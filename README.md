@@ -29,11 +29,15 @@ Here is the first commands you need to use Koin:
 
 The `provide` function declares a bean within the current context. Here we declare a MyComponent bean, by creating it: 
 
-`provide { MyComponent() }`
+```kotlin
+provide { MyComponent() }
+```
 
 The `get` function retrieves a bean from the given context (Singleton by default): 
 
-`context.get<MyComponent>()`
+```kotlin
+context.get<MyComponent>()
+```
 
 ### Modules & definitions
 
