@@ -8,8 +8,16 @@ Insert Koin to inject your app :)
 
 Setup gradle ...
 
-```
-gradle ...
+```gradle
+
+repositories {
+        maven {
+            url  "http://dl.bintray.com/ekito/koin"
+        }
+    }
+
+compile 'org.koin:koin-core:0.1.0'
+
 ```
 
 
