@@ -11,10 +11,8 @@ Setup gradle ...
 ```gradle
 
 repositories {
-        maven {
-            url  "http://dl.bintray.com/ekito/koin"
-        }
-    }
+    jcenter()
+}
 
 compile 'org.koin:koin-core:0.1.0'
 
