@@ -1,77 +1,79 @@
 # KOIN - KOtlin dependency INjection framework
 
-A simple dependency injection framework that use Kotlin and functional magic to get it done!
+KOIN is a simple dependency injection framework that use Kotlin and its functional power to get it done!  No Proxy, No code generation, No introspection. Just functional Kotlin and DSL ;)
 
-Insert Koin to inject your app :)
+**Insert Koin and start injecting :)**
 
-## Setup
+## Gradle Setup
 
-Setup gradle ...
+Check that you have jcenter repository and add the following gradle dependency:
 
 ```gradle
-
+// if not already in your gradle files
 repositories {
-    jcenter()
+        jcenter()
 }
 
-compile 'org.koin:koin-core:0.1.0'
+compile 'org.koin:koin-android:0.1.0'
 
 ```
-
 
 ## Getting Started
 
-Here is the first commands you need to use Koin:
+First of all, you need to write a **module** to gather your components definitions.
 
-### Declare And Retrieve a component
+### Writing your Module
 
-The `provide` function declares a bean within the current context. Here we declare a MyComponent bean, by creating it: 
+Write a class that extends [Module](https://github.com/Ekito/koin/blob/master/src/main/kotlin/org/koin/module/Module.kt) class. Check the [example](https://github.com/Ekito/koin/blob/master/src/test/kotlin/org/koin/test/koin/SimpleKoin.kt) below :
 
-```kotlin
-provide { MyComponent() }
-```
-
-The `get` function retrieves a bean from the given context (Singleton by default): 
-
-```kotlin
-context.get<MyComponent>()
-```
-
-### Modules & definitions
-
-A `Module` class helps you gather definitions:
-
-```kotlin
+```Kotlin
 class MyModule : Module() {
     override fun onLoad() {
         declareContext {
-            //provides dependencies
-            provide { MyComponent() } 
+            provide { ServiceB() }
+            provide { ServiceA(get()) }
+            provide { ServiceC(get(),get()) }
         }
+        //...
     }
 }
+
 ```
-**Note**: you must use the `declareContext` function to declare your definitions within the associated lambda expression.
+Your must open declaration section in the `onLoad()` method, with the `declareContext` function.  
 
-### Setup a Koin Context
+Each `provide` function helps you to declare your component. Each lambda passed to this function must return an expression for your component creation. e.g: class instance. 
 
-You can create your Koin context this way:
+You can use the `get()` method to inject your component constructor, which will resolve the needed dependency.
 
-```kotlin
-val context = Koin().build(MyModule::class)
+### Setup your Kotlin Application
+
+To start your module, you just need to build it: 
+
+```Kotlin
+val myContext = Koin().build(MyModule::class)
 ```
 
-You are now able to get your dependencies from the actual `context` object.
+This will return a context on which you will get your components instances.
 
-```kotlin
-val myComponent = context.get<MyComponent>()
+### Just get Koin
+
+Once you have your Koin context you can get your components with `get()`:
+
+```Kotlin
+val ctx = Koin().build(MyModule::class)
+
+val serviceA = ctx.get<ServiceA>()
+serviceA.doSomethingWithB()
+
+val serviceC = ctx.get<ServiceC>()
+serviceC.doSomethingWithAll()
+
+val serviceB = ctx.get<ServiceB>()
 ```
-
-A Koin context is created via `Module` class and started from the `Koin` class like below. Each of those give access to Koin context.
 
 ## Running Example
 
-### First Example
+### A first Example
 
 Let's take the following Kotlin classes:
 
@@ -127,7 +129,7 @@ fun main(args: Array<String>) {
 }
 ```
 
-[Check the sample app](https://github.com/Ekito/koin/blob/master/LICENSE)
+[Check the sample](https://github.com/Ekito/koin/blob/master/src/test/kotlin/org/koin/test/koin/SimpleKoin.kt)
 
 
 ## Advanced features
@@ -169,7 +171,7 @@ class SampleModuleAAndC : Module() {
 When loading module `Koin().build(SampleModuleAAndC::class)`, resulting context will contain components from SampleModuleB and SampleModuleAAndC.
 
 
-### Providing by class
+### Providing a class
 
 When declaring a module, you can use `provide` with functional declaration (lambda containing your component instantiation). Or you can use directly the class like: `provide (ServiceA::class))`. This will look up for the first class constructor, and fill definition.
 
@@ -271,12 +273,12 @@ class SampleModuleD : Module() {
 
 ## More ...
 
-### [Android Extensions]()
+### [Koin for Android](https://github.com/Ekito/koin-android)
 
 
 ## TODO / Roadmap
 
 * Qualifiers
-* Better Documentation page
+* Better Documentation page ;)
 
 
