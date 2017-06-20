@@ -35,7 +35,7 @@ class SampleModuleAC : Module() {
 class SampleModuleB : Module() {
     override fun onLoad() {
         declareContext {
-            factory(ServiceB::class)
+            provide { ServiceB() }
         }
     }
 }

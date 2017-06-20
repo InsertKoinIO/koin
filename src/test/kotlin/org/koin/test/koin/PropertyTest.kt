@@ -20,6 +20,9 @@ class PropertyTest {
 
         val myVal = ctx.getProperty<String>("myVal")
         assertNotNull(myVal)
+
+        assertEquals(1, ctx.propertyResolver.properties.size)
+
         val serviceD = ctx.get<ServiceD>()
         assertNotNull(serviceD)
     }
@@ -28,8 +31,12 @@ class PropertyTest {
     fun set_property() {
         val ctx = Koin().build(SampleModuleD::class)
 
+        assertEquals(0, ctx.propertyResolver.properties.size)
+
         val myVal = "myVal"
         ctx.setProperty("myVal", myVal)
+
+        assertEquals(1, ctx.propertyResolver.properties.size)
 
         val serviceD = ctx.get<ServiceD>()
         assertEquals(myVal, serviceD.myVal)

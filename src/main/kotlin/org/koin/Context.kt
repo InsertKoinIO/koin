@@ -143,9 +143,32 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
     }
 
     /**
-     * Remove a bean definiont and its instance
+     * Remove a definition and instance for gvien class
      */
     fun remove(kClass: KClass<*>) {
+        logger.info("Remove definition & isntance for $kClass")
         beanRegistry.remove(kClass)
+    }
+
+    /**
+     * Remove a definitions and instances for given classes
+     */
+    fun remove(vararg classes: KClass<*>) {
+        classes.map { remove(it) }
+    }
+
+    /**
+     * Delete instance for given class
+     */
+    fun delete(kClass: KClass<*>) {
+        logger.info("Remove instance for $kClass ")
+        beanRegistry.instanceFactory.instances.remove(kClass)
+    }
+
+    /**
+     * Delete instance for given classes
+     */
+    fun delete(vararg classes: KClass<*>) {
+        classes.map { delete(it) }
     }
 }

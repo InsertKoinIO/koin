@@ -21,6 +21,9 @@ class InjectTest {
     fun inject_into_instance() {
         val ctx = Koin().build(SampleModuleB::class)
 
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+
         val instance = MyClass()
 
         val start = System.currentTimeMillis()
@@ -30,6 +33,9 @@ class InjectTest {
         val total = System.currentTimeMillis() - start
         println("inject in $total ms")
 
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+
         assertNotNull(instance.serviceB)
         instance.serviceB.doSomething()
     }
@@ -37,6 +43,9 @@ class InjectTest {
     @Test
     fun multi_inject() {
         val ctx = Koin().build(SampleModuleAC::class)
+
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
 
         val instance = MyOtherClass()
 
@@ -50,8 +59,8 @@ class InjectTest {
         assertNotNull(instance.serviceB)
         assertNotNull(instance.serviceC)
 
-        instance.serviceB.doSomething()
-        instance.serviceC.doSomethingWithAll()
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
     }
 
     /*
@@ -60,6 +69,9 @@ class InjectTest {
     @Test
     fun manual_multi_inject() {
         val ctx = Koin().build(SampleModuleAC::class)
+
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
 
         val instance = MyOtherClass()
 
@@ -74,8 +86,8 @@ class InjectTest {
         assertNotNull(instance.serviceB)
         assertNotNull(instance.serviceC)
 
-        instance.serviceB.doSomething()
-        instance.serviceC.doSomethingWithAll()
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
     }
 
     @Test
@@ -87,6 +99,9 @@ class InjectTest {
             println("done B Mock")
         }
         ctx.provide { serviceB }
+
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
 
         val instance = MyOtherClass()
 
@@ -106,5 +121,8 @@ class InjectTest {
         assertEquals(instance.serviceB, serviceB)
 
         Mockito.verify(serviceB, Mockito.times(3)).doSomething()
+
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
     }
 }

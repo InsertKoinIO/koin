@@ -4,9 +4,11 @@ KOIN is a simple dependency injection framework that use Kotlin and its function
 
 **Insert Koin and start injecting :)**
 
-## Gradle Setup
+## Setup
 
 Check that you have jcenter repository and add the following gradle dependency:
+
+### Gradle
 
 ```gradle
 // if not already in your gradle files
@@ -14,8 +16,18 @@ repositories {
         jcenter()
 }
 
-compile 'org.koin:koin-android:0.1.0'
+compile 'org.koin:koin-android:0.1.1'
 
+```
+
+### Maven
+
+```xml
+<dependency>
+    <groupId>org.koin</groupId>
+    <artifactId>koin-core</artifactId>
+    <version>0.1.0</version>
+</dependency>
 ```
 
 ## Getting Started
@@ -218,6 +230,18 @@ val context = Koin().build(SampleModule::class)
 val first = context.get<ServiceB>()
 // is null
 val second = context.getOrNull<ServiceB>()
+```
+
+### Deleting & Removing
+
+For a given context, you can delete an instance via its class (further instance access will recreate an instance):
+```kotlin
+ctx.delete(ServiceB::class)
+```
+
+You can also remove instance and definition (no more instantiation possible):
+```kotlin
+ctx.remove(ServiceB::class)
 ```
 
 ### @Inject

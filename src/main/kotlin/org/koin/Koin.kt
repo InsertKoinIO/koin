@@ -16,7 +16,7 @@ class Koin() {
     val context: Context = Context()
 
     init {
-        logger.info("Koin Start !")
+        logger.info("(-) Koin Started ! (-)")
     }
 
     /**
@@ -30,18 +30,16 @@ class Koin() {
     }
 
     /**
-     * Load module
+     * Load modules
      */
-    fun build(clazz: KClass<out Module>? = null): Context {
-        logger.info("load module ${clazz?.simpleName} ...")
+    fun build(vararg classes: KClass<out Module>): Context {
+        logger.info("load module $classes ...")
 
-        val module: KClass<out Module>
-        if (clazz == null) {
-            module = EmptyModule::class
+        if (classes.isEmpty()) {
+            context.import(EmptyModule::class)
         } else {
-            module = clazz
+            classes.map { context.import(it) }
         }
-        context.import(module)
         return context
     }
 }

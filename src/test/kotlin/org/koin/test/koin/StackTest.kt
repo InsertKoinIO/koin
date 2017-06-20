@@ -15,11 +15,16 @@ class StackTest {
     @Test
     fun simple_stack() {
         val ctx = Koin().build(SampleModuleB::class)
-
         ctx.stack { ServiceA(ctx.get()) }
+
+        assertEquals(2, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
 
         val serviceA_1: ServiceA = ctx.get()
         val serviceA_2: ServiceA? = ctx.getOrNull()
+
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
 
         assertNotNull(serviceA_1)
         assertNull(serviceA_2)
@@ -31,13 +36,25 @@ class StackTest {
 
         ctx.stack { ServiceA(ctx.get()) }
 
+        assertEquals(2, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+
         val serviceA_1: ServiceA = ctx.get()
+
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
 
         ctx.stack { ServiceA(ctx.get()) }
 
         val serviceA_2: ServiceA = ctx.get()
 
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+
         val serviceA_3: ServiceA? = ctx.getOrNull()
+
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
 
         assertNotNull(serviceA_1)
         assertNotNull(serviceA_2)

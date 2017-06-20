@@ -4,8 +4,6 @@ import org.koin.bean.BeanDefinition
 import org.koin.bean.BeanType
 import org.koin.error.NoBeanDefFoundException
 import java.util.logging.Logger
-import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.javaField
 
@@ -35,7 +33,7 @@ class BeanRegistry(val instanceFactory: InstanceFactory = InstanceFactory()) {
         val found = searchDefinition(clazz)
         // overwrite existing definition
         if (found != null) {
-            definitions.remove(found)
+            remove(clazz)
         }
         definitions += def
     }
