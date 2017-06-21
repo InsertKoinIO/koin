@@ -24,6 +24,7 @@ First release
 - Advanced context functions : Factory & Stack bean instance strategies
 - Can remove instance/definition from context
 - Properties injection
+- Retrieve by interface
 - @Inject injection
 
 ## Installation

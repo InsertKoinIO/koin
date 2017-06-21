@@ -16,7 +16,7 @@ import org.koin.test.koin.example.SampleModuleB
 class KoinDeleteAndRemoveTest {
 
     @Test
-    fun simple_delete() {
+    fun `delete an instance`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         val serviceB = ctx.get<ServiceB>()
@@ -32,7 +32,7 @@ class KoinDeleteAndRemoveTest {
     }
 
     @Test
-    fun create_delete() {
+    fun `delete & recreate instance`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         val serviceB = ctx.get<ServiceB>()
@@ -57,7 +57,7 @@ class KoinDeleteAndRemoveTest {
     }
 
     @Test
-    fun multi_delete() {
+    fun `delete multiple instances`() {
         val ctx = Koin().build(SampleModuleAC::class)
 
         val serviceB = ctx.get<ServiceB>()
@@ -77,7 +77,7 @@ class KoinDeleteAndRemoveTest {
 
 
     @Test
-    fun simple_remove() {
+    fun `remove bean definition`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         val serviceB = ctx.get<ServiceB>()
@@ -92,7 +92,7 @@ class KoinDeleteAndRemoveTest {
     }
 
     @Test
-    fun multi_remove() {
+    fun `remove multiple definitions`() {
         val ctx = Koin().build(SampleModuleAC::class)
 
         val serviceB = ctx.get<ServiceB>()

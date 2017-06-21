@@ -13,7 +13,7 @@ import org.koin.test.koin.example.SampleModuleB
 class StackTest {
 
     @Test
-    fun simple_stack() {
+    fun `stack a definition and retrieve it`() {
         val ctx = Koin().build(SampleModuleB::class)
         ctx.stack { ServiceA(ctx.get()) }
 
@@ -31,7 +31,7 @@ class StackTest {
     }
 
     @Test
-    fun chain_stack() {
+    fun `stack same definitions`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         ctx.stack { ServiceA(ctx.get()) }

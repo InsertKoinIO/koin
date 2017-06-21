@@ -13,7 +13,7 @@ import org.koin.test.koin.example.SampleModuleD
 class PropertyTest {
 
     @Test
-    fun simple_property_added() {
+    fun `property has been added`() {
         val ctx = Koin()
                 .properties(mapOf("myVal" to "VALUE!"))
                 .build(SampleModuleD::class)
@@ -28,7 +28,7 @@ class PropertyTest {
     }
 
     @Test
-    fun set_property() {
+    fun `set a property on context`() {
         val ctx = Koin().build(SampleModuleD::class)
 
         assertEquals(0, ctx.propertyResolver.properties.size)

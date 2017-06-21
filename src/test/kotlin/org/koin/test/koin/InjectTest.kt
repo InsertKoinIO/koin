@@ -18,7 +18,7 @@ import org.mockito.Mockito
 class InjectTest {
 
     @Test
-    fun inject_into_instance() {
+    fun `inject into tagged instance`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         assertEquals(1, ctx.beanRegistry.definitions.size)
@@ -41,7 +41,7 @@ class InjectTest {
     }
 
     @Test
-    fun multi_inject() {
+    fun `inject multiple components into instance`() {
         val ctx = Koin().build(SampleModuleAC::class)
 
         assertEquals(3, ctx.beanRegistry.definitions.size)
@@ -67,7 +67,7 @@ class InjectTest {
      To compare with @inject
      */
     @Test
-    fun manual_multi_inject() {
+    fun `manual binding into instance`() {
         val ctx = Koin().build(SampleModuleAC::class)
 
         assertEquals(3, ctx.beanRegistry.definitions.size)
@@ -91,7 +91,7 @@ class InjectTest {
     }
 
     @Test
-    fun multi_inject_mock() {
+    fun `multi components inject with mocks`() {
         val ctx = Koin().build(SampleModuleAC::class)
 
         val serviceB: ServiceB = Mockito.mock(ServiceB::class.java)

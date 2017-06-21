@@ -26,8 +26,7 @@ class MyModule : Module() {
 class SimpleTest {
 
     @Test
-    fun simple_test_module() {
-
+    fun `simple load of MyModule`() {
         val ctx = Koin().build(MyModule::class)
 
         val serviceA = ctx.get<ServiceA>()

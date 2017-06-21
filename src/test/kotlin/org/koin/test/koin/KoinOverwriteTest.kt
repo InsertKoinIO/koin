@@ -14,7 +14,7 @@ import org.mockito.Mockito.mock
 class KoinOverwriteTest {
 
     @Test
-    fun overwrite_definition() {
+    fun `overwrite an already existing bean definition`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         assertEquals(1, ctx.beanRegistry.definitions.size)

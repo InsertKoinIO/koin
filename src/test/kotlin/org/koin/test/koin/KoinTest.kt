@@ -19,7 +19,7 @@ import org.mockito.Mockito.times
 class KoinTest {
 
     @Test
-    fun simple_di() {
+    fun `simple load and retrieve instance`() {
         val ctx = Koin().build(SampleModuleB::class)
 
         val serviceB = ctx.get<ServiceB>()
@@ -34,7 +34,7 @@ class KoinTest {
     }
 
     @Test
-    fun simple_di_multi_modules() {
+    fun `load mulitple definition and retrieve them`() {
         val ctx = Koin().build(SampleModuleAC::class)
 
         val serviceB = ctx.get<ServiceB>()
@@ -51,7 +51,7 @@ class KoinTest {
 
 
     @Test
-    fun functional_di() {
+    fun `functional declaration with mock`() {
         //onLoad only ServiceB
         val ctx = Koin().build(SampleModuleB::class)
 
@@ -72,7 +72,7 @@ class KoinTest {
     }
 
     @Test
-    fun factory_functional() {
+    fun `factory declaration with mock`() {
         //onLoad only ServiceB
         val ctx = Koin().build(SampleModuleB::class)
 
@@ -105,7 +105,7 @@ class KoinTest {
     }
 
     @Test
-    fun factory() {
+    fun `use of factory instances`() {
         //onLoad only ServiceB
         val ctx = Koin().build(SampleModuleB::class)
 
@@ -136,7 +136,7 @@ class KoinTest {
     }
 
     @Test
-    fun empty_module() {
+    fun `use of EmptyModule`() {
         //onLoad only ServiceB
         val ctx = Koin().build()
 
@@ -154,7 +154,7 @@ class KoinTest {
     }
 
     @Test
-    fun lazy_import_module() {
+    fun `lazy linking and import definitions`() {
         val ctx = Koin().build()
 
         assertEquals(0, ctx.beanRegistry.definitions.size)

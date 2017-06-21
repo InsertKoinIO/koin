@@ -16,7 +16,7 @@ class MockingInjectionTest {
     val serviceA: ServiceA by lazy { ServiceA(serviceB) }
 
     @Test
-    fun testInjected() {
+    fun `simple mock injection`() {
         `when`(serviceB.doSomething()).then {
             println("<mock> $this doSomething !")
         }
@@ -25,7 +25,7 @@ class MockingInjectionTest {
     }
 
     @Test
-    fun testFactory() {
+    fun `multiple mock injection`() {
         val serviceB: ServiceB = mock(ServiceB::class.java)
         val serviceA: ServiceA = mock(ServiceA::class.java)
         `when`(serviceA.doSomethingWithB()).then {

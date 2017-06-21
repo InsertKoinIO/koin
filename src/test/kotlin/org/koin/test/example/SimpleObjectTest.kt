@@ -10,7 +10,7 @@ import org.junit.Test
 class SimpleObjectTest {
 
     @Test
-    fun test_object_class_injection() {
+    fun `simple injection from Object container classes`() {
 
         val serviceA = Container.serviceA
         serviceA.doSomethingWithB()
