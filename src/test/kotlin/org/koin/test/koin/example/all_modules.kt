@@ -1,10 +1,6 @@
 package org.koin.test.koin.example
 
 import org.koin.module.Module
-import org.koin.test.ServiceA
-import org.koin.test.ServiceB
-import org.koin.test.ServiceC
-import org.koin.test.ServiceD
 
 
 /**
@@ -18,7 +14,17 @@ class SampleModuleA : Module() {
     }
 }
 
-class SampleModuleAC : Module() {
+class SampleModuleC : Module() {
+    override fun onLoad() {
+        declareContext {
+            provide(ServiceA::class)
+
+            provide { ServiceC(get(), get()) }
+        }
+    }
+}
+
+class SampleModuleC_ImportB : Module() {
     override fun onLoad() {
         declareContext {
             import(SampleModuleB::class)

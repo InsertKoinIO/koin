@@ -1,4 +1,4 @@
-package org.koin.test
+package org.koin.test.koin.example
 
 /**
  * Created by arnaud on 09/06/2017.

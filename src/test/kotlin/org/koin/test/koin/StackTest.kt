@@ -3,7 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.ServiceA
+import org.koin.test.koin.example.ServiceA
 import org.koin.test.koin.example.SampleModuleB
 
 

@@ -4,10 +4,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.ServiceB
+import org.koin.test.koin.example.ServiceB
 import org.koin.test.koin.example.MyClass
 import org.koin.test.koin.example.MyOtherClass
-import org.koin.test.koin.example.SampleModuleAC
+import org.koin.test.koin.example.SampleModuleC_ImportB
 import org.koin.test.koin.example.SampleModuleB
 import org.mockito.Mockito
 
@@ -42,7 +42,7 @@ class InjectTest {
 
     @Test
     fun `inject multiple components into instance`() {
-        val ctx = Koin().build(SampleModuleAC::class)
+        val ctx = Koin().build(SampleModuleC_ImportB::class)
 
         assertEquals(3, ctx.beanRegistry.definitions.size)
         assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
@@ -68,7 +68,7 @@ class InjectTest {
      */
     @Test
     fun `manual binding into instance`() {
-        val ctx = Koin().build(SampleModuleAC::class)
+        val ctx = Koin().build(SampleModuleC_ImportB::class)
 
         assertEquals(3, ctx.beanRegistry.definitions.size)
         assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
@@ -92,7 +92,7 @@ class InjectTest {
 
     @Test
     fun `multi components inject with mocks`() {
-        val ctx = Koin().build(SampleModuleAC::class)
+        val ctx = Koin().build(SampleModuleC_ImportB::class)
 
         val serviceB: ServiceB = Mockito.mock(ServiceB::class.java)
         Mockito.`when`(serviceB.doSomething()).then {

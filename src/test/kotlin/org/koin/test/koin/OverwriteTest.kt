@@ -4,14 +4,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.ServiceB
+import org.koin.test.koin.example.ServiceB
 import org.koin.test.koin.example.SampleModuleB
 import org.mockito.Mockito.mock
 
 /**
  * Created by arnaud on 31/05/2017.
  */
-class KoinOverwriteTest {
+class OverwriteTest {
 
     @Test
     fun `overwrite an already existing bean definition`() {

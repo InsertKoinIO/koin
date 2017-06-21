@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.ServiceD
+import org.koin.test.koin.example.ServiceD
 import org.koin.test.koin.example.SampleModuleD
 
 /**

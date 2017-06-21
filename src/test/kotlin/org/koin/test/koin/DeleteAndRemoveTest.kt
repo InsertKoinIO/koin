@@ -4,16 +4,16 @@ import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.ServiceA
-import org.koin.test.ServiceB
-import org.koin.test.ServiceC
-import org.koin.test.koin.example.SampleModuleAC
+import org.koin.test.koin.example.ServiceA
+import org.koin.test.koin.example.ServiceB
+import org.koin.test.koin.example.ServiceC
+import org.koin.test.koin.example.SampleModuleC_ImportB
 import org.koin.test.koin.example.SampleModuleB
 
 /**
  * Created by arnaud on 31/05/2017.
  */
-class KoinDeleteAndRemoveTest {
+class DeleteAndRemoveTest {
 
     @Test
     fun `delete an instance`() {
@@ -58,7 +58,7 @@ class KoinDeleteAndRemoveTest {
 
     @Test
     fun `delete multiple instances`() {
-        val ctx = Koin().build(SampleModuleAC::class)
+        val ctx = Koin().build(SampleModuleC_ImportB::class)
 
         val serviceB = ctx.get<ServiceB>()
         val serviceC = ctx.get<ServiceC>()
@@ -93,7 +93,7 @@ class KoinDeleteAndRemoveTest {
 
     @Test
     fun `remove multiple definitions`() {
-        val ctx = Koin().build(SampleModuleAC::class)
+        val ctx = Koin().build(SampleModuleC_ImportB::class)
 
         val serviceB = ctx.get<ServiceB>()
         val serviceC = ctx.get<ServiceC>()

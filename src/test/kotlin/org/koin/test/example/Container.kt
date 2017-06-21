@@ -1,8 +1,8 @@
 package org.koin.test.example
 
-import org.koin.test.ServiceA
-import org.koin.test.ServiceB
-import org.koin.test.ServiceC
+import org.koin.test.koin.example.ServiceA
+import org.koin.test.koin.example.ServiceB
+import org.koin.test.koin.example.ServiceC
 
 /**
  * Created by arnaud on 20/04/2017.

@@ -8,7 +8,7 @@ First release
 - Bean definition overwrite when providing new definition
 
 **Added**
-- Koin build with multiple modules in entry
+- Koin build with multiple modules
 - Context delete functions
 - Context remove with list
 

@@ -4,9 +4,9 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
 import org.koin.module.Module
-import org.koin.test.ServiceA
-import org.koin.test.ServiceB
-import org.koin.test.ServiceC
+import org.koin.test.koin.example.ServiceA
+import org.koin.test.koin.example.ServiceB
+import org.koin.test.koin.example.ServiceC
 
 /**
  * Created by arnaud on 01/06/2017.
