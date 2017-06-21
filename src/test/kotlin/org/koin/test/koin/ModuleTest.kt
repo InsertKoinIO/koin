@@ -83,4 +83,13 @@ class ModuleTest {
         assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
     }
 
+    @Test
+    fun `missing bean component - lazy linking`() {
+        val ctx = Koin().build(SampleModuleC::class)
+
+        assertNull(ctx.getOrNull<ServiceA>())
+        assertNull(ctx.getOrNull<ServiceC>())
+        assertEquals(2, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+    }
 }

@@ -5,27 +5,18 @@
 First release
 
 **Fixes**
+- Factory bean does not keep instances any more
 - Bean definition overwrite when providing new definition
 
 **Added**
-- Koin build with multiple modules
+- Koin build with vararg of Module classes
 - Context delete functions
-- Context remove with list
+- Context remove with list of classes
 
 
 ## [0.1.0]()
 
 First release
-
-**Added**
-- Koin Builder
-- Basic context functions : module, provide, import & lazy linking, bean & instances registry
-- Provide by class (1st constructor)
-- Advanced context functions : Factory & Stack bean instance strategies
-- Can remove instance/definition from context
-- Properties injection
-- Retrieve by interface
-- @Inject injection
 
 ## Installation
 

@@ -19,10 +19,10 @@ class InstanceFactory {
     /**
      * Retrieve or create bean instance
      */
-    fun <T> retrieveOrCreateInstance(clazz: KClass<*>, def: BeanDefinition<*>): T {
+    fun <T> retrieveOrCreateInstance(clazz: KClass<*>, def: BeanDefinition<*>, saveInstance: Boolean = true): T {
         var instance = findExistingInstance<T>(clazz)
         if (instance == null) {
-            instance = createInstance(def, clazz)
+            instance = createInstance(def, clazz, saveInstance)
         }
         return instance!!
     }
@@ -42,11 +42,13 @@ class InstanceFactory {
     /**
      * create instance for given bean definition
      */
-    fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>): T {
+    fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, saveInstance: Boolean = true): T {
         logger.fine("create instance for $def")
 
         val instance = def.definition.invoke() as Any
-        instances[clazz] = instance
+        if (saveInstance) {
+            instances[clazz] = instance
+        }
         return instance as T
     }
 }

@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.Koin
 import org.koin.test.koin.example.ServiceA
 import org.koin.test.koin.example.SampleModuleB
+import org.koin.test.koin.example.ServiceB
 
 
 /**
@@ -14,51 +15,42 @@ class StackTest {
 
     @Test
     fun `stack a definition and retrieve it`() {
-        val ctx = Koin().build(SampleModuleB::class)
-        ctx.stack { ServiceA(ctx.get()) }
-
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
-
-        val serviceA_1: ServiceA = ctx.get()
-        val serviceA_2: ServiceA? = ctx.getOrNull()
+        val ctx = Koin().build()
+        ctx.stack { ServiceB() }
 
         assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
 
-        assertNotNull(serviceA_1)
-        assertNull(serviceA_2)
+        assertNotNull(ctx.getOrNull<ServiceB>())
+
+        assertEquals(0, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+
+        assertNull(ctx.getOrNull<ServiceB>())
     }
 
     @Test
     fun `stack same definitions`() {
         val ctx = Koin().build(SampleModuleB::class)
-
         ctx.stack { ServiceA(ctx.get()) }
 
         assertEquals(2, ctx.beanRegistry.definitions.size)
         assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
 
-        val serviceA_1: ServiceA = ctx.get()
+        assertNotNull(ctx.getOrNull<ServiceA>())
 
         assertEquals(1, ctx.beanRegistry.definitions.size)
         assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
 
         ctx.stack { ServiceA(ctx.get()) }
-
-        val serviceA_2: ServiceA = ctx.get()
-
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
-
-        val serviceA_3: ServiceA? = ctx.getOrNull()
+        assertNotNull(ctx.getOrNull<ServiceA>())
 
         assertEquals(1, ctx.beanRegistry.definitions.size)
         assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
 
-        assertNotNull(serviceA_1)
-        assertNotNull(serviceA_2)
-        assertNull(serviceA_3)
-        assertNotEquals(serviceA_1, serviceA_2)
+        assertNull(ctx.getOrNull<ServiceA>())
+
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
     }
 }

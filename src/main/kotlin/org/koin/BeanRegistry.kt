@@ -72,12 +72,12 @@ class BeanRegistry(val instanceFactory: InstanceFactory = InstanceFactory()) {
 
         if (def != null) {
             return when (def.type) {
-                BeanType.FACTORY -> instanceFactory.createInstance(def, clazz)
+                BeanType.FACTORY -> instanceFactory.createInstance(def, clazz, false)
                 BeanType.SINGLETON -> {
                     instanceFactory.retrieveOrCreateInstance<T>(clazz, def)
                 }
                 BeanType.STACK -> {
-                    val instance = instanceFactory.retrieveOrCreateInstance<T>(clazz, def)
+                    val instance = instanceFactory.retrieveOrCreateInstance<T>(clazz, def, false)
                     remove(clazz)
                     instance
                 }

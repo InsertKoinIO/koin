@@ -86,13 +86,27 @@ class KoinTest {
     }
 
     @Test
-    fun `missing bean component - lazy linking`() {
-        val ctx = Koin().build(SampleModuleC::class)
+    fun `provide for class with many constructors`() {
+        val ctx = Koin().build()
 
-        assertNull(ctx.getOrNull<ServiceA>())
-        assertNull(ctx.getOrNull<ServiceC>())
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.provide(ServiceB::class)
+        ctx.provide(ServiceA::class)
+        ctx.provide(ServiceManyConstructor::class)
+
+        assertNotNull(ctx.get<ServiceManyConstructor>())
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+    }
+
+    @Test
+    fun `provide for class with no constructor`() {
+        val ctx = Koin().build()
+
+        ctx.provide(NoConstructor::class)
+
+        assertNotNull(ctx.get<NoConstructor>())
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
     }
 
     @Test
@@ -111,34 +125,6 @@ class KoinTest {
 
         assertNotNull(serviceA)
         Mockito.verify(serviceB).doSomething()
-    }
-
-    @Test
-    fun `factory declaration with mock`() {
-        val ctx = Koin().build()
-
-        val serviceB: ServiceB = Mockito.mock(ServiceB::class.java)
-        Mockito.`when`(serviceB.doSomething()).then {
-            println("done B Mock")
-        }
-
-        ctx.provide { serviceB }
-        ctx.factory({ ServiceA(ctx.get()) })
-
-        val serviceA_1 = ctx.get<ServiceA>()
-        serviceA_1.doSomethingWithB()
-
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(2, ctx.beanRegistry.instanceFactory.instances.size)
-
-        val serviceA_2 = ctx.get<ServiceA>()
-        serviceA_2.doSomethingWithB()
-
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(2, ctx.beanRegistry.instanceFactory.instances.size)
-
-        assertNotEquals(serviceA_1, serviceA_2)
-        Mockito.verify(serviceB, times(2)).doSomething()
     }
 
     @Test

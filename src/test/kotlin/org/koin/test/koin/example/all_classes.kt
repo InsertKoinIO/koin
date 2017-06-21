@@ -9,7 +9,7 @@ class ServiceA(val serviceB: ServiceB) {
         println("$this ctor A")
     }
 
-    fun doSomethingWithB(){
+    fun doSomethingWithB() {
         println("$this do something in A")
         serviceB.doSomething()
     }
@@ -21,7 +21,7 @@ class ServiceB() {
         println("$this ctor B")
     }
 
-    fun doSomething(){
+    fun doSomething() {
         println("$this do something in B")
     }
 }
@@ -31,20 +31,32 @@ class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB) {
         println("$this ctor C")
     }
 
-    fun doSomethingWithAll(){
+    fun doSomethingWithAll() {
         println("$this do something in C")
         serviceA.doSomethingWithB()
         serviceB.doSomething()
     }
 }
 
-class ServiceD(val myVal : String) {
+class ServiceD(val myVal: String) {
 
     init {
         println("$this ctor D")
     }
 
-    fun doSomething(){
+    fun doSomething() {
         println("$this do something in D with $myVal")
     }
+}
+
+class NoConstructor {
+
+}
+
+class ServiceManyConstructor(val serviceA: ServiceA) {
+
+    constructor(serviceA: ServiceA, serviceB: ServiceB) : this(serviceA) {
+
+    }
+
 }

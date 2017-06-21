@@ -127,7 +127,7 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
         logger.finest("declare class : $clazz - type : $type")
 
         if (clazz.constructors.isEmpty()) {
-            throw IllegalStateException("class $clazz has no constructor")
+            throw BeanDefinitionException("class $clazz has no constructor")
         } else {
             val ctor = clazz.constructors.first()
             val types = ctor.parameters
