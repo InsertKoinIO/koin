@@ -1,21 +1,39 @@
-# KOIN - KOtlin dependency INjection framework
+# Insert Koin to make dependency injection
 
-KOIN is a simple dependency injection framework that use Kotlin and its functional power to get it done!  No Proxy, No code generation, No introspection. Just functional Kotlin and DSL ;)
+KOIN is a dependency injection framework that uses Kotlin and its functional power to get things done!  No proxy/CGLib, No code generation, No introspection. Just functional Kotlin and DSL magic ;)
 
-**Insert Koin and start injecting :)**
+![logo](./img/insert_koin_logo.jpg)
+
+# Table of Contents
+
+1. [Setup](#Setup)
+2. [Getting Started](#Getting_Started)
+	1. [Write your Module](#Write_your_Module)
+	2. [Setup your application](#Setup_your_application)
+2. [A first Example](#A_first_Example)
+3. [Using KOIN Framework](#Using_KOIN_Framework)
+	1. [Creating a module](#Creating_a_module)
+	2. [Providing a component](#providing-a-component)
+	3. [Injecting a dependency](#injecting-a-dependency)
+	4. [Start your context](#start-your-context)
+	5. [Safely resolving a dependency](#safely-resolving-a-dependency)
+	6. [Factory components](#factory-components)
+	7. [Stacking components](#stacking-components)
+	8. [Deleting & removing](#deleting-&-removing)
+	9. [Importing modules](#importing-modules)
+	10. [Lazy linking](#lazy-linking)
+	11. [Injecting with @Inject](#injecting-with-@inject)
+	12. [Using properties](#using-properties)
+4. [Library extensions](#library-extensions)
+5. [Roadmap](#roadmap)
 
 ## Setup
 
-Check that you have jcenter repository and add the following gradle dependency:
+Check that you have `jcenter` repository and add the following gradle dependency:
 
 ### Gradle
 
 ```gradle
-// if not already in your gradle files
-repositories {
-        jcenter()
-}
-
 compile 'org.koin:koin-android:0.1.1'
 
 ```
@@ -26,15 +44,15 @@ compile 'org.koin:koin-android:0.1.1'
 <dependency>
     <groupId>org.koin</groupId>
     <artifactId>koin-core</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
 ## Getting Started
 
-First of all, you need to write a **module** to gather your components definitions.
+First of all, you need to write a **Module** to gather your components definitions. Then you will be ready to load your module and inject yoru components. Keep in mind, that **injection by constructor** is the default strategy targeted by Koin. Write your components with constructors for your dependencies.
 
-### Writing your Module
+### Write your Module
 
 Write a class that extends [Module](https://github.com/Ekito/koin/blob/master/src/main/kotlin/org/koin/module/Module.kt) class. Check the [example](https://github.com/Ekito/koin/blob/master/src/test/kotlin/org/koin/test/koin/SimpleKoin.kt) below :
 
@@ -44,72 +62,43 @@ class MyModule : Module() {
         declareContext {
             provide { ServiceB() }
             provide { ServiceA(get()) }
-            provide { ServiceC(get(),get()) }
         }
-        //...
     }
 }
 
 ```
-Your must open declaration section in the `onLoad()` method, with the `declareContext` function.  
+Open declaration section wihtin the `declareContext` function, in the in the `onLoad()` method.  The `declareContext` function bring you the Koin DSL and allow you to declare your components.
 
-Each `provide` function helps you to declare your component. Each lambda passed to this function must return an expression for your component creation. e.g: class instance. 
+* `provide {}` function helps you to declare your component within function Each lambda passed to this function must return an expression for your component creation. e.g: class instance. 
+* `get()` function allow you to resolve the given dependency and retrieve your component instance
 
-You can use the `get()` method to inject your component constructor, which will resolve the needed dependency.
 
-### Setup your Kotlin Application
+### Setup your application
 
-To start your module, you just need to build it: 
+*Build* your module with the `Koin` builder class: 
 
 ```Kotlin
 val myContext = Koin().build(MyModule::class)
 ```
 
-This will return a context on which you will get your components instances.
+This will return a **Koin context** on which you will get your components instances.
 
-### Just get Koin
-
-Once you have your Koin context you can get your components with `get()`:
+Once you have your Koin context you can get your components with `get()` function:
 
 ```Kotlin
 val ctx = Koin().build(MyModule::class)
 
 val serviceA = ctx.get<ServiceA>()
 serviceA.doSomethingWithB()
-
-val serviceC = ctx.get<ServiceC>()
-serviceC.doSomethingWithAll()
-
-val serviceB = ctx.get<ServiceB>()
 ```
 
-## Running Example
+## A first Example
 
-### A first Example
-
-Let's take the following Kotlin classes:
+Let's take the following Kotlin classes. We use injection by constructor:
 
 ```kotlin
-class ServiceB() {
-
-    init {
-        println("$this is B")
-    }
-
-    fun doSomething(){
-        println("$this do something in B")
-    }
-}
-class ServiceA(val serviceB: ServiceB) {
-    init {
-        println("$this is A")
-    }
-
-    fun doSomethingWithB(){
-        println("$this do something in A")
-        serviceB.doSomething()
-    }
-}
+class ServiceB() {//...}
+class ServiceA(val serviceB: ServiceB) {//...}
 ```
 
 Let's create a module to declare our components:
@@ -118,100 +107,152 @@ Let's create a module to declare our components:
 class SampleModule : Module() {
     override fun onLoad() {
         declareContext {
+            // Provide ServiceB
             provide { ServiceB() }
-            // ServiceB will be injected into ServiceA
+            // Provide ServiceA and resolve ServiceB with get()
             provide { ServiceA(get())}
         }
     }
 }
 ```
 
-**note:** we only need to use **get()** in ServiceA constructor, it will retrieve the given dependency.
+**Note:** Dependency resolution is made lazily
 
-Start a Kotlin app and run your context:
+Start a Kotlin app and run it:
 
 ```kotlin
 fun main(args: Array<String>) {
 	val context = Koin().build(SampleModule::class)
-
+	// get your components ...
 	val serviceA = context.get<serviceA>()
-	val serviceB = context.get<ServiceB>()
-
+	// run it
 	serviceA.doSomethingWithB()
 }
 ```
 
-[Check the sample](https://github.com/Ekito/koin/blob/master/src/test/kotlin/org/koin/test/koin/SimpleKoin.kt)
+[Complete sample here](https://github.com/Ekito/koin/blob/master/src/test/kotlin/org/koin/test/koin/SimpleKoin.kt)
 
 
-## Advanced features
+## Using KOIN Framework
 
-### Safely Get Components
+### Creating a module
 
-You can safely retrieve an optional component with `getOtNull` function like:
+Write a class that extends [Module](https://github.com/Ekito/koin/blob/master/src/main/kotlin/org/koin/module/Module.kt) class. Open a declaration section wihtin the `declareContext` function, in the `onLoad()` method: 
 
-```kotlin
-val serviceB : ServiceB? = context.getOrNull()
-```
-
-### Module Import
-
-You can make imports from existing modules, in your module:
-
-```kotlin
-class SampleModuleB : Module() {
+```Kotlin
+class MyModule : Module() {
     override fun onLoad() {
         declareContext {
-            provide { ServiceB() }
+            // your decleration here...
         }
     }
 }
 
-class SampleModuleAAndC : Module() {
-    override fun onLoad() {
-        declareContext {
-            import(SampleModuleB::class)
-
-            provide { ServiceA(get()) }
-
-            provide { ServiceC(get(), get()) }
-        }
-    }
-}
 ```
+The `declareContext` function brings you the Koin context and its DSL to work with your dependencies. All the features below can be used here, or on a built context from **Koin builder**.
 
-When loading module `Koin().build(SampleModuleAAndC::class)`, resulting context will contain components from SampleModuleB and SampleModuleAAndC.
 
+### Providing a component 
 
-### Providing a class
-
-When declaring a module, you can use `provide` with functional declaration (lambda containing your component instantiation). Or you can use directly the class like: `provide (ServiceA::class))`. This will look up for the first class constructor, and fill definition.
-
-We can write SampleModuleAAndC as follow:
+Whitin `declareContext` function or on a Koin context object, you can use the `provide` function for functional declaration (lambda containing your component instantiation). This will provide a **singleton** instance for your component.
 
 ```kotlin
-class SampleModuleAAndC : Module() {
-    override fun onLoad() {
-        declareContext {
-            provide(ServiceA::class)
-            provide(ServiceC::class)
-        }
-    }
+declareContext {
+    // provide Singleton definition for ServiceB
+    provide { ServiceB()}
 }
 ```
-[Check test sample](https://github.com/Ekito/koin/blob/master/LICENSE)
 
-**note:** it will take more resources & time than declaring directly with lambda form (Koin will write it for you, but it has a price)
+You can also provide a component by its class, and let Koin makes **introspection** to find its constructor:
 
-### Factory Beans
+```kotlin
+declareContext {
+    provide(ServiceB::class)
+}
+```
+In this case, **all dependencies will be lazily injected like in functional declaration**. This will be also a singleton instance.
 
-On a context or while declaring a module, you can provide a component as a factory with `factory { ServiceB() }`. Each time you will request ServiceB component, Koin will create a new instance. 
 
-### Stacking
+### Injecting a dependency
 
-On a context or while declaring a module, you can provide a component as stacked with `stack { ServiceB() }`. This is for *"one use only"* component. Next time you will request ServiceB component, Koin will create an instance and remove its definition from container. You won't be able to retrieve it after.
+In a Koin module, you can resolve an component instance with the `get()` function:
 
-_**Example:**_
+```kotlin
+// used classes
+class ServiceB() {//...}
+class ServiceA(val serviceB: ServiceB) {//...}
+
+//in a module context
+declareContext {
+    // Resolving needed dependency with get()
+    provide { ServiceA(get())}
+}
+```
+
+Instance resolution will be made lazily: instance will be created/resolve when you will ask for it.
+
+
+### Start your context
+
+You can start one or several modules, with the Koin builder API `Koin().build(...)`:
+
+```kotlin
+val context = Koin().build(MyModule::class)
+```
+
+Now you can retrieve your components instances, everywhere you have your context:
+
+```kotlin
+// Retrieve serviceA component
+val serviceA = context.get<ServiceA>()
+```
+
+**Note:** : Resolving component dependencies in constructor don't require to specify type, because constructors already hold it.  
+
+### Safely resolving a dependency
+
+If you are not sure about a dependency, you can resolve it safely with `getOrNull()`:
+
+```kotlin
+val ctx = Koin().build(MyModule::class)
+
+// will throw NoBeanDefFoundException if not found
+val serviceA = ctx.get<ServiceA>()
+
+// will return null if not found
+val serviceA = ctx.getOrNull<ServiceA>() 
+```
+
+### Factory components
+
+On a context or while declaring a module, instated of providing a singleton you can provide a factory with `factory` function: 
+
+```Kotlin
+declareContext {
+	factory { ServiceB() }
+}
+```
+```Kotlin
+// Resolve isntances from ServiceA
+val serviceA_1 = ctx.get<ServiceA>()
+val serviceA_2 = ctx.get<ServiceA>()
+
+// serviceA_1 & serviceA_2 are different !
+```
+
+Koin will **create a new instance for each demand**. Beware that Koin do not retain previous created instance.
+
+### Stacking components
+
+You can also provide a component with **one use only** lifecycle. Component is put on stack: 
+
+```Kotlin
+declareContext {
+	stack { ServiceB() }
+}
+```
+
+When you will request ServiceB component, Koin will **create an instance and remove it all** from container. You won't be able to retrieve it anymore after.
 
 ```kotlin
 class SampleModule : Module() {
@@ -222,32 +263,105 @@ class SampleModule : Module() {
     }
 }
 ```
-
-```kotlin
+```Kotlin
+// Start module
 val context = Koin().build(SampleModule::class)
-
-// is retrieved
+// ServiceB is retrieved
 val first = context.get<ServiceB>()
-// is null
+// ServiceB is gone
 val second = context.getOrNull<ServiceB>()
 ```
 
-### Deleting & Removing
+### Deleting & removing
 
-For a given context, you can delete an instance via its class (further instance access will recreate an instance):
+On a Koin context, you can delete an instance via its class (further instance access will recreate an instance) with `delete`:
+
 ```kotlin
 ctx.delete(ServiceB::class)
 ```
 
-You can also remove instance and definition (no more instantiation possible):
+You can also remove instance and its definition (no more instance can be created) with `remove`:
+
 ```kotlin
 ctx.remove(ServiceB::class)
 ```
 
-### @Inject
+### Importing modules
 
-For those who still want to use @Inject in their classes, you can ask Koin to inject dependencies on a given object intance, with the `inject` function from a Koin context. 
-Take the following class:
+You can import several modules definitions, into in your actual module with `import` function:
+
+```kotlin
+class ModuleB : Module() {
+    override fun onLoad() {
+        declareContext {
+            provide { ServiceB() }
+        }
+    }
+}
+
+class ModuleImportingB : Module() {
+    override fun onLoad() {
+        declareContext {
+            // Import module containg ServiceB definition
+            import(SampleModuleB::class)
+   			  // Resolve ServiceB
+            provide { ServiceA(get()) }
+        }
+    }
+}
+```
+
+When loading module `Koin().build(ModuleImportingB::class)`, resulting context will contain components from SampleModuleB and ModuleImportingB.
+
+### Lazy linking
+
+You must provide a compiling bean definition with `get()`:
+
+```Kotlin
+provide { ServiceA(get()) }
+```
+
+The `get()` ask the container for given definition. But all of this done lazily, when you ask the dependency. That mean that your can provide later definition:
+
+```kotlin
+// used classes
+class ServiceB() {//...}
+class ServiceA(val serviceB: ServiceB) {//...}
+
+class MyModule : Module() {
+    override fun onLoad() {
+        declareContext {
+            // will resolve for ServiceB
+            provide { ServiceA(get()) }
+        }
+    }
+}
+```
+
+From here you can:
+
+1. make direct module import in your module
+2. load another module with it, at start
+3. provide a definition on context
+
+In case 2, load a 2nd module at start:
+
+```kotlin
+//load 2 modules
+val ctx = Koin().build(SampleModule::class, <ModuleWithServiceB>::class)
+```
+
+In case 3, provide a late definition:
+
+```kotlin
+val ctx = Koin().build(SampleModule::class)
+// Provide a definition for ServiceB
+ctx.provide { ServiceB() }
+```
+
+### Injecting with @Inject
+
+For those who still want to use `@Inject` in their classes, you can ask Koin to inject dependencies on a given object intance, with the `inject` function from a Koin context. Take the following class:
 
 ```kotlin
 class MyClass {
@@ -255,18 +369,22 @@ class MyClass {
     lateinit var serviceB: ServiceB
 }
 ```
-And inject needed depndencies:
+
+And inject needed dependencies:
 
 ```kotlin
 val ctx = Koin().build(SampleModule::class)
+// create your class isntance
 val myClass = MyClass()
+// inject it with koin
 ctx.inject(myClass)
+// run it !
 myClass.serviceB.doSomething()
 ```
 
-### Properties
+### Using properties
 
-You can inject properties into your context, directly at start (map of values):
+You can **inject properties into your context**, directly at start with a map of values via `properties()` function:
 
 ```kotlin
 val ctx = Koin()
@@ -274,15 +392,18 @@ val ctx = Koin()
         .build(SampleModule::class)
 ```
 
-And retrieve your value from context:
+And retrieve your value from context, with `getProperty()`:
 
 ```kotlin
 val myVal = ctx.getProperty<String>("myVal")
 ```
-or in your module:
+
+In module definition, this will be done lazily:
 
 ```kotlin
-class SampleModuleD : Module() {
+class ServiceD(val myVal :String){//...}
+
+class SampleModule : Module() {
     override fun onLoad() {
         declareContext {
             provide { ServiceD(getProperty<String>("myVal"))}
@@ -291,18 +412,18 @@ class SampleModuleD : Module() {
 }
 ```
 
-`getPropertyOrNull` let you retrieve a nullable property.
+You can **resolve safely a property** with `getPropertyOrNull()`, which lets you retrieve a nullable property.
 
-`setProperty(key,value)` is also available to declare a property.
+To set a property on a context, use the `setProperty(key,value)` function.
 
-## More ...
+## Library extensions
 
 ### [Koin for Android](https://github.com/Ekito/koin-android)
 
+## Roadmap
 
-## TODO / Roadmap
-
-* Qualifiers
-* Better Documentation page ;)
+* Javadoc/Dokka Documentation
+* Lifecycle & Architecture
+* get/set component with qualifiers
 
 
