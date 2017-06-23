@@ -1,12 +1,16 @@
 # Change Log
 
-## [0.1.1]()
+## [0.1.2]()
 
-First release
+**Fixes**
+- Missing property throws MissingPropertyException
+
+## [0.1.1]()
 
 **Fixes**
 - Factory bean does not keep instances any more
 - Bean definition overwrite when providing new definition
+- Missing property throws MissingPropertyException
 
 **Added**
 - Koin build with vararg of Module classes

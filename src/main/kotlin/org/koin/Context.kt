@@ -2,6 +2,7 @@ package org.koin
 
 import org.koin.bean.BeanType
 import org.koin.error.BeanDefinitionException
+import org.koin.error.MissingPropertyException
 import org.koin.module.Module
 import java.util.logging.Logger
 import javax.inject.Inject
@@ -49,7 +50,8 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
     /**
      * Retrieve a property
      */
-    inline fun <reified T> getProperty(key: String): T = getPropertyOrNull(key)!!
+    @Throws(MissingPropertyException::class)
+    inline fun <reified T> getProperty(key: String): T = getPropertyOrNull(key) ?: throw MissingPropertyException("Could not bind property $key")
 
     /**
      * Retrieve safely a property
