@@ -21,21 +21,3 @@
 ## [0.1.0]()
 
 First release
-
-## Installation
-
-### Maven
-
-```xml
-<dependency>
-    <groupId>org.koin</groupId>
-    <artifactId>koin-core</artifactId>
-    <version>0.1.1</version>
-</dependency>
-```
-
-### Gradle
-
-```gradle
-compile 'org.koin:koin-core:0.1.1'
-```

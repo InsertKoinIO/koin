@@ -34,7 +34,7 @@ Check that you have `jcenter` repository and add the following gradle dependency
 ### Gradle
 
 ```gradle
-compile 'org.koin:koin-android:0.1.1'
+compile 'org.koin:koin-android:0.1.2'
 
 ```
 
@@ -44,7 +44,7 @@ compile 'org.koin:koin-android:0.1.1'
 <dependency>
     <groupId>org.koin</groupId>
     <artifactId>koin-core</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 </dependency>
 ```
 
