@@ -22,7 +22,7 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 	8. [Deleting & removing](#deleting-&-removing)
 	9. [Importing modules](#importing-modules)
 	10. [Lazy linking](#lazy-linking)
-	11. [Injecting with @Inject](#injecting-with-@inject)
+	11. [Injecting with @Inject](#injecting-with-inject)
 	12. [Using properties](#using-properties)
 4. [Library extensions](#library-extensions)
 	1. [Koin for Android](#koin-for-android) 
