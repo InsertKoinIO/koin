@@ -3,9 +3,9 @@ package org.koin
 import org.koin.bean.BeanDefinition
 import org.koin.bean.BeanType
 import org.koin.error.NoBeanDefFoundException
-import java.util.logging.Logger
+import kotlin.reflect.KClass
+import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.jvm.javaField
 
 /**
  * Bean registry
@@ -49,11 +49,12 @@ class BeanRegistry(val instanceFactory: InstanceFactory = InstanceFactory()) {
     fun searchCompatibleType(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.clazz.isSubclassOf(clazz) }.firstOrNull()
 
 
-    fun <T : Any> resolveInjection(target: T, p: kotlin.reflect.KProperty1<T, *>) {
-        val type = p.returnType.classifier as kotlin.reflect.KClass<*>
-        val instance = resolveInstance<Any>(type)
-        val javaField = p.javaField
-        javaField?.set(target, instance)
+    /**
+     * Resolve property injection for given target instance
+     */
+    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
+        val instance: Any = resolveInstance(member.returnType.classifier as KClass<*>)
+        member.setter.call(target, instance)
     }
 
     /**

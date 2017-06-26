@@ -11,9 +11,20 @@ class MyClass {
     lateinit var serviceB: ServiceB
 }
 
+class MyClassNotTagged {
+    lateinit var serviceB: ServiceB
+}
+
 class MyOtherClass {
     @Inject
     lateinit var serviceB: ServiceB
     @Inject
+    lateinit var serviceC: ServiceC
+}
+
+class MissedTagClass {
+    @Inject
+    lateinit var serviceB: ServiceB
+
     lateinit var serviceC: ServiceC
 }

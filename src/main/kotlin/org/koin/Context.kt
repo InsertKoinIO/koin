@@ -7,9 +7,9 @@ import org.koin.module.Module
 import java.util.logging.Logger
 import javax.inject.Inject
 import kotlin.reflect.KClass
+import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.createInstance
-import kotlin.reflect.full.declaredMemberProperties
 
 /**
  * Koin Context
@@ -26,13 +26,16 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
      * @param target
      */
     inline fun <reified T : Any> inject(target: T) {
+        logger.info("start inject ...")
         val clazz = T::class
-        val fields = target.javaClass.declaredFields
-        val fieldsToInject = fields.filter { it.annotations.filter { it is Inject }.isNotEmpty() }.map { it.name }
+        val fields = clazz.java.fields.filter { it.isAnnotationPresent(Inject::class.java) }.map { it.name }
+        val memberToInject = clazz.members.filter { it.name in fields }
 
-        clazz.declaredMemberProperties.filter { it.name in fieldsToInject }.forEach { p ->
-            beanRegistry.resolveInjection(target, p)
-        }
+        logger.info("detected fields to inject : $fields")
+
+        memberToInject.forEach { beanRegistry.resolveInjection<Any>(target, it as KMutableProperty<Any>) }
+
+        logger.info("all injected !")
     }
 
     /**
@@ -72,6 +75,16 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
     }
 
     /**
+     * Lazy get component dependency
+     */
+    inline fun <reified T> lazyGet(): Lazy<T> = lazy { get<T>() }
+
+    /**
+     * Lazy get component dependency or null
+     */
+    inline fun <reified T> lazyGetOrNul(): Lazy<T?> = lazy { getOrNull<T>() }
+
+    /**
      * Retrieve a bean instance or null
      */
     inline fun <reified T> getOrNull(): T? {
@@ -79,6 +92,7 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
         try {
             return beanRegistry.resolveInstance(clazz)
         } catch(e: Exception) {
+            logger.warning("couldn't get bean for $clazz - due to error : $e")
             return null
         }
     }

@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.1.3]()
+
+**Added**
+
+**Fixes**
+- inject() - revisited introspection code
+
 ## [0.1.2]()
 
 **Fixes**

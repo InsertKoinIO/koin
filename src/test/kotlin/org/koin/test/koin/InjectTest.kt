@@ -1,14 +1,9 @@
 package org.koin.test.koin
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.koin.example.ServiceB
-import org.koin.test.koin.example.MyClass
-import org.koin.test.koin.example.MyOtherClass
-import org.koin.test.koin.example.SampleModuleC_ImportB
-import org.koin.test.koin.example.SampleModuleB
+import org.koin.test.koin.example.*
 import org.mockito.Mockito
 
 
@@ -16,6 +11,62 @@ import org.mockito.Mockito
  * Created by arnaud on 31/05/2017.
  */
 class InjectTest {
+
+    @Test
+    fun `don't inject into instance`() {
+        val ctx = Koin().build(SampleModuleB::class)
+
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+
+        val instance = MyClassNotTagged()
+
+        val start = System.currentTimeMillis()
+
+        ctx.inject(instance)
+
+        val total = System.currentTimeMillis() - start
+        println("inject in $total ms")
+
+        assertEquals(1, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+
+        try {
+            instance.serviceB
+            fail()
+        } catch(e: UninitializedPropertyAccessException) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun `don't inject all instances - miss tagged class`() {
+        val ctx = Koin().build(SampleModuleC_ImportB::class)
+
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+
+        val instance = MissedTagClass()
+
+        val start = System.currentTimeMillis()
+
+        ctx.inject(instance)
+
+        val total = System.currentTimeMillis() - start
+        println("inject in $total ms")
+
+        assertEquals(3, ctx.beanRegistry.definitions.size)
+        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+
+        assertNotNull(instance.serviceB)
+
+        try {
+            instance.serviceC
+            fail()
+        } catch(e: UninitializedPropertyAccessException) {
+            assertNotNull(e)
+        }
+    }
 
     @Test
     fun `inject into tagged instance`() {
