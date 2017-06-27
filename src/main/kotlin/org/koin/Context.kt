@@ -75,16 +75,6 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
     }
 
     /**
-     * Lazy get component dependency
-     */
-    inline fun <reified T> lazyGet(): Lazy<T> = lazy { get<T>() }
-
-    /**
-     * Lazy get component dependency or null
-     */
-    inline fun <reified T> lazyGetOrNul(): Lazy<T?> = lazy { getOrNull<T>() }
-
-    /**
      * Retrieve a bean instance or null
      */
     inline fun <reified T> getOrNull(): T? {
