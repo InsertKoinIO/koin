@@ -11,4 +11,4 @@ import kotlin.reflect.KClass
  * has a type (clazz)
  * has a BeanType : default singleton
  */
-data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val type: BeanType = BeanType.SINGLETON)
+data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val type: BeanType = BeanType.SINGLETON, val scope: KClass<*>? = null)

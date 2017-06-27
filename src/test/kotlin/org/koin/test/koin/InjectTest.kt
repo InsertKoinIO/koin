@@ -16,8 +16,7 @@ class InjectTest {
     fun `don't inject into instance`() {
         val ctx = Koin().build(SampleModuleB::class)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         val instance = MyClassNotTagged()
 
@@ -28,8 +27,7 @@ class InjectTest {
         val total = System.currentTimeMillis() - start
         println("inject in $total ms")
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         try {
             instance.serviceB
@@ -43,8 +41,7 @@ class InjectTest {
     fun `don't inject all instances - miss tagged class`() {
         val ctx = Koin().build(SampleModuleC_ImportB::class)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 0)
 
         val instance = MissedTagClass()
 
@@ -55,8 +52,7 @@ class InjectTest {
         val total = System.currentTimeMillis() - start
         println("inject in $total ms")
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 1)
 
         assertNotNull(instance.serviceB)
 
@@ -72,8 +68,7 @@ class InjectTest {
     fun `inject into tagged instance`() {
         val ctx = Koin().build(SampleModuleB::class)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         val instance = MyClass()
 
@@ -84,9 +79,7 @@ class InjectTest {
         val total = System.currentTimeMillis() - start
         println("inject in $total ms")
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
-
+        ctx.assertSizes(1, 1)
         assertNotNull(instance.serviceB)
         instance.serviceB.doSomething()
     }
@@ -95,8 +88,7 @@ class InjectTest {
     fun `inject multiple components into instance`() {
         val ctx = Koin().build(SampleModuleC_ImportB::class)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 0)
 
         val instance = MyOtherClass()
 
@@ -110,8 +102,7 @@ class InjectTest {
         assertNotNull(instance.serviceB)
         assertNotNull(instance.serviceC)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 
     /*
@@ -121,8 +112,7 @@ class InjectTest {
     fun `manual binding into instance`() {
         val ctx = Koin().build(SampleModuleC_ImportB::class)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 0)
 
         val instance = MyOtherClass()
 
@@ -137,8 +127,7 @@ class InjectTest {
         assertNotNull(instance.serviceB)
         assertNotNull(instance.serviceC)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 
     @Test
@@ -151,8 +140,7 @@ class InjectTest {
         }
         ctx.provide { serviceB }
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 0)
 
         val instance = MyOtherClass()
 
@@ -173,7 +161,6 @@ class InjectTest {
 
         Mockito.verify(serviceB, Mockito.times(3)).doSomething()
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 }

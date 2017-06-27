@@ -1,15 +1,10 @@
 package org.koin.test.koin
 
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.koin.example.ServiceA
-import org.koin.test.koin.example.ServiceB
-import org.koin.test.koin.example.ServiceC
-import org.koin.test.koin.example.SampleModuleA
-import org.koin.test.koin.example.SampleModuleC_ImportB
-import org.koin.test.koin.example.SampleModuleB
-import org.koin.test.koin.example.SampleModuleC
+import org.koin.test.koin.example.*
 
 /**
  * Created by arnaud on 31/05/2017.
@@ -22,8 +17,7 @@ class ModuleTest {
 
         val serviceB = ctx.get<ServiceB>()
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
 
         val serviceA = ctx.getOrNull<ServiceA>()
 
@@ -37,8 +31,7 @@ class ModuleTest {
 
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(2, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 2)
     }
 
     @Test
@@ -48,8 +41,7 @@ class ModuleTest {
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
         assertNotNull(ctx.get<ServiceC>())
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 
     @Test
@@ -59,8 +51,7 @@ class ModuleTest {
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
         assertNotNull(ctx.get<ServiceC>())
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 
     @Test
@@ -68,19 +59,16 @@ class ModuleTest {
         //onLoad only ServiceB
         val ctx = Koin().build(SampleModuleC::class)
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 0)
 
         ctx.provide { ServiceB() }
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 0)
 
         assertNotNull(ctx.get<ServiceA>())
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceC>())
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 
     @Test
@@ -89,7 +77,6 @@ class ModuleTest {
 
         assertNull(ctx.getOrNull<ServiceA>())
         assertNull(ctx.getOrNull<ServiceC>())
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 0)
     }
 }

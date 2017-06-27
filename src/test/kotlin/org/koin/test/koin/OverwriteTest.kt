@@ -1,11 +1,10 @@
 package org.koin.test.koin
 
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.koin.example.ServiceB
 import org.koin.test.koin.example.SampleModuleB
+import org.koin.test.koin.example.ServiceB
 import org.mockito.Mockito.mock
 
 /**
@@ -17,21 +16,18 @@ class OverwriteTest {
     fun `overwrite an already existing bean definition`() {
         val ctx = Koin().build(SampleModuleB::class)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         val serviceB = ctx.get<ServiceB>()
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
 
         val mockB = mock(ServiceB::class.java)
         ctx.provide { mockB }
 
         val serviceBMock = ctx.get<ServiceB>()
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
 
         assertNotEquals(serviceB, serviceBMock)
     }

@@ -1,6 +1,5 @@
 package org.koin.test.koin
 
-import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.Koin
@@ -18,13 +17,11 @@ class InterfaceBindingTest {
 
         ctx.provide { MyService() }
 
-        Assert.assertEquals(1, ctx.beanRegistry.definitions.size)
-        Assert.assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         assertNotNull(ctx.get<MyInterface>())
 
-        Assert.assertEquals(1, ctx.beanRegistry.definitions.size)
-        Assert.assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
     }
 
     @Test
@@ -33,12 +30,10 @@ class InterfaceBindingTest {
 
         ctx.provide(MyService::class)
 
-        Assert.assertEquals(1, ctx.beanRegistry.definitions.size)
-        Assert.assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         assertNotNull(ctx.get<MyInterface>())
 
-        Assert.assertEquals(1, ctx.beanRegistry.definitions.size)
-        Assert.assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
     }
 }

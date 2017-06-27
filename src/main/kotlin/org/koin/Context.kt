@@ -3,6 +3,7 @@ package org.koin
 import org.koin.bean.BeanType
 import org.koin.error.BeanDefinitionException
 import org.koin.error.MissingPropertyException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.module.Module
 import java.util.logging.Logger
 import javax.inject.Inject
@@ -16,7 +17,7 @@ import kotlin.reflect.full.createInstance
  * Define dependencies & properties for actual context
  * @author - Arnaud GIULIANI
  */
-class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResolver: PropertyResolver = PropertyResolver()) {
+class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val instanceFactory: InstanceFactory = InstanceFactory(), val propertyResolver: PropertyResolver = PropertyResolver()) {
 
     val logger: Logger = Logger.getLogger(Context::class.java.simpleName)
 
@@ -33,7 +34,7 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
 
         logger.info("detected fields to inject : $fields")
 
-        memberToInject.forEach { beanRegistry.resolveInjection<Any>(target, it as KMutableProperty<Any>) }
+        memberToInject.forEach { resolveInjection<Any>(target, it as KMutableProperty<Any>) }
 
         logger.info("all injected !")
     }
@@ -49,6 +50,15 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
         module.context = this
         module.onLoad()
     }
+
+    /**
+     * Resolve property injection for given target instance
+     */
+    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
+        val instance: Any = resolveInstance(member.returnType.classifier as KClass<*>)
+        member.setter.call(target, instance)
+    }
+
 
     /**
      * Retrieve a property
@@ -70,8 +80,7 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
      * Retrieve a bean instance
      */
     inline fun <reified T> get(): T {
-        val clazz: KClass<*> = T::class
-        return beanRegistry.resolveInstance(clazz)
+        return resolveInstance(T::class)
     }
 
     /**
@@ -80,10 +89,31 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
     inline fun <reified T> getOrNull(): T? {
         val clazz: KClass<*> = T::class
         try {
-            return beanRegistry.resolveInstance(clazz)
+            return resolveInstance(clazz)
         } catch(e: Exception) {
             logger.warning("couldn't get bean for $clazz - due to error : $e")
             return null
+        }
+    }
+
+    /**
+     * Retrieve a bean instance for given Clazz
+     * @param clazz
+     */
+    @Throws(NoBeanDefFoundException::class)
+    fun <T> resolveInstance(clazz: KClass<*>): T {
+        logger.info("resolve instance for $clazz")
+
+        var def = beanRegistry.searchDefinition(clazz)
+        if (def == null) {
+            def = beanRegistry.searchCompatibleDefinition(clazz)
+            logger.info("found compatible type for $clazz ? $def")
+        }
+
+        if (def != null) {
+            return instanceFactory.resolveInstance<T>(def, clazz)
+        } else {
+            throw NoBeanDefFoundException("Can't find bean definition for $clazz")
         }
     }
 
@@ -105,22 +135,13 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
         provide(clazz, BeanType.FACTORY)
     }
 
-
-    /**
-     * Provide bean definition for single use instance
-     */
-    inline fun <reified T : Any> stack(noinline definition: () -> T) {
-        logger.finest("declare stack $definition")
-
-        beanRegistry.declare(definition, T::class, BeanType.STACK)
-    }
-
     /**
      * provide bean definition
      * @param functional decleration
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
         logger.finest("declare singleton $definition")
+        instanceFactory.remove(T::class)
         beanRegistry.declare(definition, T::class)
     }
 
@@ -141,7 +162,7 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
                 beanRegistry.declare({ clazz.createInstance() }, clazz, type)
             } else {
                 beanRegistry.declare({
-                    val instances: Map<KParameter, Any> = types.map { it to beanRegistry.resolveInstance<Any>(it.type.classifier as KClass<*>) }.toMap()
+                    val instances: Map<KParameter, Any> = types.map { it to resolveInstance<Any>(it.type.classifier as KClass<*>) }.toMap()
                     ctor.callBy(instances)
                 }, clazz, type)
             }
@@ -149,32 +170,19 @@ class Context(val beanRegistry: BeanRegistry = BeanRegistry(), val propertyResol
     }
 
     /**
-     * Remove a definition and instance for gvien class
-     */
-    fun remove(kClass: KClass<*>) {
-        logger.info("Remove definition & isntance for $kClass")
-        beanRegistry.remove(kClass)
-    }
-
-    /**
      * Remove a definitions and instances for given classes
      */
     fun remove(vararg classes: KClass<*>) {
-        classes.map { remove(it) }
-    }
-
-    /**
-     * Delete instance for given class
-     */
-    fun delete(kClass: KClass<*>) {
-        logger.info("Remove instance for $kClass ")
-        beanRegistry.instanceFactory.instances.remove(kClass)
+        logger.info("Remove definition & isntance for $classes")
+        beanRegistry.remove(*classes)
+        instanceFactory.remove(*classes)
     }
 
     /**
      * Delete instance for given classes
      */
     fun delete(vararg classes: KClass<*>) {
-        classes.map { delete(it) }
+        logger.info("Remove instance for $classes ")
+        instanceFactory.remove(*classes)
     }
 }

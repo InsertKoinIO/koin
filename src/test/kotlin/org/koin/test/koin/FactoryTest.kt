@@ -19,14 +19,12 @@ class FactoryTest {
 
         ctx.factory { ServiceB() }
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         val servB_1 = ctx.get<ServiceB>()
         val servB_2 = ctx.get<ServiceB>()
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
         assertNotEquals(servB_1, servB_2)
     }
 
@@ -36,14 +34,12 @@ class FactoryTest {
 
         ctx.factory { ServiceA(ctx.get()) }
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 0)
 
         val servA_1 = ctx.get<ServiceA>()
         val servA_2 = ctx.get<ServiceA>()
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 1)
 
         assertNotEquals(servA_1, servA_2)
         assertEquals(servA_1.serviceB, servA_1.serviceB)

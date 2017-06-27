@@ -26,8 +26,7 @@ class KoinTest {
         ctx.provide { serviceB }
         ctx.provide({ ServiceA(ctx.get()) })
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 0)
 
         val serviceA_1 = ctx.get<ServiceA>()
         serviceA_1.doSomethingWithB()
@@ -35,8 +34,7 @@ class KoinTest {
         val serviceA_2 = ctx.get<ServiceA>()
         serviceA_2.doSomethingWithB()
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(2, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 2)
 
         assertEquals(serviceA_1, serviceA_2)
         Mockito.verify(serviceB, times(2)).doSomething()
@@ -49,14 +47,12 @@ class KoinTest {
         ctx.provide(ServiceB::class)
         ctx.provide(ServiceA::class)
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 0)
 
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(2, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 2)
 
     }
 
@@ -67,8 +63,7 @@ class KoinTest {
         ctx.provide(ServiceB::class)
 
         assertNull(ctx.getOrNull<ServiceA>())
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
     }
 
     @Test
@@ -81,8 +76,7 @@ class KoinTest {
             assertNotNull(e)
         }
 
-        assertEquals(0, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(0, 0)
     }
 
     @Test
@@ -94,8 +88,7 @@ class KoinTest {
         ctx.provide(ServiceManyConstructor::class)
 
         assertNotNull(ctx.get<ServiceManyConstructor>())
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
     }
 
     @Test
@@ -105,8 +98,7 @@ class KoinTest {
         ctx.provide(NoConstructor::class)
 
         assertNotNull(ctx.get<NoConstructor>())
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
     }
 
     @Test
@@ -132,8 +124,7 @@ class KoinTest {
         //onLoad only ServiceB
         val ctx = Koin().build()
 
-        assertEquals(0, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(0, 0)
 
         ctx.provide { ServiceB() }
 
@@ -141,28 +132,24 @@ class KoinTest {
 
         assertNotNull(serviceB)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
     }
 
     @Test
     fun `lazy linking and import definitions`() {
         val ctx = Koin().build()
 
-        assertEquals(0, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(0, 0)
 
         ctx.import(SampleModuleA::class)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         ctx.provide { ServiceB() }
         Assert.assertNotNull(ctx.get<ServiceA>())
         Assert.assertNotNull(ctx.get<ServiceB>())
 
-        assertEquals(2, ctx.beanRegistry.definitions.size)
-        assertEquals(2, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(2, 2)
     }
 
 }

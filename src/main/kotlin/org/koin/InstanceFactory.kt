@@ -1,6 +1,7 @@
 package org.koin
 
 import org.koin.bean.BeanDefinition
+import org.koin.bean.BeanType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Logger
 import kotlin.reflect.KClass
@@ -50,5 +51,18 @@ class InstanceFactory {
             instances[clazz] = instance
         }
         return instance as T
+    }
+
+    fun <T> resolveInstance(def: BeanDefinition<*>, clazz: KClass<*>): T {
+        return when (def.type) {
+            BeanType.FACTORY -> createInstance(def, clazz, false)
+            BeanType.SINGLETON -> {
+                retrieveOrCreateInstance<T>(clazz, def)
+            }
+        }
+    }
+
+    fun remove(vararg kClasses: KClass<*>) {
+        kClasses.forEach { instances.remove(it) }
     }
 }

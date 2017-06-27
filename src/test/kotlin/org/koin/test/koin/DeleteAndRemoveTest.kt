@@ -1,14 +1,11 @@
 package org.koin.test.koin
 
 import org.junit.Assert
-import org.junit.Assert.*
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.koin.example.ServiceA
-import org.koin.test.koin.example.ServiceB
-import org.koin.test.koin.example.ServiceC
-import org.koin.test.koin.example.SampleModuleC_ImportB
-import org.koin.test.koin.example.SampleModuleB
+import org.koin.test.koin.example.*
 
 /**
  * Created by arnaud on 31/05/2017.
@@ -22,13 +19,11 @@ class DeleteAndRemoveTest {
         val serviceB = ctx.get<ServiceB>()
         assertNotNull(serviceB)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
 
         ctx.delete(ServiceB::class)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
     }
 
     @Test
@@ -38,20 +33,17 @@ class DeleteAndRemoveTest {
         val serviceB = ctx.get<ServiceB>()
         assertNotNull(serviceB)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
 
         ctx.delete(ServiceB::class)
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 0)
 
         ctx.provide(ServiceB::class)
 
         val serviceB2 = ctx.get<ServiceB>()
 
-        assertEquals(1, ctx.beanRegistry.definitions.size)
-        assertEquals(1, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(1, 1)
 
         assertNotEquals(serviceB, serviceB2)
     }
@@ -65,14 +57,11 @@ class DeleteAndRemoveTest {
         assertNotNull(serviceB)
         assertNotNull(serviceC)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
 
         ctx.delete(ServiceB::class, ServiceC::class, ServiceA::class)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 0)
     }
 
 
@@ -87,8 +76,7 @@ class DeleteAndRemoveTest {
         val serviceB_2 = ctx.getOrNull<ServiceB>()
         Assert.assertNull(serviceB_2)
 
-        assertEquals(0, ctx.beanRegistry.definitions.size)
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(0, 0)
     }
 
     @Test
@@ -100,14 +88,11 @@ class DeleteAndRemoveTest {
         assertNotNull(serviceB)
         assertNotNull(serviceC)
 
-        assertEquals(3, ctx.beanRegistry.definitions.size)
-        assertEquals(3, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(3, 3)
 
         ctx.remove(ServiceB::class, ServiceC::class, ServiceA::class)
 
-        assertEquals(0, ctx.beanRegistry.definitions.size)
-
-        assertEquals(0, ctx.beanRegistry.instanceFactory.instances.size)
+        ctx.assertSizes(0, 0)
     }
 
 }

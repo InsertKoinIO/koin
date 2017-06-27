@@ -6,9 +6,9 @@ package org.koin.bean
  * @author - Arnaud GIULIANI
  *
  * SINGLETON: one instance only in the context
- * FACTORY : one instance per call (old isntance is removed)
+ * FACTORY : one instance per call (old instance is removed)
  * STACK : one instance, then removed from context
  */
 enum class BeanType {
-    SINGLETON, FACTORY, STACK
+    SINGLETON, FACTORY
 }

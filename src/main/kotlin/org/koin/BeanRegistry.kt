@@ -2,9 +2,6 @@ package org.koin
 
 import org.koin.bean.BeanDefinition
 import org.koin.bean.BeanType
-import org.koin.error.NoBeanDefFoundException
-import kotlin.reflect.KClass
-import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.isSubclassOf
 
 /**
@@ -12,7 +9,7 @@ import kotlin.reflect.full.isSubclassOf
  * gather definitions of beans & communicate with instance factory to handle instances
  * @author - Arnaud GIULIANI
  */
-class BeanRegistry(val instanceFactory: InstanceFactory = InstanceFactory()) {
+class BeanRegistry() {
 
     val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(org.koin.BeanRegistry::class.java.simpleName)
 
@@ -46,59 +43,15 @@ class BeanRegistry(val instanceFactory: InstanceFactory = InstanceFactory()) {
     /**
      * Search for a compatible bean definition (subtype type of given clazz)
      */
-    fun searchCompatibleType(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.clazz.isSubclassOf(clazz) }.firstOrNull()
-
-
-    /**
-     * Resolve property injection for given target instance
-     */
-    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
-        val instance: Any = resolveInstance(member.returnType.classifier as KClass<*>)
-        member.setter.call(target, instance)
-    }
-
-    /**
-     * Retrieve a bean instance for given Clazz
-     * @param clazz
-     */
-    @Throws(NoBeanDefFoundException::class)
-    fun <T> resolveInstance(clazz: kotlin.reflect.KClass<*>): T {
-        logger.info("resolve instance for $clazz")
-
-        var def = searchDefinition(clazz)
-        if (def == null) {
-            def = searchCompatibleType(clazz)
-            logger.info("found compatible type for $clazz ? $def")
-        }
-
-        if (def != null) {
-            return when (def.type) {
-                BeanType.FACTORY -> instanceFactory.createInstance(def, clazz, false)
-                BeanType.SINGLETON -> {
-                    instanceFactory.retrieveOrCreateInstance<T>(clazz, def)
-                }
-                BeanType.STACK -> {
-                    val instance = instanceFactory.retrieveOrCreateInstance<T>(clazz, def, false)
-                    remove(clazz)
-                    instance
-                }
-            }
-        } else {
-            throw NoBeanDefFoundException("Can't find bean definition for $clazz")
-        }
-    }
+    fun searchCompatibleDefinition(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.clazz.isSubclassOf(clazz) }.firstOrNull()
 
     /**
      * remove a bean and its instance
      * @param clazz Class
      */
-    fun remove(clazz: kotlin.reflect.KClass<*>) {
-        logger.warning("remove $clazz")
+    fun remove(vararg classes: kotlin.reflect.KClass<*>) {
+        logger.warning("remove $classes")
 
-        val found = searchDefinition(clazz)
-        if (found != null) {
-            definitions.remove(found)
-            instanceFactory.instances.remove(clazz)
-        }
+        classes.map { searchDefinition(it) }.forEach { definitions.remove(it) }
     }
 }
