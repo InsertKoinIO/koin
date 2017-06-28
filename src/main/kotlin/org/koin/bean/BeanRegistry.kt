@@ -75,11 +75,11 @@ class BeanRegistry() {
     private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.clazz.isSubclassOf(clazz) }.firstOrNull()
 
     /**
-     * remove a bean and its instance
+     * removeInstance a bean and its instance
      * @param clazz Class
      */
     fun remove(vararg classes: kotlin.reflect.KClass<*>) {
-        logger.warning("remove $classes")
+        logger.warning("removeInstance $classes")
 
         classes.map { search(it) }.forEach { definitions.remove(it) }
     }

@@ -253,7 +253,7 @@ declareContext {
 }
 ```
 
-When you will request ServiceB component, Koin will **create an instance and remove it all** from container. You won't be able to retrieve it anymore after.
+When you will request ServiceB component, Koin will **create an instance and removeInstance it all** from container. You won't be able to retrieve it anymore after.
 
 ```kotlin
 class SampleModule : Module() {
@@ -281,10 +281,10 @@ On a Koin context, you can delete an instance via its class (further instance ac
 ctx.delete(ServiceB::class)
 ```
 
-You can also remove instance and its definition (no more instance can be created) with `remove`:
+You can also removeInstance instance and its definition (no more instance can be created) with `removeInstance`:
 
 ```kotlin
-ctx.remove(ServiceB::class)
+ctx.removeInstance(ServiceB::class)
 ```
 
 ### Importing modules

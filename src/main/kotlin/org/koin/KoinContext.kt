@@ -2,9 +2,11 @@ package org.koin
 
 import org.koin.bean.BeanRegistry
 import org.koin.context.Scope
+import org.koin.error.MissingPropertyException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.logging.Logger
+import kotlin.reflect.KClass
 
 /**
  * Created by arnaud on 28/06/2017.
@@ -38,8 +40,25 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
         logger.finest("declare singleton $definition")
-        instanceResolver.deleteInstance(T::class, Scope.root())
+        instanceResolver.deleteInstance(T::class, scope = Scope.root())
         beanRegistry.declare(definition, T::class, Scope.root())
+    }
+
+    /**
+     * Remove a definitions and instances for given classes
+     */
+    fun remove(vararg classes: KClass<*>) {
+        logger.info("Remove definition & isntance for $classes")
+        beanRegistry.remove(*classes)
+        instanceResolver.deleteInstance(*classes, scope = Scope.root())
+    }
+
+    /**
+     * Delete instance for given classes
+     */
+    fun delete(vararg classes: KClass<*>) {
+        logger.info("Remove instance for $classes ")
+        instanceResolver.deleteInstance(*classes, scope = Scope.root())
     }
 
 //    /**
@@ -90,56 +109,19 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 //        }
 //    }
 //
-////    /**
-////     * Retrieve a property
-////     */
-////    @Throws(MissingPropertyException::class)
-////    inline fun <reified T> getProperty(key: String): T = getPropertyOrNull(key) ?: throw MissingPropertyException("Could not bind property $key")
-////
-////    /**
-////     * Retrieve safely a property
-////     */
-////    inline fun <reified T> getPropertyOrNull(key: String): T? = propertyResolver.getProperty(key)
-////
-////    /**
-////     * Set a property
-////     */
-////    fun setProperty(key: String, value: Any) = propertyResolver.setProperty(key, value)
-////
-////    /**
-////     * Retrieve a bean instance
-////     */
-////    inline fun <reified T> get(): T {
-////        return resolveInstance(T::class)
-////    }
-////
-////    /**
-////     * Retrieve a bean instance or null
-////     */
-////    inline fun <reified T> getOrNull(): T? {
-////        val clazz: KClass<*> = T::class
-////        try {
-////            return resolveInstance(clazz)
-////        } catch(e: Exception) {
-////            logger.warning("couldn't get bean for $clazz - due to error : $e")
-////            return null
-////        }
-////    }
-//
-//    /**
-//     * Remove a definitions and instances for given classes
-//     */
-//    fun remove(vararg classes: KClass<*>) {
-//        logger.info("Remove definition & isntance for $classes")
-//        beanRegistry.remove(*classes)
-//        instanceFactory.remove(*classes)
-//    }
-//
-//    /**
-//     * Delete instance for given classes
-//     */
-//    fun delete(vararg classes: KClass<*>) {
-//        logger.info("Remove instance for $classes ")
-//        instanceFactory.remove(*classes)
-//    }
+    /**
+     * Retrieve a property
+     */
+    @Throws(MissingPropertyException::class)
+    inline fun <reified T> getProperty(key: String): T = getPropertyOrNull(key) ?: throw MissingPropertyException("Could not bind property $key")
+
+    /**
+     * Retrieve safely a property
+     */
+    inline fun <reified T> getPropertyOrNull(key: String): T? = propertyResolver.getProperty(key)
+
+    /**
+     * Set a property
+     */
+    fun setProperty(key: String, value: Any) = propertyResolver.setProperty(key, value)
 }

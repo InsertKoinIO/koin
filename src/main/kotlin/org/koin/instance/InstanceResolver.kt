@@ -19,19 +19,19 @@ class InstanceResolver() {
 
     fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope = Scope.root()): T {
         val instanceFactory = getInstanceFactory(scope) ?: throw ScopeNotFoundException("couldn't resolve scope $scope")
-        logger.info("--> resolve instance in scope : $instanceFactory")
+        logger.info(">> Resolve scope >> $def >> $scope")
         return instanceFactory.resolveInstance<T>(def)
     }
 
-    fun deleteInstance(kClass: KClass<*>, scope: Scope = Scope.root()) {
+    fun deleteInstance(vararg classes: KClass<*>, scope: Scope = Scope.root()) {
         val instanceFactory = getInstanceFactory(scope) ?: throw ScopeNotFoundException("couldn't resolve scope $scope")
-        return instanceFactory.deleteInstance(kClass)
+        classes.forEach { instanceFactory.deleteInstance(it) }
     }
 
     fun createContext(scope: Scope) {
         if (!all_context.containsKey(scope)) {
             all_context[scope] = InstanceFactory()
-            logger.info("--> create scope $scope")
+            logger.info(">> Create scope $scope")
         }
     }
 }

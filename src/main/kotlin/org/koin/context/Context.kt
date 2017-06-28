@@ -75,7 +75,7 @@ class Context(val beanRegistry: BeanRegistry, val propertyResolver: PropertyReso
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
         logger.finest("declare singleton $definition")
-        instanceResolver.deleteInstance(T::class, module.scope)
+        instanceResolver.deleteInstance(T::class, scope = module.scope)
         beanRegistry.declare(definition, T::class, module.scope)
     }
 

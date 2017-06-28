@@ -22,7 +22,7 @@
 **Added**
 - Koin build with vararg of Module classes
 - Context delete functions
-- Context remove with list of classes
+- Context removeInstance with list of classes
 - Kotlin 1.1.2-5
 
 ## [0.1.0]()
