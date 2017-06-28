@@ -3,6 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
+import org.koin.context.Scope
 import org.koin.module.Module
 import org.koin.test.koin.example.ServiceA
 import org.koin.test.koin.example.ServiceB
@@ -15,7 +16,7 @@ import org.koin.test.koin.example.ServiceC
 
 class MyModule : Module() {
     override fun onLoad() {
-        declareContext {
+        Context {
             provide { ServiceA(get()) }
             provide { ServiceB() }
             provide { ServiceC(get(), get()) }
@@ -40,9 +41,13 @@ class SimpleTest {
         Assert.assertNotNull(serviceA)
         Assert.assertNotNull(serviceB)
         Assert.assertNotNull(serviceC)
-
+        Assert.assertEquals(serviceA.serviceB, serviceB)
         Assert.assertEquals(serviceC.serviceA, serviceA)
         Assert.assertEquals(serviceC.serviceB, serviceB)
+
+        ctx.assertSizes(3, 3)
+        ctx.assertProps(0)
+        Assert.assertEquals(3, ctx.instanceResolver.getInstanceFactory(Scope.root())!!.instances.size)
     }
 
 }

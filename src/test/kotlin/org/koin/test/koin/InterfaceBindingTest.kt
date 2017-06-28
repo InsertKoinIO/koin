@@ -23,17 +23,4 @@ class InterfaceBindingTest {
 
         ctx.assertSizes(1, 1)
     }
-
-    @Test
-    fun `bind component defined by class with its interface`() {
-        val ctx = Koin().build()
-
-        ctx.provide(MyService::class)
-
-        ctx.assertSizes(1, 0)
-
-        assertNotNull(ctx.get<MyInterface>())
-
-        ctx.assertSizes(1, 1)
-    }
 }

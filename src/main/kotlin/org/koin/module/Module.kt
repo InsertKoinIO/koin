@@ -1,6 +1,8 @@
 package org.koin.module
 
-import org.koin.Context
+import org.koin.KoinContext
+import org.koin.context.Context
+import org.koin.context.Scope
 
 
 /**
@@ -9,7 +11,8 @@ import org.koin.Context
  */
 abstract class Module() {
 
-    lateinit var context: Context
+    lateinit var koinContext: KoinContext
+    var scope: Scope = Scope.root()
 
     /**
      * onLoad module definition
@@ -20,5 +23,15 @@ abstract class Module() {
     /**
      * Help declare beans into current context
      */
-    fun declareContext(definition: Context.() -> Unit) = definition(context)
+    fun Context(definition: Context.() -> Unit) {
+        definition(Context(koinContext.beanRegistry, koinContext.propertyResolver, koinContext.instanceResolver, this))
+    }
+
+    /**
+     * provide bean definition
+     * @param functional decleration
+     */
+    inline fun <reified T : Any> scope(noinline definition: () -> T) {
+        scope = Scope.fromClass(T::class)
+    }
 }

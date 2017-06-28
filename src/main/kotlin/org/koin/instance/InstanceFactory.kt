@@ -1,7 +1,6 @@
-package org.koin
+package org.koin.instance
 
 import org.koin.bean.BeanDefinition
-import org.koin.bean.BeanType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Logger
 import kotlin.reflect.KClass
@@ -20,8 +19,8 @@ class InstanceFactory {
     /**
      * Retrieve or create bean instance
      */
-    fun <T> retrieveOrCreateInstance(clazz: KClass<*>, def: BeanDefinition<*>, saveInstance: Boolean = true): T {
-        var instance = findExistingInstance<T>(clazz)
+    fun <T> retrieveInstance(def: BeanDefinition<*>, clazz: KClass<*>, saveInstance: Boolean = true): T {
+        var instance = findInstance<T>(clazz)
         if (instance == null) {
             instance = createInstance(def, clazz, saveInstance)
         }
@@ -31,7 +30,7 @@ class InstanceFactory {
     /**
      * Find existing instance
      */
-    fun <T> findExistingInstance(clazz: KClass<*>): T? {
+    fun <T> findInstance(clazz: KClass<*>): T? {
         val existingClass = instances.keys.filter { it == clazz }.firstOrNull()
         if (existingClass != null) {
             return instances[existingClass] as? T
@@ -53,16 +52,11 @@ class InstanceFactory {
         return instance as T
     }
 
-    fun <T> resolveInstance(def: BeanDefinition<*>, clazz: KClass<*>): T {
-        return when (def.type) {
-            BeanType.FACTORY -> createInstance(def, clazz, false)
-            BeanType.SINGLETON -> {
-                retrieveOrCreateInstance<T>(clazz, def)
-            }
-        }
+    fun <T> resolveInstance(def: BeanDefinition<*>): T {
+        return retrieveInstance<T>(def, def.clazz)
     }
 
-    fun remove(vararg kClasses: KClass<*>) {
+    fun deleteInstance(vararg kClasses: KClass<*>) {
         kClasses.forEach { instances.remove(it) }
     }
 }

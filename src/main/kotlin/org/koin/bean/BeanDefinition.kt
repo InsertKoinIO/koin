@@ -1,5 +1,6 @@
 package org.koin.bean
 
+import org.koin.context.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -11,4 +12,4 @@ import kotlin.reflect.KClass
  * has a type (clazz)
  * has a BeanType : default singleton
  */
-data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val type: BeanType = BeanType.SINGLETON, val scope: KClass<*>? = null)
+data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root())

@@ -1,23 +1,29 @@
 package org.koin.test.koin
 
 import org.junit.Assert
-import org.koin.Context
+import org.koin.KoinContext
 
 /**
  * Context Test Utils
  */
 
-fun Context.definitions() = beanRegistry.definitions
+fun KoinContext.definitions() = beanRegistry.definitions
 
-fun Context.instances() = instanceFactory.instances
+fun KoinContext.allContext() = instanceResolver.all_context
 
-fun Context.properties() = propertyResolver.properties
+fun KoinContext.instances() = allContext().flatMap { it.value.instances.toList() }
 
-fun Context.assertSizes(definitionSize: Int, instanceSize: Int) {
-    Assert.assertEquals("context definition size must be equals", definitions().size, definitionSize)
-    Assert.assertEquals("context instances size must be equals", instances().size, instanceSize)
+fun KoinContext.properties() = propertyResolver.registry.properties
+
+fun KoinContext.assertSizes(definitionSize: Int, instanceSize: Int) {
+    Assert.assertEquals("context definition size must be equals", definitionSize, definitions().size)
+    Assert.assertEquals("context instances size must be equals", instanceSize, instances().size)
 }
 
-fun Context.assertProps(properties: Int) {
-    Assert.assertEquals("context properties size must be equals", properties().size, properties)
+fun KoinContext.assertProps(properties: Int) {
+    Assert.assertEquals("context properties size must be equals", properties, properties().size)
+}
+
+fun KoinContext.assertScopes(scopeSize: Int) {
+    Assert.assertEquals("context scope size must be equals", scopeSize, allContext().size)
 }
