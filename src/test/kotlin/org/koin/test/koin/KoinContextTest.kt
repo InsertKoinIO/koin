@@ -4,6 +4,8 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
 import org.koin.error.NoBeanDefFoundException
+import org.koin.test.ext.assertScopes
+import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.ServiceA
 import org.koin.test.koin.example.ServiceB
 import org.mockito.Mockito

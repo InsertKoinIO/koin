@@ -3,6 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.Koin
+import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.MyInterface
 import org.koin.test.koin.example.MyService
 

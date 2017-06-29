@@ -48,15 +48,3 @@ class ServiceD(val myVal: String) {
         println("$this do something in D with $myVal")
     }
 }
-
-class NoConstructor {
-
-}
-
-class ServiceManyConstructor(val serviceA: ServiceA) {
-
-    constructor(serviceA: ServiceA, serviceB: ServiceB) : this(serviceA) {
-
-    }
-
-}

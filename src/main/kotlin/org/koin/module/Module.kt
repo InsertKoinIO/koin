@@ -32,6 +32,6 @@ abstract class Module() {
      * @param functional decleration
      */
     inline fun <reified T : Any> scope(noinline definition: () -> T) {
-        scope = Scope.fromClass(T::class)
+        scope = Scope.fromClass(definition()::class)
     }
 }

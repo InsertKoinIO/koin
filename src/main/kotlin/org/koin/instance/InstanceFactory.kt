@@ -30,7 +30,7 @@ class InstanceFactory {
     /**
      * Find existing instance
      */
-    fun <T> findInstance(clazz: KClass<*>): T? {
+    private fun <T> findInstance(clazz: KClass<*>): T? {
         val existingClass = instances.keys.filter { it == clazz }.firstOrNull()
         if (existingClass != null) {
             return instances[existingClass] as? T
@@ -42,7 +42,7 @@ class InstanceFactory {
     /**
      * create instance for given bean definition
      */
-    fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, saveInstance: Boolean = true): T {
+    private fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, saveInstance: Boolean = true): T {
         logger.fine("create instance for $def")
 
         val instance = def.definition.invoke() as Any

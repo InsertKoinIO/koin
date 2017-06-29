@@ -6,14 +6,6 @@ import org.koin.module.Module
 /**
  * Created by arnaud on 09/06/2017.
  */
-class SampleModuleA : Module() {
-    override fun onLoad() {
-        Context {
-            provide { ServiceA(get()) }
-        }
-    }
-}
-
 class SampleModuleA_C : Module() {
     override fun onLoad() {
         Context {

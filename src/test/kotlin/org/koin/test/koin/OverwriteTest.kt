@@ -3,6 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.koin.Koin
+import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.SampleModuleB
 import org.koin.test.koin.example.ServiceB
 import org.mockito.Mockito.mock

@@ -63,7 +63,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.7.22'
 
     // Kt
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // Inject Annotations

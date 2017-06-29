@@ -4,6 +4,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.Koin
+import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.*
 
 /**
@@ -37,10 +38,10 @@ class ModuleTest {
 
     @Test
     fun `load mulitple modules`() {
-        val ctx = Koin().build(SampleModuleA::class, SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleA_C::class, SampleModuleB::class)
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
-        ctx.assertSizes(2, 2)
+        ctx.assertSizes(3, 2)
     }
 
     @Test

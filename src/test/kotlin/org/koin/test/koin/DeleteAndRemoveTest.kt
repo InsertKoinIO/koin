@@ -5,6 +5,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.Koin
+import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.*
 
 /**

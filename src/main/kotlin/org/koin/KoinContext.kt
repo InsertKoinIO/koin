@@ -6,7 +6,9 @@ import org.koin.error.MissingPropertyException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.logging.Logger
+import javax.inject.Inject
 import kotlin.reflect.KClass
+import kotlin.reflect.KMutableProperty
 
 /**
  * Created by arnaud on 28/06/2017.
@@ -61,32 +63,32 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         instanceResolver.deleteInstance(*classes, scope = Scope.root())
     }
 
-//    /**
-//     * Inject bean into fields of target object
-//     * Use introspection
-//     * @param target
-//     */
-//    inline fun <reified T : Any> inject(target: T) {
-////        logger.info("start inject ...")
-////        val clazz = T::class
-////        val fields = clazz.java.fields.filter { it.isAnnotationPresent(Inject::class.java) }.map { it.name }
-////        val memberToInject = clazz.members.filter { it.name in fields }
-////
-////        logger.info("detected fields to inject : $fields")
-////
-////        memberToInject.forEach { resolveInjection<Any>(target, it as KMutableProperty<Any>) }
-////
-////        logger.info("all injected !")
-//    }
-//
-//
-//    /**
-//     * Resolve property injection for given target instance
-//     */
-//    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
-////        val instance: Any = resolveInstance(member.returnType.classifier as KClass<*>)
-////        member.setter.call(target, instance)
-//    }
+    /**
+     * Inject bean into fields of target object
+     * Use introspection
+     * @param target
+     */
+    inline fun <reified T : Any> inject(target: T) {
+        logger.info("start inject ...")
+        val clazz = T::class
+        val fields = clazz.java.fields.filter { it.isAnnotationPresent(Inject::class.java) }.map { it.name }
+        val memberToInject = clazz.members.filter { it.name in fields }
+
+        logger.info("detected fields to inject : $fields")
+
+        memberToInject.forEach { resolveInjection<Any>(target, it as KMutableProperty<Any>) }
+
+        logger.info("all injected !")
+    }
+
+
+    /**
+     * Resolve property injection for given target instance
+     */
+    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
+        val instance: Any = instanceResolver.resolveInstance(beanRegistry.searchAll(member.returnType.classifier as KClass<*>), Scope.root())
+        member.setter.call(target, instance)
+    }
 //
 //    /**
 //     * Retrieve a bean instance for given Clazz
