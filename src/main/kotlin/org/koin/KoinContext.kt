@@ -2,8 +2,8 @@ package org.koin
 
 import org.koin.bean.BeanRegistry
 import org.koin.context.Scope
+import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
-import org.koin.error.NoBeanDefFoundException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.logging.Logger
@@ -16,20 +16,39 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
     val logger: Logger = Logger.getLogger(KoinContext::class.java.simpleName)
 
+    /*
+        Contextual to call !!!
+     */
+    var currentScopes = arrayListOf<Scope>()
+
     /**
      * Retrieve a bean instance
      */
-    inline fun <reified T> get(vararg scopeClasses: KClass<*>): T = getOrNull<T>(*scopeClasses) ?: throw NoBeanDefFoundException("No bean found for ${T::class}")
+    inline fun <reified T> get(vararg scopeClasses: KClass<*>): T = getOrNull<T>(*scopeClasses) ?: throw InstanceNotFoundException("No instance found for ${T::class}")
 
     /**
      * Retrieve a bean instance or null
      */
     inline fun <reified T> getOrNull(vararg openedScopes: KClass<*>): T? {
+        cleanScope()
         if (openedScopes.isEmpty()) {
-            return instanceResolver.resolveInstance(beanRegistry.searchAll(T::class))!!
+            rootScope()
+            return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), currentScopes)
         } else {
-            return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), openedScopes.map { Scope(it) })
+            buildScope(*openedScopes)
+            return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), currentScopes)
         }
+    }
+
+    fun cleanScope() {
+        currentScopes.clear()
+        currentScopes.add(Scope.root())
+    }
+
+    fun rootScope() = currentScopes.add(Scope.root())
+
+    fun buildScope(vararg openedScopes: KClass<*>) {
+        currentScopes.addAll(openedScopes.map { Scope(it) })
     }
 
     /**

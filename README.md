@@ -59,7 +59,7 @@ Write a class that extends [Module](https://github.com/Ekito/koin/blob/master/sr
 
 ```Kotlin
 class MyModule : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             provide { ServiceB() }
             provide { ServiceA(get()) }
@@ -68,7 +68,7 @@ class MyModule : Module() {
 }
 
 ```
-Open declaration section wihtin the `declareContext` function, in the in the `onLoad()` method.  The `declareContext` function bring you the Koin DSL and allow you to declare your components.
+Open declaration section wihtin the `declareContext` function, in the in the `context()` method.  The `declareContext` function bring you the Koin DSL and allow you to declare your components.
 
 * `provide {}` function helps you to declare your component within function Each lambda passed to this function must return an expression for your component creation. e.g: class instance. 
 * `get()` function allow you to resolve the given dependency and retrieve your component instance
@@ -106,7 +106,7 @@ Let's create a module to declare our components:
 
 ```kotlin
 class SampleModule : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             // Provide ServiceB
             provide { ServiceB() }
@@ -138,11 +138,11 @@ fun main(args: Array<String>) {
 
 ### Creating a module
 
-Write a class that extends [Module](https://github.com/Ekito/koin/blob/master/src/main/kotlin/org/koin/module/Module.kt) class. Open a declaration section wihtin the `declareContext` function, in the `onLoad()` method: 
+Write a class that extends [Module](https://github.com/Ekito/koin/blob/master/src/main/kotlin/org/koin/module/Module.kt) class. Open a declaration section wihtin the `declareContext` function, in the `context()` method: 
 
 ```Kotlin
 class MyModule : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             // your decleration here...
         }
@@ -257,7 +257,7 @@ When you will request ServiceB component, Koin will **create an instance and rem
 
 ```kotlin
 class SampleModule : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             stack { ServiceB() }
         }
@@ -293,7 +293,7 @@ You can import several modules definitions, into in your actual module with `imp
 
 ```kotlin
 class ModuleB : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             provide { ServiceB() }
         }
@@ -301,7 +301,7 @@ class ModuleB : Module() {
 }
 
 class ModuleImportingB : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             // Import module containg ServiceB definition
             import(SampleModuleB::class)
@@ -330,7 +330,7 @@ class ServiceB() {//...}
 class ServiceA(val serviceB: ServiceB) {//...}
 
 class MyModule : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             // will resolve for ServiceB
             provide { ServiceA(get()) }
@@ -405,7 +405,7 @@ In module definition, this will be done lazily:
 class ServiceD(val myVal :String){//...}
 
 class SampleModule : Module() {
-    override fun onLoad() {
+    override fun context() {
         declareContext {
             provide { ServiceD(getProperty<String>("myVal"))}
         }

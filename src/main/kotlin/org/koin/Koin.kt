@@ -6,8 +6,6 @@ import org.koin.instance.InstanceResolver
 import org.koin.module.Module
 import org.koin.property.PropertyResolver
 import java.util.logging.Logger
-import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
 
 /**
  * Koin Context Builder
@@ -38,16 +36,17 @@ class Koin {
     /**
      * Load modules
      */
-    fun build(vararg classes: KClass<out Module>): KoinContext {
-        logger.info("load module $classes ...")
+    fun <T : Module> build(vararg modules: T): KoinContext {
+        logger.info("load module $modules ...")
 
         val koinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
-        classes.forEach {
-            val module = it.createInstance()
-            module.koinContext = koinContext
-            instanceResolver.createContext(module.scope())
-            module.onLoad()
+        modules.forEach {
+            it.koinContet = koinContext
+            it.context()
         }
+
         return koinContext
     }
+
+    fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
 }

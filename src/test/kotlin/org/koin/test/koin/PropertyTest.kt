@@ -17,7 +17,7 @@ class PropertyTest {
     fun `property has been added`() {
         val ctx = Koin()
                 .properties(mapOf("myVal" to "VALUE!"))
-                .build(SampleModuleD::class)
+                .build(SampleModuleD())
 
         val myVal = ctx.getProperty<String>("myVal")
         assertNotNull(myVal)
@@ -30,7 +30,7 @@ class PropertyTest {
 
     @Test
     fun `set a property on context`() {
-        val ctx = Koin().build(SampleModuleD::class)
+        val ctx = Koin().build(SampleModuleD())
 
         ctx.assertProps(0)
 

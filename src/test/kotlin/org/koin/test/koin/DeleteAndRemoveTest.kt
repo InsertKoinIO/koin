@@ -15,7 +15,7 @@ class DeleteAndRemoveTest {
 
     @Test
     fun `delete an instance`() {
-        val ctx = Koin().build(SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleB())
 
         val serviceB = ctx.get<ServiceB>()
         assertNotNull(serviceB)
@@ -29,7 +29,7 @@ class DeleteAndRemoveTest {
 
     @Test
     fun `delete & recreate instance`() {
-        val ctx = Koin().build(SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleB())
 
         val serviceB = ctx.get<ServiceB>()
         assertNotNull(serviceB)
@@ -51,7 +51,7 @@ class DeleteAndRemoveTest {
 
     @Test
     fun `delete multiple instances`() {
-        val ctx = Koin().build(SampleModuleB::class, SampleModuleA_C::class)
+        val ctx = Koin().build(SampleModuleB(), SampleModuleA_C())
 
         val serviceB = ctx.get<ServiceB>()
         val serviceC = ctx.get<ServiceC>()
@@ -68,7 +68,7 @@ class DeleteAndRemoveTest {
 
     @Test
     fun `remove bean definition`() {
-        val ctx = Koin().build(SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleB())
 
         val serviceB = ctx.get<ServiceB>()
         assertNotNull(serviceB)
@@ -82,7 +82,7 @@ class DeleteAndRemoveTest {
 
     @Test
     fun `remove multiple definitions`() {
-        val ctx = Koin().build(SampleModuleB::class, SampleModuleA_C::class)
+        val ctx = Koin().build(SampleModuleB(), SampleModuleA_C())
 
         val serviceB = ctx.get<ServiceB>()
         val serviceC = ctx.get<ServiceC>()

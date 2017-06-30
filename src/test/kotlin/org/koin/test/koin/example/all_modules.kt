@@ -7,26 +7,23 @@ import org.koin.module.Module
  * Created by arnaud on 09/06/2017.
  */
 class SampleModuleA_C : Module() {
-    override fun onLoad() {
-        declareContext {
-            provide { ServiceA(get()) }
-            provide { ServiceC(get(), get()) }
-        }
-    }
+    override fun context() =
+            declareContext {
+                provide { ServiceA(get()) }
+                provide { ServiceC(get(), get()) }
+            }
 }
 
 class SampleModuleB : Module() {
-    override fun onLoad() {
-        declareContext {
-            provide { ServiceB() }
-        }
-    }
+    override fun context() =
+            declareContext {
+                provide { ServiceB() }
+            }
 }
 
 class SampleModuleD : Module() {
-    override fun onLoad() {
-        declareContext {
-            provide { ServiceD(getProperty<String>("myVal")) }
-        }
-    }
+    override fun context() =
+            declareContext {
+                provide { ServiceD(getProperty<String>("myVal")) }
+            }
 }

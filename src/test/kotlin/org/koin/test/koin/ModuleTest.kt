@@ -4,6 +4,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.Koin
+import org.koin.error.InstanceNotFoundException
 import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.*
 
@@ -14,7 +15,7 @@ class ModuleTest {
 
     @Test
     fun `load module`() {
-        val ctx = Koin().build(SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleB())
 
         ctx.assertSizes(1, 0)
 
@@ -25,7 +26,7 @@ class ModuleTest {
 
     @Test
     fun `load module - missing dep`() {
-        val ctx = Koin().build(SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleB())
 
         ctx.assertSizes(1, 0)
 
@@ -38,7 +39,7 @@ class ModuleTest {
 
     @Test
     fun `load mulitple modules`() {
-        val ctx = Koin().build(SampleModuleA_C::class, SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleA_C(), SampleModuleB())
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
         ctx.assertSizes(3, 2)
@@ -46,7 +47,7 @@ class ModuleTest {
 
     @Test
     fun `load mulitple modules - lazy deps`() {
-        val ctx = Koin().build(SampleModuleB::class, SampleModuleA_C::class)
+        val ctx = Koin().build(SampleModuleB(), SampleModuleA_C())
 
         assertNotNull(ctx.get<ServiceB>())
         assertNotNull(ctx.get<ServiceA>())
@@ -56,8 +57,8 @@ class ModuleTest {
 
     @Test
     fun `import with lazy linking`() {
-        //onLoad only ServiceB
-        val ctx = Koin().build(SampleModuleA_C::class)
+        //context only ServiceB
+        val ctx = Koin().build(SampleModuleA_C())
 
         ctx.assertSizes(2, 0)
 
@@ -73,10 +74,15 @@ class ModuleTest {
 
     @Test
     fun `missing bean component - lazy linking`() {
-        val ctx = Koin().build(SampleModuleA_C::class)
+        val ctx = Koin().build(SampleModuleA_C())
 
-        assertNull(ctx.getOrNull<ServiceA>())
-        assertNull(ctx.getOrNull<ServiceC>())
+        try {
+            assertNull(ctx.getOrNull<ServiceA>())
+            assertNull(ctx.getOrNull<ServiceC>())
+        } catch(e: InstanceNotFoundException) {
+            assertNotNull(e)
+        }
+
         ctx.assertSizes(2, 0)
     }
 }

@@ -3,6 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
+import org.koin.error.InstanceNotFoundException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
@@ -74,7 +75,7 @@ class KoinContextTest {
 
         try {
             assertNull(ctx.get<ServiceA>())
-        } catch(e: NoBeanDefFoundException) {
+        } catch(e: InstanceNotFoundException) {
             assertNotNull(e)
         }
 

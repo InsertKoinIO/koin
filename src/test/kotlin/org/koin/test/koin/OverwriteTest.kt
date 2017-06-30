@@ -15,7 +15,7 @@ class OverwriteTest {
 
     @Test
     fun `overwrite an already existing bean definition`() {
-        val ctx = Koin().build(SampleModuleB::class)
+        val ctx = Koin().build(SampleModuleB())
 
         ctx.assertSizes(1, 0)
 

@@ -7,10 +7,11 @@ import kotlin.reflect.KClass
  */
 data class Scope(val clazz: KClass<*>? = null) {
 
-    fun isRoot() = this == root()
+    fun isRoot() = clazz == null
+
+    override fun toString(): String = if (isRoot()) "Scope[$clazz]" else "Scope(ROOT)"
 
     companion object {
         fun root() = Scope()
-        fun fromClass(clazz: KClass<*>) = Scope(clazz)
     }
 }

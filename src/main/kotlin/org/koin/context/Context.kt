@@ -1,19 +1,17 @@
 package org.koin.context
 
-import org.koin.bean.BeanRegistry
+import org.koin.KoinContext
+import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
-import org.koin.error.NoBeanDefFoundException
-import org.koin.instance.InstanceResolver
-import org.koin.module.Module
-import org.koin.property.PropertyResolver
 import java.util.logging.Logger
+import kotlin.reflect.KClass
 
 /**
  * Koin Context
  * Define dependencies & properties for actual context
  * @author - Arnaud GIULIANI
  */
-class Context(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceResolver: InstanceResolver, val module: Module) {
+class Context(val koinContext: KoinContext) {
 
     val logger: Logger = Logger.getLogger(Context::class.java.simpleName)
 
@@ -21,62 +19,41 @@ class Context(val beanRegistry: BeanRegistry, val propertyResolver: PropertyReso
      * Retrieve a property
      */
     @Throws(MissingPropertyException::class)
-    inline fun <reified T> getProperty(key: String): T = propertyResolver.getProperty(key)
+    inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 
     /**
      * Retrieve safely a property
      */
-    inline fun <reified T> getPropertyOrNull(key: String): T? = propertyResolver.getPropertyOrNull(key)
+    inline fun <reified T> getPropertyOrNull(key: String): T? = koinContext.propertyResolver.getPropertyOrNull(key)
 
     /**
      * Set a property
      */
-    fun setProperty(key: String, value: Any) = propertyResolver.setProperty(key, value)
+    fun setProperty(key: String, value: Any) = koinContext.propertyResolver.setProperty(key, value)
 
     /**
-     * Retrieve a bean instance
+     * Declarative DSL
      */
-    inline fun <reified T> get(): T {
-        return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), module.scope()) ?: throw NoBeanDefFoundException("No bean found for ${T::class}")
-    }
 
-    /**
-     * Retrieve a bean instance or null
-     */
-    inline fun <reified T> getOrNull(): T? {
-        try {
-            return get<T>()
-        } catch(e: Exception) {
-            logger.warning("No bean found due to error $e - return null")
-            return null
-        }
-    }
+    var contextScope: Scope? = null
 
-//    /**
-//     * provide bean definition - As factory
-//     * @param functional decleration
-//     */
-//    inline fun <reified T : Any> factory(noinline definition: () -> T) {
-//        logger.finest("declare factory $definition")
-//        beanRegistry.declare(definition, T::class, BeanType.FACTORY)
-//    }
-
-//    /**
-//     * provide bean definition - As factory
-//     * @param clazz
-//     */
-//    fun factory(clazz: KClass<*>) {
-//        logger.finest("declare factory class $clazz")
-//        provide(clazz, BeanType.FACTORY)
-//    }
-
-    /**
-     * provide bean definition
-     * @param functional decleration
-     */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
-        logger.finest("declare singleton $definition")
-        instanceResolver.deleteInstance(T::class, scope = module.scope())
-        beanRegistry.declare(definition, T::class, module.scope())
+        koinContext.beanRegistry.declare(definition, T::class, contextScope ?: Scope.root())
+    }
+
+    fun scope(definition: () -> KClass<*>) {
+        contextScope = Scope(definition())
+    }
+
+    /**
+     * Runtime resolutions
+     */
+
+    inline fun <reified T : Any> get(): T {
+        return getOrNull<T>() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
+    }
+
+    inline fun <reified T : Any> getOrNull(): T? {
+        return koinContext.instanceResolver.resolveInstance<T>(koinContext.beanRegistry.searchAll(T::class), koinContext.currentScopes)
     }
 }

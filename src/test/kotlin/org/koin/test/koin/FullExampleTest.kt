@@ -16,21 +16,20 @@ import org.koin.test.koin.example.ServiceC
  */
 
 
-class MyModule : Module() {
-    override fun onLoad() {
-        declareContext {
-            provide { ServiceA(get()) }
-            provide { ServiceB() }
-            provide { ServiceC(get(), get()) }
-        }
-    }
+class SimpleModule : Module() {
+    override fun context() =
+            declareContext {
+                provide { ServiceA(get()) }
+                provide { ServiceB() }
+                provide { ServiceC(get(), get()) }
+            }
 }
 
 class FullExampleTest {
 
     @Test
     fun `load of MyModule & test inject`() {
-        val ctx = Koin().build(MyModule::class)
+        val ctx = Koin().build(SimpleModule())
 
         val serviceA = ctx.get<ServiceA>()
         serviceA.doSomethingWithB()
@@ -49,7 +48,7 @@ class FullExampleTest {
 
         ctx.assertSizes(3, 3)
         ctx.assertProps(0)
-        Assert.assertEquals(3, ctx.instanceResolver.getInstanceFactory(Scope.root())!!.instances.size)
+        Assert.assertEquals(3, ctx.instanceResolver.getInstanceFactory(Scope.root()).instances.size)
     }
 
 }
