@@ -17,16 +17,11 @@ class InstanceResolver() {
 
     fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw ScopeNotFoundException("couldn't resolve scope $scope")
 
-    fun <T> resolveInstance(def: BeanDefinition<*>?, openedScopes: List<Scope>): T? {
+    fun <T> resolveInstance(def: BeanDefinition<*>?): T? {
         if (def == null) return null
         else {
-            for (scope in openedScopes) {
-                val instanceFactory = getInstanceFactory(scope)
-                logger.info(">> Resolve ${def.clazz} @ scope $scope")
-                val instance = instanceFactory.resolveInstance<T>(def, scope)
-                if (instance != null) return instance
-            }
-            return null
+            val instanceFactory = getInstanceFactory(def.scope)
+            return instanceFactory.resolveInstance<T>(def, def.scope)
         }
     }
 

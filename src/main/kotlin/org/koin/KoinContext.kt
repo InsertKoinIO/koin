@@ -19,26 +19,25 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /*
         Contextual to call !!!
      */
-    var currentScopes = arrayListOf<Scope>()
+//    var currentScopes = arrayListOf<Scope>()
 
     /**
      * Retrieve a bean instance
      */
-    inline fun <reified T> get(vararg scopeClasses: KClass<*>): T = getOrNull<T>(*scopeClasses) ?: throw InstanceNotFoundException("No instance found for ${T::class}")
+    inline fun <reified T> get(): T = getOrNull<T>() ?: throw InstanceNotFoundException("No instance found for ${T::class}")
 
     /**
      * Retrieve a bean instance or null
      */
-    inline fun <reified T> getOrNull(vararg openedScopes: KClass<*>): T? {
-        buildScope(*openedScopes)
-        return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), currentScopes)
+    inline fun <reified T> getOrNull(): T? {
+        return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class))
     }
 
-    fun buildScope(vararg openedScopes: KClass<*>) {
-        currentScopes.clear()
-        currentScopes.addAll(openedScopes.map { Scope(it) })
-        currentScopes.add(Scope.root())
-    }
+//    fun buildScope(vararg openedScopes: KClass<*>) {
+//        currentScopes.clear()
+//        currentScopes.addAll(openedScopes.map { Scope(it) })
+//        currentScopes.add(Scope.root())
+//    }
 
     /**
      * provide bean definition
@@ -53,9 +52,11 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Clear given scope instance
      */
-    fun release(scopeClass: KClass<*>) {
-        logger.warning("Clear instance $scopeClass ")
-        instanceResolver.getInstanceFactory(Scope(scopeClass)).clear()
+    fun release(vararg scopeClasses: KClass<*>) {
+        scopeClasses.forEach {
+            logger.warning("Clear instance $it ")
+            instanceResolver.getInstanceFactory(Scope(it)).clear()
+        }
     }
 
     /**

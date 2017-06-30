@@ -3,7 +3,6 @@ package org.koin.dsl.context
 import org.koin.KoinContext
 import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
-import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -12,8 +11,6 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 class Context(val koinContext: KoinContext) {
-
-    val logger: Logger = Logger.getLogger(Context::class.java.simpleName)
 
     /**
      * Retrieve a property
@@ -54,6 +51,6 @@ class Context(val koinContext: KoinContext) {
     }
 
     inline fun <reified T : Any> getOrNull(): T? {
-        return koinContext.instanceResolver.resolveInstance<T>(koinContext.beanRegistry.searchAll(T::class), koinContext.currentScopes)
+        return koinContext.instanceResolver.resolveInstance<T>(koinContext.beanRegistry.searchAll(T::class))
     }
 }
