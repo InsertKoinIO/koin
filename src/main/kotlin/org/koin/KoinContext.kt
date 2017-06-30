@@ -51,20 +51,19 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * Remove a definitions and instances for given classes
+     * Clear given scope instance
      */
-    fun remove(vararg classes: KClass<*>) {
-        logger.info("Remove definition & isntance for $classes")
-        beanRegistry.remove(*classes)
-        instanceResolver.deleteInstance(*classes, scope = Scope.root())
+    fun release(scopeClass: KClass<*>) {
+        logger.warning("Clear instance $scopeClass ")
+        instanceResolver.getInstanceFactory(Scope(scopeClass)).clear()
     }
 
     /**
-     * Delete instance for given classes
+     * Clear given scope instance
      */
-    fun delete(vararg classes: KClass<*>) {
-        logger.info("Remove instance for $classes ")
-        instanceResolver.deleteInstance(*classes, scope = Scope.root())
+    fun release() {
+        logger.warning("Clear instance ROOT")
+        instanceResolver.getInstanceFactory(Scope.root()).clear()
     }
 
 //    /**

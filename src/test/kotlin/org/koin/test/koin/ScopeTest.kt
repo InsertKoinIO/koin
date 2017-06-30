@@ -102,4 +102,18 @@ class ScopeTest {
         ctx.assertRootScopeSize(1)
         ctx.assertSizes(3, 3)
     }
+
+    @Test
+    fun `scope release`() {
+        val ctx = Koin().build(ScopedModuleB())
+        ctx.assertScopes(2)
+        ctx.assertSizes(1, 0)
+        Assert.assertNotNull(ctx.get<ServiceB>(ServiceB::class))
+        ctx.assertSizes(1, 1)
+        ctx.assertScopeSize(ServiceB::class, 1)
+
+        ctx.release(ServiceB::class)
+        ctx.assertSizes(1, 0)
+        ctx.assertScopeSize(ServiceB::class, 0)
+    }
 }

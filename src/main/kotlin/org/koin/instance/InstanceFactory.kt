@@ -44,7 +44,7 @@ class InstanceFactory {
      * create instance for given bean definition
      */
     private fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
-        logger.fine("Create isntance : $def")
+        logger.fine(">> Create instance : $def")
         if (def.scope == scope) {
             val instance = def.definition.invoke() as Any
             instances[clazz] = instance
@@ -58,5 +58,9 @@ class InstanceFactory {
 
     fun deleteInstance(vararg kClasses: KClass<*>) {
         kClasses.forEach { instances.remove(it) }
+    }
+
+    fun clear() {
+        instances.clear()
     }
 }

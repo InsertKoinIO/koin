@@ -22,7 +22,7 @@ class InstanceResolver() {
         else {
             for (scope in openedScopes) {
                 val instanceFactory = getInstanceFactory(scope)
-                logger.info("Resolve ${def.clazz} @ scope $scope")
+                logger.info(">> Resolve ${def.clazz} @ scope $scope")
                 val instance = instanceFactory.resolveInstance<T>(def, scope)
                 if (instance != null) return instance
             }

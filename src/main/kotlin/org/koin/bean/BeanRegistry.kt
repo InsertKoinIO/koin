@@ -24,7 +24,7 @@ class BeanRegistry() {
     inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, scope: Scope) {
         val def = BeanDefinition(function, clazz, scope)
 
-        logger.info("declare bean definition $def")
+        logger.info(">> Declare bean definition $def")
 
         val found = search(clazz)
         if (found != null) {
