@@ -1,7 +1,7 @@
 package org.koin
 
 import org.koin.bean.BeanRegistry
-import org.koin.context.Scope
+import org.koin.dsl.context.Scope
 import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
 import org.koin.instance.InstanceResolver
@@ -30,25 +30,14 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Retrieve a bean instance or null
      */
     inline fun <reified T> getOrNull(vararg openedScopes: KClass<*>): T? {
-        cleanScope()
-        if (openedScopes.isEmpty()) {
-            rootScope()
-            return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), currentScopes)
-        } else {
-            buildScope(*openedScopes)
-            return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), currentScopes)
-        }
+        buildScope(*openedScopes)
+        return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), currentScopes)
     }
-
-    fun cleanScope() {
-        currentScopes.clear()
-        currentScopes.add(Scope.root())
-    }
-
-    fun rootScope() = currentScopes.add(Scope.root())
 
     fun buildScope(vararg openedScopes: KClass<*>) {
+        currentScopes.clear()
         currentScopes.addAll(openedScopes.map { Scope(it) })
+        currentScopes.add(Scope.root())
     }
 
     /**

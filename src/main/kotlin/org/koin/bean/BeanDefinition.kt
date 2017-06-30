@@ -1,6 +1,6 @@
 package org.koin.bean
 
-import org.koin.context.Scope
+import org.koin.dsl.context.Scope
 import kotlin.reflect.KClass
 
 /**

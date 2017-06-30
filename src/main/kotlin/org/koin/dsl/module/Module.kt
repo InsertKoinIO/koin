@@ -1,7 +1,7 @@
-package org.koin.module
+package org.koin.dsl.module
 
 import org.koin.KoinContext
-import org.koin.context.Context
+import org.koin.dsl.context.Context
 
 
 /**

@@ -1,4 +1,4 @@
-package org.koin.context
+package org.koin.dsl.context
 
 import org.koin.KoinContext
 import org.koin.error.InstanceNotFoundException

@@ -1,6 +1,6 @@
 package org.koin.test.koin.example
 
-import org.koin.module.Module
+import org.koin.dsl.module.Module
 
 
 /**

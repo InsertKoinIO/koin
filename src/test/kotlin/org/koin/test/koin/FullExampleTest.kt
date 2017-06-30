@@ -3,8 +3,8 @@ package org.koin.test.koin
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
-import org.koin.context.Scope
-import org.koin.module.Module
+import org.koin.dsl.context.Scope
+import org.koin.dsl.module.Module
 import org.koin.test.ext.assertProps
 import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.ServiceA

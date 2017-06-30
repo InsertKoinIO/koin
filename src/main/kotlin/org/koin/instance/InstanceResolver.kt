@@ -1,7 +1,7 @@
 package org.koin.instance
 
 import org.koin.bean.BeanDefinition
-import org.koin.context.Scope
+import org.koin.dsl.context.Scope
 import org.koin.error.ScopeNotFoundException
 import java.util.logging.Logger
 import kotlin.reflect.KClass
