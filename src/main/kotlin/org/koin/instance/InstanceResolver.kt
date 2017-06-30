@@ -17,10 +17,14 @@ class InstanceResolver() {
 
     fun getInstanceFactory(scope: Scope) = all_context[scope]
 
-    fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope = Scope.root()): T {
-        val instanceFactory = getInstanceFactory(scope) ?: throw ScopeNotFoundException("couldn't resolve scope $scope")
-        logger.info(">> Resolve scope >> $def >> $scope")
-        return instanceFactory.resolveInstance<T>(def)
+    fun <T> resolveInstance(def: BeanDefinition<*>, openedScopes: List<Scope> = listOf(Scope.root())): T? {
+        for (scope in openedScopes) {
+            val instanceFactory = getInstanceFactory(scope) ?: throw ScopeNotFoundException("couldn't resolve scope $scope")
+            logger.info("Resolve ${def.clazz} @ scope $scope")
+            val instance = instanceFactory.resolveInstance<T>(def, scope)
+            if (instance != null) return instance
+        }
+        return null
     }
 
     fun deleteInstance(vararg classes: KClass<*>, scope: Scope = Scope.root()) {

@@ -1,37 +1,69 @@
-//package org.koin.test.koin
-//
-//import org.junit.Test
-//import org.koin.module.Module
-//import org.koin.test.koin.example.ServiceA
-//import org.koin.test.koin.example.ServiceB
-//
-//
-//class ScopedModule : Module() {
-//    override fun onLoad() {
-//        declareContext {
-//            scope(ServiceA::class)
-//            provide { ServiceA(get()) }
-//        }
-//    }
-//
-//}
-//
-//class NonScopedModule : Module() {
-//    override fun onLoad() {
-//        declareContext {
-//            provide { ServiceB() }
-//        }
-//    }
-//
-//}
-//
-///**
-// * Created by arnaud on 31/05/2017.
-// */
-//class ScopeTest {
-//
-//    @Test
-//    fun `don't inject into instance`() {
-//
-//    }
-//}
+package org.koin.test.koin
+
+import org.junit.Assert
+import org.junit.Test
+import org.koin.Koin
+import org.koin.context.Scope
+import org.koin.module.Module
+import org.koin.test.ext.assertScopes
+import org.koin.test.ext.assertSizes
+import org.koin.test.koin.example.ServiceA
+import org.koin.test.koin.example.ServiceB
+
+
+class ScopedModuleB : Module(scope = ServiceB::class) {
+    override fun onLoad() {
+        declareContext {
+            provide { ServiceB() }
+        }
+    }
+}
+
+class ScopedModuleA : Module(scope = ServiceA::class) {
+    override fun onLoad() {
+        declareContext {
+            provide { ServiceA(get()) }
+        }
+    }
+}
+
+/**
+ * Created by arnaud on 31/05/2017.
+ */
+class ScopeTest {
+
+    @Test
+    fun `get scoped instances`() {
+        val ctx = Koin().build(ScopedModuleB::class)
+        ctx.assertScopes(2)
+        ctx.assertSizes(1, 0)
+        Assert.assertNotNull(ctx.get<ServiceB>(ServiceB::class))
+
+        Assert.assertEquals(1, ctx.instanceResolver.getInstanceFactory(Scope(ServiceB::class))!!.instances.size)
+        ctx.assertSizes(1, 1)
+    }
+
+    @Test
+    fun `can't get scoped instances`() {
+        val ctx = Koin().build(ScopedModuleB::class)
+        ctx.assertScopes(2)
+        ctx.assertSizes(1, 0)
+        Assert.assertNull(ctx.get<ServiceB>())
+
+        Assert.assertEquals(0, ctx.instanceResolver.getInstanceFactory(Scope(ServiceB::class))!!.instances.size)
+        ctx.assertSizes(1, 0)
+    }
+
+    @Test
+    fun `get multi scoped instances`() {
+        val ctx = Koin().build(ScopedModuleB::class, ScopedModuleA::class)
+        ctx.assertScopes(3)
+        ctx.assertSizes(2, 0)
+        Assert.assertNotNull(ctx.get<ServiceB>(ServiceB::class))
+        Assert.assertNotNull(ctx.get<ServiceA>(ServiceA::class, ServiceB::class))
+
+        Assert.assertEquals(1, ctx.instanceResolver.getInstanceFactory(Scope(ServiceB::class))!!.instances.size)
+        Assert.assertEquals(1, ctx.instanceResolver.getInstanceFactory(Scope(ServiceA::class))!!.instances.size)
+        ctx.assertSizes(2, 2)
+    }
+}

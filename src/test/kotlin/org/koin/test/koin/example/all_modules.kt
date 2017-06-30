@@ -8,7 +8,7 @@ import org.koin.module.Module
  */
 class SampleModuleA_C : Module() {
     override fun onLoad() {
-        Context {
+        declareContext {
             provide { ServiceA(get()) }
             provide { ServiceC(get(), get()) }
         }
@@ -17,7 +17,7 @@ class SampleModuleA_C : Module() {
 
 class SampleModuleB : Module() {
     override fun onLoad() {
-        Context {
+        declareContext {
             provide { ServiceB() }
         }
     }
@@ -25,7 +25,7 @@ class SampleModuleB : Module() {
 
 class SampleModuleD : Module() {
     override fun onLoad() {
-        Context {
+        declareContext {
             provide { ServiceD(getProperty<String>("myVal")) }
         }
     }

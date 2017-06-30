@@ -3,16 +3,16 @@ package org.koin.module
 import org.koin.KoinContext
 import org.koin.context.Context
 import org.koin.context.Scope
+import kotlin.reflect.KClass
 
 
 /**
  * Module class - Help define beans within actual context
  * @author - Arnaud GIULIANI
  */
-abstract class Module() {
+abstract class Module(var scope: KClass<*>? = null) {
 
     lateinit var koinContext: KoinContext
-    var scope: Scope = Scope.root()
 
     /**
      * onLoad module definition
@@ -21,17 +21,14 @@ abstract class Module() {
     abstract fun onLoad()
 
     /**
-     * Help declare beans into current context
+     * Handle scope for Context
      */
-    fun Context(definition: Context.() -> Unit) {
-        definition(Context(koinContext.beanRegistry, koinContext.propertyResolver, koinContext.instanceResolver, this))
-    }
+    fun scope() = Scope(scope)
 
     /**
-     * provide bean definition
-     * @param functional decleration
+     * Help declare beans into current context
      */
-    inline fun <reified T : Any> scope(noinline definition: () -> T) {
-        scope = Scope.fromClass(definition()::class)
+    fun declareContext(definition: Context.() -> Unit) {
+        definition(Context(koinContext.beanRegistry, koinContext.propertyResolver, koinContext.instanceResolver, this))
     }
 }

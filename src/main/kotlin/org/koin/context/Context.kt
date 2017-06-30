@@ -2,6 +2,7 @@ package org.koin.context
 
 import org.koin.bean.BeanRegistry
 import org.koin.error.MissingPropertyException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.instance.InstanceResolver
 import org.koin.module.Module
 import org.koin.property.PropertyResolver
@@ -36,7 +37,7 @@ class Context(val beanRegistry: BeanRegistry, val propertyResolver: PropertyReso
      * Retrieve a bean instance
      */
     inline fun <reified T> get(): T {
-        return instanceResolver.resolveInstance(beanRegistry.searchAll(T::class), module.scope)
+        return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), module.scope()) ?: throw NoBeanDefFoundException("No bean found for ${T::class}")
     }
 
     /**
@@ -75,17 +76,7 @@ class Context(val beanRegistry: BeanRegistry, val propertyResolver: PropertyReso
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
         logger.finest("declare singleton $definition")
-        instanceResolver.deleteInstance(T::class, scope = module.scope)
-        beanRegistry.declare(definition, T::class, module.scope)
+        instanceResolver.deleteInstance(T::class, scope = module.scope())
+        beanRegistry.declare(definition, T::class, module.scope())
     }
-
-//    /**
-//     * provide bean definition for class
-//     * @param clazz
-//     */
-//    @Throws(BeanDefinitionException::class)
-//    fun provide(clazz: KClass<*>) {
-//        logger.finest("declare class : $clazz")
-//        beanRegistry.declareFromConstructor(clazz, instanceResolver.getInstanceFactory(module.scope) ?: throw ScopeNotFoundException(""),module.scope)
-//    }
 }

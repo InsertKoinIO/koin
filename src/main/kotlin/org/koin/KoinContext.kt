@@ -3,12 +3,11 @@ package org.koin
 import org.koin.bean.BeanRegistry
 import org.koin.context.Scope
 import org.koin.error.MissingPropertyException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.logging.Logger
-import javax.inject.Inject
 import kotlin.reflect.KClass
-import kotlin.reflect.KMutableProperty
 
 /**
  * Created by arnaud on 28/06/2017.
@@ -20,19 +19,16 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Retrieve a bean instance
      */
-    inline fun <reified T> get(): T {
-        return instanceResolver.resolveInstance(beanRegistry.searchAll(T::class))
-    }
+    inline fun <reified T> get(vararg scopeClasses: KClass<*>): T = getOrNull<T>(*scopeClasses) ?: throw NoBeanDefFoundException("No bean found for ${T::class}")
 
     /**
      * Retrieve a bean instance or null
      */
-    inline fun <reified T> getOrNull(): T? {
-        try {
-            return get<T>()
-        } catch(e: Exception) {
-            logger.warning("No bean found due to error $e - return null")
-            return null
+    inline fun <reified T> getOrNull(vararg openedScopes: KClass<*>): T? {
+        if (openedScopes.isEmpty()) {
+            return instanceResolver.resolveInstance(beanRegistry.searchAll(T::class))!!
+        } else {
+            return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class), openedScopes.map { Scope(it) })
         }
     }
 
@@ -63,32 +59,32 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         instanceResolver.deleteInstance(*classes, scope = Scope.root())
     }
 
-    /**
-     * Inject bean into fields of target object
-     * Use introspection
-     * @param target
-     */
-    inline fun <reified T : Any> inject(target: T) {
-        logger.info("start inject ...")
-        val clazz = T::class
-        val fields = clazz.java.fields.filter { it.isAnnotationPresent(Inject::class.java) }.map { it.name }
-        val memberToInject = clazz.members.filter { it.name in fields }
-
-        logger.info("detected fields to inject : $fields")
-
-        memberToInject.forEach { resolveInjection<Any>(target, it as KMutableProperty<Any>) }
-
-        logger.info("all injected !")
-    }
-
-
-    /**
-     * Resolve property injection for given target instance
-     */
-    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
-        val instance: Any = instanceResolver.resolveInstance(beanRegistry.searchAll(member.returnType.classifier as KClass<*>), Scope.root())
-        member.setter.call(target, instance)
-    }
+//    /**
+//     * Inject bean into fields of target object
+//     * Use introspection
+//     * @param target
+//     */
+//    inline fun <reified T : Any> inject(target: T) {
+//        logger.info("start inject ...")
+//        val clazz = T::class
+//        val fields = clazz.java.fields.filter { it.isAnnotationPresent(Inject::class.java) }.map { it.name }
+//        val memberToInject = clazz.members.filter { it.name in fields }
+//
+//        logger.info("detected fields to inject : $fields")
+//
+//        memberToInject.forEach { resolveInjection<Any>(target, it as KMutableProperty<Any>) }
+//
+//        logger.info("all injected !")
+//    }
+//
+//
+//    /**
+//     * Resolve property injection for given target instance
+//     */
+//    fun <T : Any> resolveInjection(target: Any, member: KMutableProperty<T>) {
+//        val instance: Any = instanceResolver.resolveInstance(beanRegistry.searchAll(member.returnType.classifier as KClass<*>), Scope.root())
+//        member.setter.call(target, instance)
+//    }
 //
 //    /**
 //     * Retrieve a bean instance for given Clazz

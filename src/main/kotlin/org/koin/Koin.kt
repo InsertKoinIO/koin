@@ -45,7 +45,7 @@ class Koin {
         classes.forEach {
             val module = it.createInstance()
             module.koinContext = koinContext
-            instanceResolver.createContext(module.scope)
+            instanceResolver.createContext(module.scope())
             module.onLoad()
         }
         return koinContext

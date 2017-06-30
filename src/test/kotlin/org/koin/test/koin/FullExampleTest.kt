@@ -18,7 +18,7 @@ import org.koin.test.koin.example.ServiceC
 
 class MyModule : Module() {
     override fun onLoad() {
-        Context {
+        declareContext {
             provide { ServiceA(get()) }
             provide { ServiceB() }
             provide { ServiceC(get(), get()) }
