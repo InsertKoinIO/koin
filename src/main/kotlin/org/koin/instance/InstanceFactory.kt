@@ -46,9 +46,14 @@ class InstanceFactory {
     private fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
         logger.fine(">> Create instance : $def")
         if (def.scope == scope) {
-            val instance = def.definition.invoke() as Any
-            instances[clazz] = instance
-            return instance as T
+            try {
+                val instance = def.definition.invoke() as Any
+                instances[clazz] = instance
+                return instance as T
+            } catch(e: Exception) {
+                logger.warning("Couldn't get instance for $def due to error $e")
+                return null
+            }
         } else return null
     }
 
