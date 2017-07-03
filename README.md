@@ -15,7 +15,7 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 	1. [Creating a module](#creating-a-module)
 	2. [Providing a component](#providing-a-component)
 	3. [Type Binding](#type-binding)
-	4. [Injecting a dependency](#injecting-a-dependency)
+	4. [Resolve a dependency](#resolve-a-dependency)
 	5. [Start your context](#start-your-context)
 	6. [Safely resolving a dependency](#safely-resolving-a-dependency)
 	8. [Scopes](#scopes)
@@ -173,7 +173,7 @@ class ServiceB() : Processor {//...}
 //in a module context
 class MyModule : Module() {
 	 override fun context() = declareContext {
-	    // definie ServiceB and allow binding with DoSomething
+	    // definie ServiceB and allow binding with Processor
 	    provide { ServiceB()} bind { Processor::class }
 	}
 }
@@ -186,7 +186,7 @@ val processor = context.get<Processor>()
 processor.processing()
 ```
 
-### Injecting a dependency
+### Resolve a dependency
 
 In a Koin module, you can resolve an component instance with the `get()` function:
 
@@ -291,7 +291,7 @@ class ModuleB : Module() {
 class ModuleA : Module() {
     override fun context() =
         declareContext {
-   			  // Resolve ServiceB
+			  // Resolve ServiceB
             provide { ServiceA(get()) }
         }
     }
