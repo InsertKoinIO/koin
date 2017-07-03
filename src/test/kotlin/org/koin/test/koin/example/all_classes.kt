@@ -11,32 +11,32 @@ class ServiceA(val serviceB: ServiceB) {
 
     fun doSomethingWithB() {
         println("$this do something in A")
-        serviceB.doSomething()
+        serviceB.process()
     }
 }
 
-class OtherServiceA(val doSomething: DoSomething) {
+class OtherServiceA(val processor: Proecssor) {
     init {
         println("$this ctor OtherServiceA")
     }
 
     fun doSomethingWithB() {
         println("$this do something in OtherServiceA")
-        doSomething.doSomething()
+        processor.process()
     }
 }
 
-interface DoSomething {
-    fun doSomething()
+interface Proecssor {
+    fun process()
 }
 
-class ServiceB() : DoSomething {
+class ServiceB() : Proecssor {
 
     init {
         println("$this ctor B")
     }
 
-    override fun doSomething() {
+    override fun process() {
         println("$this do something in B")
     }
 }
@@ -49,7 +49,7 @@ class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB) {
     fun doSomethingWithAll() {
         println("$this do something in C")
         serviceA.doSomethingWithB()
-        serviceB.doSomething()
+        serviceB.process()
     }
 }
 

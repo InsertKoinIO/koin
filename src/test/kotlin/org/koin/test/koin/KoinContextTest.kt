@@ -4,7 +4,6 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
 import org.koin.error.InstanceNotFoundException
-import org.koin.error.NoBeanDefFoundException
 import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.ServiceA
@@ -38,7 +37,7 @@ class KoinContextTest {
         val ctx = Koin().build()
 
         val serviceB: ServiceB = Mockito.mock(ServiceB::class.java)
-        Mockito.`when`(serviceB.doSomething()).then {
+        Mockito.`when`(serviceB.process()).then {
             println("done B Mock")
         }
 
@@ -56,7 +55,7 @@ class KoinContextTest {
         ctx.assertSizes(2, 2)
 
         assertEquals(serviceA_1, serviceA_2)
-        Mockito.verify(serviceB, times(2)).doSomething()
+        Mockito.verify(serviceB, times(2)).process()
     }
 
     @Test

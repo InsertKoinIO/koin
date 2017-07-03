@@ -17,11 +17,11 @@ class MockingInjectionTest {
 
     @Test
     fun `simple mock injection`() {
-        `when`(serviceB.doSomething()).then {
-            println("<mock> $this doSomething !")
+        `when`(serviceB.process()).then {
+            println("<mock> $this processor !")
         }
         serviceA.doSomethingWithB()
-        verify(serviceB).doSomething()
+        verify(serviceB).process()
     }
 
     @Test
@@ -30,15 +30,15 @@ class MockingInjectionTest {
         val serviceA: ServiceA = mock(ServiceA::class.java)
         `when`(serviceA.doSomethingWithB()).then {
             println("<mock> A $this doSomethingWithB !")
-            serviceB.doSomething()
+            serviceB.process()
         }
-        `when`(serviceB.doSomething()).then {
-            println("<mock> B $this doSomething !")
+        `when`(serviceB.process()).then {
+            println("<mock> B $this processor !")
         }
         val serviceC = ServiceC(serviceA, serviceB)
 
         serviceC.doSomethingWithAll()
         verify(serviceA).doSomethingWithB()
-        verify(serviceB, times(2)).doSomething()
+        verify(serviceB, times(2)).process()
     }
 }

@@ -18,7 +18,7 @@ class BoundTypesTest {
         val ctx = Koin().build(BindModuleB())
         ctx.assertScopes(1)
         ctx.assertSizes(1, 0)
-        Assert.assertNotNull(ctx.get<DoSomething>())
+        Assert.assertNotNull(ctx.get<Proecssor>())
 
         ctx.assertRootScopeSize(1)
         ctx.assertSizes(1, 1)
@@ -29,7 +29,7 @@ class BoundTypesTest {
         val ctx = Koin().build(SampleModuleB())
         ctx.assertScopes(1)
         ctx.assertSizes(1, 0)
-        Assert.assertNull(ctx.getOrNull<DoSomething>())
+        Assert.assertNull(ctx.getOrNull<Proecssor>())
 
         ctx.assertRootScopeSize(0)
         ctx.assertSizes(1, 0)
@@ -40,7 +40,7 @@ class BoundTypesTest {
         val ctx = Koin().build(BindModuleB())
         ctx.assertScopes(1)
         ctx.assertSizes(1, 0)
-        val intf = ctx.get<DoSomething>()
+        val intf = ctx.get<Proecssor>()
         val servB = ctx.get<ServiceB>()
 
         Assert.assertEquals(servB, intf)
