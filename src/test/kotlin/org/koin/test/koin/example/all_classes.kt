@@ -15,13 +15,28 @@ class ServiceA(val serviceB: ServiceB) {
     }
 }
 
-class ServiceB() {
+class OtherServiceA(val doSomething: DoSomething) {
+    init {
+        println("$this ctor OtherServiceA")
+    }
+
+    fun doSomethingWithB() {
+        println("$this do something in OtherServiceA")
+        doSomething.doSomething()
+    }
+}
+
+interface DoSomething {
+    fun doSomething()
+}
+
+class ServiceB() : DoSomething {
 
     init {
         println("$this ctor B")
     }
 
-    fun doSomething() {
+    override fun doSomething() {
         println("$this do something in B")
     }
 }

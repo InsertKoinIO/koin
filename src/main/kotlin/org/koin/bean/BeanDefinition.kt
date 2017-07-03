@@ -12,4 +12,11 @@ import kotlin.reflect.KClass
  * has a type (clazz)
  * has a BeanType : default singleton
  */
-data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root())
+data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root(), var bindTypes: List<KClass<*>> = arrayListOf()) {
+
+    infix fun bind(bind: () -> KClass<*>): BeanDefinition<T> {
+        bindTypes += bind()
+        return this
+    }
+
+}

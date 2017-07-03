@@ -3,39 +3,11 @@ package org.koin.test.koin
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
-import org.koin.dsl.context.Context
-import org.koin.dsl.module.Module
 import org.koin.test.ext.assertRootScopeSize
 import org.koin.test.ext.assertScopeSize
 import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
-import org.koin.test.koin.example.ServiceA
-import org.koin.test.koin.example.ServiceB
-import org.koin.test.koin.example.ServiceC
-
-
-class ScopedModuleB : Module() {
-    override fun context() =
-            declareContext {
-                scope { ServiceB::class }
-                provide { ServiceB() }
-            }
-}
-
-
-class ScopedModuleA : Module() {
-    override fun context() =
-            declareContext {
-                scope { ServiceA::class }
-                provide { ServiceA(get()) }
-            }
-}
-
-class NonScopedModuleC : Module() {
-    override fun context(): Context = declareContext {
-        provide { ServiceC(get(), get()) }
-    }
-}
+import org.koin.test.koin.example.*
 
 /**
  * Created by arnaud on 31/05/2017.
@@ -119,7 +91,7 @@ class ScopeTest {
 
     @Test
     fun `get multi scoped instances with root`() {
-        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), NonScopedModuleC())
+        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), SampleModuleC())
         ctx.assertScopes(3)
         ctx.assertSizes(3, 0)
         Assert.assertNotNull(ctx.get<ServiceC>())
@@ -132,7 +104,7 @@ class ScopeTest {
 
     @Test
     fun `isolated scope - 3 instance`() {
-        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), NonScopedModuleC())
+        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), SampleModuleC())
         ctx.assertScopes(3)
         ctx.assertRootScopeSize(0)
         ctx.assertSizes(3, 0)

@@ -1,7 +1,6 @@
 package org.koin.bean
 
 import org.koin.dsl.context.Scope
-import kotlin.reflect.full.isSubclassOf
 
 /**
  * Bean registry
@@ -13,6 +12,23 @@ class BeanRegistry() {
     val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(BeanRegistry::class.java.simpleName)
 
     val definitions = HashSet<BeanDefinition<*>>()
+
+    /**
+     * Add/Replace an existing bean
+
+     * @param o
+     * *
+     * @param clazz
+     */
+    inline fun <reified T : Any> declare(def: BeanDefinition<*>) {
+        logger.info(">> Declare bean definition $def")
+
+        val found = search(def.clazz)
+        if (found != null) {
+            remove(def.clazz)
+        }
+        definitions += def
+    }
 
     /**
      * Add/Replace an existing bean
@@ -46,7 +62,7 @@ class BeanRegistry() {
     /**
      * Search for a compatible bean definition (subtype type of given clazz)
      */
-    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.clazz.isSubclassOf(clazz) }.firstOrNull()
+    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.bindTypes.contains(clazz) }.firstOrNull()
 
     /**
      * removeInstance a bean and its instance

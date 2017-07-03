@@ -1,5 +1,6 @@
 package org.koin.test.koin.example
 
+import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 
 
@@ -26,4 +27,39 @@ class SampleModuleD : Module() {
             declareContext {
                 provide { ServiceD(getProperty<String>("myVal")) }
             }
+}
+
+class ScopedModuleB : Module() {
+    override fun context() =
+            declareContext {
+                scope { ServiceB::class }
+                provide { ServiceB() }
+            }
+}
+
+
+class ScopedModuleA : Module() {
+    override fun context() =
+            declareContext {
+                scope { ServiceA::class }
+                provide { ServiceA(get()) }
+            }
+}
+
+class SampleModuleC : Module() {
+    override fun context(): Context = declareContext {
+        provide { ServiceC(get(), get()) }
+    }
+}
+
+class SampleModuleOA : Module() {
+    override fun context() = declareContext {
+        provide { OtherServiceA(get()) }
+    }
+}
+
+class BindModuleB : Module() {
+    override fun context() = declareContext {
+        provide { ServiceB() } bind { DoSomething::class }
+    }
 }
