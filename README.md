@@ -6,7 +6,8 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 
 # Table of Contents
 
-1. [Setup](#Setup)
+1. [What's new?](#what-s-new)
+2. [Setup](#Setup)
 2. [Getting Started](#Getting_Started)
 	1. [Write your Module](#Write_your_Module)
 	2. [Setup your application](#Setup_your_application)
@@ -25,6 +26,43 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 4. [Library extensions](#library-extensions)
 	1. [Koin for Android](#koin-for-android) 
 5. [Roadmap](#roadmap)
+
+
+## What's new?
+
+### 0.2.x
+
+_DSL_
+
+* Module class must now override `context()` function and return a Context object (instead of `onLoad()`). You have to use the following syntax construction:
+
+```Kotlin
+class NetworkModule : Module() {
+    override fun context() = declareContext { ... }
+}
+```
+* You can define [scope](#scopes) for a module, and [bind types](#type-binding) for provided components
+
+_Koin_
+
+* Koin builder now takes modules instances (instead of module classes):
+
+```Kotlin
+// fill applicationContext for Koin context
+val ctx = Koin().init(applicationContext).build(MyModule())
+```
+
+* factory, stack operators have been removed
+* import is replaced with module instances load
+* delete/remove replcaed with `release()` Scope operation
+* All reflection & kotlin-reflect code have been removed
+
+_Scope_
+
+* You can declare scopes in your modules, with `scope {}` operator. See [scopes](#scopes) section
+* Release scope instances with `release()`
+
+
 
 ## Setup
 
