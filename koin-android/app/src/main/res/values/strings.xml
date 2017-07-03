@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Weather App</string>
+    <string name="action_settings">Settings</string>
+    <string name="loading">Search for a city to have your weather…</string>
+    <string name="weather_title">Weather for</string>
+    <string name="location_title">Search location</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+</resources>

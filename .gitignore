@@ -4,4 +4,8 @@ build/
 .gradle
 local.properties
 classes/
+.DS_Store
+/build
+/captures
+
 

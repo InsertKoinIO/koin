@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '25.0.3'
+
+    defaultConfig {
+        applicationId "koin.sampleapp"
+        minSdkVersion 18
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+//    compile project(":koin-android")
+    compile 'org.koin:koin-android:0.2.0'
+
+    compile 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
+
+    //json
+    compile 'com.google.code.gson:gson:2.8.0'
+
+    // Networking
+    compile "com.squareup.retrofit2:retrofit:$retrofit_version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // Rx
+    compile "io.reactivex.rxjava2:rxjava:$rxjava_version"
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+}
+repositories {
+    mavenCentral()
+}

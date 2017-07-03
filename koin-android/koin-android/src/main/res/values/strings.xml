@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Koin-Android</string>
+    <string name="url">this is a sample url string</string>
+</resources>
