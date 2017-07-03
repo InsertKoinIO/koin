@@ -6,8 +6,8 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 
 # Table of Contents
 
-1. [What's new?](#what-s-new)
 2. [Setup](#setup)
+1. [What's new?](#whats-new)
 2. [Getting Started](#getting-Started)
 	1. [Write a Module](#write-a-module)
 	2. [Setup your Android Application](#setup-your-android-application)
@@ -28,6 +28,20 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 	2. [Compile time & Lazy linking](#compile-time--lazy-linking)
 	3. [Using properties](#using-properties)
 7. [Roadmap](#roadmap) 
+
+## Setup
+
+Check that you have `jcenter` repository and add the following gradle dependency for Android:
+
+```gradle
+compile 'org.koin:koin-android:0.2.0'
+```
+
+For pure Kotlin usage, you can just use the core module:
+
+```gradle
+compile 'org.koin:koin-core:0.2.0'
+```
 
 ## What's new?
 
@@ -70,21 +84,6 @@ _Android_
 
 * `KoinAwareContext` interface used to setup Android application (KoinApplication & KoinMultidexApplication removed)
 * `by inject<>()` operator to inject any Activity or Fragment
-
-
-## Setup
-
-Check that you have `jcenter` repository and add the following gradle dependency for Android:
-
-```gradle
-compile 'org.koin:koin-android:0.2.0'
-```
-
-For pure Kotlin usage, you can just use the core module:
-
-```gradle
-compile 'org.koin:koin-core:0.2.0'
-```
 
 ## Getting Started
 
