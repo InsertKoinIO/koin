@@ -14,7 +14,7 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 3. [Using KOIN Framework](#using-koin-framework)
 	1. [Creating a module](#creating-a-module)
 	2. [Providing a component](#providing-a-component)
-	3. [Type Binding](#type-Binding)
+	3. [Type Binding](#type-binding)
 	4. [Injecting a dependency](#injecting-a-dependency)
 	5. [Start your context](#start-your-context)
 	6. [Safely resolving a dependency](#safely-resolving-a-dependency)
@@ -48,8 +48,7 @@ compile 'org.koin:koin-core:0.2.0'
 
 ## Getting Started
 
-First of all, you need to write a **Module** to gather your components definitions. Then you will be ready to load and use it. Keep in mind, that **injection by constructor** is the default strategy targeted by Koin. Write your components with constructors for your dependencies.
-
+First of all, you need to write a **Module** to gather your components definitions. Then you will be ready to load and use it. Keep in mind, that **injection by constructor** is the default strategy targeted by Koin.
 ### Write your Module
 
 Write a class that extends [Module]() class. Check the [example]() below :
