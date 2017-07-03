@@ -14,6 +14,9 @@ import kotlin.reflect.KClass
  */
 data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root(), var bindTypes: List<KClass<*>> = arrayListOf()) {
 
+    /**
+     * Add a compatible type to current bounded definition
+     */
     infix fun bind(bind: () -> KClass<*>): BeanDefinition<T> {
         bindTypes += bind()
         return this

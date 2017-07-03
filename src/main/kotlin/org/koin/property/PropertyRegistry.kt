@@ -1,7 +1,8 @@
 package org.koin.property
 
 /**
- * Created by arnaud on 28/06/2017.
+ * Gather all properties
+ * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry {

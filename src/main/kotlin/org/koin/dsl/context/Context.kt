@@ -15,31 +15,46 @@ class Context(val koinContext: KoinContext) {
 
     val provided = arrayListOf<BeanDefinition<*>>()
 
-    /**
-     * Declarative DSL
+    /*
+     * Declarative parts
      */
 
+    /**
+     * Declared context scope
+     */
     var contextScope: Scope? = null
 
+    /**
+     * declare a Context scope
+     */
+    fun scope(definition: () -> KClass<*>) {
+        contextScope = Scope(definition())
+    }
+
+    /**
+     * Provide a bean definition
+     */
     inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> {
         val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root())
         provided += beanDefinition
         return beanDefinition
     }
 
-    fun scope(definition: () -> KClass<*>) {
-        contextScope = Scope(definition())
-    }
 
-    /**
+    /*
      * Runtime resolutions
      */
 
-
+    /**
+     * Resolve a component
+     */
     inline fun <reified T : Any> get(): T {
         return getOrNull<T>() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
     }
 
+    /**
+     * Safely resolve a component (can be null)
+     */
     inline fun <reified T : Any> getOrNull(): T? {
         return koinContext.instanceResolver.resolveInstance<T>(koinContext.beanRegistry.searchAll(T::class))
     }

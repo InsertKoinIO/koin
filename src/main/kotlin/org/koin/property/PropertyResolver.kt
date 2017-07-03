@@ -3,7 +3,7 @@ package org.koin.property
 import org.koin.error.MissingPropertyException
 
 /**
- * Resolve properties for context
+ * Resolve properties for a context
  * @author - Arnaud GIULIANI
  */
 class PropertyResolver {

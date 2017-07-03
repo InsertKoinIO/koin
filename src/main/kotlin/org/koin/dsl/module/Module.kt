@@ -13,13 +13,12 @@ abstract class Module {
     lateinit var koinContet: KoinContext
 
     /**
-     * context module definition
-     * use function declareContext - to declare your context
+     * module's context
      */
     abstract fun context(): Context
 
     /**
-     * Help create context
+     * Create Context function
      */
     fun declareContext(init: Context.() -> Unit) = Context(koinContet).apply(init)
 

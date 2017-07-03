@@ -7,7 +7,7 @@ import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
- * Instance factory - handle objects instances from BeanRegistry
+ * Instance factory - handle objects creation for BeanRegistry
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")

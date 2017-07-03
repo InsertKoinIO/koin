@@ -34,7 +34,7 @@ class Koin {
     }
 
     /**
-     * Load modules
+     * load given module instances into current koin context
      */
     fun <T : Module> build(vararg modules: T): KoinContext {
         logger.info("load module $modules ...")
@@ -54,5 +54,8 @@ class Koin {
         return koinContext
     }
 
+    /**
+     * load directly Koin context with no modules
+     */
     fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
 }

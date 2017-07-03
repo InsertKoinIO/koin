@@ -2,12 +2,11 @@ package org.koin.instance
 
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
-import org.koin.error.ScopeNotFoundException
 import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
- * Created by arnaud on 28/06/2017.
+ * Manage all InstanceFactory per Scope
  */
 class InstanceResolver() {
 
@@ -15,7 +14,7 @@ class InstanceResolver() {
 
     val all_context = HashMap<Scope, InstanceFactory>()
 
-    fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw ScopeNotFoundException("couldn't resolve scope $scope")
+    fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw IllegalStateException("couldn't resolve scope $scope")
 
     fun <T> resolveInstance(def: BeanDefinition<*>?): T? {
         if (def == null) return null

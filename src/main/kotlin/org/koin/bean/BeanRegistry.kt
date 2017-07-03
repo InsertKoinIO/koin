@@ -1,6 +1,7 @@
 package org.koin.bean
 
 import org.koin.dsl.context.Scope
+import kotlin.reflect.KClass
 
 /**
  * Bean registry
@@ -11,6 +12,9 @@ class BeanRegistry() {
 
     val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(BeanRegistry::class.java.simpleName)
 
+    /*
+        bean definitions
+     */
     val definitions = HashSet<BeanDefinition<*>>()
 
     /**
@@ -65,10 +69,10 @@ class BeanRegistry() {
     private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.bindTypes.contains(clazz) }.firstOrNull()
 
     /**
-     * removeInstance a bean and its instance
+     * move any definition for given classs
      * @param clazz Class
      */
-    fun remove(vararg classes: kotlin.reflect.KClass<*>) {
+    fun remove(vararg classes: KClass<*>) {
         logger.warning("removeInstance $classes")
         classes.map { search(it) }.forEach { definitions.remove(it) }
     }

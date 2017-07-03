@@ -10,16 +10,14 @@ import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
- * Created by arnaud on 28/06/2017.
+ * Koin Application Context
+ * Context from where you can get beans defines in modules
+ *
+ * @author Arnaud GIULIANI
  */
 class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceResolver: InstanceResolver) {
 
     val logger: Logger = Logger.getLogger(KoinContext::class.java.simpleName)
-
-    /*
-        Contextual to call !!!
-     */
-//    var currentScopes = arrayListOf<Scope>()
 
     /**
      * Retrieve a bean instance
@@ -27,20 +25,37 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     inline fun <reified T> get(): T = getOrNull<T>() ?: throw InstanceNotFoundException("No instance found for ${T::class}")
 
     /**
-     * Retrieve a bean instance or null
+     * Safely Retrieve a bean instance (can be null)
      */
     inline fun <reified T> getOrNull(): T? {
         return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class))
     }
 
     /**
-     * provide bean definition
+     * provide bean definition at Root scope
      * @param functional decleration
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
         logger.finest("declare singleton $definition")
-        instanceResolver.deleteInstance(T::class, scope = Scope.root())
-        beanRegistry.declare(definition, T::class, Scope.root())
+        provideDefinition(definition, Scope.root())
+    }
+
+    /**
+     * provide bean definition at given class/scope
+     * @param functional decleration
+     */
+    inline fun <reified T : Any> provide(noinline definition: () -> T, scopeClass: KClass<*>) {
+        logger.finest("declare singleton $definition")
+        provideDefinition(definition, Scope(scopeClass))
+    }
+
+    /**
+     * provide bean definition at given scope
+     * @param functional decleration
+     */
+    inline fun <reified T : Any> provideDefinition(noinline definition: () -> T, scope: Scope) {
+        instanceResolver.deleteInstance(T::class, scope = scope)
+        beanRegistry.declare(definition, T::class, scope = scope)
     }
 
     /**
@@ -54,7 +69,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * Clear given scope instance
+     * Clear given Root instance
      */
     fun release() {
         logger.warning("Clear instance ROOT")
