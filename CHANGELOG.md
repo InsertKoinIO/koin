@@ -3,25 +3,34 @@
 ## [0.2.0]()
 
 **Added**
-- Scopes
-- bind & scope function for DSL
+
+- [Core] Scopes
+- [Core] bind & scope function for DSL
+- [Android] `by inject` functions
+
 
 **Fixes**
-- Module DSL
-- Context -> reworked as KoinContext
-- Context is now for internal DSL delcaration
+
+- [Core] Module DSL
+- [Core] Type binding
+- [Core] Context -> reworked as KoinContext
+- [Core] Context is now for internal DSL declaration
 
 **Removed**
-- Any link with introspection/reflect
-- factory, stack => replace with Scope
-- import => replace with load multi modules
-- inject => no need anymore (see inject by in Koin-Android)
+
+- [Core][Android] Any link with introspection/reflect
+- [Core] factory, stack => replace with Scope
+- [Core] import => replace with load multi modules
+- [Core] inject => no need anymore (see inject by in Koin-Android)
 
 ## [0.1.3]()
 
 **Added**
+- KoinContextAware, to help you define your Koin context
+- inject & optional delegates function to inject your components
 
 **Fixes**
+- bean linking
 - inject() - revisited introspection code
 
 ## [0.1.2]()

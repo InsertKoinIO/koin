@@ -1,8 +1,8 @@
 package fr.ekito.koin.test.android
 
 import android.app.Activity
-import fr.ekito.koin.android.R
 import org.koin.android.AndroidModule
+import org.koin.android.R
 
 /**
  * Some tests classes
