@@ -164,20 +164,27 @@ Once you have declare a component, you can specify additional type that can be u
 
 ```kotlin
 // interface
-interface DoSomething {
-    fun doSomething()
+interface Processor {
+    fun processing()
 }
 // component with interface
-class ServiceB() : DoSomething {//...}
+class ServiceB() : Processor {//...}
 
 //in a module context
-declareContext {
-    // definie ServiceB and allow binding with DoSomething
-    provide { ServiceB()} bind { DoSomething::class }
+class MyModule : Module() {
+	 override fun context() = declareContext {
+	    // definie ServiceB and allow binding with DoSomething
+	    provide { ServiceB()} bind { Processor::class }
+	}
 }
 ```
 This way, we provide a component that can be bound to ServiceB::class &  DoSomething::class.
 
+```kotlin
+val context = Koin().build(MyModule())
+val processor = context.get<Processor>()
+processor.processing()
+```
 
 ### Injecting a dependency
 
