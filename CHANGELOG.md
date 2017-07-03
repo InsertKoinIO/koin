@@ -1,5 +1,22 @@
 # Change Log
 
+## [0.2.0]()
+
+**Added**
+- Scopes
+- bind & scope function for DSL
+
+**Fixes**
+- Module DSL
+- Context -> reworked as KoinContext
+- Context is now for internal DSL delcaration
+
+**Removed**
+- Any link with introspection/reflect
+- factory, stack => replace with Scope
+- import => replace with load multi modules
+- inject => no need anymore (see inject by in Koin-Android)
+
 ## [0.1.3]()
 
 **Added**
