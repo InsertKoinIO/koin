@@ -33,6 +33,8 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 
 ### Changes in 0.2.x
 
+**Koin & Koin-Android project has meen merged**
+
 _DSL_
 
 * Module class must now override `context()` function and return a Context object (instead of `onLoad()`). You have to use the following syntax:
