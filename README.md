@@ -1,10 +1,8 @@
-# Insert Koin to make dependency injection - For Android
+# Insert Koin to make dependency injection
 
 KOIN is a dependency injection framework that uses Kotlin and its functional power to get things done!  No proxy/CGLib, No code generation, No introspection. Just functional Kotlin and DSL magic ;)
 
 ![logo](./img/insert_koin_android_logo.jpg)
-
-**Koin Android is a [Koin](https://github.com/Ekito/koin) library extension to help you make easily dependency injection on your Android project**
 
 # Table of Contents
 
