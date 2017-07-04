@@ -24,9 +24,9 @@ Write a class that extends [AndroidModule](https://github.com/Ekito/koin/blob/ma
 class MyModule : AndroidModule() {
     override fun context() =
         declareContext {
-			// declare dependency here ...
-			provide { createOkHttpClient() }
-	       }
+	    // declare dependency here ...
+	    provide { createOkHttpClient() }
+	}
     }
 }
 
