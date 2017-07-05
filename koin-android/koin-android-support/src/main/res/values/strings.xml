@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">koin-android</string>
+    <string name="app_name">koin-android-support</string>
     <string name="url">this is a sample url string</string>
 </resources>

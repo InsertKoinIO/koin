@@ -13,7 +13,6 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -40,7 +39,9 @@ dependencies {
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
-    compile 'org.koin:koin-core:0.2.0'
+    compile "org.koin:koin-android:$koin_version"
+    // Support Library
+    compile 'com.android.support:appcompat-v7:25.3.1'
 }
 
 repositories {
@@ -49,15 +50,14 @@ repositories {
 }
 
 group = 'org.koin'
-version = '0.2.1'
-description = 'KOIN - Kotlin simple dependency injection for Android'
+version = "$koin_version"
+description = 'KOIN - Kotlin simple dependency injection for Android - Support extensions'
 
 ext{
     publishedGroupId = group
-    libraryName = 'Koin Android'
-
-    artifact = 'koin-android'
-    libraryDescription = 'KOIN - Kotlin simple dependency injection for Android'
+    libraryName = 'Koin Android Support'
+    artifact = 'koin-android-support'
+    libraryDescription = 'KOIN - Kotlin simple dependency injection for Android - Support extensions'
     libraryVersion = version
 }
 
@@ -101,7 +101,7 @@ bintray {
     override = true
     pkg {
         repo = 'koin'
-        name = 'koin-android'
+        name = 'koin-android-support'
         userOrg = 'ekito'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/Ekito/koin.git'
