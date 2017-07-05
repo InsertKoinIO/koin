@@ -14,11 +14,11 @@ compile 'org.koin:koin-android:0.2.0'
 
 ## Getting Started
 
-First of all, you need to write a module. A module **gather your components definitions** and allow it to be loaded by Koin and injected in your application. Keep in mind, that **injection by constructor** is the default strategy targeted by Koin.
+First of all, you need to write a module. A module **gathers your components definitions** and allows it to be loaded by Koin and injected in your application. Keep in mind, that **injection by constructor** is the default strategy targeted by Koin.
 
 ### Writing a module
 
-Write a class that extends [AndroidModule](https://github.com/Ekito/koin/blob/master/koin-android/koin-android/src/main/kotlin/org/koin/android/AndroidModule.kt), and override the `context()` function and use to `declareContext` function to define a context like below:
+Write a class that extends [AndroidModule](https://github.com/Ekito/koin/blob/master/koin-android/koin-android/src/main/kotlin/org/koin/android/AndroidModule.kt), overrides the `context()` function and uses the `declareContext` function to define a context like below:
 
 ```Kotlin
 class MyModule : AndroidModule() {
@@ -32,12 +32,12 @@ class MyModule : AndroidModule() {
 
 fun createOkHttpClient() : OkHttpClient { //create OkHttpClient ...}
 ```
-Your context is provided by the `context()` function, and described via the `declareContext` function. This unlock the **Koin DSL**:
+Your context is provided by the `context()` function and described via the `declareContext` function. This unlocks the **Koin DSL**:
 
-* `provide { /* component definition */ }` declare a component for your [Module](https://github.com/Ekito/koin/wiki#module-class)
+* `provide { /* component definition */ }` declares a component for your [Module](https://github.com/Ekito/koin/wiki#module-class)
 * `bind {/* compatible type */}` [bind](https://github.com/Ekito/koin/wiki#type-binding) a compatible type for *provided definition*
 * `get()` inject a component dependency
-* `scope {/* scope class */}` defineor reuse a [scope](https://github.com/Ekito/koin/wiki#scopes) current module's definitions
+* `scope {/* scope class */}` define or reuse a [scope](https://github.com/Ekito/koin/wiki#scopes) current module's definitions
 
 **AndroidModule** also gives you the possibility to retrieve Android specific resources directly in your module context (*ApplicationContext*, *Resources* & *Assets*). e.g: Get an Android string in your module:
 
@@ -84,7 +84,7 @@ By using `KoinContextAware` interface, you will be able to use the **Koin Androi
 
 ### Start injecting
 
-Once you have your Koin context, you can get **inject your components from anywhere** (Application, Activity, Fragment) by using `by inject<>()` function:
+Once you have your Koin context, you can **inject your components from anywhere** (Application, Activity, Fragment) by using `by inject<>()` function:
 
 ```Kotlin
 class MainActivity : AppCompatActivity() {
@@ -103,7 +103,7 @@ That's it !
 
 You can find a complete sample app here: [github sources](https://github.com/Ekito/koin/tree/master/koin-android/app)
 
-This sample demo basics concepts:
+This sample shows the basic concepts of:
 
 * A [Module](https://github.com/Ekito/koin/blob/master/koin-android/app/src/main/kotlin/koin/sampleapp/koin/MyModule.kt) -- Module example to create okhttpClient, retrofit and web service component
 * An [Application](https://github.com/Ekito/koin/blob/master/koin-android/app/src/main/kotlin/koin/sampleapp/MainApplication.kt) -- Setup for loading module with Android application
