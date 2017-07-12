@@ -113,3 +113,9 @@ This sample shows the basic concepts of:
 ## Documentation
 
 Check the [wiki](https://github.com/Ekito/koin/wiki) for complete documentation.
+
+## Contact & Support
+
+Check the [kotlin slack](https://kotlinlang.org/community/) - #koin channel
+
+
