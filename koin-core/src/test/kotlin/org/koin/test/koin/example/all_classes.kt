@@ -63,3 +63,8 @@ class ServiceD(val myVal: String) {
         println("$this do something in D with $myVal")
     }
 }
+
+//Circular defs
+class ServiceTwo(val serviceOne: ServiceOne)
+
+class ServiceOne(val serviceTwo: ServiceTwo)

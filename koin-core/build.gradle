@@ -18,7 +18,7 @@ apply plugin: 'com.jfrog.bintray'
 
 archivesBaseName = 'koin-core'
 group = 'org.koin'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Koin - simple dependency injection for Kotlin'
 
 // custom tasks for creating source/javadoc jars

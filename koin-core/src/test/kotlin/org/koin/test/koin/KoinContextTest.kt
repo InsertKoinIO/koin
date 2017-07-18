@@ -8,6 +8,8 @@ import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.ServiceA
 import org.koin.test.koin.example.ServiceB
+import org.koin.test.koin.example.ServiceOne
+import org.koin.test.koin.example.ServiceTwo
 import org.mockito.Mockito
 import org.mockito.Mockito.times
 
@@ -27,6 +29,24 @@ class KoinContextTest {
 
         assertNotNull(ctx.get<ServiceA>())
         assertNotNull(ctx.get<ServiceB>())
+
+        ctx.assertSizes(2, 2)
+        ctx.assertScopes(1)
+    }
+
+    //TODO Handle Stack
+
+    @Test
+    fun `circular deps`() {
+        val ctx = Koin().build()
+
+        ctx.provide { ServiceTwo(ctx.get()) }
+        ctx.provide { ServiceOne(ctx.get()) }
+
+        ctx.assertSizes(2, 0)
+
+        assertNotNull(ctx.get<ServiceTwo>())
+        assertNotNull(ctx.get<ServiceOne>())
 
         ctx.assertSizes(2, 2)
         ctx.assertScopes(1)
