@@ -56,7 +56,7 @@ class Context(val koinContext: KoinContext) {
      * Safely resolve a component (can be null)
      */
     inline fun <reified T : Any> getOrNull(): T? {
-        return koinContext.instanceResolver.resolveInstance<T>(koinContext.beanRegistry.searchAll(T::class))
+        return koinContext.resolve<T>()
     }
 
     /**

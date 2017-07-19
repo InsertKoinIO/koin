@@ -40,7 +40,7 @@ dependencies {
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
-    compile 'org.koin:koin-core:0.2.0'
+    compile 'org.koin:koin-core:0.2.1'
 }
 
 repositories {

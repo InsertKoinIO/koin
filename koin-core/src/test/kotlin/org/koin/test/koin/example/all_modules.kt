@@ -60,6 +60,6 @@ class SampleModuleOA : Module() {
 
 class BindModuleB : Module() {
     override fun context() = declareContext {
-        provide { ServiceB() } bind { Proecssor::class }
+        provide { ServiceB() } bind { Processor::class }
     }
 }

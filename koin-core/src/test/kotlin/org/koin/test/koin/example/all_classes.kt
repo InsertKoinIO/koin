@@ -15,7 +15,7 @@ class ServiceA(val serviceB: ServiceB) {
     }
 }
 
-class OtherServiceA(val processor: Proecssor) {
+class OtherServiceA(val processor: Processor) {
     init {
         println("$this ctor OtherServiceA")
     }
@@ -26,11 +26,11 @@ class OtherServiceA(val processor: Proecssor) {
     }
 }
 
-interface Proecssor {
+interface Processor {
     fun process()
 }
 
-class ServiceB() : Proecssor {
+class ServiceB() : Processor {
 
     init {
         println("$this ctor B")

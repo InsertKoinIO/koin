@@ -2,10 +2,12 @@ package org.koin
 
 import org.koin.bean.BeanRegistry
 import org.koin.dsl.context.Scope
+import org.koin.error.CyclicDependencyException
 import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
+import java.util.*
 import java.util.logging.Logger
 import kotlin.reflect.KClass
 
@@ -28,7 +30,32 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Safely Retrieve a bean instance (can be null)
      */
     inline fun <reified T> getOrNull(): T? {
-        return instanceResolver.resolveInstance<T>(beanRegistry.searchAll(T::class))
+        return resolve<T>()
+    }
+
+    /**
+     * resolution stack
+     */
+    val resolutionStack = Stack<KClass<*>>()
+
+    /**
+     * Resolve a dependency for its bean definition
+     */
+    inline fun <reified T> resolve(): T? {
+        val clazz = T::class
+        logger.info("resolve $clazz :: $resolutionStack")
+
+        if (resolutionStack.contains(clazz)) {
+            throw CyclicDependencyException("Cyclic dependency for $clazz")
+        }
+        resolutionStack.add(clazz)
+
+        val instance = instanceResolver.resolveInstance<T>(beanRegistry.searchAll(clazz))
+        val head = resolutionStack.pop()
+        if (head != clazz) {
+            throw IllegalStateException("Calling HEAD was $head but must be $clazz")
+        }
+        return instance
     }
 
     /**

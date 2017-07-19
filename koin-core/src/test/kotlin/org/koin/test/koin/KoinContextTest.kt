@@ -45,10 +45,10 @@ class KoinContextTest {
 
         ctx.assertSizes(2, 0)
 
-        assertNotNull(ctx.get<ServiceTwo>())
-        assertNotNull(ctx.get<ServiceOne>())
+        assertNull(ctx.getOrNull<ServiceTwo>())
+        assertNull(ctx.getOrNull<ServiceOne>())
 
-        ctx.assertSizes(2, 2)
+        ctx.assertSizes(2, 0)
         ctx.assertScopes(1)
     }
 
