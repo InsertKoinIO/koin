@@ -9,7 +9,12 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 Check that you have `jcenter` repository. Add the following gradle dependency for your Android app:
 
 ```gradle
-compile 'org.koin:koin-android:0.2.0'
+compile 'org.koin:koin-android:0.2.1'
+```
+or if you need android-support classes:
+
+```gradle
+compile 'org.koin:koin-android-support:0.2.1'
 ```
 
 ## Getting Started

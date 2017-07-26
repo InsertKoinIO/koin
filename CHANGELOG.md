@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.2.1]()
+
+**Added**
+
+- [Core] Cycle dependency proection & 
+- [Android] android-support module - unlock Koin for AppCompatActivity & Fragment (support)
+- Kotlin 1.1.3-2
+
+**Fixes**
+
+- [Core] Koin context call stack
+
+
 ## [0.2.0]()
 
 **Added**
