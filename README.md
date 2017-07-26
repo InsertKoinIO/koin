@@ -109,10 +109,14 @@ This sample shows the basic concepts of:
 * An [Application](https://github.com/Ekito/koin/blob/master/koin-android/app/src/main/kotlin/koin/sampleapp/MainApplication.kt) -- Setup for loading module with Android application
 * An [Activity](https://github.com/Ekito/koin/blob/master/koin-android/app/src/main/kotlin/koin/sampleapp/MainActivity.kt#L26) -- Inject `WeatherService` into MainActivity
 
-
 ## Documentation
 
 Check the [wiki](https://github.com/Ekito/koin/wiki) for complete documentation.
+
+## Articles
+
+* [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
+* [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
 
 ## Contact & Support
 
