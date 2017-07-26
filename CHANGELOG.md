@@ -4,7 +4,7 @@
 
 **Added**
 
-- [Core] Cycle dependency proection & 
+- [Core] Cycle dependency protection 
 - [Android] android-support module - unlock Koin for AppCompatActivity & Fragment (support)
 - Kotlin 1.1.3-2
 
