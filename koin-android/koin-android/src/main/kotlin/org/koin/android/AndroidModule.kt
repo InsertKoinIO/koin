@@ -11,7 +11,7 @@ import org.koin.dsl.module.Module
  */
 abstract class AndroidModule : Module() {
 
-    val applicationContext: Application by lazy { koinContet.getOrNull<Application>() ?: throw KoinApplicationException("Android application context has not been initialized. Please use init() from Koin builder.") }
+    val applicationContext: Application by lazy { koinContext.getOrNull<Application>() ?: throw KoinApplicationException("Android application context has not been initialized. Please use init() from Koin builder.") }
 
     val resources: Resources by lazy { applicationContext.resources }
 

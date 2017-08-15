@@ -10,7 +10,7 @@ import org.koin.dsl.context.Context
  */
 abstract class Module {
 
-    lateinit var koinContet: KoinContext
+    lateinit var koinContext: KoinContext
 
     /**
      * module's context
@@ -20,6 +20,6 @@ abstract class Module {
     /**
      * Create Context function
      */
-    fun declareContext(init: Context.() -> Unit) = Context(koinContet).apply(init)
+    fun declareContext(init: Context.() -> Unit) = Context(koinContext).apply(init)
 
 }
