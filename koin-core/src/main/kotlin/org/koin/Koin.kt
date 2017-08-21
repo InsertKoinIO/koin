@@ -41,7 +41,7 @@ class Koin {
 
         val koinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
         modules.forEach {
-            it.koinContet = koinContext
+            it.koinContext = koinContext
             val ctx = it.context()
             val scope = ctx.contextScope
             if (scope != null) {
