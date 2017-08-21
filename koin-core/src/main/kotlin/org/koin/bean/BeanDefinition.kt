@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  *
  * Gather type of T
- * definied by lazy/function
+ * defined by lazy/function
  * has a type (clazz)
  * has a BeanType : default singleton
  */

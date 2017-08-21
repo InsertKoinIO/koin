@@ -10,9 +10,7 @@ class PropertyRegistry {
 
     fun <T> get(key: String): T? = properties[key] as? T?
 
-    fun set(key: String, value: Any): Unit {
+    fun set(key: String, value: Any) {
         properties[key] = value
     }
-
-
 }

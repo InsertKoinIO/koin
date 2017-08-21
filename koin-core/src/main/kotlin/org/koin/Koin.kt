@@ -48,7 +48,7 @@ class Koin {
                 logger.info("preparing scope $scope")
                 instanceResolver.createContext(scope)
             }
-            ctx.provided.forEach { beanRegistry.declare<Any>(it) }
+            ctx.provided.forEach { beanRegistry.declare(it) }
         }
 
         return koinContext

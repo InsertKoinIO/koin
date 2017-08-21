@@ -8,19 +8,19 @@ import kotlin.reflect.KClass
 /**
  * Manage all InstanceFactory per Scope
  */
-class InstanceResolver() {
+class InstanceResolver {
 
-    val logger: Logger = Logger.getLogger(InstanceResolver::class.java.simpleName)
+    private val logger: Logger = Logger.getLogger(InstanceResolver::class.java.simpleName)
 
     val all_context = HashMap<Scope, InstanceFactory>()
 
     fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw IllegalStateException("couldn't resolve scope $scope")
 
     fun <T> resolveInstance(def: BeanDefinition<*>?): T? {
-        if (def == null) return null
+        return if (def == null) null
         else {
             val instanceFactory = getInstanceFactory(def.scope)
-            return instanceFactory.resolveInstance<T>(def, def.scope)
+            instanceFactory.resolveInstance<T>(def, def.scope)
         }
     }
 

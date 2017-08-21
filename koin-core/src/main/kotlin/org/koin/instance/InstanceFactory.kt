@@ -13,14 +13,14 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class InstanceFactory {
 
-    val logger: Logger = Logger.getLogger(InstanceFactory::class.java.simpleName)
+    private val logger: Logger = Logger.getLogger(InstanceFactory::class.java.simpleName)
 
     val instances = ConcurrentHashMap<KClass<*>, Any>()
 
     /**
      * Retrieve or create bean instance
      */
-    fun <T> retrieveInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
+    private fun <T> retrieveInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
         var instance = findInstance<T>(clazz)
         if (instance == null) {
             instance = createInstance(def, clazz, scope)
@@ -32,11 +32,11 @@ class InstanceFactory {
      * Find existing instance
      */
     private fun <T> findInstance(clazz: KClass<*>): T? {
-        val existingClass = instances.keys.filter { it == clazz }.firstOrNull()
-        if (existingClass != null) {
-            return instances[existingClass] as? T
+        val existingClass = instances.keys.firstOrNull { it == clazz }
+        return if (existingClass != null) {
+            instances[existingClass] as? T
         } else {
-            return null
+            null
         }
     }
 
@@ -45,16 +45,16 @@ class InstanceFactory {
      */
     private fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
         logger.fine(">> Create instance : $def")
-        if (def.scope == scope) {
+        return if (def.scope == scope) {
             try {
                 val instance = def.definition.invoke() as Any
                 instances[clazz] = instance
-                return instance as T
+                instance as T
             } catch(e: Exception) {
                 logger.warning("Couldn't get instance for $def due to error $e")
-                return null
+                null
             }
-        } else return null
+        } else null
     }
 
     fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope): T? {

@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * gather definitions of beans & communicate with instance factory to handle instances
  * @author - Arnaud GIULIANI
  */
-class BeanRegistry() {
+class BeanRegistry {
 
     val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(BeanRegistry::class.java.simpleName)
 
@@ -19,12 +19,10 @@ class BeanRegistry() {
 
     /**
      * Add/Replace an existing bean
-
-     * @param o
-     * *
-     * @param clazz
+     *
+     * @param def : Bean definition
      */
-    inline fun <reified T : Any> declare(def: BeanDefinition<*>) {
+    fun declare(def: BeanDefinition<*>) {
         logger.info(">> Declare bean definition $def")
 
         val found = search(def.clazz)
@@ -36,10 +34,10 @@ class BeanRegistry() {
 
     /**
      * Add/Replace an existing bean
-
-     * @param o
-     * *
-     * @param clazz
+     *
+     * @param function : Declaration function bean
+     * @param clazz : Bean Type
+     * @param scope : Bean scope
      */
     inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, scope: Scope) {
         val def = BeanDefinition(function, clazz, scope)
@@ -61,16 +59,16 @@ class BeanRegistry() {
     /**
      * Search for a bean definition
      */
-    fun search(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.clazz == clazz }.firstOrNull()
+    fun search(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.firstOrNull { it.clazz == clazz }
 
     /**
      * Search for a compatible bean definition (subtype type of given clazz)
      */
-    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.filter { it.bindTypes.contains(clazz) }.firstOrNull()
+    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.firstOrNull { it.bindTypes.contains(clazz) }
 
     /**
-     * move any definition for given classs
-     * @param clazz Class
+     * move any definition for given class
+     * @param classes Class
      */
     fun remove(vararg classes: KClass<*>) {
         logger.warning("removeInstance $classes")
