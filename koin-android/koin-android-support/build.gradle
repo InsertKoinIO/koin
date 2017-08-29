@@ -38,15 +38,18 @@ dependencies {
 
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     // Koin
     compile "org.koin:koin-android:$koin_version"
+//    compile project(":koin-android")
+
     // Support Library
     compile 'com.android.support:appcompat-v7:25.3.1'
 }
 
 repositories {
     jcenter()
-//    mavenLocal()
+    mavenLocal()
 }
 
 group = 'org.koin'
