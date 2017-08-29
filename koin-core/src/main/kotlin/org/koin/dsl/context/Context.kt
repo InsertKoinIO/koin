@@ -48,16 +48,12 @@ class Context(val koinContext: KoinContext) {
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(): T {
-        return getOrNull() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
-    }
+    inline fun <reified T : Any> get(): T = getOrNull() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
 
     /**
      * Safely resolve a component (can be null)
      */
-    inline fun <reified T : Any> getOrNull(): T? {
-        return koinContext.resolve<T>()
-    }
+    inline fun <reified T : Any> getOrNull(): T? = koinContext.resolve<T>()
 
     /**
      * Retrieve a property
