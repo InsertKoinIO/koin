@@ -2,7 +2,7 @@ package android.support
 
 import android.app.getKoin
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.FragmentActivity
 import org.koin.KoinContext
 import kotlin.reflect.KClass
 
@@ -13,27 +13,27 @@ import kotlin.reflect.KClass
 /**
  * Return Koin context from Activity
  */
-fun AppCompatActivity.getKoin(): KoinContext = this.application.getKoin()
+fun FragmentActivity.getKoin(): KoinContext = this.application.getKoin()
 
 /**
  * Inject current dependency
  */
-inline fun <reified T> AppCompatActivity.get(): T = getKoin().get<T>()
+inline fun <reified T> FragmentActivity.get(): T = getKoin().get<T>()
 
 /**
  * Release scope instances
  */
-fun AppCompatActivity.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
+fun FragmentActivity.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
 
 /**
  * inject lazily given dependency for Activity
  */
-inline fun <reified T> AppCompatActivity.inject(): Lazy<T> = lazy { getKoin().get<T>() }
+inline fun <reified T> FragmentActivity.inject(): Lazy<T> = lazy { getKoin().get<T>() }
 
 /**
  * inject lazily given dependency for Activity - can be null
  */
-inline fun <reified T> AppCompatActivity.injectOrNull(): Lazy<T?> = lazy { getKoin().getOrNull<T>() }
+inline fun <reified T> FragmentActivity.injectOrNull(): Lazy<T?> = lazy { getKoin().getOrNull<T>() }
 
 
 /**
