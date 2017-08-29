@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.2.2]()
+
+**Added**
+- [Android] android-support has extensions now on FragmentActivity
+- [Core] KoinContext.provide() & KoinContext.provideAt()
+- Kotlin 1.1.4-2
+
+**Removed**
+- [Android] android-support extensions for AppCompatSupport
+- [Core] KoinContext.provideDefinition()
+
+Also Integrated last pull requests (core code clean & android resource clean) 
+
 ## [0.2.1]()
 
 **Added**
