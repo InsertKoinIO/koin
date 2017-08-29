@@ -39,8 +39,9 @@ dependencies {
 
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     // Koin
-    compile 'org.koin:koin-core:0.2.1'
+    compile "org.koin:koin-core:$koin_version"
 }
 
 repositories {
@@ -49,7 +50,7 @@ repositories {
 }
 
 group = 'org.koin'
-version = '0.2.1'
+version = '0.2.2'
 description = 'KOIN - Kotlin simple dependency injection for Android'
 
 ext{
