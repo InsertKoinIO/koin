@@ -2,7 +2,6 @@ package fr.ekito.koin.test.android
 
 import android.app.Activity
 import org.koin.android.AndroidModule
-import org.koin.android.R
 
 /**
  * Some tests classes
@@ -20,7 +19,7 @@ class ComplexModule : AndroidModule() {
     override fun context() =
             declareContext {
                 provide { AndroidComponent(get()) }
-                provide { OtherService(get(), resources.getString(R.string.url)) }
+//                provide { OtherService(get(), resources.getString(R.string.url)) }
             }
 }
 
@@ -37,6 +36,6 @@ class ActivityModule : AndroidModule() {
     override fun context() =
             declareContext {
                 scope { Activity::class }
-                provide { OtherService(get(), resources.getString(R.string.url)) }
+//                provide { OtherService(get(), resources.getString(R.string.url)) }
             }
 }
