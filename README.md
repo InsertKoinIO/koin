@@ -9,12 +9,12 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 Check that you have `jcenter` repository. Add the following gradle dependency for your Android app:
 
 ```gradle
-compile 'org.koin:koin-android:0.2.1'
+compile 'org.koin:koin-android:0.2.2'
 ```
 or if you need android-support classes:
 
 ```gradle
-compile 'org.koin:koin-android-support:0.2.1'
+compile 'org.koin:koin-android-support:0.2.2'
 ```
 
 ## Getting Started
@@ -28,21 +28,50 @@ Write a class that extends [AndroidModule](https://github.com/Ekito/koin/blob/ma
 ```Kotlin
 class MyModule : AndroidModule() {
     override fun context() =
-        declareContext {
-	    // declare dependency here ...
-	    provide { createOkHttpClient() }
-	}
-    }
+            declareContext {
+                provide { ServiceA(get()) }
+                provide { ServiceB() }
+                provide { ServiceC(get(), get()) }
+            }
 }
 
-fun createOkHttpClient() : OkHttpClient { //create OkHttpClient ...}
+//for classes
+class ServiceA(val serviceB: ServiceB) 
+class ServiceB()
+class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB)
 ```
+
 Your context is provided by the `context()` function and described via the `declareContext` function. This unlocks the **Koin DSL**:
 
 * `provide { /* component definition */ }` declares a component for your [Module](https://github.com/Ekito/koin/wiki#module-class)
 * `bind {/* compatible type */}` [bind](https://github.com/Ekito/koin/wiki#type-binding) a compatible type for *provided definition*
 * `get()` inject a component dependency
 * `scope {/* scope class */}` define or reuse a [scope](https://github.com/Ekito/koin/wiki#scopes) current module's definitions
+
+Below a more complete [module example](https://github.com/Ekito/koin/blob/master/koin-android/app/src/main/kotlin/koin/sampleapp/koin/MyModule.kt), with sample weather app:
+
+```Kotlin
+class MyModule : AndroidModule() {
+
+    val TAG = MyModule::class.java.simpleName
+
+    override fun context() =
+            declareContext {
+                // Scope MainActivity
+                scope { MainActivity::class }
+		
+                // provided components
+                provide { WeatherService(get()) }
+                provide { createClient() }
+		// build retrofit web service with android String resource url
+                provide { retrofitWS(get(), resources.getString(R.string.server_url)) }
+            }
+
+    private fun createClient(): OkHttpClient {//return OkHttpClient}
+
+    private fun retrofitWS(okHttpClient: OkHttpClient, url: String): WeatherWS { // create retrofit WeatherWS class}
+}
+```
 
 **AndroidModule** also gives you the possibility to retrieve Android specific resources directly in your module context (*ApplicationContext*, *Resources* & *Assets*). e.g: Get an Android string in your module:
 
