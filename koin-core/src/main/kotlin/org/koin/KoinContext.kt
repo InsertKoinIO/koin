@@ -64,23 +64,27 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
         logger.finest("declare singleton $definition")
-        provideDefinition(definition, Scope.root())
+        declare(definition, Scope.root())
     }
 
-//    /**
-//     * provide bean definition at given class/scope
-//     * @param definition - function declaration
-//     */
-//    inline fun <reified T : Any> provide(noinline definition: () -> T, scopeClass: KClass<*>) {
-//        logger.finest("declare singleton $definition")
-//        provideDefinition(definition, Scope(scopeClass))
-//    }
+    /**
+     * provide bean definition at given class/scope
+     * @param definition  function declaration
+     */
+    inline fun <reified T : Any> provideAt(noinline definition: () -> T, scopeClass: KClass<*>) {
+        val scope = Scope(scopeClass)
+        val existingScope = instanceResolver.all_context[scope]
+        if (existingScope == null){
+            instanceResolver.createContext(scope)
+        }
+        declare(definition, scope)
+    }
 
     /**
      * provide bean definition at given scope
      * @param definition  function declaration
      */
-    inline fun <reified T : Any> provideDefinition(noinline definition: () -> T, scope: Scope) {
+    inline fun <reified T : Any> declare(noinline definition: () -> T, scope: Scope) {
         instanceResolver.deleteInstance(T::class, scope = scope)
         beanRegistry.declare(definition, T::class, scope = scope)
     }

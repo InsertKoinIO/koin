@@ -15,6 +15,18 @@ import org.koin.test.koin.example.*
 class ScopeTest {
 
     @Test
+    fun `provide at scope `() {
+        val ctx = Koin().build()
+        ctx.provideAt({ServiceB()}, ServiceB::class)
+        ctx.assertScopes(2)
+        ctx.assertSizes(1, 0)
+        Assert.assertNotNull(ctx.get<ServiceB>())
+
+        ctx.assertScopeSize(ServiceB::class, 1)
+        ctx.assertSizes(1, 1)
+    }
+
+    @Test
     fun `get scoped instances`() {
         val ctx = Koin().build(ScopedModuleB())
         ctx.assertScopes(2)
