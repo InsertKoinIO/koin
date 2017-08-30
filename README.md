@@ -41,12 +41,12 @@ class ServiceB()
 class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB)
 ```
 
-Your context is provided by the `context()` function and described via the `declareContext` function. This unlocks the **Koin DSL**:
+To describe your module, you can use the following **Koin DSL** keywords:
 
 * `provide { /* component definition */ }` declares a component for your [Module](https://github.com/Ekito/koin/wiki#module-class)
-* `bind {/* compatible type */}` [bind](https://github.com/Ekito/koin/wiki#type-binding) a compatible type for *provided definition*
-* `get()` inject a component dependency
-* `scope {/* scope class */}` define or reuse a [scope](https://github.com/Ekito/koin/wiki#scopes) current module's definitions
+* `bind {/* compatible type */}` [bind](https://github.com/Ekito/koin/wiki#type-binding) a compatible type for *provided definition* (use it behind provide{} expression)
+* `get()` resolve a component dependency
+* `scope {/* scope class */}` use the given [scope](https://github.com/Ekito/koin/wiki#scopes) for current module's definitions
 
 Below a more complete [module example](https://github.com/Ekito/koin/blob/master/koin-android/app/src/main/kotlin/koin/sampleapp/koin/MyModule.kt), with sample weather app:
 
@@ -57,12 +57,13 @@ class MyModule : AndroidModule() {
 
     override fun context() =
             declareContext {
-                // Scope MainActivity
+                // Scope for MainActivity
                 scope { MainActivity::class }
 		
-                // provided components
+                // provided some components
                 provide { WeatherService(get()) }
                 provide { createClient() }
+		
 		// build retrofit web service with android String resource url
                 provide { retrofitWS(get(), resources.getString(R.string.server_url)) }
             }
@@ -118,7 +119,12 @@ By using `KoinContextAware` interface, you will be able to use the **Koin Androi
 
 ### Start injecting
 
-Once you have your Koin context, you can **inject your components from anywhere** (Application, Activity, Fragment) by using `by inject<>()` function:
+Once your app is configured and ready to go, you have to ways of handling injection:
+
+* Android world (Activity,Fragment...): use the by inject() lazy operator
+* Kotlin component: injection is made by constructor
+
+Below a quick sample of using `by inject<>()` in an Activity:
 
 ```Kotlin
 class MainActivity : AppCompatActivity() {
