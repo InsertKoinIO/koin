@@ -27,13 +27,14 @@ class ScopeTest {
         val resources = mock(Resources::class.java)
         val urlValue = "url value"
         Mockito.`when`(applicationContext.resources).thenReturn(resources)
-        Mockito.`when`(resources.getString(ArgumentMatchers.anyInt())).thenReturn(urlValue)
 
         val ctx = Koin().init(applicationContext).build(SampleModule(), ActivityModule())
 
         ctx.assertScopes(2)
         ctx.assertSizes(3, 0)
         ctx.assertScopeSize(Activity::class, 0)
+
+        ctx.setProperty("url",urlValue)
 
         val service_1 = ctx.get<OtherService>()
         val component = ctx.get<AndroidComponent>()

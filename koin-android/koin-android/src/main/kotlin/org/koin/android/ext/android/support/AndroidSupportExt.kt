@@ -1,6 +1,6 @@
-package android.support
+package org.koin.android.ext.android.support
 
-import android.app.getKoin
+import org.koin.android.ext.android.app.getKoin
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.KoinContext

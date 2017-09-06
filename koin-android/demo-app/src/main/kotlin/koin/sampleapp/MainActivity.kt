@@ -1,7 +1,7 @@
 package koin.sampleapp
 
-import android.app.inject
-import android.app.release
+import org.koin.android.ext.android.app.inject
+import org.koin.android.ext.android.app.release
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity

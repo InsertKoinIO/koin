@@ -40,19 +40,18 @@ class ModuleTest {
         val resources = mock(Resources::class.java)
         val urlValue = "url value"
         `when`(applicationContext.resources).thenReturn(resources)
-        `when`(resources.getString(ArgumentMatchers.anyInt())).thenReturn(urlValue)
 
         val ctx = Koin().init(applicationContext).build(ComplexModule())
+        ctx.setProperty("url",urlValue)
 
         ctx.assertSizes(3, 0)
 
-        val found_appContext = ctx.get<OtherService>()
+        val found_appContext = ctx.get<AndroidComponent>()
 
-        assertEquals(applicationContext, found_appContext.androidComponent.application)
-        assertEquals(urlValue, found_appContext.url)
+        assertEquals(applicationContext, found_appContext.application)
 
-        ctx.assertSizes(3, 3)
-        ctx.assertProps(0)
+        ctx.assertSizes(3, 2)
+        ctx.assertProps(1)
     }
 
     @Test
