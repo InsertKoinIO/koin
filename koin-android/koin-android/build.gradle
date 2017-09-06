@@ -5,15 +5,14 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -34,23 +33,25 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
     testCompile 'org.mockito:mockito-core:2.7.22'
 
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     // Koin
-    compile "org.koin:koin-core:$koin_version"
+    compile "org.koin:koin-core:$rootProject.ext.koin_version"
+
+    // Support Library
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
 }
 
 repositories {
     jcenter()
-//    mavenLocal()
+    mavenLocal()
 }
 
 group = 'org.koin'
-version = '0.2.2'
+version = "$rootProject.ext.koin_version"
 description = 'KOIN - Kotlin simple dependency injection for Android'
 
 ext{

@@ -1,1 +1,1 @@
-include ':app', ':koin-android', ':koin-android-support'
+include ':demo-app', ':koin-android'

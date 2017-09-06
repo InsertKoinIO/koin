@@ -2,6 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+ext{
+    okhttp_version = '3.6.0'
+    retrofit_version = '2.2.0'
+    rxjava_version = '2.1.0'
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.3'
@@ -33,8 +39,8 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-//    compile project(":koin-android")
-    compile "org.koin:koin-android:$koin_version"
+    compile project(":koin-android")
+//    compile "org.koin:koin-android:$koin_version"
 
     compile 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
 

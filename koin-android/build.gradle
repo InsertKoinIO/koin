@@ -1,15 +1,24 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Define versions in a single place
+ext {
+    // Koin Version
+    koin_version = "0.3.0"
+
+    // Sdk and tools
+    minSdkVersion = 14
+    targetSdkVersion = 26
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.1'
+
+    // App dependencies
+    supportLibraryVersion = '25.0.1'
+    junitVersion = '4.12'
+}
 
 buildscript {
     ext {
-        // Koin Version
-        koin_version = "0.2.2"
-
-        // Other deps
-        kotlin_version = '1.1.4-2'
-        okhttp_version = '3.6.0'
-        retrofit_version = '2.2.0'
-        rxjava_version = '2.1.0'
+        kotlin_version = '1.1.4-3'
+        gradleVersion = '2.3.3'
     }
     repositories {
         jcenter()
@@ -28,10 +37,11 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-//        mavenLocal()
+        mavenLocal()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
