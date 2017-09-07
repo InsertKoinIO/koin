@@ -56,12 +56,12 @@ class MyModule : AndroidModule() {
             declareContext {
                 // Scope for MainActivity
                 scope { MainActivity::class }
-		
+        
                 // provided some components
                 provide { WeatherService(get()) }
                 provide { createClient() }
-		
-		// build retrofit web service with android String resource url
+        
+        // build retrofit web service with android String resource url
                 provide { retrofitWS(get(), resources.getString(R.string.server_url)) }
             }
 
@@ -157,5 +157,4 @@ Check the [wiki](https://github.com/Ekito/koin/wiki) for complete documentation.
 ## Contact & Support
 
 Check the [kotlin slack](https://kotlinlang.org/community/) - `#koin channel
-
 

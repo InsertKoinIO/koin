@@ -12,20 +12,20 @@ import org.koin.android.init
 class MainApplication : Application(), KoinContextAware {
 
     /**
-     * Koin context
+     * KoinContext property
      */
-    lateinit var context: KoinContext
+    lateinit var koinContext: KoinContext
 
     /**
-     * Koin context getter
+     * KoinContext getter
      */
-    override fun getKoin(): KoinContext = context
+    override fun getKoin(): KoinContext = koinContext
 
     override fun onCreate() {
         super.onCreate()
 
         // init Koin with NetworkModule module
-        context = Koin().init(this).build(MyModule())
+        koinContext = Koin().init(this).build(MyModule())
 
         Iconify.with(WeathericonsModule())
     }
