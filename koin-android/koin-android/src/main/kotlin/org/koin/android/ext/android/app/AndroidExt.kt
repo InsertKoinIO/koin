@@ -2,8 +2,8 @@ package org.koin.android.ext.android.app
 
 import android.app.Activity
 import android.app.Application
-import android.app.Fragment
 import android.app.Service
+import android.support.v4.app.Fragment
 import org.koin.KoinContext
 import org.koin.android.KoinContextAware
 import org.koin.android.error.KoinApplicationException
