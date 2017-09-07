@@ -16,7 +16,7 @@ class Context(val koinContext: KoinContext) {
     val provided = arrayListOf<BeanDefinition<*>>()
 
     /*
-     * Declarative parts
+     * Dependency declaration
      */
 
     /**
@@ -32,23 +32,37 @@ class Context(val koinContext: KoinContext) {
     }
 
     /**
-     * Provide a bean definition
+     * Provide a bean definition & empty name
      */
-    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root())
+    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> = provide("", definition)
+
+    /**
+     * Provide a bean definition with a name
+     */
+    inline fun <reified T : Any> provide(name: String, noinline definition: () -> T): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root(), name = name)
         provided += beanDefinition
         return beanDefinition
     }
 
-
     /*
-     * Runtime resolutions
+        Dependency resolvers
      */
 
     /**
      * Resolve a component
      */
     inline fun <reified T : Any> get(): T = getOrNull() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
+
+    /**
+     * Resolve a component
+     */
+    inline fun <reified T : Any> get(name: String): T = getOrNull(name) ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
+
+    /**
+     * Safely resolve a component (can be null)
+     */
+    inline fun <reified T : Any> getOrNull(name: String): T? = koinContext.resolveByName<T>(name)
 
     /**
      * Safely resolve a component (can be null)

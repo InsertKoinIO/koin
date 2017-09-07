@@ -37,6 +37,23 @@ class ScopedModuleB : Module() {
             }
 }
 
+class MultiDeclareA : Module() {
+    override fun context() =
+            declareContext {
+                provide { ServiceB() }
+                provide("A1") { ServiceA(get()) }
+                provide("A2") { ServiceA(get()) }
+            }
+}
+
+class MultiDeclareB : Module() {
+    override fun context() =
+            declareContext {
+                provide("B1") { ServiceB() }
+                provide("B2") { ServiceB() }
+                provide { ServiceA(get()) }
+            }
+}
 
 class ScopedModuleA : Module() {
     override fun context() =

@@ -33,10 +33,32 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         return resolve<T>()
     }
 
+    //TODO Getters by name
+
     /**
      * resolution stack
      */
     val resolutionStack = Stack<KClass<*>>()
+
+    /**
+     * Resolve a dependency for its bean definition
+     */
+    inline fun <reified T> resolveByName(name : String): T? {
+        val clazz = T::class
+        logger.info("resolve $clazz :: $resolutionStack")
+
+        if (resolutionStack.contains(clazz)) {
+            throw CyclicDependencyException("Cyclic dependency for $clazz")
+        }
+        resolutionStack.add(clazz)
+
+        val instance = instanceResolver.resolveInstance<T>(beanRegistry.searchByName(name))
+        val head = resolutionStack.pop()
+        if (head != clazz) {
+            throw IllegalStateException("Calling HEAD was $head but must be $clazz")
+        }
+        return instance
+    }
 
     /**
      * Resolve a dependency for its bean definition

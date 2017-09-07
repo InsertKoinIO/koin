@@ -52,6 +52,15 @@ class BeanRegistry {
     }
 
     /**
+     * Search bean by its name
+     */
+    fun searchByName(name: String): BeanDefinition<*>? {
+        val results = definitions.filter { it.name == name }
+        return if (results.size <= 1) results.firstOrNull()
+        else error("Bean resolution error : multiple candidates for $name")
+    }
+
+    /**
      * Search for any bean definition
      */
     fun searchAll(clazz: kotlin.reflect.KClass<*>) = search(clazz) ?: searchCompatible(clazz)
@@ -59,12 +68,20 @@ class BeanRegistry {
     /**
      * Search for a bean definition
      */
-    fun search(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.firstOrNull { it.clazz == clazz }
+    fun search(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? {
+        val results = definitions.filter { it.clazz == clazz }
+        return if (results.size <= 1) results.firstOrNull()
+        else error("Bean resolution error : multiple candidates for $clazz")
+    }
 
     /**
      * Search for a compatible bean definition (subtype type of given clazz)
      */
-    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = definitions.firstOrNull { it.bindTypes.contains(clazz) }
+    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? {
+        val results = definitions.filter { it.bindTypes.contains(clazz) }
+        return if (results.size <= 1) results.firstOrNull()
+        else error("Bean resolution error : multiple candidates for $clazz")
+    }
 
     /**
      * move any definition for given class
@@ -74,4 +91,5 @@ class BeanRegistry {
         logger.warning("removeInstance $classes")
         classes.map { search(it) }.forEach { definitions.remove(it) }
     }
+
 }

@@ -11,8 +11,9 @@ import kotlin.reflect.KClass
  * defined by lazy/function
  * has a type (clazz)
  * has a BeanType : default singleton
+ * has a name, if specified
  */
-data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root(), var bindTypes: List<KClass<*>> = arrayListOf()) {
+data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root(), var bindTypes: List<KClass<*>> = arrayListOf(), val name : String = "") {
 
     /**
      * Add a compatible type to current bounded definition
