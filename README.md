@@ -36,7 +36,7 @@ class ServiceB()
 class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB)
 ```
 
-### Koin module DSL in a nutshell
+### Koin DSL in a nutshell
 
 To describe your module, you can use the following **Koin DSL** keywords:
 
