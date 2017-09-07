@@ -24,16 +24,12 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Retrieve a bean instance
      */
-    inline fun <reified T> get(): T = getOrNull<T>() ?: throw InstanceNotFoundException("No instance found for ${T::class}")
+    inline fun <reified T> get(name: String = ""): T = getOrNull<T>(name) ?: throw InstanceNotFoundException("No instance found for ${T::class}")
 
     /**
      * Safely Retrieve a bean instance (can be null)
      */
-    inline fun <reified T> getOrNull(): T? {
-        return resolve<T>()
-    }
-
-    //TODO Getters by name
+    inline fun <reified T> getOrNull(name: String = ""): T? = if (name.isEmpty()) resolve<T>() else resolveByName<T>(name)
 
     /**
      * resolution stack
@@ -43,7 +39,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Resolve a dependency for its bean definition
      */
-    inline fun <reified T> resolveByName(name : String): T? {
+    inline fun <reified T> resolveByName(name: String): T? {
         val clazz = T::class
         logger.info("resolve $clazz :: $resolutionStack")
 
@@ -96,7 +92,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     inline fun <reified T : Any> provideAt(noinline definition: () -> T, scopeClass: KClass<*>) {
         val scope = Scope(scopeClass)
         val existingScope = instanceResolver.all_context[scope]
-        if (existingScope == null){
+        if (existingScope == null) {
             instanceResolver.createContext(scope)
         }
         declare(definition, scope)
