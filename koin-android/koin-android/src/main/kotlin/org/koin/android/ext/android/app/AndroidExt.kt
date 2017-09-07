@@ -32,7 +32,7 @@ fun Activity.getKoin(): KoinContext = this.application.getKoin()
 /**
  * Inject current dependency
  */
-inline fun <reified T> Activity.get(): T = getKoin().get<T>()
+inline fun <reified T> Activity.get(name : String = ""): T = getKoin().get(name)
 
 /**
  * Release scope instances
@@ -42,12 +42,12 @@ fun Activity.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeC
 /**
  * inject lazily given dependency for Activity
  */
-inline fun <reified T> Activity.inject(): Lazy<T> = lazy { getKoin().get<T>() }
+inline fun <reified T> Activity.inject(name : String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
 
 /**
  * inject lazily given dependency for Activity - can be null
  */
-inline fun <reified T> Activity.injectOrNull(): Lazy<T?> = lazy { getKoin().getOrNull<T>() }
+inline fun <reified T> Activity.injectOrNull(name : String = ""): Lazy<T?> = lazy { getKoin().getOrNull<T>(name) }
 
 
 /* Fragment */
@@ -60,17 +60,17 @@ fun Fragment.getKoin(): KoinContext = activity.getKoin()
 /**
  * Inject current dependency
  */
-inline fun <reified T> Fragment.get(): T = getKoin().get()
+inline fun <reified T> Fragment.get(name : String = ""): T = getKoin().get(name)
 
 /**
  * inject lazily given dependency for Fragment
  */
-inline fun <reified T> Fragment.inject(): Lazy<T> = lazy { getKoin().get<T>() }
+inline fun <reified T> Fragment.inject(name : String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
 
 /**
  * inject lazily given dependency for Fragment - can be null
  */
-inline fun <reified T> Fragment.injectOrNull(): Lazy<T?> = lazy { getKoin().getOrNull<T>() }
+inline fun <reified T> Fragment.injectOrNull(name : String = ""): Lazy<T?> = lazy { getKoin().getOrNull<T>(name) }
 
 /**
  * Release scope instances
@@ -88,17 +88,17 @@ fun Service.getKoin() = this.application.getKoin()
 /**
  * Inject current dependency
  */
-inline fun <reified T> Service.get(): T = getKoin().get<T>()
+inline fun <reified T> Service.get(name : String = ""): T = getKoin().get(name)
 
 /**
  * inject lazily given dependency for Activity
  */
-inline fun <reified T> Service.inject(): Lazy<T> = lazy { getKoin().get<T>() }
+inline fun <reified T> Service.inject(name : String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
 
 /**
  * inject lazily given dependency for Activity - can be null
  */
-inline fun <reified T> Service.injectOrNull(): Lazy<T?> = lazy { getKoin().getOrNull<T>() }
+inline fun <reified T> Service.injectOrNull(name : String = ""): Lazy<T?> = lazy { getKoin().getOrNull<T>(name) }
 
 /**
  * Release scope instances
