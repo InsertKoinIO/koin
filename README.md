@@ -40,7 +40,7 @@ class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB)
 
 To describe your module, you can use the following **Koin DSL** keywords:
 
-* `provide { /* component definition */ }` declares a component for your [Module](https://github.com/Ekito/koin/wiki#module-class) - You provide a function to instanciante yoru compoent
+* `provide { /* component definition */ }` declares a component for your [Module](https://github.com/Ekito/koin/wiki#module-class) - You provide a function to instanciate your component
 * `bind {/* compatible type */}` [bind](https://github.com/Ekito/koin/wiki#type-binding) a compatible type for *provided definition* (use it behind provide{} expression)
 * `get()` resolve a component dependency
 * `scope {/* scope class */}` use the given [scope](https://github.com/Ekito/koin/wiki#scopes) for current module's definitions
