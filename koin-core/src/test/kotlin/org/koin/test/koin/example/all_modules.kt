@@ -46,7 +46,15 @@ class MultiDeclareA : Module() {
             }
 }
 
-class MultiDeclareB : Module() {
+class ConflictingModule : Module() {
+    override fun context() =
+            declareContext {
+                provide { ServiceB() }
+                provide { ServiceB() }
+            }
+}
+
+class ConflictingDependency : Module() {
     override fun context() =
             declareContext {
                 provide("B1") { ServiceB() }
@@ -54,6 +62,16 @@ class MultiDeclareB : Module() {
                 provide { ServiceA(get()) }
             }
 }
+
+class CleanMultiDependency : Module() {
+    override fun context() =
+            declareContext {
+                provide("B1") { ServiceB() }
+                provide("B2") { ServiceB() }
+                provide { ServiceA(get("B1")) }
+            }
+}
+
 
 class ScopedModuleA : Module() {
     override fun context() =

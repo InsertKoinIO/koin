@@ -76,6 +76,8 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         return instance
     }
 
+    //TODO provide with name
+
     /**
      * provide bean definition at Root scope
      * @param definition function declaration

@@ -1,6 +1,7 @@
 package org.koin.bean
 
 import org.koin.dsl.context.Scope
+import org.koin.error.BeanDefinitionConflict
 import kotlin.reflect.KClass
 
 /**
@@ -24,11 +25,6 @@ class BeanRegistry {
      */
     fun declare(def: BeanDefinition<*>) {
         logger.info(">> Declare bean definition $def")
-
-        val found = search(def.clazz)
-        if (found != null) {
-            remove(def.clazz)
-        }
         definitions += def
     }
 
@@ -57,7 +53,7 @@ class BeanRegistry {
     fun searchByName(name: String): BeanDefinition<*>? {
         val results = definitions.filter { it.name == name }
         return if (results.size <= 1) results.firstOrNull()
-        else error("Bean resolution error : multiple candidates for $name")
+        else throw BeanDefinitionConflict("Bean resolution error : multiple candidates for $name")
     }
 
     /**
@@ -71,7 +67,7 @@ class BeanRegistry {
     fun search(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? {
         val results = definitions.filter { it.clazz == clazz }
         return if (results.size <= 1) results.firstOrNull()
-        else error("Bean resolution error : multiple candidates for $clazz")
+        else throw BeanDefinitionConflict("Bean resolution error : multiple candidates for $clazz")
     }
 
     /**
@@ -80,7 +76,7 @@ class BeanRegistry {
     private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? {
         val results = definitions.filter { it.bindTypes.contains(clazz) }
         return if (results.size <= 1) results.firstOrNull()
-        else error("Bean resolution error : multiple candidates for $clazz")
+        else throw BeanDefinitionConflict("Bean resolution error : multiple candidates for $clazz")
     }
 
     /**

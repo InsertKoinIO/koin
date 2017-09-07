@@ -15,15 +15,15 @@ class InstanceFactory {
 
     private val logger: Logger = Logger.getLogger(InstanceFactory::class.java.simpleName)
 
-    val instances = ConcurrentHashMap<KClass<*>, Any>()
+    val instances = ConcurrentHashMap<BeanDefinition<*>, Any>()
 
     /**
      * Retrieve or create bean instance
      */
-    private fun <T> retrieveInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
-        var instance = findInstance<T>(clazz)
+    private fun <T> retrieveInstance(def: BeanDefinition<*>, scope: Scope): T? {
+        var instance = findInstance<T>(def)
         if (instance == null) {
-            instance = createInstance(def, clazz, scope)
+            instance = createInstance(def, scope)
         }
         return instance
     }
@@ -31,8 +31,8 @@ class InstanceFactory {
     /**
      * Find existing instance
      */
-    private fun <T> findInstance(clazz: KClass<*>): T? {
-        val existingClass = instances.keys.firstOrNull { it == clazz }
+    private fun <T> findInstance(def: BeanDefinition<*>): T? {
+        val existingClass = instances.keys.firstOrNull { it == def }
         return if (existingClass != null) {
             instances[existingClass] as? T
         } else {
@@ -43,14 +43,14 @@ class InstanceFactory {
     /**
      * create instance for given bean definition
      */
-    private fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
+    private fun <T> createInstance(def: BeanDefinition<*>, scope: Scope): T? {
         logger.fine(">> Create instance : $def")
         return if (def.scope == scope) {
             try {
                 val instance = def.definition.invoke() as Any
-                instances[clazz] = instance
+                instances[def] = instance
                 instance as T
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 logger.warning("Couldn't get instance for $def due to error $e")
                 null
             }
@@ -58,11 +58,14 @@ class InstanceFactory {
     }
 
     fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope): T? {
-        return retrieveInstance<T>(def, def.clazz, scope)
+        return retrieveInstance<T>(def, scope)
     }
 
     fun deleteInstance(vararg kClasses: KClass<*>) {
-        kClasses.forEach { instances.remove(it) }
+        kClasses.forEach { clazz ->
+            val res = instances.keys.filter { it.clazz == clazz }
+            res.forEach { def -> instances.remove(def) }
+        }
     }
 
     fun clear() {
