@@ -88,12 +88,12 @@ inline fun <reified T> Fragment.injectOrNull(name: String = ""): Lazy<T?> = lazy
 fun Fragment.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
 
 /**
- * inject lazily given property for Activity
+ * inject lazily given property for Fragment
  */
 inline fun <reified T> Fragment.property(key: String) = lazy { getKoin().getProperty<T>(key).takeIf { key.isNotEmpty() } ?: KoinPropertyError("Can't inject empty property") }
 
 /**
- * inject lazily given property for Activity or return null
+ * inject lazily given property for Fragment or return null
  */
 inline fun <reified T> Fragment.propertyOrNll(key: String) = lazy { getKoin().getPropertyOrNull<T>(key) }
 
@@ -121,12 +121,12 @@ inline fun <reified T> Service.inject(name: String = ""): Lazy<T> = lazy { getKo
 inline fun <reified T> Service.injectOrNull(name: String = ""): Lazy<T?> = lazy { getKoin().getOrNull<T>(name) }
 
 /**
- * inject lazily given property for Activity
+ * inject lazily given property for Service
  */
 inline fun <reified T> Service.property(key: String) = lazy { getKoin().getProperty<T>(key).takeIf { key.isNotEmpty() } ?: KoinPropertyError("Can't inject empty property") }
 
 /**
- * inject lazily given property for Activity or return null
+ * inject lazily given property for Service or return null
  */
 inline fun <reified T> Service.propertyOrNll(key: String) = lazy { getKoin().getPropertyOrNull<T>(key) }
 
