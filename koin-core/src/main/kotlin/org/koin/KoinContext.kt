@@ -4,7 +4,6 @@ import org.koin.bean.BeanRegistry
 import org.koin.dsl.context.Scope
 import org.koin.error.CyclicDependencyException
 import org.koin.error.InstanceNotFoundException
-import org.koin.error.MissingPropertyException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.*
@@ -128,18 +127,13 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * Retrieve a property
+     * Retrieve a property by its key
+     * can return null
      */
-    @Throws(MissingPropertyException::class)
-    inline fun <reified T> getProperty(key: String): T = getPropertyOrNull(key) ?: throw MissingPropertyException("Could not bind property $key")
-
-    /**
-     * Retrieve safely a property
-     */
-    inline fun <reified T> getPropertyOrNull(key: String): T? = propertyResolver.getProperty(key)
+    inline fun <reified T> getProperty(key: String): T? = propertyResolver.getProperty(key)
 
     /**
      * Set a property
      */
-    fun setProperty(key: String, value: Any) = propertyResolver.setProperty(key, value)
+    fun setProperty(key: String, value: Any?) = propertyResolver.setProperty(key, value)
 }

@@ -74,14 +74,4 @@ class Context(val koinContext: KoinContext) {
      */
     @Throws(MissingPropertyException::class)
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
-
-    /**
-     * Retrieve safely a property
-     */
-    inline fun <reified T> getPropertyOrNull(key: String): T? = koinContext.propertyResolver.getPropertyOrNull(key)
-
-    /**
-     * Set a property
-     */
-    fun setProperty(key: String, value: Any) = koinContext.propertyResolver.setProperty(key, value)
 }

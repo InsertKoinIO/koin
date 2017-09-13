@@ -20,7 +20,7 @@ class PropertyTest {
                 .properties(mapOf("isTrue" to true))
                 .build(SampleModuleD())
 
-        val myVal = ctx.getProperty<Boolean>("isTrue")
+        val myVal = ctx.getProperty<Boolean>("isTrue")!!
         Assert.assertTrue(myVal)
 
         ctx.assertProps(1)
@@ -55,5 +55,42 @@ class PropertyTest {
 
         val serviceD = ctx.get<ServiceD>()
         assertEquals(myVal, serviceD.myVal)
+    }
+
+    @Test
+    fun `overwrite a property on context`() {
+        val ctx = Koin().build()
+
+        ctx.assertProps(0)
+
+        val myVal = "myVal"
+        ctx.setProperty(myVal, "1")
+
+        ctx.setProperty(myVal, "2")
+
+        ctx.assertProps(1)
+
+        assertEquals("2", ctx.getProperty(myVal))
+    }
+
+    @Test
+    fun `set a nullable property`() {
+        val ctx = Koin().build()
+
+        val myVal = "myVal"
+        ctx.setProperty(myVal, null)
+
+        Assert.assertNull(ctx.getProperty<Any?>(myVal))
+    }
+
+    @Test
+    fun `overwrite with nullable property`() {
+        val ctx = Koin().build()
+
+        val myVal = "myVal"
+        ctx.setProperty(myVal, "1")
+        ctx.setProperty(myVal, null)
+
+        Assert.assertNull(ctx.getProperty<Any?>(myVal))
     }
 }

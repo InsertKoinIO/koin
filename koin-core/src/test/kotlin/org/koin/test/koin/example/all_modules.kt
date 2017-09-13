@@ -25,7 +25,7 @@ class SampleModuleB : Module() {
 class SampleModuleD : Module() {
     override fun context() =
             declareContext {
-                provide { ServiceD(getProperty<String>("myVal")) }
+                provide { ServiceD(getProperty("myVal")) }
             }
 }
 
