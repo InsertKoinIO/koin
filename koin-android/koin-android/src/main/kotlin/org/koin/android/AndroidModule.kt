@@ -3,7 +3,6 @@ package org.koin.android
 import android.app.Application
 import android.content.res.AssetManager
 import android.content.res.Resources
-import org.koin.android.error.KoinApplicationException
 import org.koin.dsl.module.Module
 
 /**
@@ -11,7 +10,7 @@ import org.koin.dsl.module.Module
  */
 abstract class AndroidModule : Module() {
 
-    val applicationContext: Application by lazy { koinContext.getOrNull<Application>() ?: throw KoinApplicationException("Android application context has not been initialized. Please use init() from Koin builder.") }
+    val applicationContext: Application by lazy { koinContext.get<Application>() }
 
     val resources: Resources by lazy { applicationContext.resources }
 

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import org.koin.KoinContext
 import org.koin.android.KoinContextAware
 import org.koin.android.error.KoinApplicationException
-import org.koin.android.error.KoinPropertyError
 import kotlin.reflect.KClass
 
 
@@ -33,7 +32,7 @@ fun Activity.getKoin(): KoinContext = this.application.getKoin()
 /**
  * Inject current dependency
  */
-inline fun <reified T> Activity.get(name: String = ""): T = getKoin().get(name)
+inline fun <reified T> Activity.get(name: String = "") = getKoin().get<T>(name)
 
 /**
  * Release scope instances
@@ -46,19 +45,9 @@ fun Activity.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeC
 inline fun <reified T> Activity.inject(name: String = "") = lazy { getKoin().get<T>(name) }
 
 /**
- * inject lazily given dependency for Activity - can be null
- */
-inline fun <reified T> Activity.injectOrNull(name: String = "") = lazy { getKoin().getOrNull<T>(name) }
-
-/**
  * inject lazily given property for Activity
  */
-inline fun <reified T> Activity.property(key: String) = lazy { getKoin().getProperty<T>(key).takeIf { key.isNotEmpty() } ?: KoinPropertyError("Can't inject empty property") }
-
-/**
- * inject lazily given property for Activity or return null
- */
-inline fun <reified T> Activity.propertyOrNll(key: String) = lazy { getKoin().getPropertyOrNull<T>(key) }
+inline fun <reified T> Activity.property(key: String) = lazy { getKoin().getProperty<T>(key) }
 
 /* Fragment */
 
@@ -78,11 +67,6 @@ inline fun <reified T> Fragment.get(name: String = ""): T = getKoin().get(name)
 inline fun <reified T> Fragment.inject(name: String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
 
 /**
- * inject lazily given dependency for Fragment - can be null
- */
-inline fun <reified T> Fragment.injectOrNull(name: String = ""): Lazy<T?> = lazy { getKoin().getOrNull<T>(name) }
-
-/**
  * Release scope instances
  */
 fun Fragment.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
@@ -90,13 +74,7 @@ fun Fragment.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeC
 /**
  * inject lazily given property for Fragment
  */
-inline fun <reified T> Fragment.property(key: String) = lazy { getKoin().getProperty<T>(key).takeIf { key.isNotEmpty() } ?: KoinPropertyError("Can't inject empty property") }
-
-/**
- * inject lazily given property for Fragment or return null
- */
-inline fun <reified T> Fragment.propertyOrNll(key: String) = lazy { getKoin().getPropertyOrNull<T>(key) }
-
+inline fun <reified T> Fragment.property(key: String) = lazy { getKoin().getProperty<T>(key) }
 
 /* Service */
 
@@ -116,19 +94,9 @@ inline fun <reified T> Service.get(name: String = ""): T = getKoin().get(name)
 inline fun <reified T> Service.inject(name: String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
 
 /**
- * inject lazily given dependency for Activity - can be null
- */
-inline fun <reified T> Service.injectOrNull(name: String = ""): Lazy<T?> = lazy { getKoin().getOrNull<T>(name) }
-
-/**
  * inject lazily given property for Service
  */
-inline fun <reified T> Service.property(key: String) = lazy { getKoin().getProperty<T>(key).takeIf { key.isNotEmpty() } ?: KoinPropertyError("Can't inject empty property") }
-
-/**
- * inject lazily given property for Service or return null
- */
-inline fun <reified T> Service.propertyOrNll(key: String) = lazy { getKoin().getPropertyOrNull<T>(key) }
+inline fun <reified T> Service.property(key: String) = lazy { getKoin().getProperty<T>(key) }
 
 /**
  * Release scope instances

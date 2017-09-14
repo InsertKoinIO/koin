@@ -39,8 +39,8 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile project(":koin-android")
-//    compile "org.koin:koin-android:$koin_version"
+//    compile project(":koin-android")
+    compile "org.koin:koin-android:$koin_version"
 
     compile 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
 
