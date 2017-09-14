@@ -3,10 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
-import org.koin.test.ext.assertRootScopeSize
-import org.koin.test.ext.assertScopeSize
-import org.koin.test.ext.assertScopes
-import org.koin.test.ext.assertSizes
+import org.koin.test.ext.*
 import org.koin.test.koin.example.*
 
 /**
@@ -17,7 +14,7 @@ class ScopeTest {
     @Test
     fun `provide at scope `() {
         val ctx = Koin().build()
-        ctx.provideAt({ServiceB()}, ServiceB::class)
+        ctx.provideAt({ ServiceB() }, ServiceB::class)
         ctx.assertScopes(2)
         ctx.assertSizes(1, 0)
         Assert.assertNotNull(ctx.get<ServiceB>())

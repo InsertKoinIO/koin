@@ -2,6 +2,7 @@ package org.koin.bean
 
 import org.koin.dsl.context.Scope
 import org.koin.error.BeanDefinitionConflict
+import org.koin.error.NoBeanDefFoundException
 import kotlin.reflect.KClass
 
 /**
@@ -40,7 +41,7 @@ class BeanRegistry {
 
         logger.info(">> Declare bean definition $def")
 
-        val found = search(clazz)
+        val found = searchByClass(clazz)
         if (found != null) {
             remove(clazz)
         }
@@ -50,34 +51,31 @@ class BeanRegistry {
     /**
      * Search bean by its name
      */
-    fun searchByName(name: String): BeanDefinition<*>? {
-        val results = definitions.filter { it.name == name }
-        return if (results.size <= 1) results.firstOrNull()
-        else throw BeanDefinitionConflict("Bean resolution error : multiple candidates for $name")
-    }
+    fun searchByName(name: String) = searchDefinition({ it.name == name }, " name : $name") ?: throw NoBeanDefFoundException("No bean definition found for name $name")
 
     /**
      * Search for any bean definition
      */
-    fun searchAll(clazz: kotlin.reflect.KClass<*>) = search(clazz) ?: searchCompatible(clazz)
+    fun searchAll(clazz: kotlin.reflect.KClass<*>) = (searchByClass(clazz) ?: searchCompatible(clazz)) ?: throw NoBeanDefFoundException("No bean definition found for class $clazz")
 
     /**
      * Search for a bean definition
      */
-    fun search(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? {
-        val results = definitions.filter { it.clazz == clazz }
+    fun searchByClass(clazz: kotlin.reflect.KClass<*>) = searchDefinition({ it.clazz == clazz }, " class : $clazz")
+
+    /**
+     * Search definition with given filter function
+     */
+    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean, errorMsg: String): BeanDefinition<*>? {
+        val results = definitions.filter(filter)
         return if (results.size <= 1) results.firstOrNull()
-        else throw BeanDefinitionConflict("Bean resolution error : multiple candidates for $clazz")
+        else throw BeanDefinitionConflict("Bean definition resolution error : no bean or multiple definition for $errorMsg")
     }
 
     /**
      * Search for a compatible bean definition (subtype type of given clazz)
      */
-    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? {
-        val results = definitions.filter { it.bindTypes.contains(clazz) }
-        return if (results.size <= 1) results.firstOrNull()
-        else throw BeanDefinitionConflict("Bean resolution error : multiple candidates for $clazz")
-    }
+    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = searchDefinition({ it.bindTypes.contains(clazz) }, "for compatible type : $clazz")
 
     /**
      * move any definition for given class
@@ -85,7 +83,7 @@ class BeanRegistry {
      */
     fun remove(vararg classes: KClass<*>) {
         logger.warning("removeInstance $classes")
-        classes.map { search(it) }.forEach { definitions.remove(it) }
+        classes.map { searchByClass(it) }.forEach { definitions.remove(it) }
     }
 
 }

@@ -6,6 +6,7 @@ import org.koin.Koin
 import org.koin.test.ext.assertRootScopeSize
 import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
+import org.koin.test.ext.getOrNull
 import org.koin.test.koin.example.*
 
 /**

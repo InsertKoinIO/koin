@@ -14,14 +14,11 @@ class InstanceResolver {
 
     val all_context = HashMap<Scope, InstanceFactory>()
 
-    fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw IllegalStateException("couldn't resolve scope $scope")
+    fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw IllegalStateException("couldn't resolveInstance scope $scope")
 
-    fun <T> resolveInstance(def: BeanDefinition<*>?): T? {
-        return if (def == null) null
-        else {
-            val instanceFactory = getInstanceFactory(def.scope)
-            instanceFactory.resolveInstance<T>(def, def.scope)
-        }
+    fun <T> resolveInstance(def: BeanDefinition<*>): T {
+        val instanceFactory = getInstanceFactory(def.scope)
+        return instanceFactory.resolveInstance(def, def.scope)
     }
 
     fun deleteInstance(vararg classes: KClass<*>, scope: Scope) {

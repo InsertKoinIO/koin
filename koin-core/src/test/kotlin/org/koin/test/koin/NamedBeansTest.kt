@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
 import org.koin.error.BeanDefinitionConflict
-import org.koin.error.InstanceNotFoundException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
 import org.koin.test.koin.example.*
@@ -64,7 +64,7 @@ class NamedBeansTest {
         try {
             ctx.get<ServiceA>()
             Assert.fail()
-        } catch (e: InstanceNotFoundException) {
+        } catch (e: NoBeanDefFoundException) {
         }
     }
 

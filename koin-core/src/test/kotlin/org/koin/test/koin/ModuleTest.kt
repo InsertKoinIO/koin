@@ -6,6 +6,7 @@ import org.junit.Test
 import org.koin.Koin
 import org.koin.error.InstanceNotFoundException
 import org.koin.test.ext.assertSizes
+import org.koin.test.ext.getOrNull
 import org.koin.test.koin.example.*
 
 /**
@@ -79,7 +80,7 @@ class ModuleTest {
         try {
             assertNull(ctx.getOrNull<ServiceA>())
             assertNull(ctx.getOrNull<ServiceC>())
-        } catch(e: InstanceNotFoundException) {
+        } catch (e: InstanceNotFoundException) {
             assertNotNull(e)
         }
 

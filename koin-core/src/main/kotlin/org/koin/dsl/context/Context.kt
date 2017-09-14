@@ -2,7 +2,6 @@ package org.koin.dsl.context
 
 import org.koin.KoinContext
 import org.koin.bean.BeanDefinition
-import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
 import kotlin.reflect.KClass
 
@@ -52,22 +51,12 @@ class Context(val koinContext: KoinContext) {
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(): T = getOrNull() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
+    inline fun <reified T : Any> get(): T = koinContext.resolveByClass()
 
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(name: String): T = getOrNull(name) ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
-
-    /**
-     * Safely resolve a component (can be null)
-     */
-    inline fun <reified T : Any> getOrNull(name: String): T? = koinContext.resolveByName<T>(name)
-
-    /**
-     * Safely resolve a component (can be null)
-     */
-    inline fun <reified T : Any> getOrNull(): T? = koinContext.resolve<T>()
+    inline fun <reified T : Any> get(name: String): T = koinContext.resolveByName<T>(name)
 
     /**
      * Retrieve a property

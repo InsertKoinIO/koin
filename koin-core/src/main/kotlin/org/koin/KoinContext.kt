@@ -1,9 +1,9 @@
 package org.koin
 
+import org.koin.bean.BeanDefinition
 import org.koin.bean.BeanRegistry
 import org.koin.dsl.context.Scope
 import org.koin.error.CyclicDependencyException
-import org.koin.error.InstanceNotFoundException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.*
@@ -21,53 +21,41 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     val logger: Logger = Logger.getLogger(KoinContext::class.java.simpleName)
 
     /**
-     * Retrieve a bean instance
-     */
-    inline fun <reified T> get(name: String = ""): T = getOrNull<T>(name) ?: throw InstanceNotFoundException("No instance found for ${T::class}")
-
-    /**
-     * Safely Retrieve a bean instance (can be null)
-     */
-    inline fun <reified T> getOrNull(name: String = ""): T? = if (name.isEmpty()) resolve<T>() else resolveByName<T>(name)
-
-    /**
      * resolution stack
      */
     val resolutionStack = Stack<KClass<*>>()
 
     /**
-     * Resolve a dependency for its bean definition
+     * Retrieve a bean instance
      */
-    inline fun <reified T> resolveByName(name: String): T? {
-        val clazz = T::class
-        logger.info("resolve $clazz :: $resolutionStack")
-
-        if (resolutionStack.contains(clazz)) {
-            throw CyclicDependencyException("Cyclic dependency for $clazz")
-        }
-        resolutionStack.add(clazz)
-
-        val instance = instanceResolver.resolveInstance<T>(beanRegistry.searchByName(name))
-        val head = resolutionStack.pop()
-        if (head != clazz) {
-            throw IllegalStateException("Calling HEAD was $head but must be $clazz")
-        }
-        return instance
-    }
+    inline fun <reified T> get(name: String = ""): T = if (name.isEmpty()) resolveByClass() else resolveByName(name)
 
     /**
      * Resolve a dependency for its bean definition
      */
-    inline fun <reified T> resolve(): T? {
+    inline fun <reified T> resolveByName(name: String) = resolveInstance<T> { beanRegistry.searchByName(name) }
+
+
+    /**
+     * Resolve a dependency for its bean definition
+     */
+    inline fun <reified T> resolveByClass(): T = resolveInstance { beanRegistry.searchAll(T::class) }
+
+    /**
+     * Resolve a dependency for its bean definition
+     */
+    inline fun <reified T> resolveInstance(resolver: () -> BeanDefinition<*>): T {
         val clazz = T::class
-        logger.info("resolve $clazz :: $resolutionStack")
+        logger.info("resolveInstance $clazz :: $resolutionStack")
 
         if (resolutionStack.contains(clazz)) {
             throw CyclicDependencyException("Cyclic dependency for $clazz")
         }
         resolutionStack.add(clazz)
 
-        val instance = instanceResolver.resolveInstance<T>(beanRegistry.searchAll(clazz))
+        val beanDefinition: BeanDefinition<*> = resolver()
+
+        val instance = instanceResolver.resolveInstance<T>(beanDefinition)
         val head = resolutionStack.pop()
         if (head != clazz) {
             throw IllegalStateException("Calling HEAD was $head but must be $clazz")
@@ -75,7 +63,6 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         return instance
     }
 
-    //TODO provide with name ?
 
     /**
      * provide bean definition at Root scope

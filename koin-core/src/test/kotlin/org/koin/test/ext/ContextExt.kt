@@ -21,6 +21,19 @@ fun KoinContext.getScope(scope: Scope) = instanceResolver.getInstanceFactory(sco
 
 fun KoinContext.getScopeInstances(scope: Scope) = getScope(scope).instances
 
+inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
+    var instance: T? = null
+    try {
+        instance = if (name.isNotEmpty()) {
+            this.get<T>(name)
+        } else {
+            this.get<T>()
+        }
+    } catch (e: Exception) {
+    }
+    return instance
+}
+
 fun KoinContext.assertSizes(definitionSize: Int, instanceSize: Int) {
     Assert.assertEquals("context definition size must be equals", definitionSize, definitions().size)
     Assert.assertEquals("context instances size must be equals", instanceSize, instances().size)

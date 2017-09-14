@@ -2,6 +2,7 @@ package org.koin.instance
 
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
+import org.koin.error.BeanDefinitionConflict
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Logger
 import kotlin.reflect.KClass
@@ -20,12 +21,12 @@ class InstanceFactory {
     /**
      * Retrieve or create bean instance
      */
-    private fun <T> retrieveInstance(def: BeanDefinition<*>, scope: Scope): T? {
+    private fun <T> retrieveInstance(def: BeanDefinition<*>, scope: Scope): T {
         var instance = findInstance<T>(def)
         if (instance == null) {
             instance = createInstance(def, scope)
         }
-        return instance
+        return instance!!
     }
 
     /**
@@ -43,23 +44,16 @@ class InstanceFactory {
     /**
      * create instance for given bean definition
      */
-    private fun <T> createInstance(def: BeanDefinition<*>, scope: Scope): T? {
+    private fun <T> createInstance(def: BeanDefinition<*>, scope: Scope): T {
         logger.fine(">> Create instance : $def")
         return if (def.scope == scope) {
-            try {
-                val instance = def.definition.invoke() as Any
-                instances[def] = instance
-                instance as T
-            } catch (e: Exception) {
-                logger.warning("Couldn't get instance for $def due to error $e")
-                null
-            }
-        } else null
+            val instance = def.definition.invoke() as Any
+            instances[def] = instance
+            instance as T
+        } else throw BeanDefinitionConflict("Can't create bean $def in scope : $scope")
     }
 
-    fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope): T? {
-        return retrieveInstance<T>(def, scope)
-    }
+    fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope) = retrieveInstance<T>(def, scope)
 
     fun deleteInstance(vararg kClasses: KClass<*>) {
         kClasses.forEach { clazz ->
