@@ -96,22 +96,17 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * Clear given scope instance
+     * Clear given class/scope instance
      */
-    fun release(vararg scopeClasses: KClass<*>) {
-        scopeClasses.forEach {
-            logger.warning("Clear instance $it ")
-            instanceResolver.getInstanceFactory(Scope(it)).clear()
-        }
+    private fun release(scopedClass: KClass<*>) {
+        logger.warning("Clear instance $scopedClass ")
+        instanceResolver.getInstanceFactory(Scope(scopedClass)).clear()
     }
 
     /**
-     * Clear given Root instance
+     * Clear given class/scope instance from objects
      */
-    fun release() {
-        logger.warning("Clear instance ROOT")
-        instanceResolver.getInstanceFactory(Scope.root()).clear()
-    }
+    fun release(vararg scopedObject: Any) = scopedObject.map { it::class }.forEach { release(it) }
 
     /**
      * Retrieve a property by its key

@@ -61,7 +61,7 @@ class ScopeTest {
         ctx.assertSizes(2, 2)
         ctx.assertRootScopeSize(0)
 
-        ctx.release(ServiceB::class)
+        ctx.release(serviceB_1)
         ctx.assertScopeSize(ServiceB::class, 0)
         ctx.assertScopeSize(ServiceA::class, 1)
         ctx.assertSizes(2, 1)
@@ -76,7 +76,7 @@ class ScopeTest {
         ctx.assertSizes(2, 2)
         ctx.assertRootScopeSize(0)
 
-        ctx.release(ServiceA::class)
+        ctx.release(serviceA)
         serviceA = ctx.get<ServiceA>()
         Assert.assertEquals(serviceA.serviceB, serviceB_2)
         ctx.assertScopeSize(ServiceB::class, 1)
@@ -151,11 +151,27 @@ class ScopeTest {
         val ctx = Koin().build(ScopedModuleB())
         ctx.assertScopes(2)
         ctx.assertSizes(1, 0)
-        Assert.assertNotNull(ctx.get<ServiceB>())
+        val serviceB = ctx.get<ServiceB>()
+        Assert.assertNotNull(serviceB)
         ctx.assertSizes(1, 1)
         ctx.assertScopeSize(ServiceB::class, 1)
 
-        ctx.release(ServiceB::class)
+        ctx.release(serviceB)
+        ctx.assertSizes(1, 0)
+        ctx.assertScopeSize(ServiceB::class, 0)
+    }
+
+    @Test
+    fun `scope release from object`() {
+        val ctx = Koin().build(ScopedModuleB())
+        ctx.assertScopes(2)
+        ctx.assertSizes(1, 0)
+        val serviceB = ctx.get<ServiceB>()
+        Assert.assertNotNull(serviceB)
+        ctx.assertSizes(1, 1)
+        ctx.assertScopeSize(ServiceB::class, 1)
+
+        ctx.release(serviceB)
         ctx.assertSizes(1, 0)
         ctx.assertScopeSize(ServiceB::class, 0)
     }
