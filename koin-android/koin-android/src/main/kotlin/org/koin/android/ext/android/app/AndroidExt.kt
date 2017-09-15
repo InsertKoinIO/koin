@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import org.koin.KoinContext
 import org.koin.android.KoinContextAware
 import org.koin.android.error.KoinApplicationException
-import kotlin.reflect.KClass
 
 
 /* Application */
@@ -37,7 +36,7 @@ inline fun <reified T> Activity.get(name: String = "") = getKoin().get<T>(name)
 /**
  * Release scope instances
  */
-fun Activity.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
+fun Activity.release(instance: Any) = getKoin().release(instance)
 
 /**
  * inject lazily given dependency for Activity
@@ -69,7 +68,7 @@ inline fun <reified T> Fragment.inject(name: String = ""): Lazy<T> = lazy { getK
 /**
  * Release scope instances
  */
-fun Fragment.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
+fun Fragment.release(instance: Any) = getKoin().release(instance)
 
 /**
  * inject lazily given property for Fragment
@@ -101,4 +100,4 @@ inline fun <reified T> Service.property(key: String) = lazy { getKoin().getPrope
 /**
  * Release scope instances
  */
-fun Service.release(vararg scopeClasses: KClass<*>) = getKoin().release(*scopeClasses)
+fun Service.release(instance: Any) = getKoin().release(instance)
