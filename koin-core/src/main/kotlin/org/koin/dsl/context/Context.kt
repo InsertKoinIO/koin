@@ -30,16 +30,17 @@ class Context(val koinContext: KoinContext) {
         contextScope = Scope(definition())
     }
 
-    /**
-     * Provide a bean definition & empty name
-     */
-    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> = provide("", definition)
+//    /**
+//     * Provide a bean definition & empty name
+//     */
+//    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> = provide(definition)
 
     /**
-     * Provide a bean definition with a name
+     * Provide a bean definition
+     * with a name
      */
-    inline fun <reified T : Any> provide(name: String, noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root(), name = name)
+    inline fun <reified T : Any> provide(name: String = "", vararg bind: KClass<*> = emptyArray(), noinline definition: () -> T): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root(), bindTypes = bind.toList(), name = name)
         provided += beanDefinition
         return beanDefinition
     }

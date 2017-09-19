@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
  */
 class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceResolver: InstanceResolver) {
 
-    val logger: Logger = Logger.getLogger(KoinContext::class.java.simpleName)
+//    val logger: Logger = Logger.getLogger(KoinContext::class.java.simpleName)
 
     /**
      * resolution stack
@@ -46,7 +46,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T> resolveInstance(resolver: () -> BeanDefinition<*>): T {
         val clazz = T::class
-        logger.info("resolveInstance $clazz :: $resolutionStack")
+//        logger.info("resolveInstance $clazz :: $resolutionStack")
 
         if (resolutionStack.contains(clazz)) {
             throw CyclicDependencyException("Cyclic dependency for $clazz")
@@ -69,7 +69,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param definition function declaration
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
-        logger.finest("declare singleton $definition")
+//        logger.finest("declare singleton $definition")
         declare(definition, Scope.root())
     }
 
@@ -99,7 +99,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Clear given class/scope instance
      */
     private fun release(scopedClass: KClass<*>) {
-        logger.warning("Clear instance $scopedClass ")
+//        logger.warning("Clear instance $scopedClass ")
         instanceResolver.getInstanceFactory(Scope(scopedClass)).clear()
     }
 
