@@ -2,16 +2,15 @@ package fr.ekito.koin.test.android
 
 import android.app.Application
 import android.content.res.Resources
-import fr.ekito.koin.test.ext.assertProps
-import fr.ekito.koin.test.ext.assertSizes
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
 import org.koin.android.init
-import org.koin.error.InstanceNotFoundException
-import org.koin.error.MissingPropertyException
-import org.mockito.ArgumentMatchers
+import org.koin.error.BeanInstanceCreationException
+import org.koin.test.ext.assertProps
+import org.koin.test.ext.assertSizes
+import org.koin.test.ext.getOrNull
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -42,7 +41,7 @@ class ModuleTest {
         `when`(applicationContext.resources).thenReturn(resources)
 
         val ctx = Koin().init(applicationContext).build(ComplexModule())
-        ctx.setProperty("url",urlValue)
+        ctx.setProperty("url", urlValue)
 
         ctx.assertSizes(3, 0)
 
@@ -74,7 +73,7 @@ class ModuleTest {
         try {
             val service = ctx.get<OtherService>()
             fail()
-        } catch(e: InstanceNotFoundException) {
+        } catch (e: BeanInstanceCreationException) {
             assertNotNull(e)
         }
         ctx.assertSizes(2, 0)
@@ -108,7 +107,7 @@ class ModuleTest {
         try {
             val found_appContext = ctx.get<OtherService>()
             fail()
-        } catch(e: InstanceNotFoundException) {
+        } catch (e: BeanInstanceCreationException) {
             assertNotNull(e)
         }
 

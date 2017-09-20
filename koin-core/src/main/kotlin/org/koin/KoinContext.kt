@@ -8,7 +8,6 @@ import org.koin.error.DependencyResolutionException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.*
-import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -87,7 +86,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Create a scope
      */
-    fun declareScope(scopedClass: KClass<*>){
+    fun declareScope(scopedClass: KClass<*>) {
         instanceResolver.createContext(Scope(scopedClass))
     }
 

@@ -3,16 +3,12 @@ package fr.ekito.koin.test.android
 import android.app.Activity
 import android.app.Application
 import android.content.res.Resources
-import fr.ekito.koin.test.ext.assertRootScopeSize
-import fr.ekito.koin.test.ext.assertScopeSize
-import fr.ekito.koin.test.ext.assertScopes
-import fr.ekito.koin.test.ext.assertSizes
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Koin
 import org.koin.android.init
-import org.mockito.ArgumentMatchers
+import org.koin.test.ext.*
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 
@@ -34,7 +30,7 @@ class ScopeTest {
         ctx.assertSizes(3, 0)
         ctx.assertScopeSize(Activity::class, 0)
 
-        ctx.setProperty("url",urlValue)
+        ctx.setProperty("url", urlValue)
 
         val service_1 = ctx.get<OtherService>()
         val component = ctx.get<AndroidComponent>()
@@ -44,7 +40,7 @@ class ScopeTest {
         ctx.assertScopeSize(Activity::class, 1)
         ctx.assertSizes(3, 3)
 
-        ctx.release(Activity::class)
+        ctx.release(Mockito.mock(Activity::class.java))
         ctx.assertScopeSize(Activity::class, 0)
         ctx.assertSizes(3, 2)
 

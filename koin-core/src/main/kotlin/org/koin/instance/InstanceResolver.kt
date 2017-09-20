@@ -3,7 +3,6 @@ package org.koin.instance
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
 import org.koin.error.BeanDefinitionException
-import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
