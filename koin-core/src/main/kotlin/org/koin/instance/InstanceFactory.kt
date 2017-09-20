@@ -3,8 +3,8 @@ package org.koin.instance
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
 import org.koin.error.BeanDefinitionException
+import org.koin.error.BeanInstanceCreationException
 import java.util.concurrent.ConcurrentHashMap
-import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -47,9 +47,13 @@ class InstanceFactory {
     private fun <T> createInstance(def: BeanDefinition<*>, scope: Scope): T {
 //        logger.fine(">> Create instance : $def")
         return if (def.scope == scope) {
-            val instance = def.definition.invoke() as Any
-            instances[def] = instance
-            instance as T
+            try {
+                val instance = def.definition.invoke() as Any
+                instances[def] = instance
+                instance as T
+            } catch (e: Throwable) {
+                throw BeanInstanceCreationException("Can't create bean $def due to error : $e")
+            }
         } else throw BeanDefinitionException("Can't create bean $def in scope : $scope -- Scope has not been declared")
     }
 
