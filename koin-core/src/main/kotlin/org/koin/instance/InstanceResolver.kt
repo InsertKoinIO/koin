@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  */
 class InstanceResolver {
 
-    private val logger: Logger = Logger.getLogger(InstanceResolver::class.java.simpleName)
+//    private val logger: Logger = Logger.getLogger(InstanceResolver::class.java.simpleName)
 
     val all_context = HashMap<Scope, InstanceFactory>()
 
@@ -30,7 +30,7 @@ class InstanceResolver {
     fun createContext(scope: Scope) {
         if (!all_context.containsKey(scope)) {
             all_context[scope] = InstanceFactory()
-            logger.info(">> Create scope $scope")
+//            logger.info(">> Create scope $scope")
         }
     }
 }

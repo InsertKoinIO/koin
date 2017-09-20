@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  */
 class BeanRegistry {
 
-    val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(BeanRegistry::class.java.simpleName)
+//    val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(BeanRegistry::class.java.simpleName)
 
     /*
         bean definitions
@@ -25,7 +25,7 @@ class BeanRegistry {
      * @param def : Bean definition
      */
     fun declare(def: BeanDefinition<*>) {
-        logger.info(">> Declare bean definition $def")
+//        logger.info(">> Declare bean definition $def")
         definitions += def
     }
 
@@ -39,7 +39,7 @@ class BeanRegistry {
     inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, scope: Scope) {
         val def = BeanDefinition(function, clazz, scope)
 
-        logger.info(">> Declare bean definition $def")
+//        logger.info(">> Declare bean definition $def")
 
         val found = searchByClass(clazz)
         if (found != null) {
@@ -82,7 +82,7 @@ class BeanRegistry {
      * @param classes Class
      */
     fun remove(vararg classes: KClass<*>) {
-        logger.warning("removeInstance $classes")
+//        logger.warning("removeInstance $classes")
         classes.map { searchByClass(it) }.forEach { definitions.remove(it) }
     }
 
