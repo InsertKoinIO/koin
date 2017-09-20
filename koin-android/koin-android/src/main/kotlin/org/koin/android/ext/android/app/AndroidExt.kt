@@ -3,6 +3,7 @@ package org.koin.android.ext.android.app
 import android.app.Activity
 import android.app.Application
 import android.app.Service
+import android.content.Context
 import android.support.v4.app.Fragment
 import org.koin.KoinContext
 import org.koin.android.KoinContextAware
@@ -20,6 +21,12 @@ fun Application.getKoin(): KoinContext {
         return getKoin()
     } else throw KoinApplicationException("Your application is not a Koin Application. Please use KoinContextAware interface in your application class.")
 }
+
+/**
+ * Return Koin context from Android Context
+ */
+fun Context.getKoin() : KoinContext = this.applicationContext.getKoin()
+
 
 /* Activity */
 
