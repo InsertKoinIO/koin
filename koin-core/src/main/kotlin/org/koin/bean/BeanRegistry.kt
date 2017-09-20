@@ -1,7 +1,7 @@
 package org.koin.bean
 
 import org.koin.dsl.context.Scope
-import org.koin.error.BeanDefinitionConflict
+import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
 import kotlin.reflect.KClass
 
@@ -69,7 +69,7 @@ class BeanRegistry {
     private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean, errorMsg: String): BeanDefinition<*>? {
         val results = definitions.filter(filter)
         return if (results.size <= 1) results.firstOrNull()
-        else throw BeanDefinitionConflict("Bean definition resolution error : no bean or multiple definition for $errorMsg")
+        else throw BeanDefinitionException("Bean definition resolution error : no bean or multiple definition for $errorMsg")
     }
 
     /**

@@ -2,7 +2,7 @@ package org.koin.instance
 
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
-import org.koin.error.BeanDefinitionConflict
+import org.koin.error.BeanDefinitionException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Logger
 import kotlin.reflect.KClass
@@ -50,7 +50,7 @@ class InstanceFactory {
             val instance = def.definition.invoke() as Any
             instances[def] = instance
             instance as T
-        } else throw BeanDefinitionConflict("Can't create bean $def in scope : $scope")
+        } else throw BeanDefinitionException("Can't create bean $def in scope : $scope -- Scope has not been declared")
     }
 
     fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope) = retrieveInstance<T>(def, scope)

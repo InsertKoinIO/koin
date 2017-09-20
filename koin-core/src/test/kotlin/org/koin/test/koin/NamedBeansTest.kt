@@ -3,7 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
-import org.koin.error.BeanDefinitionConflict
+import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.test.ext.assertScopes
 import org.koin.test.ext.assertSizes
@@ -39,7 +39,7 @@ class NamedBeansTest {
         try {
             ctx.get<ServiceA>()
             Assert.fail()
-        } catch (e: BeanDefinitionConflict) {
+        } catch (e: BeanDefinitionException) {
         }
     }
 
@@ -52,7 +52,7 @@ class NamedBeansTest {
         try {
             ctx.get<ServiceB>()
             Assert.fail()
-        } catch (e: BeanDefinitionConflict) {
+        } catch (e: BeanDefinitionException) {
         }
     }
 

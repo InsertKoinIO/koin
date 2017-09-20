@@ -3,6 +3,7 @@ package org.koin.test.koin
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
+import org.koin.error.BeanDefinitionException
 import org.koin.test.ext.*
 import org.koin.test.koin.example.*
 
@@ -14,6 +15,7 @@ class ScopeTest {
     @Test
     fun `provide at scope `() {
         val ctx = Koin().build()
+        ctx.declareScope(ServiceB::class)
         ctx.provideAt({ ServiceB() }, ServiceB::class)
         ctx.assertScopes(2)
         ctx.assertSizes(1, 0)
@@ -174,5 +176,21 @@ class ScopeTest {
         ctx.release(serviceB)
         ctx.assertSizes(1, 0)
         ctx.assertScopeSize(ServiceB::class, 0)
+    }
+
+    @Test
+    fun `provide bean in non existing scope `() {
+        val ctx = Koin().build()
+        try {
+            ctx.provideAt({ ServiceB() }, ServiceB::class)
+            Assert.fail()
+        } catch (e: BeanDefinitionException) {
+        }
+
+        try {
+            ctx.assertScopeSize(ServiceB::class, 0)
+        } catch (e: Exception) {
+        }
+        ctx.assertSizes(0, 0)
     }
 }

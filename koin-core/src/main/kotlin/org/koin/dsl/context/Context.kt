@@ -2,7 +2,6 @@ package org.koin.dsl.context
 
 import org.koin.KoinContext
 import org.koin.bean.BeanDefinition
-import org.koin.error.MissingPropertyException
 import kotlin.reflect.KClass
 
 /**
@@ -61,6 +60,5 @@ class Context(val koinContext: KoinContext) {
     /**
      * Retrieve a property
      */
-    @Throws(MissingPropertyException::class)
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 }

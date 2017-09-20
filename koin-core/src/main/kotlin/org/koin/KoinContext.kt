@@ -3,7 +3,8 @@ package org.koin
 import org.koin.bean.BeanDefinition
 import org.koin.bean.BeanRegistry
 import org.koin.dsl.context.Scope
-import org.koin.error.CyclicDependencyException
+import org.koin.error.BeanDefinitionException
+import org.koin.error.DependencyResolutionException
 import org.koin.instance.InstanceResolver
 import org.koin.property.PropertyResolver
 import java.util.*
@@ -49,7 +50,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         logger.info("resolveInstance $clazz :: $resolutionStack")
 
         if (resolutionStack.contains(clazz)) {
-            throw CyclicDependencyException("Cyclic dependency for $clazz")
+            throw DependencyResolutionException("Cyclic dependency for $clazz")
         }
         resolutionStack.add(clazz)
 
@@ -79,11 +80,15 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T : Any> provideAt(noinline definition: () -> T, scopeClass: KClass<*>) {
         val scope = Scope(scopeClass)
-        val existingScope = instanceResolver.all_context[scope]
-        if (existingScope == null) {
-            instanceResolver.createContext(scope)
-        }
+        instanceResolver.all_context[scope] ?: throw BeanDefinitionException("No scope defined for class $scopeClass")
         declare(definition, scope)
+    }
+
+    /**
+     * Create a scope
+     */
+    fun declareScope(scopedClass: KClass<*>){
+        instanceResolver.createContext(Scope(scopedClass))
     }
 
     /**
