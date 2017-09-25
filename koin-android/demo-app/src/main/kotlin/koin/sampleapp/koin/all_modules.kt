@@ -1,10 +1,10 @@
 package koin.sampleapp.koin
 
-import android.util.Log
-import koin.sampleapp.MainActivity
 import koin.sampleapp.R
-import koin.sampleapp.service.WeatherService
 import koin.sampleapp.service.WeatherWS
+import koin.sampleapp.weather.WeatherActivity
+import koin.sampleapp.weather.WeatherContract
+import koin.sampleapp.weather.WeatherPresenter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.AndroidModule
@@ -16,22 +16,30 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by arnaud on 12/06/2017.
  */
-class MyModule : AndroidModule() {
 
-    val TAG = MyModule::class.java.simpleName
+
+fun allModules() = arrayOf(GlobalModule(), MainActivityModule())
+
+class MainActivityModule : AndroidModule() {
 
     override fun context() =
             declareContext {
-                // Scope MainActivity
-                scope { MainActivity::class }
+                // Scope WeatherActivity
+                scope { WeatherActivity::class }
+                provide { WeatherPresenter(get()) } bind { WeatherContract.Presenter::class }
+            }
+}
+
+class GlobalModule : AndroidModule() {
+
+    override fun context() =
+            declareContext {
                 // provided components
-                provide { WeatherService(get()) }
                 provide { createClient() }
                 provide { retrofitWS(get(), resources.getString(R.string.server_url)) }
             }
 
     private fun createClient(): OkHttpClient {
-        Log.i(TAG, "create OkHttpClient")
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
@@ -41,7 +49,6 @@ class MyModule : AndroidModule() {
     }
 
     private fun retrofitWS(okHttpClient: OkHttpClient, url: String): WeatherWS {
-        Log.i(TAG, "create retrofitWS")
         val retrofit = Retrofit.Builder()
                 .baseUrl(url)
                 .client(okHttpClient)

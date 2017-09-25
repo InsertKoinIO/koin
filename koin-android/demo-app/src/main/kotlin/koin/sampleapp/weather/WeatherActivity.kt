@@ -1,7 +1,5 @@
-package koin.sampleapp
+package koin.sampleapp.weather
 
-import org.koin.android.ext.android.app.inject
-import org.koin.android.ext.android.app.release
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -10,22 +8,20 @@ import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
 import fr.ekito.myweatherapp.DailyForecastModel
 import fr.ekito.myweatherapp.DialogHelper
-import io.reactivex.disposables.Disposable
+import koin.sampleapp.R
 import koin.sampleapp.json.getDailyForecasts
-import koin.sampleapp.json.getLocation
 import koin.sampleapp.json.weather.Weather
-import koin.sampleapp.service.WeatherService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.koin.android.ext.android.app.inject
+import org.koin.android.ext.android.app.release
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
 
     private val now = Date()
 
-    val weatherService by inject<WeatherService>()
-
-    private var currentRequest: Disposable? = null
+    override val presenter: WeatherContract.Presenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,32 +32,26 @@ class MainActivity : AppCompatActivity() {
         weather_main_layout.visibility = View.GONE
         weather_forecast_layout.visibility = View.GONE
 
-        fab.setOnClickListener { view -> DialogHelper.locationDialog(view, { location -> getWeatherData(view, location) }) }
+        fab.setOnClickListener { view ->
+            DialogHelper.locationDialog(view, { location ->
+                Snackbar.make(view, "Getting your weather :)", Snackbar.LENGTH_SHORT).show()
+                presenter.getWeather(location)
+            })
+        }
     }
 
-    /**
-     * Retrieve Weather Data from the REST API
-     */
-    fun getWeatherData(view: View, location: String) {
-
-        Snackbar.make(view, "Getting your weather :)", Snackbar.LENGTH_SHORT).show()
-
-        currentRequest = weatherService.getGeocode(location)
-                .map { it.getLocation() ?: throw IllegalStateException("No Location data") }
-                .flatMap { location -> weatherService.getWeather(location.lat, location.lng) }
-                .subscribe(
-                        { weather -> updateWeatherUI(weather, location) },
-                        { error -> Snackbar.make(view, "Weather Error : " + error, Snackbar.LENGTH_LONG).show() })
+    override fun onResume() {
+        super.onResume()
+        presenter.view = this
+        presenter.start()
     }
 
-    override fun onStop() {
-        super.onStop()
-        currentRequest?.dispose()
-        release(MainActivity::class)
+    override fun onDestroy() {
+        super.onDestroy()
+        release(this)
     }
 
-    fun updateWeatherUI(weather: Weather?, location: String) {
-
+    override fun displayWeather(weather: Weather?, location: String) {
         if (weather != null) {
             weather_main_layout.visibility = View.VISIBLE
             weather_forecast_layout.visibility = View.VISIBLE
