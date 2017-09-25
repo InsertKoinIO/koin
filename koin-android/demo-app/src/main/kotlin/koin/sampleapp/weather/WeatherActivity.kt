@@ -17,6 +17,9 @@ import org.koin.android.ext.android.app.inject
 import org.koin.android.ext.android.app.release
 import java.util.*
 
+/**
+ * Weather View
+ */
 class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
 
     private val now = Date()
@@ -48,6 +51,7 @@ class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
+        presenter.stop()
         release(this)
     }
 

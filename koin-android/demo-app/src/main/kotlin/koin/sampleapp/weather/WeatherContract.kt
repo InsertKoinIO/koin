@@ -5,7 +5,7 @@ import koin.sampleapp.BaseView
 import koin.sampleapp.json.weather.Weather
 
 /**
- * Created by arnaud on 25/09/2017.
+ * Weather MVP Contract
  */
 interface WeatherContract {
     interface View : BaseView<Presenter> {

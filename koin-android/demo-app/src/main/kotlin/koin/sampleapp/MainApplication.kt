@@ -3,7 +3,8 @@ package koin.sampleapp
 import android.app.Application
 import com.joanzapata.iconify.Iconify
 import com.joanzapata.iconify.fonts.WeathericonsModule
-import koin.sampleapp.koin.allModules
+import koin.sampleapp.di.WebModule
+import koin.sampleapp.di.allModules
 import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.android.KoinContextAware
@@ -25,7 +26,9 @@ class MainApplication : Application(), KoinContextAware {
         super.onCreate()
 
         // init Koin with NetworkModule module
-        koinContext = Koin().init(this).build(*allModules())
+        koinContext = Koin().init(this).build(allModules())
+        // Fill url property
+        koinContext.setProperty(WebModule.SERVER_URL, resources.getString(R.string.server_url))
 
         Iconify.with(WeathericonsModule())
     }

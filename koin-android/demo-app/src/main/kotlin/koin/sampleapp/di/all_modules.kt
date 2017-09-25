@@ -1,6 +1,7 @@
-package koin.sampleapp.koin
+package koin.sampleapp.di
 
-import koin.sampleapp.R
+import koin.sampleapp.rx.ApplicationSchedulerProvider
+import koin.sampleapp.rx.SchedulerProvider
 import koin.sampleapp.service.WeatherWS
 import koin.sampleapp.weather.WeatherActivity
 import koin.sampleapp.weather.WeatherContract
@@ -18,25 +19,35 @@ import java.util.concurrent.TimeUnit
  */
 
 
-fun allModules() = arrayOf(GlobalModule(), MainActivityModule())
+fun allModules() = arrayListOf(MainModule(), WebModule(), WeatherModule())
 
-class MainActivityModule : AndroidModule() {
+class WeatherModule : AndroidModule() {
 
     override fun context() =
             declareContext {
                 // Scope WeatherActivity
                 scope { WeatherActivity::class }
-                provide { WeatherPresenter(get()) } bind { WeatherContract.Presenter::class }
+                provide { WeatherPresenter(get(), get()) } bind { WeatherContract.Presenter::class }
             }
 }
 
-class GlobalModule : AndroidModule() {
+class MainModule : AndroidModule() {
+    override fun context() =
+            declareContext {
+                // Rx schedulers
+                provide { ApplicationSchedulerProvider() } bind { SchedulerProvider::class }
+            }
+
+}
+
+class WebModule : AndroidModule() {
 
     override fun context() =
             declareContext {
-                // provided components
+                // provided web components
                 provide { createClient() }
-                provide { retrofitWS(get(), resources.getString(R.string.server_url)) }
+                // Fill property
+                provide { retrofitWS(get(), getProperty(SERVER_URL)) }
             }
 
     private fun createClient(): OkHttpClient {
@@ -55,5 +66,9 @@ class GlobalModule : AndroidModule() {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
         return retrofit.create(WeatherWS::class.java)
+    }
+
+    companion object {
+        const val SERVER_URL = "SERVER_URL"
     }
 }
