@@ -11,6 +11,7 @@ interface WeatherContract {
     interface View : BaseView<Presenter> {
 
         fun displayWeather(weather: Weather?, location: String)
+        fun displayError(error: Throwable)
     }
 
     interface Presenter : BasePresenter<View> {

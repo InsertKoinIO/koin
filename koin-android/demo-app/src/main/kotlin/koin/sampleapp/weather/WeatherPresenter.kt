@@ -13,19 +13,20 @@ class WeatherPresenter(val weatherWS: WeatherWS) : WeatherContract.Presenter {
 
     override lateinit var view: WeatherContract.View
     private var currentRequest: Disposable? = null
-    val DEFAULT_LANG = "EN"
+    private val DEFAULT_LANG = "EN"
 
     override fun start() {
 
     }
 
     override fun getWeather(location: String) {
+        currentRequest?.dispose()
         currentRequest = weatherWS.geocode(location)
                 .map { it.getLocation() ?: throw IllegalStateException("No Location data") }
                 .flatMap { location -> weatherWS.weather(location.lat, location.lng, DEFAULT_LANG) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ weather -> view.displayWeather(weather, location) }, { error -> error("Got error $error") })
+                .subscribe({ weather -> view.displayWeather(weather, location) }, { error -> view.displayError(error) })
     }
 
 }

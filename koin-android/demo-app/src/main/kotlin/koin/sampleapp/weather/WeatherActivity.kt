@@ -51,6 +51,10 @@ class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
         release(this)
     }
 
+    override fun displayError(error: Throwable) {
+        Snackbar.make(this.currentFocus, "Got error :( $error", Snackbar.LENGTH_SHORT).show()
+    }
+
     override fun displayWeather(weather: Weather?, location: String) {
         if (weather != null) {
             weather_main_layout.visibility = View.VISIBLE
