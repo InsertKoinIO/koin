@@ -1,8 +1,8 @@
 package koin.sampleapp.weather
 
 import io.reactivex.disposables.Disposable
-import koin.sampleapp.json.getLocation
-import koin.sampleapp.rx.SchedulerProvider
+import koin.sampleapp.service.json.getLocation
+import koin.sampleapp.util.rx.SchedulerProvider
 import koin.sampleapp.service.WeatherWS
 
 /**

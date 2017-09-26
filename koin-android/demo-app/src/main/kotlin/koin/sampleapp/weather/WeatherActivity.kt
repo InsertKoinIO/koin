@@ -9,8 +9,8 @@ import com.joanzapata.iconify.widget.IconTextView
 import fr.ekito.myweatherapp.DailyForecastModel
 import fr.ekito.myweatherapp.DialogHelper
 import koin.sampleapp.R
-import koin.sampleapp.json.getDailyForecasts
-import koin.sampleapp.json.weather.Weather
+import koin.sampleapp.service.json.getDailyForecasts
+import koin.sampleapp.service.json.weather.Weather
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.app.inject

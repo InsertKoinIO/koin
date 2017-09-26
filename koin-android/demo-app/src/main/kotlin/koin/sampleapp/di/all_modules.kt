@@ -1,7 +1,7 @@
 package koin.sampleapp.di
 
-import koin.sampleapp.rx.ApplicationSchedulerProvider
-import koin.sampleapp.rx.SchedulerProvider
+import koin.sampleapp.util.rx.ApplicationSchedulerProvider
+import koin.sampleapp.util.rx.SchedulerProvider
 import koin.sampleapp.service.WeatherWS
 import koin.sampleapp.weather.WeatherActivity
 import koin.sampleapp.weather.WeatherContract

@@ -1,7 +1,7 @@
 package fr.ekito.myweatherapp.weather
 
-import fr.ekito.myweatherapp.TestWebServicesModule
-import fr.ekito.myweatherapp.any
+import fr.ekito.myweatherapp.di.TestWebServicesModule
+import fr.ekito.myweatherapp.util.any
 import junit.framework.Assert
 import koin.sampleapp.di.WeatherModule
 import koin.sampleapp.di.WebModule
@@ -24,7 +24,9 @@ class WeatherPresenterTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
         val context = Koin().build(arrayListOf(TestWebServicesModule(), WebModule(), WeatherModule()))
+        // provide mock as View component
         context.provide { view }
+        // inject server property
         context.setProperty(WebModule.SERVER_URL, TestWebServicesModule.SERVER_URL)
 
         presenter = context.get()
