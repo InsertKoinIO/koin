@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 
 ### Tutorial with Demo App
 
-Check the [*demo-app*](https://github.com/Ekito/koin/tree/master/koin-android/demo-app) source code and get a more complete application. The (demo-app wiki page)[https://github.com/Ekito/koin/wiki/Demo-App] describes all about Koin in a real app.
+Check the [*demo-app*](https://github.com/Ekito/koin/tree/master/koin-android/demo-app) source code and get a more complete application. The [demo-app wiki page](https://github.com/Ekito/koin/wiki/Demo-App) describes all about Koin in a real app.
 
 
 ## Documentation
