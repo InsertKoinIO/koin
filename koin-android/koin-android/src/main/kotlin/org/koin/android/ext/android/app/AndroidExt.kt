@@ -16,16 +16,13 @@ import org.koin.android.error.KoinApplicationException
  * Return Koin context from Application
  */
 @Throws(KoinApplicationException::class)
-fun Application.getKoin(): KoinContext {
-    if (this is KoinContextAware) {
-        return getKoin()
-    } else throw KoinApplicationException("Your application is not a Koin Application. Please use KoinContextAware interface in your application class.")
-}
+fun Application.getKoin(): KoinContext =
+        if (this is KoinContextAware) getKoin() else throw KoinApplicationException("Your application is not a Koin Application. Please use KoinContextAware interface in your application class.")
 
 /**
  * Return Koin context from Android Context
  */
-fun Context.getKoin() : KoinContext = this.applicationContext.getKoin()
+fun Context.getKoin(): KoinContext = this.applicationContext.getKoin()
 
 
 /* Activity */

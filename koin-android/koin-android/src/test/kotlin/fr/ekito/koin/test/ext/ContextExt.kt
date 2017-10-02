@@ -1,4 +1,4 @@
-package org.koin.test.ext
+package fr.ekito.koin.test.ext
 
 import org.junit.Assert
 import org.koin.KoinContext

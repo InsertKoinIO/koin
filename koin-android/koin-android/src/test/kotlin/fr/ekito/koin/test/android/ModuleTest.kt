@@ -8,9 +8,9 @@ import org.junit.Test
 import org.koin.Koin
 import org.koin.android.init
 import org.koin.error.BeanInstanceCreationException
-import org.koin.test.ext.assertProps
-import org.koin.test.ext.assertSizes
-import org.koin.test.ext.getOrNull
+import fr.ekito.koin.test.ext.assertProps
+import fr.ekito.koin.test.ext.assertSizes
+import fr.ekito.koin.test.ext.getOrNull
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 

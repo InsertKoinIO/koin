@@ -1,6 +1,6 @@
 package org.koin.android.error
 
 /**
- * Created by arnaud on 22/06/2017.
+ * Koin Application Exception
  */
 class KoinApplicationException(msg: String) : Exception(msg)
