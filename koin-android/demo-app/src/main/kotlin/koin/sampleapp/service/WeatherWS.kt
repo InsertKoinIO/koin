@@ -7,9 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
 
-/**
- * Created by arnaud on 04/08/2016.
- */
 interface WeatherWS {
 
     @GET("/geocode")

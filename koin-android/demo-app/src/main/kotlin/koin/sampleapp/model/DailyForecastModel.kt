@@ -1,4 +1,4 @@
-package fr.ekito.myweatherapp
+package koin.sampleapp.model
 
 data class DailyForecastModel(val forecastString: String, val icon: String, val temperatureLow: String, val temperatureHigh: String) {
 

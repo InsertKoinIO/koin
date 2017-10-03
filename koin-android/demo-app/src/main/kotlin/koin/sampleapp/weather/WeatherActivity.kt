@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
-import fr.ekito.myweatherapp.DailyForecastModel
+import koin.sampleapp.model.DailyForecastModel
 import fr.ekito.myweatherapp.DialogHelper
 import koin.sampleapp.R
 import koin.sampleapp.service.json.getDailyForecasts

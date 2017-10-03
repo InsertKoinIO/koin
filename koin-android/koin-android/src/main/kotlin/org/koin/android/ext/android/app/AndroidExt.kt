@@ -17,12 +17,12 @@ import org.koin.android.error.KoinApplicationException
  */
 @Throws(KoinApplicationException::class)
 fun Application.getKoin(): KoinContext =
-        if (this is KoinContextAware) getKoin() else throw KoinApplicationException("Your application is not a Koin Application. Please use KoinContextAware interface in your application class.")
+        if (this is KoinContextAware) koinContext else throw KoinApplicationException("Your application is not a Koin Application. Please use KoinContextAware interface in your application class.")
 
 /**
  * Return Koin context from Android Context
  */
-fun Context.getKoin(): KoinContext = this.applicationContext.getKoin()
+fun Context.getKoin(): KoinContext = applicationContext.getKoin()
 
 
 /* Activity */
@@ -30,7 +30,7 @@ fun Context.getKoin(): KoinContext = this.applicationContext.getKoin()
 /**
  * Return Koin context from Activity
  */
-fun Activity.getKoin(): KoinContext = this.application.getKoin()
+fun Activity.getKoin(): KoinContext = application.getKoin()
 
 /**
  * Inject current dependency
@@ -84,7 +84,7 @@ inline fun <reified T> Fragment.property(key: String) = lazy { getKoin().getProp
 /**
  * Service Koin Context
  */
-fun Service.getKoin() = this.application.getKoin()
+fun Service.getKoin() = application.getKoin()
 
 /**
  * Inject current dependency

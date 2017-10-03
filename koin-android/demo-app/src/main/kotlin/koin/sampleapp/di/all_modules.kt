@@ -1,8 +1,8 @@
 package koin.sampleapp.di
 
+import koin.sampleapp.service.WeatherWS
 import koin.sampleapp.util.rx.ApplicationSchedulerProvider
 import koin.sampleapp.util.rx.SchedulerProvider
-import koin.sampleapp.service.WeatherWS
 import koin.sampleapp.weather.WeatherActivity
 import koin.sampleapp.weather.WeatherContract
 import koin.sampleapp.weather.WeatherPresenter
@@ -14,15 +14,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-/**
- * Created by arnaud on 12/06/2017.
- */
-
-
 fun allModules() = arrayListOf(MainModule(), WebModule(), WeatherModule())
 
 class WeatherModule : AndroidModule() {
-
     override fun context() =
             declareContext {
                 // Scope WeatherActivity
@@ -41,7 +35,6 @@ class MainModule : AndroidModule() {
 }
 
 class WebModule : AndroidModule() {
-
     override fun context() =
             declareContext {
                 // provided web components

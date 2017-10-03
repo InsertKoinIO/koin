@@ -1,6 +1,6 @@
 package koin.sampleapp.service.json
 
-import fr.ekito.myweatherapp.DailyForecastModel
+import koin.sampleapp.model.DailyForecastModel
 import koin.sampleapp.service.json.weather.Weather
 
 private val PREFIX = "nt_"

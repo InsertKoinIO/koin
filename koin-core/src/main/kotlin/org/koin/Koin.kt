@@ -13,14 +13,14 @@ import java.util.logging.Logger
  */
 class Koin {
 
-//    val logger: Logger = Logger.getLogger(Koin::class.java.simpleName)
+    val logger: Logger = Logger.getLogger(Koin::class.java.simpleName)
 
     val beanRegistry = BeanRegistry()
     val propertyResolver = PropertyResolver()
     val instanceResolver = InstanceResolver()
 
     init {
-//        logger.info("(-) Koin Started ! (-)")
+        logger.info("(-) Koin Started ! (-)")
         instanceResolver.createContext(Scope.root())
     }
 
@@ -50,7 +50,7 @@ class Koin {
             }
             ctx.provided.forEach { beanRegistry.declare(it) }
         }
-
+        logger.info("(-) ${beanRegistry.definitions.size} definitions loaded (-)")
         return koinContext
     }
 
