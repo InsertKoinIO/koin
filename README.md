@@ -112,5 +112,5 @@ Check the [wiki](https://github.com/Ekito/koin/wiki) for complete documentation.
 
 ## Contact & Support
 
-Check the [kotlin slack](https://kotlinlang.org/community/) - `#koin channel
+Check the [kotlin slack](https://kotlinlang.org/community/) - **#koin** channel
 
