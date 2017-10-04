@@ -24,8 +24,6 @@ class WeatherPresenterTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
         val context = Koin().build(arrayListOf(TestWebServicesModule(), WebModule(), WeatherModule()))
-        // provide mock as View component
-        context.provide { view }
         // inject server property
         context.setProperty(WebModule.SERVER_URL, TestWebServicesModule.SERVER_URL)
 
