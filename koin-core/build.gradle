@@ -18,7 +18,7 @@ apply plugin: 'com.jfrog.bintray'
 
 archivesBaseName = 'koin-core'
 group = 'org.koin'
-version = '0.3.0'
+version = '0.3.1'
 description = 'Koin - simple dependency injection for Kotlin'
 
 // custom tasks for creating source/javadoc jars
@@ -65,9 +65,6 @@ dependencies {
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-//    compile 'com.jakewharton.timber:timber:4.5.1'
-
 }
 
 repositories {

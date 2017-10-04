@@ -14,8 +14,6 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class InstanceFactory {
 
-//    private val logger: Logger = Logger.getLogger(InstanceFactory::class.java.simpleName)
-
     val instances = ConcurrentHashMap<BeanDefinition<*>, Any>()
 
     /**
@@ -45,7 +43,6 @@ class InstanceFactory {
      * create instance for given bean definition
      */
     private fun <T> createInstance(def: BeanDefinition<*>, scope: Scope): T {
-//        logger.fine(">> Create instance : $def")
         return if (def.scope == scope) {
             try {
                 val instance = def.definition.invoke() as Any

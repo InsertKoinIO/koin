@@ -32,7 +32,7 @@ class Context(val koinContext: KoinContext) {
 //    /**
 //     * Provide a bean definition & empty name
 //     */
-//    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> = provide(definition)
+//    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> = provide(definition = definition)
 
     /**
      * Provide a bean definition
