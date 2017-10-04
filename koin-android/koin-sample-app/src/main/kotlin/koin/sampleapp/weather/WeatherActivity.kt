@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
-import koin.sampleapp.model.DailyForecastModel
 import fr.ekito.myweatherapp.DialogHelper
 import koin.sampleapp.R
+import koin.sampleapp.model.DailyForecastModel
 import koin.sampleapp.service.json.getDailyForecasts
 import koin.sampleapp.service.json.weather.Weather
 import kotlinx.android.synthetic.main.activity_main.*
@@ -49,10 +49,10 @@ class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
         presenter.start()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
         presenter.stop()
         release(this)
+        super.onPause()
     }
 
     override fun displayError(error: Throwable) {
