@@ -9,7 +9,7 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 Check that you have `jcenter` repository. Add the following gradle dependency to your Android app:
 
 ```gradle
-compile 'org.koin:koin-android:0.3.0'
+compile 'org.koin:koin-android:0.3.1'
 ```
 
 ## Getting Started
@@ -45,46 +45,38 @@ To describe your module, you can use the following **Koin DSL** keywords:
 * `get()` resolve a component dependency
 * `scope {/* scope class */}` use the given [scope](https://github.com/Ekito/koin/wiki#scopes) for current module's definitions
 
+_NB_: Koin is simple: All your components are singletons. You have to use **scopes** to handle your components lifecycle and release them when needed.
 
 ### Setup your Application
 
-To start your module, you must build it in your *application* class like below:
+To start Koin and your modules, you just have to build it in your *application* class like below:
 
 ```Kotlin
 class MainApplication : Application(), KoinContextAware {
 
-     /**
-     * Koin context
-     */
-    lateinit var koinContext: KoinContext
-
-    /**
-     * KoinContextAware - Retrieve Koin Context
-     */
-    override fun getKoin(): KoinContext = koinContext
+     // Your Koin Context here
+    override val koinContext = newKoinContext(this, allModules())
 
     override fun onCreate() {
         super.onCreate()
-        // insert Koin !
-        koinContext = Koin().init(this).build(MyModule()) 
-        // ...
+        // Your Koin context is ready ! :)
     }
 }
 ```
 
-Implement `KoinContextAware` interface, and make your *koinContext*. This will able you to use the **Koin Android extensions** in your Android Application.
+Implement `KoinContextAware` interface, and build your *koinContext* with the `newKoinContext` function huilder. This will able you to use the **Koin Android extensions** in your Android Application.
 
-**Don't forget to use the** `init()` function to init *Android context* injection, else you won't be able to load your modules & extensions.
-
+The `newKoinContext` function build a KoinContext for your `ApplicationContext` class and list of `AndroidModule` (`allmMdules()` is just a function returning a list of `AndroidModule`).
 
 ### Inject your components
 
-Once your app is configured and ready to go, you have to ways of handling injection in your application:
+Once your app is configured, you have to ways of handling injection in your application:
 
-* Android components (Activity,Fragment...): use the by inject() lazy operator
-* Kotlin componenst: injection is made by constructor
+* In Android components (Activity,Fragment...): use the `by inject()` lazy operator
+* in any Kotlin component: **injection is made by constructor**
 
-Below a quick sample of using `by inject()` in an Activity:
+
+Below a quick sample of injection with `by inject()` in an Activity:
 
 ```Kotlin
 class MainActivity : AppCompatActivity() {
@@ -96,14 +88,15 @@ class MainActivity : AppCompatActivity() {
 ```
 
 
-## A Complete tour with the demo-app
+## The Sample App
 
-Check the [*demo-app*](https://github.com/Ekito/koin/tree/master/koin-android/demo-app) module source code and get a complete application sample. The [weather-app](https://github.com/Ekito/koin/wiki/The-Weather-App) wiki page describes all about Koin  usage, in a real app development.
+The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/koin-android/koin-sample-app) application offers a complete application sample, with MVP Android style. 
 
+The weather app [wiki page](https://github.com/Ekito/koin/wiki/The-Koin-Sample-App) describes all about Koin features used.
 
 ## Documentation
 
-Check the [wiki](https://github.com/Ekito/koin/wiki) for complete documentation.
+A global wiki[wiki](https://github.com/Ekito/koin/wiki) page gather all features and references about Koin Framework.
 
 ## Articles
 
@@ -112,5 +105,9 @@ Check the [wiki](https://github.com/Ekito/koin/wiki) for complete documentation.
 
 ## Contact & Support
 
-Check the [kotlin slack](https://kotlinlang.org/community/) - **#koin** channel
+### Slack
+Check the [kotlin slack community](https://kotlinlang.org/community/) and join **#koin** channel
+
+### Github
+Don't hesitate to open an issue to discuss about your needs or if you don't a feature for example.
 
