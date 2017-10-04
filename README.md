@@ -18,6 +18,29 @@ First of all, you need to write a module. A module **gathers your components def
 
 Check the latest changes: [what's new](https://github.com/Ekito/koin/wiki/What's-new-%3F)
 
+
+### Setup your Application
+
+To start Koin and your modules, you just have to build it in your *application* class like below:
+
+```Kotlin
+class MainApplication : Application(), KoinContextAware {
+
+     // Your Koin Context here
+    override val koinContext = newKoinContext(this, allModules())
+
+    override fun onCreate() {
+        super.onCreate()
+        // Your Koin context is ready ! :)
+    }
+}
+```
+
+Implement `KoinContextAware` interface, and build your *koinContext* with the `newKoinContext` function huilder. This will able you to use the **Koin Android extensions** in your Android Application.
+
+The `newKoinContext` function build a KoinContext for your `ApplicationContext` class and list of `AndroidModule` (`allmMdules()` is just a function returning a list of `AndroidModule`).
+
+
 ### Declare your dependencies
 
 First of all, write a module class (extends [AndroidModule](https://github.com/Ekito/koin/wiki#module-class)), overrides the `context()` function by using the `declareContext` function, to declare a context like below:
@@ -48,27 +71,6 @@ To describe your module, you can use the following **Koin DSL** keywords:
 * `scope {/* scope class */}` use the given [scope](https://github.com/Ekito/koin/wiki#scopes) for current module's definitions
 
 _NB_: Koin is simple: All your components are singletons. You have to use **scopes** to handle your components lifecycle and release them when needed.
-
-### Setup your Application
-
-To start Koin and your modules, you just have to build it in your *application* class like below:
-
-```Kotlin
-class MainApplication : Application(), KoinContextAware {
-
-     // Your Koin Context here
-    override val koinContext = newKoinContext(this, allModules())
-
-    override fun onCreate() {
-        super.onCreate()
-        // Your Koin context is ready ! :)
-    }
-}
-```
-
-Implement `KoinContextAware` interface, and build your *koinContext* with the `newKoinContext` function huilder. This will able you to use the **Koin Android extensions** in your Android Application.
-
-The `newKoinContext` function build a KoinContext for your `ApplicationContext` class and list of `AndroidModule` (`allmMdules()` is just a function returning a list of `AndroidModule`).
 
 ### Inject your components
 
