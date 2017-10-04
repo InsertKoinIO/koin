@@ -96,7 +96,7 @@ The weather app [wiki page](https://github.com/Ekito/koin/wiki/The-Koin-Sample-A
 
 ## Documentation
 
-A global wiki[wiki](https://github.com/Ekito/koin/wiki) page gather all features and references about Koin Framework.
+A global [wiki](https://github.com/Ekito/koin/wiki) documentation page gather all features and references about Koin Framework.
 
 ## Articles
 
