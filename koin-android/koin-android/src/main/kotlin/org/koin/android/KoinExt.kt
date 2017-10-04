@@ -18,12 +18,33 @@ fun Koin.init(application: Application): Koin {
   val koinContext = newKoinContext(this, modules...)
  */
 
+/**
+ * Create a new Koin Context
+ * @param application - Android application
+ * @param modules - list of AndroidModule
+ */
 fun newKoinContext(application: Application, modules: List<AndroidModule>): KoinContext = Koin().init(application).build(modules)
+
+/**
+ * Create a new Koin Context
+ * @param application - Android application
+ * @param modules - vararg of AndroidModule
+ */
 fun newKoinContext(application: Application, vararg modules : AndroidModule): KoinContext = Koin().init(application).build(*modules)
 
 /*
   val koinContext by lazyKoinContext(this, modules...)
  */
-
+/**
+ * Create a lazy created Koin Context
+ * @param application - Android application
+ * @param modules - list of AndroidModule
+ */
 fun lazyKoinContext(application: Application, modules: List<AndroidModule>) = lazy { Koin().init(application).build(modules) }
+
+/**
+ * Create a lazy created Koin Context
+ * @param application - Android application
+ * @param modules - vararg of AndroidModule
+ */
 fun lazyKoinContext(application: Application, vararg modules : AndroidModule) = lazy { Koin().init(application).build(*modules) }

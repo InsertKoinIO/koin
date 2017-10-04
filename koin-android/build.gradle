@@ -2,7 +2,7 @@
 // Define versions in a single place
 ext {
     // Koin Version
-    koin_version = "0.3.0"
+    koin_version = "0.3.1"
 
     // Sdk and tools
     minSdkVersion = 14
@@ -17,7 +17,7 @@ ext {
 
 buildscript {
     ext {
-        kotlin_version = '1.1.50'
+        kotlin_version = '1.1.51'
         gradleVersion = '2.3.3'
     }
     repositories {

@@ -10,10 +10,19 @@ import org.koin.dsl.module.Module
  */
 abstract class AndroidModule : Module() {
 
+    /**
+     * Android application context
+     */
     val applicationContext: Application by lazy { koinContext.get<Application>() }
 
+    /**
+     * Android resources
+     */
     val resources: Resources by lazy { applicationContext.resources }
 
+    /**
+     * Android assets
+     */
     val assets: AssetManager by lazy { applicationContext.assets }
 
 }
