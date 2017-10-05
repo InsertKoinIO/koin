@@ -64,6 +64,19 @@ class ServiceD(val myVal: String) {
     }
 }
 
+interface GenericProducer<out T> {
+    fun produce(): T
+}
+
+class ProducerImpl() : GenericProducer<String> {
+    override fun produce() = OK
+
+    companion object {
+        const val OK = "OK"
+    }
+}
+
+
 //Circular defs
 class ServiceTwo(val serviceOne: ServiceOne)
 

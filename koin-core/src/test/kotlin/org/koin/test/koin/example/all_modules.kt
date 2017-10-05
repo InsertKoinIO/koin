@@ -103,3 +103,9 @@ class BindModuleB : Module() {
         provide { ServiceB() } bind (Processor::class)
     }
 }
+
+class GenericProducerModule : Module() {
+    override fun context() = declareContext {
+        provide { ProducerImpl() } bind (GenericProducer::class)
+    }
+}

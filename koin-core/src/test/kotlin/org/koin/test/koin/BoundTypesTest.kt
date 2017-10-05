@@ -76,4 +76,18 @@ class BoundTypesTest {
         ctx.assertRootScopeSize(0)
         ctx.assertSizes(2, 0)
     }
+
+    @Test
+    fun `should inject generic interface`() {
+        val ctx = Koin().build(GenericProducerModule())
+        ctx.assertScopes(1)
+        ctx.assertSizes(1, 0)
+
+        val producer = ctx.get<GenericProducer<String>>()
+        Assert.assertEquals(ProducerImpl.OK, producer.produce())
+
+        ctx.assertScopes(1)
+        ctx.assertRootScopeSize(1)
+        ctx.assertSizes(1, 1)
+    }
 }
