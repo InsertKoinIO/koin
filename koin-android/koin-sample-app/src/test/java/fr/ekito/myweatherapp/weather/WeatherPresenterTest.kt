@@ -31,7 +31,6 @@ class WeatherPresenterTest {
         presenter.view = view
     }
 
-
     @Test
     fun testDisplayWeather() {
         Assert.assertNotNull(presenter)

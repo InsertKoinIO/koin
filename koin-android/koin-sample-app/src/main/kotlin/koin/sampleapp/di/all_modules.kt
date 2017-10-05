@@ -18,10 +18,9 @@ fun allModules() = listOf(MainModule(), WebModule(), WeatherModule())
 
 class WeatherModule : AndroidModule() {
     override fun context() =
-            declareContext {
-                // Scope WeatherActivity
-                scope { WeatherActivity::class }
-                provide { WeatherPresenter(get(), get()) } bind { WeatherContract.Presenter::class }
+            // Scope WeatherActivity
+            declareContext(scope = WeatherActivity::class) {
+                provide { WeatherPresenter(get(), get()) } bind (WeatherContract.Presenter::class)
             }
 }
 
@@ -29,7 +28,7 @@ class MainModule : AndroidModule() {
     override fun context() =
             declareContext {
                 // Rx schedulers
-                provide { ApplicationSchedulerProvider() } bind { SchedulerProvider::class }
+                provide { ApplicationSchedulerProvider() } bind (SchedulerProvider::class)
             }
 
 }

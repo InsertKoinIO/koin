@@ -34,8 +34,7 @@ class ComplexPropertyModule : AndroidModule() {
 
 class ActivityModule : AndroidModule() {
     override fun context() =
-            declareContext {
-                scope { Activity::class }
+            declareContext(scope = Activity::class) {
                 provide { OtherService(get(), getProperty("url")) }
             }
 }

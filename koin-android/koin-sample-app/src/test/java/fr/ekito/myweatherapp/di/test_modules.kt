@@ -10,7 +10,7 @@ class TestWebServicesModule : AndroidModule() {
     override fun context(): Context {
         return declareContext {
             // provided components
-            provide { TestSchedulerProvider() } bind { SchedulerProvider::class }
+            provide { TestSchedulerProvider() } bind (SchedulerProvider::class)
         }
     }
 
