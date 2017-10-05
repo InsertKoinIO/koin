@@ -2,14 +2,13 @@ package org.koin.dsl.context
 
 import org.koin.KoinContext
 import org.koin.bean.BeanDefinition
-import kotlin.reflect.KClass
 
 /**
  * Koin Context
  * Define dependencies & properties for actual context
  * @author - Arnaud GIULIANI
  */
-class Context(val koinContext: KoinContext) {
+class Context(val scope: Scope, val koinContext: KoinContext) {
 
     val provided = arrayListOf<BeanDefinition<*>>()
 
@@ -18,28 +17,11 @@ class Context(val koinContext: KoinContext) {
      */
 
     /**
-     * Declared context scope
-     */
-    var contextScope: Scope? = null
-
-    /**
-     * declare a Context scope
-     */
-    fun scope(definition: () -> KClass<*>) {
-        contextScope = Scope(definition())
-    }
-
-//    /**
-//     * Provide a bean definition & empty name
-//     */
-//    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> = provide(definition = definition)
-
-    /**
      * Provide a bean definition
      * with a name
      */
-    inline fun <reified T : Any> provide(name: String = "", vararg bind: KClass<*> = emptyArray(), noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root(), bindTypes = bind.toList(), name = name)
+    inline fun <reified T : Any> provide(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition(definition, T::class, scope, name = name)
         provided += beanDefinition
         return beanDefinition
     }

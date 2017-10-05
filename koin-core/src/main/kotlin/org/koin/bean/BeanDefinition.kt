@@ -18,8 +18,8 @@ data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, 
     /**
      * Add a compatible type to current bounded definition
      */
-    infix fun bind(bind: () -> KClass<*>): BeanDefinition<T> {
-        bindTypes += bind()
+    infix fun bind(clazz: KClass<*>): BeanDefinition<*> {
+        bindTypes += clazz
         return this
     }
 

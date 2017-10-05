@@ -29,4 +29,6 @@ class InstanceResolver {
             all_context[scope] = InstanceFactory()
         }
     }
+
+    fun scopeExists(scope : Scope) = all_context[scope] != null
 }

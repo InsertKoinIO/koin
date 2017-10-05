@@ -39,13 +39,12 @@ class Koin {
         modules.forEach {
             it.koinContext = koinContext
             val ctx = it.context()
-            val scope = ctx.contextScope
-            if (scope != null) {
+            val scope = ctx.scope
+            if (!instanceResolver.scopeExists(scope)) {
                 instanceResolver.createContext(scope)
             }
             ctx.provided.forEach { beanRegistry.declare(it) }
         }
-//        logger.info("(-) ${beanRegistry.definitions.size} definitions loaded (-)")
         return koinContext
     }
 

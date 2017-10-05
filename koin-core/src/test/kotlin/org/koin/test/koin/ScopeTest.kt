@@ -26,6 +26,18 @@ class ScopeTest {
     }
 
     @Test
+    fun `several provide on root scope`() {
+        val ctx = Koin().build(ScopedModuleA(),ScopedModuleA_B())
+
+        ctx.assertScopes(2)
+        ctx.assertSizes(2, 0)
+        Assert.assertNotNull(ctx.get<ServiceA>())
+
+        ctx.assertScopeSize(ServiceA::class, 2)
+        ctx.assertSizes(2, 2)
+    }
+
+    @Test
     fun `get scoped instances`() {
         val ctx = Koin().build(ScopedModuleB())
         ctx.assertScopes(2)

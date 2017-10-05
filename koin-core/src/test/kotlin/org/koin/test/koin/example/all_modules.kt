@@ -31,8 +31,7 @@ class SampleModuleD : Module() {
 
 class ScopedModuleB : Module() {
     override fun context() =
-            declareContext {
-                scope { ServiceB::class }
+            declareContext(scope = ServiceB::class) {
                 provide { ServiceB() }
             }
 }
@@ -75,9 +74,15 @@ class CleanMultiDependency : Module() {
 
 class ScopedModuleA : Module() {
     override fun context() =
-            declareContext {
-                scope { ServiceA::class }
+            declareContext(scope = ServiceA::class) {
                 provide { ServiceA(get()) }
+            }
+}
+
+class ScopedModuleA_B : Module() {
+    override fun context() =
+            declareContext(scope = ServiceA::class) {
+                provide { ServiceB() }
             }
 }
 
@@ -95,6 +100,6 @@ class SampleModuleOA : Module() {
 
 class BindModuleB : Module() {
     override fun context() = declareContext {
-        provide { ServiceB() } bind { Processor::class }
+        provide { ServiceB() } bind (Processor::class)
     }
 }
