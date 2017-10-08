@@ -1,16 +1,12 @@
 package org.koin.core.instance
 
 import org.koin.core.bean.BeanDefinition
-import org.koin.error.BeanDefinitionException
-import org.koin.error.BeanInstanceCreationException
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
 
 /**
  * Instance factory - handle objects creation for BeanRegistry
  * @author - Arnaud GIULIANI
  */
-@Suppress("UNCHECKED_CAST")
 class InstanceFactory {
 
     val instances = ConcurrentHashMap<BeanDefinition<*>, Any>()

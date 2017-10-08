@@ -21,7 +21,7 @@
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //
-//        ctx.assertScopeSize(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
 //        ctx.assertSizes(1, 1)
 //    }
 //
@@ -33,7 +33,7 @@
 //        ctx.assertSizes(2, 0)
 //        Assert.assertNotNull(ctx.get<ServiceA>())
 //
-//        ctx.assertScopeSize(ServiceA::class, 2)
+//        ctx.assertScopes(ServiceA::class, 2)
 //        ctx.assertSizes(2, 2)
 //    }
 //
@@ -44,7 +44,7 @@
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //
-//        ctx.assertScopeSize(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
 //        ctx.assertSizes(1, 1)
 //    }
 //
@@ -52,14 +52,14 @@
 //    fun `isolated scope - 1 instance`() {
 //        val ctx = Koin().build(ScopedModuleB())
 //        ctx.assertScopes(2)
-//        ctx.assertScopeSize(ServiceB::class, 0)
+//        ctx.assertScopes(ServiceB::class, 0)
 //        ctx.assertSizes(1, 0)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //        Assert.assertNotNull(ctx.getOrNull<ServiceB>())
 //
-//        ctx.assertScopeSize(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
 //        ctx.assertSizes(1, 1)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //    }
 //
 //    @Test
@@ -70,33 +70,33 @@
 //        var serviceA = ctx.get<ServiceA>()
 //
 //        Assert.assertEquals(serviceA.serviceB, serviceB_1)
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //
 //        ctx.release(serviceB_1)
-//        ctx.assertScopeSize(ServiceB::class, 0)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertScopes(ServiceB::class, 0)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(2, 1)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //
 //        val serviceB_2 = ctx.get<ServiceB>()
 //        serviceA = ctx.get<ServiceA>()
 //        Assert.assertNotEquals(serviceA.serviceB, serviceB_2)
 //        Assert.assertNotEquals(serviceB_1, serviceB_2)
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //
 //        ctx.release(serviceA)
 //        serviceA = ctx.get<ServiceA>()
 //        Assert.assertEquals(serviceA.serviceB, serviceB_2)
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //    }
 //
 //    @Test
@@ -107,8 +107,8 @@
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //        Assert.assertNotNull(ctx.get<ServiceA>())
 //
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
 //    }
 //
@@ -119,9 +119,9 @@
 //        ctx.assertSizes(3, 0)
 //        Assert.assertNotNull(ctx.get<ServiceC>())
 //
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
-//        ctx.assertRootScopeSize(1)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertRootScope(1)
 //        ctx.assertSizes(3, 3)
 //    }
 //
@@ -129,30 +129,30 @@
 //    fun `isolated scope - 3 instance`() {
 //        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), SampleModuleC())
 //        ctx.assertScopes(3)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //        ctx.assertSizes(3, 0)
 //
 //        val serviceB = ctx.get<ServiceB>()
 //        Assert.assertNotNull(serviceB)
 //        ctx.assertScopes(3)
-//        ctx.assertRootScopeSize(0)
-//        ctx.assertScopeSize(ServiceB::class, 1)
+//        ctx.assertRootScope(0)
+//        ctx.assertScopes(ServiceB::class, 1)
 //        ctx.assertSizes(3, 1)
 //
 //        val serviceA = ctx.get<ServiceA>()
 //        Assert.assertNotNull(serviceA)
 //        ctx.assertScopes(3)
-//        ctx.assertRootScopeSize(0)
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertRootScope(0)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(3, 2)
 //
 //        val serviceC = ctx.get<ServiceC>()
 //        Assert.assertNotNull(serviceC)
 //        ctx.assertScopes(3)
-//        ctx.assertRootScopeSize(1)
-//        ctx.assertScopeSize(ServiceB::class, 1)
-//        ctx.assertScopeSize(ServiceA::class, 1)
+//        ctx.assertRootScope(1)
+//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceA::class, 1)
 //        ctx.assertSizes(3, 3)
 //
 //        Assert.assertEquals(serviceB, serviceA.serviceB)
@@ -168,11 +168,11 @@
 //        val serviceB = ctx.get<ServiceB>()
 //        Assert.assertNotNull(serviceB)
 //        ctx.assertSizes(1, 1)
-//        ctx.assertScopeSize(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
 //
 //        ctx.release(serviceB)
 //        ctx.assertSizes(1, 0)
-//        ctx.assertScopeSize(ServiceB::class, 0)
+//        ctx.assertScopes(ServiceB::class, 0)
 //    }
 //
 //    @Test
@@ -183,11 +183,11 @@
 //        val serviceB = ctx.get<ServiceB>()
 //        Assert.assertNotNull(serviceB)
 //        ctx.assertSizes(1, 1)
-//        ctx.assertScopeSize(ServiceB::class, 1)
+//        ctx.assertScopes(ServiceB::class, 1)
 //
 //        ctx.release(serviceB)
 //        ctx.assertSizes(1, 0)
-//        ctx.assertScopeSize(ServiceB::class, 0)
+//        ctx.assertScopes(ServiceB::class, 0)
 //    }
 //
 //    @Test
@@ -200,7 +200,7 @@
 //        }
 //
 //        try {
-//            ctx.assertScopeSize(ServiceB::class, 0)
+//            ctx.assertScopes(ServiceB::class, 0)
 //        } catch (e: Exception) {
 //        }
 //        ctx.assertSizes(0, 0)

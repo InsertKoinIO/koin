@@ -22,7 +22,7 @@ class Context(val scope: KClass<*>? = null, val koinContext: KoinContext) {
     /**
      * Create Root Context function
      */
-    fun scopeContext(newScope: KClass<*>, init: Context.() -> Unit): Context {
+    fun subContext(newScope: KClass<*>, init: Context.() -> Unit): Context {
         val newContext = Context(newScope, koinContext)
         newContext.parentScope = scope
         subContexts += newContext

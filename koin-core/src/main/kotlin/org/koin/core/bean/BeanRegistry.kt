@@ -1,6 +1,7 @@
 package org.koin.core.bean
 
 import org.koin.core.scope.Scope
+import kotlin.reflect.KClass
 
 /**
  * Bean registry
@@ -10,6 +11,12 @@ import org.koin.core.scope.Scope
 class BeanRegistry {
 
     val definitions = HashMap<BeanDefinition<*>, Scope>()
+    val scopes = arrayListOf<Scope>()
+    val rootScope = Scope.root()
+
+    init {
+        scopes += rootScope
+    }
 
     /**
      * Add/Replace an existing bean
@@ -18,6 +25,32 @@ class BeanRegistry {
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
         definitions += Pair(def, scope)
+    }
+
+    fun scope(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
+
+    fun isVisible(def: BeanDefinition<*>, scope: Scope): Boolean {
+        val actualScope = definitions[def]
+        val visibleScopes = listOf(actualScope) + parentScopes(actualScope)
+        return visibleScopes.firstOrNull { it?.clazz == scope.clazz } != null
+    }
+
+    private fun parentScopes(scope: Scope?): List<Scope?> {
+        return if (scope?.parentScope == null) emptyList()
+        else listOf(scope.parentScope) + parentScopes(scope.parentScope)
+    }
+
+    fun findOrCreateScope(scope: KClass<*>?, parentScope: KClass<*>? = null): Scope {
+        return if (scope == null) rootScope
+        else {
+            scopes.firstOrNull { it.clazz == scope } ?: createScope(scope, parentScope)
+        }
+    }
+
+    private fun createScope(scope: KClass<*>, parentScope: KClass<*>?): Scope {
+        val s = Scope(scope, parentScope = findOrCreateScope(parentScope))
+        scopes += s
+        return s
     }
 
 //    /**

@@ -1,7 +1,6 @@
 package org.koin
 
 import org.koin.core.bean.BeanRegistry
-import org.koin.core.instance.InstanceResolver
 import org.koin.core.property.PropertyResolver
 import java.util.*
 import kotlin.reflect.KClass
@@ -12,7 +11,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud GIULIANI
  */
-class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceResolver: InstanceResolver) {
+class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver) {
 
     /**
      * resolution stack

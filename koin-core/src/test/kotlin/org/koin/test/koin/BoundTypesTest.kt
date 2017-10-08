@@ -3,7 +3,7 @@
 //import org.junit.Assert
 //import org.junit.Test
 //import org.koin.Koin
-//import org.koin.test.ext.assertRootScopeSize
+//import org.koin.test.ext.assertRootScope
 //import org.koin.test.ext.assertScopes
 //import org.koin.test.ext.assertSizes
 //import org.koin.test.ext.getOrNull
@@ -22,7 +22,7 @@
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNotNull(ctx.get<Processor>())
 //
-//        ctx.assertRootScopeSize(1)
+//        ctx.assertRootScope(1)
 //        ctx.assertSizes(1, 1)
 //    }
 //
@@ -33,7 +33,7 @@
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNull(ctx.getOrNull<Processor>())
 //
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //        ctx.assertSizes(1, 0)
 //    }
 //
@@ -46,7 +46,7 @@
 //        val servB = ctx.get<ServiceB>()
 //
 //        Assert.assertEquals(servB, intf)
-//        ctx.assertRootScopeSize(1)
+//        ctx.assertRootScope(1)
 //        ctx.assertSizes(1, 1)
 //    }
 //
@@ -61,7 +61,7 @@
 //        servA.doSomethingWithB()
 //
 //        ctx.assertScopes(1)
-//        ctx.assertRootScopeSize(2)
+//        ctx.assertRootScope(2)
 //        ctx.assertSizes(2, 2)
 //    }
 //
@@ -74,7 +74,7 @@
 //        Assert.assertNull(ctx.getOrNull<OtherServiceA>())
 //
 //        ctx.assertScopes(1)
-//        ctx.assertRootScopeSize(0)
+//        ctx.assertRootScope(0)
 //        ctx.assertSizes(2, 0)
 //    }
 //
@@ -88,7 +88,7 @@
 //        Assert.assertEquals(ProducerImpl.OK, producer.produce())
 //
 //        ctx.assertScopes(1)
-//        ctx.assertRootScopeSize(1)
+//        ctx.assertRootScope(1)
 //        ctx.assertSizes(1, 1)
 //    }
 //}
