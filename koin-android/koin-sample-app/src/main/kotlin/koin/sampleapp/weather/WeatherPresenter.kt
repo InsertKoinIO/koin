@@ -29,7 +29,10 @@ class WeatherPresenter(val weatherWS: WeatherWS, val schedulerProvider: Schedule
                 .flatMap { location -> weatherWS.weather(location.lat, location.lng, DEFAULT_LANG) }
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .subscribe({ weather -> view.displayWeather(weather, location) }, { error -> view.displayError(error) })
+                .subscribe(
+                        { weather -> view.displayWeather(weather, location) },
+                        { error -> view.displayError(error) }
+                )
     }
 
 }

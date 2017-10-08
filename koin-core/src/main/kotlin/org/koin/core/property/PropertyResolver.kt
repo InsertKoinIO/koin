@@ -1,4 +1,4 @@
-package org.koin.property
+package org.koin.core.property
 
 /**
  * Resolve properties for a context

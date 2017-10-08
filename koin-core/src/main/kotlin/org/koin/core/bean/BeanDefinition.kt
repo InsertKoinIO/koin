@@ -1,6 +1,5 @@
-package org.koin.bean
+package org.koin.core.bean
 
-import org.koin.dsl.context.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -13,7 +12,7 @@ import kotlin.reflect.KClass
  * has a BeanType : default singleton
  * has a name, if specified
  */
-data class BeanDefinition<out T>(val definition: () -> T, val clazz: KClass<*>, val scope: Scope = Scope.root(), var bindTypes: List<KClass<*>> = arrayListOf(), val name: String = "") {
+data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
 
     /**
      * Add a compatible type to current bounded definition
