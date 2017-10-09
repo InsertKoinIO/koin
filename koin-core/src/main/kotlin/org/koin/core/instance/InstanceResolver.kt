@@ -1,13 +1,14 @@
 //package org.koin.core.instance
 //
-//import org.koin.core.getScope.Scope
-//import kotlin.reflect.KClass
+//import org.koin.core.bean.BeanDefinition
+//import java.util.concurrent.ConcurrentHashMap
 //
 ///**
 // * Manage all InstanceFactory per Scope
 // */
 //class InstanceResolver {
 //
+//    val instances = ConcurrentHashMap<BeanDefinition<*>, Any>()
 //
 //
 ////    fun getInstanceFactory(getScope: Scope) = all_context[getScope] ?: throw BeanDefinitionException("couldn't resolveInstance getScope $getScope")
@@ -27,7 +28,7 @@
 ////            all_context[getScope] = InstanceFactory()
 ////        }
 ////    }
-//
+////
 ////    fun scopeExists(getScope : Scope) = all_context[getScope] != null
 //
 //

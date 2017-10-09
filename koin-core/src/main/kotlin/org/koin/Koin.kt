@@ -1,6 +1,7 @@
 package org.koin
 
 import org.koin.core.bean.BeanRegistry
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyResolver
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
@@ -12,6 +13,7 @@ import org.koin.dsl.module.Module
 class Koin {
     val beanRegistry = BeanRegistry()
     val propertyResolver = PropertyResolver()
+    val instanceFactory = InstanceFactory(beanRegistry)
 
     /**
      * Inject properties to context
@@ -25,7 +27,7 @@ class Koin {
      * load given list of module instances into current koin context
      */
     fun <T : Module> build(modules: List<T>): KoinContext {
-        val koinContext = KoinContext(beanRegistry, propertyResolver)
+        val koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
         modules.forEach { module ->
             module.koinContext = koinContext
             val context = module.context()
@@ -56,5 +58,5 @@ class Koin {
     /**
      * load directly Koin context with no modules
      */
-    fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver)
+    fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
 }

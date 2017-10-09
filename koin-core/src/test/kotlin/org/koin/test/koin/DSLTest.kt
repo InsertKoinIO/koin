@@ -9,24 +9,19 @@ import org.koin.test.ext.assertDefinedInScope
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertScopeParent
 
-
-class ComponentA
-class ComponentB
-class ComponentC
-
 // getScope qualifier
 
 class FlatContextsModule() : Module() {
     override fun context() = applicationContext {
 
-        provide { ComponentA() }
+        provide { DSLTest.ComponentA() }
 
         context(name = "B") {
-            provide { ComponentB() }
+            provide { DSLTest.ComponentB() }
         }
 
         context(name = "C") {
-            provide { ComponentC() }
+            provide { DSLTest.ComponentC() }
         }
     }
 }
@@ -35,13 +30,13 @@ class FlatContextsModule() : Module() {
 class HierarchyContextsModule() : Module() {
     override fun context() = applicationContext {
         context(name = "A") {
-            provide { ComponentA() }
+            provide { DSLTest.ComponentA() }
 
             context(name = "B") {
-                provide { ComponentB() }
+                provide { DSLTest.ComponentB() }
 
                 context(name = "C") {
-                    provide { ComponentC() }
+                    provide { DSLTest.ComponentC() }
                 }
             }
         }
@@ -50,6 +45,12 @@ class HierarchyContextsModule() : Module() {
 
 
 class DSLTest {
+
+
+    class ComponentA
+    class ComponentB
+    class ComponentC
+
 
     @Test
     fun `can create flat contexts`() {

@@ -44,17 +44,18 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(): T = null as T //koinContext.resolveByClass() // getScope
+    inline fun <reified T : Any> get(): T = koinContext.resolveByClass()
 
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(name: String): T = null as T  //koinContext.resolveByName(name) // getScope
+    inline fun <reified T : Any> get(name: String): T = koinContext.resolveByName(name)
 
     /**
      * Retrieve a property
      */
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 
+    // String display
     override fun toString(): String = "Context[$name]"
 }
