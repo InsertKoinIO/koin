@@ -1,6 +1,6 @@
 //package org.koin.core.instance
 //
-//import org.koin.core.scope.Scope
+//import org.koin.core.getScope.Scope
 //import kotlin.reflect.KClass
 //
 ///**
@@ -10,25 +10,25 @@
 //
 //
 //
-////    fun getInstanceFactory(scope: Scope) = all_context[scope] ?: throw BeanDefinitionException("couldn't resolveInstance scope $scope")
+////    fun getInstanceFactory(getScope: Scope) = all_context[getScope] ?: throw BeanDefinitionException("couldn't resolveInstance getScope $getScope")
 ////
 ////    fun <T> resolveInstance(def: BeanDefinition<*>): T {
-////        val instanceFactory = getInstanceFactory(def.scope)
-////        return instanceFactory.resolveInstance(def, def.scope)
+////        val instanceFactory = getInstanceFactory(def.getScope)
+////        return instanceFactory.resolveInstance(def, def.getScope)
 ////    }
 ////
-////    fun deleteInstance(vararg classes: KClass<*>, scope: Scope) {
-////        val instanceFactory = getInstanceFactory(scope)
+////    fun deleteInstance(vararg classes: KClass<*>, getScope: Scope) {
+////        val instanceFactory = getInstanceFactory(getScope)
 ////        classes.forEach { instanceFactory.deleteInstance(it) }
 ////    }
 ////
-////    fun createContext(scope: Scope) {
-////        if (!all_context.containsKey(scope)) {
-////            all_context[scope] = InstanceFactory()
+////    fun createContext(getScope: Scope) {
+////        if (!all_context.containsKey(getScope)) {
+////            all_context[getScope] = InstanceFactory()
 ////        }
 ////    }
 //
-////    fun scopeExists(scope : Scope) = all_context[scope] != null
+////    fun scopeExists(getScope : Scope) = all_context[getScope] != null
 //
 //
 //}

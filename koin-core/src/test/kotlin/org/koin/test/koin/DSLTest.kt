@@ -1,63 +1,47 @@
 package org.koin.test.koin
 
-import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
+import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.test.ext.*
+import org.koin.test.ext.assertContexts
+import org.koin.test.ext.assertDefinedInScope
+import org.koin.test.ext.assertDefinitions
+import org.koin.test.ext.assertScopeParent
 
 
-class ServiceA
-class ServiceB
-class ServiceC
-class ServiceD
+class ComponentA
+class ComponentB
+class ComponentC
 
-class SimpleRootModule() : Module() {
-    override fun context() = newContext {
-        provide { ServiceA() }
-    }
-}
+// getScope qualifier
 
-class SubContextModule() : Module() {
-    override fun context() = newContext {
-        provide { ServiceA() }
+class FlatContextsModule() : Module() {
+    override fun context() = applicationContext {
 
-        subContext(ServiceB::class) {
-            provide { ServiceB() }
+        provide { ComponentA() }
+
+        context(name = "B") {
+            provide { ComponentB() }
+        }
+
+        context(name = "C") {
+            provide { ComponentC() }
         }
     }
 }
 
-class ComplexScopeModule() : Module() {
-    override fun context() = newContext {
 
-        subContext(ServiceB::class) {
-            provide { ServiceB() }
+class HierarchyContextsModule() : Module() {
+    override fun context() = applicationContext {
+        context(name = "A") {
+            provide { ComponentA() }
 
-            subContext(ServiceA::class) {
-                provide { ServiceA() }
-            }
-        }
+            context(name = "B") {
+                provide { ComponentB() }
 
-        subContext(ServiceC::class) {
-            provide { ServiceC() }
-        }
-    }
-}
-
-class FullHierarchyModule() : Module() {
-    override fun context() = newContext {
-
-        provide { ServiceD() }
-
-        subContext(ServiceC::class) {
-            provide { ServiceC() }
-
-            subContext(ServiceB::class) {
-                provide { ServiceB() }
-
-                subContext(ServiceA::class) {
-                    provide { ServiceA() }
+                context(name = "C") {
+                    provide { ComponentC() }
                 }
             }
         }
@@ -68,140 +52,34 @@ class FullHierarchyModule() : Module() {
 class DSLTest {
 
     @Test
-    fun `can create a root context`() {
-        val ctx = Koin().build(SimpleRootModule())
+    fun `can create flat contexts`() {
+        val ctx = Koin().build(FlatContextsModule())
 
-        ctx.assertScopes(1)
-        ctx.assertDefinitions(1)
-        ctx.assertInstances(0)
-        ctx.assertRootScope(0)
-    }
-
-    @Test
-    fun `can create several contexts`() {
-        val ctx = Koin().build(SubContextModule())
-
-        ctx.assertScopes(2)
-        ctx.assertDefinitions(2)
-        ctx.assertInstances(0)
-        ctx.assertRootScope(0)
-
-        val root = ctx.rootScope()
-        val scopeB = ctx.getScope(ServiceB::class)
-        ctx.assertParentScope(root, scopeB)
-    }
-
-    @Test
-    fun `complex context visibility`() {
-        val ctx = Koin().build(SubContextModule())
-
-        val root = ctx.rootScope()
-        val scopeB = ctx.getScope(ServiceB::class)
-        ctx.assertParentScope(root, scopeB)
-        ctx.assertVisible(root, ServiceB::class)
-    }
-
-    @Test
-    fun `can create more complex contexts`() {
-        val ctx = Koin().build(ComplexScopeModule())
-
-        ctx.assertScopes(4)
+        ctx.assertContexts(3)
         ctx.assertDefinitions(3)
-        ctx.assertInstances(0)
-        ctx.assertRootScope(0)
 
-        val root = ctx.rootScope()
-        val scopeB = ctx.getScope(ServiceB::class)
-        val scopeC = ctx.getScope(ServiceC::class)
-        val scopeA = ctx.getScope(ServiceA::class)
+        ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        ctx.assertDefinedInScope(ComponentB::class, "B")
+        ctx.assertDefinedInScope(ComponentC::class, "C")
 
-        ctx.assertParentScope(root, scopeB)
-        ctx.assertParentScope(root, scopeC)
-        ctx.assertParentScope(scopeB, scopeA)
+        ctx.assertScopeParent("B", Scope.ROOT)
+        ctx.assertScopeParent("C", Scope.ROOT)
     }
 
     @Test
-    fun `more complex context visibility`() {
-        val ctx = Koin().build(ComplexScopeModule())
+    fun `can create hierarchy contexts`() {
+        val ctx = Koin().build(HierarchyContextsModule())
 
-        val root = ctx.rootScope()
-        val scopeB = ctx.getScope(ServiceB::class)
-        val scopeC = ctx.getScope(ServiceC::class)
-        val scopeA = ctx.getScope(ServiceA::class)
-
-        ctx.assertParentScope(root, scopeB)
-        ctx.assertParentScope(root, scopeC)
-        ctx.assertParentScope(scopeB, scopeA)
-
-        ctx.assertVisible(root, ServiceB::class)
-        ctx.assertVisible(root, ServiceA::class)
-        ctx.assertVisible(root, ServiceC::class)
-
-        ctx.assertVisible(scopeA, ServiceA::class)
-        ctx.assertVisible(scopeB, ServiceA::class)
-        ctx.assertNotVisible(scopeC, ServiceA::class)
-
-        ctx.assertNotVisible(scopeA, ServiceB::class)
-        ctx.assertVisible(scopeB, ServiceB::class)
-        ctx.assertNotVisible(scopeC, ServiceB::class)
-
-        ctx.assertNotVisible(scopeA, ServiceC::class)
-        ctx.assertNotVisible(scopeB, ServiceC::class)
-        ctx.assertVisible(scopeB, ServiceC::class)
-    }
-
-    @Test
-    fun `can create full hierarchy contexts`() {
-        val ctx = Koin().build(FullHierarchyModule())
-
-        ctx.assertScopes(4)
+        ctx.assertContexts(4)
         ctx.assertDefinitions(3)
-        ctx.assertInstances(0)
-        ctx.assertRootScope(0)
 
-        val root = ctx.rootScope()
-        val scopeB = ctx.getScope(ServiceB::class)
-        val scopeC = ctx.getScope(ServiceC::class)
-        val scopeA = ctx.getScope(ServiceA::class)
+        ctx.assertDefinedInScope(ComponentA::class, "A")
+        ctx.assertDefinedInScope(ComponentB::class, "B")
+        ctx.assertDefinedInScope(ComponentC::class, "C")
 
-        ctx.assertParentScope(root, scopeC)
-        ctx.assertParentScope(scopeC, scopeB)
-        ctx.assertParentScope(scopeB, scopeA)
+        ctx.assertScopeParent("A", Scope.ROOT)
+        ctx.assertScopeParent("B", "A")
+        ctx.assertScopeParent("C", "B")
     }
 
-    @Test
-    fun `full hierarchy context visibility`() {
-        val ctx = Koin().build(FullHierarchyModule())
-
-        val root = ctx.rootScope()
-        val scopeA = ctx.getScope(ServiceA::class)
-        val scopeB = ctx.getScope(ServiceB::class)
-        val scopeC = ctx.getScope(ServiceC::class)
-
-        Assert.assertEquals(root, ctx.beanRegistry.scope(ctx.definition(ServiceD::class)))
-
-        ctx.assertParentScope(root, scopeC)
-        ctx.assertParentScope(scopeC, scopeB)
-        ctx.assertParentScope(scopeB, scopeA)
-
-        ctx.assertVisible(root, ServiceA::class)
-        ctx.assertVisible(scopeC, ServiceA::class)
-        ctx.assertVisible(scopeB, ServiceA::class)
-        ctx.assertVisible(scopeA, ServiceA::class)
-
-        ctx.assertVisible(root, ServiceB::class)
-        ctx.assertVisible(scopeC, ServiceB::class)
-        ctx.assertVisible(scopeB, ServiceB::class)
-        ctx.assertNotVisible(scopeA, ServiceB::class)
-
-        ctx.assertVisible(root, ServiceC::class)
-        ctx.assertVisible(scopeC, ServiceC::class)
-        ctx.assertNotVisible(scopeB, ServiceC::class)
-        ctx.assertNotVisible(scopeA, ServiceC::class)
-
-        ctx.assertVisible(root, ServiceD::class)
-        ctx.assertNotVisible(scopeA, ServiceD::class)
-        ctx.assertNotVisible(scopeB, ServiceD::class)
-        ctx.assertNotVisible(scopeA, ServiceD::class)
-    }
 }

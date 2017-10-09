@@ -4,7 +4,7 @@
 //import org.junit.Test
 //import org.koin.Koin
 //import org.koin.error.NoBeanDefFoundException
-//import org.koin.test.ext.assertScopes
+//import org.koin.test.ext.assertContexts
 //import org.koin.test.ext.assertSizes
 //import org.koin.test.ext.getOrNull
 //import org.koin.test.koin.example.ServiceA
@@ -32,7 +32,7 @@
 //        assertNotNull(ctx.get<ServiceB>())
 //
 //        ctx.assertSizes(2, 2)
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //    }
 //
 //    //TODO Handle Stack
@@ -50,7 +50,7 @@
 //        assertNull(ctx.getOrNull<ServiceOne>())
 //
 //        ctx.assertSizes(2, 0)
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //    }
 //
 //    @Test

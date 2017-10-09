@@ -5,7 +5,7 @@
 //import org.koin.Koin
 //import org.koin.error.BeanDefinitionException
 //import org.koin.error.NoBeanDefFoundException
-//import org.koin.test.ext.assertScopes
+//import org.koin.test.ext.assertContexts
 //import org.koin.test.ext.assertSizes
 //import org.koin.test.koin.example.*
 //
@@ -17,7 +17,7 @@
 //    @Test
 //    fun `get named bean instance`() {
 //        val ctx = Koin().build(MultiDeclareA())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(3, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //
@@ -32,7 +32,7 @@
 //    @Test
 //    fun `error getting named bean instance`() {
 //        val ctx = Koin().build(MultiDeclareA())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(3, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //
@@ -46,7 +46,7 @@
 //    @Test
 //    fun `error getting module with conflicting named dependency`() {
 //        val ctx = Koin().build(ConflictingDependency())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(3, 0)
 //
 //        try {
@@ -59,7 +59,7 @@
 //    @Test
 //    fun `error with conflicting declaration `() {
 //        val ctx = Koin().build(ConflictingModule())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(2, 0)
 //        try {
 //            ctx.get<ServiceA>()
@@ -71,7 +71,7 @@
 //    @Test
 //    fun `getting module with named dependency`() {
 //        val ctx = Koin().build(CleanMultiDependency())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(3, 0)
 //
 //        val a = ctx.get<ServiceA>()
@@ -88,7 +88,7 @@
 //    @Test
 //    fun `provide for named dependency`() {
 //        val ctx = Koin().build(CleanMultiDependency())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //
 //        ctx.provide { ServiceC(ctx.get(), ctx.get("B1")) }
 //

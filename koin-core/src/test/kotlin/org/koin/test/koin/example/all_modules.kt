@@ -9,7 +9,7 @@ import org.koin.dsl.module.Module
  */
 class SampleModuleA_C : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide { ServiceA(get()) }
                 provide { ServiceC(get(), get()) }
             }
@@ -17,28 +17,28 @@ class SampleModuleA_C : Module() {
 
 class SampleModuleB : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide { ServiceB() }
             }
 }
 
 class SampleModuleD : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide { ServiceD(getProperty("myVal")) }
             }
 }
 
 class ScopedModuleB : Module() {
     override fun context() =
-            newContext(scope = ServiceB::class) {
+            applicationContext {
                 provide { ServiceB() }
             }
 }
 
 class MultiDeclareA : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide { ServiceB() }
                 provide("A1") { ServiceA(get()) }
                 provide("A2") { ServiceA(get()) }
@@ -47,7 +47,7 @@ class MultiDeclareA : Module() {
 
 class ConflictingModule : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide { ServiceB() }
                 provide { ServiceB() }
             }
@@ -55,7 +55,7 @@ class ConflictingModule : Module() {
 
 class ConflictingDependency : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide("B1") { ServiceB() }
                 provide("B2") { ServiceB() }
                 provide { ServiceA(get()) }
@@ -64,7 +64,7 @@ class ConflictingDependency : Module() {
 
 class CleanMultiDependency : Module() {
     override fun context() =
-            newContext {
+            applicationContext {
                 provide("B1") { ServiceB() }
                 provide("B2") { ServiceB() }
                 provide { ServiceA(get("B1")) }
@@ -74,38 +74,38 @@ class CleanMultiDependency : Module() {
 
 class ScopedModuleA : Module() {
     override fun context() =
-            newContext(scope = ServiceA::class) {
+            applicationContext {
                 provide { ServiceA(get()) }
             }
 }
 
 class ScopedModuleA_B : Module() {
     override fun context() =
-            newContext(scope = ServiceA::class) {
+            applicationContext {
                 provide { ServiceB() }
             }
 }
 
 class SampleModuleC : Module() {
-    override fun context(): Context = newContext {
+    override fun context(): Context = applicationContext {
         provide { ServiceC(get(), get()) }
     }
 }
 
 class SampleModuleOA : Module() {
-    override fun context() = newContext {
+    override fun context() = applicationContext {
         provide { OtherServiceA(get()) }
     }
 }
 
 class BindModuleB : Module() {
-    override fun context() = newContext {
+    override fun context() = applicationContext {
         provide { ServiceB() } bind (Processor::class)
     }
 }
 
 class GenericProducerModule : Module() {
-    override fun context() = newContext {
+    override fun context() = applicationContext {
         provide { ProducerImpl() } bind (GenericProducer::class)
     }
 }

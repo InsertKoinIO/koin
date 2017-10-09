@@ -22,5 +22,5 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
         return this
     }
 
-    override fun toString() = "Bean[name=$name,class=${clazz.java.simpleName},binds=${bindTypes.size}]"
+    override fun toString() = "Bean[name=$name,class=${clazz.java.simpleName},binds~${bindTypes.size}]"
 }

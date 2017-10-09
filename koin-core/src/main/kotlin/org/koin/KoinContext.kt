@@ -55,7 +55,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
 
 //    /**
-//     * provide bean definition at Root scope
+//     * provide bean definition at Root getScope
 //     * @param definition function declaration
 //     */
 //    inline fun <reified T : Any> provide(noinline definition: () -> T) {
@@ -63,33 +63,33 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 //    }
 //
 //    /**
-//     * provide bean definition at given class/scope
+//     * provide bean definition at given class/getScope
 //     * @param definition  function declaration
 //     */
 //    inline fun <reified T : Any> provideAt(noinline definition: () -> T, scopeClass: KClass<*>) {
-//        val scope = Scope(scopeClass)
-//        instanceResolver.all_context[scope] ?: throw BeanDefinitionException("No scope defined for class $scopeClass")
-//        declare(definition, scope)
+//        val getScope = Scope(scopeClass)
+//        instanceResolver.all_context[getScope] ?: throw BeanDefinitionException("No getScope defined for class $scopeClass")
+//        declare(definition, getScope)
 //    }
 //
 //    /**
-//     * Create a scope
+//     * Create a getScope
 //     */
 //    fun declareScope(scopedClass: KClass<*>) {
 //        instanceResolver.createContext(Scope(scopedClass))
 //    }
 //
 //    /**
-//     * provide bean definition at given scope
+//     * provide bean definition at given getScope
 //     * @param definition  function declaration
 //     */
-//    inline fun <reified T : Any> declare(noinline definition: () -> T, scope: Scope) {
-//        instanceResolver.deleteInstance(T::class, scope = scope)
-//        beanRegistry.declare(definition, T::class, scope = scope)
+//    inline fun <reified T : Any> declare(noinline definition: () -> T, getScope: Scope) {
+//        instanceResolver.deleteInstance(T::class, getScope = getScope)
+//        beanRegistry.declare(definition, T::class, getScope = getScope)
 //    }
 //
 //    /**
-//     * Clear given class/scope instance
+//     * Clear given class/getScope instance
 //     */
 //    private fun release(scopedClass: KClass<*>) {
 ////        logger.warning("Clear instance $scopedClass ")
@@ -97,7 +97,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 //    }
 //
 //    /**
-//     * Clear given class/scope instance from objects
+//     * Clear given class/getScope instance from objects
 //     */
 //    fun release(vararg scopedObject: Any) = scopedObject.map { it::class }.forEach { release(it) }
 //

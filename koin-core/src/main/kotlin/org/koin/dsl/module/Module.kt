@@ -1,8 +1,8 @@
 package org.koin.dsl.module
 
 import org.koin.KoinContext
+import org.koin.core.scope.Scope
 import org.koin.dsl.context.Context
-import kotlin.reflect.KClass
 
 
 /**
@@ -21,5 +21,5 @@ abstract class Module {
     /**
      * Create Context function
      */
-    fun newContext(scope: KClass<*>? = null, init: Context.() -> Unit) = Context(scope, koinContext).apply(init)
+    fun applicationContext(init: Context.() -> Unit) = Context(Scope.ROOT, koinContext).apply(init)
 }

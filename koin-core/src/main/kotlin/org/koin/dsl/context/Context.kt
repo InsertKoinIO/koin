@@ -2,18 +2,17 @@ package org.koin.dsl.context
 
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
-import kotlin.reflect.KClass
+import org.koin.core.scope.Scope
 
 /**
  * Koin Context
  * Define dependencies & properties for actual context
  * @author - Arnaud GIULIANI
  */
-class Context(val scope: KClass<*>? = null, val koinContext: KoinContext) {
+class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     val definitions = arrayListOf<BeanDefinition<*>>()
     val subContexts = arrayListOf<Context>()
-    var parentScope: KClass<*>? = null
 
     /*
      * Dependency declaration
@@ -22,15 +21,10 @@ class Context(val scope: KClass<*>? = null, val koinContext: KoinContext) {
     /**
      * Create Root Context function
      */
-    fun subContext(newScope: KClass<*>, init: Context.() -> Unit): Context {
-        val newContext = Context(newScope, koinContext)
-        newContext.parentScope = scope
+    fun context(name: String, init: Context.() -> Unit): Context {
+        val newContext = Context(name, koinContext)
         subContexts += newContext
         return newContext.apply(init)
-    }
-
-    infix fun dependsOn(clazz: KClass<*>) {
-        parentScope = clazz
     }
 
     /**
@@ -50,17 +44,17 @@ class Context(val scope: KClass<*>? = null, val koinContext: KoinContext) {
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(): T = null as T //koinContext.resolveByClass() // scope
-
-    //TODO Classe Android / Autorelease (Act ou frag)?
+    inline fun <reified T : Any> get(): T = null as T //koinContext.resolveByClass() // getScope
 
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(name: String): T = null as T  //koinContext.resolveByName(name) // scope
+    inline fun <reified T : Any> get(name: String): T = null as T  //koinContext.resolveByName(name) // getScope
 
     /**
      * Retrieve a property
      */
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
+
+    override fun toString(): String = "Context[$name]"
 }

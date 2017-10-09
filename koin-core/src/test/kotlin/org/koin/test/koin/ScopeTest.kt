@@ -13,71 +13,71 @@
 //class ScopeTest {
 //
 //    @Test
-//    fun `provide at scope `() {
+//    fun `provide at getScope `() {
 //        val ctx = Koin().build()
 //        ctx.declareScope(ServiceB::class)
 //        ctx.provideAt({ ServiceB() }, ServiceB::class)
-//        ctx.assertScopes(2)
+//        ctx.assertContexts(2)
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //
-//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
 //        ctx.assertSizes(1, 1)
 //    }
 //
 //    @Test
-//    fun `several provide on root scope`() {
+//    fun `several provide on root getScope`() {
 //        val ctx = Koin().build(ScopedModuleA(),ScopedModuleA_B())
 //
-//        ctx.assertScopes(2)
+//        ctx.assertContexts(2)
 //        ctx.assertSizes(2, 0)
 //        Assert.assertNotNull(ctx.get<ServiceA>())
 //
-//        ctx.assertScopes(ServiceA::class, 2)
+//        ctx.assertContexts(ServiceA::class, 2)
 //        ctx.assertSizes(2, 2)
 //    }
 //
 //    @Test
 //    fun `get scoped instances`() {
 //        val ctx = Koin().build(ScopedModuleB())
-//        ctx.assertScopes(2)
+//        ctx.assertContexts(2)
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //
-//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
 //        ctx.assertSizes(1, 1)
 //    }
 //
 //    @Test
-//    fun `isolated scope - 1 instance`() {
+//    fun `isolated getScope - 1 instance`() {
 //        val ctx = Koin().build(ScopedModuleB())
-//        ctx.assertScopes(2)
-//        ctx.assertScopes(ServiceB::class, 0)
+//        ctx.assertContexts(2)
+//        ctx.assertContexts(ServiceB::class, 0)
 //        ctx.assertSizes(1, 0)
 //        ctx.assertRootScope(0)
 //        Assert.assertNotNull(ctx.getOrNull<ServiceB>())
 //
-//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
 //        ctx.assertSizes(1, 1)
 //        ctx.assertRootScope(0)
 //    }
 //
 //    @Test
-//    fun `multi scope - remove test`() {
+//    fun `multi getScope - remove test`() {
 //        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA())
 //
 //        val serviceB_1 = ctx.get<ServiceB>()
 //        var serviceA = ctx.get<ServiceA>()
 //
 //        Assert.assertEquals(serviceA.serviceB, serviceB_1)
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
 //        ctx.assertRootScope(0)
 //
 //        ctx.release(serviceB_1)
-//        ctx.assertScopes(ServiceB::class, 0)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 0)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(2, 1)
 //        ctx.assertRootScope(0)
 //
@@ -85,16 +85,16 @@
 //        serviceA = ctx.get<ServiceA>()
 //        Assert.assertNotEquals(serviceA.serviceB, serviceB_2)
 //        Assert.assertNotEquals(serviceB_1, serviceB_2)
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
 //        ctx.assertRootScope(0)
 //
 //        ctx.release(serviceA)
 //        serviceA = ctx.get<ServiceA>()
 //        Assert.assertEquals(serviceA.serviceB, serviceB_2)
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
 //        ctx.assertRootScope(0)
 //    }
@@ -102,57 +102,57 @@
 //    @Test
 //    fun `get multi scoped instances`() {
 //        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA())
-//        ctx.assertScopes(3)
+//        ctx.assertContexts(3)
 //        ctx.assertSizes(2, 0)
 //        Assert.assertNotNull(ctx.get<ServiceB>())
 //        Assert.assertNotNull(ctx.get<ServiceA>())
 //
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(2, 2)
 //    }
 //
 //    @Test
 //    fun `get multi scoped instances with root`() {
 //        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), SampleModuleC())
-//        ctx.assertScopes(3)
+//        ctx.assertContexts(3)
 //        ctx.assertSizes(3, 0)
 //        Assert.assertNotNull(ctx.get<ServiceC>())
 //
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertRootScope(1)
 //        ctx.assertSizes(3, 3)
 //    }
 //
 //    @Test
-//    fun `isolated scope - 3 instance`() {
+//    fun `isolated getScope - 3 instance`() {
 //        val ctx = Koin().build(ScopedModuleB(), ScopedModuleA(), SampleModuleC())
-//        ctx.assertScopes(3)
+//        ctx.assertContexts(3)
 //        ctx.assertRootScope(0)
 //        ctx.assertSizes(3, 0)
 //
 //        val serviceB = ctx.get<ServiceB>()
 //        Assert.assertNotNull(serviceB)
-//        ctx.assertScopes(3)
+//        ctx.assertContexts(3)
 //        ctx.assertRootScope(0)
-//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
 //        ctx.assertSizes(3, 1)
 //
 //        val serviceA = ctx.get<ServiceA>()
 //        Assert.assertNotNull(serviceA)
-//        ctx.assertScopes(3)
+//        ctx.assertContexts(3)
 //        ctx.assertRootScope(0)
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(3, 2)
 //
 //        val serviceC = ctx.get<ServiceC>()
 //        Assert.assertNotNull(serviceC)
-//        ctx.assertScopes(3)
+//        ctx.assertContexts(3)
 //        ctx.assertRootScope(1)
-//        ctx.assertScopes(ServiceB::class, 1)
-//        ctx.assertScopes(ServiceA::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceA::class, 1)
 //        ctx.assertSizes(3, 3)
 //
 //        Assert.assertEquals(serviceB, serviceA.serviceB)
@@ -161,37 +161,37 @@
 //    }
 //
 //    @Test
-//    fun `scope release`() {
+//    fun `getScope release`() {
 //        val ctx = Koin().build(ScopedModuleB())
-//        ctx.assertScopes(2)
+//        ctx.assertContexts(2)
 //        ctx.assertSizes(1, 0)
 //        val serviceB = ctx.get<ServiceB>()
 //        Assert.assertNotNull(serviceB)
 //        ctx.assertSizes(1, 1)
-//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
 //
 //        ctx.release(serviceB)
 //        ctx.assertSizes(1, 0)
-//        ctx.assertScopes(ServiceB::class, 0)
+//        ctx.assertContexts(ServiceB::class, 0)
 //    }
 //
 //    @Test
-//    fun `scope release from object`() {
+//    fun `getScope release from object`() {
 //        val ctx = Koin().build(ScopedModuleB())
-//        ctx.assertScopes(2)
+//        ctx.assertContexts(2)
 //        ctx.assertSizes(1, 0)
 //        val serviceB = ctx.get<ServiceB>()
 //        Assert.assertNotNull(serviceB)
 //        ctx.assertSizes(1, 1)
-//        ctx.assertScopes(ServiceB::class, 1)
+//        ctx.assertContexts(ServiceB::class, 1)
 //
 //        ctx.release(serviceB)
 //        ctx.assertSizes(1, 0)
-//        ctx.assertScopes(ServiceB::class, 0)
+//        ctx.assertContexts(ServiceB::class, 0)
 //    }
 //
 //    @Test
-//    fun `provide bean in non existing scope `() {
+//    fun `provide bean in non existing getScope `() {
 //        val ctx = Koin().build()
 //        try {
 //            ctx.provideAt({ ServiceB() }, ServiceB::class)
@@ -200,7 +200,7 @@
 //        }
 //
 //        try {
-//            ctx.assertScopes(ServiceB::class, 0)
+//            ctx.assertContexts(ServiceB::class, 0)
 //        } catch (e: Exception) {
 //        }
 //        ctx.assertSizes(0, 0)

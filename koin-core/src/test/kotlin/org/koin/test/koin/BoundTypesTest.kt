@@ -4,7 +4,7 @@
 //import org.junit.Test
 //import org.koin.Koin
 //import org.koin.test.ext.assertRootScope
-//import org.koin.test.ext.assertScopes
+//import org.koin.test.ext.assertContexts
 //import org.koin.test.ext.assertSizes
 //import org.koin.test.ext.getOrNull
 //import org.koin.test.koin.example.*
@@ -18,7 +18,7 @@
 //    @Test
 //    fun `get bounded instance`() {
 //        val ctx = Koin().build(BindModuleB())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNotNull(ctx.get<Processor>())
 //
@@ -29,7 +29,7 @@
 //    @Test
 //    fun `should not get bounded instance`() {
 //        val ctx = Koin().build(SampleModuleB())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(1, 0)
 //        Assert.assertNull(ctx.getOrNull<Processor>())
 //
@@ -40,7 +40,7 @@
 //    @Test
 //    fun `get same bounded instance`() {
 //        val ctx = Koin().build(BindModuleB())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(1, 0)
 //        val intf = ctx.get<Processor>()
 //        val servB = ctx.get<ServiceB>()
@@ -53,14 +53,14 @@
 //    @Test
 //    fun `inject with bounded instance`() {
 //        val ctx = Koin().build(SampleModuleOA(), BindModuleB())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(2, 0)
 //
 //        val servA = ctx.get<OtherServiceA>()
 //        Assert.assertNotNull(servA)
 //        servA.doSomethingWithB()
 //
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertRootScope(2)
 //        ctx.assertSizes(2, 2)
 //    }
@@ -68,12 +68,12 @@
 //    @Test
 //    fun `should not inject with bounded instance`() {
 //        val ctx = Koin().build(SampleModuleOA(), SampleModuleB())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(2, 0)
 //
 //        Assert.assertNull(ctx.getOrNull<OtherServiceA>())
 //
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertRootScope(0)
 //        ctx.assertSizes(2, 0)
 //    }
@@ -81,13 +81,13 @@
 //    @Test
 //    fun `should inject generic interface`() {
 //        val ctx = Koin().build(GenericProducerModule())
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertSizes(1, 0)
 //
 //        val producer = ctx.get<GenericProducer<String>>()
 //        Assert.assertEquals(ProducerImpl.OK, producer.produce())
 //
-//        ctx.assertScopes(1)
+//        ctx.assertContexts(1)
 //        ctx.assertRootScope(1)
 //        ctx.assertSizes(1, 1)
 //    }

@@ -14,13 +14,13 @@ fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*> = AllDefinitions
 
 fun KoinContext.allContext() = beanRegistry.scopes
 
-fun KoinContext.allInstances() = allContext().flatMap { it.instanceFactory.instances.toList() }
+//fun KoinContext.allInstances() = allContext().flatMap { it.instanceFactory.instances.toList() }
 
 fun KoinContext.allProperties() = propertyResolver.registry.properties
 
-fun KoinContext.getScope(scope: KClass<*>) = beanRegistry.scopes.first { it.clazz == scope }
+fun KoinContext.getScope(scope: String) = beanRegistry.scopes.first { it.name == scope }
 
-fun KoinContext.getScopeInstances(scope: KClass<*>) = getScope(scope).instanceFactory.instances
+//fun KoinContext.getScopeInstances(getScope: KClass<*>) = getScope(getScope).instanceFactory.instances
 
 inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
     var instance: T? = null

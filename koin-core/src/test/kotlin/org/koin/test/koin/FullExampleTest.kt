@@ -3,7 +3,7 @@
 //import org.junit.Assert
 //import org.junit.Test
 //import org.koin.Koin
-//import org.koin.core.scope.Scope
+//import org.koin.core.getScope.Scope
 //import org.koin.dsl.module.Module
 //import org.koin.test.ext.assertProps
 //import org.koin.test.ext.assertSizes

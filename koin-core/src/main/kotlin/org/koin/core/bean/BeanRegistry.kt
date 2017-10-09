@@ -1,7 +1,6 @@
 package org.koin.core.bean
 
 import org.koin.core.scope.Scope
-import kotlin.reflect.KClass
 
 /**
  * Bean registry
@@ -27,28 +26,24 @@ class BeanRegistry {
         definitions += Pair(def, scope)
     }
 
-    fun scope(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
+    fun getScope(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
 
-    fun isVisible(def: BeanDefinition<*>, scope: Scope): Boolean {
-        val actualScope = definitions[def]
-        val visibleScopes = listOf(actualScope) + parentScopes(actualScope)
-        return visibleScopes.firstOrNull { it?.clazz == scope.clazz } != null
-    }
+    fun getScope(name :String) = scopes.first { it.name == name }
 
-    private fun parentScopes(scope: Scope?): List<Scope?> {
-        return if (scope?.parentScope == null) emptyList()
-        else listOf(scope.parentScope) + parentScopes(scope.parentScope)
-    }
+//    fun scopeHierarchy(getScope: Scope): List<Scope?> {
+//        return if (getScope?.parent == null) emptyList()
+//        else listOf(getScope.parent) + scopeHierarchy(getScope.parent)
+//    }
 
-    fun findOrCreateScope(scope: KClass<*>?, parentScope: KClass<*>? = null): Scope {
-        return if (scope == null) rootScope
+    fun findOrCreateScope(scopeName: String?, parentScopeName: String? = null): Scope {
+        return if (scopeName == null) rootScope
         else {
-            scopes.firstOrNull { it.clazz == scope } ?: createScope(scope, parentScope)
+            scopes.firstOrNull { it.name == scopeName } ?: createScope(scopeName, parentScopeName)
         }
     }
 
-    private fun createScope(scope: KClass<*>, parentScope: KClass<*>?): Scope {
-        val s = Scope(scope, parentScope = findOrCreateScope(parentScope))
+    private fun createScope(scope: String, parentScope: String?): Scope {
+        val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
         return s
     }
@@ -58,16 +53,16 @@ class BeanRegistry {
 //     *
 //     * @param function : Declaration function bean
 //     * @param clazz : Bean Type
-//     * @param scope : Bean scope
+//     * @param getScope : Bean getScope
 //     */
-//    inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, scope: Scope) {
+//    inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, getScope: Scope) {
 //        val def = BeanDefinition(clazz = clazz, definition = function)
 //
 //        val found = searchByClass(clazz)
 //        if (found != null) {
 //            remove(clazz)
 //        }
-//        definitions += Pair(def, scope)
+//        definitions += Pair(def, getScope)
 //    }
 //
 //    /**
