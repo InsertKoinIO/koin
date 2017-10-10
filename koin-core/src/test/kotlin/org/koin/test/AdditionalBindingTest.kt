@@ -28,11 +28,23 @@ class AdditionalBindingTest {
         }
     }
 
+    class TwoBoundModule() : Module() {
+        override fun context() = applicationContext {
+            provide { ComponentB() } bind (OtherInterfaceComponent::class)
+            provide { ComponentC() } bind (OtherInterfaceComponent::class)
+        }
+    }
+
     class ComponentA : InterfaceComponent
     interface InterfaceComponent
 
     class ComponentB : OtherInterfaceComponent<String> {
         override fun get() = "HELLO"
+
+    }
+
+    class ComponentC : OtherInterfaceComponent<String> {
+        override fun get() = "HELLO_C"
 
     }
 
@@ -88,6 +100,21 @@ class AdditionalBindingTest {
         ctx.assertDefinitions(1)
         ctx.assertContexts(1)
         ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+    }
+
+    @Test
+    fun `should not bind generic component`() {
+        val ctx = Koin().build(TwoBoundModule())
+
+        val intf = ctx.getOrNull<OtherInterfaceComponent<String>>()
+
+        Assert.assertNull(intf)
+
+        ctx.assertRemainingInstances(0)
+        ctx.assertDefinitions(2)
+        ctx.assertContexts(1)
+        ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        ctx.assertDefinedInScope(ComponentC::class, Scope.ROOT)
     }
 
 }
