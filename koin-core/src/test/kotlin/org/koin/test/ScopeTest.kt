@@ -1,3 +1,5 @@
+package org.koin.test
+
 //package org.koin.test.koin
 //
 //import org.junit.Assert

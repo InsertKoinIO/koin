@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 
 fun KoinContext.AllDefinitions() = beanRegistry.definitions
 
-fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*> = AllDefinitions().keys.first { it.clazz == clazz }
+fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*>? = AllDefinitions().keys.firstOrNull() { it.clazz == clazz }
 
 fun KoinContext.allContext() = beanRegistry.scopes
 
