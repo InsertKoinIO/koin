@@ -1,98 +1,162 @@
 package org.koin.test
 
-//package org.koin.test.koin
-//
-//import org.junit.Assert
-//import org.junit.Assert.assertEquals
-//import org.junit.Assert.assertNotNull
-//import org.junit.Test
-//import org.koin.Koin
-//import org.koin.test.ext.assertProps
-//import org.koin.test.koin.example.SampleModuleD
-//import org.koin.test.koin.example.ServiceD
-//
-///**
-// * Created by arnaud on 31/05/2017.
-// */
-//class PropertyTest {
-//
-//    @Test
-//    fun `get boolean property`() {
-//        val ctx = Koin()
-//                .properties(mapOf("isTrue" to true))
-//                .build(SampleModuleD())
-//
-//        val myVal = ctx.getProperty<Boolean>("isTrue")!!
-//        Assert.assertTrue(myVal)
-//
-//        ctx.assertProps(1)
-//    }
-//
-//
-//    @Test
-//    fun `property has been added`() {
-//        val ctx = Koin()
-//                .properties(mapOf("myVal" to "VALUE!"))
-//                .build(SampleModuleD())
-//
-//        val myVal = ctx.getProperty<String>("myVal")
-//        assertNotNull(myVal)
-//
-//        ctx.assertProps(1)
-//
-//        val serviceD = ctx.get<ServiceD>()
-//        assertNotNull(serviceD)
-//    }
-//
-//    @Test
-//    fun `set a property on context`() {
-//        val ctx = Koin().build(SampleModuleD())
-//
-//        ctx.assertProps(0)
-//
-//        val myVal = "myVal"
-//        ctx.setProperty("myVal", myVal)
-//
-//        ctx.assertProps(1)
-//
-//        val serviceD = ctx.get<ServiceD>()
-//        assertEquals(myVal, serviceD.myVal)
-//    }
-//
-//    @Test
-//    fun `overwrite a property on context`() {
-//        val ctx = Koin().build()
-//
-//        ctx.assertProps(0)
-//
-//        val myVal = "myVal"
-//        ctx.setProperty(myVal, "1")
-//
-//        ctx.setProperty(myVal, "2")
-//
-//        ctx.assertProps(1)
-//
-//        assertEquals("2", ctx.getProperty(myVal))
-//    }
-//
-//    @Test
-//    fun `set a nullable property`() {
-//        val ctx = Koin().build()
-//
-//        val myVal = "myVal"
-//        ctx.setProperty(myVal, null)
-//
-//        Assert.assertNull(ctx.getProperty<Any?>(myVal))
-//    }
-//
-//    @Test
-//    fun `overwrite with nullable property`() {
-//        val ctx = Koin().build()
-//
-//        val myVal = "myVal"
-//        ctx.setProperty(myVal, "1")
-//        ctx.setProperty(myVal, null)
-//
-//        Assert.assertNull(ctx.getProperty<Any?>(myVal))
-//    }
-//}
+import org.junit.Assert
+import org.junit.Test
+import org.koin.Koin
+import org.koin.core.scope.Scope
+import org.koin.dsl.module.Module
+import org.koin.test.ext.*
+
+class PropertyTest {
+
+    class SimpleModule() : Module() {
+        override fun context() = applicationContext {
+            provide { ComponentA(getProperty(K_URL)) }
+            provide { ComponentB(get()) }
+        }
+    }
+
+    class ComplexModule() : Module() {
+        override fun context() = applicationContext {
+            provide { ComponentB(get()) }
+            context("A") {
+                provide { ComponentA(getProperty(K_URL)) }
+            }
+        }
+    }
+
+    class MoreComplexModule() : Module() {
+        override fun context() = applicationContext {
+            provide { ComponentB(get()) }
+            context("A") {
+                provideFactory { ComponentA(getProperty(K_URL)) }
+            }
+        }
+    }
+
+    class ComponentA(val url: String)
+    class ComponentB(val componentA: ComponentA)
+
+    @Test
+    fun `should inject property`() {
+        val ctx = Koin().build(SimpleModule())
+        ctx.setProperty(K_URL, K_URL_VAL)
+
+        val url = ctx.getProperty<String>(K_URL)
+        val a = ctx.get<ComponentA>()
+        val b = ctx.get<ComponentB>()
+
+        Assert.assertEquals(a, b.componentA)
+        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(url, a.url)
+
+        ctx.assertRemainingInstances(2)
+        ctx.assertDefinitions(2)
+        ctx.assertContexts(1)
+        ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        ctx.assertProperties(1)
+    }
+
+
+    @Test
+    fun `should inject property - at build`() {
+        val ctx = Koin().properties(mapOf(Pair(K_URL, K_URL_VAL))).build(SimpleModule())
+
+        val url = ctx.getProperty<String>(K_URL)
+        val a = ctx.get<ComponentA>()
+        val b = ctx.get<ComponentB>()
+
+        Assert.assertEquals(a, b.componentA)
+        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(url, a.url)
+
+        ctx.assertRemainingInstances(2)
+        ctx.assertDefinitions(2)
+        ctx.assertContexts(1)
+        ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        ctx.assertProperties(1)
+    }
+
+    @Test
+    fun `should inject property - complex module`() {
+        val ctx = Koin().build(ComplexModule())
+        ctx.setProperty(K_URL, K_URL_VAL)
+
+        val url = ctx.getProperty<String>(K_URL)
+        val a = ctx.get<ComponentA>()
+        val b = ctx.get<ComponentB>()
+
+        Assert.assertEquals(a, b.componentA)
+        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(url, a.url)
+
+        ctx.assertRemainingInstances(2)
+        ctx.assertDefinitions(2)
+        ctx.assertContexts(2)
+        ctx.assertDefinedInScope(ComponentA::class, "A")
+        ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        ctx.assertProperties(1)
+    }
+
+    @Test
+    fun `should not inject property`() {
+        val ctx = Koin().build(SimpleModule())
+
+        val url = ctx.getProperty<String?>(K_URL)
+        val a = ctx.getOrNull<ComponentA>()
+        val b = ctx.getOrNull<ComponentB>()
+
+        Assert.assertNull(a)
+        Assert.assertNull(b)
+        Assert.assertNull(url)
+
+        ctx.assertRemainingInstances(0)
+        ctx.assertDefinitions(2)
+        ctx.assertContexts(1)
+        ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        ctx.assertProperties(0)
+    }
+
+
+    @Test
+    fun `should overwrite property`() {
+        val ctx = Koin().build(MoreComplexModule())
+        ctx.setProperty(K_URL, K_URL_VAL)
+
+        var url = ctx.getProperty<String>(K_URL)
+        var a = ctx.get<ComponentA>()
+        var b = ctx.get<ComponentB>()
+
+        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(url, a.url)
+        Assert.assertEquals(b.componentA.url, a.url)
+
+        ctx.assertRemainingInstances(1)
+        ctx.assertDefinitions(2)
+
+        ctx.setProperty(K_URL, K_URL_VAL2)
+
+        url = ctx.getProperty<String>(K_URL)
+        a = ctx.get()
+
+        Assert.assertEquals(url, a.url)
+        Assert.assertEquals(K_URL_VAL2, a.url)
+
+        ctx.assertRemainingInstances(1)
+        ctx.assertDefinitions(2)
+
+        ctx.assertContexts(2)
+        ctx.assertProperties(1)
+        ctx.assertDefinedInScope(ComponentA::class, "A")
+        ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
+    }
+
+    companion object {
+        val K_URL = "URL"
+        val K_URL_VAL = "http://..."
+        val K_URL_VAL2 = "http://...2"
+    }
+}

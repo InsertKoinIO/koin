@@ -22,15 +22,15 @@ fun KoinContext.assertScopeParent(scopeName: String, scopeParent: String) {
 }
 
 fun KoinContext.assertRemainingInstances(instanceSize: Int) {
-    Assert.assertEquals("context allInstances size must be equals", instanceSize, allInstances().size)
+    Assert.assertEquals("context must have $instanceSize instances", instanceSize, allInstances().size)
 }
 
-//fun KoinContext.assertProps(properties: Int) {
-//    Assert.assertEquals("context allProperties size must be equals", properties, allProperties().size)
-//}
+fun KoinContext.assertProperties(properties: Int) {
+    Assert.assertEquals("context must have $properties properties", properties, allProperties().size)
+}
 
 fun KoinContext.assertContexts(totalContexts: Int) {
-    Assert.assertEquals("applicationContext must have $totalContexts contexts", totalContexts, allContext().size)
+    Assert.assertEquals("context must have $totalContexts contexts", totalContexts, allContext().size)
 }
 
 //fun KoinContext.assertContexts(getScope: KClass<*>, size: Int) {

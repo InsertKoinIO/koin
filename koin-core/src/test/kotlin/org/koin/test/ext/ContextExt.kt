@@ -16,7 +16,7 @@ fun KoinContext.allContext() = beanRegistry.scopes
 
 fun KoinContext.allInstances() = instanceFactory.instances.toList()
 
-fun KoinContext.allProperties() = propertyResolver.registry.properties
+fun KoinContext.allProperties() = propertyResolver.properties
 
 fun KoinContext.getScope(scope: String) = beanRegistry.scopes.first { it.name == scope }
 

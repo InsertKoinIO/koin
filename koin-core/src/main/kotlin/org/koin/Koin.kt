@@ -2,7 +2,7 @@ package org.koin
 
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
-import org.koin.core.property.PropertyResolver
+import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 
@@ -12,7 +12,7 @@ import org.koin.dsl.module.Module
  */
 class Koin {
     val beanRegistry = BeanRegistry()
-    val propertyResolver = PropertyResolver()
+    val propertyResolver = PropertyRegistry()
     val instanceFactory = InstanceFactory(beanRegistry)
 
     /**

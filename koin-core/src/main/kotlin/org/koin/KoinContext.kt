@@ -3,7 +3,7 @@ package org.koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
-import org.koin.core.property.PropertyResolver
+import org.koin.core.property.PropertyRegistry
 import org.koin.error.DependencyResolutionException
 import java.util.*
 import kotlin.reflect.KClass
@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud GIULIANI
  */
-class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceFactory: InstanceFactory) {
+class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory) {
 
     /**
      * resolution stack
@@ -65,43 +65,6 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
             instanceFactory.resolveInstance<Any>(def)
         }
     }
-
-    //TODO DRY RUN fun dryRun() : Boolean
-
-
-//    /**
-//     * provide bean definition at Root getScope
-//     * @param definition function declaration
-//     */
-//    inline fun <reified T : Any> provide(noinline definition: () -> T) {
-//        declare(definition, Scope.root())
-//    }
-//
-//    /**
-//     * provide bean definition at given class/getScope
-//     * @param definition  function declaration
-//     */
-//    inline fun <reified T : Any> provideAt(noinline definition: () -> T, scopeClass: KClass<*>) {
-//        val getScope = Scope(scopeClass)
-//        instanceResolver.all_context[getScope] ?: throw BeanDefinitionException("No getScope defined for class $scopeClass")
-//        declare(definition, getScope)
-//    }
-//
-//    /**
-//     * Create a getScope
-//     */
-//    fun declareScope(scopedClass: KClass<*>) {
-//        instanceResolver.createContext(Scope(scopedClass))
-//    }
-//
-//    /**
-//     * provide bean definition at given getScope
-//     * @param definition  function declaration
-//     */
-//    inline fun <reified T : Any> declare(noinline definition: () -> T, getScope: Scope) {
-//        instanceResolver.deleteInstance(T::class, getScope = getScope)
-//        beanRegistry.declare(definition, T::class, getScope = getScope)
-//    }
 //
 //    /**
 //     * Clear given class/getScope instance
@@ -116,14 +79,14 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 //     */
 //    fun release(vararg scopedObject: Any) = scopedObject.map { it::class }.forEach { release(it) }
 //
-//    /**
-//     * Retrieve a property by its key
-//     * can return null
-//     */
-//    inline fun <reified T> getProperty(key: String): T? = propertyResolver.getProperty(key)
-//
-//    /**
-//     * Set a property
-//     */
-//    fun setProperty(key: String, value: Any?) = propertyResolver.setProperty(key, value)
+    /**
+     * Retrieve a property by its key
+     * can return null
+     */
+    inline fun <reified T> getProperty(key: String): T? = propertyResolver.getProperty(key)
+
+    /**
+     * Set a property
+     */
+    fun setProperty(key: String, value: Any?) = propertyResolver.setProperty(key, value)
 }
