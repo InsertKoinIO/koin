@@ -51,7 +51,7 @@ class AdditionalBindingTest {
         Assert.assertNotNull(intf)
         Assert.assertEquals(a, intf)
 
-        ctx.assertInstances(1)
+        ctx.assertRemainingInstances(1)
         ctx.assertDefinitions(1)
         ctx.assertContexts(1)
         ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
@@ -67,7 +67,7 @@ class AdditionalBindingTest {
         Assert.assertNotNull(a)
         Assert.assertNull(intf)
 
-        ctx.assertInstances(1)
+        ctx.assertRemainingInstances(1)
         ctx.assertDefinitions(1)
         ctx.assertContexts(1)
         ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
@@ -84,7 +84,7 @@ class AdditionalBindingTest {
         Assert.assertNotNull(intf)
         Assert.assertEquals("HELLO", intf.get())
 
-        ctx.assertInstances(1)
+        ctx.assertRemainingInstances(1)
         ctx.assertDefinitions(1)
         ctx.assertContexts(1)
         ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)

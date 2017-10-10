@@ -21,7 +21,7 @@ fun KoinContext.assertScopeParent(scopeName: String, scopeParent: String) {
     Assert.assertEquals("Scope '$scopeName' must have parent '$scopeName'", scopeParent, beanRegistry.getScope(scopeName).parent?.name)
 }
 
-fun KoinContext.assertInstances(instanceSize: Int) {
+fun KoinContext.assertRemainingInstances(instanceSize: Int) {
     Assert.assertEquals("context allInstances size must be equals", instanceSize, allInstances().size)
 }
 

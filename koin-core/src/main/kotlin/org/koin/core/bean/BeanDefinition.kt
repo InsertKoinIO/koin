@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * has a BeanType : default singleton
  * has a name, if specified
  */
-data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
+data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, val isSingleton: Boolean, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
 
     /**
      * Add a compatible type to current bounded definition
@@ -22,5 +22,10 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
         return this
     }
 
-    override fun toString() = "Bean[name=$name,class=${clazz.java.simpleName},binds~${bindTypes.size}]"
+    /**
+     * Bean definition is not a singleton, but a factory
+     */
+    fun isNotASingleton() = !isSingleton
+
+    override fun toString() = "Bean[name='$name',class=${clazz.java.simpleName},singleton=$isSingleton,binds~${bindTypes.size}]"
 }

@@ -31,13 +31,20 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * Provide a bean definition
      * with a name
      */
-    inline fun <reified T : Any> provide(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(name, T::class, definition = definition)
+    inline fun <reified T : Any> provide(name: String = "", isSingleton: Boolean = true, noinline definition: () -> T): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition(name, T::class, isSingleton, definition = definition)
         definitions += beanDefinition
         return beanDefinition
     }
 
-    //TODO Factory
+    /**
+     * Provide a bean definition - as factory
+     */
+    inline fun <reified T : Any> provideFactory(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition(name, T::class, false, definition = definition)
+        definitions += beanDefinition
+        return beanDefinition
+    }
 
 
     /*

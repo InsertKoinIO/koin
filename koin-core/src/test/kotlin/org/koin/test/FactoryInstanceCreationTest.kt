@@ -10,16 +10,15 @@ import org.koin.test.ext.assertDefinedInScope
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertRemainingInstances
 
-
 /**
  * Created by arnaud on 01/06/2017.
  */
-class InstanceCreationTest {
+class FactoryInstanceCreationTest {
 
     class FlatModule : Module() {
         override fun context() =
                 applicationContext {
-                    provide { ComponentA() }
+                    provideFactory { ComponentA() }
                     provide { ComponentB(get()) }
                     provide { ComponentC(get(), get()) }
                 }
@@ -28,7 +27,7 @@ class InstanceCreationTest {
     class HierarchicModule : Module() {
         override fun context() =
                 applicationContext {
-                    provide { ComponentA() }
+                    provideFactory { ComponentA() }
 
                     context("B") {
                         provide { ComponentB(get()) }
@@ -55,11 +54,11 @@ class InstanceCreationTest {
         Assert.assertNotNull(a)
         Assert.assertNotNull(b)
         Assert.assertNotNull(c)
-        Assert.assertEquals(a, b.componentA)
-        Assert.assertEquals(a, c.componentA)
+        Assert.assertNotEquals(a, b.componentA)
+        Assert.assertNotEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        ctx.assertRemainingInstances(3)
+        ctx.assertRemainingInstances(2)
         ctx.assertDefinitions(3)
         ctx.assertContexts(1)
         ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
@@ -78,11 +77,11 @@ class InstanceCreationTest {
         Assert.assertNotNull(a)
         Assert.assertNotNull(b)
         Assert.assertNotNull(c)
-        Assert.assertEquals(a, b.componentA)
-        Assert.assertEquals(a, c.componentA)
+        Assert.assertNotEquals(a, b.componentA)
+        Assert.assertNotEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        ctx.assertRemainingInstances(3)
+        ctx.assertRemainingInstances(2)
         ctx.assertDefinitions(3)
         ctx.assertContexts(3)
         ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)

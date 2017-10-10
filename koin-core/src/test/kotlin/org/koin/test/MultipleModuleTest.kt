@@ -9,7 +9,7 @@ import org.koin.dsl.module.Module
 import org.koin.test.ext.assertContexts
 import org.koin.test.ext.assertDefinedInScope
 import org.koin.test.ext.assertDefinitions
-import org.koin.test.ext.assertInstances
+import org.koin.test.ext.assertRemainingInstances
 
 class MultipleModuleTest {
 
@@ -46,7 +46,7 @@ class MultipleModuleTest {
     fun `load mulitple modules`() {
         val ctx = Koin().build(SimpleModuleA(), SimpleModuleB(), SimpleModuleC())
 
-        ctx.assertInstances(0)
+        ctx.assertRemainingInstances(0)
         ctx.assertDefinitions(3)
         ctx.assertContexts(4)
 
@@ -65,7 +65,7 @@ class MultipleModuleTest {
         Assert.assertEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        ctx.assertInstances(3)
+        ctx.assertRemainingInstances(3)
         ctx.assertDefinitions(3)
         ctx.assertContexts(4)
         ctx.assertDefinedInScope(ComponentA::class, "A")

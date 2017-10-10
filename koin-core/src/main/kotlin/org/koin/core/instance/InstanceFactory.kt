@@ -20,11 +20,22 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
      * Retrieve or create bean instance
      */
     private fun <T> retrieveInstance(def: BeanDefinition<*>): T {
-        var instance = findInstance<T>(def)
-        if (instance == null) {
-            instance = createInstance(def)
+        // Factory
+        return if (def.isNotASingleton()) {
+            createInstance(def)
+        } else {
+            // Singleton
+            var instance = findInstance<T>(def)
+            if (instance == null) {
+                instance = createInstance(def)
+                saveInstance(def, instance)
+            }
+            instance ?: throw BeanInstanceCreationException("Couldn't create instance for $def")
         }
-        return instance!!
+    }
+
+    private fun <T> saveInstance(def: BeanDefinition<*>, instance: T) {
+        instances[def] = instance as Any
     }
 
     /**
@@ -48,7 +59,6 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
         else {
             try {
                 val instance = def.definition.invoke() as Any
-                instances[def] = instance
                 instance as T
                 return instance
             } catch (e: Throwable) {

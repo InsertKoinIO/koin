@@ -3,7 +3,6 @@ package org.koin.core.bean
 import org.koin.core.scope.Scope
 import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
-import kotlin.reflect.KClass
 
 /**
  * Bean registry
@@ -58,22 +57,22 @@ class BeanRegistry {
         return s
     }
 
-    /**
-     * Add/Replace an existing bean
-     *
-     * @param function : Declaration function bean
-     * @param clazz : Bean Type
-     * @param getScope : Bean getScope
-     */
-    inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, getScope: Scope) {
-        val def = BeanDefinition(clazz = clazz, definition = function)
-
-        val found = searchByClass(clazz)
-        if (found != null) {
-            remove(clazz)
-        }
-        definitions += Pair(def, getScope)
-    }
+//    /**
+//     * Add/Replace an existing bean
+//     *
+//     * @param function : Declaration function bean
+//     * @param clazz : Bean Type
+//     * @param getScope : Bean getScope
+//     */
+//    inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, getScope: Scope) {
+//        val def = BeanDefinition(clazz = clazz, definition = function)
+//
+//        val found = searchByClass(clazz)
+//        if (found != null) {
+//            remove(clazz)
+//        }
+//        definitions += Pair(def, getScope)
+//    }
 
     /**
      * Search bean by its name
@@ -104,12 +103,12 @@ class BeanRegistry {
      */
     private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = searchDefinition({ it.bindTypes.contains(clazz) }, "for compatible type : $clazz")
 
-    /**
-     * move any definition for given class
-     * @param classes Class
-     */
-    fun remove(vararg classes: KClass<*>) {
-        classes.map { searchByClass(it) }.forEach { definitions.remove(it) }
-    }
+//    /**
+//     * move any definition for given class
+//     * @param classes Class
+//     */
+//    fun remove(vararg classes: KClass<*>) {
+//        classes.map { searchByClass(it) }.forEach { definitions.remove(it) }
+//    }
 
 }
