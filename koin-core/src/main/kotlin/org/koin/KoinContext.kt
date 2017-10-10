@@ -48,7 +48,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
         val beanDefinition: BeanDefinition<*> = resolver()
 
-        val instance = instanceFactory.resolveInstance<T>(beanDefinition)
+        val instance = instanceFactory.retrieveInstance<T>(beanDefinition)
         val head = resolutionStack.pop()
         if (head != clazz) {
             throw IllegalStateException("Calling HEAD was $head but must be $clazz")
@@ -62,23 +62,18 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     fun dryRun() {
         beanRegistry.definitions.keys.forEach { def ->
-            instanceFactory.resolveInstance<Any>(def)
+            instanceFactory.retrieveInstance<Any>(def)
         }
     }
-//
-//    /**
-//     * Clear given class/getScope instance
-//     */
-//    private fun release(scopedClass: KClass<*>) {
-////        logger.warning("Clear instance $scopedClass ")
-//        instanceResolver.getInstanceFactory(Scope(scopedClass)).clear()
-//    }
-//
-//    /**
-//     * Clear given class/getScope instance from objects
-//     */
-//    fun release(vararg scopedObject: Any) = scopedObject.map { it::class }.forEach { release(it) }
-//
+
+    /**
+     * TODO
+     */
+    fun release(name: String) {
+        val definitions: List<BeanDefinition<*>> = beanRegistry.definitionsFromScope(name)
+        instanceFactory.dropAllInstances(definitions)
+    }
+
     /**
      * Retrieve a property by its key
      * can return null

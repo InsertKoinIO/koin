@@ -50,11 +50,6 @@ class MVPArchitectureTest {
         val repository = ctx.get<Repository>()
         val datasource = ctx.get<DebugDatasource>()
 
-        Assert.assertNotNull(view)
-        Assert.assertNotNull(presenter)
-        Assert.assertNotNull(repository)
-        Assert.assertNotNull(datasource)
-
         Assert.assertNotEquals(presenter, view.presenter)
         Assert.assertEquals(repository, presenter.repository)
         Assert.assertEquals(repository, view.presenter.repository)

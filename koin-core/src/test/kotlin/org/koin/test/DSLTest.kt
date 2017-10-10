@@ -9,7 +9,7 @@ import org.koin.test.ext.assertDefinedInScope
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertScopeParent
 
-// getScope qualifier
+// getScopeForDefinition qualifier
 
 
 class DSLTest {

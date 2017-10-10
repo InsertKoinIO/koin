@@ -1,5 +1,4 @@
 package org.koin.error
 
 
-class BeanInstanceCreationException(msg : String) : Exception(msg){
-}
+class BeanInstanceCreationException(msg : String) : Exception(msg)

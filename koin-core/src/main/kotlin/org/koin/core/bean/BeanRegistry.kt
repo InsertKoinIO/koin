@@ -3,6 +3,7 @@ package org.koin.core.bean
 import org.koin.core.scope.Scope
 import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
+import org.koin.error.NoScopeFoundException
 
 /**
  * Bean registry
@@ -31,12 +32,12 @@ class BeanRegistry {
     /**
      * TODO
      */
-    fun getScope(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
+    fun getScopeForDefinition(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
 
     /**
      * TODO
      */
-    fun getScope(name: String) = scopes.first { it.name == name }
+    fun getScope(name: String) = scopes.firstOrNull { it.name == name } ?: throw NoScopeFoundException("Context scope '$name' not found")
 
     /**
      * TODO
@@ -56,23 +57,6 @@ class BeanRegistry {
         scopes += s
         return s
     }
-
-//    /**
-//     * Add/Replace an existing bean
-//     *
-//     * @param function : Declaration function bean
-//     * @param clazz : Bean Type
-//     * @param getScope : Bean getScope
-//     */
-//    inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, getScope: Scope) {
-//        val def = BeanDefinition(clazz = clazz, definition = function)
-//
-//        val found = searchByClass(clazz)
-//        if (found != null) {
-//            remove(clazz)
-//        }
-//        definitions += Pair(def, getScope)
-//    }
 
     /**
      * Search bean by its name
@@ -103,12 +87,17 @@ class BeanRegistry {
      */
     private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = searchDefinition({ it.bindTypes.contains(clazz) }, "for compatible type : $clazz")
 
-//    /**
-//     * move any definition for given class
-//     * @param classes Class
-//     */
-//    fun remove(vararg classes: KClass<*>) {
-//        classes.map { searchByClass(it) }.forEach { definitions.remove(it) }
-//    }
+    /**
+     * TODO
+     */
+    fun definitionsFromScope(name: String): List<BeanDefinition<*>> {
+        val scopes = allScopesfrom(name).toSet()
+        return definitions.keys.filter { def -> definitions[def] in scopes }
+    }
 
+    private fun allScopesfrom(name: String): List<Scope> {
+        val scope = getScope(name)
+        val firstChild = scopes.filter { it.parent == scope }
+        return listOf(scope) + firstChild + firstChild.flatMap { allScopesfrom(it.name) }
+    }
 }

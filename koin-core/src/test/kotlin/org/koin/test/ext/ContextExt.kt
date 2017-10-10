@@ -20,7 +20,7 @@ fun KoinContext.allProperties() = propertyResolver.properties
 
 fun KoinContext.getScope(scope: String) = beanRegistry.scopes.first { it.name == scope }
 
-//fun KoinContext.getScopeInstances(getScope: KClass<*>) = getScope(getScope).instanceFactory.instances
+//fun KoinContext.getScopeInstances(getScopeForDefinition: KClass<*>) = getScopeForDefinition(getScopeForDefinition).instanceFactory.instances
 
 inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
     var instance: T? = null

@@ -40,7 +40,7 @@ class Koin {
      * Register context definitions & subContexts
      */
     private fun registerDefinitions(context: Context, parentContext: Context? = null) {
-        // Create or reuse getScope context
+        // Create or reuse getScopeForDefinition context
         val scope = beanRegistry.findOrCreateScope(context.name, parentContext?.name)
 
         // Add definitions

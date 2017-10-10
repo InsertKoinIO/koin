@@ -14,12 +14,10 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
 
     val instances = ConcurrentHashMap<BeanDefinition<*>, Any>()
 
-    fun <T> resolveInstance(def: BeanDefinition<*>): T = retrieveInstance(def)
-
     /**
      * Retrieve or create bean instance
      */
-    private fun <T> retrieveInstance(def: BeanDefinition<*>): T {
+    fun <T> retrieveInstance(def: BeanDefinition<*>): T {
         // Factory
         return if (def.isNotASingleton()) {
             createInstance(def)
@@ -54,7 +52,7 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
      * create instance for given bean definition
      */
     private fun <T> createInstance(def: BeanDefinition<*>): T {
-        val scope = beanRegistry.getScope(def)
+        val scope = beanRegistry.getScopeForDefinition(def)
         if (scope == null) throw BeanDefinitionException("Can't create bean $def in : $scope -- Scope has not been declared")
         else {
             try {
@@ -66,15 +64,11 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
             }
         }
     }
-//
-//    fun deleteInstance(vararg kClasses: KClass<*>) {
-//        kClasses.forEach { clazz ->
-//            val res = instances.keys.filter { it.clazz == clazz }
-//            res.forEach { def -> instances.remove(def) }
-//        }
-//    }
-//
-//    fun clear() {
-//        instances.clear()
-//    }
+
+    /**
+     * TODO
+     */
+    fun dropAllInstances(definitions: List<BeanDefinition<*>>) {
+        definitions.forEach { instances.remove(it) }
+    }
 }

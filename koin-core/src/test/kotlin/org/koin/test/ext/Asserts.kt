@@ -14,7 +14,7 @@ fun KoinContext.assertDefinitions(definitionSize: Int) {
 
 fun KoinContext.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String) {
     val definition = definition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in getScope $scopeName", beanRegistry.getScope(scopeName), beanRegistry.definitions[definition])
+    Assert.assertEquals("$definitionClazz must be in getScopeForDefinition $scopeName", beanRegistry.getScope(scopeName), beanRegistry.definitions[definition])
 }
 
 fun KoinContext.assertScopeParent(scopeName: String, scopeParent: String) {
@@ -32,15 +32,3 @@ fun KoinContext.assertProperties(properties: Int) {
 fun KoinContext.assertContexts(totalContexts: Int) {
     Assert.assertEquals("context must have $totalContexts contexts", totalContexts, allContext().size)
 }
-
-//fun KoinContext.assertContexts(getScope: KClass<*>, size: Int) {
-//    Assert.assertEquals("context getScope $getScope must be equals", size, getScopeInstances(getScope).size)
-//}
-//
-//fun KoinContext.assertRootScope(size: Int) {
-//    Assert.assertEquals("context ROOT has $size instances", size, getScopeInstances(RootScope::class).size)
-//}
-//
-//fun KoinContext.assertParentScope(parent: Scope, source: Scope) {
-//    Assert.assertEquals("getScope $parent must be parent of $source", parent, source.parentScope)
-//}
