@@ -56,6 +56,16 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         return instance
     }
 
+
+    /**
+     * TODO
+     */
+    fun dryRun() {
+        beanRegistry.definitions.keys.forEach { def ->
+            instanceFactory.resolveInstance<Any>(def)
+        }
+    }
+
     //TODO DRY RUN fun dryRun() : Boolean
 
 

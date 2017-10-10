@@ -5,6 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Koin
 import org.koin.dsl.module.Module
+import org.koin.error.BeanInstanceCreationException
 import org.koin.test.ext.assertContexts
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertRemainingInstances
@@ -64,7 +65,8 @@ class KoinContextTest {
         try {
             assertNull(ctx.get<ComponentA>())
             fail("should not inject ")
-        } catch (e: Exception) {
+        } catch (e: BeanInstanceCreationException) {
+            System.err.println(e)
         }
         ctx.assertRemainingInstances(0)
     }

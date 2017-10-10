@@ -54,9 +54,4 @@ class Koin {
      * load given module instances into current koin context
      */
     fun <T : Module> build(vararg modules: T): KoinContext = build(modules.asList())
-
-//    /**
-//     * load directly Koin context with no modules
-//     */
-//    fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
 }
