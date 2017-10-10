@@ -21,9 +21,9 @@ fun KoinContext.assertScopeParent(scopeName: String, scopeParent: String) {
     Assert.assertEquals("Scope '$scopeName' must have parent '$scopeName'", scopeParent, beanRegistry.getScope(scopeName).parent?.name)
 }
 
-//fun KoinContext.assertInstances(instanceSize: Int) {
-//    Assert.assertEquals("context allInstances size must be equals", instanceSize, allInstances().size)
-//}
+fun KoinContext.assertInstances(instanceSize: Int) {
+    Assert.assertEquals("context allInstances size must be equals", instanceSize, allInstances().size)
+}
 
 //fun KoinContext.assertProps(properties: Int) {
 //    Assert.assertEquals("context allProperties size must be equals", properties, allProperties().size)
@@ -38,7 +38,7 @@ fun KoinContext.assertContexts(totalContexts: Int) {
 //}
 //
 //fun KoinContext.assertRootScope(size: Int) {
-//    Assert.assertEquals("context getScope ROOT must be equals", size, getScopeInstances(RootScope::class).size)
+//    Assert.assertEquals("context ROOT has $size instances", size, getScopeInstances(RootScope::class).size)
 //}
 //
 //fun KoinContext.assertParentScope(parent: Scope, source: Scope) {

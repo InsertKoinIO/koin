@@ -14,7 +14,7 @@ fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*> = AllDefinitions
 
 fun KoinContext.allContext() = beanRegistry.scopes
 
-//fun KoinContext.allInstances() = allContext().flatMap { it.instanceFactory.instances.toList() }
+fun KoinContext.allInstances() = instanceFactory.instances.toList()
 
 fun KoinContext.allProperties() = propertyResolver.registry.properties
 

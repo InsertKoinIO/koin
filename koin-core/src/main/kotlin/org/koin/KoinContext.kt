@@ -56,6 +56,8 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         return instance
     }
 
+    //TODO DRY RUN fun dryRun() : Boolean
+
 
 //    /**
 //     * provide bean definition at Root getScope

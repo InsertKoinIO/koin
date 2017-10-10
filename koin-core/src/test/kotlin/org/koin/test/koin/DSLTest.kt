@@ -11,41 +11,39 @@ import org.koin.test.ext.assertScopeParent
 
 // getScope qualifier
 
-class FlatContextsModule() : Module() {
-    override fun context() = applicationContext {
 
-        provide { DSLTest.ComponentA() }
+class DSLTest {
 
-        context(name = "B") {
-            provide { DSLTest.ComponentB() }
-        }
+    class FlatContextsModule() : Module() {
+        override fun context() = applicationContext {
 
-        context(name = "C") {
-            provide { DSLTest.ComponentC() }
-        }
-    }
-}
-
-
-class HierarchyContextsModule() : Module() {
-    override fun context() = applicationContext {
-        context(name = "A") {
-            provide { DSLTest.ComponentA() }
+            provide { ComponentA() }
 
             context(name = "B") {
-                provide { DSLTest.ComponentB() }
+                provide { ComponentB() }
+            }
 
-                context(name = "C") {
-                    provide { DSLTest.ComponentC() }
+            context(name = "C") {
+                provide { ComponentC() }
+            }
+        }
+    }
+
+    class HierarchyContextsModule() : Module() {
+        override fun context() = applicationContext {
+            context(name = "A") {
+                provide { ComponentA() }
+
+                context(name = "B") {
+                    provide { ComponentB() }
+
+                    context(name = "C") {
+                        provide { ComponentC() }
+                    }
                 }
             }
         }
     }
-}
-
-
-class DSLTest {
-
 
     class ComponentA
     class ComponentB
@@ -68,7 +66,7 @@ class DSLTest {
     }
 
     @Test
-    fun `can create hierarchy contexts`() {
+    fun `can create hierarchic contexts`() {
         val ctx = Koin().build(HierarchyContextsModule())
 
         ctx.assertContexts(4)

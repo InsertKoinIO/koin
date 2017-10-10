@@ -35,8 +35,6 @@
 //        ctx.assertContexts(1)
 //    }
 //
-//    //TODO Handle Stack
-//
 //    @Test
 //    fun `circular deps`() {
 //        val ctx = Koin().build()

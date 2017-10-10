@@ -19,7 +19,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      */
 
     /**
-     * Create Root Context function
+     * TODO
      */
     fun context(name: String, init: Context.() -> Unit): Context {
         val newContext = Context(name, koinContext)
@@ -36,6 +36,9 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
         definitions += beanDefinition
         return beanDefinition
     }
+
+    //TODO Factory
+
 
     /*
         Dependency resolvers
