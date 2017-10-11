@@ -4,6 +4,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.Scope
 import org.koin.error.DependencyResolutionException
 import java.util.*
 import kotlin.reflect.KClass
@@ -64,6 +65,16 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         beanRegistry.definitions.keys.forEach { def ->
             instanceFactory.retrieveInstance<Any>(def)
         }
+    }
+
+
+    /**
+     * Provide a bean definition
+     */
+    inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, noinline definition: () -> T) {
+        val clazz = T::class
+        instanceFactory.dropInstance(clazz)
+        beanRegistry.declare(BeanDefinition(clazz = clazz, definition = definition), beanRegistry.getScope(contextName))
     }
 
     /**

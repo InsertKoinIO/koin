@@ -5,6 +5,7 @@ import org.koin.core.bean.BeanRegistry
 import org.koin.error.BeanDefinitionException
 import org.koin.error.BeanInstanceCreationException
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -72,10 +73,11 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
         definitions.forEach { instances.remove(it) }
     }
 
-//    /**
-//     * TODO
-//     */
-//    fun dropAnyInstance(clazz: KClass<*>) {
-//        dropAllInstances(instances.keys().toList().filter { it.clazz == clazz })
-//    }
+    /**
+     * Drop instance for given bean definition class
+     */
+    fun dropInstance(clazz: KClass<*>) {
+        dropAllInstances(instances.keys().toList().filter { it.clazz == clazz })
+    }
+
 }

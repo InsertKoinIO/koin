@@ -22,7 +22,24 @@ class ExternalDeclarationTest {
     @Test
     fun `should provide a component - external definition`() {
         val ctx = Koin().provide { ComponentA() }.build(EmptyModule())
-        
+
+        ctx.assertContexts(1)
+        ctx.assertDefinitions(1)
+        ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
+
+        Assert.assertNotNull(ctx.get<ComponentA>())
+        ctx.assertRemainingInstances(1)
+    }
+
+    @Test
+    fun `should provide a component - after definition`() {
+        val ctx = Koin().build(EmptyModule())
+
+        ctx.assertContexts(1)
+        ctx.assertDefinitions(0)
+
+        ctx.provide { ComponentA() }
+
         ctx.assertContexts(1)
         ctx.assertDefinitions(1)
         ctx.assertDefinedInScope(ComponentA::class, Scope.ROOT)
