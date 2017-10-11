@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * has a BeanType : default singleton
  * has a name, if specified
  */
-data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, val isSingleton: Boolean, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
+data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, val isSingleton: Boolean = true, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
 
     /**
      * Add a compatible type to current bounded definition

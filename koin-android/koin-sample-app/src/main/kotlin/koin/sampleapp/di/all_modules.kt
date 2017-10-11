@@ -3,7 +3,6 @@ package koin.sampleapp.di
 import koin.sampleapp.service.WeatherWS
 import koin.sampleapp.util.rx.ApplicationSchedulerProvider
 import koin.sampleapp.util.rx.SchedulerProvider
-import koin.sampleapp.weather.WeatherActivity
 import koin.sampleapp.weather.WeatherContract
 import koin.sampleapp.weather.WeatherPresenter
 import okhttp3.OkHttpClient
@@ -14,53 +13,46 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-fun allModules() = listOf(MainModule(), WebModule(), WeatherModule())
+fun allModules() = listOf(WeatherModule(), RxModule())
 
 class WeatherModule : AndroidModule() {
-    override fun context() =
-            // Scope WeatherActivity
-            declareContext(scope = WeatherActivity::class) {
-                provide { WeatherPresenter(get(), get()) } bind (WeatherContract.Presenter::class)
-            }
-}
+    override fun context() = applicationContext {
+        context("WeatherActivity") {
+            provideFactory { WeatherPresenter(get(), get()) } bind (WeatherContract.Presenter::class)
+        }
 
-class MainModule : AndroidModule() {
-    override fun context() =
-            declareContext {
-                // Rx schedulers
-                provide { ApplicationSchedulerProvider() } bind (SchedulerProvider::class)
-            }
-
-}
-
-class WebModule : AndroidModule() {
-    override fun context() =
-            declareContext {
-                // provided web components
-                provide { createClient() }
-                // Fill property
-                provide { retrofitWS(get(), getProperty(SERVER_URL)) }
-            }
-
-    private fun createClient(): OkHttpClient {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        return OkHttpClient.Builder()
-                .connectTimeout(60L, TimeUnit.SECONDS)
-                .readTimeout(60L, TimeUnit.SECONDS)
-                .addInterceptor(httpLoggingInterceptor).build()
-    }
-
-    private fun retrofitWS(okHttpClient: OkHttpClient, url: String): WeatherWS {
-        val retrofit = Retrofit.Builder()
-                .baseUrl(url)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
-        return retrofit.create(WeatherWS::class.java)
+        // provided web components
+        provide { createOkHttpClient() }
+        // Fill property
+        provide { createWebService<WeatherWS>(get(), getProperty(SERVER_URL)) }
     }
 
     companion object {
+        fun createOkHttpClient(): OkHttpClient {
+            val httpLoggingInterceptor = HttpLoggingInterceptor()
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            return OkHttpClient.Builder()
+                    .connectTimeout(60L, TimeUnit.SECONDS)
+                    .readTimeout(60L, TimeUnit.SECONDS)
+                    .addInterceptor(httpLoggingInterceptor).build()
+        }
+
+        inline fun <reified T> createWebService(okHttpClient: OkHttpClient, url: String): T {
+            val retrofit = Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
+            return retrofit.create(T::class.java)
+        }
+
         const val SERVER_URL = "SERVER_URL"
+        const val CTX_WEATHER_ACTIVITY = "WeatherActivity"
+    }
+}
+
+class RxModule : AndroidModule() {
+    override fun context() = applicationContext {
+        provide { ApplicationSchedulerProvider() } bind (SchedulerProvider::class)
     }
 }

@@ -31,6 +31,7 @@ inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
             this.get<T>()
         }
     } catch (e: Exception) {
+        resolutionStack.clear()
     }
     return instance
 }

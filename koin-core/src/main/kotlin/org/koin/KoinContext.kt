@@ -4,6 +4,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.Scope
 import org.koin.error.DependencyResolutionException
 import java.util.*
 import kotlin.reflect.KClass
@@ -51,11 +52,11 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         val instance = instanceFactory.retrieveInstance<T>(beanDefinition)
         val head = resolutionStack.pop()
         if (head != clazz) {
+            resolutionStack.clear()
             throw IllegalStateException("Calling HEAD was $head but must be $clazz")
         }
         return instance
     }
-
 
     /**
      * TODO

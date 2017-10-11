@@ -1,7 +1,7 @@
 package org.koin.test
 
-import junit.framework.Assert.fail
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Koin
 import org.koin.dsl.module.Module

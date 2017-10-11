@@ -1,6 +1,5 @@
 package fr.ekito.koin.test.android
 
-import android.app.Activity
 import org.koin.android.AndroidModule
 
 /**
@@ -9,7 +8,7 @@ import org.koin.android.AndroidModule
 
 class SampleModule : AndroidModule() {
     override fun context() =
-            declareContext {
+            applicationContext {
                 provide { AndroidComponent(get()) }
             }
 }
@@ -17,7 +16,7 @@ class SampleModule : AndroidModule() {
 
 class ComplexModule : AndroidModule() {
     override fun context() =
-            declareContext {
+            applicationContext {
                 provide { AndroidComponent(get()) }
                 provide { OtherService(get(), getProperty("url")) }
             }
@@ -26,7 +25,7 @@ class ComplexModule : AndroidModule() {
 
 class ComplexPropertyModule : AndroidModule() {
     override fun context() =
-            declareContext {
+            applicationContext {
                 provide { AndroidComponent(get()) }
                 provide { OtherService(get(), getProperty(OtherService.URL)) }
             }
@@ -34,7 +33,13 @@ class ComplexPropertyModule : AndroidModule() {
 
 class ActivityModule : AndroidModule() {
     override fun context() =
-            declareContext(scope = Activity::class) {
-                provide { OtherService(get(), getProperty("url")) }
+            applicationContext {
+                context(CTX_ACTIVITY_MODULE) {
+                    provide { OtherService(get(), getProperty("url")) }
+                }
             }
+
+    companion object {
+        val CTX_ACTIVITY_MODULE = "ActivityModule"
+    }
 }

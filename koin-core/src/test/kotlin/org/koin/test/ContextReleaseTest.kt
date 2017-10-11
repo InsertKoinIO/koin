@@ -1,9 +1,10 @@
 package org.koin.test
 
-import junit.framework.Assert.fail
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Koin
+import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.error.NoScopeFoundException
 import org.koin.test.ext.*
@@ -86,6 +87,41 @@ class ContextReleaseTest {
         ctx.assertRemainingInstances(3)
 
         ctx.release("A")
+
+        ctx.assertRemainingInstances(0)
+
+        val a2 = ctx.get<ComponentA>()
+        val b2 = ctx.get<ComponentB>()
+        val c2 = ctx.get<ComponentC>()
+
+        ctx.assertRemainingInstances(3)
+
+        Assert.assertNotEquals(a1, a2)
+        Assert.assertNotEquals(b1, b2)
+        Assert.assertNotEquals(c1, c2)
+    }
+
+    @Test
+    fun `should release context - from ROOT`() {
+        val ctx = Koin().build(HierarchyContextsModule())
+
+        ctx.assertContexts(4)
+        ctx.assertDefinitions(3)
+
+        ctx.assertDefinedInScope(ComponentA::class, "A")
+        ctx.assertDefinedInScope(ComponentB::class, "B")
+        ctx.assertDefinedInScope(ComponentC::class, "C")
+
+        ctx.assertScopeParent("B", "A")
+        ctx.assertScopeParent("C", "B")
+
+        val a1 = ctx.get<ComponentA>()
+        val b1 = ctx.get<ComponentB>()
+        val c1 = ctx.get<ComponentC>()
+
+        ctx.assertRemainingInstances(3)
+
+        ctx.release(Scope.ROOT)
 
         ctx.assertRemainingInstances(0)
 

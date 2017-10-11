@@ -1,25 +1,26 @@
-package fr.ekito.koin.test.ext
+package org.koin.test.ext
 
-import org.junit.Assert
 import org.koin.KoinContext
-import org.koin.dsl.context.Scope
+import org.koin.core.bean.BeanDefinition
 import kotlin.reflect.KClass
 
 /**
  * Context Test Utils
  */
 
-fun KoinContext.definitions() = beanRegistry.definitions
+fun KoinContext.AllDefinitions() = beanRegistry.definitions
 
-fun KoinContext.allContext() = instanceResolver.all_context
+fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*>? = AllDefinitions().keys.firstOrNull() { it.clazz == clazz }
 
-fun KoinContext.instances() = allContext().flatMap { it.value.instances.toList() }
+fun KoinContext.allContext() = beanRegistry.scopes
 
-fun KoinContext.properties() = propertyResolver.registry.properties
+fun KoinContext.allInstances() = instanceFactory.instances.toList()
 
-fun KoinContext.getScope(scope: Scope) = instanceResolver.getInstanceFactory(scope)
+fun KoinContext.allProperties() = propertyResolver.properties
 
-fun KoinContext.getScopeInstances(scope: Scope) = getScope(scope).instances
+fun KoinContext.getScope(scope: String) = beanRegistry.scopes.first { it.name == scope }
+
+//fun KoinContext.getScopeInstances(getScopeForDefinition: KClass<*>) = getScopeForDefinition(getScopeForDefinition).instanceFactory.instances
 
 inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
     var instance: T? = null
@@ -30,27 +31,9 @@ inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
             this.get<T>()
         }
     } catch (e: Exception) {
+        resolutionStack.clear()
     }
     return instance
 }
 
-fun KoinContext.assertSizes(definitionSize: Int, instanceSize: Int) {
-    Assert.assertEquals("context definition size must be equals", definitionSize, definitions().size)
-    Assert.assertEquals("context instances size must be equals", instanceSize, instances().size)
-}
-
-fun KoinContext.assertProps(properties: Int) {
-    Assert.assertEquals("context properties size must be equals", properties, properties().size)
-}
-
-fun KoinContext.assertScopes(scopeSize: Int) {
-    Assert.assertEquals("context scope size must be equals", scopeSize, allContext().size)
-}
-
-fun KoinContext.assertScopeSize(scope: KClass<*>, size: Int) {
-    Assert.assertEquals("context scope $scope must be equals", size, getScopeInstances(Scope(scope)).size)
-}
-
-fun KoinContext.assertRootScopeSize(size: Int) {
-    Assert.assertEquals("context scope ROOT must be equals", size, getScopeInstances(Scope.root()).size)
-}
+fun KoinContext.rootScope() = beanRegistry.rootScope

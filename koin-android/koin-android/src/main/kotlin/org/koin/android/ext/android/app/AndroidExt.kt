@@ -40,7 +40,7 @@ inline fun <reified T> Activity.get(name: String = "") = getKoin().get<T>(name)
 /**
  * Release scope instances
  */
-fun Activity.release(instance: Any) = getKoin().release(instance)
+fun Activity.release(instance: String) = getKoin().release(instance)
 
 /**
  * inject lazily given dependency for Activity
@@ -72,7 +72,7 @@ inline fun <reified T> Fragment.inject(name: String = ""): Lazy<T> = lazy { getK
 /**
  * Release scope instances
  */
-fun Fragment.release(instance: Any) = getKoin().release(instance)
+fun Fragment.release(scopeName: String) = getKoin().release(scopeName)
 
 /**
  * inject lazily given property for Fragment
@@ -104,4 +104,4 @@ inline fun <reified T> Service.property(key: String) = lazy { getKoin().getPrope
 /**
  * Release scope instances
  */
-fun Service.release(instance: Any) = getKoin().release(instance)
+fun Service.release(scopeName: String) = getKoin().release(scopeName)

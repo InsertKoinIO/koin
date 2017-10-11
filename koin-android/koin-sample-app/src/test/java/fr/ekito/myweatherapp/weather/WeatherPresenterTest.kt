@@ -1,10 +1,9 @@
 package fr.ekito.myweatherapp.weather
 
-import fr.ekito.myweatherapp.di.TestWebServicesModule
+import fr.ekito.myweatherapp.di.RxTestModule
 import fr.ekito.myweatherapp.util.any
 import junit.framework.Assert
 import koin.sampleapp.di.WeatherModule
-import koin.sampleapp.di.WebModule
 import koin.sampleapp.service.WeatherWS
 import koin.sampleapp.weather.WeatherContract
 import org.junit.Before
@@ -23,9 +22,9 @@ class WeatherPresenterTest {
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
-        val context = Koin().build(arrayListOf(TestWebServicesModule(), WebModule(), WeatherModule()))
+        val context = Koin().build(arrayListOf(RxTestModule(), WeatherModule()))
         // inject server property
-        context.setProperty(WebModule.SERVER_URL, TestWebServicesModule.SERVER_URL)
+        context.setProperty(WeatherModule.SERVER_URL, RxTestModule.SERVER_URL)
 
         presenter = context.get()
         presenter.view = view

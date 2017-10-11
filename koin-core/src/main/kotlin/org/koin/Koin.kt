@@ -1,8 +1,10 @@
 package org.koin
 
+import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.Scope
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 
@@ -34,6 +36,15 @@ class Koin {
             registerDefinitions(context)
         }
         return koinContext
+    }
+
+    /**
+     * TODO
+     */
+    inline fun <reified T : Any> provide(scope: String = Scope.ROOT, noinline definition: () -> T): Koin {
+        val clazz = T::class
+        beanRegistry.declare(BeanDefinition(clazz = clazz, definition = definition), beanRegistry.getScope(scope))
+        return this
     }
 
     /**

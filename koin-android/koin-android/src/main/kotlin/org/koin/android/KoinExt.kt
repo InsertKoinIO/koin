@@ -3,20 +3,16 @@ package org.koin.android
 import android.app.Application
 import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.dsl.context.Scope
+import org.koin.core.scope.Scope
 
 /**
  * init android Application - for Koin koin
  */
 fun Koin.init(application: Application): Koin {
     // provide Application defintion
-    beanRegistry.declare({ application }, Application::class, Scope.root())
+    provide { application }
     return this
 }
-
-/*
-  val koinContext = newKoinContext(this, modules...)
- */
 
 /**
  * Create a new Koin Context
@@ -30,7 +26,7 @@ fun newKoinContext(application: Application, modules: List<AndroidModule>): Koin
  * @param application - Android application
  * @param modules - vararg of AndroidModule
  */
-fun newKoinContext(application: Application, vararg modules : AndroidModule): KoinContext = Koin().init(application).build(*modules)
+fun newKoinContext(application: Application, vararg modules: AndroidModule): KoinContext = Koin().init(application).build(*modules)
 
 /*
   val koinContext by lazyKoinContext(this, modules...)
@@ -47,4 +43,4 @@ fun lazyKoinContext(application: Application, modules: List<AndroidModule>) = la
  * @param application - Android application
  * @param modules - vararg of AndroidModule
  */
-fun lazyKoinContext(application: Application, vararg modules : AndroidModule) = lazy { Koin().init(application).build(*modules) }
+fun lazyKoinContext(application: Application, vararg modules: AndroidModule) = lazy { Koin().init(application).build(*modules) }

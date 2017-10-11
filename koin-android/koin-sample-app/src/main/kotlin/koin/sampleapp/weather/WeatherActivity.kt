@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
 import fr.ekito.myweatherapp.DialogHelper
 import koin.sampleapp.R
+import koin.sampleapp.di.WeatherModule
 import koin.sampleapp.model.DailyForecastModel
 import koin.sampleapp.service.json.getDailyForecasts
 import koin.sampleapp.service.json.weather.Weather
@@ -51,7 +52,7 @@ class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
 
     override fun onPause() {
         presenter.stop()
-        release(this)
+        release(WeatherModule.CTX_WEATHER_ACTIVITY)
         super.onPause()
     }
 

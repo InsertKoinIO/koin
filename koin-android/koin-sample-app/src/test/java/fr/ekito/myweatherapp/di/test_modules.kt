@@ -3,15 +3,12 @@ package fr.ekito.myweatherapp.di
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.android.AndroidModule
-import org.koin.dsl.context.Context
 
-class TestWebServicesModule : AndroidModule() {
+class RxTestModule : AndroidModule() {
 
-    override fun context(): Context {
-        return declareContext {
-            // provided components
-            provide { TestSchedulerProvider() } bind (SchedulerProvider::class)
-        }
+    override fun context() = applicationContext {
+        // provided components
+        provide { TestSchedulerProvider() } bind (SchedulerProvider::class)
     }
 
     companion object {
