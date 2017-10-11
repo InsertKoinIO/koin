@@ -50,16 +50,25 @@ class ContextReleaseTest {
         val c1 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         ctx.release("B")
 
         ctx.assertRemainingInstances(1)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 0)
+        ctx.assertContextInstances("C", 0)
 
         val a2 = ctx.get<ComponentA>()
         val b2 = ctx.get<ComponentB>()
         val c2 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         Assert.assertEquals(a1, a2)
         Assert.assertNotEquals(b1, b2)
@@ -85,16 +94,25 @@ class ContextReleaseTest {
         val c1 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         ctx.release("A")
 
         ctx.assertRemainingInstances(0)
+        ctx.assertContextInstances("A", 0)
+        ctx.assertContextInstances("B", 0)
+        ctx.assertContextInstances("C", 0)
 
         val a2 = ctx.get<ComponentA>()
         val b2 = ctx.get<ComponentB>()
         val c2 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         Assert.assertNotEquals(a1, a2)
         Assert.assertNotEquals(b1, b2)
@@ -120,16 +138,25 @@ class ContextReleaseTest {
         val c1 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         ctx.release(Scope.ROOT)
 
         ctx.assertRemainingInstances(0)
+        ctx.assertContextInstances("A", 0)
+        ctx.assertContextInstances("B", 0)
+        ctx.assertContextInstances("C", 0)
 
         val a2 = ctx.get<ComponentA>()
         val b2 = ctx.get<ComponentB>()
         val c2 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         Assert.assertNotEquals(a1, a2)
         Assert.assertNotEquals(b1, b2)
@@ -155,16 +182,25 @@ class ContextReleaseTest {
         val c1 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         ctx.release("C")
 
         ctx.assertRemainingInstances(2)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 0)
 
         val a2 = ctx.get<ComponentA>()
         val b2 = ctx.get<ComponentB>()
         val c2 = ctx.get<ComponentC>()
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         Assert.assertEquals(a1, a2)
         Assert.assertEquals(b1, b2)
@@ -190,6 +226,9 @@ class ContextReleaseTest {
         Assert.assertNotNull(ctx.get<ComponentC>())
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
 
         try {
             ctx.release("D")
@@ -198,5 +237,8 @@ class ContextReleaseTest {
         }
 
         ctx.assertRemainingInstances(3)
+        ctx.assertContextInstances("A", 1)
+        ctx.assertContextInstances("B", 1)
+        ctx.assertContextInstances("C", 1)
     }
 }

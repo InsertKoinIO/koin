@@ -39,11 +39,11 @@ class Koin {
     }
 
     /**
-     * TODO
+     * Provide a bean definition before building any module
      */
-    inline fun <reified T : Any> provide(scope: String = Scope.ROOT, noinline definition: () -> T): Koin {
+    inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, noinline definition: () -> T): Koin {
         val clazz = T::class
-        beanRegistry.declare(BeanDefinition(clazz = clazz, definition = definition), beanRegistry.getScope(scope))
+        beanRegistry.declare(BeanDefinition(clazz = clazz, definition = definition), beanRegistry.getScope(contextName))
         return this
     }
 

@@ -30,17 +30,17 @@ class BeanRegistry {
     }
 
     /**
-     * TODO
+     * Retrieve context scope for given bean definition
      */
     fun getScopeForDefinition(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
 
     /**
-     * TODO
+     * Retrieve context scope for given name
      */
     fun getScope(name: String) = scopes.firstOrNull { it.name == name } ?: throw NoScopeFoundException("Context scope '$name' not found")
 
     /**
-     * TODO
+     * Find or create context scope
      */
     fun findOrCreateScope(scopeName: String?, parentScopeName: String? = null): Scope {
         return if (scopeName == null) rootScope
@@ -50,7 +50,7 @@ class BeanRegistry {
     }
 
     /**
-     * TODO
+     * Create context scope
      */
     fun createScope(scope: String, parentScope: String?): Scope {
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
@@ -88,13 +88,16 @@ class BeanRegistry {
     private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = searchDefinition({ it.bindTypes.contains(clazz) }, "for compatible type : $clazz")
 
     /**
-     * TODO
+     * Get bean definitions from given scope context & child
      */
-    fun definitionsFromScope(name: String): List<BeanDefinition<*>> {
+    fun getDefinitionsFromScope(name: String): List<BeanDefinition<*>> {
         val scopes = allScopesfrom(name).toSet()
         return definitions.keys.filter { def -> definitions[def] in scopes }
     }
 
+    /**
+     * Retrieve scope and child for given name
+     */
     private fun allScopesfrom(name: String): List<Scope> {
         val scope = getScope(name)
         val firstChild = scopes.filter { it.parent == scope }

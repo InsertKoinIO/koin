@@ -19,7 +19,8 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      */
 
     /**
-     * TODO
+     * Create a sub context in actual context
+     * @param name
      */
     fun context(name: String, init: Context.() -> Unit): Context {
         val newContext = Context(name, koinContext)
@@ -29,7 +30,8 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     /**
      * Provide a bean definition
-     * with a name
+     * @param name
+     * @param isSingleton
      */
     inline fun <reified T : Any> provide(name: String = "", isSingleton: Boolean = true, noinline definition: () -> T): BeanDefinition<T> {
         val beanDefinition = BeanDefinition(name, T::class, isSingleton, definition = definition)
@@ -38,7 +40,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     }
 
     /**
-     * Provide a bean definition - as factory
+     * Provide a bean definition - as factory (recreate instance each time)
      */
     inline fun <reified T : Any> provideFactory(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
         val beanDefinition = BeanDefinition(name, T::class, false, definition = definition)

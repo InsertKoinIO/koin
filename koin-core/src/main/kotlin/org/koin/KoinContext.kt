@@ -4,7 +4,6 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
-import org.koin.core.scope.Scope
 import org.koin.error.DependencyResolutionException
 import java.util.*
 import kotlin.reflect.KClass
@@ -59,7 +58,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * TODO
+     * Try to inject each definition
      */
     fun dryRun() {
         beanRegistry.definitions.keys.forEach { def ->
@@ -68,21 +67,25 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * TODO
+     * Drop all instances for context
+     * @param name
      */
     fun release(name: String) {
-        val definitions: List<BeanDefinition<*>> = beanRegistry.definitionsFromScope(name)
+        val definitions: List<BeanDefinition<*>> = beanRegistry.getDefinitionsFromScope(name)
         instanceFactory.dropAllInstances(definitions)
     }
 
     /**
      * Retrieve a property by its key
      * can return null
+     * @param key
      */
     inline fun <reified T> getProperty(key: String): T? = propertyResolver.getProperty(key)
 
     /**
      * Set a property
+     * @param key
+     * @param value
      */
     fun setProperty(key: String, value: Any?) = propertyResolver.setProperty(key, value)
 }

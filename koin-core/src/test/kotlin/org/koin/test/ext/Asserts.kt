@@ -17,6 +17,13 @@ fun KoinContext.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: Stri
     Assert.assertEquals("$definitionClazz must be in getScopeForDefinition $scopeName", beanRegistry.getScope(scopeName), beanRegistry.definitions[definition])
 }
 
+fun KoinContext.assertContextInstances(scopeName: String, size: Int) {
+    val scope = getScope(scopeName)
+    val definitions = AllDefinitions().filter { it.value == scope }.map { it.key }.toSet()
+    val instances = allInstances().filter { it.first in definitions }
+    Assert.assertEquals("scope $scopeName must have $size instances", size, instances.size)
+}
+
 fun KoinContext.assertScopeParent(scopeName: String, scopeParent: String) {
     Assert.assertEquals("Scope '$scopeName' must have parent '$scopeName'", scopeParent, beanRegistry.getScope(scopeName).parent?.name)
 }
