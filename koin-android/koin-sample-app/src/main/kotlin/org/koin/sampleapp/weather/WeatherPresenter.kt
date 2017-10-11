@@ -1,18 +1,16 @@
 package org.koin.sampleapp.weather
 
 import io.reactivex.disposables.Disposable
-import org.koin.sampleapp.repository.json.getLocation
-import org.koin.sampleapp.repository.remote.WeatherDatasource
+import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.rx.SchedulerProvider
 
 /**
  * Weather Presenter
  */
-class WeatherPresenter(val weatherWS: WeatherDatasource, val schedulerProvider: SchedulerProvider) : WeatherContract.Presenter {
+class WeatherPresenter(val weatherRepository: WeatherRepository, val schedulerProvider: SchedulerProvider) : WeatherContract.Presenter {
 
     override lateinit var view: WeatherContract.View
     private var currentRequest: Disposable? = null
-    private val DEFAULT_LANG = "EN"
 
     override fun start() {
 
@@ -24,9 +22,7 @@ class WeatherPresenter(val weatherWS: WeatherDatasource, val schedulerProvider: 
 
     override fun getWeather(location: String) {
         currentRequest?.dispose()
-        currentRequest = weatherWS.geocode(location)
-                .map { it.getLocation() ?: throw IllegalStateException("No Location data") }
-                .flatMap { location -> weatherWS.weather(location.lat, location.lng, DEFAULT_LANG) }
+        currentRequest = weatherRepository.getWeather(location)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe(

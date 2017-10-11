@@ -6,7 +6,7 @@ import org.junit.Test
 import org.koin.Koin
 import org.koin.sampleapp.di.RxTestModule
 import org.koin.sampleapp.di.WeatherModule
-import org.koin.sampleapp.repository.remote.WeatherDatasource
+import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.util.any
 import org.mockito.Mock
 import org.mockito.Mockito

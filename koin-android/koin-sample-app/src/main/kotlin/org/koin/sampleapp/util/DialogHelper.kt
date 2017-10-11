@@ -1,4 +1,4 @@
-package org.koin.sampleapp.weather
+package org.koin.sampleapp.util
 
 
 import android.support.v7.app.AlertDialog.Builder

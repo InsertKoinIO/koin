@@ -15,6 +15,7 @@ import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.weather.model.DailyForecastModel
 import org.koin.sampleapp.repository.json.getDailyForecasts
 import org.koin.sampleapp.repository.json.weather.Weather
+import org.koin.sampleapp.util.DialogHelper
 import java.util.*
 
 /**

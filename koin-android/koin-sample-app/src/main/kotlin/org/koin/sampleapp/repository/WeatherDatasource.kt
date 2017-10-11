@@ -1,4 +1,4 @@
-package org.koin.sampleapp.repository.remote
+package org.koin.sampleapp.repository
 
 import io.reactivex.Single
 import org.koin.sampleapp.repository.json.geocode.Geocode
