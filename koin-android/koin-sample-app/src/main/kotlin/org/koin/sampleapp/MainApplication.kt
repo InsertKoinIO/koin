@@ -6,12 +6,12 @@ import com.joanzapata.iconify.fonts.WeathericonsModule
 import org.koin.android.KoinContextAware
 import org.koin.android.newKoinContext
 import org.koin.sampleapp.di.WeatherModule
-import org.koin.sampleapp.di.allModules
+import org.koin.sampleapp.di.weatherAppModules
 
 class MainApplication : Application(), KoinContextAware {
 
     // Koin Context
-    override val koinContext = newKoinContext(this, allModules())
+    override val koinContext = newKoinContext(this, weatherAppModules())
 
     override fun onCreate() {
         super.onCreate()

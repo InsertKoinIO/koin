@@ -14,7 +14,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-fun allModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxModule())
+fun weatherAppModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxModule())
 
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
