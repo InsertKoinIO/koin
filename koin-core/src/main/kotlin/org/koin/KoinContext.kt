@@ -67,9 +67,8 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         }
     }
 
-
     /**
-     * Provide a bean definition
+     * Provide a bean definition, on the fly
      */
     inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, noinline definition: () -> T) {
         val clazz = T::class
