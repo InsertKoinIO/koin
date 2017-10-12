@@ -6,9 +6,6 @@ import org.koin.sampleapp.repository.json.geocode.Geocode
 import org.koin.sampleapp.repository.json.geocode.Location
 import org.koin.sampleapp.repository.json.weather.Weather
 
-/**
- * Created by arnaud on 12/10/2017.
- */
 class LocalDataSource(val jsonReader: JsonReader) : WeatherDatasource {
     private val cities = HashMap<Location, String>()
     private val default_city = "toulouse"

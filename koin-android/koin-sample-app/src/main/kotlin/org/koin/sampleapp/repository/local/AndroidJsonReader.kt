@@ -4,9 +4,6 @@ import android.app.Application
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-/**
- * Created by arnaud on 12/10/2017.
- */
 class AndroidJsonReader(val application: Application) : BaseReader() {
 
     override fun getAllFiles(): List<String> = application.assets.list("json").toList()
