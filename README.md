@@ -1,10 +1,17 @@
-# Insert Koin to make dependency injection
-
-KOIN is a dependency injection framework that uses Kotlin and its functional power to get things done!  No proxy/CGLib, No code generation, No introspection. Just functional Kotlin and DSL magic ;)
-
 ![logo](./img/insert_koin_android_logo.jpg)
 
-Check the latest changes in [What's new](https://github.com/Ekito/koin/wiki/What's-new-%3Fv) wiki page.
+### What's KOIN?
+
+Koin is a simple (but powerfull) Dependency injection framework for Android. It uses [Kotlin](https://kotlinlang.org/) and its functional power to get things done!  No proxy/CGLib, No code generation, No introspection. Just functional Kotlin and DSL magic ;)
+
+KOIN is a very small library, that aims to be as simple as possible and let's write you dependency injection in a breath.
+
+*Just describe your stuffs and inject it!*
+
+### What's Up?
+
+Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3Fv) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
+
 
 # Getting Started
 
@@ -39,7 +46,7 @@ The `newKoinContext` function builder need a list of modules to run. A function 
 
 # Dependency management
 
-## Declaration in modules
+## Describing your dependencies
 
 Koin ask you to declare your components in modules.
 
@@ -51,7 +58,7 @@ class WeatherModule : AndroidModule() {
         // WeatherActivity context
         context(name = "WeatherActivity") {
             // Provide a factory for presenter WeatherContract.Presenter
-            provide { WeatherPresenter(get()) } bind WeatherContract.Presenter::class
+            provide { WeatherPresenter(get()) }
         }
         
         // Weather data repository
@@ -78,13 +85,14 @@ Once your app is configured, you have 2 ways of handling injection in your appli
 * In **Android components** (Activity,Fragment...): use the `by inject()` lazy operator
 * in **any Kotlin component**: injection is made by constructor
 
-Below a sample of injection with `by inject()` in an Activity:
+
+Below a sample of injection with `by inject()` in an Android Activity:
 
 ```Kotlin
 class WeatherActivity() : AppCompatActivity() {
 
     // inject my Presenter 
-    val presenter: WeatherContract.Presenter by inject()
+    val presenter by inject<WeatherPresenter>()
     
 }
 ```
