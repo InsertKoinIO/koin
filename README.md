@@ -4,7 +4,11 @@ KOIN is a dependency injection framework that uses Kotlin and its functional pow
 
 ![logo](./img/insert_koin_android_logo.jpg)
 
-## Setup
+Check the latest changes in [What's new](https://github.com/Ekito/koin/wiki/What's-new-%3Fv) wiki page.
+
+# Getting Started
+
+## Gradle
 
 Check that you have `jcenter` repository. Add the following gradle dependency to your Android app:
 
@@ -12,16 +16,9 @@ Check that you have `jcenter` repository. Add the following gradle dependency to
 compile 'org.koin:koin-android:0.4.0'
 ```
 
-## Getting Started
-
-First of all, you need to write a module. A module **gathers your components definitions** and allows it to be loaded by Koin and injected in your application. Keep in mind, that **injection by constructor** is the default strategy targeted by Koin. In Android components (Activity, Fragment ...) you can use `by inject()` to inject your dependencies.  
-
-Check the latest changes: [what's new](https://github.com/Ekito/koin/wiki/What's-new-%3F)
-
-
 ### Setup your Application
 
-To start Koin and your modules, you just have to build it in your *application* class like below:
+To start Koin and your modules, you just have to make it in your Android *Application* class like below:
 
 ```Kotlin
 class MainApplication : Application(), KoinContextAware {
@@ -36,82 +33,88 @@ class MainApplication : Application(), KoinContextAware {
 }
 ```
 
-Implement `KoinContextAware` interface, and build your *koinContext* with the `newKoinContext` function huilder. This will able you to use the **Koin Android extensions** in your Android Application.
+**Implement** `KoinContextAware` interface, and **override** your `koinContext` property with the `newKoinContext()` function builder.
 
-The `newKoinContext` function build a KoinContext for your `ApplicationContext` class and list of `AndroidModule` (`allmMdules()` is just a function returning a list of `AndroidModule`).
+The `newKoinContext` function builder need a list of modules to run. A function can do it four you, like `allModules()` function.
 
+# Dependency management
 
-### Declare your dependencies
+## Declaration in modules
 
-First of all, write a module class (extends [AndroidModule](https://github.com/Ekito/koin/wiki#module-class)), overrides the `context()` function by using the `declareContext` function, to declare a context like below:
+Koin ask you to declare your components in modules.
+
+A module class **extends** [AndroidModule](https://github.com/Ekito/koin/wiki#module-class) class and implement the `context()` function by using the `applicationContext` function builder, to declare a context like below:
 
 ```Kotlin
-class MyModule : AndroidModule() {
-    override fun context() =
-            declareContext {
-                provide { ServiceA(get()) }
-                provide { ServiceB() }
-                provide { ServiceC(get(), get()) }
-            }
+class WeatherModule : AndroidModule() {
+    override fun context() = applicationContext {
+        // WeatherActivity context
+        context(name = "WeatherActivity") {
+            // Provide a factory for presenter WeatherContract.Presenter
+            provide { WeatherPresenter(get()) } bind WeatherContract.Presenter::class
+        }
+        
+        // Weather data repository
+        provide { WeatherRepository(get()) }
+        
+        // Local Weather DataSource 
+        provide { LocalDataSource(AndroidReader(applicationContext) } bind WeatherDatasource::class
+    }
 }
 
 //for classes
-class ServiceA(val serviceB: ServiceB) 
-class ServiceB()
-class ServiceC(val serviceA: ServiceA, val serviceB: ServiceB)
+class WeatherPresenter(val weatherRepository: WeatherRepository)
+class WeatherRepository(val weatherDatasource: WeatherDatasource)
+class LocalDataSource(val jsonReader: JsonReader) : WeatherDatasource
 ```
+Your module provides then an *applicationContext* (description of yoru components), which will be made of provided components and subcontexts.
 
-### Koin DSL
+You can refer to the [Koin DSL](https://github.com/Ekito/koin/wiki/Koin-DSL) for more details. 
 
-To describe your module, you can use the following **Koin DSL** keywords:
+## Making dependency injection
 
-* `provide { /* component definition */ }` declares a component for your [Module](https://github.com/Ekito/koin/wiki#module-class) - You provide a function to instanciate your component
-* `bind {/* compatible type */}` [bind](https://github.com/Ekito/koin/wiki#type-binding) a compatible type for *provided definition* (use it behind provide{} expression)
-* `get()` resolve a component dependency
-* `scope {/* scope class */}` use the given [scope](https://github.com/Ekito/koin/wiki#scopes) for current module's definitions
+Once your app is configured, you have 2 ways of handling injection in your application:
 
-_NB_: Koin is simple: All your components are singletons. You have to use **scopes** to handle your components lifecycle and release them when needed.
+* In **Android components** (Activity,Fragment...): use the `by inject()` lazy operator
+* in **any Kotlin component**: injection is made by constructor
 
-### Inject your components
-
-Once your app is configured, you have to ways of handling injection in your application:
-
-* In Android components (Activity,Fragment...): use the `by inject()` lazy operator
-* in any Kotlin component: **injection is made by constructor**
-
-
-Below a quick sample of injection with `by inject()` in an Activity:
+Below a sample of injection with `by inject()` in an Activity:
 
 ```Kotlin
-class MainActivity : AppCompatActivity() {
+class WeatherActivity() : AppCompatActivity() {
 
-    // inject my WeatherService 
-    val weatherService by inject<WeatherService>()
-    // ...
+    // inject my Presenter 
+    val presenter: WeatherContract.Presenter by inject()
+    
 }
 ```
 
+## Checking your modules
 
-## The Sample App
+Koin is an internal DSL: all your modules evolves directly with your code (if you change a component, it will also impact your modules). 
+
+You can check your modules with `KoinContext.dryRun()` (launch all your modules and try to inject each component). Better is to place it in your tests folder and check it regulary - ensure everything is injected correctly.
+
+# The Sample App
 
 The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/koin-android/koin-sample-app) application offers a complete application sample, with MVP Android style. 
 
 The weather app [wiki page](https://github.com/Ekito/koin/wiki/The-Koin-Sample-App) describes all about Koin features used.
 
-## Documentation
+# Documentation
 
 A global [wiki](https://github.com/Ekito/koin/wiki) documentation page gather all features and references about Koin Framework.
 
-## Articles
+# Articles
 
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
 
-## Contact & Support
+# Contact & Support
 
-### Slack
+## Slack
 Check the [kotlin slack community](https://kotlinlang.org/community/) and join **#koin** channel
 
-### Github
+## Github
 Don't hesitate to open an issue to discuss about your needs or if you don't a feature for example.
 
