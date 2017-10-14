@@ -9,7 +9,7 @@
     android:gravity="center"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="fr.ekito.myweatherapp.MainActivity"
+    tools:context=".weather.WeatherActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView
@@ -67,37 +67,37 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <TextView
-                android:layout_alignParentStart="true"
                 android:id="@+id/weather_forecast_day1"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:text="Day +1"
                 android:textColor="@color/white" />
 
             <com.joanzapata.iconify.widget.IconTextView
-                android:layout_below="@id/weather_forecast_day1"
                 android:id="@+id/weather_icon_day1"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/weather_forecast_day1"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="50sp" />
 
             <TextView
-                android:layout_below="@id/weather_icon_day1"
                 android:id="@+id/weather_temp_day1"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/weather_icon_day1"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:textColor="@color/white" />
@@ -108,37 +108,37 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <TextView
-                android:layout_alignParentStart="true"
                 android:id="@+id/weather_forecast_day2"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:text="Day +2"
                 android:textColor="@color/white" />
 
             <com.joanzapata.iconify.widget.IconTextView
-                android:layout_below="@id/weather_forecast_day2"
                 android:id="@+id/weather_icon_day2"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/weather_forecast_day2"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="50sp" />
 
             <TextView
-                android:layout_below="@id/weather_icon_day2"
                 android:id="@+id/weather_temp_day2"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/weather_icon_day2"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:textColor="@color/white" />
@@ -149,37 +149,37 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <TextView
-                android:layout_alignParentStart="true"
                 android:id="@+id/weather_forecast_day3"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:text="Day +3"
                 android:textColor="@color/white" />
 
             <com.joanzapata.iconify.widget.IconTextView
-                android:layout_below="@id/weather_forecast_day3"
                 android:id="@+id/weather_icon_day3"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/weather_forecast_day3"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="50sp" />
 
             <TextView
-                android:layout_below="@id/weather_icon_day3"
                 android:id="@+id/weather_temp_day3"
                 style="@style/Text.Thin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/weather_icon_day3"
                 android:layout_margin="@dimen/weather_margin"
                 android:gravity="center"
                 android:textColor="@color/white" />
