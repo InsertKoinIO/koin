@@ -8,7 +8,7 @@ KOIN is a very small library, that aims to be as simple as possible and let's wr
 
 *Just describe your stuffs and inject it!*
 
-### What's Up?
+### What's up?
 
 Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3Fv) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
 
