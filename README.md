@@ -10,7 +10,7 @@ KOIN is a very small library, that aims to be as simple as possible and let's wr
 
 ### What's up?
 
-Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3Fv) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
+Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3F) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
 
 For users prior to Koin 0.4.x, please refer to [migrating to 0.4.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-04x) page to understand the last changes. 
 
