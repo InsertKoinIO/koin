@@ -1,10 +1,12 @@
 package org.koin.test
 
+import junit.framework.Assert.fail
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
+import org.koin.error.MissingPropertyException
 import org.koin.test.ext.*
 
 class PropertyTest {
@@ -104,13 +106,19 @@ class PropertyTest {
     fun `should not inject property`() {
         val ctx = Koin().build(SimpleModule())
 
-        val url = ctx.getProperty<String?>(K_URL)
+        var url: String? = null
+        try {
+            url = ctx.getProperty<String>(K_URL)
+            fail()
+        } catch (e: MissingPropertyException) {
+            System.err.println(e)
+        }
         val a = ctx.getOrNull<ComponentA>()
         val b = ctx.getOrNull<ComponentB>()
 
+        Assert.assertNull(url)
         Assert.assertNull(a)
         Assert.assertNull(b)
-        Assert.assertNull(url)
 
         ctx.assertRemainingInstances(0)
         ctx.assertDefinitions(2)
@@ -119,7 +127,6 @@ class PropertyTest {
         ctx.assertDefinedInScope(ComponentB::class, Scope.ROOT)
         ctx.assertProperties(0)
     }
-
 
     @Test
     fun `should overwrite property`() {

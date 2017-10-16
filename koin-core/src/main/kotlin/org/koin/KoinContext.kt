@@ -90,7 +90,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * can return null
      * @param key
      */
-    inline fun <reified T> getProperty(key: String): T? = propertyResolver.getProperty(key)
+    inline fun <reified T> getProperty(key: String): T = propertyResolver.getProperty(key)
 
     /**
      * Set a property
