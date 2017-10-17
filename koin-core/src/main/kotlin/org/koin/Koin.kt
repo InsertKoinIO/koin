@@ -7,6 +7,7 @@ import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
+import kotlin.reflect.KClass
 
 /**
  * Koin Context Builder
@@ -41,9 +42,13 @@ class Koin {
     /**
      * Provide a bean definition before building any module
      */
-    inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, noinline definition: () -> T): Koin {
+    inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, additionalBinding: KClass<*>? = null, noinline definition: () -> T): Koin {
         val clazz = T::class
-        beanRegistry.declare(BeanDefinition(clazz = clazz, definition = definition), beanRegistry.getScope(contextName))
+        val beanDefinition = BeanDefinition(clazz = clazz, definition = definition)
+        if (additionalBinding != null) {
+            beanDefinition.bind(additionalBinding)
+        }
+        beanRegistry.declare(beanDefinition, beanRegistry.getScope(contextName))
         return this
     }
 

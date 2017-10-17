@@ -70,10 +70,14 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Provide a bean definition, on the fly
      */
-    inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, noinline definition: () -> T) {
+    inline fun <reified T : Any> provide(contextName: String = Scope.ROOT, additionalBinding : KClass<*>? = null, noinline definition: () -> T) {
         val clazz = T::class
         instanceFactory.dropInstance(clazz)
-        beanRegistry.declare(BeanDefinition(clazz = clazz, definition = definition), beanRegistry.getScope(contextName))
+        val beanDefinition = BeanDefinition(clazz = clazz, definition = definition)
+        if (additionalBinding != null){
+            beanDefinition.bind(additionalBinding)
+        }
+        beanRegistry.declare(beanDefinition, beanRegistry.getScope(contextName))
     }
 
     /**
