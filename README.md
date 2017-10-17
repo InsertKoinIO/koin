@@ -21,7 +21,7 @@ For users using a version prior to Koin 0.4.x, please refer the [migrating to 0.
 Check that you have the `jcenter` repository. Add the following gradle dependency to your Android app:
 
 ```gradle
-compile 'org.koin:koin-android:0.4.0'
+compile 'org.koin:koin-android:0.4.1'
 ```
 
 ### Setup your Application
