@@ -4,10 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.StandAloneRegistry
-import org.koin.standalone.inject
-import org.koin.standalone.releaseContext
-import org.koin.standalone.startContext
+import org.koin.standalone.*
 import org.koin.test.ext.assertContexts
 import org.koin.test.ext.assertDefinedInScope
 import org.koin.test.ext.assertDefinitions
@@ -51,7 +48,7 @@ class MVPArchitectureTest {
     fun `should create all MVP hierarchy`() {
         startContext(MVPModule(), DataSourceModule())
 
-        val ctx = StandAloneRegistry.koinContext
+        val ctx = getKoin()
 
         val view = ctx.get<View>()
         val presenter = ctx.get<Presenter>()
