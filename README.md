@@ -45,8 +45,6 @@ class MainApplication : Application(), KoinContextAware {
 
 The `newKoinContext` function builder requires a list of modules to run. A function can manage this for you, check out the `allModules()` function.
 
-# Dependency management
-
 ## Describing your dependencies
 
 KOIN requires you to declare your components in modules.
@@ -103,6 +101,17 @@ class WeatherActivity() : AppCompatActivity() {
 KOIN is an internal DSL: all your modules evolves directly with your code (if you change a component, it will also impact your modules). 
 
 You can check your modules with `KoinContext.dryRun()` (launch all your modules and try to inject each component). Better is to place it in your tests folder and check it regulary - ensure everything is injected correctly.
+
+in a JUnit test file:
+
+```kotlin
+@Test
+fun dryRun(){
+     val koinContext = Koin().build(allModules()).dryRun()
+     // or if you need Application context in your injection
+     val koinContext = Koin().init(mock(Application::class.java)).build(allModules()).dryRun()
+}
+```
 
 # The Sample App
 
