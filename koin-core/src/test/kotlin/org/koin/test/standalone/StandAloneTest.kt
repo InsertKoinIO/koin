@@ -36,6 +36,10 @@ class StandAloneTest {
 
     class View() {
         val presenter: Presenter by inject()
+
+        fun onDestroy() {
+            releaseContext("View")
+        }
     }
 
     class Presenter(val repository: Repository)
@@ -67,7 +71,7 @@ class StandAloneTest {
         ctx.assertDefinedInScope(View::class, "View")
         ctx.assertDefinedInScope(Presenter::class, "View")
 
-        releaseContext("View")
+        view.onDestroy()
         ctx.assertRemainingInstances(2)
         ctx.assertDefinitions(4)
         ctx.assertContexts(2)
