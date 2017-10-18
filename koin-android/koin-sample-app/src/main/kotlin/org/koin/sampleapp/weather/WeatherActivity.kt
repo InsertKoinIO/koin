@@ -2,12 +2,12 @@ package org.koin.sampleapp.weather
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.koin.android.ContextAwareActivity
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.repository.json.getDailyForecasts
@@ -15,13 +15,14 @@ import org.koin.sampleapp.repository.json.weather.Weather
 import org.koin.sampleapp.util.DialogHelper
 import org.koin.sampleapp.weather.model.DailyForecastModel
 import org.koin.standalone.inject
-import org.koin.standalone.releaseContext
 import java.util.*
 
 /**
  * Weather View
  */
-class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
+class WeatherActivity() : ContextAwareActivity(), WeatherContract.View {
+
+    override val contextName = WeatherModule.CTX_WEATHER_ACTIVITY
 
     private val now = Date()
 
@@ -50,11 +51,7 @@ class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
         presenter.start()
     }
 
-    override fun onPause() {
-        presenter.stop()
-        releaseContext(WeatherModule.CTX_WEATHER_ACTIVITY)
-        super.onPause()
-    }
+    // ContextAwareActivity will drop presenter on onPause
 
     override fun displayError(error: Throwable) {
         Snackbar.make(this.currentFocus, "Got error :( $error", Snackbar.LENGTH_SHORT).show()
