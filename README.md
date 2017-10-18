@@ -87,15 +87,18 @@ Once your app is configured, you have 2 ways of handling injection in your appli
 ```Kotlin
 // In Android class, use the by inject() operator
 class WeatherActivity() : AppCompatActivity() {
+
     // inject my Presenter 
     val presenter by inject<WeatherPresenter>()
-    
+
+    // you can use your injected dependencies anywhere
 }
 ```
 
 ```Kotlin
 // In pure Kotlin class, All is injected in constructor
-class WeatherPresenter(val weatherRepository: WeatherRepository, val schedulerProvider: SchedulerProvider) {
+class WeatherPresenter(val weatherRepository: WeatherRepository) {
+
     // you can use your dependencies here
 }
 ```
