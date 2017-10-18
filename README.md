@@ -111,7 +111,7 @@ fun dryRun(){
      // or if you need Application context in your injection
      val koinContext = Koin().init(mock(Application::class.java)).build(allModules()).dryRun()
 }
-
+```
 
 # The Sample App
 
