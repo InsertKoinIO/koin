@@ -84,12 +84,9 @@ Once your app is configured, you have 2 ways of handling injection in your appli
 * In **Android components** (Activity, Fragment etc.): use the `by inject()` lazy operator
 * In **any Kotlin component**: injection is made **by constructor**
 
-
-Below is a sample of injection with `by inject()` in an Android Activity:
-
 ```Kotlin
+// In Android class, use the by inject() operator
 class WeatherActivity() : AppCompatActivity() {
-
     // inject my Presenter 
     val presenter by inject<WeatherPresenter>()
     
@@ -97,7 +94,7 @@ class WeatherActivity() : AppCompatActivity() {
 ```
 
 ```Kotlin
-// All is injected in constructor
+// In pure Kotlin class, All is injected in constructor
 class WeatherPresenter(val weatherRepository: WeatherRepository, val schedulerProvider: SchedulerProvider) {
     // you can use your dependencies here
 }
