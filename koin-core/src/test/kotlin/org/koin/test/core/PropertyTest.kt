@@ -1,4 +1,4 @@
-package org.koin.test
+package org.koin.test.core
 
 import junit.framework.Assert.fail
 import org.junit.Assert
