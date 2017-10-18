@@ -82,17 +82,24 @@ You can refer to the [KOIN DSL](https://github.com/Ekito/koin/wiki/Koin-DSL) for
 Once your app is configured, you have 2 ways of handling injection in your application:
 
 * In **Android components** (Activity, Fragment etc.): use the `by inject()` lazy operator
-* In **any Kotlin component**: injection is made by constructor
-
-
-Below is a sample of injection with `by inject()` in an Android Activity:
+* In **any Kotlin component**: injection is made **by constructor**
 
 ```Kotlin
+// In Android class, use the by inject() operator
 class WeatherActivity() : AppCompatActivity() {
 
     // inject my Presenter 
     val presenter by inject<WeatherPresenter>()
-    
+
+    // you can use your injected dependencies anywhere
+}
+```
+
+```Kotlin
+// In pure Kotlin class, All is injected in constructor
+class WeatherPresenter(val weatherRepository: WeatherRepository) {
+
+    // you can use your dependencies here
 }
 ```
 
