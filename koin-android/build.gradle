@@ -2,7 +2,7 @@
 // Define versions in a single place
 ext {
     // Koin Version
-    koin_version = "0.4.1"
+    koin_version = "0.5.0"
 
     // Sdk and tools
     minSdkVersion = 14

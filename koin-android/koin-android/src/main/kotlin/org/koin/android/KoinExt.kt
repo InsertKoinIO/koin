@@ -1,16 +1,16 @@
 package org.koin.android
 
 import android.app.Application
+import android.content.Context
 import org.koin.Koin
-import org.koin.KoinContext
-import org.koin.core.scope.Scope
+import org.koin.standalone.StandAloneRegistry
 
 /**
  * init android Application - for Koin koin
  */
 fun Koin.init(application: Application): Koin {
     // provide Application defintion
-    provide { application }
+    provide(additionalBinding = Context::class) { application }
     return this
 }
 
@@ -19,15 +19,18 @@ fun Koin.init(application: Application): Koin {
  * @param application - Android application
  * @param modules - list of AndroidModule
  */
-fun newKoinContext(application: Application, modules: List<AndroidModule>): KoinContext = Koin().init(application).build(modules)
+fun newKoinContext(application: Application, modules: List<AndroidModule>) {
+    StandAloneRegistry.koinContext = Koin().init(application).build(modules)
+}
 
 /**
  * Create a new Koin Context
  * @param application - Android application
  * @param modules - vararg of AndroidModule
  */
-fun newKoinContext(application: Application, vararg modules: AndroidModule): KoinContext = Koin().init(application).build(*modules)
-
+fun newKoinContext(application: Application, vararg modules: AndroidModule) {
+    StandAloneRegistry.koinContext = Koin().init(application).build(*modules)
+}
 /*
   val koinContext by lazyKoinContext(this, modules...)
  */
@@ -36,11 +39,11 @@ fun newKoinContext(application: Application, vararg modules: AndroidModule): Koi
  * @param application - Android application
  * @param modules - list of AndroidModule
  */
-fun lazyKoinContext(application: Application, modules: List<AndroidModule>) = lazy { Koin().init(application).build(modules) }
+fun lazyKoinContext(application: Application, modules: List<AndroidModule>) = lazy { newKoinContext(application, modules) }
 
 /**
  * Create a lazy created Koin Context
  * @param application - Android application
  * @param modules - vararg of AndroidModule
  */
-fun lazyKoinContext(application: Application, vararg modules: AndroidModule) = lazy { Koin().init(application).build(*modules) }
+fun lazyKoinContext(application: Application, vararg modules: AndroidModule) = lazy { newKoinContext(application, *modules) }

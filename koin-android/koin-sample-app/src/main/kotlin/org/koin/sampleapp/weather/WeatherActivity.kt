@@ -8,14 +8,14 @@ import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.koin.android.ext.android.app.inject
-import org.koin.android.ext.android.app.release
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
-import org.koin.sampleapp.weather.model.DailyForecastModel
 import org.koin.sampleapp.repository.json.getDailyForecasts
 import org.koin.sampleapp.repository.json.weather.Weather
 import org.koin.sampleapp.util.DialogHelper
+import org.koin.sampleapp.weather.model.DailyForecastModel
+import org.koin.standalone.inject
+import org.koin.standalone.releaseContext
 import java.util.*
 
 /**
@@ -52,7 +52,7 @@ class WeatherActivity() : AppCompatActivity(), WeatherContract.View {
 
     override fun onPause() {
         presenter.stop()
-        release(WeatherModule.CTX_WEATHER_ACTIVITY)
+        releaseContext(WeatherModule.CTX_WEATHER_ACTIVITY)
         super.onPause()
     }
 
