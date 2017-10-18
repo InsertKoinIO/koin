@@ -102,6 +102,17 @@ KOIN is an internal DSL: all your modules evolves directly with your code (if yo
 
 You can check your modules with `KoinContext.dryRun()` (launch all your modules and try to inject each component). Better is to place it in your tests folder and check it regulary - ensure everything is injected correctly.
 
+in a JUnit test file:
+
+```kotlin
+@Test
+fun dryRun(){
+     val koinContext = Koin().build(allModules()).dryRun()
+     // or if you need Application context in your injection
+     val koinContext = Koin().init(mock(Application::class.java)).build(allModules()).dryRun()
+}
+
+
 # The Sample App
 
 The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/koin-android/koin-sample-app) application offers a complete application sample, with MVP Android style. 
