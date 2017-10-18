@@ -45,8 +45,6 @@ class MainApplication : Application(), KoinContextAware {
 
 The `newKoinContext` function builder requires a list of modules to run. A function can manage this for you, check out the `allModules()` function.
 
-# Dependency management
-
 ## Describing your dependencies
 
 KOIN requires you to declare your components in modules.
@@ -84,17 +82,24 @@ You can refer to the [KOIN DSL](https://github.com/Ekito/koin/wiki/Koin-DSL) for
 Once your app is configured, you have 2 ways of handling injection in your application:
 
 * In **Android components** (Activity, Fragment etc.): use the `by inject()` lazy operator
-* In **any Kotlin component**: injection is made by constructor
-
-
-Below is a sample of injection with `by inject()` in an Android Activity:
+* In **any Kotlin component**: injection is made **by constructor**
 
 ```Kotlin
+// In Android class, use the by inject() operator
 class WeatherActivity() : AppCompatActivity() {
 
     // inject my Presenter 
     val presenter by inject<WeatherPresenter>()
-    
+
+    // you can use your injected dependencies anywhere
+}
+```
+
+```Kotlin
+// In pure Kotlin class, All is injected in constructor
+class WeatherPresenter(val weatherRepository: WeatherRepository) {
+
+    // you can use your dependencies here
 }
 ```
 
@@ -103,6 +108,17 @@ class WeatherActivity() : AppCompatActivity() {
 KOIN is an internal DSL: all your modules evolves directly with your code (if you change a component, it will also impact your modules). 
 
 You can check your modules with `KoinContext.dryRun()` (launch all your modules and try to inject each component). Better is to place it in your tests folder and check it regulary - ensure everything is injected correctly.
+
+in a JUnit test file:
+
+```kotlin
+@Test
+fun dryRun(){
+     val koinContext = Koin().build(allModules()).dryRun()
+     // or if you need Application context in your injection
+     val koinContext = Koin().init(mock(Application::class.java)).build(allModules()).dryRun()
+}
+```
 
 # The Sample App
 
