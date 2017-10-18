@@ -13,7 +13,7 @@ import org.koin.test.ext.assertDefinedInScope
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertRemainingInstances
 
-class StandAloneTest {
+class MVPArchitectureTest {
     class MVPModule : Module() {
         override fun context() =
                 applicationContext {
