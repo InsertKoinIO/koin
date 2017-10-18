@@ -45,8 +45,6 @@ class MainApplication : Application(), KoinContextAware {
 
 The `newKoinContext` function builder requires a list of modules to run. A function can manage this for you, check out the `allModules()` function.
 
-# Dependency management
-
 ## Describing your dependencies
 
 KOIN requires you to declare your components in modules.
