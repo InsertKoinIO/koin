@@ -5,8 +5,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.Koin
-import org.koin.android.AndroidModule
-import org.koin.android.init
+import org.koin.android.ext.koin.init
+import org.koin.android.module.AndroidModule
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertRemainingInstances
 import org.koin.test.ext.getOrNull

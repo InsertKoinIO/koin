@@ -1,6 +1,6 @@
 package org.koin.sampleapp.di
 
-import org.koin.android.AndroidModule
+import org.koin.android.module.AndroidModule
 import org.koin.sampleapp.datasource.JavaReader
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.local.LocalDataSource

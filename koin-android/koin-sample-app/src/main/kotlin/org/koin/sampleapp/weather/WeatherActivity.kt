@@ -7,26 +7,26 @@ import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.koin.android.ContextAwareActivity
+import org.koin.android.contextaware.ContextAwareActivity
+import org.koin.android.ext.android.inject
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.repository.json.getDailyForecasts
 import org.koin.sampleapp.repository.json.weather.Weather
 import org.koin.sampleapp.util.DialogHelper
 import org.koin.sampleapp.weather.model.DailyForecastModel
-import org.koin.standalone.inject
 import java.util.*
 
 /**
  * Weather View
  */
-class WeatherActivity() : ContextAwareActivity(), WeatherContract.View {
+class WeatherActivity : ContextAwareActivity(), WeatherContract.View {
 
     override val contextName = WeatherModule.CTX_WEATHER_ACTIVITY
 
     private val now = Date()
 
-    override val presenter: WeatherContract.Presenter by inject()
+    override val presenter by inject<WeatherContract.Presenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -2,12 +2,12 @@ package org.koin.test.android
 
 import android.app.Application
 import android.content.res.Resources
-import org.koin.test.ext.*
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Koin
-import org.koin.android.init
+import org.koin.android.ext.koin.init
+import org.koin.test.ext.*
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 

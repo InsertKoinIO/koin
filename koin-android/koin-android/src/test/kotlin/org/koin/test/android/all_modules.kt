@@ -1,6 +1,6 @@
 package org.koin.test.android
 
-import org.koin.android.AndroidModule
+import org.koin.android.module.AndroidModule
 
 /**
  * Some tests classes

@@ -6,7 +6,7 @@ import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Koin
-import org.koin.android.init
+import org.koin.android.ext.koin.init
 import org.koin.error.BeanInstanceCreationException
 import org.koin.test.ext.assertDefinitions
 import org.koin.test.ext.assertProperties

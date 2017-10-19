@@ -2,7 +2,7 @@ package org.koin.sampleapp.di
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.AndroidModule
+import org.koin.android.module.AndroidModule
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.rx.ApplicationSchedulerProvider
