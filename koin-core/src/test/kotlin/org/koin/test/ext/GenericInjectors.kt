@@ -1,9 +1,11 @@
-package org.koin.standalone
+package org.koin.test.ext
+
+import org.koin.standalone.StandAloneContext
 
 /**
  * Get Koin context everywhere
  */
-fun <T> T.getKoin() = StandAloneRegistry.koinContext
+fun <T> T.getKoin() = StandAloneContext.koinContext
 
 /**
  * inject any component
