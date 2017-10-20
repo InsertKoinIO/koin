@@ -11,7 +11,7 @@ ext {
     buildToolsVersion = '26.0.1'
 
     // App dependencies
-    supportLibraryVersion = '25.3.1'
+    supportLibraryVersion = '26.0.0'
     junitVersion = '4.12'
 }
 
@@ -38,6 +38,9 @@ allprojects {
     repositories {
         jcenter()
         mavenLocal()
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 }
 
