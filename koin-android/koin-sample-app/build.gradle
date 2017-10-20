@@ -9,13 +9,13 @@ ext{
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "koin.sampleapp"
-        minSdkVersion 18
-        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
@@ -36,14 +36,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:2.8.47"
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.ext.supportLibraryVersion"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // Koin
-//    compile project(":koin-android")
-    compile "org.koin:koin-android:$koin_version"
+    compile project(":koin-android")
+//    compile "org.koin:koin-android:$koin_version"
     testCompile "org.koin:koin-test:$koin_version"
 
     compile 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'

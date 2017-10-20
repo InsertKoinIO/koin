@@ -42,7 +42,7 @@ fun KoinContext.bindBool(id: Int, key: String) {
  * @param application - Android application
  * @param modules - list of AndroidModule
  */
-fun newContext(application: Application, modules: List<AndroidModule>) {
+fun startAndroidContext(application: Application, modules: List<AndroidModule>) {
     StandAloneContext.koinContext = Koin().init(application).build(modules)
 }
 
@@ -51,6 +51,6 @@ fun newContext(application: Application, modules: List<AndroidModule>) {
  * @param application - Android application
  * @param modules - vararg of AndroidModule
  */
-fun newContext(application: Application, vararg modules: AndroidModule) {
+fun startAndroidContext(application: Application, vararg modules: AndroidModule) {
     StandAloneContext.koinContext = Koin().init(application).build(*modules)
 }
