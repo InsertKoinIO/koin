@@ -1,4 +1,4 @@
-package org.koin.test.ext
+package org.koin.test.standalone
 
 import org.koin.standalone.StandAloneContext
 

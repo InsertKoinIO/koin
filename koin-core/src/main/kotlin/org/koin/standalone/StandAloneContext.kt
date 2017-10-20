@@ -5,7 +5,7 @@ import org.koin.KoinContext
 import org.koin.dsl.module.Module
 
 /**
- * Koin registry
+ * Koin agnostic context
  */
 object StandAloneContext {
     /**

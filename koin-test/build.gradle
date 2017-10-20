@@ -1,0 +1,76 @@
+buildscript {
+    ext.kotlin_version = '1.1.51'
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+apply plugin: 'kotlin'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+archivesBaseName = 'koin-test'
+group = 'org.koin'
+version = '0.5.0'
+description = 'Koin - simple dependency injection for Kotlin - Tests tools'
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+
+bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    user = properties.getProperty('bintray_user')
+    key = properties.getProperty('bintray_apikey')
+
+    configurations = ['archives']
+
+    publish = true //[Default: false] Whether version should be auto published after an upload
+    override = true
+    pkg {
+        repo = 'koin'
+        name = 'koin-test'
+        userOrg = 'ekito'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Ekito/koin.git'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'junit:junit:4.12'
+//    compile 'org.mockito:mockito-core:2.7.22'
+
+    // Kt
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    // Koin
+    compile "org.koin:koin-core:$version"
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
