@@ -3,6 +3,8 @@ package org.koin.sampleapp.weather
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Test
+import org.koin.Koin
+import org.koin.log.PrintLogger
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.util.any
@@ -24,6 +26,7 @@ class LocalWeatherPresenterTest : KoinTest {
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
+        Koin.logger = PrintLogger()
         startContext(testLocalDatasource())
 
         presenter.view = view

@@ -7,6 +7,8 @@ import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
+import org.koin.log.EmptyLogger
+import org.koin.log.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -36,6 +38,9 @@ class Koin {
             val context = module.context()
             registerDefinitions(context)
         }
+
+        logger.log("(Koin) loaded ${beanRegistry.definitions.size} definitions")
+
         return koinContext
     }
 
@@ -60,7 +65,10 @@ class Koin {
         val scope = beanRegistry.findOrCreateScope(context.name, parentContext?.name)
 
         // Add definitions
-        context.definitions.forEach { definition -> beanRegistry.declare(definition, scope) }
+        context.definitions.forEach { definition ->
+            logger.log("(Koin) define : $definition")
+            beanRegistry.declare(definition, scope)
+        }
 
         // Check sub contexts
         context.subContexts.forEach { subContext -> registerDefinitions(subContext, context) }
@@ -70,4 +78,8 @@ class Koin {
      * load given module instances into current koin context
      */
     fun <T : Module> build(vararg modules: T): KoinContext = build(modules.asList())
+
+    companion object {
+        var logger: Logger = EmptyLogger()
+    }
 }

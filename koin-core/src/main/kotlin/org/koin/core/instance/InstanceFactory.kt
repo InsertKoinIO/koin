@@ -1,5 +1,6 @@
 package org.koin.core.instance
 
+import org.koin.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.error.BeanDefinitionException
@@ -21,13 +22,17 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
     fun <T> retrieveInstance(def: BeanDefinition<*>): T {
         // Factory
         return if (def.isNotASingleton()) {
+            Koin.logger.log("retrieve factory instance for $def")
             createInstance(def)
         } else {
             // Singleton
             var instance = findInstance<T>(def)
             if (instance == null) {
+                Koin.logger.log("create instance $def")
                 instance = createInstance(def)
                 saveInstance(def, instance)
+            } else{
+                Koin.logger.log("retrieved instance for $instance")
             }
             instance ?: throw BeanInstanceCreationException("Couldn't create instance for $def")
         }

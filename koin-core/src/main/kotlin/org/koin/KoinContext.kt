@@ -1,5 +1,6 @@
 package org.koin
 
+import org.koin.Koin.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
@@ -41,6 +42,9 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T> resolveInstance(resolver: () -> BeanDefinition<*>): T {
         val clazz = T::class
+
+        logger.log("resolving $clazz")
+
         if (resolutionStack.contains(clazz)) {
             throw DependencyResolutionException("Cyclic dependency for $clazz")
         }
@@ -49,6 +53,9 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         val beanDefinition: BeanDefinition<*> = resolver()
 
         val instance = instanceFactory.retrieveInstance<T>(beanDefinition)
+
+        logger.log("got instance  $instance")
+
         val head = resolutionStack.pop()
         if (head != clazz) {
             resolutionStack.clear()
