@@ -6,7 +6,7 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.standalone.releaseContext
 import org.koin.standalone.startContext
-import org.koin.test.components.TestComponent
+import org.koin.test.components.KoinTest
 import org.koin.test.components.getKoin
 import org.koin.test.components.inject
 import org.koin.test.ext.junit.assertContexts
@@ -14,7 +14,7 @@ import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class TestSample : TestComponent {
+class TestSample : KoinTest {
 
     class MVPModule : Module() {
         override fun context() =

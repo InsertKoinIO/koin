@@ -5,10 +5,7 @@ import org.junit.Test
 import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.test.ext.assertContexts
-import org.koin.test.ext.assertDefinedInScope
-import org.koin.test.ext.assertDefinitions
-import org.koin.test.ext.assertRemainingInstances
+import org.koin.test.ext.*
 
 class ExternalDeclarationTest {
 

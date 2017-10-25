@@ -88,4 +88,11 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param value
      */
     fun setProperty(key: String, value: Any?) = propertyResolver.setProperty(key, value)
+
+    /**
+     * Delete properties from keys
+     */
+    fun removeProperties(vararg keys : String){
+        keys.forEach { propertyResolver.delete(it) }
+    }
 }

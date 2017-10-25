@@ -7,13 +7,13 @@ import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.util.any
 import org.koin.standalone.startContext
-import org.koin.test.components.TestComponent
+import org.koin.test.components.KoinTest
 import org.koin.test.components.inject
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
-class LocalWeatherPresenterTest : TestComponent {
+class LocalWeatherPresenterTest : KoinTest {
 
     val presenter by inject<WeatherContract.Presenter>()
 

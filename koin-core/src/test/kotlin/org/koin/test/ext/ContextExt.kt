@@ -2,6 +2,7 @@ package org.koin.test.ext
 
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -37,3 +38,12 @@ inline fun <reified T> KoinContext.getOrNull(name: String = ""): T? {
 }
 
 fun KoinContext.rootScope() = beanRegistry.rootScope
+
+inline fun <reified T> KoinContext.provide(name: String = "", bind: KClass<*>? = null, scopeName: String? = null, noinline definition: () -> T) {
+    val beanDefinition = BeanDefinition(name, T::class, definition = definition)
+    bind?.let {
+        beanDefinition.bind(bind)
+    }
+    val scope = if (scopeName != null) getScope(scopeName) else getScope(Scope.ROOT)
+    beanRegistry.declare(beanDefinition, scope)
+}

@@ -28,7 +28,17 @@ class PropertyRegistry {
      */
     inline fun <reified T> getProperty(key: String): T = get(key)
 
+    /**
+     * Add properties
+     */
     fun addAll(props: Map<String, Any>) {
         properties += props
+    }
+
+    /**
+     * Delete a property
+     */
+    fun delete(key: String) {
+        properties.remove(key)
     }
 }
