@@ -22,17 +22,17 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
     fun <T> retrieveInstance(def: BeanDefinition<*>): T {
         // Factory
         return if (def.isNotASingleton()) {
-            Koin.logger.log("retrieve factory instance for $def")
+            Koin.logger.log("Create instance for $def")
             createInstance(def)
         } else {
             // Singleton
             var instance = findInstance<T>(def)
             if (instance == null) {
-                Koin.logger.log("create instance $def")
+                Koin.logger.log("Create instance $def")
                 instance = createInstance(def)
                 saveInstance(def, instance)
             } else{
-                Koin.logger.log("retrieved instance for $instance")
+                Koin.logger.log("Retrieved instance for $instance")
             }
             instance ?: throw BeanInstanceCreationException("Couldn't create instance for $def")
         }

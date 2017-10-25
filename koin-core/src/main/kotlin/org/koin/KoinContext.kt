@@ -43,9 +43,10 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     inline fun <reified T> resolveInstance(resolver: () -> BeanDefinition<*>): T {
         val clazz = T::class
 
-        logger.log("resolving $clazz")
+        logger.log("Resolving $clazz")
 
         if (resolutionStack.contains(clazz)) {
+            logger.log("Cyclic dependency error stack : $resolutionStack")
             throw DependencyResolutionException("Cyclic dependency for $clazz")
         }
         resolutionStack.add(clazz)
@@ -54,7 +55,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
         val instance = instanceFactory.retrieveInstance<T>(beanDefinition)
 
-        logger.log("got instance  $instance")
+        logger.log("Got instance  $instance")
 
         val head = resolutionStack.pop()
         if (head != clazz) {
@@ -68,6 +69,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Try to inject each definition
      */
     fun dryRun() {
+        logger.log("(KOIN - DRY RUN)")
         beanRegistry.definitions.keys.forEach { def ->
             instanceFactory.retrieveInstance<Any>(def)
         }
@@ -78,6 +80,9 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param name
      */
     fun release(name: String) {
+
+        logger.log("Release context : $name")
+
         val definitions: List<BeanDefinition<*>> = beanRegistry.getDefinitionsFromScope(name)
         instanceFactory.dropAllInstances(definitions)
     }
@@ -100,6 +105,9 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Delete properties from keys
      */
     fun removeProperties(vararg keys : String){
+
+        logger.log("Remove keys : $keys")
+
         keys.forEach { propertyResolver.delete(it) }
     }
 }
