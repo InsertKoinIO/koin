@@ -16,7 +16,7 @@ class MainApplication : Application() {
 
         startAndroidContext(this, weatherAppModules())
 
-        // Fill url property from Android resource
+        // bind R.string.server_url to Koin WeatherModule.SERVER_URL
         getKoin().bindString(R.string.server_url, WeatherModule.SERVER_URL)
 
         Iconify.with(WeathericonsModule())

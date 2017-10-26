@@ -19,7 +19,7 @@ fun weatherAppModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxMo
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
         context(name = CTX_WEATHER_ACTIVITY) {
-            provideFactory { WeatherPresenter(get(), get()) } bind (WeatherContract.Presenter::class)
+            provide { WeatherPresenter(get(), get()) } bind (WeatherContract.Presenter::class)
         }
 
         provide { WeatherRepository(get()) }
