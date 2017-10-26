@@ -12,7 +12,7 @@ KOIN is a very small library, that aims to be as simple as possible and let's yo
 
 Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3F) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
 
-For users using a version prior to Koin 0.4.x, please refer the [migrating to 0.4.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-04x) page to understand the latest changes. 
+For users using a version prior to Koin 0.5.x, please refer the [migrating to 0.5.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-05x) page to understand the latest changes. 
 
 # Getting Started
 
@@ -74,7 +74,7 @@ class LocalDataSource(val jsonReader: JsonReader) : WeatherDatasource
 ```
 Your module then provides an *applicationContext* (description of your components), which will be made of provided components and subcontexts.
 
-You can refer to the [KOIN DSL](https://github.com/Ekito/koin/wiki/Koin-DSL) for more details. 
+You can refer to the [KOIN DSL](https://github.com/Ekito/koin/wiki/Koin-DSL) for more details.
 
 ## Making dependency injection
 
@@ -101,6 +101,27 @@ class WeatherPresenter(val weatherRepository: WeatherRepository) {
     // you can use your dependencies here
 }
 ```
+
+## Working with properties
+
+Declare any property from outside of your module :
+
+```kotlin
+// Set property key with its value
+getKoin().setProperty("key",value)
+```
+
+Resolve it in your module with `getProperty("key")` or inject in an Android class with `by property("key")`
+
+You can also easily bind any Android property:
+
+
+```kotlin
+// bind R.string.server_url to Koin WeatherModule.SERVER_URL
+getKoin().bindString(R.string.server_url, WeatherModule.SERVER_URL)
+
+```
+
 
 ## Checking your modules
 
