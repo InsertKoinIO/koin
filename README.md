@@ -21,7 +21,7 @@ For users using a version prior to Koin 0.4.x, please refer the [migrating to 0.
 Check that you have the `jcenter` repository. Add the following gradle dependency to your Android app:
 
 ```gradle
-compile 'org.koin:koin-android:0.4.1'
+compile 'org.koin:koin-android:0.5.0'
 ```
 
 ### Setup your Application
@@ -120,11 +120,50 @@ fun dryRun(){
 }
 ```
 
+
+# Testing
+
+You can also use Koin for your tests. You can extend the `KoinTest` interface to inject any component from Koin context: 
+
+```kotlin
+class LocalWeatherPresenterTest : KoinTest {
+    
+    // Directly injected
+    val presenter by inject<WeatherContract.Presenter>()
+
+    @Mock lateinit var view: WeatherContract.View
+    @Mock lateinit var weatherWS: WeatherDatasource
+
+
+    @Before
+    fun before() {
+        // Mocks
+        MockitoAnnotations.initMocks(this)
+        // Koin context
+        startContext(testLocalDatasource())
+
+        presenter.view = view
+    }
+
+    @Test
+    fun testDisplayWeather() {
+        Assert.assertNotNull(presenter)
+
+        val locationString = "Paris, france"
+        presenter.getWeather(locationString)
+
+        Mockito.verify(view).displayWeather(any(), any())
+    }
+}
+
+```
+
 # The Sample App
 
 The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/koin-android/koin-sample-app) application offers a complete application sample, with MVP Android style. 
 
 The weather app [wiki page](https://github.com/Ekito/koin/wiki/The-Koin-Sample-App) describes all the KOIN features used.
+
 
 # Documentation
 
