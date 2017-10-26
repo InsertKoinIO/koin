@@ -29,24 +29,20 @@ compile 'org.koin:koin-test:0.5.0'
 
 ### Setup your Application
 
-To start KOIN and your modules, you just have to implement it in your Android *Application* class like below:
+To start KOIN and your modules, you just have to use the `startAndroidContext` function in your Android *Application* class like below:
 
 ```Kotlin
-class MainApplication : Application(), KoinContextAware {
-
-     // Your Koin Context here
-    override val koinContext = newKoinContext(this, allModules())
+class MainApplication : Application(){
 
     override fun onCreate() {
         super.onCreate()
-        // Your Koin context is ready ! :)
+        // Start Koin
+        startAndroidContext(this, allModules())
     }
 }
 ```
 
-**Implement** `KoinContextAware` interface, and **override** your `koinContext` property with the `newKoinContext()` function builder.
-
-The `newKoinContext` function builder requires a list of modules to run. A function can manage this for you, check out the `allModules()` function.
+The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `allModules()` function.
 
 ## Describing your dependencies
 
