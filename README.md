@@ -21,7 +21,10 @@ For users using a version prior to Koin 0.4.x, please refer the [migrating to 0.
 Check that you have the `jcenter` repository. Add the following gradle dependency to your Android app:
 
 ```gradle
+// Koin for Android
 compile 'org.koin:koin-android:0.5.0'
+// If you need Koin for your tests
+compile 'org.koin:koin-test:0.5.0'
 ```
 
 ### Setup your Application
@@ -132,8 +135,6 @@ class LocalWeatherPresenterTest : KoinTest {
     val presenter by inject<WeatherContract.Presenter>()
 
     @Mock lateinit var view: WeatherContract.View
-    @Mock lateinit var weatherWS: WeatherDatasource
-
 
     @Before
     fun before() {
