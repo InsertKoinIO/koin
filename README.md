@@ -123,19 +123,31 @@ getKoin().bindString(R.string.server_url, WeatherModule.SERVER_URL)
 ```
 
 
-## Managing context lifcycle
+## Managing context life cycle
 
-One of the biggest value of Koin, is the ability to drop any context to suits your components life cycle. At any moment, you can use the `releaseContext()` function to release all instances from a context.
+One of the biggest value of Koin, is the ability to drop any instances from a given context, to suits your components life cycle. At any moment, you can use the `releaseContext()` function to release all instances from a context.
 
 You can use the `ContextAwareActivity` or `ContextAwareFragent` to automatically drop an associated context:
 
 ```kotlin
 
+// A module with a context
+class WeatherModule : AndroidModule() {
+    override fun context() = applicationContext {
+        context(name = "WeatherActivity") {
+            provide { WeatherPresenter(get(), get()) }
+        }
+    }
+}
+
 class WeatherActivity : ContextAwareActivity(), WeatherContract.View {
+    
+    // associated context name
+    override val contextName = "WeatherActivity"
+    
+    override val presenter by inject<WeatherPresenter>()
 
-    override val contextName = WeatherModule.CTX_WEATHER_ACTIVITY
-
-    //will call releaseContext(WeatherModule.CTX_WEATHER_ACTIVITY) on onPause()
+    //will call releaseContext("WeatherActivity") on onPause() - drop WeatherPresenter instance
 }
 ```
 
