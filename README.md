@@ -186,7 +186,7 @@ fun dryRun(){
 ```
 
 
-# Testing
+## Testing
 
 You can also use Koin for your tests. You can extend the `KoinTest` interface to inject any component from Koin context: 
 
