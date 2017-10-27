@@ -1,8 +1,11 @@
 package org.koin.test.ext
 
+import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.scope.Scope
+import org.koin.dsl.module.Module
+import org.koin.standalone.StandAloneContext
 import kotlin.reflect.KClass
 
 /**
@@ -46,4 +49,18 @@ inline fun <reified T> KoinContext.provide(name: String = "", bind: KClass<*>? =
     }
     val scope = if (scopeName != null) getScope(scopeName) else getScope(Scope.ROOT)
     beanRegistry.declare(beanDefinition, scope)
+}
+
+/**
+ * Koin Context builder
+ */
+fun startContext(list: List<Module>) {
+    StandAloneContext.koinContext = Koin().build(list)
+}
+
+/**
+ * Koin Context builder
+ */
+fun startContext(vararg list: Module) {
+    StandAloneContext.koinContext = Koin().build(*list)
 }
