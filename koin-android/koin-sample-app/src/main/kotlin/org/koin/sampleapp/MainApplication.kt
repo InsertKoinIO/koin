@@ -4,8 +4,8 @@ import android.app.Application
 import com.joanzapata.iconify.Iconify
 import com.joanzapata.iconify.fonts.WeathericonsModule
 import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.android.startAndroidContext
 import org.koin.android.ext.koin.bindString
-import org.koin.android.ext.koin.startAndroidContext
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.di.weatherAppModules
 

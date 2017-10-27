@@ -7,10 +7,10 @@ import org.koin.sampleapp.di.RxTestModule
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.di.testRemoteDatasource
 import org.koin.sampleapp.util.any
-import org.koin.standalone.startContext
 import org.koin.test.components.KoinTest
 import org.koin.test.components.getKoin
 import org.koin.test.components.inject
+import org.koin.test.components.startContext
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations

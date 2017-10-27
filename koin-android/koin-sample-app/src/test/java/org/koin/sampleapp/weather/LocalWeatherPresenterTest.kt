@@ -8,9 +8,9 @@ import org.koin.log.PrintLogger
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.util.any
-import org.koin.standalone.startContext
 import org.koin.test.components.KoinTest
 import org.koin.test.components.inject
+import org.koin.test.components.startContext
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
