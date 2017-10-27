@@ -1,0 +1,18 @@
+$dokka.format:html
+$dokka.linkExtension:html
+$dokka.location:org.koin.android.ext.android$getKoin(android.content.Context)org.koin.android.ext.android/android.content.-context/get-koin.html
+$dokka.location:org.koin.android.ext.android$inject(android.app.Activity, kotlin.String)org.koin.android.ext.android/android.app.-activity/inject.html
+$dokka.location:org.koin.android.ext.android$inject(android.app.Service, kotlin.String)org.koin.android.ext.android/android.app.-service/inject.html
+$dokka.location:org.koin.android.ext.android$inject(android.support.v4.app.Fragment, kotlin.String)org.koin.android.ext.android/android.support.v4.app.-fragment/inject.html
+$dokka.location:org.koin.android.ext.android$property(android.app.Activity, kotlin.String)org.koin.android.ext.android/android.app.-activity/property.html
+$dokka.location:org.koin.android.ext.android$property(android.app.Service, kotlin.String)org.koin.android.ext.android/android.app.-service/property.html
+$dokka.location:org.koin.android.ext.android$property(android.support.v4.app.Fragment, kotlin.String)org.koin.android.ext.android/android.support.v4.app.-fragment/property.html
+$dokka.location:org.koin.android.ext.koin$bindBool(org.koin.KoinContext, kotlin.Int, kotlin.String)org.koin.android.ext.koin/org.koin.-koin-context/bind-bool.html
+$dokka.location:org.koin.android.ext.koin$bindInt(org.koin.KoinContext, kotlin.Int, kotlin.String)org.koin.android.ext.koin/org.koin.-koin-context/bind-int.html
+$dokka.location:org.koin.android.ext.koin$bindString(org.koin.KoinContext, kotlin.Int, kotlin.String)org.koin.android.ext.koin/org.koin.-koin-context/bind-string.html
+$dokka.location:org.koin.android.ext.koin$init(org.koin.Koin, android.app.Application)org.koin.android.ext.koin/org.koin.-koin/init.html
+org.koin.android.contextaware
+org.koin.android.ext.android
+org.koin.android.ext.koin
+org.koin.android.logger
+org.koin.android.module

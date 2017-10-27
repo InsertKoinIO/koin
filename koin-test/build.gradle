@@ -1,7 +1,7 @@
 buildscript {
     ext{
         kotlin_version = '1.1.51'
-        okka_version = '0.9.15'
+        dokka_version = '0.9.15'
     }
 
     repositories {

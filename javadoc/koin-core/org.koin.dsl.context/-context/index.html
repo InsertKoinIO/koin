@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Context - koin-core</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">koin-core</a>&nbsp;/&nbsp;<a href="../index.html">org.koin.dsl.context</a>&nbsp;/&nbsp;<a href=".">Context</a><br/>
+<br/>
+<h1>Context</h1>
+<code><span class="keyword">class </span><span class="identifier">Context</span></code>
+<p>Koin Context
+Define dependencies &amp; properties for actual context</p>
+<p><strong>Author</strong><br/>
+<ul><li>Arnaud GIULIANI</li>
+</ul>
+</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Context</span><span class="symbol">(</span><span class="identifier" id="org.koin.dsl.context.Context$<init>(kotlin.String, org.koin.KoinContext)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Scope.ROOT<span class="symbol">, </span><span class="identifier" id="org.koin.dsl.context.Context$<init>(kotlin.String, org.koin.KoinContext)/koinContext">koinContext</span><span class="symbol">:</span>&nbsp;<a href="../../org.koin/-koin-context/index.html"><span class="identifier">KoinContext</span></a><span class="symbol">)</span></code>
+<p>Koin Context
+Define dependencies &amp; properties for actual context</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="definitions.html">definitions</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">definitions</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html"><span class="identifier">ArrayList</span></a><span class="symbol">&lt;</span><a href="../../org.koin.core.bean/-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>bean definitions</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="koin-context.html">koinContext</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">koinContext</span><span class="symbol">: </span><a href="../../org.koin/-koin-context/index.html"><span class="identifier">KoinContext</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="name.html">name</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="sub-contexts.html">subContexts</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">subContexts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html"><span class="identifier">ArrayList</span></a><span class="symbol">&lt;</span><span class="identifier">Context</span><span class="symbol">&gt;</span></code>
+<p>sub contexts</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="context.html">context</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">context</span><span class="symbol">(</span><span class="identifier" id="org.koin.dsl.context.Context$context(kotlin.String, kotlin.Function1((org.koin.dsl.context.Context, kotlin.Unit)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="org.koin.dsl.context.Context$context(kotlin.String, kotlin.Function1((org.koin.dsl.context.Context, kotlin.Unit)))/init">init</span><span class="symbol">:</span>&nbsp;<span class="identifier">Context</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Context</span></code>
+<p>Create a sub context in actual context</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="get.html">get</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">get</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">get</span><span class="symbol">(</span><span class="identifier" id="org.koin.dsl.context.Context$get(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code>
+<p>Resolve a component</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="get-property.html">getProperty</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getProperty</span><span class="symbol">(</span><span class="identifier" id="org.koin.dsl.context.Context$getProperty(kotlin.String)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code>
+<p>Retrieve a property</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="provide.html">provide</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">provide</span><span class="symbol">(</span><span class="identifier" id="org.koin.dsl.context.Context$provide(kotlin.String, kotlin.Boolean, kotlin.Function0((org.koin.dsl.context.Context.provide.T)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;""<span class="symbol">, </span><span class="identifier" id="org.koin.dsl.context.Context$provide(kotlin.String, kotlin.Boolean, kotlin.Function0((org.koin.dsl.context.Context.provide.T)))/isSingleton">isSingleton</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;true<span class="symbol">, </span><span class="identifier" id="org.koin.dsl.context.Context$provide(kotlin.String, kotlin.Boolean, kotlin.Function0((org.koin.dsl.context.Context.provide.T)))/definition">definition</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../org.koin.core.bean/-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Provide a bean definition</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="provide-factory.html">provideFactory</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">provideFactory</span><span class="symbol">(</span><span class="identifier" id="org.koin.dsl.context.Context$provideFactory(kotlin.String, kotlin.Function0((org.koin.dsl.context.Context.provideFactory.T)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;""<span class="symbol">, </span><span class="identifier" id="org.koin.dsl.context.Context$provideFactory(kotlin.String, kotlin.Function0((org.koin.dsl.context.Context.provideFactory.T)))/definition">definition</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../org.koin.core.bean/-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Provide a bean definition - as factory (recreate instance each time)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="to-string.html">toString</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

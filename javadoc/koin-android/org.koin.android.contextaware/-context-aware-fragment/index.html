@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ContextAwareFragment - koin-android</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">koin-android</a>&nbsp;/&nbsp;<a href="../index.html">org.koin.android.contextaware</a>&nbsp;/&nbsp;<a href=".">ContextAwareFragment</a><br/>
+<br/>
+<h1>ContextAwareFragment</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ContextAwareFragment</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Fragment</span></code>
+<p>ContextAwareFragment</p>
+<p>Drop context with name contextName on onPause()</p>
+<p><strong>Author</strong><br/>
+Arnaud Giuliani</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">ContextAwareFragment</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<p>ContextAwareFragment</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="context-name.html">contextName</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">contextName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code>
+<p>Koin sub context name</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="on-pause.html">onPause</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onPause</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../org.koin.android.ext.android/android.support.v4.app.-fragment/inject.html">inject</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">Fragment</span><span class="symbol">.</span><span class="identifier">inject</span><span class="symbol">(</span><span class="identifier" id="org.koin.android.ext.android$inject(android.support.v4.app.Fragment, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;""<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-lazy/index.html"><span class="identifier">Lazy</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>inject lazily given dependency for Fragment</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="../../org.koin.android.ext.android/android.support.v4.app.-fragment/property.html">property</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">Fragment</span><span class="symbol">.</span><span class="identifier">property</span><span class="symbol">(</span><span class="identifier" id="org.koin.android.ext.android$property(android.support.v4.app.Fragment, kotlin.String)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-lazy/index.html"><span class="identifier">Lazy</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>inject lazily given property for Fragment</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,20 @@
+$dokka.format:html
+$dokka.linkExtension:html
+$dokka.location:org.koin.test.ext.junit$assertContextInstances(org.koin.KoinContext, kotlin.String, kotlin.Int)org.koin.test.ext.junit/org.koin.-koin-context/assert-context-instances.html
+$dokka.location:org.koin.test.ext.junit$assertContexts(org.koin.KoinContext, kotlin.Int)org.koin.test.ext.junit/org.koin.-koin-context/assert-contexts.html
+$dokka.location:org.koin.test.ext.junit$assertDefinedInScope(org.koin.KoinContext, kotlin.reflect.KClass((kotlin.Any)), kotlin.String)org.koin.test.ext.junit/org.koin.-koin-context/assert-defined-in-scope.html
+$dokka.location:org.koin.test.ext.junit$assertDefinitions(org.koin.KoinContext, kotlin.Int)org.koin.test.ext.junit/org.koin.-koin-context/assert-definitions.html
+$dokka.location:org.koin.test.ext.junit$assertProperties(org.koin.KoinContext, kotlin.Int)org.koin.test.ext.junit/org.koin.-koin-context/assert-properties.html
+$dokka.location:org.koin.test.ext.junit$assertRemainingInstances(org.koin.KoinContext, kotlin.Int)org.koin.test.ext.junit/org.koin.-koin-context/assert-remaining-instances.html
+$dokka.location:org.koin.test.ext.junit$assertScopeParent(org.koin.KoinContext, kotlin.String, kotlin.String)org.koin.test.ext.junit/org.koin.-koin-context/assert-scope-parent.html
+$dokka.location:org.koin.test.ext.koin$AllDefinitions(org.koin.KoinContext)org.koin.test.ext.koin/org.koin.-koin-context/-all-definitions.html
+$dokka.location:org.koin.test.ext.koin$allContext(org.koin.KoinContext)org.koin.test.ext.koin/org.koin.-koin-context/all-context.html
+$dokka.location:org.koin.test.ext.koin$allInstances(org.koin.KoinContext)org.koin.test.ext.koin/org.koin.-koin-context/all-instances.html
+$dokka.location:org.koin.test.ext.koin$allProperties(org.koin.KoinContext)org.koin.test.ext.koin/org.koin.-koin-context/all-properties.html
+$dokka.location:org.koin.test.ext.koin$definition(org.koin.KoinContext, kotlin.reflect.KClass((kotlin.Any)))org.koin.test.ext.koin/org.koin.-koin-context/definition.html
+$dokka.location:org.koin.test.ext.koin$getScope(org.koin.KoinContext, kotlin.String)org.koin.test.ext.koin/org.koin.-koin-context/get-scope.html
+$dokka.location:org.koin.test.ext.koin$provide(org.koin.KoinContext, kotlin.String, kotlin.reflect.KClass((kotlin.Any)), kotlin.String, kotlin.Function0((org.koin.test.ext.koin.provide.T)))org.koin.test.ext.koin/org.koin.-koin-context/provide.html
+$dokka.location:org.koin.test.ext.koin$rootScope(org.koin.KoinContext)org.koin.test.ext.koin/org.koin.-koin-context/root-scope.html
+org.koin.test.components
+org.koin.test.ext.junit
+org.koin.test.ext.koin

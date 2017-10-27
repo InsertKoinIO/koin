@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BeanRegistry - koin-core</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">koin-core</a>&nbsp;/&nbsp;<a href="../index.html">org.koin.core.bean</a>&nbsp;/&nbsp;<a href=".">BeanRegistry</a><br/>
+<br/>
+<h1>BeanRegistry</h1>
+<code><span class="keyword">class </span><span class="identifier">BeanRegistry</span></code>
+<p>Bean registry
+gather definitions of beans &amp; communicate with instance factory to handle instances</p>
+<p><strong>Author</strong><br/>
+<ul><li>Arnaud GIULIANI</li>
+</ul>
+</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">BeanRegistry</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<p>Bean registry
+gather definitions of beans &amp; communicate with instance factory to handle instances</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="definitions.html">definitions</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">definitions</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-hash-map/index.html"><span class="identifier">HashMap</span></a><span class="symbol">&lt;</span><a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="root-scope.html">rootScope</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">rootScope</span><span class="symbol">: </span><a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="scopes.html">scopes</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">scopes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html"><span class="identifier">ArrayList</span></a><span class="symbol">&lt;</span><a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="create-scope.html">createScope</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createScope</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$createScope(kotlin.String, kotlin.String)/scope">scope</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="org.koin.core.bean.BeanRegistry$createScope(kotlin.String, kotlin.String)/parentScope">parentScope</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a></code>
+<p>Create context scope</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="declare.html">declare</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">declare</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$declare(org.koin.core.bean.BeanDefinition((kotlin.Any)), org.koin.core.scope.Scope)/def">def</span><span class="symbol">:</span>&nbsp;<a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="org.koin.core.bean.BeanRegistry$declare(org.koin.core.bean.BeanDefinition((kotlin.Any)), org.koin.core.scope.Scope)/scope">scope</span><span class="symbol">:</span>&nbsp;<a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Add/Replace an existing bean</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="find-or-create-scope.html">findOrCreateScope</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findOrCreateScope</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$findOrCreateScope(kotlin.String, kotlin.String)/scopeName">scopeName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="org.koin.core.bean.BeanRegistry$findOrCreateScope(kotlin.String, kotlin.String)/parentScopeName">parentScopeName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a></code>
+<p>Find or create context scope</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="get-definitions-from-scope.html">getDefinitionsFromScope</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getDefinitionsFromScope</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$getDefinitionsFromScope(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Get bean definitions from given scope context &amp; child</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="get-scope.html">getScope</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getScope</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$getScope(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a></code>
+<p>Retrieve context scope for given name</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="get-scope-for-definition.html">getScopeForDefinition</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getScopeForDefinition</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$getScopeForDefinition(org.koin.core.bean.BeanDefinition((kotlin.Any)))/beanDefinition">beanDefinition</span><span class="symbol">:</span>&nbsp;<a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../org.koin.core.scope/-scope/index.html"><span class="identifier">Scope</span></a><span class="symbol">?</span></code>
+<p>Retrieve context scope for given bean definition</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="search-all.html">searchAll</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">searchAll</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$searchAll(kotlin.reflect.KClass((kotlin.Any)))/clazz">clazz</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span></code>
+<p>Search for any bean definition</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="search-by-class.html">searchByClass</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">searchByClass</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$searchByClass(kotlin.reflect.KClass((kotlin.Any)))/clazz">clazz</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">?</span></code>
+<p>Search for a bean definition</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="search-by-name.html">searchByName</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">searchByName</span><span class="symbol">(</span><span class="identifier" id="org.koin.core.bean.BeanRegistry$searchByName(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-bean-definition/index.html"><span class="identifier">BeanDefinition</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span></code>
+<p>Search bean by its name</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
