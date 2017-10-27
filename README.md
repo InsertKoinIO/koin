@@ -44,7 +44,7 @@ class MainApplication : Application(){
 
 The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `allModules()` function.
 
-## Describing your dependencies
+## Declaring your dependencies
 
 KOIN requires you to declare your components in modules.
 
