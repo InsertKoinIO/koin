@@ -4,10 +4,16 @@ import android.support.v7.app.AppCompatActivity
 import org.koin.standalone.releaseContext
 
 /**
- * Activity - Drop context with name contextName on onPause()
+ * ContextAwareActivity
+ * Help to Drop context with name contextName on onPause()
+ *
+ * @author Arnaud Giuliani
  */
 abstract class ContextAwareActivity : AppCompatActivity() {
 
+    /**
+     * Koin sub context name
+     */
     abstract val contextName: String
 
     override fun onPause() {

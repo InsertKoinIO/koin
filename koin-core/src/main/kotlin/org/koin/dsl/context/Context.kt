@@ -7,16 +7,20 @@ import org.koin.core.scope.Scope
 /**
  * Koin Context
  * Define dependencies & properties for actual context
+ *
  * @author - Arnaud GIULIANI
  */
 class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
-    val definitions = arrayListOf<BeanDefinition<*>>()
-    val subContexts = arrayListOf<Context>()
-
-    /*
-     * Dependency declaration
+    /**
+     * bean definitions
      */
+    val definitions = arrayListOf<BeanDefinition<*>>()
+
+    /**
+     * sub contexts
+     */
+    val subContexts = arrayListOf<Context>()
 
     /**
      * Create a sub context in actual context
@@ -48,11 +52,6 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
         return beanDefinition
     }
 
-
-    /*
-        Dependency resolvers
-     */
-
     /**
      * Resolve a component
      */
@@ -60,11 +59,13 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     /**
      * Resolve a component
+     * @param name : component name
      */
     inline fun <reified T : Any> get(name: String): T = koinContext.resolveByName(name)
 
     /**
      * Retrieve a property
+     * @param key - property key
      */
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 

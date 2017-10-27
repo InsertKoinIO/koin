@@ -80,6 +80,9 @@ class Koin {
     fun <T : Module> build(vararg modules: T): KoinContext = build(modules.asList())
 
     companion object {
+        /**
+         * Koin Logger
+         */
         var logger: Logger = EmptyLogger()
     }
 }

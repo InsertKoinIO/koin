@@ -1,7 +1,11 @@
 package org.koin.test.components
 
 /**
- * Koin Test Component
+ * A Koin Test Component
+ *
+ * used to tag an "injectable" test component
+ *
+ * @author Arnaud Giuliani
  */
 interface KoinTest {
 }

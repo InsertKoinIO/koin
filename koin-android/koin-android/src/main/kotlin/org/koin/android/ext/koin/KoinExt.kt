@@ -8,7 +8,8 @@ import org.koin.android.module.AndroidModule
 import org.koin.standalone.StandAloneContext
 
 /**
- * init android Application - for Koin koin
+ * init android Application dependency in Koin context
+ * @param application - Android Application instance
  */
 fun Koin.init(application: Application): Koin {
     // provide Application defintion
@@ -18,6 +19,8 @@ fun Koin.init(application: Application): Koin {
 
 /**
  * Bind an Android String to Koin property
+ * @param id - Android resource String id
+ * @param key - Koin property key
  */
 fun KoinContext.bindString(id: Int, key: String) {
     setProperty(key, get<Application>().getString(id))
@@ -25,6 +28,8 @@ fun KoinContext.bindString(id: Int, key: String) {
 
 /**
  * Bind an Android Integer to Koin property
+ * @param id - Android resource Int id
+ * @param key - Koin property key
  */
 fun KoinContext.bindInt(id: Int, key: String) {
     setProperty(key, get<Application>().resources.getInteger(id))
@@ -32,6 +37,8 @@ fun KoinContext.bindInt(id: Int, key: String) {
 
 /**
  * Bind an Android Boolean to Koin property
+ * @param id - Android resource Boolean id
+ * @param key - Koin property key
  */
 fun KoinContext.bindBool(id: Int, key: String) {
     setProperty(key, get<Application>().resources.getBoolean(id))

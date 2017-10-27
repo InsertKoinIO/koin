@@ -5,7 +5,8 @@ import org.koin.KoinContext
 import org.koin.dsl.module.Module
 
 /**
- * Koin agnostic context
+ * Koin agnostic context support
+ * @author - Arnaud GIULIANI
  */
 object StandAloneContext {
     /**

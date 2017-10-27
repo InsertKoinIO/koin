@@ -1,5 +1,8 @@
 buildscript {
-    ext.kotlin_version = '1.1.51'
+    ext{
+        kotlin_version = '1.1.51'
+        dokka_version = '0.9.15'
+    }
 
     repositories {
         jcenter()
@@ -9,12 +12,14 @@ buildscript {
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
     }
 }
 apply plugin: 'kotlin'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'org.jetbrains.dokka'
 
 archivesBaseName = 'koin-core'
 group = 'org.koin'
@@ -36,6 +41,10 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+}
 
 bintray {
     Properties properties = new Properties()

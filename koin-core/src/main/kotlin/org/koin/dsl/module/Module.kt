@@ -6,7 +6,7 @@ import org.koin.dsl.context.Context
 
 
 /**
- * Module class - Help define beans within actual context
+ * Module  - Help define beans within actual context
  * @author - Arnaud GIULIANI
  */
 abstract class Module {

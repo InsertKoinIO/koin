@@ -4,10 +4,17 @@ import android.support.v4.app.Fragment
 import org.koin.standalone.releaseContext
 
 /**
- * Fragment - Drop context with name contextName on onPause()
+ * ContextAwareFragment
+ *
+ * Drop context with name contextName on onPause()
+ *
+ * @author Arnaud Giuliani
  */
 abstract class ContextAwareFragment : Fragment() {
 
+    /**
+     * Koin sub context name
+     */
     abstract val contextName: String
 
     override fun onPause() {

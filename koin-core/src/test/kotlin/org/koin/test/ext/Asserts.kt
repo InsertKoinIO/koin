@@ -4,9 +4,6 @@ import org.junit.Assert
 import org.koin.KoinContext
 import kotlin.reflect.KClass
 
-/**
- * Asserts tools
- */
 
 fun KoinContext.assertDefinitions(definitionSize: Int) {
     Assert.assertEquals("applicationContext must have $definitionSize definition", definitionSize, AllDefinitions().size)

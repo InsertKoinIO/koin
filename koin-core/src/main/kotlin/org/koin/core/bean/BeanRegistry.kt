@@ -8,6 +8,7 @@ import org.koin.error.NoScopeFoundException
 /**
  * Bean registry
  * gather definitions of beans & communicate with instance factory to handle instances
+ *
  * @author - Arnaud GIULIANI
  */
 class BeanRegistry {

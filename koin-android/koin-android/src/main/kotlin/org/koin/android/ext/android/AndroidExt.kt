@@ -41,7 +41,7 @@ inline fun <reified T> Fragment.property(key: String) = lazy { StandAloneContext
 /* Service */
 
 /**
- * inject lazily given dependency for Activity
+ * inject lazily given dependency for Service
  */
 inline fun <reified T> Service.inject(name: String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
 

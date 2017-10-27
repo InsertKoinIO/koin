@@ -6,6 +6,8 @@ import org.koin.dsl.module.Module
 
 /**
  * Koin module with Android facilities
+ *
+ * @author Arnaud Giuliani
  */
 abstract class AndroidModule : Module() {
 

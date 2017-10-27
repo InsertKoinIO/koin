@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory) {
 
     /**
-     * resolution stack
+     * call stack - bean definition resolution
      */
     val resolutionStack = Stack<KClass<*>>()
 
@@ -29,11 +29,13 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
     /**
      * Resolve a dependency for its bean definition
+     * @param beandefinition name
      */
     inline fun <reified T> resolveByName(name: String) = resolveInstance<T> { beanRegistry.searchByName(name) }
 
     /**
      * Resolve a dependency for its bean definition
+     * byt Its infered type
      */
     inline fun <reified T> resolveByClass(): T = resolveInstance { beanRegistry.searchAll(T::class) }
 
@@ -66,7 +68,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * Try to inject each definition
+     * Check the all the loaded definitions - Try to resolve each definition
      */
     fun dryRun() {
         logger.log("(KOIN - DRY RUN)")
@@ -76,7 +78,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     }
 
     /**
-     * Drop all instances for context
+     * Drop all instances for given context
      * @param name
      */
     fun release(name: String) {
@@ -99,12 +101,13 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param key
      * @param value
      */
-    fun setProperty(key: String, value: Any?) = propertyResolver.setProperty(key, value)
+    fun setProperty(key: String, value: Any) = propertyResolver.setProperty(key, value)
 
     /**
      * Delete properties from keys
+     * @param keys
      */
-    fun removeProperties(vararg keys : String){
+    fun removeProperties(vararg keys: String) {
 
         logger.log("Remove keys : $keys")
 
