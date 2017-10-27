@@ -232,6 +232,10 @@ The weather app [wiki page](https://github.com/Ekito/koin/wiki/The-Koin-Sample-A
 
 A global [wiki](https://github.com/Ekito/koin/wiki) documentation page gather all features and references about the KOIN Framework.
 
+## Javadoc 
+
+generated javadoc is available [javadoc](https://github.com/Ekito/koin/tree/master/javadoc) folder
+
 # Articles
 
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
