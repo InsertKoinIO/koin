@@ -234,7 +234,11 @@ A global [wiki](https://github.com/Ekito/koin/wiki) documentation page gather al
 
 ## Javadoc 
 
-generated javadoc is available [javadoc](https://github.com/Ekito/koin/tree/master/javadoc) folder
+Generated javadoc is available:
+
+* [koin-core](https://ekito.github.io/koin/javadoc/koin-core/)
+* [koin-test](https://ekito.github.io/koin/javadoc/koin-test/)
+* [koin-android](https://ekito.github.io/koin/javadoc/koin-android/)
 
 # Articles
 
