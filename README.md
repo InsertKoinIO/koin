@@ -37,12 +37,12 @@ class MainApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         // Start Koin
-        startAndroidContext(this, allModules())
+        startAndroidContext(this, weatherAppModules())
     }
 }
 ```
 
-The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `allModules()` function.
+The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `weatherAppModules()` function.
 
 ## Declaring your dependencies
 
