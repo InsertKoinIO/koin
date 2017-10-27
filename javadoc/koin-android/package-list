@@ -7,6 +7,8 @@ $dokka.location:org.koin.android.ext.android$inject(android.support.v4.app.Fragm
 $dokka.location:org.koin.android.ext.android$property(android.app.Activity, kotlin.String)org.koin.android.ext.android/android.app.-activity/property.html
 $dokka.location:org.koin.android.ext.android$property(android.app.Service, kotlin.String)org.koin.android.ext.android/android.app.-service/property.html
 $dokka.location:org.koin.android.ext.android$property(android.support.v4.app.Fragment, kotlin.String)org.koin.android.ext.android/android.support.v4.app.-fragment/property.html
+$dokka.location:org.koin.android.ext.android$startAndroidContext(android.app.Application, android.app.Application, kotlin.Array((org.koin.android.module.AndroidModule)))org.koin.android.ext.android/android.app.-application/start-android-context.html
+$dokka.location:org.koin.android.ext.android$startAndroidContext(android.app.Application, android.app.Application, kotlin.collections.List((org.koin.android.module.AndroidModule)))org.koin.android.ext.android/android.app.-application/start-android-context.html
 $dokka.location:org.koin.android.ext.koin$bindBool(org.koin.KoinContext, kotlin.Int, kotlin.String)org.koin.android.ext.koin/org.koin.-koin-context/bind-bool.html
 $dokka.location:org.koin.android.ext.koin$bindInt(org.koin.KoinContext, kotlin.Int, kotlin.String)org.koin.android.ext.koin/org.koin.-koin-context/bind-int.html
 $dokka.location:org.koin.android.ext.koin$bindString(org.koin.KoinContext, kotlin.Int, kotlin.String)org.koin.android.ext.koin/org.koin.-koin-context/bind-string.html
