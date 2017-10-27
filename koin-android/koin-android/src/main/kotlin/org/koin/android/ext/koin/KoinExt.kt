@@ -43,21 +43,3 @@ fun KoinContext.bindInt(id: Int, key: String) {
 fun KoinContext.bindBool(id: Int, key: String) {
     setProperty(key, get<Application>().resources.getBoolean(id))
 }
-
-/**
- * Create a new Koin Context
- * @param application - Android application
- * @param modules - list of AndroidModule
- */
-fun startAndroidContext(application: Application, modules: List<AndroidModule>) {
-    StandAloneContext.koinContext = Koin().init(application).build(modules)
-}
-
-/**
- * Create a new Koin Context
- * @param application - Android application
- * @param modules - vararg of AndroidModule
- */
-fun startAndroidContext(application: Application, vararg modules: AndroidModule) {
-    StandAloneContext.koinContext = Koin().init(application).build(*modules)
-}
