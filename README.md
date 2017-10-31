@@ -102,6 +102,38 @@ class WeatherPresenter(val weatherRepository: WeatherRepository) {
 }
 ```
 
+## Named dependencies
+
+You can provide a name to a provided component:
+
+```kotlin
+class WeatherModule : AndroidModule() {
+    override fun context() = applicationContext {
+           provide("MyPresenter") { WeatherPresenter() }
+    }
+}
+```
+
+To get a component with its name, in an Android class:
+```kotlin
+class WeatherActivity : AppcompatActivity(){
+    val presenter by inject<WeatherPresenter>("MyPresenter")
+}
+```
+
+or in constructor:
+```kotlin
+class WeatherModule : AndroidModule() {
+    override fun context() = applicationContext {
+           provide("MyPresenter") { WeatherPresenter() }
+           // inject name dependency
+           provide { WeatherView(get("MyPresenter")) }
+    }
+}
+```
+
+
+
 ## Working with properties
 
 Declare any property from outside of your module :
