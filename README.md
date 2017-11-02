@@ -22,9 +22,9 @@ Check that you have the `jcenter` repository. Add the following gradle dependenc
 
 ```gradle
 // Koin for Android
-compile 'org.koin:koin-android:0.5.1'
+compile 'org.koin:koin-android:0.5.2'
 // If you need Koin for your tests
-testCompile 'org.koin:koin-test:0.5.1'
+testCompile 'org.koin:koin-test:0.5.2'
 ```
 
 ### Setup your Application
