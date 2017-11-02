@@ -12,12 +12,7 @@ import org.koin.dsl.module.Module
 abstract class AndroidModule : Module() {
 
     /**
-     * Android application context
+     * Android application androidContext
      */
-    val applicationContext: Application by lazy { koinContext.get<Application>() }
-
-    /**
-     * Android context
-     */
-    val context: Context by lazy { koinContext.get<Context>() }
+    val androidApplication: Application by lazy { koinContext.get<Application>() }
 }
