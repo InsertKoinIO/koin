@@ -103,6 +103,23 @@ class PropertyTest {
     }
 
     @Test
+    fun `should not inject property but get default value as return`() {
+        val ctx = Koin().build(SimpleModule())
+
+        var url: String? = null
+        try {
+            url = ctx.getProperty<String>(K_URL)
+            fail()
+        } catch (e: MissingPropertyException) {
+            System.err.println(e)
+        }
+        val urlWithDefault = ctx.getPropertyOrElse<String>(K_URL, "DEFAULT")
+
+        Assert.assertNull(url)
+        Assert.assertEquals(urlWithDefault, "DEFAULT")
+    }
+
+    @Test
     fun `should not inject property`() {
         val ctx = Koin().build(SimpleModule())
 
