@@ -5,6 +5,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.Scope
 import org.koin.error.DependencyResolutionException
 import java.util.*
 import kotlin.reflect.KClass
@@ -112,5 +113,21 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         logger.log("Remove keys : $keys")
 
         keys.forEach { propertyResolver.delete(it) }
+    }
+
+    /**
+     * Provide a bean definition
+     * @param name - component name (default "")
+     * @param bind - assignable class (default is null)
+     * @param scopeName - scope name (default is null)
+     * @param definition - component definition function
+     */
+    inline fun <reified T> provide(name: String = "", bind: KClass<*>? = null, scopeName: String? = null, noinline definition: () -> T) {
+        val beanDefinition = BeanDefinition(name, T::class, definition = definition)
+        bind?.let {
+            beanDefinition.bind(bind)
+        }
+        val scope = if (scopeName != null) beanRegistry.getScope(scopeName) else beanRegistry.getScope(Scope.ROOT)
+        beanRegistry.declare(beanDefinition, scope)
     }
 }
