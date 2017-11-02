@@ -14,6 +14,10 @@ class PropertyRegistry {
             ?: throw MissingPropertyException("Can't cast property with key '$key' to ${T::class}")
     else throw MissingPropertyException("can't find property with key '$key'")
 
+    inline fun <reified T> getOrElse(key: String, defaultValue: T): T {
+        return try { get(key) } catch (e: MissingPropertyException) { defaultValue }
+    }
+
     fun set(key: String, value: Any) {
         properties[key] = value
     }
@@ -24,9 +28,14 @@ class PropertyRegistry {
     fun setProperty(key: String, value: Any) = set(key, value)
 
     /**
-     * Retrieve a property or null
+     * Retrieve a property or get MissingPropertyException thrown
      */
     inline fun <reified T> getProperty(key: String): T = get(key)
+
+    /**
+     * Retrieve a property or get provided default value
+     */
+    inline fun <reified T> getPropertyOrElse(key: String, defaultValue: T): T = getOrElse(key, defaultValue)
 
     /**
      * Add properties
