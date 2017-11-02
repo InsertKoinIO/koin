@@ -2,9 +2,9 @@ package org.koin.android.ext.android
 
 import android.app.Activity
 import android.app.Application
+import android.app.Fragment
 import android.app.Service
 import android.content.Context
-import android.support.v4.app.Fragment
 import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.android.ext.koin.init
@@ -40,34 +40,73 @@ fun Context.getKoin(): KoinContext = StandAloneContext.koinContext
 
 /**
  * inject lazily given dependency for Activity
+ * @param name - bean name / optional
  */
 inline fun <reified T> Activity.inject(name: String = "") = lazy { StandAloneContext.koinContext.get<T>(name) }
 
 /**
  * inject lazily given property for Activity
+ * @param key - key property
+ * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Activity.property(key: String) = lazy { StandAloneContext.koinContext.getProperty<T>(key) }
+
+/**
+ * inject lazily given property for Activity
+ * give a default value if property is missing
+ *
+ * @param key - key property
+ * @param defaultValue - default value if property is missing
+ *
+ */
+inline fun <reified T> Activity.property(key: String, defaultValue: T) = lazy { StandAloneContext.koinContext.getPropertyOrElse(key, defaultValue) }
 
 /* Fragment */
 
 /**
  * inject lazily given dependency for Fragment
+ * @param name - bean name / optional
  */
 inline fun <reified T> Fragment.inject(name: String = ""): Lazy<T> = lazy { StandAloneContext.koinContext.get<T>(name) }
 
 /**
  * inject lazily given property for Fragment
+ * @param key - key property
+ * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Fragment.property(key: String) = lazy { StandAloneContext.koinContext.getProperty<T>(key) }
+
+/**
+ * inject lazily given property for Fragment
+ * give a default value if property is missing
+ *
+ * @param key - key property
+ * @param defaultValue - default value if property is missing
+ *
+ */
+inline fun <reified T> Fragment.property(key: String, defaultValue: T) = lazy { StandAloneContext.koinContext.getPropertyOrElse(key, defaultValue) }
 
 /* Service */
 
 /**
- * inject lazily given dependency for Service
+ * inject lazily given dependency for Fragment
+ * @param name - bean name / optional
  */
-inline fun <reified T> Service.inject(name: String = ""): Lazy<T> = lazy { getKoin().get<T>(name) }
+inline fun <reified T> Service.inject(name: String = ""): Lazy<T> = lazy { StandAloneContext.koinContext.get<T>(name) }
 
 /**
- * inject lazily given property for Service
+ * inject lazily given property for Fragment
+ * @param key - key property
+ * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Service.property(key: String) = lazy { getKoin().getProperty<T>(key) }
+inline fun <reified T> Service.property(key: String) = lazy { StandAloneContext.koinContext.getProperty<T>(key) }
+
+/**
+ * inject lazily given property for Fragment
+ * give a default value if property is missing
+ *
+ * @param key - key property
+ * @param defaultValue - default value if property is missing
+ *
+ */
+inline fun <reified T> Service.property(key: String, defaultValue: T) = lazy { StandAloneContext.koinContext.getPropertyOrElse(key, defaultValue) }
