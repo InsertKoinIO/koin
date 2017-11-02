@@ -37,12 +37,12 @@ class MainApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         // Start Koin
-        startAndroidContext(this, allModules())
+        startAndroidContext(this, weatherAppModules())
     }
 }
 ```
 
-The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `allModules()` function.
+The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `weatherAppModules()` function.
 
 ## Declaring your dependencies
 
@@ -101,6 +101,38 @@ class WeatherPresenter(val weatherRepository: WeatherRepository) {
     // you can use your dependencies here
 }
 ```
+
+## Named dependencies
+
+You can provide a name to a provided component:
+
+```kotlin
+class WeatherModule : AndroidModule() {
+    override fun context() = applicationContext {
+           provide("MyPresenter") { WeatherPresenter() }
+    }
+}
+```
+
+To get a component with its name, in an Android class:
+```kotlin
+class WeatherActivity : AppcompatActivity(){
+    val presenter by inject<WeatherPresenter>("MyPresenter")
+}
+```
+
+or in constructor:
+```kotlin
+class WeatherModule : AndroidModule() {
+    override fun context() = applicationContext {
+           provide("MyPresenter") { WeatherPresenter() }
+           // inject name dependency
+           provide { WeatherView(get("MyPresenter")) }
+    }
+}
+```
+
+
 
 ## Working with properties
 
@@ -242,6 +274,7 @@ Generated javadoc is available:
 
 # Articles
 
+* [Moving from Dagger to Koin - Simplify your Android development](https://medium.com/@giuliani.arnaud/moving-from-dagger-to-koin-simplify-your-android-development-e8c61d80cddb)
 * [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
