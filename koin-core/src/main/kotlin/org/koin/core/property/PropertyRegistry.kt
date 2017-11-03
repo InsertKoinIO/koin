@@ -1,5 +1,6 @@
 package org.koin.core.property
 
+import org.koin.Koin
 import org.koin.error.MissingPropertyException
 
 /**
@@ -30,6 +31,7 @@ class PropertyRegistry {
      * Set a property
      */
     fun setProperty(key: String, value: Any) {
+        Koin.logger.log("set property $key -> $value")
         properties[key] = value
     }
 
@@ -37,6 +39,7 @@ class PropertyRegistry {
      * Add properties
      */
     fun addAll(props: Map<String, Any>) {
+        Koin.logger.log("addAll properties $props")
         properties += props
     }
 
@@ -44,6 +47,7 @@ class PropertyRegistry {
      * Delete a property
      */
     fun delete(key: String) {
+        Koin.logger.log("delete property $key")
         properties.remove(key)
     }
 }

@@ -1,5 +1,6 @@
 package org.koin.core.bean
 
+import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
@@ -27,6 +28,7 @@ class BeanRegistry {
      * @param def : Bean definition
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
+        Koin.logger.log("declare bean $def for scope $scope")
         definitions += Pair(def, scope)
     }
 
@@ -54,6 +56,7 @@ class BeanRegistry {
      * Create context scope
      */
     fun createScope(scope: String, parentScope: String?): Scope {
+        Koin.logger.log("create scope $scope with parent $parentScope")
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
         return s
