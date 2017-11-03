@@ -113,7 +113,7 @@ class PropertyTest {
         } catch (e: MissingPropertyException) {
             System.err.println(e)
         }
-        val urlWithDefault = ctx.getPropertyOrElse<String>(K_URL, "DEFAULT")
+        val urlWithDefault = ctx.getProperty(K_URL, "DEFAULT")
 
         Assert.assertNull(url)
         Assert.assertEquals(urlWithDefault, "DEFAULT")

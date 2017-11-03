@@ -7,6 +7,7 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
 import org.koin.error.DependencyResolutionException
+import org.koin.error.MissingPropertyException
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -94,15 +95,16 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Retrieve a property by its key
      * can throw MissingPropertyException if the property is not found
      * @param key
+     * @throws MissingPropertyException if key is not found
      */
     inline fun <reified T> getProperty(key: String): T = propertyResolver.getProperty(key)
 
     /**
      * Retrieve a property by its key or return provided default value
-     * @param key
-     * @param value
+     * @param key - property key
+     * @param defaultValue - default value if property is not found
      */
-    inline fun <reified T> getPropertyOrElse(key: String, defaultValue: T): T = propertyResolver.getProperty(key, defaultValue)
+    inline fun <reified T> getProperty(key: String, defaultValue: T): T = propertyResolver.getProperty(key, defaultValue)
 
     /**
      * Set a property
