@@ -10,32 +10,28 @@ class PropertyRegistry {
 
     val properties = HashMap<String, Any>()
 
-    inline fun <reified T> get(key: String): T = if (key in properties.keys) properties[key] as? T?
-            ?: throw MissingPropertyException("Can't cast property with key '$key' to ${T::class}")
-    else throw MissingPropertyException("can't find property with key '$key'")
+    /**
+     * Get value for given property
+     * @param key - key property
+     * @throws MissingPropertyException if property is missing
+     */
+    inline fun <reified T> getProperty(key: String): T = properties[key] as T? ?: throw MissingPropertyException("Can't find property '$key'")
 
-    inline fun <reified T> getOrElse(key: String, defaultValue: T): T {
-        return try { get(key) } catch (e: MissingPropertyException) { defaultValue }
-    }
-
-    fun set(key: String, value: Any) {
-        properties[key] = value
+    /**
+     * Get value for given property or get default value if property key is missing
+     * @param key - key property
+     * @param defaultValue - default value for key
+     */
+    inline fun <reified T> getProperty(key: String, defaultValue: T): T {
+        return properties[key] as T? ?: defaultValue
     }
 
     /**
      * Set a property
      */
-    fun setProperty(key: String, value: Any) = set(key, value)
-
-    /**
-     * Retrieve a property or get MissingPropertyException thrown
-     */
-    inline fun <reified T> getProperty(key: String): T = get(key)
-
-    /**
-     * Retrieve a property or get provided default value
-     */
-    inline fun <reified T> getPropertyOrElse(key: String, defaultValue: T): T = getOrElse(key, defaultValue)
+    fun setProperty(key: String, value: Any) {
+        properties[key] = value
+    }
 
     /**
      * Add properties
