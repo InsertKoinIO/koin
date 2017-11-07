@@ -23,7 +23,7 @@ apply plugin: 'org.jetbrains.dokka'
 
 archivesBaseName = 'koin-test'
 group = 'org.koin'
-version = '0.5.2'
+version = '0.6.0'
 description = 'Koin - simple dependency injection for Kotlin - Tests tools'
 
 // custom tasks for creating source/javadoc jars
