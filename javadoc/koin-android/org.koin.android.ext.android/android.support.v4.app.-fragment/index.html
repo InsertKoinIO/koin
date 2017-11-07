@@ -16,7 +16,7 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">Fragment</span><span class="symbol">.</span><span class="identifier">inject</span><span class="symbol">(</span><span class="identifier" id="org.koin.android.ext.android$inject(android.support.v4.app.Fragment, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;""<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-lazy/index.html"><span class="identifier">Lazy</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
-<p>inject lazily given dependency for Fragment</p>
+<p>lazy inject given dependency for Fragment</p>
 </td>
 </tr>
 <tr>
@@ -25,7 +25,10 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">Fragment</span><span class="symbol">.</span><span class="identifier">property</span><span class="symbol">(</span><span class="identifier" id="org.koin.android.ext.android$property(android.support.v4.app.Fragment, kotlin.String)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-lazy/index.html"><span class="identifier">Lazy</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
-<p>inject lazily given property for Fragment</p>
+<p>lazy inject given property for Fragment</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">Fragment</span><span class="symbol">.</span><span class="identifier">property</span><span class="symbol">(</span><span class="identifier" id="org.koin.android.ext.android$property(android.support.v4.app.Fragment, kotlin.String, org.koin.android.ext.android.property.T)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="org.koin.android.ext.android$property(android.support.v4.app.Fragment, kotlin.String, org.koin.android.ext.android.property.T)/defaultValue">defaultValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-lazy/index.html"><span class="identifier">Lazy</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>lazy inject given property for Fragment
+give a default value if property is missing</p>
 </td>
 </tr>
 </tbody>
