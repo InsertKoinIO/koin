@@ -14,9 +14,9 @@ interface KoinComponent
  */
 fun KoinComponent.startContext(list: List<Module>, bindSystemProperties : Boolean = false) {
     if (bindSystemProperties) {
-        StandAloneContext.koinContext = Koin().bindSystemProperties().build(list)
+        StandAloneContext.koinContext = Koin().bindKoinProperties().bindSystemProperties().build(list)
     } else {
-        StandAloneContext.koinContext = Koin().build(list)
+        StandAloneContext.koinContext = Koin().bindKoinProperties().build(list)
     }
 }
 

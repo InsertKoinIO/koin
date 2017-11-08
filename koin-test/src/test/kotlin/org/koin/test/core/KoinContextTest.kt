@@ -1,7 +1,6 @@
 package org.koin.test.core
 
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
@@ -99,5 +98,23 @@ class KoinContextTest : KoinTest {
             getProperty<String>("os.name")
             fail("should not inject ")
         } catch (ignored: MissingPropertyException) { }
+    }
+
+    @Test
+    fun `assert koin properties are injected`() {
+
+        // Should read koin.properties file which contains "os.version" definition
+        startContext(arrayListOf(SingleModule()))
+        assertEquals("done", getProperty("test.koin"))
+        assertEquals("weird", getProperty("os.version"))
+    }
+
+    @Test
+    fun `assert system properties overrides koin properties`() {
+
+        startContext(arrayListOf(SingleModule()), true)
+        assertNotNull(getProperty("os.name"))
+        assertEquals("done", getProperty("test.koin"))
+        assertNotEquals("weird", getProperty("os.version"))
     }
 }
