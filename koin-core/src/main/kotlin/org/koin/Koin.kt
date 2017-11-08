@@ -9,6 +9,8 @@ import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 import org.koin.log.EmptyLogger
 import org.koin.log.Logger
+import java.io.File
+import java.io.FileInputStream
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -30,19 +32,41 @@ class Koin {
     }
 
     /**
+     * Inject all properties from koin properties file to context
+     */
+    fun bindKoinProperties(koinPropFilename: String = "koin.properties"): Koin {
+        val classLoader: ClassLoader = Koin::class.java.classLoader
+
+        val path: String? = classLoader.getResource(koinPropFilename)?.path
+
+        if (path != null && File(path).exists()) {
+
+            val koinProperties = Properties()
+            FileInputStream(path).use { koinProperties.load(it) }
+
+            val nb = bindProperties(koinProperties)
+            logger.log("(Koin) loaded $nb properties from $koinPropFilename file")
+        }
+        return this
+    }
+
+    /**
      * Inject all system properties to context
      */
     fun bindSystemProperties(): Koin {
-        val systemProps: Properties = System.getProperties()
-
-        val nb = systemProps.keys
-                .filter { it is String && systemProps[it] != null }
-                .map { propertyResolver.setProperty(it as String, systemProps[it]!!) }
-                .count()
-
+        val nb = bindProperties(System.getProperties())
         logger.log("(Koin) loaded $nb system properties")
-
         return this
+    }
+
+    /**
+     * Inject all properties to context
+     */
+    private fun bindProperties(properties: Properties): Int {
+        return properties.keys
+                .filter { it is String && properties[it] != null }
+                .map { propertyResolver.setProperty(it as String, properties[it]!!) }
+                .count()
     }
 
     /**

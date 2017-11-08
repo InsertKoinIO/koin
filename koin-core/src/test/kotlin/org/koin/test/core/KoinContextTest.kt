@@ -72,7 +72,24 @@ class KoinContextTest {
     }
 
     @Test
-    fun `assert system properties are well injected by default`() {
+    fun `assert koin properties are well injected`() {
+        val ctx = Koin().bindKoinProperties().build(arrayListOf(SingleModule()))
+        assertNotNull(ctx.getProperty("test.koin"))
+    }
+
+    @Test
+    fun `assert koin properties are not injected if specified as so`() {
+        val ctx = Koin().build(arrayListOf(SingleModule()))
+
+        try {
+            ctx.getProperty<String>("test.koin")
+            fail("should not inject ")
+        } catch (ignored: MissingPropertyException) {
+        }
+    }
+
+    @Test
+    fun `assert system properties are well injected`() {
         val ctx = Koin().bindSystemProperties().build(arrayListOf(SingleModule()))
         assertNotNull(ctx.getProperty("os.name"))
     }
@@ -84,6 +101,19 @@ class KoinContextTest {
         try {
             ctx.getProperty<String>("os.name")
             fail("should not inject ")
-        } catch (ignored: MissingPropertyException) { }
+        } catch (ignored: MissingPropertyException) {
+        }
+    }
+
+    @Test
+    fun `assert system properties overrides koin properties`() {
+
+        // Should read koin.properties file which contains "os.version" definition
+        val ctxWithoutSystemProp = Koin().bindKoinProperties().build(arrayListOf(SingleModule()))
+        assertEquals("weird", ctxWithoutSystemProp.getProperty("os.version"))
+
+        val ctx = Koin().bindKoinProperties().bindSystemProperties().build(arrayListOf(SingleModule()))
+        assertNotNull(ctx.getProperty("os.name"))
+        assertNotEquals("weird", ctx.getProperty("os.version"))
     }
 }
