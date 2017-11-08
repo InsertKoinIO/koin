@@ -36,8 +36,8 @@ class Koin {
                 .filter { it is String && systemProps[it] != null }
                 .map { propertyResolver.add(it as String, systemProps[it]!!) }
                 .count()
-        
-        logger.log("(Koin) loaded ${nb} system properties")
+
+        logger.log("(Koin) loaded $nb system properties")
 
         return this
     }
