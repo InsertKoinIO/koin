@@ -53,6 +53,20 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     }
 
     /**
+     * TODO
+     */
+    fun property(pair: Pair<String, Any>) {
+        koinContext.propertyResolver.add(pair.first, pair.second)
+    }
+
+    /**
+     * TODO
+     */
+    fun properties(pairs: List<Pair<String, Any>>) {
+        pairs.forEach { property(it) }
+    }
+
+    /**
      * Resolve a component
      */
     inline fun <reified T : Any> get(): T = koinContext.resolveByClass()

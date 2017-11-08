@@ -43,7 +43,7 @@ class MVPArchitectureTest {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        val ctx = Koin().build(MVPModule(), DataSourceModule())
+        val ctx = Koin().build(listOf(MVPModule(), DataSourceModule()))
 
         val view = ctx.get<View>()
         val presenter = ctx.get<Presenter>()

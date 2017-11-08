@@ -26,7 +26,7 @@ class NamedBeansTest {
 
     @Test
     fun `should get named bean`() {
-        val ctx = Koin().build(DataSourceModule())
+        val ctx = Koin().build(listOf(DataSourceModule()))
 
         val debug = ctx.get<Datasource>("debugDatasource")
         val prod = ctx.get<Datasource>("ProdDatasource")
@@ -41,7 +41,7 @@ class NamedBeansTest {
 
     @Test
     fun `should not get named bean`() {
-        val ctx = Koin().build(DataSourceModule())
+        val ctx = Koin().build(listOf(DataSourceModule()))
 
         val other = ctx.getOrNull<Datasource>("otherDatasource")
 

@@ -54,7 +54,7 @@ class AdditionalBindingTest {
 
     @Test
     fun `same instance for provided & bound component`() {
-        val ctx = Koin().build(BoundModule())
+        val ctx = Koin().build(listOf(BoundModule()))
 
         val a = ctx.get<ComponentA>()
         val intf = ctx.get<InterfaceComponent>()
@@ -71,7 +71,7 @@ class AdditionalBindingTest {
 
     @Test
     fun `should not bound component`() {
-        val ctx = Koin().build(NotBoundModule())
+        val ctx = Koin().build(listOf(NotBoundModule()))
 
         val a = ctx.get<ComponentA>()
         val intf = ctx.getOrNull<InterfaceComponent>()
@@ -87,7 +87,7 @@ class AdditionalBindingTest {
 
     @Test
     fun `should bind generic component`() {
-        val ctx = Koin().build(GenericBoundModule())
+        val ctx = Koin().build(listOf(GenericBoundModule()))
 
         val b = ctx.get<ComponentB>()
         val intf = ctx.get<OtherInterfaceComponent<String>>()
@@ -104,7 +104,7 @@ class AdditionalBindingTest {
 
     @Test
     fun `should not bind generic component`() {
-        val ctx = Koin().build(TwoBoundModule())
+        val ctx = Koin().build(listOf(TwoBoundModule()))
 
         val intf = ctx.getOrNull<OtherInterfaceComponent<String>>()
 

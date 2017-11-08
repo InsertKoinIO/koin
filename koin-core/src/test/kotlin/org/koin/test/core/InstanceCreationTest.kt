@@ -46,7 +46,7 @@ class InstanceCreationTest {
 
     @Test
     fun `load and create instances for flat module`() {
-        val ctx = Koin().build(FlatModule())
+        val ctx = Koin().build(listOf(FlatModule()))
 
         val a = ctx.get<ComponentA>()
         val b = ctx.get<ComponentB>()
@@ -69,7 +69,7 @@ class InstanceCreationTest {
 
     @Test
     fun `load and create instances for hierarchic context`() {
-        val ctx = Koin().build(HierarchicModule())
+        val ctx = Koin().build(listOf(HierarchicModule()))
 
         val a = ctx.get<ComponentA>()
         val b = ctx.get<ComponentB>()

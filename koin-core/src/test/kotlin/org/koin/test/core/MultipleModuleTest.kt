@@ -44,7 +44,7 @@ class MultipleModuleTest {
 
     @Test
     fun `load mulitple modules`() {
-        val ctx = Koin().build(SimpleModuleA(), SimpleModuleB(), SimpleModuleC())
+        val ctx = Koin().build(listOf(SimpleModuleA(), SimpleModuleB(), SimpleModuleC()))
 
         ctx.assertRemainingInstances(0)
         ctx.assertDefinitions(3)

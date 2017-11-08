@@ -2,10 +2,17 @@ package org.koin.test.standalone
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.*
-import org.koin.test.ext.*
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext
+import org.koin.standalone.inject
+import org.koin.standalone.releaseContext
+import org.koin.test.ext.assertContexts
+import org.koin.test.ext.assertDefinedInScope
+import org.koin.test.ext.assertDefinitions
+import org.koin.test.ext.assertRemainingInstances
 
 class MVPArchitectureTest {
     class MVPModule : Module() {
@@ -28,7 +35,7 @@ class MVPArchitectureTest {
     }
 
 
-    class View() {
+    class View() : KoinComponent {
         val presenter: Presenter by inject()
 
         fun onDestroy() {
@@ -43,9 +50,8 @@ class MVPArchitectureTest {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        startContext(MVPModule(), DataSourceModule())
-
-        val ctx = getKoin()
+        val ctx = Koin().build(listOf(MVPModule(), DataSourceModule()))
+        StandAloneContext.koinContext = ctx
 
         val view = ctx.get<View>()
         val presenter = ctx.get<Presenter>()

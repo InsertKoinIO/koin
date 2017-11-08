@@ -10,9 +10,19 @@ import org.koin.error.MissingPropertyException
 import org.koin.test.ext.*
 
 class PropertyTest {
-
     class SimpleModule() : Module() {
         override fun context() = applicationContext {
+
+            property(K_URL to K_URL_VAL)
+
+            provide { ComponentA(getProperty(K_URL)) }
+            provide { ComponentB(get()) }
+        }
+    }
+
+    class NoPropertyModule() : Module() {
+        override fun context() = applicationContext {
+
             provide { ComponentA(getProperty(K_URL)) }
             provide { ComponentB(get()) }
         }
@@ -41,7 +51,7 @@ class PropertyTest {
 
     @Test
     fun `should inject property`() {
-        val ctx = Koin().build(SimpleModule())
+        val ctx = Koin().build(listOf(SimpleModule()))
         ctx.setProperty(K_URL, K_URL_VAL)
 
         val url = ctx.getProperty<String>(K_URL)
@@ -63,7 +73,7 @@ class PropertyTest {
 
     @Test
     fun `should inject property - at build`() {
-        val ctx = Koin().properties(mapOf(Pair(K_URL, K_URL_VAL))).build(SimpleModule())
+        val ctx = Koin().build(listOf(SimpleModule()))
 
         val url = ctx.getProperty<String>(K_URL)
         val a = ctx.get<ComponentA>()
@@ -83,7 +93,7 @@ class PropertyTest {
 
     @Test
     fun `should inject property - complex module`() {
-        val ctx = Koin().build(ComplexModule())
+        val ctx = Koin().build(listOf(ComplexModule()))
         ctx.setProperty(K_URL, K_URL_VAL)
 
         val url = ctx.getProperty<String>(K_URL)
@@ -104,7 +114,7 @@ class PropertyTest {
 
     @Test
     fun `should not inject property but get default value as return`() {
-        val ctx = Koin().build(SimpleModule())
+        val ctx = Koin().build(listOf(NoPropertyModule()))
 
         var url: String? = null
         try {
@@ -121,7 +131,7 @@ class PropertyTest {
 
     @Test
     fun `should not inject property`() {
-        val ctx = Koin().build(SimpleModule())
+        val ctx = Koin().build(listOf(NoPropertyModule()))
 
         var url: String? = null
         try {
@@ -147,7 +157,7 @@ class PropertyTest {
 
     @Test
     fun `should overwrite property`() {
-        val ctx = Koin().build(MoreComplexModule())
+        val ctx = Koin().build(listOf(MoreComplexModule()))
         ctx.setProperty(K_URL, K_URL_VAL)
 
         var url = ctx.getProperty<String>(K_URL)

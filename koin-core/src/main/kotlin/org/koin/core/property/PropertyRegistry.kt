@@ -28,19 +28,19 @@ class PropertyRegistry {
     }
 
     /**
-     * Set a property
-     */
-    fun setProperty(key: String, value: Any) {
-        Koin.logger.log("set property $key -> $value")
-        properties[key] = value
-    }
-
-    /**
      * Add properties
      */
     fun addAll(props: Map<String, Any>) {
-        Koin.logger.log("addAll properties $props")
+        Koin.logger.log("addAll properties ${props.keys}")
         properties += props
+    }
+
+    /**
+     * Add property
+     */
+    fun add(key: String, value: Any) {
+        Koin.logger.log("add property $key")
+        properties += Pair(key, value)
     }
 
     /**
@@ -49,5 +49,12 @@ class PropertyRegistry {
     fun delete(key: String) {
         Koin.logger.log("delete property $key")
         properties.remove(key)
+    }
+
+    /**
+     * Delete properties
+     */
+    fun deleteAll(keys: Array<out String>) {
+        keys.forEach { delete(it) }
     }
 }

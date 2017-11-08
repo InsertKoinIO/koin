@@ -34,7 +34,7 @@ class KoinContextTest {
 
     @Test
     fun `circular deps injection error`() {
-        val ctx = Koin().build(CircularDeps())
+        val ctx = Koin().build(listOf(CircularDeps()))
 
         ctx.assertDefinitions(2)
         ctx.assertRemainingInstances(0)
@@ -48,7 +48,7 @@ class KoinContextTest {
 
     @Test
     fun `safe missing bean`() {
-        val ctx = Koin().build(SingleModule())
+        val ctx = Koin().build(listOf(SingleModule()))
 
         ctx.assertDefinitions(1)
         ctx.assertRemainingInstances(0)
@@ -58,7 +58,7 @@ class KoinContextTest {
 
     @Test
     fun `unsafe missing bean`() {
-        val ctx = Koin().build(SingleModule())
+        val ctx = Koin().build(listOf(SingleModule()))
 
         ctx.assertDefinitions(1)
         ctx.assertRemainingInstances(0)

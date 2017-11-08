@@ -34,7 +34,7 @@ class DryRunTest {
 
     @Test
     fun `successful dry run`() {
-        val ctx = Koin().build(SimpleModule())
+        val ctx = Koin().build(listOf(SimpleModule()))
         ctx.dryRun()
 
         ctx.assertDefinitions(2)
@@ -49,7 +49,7 @@ class DryRunTest {
 
     @Test
     fun `unsuccessful dry run`() {
-        val ctx = Koin().build(BrokenModule())
+        val ctx = Koin().build(listOf(BrokenModule()))
         try {
             ctx.dryRun()
             fail()

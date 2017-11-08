@@ -33,7 +33,7 @@ class ContextReleaseTest {
 
     @Test
     fun `should release context - from B`() {
-        val ctx = Koin().build(HierarchyContextsModule())
+        val ctx = Koin().build(listOf(HierarchyContextsModule()))
 
         ctx.assertContexts(4)
         ctx.assertDefinitions(3)
@@ -54,7 +54,7 @@ class ContextReleaseTest {
         ctx.assertContextInstances("B", 1)
         ctx.assertContextInstances("C", 1)
 
-        ctx.release("B")
+        ctx.releaseContext("B")
 
         ctx.assertRemainingInstances(1)
         ctx.assertContextInstances("A", 1)
@@ -77,7 +77,7 @@ class ContextReleaseTest {
 
     @Test
     fun `should release context - from A`() {
-        val ctx = Koin().build(HierarchyContextsModule())
+        val ctx = Koin().build(listOf(HierarchyContextsModule()))
 
         ctx.assertContexts(4)
         ctx.assertDefinitions(3)
@@ -98,7 +98,7 @@ class ContextReleaseTest {
         ctx.assertContextInstances("B", 1)
         ctx.assertContextInstances("C", 1)
 
-        ctx.release("A")
+        ctx.releaseContext("A")
 
         ctx.assertRemainingInstances(0)
         ctx.assertContextInstances("A", 0)
@@ -121,7 +121,7 @@ class ContextReleaseTest {
 
     @Test
     fun `should release context - from ROOT`() {
-        val ctx = Koin().build(HierarchyContextsModule())
+        val ctx = Koin().build(listOf(HierarchyContextsModule()))
 
         ctx.assertContexts(4)
         ctx.assertDefinitions(3)
@@ -142,7 +142,7 @@ class ContextReleaseTest {
         ctx.assertContextInstances("B", 1)
         ctx.assertContextInstances("C", 1)
 
-        ctx.release(Scope.ROOT)
+        ctx.releaseContext(Scope.ROOT)
 
         ctx.assertRemainingInstances(0)
         ctx.assertContextInstances("A", 0)
@@ -165,7 +165,7 @@ class ContextReleaseTest {
 
     @Test
     fun `should release context - from C`() {
-        val ctx = Koin().build(HierarchyContextsModule())
+        val ctx = Koin().build(listOf(HierarchyContextsModule()))
 
         ctx.assertContexts(4)
         ctx.assertDefinitions(3)
@@ -186,7 +186,7 @@ class ContextReleaseTest {
         ctx.assertContextInstances("B", 1)
         ctx.assertContextInstances("C", 1)
 
-        ctx.release("C")
+        ctx.releaseContext("C")
 
         ctx.assertRemainingInstances(2)
         ctx.assertContextInstances("A", 1)
@@ -209,7 +209,7 @@ class ContextReleaseTest {
 
     @Test
     fun `should not release context - unknown context`() {
-        val ctx = Koin().build(HierarchyContextsModule())
+        val ctx = Koin().build(listOf(HierarchyContextsModule()))
 
         ctx.assertContexts(4)
         ctx.assertDefinitions(3)
@@ -231,7 +231,7 @@ class ContextReleaseTest {
         ctx.assertContextInstances("C", 1)
 
         try {
-            ctx.release("D")
+            ctx.releaseContext("D")
             fail()
         } catch (e: NoScopeFoundException) {
         }

@@ -1,6 +1,7 @@
 package org.koin.standalone
 
-import org.koin.KoinContext
+import org.koin.Koin
+import org.koin.dsl.module.Module
 
 /**
  * Koin agnostic context support
@@ -10,10 +11,17 @@ object StandAloneContext {
     /**
      * Koin Context
      */
-    lateinit var koinContext: KoinContext
+    lateinit var koinContext: StandAloneKoinContext
 }
 
 /**
- * releaseContext any context
+ * Stand alone Koin context
  */
-fun releaseContext(name: String = "") = StandAloneContext.koinContext.release(name)
+interface StandAloneKoinContext
+
+/**
+ * Koin starter
+ */
+fun startContext(list: List<Module>) {
+    StandAloneContext.koinContext = Koin().build(list)
+}

@@ -52,7 +52,7 @@ class DSLTest {
 
     @Test
     fun `can create flat contexts`() {
-        val ctx = Koin().build(FlatContextsModule())
+        val ctx = Koin().build(listOf(FlatContextsModule()))
 
         ctx.assertContexts(3)
         ctx.assertDefinitions(3)
@@ -67,7 +67,7 @@ class DSLTest {
 
     @Test
     fun `can create hierarchic contexts`() {
-        val ctx = Koin().build(HierarchyContextsModule())
+        val ctx = Koin().build(listOf(HierarchyContextsModule()))
 
         ctx.assertContexts(4)
         ctx.assertDefinitions(3)
