@@ -32,9 +32,12 @@ class Koin {
     fun bindSystemProperties(): Koin {
         val systemProps: Properties = System.getProperties()
 
-        systemProps.keys
+        val nb = systemProps.keys
                 .filter { it is String && systemProps[it] != null }
-                .forEach { propertyResolver.add(it as String, systemProps[it]!!) }
+                .map { propertyResolver.add(it as String, systemProps[it]!!) }
+                .count()
+        
+        logger.log("(Koin) loaded ${nb} system properties")
 
         return this
     }
