@@ -9,6 +9,7 @@ import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 import org.koin.log.EmptyLogger
 import org.koin.log.Logger
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -25,6 +26,19 @@ class Koin {
      */
     fun properties(props: Map<String, Any>): Koin {
         propertyResolver.addAll(props)
+        return this
+    }
+
+    /**
+     * Inject all system properties to context
+     */
+    fun bindSystemProperties(): Koin {
+        val systemProps: Properties = System.getProperties()
+
+        systemProps.keys
+                .filter { it is String && systemProps[it] != null }
+                .forEach { propertyResolver.setProperty(it as String, systemProps[it]!!) }
+
         return this
     }
 

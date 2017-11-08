@@ -44,8 +44,12 @@ fun KoinContext.rootScope() = beanRegistry.rootScope
 /**
  * Koin Context builder
  */
-fun startContext(list: List<Module>) {
-    StandAloneContext.koinContext = Koin().build(list)
+fun startContext(list: List<Module>, bindSystemProperties : Boolean = true) {
+    if (bindSystemProperties) {
+        StandAloneContext.koinContext = Koin().bindSystemProperties().build(list)
+    } else {
+        StandAloneContext.koinContext = Koin().build(list)
+    }
 }
 
 /**
