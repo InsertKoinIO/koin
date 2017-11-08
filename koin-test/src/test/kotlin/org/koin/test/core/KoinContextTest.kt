@@ -1,15 +1,18 @@
 package org.koin.test.core
 
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
+import org.koin.error.MissingPropertyException
 import org.koin.standalone.startContext
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 import org.koin.test.get
+import org.koin.test.getProperty
 
 class KoinContextTest : KoinTest {
 
@@ -82,4 +85,19 @@ class KoinContextTest : KoinTest {
         assertRemainingInstances(0)
     }
 
+    @Test
+    fun `assert system properties are well injected if specified as so`() {
+        startContext(arrayListOf(SingleModule()), true)
+        assertNotNull(getProperty("os.name"))
+    }
+
+    @Test
+    fun `assert system properties are not injected by default`() {
+        startContext(arrayListOf(SingleModule()))
+
+        try {
+            getProperty<String>("os.name")
+            fail("should not inject ")
+        } catch (ignored: MissingPropertyException) { }
+    }
 }
