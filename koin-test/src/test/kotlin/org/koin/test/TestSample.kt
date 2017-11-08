@@ -2,19 +2,19 @@ package org.koin.test
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext
+import org.koin.standalone.inject
 import org.koin.standalone.releaseContext
-import org.koin.test.components.KoinTest
-import org.koin.test.components.getKoin
-import org.koin.test.components.inject
-import org.koin.test.components.startContext
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class TestSample : KoinTest {
+class TestSample : KoinComponent {
 
     class MVPModule : Module() {
         override fun context() =
@@ -36,7 +36,7 @@ class TestSample : KoinTest {
     }
 
 
-    class View(val presenter: Presenter) {
+    class View(val presenter: Presenter) : KoinComponent {
         fun onDestroy() {
             releaseContext("View")
         }
@@ -55,9 +55,8 @@ class TestSample : KoinTest {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        startContext(MVPModule(), DataSourceModule())
-
-        val ctx = getKoin()
+        val ctx = Koin().build(listOf(MVPModule(), DataSourceModule()))
+        StandAloneContext.koinContext = ctx
 
         Assert.assertEquals(presenter, view.presenter)
         Assert.assertEquals(repository, presenter.repository)
