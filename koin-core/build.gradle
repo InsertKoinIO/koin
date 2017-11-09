@@ -26,6 +26,11 @@ group = 'org.koin'
 version = "$rootProject.ext.koin_version"
 description = 'Koin - simple dependency injection for Kotlin'
 
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    main.java.srcDirs += 'src/test/kotlin'
+}
+
 // custom tasks for creating source/javadoc jars
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -68,12 +73,8 @@ bintray {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.7.22'
-
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
 
 repositories {

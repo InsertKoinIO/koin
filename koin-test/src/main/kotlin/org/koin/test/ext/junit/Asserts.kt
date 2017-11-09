@@ -2,17 +2,19 @@ package org.koin.test.ext.junit
 
 import org.junit.Assert
 import org.koin.KoinContext
+import org.koin.standalone.StandAloneContext
+import org.koin.test.KoinTest
 import org.koin.test.ext.koin.*
 import kotlin.reflect.KClass
 
-
+private val koinTestContext = StandAloneContext.koinContext as KoinContext
 
 /**
  * Assert context definition definitionCount
  * @param definitionCount - number of definitions
  */
-fun KoinContext.assertDefinitions(definitionCount: Int) {
-    Assert.assertEquals("applicationContext must have $definitionCount definition", definitionCount, AllDefinitions().size)
+fun KoinTest.assertDefinitions(definitionCount: Int) {
+    Assert.assertEquals("applicationContext must have $definitionCount definition", definitionCount, koinTestContext.AllDefinitions().size)
 }
 
 /**
@@ -20,9 +22,9 @@ fun KoinContext.assertDefinitions(definitionCount: Int) {
  * @param definitionClazz - bean definition class
  * @param scopeName - scope name
  */
-fun KoinContext.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String) {
-    val definition = definition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", beanRegistry.getScope(scopeName), beanRegistry.definitions[definition])
+fun KoinTest.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String) {
+    val definition = koinTestContext.definition(definitionClazz)
+    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", koinTestContext.beanRegistry.getScope(scopeName), koinTestContext.beanRegistry.definitions[definition])
 }
 
 /**
@@ -30,10 +32,10 @@ fun KoinContext.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: Stri
  * @param scopeName - scope name
  * @param instanceCount - number of instances
  */
-fun KoinContext.assertContextInstances(scopeName: String, instanceCount: Int) {
-    val scope = getScope(scopeName)
-    val definitions = AllDefinitions().filter { it.value == scope }.map { it.key }.toSet()
-    val instances = allInstances().filter { it.first in definitions }
+fun KoinTest.assertContextInstances(scopeName: String, instanceCount: Int) {
+    val scope = koinTestContext.getScope(scopeName)
+    val definitions = koinTestContext.AllDefinitions().filter { it.value == scope }.map { it.key }.toSet()
+    val instances = koinTestContext.allInstances().filter { it.first in definitions }
     Assert.assertEquals("scope $scopeName must have $instanceCount instances", instanceCount, instances.size)
 }
 
@@ -42,30 +44,30 @@ fun KoinContext.assertContextInstances(scopeName: String, instanceCount: Int) {
  * @param scopeName - target scope name
  * @param scopeParent - parent scope name
  */
-fun KoinContext.assertScopeParent(scopeName: String, scopeParent: String) {
-    Assert.assertEquals("Scope '$scopeName' must have parent '$scopeName'", scopeParent, beanRegistry.getScope(scopeName).parent?.name)
+fun KoinTest.assertScopeParent(scopeName: String, scopeParent: String) {
+    Assert.assertEquals("Scope '$scopeName' must have parent '$scopeName'", scopeParent, koinTestContext.beanRegistry.getScope(scopeName).parent?.name)
 }
 
 /**
  * Assert Koin has reminaing instances
  * @param instanceCount - instances count
  */
-fun KoinContext.assertRemainingInstances(instanceCount: Int) {
-    Assert.assertEquals("context must have $instanceCount instances", instanceCount, allInstances().size)
+fun KoinTest.assertRemainingInstances(instanceCount: Int) {
+    Assert.assertEquals("context must have $instanceCount instances", instanceCount, koinTestContext.allInstances().size)
 }
 
 /**
  * Assert Koin has properties count
  * @param propertyCount - properties count
  */
-fun KoinContext.assertProperties(propertyCount: Int) {
-    Assert.assertEquals("context must have $propertyCount properties", propertyCount, allProperties().size)
+fun KoinTest.assertProperties(propertyCount: Int) {
+    Assert.assertEquals("context must have $propertyCount properties", propertyCount, koinTestContext.allProperties().size)
 }
 
 /**
  * Assert Koin has contextCount contexts
  * @param contextCount - context count
  */
-fun KoinContext.assertContexts(contextCount: Int) {
-    Assert.assertEquals("context must have $contextCount contexts", contextCount, allContext().size)
+fun KoinTest.assertContexts(contextCount: Int) {
+    Assert.assertEquals("context must have $contextCount contexts", contextCount, koinTestContext.allContext().size)
 }

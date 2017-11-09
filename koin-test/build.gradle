@@ -1,5 +1,5 @@
 buildscript {
-    ext{
+    ext {
         kotlin_version = '1.1.51'
         dokka_version = '0.9.15'
     }
@@ -25,6 +25,11 @@ archivesBaseName = 'koin-test'
 group = 'org.koin'
 version = '0.6.0'
 description = 'Koin - simple dependency injection for Kotlin - Tests tools'
+
+//sourceSets {
+//    main.java.srcDirs += 'src/main/kotlin'
+//    main.java.srcDirs += 'src/test/kotlin'
+//}
 
 // custom tasks for creating source/javadoc jars
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -68,18 +73,13 @@ bintray {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'junit:junit:4.12'
-//    compile 'org.mockito:mockito-core:2.7.22'
-
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // Koin
-    compile "org.koin:koin-core:$version"
-}
+    compile project(":koin-core")
+//    compile "org.koin:koin-core:$version"
 
-repositories {
-    jcenter()
-    mavenCentral()
+    compile 'junit:junit:4.12'
+    compile 'org.mockito:mockito-core:2.7.22'
 }
