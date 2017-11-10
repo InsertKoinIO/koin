@@ -1,20 +1,3 @@
-buildscript {
-    ext {
-        kotlin_version = '1.1.51'
-        dokka_version = '0.9.15'
-    }
-
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
-    }
-}
 apply plugin: 'kotlin'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -25,11 +8,6 @@ archivesBaseName = 'koin-test'
 group = 'org.koin'
 version = '0.6.0'
 description = 'Koin - simple dependency injection for Kotlin - Tests tools'
-
-//sourceSets {
-//    main.java.srcDirs += 'src/main/kotlin'
-//    main.java.srcDirs += 'src/test/kotlin'
-//}
 
 // custom tasks for creating source/javadoc jars
 task sourcesJar(type: Jar, dependsOn: classes) {

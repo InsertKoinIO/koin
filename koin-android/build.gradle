@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'org.jetbrains.dokka-android'
+
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -12,20 +12,6 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
     }
 }
 
@@ -40,7 +26,10 @@ dependencies {
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
-    compile "org.koin:koin-core:$rootProject.ext.koin_version"
+    //compile "org.koin:koin-core:$rootProject.ext.koin_version"
+    //testCompile "org.koin:koin-test:$rootProject.ext.koin_version"
+    compile project(":koin-core")
+    testCompile project(":koin-test")
 
     // Support Library
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"

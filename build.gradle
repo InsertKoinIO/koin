@@ -19,13 +19,14 @@ buildscript {
     ext {
         kotlin_version = '1.1.51'
         dokka_version = '0.9.15'
-        gradleVersion = '2.3.3'
+        android_version = '2.3.3'
     }
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+//        classpath "com.android.tools.build:gradle:$android_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
@@ -38,11 +39,8 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         mavenLocal()
-        maven {
-            url 'https://maven.google.com'
-        }
+        jcenter()
     }
 }
 

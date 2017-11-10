@@ -1,23 +1,23 @@
-//package org.koin.test.android
-//
-//import android.app.Application
-//import android.content.res.Resources
-//import org.junit.Assert
-//import org.junit.Assert.*
-//import org.junit.Test
-//import org.koin.Koin
-//import org.koin.android.ext.koin.init
-//import org.koin.error.BeanInstanceCreationException
-//import org.koin.test.ext.junit.assertDefinitions
-//import org.koin.test.ext.junit.assertProperties
-//import org.koin.test.ext.junit.assertRemainingInstances
-//import org.mockito.Mockito.`when`
-//import org.mockito.Mockito.mock
-//
-///**
-// * Android Module Tests
-// */
-//class ModuleTest {
+package org.koin.test.android
+
+import android.app.Application
+import android.content.res.Resources
+import org.junit.Assert
+import org.junit.Assert.*
+import org.junit.Test
+import org.koin.Koin
+import org.koin.android.ext.koin.init
+import org.koin.error.BeanInstanceCreationException
+import org.koin.test.ext.junit.assertDefinitions
+import org.koin.test.ext.junit.assertProperties
+import org.koin.test.ext.junit.assertRemainingInstances
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+
+/**
+ * Android Module Tests
+ */
+class ModuleTest {
 //
 //    @Test
 //    fun should_initialize_module() {
@@ -123,4 +123,4 @@
 //        ctx.assertDefinitions(3)
 //        ctx.assertRemainingInstances(2)
 //    }
-//}
+}
