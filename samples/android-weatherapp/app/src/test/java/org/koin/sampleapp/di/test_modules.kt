@@ -10,7 +10,7 @@ import org.koin.sampleapp.util.TestSchedulerProvider
 class RxTestModule : AndroidModule() {
     override fun context() = applicationContext {
         // provided components
-        provide { TestSchedulerProvider() } bind (SchedulerProvider::class)
+        provide { TestSchedulerProvider() } bind SchedulerProvider::class
     }
 
     companion object {
@@ -20,7 +20,7 @@ class RxTestModule : AndroidModule() {
 
 class TestDataSourceModule : AndroidModule() {
     override fun context() = applicationContext {
-        provide { LocalDataSource(JavaReader()) } bind (WeatherDatasource::class)
+        provide { LocalDataSource(JavaReader()) } bind WeatherDatasource::class
     }
 }
 

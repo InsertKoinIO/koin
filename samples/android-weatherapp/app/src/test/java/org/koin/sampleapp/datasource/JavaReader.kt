@@ -8,7 +8,7 @@ import java.io.File
  */
 class JavaReader : BaseReader() {
 
-    val base_path = "koin-sample-app/src/test/resources/json"
+    val base_path = "app/src/test/resources/json"
 
     override fun getAllFiles(): List<String> = File(base_path).list().toList()
 
