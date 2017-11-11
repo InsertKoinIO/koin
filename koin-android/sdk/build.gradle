@@ -1,0 +1,126 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'org.jetbrains.dokka-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
+    testCompile 'org.mockito:mockito-core:2.7.22'
+
+    // Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // Koin
+    compile "org.koin:koin-core:$rootProject.ext.koin_version"
+
+    // Support Library
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+group = 'org.koin'
+version = "$rootProject.ext.koin_version"
+description = 'KOIN - Kotlin simple dependency injection for Android'
+
+ext{
+    publishedGroupId = group
+    libraryName = 'Koin Android'
+
+    artifact = 'koin-android'
+    libraryDescription = 'KOIN - Kotlin simple dependency injection for Android'
+    libraryVersion = version
+}
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+
+                // Add your description here
+                name libraryName
+                description libraryDescription
+
+                developers {
+                    developer {
+                        id 'arnaudgiuliani'
+                        name 'Arnaud GIULIANI'
+                        email 'agiuliani@ekito.fr'
+                    }
+                }
+                scm {
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    user = properties.getProperty('bintray_user')
+    key = properties.getProperty('bintray_apikey')
+
+    configurations = ['archives']
+
+    publish = true //[Default: false] Whether version should be auto published after an upload
+    override = true
+    pkg {
+        repo = 'koin'
+        name = 'koin-android'
+        userOrg = 'ekito'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Ekito/koin.git'
+        description = libraryDescription
+        version {
+            desc = description
+            // Optional. The passphrase for GPG signing'
+            // gpg {
+            //    sign = true //Determines whether to GPG sign the files. The default is false
+            //    passphrase = properties.getProperty("bintray.gpg.password")
+            //}
+        }
+    }
+}

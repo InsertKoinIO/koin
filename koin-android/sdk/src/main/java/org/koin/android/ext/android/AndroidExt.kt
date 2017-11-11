@@ -22,6 +22,33 @@ fun Application.startAndroidContext(application: Application, modules: List<Andr
 private val koinContext = (StandAloneContext.koinContext as KoinContext)
 
 
+/**
+ * Bind an Android String to Koin property
+ * @param id - Android resource String id
+ * @param key - Koin property key
+ */
+fun Context.bindString(id: Int, key: String) {
+    koinContext.setProperty(key, koinContext.get<Application>().getString(id))
+}
+
+/**
+ * Bind an Android Integer to Koin property
+ * @param id - Android resource Int id
+ * @param key - Koin property key
+ */
+fun Context.bindInt(id: Int, key: String) {
+    koinContext.setProperty(key, koinContext.get<Application>().resources.getInteger(id))
+}
+
+/**
+ * Bind an Android Boolean to Koin property
+ * @param id - Android resource Boolean id
+ * @param key - Koin property key
+ */
+fun Context.bindBool(id: Int, key: String) {
+    koinContext.setProperty(key, koinContext.get<Application>().resources.getBoolean(id))
+}
+
 /* Activity */
 
 /**

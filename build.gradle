@@ -1,50 +1,81 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-// Define versions in a single place
-ext {
-    // Koin Version
-    koin_version = "0.6.0"
-
-    // Sdk and tools
-    minSdkVersion = 14
-    targetSdkVersion = 26
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.2'
-
-    // App dependencies
-    supportLibraryVersion = '26.0.0'
-    junitVersion = '4.12'
+def Properties props = new Properties()
+def propFile = file('koin.properties')
+if (propFile.canRead()) {
+    props.load(new FileInputStream(propFile))
+    ext.koin_version = props['KOIN_VERSION']
 }
 
 buildscript {
-    ext {
-        kotlin_version = '1.1.51'
-        dokka_version = '0.9.15'
-        android_version = '2.3.3'
+    def Properties p = new Properties()
+    def pf = file('koin.properties')
+    if (pf.canRead()) {
+        p.load(new FileInputStream(pf))
+        ext.kotlin_version = p['KOTLIN_VERSION']
+        ext.dokka_version = p['DOKKA_VERSION']
     }
     repositories {
         jcenter()
         google()
     }
     dependencies {
-//        classpath "com.android.tools.build:gradle:$android_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${dokka_version}"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
-allprojects {
+subprojects {
+    apply plugin: 'kotlin'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'org.jetbrains.dokka'
+
     repositories {
         mavenLocal()
         jcenter()
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    group = 'org.koin'
+    version = "$koin_version"
+
+    // custom tasks for creating source/javadoc jars
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar, javadocJar
+    }
+
+    dokka {
+        outputFormat = 'html'
+        outputDirectory = "$buildDir/javadoc"
+    }
+
+    bintray {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        user = properties.getProperty('bintray_user')
+        key = properties.getProperty('bintray_apikey')
+
+        configurations = ['archives']
+
+        publish = true //[Default: false] Whether version should be auto published after an upload
+        override = true
+        pkg {
+            repo = 'koin'
+            name = archivesBaseName
+            userOrg = 'ekito'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/Ekito/koin.git'
+        }
+    }
 }
 
