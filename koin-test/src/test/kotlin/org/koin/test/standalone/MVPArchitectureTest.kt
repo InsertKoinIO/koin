@@ -2,8 +2,10 @@ package org.koin.test.standalone
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
+import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import org.koin.standalone.releaseContext
@@ -49,8 +51,40 @@ class MVPArchitectureTest : KoinTest {
     interface Datasource
     class DebugDatasource : Datasource
 
+    init {
+        Koin.logger = PrintLogger()
+    }
+
     @Test
     fun `should create all MVP hierarchy`() {
+        startContext(listOf(MVPModule(), DataSourceModule()))
+
+        val view = get<View>()
+        val presenter = get<Presenter>()
+        val repository = get<Repository>()
+        val datasource = get<DebugDatasource>()
+
+        Assert.assertEquals(presenter, view.presenter)
+        Assert.assertEquals(repository, presenter.repository)
+        Assert.assertEquals(repository, view.presenter.repository)
+        Assert.assertEquals(datasource, repository.datasource)
+
+        assertRemainingInstances(4)
+        assertDefinitions(4)
+        assertContexts(2)
+        assertDefinedInScope(Repository::class, Scope.ROOT)
+        assertDefinedInScope(DebugDatasource::class, Scope.ROOT)
+        assertDefinedInScope(View::class, "View")
+        assertDefinedInScope(Presenter::class, "View")
+
+        view.onDestroy()
+        assertRemainingInstances(2)
+        assertDefinitions(4)
+        assertContexts(2)
+    }
+
+    @Test
+    fun `should create all MVP hierarchy 2`() {
         startContext(listOf(MVPModule(), DataSourceModule()))
 
         val view = get<View>()

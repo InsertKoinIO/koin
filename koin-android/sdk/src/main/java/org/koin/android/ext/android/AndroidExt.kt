@@ -19,16 +19,13 @@ fun Application.startAndroidContext(application: Application, modules: List<Andr
     StandAloneContext.koinContext = Koin().init(application).build(modules)
 }
 
-private val koinContext = (StandAloneContext.koinContext as KoinContext)
-
-
 /**
  * Bind an Android String to Koin property
  * @param id - Android resource String id
  * @param key - Koin property key
  */
 fun Context.bindString(id: Int, key: String) {
-    koinContext.setProperty(key, koinContext.get<Application>().getString(id))
+    (StandAloneContext.koinContext as KoinContext).setProperty(key, (StandAloneContext.koinContext as KoinContext).get<Application>().getString(id))
 }
 
 /**
@@ -37,7 +34,7 @@ fun Context.bindString(id: Int, key: String) {
  * @param key - Koin property key
  */
 fun Context.bindInt(id: Int, key: String) {
-    koinContext.setProperty(key, koinContext.get<Application>().resources.getInteger(id))
+    (StandAloneContext.koinContext as KoinContext).setProperty(key, (StandAloneContext.koinContext as KoinContext).get<Application>().resources.getInteger(id))
 }
 
 /**
@@ -46,7 +43,7 @@ fun Context.bindInt(id: Int, key: String) {
  * @param key - Koin property key
  */
 fun Context.bindBool(id: Int, key: String) {
-    koinContext.setProperty(key, koinContext.get<Application>().resources.getBoolean(id))
+    (StandAloneContext.koinContext as KoinContext).setProperty(key, (StandAloneContext.koinContext as KoinContext).get<Application>().resources.getBoolean(id))
 }
 
 /* Activity */
@@ -74,12 +71,20 @@ inline fun <reified T> Context.property(key: String) = lazy { (StandAloneContext
  */
 inline fun <reified T> Context.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
+/**
+ * TODO
+ */
+fun Context.bindProperty(key: String, value: Any) = lazy { (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value) }
 
-fun Context.bindProperty(key: String, value: Any) = lazy { koinContext.propertyResolver.add(key, value) }
+/**
+ * TODO
+ */
+fun Context.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
 
-fun Context.releaseContext(name: String) = koinContext.releaseContext(name)
-
-fun Context.releaseProperties(vararg keys: String) = koinContext.releaseProperties(*keys)
+/**
+ * TODO
+ */
+fun Context.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)
 
 
 /* Support Fragment */
@@ -107,8 +112,17 @@ inline fun <reified T> Fragment.property(key: String) = lazy { (StandAloneContex
  */
 inline fun <reified T> Fragment.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
-fun Fragment.bindProperty(key: String, value: Any) = lazy { koinContext.propertyResolver.add(key, value) }
+/**
+ * TODO
+ */
+fun Fragment.bindProperty(key: String, value: Any) = lazy { (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value) }
 
-fun Fragment.releaseContext(name: String) = koinContext.releaseContext(name)
+/**
+ * TODO
+ */
+fun Fragment.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
 
-fun Fragment.releaseProperties(vararg keys: String) = koinContext.releaseProperties(*keys)
+/**
+ * TODO
+ */
+fun Fragment.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)

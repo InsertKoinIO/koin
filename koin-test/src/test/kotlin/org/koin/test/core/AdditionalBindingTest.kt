@@ -1,16 +1,19 @@
 package org.koin.test.core
 
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.inject
+import org.koin.log.PrintLogger
 import org.koin.standalone.startContext
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.get
 
 
 class AdditionalBindingTest : KoinTest {
@@ -57,12 +60,16 @@ class AdditionalBindingTest : KoinTest {
         fun get(): T
     }
 
+    init {
+        Koin.logger = PrintLogger()
+    }
+
     @Test
     fun `same instance for provided & bound component`() {
         startContext(listOf(BoundModule()))
 
-        val a by inject<ComponentA>()
-        val intf by inject<InterfaceComponent>()
+        val a = get<ComponentA>()
+        val intf = get<InterfaceComponent>()
 
         Assert.assertNotNull(a)
         Assert.assertNotNull(intf)
@@ -78,11 +85,15 @@ class AdditionalBindingTest : KoinTest {
     fun `should not bound component`() {
         startContext(listOf(NotBoundModule()))
 
-        val a by inject<ComponentA>()
-        val intf by inject<InterfaceComponent>()
+        val a = get<ComponentA>()
+
+        try {
+            get<InterfaceComponent>()
+            fail()
+        } catch (e: Exception) {
+        }
 
         Assert.assertNotNull(a)
-        Assert.assertNull(intf)
 
         assertRemainingInstances(1)
         assertDefinitions(1)
@@ -94,8 +105,8 @@ class AdditionalBindingTest : KoinTest {
     fun `should bind generic component`() {
         startContext(listOf(GenericBoundModule()))
 
-        val b by inject<ComponentB>()
-        val intf by inject<OtherInterfaceComponent<String>>()
+        val b = get<ComponentB>()
+        val intf = get<OtherInterfaceComponent<String>>()
 
         Assert.assertNotNull(b)
         Assert.assertNotNull(intf)
@@ -111,9 +122,11 @@ class AdditionalBindingTest : KoinTest {
     fun `should not bind generic component`() {
         startContext(listOf(TwoBoundModule()))
 
-        val intf by inject<OtherInterfaceComponent<String>>()
-
-        Assert.assertNull(intf)
+        try {
+            get<OtherInterfaceComponent<String>>()
+            fail()
+        } catch (e: Exception) {
+        }
 
         assertRemainingInstances(0)
         assertDefinitions(2)
