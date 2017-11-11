@@ -38,10 +38,10 @@ fun KoinContext.allProperties() = propertyResolver.properties
  */
 fun KoinContext.getScope(scopeName: String) = beanRegistry.scopes.first { it.name == scopeName }
 
-/**
- * Return ROOT Scope
- */
-fun KoinContext.rootScope() = beanRegistry.rootScope
+///**
+// * Return ROOT Scope
+// */
+//fun KoinContext.rootScope() = beanRegistry.rootScope
 
 /**
  * Provide a bean definition in actual KoinContext

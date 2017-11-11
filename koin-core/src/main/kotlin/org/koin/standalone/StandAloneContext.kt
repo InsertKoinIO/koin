@@ -1,6 +1,7 @@
 package org.koin.standalone
 
 import org.koin.Koin
+import org.koin.KoinContext
 import org.koin.dsl.module.Module
 
 /**
@@ -24,4 +25,13 @@ interface StandAloneKoinContext
  */
 fun startContext(list: List<Module>) {
     StandAloneContext.koinContext = Koin().build(list)
+}
+
+/**
+ * Dry Run starter
+ * Test if each bean definition can be created/injected
+ */
+fun dryRun(list: List<Module>) {
+    startContext(list)
+    (StandAloneContext.koinContext as KoinContext).dryRun()
 }
