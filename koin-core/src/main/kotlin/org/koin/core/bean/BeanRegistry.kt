@@ -28,7 +28,6 @@ class BeanRegistry {
      * @param def : Bean definition
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
-        Koin.logger.log("declare bean $def for scope $scope")
         definitions += Pair(def, scope)
     }
 

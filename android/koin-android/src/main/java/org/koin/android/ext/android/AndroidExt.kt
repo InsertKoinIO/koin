@@ -72,17 +72,21 @@ inline fun <reified T> Context.property(key: String) = lazy { (StandAloneContext
 inline fun <reified T> Context.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
 /**
- * TODO
+ * Set a property
+ * @param key
+ * @param value
  */
-fun Context.bindProperty(key: String, value: Any) = lazy { (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value) }
+fun Context.bindProperty(key: String, value: Any) = (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value)
 
 /**
- * TODO
+ * Release a context
+ * @param name
  */
 fun Context.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
 
 /**
- * TODO
+ * Release properties
+ * @param keys - property keys
  */
 fun Context.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)
 
@@ -113,16 +117,20 @@ inline fun <reified T> Fragment.property(key: String) = lazy { (StandAloneContex
 inline fun <reified T> Fragment.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
 /**
- * TODO
+ * Set a property
+ * @param key
+ * @param value
  */
-fun Fragment.bindProperty(key: String, value: Any) = lazy { (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value) }
+fun Fragment.bindProperty(key: String, value: Any) = (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value)
 
 /**
- * TODO
+ * Release a context
+ * @param name
  */
 fun Fragment.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
 
 /**
- * TODO
+ * Release properties
+ * @param keys - property keys
  */
 fun Fragment.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)

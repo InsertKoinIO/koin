@@ -5,8 +5,8 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
-import org.koin.standalone.dryRun
 import org.koin.test.KoinTest
+import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances

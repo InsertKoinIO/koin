@@ -18,4 +18,7 @@ inline fun <reified T> KoinTest.getProperty(name: String = "", defaultVale: T) =
 /**
  * Dry Run Starter
  */
-fun KoinTest.dryRun(modules: List<Module>) = Koin().build(modules).dryRun()
+fun KoinTest.dryRun(modules: List<Module>) {
+    StandAloneContext.koinContext = Koin().build(modules)
+    (StandAloneContext.koinContext as KoinContext).dryRun()
+}

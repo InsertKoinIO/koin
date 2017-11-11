@@ -40,6 +40,7 @@ dependencies {
     // Koin
     compile "org.koin:koin-core:$rootProject.ext.koin_version"
     testCompile "org.koin:koin-test:$rootProject.ext.koin_version"
+    testCompile 'org.mockito:mockito-core:2.7.22'
 
     // Support Library
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
