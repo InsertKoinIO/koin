@@ -17,9 +17,9 @@ class PropertyTest : KoinTest {
     class SimpleModule() : Module() {
         override fun context() = applicationContext {
 
-            property(K_URL to K_URL_VAL)
+            property(KEY to VALUE)
 
-            provide { ComponentA(getProperty(K_URL)) }
+            provide { ComponentA(getProperty(KEY)) }
             provide { ComponentB(get()) }
         }
     }
@@ -27,7 +27,7 @@ class PropertyTest : KoinTest {
     class NoPropertyModule() : Module() {
         override fun context() = applicationContext {
 
-            provide { ComponentA(getProperty(K_URL)) }
+            provide { ComponentA(getProperty(KEY)) }
             provide { ComponentB(get()) }
         }
     }
@@ -36,7 +36,7 @@ class PropertyTest : KoinTest {
         override fun context() = applicationContext {
             provide { ComponentB(get()) }
             context("A") {
-                provide { ComponentA(getProperty(K_URL)) }
+                provide { ComponentA(getProperty(KEY)) }
             }
         }
     }
@@ -45,7 +45,7 @@ class PropertyTest : KoinTest {
         override fun context() = applicationContext {
             provide { ComponentB(get()) }
             context("A") {
-                provideFactory { ComponentA(getProperty(K_URL)) }
+                provideFactory { ComponentA(getProperty(KEY)) }
             }
         }
     }
@@ -56,14 +56,14 @@ class PropertyTest : KoinTest {
     @Test
     fun `should inject external property`() {
         startContext(listOf(SimpleModule()))
-        bindProperty(K_URL, K_URL_VAL)
+        bindProperty(KEY, VALUE)
 
-        val url = getProperty<String>(K_URL)
+        val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
         val b = get<ComponentB>()
 
         Assert.assertEquals(a, b.componentA)
-        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
 
         assertRemainingInstances(2)
@@ -79,12 +79,12 @@ class PropertyTest : KoinTest {
     fun `should inject internal property`() {
         startContext(listOf(SimpleModule()))
 
-        val url = getProperty<String>(K_URL)
+        val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
         val b = get<ComponentB>()
 
         Assert.assertEquals(a, b.componentA)
-        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
 
         assertRemainingInstances(2)
@@ -98,14 +98,14 @@ class PropertyTest : KoinTest {
     @Test
     fun `should inject property - complex module`() {
         startContext(listOf(ComplexModule()))
-        bindProperty(K_URL, K_URL_VAL)
+        bindProperty(KEY, VALUE)
 
-        val url = getProperty<String>(K_URL)
+        val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
         val b = get<ComponentB>()
 
         Assert.assertEquals(a, b.componentA)
-        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
 
         assertRemainingInstances(2)
@@ -121,12 +121,12 @@ class PropertyTest : KoinTest {
         startContext(listOf(NoPropertyModule()))
 
         try {
-            getProperty<String>(K_URL)
+            getProperty<String>(KEY)
             fail()
         } catch (e: MissingPropertyException) {
             System.err.println(e)
         }
-        val urlWithDefault = getProperty(K_URL, "DEFAULT")
+        val urlWithDefault = getProperty(KEY, "DEFAULT")
 
         Assert.assertEquals(urlWithDefault, "DEFAULT")
     }
@@ -136,7 +136,7 @@ class PropertyTest : KoinTest {
         startContext(listOf(NoPropertyModule()))
 
         try {
-            getProperty<String>(K_URL)
+            getProperty<String>(KEY)
             fail()
         } catch (e: MissingPropertyException) {
             System.err.println(e)
@@ -163,26 +163,26 @@ class PropertyTest : KoinTest {
     @Test
     fun `should overwrite property`() {
         startContext(listOf(MoreComplexModule()))
-        bindProperty(K_URL, K_URL_VAL)
+        bindProperty(KEY, VALUE)
 
-        var url = getProperty<String>(K_URL)
+        var url = getProperty<String>(KEY)
         var a = get<ComponentA>()
         val b = get<ComponentB>()
 
-        Assert.assertEquals(K_URL_VAL, a.url)
+        Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
         Assert.assertEquals(b.componentA.url, a.url)
 
         assertRemainingInstances(1)
         assertDefinitions(2)
 
-        bindProperty(K_URL, K_URL_VAL2)
+        bindProperty(KEY, VALUE_2)
 
-        url = getProperty<String>(K_URL)
+        url = getProperty<String>(KEY)
         a = get()
 
         Assert.assertEquals(url, a.url)
-        Assert.assertEquals(K_URL_VAL2, a.url)
+        Assert.assertEquals(VALUE_2, a.url)
 
         assertRemainingInstances(1)
         assertDefinitions(2)
@@ -194,8 +194,8 @@ class PropertyTest : KoinTest {
     }
 
     companion object {
-        val K_URL = "URL"
-        val K_URL_VAL = "http://..."
-        val K_URL_VAL2 = "http://...2"
+        val KEY = "URL"
+        val VALUE = "http://..."
+        val VALUE_2 = "http://...2"
     }
 }

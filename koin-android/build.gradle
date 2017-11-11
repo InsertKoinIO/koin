@@ -12,10 +12,7 @@ ext {
     targetSdkVersion = 26
     compileSdkVersion = 26
     buildToolsVersion = '26.0.2'
-
-    // App dependencies
     supportLibraryVersion = '26.0.0'
-    junitVersion = '4.12'
 }
 
 buildscript {
