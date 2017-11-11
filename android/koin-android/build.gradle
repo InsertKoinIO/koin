@@ -57,6 +57,7 @@ dokka {
 
 group = 'org.koin'
 version = "$rootProject.ext.koin_version"
+//artifact = "koin-android"
 description = 'KOIN - Kotlin simple dependency injection for Android'
 
 ext{
@@ -75,7 +76,7 @@ install {
             project {
                 packaging 'aar'
                 groupId publishedGroupId
-                artifactId artifact
+                artifactId 'koin-android'
 
                 // Add your description here
                 name libraryName
