@@ -20,13 +20,6 @@ object StandAloneContext {
  */
 interface StandAloneKoinContext
 
-/**
- * Koin starter
- */
-fun startContext(list: List<Module>) {
-    StandAloneContext.koinContext = Koin().build(list)
-}
-
 ///**
 // * Dry Run starter
 // * Test if each bean definition can be created/injected

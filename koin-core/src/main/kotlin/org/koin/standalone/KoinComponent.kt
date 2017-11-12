@@ -1,11 +1,20 @@
 package org.koin.standalone
 
+import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.dsl.module.Module
 
 /**
  * Koin component
  */
 interface KoinComponent
+
+/**
+ * Koin starter
+ */
+fun KoinComponent.startContext(list: List<Module>) {
+    StandAloneContext.koinContext = Koin().build(list)
+}
 
 /**
  * inject lazily given dependency for KoinComponent
