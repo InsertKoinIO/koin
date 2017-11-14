@@ -1,18 +1,7 @@
-def Properties props = new Properties()
-def propFile = file('koin.properties')
-if (propFile.canRead()) {
-    props.load(new FileInputStream(propFile))
-    ext.koin_version = props['KOIN_VERSION']
-}
+apply from: "common.gradle"
 
 buildscript {
-    def Properties p = new Properties()
-    def pf = file('koin.properties')
-    if (pf.canRead()) {
-        p.load(new FileInputStream(pf))
-        ext.kotlin_version = p['KOTLIN_VERSION']
-        ext.dokka_version = p['DOKKA_VERSION']
-    }
+    apply from: "common.gradle"
     repositories {
         jcenter()
     }

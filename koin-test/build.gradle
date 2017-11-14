@@ -11,6 +11,6 @@ dependencies {
     // Koin
     compile project(":koin-core")
 
-    compile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.7.22'
+    compile "junit:junit:$junit_version"
+    testCompile "org.mockito:mockito-core:$mockito_version"
 }

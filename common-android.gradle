@@ -1,0 +1,12 @@
+ext {
+    // Sdk and tools
+    minSdkVersion = 14
+    targetSdkVersion = 26
+    compileSdkVersion = 26
+
+    androidGradlePlugin = "2.3.3"
+
+    buildToolsVersion = '26.0.2'
+
+    supportLibraryVersion = '26.0.0'
+}

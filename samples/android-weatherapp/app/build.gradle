@@ -3,9 +3,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 ext{
-    okhttp_version = '3.6.0'
+    okhttp_version = '3.8.1'
     retrofit_version = '2.2.0'
-    rxjava_version = '2.1.0'
+    rxjava_version = '2.1.6'
 }
 
 android {
@@ -33,8 +33,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:2.8.47"
+    testCompile "junit:junit:$junit_version"
+    testCompile "org.mockito:mockito-core:$mockito_version"
 
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.ext.supportLibraryVersion"
@@ -61,7 +61,7 @@ dependencies {
     compile "io.reactivex.rxjava2:rxjava:$rxjava_version"
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
-    testCompile "org.robolectric:robolectric:3.5.1"
+//    testCompile "org.robolectric:robolectric:3.5.1"
 }
 repositories {
     mavenCentral()

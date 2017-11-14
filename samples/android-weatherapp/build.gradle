@@ -1,50 +1,27 @@
-def Properties props = new Properties()
-def propFile = file('../../koin.properties')
-if (propFile.canRead()) {
-    props.load(new FileInputStream(propFile))
-    ext.koin_version = props['KOIN_VERSION']
-}
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-// Define versions in a single place
-ext {
-    // Sdk and tools
-    minSdkVersion = 14
-    targetSdkVersion = 26
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.2'
-    supportLibraryVersion = '26.0.0'
-}
+apply from: "../../common.gradle"
+apply from: "../../common-android.gradle"
 
 buildscript {
-    def Properties p = new Properties()
-    def pf = file('../../koin.properties')
-    if (pf.canRead()) {
-        p.load(new FileInputStream(pf))
-        ext.kotlin_version = p['KOTLIN_VERSION']
-        ext.dokka_version = p['DOKKA_VERSION']
-    }
+    apply from: "../../common.gradle"
+    apply from: "../../common-android.gradle"
+
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath "com.android.tools.build:gradle:$androidGradlePlugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${dokka_version}"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
         mavenLocal()
-        maven {
-            url 'https://maven.google.com'
-        }
+        jcenter()
+        google()
     }
 }
 
