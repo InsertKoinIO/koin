@@ -21,14 +21,14 @@ class WeatherPresenter(val weatherRepository: WeatherRepository, val schedulerPr
     }
 
     override fun getWeather(location: String) {
-        currentRequest?.dispose()
-        currentRequest = weatherRepository.getWeather(location)
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .subscribe(
-                        { weather -> view.displayWeather(weather, location) },
-                        { error -> view.displayError(error) }
-                )
+//        currentRequest?.dispose()
+//        currentRequest = weatherRepository.getWeather(location)
+//                .subscribeOn(schedulerProvider.io())
+//                .observeOn(schedulerProvider.ui())
+//                .subscribe(
+//                        { weather -> view.displayWeather(weather, location) },
+//                        { error -> view.displayError(error) }
+//                )
     }
 
 }

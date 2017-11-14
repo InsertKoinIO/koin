@@ -8,6 +8,7 @@ import org.koin.Koin
 import org.koin.android.ext.android.bindString
 import org.koin.android.ext.android.startAndroidContext
 import org.koin.android.logger.AndroidLogger
+import org.koin.sampleapp.di.RemoteDataSourceModule
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.di.weatherAppModules
 
@@ -23,7 +24,7 @@ class MainApplication : Application() {
         }
 
         // bind R.string.server_url to Koin WeatherModule.SERVER_URL
-        bindString(R.string.server_url, WeatherModule.SERVER_URL)
+        bindString(R.string.server_url, RemoteDataSourceModule.SERVER_URL)
 
         Iconify.with(WeathericonsModule())
     }

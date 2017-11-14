@@ -7,6 +7,8 @@ import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.util.rx.ApplicationSchedulerProvider
 import org.koin.sampleapp.util.rx.SchedulerProvider
+import org.koin.sampleapp.view.main.MainContract
+import org.koin.sampleapp.view.main.MainPresenter
 import org.koin.sampleapp.view.weather.WeatherContract
 import org.koin.sampleapp.view.weather.WeatherPresenter
 import retrofit2.Retrofit
@@ -18,15 +20,18 @@ fun weatherAppModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxMo
 
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
-        context(name = CTX_WEATHER_ACTIVITY) {
-            provide { WeatherPresenter(get(), get()) } bind (WeatherContract.Presenter::class)
+        context(CTX_MAIN_ACTIVITY){
+            provide { MainPresenter() } bind MainContract.Presenter::class
+        }
+        context(CTX_WEATHER_ACTIVITY) {
+            provide { WeatherPresenter(get(), get()) } bind WeatherContract.Presenter::class
         }
 
         provide { WeatherRepository(get()) }
     }
 
     companion object {
-        const val SERVER_URL = "SERVER_URL"
+        const val CTX_MAIN_ACTIVITY = "MainActivity"
         const val CTX_WEATHER_ACTIVITY = "WeatherActivity"
     }
 }
@@ -37,7 +42,11 @@ class RemoteDataSourceModule : AndroidModule() {
         provide { createOkHttpClient() }
 
         // Fill property
-        provide { createWebService<WeatherDatasource>(get(), getProperty(WeatherModule.SERVER_URL)) }
+        provide { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
+    }
+
+    companion object {
+        const val SERVER_URL = "SERVER_URL"
     }
 }
 

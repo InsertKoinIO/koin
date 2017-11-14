@@ -4,12 +4,21 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="margin">4dp</dimen>
-    <dimen name="weather_margin">8dp</dimen>
+    <dimen name="activity_padding_horizontal">16dp</dimen>
 
-    <dimen name="text_base">22sp</dimen>
-    <dimen name="text_medium">18sp</dimen>
-    <dimen name="text_small">14sp</dimen>
-    <dimen name="text_big">24sp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_radius">2dp</dimen>
 
+    <dimen name="icon_width">44dp</dimen>
+    <dimen name="icon_height">44dp</dimen>
+
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text">14sp</dimen>
+    <dimen name="text_subheading">16sp</dimen>
+    <dimen name="text_heading">18sp</dimen>
+    <dimen name="text_title">19sp</dimen>
+    <dimen name="text_headline">24sp</dimen>
+    <dimen name="text_display1">34sp</dimen>
+
+    <dimen name="cell_height">72dp</dimen>
 </resources>
