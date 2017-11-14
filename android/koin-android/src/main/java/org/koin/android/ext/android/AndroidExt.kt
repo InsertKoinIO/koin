@@ -1,14 +1,15 @@
 package org.koin.android.ext.android
 
 import android.app.Application
-import android.content.Context
-import android.support.v4.app.Fragment
+import android.content.ComponentCallbacks
 import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.android.ext.koin.init
 import org.koin.android.module.AndroidModule
 import org.koin.standalone.StandAloneContext
 
+
+internal fun context() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Create a new Koin Context
@@ -24,8 +25,8 @@ fun Application.startAndroidContext(application: Application, modules: List<Andr
  * @param id - Android resource String id
  * @param key - Koin property key
  */
-fun Context.bindString(id: Int, key: String) {
-    (StandAloneContext.koinContext as KoinContext).setProperty(key, (StandAloneContext.koinContext as KoinContext).get<Application>().getString(id))
+fun ComponentCallbacks.bindString(id: Int, key: String) {
+    context().setProperty(key, context().get<Application>().getString(id))
 }
 
 /**
@@ -33,8 +34,8 @@ fun Context.bindString(id: Int, key: String) {
  * @param id - Android resource Int id
  * @param key - Koin property key
  */
-fun Context.bindInt(id: Int, key: String) {
-    (StandAloneContext.koinContext as KoinContext).setProperty(key, (StandAloneContext.koinContext as KoinContext).get<Application>().resources.getInteger(id))
+fun ComponentCallbacks.bindInt(id: Int, key: String) {
+    context().setProperty(key, context().get<Application>().resources.getInteger(id))
 }
 
 /**
@@ -42,24 +43,22 @@ fun Context.bindInt(id: Int, key: String) {
  * @param id - Android resource Boolean id
  * @param key - Koin property key
  */
-fun Context.bindBool(id: Int, key: String) {
-    (StandAloneContext.koinContext as KoinContext).setProperty(key, (StandAloneContext.koinContext as KoinContext).get<Application>().resources.getBoolean(id))
+fun ComponentCallbacks.bindBool(id: Int, key: String) {
+    context().setProperty(key, context().get<Application>().resources.getBoolean(id))
 }
-
-/* Activity */
 
 /**
  * inject lazily given dependency for Activity
  * @param name - bean name / optional
  */
-inline fun <reified T> Context.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
+inline fun <reified T> ComponentCallbacks.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
 
 /**
  * lazy inject given property for Activity
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Context.property(key: String) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
+inline fun <reified T> ComponentCallbacks.property(key: String) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
 
 /**
  * lazy inject  given property for Activity
@@ -69,68 +68,23 @@ inline fun <reified T> Context.property(key: String) = lazy { (StandAloneContext
  * @param defaultValue - default value if property is missing
  *
  */
-inline fun <reified T> Context.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
+inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
 /**
  * Set a property
  * @param key
  * @param value
  */
-fun Context.bindProperty(key: String, value: Any) = (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value)
+fun ComponentCallbacks.bindProperty(key: String, value: Any) = context().propertyResolver.add(key, value)
 
 /**
  * Release a context
  * @param name
  */
-fun Context.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
+fun ComponentCallbacks.releaseContext(name: String) = context().releaseContext(name)
 
 /**
  * Release properties
  * @param keys - property keys
  */
-fun Context.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)
-
-
-/* Support Fragment */
-
-/**
- * lazy inject given dependency for Fragment
- * @param name - bean name / optional
- */
-inline fun <reified T> Fragment.inject(name: String = ""): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
-
-/**
- * lazy inject given property for Fragment
- * @param key - key property
- * throw MissingPropertyException if property is not found
- */
-inline fun <reified T> Fragment.property(key: String) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
-
-/**
- * lazy inject given property for Fragment
- * give a default value if property is missing
- *
- * @param key - key property
- * @param defaultValue - default value if property is missing
- *
- */
-inline fun <reified T> Fragment.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
-
-/**
- * Set a property
- * @param key
- * @param value
- */
-fun Fragment.bindProperty(key: String, value: Any) = (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value)
-
-/**
- * Release a context
- * @param name
- */
-fun Fragment.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
-
-/**
- * Release properties
- * @param keys - property keys
- */
-fun Fragment.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)
+fun ComponentCallbacks.releaseProperties(vararg keys: String) = context().releaseProperties(*keys)

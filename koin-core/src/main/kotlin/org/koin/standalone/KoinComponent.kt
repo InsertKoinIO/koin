@@ -39,18 +39,25 @@ inline fun <reified T> KoinComponent.property(key: String) = kotlin.lazy { (Stan
  */
 inline fun <reified T> KoinComponent.property(key: String, defaultValue: T) = kotlin.lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
-/**
- * TODO
- */
-fun KoinComponent.bindProperty(key: String, value: Any) = (StandAloneContext.koinContext as KoinContext).propertyResolver.add(key, value)
+
+internal fun context() = (StandAloneContext.koinContext as KoinContext)
 
 /**
- * TODO
+ * set a property
+ * @param key
+ * @param value
  */
-fun KoinComponent.releaseContext(name: String) = (StandAloneContext.koinContext as KoinContext).releaseContext(name)
+fun KoinComponent.bindProperty(key: String, value: Any) = context().propertyResolver.add(key, value)
 
 /**
- * TODO
+ * Release a Koin context
+ * @param name
  */
-fun KoinComponent.releaseProperties(vararg keys: String) = (StandAloneContext.koinContext as KoinContext).releaseProperties(*keys)
+fun KoinComponent.releaseContext(name: String) = context().releaseContext(name)
+
+/**
+ * Release properties
+ * @param keys - key properties
+ */
+fun KoinComponent.releaseProperties(vararg keys: String) = context().releaseProperties(*keys)
 
