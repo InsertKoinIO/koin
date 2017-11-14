@@ -1,6 +1,6 @@
 package org.koin.sampleapp.repository.json
 
-import org.koin.sampleapp.weather.model.DailyForecastModel
+import org.koin.sampleapp.model.DailyForecastModel
 import org.koin.sampleapp.repository.json.weather.Weather
 
 private val PREFIX = "nt_"

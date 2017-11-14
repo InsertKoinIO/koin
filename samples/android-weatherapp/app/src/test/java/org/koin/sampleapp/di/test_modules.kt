@@ -4,7 +4,7 @@ import org.koin.android.module.AndroidModule
 import org.koin.sampleapp.datasource.JavaReader
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.local.LocalDataSource
-import org.koin.sampleapp.rx.SchedulerProvider
+import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.util.TestSchedulerProvider
 
 class RxTestModule : AndroidModule() {

@@ -1,8 +1,8 @@
-package org.koin.sampleapp.weather
+package org.koin.sampleapp.view.weather
 
 import io.reactivex.disposables.Disposable
 import org.koin.sampleapp.repository.WeatherRepository
-import org.koin.sampleapp.rx.SchedulerProvider
+import org.koin.sampleapp.util.rx.SchedulerProvider
 
 /**
  * Weather Presenter

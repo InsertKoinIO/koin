@@ -1,7 +1,7 @@
-package org.koin.sampleapp.weather
+package org.koin.sampleapp.view.weather
 
-import org.koin.sampleapp.mvp.BasePresenter
-import org.koin.sampleapp.mvp.BaseView
+import org.koin.sampleapp.util.mvp.BasePresenter
+import org.koin.sampleapp.util.mvp.BaseView
 import org.koin.sampleapp.repository.json.weather.Weather
 
 /**

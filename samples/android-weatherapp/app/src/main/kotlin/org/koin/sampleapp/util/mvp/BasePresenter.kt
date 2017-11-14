@@ -1,4 +1,4 @@
-package org.koin.sampleapp.mvp
+package org.koin.sampleapp.util.mvp
 
 interface BasePresenter<T> {
 

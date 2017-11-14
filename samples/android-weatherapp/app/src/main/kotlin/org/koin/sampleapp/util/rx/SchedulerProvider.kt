@@ -1,4 +1,4 @@
-package org.koin.sampleapp.rx
+package org.koin.sampleapp.util.rx
 
 import io.reactivex.Scheduler
 

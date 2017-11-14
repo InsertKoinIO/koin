@@ -9,7 +9,7 @@
     android:gravity="center"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".weather.WeatherActivity"
+    tools:context="org.koin.sampleapp.view.weather.WeatherActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView

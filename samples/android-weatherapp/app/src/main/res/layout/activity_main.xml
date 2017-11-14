@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/blue"
     android:fitsSystemWindows="true"
-    tools:context="org.koin.sampleapp.weather.WeatherActivity">
+    tools:context="org.koin.sampleapp.view.weather.WeatherActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

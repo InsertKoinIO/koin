@@ -5,10 +5,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.module.AndroidModule
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.WeatherRepository
-import org.koin.sampleapp.rx.ApplicationSchedulerProvider
-import org.koin.sampleapp.rx.SchedulerProvider
-import org.koin.sampleapp.weather.WeatherContract
-import org.koin.sampleapp.weather.WeatherPresenter
+import org.koin.sampleapp.util.rx.ApplicationSchedulerProvider
+import org.koin.sampleapp.util.rx.SchedulerProvider
+import org.koin.sampleapp.view.weather.WeatherContract
+import org.koin.sampleapp.view.weather.WeatherPresenter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
