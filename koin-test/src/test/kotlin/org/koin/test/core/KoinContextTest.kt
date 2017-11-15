@@ -97,7 +97,39 @@ class KoinContextTest : KoinTest {
         try {
             getProperty<String>("os.name")
             fail("should not inject ")
-        } catch (ignored: MissingPropertyException) { }
+        } catch (ignored: MissingPropertyException) {
+        }
+    }
+
+    @Test
+    fun `assert given properties are injected`() {
+
+        // Should read koin.properties file which contains "os.version" definition
+        startContext(arrayListOf(SingleModule()), props = mapOf("given.prop" to "Android"))
+        assertEquals("Android", getProperty("given.prop"))
+    }
+
+    @Test
+    fun `assert given properties are injected but overridden by koin properties`() {
+
+        // Should read koin.properties file which contains "os.version" definition
+        startContext(arrayListOf(SingleModule()), props = mapOf("given.prop" to "Android", "test.koin" to "Android"))
+        assertEquals("Android", getProperty("given.prop"))
+        assertEquals("done", getProperty("test.koin"))
+        assertEquals("weird", getProperty("os.version"))
+    }
+
+    @Test
+    fun `assert given properties are injected but overridden by koin properties and then by system properties`() {
+
+        // Should read koin.properties file which contains "os.version" definition
+        startContext(arrayListOf(SingleModule()),
+                bindSystemProperties = true,
+                props = mapOf("given.prop" to "Android", "test.koin" to "Android"))
+
+        assertEquals("Android", getProperty("given.prop"))
+        assertEquals("done", getProperty("test.koin"))
+        assertNotEquals("weird", getProperty("os.version"))
     }
 
     @Test
