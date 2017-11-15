@@ -9,8 +9,8 @@ import org.koin.sampleapp.util.rx.ApplicationSchedulerProvider
 import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.view.main.MainContract
 import org.koin.sampleapp.view.main.MainPresenter
-import org.koin.sampleapp.view.weather.WeatherContract
-import org.koin.sampleapp.view.weather.WeatherPresenter
+import org.koin.sampleapp.view.weather.WeatherResultContract
+import org.koin.sampleapp.view.weather.WeatherResultPresenter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,10 +21,10 @@ fun weatherAppModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxMo
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
         context(CTX_MAIN_ACTIVITY){
-            provide { MainPresenter() } bind MainContract.Presenter::class
+            provide { MainPresenter(get(),get()) } bind MainContract.Presenter::class
         }
         context(CTX_WEATHER_ACTIVITY) {
-            provide { WeatherPresenter(get(), get()) } bind WeatherContract.Presenter::class
+            provide { WeatherResultPresenter(get(), get()) } bind WeatherResultContract.Presenter::class
         }
 
         provide { WeatherRepository(get()) }
@@ -32,7 +32,7 @@ class WeatherModule : AndroidModule() {
 
     companion object {
         const val CTX_MAIN_ACTIVITY = "MainActivity"
-        const val CTX_WEATHER_ACTIVITY = "WeatherActivity"
+        const val CTX_WEATHER_ACTIVITY = "WeatherResultActivity"
     }
 }
 

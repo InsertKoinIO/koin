@@ -58,6 +58,7 @@
 
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
     <style name="Caption" parent="Text">

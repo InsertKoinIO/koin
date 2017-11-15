@@ -6,6 +6,7 @@ buildscript {
     apply from: "../../common-android.gradle"
 
     repositories {
+        google()
         jcenter()
     }
     dependencies {
