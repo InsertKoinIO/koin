@@ -61,7 +61,8 @@ fun KoinTest.assertRemainingInstances(instanceCount: Int) {
  * @param propertyCount - properties count
  */
 fun KoinTest.assertProperties(propertyCount: Int) {
-    Assert.assertEquals("context must have $propertyCount properties", propertyCount, context().allProperties().size)
+    val nonKoinProps = context().allProperties().filterKeys { it != "test.koin" && it != "os.version" }
+    Assert.assertEquals("context must have $propertyCount properties", propertyCount, nonKoinProps.size)
 }
 
 /**
