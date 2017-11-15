@@ -31,11 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_margin="8dp"
         android:padding="16dp">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_margin="4dp"
             android:src="@drawable/ic_search_black_24dp"
             android:tint="@color/t_white" />
 

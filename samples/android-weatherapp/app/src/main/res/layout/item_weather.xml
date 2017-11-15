@@ -16,7 +16,7 @@
         android:layout_height="104dp"
         android:gravity="center"
         android:text="Icon"
-        android:textColor="@color/accent_dark"
+        android:textColor="@color/t_white"
         android:textSize="50sp" />
 
     <LinearLayout

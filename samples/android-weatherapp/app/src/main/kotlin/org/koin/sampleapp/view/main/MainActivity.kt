@@ -8,8 +8,11 @@ import org.koin.android.contextaware.ContextAwareActivity
 import org.koin.android.ext.android.bindProperty
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.property
+import org.koin.android.ext.android.releaseProperties
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
+import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DATE
+import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DETAIL
 import org.koin.sampleapp.view.weather.WeatherResultActivity
 
 /**
@@ -33,6 +36,8 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
         }
 
         searchButton.setOnClickListener { presenter.getWeather(searchText()) }
+
+        releaseProperties(PROPERTY_WEATHER_DATE, PROPERTY_WEATHER_DETAIL)
     }
 
     private fun searchText() = searchEditText.text.trim().toString()

@@ -1,5 +1,6 @@
 package org.koin.sampleapp.view.weather
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.DefaultItemAnimator
@@ -9,10 +10,10 @@ import org.koin.android.contextaware.ContextAwareActivity
 import org.koin.android.ext.android.bindProperty
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.property
-import org.koin.android.ext.android.releaseProperties
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.model.DailyForecastModel
+import org.koin.sampleapp.view.detail.WeatherDetailActivity
 import org.koin.sampleapp.view.main.PROPERTY_ADDRESS
 import java.util.*
 
@@ -38,8 +39,9 @@ class WeatherResultActivity : ContextAwareActivity(), WeatherResultContract.View
 
         weatherList.layoutManager = LinearLayoutManager(this)
         weatherResultAdapter = WeatherResultAdapter(emptyList(), { weatherDetail ->
+            bindProperty(PROPERTY_WEATHER_DATE, now)
             bindProperty(PROPERTY_WEATHER_DETAIL, weatherDetail)
-//            startActivity(Intent(this, WeatherResultActivity::class.java))
+            startActivity(Intent(this, WeatherDetailActivity::class.java))
         })
         weatherList.itemAnimator = DefaultItemAnimator()
         weatherList.adapter = weatherResultAdapter
@@ -49,11 +51,6 @@ class WeatherResultActivity : ContextAwareActivity(), WeatherResultContract.View
         super.onResume()
         presenter.view = this
         presenter.getWeather(address)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        releaseProperties(PROPERTY_WEATHER_DATE)
     }
 
     override fun displayWeather(weatherList: List<DailyForecastModel>) {

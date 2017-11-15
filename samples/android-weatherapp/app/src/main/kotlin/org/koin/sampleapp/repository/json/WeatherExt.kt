@@ -56,4 +56,3 @@ private fun getWeatherCode(icon: String): String {
 fun Weather.getDailyForecasts(): List<DailyForecastModel> = forecast?.simpleforecast?.forecastday.orEmpty()
         .map { f -> DailyForecastModel(f.conditions!!, getWeatherCode(f.icon!!), f.low!!.celsius!!, f.high!!.celsius!!) }
         .filter { f -> !f.icon.startsWith(PREFIX) }
-        .take(4)

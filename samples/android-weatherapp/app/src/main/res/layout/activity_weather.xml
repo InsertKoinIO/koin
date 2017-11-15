@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey3"
+    android:background="@color/primary"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -14,12 +14,11 @@
         android:layout_margin="24dp"
         android:gravity="center"
         android:text="@string/weather_title"
-        android:textColor="@color/primary_text" />
+        android:textColor="@color/t_white" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/weatherList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primary" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
