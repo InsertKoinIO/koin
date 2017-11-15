@@ -14,9 +14,6 @@ class WeatherResultPresenter(val weatherRepository: WeatherRepository, val sched
     override lateinit var view: WeatherResultContract.View
     private var currentRequest: Disposable? = null
 
-    override fun start() {
-    }
-
     override fun stop() {
         currentRequest?.dispose()
         weatherRepository.clearCache()

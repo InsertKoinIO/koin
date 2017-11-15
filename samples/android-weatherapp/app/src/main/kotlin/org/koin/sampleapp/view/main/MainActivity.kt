@@ -20,10 +20,13 @@ import org.koin.sampleapp.view.weather.WeatherResultActivity
  */
 class MainActivity : ContextAwareActivity(), MainContract.View {
 
+    // Associated Koin context
     override val contextName = WeatherModule.CTX_WEATHER_ACTIVITY
 
+    // Presenter
     override val presenter by inject<MainContract.Presenter>()
 
+    // Get last address or default
     private val defaultAddress by property(PROPERTY_ADDRESS, "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +35,14 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
 
         searchEditText.setText(defaultAddress)
         searchEditText.setOnFocusChangeListener { _, _ ->
+            // save address
             bindProperty(PROPERTY_ADDRESS, searchText())
         }
 
+        // Start search weather
         searchButton.setOnClickListener { presenter.getWeather(searchText()) }
 
+        // release any of those properties (if previously used)
         releaseProperties(PROPERTY_WEATHER_DATE, PROPERTY_WEATHER_DETAIL)
     }
 
@@ -45,7 +51,6 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
     override fun onResume() {
         super.onResume()
         presenter.view = this
-        presenter.start()
     }
 
     override fun onPause() {
@@ -54,6 +59,8 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
     }
 
     override fun onWeatherSuccess() {
+        // save address
+        bindProperty(PROPERTY_ADDRESS, searchText())
         startActivity(Intent(this, WeatherResultActivity::class.java))
     }
 

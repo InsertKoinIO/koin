@@ -26,7 +26,10 @@ class WeatherResultActivity : ContextAwareActivity(), WeatherResultContract.View
 
     override val presenter by inject<WeatherResultContract.Presenter>()
 
+    // Get address
     private val address by property<String>(PROPERTY_ADDRESS)
+
+    // get Last date or set it at now
     private val now by property(PROPERTY_WEATHER_DATE, Date())
 
     private lateinit var weatherResultAdapter: WeatherResultAdapter
@@ -39,8 +42,11 @@ class WeatherResultActivity : ContextAwareActivity(), WeatherResultContract.View
 
         weatherList.layoutManager = LinearLayoutManager(this)
         weatherResultAdapter = WeatherResultAdapter(emptyList(), { weatherDetail ->
+            // save date & weather detail
             bindProperty(PROPERTY_WEATHER_DATE, now)
             bindProperty(PROPERTY_WEATHER_DETAIL, weatherDetail)
+
+            // Launch detail
             startActivity(Intent(this, WeatherDetailActivity::class.java))
         })
         weatherList.itemAnimator = DefaultItemAnimator()
@@ -51,6 +57,11 @@ class WeatherResultActivity : ContextAwareActivity(), WeatherResultContract.View
         super.onResume()
         presenter.view = this
         presenter.getWeather(address)
+    }
+
+    override fun onPause() {
+        presenter.stop()
+        super.onPause()
     }
 
     override fun displayWeather(weatherList: List<DailyForecastModel>) {

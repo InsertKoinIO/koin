@@ -16,6 +16,7 @@ import java.util.*
  */
 class WeatherDetailActivity : AppCompatActivity() {
 
+    // Get all needed data
     private val address by property<String>(PROPERTY_ADDRESS)
     private val now by property<Date>(PROPERTY_WEATHER_DATE)
     private val weather by property<DailyForecastModel>(PROPERTY_WEATHER_DETAIL)

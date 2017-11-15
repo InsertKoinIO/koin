@@ -4,6 +4,10 @@ import io.reactivex.Single
 import org.koin.sampleapp.repository.json.getLocation
 import org.koin.sampleapp.repository.json.weather.Weather
 
+/**
+ * Weather repository
+ * Make use of WeatherDatasource & add some cache
+ */
 class WeatherRepository(val weatherDatasource: WeatherDatasource) {
 
     private val DEFAULT_LANG = "EN"
