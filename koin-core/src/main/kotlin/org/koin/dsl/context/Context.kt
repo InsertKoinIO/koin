@@ -53,14 +53,16 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     }
 
     /**
-     * TODO
+     * Set a property
+     * @param pair / Key / Value
      */
     fun property(pair: Pair<String, Any>) {
-        koinContext.propertyResolver.add(pair.first, pair.second)
+        koinContext.setProperty(pair.first, pair.second)
     }
 
     /**
-     * TODO
+     * Set properties
+     * @param pairs : list of Pair / Key Value
      */
     fun properties(pairs: List<Pair<String, Any>>) {
         pairs.forEach { property(it) }
@@ -81,7 +83,14 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * Retrieve a property
      * @param key - property key
      */
-    inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
+    inline fun <reified T> getProperty(key: String): T = koinContext.getProperty(key)
+
+    /**
+     * Retrieve a property
+     * @param key - property key
+     * @param defaultValue - default value T
+     */
+    inline fun <reified T> getProperty(key: String, defaultValue: T) = koinContext.getProperty(key, defaultValue)
 
     // String display
     override fun toString(): String = "Context[$name]"
