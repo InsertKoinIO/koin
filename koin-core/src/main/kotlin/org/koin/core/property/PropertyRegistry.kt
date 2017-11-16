@@ -36,6 +36,11 @@ class PropertyRegistry {
     }
 
     /**
+     * Returns true if property with the given key exists
+     */
+    fun containsKey(key: String) = properties.containsKey(key)
+
+    /**
      * Add property
      */
     fun add(key: String, value: Any) {

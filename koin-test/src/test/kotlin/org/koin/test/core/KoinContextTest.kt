@@ -31,6 +31,15 @@ class KoinContextTest : KoinTest {
     class ComponentA(val componentB: ComponentB)
     class ComponentB(val componentA: ComponentA)
 
+    class SingleModuleWithProp() : Module() {
+
+        override fun context() = applicationContext {
+            property(GIVEN_PROP to VALUE_WEIRD)
+
+            provide { ComponentA(get()) }
+        }
+    }
+
     @Test
     fun `circular deps injection error`() {
         startContext(listOf(CircularDeps()))
@@ -148,6 +157,20 @@ class KoinContextTest : KoinTest {
         assertNotNull(getProperty(OS_NAME))
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))
+    }
+
+    @Test
+    fun `assert DLS properties are injected`() {
+
+        startContext(arrayListOf(SingleModuleWithProp()))
+        assertEquals(VALUE_WEIRD, getProperty(GIVEN_PROP))
+    }
+
+    @Test
+    fun `assert DLS properties are injected but overridden by given props`() {
+
+        startContext(arrayListOf(SingleModuleWithProp()), props = mapOf(GIVEN_PROP to VALUE_ANDROID))
+        assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
     }
 
     companion object {

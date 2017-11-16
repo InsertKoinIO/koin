@@ -54,9 +54,14 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     /**
      * TODO
+     * Bind property if this property is not already set.
+     * Less priority compared to properties given with startContext, koin properties or System properties (if bond)
      */
     fun property(pair: Pair<String, Any>) {
-        koinContext.propertyResolver.add(pair.first, pair.second)
+        val resolver = koinContext.propertyResolver
+        if (!resolver.containsKey(pair.first)) {
+            resolver.add(pair.first, pair.second)
+        }
     }
 
     /**
