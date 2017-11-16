@@ -45,7 +45,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Resolve a dependency for its bean definition
      */
     fun <T> resolveInstance(clazz: KClass<*>, resolver: () -> BeanDefinition<*>): T {
-        logger.log("Resolving $clazz")
+        logger.log("Resolve [${clazz.java.canonicalName}]")
 
         if (resolutionStack.contains(clazz)) {
             logger.log("Cyclic dependency error stack : $resolutionStack")
@@ -56,8 +56,6 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         val beanDefinition: BeanDefinition<*> = resolver()
 
         val instance = instanceFactory.retrieveInstance<T>(beanDefinition)
-
-        logger.log("Got instance  $instance")
 
         val head = resolutionStack.pop()
         if (head != clazz) {
@@ -73,6 +71,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     fun dryRun() {
         logger.log("(KOIN - DRY RUN)")
         beanRegistry.definitions.keys.forEach { def ->
+            Koin.logger.log("Testing $def ...")
             instanceFactory.retrieveInstance<Any>(def)
         }
     }

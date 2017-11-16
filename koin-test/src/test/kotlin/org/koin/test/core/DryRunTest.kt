@@ -2,9 +2,12 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
+import org.koin.Koin
 import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
+import org.koin.log.PrintLogger
 import org.koin.standalone.startContext
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
@@ -30,6 +33,11 @@ class DryRunTest : KoinTest {
 
     class ComponentA()
     class ComponentB(val componentA: ComponentA)
+
+    @Before
+    fun before() {
+        Koin.logger = PrintLogger()
+    }
 
     @Test
     fun `successful dry run`() {

@@ -2,6 +2,7 @@ package org.koin.core.property
 
 import org.koin.Koin
 import org.koin.error.MissingPropertyException
+import java.util.*
 
 /**
  * Resolve properties for a context
@@ -31,8 +32,19 @@ class PropertyRegistry {
      * Add properties
      */
     fun addAll(props: Map<String, Any>) {
-        Koin.logger.log("addAll properties ${props.keys}")
+        Koin.logger.log("additional properties : ${props.size}")
         properties += props
+    }
+
+
+    /**
+     * Inject all properties to context
+     */
+    fun import(properties: Properties): Int {
+        return properties.keys
+                .filter { it is String && properties[it] != null }
+                .map { add(it as String, properties[it]!!) }
+                .count()
     }
 
     /**
@@ -44,7 +56,6 @@ class PropertyRegistry {
      * Add property
      */
     fun add(key: String, value: Any) {
-        Koin.logger.log("add property $key")
         properties += Pair(key, value)
     }
 

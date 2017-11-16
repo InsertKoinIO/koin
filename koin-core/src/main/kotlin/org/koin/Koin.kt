@@ -23,8 +23,10 @@ class Koin {
     /**
      * Inject properties to context
      */
-    fun properties(props: Map<String, Any>): Koin {
-        propertyResolver.addAll(props)
+    fun bindAdditionalProperties(props: Map<String, Any>): Koin {
+        if (props.isNotEmpty()) {
+            propertyResolver.addAll(props)
+        }
         return this
     }
 
@@ -40,9 +42,8 @@ class Koin {
 
             val koinProperties = Properties()
             FileInputStream(path).use { koinProperties.load(it) }
-
-            val nb = bindProperties(koinProperties)
-            logger.log("(Koin) loaded $nb properties from $koinPropFilename file")
+            val nb = propertyResolver.import(koinProperties)
+            logger.log("(Koin) loaded $nb properties from '$koinPropFilename' file")
         }
         return this
     }
@@ -51,19 +52,9 @@ class Koin {
      * Inject all system properties to context
      */
     fun bindSystemProperties(): Koin {
-        val nb = bindProperties(System.getProperties())
-        logger.log("(Koin) loaded $nb system properties")
+        val nb = propertyResolver.import(System.getProperties())
+        logger.log("(Koin) loaded $nb properties from system properties")
         return this
-    }
-
-    /**
-     * Inject all properties to context
-     */
-    private fun bindProperties(properties: Properties): Int {
-        return properties.keys
-                .filter { it is String && properties[it] != null }
-                .map { propertyResolver.add(it as String, properties[it]!!) }
-                .count()
     }
 
     /**

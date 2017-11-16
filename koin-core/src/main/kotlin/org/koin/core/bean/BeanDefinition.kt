@@ -33,5 +33,7 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
      */
     fun isNotASingleton() = !isSingleton
 
-    override fun toString() = "Bean[name='$name',class=${clazz.java.simpleName},singleton=$isSingleton,binds~${bindTypes.size}]"
+    private fun bindTypes(): String = "(" + bindTypes.map { it.java.canonicalName }.joinToString() + ")"
+
+    override fun toString() = "Bean[name='$name',class=${clazz.java.canonicalName},singleton=$isSingleton,binds~${bindTypes()}]"
 }
