@@ -20,9 +20,7 @@ import java.util.*
 /**
  * Weather View
  */
-class WeatherResultActivity : ContextAwareActivity(), WeatherResultContract.View {
-
-    override val contextName = WeatherModule.CTX_WEATHER_ACTIVITY
+class WeatherResultActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), WeatherResultContract.View {
 
     override val presenter by inject<WeatherResultContract.Presenter>()
 

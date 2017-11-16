@@ -16,11 +16,16 @@ class MainPresenter(val weatherRepository: WeatherRepository, val schedulerProvi
     }
 
     override fun getWeather(address: String) {
+        view.displayProgress()
         request?.dispose()
         request = weatherRepository.getWeather(address)
                 .with(schedulerProvider)
                 .subscribe({ _ ->
+                    view.displayNormal()
                     view.onWeatherSuccess()
-                },{ error -> view.onWeatherFailed(error) })
+                }, { error ->
+                    view.displayNormal()
+                    view.onWeatherFailed(error)
+                })
     }
 }

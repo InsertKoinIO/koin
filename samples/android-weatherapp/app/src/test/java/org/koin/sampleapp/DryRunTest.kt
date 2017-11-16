@@ -3,6 +3,7 @@ package org.koin.sampleapp
 import org.junit.Test
 import org.koin.dsl.module.Module
 import org.koin.sampleapp.di.*
+import org.koin.standalone.startContext
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
 
@@ -18,17 +19,20 @@ class DryRunTest : KoinTest {
     }
 
     @Test
-    fun dryRun() {
-        dryRun(listOf(DefaultPropertiesModule()) + weatherAppModules())
+    fun normalConfiguration() {
+        startContext(listOf(DefaultPropertiesModule()) + weatherAppModules())
+        dryRun()
     }
 
     @Test
-    fun testDryRun() {
-        dryRun(listOf(DefaultPropertiesModule()) + testRemoteDatasource())
+    fun testRemoteConfiguration() {
+        startContext(listOf(DefaultPropertiesModule()) + testRemoteDatasource())
+        dryRun()
     }
 
     @Test
-    fun testLocalDataSourceDryRun() {
-        dryRun(testLocalDatasource())
+    fun testLocalConfiguration() {
+        startContext(testLocalDatasource())
+        dryRun()
     }
 }

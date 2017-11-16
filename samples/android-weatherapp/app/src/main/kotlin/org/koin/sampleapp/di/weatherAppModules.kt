@@ -5,6 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.module.AndroidModule
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.WeatherRepository
+import org.koin.sampleapp.repository.WeatherRepositoryImpl
 import org.koin.sampleapp.util.rx.ApplicationSchedulerProvider
 import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.view.main.MainContract
@@ -21,14 +22,14 @@ fun weatherAppModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxMo
 
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
-        context(CTX_MAIN_ACTIVITY){
-            provide { MainPresenter(get(),get()) } bind MainContract.Presenter::class
+        context(CTX_MAIN_ACTIVITY) {
+            provide { MainPresenter(get(), get()) } bind MainContract.Presenter::class
         }
         context(CTX_WEATHER_ACTIVITY) {
             provide { WeatherResultPresenter(get(), get()) } bind WeatherResultContract.Presenter::class
         }
 
-        provide { WeatherRepository(get()) }
+        provide { WeatherRepositoryImpl(get()) } bind WeatherRepository::class
     }
 
     companion object {

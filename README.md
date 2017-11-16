@@ -12,7 +12,7 @@ KOIN is a very small library, that aims to be as simple as possible and let's yo
 
 Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3F) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
 
-For users using a version prior to Koin 0.5.x, please refer the [migrating to 0.5.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-05x) page to understand the latest changes. 
+For users using a version prior to Koin 0.6.x, please refer the [migrating to 0.6.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-06x) page to understand the latest changes. 
 
 # Getting Started
 
@@ -21,10 +21,20 @@ For users using a version prior to Koin 0.5.x, please refer the [migrating to 0.
 Check that you have the `jcenter` repository. Add the following gradle dependency to your Android app:
 
 ```gradle
+
+// Add Jcenter to your repositories if needed
+repositories {
+        jcenter()    
+}
+
 // Koin for Android
-compile 'org.koin:koin-android:0.5.2'
-// If you need Koin for your tests
-testCompile 'org.koin:koin-test:0.5.2'
+compile 'org.koin:koin-android:0.6.0'
+
+// Koin Test tools
+testCompile 'org.koin:koin-test:0.6.0'
+
+// Koin for Kotlin project
+compile 'org.koin:koin-core:0.6.0'
 ```
 
 ### Setup your Application
@@ -140,18 +150,17 @@ Declare any property from outside of your module :
 
 ```kotlin
 // Set property key with its value
-getKoin().setProperty("key",value)
+bindProperty("key",value)
 ```
 
-Resolve it in your module with `getProperty("key")` or inject in an Android class with `by property("key")`
+You can also use any property in your Koin module with `getProperty("key")` or inject in an Android class with `by property("key")`
 
 You can also easily bind any Android property:
 
 
 ```kotlin
 // bind R.string.server_url to Koin WeatherModule.SERVER_URL
-getKoin().bindString(R.string.server_url, WeatherModule.SERVER_URL)
-
+bindString(R.string.server_url, WeatherModule.SERVER_URL)
 ```
 
 
@@ -199,6 +208,17 @@ abstract class MyCustomActivity : AppCompatActivity() {
 
 ```
 
+## Koin Components
+
+`KoinComponent` is a Kotlin interface to help you bring the following features on any component. Just add KoinComponent` to yoru class, and you will be able to use:
+
+* by inject/property
+* bindProperty
+* releaseContext
+* releaseProperties
+
+You need to start a Koin context, to be able to use any module and dependencies.
+
 
 ## Checking your modules
 
@@ -209,11 +229,13 @@ You can check your modules with `KoinContext.dryRun()` (launch all your modules 
 in a JUnit test file:
 
 ```kotlin
+
+fun allModules() = listOf /* your modules */
+
 @Test
 fun dryRun(){
-     val koinContext = Koin().build(allModules()).dryRun()
-     // or if you need Application context in your injection
-     val koinContext = Koin().init(mock(Application::class.java)).build(allModules()).dryRun()
+	  // 
+     dryRun(allModules())
 }
 ```
 
@@ -283,6 +305,9 @@ Generated javadoc is available:
 
 ## Slack
 Check the [kotlin slack community](https://kotlinlang.org/community/) and join **#koin** channel
+
+## Stackoverflow
+
 
 ## Github
 Don't hesitate to open an issue to discuss about your needs or if you don't a feature for example.

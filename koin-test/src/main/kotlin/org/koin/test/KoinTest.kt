@@ -1,8 +1,6 @@
 package org.koin.test
 
-import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
@@ -32,9 +30,8 @@ inline fun <reified T> KoinTest.getProperty(name: String = "") = (StandAloneCont
 inline fun <reified T> KoinTest.getProperty(name: String = "", defaultValue: T) = (StandAloneContext.koinContext as KoinContext).getProperty(name, defaultValue)
 
 /**
- * Dry Run Starter
+ * Make a Dry Run - Test if each definition is injectable
  */
-fun KoinTest.dryRun(modules: List<Module>) {
-    StandAloneContext.koinContext = Koin().build(modules)
+fun KoinTest.dryRun() {
     (StandAloneContext.koinContext as KoinContext).dryRun()
 }

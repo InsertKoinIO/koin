@@ -3,6 +3,7 @@ package org.koin.sampleapp.view.main
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.contextaware.ContextAwareActivity
 import org.koin.android.ext.android.bindProperty
@@ -18,10 +19,7 @@ import org.koin.sampleapp.view.weather.WeatherResultActivity
 /**
  * Weather View
  */
-class MainActivity : ContextAwareActivity(), MainContract.View {
-
-    // Associated Koin context
-    override val contextName = WeatherModule.CTX_WEATHER_ACTIVITY
+class MainActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), MainContract.View {
 
     // Presenter
     override val presenter by inject<MainContract.Presenter>()
@@ -40,7 +38,9 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
         }
 
         // Start search weather
-        searchButton.setOnClickListener { presenter.getWeather(searchText()) }
+        searchButton.setOnClickListener {
+            presenter.getWeather(searchText())
+        }
 
         // release any of those properties (if previously used)
         releaseProperties(PROPERTY_WEATHER_DATE, PROPERTY_WEATHER_DETAIL)
@@ -58,6 +58,16 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
         super.onPause()
     }
 
+    override fun displayNormal() {
+        searchProgress.visibility = View.GONE
+        searchButton.visibility = View.VISIBLE
+    }
+
+    override fun displayProgress() {
+        searchProgress.visibility = View.VISIBLE
+        searchButton.visibility = View.GONE
+    }
+
     override fun onWeatherSuccess() {
         // save address
         bindProperty(PROPERTY_ADDRESS, searchText())
@@ -65,6 +75,7 @@ class MainActivity : ContextAwareActivity(), MainContract.View {
     }
 
     override fun onWeatherFailed(error: Throwable) {
+
         Snackbar.make(this.currentFocus, "Got error : $error", Snackbar.LENGTH_LONG).show()
     }
 }
