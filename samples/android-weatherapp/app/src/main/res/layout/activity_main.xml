@@ -67,5 +67,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
 
+    <ProgressBar
+        android:id="@+id/searchProgress"
+        android:layout_gravity="center"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:visibility="gone"
+        style="@style/Widget.AppCompat.ProgressBar"/>
 
 </LinearLayout>

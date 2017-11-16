@@ -8,6 +8,8 @@ import org.koin.sampleapp.util.mvp.BaseView
  */
 interface MainContract {
     interface View : BaseView<Presenter> {
+        fun displayNormal()
+        fun displayProgress()
         fun onWeatherSuccess()
         fun onWeatherFailed(error: Throwable)
     }
