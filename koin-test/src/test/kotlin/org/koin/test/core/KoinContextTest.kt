@@ -87,7 +87,7 @@ class KoinContextTest : KoinTest {
     @Test
     fun `assert system properties are well injected if specified as so`() {
         startContext(arrayListOf(SingleModule()), true)
-        assertNotNull(getProperty("os.name"))
+        assertNotNull(getProperty(OS_NAME))
     }
 
     @Test
@@ -95,7 +95,7 @@ class KoinContextTest : KoinTest {
         startContext(arrayListOf(SingleModule()))
 
         try {
-            getProperty<String>("os.name")
+            getProperty<String>(OS_NAME)
             fail("should not inject ")
         } catch (ignored: MissingPropertyException) {
         }
@@ -104,49 +104,60 @@ class KoinContextTest : KoinTest {
     @Test
     fun `assert given properties are injected`() {
 
-        // Should read koin.properties file which contains "os.version" definition
-        startContext(arrayListOf(SingleModule()), props = mapOf("given.prop" to "Android"))
-        assertEquals("Android", getProperty("given.prop"))
+        // Should read koin.properties file which contains OS_VERSION definition
+        startContext(arrayListOf(SingleModule()), props = mapOf(GIVEN_PROP to VALUE_ANDROID))
+        assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
     }
 
     @Test
     fun `assert given properties are injected but overridden by koin properties`() {
 
-        // Should read koin.properties file which contains "os.version" definition
-        startContext(arrayListOf(SingleModule()), props = mapOf("given.prop" to "Android", "test.koin" to "Android"))
-        assertEquals("Android", getProperty("given.prop"))
-        assertEquals("done", getProperty("test.koin"))
-        assertEquals("weird", getProperty("os.version"))
+        // Should read koin.properties file which contains OS_VERSION definition
+        startContext(arrayListOf(SingleModule()), props = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
+        assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
+        assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
+        assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
 
     @Test
     fun `assert given properties are injected but overridden by koin properties and then by system properties`() {
 
-        // Should read koin.properties file which contains "os.version" definition
+        // Should read koin.properties file which contains OS_VERSION definition
         startContext(arrayListOf(SingleModule()),
                 bindSystemProperties = true,
-                props = mapOf("given.prop" to "Android", "test.koin" to "Android"))
+                props = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
 
-        assertEquals("Android", getProperty("given.prop"))
-        assertEquals("done", getProperty("test.koin"))
-        assertNotEquals("weird", getProperty("os.version"))
+        assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
+        assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
+        assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
 
     @Test
     fun `assert koin properties are injected`() {
 
-        // Should read koin.properties file which contains "os.version" definition
+        // Should read koin.properties file which contains OS_VERSION definition
         startContext(arrayListOf(SingleModule()))
-        assertEquals("done", getProperty("test.koin"))
-        assertEquals("weird", getProperty("os.version"))
+        assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
+        assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
 
     @Test
     fun `assert system properties overrides koin properties`() {
 
         startContext(arrayListOf(SingleModule()), true)
-        assertNotNull(getProperty("os.name"))
-        assertEquals("done", getProperty("test.koin"))
-        assertNotEquals("weird", getProperty("os.version"))
+        assertNotNull(getProperty(OS_NAME))
+        assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
+        assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))
+    }
+
+    companion object {
+        const val OS_NAME = "os.name"
+        const val OS_VERSION = "os.version"
+        const val GIVEN_PROP = "given.prop"
+        const val TEST_KOIN = "test.koin"
+
+        const val VALUE_DONE = "done"
+        const val VALUE_WEIRD = "weird"
+        const val VALUE_ANDROID = "Android"
     }
 }
