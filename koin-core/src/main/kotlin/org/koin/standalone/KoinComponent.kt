@@ -12,8 +12,25 @@ interface KoinComponent
 /**
  * Koin starter
  */
-fun KoinComponent.startContext(list: List<Module>) {
-    StandAloneContext.koinContext = Koin().build(list)
+fun KoinComponent.startContext(list: List<Module>, bindSystemProperties: Boolean = false, props: Map<String, Any> = HashMap()) {
+
+    val koin = Koin()
+
+    // Given props will be set in first position
+    if (!props.isEmpty()) {
+        koin.properties(props)
+    }
+
+    if (bindSystemProperties) {
+        // Koin properties will override given props which will be overridden by System properties
+        koin.bindKoinProperties().bindSystemProperties()
+    } else {
+        // Koin properties will override given props
+        koin.bindKoinProperties()
+    }
+
+    // Build koin context
+    StandAloneContext.koinContext = koin.build(list)
 }
 
 /**
