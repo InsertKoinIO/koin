@@ -3,6 +3,7 @@ package org.koin.sampleapp.di
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.module.AndroidModule
+import org.koin.sampleapp.di.Properties.SERVER_URL
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.repository.WeatherRepositoryImpl
@@ -38,6 +39,10 @@ class WeatherModule : AndroidModule() {
     }
 }
 
+object Properties {
+    const val SERVER_URL = "SERVER_URL"
+}
+
 class RemoteDataSourceModule : AndroidModule() {
     override fun context() = applicationContext {
         // provided web components
@@ -45,10 +50,6 @@ class RemoteDataSourceModule : AndroidModule() {
 
         // Fill property
         provide { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
-    }
-
-    companion object {
-        const val SERVER_URL = "SERVER_URL"
     }
 }
 

@@ -1,8 +1,10 @@
 package org.koin.sampleapp
 
 import org.junit.Test
-import org.koin.dsl.module.Module
-import org.koin.sampleapp.di.*
+import org.koin.sampleapp.di.Properties.SERVER_URL
+import org.koin.sampleapp.di.testLocalDatasource
+import org.koin.sampleapp.di.testRemoteDatasource
+import org.koin.sampleapp.di.weatherAppModules
 import org.koin.standalone.startContext
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
@@ -12,27 +14,23 @@ import org.koin.test.dryRun
  */
 class DryRunTest : KoinTest {
 
-    class DefaultPropertiesModule : Module() {
-        override fun context() = applicationContext {
-            property(RemoteDataSourceModule.SERVER_URL to "http://test.me")
-        }
-    }
+    fun defaultProperties() = mapOf(SERVER_URL to "http://test.me")
 
     @Test
     fun normalConfiguration() {
-        startContext(listOf(DefaultPropertiesModule()) + weatherAppModules())
+        startContext(weatherAppModules(), properties = defaultProperties())
         dryRun()
     }
 
     @Test
     fun testRemoteConfiguration() {
-        startContext(listOf(DefaultPropertiesModule()) + testRemoteDatasource())
+        startContext(testRemoteDatasource(), properties = defaultProperties())
         dryRun()
     }
 
     @Test
     fun testLocalConfiguration() {
-        startContext(testLocalDatasource())
+        startContext(testLocalDatasource(), properties = defaultProperties())
         dryRun()
     }
 }
