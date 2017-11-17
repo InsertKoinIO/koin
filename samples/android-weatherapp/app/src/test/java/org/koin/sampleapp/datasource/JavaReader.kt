@@ -8,9 +8,18 @@ import java.io.File
  */
 class JavaReader : BaseReader() {
 
-    val base_path = "app/src/test/resources/json"
+    fun basePath(): String? {
+        val classLoader: ClassLoader = JavaReader::class.java.classLoader
+        val path: String? = classLoader.getResource("json/")?.path
+        return path
+    }
 
-    override fun getAllFiles(): List<String> = File(base_path).list().toList()
+    override fun getAllFiles(): List<String> {
+        return basePath()?.let {
+            val list = File(it).list()
+            list.toList()
+        }!!
+    }
 
-    override fun readJsonFile(jsonFile: String): String = File("$base_path/$jsonFile").readLines().joinToString(separator = "\n")
+    override fun readJsonFile(jsonFile: String): String = File("${basePath()}/$jsonFile").readLines().joinToString(separator = "\n")
 }

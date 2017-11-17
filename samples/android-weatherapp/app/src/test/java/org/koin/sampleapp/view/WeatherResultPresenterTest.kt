@@ -19,7 +19,6 @@ class WeatherResultPresenterTest : KoinTest {
     val presenter by inject<WeatherResultContract.Presenter>()
     @Mock lateinit var view: WeatherResultContract.View
 
-
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)

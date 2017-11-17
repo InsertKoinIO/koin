@@ -12,10 +12,6 @@ class RxTestModule : AndroidModule() {
         // provided components
         provide { TestSchedulerProvider() } bind SchedulerProvider::class
     }
-
-    companion object {
-        const val SERVER_URL = "https://my-weather-api.herokuapp.com/"
-    }
 }
 
 class TestDataSourceModule : AndroidModule() {

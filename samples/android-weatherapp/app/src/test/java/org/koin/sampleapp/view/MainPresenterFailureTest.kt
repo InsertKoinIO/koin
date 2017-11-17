@@ -3,6 +3,8 @@ package org.koin.sampleapp.view
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
+import org.koin.Koin
+import org.koin.log.PrintLogger
 import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.util.TestSchedulerProvider
 import org.koin.sampleapp.util.any
