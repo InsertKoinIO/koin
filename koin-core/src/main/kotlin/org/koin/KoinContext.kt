@@ -48,7 +48,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         logger.log("Resolve [${clazz.java.canonicalName}]")
 
         if (resolutionStack.contains(clazz)) {
-            logger.log("Cyclic dependency error stack : $resolutionStack")
+            logger.err("Cyclic dependency detected while resolving $clazz")
             throw DependencyResolutionException("Cyclic dependency for $clazz")
         }
         resolutionStack.add(clazz)
@@ -59,8 +59,9 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
         val head = resolutionStack.pop()
         if (head != clazz) {
+            logger.err("Call stack error -- $resolutionStack")
             resolutionStack.clear()
-            throw IllegalStateException("Calling HEAD was $head but must be $clazz")
+            throw IllegalStateException("Calling HEAD was $head but should be $clazz")
         }
         return instance
     }
