@@ -64,6 +64,7 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
                 instance as T
                 return instance
             } catch (e: Throwable) {
+                Koin.logger.err("Can't create [$def] due to error : \n${e.stackTrace.take(10).joinToString(separator = "\n")}")
                 throw BeanInstanceCreationException("Can't create bean $def due to error : $e")
             }
         }
