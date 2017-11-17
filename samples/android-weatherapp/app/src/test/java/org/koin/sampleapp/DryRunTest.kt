@@ -12,9 +12,6 @@ import org.koin.standalone.startContext
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
 
-/**
- * Created by arnaud on 11/10/2017.
- */
 class DryRunTest : KoinTest {
 
     fun defaultProperties() = mapOf(SERVER_URL to "http://test.me")

@@ -9,12 +9,11 @@ import org.koin.android.contextaware.ContextAwareActivity
 import org.koin.android.ext.android.bindProperty
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.property
-import org.koin.android.ext.android.releaseProperties
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DATE
-import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DETAIL
 import org.koin.sampleapp.view.weather.WeatherResultActivity
+import java.util.*
 
 /**
  * Weather View
@@ -32,18 +31,11 @@ class MainActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), M
         setContentView(R.layout.activity_main)
 
         searchEditText.setText(defaultAddress)
-        searchEditText.setOnFocusChangeListener { _, _ ->
-            // save address
-            bindProperty(PROPERTY_ADDRESS, searchText())
-        }
 
         // Start search weather
         searchButton.setOnClickListener {
             presenter.getWeather(searchText())
         }
-
-        // release any of those properties (if previously used)
-        releaseProperties(PROPERTY_WEATHER_DATE, PROPERTY_WEATHER_DETAIL)
     }
 
     private fun searchText() = searchEditText.text.trim().toString()
@@ -70,7 +62,9 @@ class MainActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), M
 
     override fun onWeatherSuccess() {
         // save address
+        bindProperty(PROPERTY_WEATHER_DATE, Date())
         bindProperty(PROPERTY_ADDRESS, searchText())
+
         startActivity(Intent(this, WeatherResultActivity::class.java))
     }
 

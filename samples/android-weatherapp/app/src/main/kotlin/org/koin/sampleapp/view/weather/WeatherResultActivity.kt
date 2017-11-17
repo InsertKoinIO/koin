@@ -10,6 +10,7 @@ import org.koin.android.contextaware.ContextAwareActivity
 import org.koin.android.ext.android.bindProperty
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.property
+import org.koin.android.ext.android.releaseProperties
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.model.DailyForecastModel
@@ -23,12 +24,10 @@ import java.util.*
 class WeatherResultActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), WeatherResultContract.View {
 
     override val presenter by inject<WeatherResultContract.Presenter>()
-
     // Get address
     private val address by property<String>(PROPERTY_ADDRESS)
-
-    // get Last date or set it at now
-    private val now by property(PROPERTY_WEATHER_DATE, Date())
+    // get Last date
+    private val now by property<Date>(PROPERTY_WEATHER_DATE)
 
     private lateinit var weatherResultAdapter: WeatherResultAdapter
 
@@ -41,7 +40,6 @@ class WeatherResultActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACT
         weatherList.layoutManager = LinearLayoutManager(this)
         weatherResultAdapter = WeatherResultAdapter(emptyList(), { weatherDetail ->
             // save date & weather detail
-            bindProperty(PROPERTY_WEATHER_DATE, now)
             bindProperty(PROPERTY_WEATHER_DETAIL, weatherDetail)
 
             // Launch detail

@@ -50,6 +50,8 @@
             android:layout_marginBottom="8dp"
             android:background="@color/grey3"
             android:hint="e.g : Paris, France"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
             android:textColor="@color/primary_text" />
 
     </LinearLayout>
