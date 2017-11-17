@@ -16,13 +16,13 @@ fun KoinComponent.startContext(list: List<Module>, bindSystemProperties: Boolean
 
     val koin = if (bindSystemProperties) {
         // Koin properties will override system properties
-        Koin().bindSystemProperties()
+        Koin().bindKoinProperties().bindAdditionalProperties(properties).bindSystemProperties()
     } else {
-        Koin()
+        Koin().bindKoinProperties().bindAdditionalProperties(properties)
     }
 
     // Build koin context
-    StandAloneContext.koinContext = koin.bindKoinProperties().bindAdditionalProperties(properties).build(list)
+    StandAloneContext.koinContext = koin.build(list)
 }
 
 /**

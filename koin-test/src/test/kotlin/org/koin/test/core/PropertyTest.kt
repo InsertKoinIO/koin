@@ -17,8 +17,6 @@ class PropertyTest : KoinTest {
     class SimpleModule() : Module() {
         override fun context() = applicationContext {
 
-            property(KEY to VALUE)
-
             provide { ComponentA(getProperty(KEY)) }
             provide { ComponentB(get()) }
         }
@@ -77,7 +75,7 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should inject internal property`() {
-        startContext(listOf(SimpleModule()))
+        startContext(listOf(SimpleModule()), properties = mapOf(KEY to VALUE))
 
         val url = getProperty<String>(KEY)
         val a = get<ComponentA>()

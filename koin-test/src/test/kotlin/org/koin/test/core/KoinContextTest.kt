@@ -34,15 +34,6 @@ class KoinContextTest : KoinTest {
     class ComponentA(val componentB: ComponentB)
     class ComponentB(val componentA: ComponentA)
 
-    class SingleModuleWithProp() : Module() {
-
-        override fun context() = applicationContext {
-            property(GIVEN_PROP to VALUE_WEIRD)
-
-            provide { ComponentA(get()) }
-        }
-    }
-
     @Before
     fun before() {
         Koin.logger = PrintLogger()
@@ -136,7 +127,7 @@ class KoinContextTest : KoinTest {
     }
 
     @Test
-    fun `assert given properties are injected override koin properties and system properties`() {
+    fun `assert given properties are injected and overridden by koin properties and system properties`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
         startContext(arrayListOf(SingleModule()),
@@ -145,7 +136,7 @@ class KoinContextTest : KoinTest {
 
         assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
         assertEquals(VALUE_ANDROID, getProperty(TEST_KOIN))
-        assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
+        assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
 
     @Test
@@ -158,26 +149,12 @@ class KoinContextTest : KoinTest {
     }
 
     @Test
-    fun `assert system properties are overridden by koin properties`() {
+    fun `assert system properties are not overridden by koin properties`() {
 
         startContext(arrayListOf(SingleModule()), true)
         assertNotNull(getProperty(OS_NAME))
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
-        assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
-    }
-
-    @Test
-    fun `assert DSL properties are injected`() {
-
-        startContext(arrayListOf(SingleModuleWithProp()))
-        assertEquals(VALUE_WEIRD, getProperty(GIVEN_PROP))
-    }
-
-    @Test
-    fun `assert DSL properties are injected but overridden by given props`() {
-
-        startContext(arrayListOf(SingleModuleWithProp()), properties = mapOf(GIVEN_PROP to VALUE_ANDROID))
-        assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
+        assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
 
     companion object {
