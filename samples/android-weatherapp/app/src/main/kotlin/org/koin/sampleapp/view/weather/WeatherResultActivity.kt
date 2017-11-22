@@ -7,10 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_weather.*
 import org.koin.android.contextaware.ContextAwareActivity
-import org.koin.android.ext.android.bindProperty
-import org.koin.android.ext.android.inject
-import org.koin.android.ext.android.property
-import org.koin.android.ext.android.releaseProperties
+import org.koin.android.ext.android.*
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.model.DailyForecastModel
@@ -40,7 +37,7 @@ class WeatherResultActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACT
         weatherList.layoutManager = LinearLayoutManager(this)
         weatherResultAdapter = WeatherResultAdapter(emptyList(), { weatherDetail ->
             // save date & weather detail
-            bindProperty(PROPERTY_WEATHER_DETAIL, weatherDetail)
+            setProperty(PROPERTY_WEATHER_DETAIL, weatherDetail)
 
             // Launch detail
             startActivity(Intent(this, WeatherDetailActivity::class.java))

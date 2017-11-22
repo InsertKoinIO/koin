@@ -7,7 +7,7 @@ import org.koin.log.PrintLogger
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.view.main.MainContract
 import org.koin.standalone.inject
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -22,7 +22,7 @@ class MainPresenterTest : KoinTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
         Koin.logger = PrintLogger()
-        startContext(testLocalDatasource())
+        startKoin(testLocalDatasource())
 
         presenter.view = view
     }

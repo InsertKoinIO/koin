@@ -6,9 +6,9 @@ import android.support.design.widget.Snackbar
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.contextaware.ContextAwareActivity
-import org.koin.android.ext.android.bindProperty
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.property
+import org.koin.android.ext.android.setProperty
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DATE
@@ -62,8 +62,8 @@ class MainActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), M
 
     override fun onWeatherSuccess() {
         // save address
-        bindProperty(PROPERTY_WEATHER_DATE, Date())
-        bindProperty(PROPERTY_ADDRESS, searchText())
+        setProperty(PROPERTY_WEATHER_DATE, Date())
+        setProperty(PROPERTY_ADDRESS, searchText())
 
         startActivity(Intent(this, WeatherResultActivity::class.java))
     }

@@ -8,7 +8,7 @@ import org.koin.sampleapp.di.Properties.SERVER_URL
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.di.testRemoteDatasource
 import org.koin.sampleapp.di.weatherAppModules
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
 
@@ -23,19 +23,19 @@ class DryRunTest : KoinTest {
 
     @Test
     fun normalConfiguration() {
-        startContext(weatherAppModules(), properties = defaultProperties())
+        startKoin(weatherAppModules(), properties = defaultProperties())
         dryRun()
     }
 
     @Test
     fun testRemoteConfiguration() {
-        startContext(testRemoteDatasource(), properties = defaultProperties())
+        startKoin(testRemoteDatasource(), properties = defaultProperties())
         dryRun()
     }
 
     @Test
     fun testLocalConfiguration() {
-        startContext(testLocalDatasource(), properties = defaultProperties())
+        startKoin(testLocalDatasource(), properties = defaultProperties())
         dryRun()
     }
 }
