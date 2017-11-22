@@ -5,7 +5,7 @@ import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.dsl.module.Module
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -46,7 +46,7 @@ class MultipleModuleTest : KoinTest {
 
     @Test
     fun `load mulitple modules`() {
-        startContext(listOf(SimpleModuleA(), SimpleModuleB(), SimpleModuleC()))
+        startKoin(listOf(SimpleModuleA(), SimpleModuleB(), SimpleModuleC()))
 
         assertRemainingInstances(0)
         assertDefinitions(3)

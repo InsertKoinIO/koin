@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -44,7 +44,7 @@ class FactoryInstanceCreationTest : KoinTest {
 
     @Test
     fun `load and create instances for flat module`() {
-        startContext(listOf(FlatModule()))
+        startKoin(listOf(FlatModule()))
 
         val a = get<ComponentA>()
         val b = get<ComponentB>()
@@ -67,7 +67,7 @@ class FactoryInstanceCreationTest : KoinTest {
 
     @Test
     fun `load and create instances for hierarchic context`() {
-        startContext(listOf(HierarchicModule()))
+        startKoin(listOf(HierarchicModule()))
 
         val a = get<ComponentA>()
         val b = get<ComponentB>()

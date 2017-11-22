@@ -17,7 +17,7 @@ internal fun context() = (StandAloneContext.koinContext as KoinContext)
  * @param application - Android application
  * @param modules - list of AndroidModule
  */
-fun Application.startAndroidContext(application: Application, modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) {
+fun Application.startKoin(application: Application, modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) {
     StandAloneContext.koinContext = Koin().bindAndroidProperties(application).bindAdditionalProperties(properties).init(application).build(modules)
 }
 
@@ -76,7 +76,7 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
  * @param key
  * @param value
  */
-fun ComponentCallbacks.bindProperty(key: String, value: Any) = context().propertyResolver.add(key, value)
+fun ComponentCallbacks.setProperty(key: String, value: Any) = context().setProperty(key, value)
 
 /**
  * Release a context

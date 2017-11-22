@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -50,7 +50,7 @@ class DSLTest : KoinTest {
 
     @Test
     fun `can create flat contexts`() {
-        startContext(listOf(FlatContextsModule()))
+        startKoin(listOf(FlatContextsModule()))
 
         assertContexts(3)
         assertDefinitions(3)
@@ -65,7 +65,7 @@ class DSLTest : KoinTest {
 
     @Test
     fun `can create hierarchic contexts`() {
-        startContext(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule()))
 
         assertContexts(4)
         assertDefinitions(3)

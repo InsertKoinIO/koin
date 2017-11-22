@@ -7,7 +7,7 @@ import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.log.PrintLogger
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -66,7 +66,7 @@ class AdditionalBindingTest : KoinTest {
 
     @Test
     fun `same instance for provided & bound component`() {
-        startContext(listOf(BoundModule()))
+        startKoin(listOf(BoundModule()))
 
         val a = get<ComponentA>()
         val intf = get<InterfaceComponent>()
@@ -83,7 +83,7 @@ class AdditionalBindingTest : KoinTest {
 
     @Test
     fun `should not bound component`() {
-        startContext(listOf(NotBoundModule()))
+        startKoin(listOf(NotBoundModule()))
 
         val a = get<ComponentA>()
 
@@ -103,7 +103,7 @@ class AdditionalBindingTest : KoinTest {
 
     @Test
     fun `should bind generic component`() {
-        startContext(listOf(GenericBoundModule()))
+        startKoin(listOf(GenericBoundModule()))
 
         val b = get<ComponentB>()
         val intf = get<OtherInterfaceComponent<String>>()
@@ -120,7 +120,7 @@ class AdditionalBindingTest : KoinTest {
 
     @Test
     fun `should not bind generic component`() {
-        startContext(listOf(TwoBoundModule()))
+        startKoin(listOf(TwoBoundModule()))
 
         try {
             get<OtherInterfaceComponent<String>>()

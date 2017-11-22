@@ -8,7 +8,7 @@ import org.koin.Koin
 import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.log.PrintLogger
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
@@ -41,7 +41,7 @@ class DryRunTest : KoinTest {
 
     @Test
     fun `successful dry run`() {
-        startContext(listOf(SimpleModule()))
+        startKoin(listOf(SimpleModule()))
         dryRun()
 
         assertDefinitions(2)
@@ -57,7 +57,7 @@ class DryRunTest : KoinTest {
     @Test
     fun `unsuccessful dry run`() {
         try {
-            startContext(listOf(BrokenModule()))
+            startKoin(listOf(BrokenModule()))
             dryRun()
             fail()
         } catch (e: BeanInstanceCreationException) {

@@ -7,7 +7,7 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.error.NoScopeFoundException
 import org.koin.standalone.releaseContext
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.*
 import org.koin.test.get
@@ -36,7 +36,7 @@ class ContextReleaseTest : KoinTest {
 
     @Test
     fun `should release context - from B`() {
-        startContext(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule()))
 
         assertContexts(4)
         assertDefinitions(3)
@@ -80,7 +80,7 @@ class ContextReleaseTest : KoinTest {
 
     @Test
     fun `should release context - from A`() {
-        startContext(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule()))
 
         assertContexts(4)
         assertDefinitions(3)
@@ -124,7 +124,7 @@ class ContextReleaseTest : KoinTest {
 
     @Test
     fun `should release context - from ROOT`() {
-        startContext(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule()))
 
         assertContexts(4)
         assertDefinitions(3)
@@ -168,7 +168,7 @@ class ContextReleaseTest : KoinTest {
 
     @Test
     fun `should release context - from C`() {
-        startContext(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule()))
 
         assertContexts(4)
         assertDefinitions(3)
@@ -212,7 +212,7 @@ class ContextReleaseTest : KoinTest {
 
     @Test
     fun `should not release context - unknown context`() {
-        startContext(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule()))
 
         assertContexts(4)
         assertDefinitions(3)

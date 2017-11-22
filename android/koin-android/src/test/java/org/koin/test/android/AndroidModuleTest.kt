@@ -5,9 +5,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.android.module.AndroidModule
-import org.koin.standalone.bindProperty
 import org.koin.standalone.releaseContext
-import org.koin.standalone.startContext
+import org.koin.standalone.setProperty
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.android.ext.startAndroidContext
 import org.koin.test.ext.junit.assertContextInstances
@@ -60,7 +60,7 @@ class AndroidModuleTest : KoinTest {
         assertRemainingInstances(0)
         assertContextInstances(ActivityModule.CTX_ACTIVITY_MODULE, 0)
 
-        bindProperty(URL, "URL")
+        setProperty(URL, "URL")
 
         val service = get<OtherService>()
         val component = get<AndroidComponent>()
@@ -80,7 +80,7 @@ class AndroidModuleTest : KoinTest {
 
     @Test
     fun should_scope_no_scope() {
-        startContext(listOf(SampleModule()))
+        startKoin(listOf(SampleModule()))
 
         assertContexts(1)
         assertDefinitions(1)
@@ -116,7 +116,7 @@ class AndroidModuleTest : KoinTest {
 
     @Test
     fun should_not_run() {
-        startContext(listOf(SampleModule()))
+        startKoin(listOf(SampleModule()))
 
         assertDefinitions(1)
         assertRemainingInstances(0)

@@ -8,7 +8,7 @@ import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.MissingPropertyException
 import org.koin.log.PrintLogger
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
@@ -41,7 +41,7 @@ class KoinContextTest : KoinTest {
 
     @Test
     fun `circular deps injection error`() {
-        startContext(listOf(CircularDeps()))
+        startKoin(listOf(CircularDeps()))
 
         assertDefinitions(2)
         assertRemainingInstances(0)
@@ -63,7 +63,7 @@ class KoinContextTest : KoinTest {
 
     @Test
     fun `safe missing bean`() {
-        startContext(listOf(SingleModule()))
+        startKoin(listOf(SingleModule()))
 
         assertDefinitions(1)
         assertRemainingInstances(0)
@@ -79,7 +79,7 @@ class KoinContextTest : KoinTest {
 
     @Test
     fun `unsafe missing bean`() {
-        startContext(listOf(SingleModule()))
+        startKoin(listOf(SingleModule()))
 
         assertDefinitions(1)
         assertRemainingInstances(0)
@@ -94,13 +94,13 @@ class KoinContextTest : KoinTest {
 
     @Test
     fun `assert system properties are well injected if specified as so`() {
-        startContext(arrayListOf(SingleModule()), true)
+        startKoin(arrayListOf(SingleModule()), true)
         assertNotNull(getProperty(OS_NAME))
     }
 
     @Test
     fun `assert system properties are not injected by default`() {
-        startContext(arrayListOf(SingleModule()))
+        startKoin(arrayListOf(SingleModule()))
 
         try {
             getProperty<String>(OS_NAME)
@@ -113,7 +113,7 @@ class KoinContextTest : KoinTest {
     fun `assert given properties are injected`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
-        startContext(arrayListOf(SingleModule()), properties = mapOf(GIVEN_PROP to VALUE_ANDROID))
+        startKoin(arrayListOf(SingleModule()), properties = mapOf(GIVEN_PROP to VALUE_ANDROID))
         assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
     }
 
@@ -121,7 +121,7 @@ class KoinContextTest : KoinTest {
     fun `assert given properties are injected but override koin properties`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
-        startContext(arrayListOf(SingleModule()), properties = mapOf(TEST_KOIN to VALUE_ANDROID))
+        startKoin(arrayListOf(SingleModule()), properties = mapOf(TEST_KOIN to VALUE_ANDROID))
         assertEquals(VALUE_ANDROID, getProperty(TEST_KOIN))
         assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
@@ -130,7 +130,7 @@ class KoinContextTest : KoinTest {
     fun `assert given properties are injected and overridden by koin properties and system properties`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
-        startContext(arrayListOf(SingleModule()),
+        startKoin(arrayListOf(SingleModule()),
                 bindSystemProperties = true,
                 properties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
 
@@ -143,7 +143,7 @@ class KoinContextTest : KoinTest {
     fun `assert koin properties are injected`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
-        startContext(arrayListOf(SingleModule()))
+        startKoin(arrayListOf(SingleModule()))
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
@@ -151,7 +151,7 @@ class KoinContextTest : KoinTest {
     @Test
     fun `assert system properties are not overridden by koin properties`() {
 
-        startContext(arrayListOf(SingleModule()), true)
+        startKoin(arrayListOf(SingleModule()), true)
         assertNotNull(getProperty(OS_NAME))
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))

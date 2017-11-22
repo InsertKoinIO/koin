@@ -69,6 +69,13 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      */
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 
+    /**
+     * Retrieve a property
+     * @param key - property key
+     * @param defaultValue - default value
+     */
+    inline fun <reified T> getProperty(key: String, defaultValue : T) = koinContext.propertyResolver.getProperty(key,defaultValue)
+
     // String display
     override fun toString(): String = "Context[$name]"
 }

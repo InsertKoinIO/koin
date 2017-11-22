@@ -6,8 +6,8 @@ import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.error.MissingPropertyException
-import org.koin.standalone.bindProperty
-import org.koin.standalone.startContext
+import org.koin.standalone.setProperty
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.*
 import org.koin.test.get
@@ -53,8 +53,8 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should inject external property`() {
-        startContext(listOf(SimpleModule()))
-        bindProperty(KEY, VALUE)
+        startKoin(listOf(SimpleModule()))
+        setProperty(KEY, VALUE)
 
         val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
@@ -75,7 +75,7 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should inject internal property`() {
-        startContext(listOf(SimpleModule()), properties = mapOf(KEY to VALUE))
+        startKoin(listOf(SimpleModule()), properties = mapOf(KEY to VALUE))
 
         val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
@@ -95,8 +95,8 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should inject property - complex module`() {
-        startContext(listOf(ComplexModule()))
-        bindProperty(KEY, VALUE)
+        startKoin(listOf(ComplexModule()))
+        setProperty(KEY, VALUE)
 
         val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
@@ -116,7 +116,7 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should not inject property but get default value as return`() {
-        startContext(listOf(NoPropertyModule()))
+        startKoin(listOf(NoPropertyModule()))
 
         try {
             getProperty<String>(KEY)
@@ -131,7 +131,7 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should not inject property`() {
-        startContext(listOf(NoPropertyModule()))
+        startKoin(listOf(NoPropertyModule()))
 
         try {
             getProperty<String>(KEY)
@@ -160,8 +160,8 @@ class PropertyTest : KoinTest {
 
     @Test
     fun `should overwrite property`() {
-        startContext(listOf(MoreComplexModule()))
-        bindProperty(KEY, VALUE)
+        startKoin(listOf(MoreComplexModule()))
+        setProperty(KEY, VALUE)
 
         var url = getProperty<String>(KEY)
         var a = get<ComponentA>()
@@ -174,7 +174,7 @@ class PropertyTest : KoinTest {
         assertRemainingInstances(1)
         assertDefinitions(2)
 
-        bindProperty(KEY, VALUE_2)
+        setProperty(KEY, VALUE_2)
 
         url = getProperty<String>(KEY)
         a = get()

@@ -4,7 +4,7 @@ import junit.framework.Assert.fail
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.Module
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
@@ -28,7 +28,7 @@ class NamedBeansTest : KoinTest {
 
     @Test
     fun `should get named bean`() {
-        startContext(listOf(DataSourceModule()))
+        startKoin(listOf(DataSourceModule()))
 
         val debug = get<Datasource>("debugDatasource")
         val prod = get<Datasource>("ProdDatasource")
@@ -43,7 +43,7 @@ class NamedBeansTest : KoinTest {
 
     @Test
     fun `should not get named bean`() {
-        startContext(listOf(DataSourceModule()))
+        startKoin(listOf(DataSourceModule()))
 
         try {
             get<Datasource>("otherDatasource")

@@ -257,7 +257,7 @@ class LocalWeatherPresenterTest : KoinTest {
         // Mocks
         MockitoAnnotations.initMocks(this)
         // Koin context
-        startContext(testLocalDatasource())
+        startKoin(testLocalDatasource())
 
         presenter.view = view
     }

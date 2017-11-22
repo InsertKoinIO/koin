@@ -12,7 +12,7 @@ interface KoinComponent
 /**
  * Koin starter
  */
-fun KoinComponent.startContext(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()) {
+fun KoinComponent.startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()) {
 
     val koin = if (bindSystemProperties) {
         // Koin properties will override system properties
@@ -56,7 +56,7 @@ internal fun context() = (StandAloneContext.koinContext as KoinContext)
  * @param key
  * @param value
  */
-fun KoinComponent.bindProperty(key: String, value: Any) = context().propertyResolver.add(key, value)
+fun KoinComponent.setProperty(key: String, value: Any) = context().setProperty(key, value)
 
 /**
  * Release a Koin context

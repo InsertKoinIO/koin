@@ -9,7 +9,7 @@ import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import org.koin.standalone.releaseContext
-import org.koin.standalone.startContext
+import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -57,7 +57,7 @@ class MVPArchitectureTest : KoinTest {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        startContext(listOf(MVPModule(), DataSourceModule()))
+        startKoin(listOf(MVPModule(), DataSourceModule()))
 
         val view = get<View>()
         val presenter = get<Presenter>()
