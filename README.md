@@ -8,17 +8,17 @@ KOIN is a very small library, that aims to be as simple as possible and let's yo
 
 *Just describe your stuff and inject it!*
 
+#### New web site is coming :)
+
 ### What's up?
 
-Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3F) and the [Roadmap](https://github.com/Ekito/koin/wiki/Roadmap) for next releases.
-
-For users using a version prior to Koin 0.6.x, please refer the [migrating to 0.6.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-06x) page to understand the latest changes. 
+Check the latest changes in [What's New](https://github.com/Ekito/koin/wiki/What's-new-%3F). For users using a version prior to Koin 0.6.x, please refer the [migrating to 0.6.0](https://github.com/Ekito/koin/wiki/Migrating#migrating-to-06x) page to understand the latest changes. 
 
 # Getting Started
 
 ## Gradle
 
-Check that you have the `jcenter` repository. Add the following gradle dependency to your Android app:
+Check that you have the `jcenter` repository. Choose the needed depedency:
 
 ```gradle
 
@@ -30,7 +30,7 @@ repositories {
 // Koin for Android
 compile 'org.koin:koin-android:0.6.0'
 
-// Koin Test tools
+// Koin Testing tools
 testCompile 'org.koin:koin-test:0.6.0'
 
 // Koin for Kotlin project
@@ -47,18 +47,18 @@ class MainApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         // Start Koin
-        startAndroidContext(this, weatherAppModules())
+        startKoin(this, /* your list of modules */)
     }
 }
 ```
 
-The `startAndroidContext` function requires an `Application` instance, and a a list of modules to run. A function can manage this for you, check out the `weatherAppModules()` function.
+The `startKoin` function requires an `Application` instance, and a a list of modules to run. 
 
 ## Declaring your dependencies
 
-KOIN requires you to declare your components in modules.
+To declare your dependencies, you have to declare it in **modules**.
 
-A module class **extends** your [AndroidModule](https://github.com/Ekito/koin/wiki#module-class) class and implements the `context()` function by using the `applicationContext` function builder, to declare a context like below:
+To create a module, make a class and **extends** your `AndroidModule`. Implements the `context()` function by using the `applicationContext` function builder like below:
 
 ```Kotlin
 class WeatherModule : AndroidModule() {
@@ -150,7 +150,7 @@ Declare any property from outside of your module :
 
 ```kotlin
 // Set property key with its value
-bindProperty("key",value)
+setProperty("key",value)
 ```
 
 You can also use any property in your Koin module with `getProperty("key")` or inject in an Android class with `by property("key")`
@@ -212,30 +212,31 @@ abstract class MyCustomActivity : AppCompatActivity() {
 
 `KoinComponent` is a Kotlin interface to help you bring the following features on any component. Just add KoinComponent` to yoru class, and you will be able to use:
 
-* by inject/property
-* bindProperty
-* releaseContext
-* releaseProperties
+* Injection by `inject()` & `property()`
+* Write any property with `setProperty()`
+* release a context with `releaseContext()`
+* release some properties with `releaseProperties()`
 
-You need to start a Koin context, to be able to use any module and dependencies.
+You need to start a Koin context (usally `startKoin()`), to be able to use any module and dependencies.
 
 
 ## Checking your modules
 
 KOIN is an internal DSL: all your modules evolves directly with your code (if you change a component, it will also impact your modules). 
 
-You can check your modules with `KoinContext.dryRun()` (launch all your modules and try to inject each component). Better is to place it in your tests folder and check it regulary - ensure everything is injected correctly.
+You can check your modules with `KoinTest.dryRun()` (launch all your modules and try to inject each component). Better is to place it in your tests folder and check it regulary - ensure everything is injected correctly.
 
 in a JUnit test file:
 
 ```kotlin
-
-fun allModules() = listOf /* your modules */
-
-@Test
-fun dryRun(){
-	  // 
-     dryRun(allModules())
+class MyTest : KoinTest {
+	@Test
+	fun dryRun(){
+		  // start Koin
+	     startKoin(/* list of modules */)
+	     // dry run of given module list
+	     dryRun()
+	}
 }
 ```
 
@@ -277,22 +278,12 @@ class LocalWeatherPresenterTest : KoinTest {
 
 # The Sample App
 
-The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/koin-android/koin-sample-app) application offers a complete application sample, with MVP Android style. 
-
-The weather app [wiki page](https://github.com/Ekito/koin/wiki/The-Koin-Sample-App) describes all the KOIN features used.
+The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/samples/android-weatherapp) application offers a complete application sample, with MVP Android style. 
 
 
 # Documentation
 
-A global [wiki](https://github.com/Ekito/koin/wiki) documentation page gather all features and references about the KOIN Framework.
-
-## Javadoc 
-
-Generated javadoc is available:
-
-* [koin-core](https://ekito.github.io/koin/javadoc/koin-core/)
-* [koin-test](https://ekito.github.io/koin/javadoc/koin-test/)
-* [koin-android](https://ekito.github.io/koin/javadoc/koin-android/)
+Documentation rewriting is in progress ... check incoming new web site for more info.
 
 # Articles
 
@@ -308,6 +299,9 @@ Check the [kotlin slack community](https://kotlinlang.org/community/) and join *
 
 ## Stackoverflow
 
+Use the `Koin` & `Kotlin` tags to mark your questions.
+
+[Koin at Stackoverflow]()
 
 ## Github
 Don't hesitate to open an issue to discuss about your needs or if you don't a feature for example.
