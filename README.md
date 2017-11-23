@@ -109,6 +109,8 @@ class WeatherPresenter(val weatherRepository: WeatherRepository) {
 }
 ```
 
+For ViewModel or others classes, use the `KoinComponent` interface.
+
 ## Koin Components
 
 `KoinComponent` is a Kotlin **interface** to help you **bring the Koin features on any class**. By adding this interface, you will be able to use following functions:
@@ -126,7 +128,7 @@ In Android, the following classes have already *KoinComponent* features: `Applic
 
 ## Working with properties
 
-Declare any property from outside of your module :
+Declare any property from any `KoinComponent` :
 
 ```Kotlin
 // Set property key with its value
@@ -232,7 +234,7 @@ in a JUnit test file:
 class MyTest : KoinTest {
 	@Test
 	fun dryRun(){
-		  // start Koin
+	     // start Koin
 	     startKoin(/* list of modules */)
 	     // dry run of given module list
 	     dryRun()
