@@ -32,14 +32,11 @@ compile 'org.koin:koin-android:0.6.0'
 
 // Koin Testing tools
 testCompile 'org.koin:koin-test:0.6.0'
-
-// Koin for Kotlin project
-compile 'org.koin:koin-core:0.6.0'
 ```
 
 ### Setup your Application
 
-To start KOIN and your modules, you just have to use the `startAndroidContext` function in your Android *Application* class like below:
+To start KOIN and your modules, you just have to use the `startKoin()` function in your Android *Application* class like below:
 
 ```Kotlin
 class MainApplication : Application(){
@@ -112,11 +109,47 @@ class WeatherPresenter(val weatherRepository: WeatherRepository) {
 }
 ```
 
+## Koin Components
+
+`KoinComponent` is a Kotlin **interface** to help you **bring the Koin features on any class**. By adding this interface, you will be able to use following functions:
+
+* Injection by `inject()` & `property()`
+* Write any property with `setProperty()`
+* release a context with `releaseContext()`
+* release some properties with `releaseProperties()`
+
+You need to start a Koin context (usally `startKoin()`), to be able to use any module and dependencies.
+
+In Android, the following classes have already *KoinComponent* features: `Application`,`Context`, `Activity`, `Fragment`, `Service`
+
+
+
+## Working with properties
+
+Declare any property from outside of your module :
+
+```Kotlin
+// Set property key with its value
+setProperty("key",value)
+```
+
+You can also use any property in your Koin module with `getProperty("key")` or inject in an Android class with `by property("key")`
+
+You can also easily bind any Android property:
+
+
+```Kotlin
+// bind R.string.server_url to Koin WeatherModule.SERVER_URL
+bindString(R.string.server_url, WeatherModule.SERVER_URL)
+```
+
+
+
 ## Named dependencies
 
 You can provide a name to a provided component:
 
-```kotlin
+```Kotlin
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
            provide("MyPresenter") { WeatherPresenter() }
@@ -125,14 +158,14 @@ class WeatherModule : AndroidModule() {
 ```
 
 To get a component with its name, in an Android class:
-```kotlin
+```Kotlin
 class WeatherActivity : AppcompatActivity(){
     val presenter by inject<WeatherPresenter>("MyPresenter")
 }
 ```
 
 or in constructor:
-```kotlin
+```Kotlin
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
            provide("MyPresenter") { WeatherPresenter() }
@@ -143,35 +176,13 @@ class WeatherModule : AndroidModule() {
 ```
 
 
-
-## Working with properties
-
-Declare any property from outside of your module :
-
-```kotlin
-// Set property key with its value
-setProperty("key",value)
-```
-
-You can also use any property in your Koin module with `getProperty("key")` or inject in an Android class with `by property("key")`
-
-You can also easily bind any Android property:
-
-
-```kotlin
-// bind R.string.server_url to Koin WeatherModule.SERVER_URL
-bindString(R.string.server_url, WeatherModule.SERVER_URL)
-```
-
-
 ## Managing context life cycle
 
 One of the biggest value of Koin, is the ability to drop any instances from a given context, to suits your components life cycle. At any moment, you can use the `releaseContext()` function to release all instances from a context.
 
 You can use the `ContextAwareActivity` or `ContextAwareFragent` to automatically drop an associated context:
 
-```kotlin
-
+```Kotlin
 // A module with a context
 class WeatherModule : AndroidModule() {
     override fun context() = applicationContext {
@@ -207,17 +218,6 @@ abstract class MyCustomActivity : AppCompatActivity() {
 }
 
 ```
-
-## Koin Components
-
-`KoinComponent` is a Kotlin interface to help you bring the following features on any component. Just add KoinComponent` to yoru class, and you will be able to use:
-
-* Injection by `inject()` & `property()`
-* Write any property with `setProperty()`
-* release a context with `releaseContext()`
-* release some properties with `releaseProperties()`
-
-You need to start a Koin context (usally `startKoin()`), to be able to use any module and dependencies.
 
 
 ## Checking your modules
@@ -283,7 +283,7 @@ The [*koin-sample-app*](https://github.com/Ekito/koin/tree/master/samples/androi
 
 # Documentation
 
-Documentation rewriting is in progress ... check incoming new web site for more info.
+#### Documentation rewriting is in progress ... check incoming new web site for more info.
 
 # Articles
 
@@ -299,9 +299,7 @@ Check the [kotlin slack community](https://kotlinlang.org/community/) and join *
 
 ## Stackoverflow
 
-Use the `Koin` & `Kotlin` tags to mark your questions.
-
-[Koin at Stackoverflow]()
+Use the `Koin` & `Kotlin` tags to mark your questions. [Koin @ Stackoverflow](https://stackoverflow.com/search?q=koin)
 
 ## Github
 Don't hesitate to open an issue to discuss about your needs or if you don't a feature for example.
