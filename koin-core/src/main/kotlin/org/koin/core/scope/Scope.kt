@@ -16,4 +16,8 @@ data class Scope(val name: String, val parent: Scope? = null) {
         val ROOT = "ROOT"
         fun root() = Scope(ROOT)
     }
+
+    fun isVisible(p: Scope): Boolean = this == p || if (p.parent != null) {
+        isVisible(p.parent)
+    } else false
 }

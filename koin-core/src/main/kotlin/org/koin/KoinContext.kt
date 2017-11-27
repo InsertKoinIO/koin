@@ -41,16 +41,23 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T> resolveByClass(): T = resolveInstance(T::class) { beanRegistry.searchAll(T::class) }
 
+
     /**
      * Resolve a dependency for its bean definition
      */
     fun <T> resolveInstance(clazz: KClass<*>, resolver: () -> BeanDefinition<*>): T {
-        logger.log("Resolve [${clazz.java.canonicalName}]")
+        logger.log("Resolve [${clazz.java.canonicalName}] <> [${resolutionStack.map { it.java.canonicalName }.joinToString(separator = ",")}]")
 
         if (resolutionStack.contains(clazz)) {
             logger.err("Cyclic dependency detected while resolving $clazz")
             throw DependencyResolutionException("Cyclic dependency for $clazz")
         }
+
+        if (!beanRegistry.isVisible(clazz, resolutionStack.toList())) {
+            logger.err("Try to resolve $clazz but is not visible from classes context : $resolutionStack")
+            throw DependencyResolutionException("Try to resolve $clazz but is not visible from classes context : $resolutionStack")
+        }
+
         resolutionStack.add(clazz)
 
         val beanDefinition: BeanDefinition<*> = resolver()

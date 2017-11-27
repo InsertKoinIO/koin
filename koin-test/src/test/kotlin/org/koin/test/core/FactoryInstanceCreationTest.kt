@@ -1,9 +1,12 @@
 package org.koin.test.core
 
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
+import org.koin.log.PrintLogger
 import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
@@ -41,6 +44,11 @@ class FactoryInstanceCreationTest : KoinTest {
     class ComponentA
     class ComponentB(val componentA: ComponentA)
     class ComponentC(val componentB: ComponentB, val componentA: ComponentA)
+
+    @Before
+    fun before() {
+        Koin.logger = PrintLogger()
+    }
 
     @Test
     fun `load and create instances for flat module`() {

@@ -5,6 +5,8 @@ import org.koin.core.scope.Scope
 import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NoScopeFoundException
+import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * Bean registry
@@ -35,6 +37,11 @@ class BeanRegistry {
      * Retrieve context scope for given bean definition
      */
     fun getScopeForDefinition(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
+
+    /**
+     * Retrieve context scope for given class
+     */
+    private fun getScopeForClass(clazz: KClass<*>) = definitions[definitions.keys.first { it.clazz == clazz || it.bindTypes.contains(clazz) }]
 
     /**
      * Retrieve context scope for given name
@@ -105,5 +112,27 @@ class BeanRegistry {
         val scope = getScope(name)
         val firstChild = scopes.filter { it.parent == scope }
         return listOf(scope) + firstChild + firstChild.flatMap { allScopesfrom(it.name) }
+    }
+
+    /**
+     * Is class/bean definition visible with given class list context
+     */
+    fun isVisible(clazz: KClass<*>, resolutionStack: List<KClass<*>>): Boolean {
+        return if (resolutionStack.isEmpty()) true
+        else {
+            val pop = resolutionStack.last()
+            if (resolutionStack.isNotEmpty()) {
+                isVisibleScope(clazz, pop) && isVisible(clazz, resolutionStack - pop)
+            } else {
+                isVisibleScope(clazz, pop)
+            }
+        }
+    }
+
+
+    private fun isVisibleScope(clazz: KClass<*>, parentClass: KClass<*>): Boolean {
+        val child = getScopeForClass(clazz) ?: error("$clazz has no scope")
+        val parent = getScopeForClass(parentClass) ?: error("$parentClass has no Scope")
+        return child.isVisible(parent)
     }
 }

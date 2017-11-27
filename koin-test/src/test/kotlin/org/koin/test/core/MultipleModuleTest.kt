@@ -4,6 +4,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
@@ -21,17 +22,13 @@ class MultipleModuleTest : KoinTest {
 
     class SimpleModuleA() : Module() {
         override fun context() = applicationContext {
-            context(name = "A") {
-                provide { ComponentA() }
-            }
+            provide { ComponentA() }
         }
     }
 
     class SimpleModuleB() : Module() {
         override fun context() = applicationContext {
-            context(name = "B") {
-                provide { ComponentB(get()) }
-            }
+            provide { ComponentB(get()) }
         }
     }
 
@@ -43,14 +40,13 @@ class MultipleModuleTest : KoinTest {
         }
     }
 
-
     @Test
     fun `load mulitple modules`() {
         startKoin(listOf(SimpleModuleA(), SimpleModuleB(), SimpleModuleC()))
 
         assertRemainingInstances(0)
         assertDefinitions(3)
-        assertContexts(4)
+        assertContexts(2)
 
         assertNotNull(get<ComponentA>())
         assertNotNull(get<ComponentB>())
@@ -69,9 +65,9 @@ class MultipleModuleTest : KoinTest {
 
         assertRemainingInstances(3)
         assertDefinitions(3)
-        assertContexts(4)
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
+        assertContexts(2)
+        assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        assertDefinedInScope(ComponentB::class, Scope.ROOT)
         assertDefinedInScope(ComponentC::class, "C")
     }
 }

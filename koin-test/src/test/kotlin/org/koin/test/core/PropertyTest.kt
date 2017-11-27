@@ -32,8 +32,8 @@ class PropertyTest : KoinTest {
 
     class ComplexModule() : Module() {
         override fun context() = applicationContext {
-            provide { ComponentB(get()) }
             context("A") {
+                provide { ComponentB(get()) }
                 provide { ComponentA(getProperty(KEY)) }
             }
         }
@@ -41,8 +41,8 @@ class PropertyTest : KoinTest {
 
     class MoreComplexModule() : Module() {
         override fun context() = applicationContext {
-            provide { ComponentB(get()) }
             context("A") {
+                provide { ComponentB(get()) }
                 provideFactory { ComponentA(getProperty(KEY)) }
             }
         }
@@ -110,7 +110,7 @@ class PropertyTest : KoinTest {
         assertDefinitions(2)
         assertContexts(2)
         assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentB::class, "A")
         assertProperties(1)
     }
 
@@ -188,7 +188,7 @@ class PropertyTest : KoinTest {
         assertContexts(2)
         assertProperties(1)
         assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentB::class, "A")
     }
 
     companion object {
