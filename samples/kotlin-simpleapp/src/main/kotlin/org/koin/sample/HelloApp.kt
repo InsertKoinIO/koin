@@ -6,8 +6,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 
 // model class to backup "who" property
-class HelloModel(val who: String)
-
+data class HelloModel(val who: String)
 
 interface HelloService {
     fun seyHello()
@@ -21,7 +20,7 @@ class HelloServiceImpl(val helloModel: HelloModel) : HelloService {
 // HelloApp component
 class HelloApp : KoinComponent {
 
-    // Inject depndency
+    // Inject dependency
     val helloService by inject<HelloService>()
 
     fun seyHello() {
