@@ -1,13 +1,15 @@
 package org.koin.sampleapp.view
 
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.log.PrintLogger
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.view.main.MainContract
+import org.koin.standalone.StandAloneContext.closeKoin
+import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
-import org.koin.standalone.startKoin
 import org.koin.test.KoinTest
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -25,6 +27,11 @@ class MainPresenterTest : KoinTest {
         startKoin(testLocalDatasource())
 
         presenter.view = view
+    }
+
+    @After
+    fun after(){
+        closeKoin()
     }
 
     @Test

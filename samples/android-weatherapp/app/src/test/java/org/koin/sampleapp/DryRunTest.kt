@@ -1,5 +1,6 @@
 package org.koin.sampleapp
 
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
@@ -8,7 +9,8 @@ import org.koin.sampleapp.di.Properties.SERVER_URL
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.di.testRemoteDatasource
 import org.koin.sampleapp.di.weatherAppModules
-import org.koin.standalone.startKoin
+import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
 
@@ -19,6 +21,11 @@ class DryRunTest : KoinTest {
     @Before
     fun before() {
         Koin.logger = PrintLogger()
+    }
+
+    @After
+    fun after() {
+        StandAloneContext.closeKoin()
     }
 
     @Test
