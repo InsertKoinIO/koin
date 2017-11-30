@@ -1,37 +1,28 @@
 package org.koin.sample
 
-import org.koin.dsl.module.Module
+import org.koin.sample.Property.WHO
 import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
-import org.koin.standalone.startKoin
-
 
 // model class to backup "who" property
 class HelloModel(val who: String)
 
+
+interface HelloService {
+    fun seyHello()
+}
+
 // service class to say hello
-class HelloService(val helloModel: HelloModel) {
-    fun seyHello() = println("Hello ${helloModel.who}")
+class HelloServiceImpl(val helloModel: HelloModel) : HelloService {
+    override fun seyHello() = println("Hello ${helloModel.who}")
 }
 
-// Koin module
-class HelloModule : Module() {
-    override fun context() = applicationContext {
-        provide { HelloModel(getProperty("WHO")) }
-        provide { HelloService(get()) }
-    }
-}
-
-// HelloApp main class
+// HelloApp component
 class HelloApp : KoinComponent {
 
     // Inject depndency
     val helloService by inject<HelloService>()
-
-    // start Koin and add property "WHO"
-    init {
-        startKoin(listOf(HelloModule()), properties = mapOf("WHO" to "Koin :)"))
-    }
 
     fun seyHello() {
         helloService.seyHello()
@@ -39,5 +30,6 @@ class HelloApp : KoinComponent {
 }
 
 fun main(vararg args: String) {
+    startKoin(listOf(HelloModule()), properties = mapOf(WHO to "Koin :)"))
     HelloApp().seyHello()
 }

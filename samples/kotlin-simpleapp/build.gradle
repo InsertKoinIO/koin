@@ -1,21 +1,20 @@
-group 'org.koin.sample'
-version '1.0-SNAPSHOT'
+apply from: "../../common.gradle"
+apply plugin: 'kotlin'
 
 buildscript {
-    ext{
-        kotlin_version = '1.1.60'
-        koin_version = '0.6.0'
-    }
+    apply from: "../../common.gradle"
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${dokka_version}"
     }
 }
 
-apply plugin: 'kotlin'
-
+group 'org.koin.sample'
+version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -24,15 +23,18 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-repositories {
-    jcenter()
-    mavenCentral()
-}
-
 dependencies {
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
     // Koin
     compile "org.koin:koin-core:$koin_version"
+    testCompile "org.koin:koin-test:$koin_version"
+    
+    testCompile "org.mockito:mockito-core:$mockito_version"
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
 }
