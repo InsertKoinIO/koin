@@ -99,7 +99,7 @@ install {
 
 bintray {
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    properties.load(project.rootProject.file('../local.properties').newDataInputStream())
 
     user = properties.getProperty('bintray_user')
     key = properties.getProperty('bintray_apikey')
