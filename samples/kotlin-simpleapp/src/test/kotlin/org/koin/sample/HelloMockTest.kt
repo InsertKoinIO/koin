@@ -1,16 +1,13 @@
 package org.koin.sample
 
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.dsl.module.Module
 import org.koin.log.PrintLogger
-import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AbstractKoinTest
-import org.koin.test.KoinTest
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 
