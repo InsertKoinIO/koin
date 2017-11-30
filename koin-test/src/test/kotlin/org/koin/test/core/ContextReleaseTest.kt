@@ -7,10 +7,10 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.error.NoScopeFoundException
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
 import org.koin.standalone.releaseContext
 import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.*
-import org.koin.test.get
 
 class ContextReleaseTest : AbstractKoinTest() {
 

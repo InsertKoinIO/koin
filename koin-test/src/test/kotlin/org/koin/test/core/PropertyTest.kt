@@ -7,11 +7,11 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
+import org.koin.standalone.getProperty
 import org.koin.standalone.setProperty
 import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.*
-import org.koin.test.get
-import org.koin.test.getProperty
 
 class PropertyTest : AbstractKoinTest() {
     class SimpleModule() : Module() {

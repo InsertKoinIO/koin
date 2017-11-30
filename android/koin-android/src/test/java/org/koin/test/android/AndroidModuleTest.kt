@@ -8,6 +8,7 @@ import org.koin.android.ext.koin.startKoin
 import org.koin.android.module.AndroidModule
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
 import org.koin.standalone.releaseContext
 import org.koin.standalone.setProperty
 import org.koin.test.AbstractKoinTest
@@ -15,7 +16,6 @@ import org.koin.test.ext.junit.assertContextInstances
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
-import org.koin.test.get
 import org.mockito.Mockito.mock
 
 /**
