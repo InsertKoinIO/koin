@@ -17,12 +17,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud GIULIANI
  */
-class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory, var started: Boolean = false) : StandAloneKoinContext {
-
-    /**
-     * Is started
-     */
-    override fun isStarted() = started
+class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory) : StandAloneKoinContext {
 
     /**
      * call stack - bean definition resolution
@@ -141,6 +136,5 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         instanceFactory.clear()
         beanRegistry.clear()
         propertyResolver.clear()
-        started = false
     }
 }

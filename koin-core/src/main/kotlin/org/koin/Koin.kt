@@ -69,7 +69,6 @@ class Koin {
         }
 
         logger.log("(Registry) loaded ${beanRegistry.definitions.size} definitions")
-        koinContext.started = true
         return koinContext
     }
 

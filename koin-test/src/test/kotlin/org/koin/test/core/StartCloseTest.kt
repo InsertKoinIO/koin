@@ -1,12 +1,10 @@
 package org.koin.test.core
 
-import org.junit.Assert.assertFalse
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Koin
 import org.koin.error.AlreadyStartedException
 import org.koin.log.PrintLogger
-import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
@@ -30,25 +28,16 @@ class StartCloseTest : KoinTest {
         assertContexts(1)
 
         closeKoin()
-
-        assertFalse(StandAloneContext.koinContext.isStarted())
     }
 
     @Test
     fun `start and restart Koin`() {
         startKoin(listOf())
-
         try {
             startKoin(listOf())
             fail()
         } catch (e: AlreadyStartedException) {
         }
-
         closeKoin()
-    }
-
-    @Test
-    fun `start closed Koin`() {
-        assertFalse(StandAloneContext.koinContext.isStarted())
     }
 }

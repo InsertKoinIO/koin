@@ -11,17 +11,18 @@ import org.koin.error.AlreadyStartedException
  */
 object StandAloneContext {
 
+    private var isStarted = false
+
     /**
      * Koin Context
      */
-    var koinContext: StandAloneKoinContext = BlankContext()
+    lateinit var koinContext: StandAloneKoinContext
 
     /**
      * Koin starter
      */
     fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()) {
-
-        if (koinContext.isStarted()) {
+        if (isStarted) {
             throw AlreadyStartedException()
         }
 
@@ -34,17 +35,17 @@ object StandAloneContext {
 
         // Build koin context
         koinContext = koin.build(list)
+        isStarted = true
     }
 
     /**
      * Close actual Koin context
      */
     fun closeKoin() {
-        if (koinContext.isStarted()) {
+        if (isStarted) {
             // Close all
             (koinContext as KoinContext).close()
-            // blank object
-            koinContext = BlankContext()
+            isStarted = false
         }
     }
 }
@@ -52,16 +53,4 @@ object StandAloneContext {
 /**
  * Stand alone Koin context
  */
-interface StandAloneKoinContext {
-    /**
-     * Is Koin started ?
-     */
-    fun isStarted(): Boolean
-}
-
-/**
- * Blank Stand Alone Context
- */
-private class BlankContext : StandAloneKoinContext {
-    override fun isStarted() = false
-}
+interface StandAloneKoinContext

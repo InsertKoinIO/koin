@@ -31,7 +31,10 @@ inline fun <reified T> KoinComponent.property(key: String) = kotlin.lazy { (Stan
 inline fun <reified T> KoinComponent.property(key: String, defaultValue: T) = kotlin.lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
 
-internal fun context() = (StandAloneContext.koinContext as KoinContext)
+/**
+ * Help to Access context
+ */
+private fun context() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * set a property
