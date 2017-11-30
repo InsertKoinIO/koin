@@ -73,4 +73,11 @@ class PropertyRegistry {
     fun deleteAll(keys: Array<out String>) {
         keys.forEach { delete(it) }
     }
+
+    /**
+     * Clear all resources
+     */
+    fun clear() {
+        properties.clear()
+    }
 }

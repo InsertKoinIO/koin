@@ -4,7 +4,8 @@ ext {
 
     // Kotlin
     kotlin_version = '1.2.0'
-    
+
+    // Dokka
     dokka_version = '0.9.15'
 
     // Test

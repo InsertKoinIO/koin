@@ -17,7 +17,12 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud GIULIANI
  */
-class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory) : StandAloneKoinContext {
+class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory, var started: Boolean = false) : StandAloneKoinContext {
+
+    /**
+     * Is started
+     */
+    override fun isStarted() = started
 
     /**
      * call stack - bean definition resolution
@@ -31,7 +36,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
 
     /**
      * Resolve a dependency for its bean definition
-     * @param beandefinition name
+     * @param name bean definition name
      */
     inline fun <reified T> resolveByName(name: String): T = resolveInstance(T::class) { beanRegistry.searchByName(name) }
 
@@ -46,7 +51,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Resolve a dependency for its bean definition
      */
     fun <T> resolveInstance(clazz: KClass<*>, resolver: () -> BeanDefinition<*>): T {
-        logger.log("Resolve [${clazz.java.canonicalName}] <> [${resolutionStack.map { it.java.canonicalName }.joinToString(separator = ",")}]")
+        logger.log("Resolve [${clazz.java.canonicalName}] <> [${resolutionStack.joinToString(separator = ",") { it.java.canonicalName }}]")
 
         if (resolutionStack.contains(clazz)) {
             logger.err("Cyclic dependency detected while resolving $clazz")
@@ -123,9 +128,19 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param keys
      */
     fun releaseProperties(vararg keys: String) {
-
         logger.log("Remove keys : $keys")
-
         propertyResolver.deleteAll(keys)
+    }
+
+    /**
+     * Close res
+     */
+    fun close() {
+        logger.log("[Close] Closing Koin context")
+        resolutionStack.clear()
+        instanceFactory.clear()
+        beanRegistry.clear()
+        propertyResolver.clear()
+        started = false
     }
 }

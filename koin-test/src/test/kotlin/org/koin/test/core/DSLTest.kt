@@ -3,14 +3,14 @@ package org.koin.test.core
 import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.startKoin
-import org.koin.test.KoinTest
+import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertScopeParent
 
-class DSLTest : KoinTest {
+class DSLTest : AbstractKoinTest() {
 
     class FlatContextsModule() : Module() {
         override fun context() = applicationContext {

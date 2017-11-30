@@ -1,29 +1,11 @@
 package org.koin.standalone
 
-import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.dsl.module.Module
 
 /**
  * Koin component
  */
 interface KoinComponent
-
-/**
- * Koin starter
- */
-fun KoinComponent.startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()) {
-
-    val koin = if (bindSystemProperties) {
-        // Koin properties will override system properties
-        Koin().bindKoinProperties().bindAdditionalProperties(properties).bindSystemProperties()
-    } else {
-        Koin().bindKoinProperties().bindAdditionalProperties(properties)
-    }
-
-    // Build koin context
-    StandAloneContext.koinContext = koin.build(list)
-}
 
 /**
  * inject lazily given dependency for KoinComponent

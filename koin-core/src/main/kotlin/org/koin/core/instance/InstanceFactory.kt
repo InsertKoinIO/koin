@@ -84,4 +84,11 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
         dropAllInstances(instances.keys().toList().filter { it.clazz == clazz })
     }
 
+    /**
+     * Clear all resources
+     */
+    fun clear() {
+        instances.clear()
+    }
+
 }

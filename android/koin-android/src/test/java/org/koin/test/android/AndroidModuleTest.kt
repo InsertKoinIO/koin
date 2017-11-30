@@ -4,12 +4,13 @@ import android.app.Application
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.android.ext.koin.startKoin
 import org.koin.android.module.AndroidModule
+import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.releaseContext
 import org.koin.standalone.setProperty
-import org.koin.standalone.startKoin
-import org.koin.test.KoinTest
-import org.koin.test.android.ext.startAndroidContext
+import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContextInstances
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
@@ -20,7 +21,7 @@ import org.mockito.Mockito.mock
 /**
  * Android Module Tests
  */
-class AndroidModuleTest : KoinTest {
+class AndroidModuleTest : AbstractKoinTest() {
 
     companion object {
         val URL = "URL"
@@ -53,7 +54,7 @@ class AndroidModuleTest : KoinTest {
     @Test
     fun should_inject_by_scope() {
         val applicationContext = mock(Application::class.java)
-        startAndroidContext(applicationContext, listOf(SampleModule(), ActivityModule()))
+        StandAloneContext.startKoin(applicationContext, listOf(SampleModule(), ActivityModule()))
 
         assertContexts(2)
         assertDefinitions(3)
@@ -101,7 +102,7 @@ class AndroidModuleTest : KoinTest {
     fun should_init_context_and_dependency() {
         val androidApplication = mock(Application::class.java)
 
-        startAndroidContext(androidApplication, listOf(SampleModule()))
+        StandAloneContext.startKoin(androidApplication, listOf(SampleModule()))
 
         assertDefinitions(2)
         assertRemainingInstances(0)

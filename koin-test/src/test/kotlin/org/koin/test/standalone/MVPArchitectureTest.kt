@@ -7,17 +7,17 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.standalone.releaseContext
-import org.koin.standalone.startKoin
-import org.koin.test.KoinTest
+import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 import org.koin.test.get
 
-class MVPArchitectureTest : KoinTest {
+class MVPArchitectureTest : AbstractKoinTest() {
     class MVPModule : Module() {
         override fun context() =
                 applicationContext {

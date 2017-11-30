@@ -6,13 +6,13 @@ import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.error.NoScopeFoundException
+import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.releaseContext
-import org.koin.standalone.startKoin
-import org.koin.test.KoinTest
+import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.*
 import org.koin.test.get
 
-class ContextReleaseTest : KoinTest {
+class ContextReleaseTest : AbstractKoinTest() {
 
     class HierarchyContextsModule() : Module() {
         override fun context() = applicationContext {

@@ -135,4 +135,12 @@ class BeanRegistry {
         val parent = getScopeForClass(parentClass) ?: error("$parentClass has no Scope")
         return child.isVisible(parent)
     }
+
+    /**
+     * Clear resources
+     */
+    fun clear() {
+        definitions.clear()
+        scopes.clear()
+    }
 }

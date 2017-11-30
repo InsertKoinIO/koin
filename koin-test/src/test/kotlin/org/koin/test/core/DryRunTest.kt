@@ -8,15 +8,15 @@ import org.koin.Koin
 import org.koin.dsl.module.Module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.log.PrintLogger
-import org.koin.standalone.startKoin
-import org.koin.test.KoinTest
+import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.test.AbstractKoinTest
 import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 import org.koin.test.get
 
-class DryRunTest : KoinTest {
+class DryRunTest : AbstractKoinTest() {
 
     class SimpleModule() : Module() {
         override fun context() = applicationContext {

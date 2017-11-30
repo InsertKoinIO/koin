@@ -6,15 +6,15 @@ import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
-import org.koin.standalone.startKoin
-import org.koin.test.KoinTest
+import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 import org.koin.test.get
 
-class MultipleModuleTest : KoinTest {
+class MultipleModuleTest : AbstractKoinTest() {
 
     class ComponentA
     class ComponentB(val componentA: ComponentA)
