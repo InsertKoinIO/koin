@@ -11,3 +11,9 @@ cd samples
 cd android-weatherapp
 cd app
 gradle clean testRelease --info
+cd ..
+
+cd kotlin-sampleapp
+gradle clean test --info
+cd ..
+
