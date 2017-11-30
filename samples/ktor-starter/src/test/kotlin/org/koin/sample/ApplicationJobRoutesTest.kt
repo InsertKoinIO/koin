@@ -13,7 +13,7 @@ import org.koin.sample.KoinModule.Properties.BYE_MSG
 import org.koin.sample.KoinModule.Properties.HELLO_MSG
 import org.koin.sample.KoinModule.Properties.MY_MODEL
 import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.property
+import org.koin.standalone.getProperty
 import org.koin.test.AbstractKoinTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -63,7 +63,7 @@ class ApplicationJobRoutesTest : AbstractKoinTest() {
 
         with(handleRequest(HttpMethod.Get, "/model")) {
             assertEquals(HttpStatusCode.OK, response.status())
-            val currentModel by property<Model>(MY_MODEL)
+            val currentModel = getProperty<Model>(MY_MODEL)
 
             assertEquals("Test value", currentModel.value)
             assertEquals("Model value = ${currentModel.value}", response.content)
@@ -76,7 +76,7 @@ class ApplicationJobRoutesTest : AbstractKoinTest() {
 
         with(handleRequest(HttpMethod.Get, "/model")) {
             assertEquals(HttpStatusCode.OK, response.status())
-            val currentModel by property<Model>(MY_MODEL)
+            val currentModel = getProperty<Model>(MY_MODEL)
 
             assertEquals("Hi already said !", currentModel.value)
             assertEquals("Model value = ${currentModel.value}", response.content)
