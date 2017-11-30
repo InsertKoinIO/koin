@@ -1,0 +1,21 @@
+
+archivesBaseName = 'koin-ktor'
+description = 'Koin - simple dependency injection for Ktor'
+
+repositories {
+    mavenCentral()
+    maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile project(":koin-core")
+
+    // Kt
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // Ktor
+    compile "io.ktor:ktor-server-core:$ktor_version"
+}
