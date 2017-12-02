@@ -2,7 +2,7 @@
 
 ### What's KOIN?
 
-KOIN is a simple (but powerful) dependency injection framework for Android. It uses [Kotlin](https://kotlinlang.org/) and its functional power to get things done!  No proxy/CGLib, no code generation, no introspection. Just functional Kotlin and DSL magic ;)
+KOIN is a simple (but powerful) dependency injection framework for Android & any Kotlin runtime. It uses [Kotlin](https://kotlinlang.org/) and its functional power to get things done!  No proxy/CGLib, no code generation, no introspection. Just functional Kotlin and DSL magic ;)
 
 KOIN is a very small library, that aims to be as simple as possible and let's you write dependency injection in a breath.
 
