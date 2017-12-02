@@ -28,10 +28,10 @@ repositories {
 }
 
 // Koin for Android
-compile 'org.koin:koin-android:0.6.0'
+compile 'org.koin:koin-android:0.6.1'
 
 // Koin Testing tools
-testCompile 'org.koin:koin-test:0.6.0'
+testCompile 'org.koin:koin-test:0.6.1'
 ```
 
 ### Setup your Application
@@ -145,6 +145,7 @@ You can also easily bind any Android property:
 bindString(R.string.server_url, WeatherModule.SERVER_URL)
 ```
 
+Android/Koin property binding is available for int/string/boolean. 
 
 
 ## Named dependencies
