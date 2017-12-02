@@ -51,20 +51,20 @@ fun ComponentCallbacks.bindBool(id: Int, key: String) {
 }
 
 /**
- * inject lazily given dependency for Activity
+ * inject lazily given dependency for Android component
  * @param name - bean name / optional
  */
 inline fun <reified T> ComponentCallbacks.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
 
 /**
- * lazy inject given property for Activity
+ * lazy inject given property for Android component
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> ComponentCallbacks.property(key: String) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
 
 /**
- * lazy inject  given property for Activity
+ * lazy inject  given property for Android component
  * give a default value if property is missing
  *
  * @param key - key property
