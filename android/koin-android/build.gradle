@@ -34,16 +34,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
     compile "org.koin:koin-core:$koin_version"
     testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
-
-    // Support Library
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
 }
 
 repositories {
