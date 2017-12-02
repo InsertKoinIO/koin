@@ -24,7 +24,7 @@ class MainApplication : Application() {
         }
 
         // start Koin context
-        startKoin(this, weatherAppModules())
+        startKoin(weatherAppModules())
 
         Iconify.with(WeathericonsModule())
     }
