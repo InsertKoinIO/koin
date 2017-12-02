@@ -2,8 +2,10 @@ package org.koin.android.ext.android
 
 import android.app.Application
 import android.content.ComponentCallbacks
+import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.android.ext.koin.startKoin
+import org.koin.android.ext.koin.bindAndroidProperties
+import org.koin.android.ext.koin.init
 import org.koin.android.module.AndroidModule
 import org.koin.standalone.StandAloneContext
 
@@ -17,7 +19,9 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  * Create a new Koin Context
  * @param modules - list of AndroidModule
  */
-fun Application.startKoin(modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) = StandAloneContext.startKoin(this, modules, properties)
+fun Application.startKoin(modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) {
+    StandAloneContext.koinContext = Koin().bindAndroidProperties(this).bindAdditionalProperties(properties).init(this).build(modules)
+}
 
 /**
  * Bind an Android String to Koin property
