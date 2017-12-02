@@ -62,7 +62,7 @@ class BeanRegistry {
      * Create context scope
      */
     fun createScope(scope: String, parentScope: String?): Scope {
-        Koin.logger.log("(Scope) Create [$scope] with parent [$parentScope]")
+        Koin.logger.log("[Scope] create [$scope] with parent [$parentScope]")
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
         return s

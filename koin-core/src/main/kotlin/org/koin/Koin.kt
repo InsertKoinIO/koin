@@ -43,7 +43,7 @@ class Koin {
             val koinProperties = Properties()
             FileInputStream(path).use { koinProperties.load(it) }
             val nb = propertyResolver.import(koinProperties)
-            logger.log("(Properties) loaded $nb properties from '$koinPropFilename' file")
+            logger.log("[init] loaded $nb properties from '$koinPropFilename' file")
         }
         return this
     }
@@ -53,7 +53,7 @@ class Koin {
      */
     fun bindSystemProperties(): Koin {
         val nb = propertyResolver.import(System.getProperties())
-        logger.log("(Properties) loaded $nb properties from system properties")
+        logger.log("[init] loaded $nb properties from system properties")
         return this
     }
 
@@ -68,7 +68,7 @@ class Koin {
             registerDefinitions(context)
         }
 
-        logger.log("(Registry) loaded ${beanRegistry.definitions.size} definitions")
+        logger.log("[init] loaded ${beanRegistry.definitions.size} definitions")
         return koinContext
     }
 
@@ -81,7 +81,7 @@ class Koin {
 
         // Add definitions
         context.definitions.forEach { definition ->
-            logger.log("(Bean) define : $definition")
+            logger.log("[init] declare : $definition")
             beanRegistry.declare(definition, scope)
         }
 
