@@ -15,10 +15,9 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Create a new Koin Context
- * @param application - Android application
  * @param modules - list of AndroidModule
  */
-fun Application.startKoin(application: Application, modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) = StandAloneContext.startKoin(application, modules, properties)
+fun Application.startKoin(modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) = StandAloneContext.startKoin(this, modules, properties)
 
 /**
  * Bind an Android String to Koin property
