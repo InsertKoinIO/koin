@@ -5,8 +5,8 @@ import io.ktor.application.call
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
+import org.koin.ktor.ext.getProperty
 import org.koin.ktor.ext.inject
-import org.koin.ktor.ext.property
 import org.koin.ktor.ext.setProperty
 import org.koin.sample.BusinessServiceImpl.Companion.BYE_JOB
 import org.koin.sample.BusinessServiceImpl.Companion.HI_JOB
@@ -18,8 +18,8 @@ import org.koin.sample.KoinModule.Properties.MY_MODEL
  */
 fun Application.jobRoutes() {
 
-    // Inject service bean. Could alse be written : val service by inject<BusinessService>()
-    val service by inject<BusinessService>()
+    // Inject service bean. Could also be written : val service by inject<BusinessService>()
+    val service: BusinessService by inject()
 
     routing {
 
@@ -29,7 +29,7 @@ fun Application.jobRoutes() {
 
         get("/model") {
             // Inject lazily model object from properties
-            val model by property<Model>(MY_MODEL)
+            val model = getProperty<Model>(MY_MODEL)
             call.respondText("Model value = ${model.value}")
         }
 
