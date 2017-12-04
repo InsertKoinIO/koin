@@ -45,7 +45,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
     /**
      * Resolve a dependency for its bean definition
      */
-    fun <T> resolveInstance(clazz: KClass<*>, resolver: () -> BeanDefinition<*>): T {
+    fun <T> resolveInstance(clazz: KClass<*>, resolver: () -> BeanDefinition<*>): T = synchronized(this) {
         logger.log("Resolve [${clazz.java.canonicalName}] <> [${resolutionStack.joinToString(separator = ",") { it.java.canonicalName }}]")
 
         if (resolutionStack.contains(clazz)) {
