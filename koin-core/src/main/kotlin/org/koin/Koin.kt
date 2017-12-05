@@ -61,16 +61,14 @@ class Koin {
     /**
      * load given list of module instances into current StandAlone koin context
      */
-    fun <T : Module> build(modules: List<T>) : Koin {
-        val koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
+    fun build(modules: List<Module>): Koin {
+        StandAloneContext.koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
+
         modules.forEach { module ->
-            module.koinContext = koinContext
-            val context = module.context()
-            registerDefinitions(context)
+            registerDefinitions(module.value)
         }
 
         logger.log("[init] loaded ${beanRegistry.definitions.size} definitions")
-        StandAloneContext.koinContext = koinContext
         return this
     }
 

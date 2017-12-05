@@ -1,8 +1,11 @@
 package org.koin.test.core
 
+import org.junit.Before
 import org.junit.Test
+import org.koin.Koin
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
+import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContexts
@@ -12,32 +15,28 @@ import org.koin.test.ext.junit.assertScopeParent
 
 class DSLTest : AbstractKoinTest() {
 
-    class FlatContextsModule() : Module() {
-        override fun context() = applicationContext {
+    val FlatContextsModule = applicationContext {
 
+        provide { ComponentA() }
+
+        context(name = "B") {
+            provide { ComponentB() }
+        }
+
+        context(name = "C") {
+            provide { ComponentC() }
+        }
+    }
+
+    val HierarchyContextsModule = applicationContext {
+        context(name = "A") {
             provide { ComponentA() }
 
             context(name = "B") {
                 provide { ComponentB() }
-            }
 
-            context(name = "C") {
-                provide { ComponentC() }
-            }
-        }
-    }
-
-    class HierarchyContextsModule() : Module() {
-        override fun context() = applicationContext {
-            context(name = "A") {
-                provide { ComponentA() }
-
-                context(name = "B") {
-                    provide { ComponentB() }
-
-                    context(name = "C") {
-                        provide { ComponentC() }
-                    }
+                context(name = "C") {
+                    provide { ComponentC() }
                 }
             }
         }
@@ -47,10 +46,14 @@ class DSLTest : AbstractKoinTest() {
     class ComponentB
     class ComponentC
 
+    @Before
+    fun before() {
+        Koin.logger = PrintLogger()
+    }
 
     @Test
     fun `can create flat contexts`() {
-        startKoin(listOf(FlatContextsModule()))
+        startKoin(listOf(FlatContextsModule))
 
         assertContexts(3)
         assertDefinitions(3)
@@ -65,7 +68,7 @@ class DSLTest : AbstractKoinTest() {
 
     @Test
     fun `can create hierarchic contexts`() {
-        startKoin(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule))
 
         assertContexts(4)
         assertDefinitions(3)

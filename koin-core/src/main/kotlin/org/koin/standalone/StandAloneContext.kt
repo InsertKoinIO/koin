@@ -2,6 +2,7 @@ package org.koin.standalone
 
 import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 
