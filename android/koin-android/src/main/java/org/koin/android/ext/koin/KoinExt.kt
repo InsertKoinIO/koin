@@ -8,10 +8,21 @@ import org.koin.core.scope.Scope
 import java.util.*
 
 /**
+ * Start Koin Android features
+ * - assets/koin.proeprties loading
+ * - application/context binding
+ */
+infix fun Koin.with(application: Application) {
+    Koin.logger.log("[init] Load Android features")
+    bindAndroidProperties(application).init(application)
+}
+
+/**
  * init android Application dependency in Koin context
  * @param application - Android Application instance
  */
 fun Koin.init(application: Application): Koin {
+    Koin.logger.log("[init] ~ added Android application bean reference")
     // provide Application defintion
     beanRegistry.declare(BeanDefinition(clazz = Application::class, bindTypes = listOf(Context::class), definition = { application }), Scope.root())
     return this

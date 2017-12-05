@@ -7,6 +7,7 @@ import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 import org.koin.log.EmptyLogger
 import org.koin.log.Logger
+import org.koin.standalone.StandAloneContext
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
@@ -58,9 +59,9 @@ class Koin {
     }
 
     /**
-     * load given list of module instances into current koin context
+     * load given list of module instances into current StandAlone koin context
      */
-    fun <T : Module> build(modules: List<T>): KoinContext {
+    fun <T : Module> build(modules: List<T>) : Koin {
         val koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
         modules.forEach { module ->
             module.koinContext = koinContext
@@ -69,7 +70,8 @@ class Koin {
         }
 
         logger.log("[init] loaded ${beanRegistry.definitions.size} definitions")
-        return koinContext
+        StandAloneContext.koinContext = koinContext
+        return this
     }
 
     /**

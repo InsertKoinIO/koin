@@ -21,7 +21,7 @@ object StandAloneContext {
     /**
      * Koin starter
      */
-    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()) {
+    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
         if (isStarted) {
             throw AlreadyStartedException()
         }
@@ -34,8 +34,9 @@ object StandAloneContext {
         }
 
         // Build koin context
-        koinContext = koin.build(list)
+        val build = koin.build(list)
         isStarted = true
+        return build
     }
 
     /**
