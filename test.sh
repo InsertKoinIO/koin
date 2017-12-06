@@ -17,3 +17,6 @@ cd kotlin-sampleapp
 gradle clean test --info
 cd ..
 
+cd ktor-starter
+gradle clean test --info
+cd ..
