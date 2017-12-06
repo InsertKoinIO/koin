@@ -65,10 +65,14 @@ class Koin {
         StandAloneContext.koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
 
         modules.forEach { module ->
-            registerDefinitions(module.value)
+            registerDefinitions(module())
         }
 
         logger.log("[init] loaded ${beanRegistry.definitions.size} definitions")
+
+        if (Koin.useContextIsolation) {
+            logger.log("[init] context isolation activated")
+        }
         return this
     }
 
@@ -94,5 +98,10 @@ class Koin {
          * Koin Logger
          */
         var logger: Logger = EmptyLogger()
+
+        /**
+         * Context isolation/visibility check
+         */
+        var useContextIsolation = false
     }
 }

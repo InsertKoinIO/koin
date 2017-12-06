@@ -9,9 +9,9 @@ import org.koin.standalone.StandAloneContext
 /**
  * Create Context
  */
-fun applicationContext(init: Context.() -> Unit) = kotlin.lazy { Context(Scope.ROOT, StandAloneContext.koinContext as KoinContext).apply(init) }
+fun applicationContext(init: Context.() -> Unit): Module = { Context(Scope.ROOT, StandAloneContext.koinContext as KoinContext).apply(init) }
 
 /**
- * Module - lazy evaluated Context
+ * Module - function that gives a module
  */
-typealias Module = Lazy<Context>
+typealias Module = () -> Context

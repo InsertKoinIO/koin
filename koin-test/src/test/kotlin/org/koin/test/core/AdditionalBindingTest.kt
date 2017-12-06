@@ -31,8 +31,8 @@ class AdditionalBindingTest : AbstractKoinTest() {
     }
 
     val TwoBoundModule = applicationContext {
-        provide { ComponentB() } bind (OtherInterfaceComponent::class)
-        provide { ComponentC() } bind (OtherInterfaceComponent::class)
+        provide { ComponentB() } bind OtherInterfaceComponent::class
+        provide { ComponentC() } bind OtherInterfaceComponent::class
     }
 
     class ComponentA : InterfaceComponent

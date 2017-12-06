@@ -2,6 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.core.scope.Scope
@@ -66,9 +67,14 @@ class StackTest : AbstractKoinTest() {
     class ComponentC(val componentA: ComponentA)
     class ComponentD(val componentB: ComponentB)
 
+    @Before
+    fun before() {
+        Koin.logger = PrintLogger()
+        Koin.useContextIsolation = true
+    }
+
     @Test
     fun `has flat visibility`() {
-        Koin.logger = PrintLogger()
         startKoin(listOf(FlatContextsModule))
 
         assertContexts(3)
@@ -88,7 +94,6 @@ class StackTest : AbstractKoinTest() {
 
     @Test
     fun `has hierarchic visibility`() {
-        Koin.logger = PrintLogger()
         startKoin(listOf(HierarchyContextsModule))
 
         Assert.assertNotNull(get<ComponentC>())

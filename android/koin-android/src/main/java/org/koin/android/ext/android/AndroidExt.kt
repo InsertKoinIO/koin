@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.ComponentCallbacks
 import org.koin.KoinContext
 import org.koin.android.ext.koin.with
-import org.koin.android.module.AndroidModule
+import org.koin.dsl.module.Module
 import org.koin.standalone.StandAloneContext
 
 
@@ -20,10 +20,9 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  *
  * will be soon deprecated for starKoin() with <application>
  */
-fun Application.startKoin(application: Application, modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) {
+fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap()) {
     StandAloneContext.startKoin(modules, properties = properties) with application
 }
-
 
 /**
  * Bind an Android String to Koin property

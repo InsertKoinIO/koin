@@ -2,7 +2,6 @@ package org.koin.standalone
 
 import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 
@@ -22,7 +21,7 @@ object StandAloneContext {
     /**
      * Koin starter
      */
-    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
+    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
         if (isStarted) {
             throw AlreadyStartedException()
         }
@@ -43,7 +42,7 @@ object StandAloneContext {
     /**
      * Close actual Koin context
      */
-    fun closeKoin() {
+    fun closeKoin() = synchronized(this) {
         if (isStarted) {
             // Close all
             (koinContext as KoinContext).close()

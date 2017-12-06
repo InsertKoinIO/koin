@@ -24,7 +24,7 @@ class MVPArchitectureTest : AbstractKoinTest() {
     }
 
     val DataSourceModule = applicationContext {
-        provide { DebugDatasource() } bind (Datasource::class)
+        provide { DebugDatasource() } bind Datasource::class
     }
 
 

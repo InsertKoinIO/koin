@@ -6,7 +6,6 @@ import org.koin.core.bean.BeanRegistry
 import org.koin.error.BeanDefinitionException
 import org.koin.error.BeanInstanceCreationException
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -18,21 +17,21 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
 
     /**
      * Retrieve or create bean instance
+     * @return Instance / has been created
      */
-    fun <T> retrieveInstance(def: BeanDefinition<*>): T {
+    fun <T> retrieveInstance(def: BeanDefinition<*>): Pair<T, Boolean> {
         // Factory
         return if (def.isNotASingleton()) {
-            Koin.logger.log("[Instance] create [$def]")
-            createInstance(def)
+            Pair(createInstance(def), true)
         } else {
             // Singleton
-            var instance = findInstance<T>(def)
-            if (instance == null) {
-                Koin.logger.log("[Instance] create [$def]")
-                instance = createInstance(def)
+            val found: T? = findInstance<T>(def)
+            val instance: T = found ?: createInstance(def)
+            val created = found == null
+            if (created) {
                 saveInstance(def, instance)
             }
-            instance ?: throw BeanInstanceCreationException("Couldn't create instance for $def")
+            Pair(instance, created)
         }
     }
 
@@ -64,7 +63,7 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
                 instance as T
                 return instance
             } catch (e: Throwable) {
-                Koin.logger.err("[Instance] Error can't create [$def] due to error : \n${e.stackTrace.take(10).joinToString(separator = "\n")}")
+                Koin.logger.err("Error can't create [$def] due to error : \n${e.stackTrace.take(10).joinToString(separator = "\n")}")
                 throw BeanInstanceCreationException("Can't create bean $def due to error : $e")
             }
         }
@@ -76,13 +75,6 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
     fun dropAllInstances(definitions: List<BeanDefinition<*>>) {
         definitions.forEach { instances.remove(it) }
     }
-
-//    /**
-//     * Drop instance for given bean definition class
-//     */
-//    fun dropInstance(clazz: KClass<*>) {
-//        dropAllInstances(instances.keys().toList().filter { it.clazz == clazz })
-//    }
 
     /**
      * Clear all resources

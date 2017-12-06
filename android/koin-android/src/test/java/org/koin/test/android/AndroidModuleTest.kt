@@ -3,8 +3,11 @@ package org.koin.test.android
 import android.app.Application
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
-import org.koin.android.module.AndroidModule
+import org.koin.Koin
+import org.koin.dsl.module.applicationContext
+import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.releaseContext
@@ -25,46 +28,41 @@ class AndroidModuleTest : AbstractKoinTest() {
         val URL = "URL"
     }
 
-    class SampleModule : AndroidModule() {
-        override fun context() =
-                applicationContext {
-                    provide { mock(Application::class.java) }
-                    provide { AndroidComponent(androidApplication) }
-                }
+    val SampleModule = applicationContext {
+        provide { mock(Application::class.java) }
+        provide { AndroidComponent(get()) }
     }
 
-    class BadModule : AndroidModule() {
-        override fun context() =
-                applicationContext {
-                    provide { AndroidComponent(androidApplication) }
-                }
+
+    val BadModule = applicationContext {
+        provide { AndroidComponent(get()) }
     }
 
-    class ActivityModule : AndroidModule() {
-        override fun context() =
-                applicationContext {
-                    context(CTX_ACTIVITY_MODULE) {
-                        provide { OtherService(get(), getProperty(URL)) }
-                    }
-                }
-
-        companion object {
-            val CTX_ACTIVITY_MODULE = "ActivityModule"
+    val ActivityModule = applicationContext {
+        context(CTX_ACTIVITY_MODULE) {
+            provide { OtherService(get(), getProperty(URL)) }
         }
+
     }
+    val CTX_ACTIVITY_MODULE = "ActivityModule"
 
     class AndroidComponent(val application: Application)
 
     class OtherService(val androidComponent: AndroidComponent, val url: String)
 
+    @Before
+    fun before(){
+        Koin.logger = PrintLogger()
+    }
+
     @Test
     fun should_inject_by_scope() {
-        startKoin(listOf(SampleModule(), ActivityModule()))
+        startKoin(listOf(SampleModule, ActivityModule))
 
         assertContexts(2)
         assertDefinitions(3)
         assertRemainingInstances(0)
-        assertContextInstances(ActivityModule.CTX_ACTIVITY_MODULE, 0)
+        assertContextInstances(CTX_ACTIVITY_MODULE, 0)
 
         setProperty(URL, "URL")
 
@@ -74,19 +72,19 @@ class AndroidModuleTest : AbstractKoinTest() {
         assertEquals(component, service.androidComponent)
         assertEquals(get<Application>(), component.application)
 
-        assertContextInstances(ActivityModule.CTX_ACTIVITY_MODULE, 1)
+        assertContextInstances(CTX_ACTIVITY_MODULE, 1)
         assertDefinitions(3)
         assertRemainingInstances(3)
 
-        releaseContext(ActivityModule.CTX_ACTIVITY_MODULE)
-        assertContextInstances(ActivityModule.CTX_ACTIVITY_MODULE, 0)
+        releaseContext(CTX_ACTIVITY_MODULE)
+        assertContextInstances(CTX_ACTIVITY_MODULE, 0)
         assertDefinitions(3)
         assertRemainingInstances(2)
     }
 
     @Test
     fun should_scope_no_scope() {
-        startKoin(listOf(BadModule()))
+        startKoin(listOf(BadModule))
 
         assertContexts(1)
         assertDefinitions(1)
@@ -105,7 +103,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_init_context_and_dependency() {
-        startKoin(listOf(SampleModule()))
+        startKoin(listOf(SampleModule))
 
         assertDefinitions(2)
         assertRemainingInstances(0)
@@ -120,7 +118,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_not_run() {
-        startKoin(listOf(BadModule()))
+        startKoin(listOf(BadModule))
 
         assertDefinitions(1)
         assertRemainingInstances(0)

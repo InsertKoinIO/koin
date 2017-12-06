@@ -46,27 +46,33 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Resolve a dependency for its bean definition
      */
     fun <T> resolveInstance(clazz: KClass<*>, resolver: () -> BeanDefinition<*>): T = synchronized(this) {
-        logger.log("[Context] Resolve [${clazz.java.canonicalName}]")
-
         if (resolutionStack.contains(clazz)) {
-            logger.err("[Context] Cyclic dependency detected while resolving $clazz")
+            logger.err("Cyclic dependency detected while resolving $clazz")
             throw DependencyResolutionException("Cyclic dependency for $clazz")
         }
 
-        if (!beanRegistry.isVisible(clazz, resolutionStack.toList())) {
-            logger.err("[Context] Try to resolve $clazz but is not visible from classes context : $resolutionStack")
-            throw DependencyResolutionException("Try to resolve $clazz but is not visible from classes context : $resolutionStack")
+        // Context isolation
+        if (Koin.useContextIsolation) {
+            if (!beanRegistry.isVisible(clazz, resolutionStack.toList())) {
+                logger.err("Try to resolve $clazz but is not visible from classes context : $resolutionStack")
+                throw DependencyResolutionException("Try to resolve $clazz but is not visible from classes context : $resolutionStack")
+            }
         }
 
+        val indent = resolutionStack.joinToString(separator = "") { "\t" }
+        logger.log("${indent}Resolve [${clazz.java.canonicalName}]")
+
         resolutionStack.add(clazz)
-
         val beanDefinition: BeanDefinition<*> = resolver()
-
-        val instance = instanceFactory.retrieveInstance<T>(beanDefinition)
+        val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition)
+        if (created) {
+            logger.log("${indent} * Created")
+        }
 
         val head = resolutionStack.pop()
+
         if (head != clazz) {
-            logger.err("[Context] Call stack error -- $resolutionStack")
+            logger.err("Call stack error -- $resolutionStack")
             resolutionStack.clear()
             throw IllegalStateException("Calling HEAD was $head but should be $clazz")
         }
@@ -89,7 +95,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param name
      */
     fun releaseContext(name: String) {
-        logger.log("[Context] Release context : $name")
+        logger.log("Release context : $name")
 
         val definitions: List<BeanDefinition<*>> = beanRegistry.getDefinitionsFromScope(name)
         instanceFactory.dropAllInstances(definitions)
