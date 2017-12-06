@@ -3,11 +3,14 @@ package org.koin.sampleapp.view.weather
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_weather.*
-import org.koin.android.contextaware.ContextAwareActivity
-import org.koin.android.ext.android.*
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.property
+import org.koin.android.ext.android.releaseContext
+import org.koin.android.ext.android.setProperty
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.model.DailyForecastModel
@@ -18,7 +21,7 @@ import java.util.*
 /**
  * Weather View
  */
-class WeatherResultActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACTIVITY), WeatherResultContract.View {
+class WeatherResultActivity : AppCompatActivity(), WeatherResultContract.View {
 
     override val presenter by inject<WeatherResultContract.Presenter>()
     // Get address
@@ -54,6 +57,7 @@ class WeatherResultActivity : ContextAwareActivity(WeatherModule.CTX_WEATHER_ACT
 
     override fun onPause() {
         presenter.stop()
+        releaseContext(WeatherModule.CTX_WEATHER_ACTIVITY)
         super.onPause()
     }
 
