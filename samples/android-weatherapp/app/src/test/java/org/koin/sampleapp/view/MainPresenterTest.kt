@@ -24,7 +24,7 @@ class MainPresenterTest : KoinTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
         Koin.logger = PrintLogger()
-        startKoin(testLocalDatasource())
+        startKoin(testLocalDatasource)
 
         presenter.view = view
     }

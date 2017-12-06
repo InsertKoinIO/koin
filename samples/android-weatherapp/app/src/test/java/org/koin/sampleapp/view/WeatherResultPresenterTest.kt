@@ -8,7 +8,7 @@ import org.koin.log.PrintLogger
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.util.any
 import org.koin.sampleapp.view.weather.WeatherResultContract
-import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
@@ -25,14 +25,14 @@ class WeatherResultPresenterTest : KoinTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
         Koin.logger = PrintLogger()
-        startKoin(testLocalDatasource())
+        startKoin(testLocalDatasource)
 
         presenter.view = view
     }
 
     @After
     fun after() {
-        StandAloneContext.closeKoin()
+        closeKoin()
     }
 
     @Test

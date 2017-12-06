@@ -29,6 +29,6 @@ class HelloApp : KoinComponent {
 }
 
 fun main(vararg args: String) {
-    startKoin(listOf(HelloModule()), properties = mapOf(WHO to "Koin :)"))
+    startKoin(listOf(HelloModule), properties = mapOf(WHO to "Koin :)"))
     HelloApp().seyHello()
 }

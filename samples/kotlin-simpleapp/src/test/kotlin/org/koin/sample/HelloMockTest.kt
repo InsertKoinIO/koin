@@ -3,7 +3,7 @@ package org.koin.sample
 import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
-import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
@@ -11,10 +11,8 @@ import org.koin.test.AbstractKoinTest
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 
-class MockModule : Module() {
-    override fun context() = applicationContext {
-        provide { mock(HelloService::class.java) }
-    }
+val MockModule = applicationContext {
+    provide { mock(HelloService::class.java) }
 }
 
 class HelloMockTest : AbstractKoinTest() {
@@ -24,7 +22,7 @@ class HelloMockTest : AbstractKoinTest() {
     @Before
     fun before() {
         Koin.logger = PrintLogger()
-        startKoin(listOf(MockModule()))
+        startKoin(listOf(MockModule))
     }
 
     @Test

@@ -2,7 +2,9 @@ package org.koin.sampleapp.di
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.module.AndroidModule
+import org.koin.dsl.module.applicationContext
+import org.koin.sampleapp.di.Context.CTX_MAIN_ACTIVITY
+import org.koin.sampleapp.di.Context.CTX_WEATHER_ACTIVITY
 import org.koin.sampleapp.di.Properties.SERVER_URL
 import org.koin.sampleapp.repository.WeatherDatasource
 import org.koin.sampleapp.repository.WeatherRepository
@@ -18,39 +20,40 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-// Gather all app modules
-fun weatherAppModules() = listOf(WeatherModule(), RemoteDataSourceModule(), RxModule())
-
-class WeatherModule : AndroidModule() {
-    override fun context() = applicationContext {
-        context(CTX_MAIN_ACTIVITY) {
-            provide { MainPresenter(get(), get()) } bind MainContract.Presenter::class
-        }
-        context(CTX_WEATHER_ACTIVITY) {
-            provide { WeatherResultPresenter(get(), get()) } bind WeatherResultContract.Presenter::class
-        }
-
-        provide { WeatherRepositoryImpl(get()) } bind WeatherRepository::class
+val WeatherModule = applicationContext {
+    context(CTX_MAIN_ACTIVITY) {
+        provide { MainPresenter(get(), get()) } bind MainContract.Presenter::class
+    }
+    context(CTX_WEATHER_ACTIVITY) {
+        provide { WeatherResultPresenter(get(), get()) } bind WeatherResultContract.Presenter::class
     }
 
-    companion object {
-        const val CTX_MAIN_ACTIVITY = "MainActivity"
-        const val CTX_WEATHER_ACTIVITY = "WeatherResultActivity"
-    }
+    provide { WeatherRepositoryImpl(get()) } bind WeatherRepository::class
 }
+
+val RemoteDataSourceModule = applicationContext {
+    // provided web components
+    provide { createOkHttpClient() }
+
+    // Fill property
+    provide { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
+}
+
+val RxModule = applicationContext {
+    provide { ApplicationSchedulerProvider() } bind SchedulerProvider::class
+}
+
+// Gather all app modules
+val weatherAppModules = listOf(WeatherModule, RemoteDataSourceModule, RxModule)
+
+object Context {
+    const val CTX_MAIN_ACTIVITY = "MainActivity"
+    const val CTX_WEATHER_ACTIVITY = "WeatherResultActivity"
+}
+
 
 object Properties {
     const val SERVER_URL = "SERVER_URL"
-}
-
-class RemoteDataSourceModule : AndroidModule() {
-    override fun context() = applicationContext {
-        // provided web components
-        provide { createOkHttpClient() }
-
-        // Fill property
-        provide { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
-    }
 }
 
 fun createOkHttpClient(): OkHttpClient {
@@ -69,10 +72,4 @@ inline fun <reified T> createWebService(okHttpClient: OkHttpClient, url: String)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
     return retrofit.create(T::class.java)
-}
-
-class RxModule : AndroidModule() {
-    override fun context() = applicationContext {
-        provide { ApplicationSchedulerProvider() } bind (SchedulerProvider::class)
-    }
 }

@@ -20,7 +20,7 @@ class HelloAppTest : AbstractKoinTest() {
     @Before
     fun before() {
         Koin.logger = PrintLogger()
-        startKoin(listOf(HelloModule()), properties = mapOf(WHO to testVal))
+        startKoin(listOf(HelloModule), properties = mapOf(WHO to testVal))
     }
 
     @Test

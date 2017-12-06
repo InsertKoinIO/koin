@@ -30,19 +30,19 @@ class DryRunTest : KoinTest {
 
     @Test
     fun normalConfiguration() {
-        startKoin(weatherAppModules(), properties = defaultProperties())
+        startKoin(weatherAppModules, properties = defaultProperties())
         dryRun()
     }
 
     @Test
     fun testRemoteConfiguration() {
-        startKoin(testRemoteDatasource(), properties = defaultProperties())
+        startKoin(testRemoteDatasource, properties = defaultProperties())
         dryRun()
     }
 
     @Test
     fun testLocalConfiguration() {
-        startKoin(testLocalDatasource(), properties = defaultProperties())
+        startKoin(testLocalDatasource, properties = defaultProperties())
         dryRun()
     }
 }

@@ -12,7 +12,7 @@ import org.koin.android.ext.android.property
 import org.koin.android.ext.android.releaseContext
 import org.koin.android.ext.android.setProperty
 import org.koin.sampleapp.R
-import org.koin.sampleapp.di.WeatherModule
+import org.koin.sampleapp.di.Context.CTX_WEATHER_ACTIVITY
 import org.koin.sampleapp.model.DailyForecastModel
 import org.koin.sampleapp.view.detail.WeatherDetailActivity
 import org.koin.sampleapp.view.main.PROPERTY_ADDRESS
@@ -57,7 +57,7 @@ class WeatherResultActivity : AppCompatActivity(), WeatherResultContract.View {
 
     override fun onPause() {
         presenter.stop()
-        releaseContext(WeatherModule.CTX_WEATHER_ACTIVITY)
+        releaseContext(CTX_WEATHER_ACTIVITY)
         super.onPause()
     }
 

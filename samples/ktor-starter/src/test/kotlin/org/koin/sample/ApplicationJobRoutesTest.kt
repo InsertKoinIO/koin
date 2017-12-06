@@ -9,9 +9,9 @@ import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.log.PrintLogger
-import org.koin.sample.KoinModule.Properties.BYE_MSG
-import org.koin.sample.KoinModule.Properties.HELLO_MSG
-import org.koin.sample.KoinModule.Properties.MY_MODEL
+import org.koin.sample.Properties.BYE_MSG
+import org.koin.sample.Properties.HELLO_MSG
+import org.koin.sample.Properties.MY_MODEL
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.getProperty
 import org.koin.test.AbstractKoinTest
@@ -23,7 +23,7 @@ class ApplicationJobRoutesTest : AbstractKoinTest() {
     @Before
     fun before() {
         Koin.logger = PrintLogger()
-        startKoin(listOf(KoinModule()),
+        startKoin(listOf(KoinModule),
                 properties = mapOf(HELLO_MSG to "Bonjour", BYE_MSG to "Au revoir", MY_MODEL to Model("Test value")))
     }
 
