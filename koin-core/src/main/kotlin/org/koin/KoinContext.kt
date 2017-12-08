@@ -60,13 +60,13 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         }
 
         val indent = resolutionStack.joinToString(separator = "") { "\t" }
-        logger.log("${indent}Resolve [${clazz.java.canonicalName}]")
+        val beanDefinition: BeanDefinition<*> = resolver()
+        logger.log("${indent}Resolve [${clazz.java.canonicalName}] ~ $beanDefinition")
 
         resolutionStack.add(clazz)
-        val beanDefinition: BeanDefinition<*> = resolver()
         val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition)
         if (created) {
-            logger.log("${indent} * Created")
+            logger.log("${indent}(*) Created")
         }
 
         val head = resolutionStack.pop()
