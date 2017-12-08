@@ -13,7 +13,7 @@ import org.koin.test.AbstractKoinTest
 class HelloAppTest : AbstractKoinTest() {
 
     val model by inject<HelloModel>()
-    val service by inject<HelloServiceImpl>()
+    val service by inject<HelloService>()
 
     val testVal = "TEST"
 

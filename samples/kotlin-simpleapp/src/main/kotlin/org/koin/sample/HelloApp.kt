@@ -9,11 +9,12 @@ import org.koin.standalone.inject
 data class HelloModel(val who: String)
 
 interface HelloService {
+    val helloModel: HelloModel
     fun seyHello()
 }
 
 // service class to say hello
-class HelloServiceImpl(val helloModel: HelloModel) : HelloService {
+class HelloServiceImpl(override val helloModel: HelloModel) : HelloService {
     override fun seyHello() = println("Hello ${helloModel.who}")
 }
 

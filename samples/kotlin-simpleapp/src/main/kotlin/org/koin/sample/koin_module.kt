@@ -7,7 +7,7 @@ import org.koin.sample.Property.WHO
 // Koin module
 val HelloModule = applicationContext {
     provide { HelloModel(getProperty(WHO)) }
-    provide { HelloServiceImpl(get()) } bind HelloService::class
+    provide { HelloServiceImpl(get()) as HelloService }
 }
 
 // properties

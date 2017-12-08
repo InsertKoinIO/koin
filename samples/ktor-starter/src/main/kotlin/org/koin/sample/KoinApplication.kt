@@ -48,5 +48,5 @@ object Properties {
  */
 val KoinModule = applicationContext {
     // Business Service binding definition
-    provide { BusinessServiceImpl() } bind BusinessService::class
+    provide { BusinessServiceImpl() as BusinessService }
 }
