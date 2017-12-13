@@ -25,13 +25,13 @@ class HelloAppTest : AbstractKoinTest() {
 
     @Test
     fun testInjectedComponents() {
-        assertEquals(model, service.helloModel)
         assertEquals(model.who, testVal)
+        assertEquals("Hello " + model.who, service.hello())
     }
 
     @Test
     fun tesKoinComponents() {
-        val helloApp = HelloApp()
+        val helloApp = HelloApplication()
         assertEquals(service, helloApp.helloService)
     }
 }

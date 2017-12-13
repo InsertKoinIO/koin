@@ -27,10 +27,8 @@ class HelloMockTest : AbstractKoinTest() {
 
     @Test
     fun tesKoinComponents() {
-        val helloApp = HelloApp()
+        HelloApplication()
 
-        helloApp.seyHello()
-
-        Mockito.verify(service).seyHello()
+        Mockito.verify(service).hello()
     }
 }
