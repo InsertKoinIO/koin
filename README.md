@@ -27,7 +27,10 @@ repositories {
         jcenter()    
 }
 
-// Koin for Android
+// Koin for Kotlin apps
+compile 'org.koin:koin-core:0.6.1'
+
+// Koin for Android apps
 compile 'org.koin:koin-android:0.6.1'
 
 // Koin Testing tools
@@ -36,7 +39,7 @@ testCompile 'org.koin:koin-test:0.6.1'
 
 ### Setup your Application
 
-To start KOIN and your modules, you just have to use the `startKoin()` function in your Android *Application* class like below:
+To start KOIN and your modules, you just have to use the `startKoin()` function. In your Android *Application* class you start it like:
 
 ```Kotlin
 class MainApplication : Application(){
@@ -51,6 +54,14 @@ class MainApplication : Application(){
 
 The `startKoin` function requires an `Application` instance, and a a list of modules to run. 
 
+If your have a Kotlin app, just start Koin:
+
+```Kotlin
+fun main(vararg args : String){
+    startKoin(/* your list of modules */)
+}
+```
+
 ## Declaring your dependencies
 
 To declare your dependencies, you have to declare it in **modules**.
@@ -58,7 +69,7 @@ To declare your dependencies, you have to declare it in **modules**.
 To create a module, make a class and **extends** your `AndroidModule`. Implements the `context()` function by using the `applicationContext` function builder like below:
 
 ```Kotlin
-class WeatherModule : AndroidModule() {
+class WeatherModule : Module() {
     override fun context() = applicationContext {
         // WeatherActivity context
         context(name = "WeatherActivity") {
