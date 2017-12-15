@@ -1,4 +1,4 @@
-![logo](./img/insert_koin_android_logo.jpg)
+![logo](./img/insert_koin.png)
 
 ### What's KOIN?
 
