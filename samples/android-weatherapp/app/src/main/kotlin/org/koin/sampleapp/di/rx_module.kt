@@ -6,5 +6,5 @@ import org.koin.sampleapp.util.rx.SchedulerProvider
 
 val RxModule = applicationContext {
     // provided components
-    provide { ApplicationSchedulerProvider() as SchedulerProvider }
+    bean { ApplicationSchedulerProvider() as SchedulerProvider }
 }

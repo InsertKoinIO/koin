@@ -13,10 +13,10 @@ import java.util.concurrent.TimeUnit
 
 val RemoteDataSourceModule = applicationContext {
     // provided web components
-    provide { createOkHttpClient() }
+    bean { createOkHttpClient() }
 
     // Fill property
-    provide { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
+    bean { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
 }
 
 object Properties {

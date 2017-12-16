@@ -9,7 +9,7 @@ import org.koin.sampleapp.di.Properties.SERVER_URL
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.di.testRemoteDatasource
 import org.koin.sampleapp.di.weatherAppModules
-import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.dryRun
@@ -25,7 +25,7 @@ class DryRunTest : KoinTest {
 
     @After
     fun after() {
-        StandAloneContext.closeKoin()
+        closeKoin()
     }
 
     @Test

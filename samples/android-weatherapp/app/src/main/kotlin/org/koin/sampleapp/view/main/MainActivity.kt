@@ -8,11 +8,8 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.property
-import org.koin.android.ext.android.releaseContext
 import org.koin.android.ext.android.setProperty
 import org.koin.sampleapp.R
-import org.koin.sampleapp.di.Context.CTX_WEATHER_ACTIVITY
-import org.koin.sampleapp.di.WeatherModule
 import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DATE
 import org.koin.sampleapp.view.weather.WeatherResultActivity
 import java.util.*
@@ -49,7 +46,6 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     override fun onPause() {
         presenter.stop()
-        releaseContext(CTX_WEATHER_ACTIVITY)
         super.onPause()
     }
 
