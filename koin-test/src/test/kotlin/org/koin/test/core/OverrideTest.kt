@@ -1,0 +1,83 @@
+package org.koin.test.core
+
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import org.koin.Koin
+import org.koin.dsl.module.applicationContext
+import org.koin.log.PrintLogger
+import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
+import org.koin.test.AbstractKoinTest
+
+class OverrideTest : AbstractKoinTest() {
+
+    val sampleModule1 = applicationContext {
+        provide { ComponentA() } bind MyInterface::class
+        bean { ComponentA() }
+    }
+
+    val sampleModule2 = applicationContext {
+        bean("A") { ComponentA() as MyInterface }
+        bean("B") { ComponentB() as MyInterface }
+    }
+
+    val sampleModule3 = applicationContext {
+        bean { ComponentB() as MyInterface }
+        provide { ComponentA() as MyInterface }
+    }
+
+    val sampleModule4 = applicationContext {
+        bean { ComponentB() as MyInterface }
+        factory { ComponentA() as MyInterface }
+    }
+
+    class ComponentA : MyInterface
+    class ComponentB : MyInterface
+    interface MyInterface
+
+    @Before
+    fun before() {
+        Koin.logger = PrintLogger()
+    }
+
+    @Test
+    fun `override provide with bind`() {
+        startKoin(listOf(sampleModule1))
+
+        assertNotNull(get<ComponentA>())
+
+        try {
+            get<MyInterface>()
+            fail()
+        } catch (e: Exception) {
+        }
+    }
+
+    @Test
+    fun `no override but conflicting def`() {
+        startKoin(listOf(sampleModule2))
+
+        assertNotEquals(get<MyInterface>("A"), get<MyInterface>("B"))
+    }
+
+    @Test
+    fun `override provide with bean`() {
+        startKoin(listOf(sampleModule3))
+
+        val intf = get<MyInterface>()
+        assertNotNull(intf)
+        assertTrue(intf is ComponentA)
+
+    }
+
+    @Test
+    fun `override provide with factory`() {
+        startKoin(listOf(sampleModule4))
+
+        val intf = get<MyInterface>()
+        assertNotNull(intf)
+        assertTrue(intf is ComponentA)
+        assertNotEquals(intf, get<MyInterface>())
+    }
+}

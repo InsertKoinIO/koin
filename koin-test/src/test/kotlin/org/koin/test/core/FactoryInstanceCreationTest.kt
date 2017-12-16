@@ -19,14 +19,14 @@ class FactoryInstanceCreationTest : AbstractKoinTest() {
 
     val FlatModule =
             applicationContext {
-                provideFactory { ComponentA() }
+                factory { ComponentA() }
                 provide { ComponentB(get()) }
                 provide { ComponentC(get(), get()) }
             }
 
     val HierarchicModule =
             applicationContext {
-                provideFactory { ComponentA() }
+                factory { ComponentA() }
 
                 context("B") {
                     provide { ComponentB(get()) }

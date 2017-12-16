@@ -30,6 +30,11 @@ class BeanRegistry {
      * @param def : Bean definition
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
+        val existingBean = definitions.keys.firstOrNull { it == def }
+        existingBean?.let {
+            Koin.logger.log("[Override] $def override $existingBean")
+            definitions.remove(existingBean)
+        }
         definitions += Pair(def, scope)
     }
 

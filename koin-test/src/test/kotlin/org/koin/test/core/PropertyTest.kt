@@ -36,7 +36,7 @@ class PropertyTest : AbstractKoinTest() {
     val MoreComplexModule = applicationContext {
         context("A") {
             provide { ComponentB(get()) }
-            provideFactory { ComponentA(getProperty(KEY)) }
+            factory { ComponentA(getProperty(KEY)) }
         }
     }
 

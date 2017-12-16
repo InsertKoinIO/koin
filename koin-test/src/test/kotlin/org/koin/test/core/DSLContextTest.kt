@@ -13,7 +13,7 @@ import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertScopeParent
 
-class DSLTest : AbstractKoinTest() {
+class DSLContextTest : AbstractKoinTest() {
 
     val FlatContextsModule = applicationContext {
 

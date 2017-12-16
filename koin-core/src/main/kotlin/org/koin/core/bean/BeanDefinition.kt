@@ -36,4 +36,10 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
     private fun bindTypes(): String = "(" + bindTypes.map { it.java.canonicalName }.joinToString() + ")"
 
     override fun toString() = "Bean[name='$name',class=${clazz.java.canonicalName},singleton=$isSingleton,binds~${bindTypes()}]"
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is BeanDefinition<*>){
+            name == other.name && clazz == other.clazz
+        } else false
+    }
 }

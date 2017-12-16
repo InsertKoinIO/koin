@@ -33,7 +33,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     }
 
     /**
-     * Provide a bean definition
+     * Provide a bean definition - default provider definition
      * @param name
      * @param isSingleton
      */
@@ -44,12 +44,24 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     }
 
     /**
-     * Provide a bean definition - as factory (recreate instance each time)
+     * Provide a bean definition - alias to provide
+     * But do not return Bean definition
+     * @param name
      */
-    inline fun <reified T : Any> provideFactory(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(name, T::class, false, definition = definition)
-        definitions += beanDefinition
-        return beanDefinition
+    inline fun <reified T : Any> bean(name: String = "", noinline definition: () -> T) {
+        provide(name, true, definition)
+    }
+
+    /**
+     * Provide a factory bean definition - factory provider
+     * But do not return Bean definition
+     *
+     * (recreate instance each time)
+     *
+     * @param name
+     */
+    inline fun <reified T : Any> factory(name: String = "", noinline definition: () -> T) {
+        provide(name, false, definition)
     }
 
     /**
@@ -74,7 +86,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * @param key - property key
      * @param defaultValue - default value
      */
-    inline fun <reified T> getProperty(key: String, defaultValue : T) = koinContext.propertyResolver.getProperty(key,defaultValue)
+    inline fun <reified T> getProperty(key: String, defaultValue: T) = koinContext.propertyResolver.getProperty(key, defaultValue)
 
     // String display
     override fun toString(): String = "Context[$name]"

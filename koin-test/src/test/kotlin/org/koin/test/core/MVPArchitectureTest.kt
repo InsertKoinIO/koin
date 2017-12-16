@@ -18,8 +18,8 @@ class MVPArchitectureTest : AbstractKoinTest() {
         provide { Repository(get()) }
 
         context("ViewContext") {
-            provideFactory { View(get()) }
-            provideFactory { Presenter(get()) }
+            factory { View(get()) }
+            factory { Presenter(get()) }
         }
     }
 
