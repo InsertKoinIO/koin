@@ -33,8 +33,8 @@ class HelloApplication : KoinComponent {
 
 // Koin module
 val HelloModule = applicationContext {
-    provide { HelloModel(getProperty(WHO)) }
-    provide { HelloServiceImpl(get()) as HelloService }
+    bean { HelloModel(getProperty(WHO)) }
+    bean { HelloServiceImpl(get()) as HelloService }
 }
 
 // properties
