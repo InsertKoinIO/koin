@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     override fun onResume() {
         super.onResume()
         presenter.view = this
+        presenter.clear()
     }
 
     override fun onPause() {

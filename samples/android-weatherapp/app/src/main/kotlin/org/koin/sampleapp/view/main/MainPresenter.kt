@@ -11,6 +11,10 @@ class MainPresenter(val weatherRepository: WeatherRepository, val schedulerProvi
 
     var request: Disposable? = null
 
+    override fun clear() {
+        weatherRepository.clearCache()
+    }
+
     override fun stop() {
         request?.dispose()
     }

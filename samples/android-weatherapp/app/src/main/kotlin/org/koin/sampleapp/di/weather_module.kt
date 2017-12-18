@@ -14,5 +14,5 @@ val weatherModule = applicationContext {
 
     factory { WeatherResultPresenter(get(), get()) as WeatherResultContract.Presenter }
 
-    bean { WeatherRepositoryImpl(get()) as WeatherRepository }
+    provide { WeatherRepositoryImpl(get()) } bind WeatherRepository::class
 }
