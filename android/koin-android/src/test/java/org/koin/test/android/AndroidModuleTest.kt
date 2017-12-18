@@ -6,6 +6,7 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module.applicationContext
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
@@ -30,9 +31,8 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     val SampleModule = applicationContext {
         provide { mock(Application::class.java) }
-        provide { AndroidComponent(get()) }
+        provide { AndroidComponent(androidApplication()) }
     }
-
 
     val BadModule = applicationContext {
         provide { AndroidComponent(get()) }
@@ -51,7 +51,7 @@ class AndroidModuleTest : AbstractKoinTest() {
     class OtherService(val androidComponent: AndroidComponent, val url: String)
 
     @Before
-    fun before(){
+    fun before() {
         Koin.logger = PrintLogger()
     }
 
