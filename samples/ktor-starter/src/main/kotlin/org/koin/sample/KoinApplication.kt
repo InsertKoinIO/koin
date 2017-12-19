@@ -7,17 +7,12 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.koin.Koin
 import org.koin.dsl.module.applicationContext
-import org.koin.log.PrintLogger
 import org.koin.sample.Properties.BYE_MSG
 import org.koin.sample.Properties.MY_MODEL
 import org.koin.standalone.StandAloneContext.startKoin
 
 fun main(args: Array<String>) {
-    // Initialize Koin logger
-    Koin.logger = PrintLogger()
-
     // Start Koin
     startKoin(arrayListOf(KoinModule), properties = mapOf(BYE_MSG to "See you soon", MY_MODEL to Model("Initial value")))
 

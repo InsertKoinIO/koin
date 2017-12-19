@@ -2,9 +2,7 @@ package org.koin.sample
 
 import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
 import org.koin.dsl.module.applicationContext
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AbstractKoinTest
@@ -21,7 +19,6 @@ class HelloMockTest : AbstractKoinTest() {
 
     @Before
     fun before() {
-        Koin.logger = PrintLogger()
         startKoin(listOf(MockModule))
     }
 

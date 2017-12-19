@@ -16,11 +16,6 @@ import org.koin.test.dryRun
  */
 class DryRunTest : KoinTest {
 
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
-    }
-
     @After
     fun after() {
         closeKoin()

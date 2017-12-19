@@ -7,8 +7,6 @@ import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
 import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
-import org.koin.log.PrintLogger
 import org.koin.sample.Properties.BYE_MSG
 import org.koin.sample.Properties.HELLO_MSG
 import org.koin.sample.Properties.MY_MODEL
@@ -22,7 +20,6 @@ class ApplicationJobRoutesTest : AbstractKoinTest() {
 
     @Before
     fun before() {
-        Koin.logger = PrintLogger()
         startKoin(listOf(KoinModule),
                 properties = mapOf(HELLO_MSG to "Bonjour", BYE_MSG to "Au revoir", MY_MODEL to Model("Test value")))
     }

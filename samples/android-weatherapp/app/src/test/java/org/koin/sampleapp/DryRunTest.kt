@@ -18,11 +18,6 @@ class DryRunTest : KoinTest {
 
     fun defaultProperties() = mapOf(SERVER_URL to "http://test.me")
 
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
-    }
-
     @After
     fun after() {
         closeKoin()
