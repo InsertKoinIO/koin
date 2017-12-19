@@ -69,7 +69,6 @@ class StackTest : AbstractKoinTest() {
 
     @Before
     fun before() {
-        Koin.logger = PrintLogger()
         Koin.useContextIsolation = true
     }
 

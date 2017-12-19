@@ -52,10 +52,6 @@ class AdditionalBindingTest : AbstractKoinTest() {
         fun get(): T
     }
 
-    init {
-        Koin.logger = PrintLogger()
-    }
-
     @Test
     fun `same instance for provided & bound component`() {
         startKoin(listOf(BoundModule))

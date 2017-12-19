@@ -1,11 +1,8 @@
 package org.koin.test.core
 
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
 import org.koin.dsl.module.applicationContext
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AbstractKoinTest
@@ -35,11 +32,6 @@ class OverrideTest : AbstractKoinTest() {
     class ComponentA : MyInterface
     class ComponentB : MyInterface
     interface MyInterface
-
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `override provide with bind`() {

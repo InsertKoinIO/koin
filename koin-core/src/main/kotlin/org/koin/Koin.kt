@@ -5,8 +5,8 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
-import org.koin.log.EmptyLogger
 import org.koin.log.Logger
+import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
 import java.io.File
 import java.io.FileInputStream
@@ -97,7 +97,7 @@ class Koin {
         /**
          * Koin Logger
          */
-        var logger: Logger = EmptyLogger()
+        var logger: Logger = PrintLogger()
 
         /**
          * Context isolation/visibility check

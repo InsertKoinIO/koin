@@ -1,13 +1,10 @@
 package org.koin.test.core
 
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
 import org.koin.dsl.module.applicationContext
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.MissingPropertyException
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.getProperty
@@ -32,10 +29,6 @@ class KoinContextTest : AbstractKoinTest() {
     class ComponentA(val componentB: ComponentB)
     class ComponentB(val componentA: ComponentA)
 
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `circular deps injection error`() {

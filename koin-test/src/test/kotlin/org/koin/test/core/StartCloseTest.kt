@@ -2,9 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.Koin
 import org.koin.error.AlreadyStartedException
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
@@ -14,10 +12,6 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 
 class StartCloseTest : KoinTest {
-
-    init {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `start and close Koin`() {

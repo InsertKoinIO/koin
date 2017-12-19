@@ -3,10 +3,8 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AbstractKoinTest
@@ -30,10 +28,6 @@ class InterfaceBindingTest : AbstractKoinTest() {
     interface OtherInterfaceComponent
     class ComponentB : OtherInterfaceComponent
     class ComponentC : OtherInterfaceComponent
-
-    init {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `should get from interface but not implementation`() {

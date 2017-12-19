@@ -1,11 +1,8 @@
 package org.koin.test.core
 
-import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContexts
@@ -45,11 +42,6 @@ class DSLContextTest : AbstractKoinTest() {
     class ComponentA
     class ComponentB
     class ComponentC
-
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `can create flat contexts`() {

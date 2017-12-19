@@ -7,6 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.with
 import org.koin.dsl.module.applicationContext
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
@@ -30,12 +31,7 @@ class AndroidModuleTest : AbstractKoinTest() {
     }
 
     val SampleModule = applicationContext {
-        provide { mock(Application::class.java) }
         provide { AndroidComponent(androidApplication()) }
-    }
-
-    val BadModule = applicationContext {
-        provide { AndroidComponent(get()) }
     }
 
     val ActivityModule = applicationContext {
@@ -57,7 +53,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_inject_by_scope() {
-        startKoin(listOf(SampleModule, ActivityModule))
+        startKoin(listOf(SampleModule, ActivityModule)) with(mock(Application::class.java))
 
         assertContexts(2)
         assertDefinitions(3)
@@ -84,7 +80,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_scope_no_scope() {
-        startKoin(listOf(BadModule))
+        startKoin(listOf(SampleModule))
 
         assertContexts(1)
         assertDefinitions(1)
@@ -103,7 +99,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_init_context_and_dependency() {
-        startKoin(listOf(SampleModule))
+        startKoin(listOf(SampleModule)) with(mock(Application::class.java))
 
         assertDefinitions(2)
         assertRemainingInstances(0)
@@ -118,7 +114,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_not_run() {
-        startKoin(listOf(BadModule))
+        startKoin(listOf(SampleModule))
 
         assertDefinitions(1)
         assertRemainingInstances(0)
