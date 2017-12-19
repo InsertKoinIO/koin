@@ -2,15 +2,14 @@
 
 ## What's KOIN?
 
-KOIN is a small library, that aims to let you write dependency injection in a concise and pragmatic way.
+Koin is a small library to lets you write dependency injection in a concise and pragmatic way. No proxy, no code generation, no introspection. Just DSL and functional Kotlin magic!
 
-It uses Kotlin functional power to get things done! No proxy, no code generation, no introspection. Just functional
-          Kotlin and DSL magic!
-
-*Just describe your stuff and inject it!*
+#### *Declare, Start & Inject*
 
 
 ## Website
+
+All documentation, sample and references has been move to our website.
 
 ### Check the official website to get started: [insert-koin.io](https://insert-koin.io)
 
@@ -25,11 +24,14 @@ repositories {
 	jcenter()    
 }
 
-// Koin for Kotlin apps
+// Koin for Kotlin
 compile 'org.koin:koin-core:0.7.1'
 
 // Koin for Android
 compile 'org.koin:koin-android:0.7.1'
+
+// Koin for Ktor
+compile 'org.koin:koin-ktor:0.7.1'
 
 // Koin Testing tools
 testCompile 'org.koin:koin-test:0.7.1'
