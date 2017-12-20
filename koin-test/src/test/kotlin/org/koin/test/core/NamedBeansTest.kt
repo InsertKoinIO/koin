@@ -3,7 +3,7 @@ package org.koin.test.core
 import junit.framework.Assert.fail
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AbstractKoinTest
@@ -13,12 +13,9 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class NamedBeansTest : AbstractKoinTest() {
 
-    class DataSourceModule : Module() {
-        override fun context() =
-                applicationContext {
-                    provide(name = "debugDatasource") { DebugDatasource() } bind (Datasource::class)
-                    provide(name = "ProdDatasource") { ProdDatasource() } bind (Datasource::class)
-                }
+    val DataSourceModule = applicationContext {
+        provide(name = "debugDatasource") { DebugDatasource() } bind (Datasource::class)
+        provide(name = "ProdDatasource") { ProdDatasource() } bind (Datasource::class)
     }
 
     interface Datasource
@@ -27,7 +24,7 @@ class NamedBeansTest : AbstractKoinTest() {
 
     @Test
     fun `should get named bean`() {
-        startKoin(listOf(DataSourceModule()))
+        startKoin(listOf(DataSourceModule))
 
         val debug = get<Datasource>("debugDatasource")
         val prod = get<Datasource>("ProdDatasource")
@@ -42,7 +39,7 @@ class NamedBeansTest : AbstractKoinTest() {
 
     @Test
     fun `should not get named bean`() {
-        startKoin(listOf(DataSourceModule()))
+        startKoin(listOf(DataSourceModule))
 
         try {
             get<Datasource>("otherDatasource")

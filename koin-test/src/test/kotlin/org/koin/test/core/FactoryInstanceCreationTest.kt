@@ -1,12 +1,9 @@
 package org.koin.test.core
 
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.Module
-import org.koin.log.PrintLogger
+import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AbstractKoinTest
@@ -17,42 +14,34 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class FactoryInstanceCreationTest : AbstractKoinTest() {
 
-    class FlatModule : Module() {
-        override fun context() =
-                applicationContext {
-                    provideFactory { ComponentA() }
+    val FlatModule =
+            applicationContext {
+                factory { ComponentA() }
+                provide { ComponentB(get()) }
+                provide { ComponentC(get(), get()) }
+            }
+
+    val HierarchicModule =
+            applicationContext {
+                factory { ComponentA() }
+
+                context("B") {
                     provide { ComponentB(get()) }
-                    provide { ComponentC(get(), get()) }
-                }
-    }
 
-    class HierarchicModule : Module() {
-        override fun context() =
-                applicationContext {
-                    provideFactory { ComponentA() }
-
-                    context("B") {
-                        provide { ComponentB(get()) }
-
-                        context("C") {
-                            provide { ComponentC(get(), get()) }
-                        }
+                    context("C") {
+                        provide { ComponentC(get(), get()) }
                     }
                 }
-    }
+            }
 
     class ComponentA
     class ComponentB(val componentA: ComponentA)
     class ComponentC(val componentB: ComponentB, val componentA: ComponentA)
 
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `load and create instances for flat module`() {
-        startKoin(listOf(FlatModule()))
+        startKoin(listOf(FlatModule))
 
         val a = get<ComponentA>()
         val b = get<ComponentB>()
@@ -75,7 +64,7 @@ class FactoryInstanceCreationTest : AbstractKoinTest() {
 
     @Test
     fun `load and create instances for hierarchic context`() {
-        startKoin(listOf(HierarchicModule()))
+        startKoin(listOf(HierarchicModule))
 
         val a = get<ComponentA>()
         val b = get<ComponentB>()

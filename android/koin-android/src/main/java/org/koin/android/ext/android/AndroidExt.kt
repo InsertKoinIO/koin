@@ -2,9 +2,11 @@ package org.koin.android.ext.android
 
 import android.app.Application
 import android.content.ComponentCallbacks
+import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.android.ext.koin.startKoin
-import org.koin.android.module.AndroidModule
+import org.koin.android.ext.koin.with
+import org.koin.android.logger.AndroidLogger
+import org.koin.dsl.module.Module
 import org.koin.standalone.StandAloneContext
 
 
@@ -17,8 +19,13 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  * Create a new Koin Context
  * @param application - Android application
  * @param modules - list of AndroidModule
+ *
+ * will be soon deprecated for starKoin() with <application>
  */
-fun Application.startKoin(application: Application, modules: List<AndroidModule>, properties: Map<String, Any> = HashMap()) = StandAloneContext.startKoin(application, modules, properties)
+fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap()) {
+    Koin.logger = AndroidLogger()
+    StandAloneContext.startKoin(modules, properties = properties) with application
+}
 
 /**
  * Bind an Android String to Koin property
@@ -48,20 +55,20 @@ fun ComponentCallbacks.bindBool(id: Int, key: String) {
 }
 
 /**
- * inject lazily given dependency for Activity
+ * inject lazily given dependency for Android component
  * @param name - bean name / optional
  */
 inline fun <reified T> ComponentCallbacks.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
 
 /**
- * lazy inject given property for Activity
+ * lazy inject given property for Android component
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> ComponentCallbacks.property(key: String) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
 
 /**
- * lazy inject  given property for Activity
+ * lazy inject  given property for Android component
  * give a default value if property is missing
  *
  * @param key - key property

@@ -3,8 +3,6 @@ package org.koin.sampleapp.view
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
-import org.koin.log.PrintLogger
 import org.koin.sampleapp.di.testLocalDatasource
 import org.koin.sampleapp.view.main.MainContract
 import org.koin.standalone.StandAloneContext.closeKoin
@@ -23,14 +21,13 @@ class MainPresenterTest : KoinTest {
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
-        Koin.logger = PrintLogger()
-        startKoin(testLocalDatasource())
+        startKoin(testLocalDatasource)
 
         presenter.view = view
     }
 
     @After
-    fun after(){
+    fun after() {
         closeKoin()
     }
 

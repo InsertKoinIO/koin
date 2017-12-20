@@ -7,7 +7,7 @@ import org.koin.sampleapp.repository.json.weather.Weather
 /**
  * Weather repository
  */
-interface WeatherRepository{
+interface WeatherRepository {
     fun getWeather(location: String): Single<Weather>
     fun clearCache()
 }
@@ -16,18 +16,22 @@ interface WeatherRepository{
  * Weather repository
  * Make use of WeatherDatasource & add some cache
  */
-class WeatherRepositoryImpl(val weatherDatasource: WeatherDatasource) : WeatherRepository{
+class WeatherRepositoryImpl(val weatherDatasource: WeatherDatasource) : WeatherRepository {
 
     private val DEFAULT_LANG = "EN"
 
     var weatherCache: Weather? = null
 
     override fun getWeather(location: String): Single<Weather> {
-        return weatherCache?.let { Single.just(weatherCache!!) } ?:
-                weatherDatasource.geocode(location)
-                        .map { it.getLocation() ?: throw IllegalStateException("No Location data") }
-                        .flatMap { weatherDatasource.weather(it.lat, it.lng, DEFAULT_LANG) }
-                        .doOnSuccess { weatherCache = it }
+        return if (weatherCache != null) {
+            Single.just(weatherCache!!)
+        } else {
+            weatherDatasource.geocode(location)
+                    .map { it.getLocation() ?: throw IllegalStateException("No Location data") }
+                    .flatMap { weatherDatasource.weather(it.lat, it.lng, DEFAULT_LANG) }
+                    .doOnSuccess { weatherCache = it }
+//                    .toObservable().share().singleOrError()
+        }
     }
 
     override fun clearCache() {

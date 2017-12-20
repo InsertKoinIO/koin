@@ -21,7 +21,7 @@ object StandAloneContext {
     /**
      * Koin starter
      */
-    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()) {
+    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
         if (isStarted) {
             throw AlreadyStartedException()
         }
@@ -34,14 +34,15 @@ object StandAloneContext {
         }
 
         // Build koin context
-        koinContext = koin.build(list)
+        val build = koin.build(list)
         isStarted = true
+        return build
     }
 
     /**
      * Close actual Koin context
      */
-    fun closeKoin() {
+    fun closeKoin() = synchronized(this) {
         if (isStarted) {
             // Close all
             (koinContext as KoinContext).close()

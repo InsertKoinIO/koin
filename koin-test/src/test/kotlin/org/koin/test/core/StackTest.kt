@@ -2,10 +2,11 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.DependencyResolutionException
 import org.koin.log.PrintLogger
@@ -19,51 +20,45 @@ import org.koin.test.ext.junit.assertScopeParent
 
 class StackTest : AbstractKoinTest() {
 
-    class FlatContextsModule() : Module() {
-        override fun context() = applicationContext {
+    val FlatContextsModule = applicationContext {
 
+        provide { ComponentA() }
+
+        context(name = "B") {
+            provide { ComponentB(get()) }
+        }
+
+        context(name = "C") {
+            provide { ComponentC(get()) }
+        }
+    }
+
+    val HierarchyContextsModule = applicationContext {
+        context(name = "A") {
             provide { ComponentA() }
 
             context(name = "B") {
                 provide { ComponentB(get()) }
-            }
 
-            context(name = "C") {
-                provide { ComponentC(get()) }
-            }
-        }
-    }
-
-    class HierarchyContextsModule() : Module() {
-        override fun context() = applicationContext {
-            context(name = "A") {
-                provide { ComponentA() }
-
-                context(name = "B") {
-                    provide { ComponentB(get()) }
-
-                    context(name = "C") {
-                        provide { ComponentC(get()) }
-                    }
+                context(name = "C") {
+                    provide { ComponentC(get()) }
                 }
-
             }
-            provide { ComponentD(get()) }
+
         }
+        provide { ComponentD(get()) }
     }
 
-    class NotVisibleContextsModule() : Module() {
-        override fun context() = applicationContext {
+    val NotVisibleContextsModule = applicationContext {
 
-            provide { ComponentB(get()) }
+        provide { ComponentB(get()) }
 
-            context(name = "A") {
-                provide { ComponentA() }
-            }
+        context(name = "A") {
+            provide { ComponentA() }
+        }
 
-            context(name = "D") {
-                provide { ComponentD(get()) }
-            }
+        context(name = "D") {
+            provide { ComponentD(get()) }
         }
     }
 
@@ -72,10 +67,14 @@ class StackTest : AbstractKoinTest() {
     class ComponentC(val componentA: ComponentA)
     class ComponentD(val componentB: ComponentB)
 
+    @Before
+    fun before() {
+        Koin.useContextIsolation = true
+    }
+
     @Test
     fun `has flat visibility`() {
-        Koin.logger = PrintLogger()
-        startKoin(listOf(FlatContextsModule()))
+        startKoin(listOf(FlatContextsModule))
 
         assertContexts(3)
         assertDefinitions(3)
@@ -94,8 +93,7 @@ class StackTest : AbstractKoinTest() {
 
     @Test
     fun `has hierarchic visibility`() {
-        Koin.logger = PrintLogger()
-        startKoin(listOf(HierarchyContextsModule()))
+        startKoin(listOf(HierarchyContextsModule))
 
         Assert.assertNotNull(get<ComponentC>())
         Assert.assertNotNull(get<ComponentB>())
@@ -111,7 +109,7 @@ class StackTest : AbstractKoinTest() {
     @Test
     fun `not good visibility context`() {
         Koin.logger = PrintLogger()
-        startKoin(listOf(NotVisibleContextsModule()))
+        startKoin(listOf(NotVisibleContextsModule))
 
         Assert.assertNotNull(get<ComponentA>())
         try {

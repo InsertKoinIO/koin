@@ -16,7 +16,6 @@ class WeatherResultPresenter(val weatherRepository: WeatherRepository, val sched
 
     override fun stop() {
         currentRequest?.dispose()
-        weatherRepository.clearCache()
     }
 
     override fun getWeather(address: String) {

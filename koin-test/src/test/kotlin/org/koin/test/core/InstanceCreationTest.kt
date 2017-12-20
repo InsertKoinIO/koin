@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AbstractKoinTest
@@ -14,28 +14,22 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class InstanceCreationTest : AbstractKoinTest() {
 
-    class FlatModule : Module() {
-        override fun context() =
-                applicationContext {
-                    provide { ComponentA() }
-                    provide { ComponentB(get()) }
-                    provide { ComponentC(get(), get()) }
-                }
+    val FlatModule = applicationContext {
+        provide { ComponentA() }
+        provide { ComponentB(get()) }
+        provide { ComponentC(get(), get()) }
     }
 
-    class HierarchicModule : Module() {
-        override fun context() =
-                applicationContext {
-                    provide { ComponentA() }
+    val HierarchicModule = applicationContext {
+        provide { ComponentA() }
 
-                    context("B") {
-                        provide { ComponentB(get()) }
+        context("B") {
+            provide { ComponentB(get()) }
 
-                        context("C") {
-                            provide { ComponentC(get(), get()) }
-                        }
-                    }
-                }
+            context("C") {
+                provide { ComponentC(get(), get()) }
+            }
+        }
     }
 
     class ComponentA
@@ -44,7 +38,7 @@ class InstanceCreationTest : AbstractKoinTest() {
 
     @Test
     fun `load and create instances for flat module`() {
-        startKoin(listOf(FlatModule()))
+        startKoin(listOf(FlatModule))
 
         val a = get<ComponentA>()
         val b = get<ComponentB>()
@@ -67,7 +61,7 @@ class InstanceCreationTest : AbstractKoinTest() {
 
     @Test
     fun `load and create instances for hierarchic context`() {
-        startKoin(listOf(HierarchicModule()))
+        startKoin(listOf(HierarchicModule))
 
         val a = get<ComponentA>()
         val b = get<ComponentB>()

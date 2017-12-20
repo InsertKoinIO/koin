@@ -5,8 +5,9 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
-import org.koin.log.EmptyLogger
 import org.koin.log.Logger
+import org.koin.log.PrintLogger
+import org.koin.standalone.StandAloneContext
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
@@ -43,7 +44,7 @@ class Koin {
             val koinProperties = Properties()
             FileInputStream(path).use { koinProperties.load(it) }
             val nb = propertyResolver.import(koinProperties)
-            logger.log("(Properties) loaded $nb properties from '$koinPropFilename' file")
+            logger.log("[init] loaded $nb properties from '$koinPropFilename' file")
         }
         return this
     }
@@ -53,23 +54,26 @@ class Koin {
      */
     fun bindSystemProperties(): Koin {
         val nb = propertyResolver.import(System.getProperties())
-        logger.log("(Properties) loaded $nb properties from system properties")
+        logger.log("[init] loaded $nb properties from system properties")
         return this
     }
 
     /**
-     * load given list of module instances into current koin context
+     * load given list of module instances into current StandAlone koin context
      */
-    fun <T : Module> build(modules: List<T>): KoinContext {
-        val koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
+    fun build(modules: List<Module>): Koin {
+        StandAloneContext.koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
+
         modules.forEach { module ->
-            module.koinContext = koinContext
-            val context = module.context()
-            registerDefinitions(context)
+            registerDefinitions(module())
         }
 
-        logger.log("(Registry) loaded ${beanRegistry.definitions.size} definitions")
-        return koinContext
+        logger.log("[init] loaded ${beanRegistry.definitions.size} definitions")
+
+        if (Koin.useContextIsolation) {
+            logger.log("[init] context isolation activated")
+        }
+        return this
     }
 
     /**
@@ -81,7 +85,7 @@ class Koin {
 
         // Add definitions
         context.definitions.forEach { definition ->
-            logger.log("(Bean) define : $definition")
+            logger.log("[init] declare : $definition")
             beanRegistry.declare(definition, scope)
         }
 
@@ -93,6 +97,11 @@ class Koin {
         /**
          * Koin Logger
          */
-        var logger: Logger = EmptyLogger()
+        var logger: Logger = PrintLogger()
+
+        /**
+         * Context isolation/visibility check
+         */
+        var useContextIsolation = false
     }
 }

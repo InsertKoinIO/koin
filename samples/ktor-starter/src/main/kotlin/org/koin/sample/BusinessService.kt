@@ -1,7 +1,7 @@
 package org.koin.sample
 
-import org.koin.sample.KoinModule.Properties.BYE_MSG
-import org.koin.sample.KoinModule.Properties.HELLO_MSG
+import org.koin.sample.Properties.BYE_MSG
+import org.koin.sample.Properties.HELLO_MSG
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.property
 
@@ -25,7 +25,7 @@ class BusinessServiceImpl : BusinessService, KoinComponent {
     private val hi by property(HELLO_MSG, "Hi")
     private val bye by property(BYE_MSG, "Ciao")
 
-    override fun doJob(job: String) : String {
+    override fun doJob(job: String): String {
         return when (job) {
             HI_JOB -> "$hi from Ktor and Koin"
             BYE_JOB -> "$bye from Ktor and Koin"

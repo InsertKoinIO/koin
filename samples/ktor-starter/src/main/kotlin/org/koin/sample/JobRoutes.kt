@@ -10,7 +10,7 @@ import org.koin.ktor.ext.inject
 import org.koin.ktor.ext.setProperty
 import org.koin.sample.BusinessServiceImpl.Companion.BYE_JOB
 import org.koin.sample.BusinessServiceImpl.Companion.HI_JOB
-import org.koin.sample.KoinModule.Properties.MY_MODEL
+import org.koin.sample.Properties.MY_MODEL
 
 
 /**
