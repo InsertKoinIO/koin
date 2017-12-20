@@ -2,10 +2,8 @@ package org.koin.test.standalone
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
-import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -47,10 +45,6 @@ class MVPArchitectureTest : AbstractKoinTest() {
     class Repository(val datasource: Datasource)
     interface Datasource
     class DebugDatasource : Datasource
-
-    init {
-        Koin.logger = PrintLogger()
-    }
 
     @Test
     fun `should create all MVP hierarchy`() {
