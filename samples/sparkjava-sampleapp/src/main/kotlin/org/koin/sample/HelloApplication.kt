@@ -40,8 +40,11 @@ class HelloController : KoinComponent {
 }
 
 fun main(vararg args: String) {
+    // Spark
     start {
+        // Koin
         startKoin(listOf(helloAppModule))
+        // Controllers
         HelloController()
     }
 }

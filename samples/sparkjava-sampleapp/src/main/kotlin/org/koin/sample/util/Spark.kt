@@ -2,10 +2,11 @@ package org.koin.sample.util
 
 import spark.Spark
 import spark.kotlin.after
+import spark.kotlin.port
 
 fun start(port: Int = 4567, controllersInit: () -> Unit): Int {
 
-    spark.kotlin.port(port)
+    port(port)
 
     // Logging filter
     after("*") {
@@ -19,5 +20,5 @@ fun start(port: Int = 4567, controllersInit: () -> Unit): Int {
     Spark.awaitInitialization()
 
     // Will return the automatically defined port if requested port was 0 (useful for testing)
-    return spark.kotlin.port()
+    return port()
 }
