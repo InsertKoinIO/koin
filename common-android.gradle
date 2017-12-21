@@ -9,4 +9,8 @@ ext {
     buildToolsVersion = '26.0.2'
 
     supportLibraryVersion = '26.0.2'
+
+    // Android Architecture
+    android_arch_lifecycle_version = '1.0.3'
+    android_arch_lifecycler_compiler_version = '1.0.0'
 }
