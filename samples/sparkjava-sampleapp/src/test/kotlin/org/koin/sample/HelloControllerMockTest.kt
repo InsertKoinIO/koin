@@ -41,10 +41,12 @@ class HelloControllerMockTest : KoinTest {
 
     @Test
     fun `controller say hello with mock`() {
-        `when`(mockService.sayHello()).thenReturn("")
+        val emptyResponse = ""
+        `when`(mockService.sayHello()).thenReturn(emptyResponse)
 
         val response = sparkTest.get("/hello")
         assertEquals(200, response.status)
+        assertEquals(emptyResponse, response.body)
 
         verify(mockService).sayHello()
     }
