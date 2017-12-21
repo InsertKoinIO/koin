@@ -18,7 +18,7 @@ class HelloControllerTest : KoinTest {
     @Before()
     fun before() {
         val port = start(0) {
-            startKoin(listOf(module))
+            startKoin(listOf(helloAppModule))
             HelloController()
         }
         sparkTest = SparkTestUtil(port)

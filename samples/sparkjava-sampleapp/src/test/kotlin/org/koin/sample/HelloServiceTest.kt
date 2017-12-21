@@ -16,7 +16,7 @@ class HelloServiceTest : KoinTest {
 
     @Before()
     fun before() {
-        startKoin(listOf(module))
+        startKoin(listOf(helloAppModule))
     }
 
     @After

@@ -7,13 +7,17 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import spark.kotlin.get
 
-val module = applicationContext {
+val helloAppModule = applicationContext {
     bean { HelloServiceImpl(get()) as HelloService }
-    bean { HelloRepository() }
+    bean { HelloRepositoryImpl() as HelloRepository }
 }
 
-class HelloRepository {
-    fun getHello(): String = "Spark & Koin"
+interface HelloRepository {
+    fun getHello(): String
+}
+
+class HelloRepositoryImpl : HelloRepository {
+    override fun getHello(): String = "Spark & Koin"
 }
 
 interface HelloService {
@@ -37,7 +41,7 @@ class HelloController : KoinComponent {
 
 fun main(vararg args: String) {
     start {
-        startKoin(listOf(module))
+        startKoin(listOf(helloAppModule))
         HelloController()
     }
 }

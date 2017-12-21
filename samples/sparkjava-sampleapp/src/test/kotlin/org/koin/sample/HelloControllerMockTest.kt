@@ -23,7 +23,7 @@ class HelloControllerMockTest : KoinTest {
     @Before()
     fun before() {
         val port = start(0) {
-            startKoin(listOf(mockModule))
+            startKoin(listOf(helloMockModule))
             HelloController()
         }
         sparkTest = SparkTestUtil(port)

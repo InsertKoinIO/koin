@@ -13,7 +13,7 @@ class DryRunTest : KoinTest {
 
     @Test
     fun dryRunTest() {
-        startKoin(listOf(module))
+        startKoin(listOf(helloAppModule))
         dryRun()
         closeKoin()
     }
