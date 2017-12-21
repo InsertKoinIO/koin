@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
@@ -36,6 +37,9 @@ dependencies {
     })
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // Android Lifecycles
+    compile "android.arch.lifecycle:runtime:$android_arch_lifecycle_version"
+    kapt "android.arch.lifecycle:compiler:$android_arch_lifecycle_compiler_version"
     // Koin
     compile "org.koin:koin-core:$koin_version"
     testCompile "org.koin:koin-test:$koin_version"
