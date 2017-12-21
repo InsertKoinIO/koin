@@ -3,7 +3,7 @@ package org.koin.sample.util
 import spark.Spark
 import spark.kotlin.after
 
-fun start(port: Int = 4567, launcher: () -> Unit): Int {
+fun start(port: Int = 4567, controllersInit: () -> Unit): Int {
 
     spark.kotlin.port(port)
 
@@ -12,8 +12,8 @@ fun start(port: Int = 4567, launcher: () -> Unit): Int {
         println(request.requestMethod() + " " + request.pathInfo() + " - " + response.raw().status)
     }
 
-    // launch controllers
-    launcher()
+    // launch controllers initialization
+    controllersInit()
 
     // This is the important line. It must be *after* creating the routes and *before* the call to port()
     Spark.awaitInitialization()
