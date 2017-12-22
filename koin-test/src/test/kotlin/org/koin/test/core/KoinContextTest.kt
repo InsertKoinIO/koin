@@ -41,11 +41,13 @@ class KoinContextTest : AbstractKoinTest() {
             get<ComponentA>()
             fail()
         } catch (e: Exception) {
+            System.err.println(e)
         }
         try {
             get<ComponentB>()
             fail()
         } catch (e: Exception) {
+            System.err.println(e)
         }
 
         assertRemainingInstances(0)
@@ -63,6 +65,7 @@ class KoinContextTest : AbstractKoinTest() {
             get<ComponentA>()
             fail()
         } catch (e: Exception) {
+            System.err.println(e)
         }
 
         assertRemainingInstances(0)

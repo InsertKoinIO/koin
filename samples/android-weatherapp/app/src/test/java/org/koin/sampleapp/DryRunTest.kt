@@ -16,7 +16,7 @@ import org.koin.test.dryRun
 
 class DryRunTest : KoinTest {
 
-    fun defaultProperties() = mapOf(SERVER_URL to "http://test.me")
+    val defaultProperties = mapOf(SERVER_URL to "http://test.me")
 
     @After
     fun after() {
@@ -25,19 +25,19 @@ class DryRunTest : KoinTest {
 
     @Test
     fun normalConfiguration() {
-        startKoin(weatherAppModules, properties = defaultProperties())
+        startKoin(weatherAppModules, properties = defaultProperties)
         dryRun()
     }
 
     @Test
     fun testRemoteConfiguration() {
-        startKoin(testRemoteDatasource, properties = defaultProperties())
+        startKoin(testRemoteDatasource, properties = defaultProperties)
         dryRun()
     }
 
     @Test
     fun testLocalConfiguration() {
-        startKoin(testLocalDatasource, properties = defaultProperties())
+        startKoin(testLocalDatasource, properties = defaultProperties)
         dryRun()
     }
 }

@@ -1,6 +1,5 @@
 package org.koin.core.instance
 
-import org.koin.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.error.BeanDefinitionException
@@ -63,8 +62,7 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
                 instance as T
                 return instance
             } catch (e: Throwable) {
-                Koin.logger.err("Error can't create [$def] due to error : \n${e.stackTrace.take(10).joinToString(separator = "\n")}")
-                throw BeanInstanceCreationException("Can't create bean $def due to error : $e")
+                throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e")
             }
         }
     }

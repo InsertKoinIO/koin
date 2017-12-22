@@ -2,7 +2,6 @@ package org.koin.core.bean
 
 import org.koin.Koin
 import org.koin.core.scope.Scope
-import org.koin.error.BeanDefinitionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NoScopeFoundException
 import java.util.*
@@ -76,31 +75,27 @@ class BeanRegistry {
     /**
      * Search bean by its name
      */
-    fun searchByName(name: String) = searchDefinition({ it.name == name }, " name : $name") ?: throw NoBeanDefFoundException("No bean definition found for name $name")
+    fun searchByName(name: String) = searchDefinition { it.name == name } ?: throw NoBeanDefFoundException("No bean definition found for name $name")
 
     /**
      * Search for any bean definition
      */
-    fun searchAll(clazz: kotlin.reflect.KClass<*>) = (searchByClass(clazz) ?: searchCompatible(clazz)) ?: throw NoBeanDefFoundException("No bean definition found for class $clazz")
-
-    /**
-     * Search for a bean definition
-     */
-    fun searchByClass(clazz: kotlin.reflect.KClass<*>) = searchDefinition({ it.clazz == clazz }, " class : $clazz")
+    fun searchAll(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*> {
+        val concreteTypes = searchDefinition { it.clazz == clazz }
+        val extraBindTypes = searchDefinition { it.bindTypes.contains(clazz) }
+        return if (concreteTypes != null && extraBindTypes != null) {
+            throw NoBeanDefFoundException("Multiple definition found for class $clazz : \n\t$concreteTypes\n\t$extraBindTypes")
+        } else (concreteTypes ?: extraBindTypes) ?: throw NoBeanDefFoundException("No bean definition found for class $clazz")
+    }
 
     /**
      * Search definition with given filter function
      */
-    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean, errorMsg: String): BeanDefinition<*>? {
+    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean): BeanDefinition<*>? {
         val results = definitions.keys.filter(filter)
-        return if (results.size <= 1) results.firstOrNull()
-        else throw BeanDefinitionException("Bean definition resolution error : no bean or multiple definition for $errorMsg")
+        return if (results.size == 1) results.first()
+        else null
     }
-
-    /**
-     * Search for a compatible bean definition (subtype type of given clazz)
-     */
-    private fun searchCompatible(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*>? = searchDefinition({ it.bindTypes.contains(clazz) }, "for compatible type : $clazz")
 
     /**
      * Get bean definitions from given scope context & child
@@ -133,7 +128,6 @@ class BeanRegistry {
             }
         }
     }
-
 
     private fun isVisibleScope(clazz: KClass<*>, parentClass: KClass<*>): Boolean {
         val child = getScopeForClass(clazz) ?: error("$clazz has no scope")
