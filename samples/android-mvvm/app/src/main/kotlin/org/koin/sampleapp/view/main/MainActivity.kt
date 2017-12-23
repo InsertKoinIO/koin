@@ -13,9 +13,9 @@ import org.koin.android.ext.android.property
 import org.koin.android.ext.android.setProperty
 import org.koin.sampleapp.R
 import org.koin.sampleapp.di.WeatherAppProperties.PROPERTY_ADDRESS
+import org.koin.sampleapp.di.WeatherAppProperties.PROPERTY_WEATHER_DATE
 import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.util.rx.with
-import org.koin.sampleapp.view.weather.PROPERTY_WEATHER_DATE
 import org.koin.sampleapp.view.weather.WeatherResultActivity
 import java.util.*
 
@@ -42,13 +42,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        displayNormal()
+    }
+
     override fun onPause() {
         subscription.dispose()
         super.onPause()
     }
 
     private fun getWeather(): Disposable {
-        return mainViewModel.searchWeather(searchText())
+        return mainViewModel.searchWeather(getSearchText())
                 .with(scheduler)
                 .doOnSubscribe { displayProgress() }
                 .subscribe({
@@ -60,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 })
     }
 
-    private fun searchText() = searchEditText.text.trim().toString()
+    fun getSearchText() = searchEditText.text.trim().toString()
 
     fun displayNormal() {
         searchProgress.visibility = View.GONE
@@ -75,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     fun onWeatherSuccess() {
         // save properties
         setProperty(PROPERTY_WEATHER_DATE, Date())
-        setProperty(PROPERTY_ADDRESS, searchText())
+        setProperty(PROPERTY_ADDRESS, getSearchText())
 
         startActivity(Intent(this, WeatherResultActivity::class.java))
     }

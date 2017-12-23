@@ -26,12 +26,22 @@ class RepositoryTest : KoinTest {
     }
 
     @Test
-    fun testGetWeather() {
+    fun testBlockingGetWeather() {
         val weather1 = repository.getWeather("Paris").blockingGet()
         val weather2 = repository.getWeather("Paris").blockingGet()
 
         assertEquals(weather1, weather2)
-        assertEquals(weather1,repository.weatherCache)
-        assertEquals(weather2,repository.weatherCache)
+        assertEquals(weather1, repository.weatherCache?.second)
+        assertEquals(weather2, repository.weatherCache?.second)
+    }
+
+    @Test
+    fun testGetWeather() {
+        val weather1 = repository.getWeather("Paris").test().cancel()
+        val weather2 = repository.getWeather("Paris").test()
+        weather2.awaitTerminalEvent()
+
+        weather2.assertValue { value -> value == repository.weatherCache?.second }
+
     }
 }
