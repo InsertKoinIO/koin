@@ -22,6 +22,7 @@ class WeatherDetailActivity : AppCompatActivity() {
     // Get all needed data
     private val address by property<String>(PROPERTY_ADDRESS)
     private val now by property<Date>(PROPERTY_WEATHER_DATE)
+
     val detailViewModel: WeatherDetailViewModel by inject()
     val scheduler by inject<SchedulerProvider>()
 
@@ -43,7 +44,7 @@ class WeatherDetailActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        subscription.dispose()
+        subscription.clear()
         super.onPause()
     }
 

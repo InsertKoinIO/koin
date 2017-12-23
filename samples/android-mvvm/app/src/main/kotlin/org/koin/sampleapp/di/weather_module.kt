@@ -21,5 +21,4 @@ val weatherModule = applicationContext {
 object WeatherAppProperties {
     const val PROPERTY_ADDRESS: String = "PROPERTY_ADDRESS"
     const val PROPERTY_WEATHER_DATE = "WEATHER_DATE"
-//    const val PROPERTY_WEATHER_DETAIL = "WEATHER_DETAIL"
 }

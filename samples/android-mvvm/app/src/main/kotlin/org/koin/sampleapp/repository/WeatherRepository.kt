@@ -26,12 +26,11 @@ class WeatherRepositoryImpl(val weatherDatasource: WeatherDatasource) : WeatherR
     var detail: DailyForecastModel? = null
 
 
-    override fun selectDetail(detail: DailyForecastModel): Completable {
-        return Completable.create {
-            this.detail = detail
-            it.onComplete()
-        }
-    }
+    override fun selectDetail(detail: DailyForecastModel) =
+            Completable.create {
+                    this.detail = detail
+                    it.onComplete()
+                }
 
     override fun getSelectDetail(): Single<DailyForecastModel> = if (detail != null) Single.just(detail) else Single.error(IllegalStateException("Detail is null ! You must select a detail before"))
 
@@ -48,7 +47,6 @@ class WeatherRepositoryImpl(val weatherDatasource: WeatherDatasource) : WeatherR
             weatherDatasource.geocode(location)
                     .map { it.getLocation() ?: throw IllegalStateException("No Location data") }
                     .flatMap { weatherDatasource.weather(it.lat, it.lng, DEFAULT_LANG) }
-                    .toObservable().share().singleOrError()
                     .doOnSuccess { weatherCache = Pair(location, it) }
         }
     }

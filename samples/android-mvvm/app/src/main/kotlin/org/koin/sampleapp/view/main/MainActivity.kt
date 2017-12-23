@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        subscription.dispose()
+        subscription.clear()
         super.onPause()
     }
 

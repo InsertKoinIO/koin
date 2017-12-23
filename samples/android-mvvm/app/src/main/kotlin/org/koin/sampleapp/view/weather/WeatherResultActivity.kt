@@ -52,9 +52,7 @@ class WeatherResultActivity : AppCompatActivity() {
     }
 
 
-    private fun getWeatherList() = resultViewModel.getWeatherList(address)
-            .with(scheduler)
-            .doOnSubscribe { println("sub -> getWeatherList") }
+    private fun getWeatherList() = resultViewModel.getWeatherList(address).with(scheduler)
             .subscribe({ displayWeather(it) }, { displayError(it) })
 
     override fun onResume() {
@@ -63,7 +61,7 @@ class WeatherResultActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        subscription.dispose()
+        subscription.clear()
         super.onPause()
     }
 
