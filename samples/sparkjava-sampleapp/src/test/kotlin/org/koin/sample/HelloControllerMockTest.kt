@@ -24,15 +24,15 @@ class HelloControllerMockTest : KoinTest {
     fun before() {
         val port = start(0) {
             startKoin(listOf(helloMockModule))
-            HelloController()
+            HelloController(mockService)
         }
         sparkTest = SparkTestUtil(port)
     }
 
     @After
     fun after() {
-        stop()
         closeKoin()
+        stop()
 
         // Need to sleep in order to let the server stops
         // It's done in another thread (cf. spark.Service.stop())

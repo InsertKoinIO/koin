@@ -8,18 +8,20 @@ import org.koin.sample.util.SparkTestUtil
 import org.koin.sample.util.start
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.inject
 import org.koin.test.KoinTest
 import spark.kotlin.stop
 
 class HelloControllerTest : KoinTest {
 
     lateinit var sparkTest: SparkTestUtil
+    val helloController: HelloController by inject()
 
     @Before()
     fun before() {
         val port = start(0) {
             startKoin(listOf(helloAppModule))
-            HelloController()
+            helloController
         }
         sparkTest = SparkTestUtil(port)
     }
