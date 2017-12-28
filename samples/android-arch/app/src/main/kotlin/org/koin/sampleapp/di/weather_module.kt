@@ -4,14 +4,12 @@ import org.koin.dsl.module.applicationContext
 import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.repository.WeatherRepositoryImpl
 import org.koin.sampleapp.view.detail.WeatherDetailViewModel
-import org.koin.sampleapp.view.main.MainViewModel
-import org.koin.sampleapp.view.weather.WeatherResultViewModel
 
 val weatherModule = applicationContext {
 
-    factory { MainViewModel(get()) }
+    //    viewModel { MainViewModel(get(), get()) }
 
-    factory { WeatherResultViewModel(get()) }
+//    factory { WeatherResultViewModel(get()) }
 
     factory { WeatherDetailViewModel(get()) }
 

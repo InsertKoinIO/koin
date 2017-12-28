@@ -29,7 +29,7 @@ fun runControllers() {
  * Run all declared Spark controllers
  */
 fun KoinContext.runSparkControllers() {
-    Koin.logger.log("(RUN SPARK CONTROLLERS)")
+    Koin.logger.log("** Run Spark Controllers **")
     beanRegistry.definitions.keys
             .filter { it.bindTypes.contains(SparkController::class) }
             .forEach { def ->

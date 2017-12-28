@@ -60,6 +60,13 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:$okhttp_version"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
+    // ViewModel and LiveData
+    implementation "android.arch.lifecycle:extensions:1.0.0"
+    annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
+    // Lifecycles only (no ViewModel or LiveData)
+    implementation "android.arch.lifecycle:runtime:1.0.3"
+    annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
+
     // Rx
     compile "io.reactivex.rxjava2:rxjava:$rxjava_version"
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
