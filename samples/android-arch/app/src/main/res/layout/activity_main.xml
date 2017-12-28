@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <com.joanzapata.iconify.widget.IconTextView
+        style="@style/TextDisplay1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:gravity="center"
+        android:text="{wi_day_sunny}{wi_cloudy}{wi_rain}\nWeather App"
+        android:textColor="@color/t_white"
+        android:textSize="36sp" />
+
+    <TextView
+        style="@style/TextSubHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="Enter any location to search weather"
+        android:textColor="@color/t_white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_search_black_24dp"
+            android:tint="@color/t_white" />
+
+        <EditText
+            android:id="@+id/searchEditText"
+            style="@style/TextSubHeading"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/grey3"
+            android:hint="e.g : Paris, France"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:textColor="@color/primary_text" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/searchButton"
+        style="@style/PrimaryButton"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search weather"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+    <ProgressBar
+        android:id="@+id/searchProgress"
+        android:layout_gravity="center"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:visibility="gone"
+        style="@style/Widget.AppCompat.ProgressBar"/>
+
+</LinearLayout>

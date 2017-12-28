@@ -1,0 +1,56 @@
+{
+  "status": "OK",
+  "results": [
+    {
+      "address_components": [
+        {
+          "lang_name": null,
+          "short_name": "Berlin",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "Berlin",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "DE",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Berlin, Germany",
+      "geometry": {
+        "location": {
+          "lat": 52.52000659999999,
+          "lng": 13.404954
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 52.6754542,
+            "lng": 13.7611175
+          },
+          "southwest": {
+            "lat": 52.33962959999999,
+            "lng": 13.0911733
+          }
+        }
+      },
+      "place_id": "ChIJAVkDPzdOqEcRcDteW0YgIQQ",
+      "types": [
+        "locality",
+        "political"
+      ]
+    }
+  ]
+}

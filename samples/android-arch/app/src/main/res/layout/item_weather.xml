@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weatherItemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="104dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <com.joanzapata.iconify.widget.IconTextView
+        android:id="@+id/weatherItemIcon"
+        style="@style/Text"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:gravity="center"
+        android:text="Icon"
+        android:textColor="@color/t_white"
+        android:textSize="50sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/weatherItemForecast"
+            style="@style/Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="forecast"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/weatherItemTemp"
+            style="@style/Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="temperatures" />
+
+    </LinearLayout>
+
+</LinearLayout>

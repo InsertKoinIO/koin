@@ -1,0 +1,28 @@
+apply from: "../../common.gradle"
+apply from: "../../common-android.gradle"
+
+buildscript {
+    apply from: "../../common.gradle"
+    apply from: "../../common-android.gradle"
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidGradlePlugin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        google()
+    }
+}
+
