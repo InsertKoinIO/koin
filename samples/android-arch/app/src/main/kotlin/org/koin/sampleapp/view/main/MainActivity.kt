@@ -37,16 +37,19 @@ class MainActivity : AppCompatActivity() {
             model.searchWeather(getSearchText())
         }
 
-        model.searchOk.observe(this, android.arch.lifecycle.Observer {
+        model.searchOk.observe(this, android.arch.lifecycle.Observer<MainUIModel> {
             if (it != null) {
-                onWeatherSuccess()
+                println("model : $it")
+                when (it.isLoading) {
+                    false -> displayNormal()
+                    true -> displayProgress()
+                }
+                if (it.success) {
+                    onWeatherSuccess()
+                }
+                searchEditText.setText(it.searchText)
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        displayNormal()
     }
 
     fun getSearchText() = searchEditText.text.trim().toString()
@@ -66,7 +69,9 @@ class MainActivity : AppCompatActivity() {
         setProperty(PROPERTY_WEATHER_DATE, Date())
         setProperty(PROPERTY_ADDRESS, getSearchText())
 
-        startActivity(Intent(this, WeatherResultActivity::class.java))
+        val intent = Intent(this, WeatherResultActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
     }
 
     fun onWeatherFailed(error: Throwable) {

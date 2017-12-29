@@ -28,24 +28,23 @@ class WeatherResultActivity : AppCompatActivity() {
 
     private lateinit var weatherResultAdapter: WeatherResultAdapter
 
-    lateinit var model: WeatherResultViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
 
         weatherTitle.text = getString(R.string.weather_title).format(address, now)
 
-        model = getViewModel()
+        val model = getViewModel<WeatherResultViewModel>()
 
-        model.searchList.observe(this, android.arch.lifecycle.Observer {
+        model.searchList.observe(this, android.arch.lifecycle.Observer<WeatherResultUIModel> {
             if (it != null) {
-                displayWeather(it)
-            }
-        })
-        model.selectDetail.observe(this, android.arch.lifecycle.Observer {
-            if (it != null) {
-                onDetailSaved()
+                if (it.list != weatherResultAdapter.list) {
+                    println("update list")
+                    displayWeather(it.list)
+                }
+                if (it.selected) {
+                    onDetailSaved()
+                }
             }
         })
         weatherResultAdapter = WeatherResultAdapter(emptyList(), { weatherDetail ->
@@ -56,12 +55,6 @@ class WeatherResultActivity : AppCompatActivity() {
         weatherList.itemAnimator = DefaultItemAnimator()
         weatherList.adapter = weatherResultAdapter
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // load list
-        model.getWeatherList(address)
     }
 
     fun displayWeather(weatherList: List<DailyForecastModel>) {

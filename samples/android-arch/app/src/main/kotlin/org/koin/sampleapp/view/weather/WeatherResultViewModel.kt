@@ -8,26 +8,37 @@ import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.repository.json.getDailyForecasts
 import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.util.rx.with
-import org.koin.standalone.KoinComponent
 
 /**
  * Weather Presenter
  */
-class WeatherResultViewModel(val weatherRepository: WeatherRepository, val scheduler: SchedulerProvider) : ViewModel(), KoinComponent {
+class WeatherResultViewModel(private val weatherRepository: WeatherRepository, private val scheduler: SchedulerProvider, address: String) : ViewModel() {
 
-    val searchList = MutableLiveData<List<DailyForecastModel>>()
-    val selectDetail = MutableLiveData<Boolean>()
+    val searchList = MutableLiveData<WeatherResultUIModel>()
 
     val disposables = CompositeDisposable()
 
+    init {
+        getWeatherList(address)
+    }
+
+    lateinit var cacheList: List<DailyForecastModel>
 
     fun getWeatherList(address: String) {
         disposables.add(weatherRepository.getWeather(address).map { it.getDailyForecasts() }.with(scheduler)
-                .subscribe { list -> searchList.value = list })
+                .subscribe
+                { list ->
+                    searchList.value = WeatherResultUIModel(list)
+                    cacheList = list
+                }
+        )
     }
 
     fun selectDetail(detail: DailyForecastModel) {
-        disposables.add(weatherRepository.selectDetail(detail).with(scheduler).subscribe { selectDetail.value = true })
+        disposables.add(weatherRepository.selectDetail(detail).with(scheduler).subscribe {
+            searchList.value = WeatherResultUIModel(cacheList, true)
+            searchList.value = WeatherResultUIModel(cacheList)
+        })
     }
 
     override fun onCleared() {
@@ -35,3 +46,6 @@ class WeatherResultViewModel(val weatherRepository: WeatherRepository, val sched
         super.onCleared()
     }
 }
+
+
+data class WeatherResultUIModel(val list: List<DailyForecastModel>, val selected: Boolean = false)

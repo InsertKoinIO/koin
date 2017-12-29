@@ -12,7 +12,7 @@ val weatherModule = applicationContext {
 
     viewModel { MainViewModel(get(), get()) }
 
-    viewModel { WeatherResultViewModel(get(), get()) }
+    viewModel { WeatherResultViewModel(get(), get(), getProperty(WeatherAppProperties.PROPERTY_ADDRESS)) }
 
     viewModel { WeatherDetailViewModel(get(), get()) }
 

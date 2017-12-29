@@ -58,7 +58,7 @@ class PropertyRegistry {
      * Add property
      */
     fun add(key: String, value: Any) {
-        Koin.logger.log("[Property] $key >> '$value'")
+        Koin.logger.log("[Property] set $key >> '$value'")
         properties += Pair(key, value)
     }
 

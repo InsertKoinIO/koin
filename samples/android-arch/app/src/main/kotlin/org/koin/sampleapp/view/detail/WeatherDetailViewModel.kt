@@ -16,8 +16,14 @@ class WeatherDetailViewModel(private val weatherRepository: WeatherRepository, p
     private val disposables = CompositeDisposable()
     val detail = MutableLiveData<DailyForecastModel>()
 
+    init {
+        getDetail()
+    }
+
     fun getDetail() {
-        disposables.add(weatherRepository.getSelectDetail().with(scheduler).subscribe { d -> detail.value = d })
+        disposables.add(weatherRepository.getSelectDetail().with(scheduler).subscribe { d ->
+            detail.value = d
+        })
     }
 
     override fun onCleared() {

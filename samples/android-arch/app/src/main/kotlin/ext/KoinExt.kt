@@ -3,6 +3,7 @@ package ext
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelStores
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.KoinContext
 import org.koin.dsl.context.Context
@@ -34,6 +35,10 @@ fun <T> KoinContext.getByTypeName(canonicalName: String): T {
 
 fun <T> KoinComponent.get(modelClass: Class<T>): T = (StandAloneContext.koinContext as KoinContext).getByTypeName(modelClass.canonicalName)
 
+inline fun <reified T : ViewModel> Fragment.getViewModel(): T {
+    val vm = ViewModelProvider(ViewModelStores.of(this), KoinFactory)
+    return vm.get(T::class.java)
+}
 
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T {
     val vm = ViewModelProvider(ViewModelStores.of(this), KoinFactory)
@@ -42,8 +47,8 @@ inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T {
 
 object KoinFactory : ViewModelProvider.Factory, KoinComponent {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        //TODO check is ViewModel
-        //TODO assign android instance if AndroidViewModel
         return get(modelClass)
     }
 }
+
+// AndroidViewModel -> inject application dans constructor tout seul deja :)

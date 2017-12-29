@@ -20,25 +20,19 @@ class WeatherDetailActivity : AppCompatActivity() {
     private val address by property<String>(PROPERTY_ADDRESS)
     private val now by property<Date>(PROPERTY_WEATHER_DATE)
 
-    lateinit var model: WeatherDetailViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_detail)
 
         weatherTitle.text = getString(R.string.weather_title).format(address, now)
 
-        model = getViewModel()
+        val model = getViewModel<WeatherDetailViewModel>()
+
         model.detail.observe(this, android.arch.lifecycle.Observer { detail ->
             if (detail != null) {
                 displayDetail(detail)
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        model.getDetail()
     }
 
     fun displayDetail(weather: DailyForecastModel) {
