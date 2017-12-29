@@ -1,17 +1,20 @@
 package org.koin.sampleapp.di
 
+import ext.viewModel
 import org.koin.dsl.module.applicationContext
 import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.repository.WeatherRepositoryImpl
 import org.koin.sampleapp.view.detail.WeatherDetailViewModel
+import org.koin.sampleapp.view.main.MainViewModel
+import org.koin.sampleapp.view.weather.WeatherResultViewModel
 
 val weatherModule = applicationContext {
 
-    //    viewModel { MainViewModel(get(), get()) }
+    viewModel { MainViewModel(get(), get()) }
 
-//    factory { WeatherResultViewModel(get()) }
+    viewModel { WeatherResultViewModel(get(), get()) }
 
-    factory { WeatherDetailViewModel(get()) }
+    viewModel { WeatherDetailViewModel(get(), get()) }
 
     provide { WeatherRepositoryImpl(get()) } bind WeatherRepository::class
 }

@@ -1,12 +1,12 @@
 package org.koin.sampleapp.view.weather
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import ext.getViewModel
 import kotlinx.android.synthetic.main.activity_weather.*
 import org.koin.android.ext.android.property
 import org.koin.sampleapp.R
@@ -28,19 +28,25 @@ class WeatherResultActivity : AppCompatActivity() {
 
     private lateinit var weatherResultAdapter: WeatherResultAdapter
 
+    lateinit var model: WeatherResultViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
 
         weatherTitle.text = getString(R.string.weather_title).format(address, now)
 
+        model = getViewModel()
 
-        val model = ViewModelProviders.of(this).get(WeatherResultViewModel::class.java)
         model.searchList.observe(this, android.arch.lifecycle.Observer {
-            displayWeather(it!!)
+            if (it != null) {
+                displayWeather(it)
+            }
         })
         model.selectDetail.observe(this, android.arch.lifecycle.Observer {
-            onDetailSaved()
+            if (it != null) {
+                onDetailSaved()
+            }
         })
         weatherResultAdapter = WeatherResultAdapter(emptyList(), { weatherDetail ->
             // save date & weather detail
@@ -50,6 +56,10 @@ class WeatherResultActivity : AppCompatActivity() {
         weatherList.itemAnimator = DefaultItemAnimator()
         weatherList.adapter = weatherResultAdapter
 
+    }
+
+    override fun onResume() {
+        super.onResume()
         // load list
         model.getWeatherList(address)
     }

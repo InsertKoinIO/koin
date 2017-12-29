@@ -1,11 +1,11 @@
 package org.koin.sampleapp.view.main
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import ext.getViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.property
 import org.koin.android.ext.android.setProperty
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         searchEditText.setText(defaultAddress)
 
-        val model = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        val model = getViewModel<MainViewModel>()
 
         // Start search weather
         searchButton.setOnClickListener {
@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         model.searchOk.observe(this, android.arch.lifecycle.Observer {
-            println("got $it")
             if (it != null) {
                 onWeatherSuccess()
             }

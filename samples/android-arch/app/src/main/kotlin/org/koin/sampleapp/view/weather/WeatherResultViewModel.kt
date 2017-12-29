@@ -9,15 +9,11 @@ import org.koin.sampleapp.repository.json.getDailyForecasts
 import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.util.rx.with
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
 
 /**
  * Weather Presenter
  */
-class WeatherResultViewModel() : ViewModel(), KoinComponent {
-
-    val weatherRepository: WeatherRepository by inject()
-    val scheduler: SchedulerProvider by inject()
+class WeatherResultViewModel(val weatherRepository: WeatherRepository, val scheduler: SchedulerProvider) : ViewModel(), KoinComponent {
 
     val searchList = MutableLiveData<List<DailyForecastModel>>()
     val selectDetail = MutableLiveData<Boolean>()

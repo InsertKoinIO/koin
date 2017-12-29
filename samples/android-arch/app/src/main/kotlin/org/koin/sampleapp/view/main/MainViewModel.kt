@@ -7,16 +7,10 @@ import org.koin.sampleapp.repository.WeatherRepository
 import org.koin.sampleapp.repository.json.weather.Weather
 import org.koin.sampleapp.util.rx.SchedulerProvider
 import org.koin.sampleapp.util.rx.with
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
 
-class MainViewModel() : ViewModel(), KoinComponent {
-//(val weatherRepository: WeatherRepository,val scheduler: SchedulerProvider) : ViewModel() {
+class MainViewModel(private val weatherRepository: WeatherRepository, private val scheduler: SchedulerProvider) : ViewModel() {
 
-    val weatherRepository: WeatherRepository by inject()
-    val scheduler: SchedulerProvider by inject()
-
-    var disposable: Disposable? = null
+    private var disposable: Disposable? = null
     val searchOk = MutableLiveData<Weather>()
 
     fun searchWeather(address: String) {
