@@ -35,10 +35,16 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
 
     private fun bindTypes(): String = "(" + bindTypes.map { it.java.canonicalName }.joinToString() + ")"
 
-    override fun toString() = "Bean[name='$name',class=${clazz.java.canonicalName},singleton=$isSingleton,binds~${bindTypes()}]"
+    override fun toString(): String {
+        val n = if (name.isBlank()) "" else "name='$name', "
+        val c = "class=${clazz.java.canonicalName}"
+        val s = if (isSingleton) "Bean" else "Factory"
+        val b = if (bindTypes.isEmpty()) "" else ", binds~${bindTypes()}"
+        return "$s[$n$c$b]"
+    }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is BeanDefinition<*>){
+        return if (other is BeanDefinition<*>) {
             name == other.name && clazz == other.clazz
         } else false
     }

@@ -89,12 +89,12 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
         beanRegistry.definitions.keys.forEach { def ->
             Koin.logger.log("Testing $def ...")
             instanceFactory.retrieveInstance<Any>(def)
-            if (def.bindTypes.isNotEmpty()) {
-                def.bindTypes.forEach {
-                    Koin.logger.log("Testing additional type : $it ...")
-                    resolveByClass(it)
-                }
-            }
+//            if (def.bindTypes.isNotEmpty()) {
+//                def.bindTypes.forEach {
+//                    Koin.logger.log("Testing additional type : $it ...")
+//                    resolveByClass(it)
+//                }
+//            }
         }
     }
 

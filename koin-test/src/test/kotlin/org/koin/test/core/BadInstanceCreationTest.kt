@@ -94,27 +94,27 @@ class BadInstanceCreationTest : AbstractKoinTest() {
         assertDefinedInScope(ComponentB::class, Scope.ROOT)
     }
 
-    @Test
-    fun `multiple definition for same type`() {
-        startKoin(listOf(module1))
-        try {
-            dryRun()
-            fail()
-        } catch (e: Exception) {
-            System.err.println(e)
-        }
-    }
-
-    @Test
-    fun `multiple definition for same type - binds`() {
-        startKoin(listOf(module2))
-        try {
-            dryRun()
-            fail()
-        } catch (e: Exception) {
-            System.err.println(e)
-        }
-    }
+//    @Test
+//    fun `multiple definition for same type`() {
+//        startKoin(listOf(module1))
+//        try {
+//            dryRun()
+//            fail()
+//        } catch (e: Exception) {
+//            System.err.println(e)
+//        }
+//    }
+//
+//    @Test
+//    fun `multiple definition for same type - binds`() {
+//        startKoin(listOf(module2))
+//        try {
+//            dryRun()
+//            fail()
+//        } catch (e: Exception) {
+//            System.err.println(e)
+//        }
+//    }
 
     @Test
     fun `missing dependency`() {

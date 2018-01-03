@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
+import org.koin.android.architecture.ext.viewModel
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -11,7 +12,6 @@ import org.koin.test.AbstractKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
-import viewModel
 
 class ViewModelDSLTest : AbstractKoinTest() {
 

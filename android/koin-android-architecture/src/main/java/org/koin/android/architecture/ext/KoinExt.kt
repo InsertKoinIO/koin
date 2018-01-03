@@ -1,3 +1,5 @@
+package org.koin.android.architecture.ext
+
 import android.arch.lifecycle.ViewModel
 import org.koin.KoinContext
 import org.koin.dsl.context.Context

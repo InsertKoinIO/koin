@@ -1,11 +1,10 @@
-package org.koin.android.ext.android
+package org.koin.android.architecture.ext
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelStores
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import get
 import org.koin.standalone.KoinComponent
 
 

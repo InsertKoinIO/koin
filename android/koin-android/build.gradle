@@ -30,8 +30,6 @@ android {
 }
 
 dependencies {
-    // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
     compile "org.koin:koin-core:$koin_version"
     testCompile "org.koin:koin-test:$koin_version"

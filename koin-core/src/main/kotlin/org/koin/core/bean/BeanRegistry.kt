@@ -75,7 +75,7 @@ class BeanRegistry {
     /**
      * Search bean by its name
      */
-    fun searchByName(name: String) = searchDefinition { it.name == name } ?: throw NoBeanDefFoundException("No bean definition found for name $name")
+    fun searchByName(name: String): BeanDefinition<*> = searchDefinition { it.name == name }.firstOrNull() ?: throw NoBeanDefFoundException("No bean definition found for name $name")
 
     /**
      * Search for any bean definition
@@ -83,19 +83,19 @@ class BeanRegistry {
     fun searchAll(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*> {
         val concreteTypes = searchDefinition { it.clazz == clazz }
         val extraBindTypes = searchDefinition { it.bindTypes.contains(clazz) }
-        return if (concreteTypes != null && extraBindTypes != null) {
-            throw NoBeanDefFoundException("Multiple definition found for class $clazz : \n\t$concreteTypes\n\t$extraBindTypes")
-        } else (concreteTypes ?: extraBindTypes) ?: throw NoBeanDefFoundException("No bean definition found for class $clazz")
+        return when {
+            concreteTypes.isNotEmpty() && extraBindTypes.isNotEmpty() -> throw NoBeanDefFoundException("Multiple definition found for class $clazz : \n\t$concreteTypes\n\t$extraBindTypes")
+            concreteTypes.isEmpty() && extraBindTypes.isEmpty() -> throw NoBeanDefFoundException("No bean definition found for class $clazz")
+            concreteTypes.isNotEmpty() && concreteTypes.size == 1 -> concreteTypes.first()
+            extraBindTypes.isNotEmpty() && extraBindTypes.size == 1 -> extraBindTypes.first()
+            else -> error(IllegalStateException("Can't find bean for class $clazz"))
+        }
     }
 
     /**
      * Search definition with given filter function
      */
-    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean): BeanDefinition<*>? {
-        val results = definitions.keys.filter(filter)
-        return if (results.size == 1) results.first()
-        else null
-    }
+    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean): List<BeanDefinition<*>> = definitions.keys.filter(filter)
 
     /**
      * Get bean definitions from given scope context & child

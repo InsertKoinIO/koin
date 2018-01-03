@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'org.jetbrains.dokka-android'
@@ -15,7 +14,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
     buildTypes {
         release {
@@ -30,18 +28,15 @@ android {
 }
 
 dependencies {
-    // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
-    compile project(":koin-android")
+    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
     // Test
     testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
     // Support
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     // Architecture
-    implementation "android.arch.lifecycle:extensions:$architectureComponents"
-    annotationProcessor "android.arch.lifecycle:compiler:$architectureComponents"
+    compile "android.arch.lifecycle:extensions:$architectureComponents"
 }
 
 repositories {
@@ -58,11 +53,11 @@ group = 'org.koin'
 version = "$rootProject.ext.koin_version"
 description = 'KOIN - Kotlin simple dependency injection for Android Architecture Components'
 
-ext{
+ext {
     publishedGroupId = group
     libraryName = 'Koin Android Architecture'
 
-    artifact = 'koin-android'
+    artifact = 'koin-android-architecture'
     libraryDescription = 'KOIN - Kotlin simple dependency injection for Android Architecture Components'
     libraryVersion = version
 }
