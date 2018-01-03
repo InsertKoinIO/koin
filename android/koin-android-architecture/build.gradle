@@ -33,9 +33,15 @@ dependencies {
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Koin
-    compile "org.koin:koin-core:$koin_version"
+    compile project(":koin-android")
+    // Test
     testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
+    // Support
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    // Architecture
+    implementation "android.arch.lifecycle:extensions:$architectureComponents"
+    annotationProcessor "android.arch.lifecycle:compiler:$architectureComponents"
 }
 
 repositories {
@@ -50,15 +56,14 @@ dokka {
 
 group = 'org.koin'
 version = "$rootProject.ext.koin_version"
-//artifact = "koin-android"
-description = 'KOIN - Kotlin simple dependency injection for Android'
+description = 'KOIN - Kotlin simple dependency injection for Android Architecture Components'
 
 ext{
     publishedGroupId = group
-    libraryName = 'Koin Android'
+    libraryName = 'Koin Android Architecture'
 
     artifact = 'koin-android'
-    libraryDescription = 'KOIN - Kotlin simple dependency injection for Android'
+    libraryDescription = 'KOIN - Kotlin simple dependency injection for Android Architecture Components'
     libraryVersion = version
 }
 
@@ -69,7 +74,7 @@ install {
             project {
                 packaging 'aar'
                 groupId publishedGroupId
-                artifactId 'koin-android'
+                artifactId 'koin-android-architecture'
 
                 // Add your description here
                 name libraryName
@@ -102,7 +107,7 @@ bintray {
     override = true
     pkg {
         repo = 'koin'
-        name = 'koin-android'
+        name = 'koin-android-architecture'
         userOrg = 'ekito'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/Ekito/koin.git'

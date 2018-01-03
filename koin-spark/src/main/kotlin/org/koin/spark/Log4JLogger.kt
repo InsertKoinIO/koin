@@ -3,9 +3,12 @@ package org.koin.spark
 import org.koin.log.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ * SLF4J Koin Logger
+ */
 class Log4JLogger : Logger {
 
-    val logger: org.slf4j.Logger = LoggerFactory.getLogger("Koin")
+    private val logger: org.slf4j.Logger = LoggerFactory.getLogger("Koin")
 
     override fun err(msg: String) {
         logger.error(msg)

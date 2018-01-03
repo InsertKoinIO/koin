@@ -18,6 +18,7 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class SparkDSLTest : KoinTest {
 
     val controller: HelloController by inject()
+    val controller2: HelloController by inject()
     val service: HelloService by inject()
 
     val module = applicationContext {
@@ -46,5 +47,20 @@ class SparkDSLTest : KoinTest {
         assertDefinedInScope(HelloService::class, Scope.ROOT)
 
         assertEquals(controller, get<SparkController>())
+    }
+
+    @Test
+    fun `check controller is a bean`() {
+        startKoin(listOf(module))
+
+        assertEquals(service, controller.service)
+        assertEquals(controller2, controller)
+
+        assertEquals(controller, get<SparkController>())
+        assertRemainingInstances(2)
+        assertDefinitions(2)
+        assertContexts(1)
+        assertDefinedInScope(HelloController::class, Scope.ROOT)
+        assertDefinedInScope(HelloService::class, Scope.ROOT)
     }
 }
