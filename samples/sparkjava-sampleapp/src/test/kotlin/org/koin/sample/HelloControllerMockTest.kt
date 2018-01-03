@@ -5,7 +5,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.koin.sample.util.SparkTestUtil
-import org.koin.sample.util.start
+import org.koin.sample.util.startSpark
+import org.koin.sample.util.stopSpark
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
@@ -22,7 +23,7 @@ class HelloControllerMockTest : KoinTest {
 
     @Before()
     fun before() {
-        val port = start(0) {
+        val port = startSpark(0) {
             startKoin(listOf(helloMockModule))
             HelloController(mockService)
         }
@@ -32,11 +33,7 @@ class HelloControllerMockTest : KoinTest {
     @After
     fun after() {
         closeKoin()
-        stop()
-
-        // Need to sleep in order to let the server stops
-        // It's done in another thread (cf. spark.Service.stop())
-        Thread.sleep(50)
+        stopSpark()
     }
 
     @Test

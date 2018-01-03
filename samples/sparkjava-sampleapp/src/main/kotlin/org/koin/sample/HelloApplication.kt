@@ -3,7 +3,7 @@ package org.koin.sample
 import org.koin.dsl.module.applicationContext
 import org.koin.sample.util.controller
 import org.koin.sample.util.runControllers
-import org.koin.sample.util.start
+import org.koin.sample.util.startSpark
 import org.koin.standalone.StandAloneContext.startKoin
 import spark.kotlin.get
 
@@ -39,7 +39,7 @@ class HelloController(val service: HelloService) {
 
 fun main(vararg args: String) {
     // Spark
-    start {
+    startSpark {
         // Koin
         startKoin(listOf(helloAppModule))
         // Controllers
