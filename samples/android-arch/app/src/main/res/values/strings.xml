@@ -1,4 +1,0 @@
-<resources>
-    <string name="app_name">My Weather App</string>
-    <string name="weather_title">Weather for %1$s at %2$s</string>
-</resources>
