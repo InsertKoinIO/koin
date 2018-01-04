@@ -11,6 +11,7 @@ Koin is a small library to lets you write dependency injection in a concise and 
 
 #### All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
 
+#### Koin samples have been moved here: [koin-samples @ github](https://github.com/Ekito/koin-samples)
 
 ## Getting Started
 
