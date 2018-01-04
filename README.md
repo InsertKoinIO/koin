@@ -49,7 +49,7 @@ compile "org.koin:koin-spark:$koin_version"
 
 Check others modules (Ktor, JUnit ...) on [getting started](https://insert-koin.io/1.0/getting-started/introduction/) web page
 
-### Declare
+## Declare
 
 Write a **module** with what you want to declare and assemble:
 
@@ -65,7 +65,7 @@ val myModule = applicationContext {
 } 
 ```
 
-### Start
+## Start
 
 Use the `startKoin()` function to start Koin with your modules in your application. Below some start examples.
 
@@ -91,7 +91,7 @@ class MyApplication : Application() {
 ```
 
 
-### Inject
+## Inject
 
 You're ready to go! Components declared in modules are injected **by constructors**.
 
