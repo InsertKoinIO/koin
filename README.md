@@ -7,49 +7,172 @@ Koin is a small library to lets you write dependency injection in a concise and 
 #### *Declare, Start & Inject*
 
 
-## Website
+## insert-koin.io
 
-All documentation, sample and references has been move to our website.
-
-### Check the official website to get started: [insert-koin.io](https://insert-koin.io)
+#### All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
 
 
-## Gradle
+## Getting Started
 
-Check that you have the `jcenter` repository. Choose the needed depedency:
+### Actual Version
+
+```gradle
+koin_version = '0.8.0'
+```
+
+### Gradle
+Check that you have the `jcenter` repository. 
 
 ```gradle
 // Add Jcenter to your repositories if needed
 repositories {
 	jcenter()    
 }
+```
 
+Choose your the Koin module for your runtime:
+
+```gradle
 // Koin for Kotlin
-compile 'org.koin:koin-core:0.7.1'
+compile "org.koin:koin-core:$koin_version"
 
 // Koin for Android
-compile 'org.koin:koin-android:0.7.1'
+compile "org.koin:koin-android:$koin_version"
 
-// Koin for Ktor
-compile 'org.koin:koin-ktor:0.7.1'
+// Koin for Android Architecture Components
+compile "org.koin:koin-android-architecture:$koin_version"
 
-// Koin Testing tools
-testCompile 'org.koin:koin-test:0.7.1'
+// Koin for Spark Kotlin
+compile "org.koin:koin-spark:$koin_version"
+```
+
+Check others modules (Ktor, JUnit ...) on [getting started](https://insert-koin.io/1.0/getting-started/introduction/) web page
+
+### Declare
+
+Write a **module** with what you want to declare and assemble:
+
+```kotlin
+// Given some classes 
+class Controller(val service : BusinessService) 
+class BusinessService() 
+
+// just declare it 
+val myModule = applicationContext { 
+  provide { Controller(get()) } 
+  provide { BusinessService() } 
+} 
+```
+
+### Start
+
+Use the `startKoin()` function to start Koin with your modules in your application. Below some start examples.
+
+Kotlin:
+
+```kotlin
+fun main(vararg args : String) { 
+  // start Koin!
+  startKoin(listOf(myModule))
+} 
+```
+
+Android:
+
+```kotlin
+class MyApplication : Application() {
+  override fun onCreate(){
+    super.onCreate()
+    // start Koin!
+    startKoin(this, listOf(myModule))
+  } 
+} 
 ```
 
 
-## Last Articles
+### Inject
 
-* [When Koin met Ktor ...](https://medium.com/koin-developers/when-koin-met-ktor-c3b2395662bf)
-* [Moving from Dagger to Koin - Simplify your Android development](https://medium.com/@giuliani.arnaud/moving-from-dagger-to-koin-simplify-your-android-development-e8c61d80cddb) - ([Kotlin Weekly issue 66](http://mailchi.mp/kotlinweekly/kotlin-weekly-66?e=e8a57c719f) & [Android Weekly issue 282](http://androidweekly.net/issues/issue-282))
-* [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
-* [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
-* [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
+You're ready to go! Components declared in modules are injected **by constructors**.
 
-## Contact & Support
+```kotlin
+class Controller(val service : BusinessService){ 
+  // service has been injected 
+} 
+```
 
-### On [Kotlin Slack](https://kotlinlang.org/community/) on **#koin** channel
+**Inject** into Android Activity:
 
-### On Twitter [@insertkoin_io](https://twitter.com/insertkoin_io)
+```kotlin
+// Just a simple Activity - No need of interface nor annotation 
+class MyActivity() : AppCompatActivity() {
+
+    // lazy inject BusinessService
+    val service : BusinessService by inject()
+}
+```
+
+Get your Android Architecture **ViewModel**:
+
+```kotlin
+// MyViewModel must be previously declared with 'viewModel'
+val module = applicationContext{
+  viewModel { MyViewModel(get())}
+  //...
+}
+
+// Your ViewModel
+class MyViewModel(val service : BusinessService) : ViewModel() {
+  // do antyhing with service
+}
+
+// Bind it to your Activity
+class MyActivity() : AppCompatActivity() {
+  override fun onCreate(){
+    super.onCreate()
+    val viewModel = getViewModel<MyViewModel>()
+  }
+}
+```
+
+A **Spark** HTTP Controller:
+
+```kotlin
+// Declare your controller
+val module = applicationContext {
+  controller { HelloController(get())}
+  //...
+}
+
+// Your Spark HTTP Controller
+class HelloController(val service: HelloService) {
+  init {
+      get("/hello") {
+          service.sayHello()
+      }
+  }
+}
+
+fun main(vararg args: String) {
+  // Spark
+  startSpark {
+      // Koin
+      startKoin(listOf(helloAppModule))
+      // Run all Controllers
+      runControllers()
+  }
+}
+```
+
+Check the [getting started](https://insert-koin.io) sections for more details.
+
+## Follow us & Contact
+
+### Twitter - [@insertkoin_io](https://twitter.com/insertkoin_io)
+
+### Medium - [Koin Developers Hub](https://medium.com/koin-developers)
+
+### Slack - [Kotlin Slack](https://kotlinlang.org/community/) on **#koin** channel
+
+
 
 
