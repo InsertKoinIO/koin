@@ -1,8 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'org.jetbrains.dokka-android'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -44,76 +41,13 @@ repositories {
     mavenLocal()
 }
 
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
 }
 
-group = 'org.koin'
-version = "$rootProject.ext.koin_version"
-description = 'KOIN - Kotlin simple dependency injection for Android Architecture Components'
-
-ext {
-    publishedGroupId = group
-    libraryName = 'Koin Android Architecture'
-
-    artifact = 'koin-android-architecture'
-    libraryDescription = 'KOIN - Kotlin simple dependency injection for Android Architecture Components'
-    libraryVersion = version
+artifacts {
+    archives generateSourcesJar
 }
 
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                groupId publishedGroupId
-                artifactId 'koin-android-architecture'
-
-                // Add your description here
-                name libraryName
-                description libraryDescription
-
-                developers {
-                    developer {
-                        id 'arnaudgiuliani'
-                        name 'Arnaud GIULIANI'
-                        email 'agiuliani@ekito.fr'
-                    }
-                }
-                scm {
-                }
-            }
-        }
-    }
-}
-
-bintray {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('../local.properties').newDataInputStream())
-
-    user = properties.getProperty('bintray_user')
-    key = properties.getProperty('bintray_apikey')
-
-    configurations = ['archives']
-
-    publish = true //[Default: false] Whether version should be auto published after an upload
-    override = true
-    pkg {
-        repo = 'koin'
-        name = 'koin-android-architecture'
-        userOrg = 'ekito'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Ekito/koin.git'
-        description = libraryDescription
-        version {
-            desc = description
-            // Optional. The passphrase for GPG signing'
-            // gpg {
-            //    sign = true //Determines whether to GPG sign the files. The default is false
-            //    passphrase = properties.getProperty("bintray.gpg.password")
-            //}
-        }
-    }
-}
+apply from: 'publish.gradle'
