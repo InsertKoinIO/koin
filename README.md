@@ -47,7 +47,7 @@ compile "org.koin:koin-android-architecture:$koin_version"
 compile "org.koin:koin-spark:$koin_version"
 ```
 
-Check others modules (Ktor, JUnit ...) on [getting started](https://insert-koin.io/1.0/getting-started/introduction/) web page
+Check others modules (Ktor, JUnit ...) on [getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/) web page
 
 ## Declare
 
