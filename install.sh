@@ -3,4 +3,5 @@
 gradle clean test install
 
 cd android/
-gradle clean test assembleRelease publishToMavenLocal
+gradle clean test assembleRelease install
+

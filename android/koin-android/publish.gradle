@@ -1,8 +1,37 @@
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 version "$rootProject.ext.koin_version"
 group "org.koin"
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId group
+                artifactId 'koin-android'
+
+                // Add your description here
+                name artifactId
+                description ''
+
+                developers {
+                    developer {
+                        id 'arnaudgiuliani'
+                        name 'Arnaud GIULIANI'
+                        email 'agiuliani@ekito.fr'
+                    }
+                }
+                scm {
+                }
+            }
+        }
+    }
+}
 
 publishing {
     publications {
