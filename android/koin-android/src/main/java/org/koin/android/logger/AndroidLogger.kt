@@ -9,11 +9,16 @@ import org.koin.log.Logger
  * @author Arnaud Giuliani
  */
 class AndroidLogger : Logger {
+    val TAG = "KOIN"
+    override fun debug(msg: String) {
+        Log.d(TAG, msg)
+    }
+
     override fun err(msg: String) {
-        Log.e("KOIN","[ERROR] - $msg")
+        Log.e(TAG, "[ERROR] - $msg")
     }
 
     override fun log(msg: String) {
-        Log.i("KOIN", msg)
+        Log.i(TAG, msg)
     }
 }
