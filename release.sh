@@ -1,6 +1,6 @@
 #!/bin/sh
 
-gradle clean test install bintrayUpload --info
+gradle clean test bintrayUpload --info
 
 cd android/
-gradle clean test assembleRelease install bintrayUpload --info
+gradle clean test assembleRelease bintrayUpload --info
