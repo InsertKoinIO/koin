@@ -10,6 +10,10 @@ class Log4JLogger : Logger {
 
     private val logger: org.slf4j.Logger = LoggerFactory.getLogger("Koin")
 
+    override fun debug(msg: String) {
+        logger.debug(msg)
+    }
+
     override fun err(msg: String) {
         logger.error(msg)
     }

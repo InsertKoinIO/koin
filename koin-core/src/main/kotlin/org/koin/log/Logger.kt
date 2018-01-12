@@ -10,6 +10,11 @@ interface Logger {
     fun log(msg : String)
 
     /**
+     * Debug log
+     */
+    fun debug(msg : String)
+
+    /**
      * Error log
      */
     fun err(msg : String)

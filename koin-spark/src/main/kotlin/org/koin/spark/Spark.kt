@@ -1,29 +1,43 @@
 package org.koin.spark
 
 import org.koin.Koin
+import org.koin.KoinContext
+import org.koin.dsl.module.Module
+import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.startKoin
 import spark.Spark
 import spark.kotlin.after
 import spark.kotlin.port
 import spark.kotlin.stop
 
+val DEFAULT_PORT = 0
+
 /**
  * Start Spark server
  * @param port - server port /default 4567
- * @param runControllers - function to run Koin
+ * @param controllers - function to run Koin
  */
-fun startSpark(port: Int = 4567, runControllers: () -> Unit): Int {
+fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: () -> Unit): Int {
 
-    port(port)
+    Koin.logger = Log4JLogger()
+
+    // Start Koin
+    startKoin(modules, bindSystemProperties = true)
+    // Get port from properties
+    val foundPort = (StandAloneContext.koinContext as KoinContext).getProperty("server.port", "4567").toInt()
+    if (port != DEFAULT_PORT) {
+        port(port)
+    } else {
+        port(foundPort)
+    }
 
     // Logging filter
     after("*") {
         println(request.requestMethod() + " " + request.pathInfo() + " - " + response.raw().status)
     }
 
-    Koin.logger = Log4JLogger()
-
     // launch controllers initialization
-    runControllers()
+    controllers()
 
     // This is the important line. It must be *after* creating the routes and *before* the call to port()
     Spark.awaitInitialization()
@@ -35,7 +49,7 @@ fun startSpark(port: Int = 4567, runControllers: () -> Unit): Int {
 /**
  * Stop spark server and wait
  */
-fun stopSpark(sleep: Long = 100) {
+fun stop(sleep: Long = 100) {
     stop()
 
     // Need to sleep in order to let the server stops

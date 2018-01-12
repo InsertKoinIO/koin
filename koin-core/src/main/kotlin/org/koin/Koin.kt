@@ -53,7 +53,7 @@ class Koin {
      * Inject all system properties to context
      */
     fun bindSystemProperties(): Koin {
-        val nb = propertyResolver.import(System.getProperties())
+        val nb = propertyResolver.import(System.getenv().toProperties())
         logger.log("[init] loaded $nb properties from system properties")
         return this
     }
