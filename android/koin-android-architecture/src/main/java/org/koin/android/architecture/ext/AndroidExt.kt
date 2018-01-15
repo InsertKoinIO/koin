@@ -15,9 +15,10 @@ import org.koin.standalone.KoinComponent
 inline fun <reified T : ViewModel> Fragment.getViewModel(shareWithActivityViewModel: Boolean = true): T {
     val vm = ViewModelProvider(
             if (shareWithActivityViewModel)
-                ViewModelStores.of(activity!!, KoinFactory)
+                ViewModelStores.of(activity!!)
             else
-                ViewModelStores.of(this), KoinFactory)
+                ViewModelStores.of(this)
+            , KoinFactory)
     return vm.get(T::class.java)
 }
 
