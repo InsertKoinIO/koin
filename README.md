@@ -15,10 +15,12 @@ Koin is a small library to lets you write dependency injection in a concise and 
 
 ## Getting Started
 
+You can check the [getting started section](insert-koin.io/docs/1.0/getting-started/introduction/) from our website, to discover Koin with the favorite platofrm. Or follow the snippets below.
+
 ### Actual Version
 
 ```gradle
-koin_version = '0.8.0'
+koin_version = '0.8.1'
 ```
 
 ### Gradle
@@ -112,7 +114,7 @@ class MyActivity() : AppCompatActivity() {
 }
 ```
 
-Get your Android Architecture **ViewModel**:
+Inject your Android **ViewModel**:
 
 ```kotlin
 // MyViewModel must be previously declared with 'viewModel'
@@ -128,14 +130,16 @@ class MyViewModel(val service : BusinessService) : ViewModel() {
 
 // Bind it to your Activity
 class MyActivity() : AppCompatActivity() {
+
+  val viewModel : MyViewModel by getViewModel()
+
   override fun onCreate(){
     super.onCreate()
-    val viewModel = getViewModel<MyViewModel>()
   }
 }
 ```
 
-A **Spark** HTTP Controller:
+Start **Spark** HTTP Controller:
 
 ```kotlin
 // Declare your controller
@@ -164,7 +168,7 @@ fun main(vararg args: String) {
 }
 ```
 
-Check the [getting started](https://insert-koin.io) sections for more details.
+Go to the [getting started](https://insert-koin.io) sections for more details.
 
 ## Follow us & Contact
 
