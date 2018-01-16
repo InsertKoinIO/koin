@@ -8,11 +8,18 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 
 
+/**
+ * ViewModel DSL Extension
+ * Allow to declare a vieModel - be later inject into Activity/Fragment with dedicated injector
+ */
 inline fun <reified T : ViewModel> Context.viewModel(name: String = "", noinline definition: () -> T) {
     val bean = provide(name, false, definition)
     bean.bind(ViewModel::class)
 }
 
+/**
+ * Resolve an instance by its canonical name
+ */
 fun <T> KoinContext.getByTypeName(canonicalName: String): T {
     val foundDefinitions = beanRegistry.definitions.keys.filter { it.clazz.java.canonicalName == canonicalName }
     return when (foundDefinitions.size) {
@@ -25,4 +32,7 @@ fun <T> KoinContext.getByTypeName(canonicalName: String): T {
     }
 }
 
+/**
+ * Resolve an instance by its canonical name
+ */
 fun <T> KoinComponent.get(modelClass: Class<T>): T = (StandAloneContext.koinContext as KoinContext).getByTypeName(modelClass.canonicalName)
