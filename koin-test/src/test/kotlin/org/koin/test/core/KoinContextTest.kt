@@ -125,7 +125,7 @@ class KoinContextTest : AbstractKoinTest() {
 
         // Should read koin.properties file which contains OS_VERSION definition
         startKoin(arrayListOf(SingleModule),
-                bindSystemProperties = true,
+                useEnvironmentProperties = true,
                 properties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
 
         assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))

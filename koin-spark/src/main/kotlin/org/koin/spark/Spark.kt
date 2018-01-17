@@ -22,7 +22,7 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: () -> Un
     Koin.logger = Log4JLogger()
 
     // Start Koin
-    startKoin(modules, bindSystemProperties = true)
+    startKoin(modules, useEnvironmentProperties = true)
     // Get port from properties
     val foundPort = (StandAloneContext.koinContext as KoinContext).getProperty("server.port", "4567").toInt()
     if (port != DEFAULT_PORT) {

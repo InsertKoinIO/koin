@@ -21,14 +21,14 @@ object StandAloneContext {
     /**
      * Koin starter
      */
-    fun startKoin(list: List<Module>, bindSystemProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
+    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
         if (isStarted) {
             throw AlreadyStartedException()
         }
 
-        val koin = if (bindSystemProperties) {
+        val koin = if (useEnvironmentProperties) {
             // Koin properties will override system properties
-            Koin().bindKoinProperties().bindAdditionalProperties(properties).bindSystemProperties()
+            Koin().bindKoinProperties().bindAdditionalProperties(properties).bindEnvironmentProperties()
         } else {
             Koin().bindKoinProperties().bindAdditionalProperties(properties)
         }

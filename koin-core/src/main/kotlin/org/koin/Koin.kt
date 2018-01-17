@@ -8,8 +8,6 @@ import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
-import java.io.File
-import java.io.FileInputStream
 import java.util.*
 
 /**
@@ -34,17 +32,13 @@ class Koin {
     /**
      * Inject all properties from koin properties file to context
      */
-    fun bindKoinProperties(koinPropFilename: String = "koin.properties"): Koin {
-        val classLoader: ClassLoader = Koin::class.java.classLoader
-
-        val path: String? = classLoader.getResource(koinPropFilename)?.path
-
-        if (path != null && File(path).exists()) {
-
+    fun bindKoinProperties(koinFile: String = "/koin.properties"): Koin {
+        val content = Koin::class.java.getResource(koinFile)?.readText()
+        content?.let {
             val koinProperties = Properties()
-            FileInputStream(path).use { koinProperties.load(it) }
+            koinProperties.load(content.byteInputStream())
             val nb = propertyResolver.import(koinProperties)
-            logger.log("[init] loaded $nb properties from '$koinPropFilename' file")
+            logger.log("[init] loaded $nb properties from '$koinFile' file")
         }
         return this
     }
@@ -52,7 +46,7 @@ class Koin {
     /**
      * Inject all system properties to context
      */
-    fun bindSystemProperties(): Koin {
+    fun bindEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())
         logger.log("[init] loaded $n1 properties from properties")
         val n2 = propertyResolver.import(System.getenv().toProperties())
