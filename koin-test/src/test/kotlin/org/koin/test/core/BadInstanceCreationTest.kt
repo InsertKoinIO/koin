@@ -38,13 +38,17 @@ class BadInstanceCreationTest : AbstractKoinTest() {
         provide { ComponentError() }
     }
 
+    val module6 = applicationContext {
+        provide { ComponentA() as MyInterface } bind MyInterface::class
+    }
+
     interface MyInterface
     class ComponentA : MyInterface
     class ComponentB : MyInterface
     class ComponentC(val intf: MyInterface)
     class ComponentD(val componentE: ComponentE)
     class ComponentE(val componentD: ComponentD)
-    class ComponentError(){
+    class ComponentError() {
         init {
             error("Boum")
         }
@@ -149,4 +153,10 @@ class BadInstanceCreationTest : AbstractKoinTest() {
         }
     }
 
+    @Test
+    fun `multiple bean definitions`(){
+        startKoin(listOf(module6))
+        dryRun()
+        Assert.assertNotNull(get<MyInterface>())
+    }
 }

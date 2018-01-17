@@ -50,7 +50,8 @@ class BeanRegistry {
     /**
      * Retrieve context scope for given name
      */
-    fun getScope(name: String) = scopes.firstOrNull { it.name == name } ?: throw NoScopeFoundException("Context scope '$name' not found")
+    fun getScope(name: String) = scopes.firstOrNull { it.name == name }
+            ?: throw NoScopeFoundException("Context scope '$name' not found")
 
     /**
      * Find or create context scope
@@ -75,7 +76,8 @@ class BeanRegistry {
     /**
      * Search bean by its name
      */
-    fun searchByName(name: String): BeanDefinition<*> = searchDefinition { it.name == name }.firstOrNull() ?: throw NoBeanDefFoundException("No bean definition found for name $name")
+    fun searchByName(name: String): BeanDefinition<*> = searchDefinition { it.name == name }.firstOrNull()
+            ?: throw NoBeanDefFoundException("No bean definition found for name $name")
 
     /**
      * Search for any bean definition
@@ -83,11 +85,11 @@ class BeanRegistry {
     fun searchAll(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*> {
         val concreteTypes = searchDefinition { it.clazz == clazz }
         val extraBindTypes = searchDefinition { it.bindTypes.contains(clazz) }
+        val found = (concreteTypes + extraBindTypes).distinct()
         return when {
-            concreteTypes.isNotEmpty() && extraBindTypes.isNotEmpty() -> throw NoBeanDefFoundException("Multiple definition found for class $clazz : \n\t$concreteTypes\n\t$extraBindTypes")
-            concreteTypes.isEmpty() && extraBindTypes.isEmpty() -> throw NoBeanDefFoundException("No bean definition found for class $clazz")
-            concreteTypes.isNotEmpty() && concreteTypes.size == 1 -> concreteTypes.first()
-            extraBindTypes.isNotEmpty() && extraBindTypes.size == 1 -> extraBindTypes.first()
+            found.size > 1 -> throw NoBeanDefFoundException("Multiple definition found for class $clazz : \n\t$concreteTypes\n\t$extraBindTypes")
+            found.isEmpty() -> throw NoBeanDefFoundException("No bean definition found for class $clazz")
+            found.size == 1 -> found.first()
             else -> error(IllegalStateException("Can't find bean for class $clazz"))
         }
     }
