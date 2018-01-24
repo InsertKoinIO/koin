@@ -92,6 +92,17 @@ class MyApplication : Application() {
 } 
 ```
 
+SparkKotlin:
+
+```kotlin
+fun main(vararg args : String) { 
+  // start Spark & Koin
+  start( modules = listOf(myModule)){
+  	runControllers()
+  }
+} 
+```
+
 
 ## Inject
 
