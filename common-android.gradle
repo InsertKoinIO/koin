@@ -10,6 +10,6 @@ ext {
 
     supportLibraryVersion = '26.1.0'
 
-	architectureComponents = '1.0.0'
+	architectureComponents = '1.1.0'
 
 }
