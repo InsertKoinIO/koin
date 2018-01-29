@@ -183,6 +183,8 @@ Go to the [getting started](https://insert-koin.io) sections for more details.
 
 ## Follow us & Contact
 
+### Website - [https://insert-koin.io](https://insert-koin.io)
+
 ### Twitter - [@insertkoin_io](https://twitter.com/insertkoin_io)
 
 ### Medium - [Koin Developers Hub](https://medium.com/koin-developers)
