@@ -170,9 +170,7 @@ class HelloController(val service: HelloService) {
 
 fun main(vararg args: String) {
   // Spark
-  startSpark {
-      // Koin
-      startKoin(listOf(helloAppModule))
+  start(modules = listOf(helloAppModule)) {
       // Run all Controllers
       runControllers()
   }
