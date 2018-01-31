@@ -20,7 +20,7 @@ You can check the [getting started section](insert-koin.io/docs/1.0/getting-star
 ### Actual Version
 
 ```gradle
-koin_version = '0.8.1'
+koin_version = '0.8.2'
 ```
 
 ### Gradle

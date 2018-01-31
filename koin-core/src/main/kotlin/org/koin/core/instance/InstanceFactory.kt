@@ -4,7 +4,6 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.error.BeanDefinitionException
 import org.koin.error.BeanInstanceCreationException
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -12,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class InstanceFactory(val beanRegistry: BeanRegistry) {
 
-    val instances = ConcurrentHashMap<BeanDefinition<*>, Any>()
+    val instances = HashMap<BeanDefinition<*>, Any>()
 
     /**
      * Retrieve or create bean instance

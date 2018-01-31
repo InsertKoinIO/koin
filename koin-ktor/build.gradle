@@ -13,9 +13,6 @@ dependencies {
 
     compile project(":koin-core")
 
-    // Kt
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     // Ktor
     compile "io.ktor:ktor-server-core:$ktor_version"
 }
