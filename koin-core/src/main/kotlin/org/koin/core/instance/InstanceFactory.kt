@@ -4,6 +4,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.error.BeanDefinitionException
 import org.koin.error.BeanInstanceCreationException
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -42,7 +43,7 @@ class InstanceFactory(val beanRegistry: BeanRegistry) {
      * Find existing instance
      */
     private fun <T> findInstance(def: BeanDefinition<*>): T? {
-        val existingClass = instances.keys.firstOrNull { it == def }
+        val existingClass = Collections.list(instances.keys()).firstOrNull { it == def }
         return if (existingClass != null) {
             instances[existingClass] as? T
         } else {
