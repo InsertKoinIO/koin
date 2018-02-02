@@ -4,10 +4,7 @@
 
 A small library for writing dependency injection in a concise and pragmatic way. No proxy, no code generation, no introspection. Just DSL and functional Kotlin magic!
 
-`Declare, Start, Inject
-
-#### *Declare, Start & Inject*
-
+`Declare, Start, Inject`
 
 ## insert-koin.io
 
