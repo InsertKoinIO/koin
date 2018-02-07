@@ -57,12 +57,13 @@ Write a **module** with what you want to declare and assemble:
 ```kotlin
 // Given some classes 
 class Controller(val service : BusinessService) 
-class BusinessService() 
+class BusinessServiceImpl() : BusinessService
+interface BusinessService
 
 // just declare it 
 val myModule = applicationContext { 
   provide { Controller(get()) } 
-  provide { BusinessService() } 
+  provide { BusinessServiceImpl() as BusinessService } 
 } 
 ```
 
@@ -129,7 +130,7 @@ Inject your Android **ViewModel**:
 ```kotlin
 // MyViewModel must be previously declared with 'viewModel'
 val module = applicationContext{
-  viewModel { MyViewModel(get())}
+  viewModel { MyViewModel(get()) }
   //...
 }
 
@@ -141,7 +142,7 @@ class MyViewModel(val service : BusinessService) : ViewModel() {
 // Bind it to your Activity
 class MyActivity() : AppCompatActivity() {
 
-  val viewModel : MyViewModel by getViewModel()
+  val viewModel : MyViewModel by viewModel()
 
   override fun onCreate(){
     super.onCreate()
