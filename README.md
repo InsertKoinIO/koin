@@ -11,7 +11,9 @@ A small library for writing dependency injection in a concise and pragmatic way.
 * All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
 * Koin samples have been moved here: [koin-samples @ github](https://github.com/Ekito/koin-samples)
 
-### NEW : Koin Android Developer Quick Reference : [Android Quick Ref](https://insert-koin.io/docs/1.0/quick-reference/android/)
+### NEW : [Koin Android Developer Quick Reference](https://insert-koin.io/docs/1.0/quick-reference/android/)
+The essentials of Koin API for Android developer
+
 
 ## Getting Started
 
