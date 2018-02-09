@@ -6,7 +6,7 @@ ext {
 
     androidGradlePlugin = "3.0.0"
 
-    buildToolsVersion = '26.0.2'
+    buildToolsVersion = '27.0.2'
 
     supportLibraryVersion = '26.1.0'
 

@@ -32,7 +32,7 @@ fun Application.startKoin(application: Application, modules: List<Module>, prope
  * @param id - Android resource String id
  * @param key - Koin property key
  */
-fun ComponentCallbacks.bindString(id: Int, key: String) {
+fun Application.bindString(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().getString(id))
 }
 
@@ -41,7 +41,7 @@ fun ComponentCallbacks.bindString(id: Int, key: String) {
  * @param id - Android resource Int id
  * @param key - Koin property key
  */
-fun ComponentCallbacks.bindInt(id: Int, key: String) {
+fun Application.bindInt(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().resources.getInteger(id))
 }
 
@@ -50,9 +50,11 @@ fun ComponentCallbacks.bindInt(id: Int, key: String) {
  * @param id - Android resource Boolean id
  * @param key - Koin property key
  */
-fun ComponentCallbacks.bindBool(id: Int, key: String) {
+fun Application.bindBool(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().resources.getBoolean(id))
 }
+
+
 
 /**
  * inject lazily given dependency for Android component
@@ -79,9 +81,13 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
 
 /**
  * Set a property
+ *
+ * Depration : avoid to use setProperty to set object inside your Android app - better use intentProperty
+ *
  * @param key
  * @param value
  */
+@Deprecated("use intentProperty")
 fun ComponentCallbacks.setProperty(key: String, value: Any) = context().setProperty(key, value)
 
 /**
