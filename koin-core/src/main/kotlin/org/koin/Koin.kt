@@ -99,5 +99,10 @@ class Koin {
          * Context isolation/visibility check
          */
         var useContextIsolation = false
+
+        /**
+         * Allow to run startKoin several times and share the same Koin context
+         */
+        var allowContextSharing = false
     }
 }
