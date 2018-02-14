@@ -7,14 +7,14 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
 
-class InterfaceBindingTest : AbstractKoinTest() {
+class InterfaceBindingTest : AutoCloseKoinTest() {
 
     val InterfacesModule = applicationContext {
         provide { ComponentA() as InterfaceComponent }

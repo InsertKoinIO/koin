@@ -8,12 +8,12 @@ import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.getProperty
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class KoinContextTest : AbstractKoinTest() {
+class KoinContextTest : AutoCloseKoinTest() {
 
     val CircularDeps = applicationContext {
         provide { ComponentA(get()) }

@@ -5,11 +5,11 @@ import org.junit.Test
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 
-class DSLProviderTest : AbstractKoinTest() {
+class DSLProviderTest : AutoCloseKoinTest() {
 
     val sampleModule = applicationContext {
 

@@ -7,13 +7,13 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 
-class BadInstanceCreationTest : AbstractKoinTest() {
+class BadInstanceCreationTest : AutoCloseKoinTest() {
 
     val module1 = applicationContext {
         provide { ComponentA() as MyInterface }

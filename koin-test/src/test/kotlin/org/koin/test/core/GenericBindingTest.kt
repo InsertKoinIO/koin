@@ -6,10 +6,10 @@ import org.junit.Test
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 
 
-class GenericBindingTest : AbstractKoinTest() {
+class GenericBindingTest : AutoCloseKoinTest() {
 
     val module = applicationContext {
         bean("a") { ComponentA() as InterfaceComponent<String> }

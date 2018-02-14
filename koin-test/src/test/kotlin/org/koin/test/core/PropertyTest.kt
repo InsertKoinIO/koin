@@ -10,10 +10,10 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.getProperty
 import org.koin.standalone.setProperty
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
-class PropertyTest : AbstractKoinTest() {
+class PropertyTest : AutoCloseKoinTest() {
     val SimpleModule = applicationContext {
 
         provide { ComponentA(getProperty(KEY)) }

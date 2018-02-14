@@ -9,10 +9,10 @@ import org.koin.error.NoScopeFoundException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.releaseContext
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
-class ContextReleaseTest : AbstractKoinTest() {
+class ContextReleaseTest : AutoCloseKoinTest() {
 
     val HierarchyContextsModule = applicationContext {
         context(name = "A") {

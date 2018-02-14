@@ -2,6 +2,9 @@ package org.koin.standalone
 
 import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.core.bean.BeanRegistry
+import org.koin.core.instance.InstanceFactory
+import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 
@@ -21,22 +24,34 @@ object StandAloneContext {
     /**
      * Koin starter
      */
-    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
+    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()) = synchronized(this) {
         if (isStarted && !Koin.allowContextSharing) {
             throw AlreadyStartedException()
         }
 
-        val koin = if (useEnvironmentProperties) {
-            // Koin properties will override system properties
-            Koin().bindKoinProperties().bindAdditionalProperties(properties).bindEnvironmentProperties()
+        val koin = if (!isStarted) {
+            Koin.logger.log("[start] create context")
+            val beanRegistry = BeanRegistry()
+            val propertyResolver = PropertyRegistry()
+            val newContext = KoinContext(beanRegistry, propertyResolver, InstanceFactory(beanRegistry))
+            initProperties(Koin(newContext), useEnvironmentProperties, properties)
         } else {
-            Koin().bindKoinProperties().bindAdditionalProperties(properties)
+            Koin.logger.log("[start] reuse context")
+            val currentContext = koinContext as KoinContext
+            initProperties(Koin(currentContext), useEnvironmentProperties, properties)
         }
+        koinContext = koin.koinContext
+        koin.build(list)
 
-        // Build koin context
-        val build = koin.build(list)
         isStarted = true
-        return build
+    }
+
+    private fun initProperties(k: Koin, useEnvironmentProperties: Boolean, properties: Map<String, Any>): Koin {
+        var koin = k.bindKoinProperties().bindAdditionalProperties(properties)
+        if (useEnvironmentProperties) {
+            koin = koin.bindEnvironmentProperties()
+        }
+        return koin
     }
 
     /**

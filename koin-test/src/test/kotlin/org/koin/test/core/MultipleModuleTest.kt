@@ -8,13 +8,13 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class MultipleModuleTest : AbstractKoinTest() {
+class MultipleModuleTest : AutoCloseKoinTest() {
 
     class ComponentA
     class ComponentB(val componentA: ComponentA)

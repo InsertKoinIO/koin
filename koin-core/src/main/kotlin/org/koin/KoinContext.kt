@@ -17,7 +17,9 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud GIULIANI
  */
-class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyRegistry, val instanceFactory: InstanceFactory) : StandAloneKoinContext {
+class KoinContext(val beanRegistry: BeanRegistry,
+                  val propertyResolver: PropertyRegistry,
+                  val instanceFactory: InstanceFactory) : StandAloneKoinContext {
 
     /**
      * call stack - bean definition resolution

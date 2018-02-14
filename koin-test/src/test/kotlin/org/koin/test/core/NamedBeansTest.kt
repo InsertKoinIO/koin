@@ -6,12 +6,12 @@ import org.junit.Test
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class NamedBeansTest : AbstractKoinTest() {
+class NamedBeansTest : AutoCloseKoinTest() {
 
     val DataSourceModule = applicationContext {
         provide(name = "debugDatasource") { DebugDatasource() } bind (Datasource::class)

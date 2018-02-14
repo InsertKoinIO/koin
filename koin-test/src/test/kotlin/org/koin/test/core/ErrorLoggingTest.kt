@@ -5,10 +5,10 @@ import org.junit.Test
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 
 
-class ErrorLoggingTest : AbstractKoinTest() {
+class ErrorLoggingTest : AutoCloseKoinTest() {
 
     val module = applicationContext {
         bean { ComponentA() }
