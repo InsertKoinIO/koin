@@ -8,9 +8,12 @@ A small library for writing dependency injection in a concise and pragmatic way.
 
 ## insert-koin.io
 
-### All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
+* All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
+* Koin samples have been moved here: [koin-samples @ github](https://github.com/Ekito/koin-samples)
 
-### Koin samples have been moved here: [koin-samples @ github](https://github.com/Ekito/koin-samples)
+### NEW : [Koin Android Developer Quick Reference](https://insert-koin.io/docs/1.0/quick-reference/android/)
+The essentials of Koin API for Android developer
+
 
 ## Getting Started
 
@@ -57,12 +60,13 @@ Write a **module** with what you want to declare and assemble:
 ```kotlin
 // Given some classes 
 class Controller(val service : BusinessService) 
-class BusinessService() 
+class BusinessServiceImpl() : BusinessService
+interface BusinessService
 
 // just declare it 
 val myModule = applicationContext { 
   provide { Controller(get()) } 
-  provide { BusinessService() } 
+  provide { BusinessServiceImpl() as BusinessService } 
 } 
 ```
 
@@ -129,7 +133,7 @@ Inject your Android **ViewModel**:
 ```kotlin
 // MyViewModel must be previously declared with 'viewModel'
 val module = applicationContext{
-  viewModel { MyViewModel(get())}
+  viewModel { MyViewModel(get()) }
   //...
 }
 
@@ -141,7 +145,7 @@ class MyViewModel(val service : BusinessService) : ViewModel() {
 // Bind it to your Activity
 class MyActivity() : AppCompatActivity() {
 
-  val viewModel : MyViewModel by getViewModel()
+  val viewModel : MyViewModel by viewModel()
 
   override fun onCreate(){
     super.onCreate()
