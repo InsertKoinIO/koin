@@ -11,8 +11,8 @@ import java.util.*
  * @author - Arnaud GIULIANI
  */
 class Koin(val koinContext: KoinContext) {
-    private val propertyResolver = koinContext.propertyResolver
-    private val beanRegistry = koinContext.beanRegistry
+    val propertyResolver = koinContext.propertyResolver
+    val beanRegistry = koinContext.beanRegistry
 
     /**
      * Inject properties to context

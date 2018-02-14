@@ -1,7 +1,7 @@
 package org.koin.test.core
 
-import junit.framework.Assert.fail
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
