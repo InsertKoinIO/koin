@@ -25,7 +25,7 @@ object StandAloneContext {
      * Koin starter
      */
     fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
-        if (isStarted && !Koin.allowContextSharing) {
+        if (isStarted && !Koin.allowKoinContextShare) {
             throw AlreadyStartedException()
         }
 

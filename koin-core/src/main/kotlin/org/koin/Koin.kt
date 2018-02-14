@@ -96,6 +96,6 @@ class Koin(val koinContext: KoinContext) {
         /**
          * Allow to run startKoin several times and share the same context
          */
-        var allowContextSharing = false
+        var allowKoinContextShare = false
     }
 }

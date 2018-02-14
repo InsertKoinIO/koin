@@ -7,6 +7,7 @@ import org.koin.KoinContext
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.dsl.module.Module
+import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
 
 
@@ -22,8 +23,8 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  *
  * will be soon deprecated for starKoin() with <application>
  */
-fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap()) {
-    Koin.logger = AndroidLogger()
+fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap(), logger: Logger = AndroidLogger()) {
+    Koin.logger = logger
     StandAloneContext.startKoin(modules, properties = properties) with application
 }
 
@@ -55,7 +56,6 @@ fun Application.bindBool(id: Int, key: String) {
 }
 
 
-
 /**
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
@@ -82,12 +82,9 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
 /**
  * Set a property
  *
- * Depration : avoid to use setProperty to set object inside your Android app - better use intentProperty
- *
  * @param key
  * @param value
  */
-@Deprecated("use intentProperty")
 fun ComponentCallbacks.setProperty(key: String, value: Any) = context().setProperty(key, value)
 
 /**

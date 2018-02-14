@@ -27,7 +27,7 @@ class ContextSharingTest : AutoCloseKoinTest() {
 
     @Test
     fun `allow context sharing`() {
-        Koin.allowContextSharing = true
+        Koin.allowKoinContextShare = true
         startKoin(listOf(module1))
         startKoin(listOf(module2))
 
@@ -41,7 +41,7 @@ class ContextSharingTest : AutoCloseKoinTest() {
 
     @Test
     fun `allow context not sharing`() {
-        Koin.allowContextSharing = false
+        Koin.allowKoinContextShare = false
         startKoin(listOf(module1))
         try {
             startKoin(listOf(module2))
