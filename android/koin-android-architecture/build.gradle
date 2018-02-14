@@ -30,8 +30,6 @@ dependencies {
     // Test
     testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
-    // Support
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     // Architecture
     compile "android.arch.lifecycle:extensions:$architectureComponents"
 }
