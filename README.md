@@ -145,7 +145,7 @@ class MyViewModel(val service : BusinessService) : ViewModel() {
 // Bind it to your Activity
 class MyActivity() : AppCompatActivity() {
 
-  val viewModel : MyViewModel by viewModel()
+  val myViewModel : MyViewModel by viewModel()
 
   override fun onCreate(){
     super.onCreate()
