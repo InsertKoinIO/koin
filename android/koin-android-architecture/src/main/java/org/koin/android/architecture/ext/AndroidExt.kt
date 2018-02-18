@@ -9,30 +9,46 @@ import org.koin.standalone.KoinComponent
 
 /**
  * Get a ViewModel for given Fragment
+ * @param key The key to use to identify the ViewModel
  */
-inline fun <reified T : ViewModel> Fragment.getViewModel(): T {
+inline fun <reified T : ViewModel> Fragment.getViewModel(key: String? = null): T {
     val vm = ViewModelProvider(ViewModelStores.of(this), KoinFactory)
-    return vm.get(T::class.java)
+    return vm.get(key)
 }
 
 /**
  * Lazy get view model
  * @param fromActivity - reuse ViewModel from parent Activity or create new one
+ * @param key - the key to use to identify the ViewModel
  */
-inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = true) = lazy { if (fromActivity) activity.getViewModel<T>() else getViewModel() }
+inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = true, key: String? = null) = lazy { if (fromActivity) activity.getViewModel<T>(key) else getViewModel(key) }
 
 /**
  * Get a ViewModel for given Activity
+ * @param key The key to use to identify the ViewModel
  */
-inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T {
+inline fun <reified T : ViewModel> FragmentActivity.getViewModel(key: String? = null): T {
     val vm = ViewModelProvider(ViewModelStores.of(this), KoinFactory)
-    return vm.get(T::class.java)
+    return vm.get(key)
+}
+
+/**
+ * Resolve and get ViewModel by type and key (given non null key parameter)
+ * @param key The key to use to identify the ViewModel
+ */
+inline fun <reified T : ViewModel> ViewModelProvider.get(key: String? = null): T {
+    return if (key == null) {
+        get(T::class.java)
+    } else {
+        get(key, T::class.java)
+    }
 }
 
 /**
  * Lazy get a ViewModel - for Activity
+ * @param key The key to use to identify the ViewModel
  */
-inline fun <reified T : ViewModel> FragmentActivity.viewModel() = lazy { getViewModel<T>() }
+inline fun <reified T : ViewModel> FragmentActivity.viewModel(key: String? = null) = lazy { getViewModel<T>(key) }
 
 /**
  * Koin ViewModel factory
