@@ -20,6 +20,8 @@ import kotlin.reflect.KClass
  */
 data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, val isSingleton: Boolean = true, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
 
+    //TODO Link with Scope
+
     /**
      * Add a compatible type to current bounded definition
      */
@@ -47,5 +49,10 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
         return if (other is BeanDefinition<*>) {
             name == other.name && clazz == other.clazz
         } else false
+    }
+
+    //TODO
+    override fun hashCode(): Int {
+        return super.hashCode()
     }
 }

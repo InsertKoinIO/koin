@@ -16,13 +16,13 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
     val HierarchyContextsModule = applicationContext {
         context(name = "A") {
-            provide { ComponentA() }
+            bean { ComponentA() }
 
             context(name = "B") {
-                provide { ComponentB() }
+                bean { ComponentB() }
 
                 context(name = "C") {
-                    provide { ComponentC() }
+                    bean { ComponentC() }
                 }
             }
         }

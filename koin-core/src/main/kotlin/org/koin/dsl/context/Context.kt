@@ -37,6 +37,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * @param name
      * @param isSingleton
      */
+    @Deprecated("Now use `bean` (for singletons) or `factory` (for factories)")
     inline fun <reified T : Any> provide(name: String = "", isSingleton: Boolean = true, noinline definition: () -> T): BeanDefinition<T> {
         val beanDefinition = BeanDefinition(name, T::class, isSingleton, definition = definition)
         definitions += beanDefinition
@@ -45,23 +46,20 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     /**
      * Provide a bean definition - alias to provide
-     * But do not return Bean definition
      * @param name
      */
-    inline fun <reified T : Any> bean(name: String = "", noinline definition: () -> T) {
-        provide(name, true, definition)
+    inline fun <reified T : Any> bean(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
+        return provide(name, true, definition)
     }
 
     /**
      * Provide a factory bean definition - factory provider
-     * But do not return Bean definition
-     *
      * (recreate instance each time)
      *
      * @param name
      */
-    inline fun <reified T : Any> factory(name: String = "", noinline definition: () -> T) {
-        provide(name, false, definition)
+    inline fun <reified T : Any> factory(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
+        return provide(name, false, definition)
     }
 
     /**

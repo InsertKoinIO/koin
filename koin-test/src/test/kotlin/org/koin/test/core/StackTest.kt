@@ -22,43 +22,43 @@ class StackTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = applicationContext {
 
-        provide { ComponentA() }
+        bean { ComponentA() }
 
         context(name = "B") {
-            provide { ComponentB(get()) }
+            bean { ComponentB(get()) }
         }
 
         context(name = "C") {
-            provide { ComponentC(get()) }
+            bean { ComponentC(get()) }
         }
     }
 
     val HierarchyContextsModule = applicationContext {
         context(name = "A") {
-            provide { ComponentA() }
+            bean { ComponentA() }
 
             context(name = "B") {
-                provide { ComponentB(get()) }
+                bean { ComponentB(get()) }
 
                 context(name = "C") {
-                    provide { ComponentC(get()) }
+                    bean { ComponentC(get()) }
                 }
             }
 
         }
-        provide { ComponentD(get()) }
+        bean { ComponentD(get()) }
     }
 
     val NotVisibleContextsModule = applicationContext {
 
-        provide { ComponentB(get()) }
+        bean { ComponentB(get()) }
 
         context(name = "A") {
-            provide { ComponentA() }
+            bean { ComponentA() }
         }
 
         context(name = "D") {
-            provide { ComponentD(get()) }
+            bean { ComponentD(get()) }
         }
     }
 
