@@ -17,9 +17,9 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class InterfaceBindingTest : AutoCloseKoinTest() {
 
     val InterfacesModule = applicationContext {
-        provide { ComponentA() as InterfaceComponent }
-        provide("B") { ComponentB() as OtherInterfaceComponent }
-        provide("C") { ComponentC() as OtherInterfaceComponent }
+        bean { ComponentA() as InterfaceComponent }
+        bean("B") { ComponentB() as OtherInterfaceComponent }
+        bean("C") { ComponentC() as OtherInterfaceComponent }
     }
 
     interface InterfaceComponent

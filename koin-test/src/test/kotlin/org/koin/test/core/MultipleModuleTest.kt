@@ -21,16 +21,16 @@ class MultipleModuleTest : AutoCloseKoinTest() {
     class ComponentC(val componentA: ComponentA, val componentB: ComponentB)
 
     val SimpleModuleA = applicationContext {
-        provide { ComponentA() }
+        bean { ComponentA() }
     }
 
     val SimpleModuleB = applicationContext {
-        provide { ComponentB(get()) }
+        bean { ComponentB(get()) }
     }
 
     val SimpleModuleC = applicationContext {
         context(name = "C") {
-            provide { ComponentC(get(), get()) }
+            bean { ComponentC(get(), get()) }
         }
     }
 

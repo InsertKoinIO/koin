@@ -8,7 +8,7 @@ import org.koin.dsl.context.Context
  * Declare a Spark controller
  */
 inline fun <reified T : Any> Context.controller(name: String = "", noinline definition: () -> T) {
-    val def = provide(name, true, definition)
+    val def = bean(name, definition)
     def.bind(SparkController::class)
 }
 
@@ -30,7 +30,7 @@ fun runControllers() {
  */
 fun KoinContext.runSparkControllers() {
     Koin.logger.log("** Run Spark Controllers **")
-    beanRegistry.definitions.keys
+    beanRegistry.definitions
             .filter { it.types.contains(SparkController::class) }
             .forEach { def ->
                 Koin.logger.log("Creating $def ...")

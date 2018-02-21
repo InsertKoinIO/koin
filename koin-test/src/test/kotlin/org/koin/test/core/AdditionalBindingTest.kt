@@ -17,20 +17,20 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class AdditionalBindingTest : AutoCloseKoinTest() {
 
     val BoundModule = applicationContext {
-        provide { ComponentA() } bind InterfaceComponent::class
+        bean { ComponentA() } bind InterfaceComponent::class
     }
 
     val NotBoundModule = applicationContext {
-        provide { ComponentA() }
+        bean { ComponentA() }
     }
 
     val GenericBoundModule = applicationContext {
-        provide { ComponentB() } bind OtherInterfaceComponent::class
+        bean { ComponentB() } bind OtherInterfaceComponent::class
     }
 
     val TwoBoundModule = applicationContext {
-        provide { ComponentB() } bind OtherInterfaceComponent::class
-        provide { ComponentC() } bind OtherInterfaceComponent::class
+        bean { ComponentB() } bind OtherInterfaceComponent::class
+        bean { ComponentC() } bind OtherInterfaceComponent::class
     }
 
     class ComponentA : InterfaceComponent

@@ -16,13 +16,13 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class KoinContextTest : AutoCloseKoinTest() {
 
     val CircularDeps = applicationContext {
-        provide { ComponentA(get()) }
-        provide { ComponentB(get()) }
+        bean { ComponentA(get()) }
+        bean { ComponentB(get()) }
     }
 
 
     val SingleModule = applicationContext {
-        provide { ComponentA(get()) }
+        bean { ComponentA(get()) }
     }
 
 

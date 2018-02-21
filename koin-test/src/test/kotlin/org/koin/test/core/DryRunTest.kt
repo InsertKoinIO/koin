@@ -16,12 +16,12 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class DryRunTest : AutoCloseKoinTest() {
 
     val SimpleModule = applicationContext {
-        provide { ComponentA() }
-        provide { ComponentB(get()) }
+        bean { ComponentA() }
+        bean { ComponentB(get()) }
     }
 
     val BrokenModule = applicationContext {
-        provide { ComponentB(get()) }
+        bean { ComponentB(get()) }
     }
 
     class ComponentA()

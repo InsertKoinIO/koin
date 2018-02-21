@@ -15,19 +15,19 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class InstanceCreationTest : AutoCloseKoinTest() {
 
     val FlatModule = applicationContext {
-        provide { ComponentA() }
-        provide { ComponentB(get()) }
-        provide { ComponentC(get(), get()) }
+        bean { ComponentA() }
+        bean { ComponentB(get()) }
+        bean { ComponentC(get(), get()) }
     }
 
     val HierarchicModule = applicationContext {
-        provide { ComponentA() }
+        bean { ComponentA() }
 
         context("B") {
-            provide { ComponentB(get()) }
+            bean { ComponentB(get()) }
 
             context("C") {
-                provide { ComponentC(get(), get()) }
+                bean { ComponentC(get(), get()) }
             }
         }
     }

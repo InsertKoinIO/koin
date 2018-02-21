@@ -14,8 +14,8 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class NamedBeansTest : AutoCloseKoinTest() {
 
     val DataSourceModule = applicationContext {
-        provide(name = "debugDatasource") { DebugDatasource() } bind (Datasource::class)
-        provide(name = "ProdDatasource") { ProdDatasource() } bind (Datasource::class)
+        bean(name = "debugDatasource") { DebugDatasource() } bind (Datasource::class)
+        bean(name = "ProdDatasource") { ProdDatasource() } bind (Datasource::class)
     }
 
     interface Datasource

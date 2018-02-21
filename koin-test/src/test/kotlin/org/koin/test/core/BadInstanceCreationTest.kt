@@ -16,30 +16,30 @@ import org.koin.test.ext.junit.assertDefinitions
 class BadInstanceCreationTest : AutoCloseKoinTest() {
 
     val module1 = applicationContext {
-        provide { ComponentA() as MyInterface }
-        provide { ComponentB() } bind MyInterface::class
+        bean { ComponentA() as MyInterface }
+        bean { ComponentB() } bind MyInterface::class
     }
 
     val module2 = applicationContext {
-        provide { ComponentA() } bind MyInterface::class
-        provide { ComponentB() } bind MyInterface::class
+        bean { ComponentA() } bind MyInterface::class
+        bean { ComponentB() } bind MyInterface::class
     }
 
     val module3 = applicationContext {
-        provide { ComponentC(get()) }
+        bean { ComponentC(get()) }
     }
 
     val module4 = applicationContext {
-        provide { ComponentD(get()) }
-        provide { ComponentE(get()) }
+        bean { ComponentD(get()) }
+        bean { ComponentE(get()) }
     }
 
     val module5 = applicationContext {
-        provide { ComponentError() }
+        bean { ComponentError() }
     }
 
     val module6 = applicationContext {
-        provide { ComponentA() as MyInterface } bind MyInterface::class
+        bean { ComponentA() as MyInterface } bind MyInterface::class
     }
 
     interface MyInterface

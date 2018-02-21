@@ -10,7 +10,7 @@ import org.koin.test.AutoCloseKoinTest
 class OverrideTest : AutoCloseKoinTest() {
 
     val sampleModule1 = applicationContext {
-        provide { ComponentA() } bind MyInterface::class
+        bean { ComponentA() } bind MyInterface::class
         bean { ComponentA() }
     }
 
@@ -21,7 +21,7 @@ class OverrideTest : AutoCloseKoinTest() {
 
     val sampleModule3 = applicationContext {
         bean { ComponentB() as MyInterface }
-        provide { ComponentA() as MyInterface }
+        bean { ComponentA() as MyInterface }
     }
 
     val sampleModule4 = applicationContext {

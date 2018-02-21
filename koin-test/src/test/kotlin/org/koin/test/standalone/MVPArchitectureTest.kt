@@ -19,17 +19,17 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule =
             applicationContext {
-                provide { Repository(get()) }
+                bean { Repository(get()) }
 
                 context("View") {
-                    provide { View() }
-                    provide { Presenter(get()) }
+                    bean { View() }
+                    bean { Presenter(get()) }
                 }
             }
 
     val DataSourceModule =
             applicationContext {
-                provide { DebugDatasource() } bind (Datasource::class)
+                bean { DebugDatasource() } bind (Datasource::class)
             }
 
 

@@ -13,7 +13,7 @@ class DSLProviderTest : AutoCloseKoinTest() {
 
     val sampleModule = applicationContext {
 
-        provide { ComponentA() } bind MyInterface::class
+        bean { ComponentA() } bind MyInterface::class
 
         bean { ComponentB() }
 
