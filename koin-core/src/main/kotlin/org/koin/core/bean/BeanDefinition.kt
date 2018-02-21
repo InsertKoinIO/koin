@@ -1,5 +1,6 @@
 package org.koin.core.bean
 
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -15,18 +16,16 @@ import kotlin.reflect.KClass
  * @param name - bean name
  * @param clazz - bean class
  * @param isSingleton - is the bean a singleton
- * @param bindTypes - list of assignable types
+ * @param types - list of assignable types
  * @param definition - bean definition function
  */
-data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, val isSingleton: Boolean = true, var bindTypes: List<KClass<*>> = arrayListOf(), val definition: () -> T) {
-
-    //TODO Link with Scope
+data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, var types: List<KClass<*>> = arrayListOf(), val scope: Scope = Scope.root(), val isSingleton: Boolean = true, val definition: () -> T) {
 
     /**
      * Add a compatible type to current bounded definition
      */
     infix fun bind(clazz: KClass<*>): BeanDefinition<*> {
-        bindTypes += clazz
+        types += clazz
         return this
     }
 
@@ -35,24 +34,28 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
      */
     fun isNotASingleton() = !isSingleton
 
-    private fun bindTypes(): String = "(" + bindTypes.map { it.java.canonicalName }.joinToString() + ")"
+    private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
     override fun toString(): String {
         val n = if (name.isBlank()) "" else "name='$name', "
         val c = "class=${clazz.java.canonicalName}"
         val s = if (isSingleton) "Bean" else "Factory"
-        val b = if (bindTypes.isEmpty()) "" else ", binds~${bindTypes()}"
-        return "$s[$n$c$b]"
+        val b = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
+        val sn = if (scope != Scope.root()) ", scope:${scope.name}" else ""
+        return "$s[$n$c$b$sn]"
     }
 
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {
-            name == other.name && clazz == other.clazz
+            name == other.name && clazz == other.clazz && scope == other.scope
         } else false
     }
 
-    //TODO
     override fun hashCode(): Int {
-        return super.hashCode()
+        return name.hashCode() + clazz.hashCode() + scope.hashCode()
+    }
+
+    fun isCompatibleWith(clazz: KClass<*>): Boolean {
+        return this.clazz == clazz || types.contains(clazz)
     }
 }

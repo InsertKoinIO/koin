@@ -15,7 +15,7 @@ fun KoinContext.AllDefinitions() = beanRegistry.definitions
  * return definition for given class
  * @param clazz - bean definition class
  */
-fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*>? = AllDefinitions().keys.firstOrNull() { it.clazz == clazz }
+fun KoinContext.definition(clazz: KClass<*>): BeanDefinition<*>? = AllDefinitions().firstOrNull() { it.clazz == clazz }
 
 /**
  * Return all contexts of Koin

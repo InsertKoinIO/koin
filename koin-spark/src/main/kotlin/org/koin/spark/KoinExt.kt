@@ -31,7 +31,7 @@ fun runControllers() {
 fun KoinContext.runSparkControllers() {
     Koin.logger.log("** Run Spark Controllers **")
     beanRegistry.definitions.keys
-            .filter { it.bindTypes.contains(SparkController::class) }
+            .filter { it.types.contains(SparkController::class) }
             .forEach { def ->
                 Koin.logger.log("Creating $def ...")
                 instanceFactory.retrieveInstance<Any>(def)

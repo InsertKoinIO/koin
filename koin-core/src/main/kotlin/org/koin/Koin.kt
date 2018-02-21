@@ -74,7 +74,6 @@ class Koin(val koinContext: KoinContext) {
 
         // Add definitions
         context.definitions.forEach { definition ->
-            logger.log("[init] declare : $definition")
             beanRegistry.declare(definition, scope)
         }
 
@@ -91,7 +90,7 @@ class Koin(val koinContext: KoinContext) {
         /**
          * Context isolation/visibility check
          */
-        var useContextIsolation = false
+        var useContextIsolation = true
 
         /**
          * Allow to run startKoin several times and share the same context

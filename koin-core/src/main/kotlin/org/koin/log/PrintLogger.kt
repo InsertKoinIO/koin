@@ -5,11 +5,11 @@ package org.koin.log
  */
 class PrintLogger : Logger {
     override fun debug(msg: String) {
-        System.err.println("(KOIN) :: [DEBUG] :: $msg")
+        println("(KOIN) :: [DEBUG] :: $msg")
     }
 
     override fun log(msg: String) {
-        println("(KOIN) :: $msg")
+        println("(KOIN) :: [INFO] :: $msg")
     }
 
     override fun err(msg: String) {

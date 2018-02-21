@@ -39,7 +39,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      */
     @Deprecated("Now use `bean` (for singletons) or `factory` (for factories)")
     inline fun <reified T : Any> provide(name: String = "", isSingleton: Boolean = true, noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(name, T::class, isSingleton, definition = definition)
+        val beanDefinition = BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
         definitions += beanDefinition
         return beanDefinition
     }

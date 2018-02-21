@@ -17,8 +17,8 @@ class FactoryInstanceCreationTest : AutoCloseKoinTest() {
     val FlatModule =
             applicationContext {
                 factory { ComponentA() }
-                provide { ComponentB(get()) }
-                provide { ComponentC(get(), get()) }
+                bean { ComponentB(get()) }
+                bean { ComponentC(get(), get()) }
             }
 
     val HierarchicModule =
@@ -26,10 +26,10 @@ class FactoryInstanceCreationTest : AutoCloseKoinTest() {
                 factory { ComponentA() }
 
                 context("B") {
-                    provide { ComponentB(get()) }
+                    bean { ComponentB(get()) }
 
                     context("C") {
-                        provide { ComponentC(get(), get()) }
+                        bean { ComponentC(get(), get()) }
                     }
                 }
             }
