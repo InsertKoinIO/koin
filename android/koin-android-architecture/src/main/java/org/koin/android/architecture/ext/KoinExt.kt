@@ -21,12 +21,12 @@ inline fun <reified T : ViewModel> Context.viewModel(name: String = "", noinline
  * Resolve an instance by its canonical name
  */
 fun <T> KoinContext.getByTypeName(canonicalName: String): T {
-    val foundDefinitions = beanRegistry.definitions.keys.filter { it.clazz.java.canonicalName == canonicalName }
+    val foundDefinitions = beanRegistry.definitions.filter { it.clazz.java.canonicalName == canonicalName }
     return when (foundDefinitions.size) {
         0 -> throw NoBeanDefFoundException("No bean definition found for class name '$canonicalName'")
         1 -> {
             val def = foundDefinitions.first()
-            resolveInstance(def.clazz, { def })
+            resolveInstance(def.clazz, { listOf(def) })
         }
         else -> throw NoBeanDefFoundException("Multiple bean definitions found for class name '$canonicalName'")
     }
