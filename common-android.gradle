@@ -1,14 +1,14 @@
 ext {
     // Sdk and tools
     minSdkVersion = 14
-    targetSdkVersion = 26
-    compileSdkVersion = 26
+    targetSdkVersion = 27
+    compileSdkVersion = 27
 
     androidGradlePlugin = "3.0.1"
 
     buildToolsVersion = '27.0.2'
 
-    supportLibraryVersion = '26.1.0'
+    supportLibraryVersion = '27.0.2'
 
 	architectureComponents = '1.1.0'
 

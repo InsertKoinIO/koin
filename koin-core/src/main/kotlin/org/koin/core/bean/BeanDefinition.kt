@@ -1,6 +1,7 @@
 package org.koin.core.bean
 
 import org.koin.core.scope.Scope
+import org.koin.dsl.context.ParametersProvider
 import kotlin.reflect.KClass
 
 /**
@@ -19,7 +20,7 @@ import kotlin.reflect.KClass
  * @param types - list of assignable types
  * @param definition - bean definition function
  */
-data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, var types: List<KClass<*>> = arrayListOf(), val scope: Scope = Scope.root(), val isSingleton: Boolean = true, val definition: () -> T) {
+data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, var types: List<KClass<*>> = arrayListOf(), val scope: Scope = Scope.root(), val isSingleton: Boolean = true, val definition: Definition<T>) {
 
     /**
      * Add a compatible type to current bounded definition
@@ -59,3 +60,5 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
         return this.clazz == clazz || types.contains(clazz)
     }
 }
+
+typealias Definition<T> = (ParametersProvider) -> T

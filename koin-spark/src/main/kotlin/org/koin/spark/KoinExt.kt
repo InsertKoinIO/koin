@@ -2,12 +2,14 @@ package org.koin.spark
 
 import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.core.bean.Definition
 import org.koin.dsl.context.Context
+import org.koin.dsl.context.Parameters
 
 /**
  * Declare a Spark controller
  */
-inline fun <reified T : Any> Context.controller(name: String = "", noinline definition: () -> T) {
+inline fun <reified T : Any> Context.controller(name: String = "", noinline definition: Definition<T>) {
     val def = bean(name, definition)
     def.bind(SparkController::class)
 }
@@ -34,6 +36,6 @@ fun KoinContext.runSparkControllers() {
             .filter { it.types.contains(SparkController::class) }
             .forEach { def ->
                 Koin.logger.log("Creating $def ...")
-                instanceFactory.retrieveInstance<Any>(def)
+                instanceFactory.retrieveInstance<Any>(def, Parameters())
             }
 }

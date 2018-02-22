@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ComponentCallbacks
 import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.ParameterMap
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.dsl.module.Module
@@ -60,7 +61,7 @@ fun Application.bindBool(id: Int, key: String) {
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
  */
-inline fun <reified T> ComponentCallbacks.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
+inline fun <reified T> ComponentCallbacks.inject(name: String = "", parameters: ParameterMap = emptyMap()) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
  * lazy inject given property for Android component

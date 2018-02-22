@@ -2,6 +2,7 @@ package org.koin.dsl.context
 
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.Definition
 import org.koin.core.scope.Scope
 
 /**
@@ -38,7 +39,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * @param isSingleton
      */
     @Deprecated("Now use `bean` (for singletons) or `factory` (for factories)")
-    inline fun <reified T : Any> provide(name: String = "", isSingleton: Boolean = true, noinline definition: () -> T): BeanDefinition<T> {
+    inline fun <reified T : Any> provide(name: String = "", isSingleton: Boolean = true, noinline definition: Definition<T>): BeanDefinition<T> {
         val beanDefinition = BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
         definitions += beanDefinition
         return beanDefinition
@@ -48,7 +49,7 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * Provide a bean definition - alias to provide
      * @param name
      */
-    inline fun <reified T : Any> bean(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
+    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
         return provide(name, true, definition)
     }
 
@@ -58,20 +59,20 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      *
      * @param name
      */
-    inline fun <reified T : Any> factory(name: String = "", noinline definition: () -> T): BeanDefinition<T> {
+    inline fun <reified T : Any> factory(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
         return provide(name, false, definition)
     }
 
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(): T = koinContext.resolveByClass()
+    inline fun <reified T : Any> get(): T = koinContext.resolveByClass(emptyMap())
 
     /**
      * Resolve a component
      * @param name : component name
      */
-    inline fun <reified T : Any> get(name: String): T = koinContext.resolveByName(name)
+    inline fun <reified T : Any> get(name: String): T = koinContext.resolveByName(name, emptyMap())
 
     /**
      * Retrieve a property

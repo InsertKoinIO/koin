@@ -2,7 +2,6 @@ package org.koin.test.ext.koin
 
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 
@@ -37,24 +36,3 @@ fun KoinContext.allProperties() = propertyResolver.properties
  * @param scopeName - scope name
  */
 fun KoinContext.getScope(scopeName: String) = beanRegistry.scopes.first { it.name == scopeName }
-
-///**
-// * Return ROOT Scope
-// */
-//fun KoinContext.rootScope() = beanRegistry.rootScope
-
-/**
- * Provide a bean definition in actual KoinContext
- * @param name - bean name
- * @param bind - assignable type
- * @param scopeName - target scope name
- * @param definition - bean definition function
- */
-inline fun <reified T> KoinContext.provide(name: String = "", bind: KClass<*>? = null, scopeName: String? = null, noinline definition: () -> T) {
-    val beanDefinition = BeanDefinition(name, T::class, definition = definition)
-    bind?.let {
-        beanDefinition.bind(bind)
-    }
-    val scope = if (scopeName != null) getScope(scopeName) else getScope(Scope.ROOT)
-    beanRegistry.declare(beanDefinition, scope)
-}

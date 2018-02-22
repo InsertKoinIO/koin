@@ -33,7 +33,8 @@ object StandAloneContext {
             Koin.logger.log("[start] create context")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
-            val newContext = KoinContext(beanRegistry, propertyResolver, InstanceFactory(beanRegistry))
+            val instanceFactory = InstanceFactory()
+            val newContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
             initProperties(Koin(newContext), useEnvironmentProperties, properties)
         } else {
             Koin.logger.log("[start] reuse context")

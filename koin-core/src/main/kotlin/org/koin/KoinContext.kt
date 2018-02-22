@@ -5,6 +5,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.dsl.context.Parameters
 import org.koin.error.DependencyResolutionException
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneKoinContext
@@ -24,35 +25,35 @@ class KoinContext(val beanRegistry: BeanRegistry,
     /**
      * call stack - bean definition resolution
      */
-    private val resolutionStack = Stack<BeanDefinition<*>>()
+    private val resolutionStack = Stack<StackItem>()
 
     /**
      * Retrieve a bean instance
      */
-    inline fun <reified T> get(name: String = ""): T = if (name.isEmpty()) resolveByClass() else resolveByName(name)
+    inline fun <reified T> get(name: String = "", parameters: ParameterMap = emptyMap()): T = if (name.isEmpty()) resolveByClass(parameters) else resolveByName(name, parameters)
 
     /**
      * Resolve a dependency for its bean definition
      * @param name bean definition name
      */
-    inline fun <reified T> resolveByName(name: String): T = resolveInstance(T::class) { beanRegistry.searchByName(name) }
+    inline fun <reified T> resolveByName(name: String, parameters: ParameterMap): T = resolveInstance(T::class, parameters) { beanRegistry.searchByName(name) }
 
     /**
      * Resolve a dependency for its bean definition
      * byt Its infered type
      */
-    inline fun <reified T> resolveByClass(): T = resolveByClass(T::class)
+    inline fun <reified T> resolveByClass(parameters: ParameterMap): T = resolveByClass(T::class, parameters)
 
     /**
      * Resolve a dependency for its bean definition
      * byt its type
      */
-    inline fun <reified T> resolveByClass(clazz: KClass<*>): T = resolveInstance(clazz) { beanRegistry.searchAll(clazz) }
+    inline fun <reified T> resolveByClass(clazz: KClass<*>, parameters: ParameterMap): T = resolveInstance(clazz, parameters) { beanRegistry.searchAll(clazz) }
 
     /**
      * Resolve a dependency for its bean definition
      */
-    fun <T> resolveInstance(clazz: KClass<*>, definitionResolver: () -> List<BeanDefinition<*>>): T = synchronized(this) {
+    fun <T> resolveInstance(clazz: KClass<*>, paramsValue: ParameterMap, definitionResolver: () -> List<BeanDefinition<*>>): T = synchronized(this) {
         if (resolutionStack.any { it.isCompatibleWith(clazz) }) {
             System.err.println("resolutionStack : $resolutionStack")
             throw DependencyResolutionException("Cyclic dependency detected while resolving $clazz")
@@ -76,8 +77,10 @@ class KoinContext(val beanRegistry: BeanRegistry,
         val indent = resolutionStack.joinToString(separator = "") { "\t" }
         logger.log("${indent}Resolve [${clazz.java.canonicalName}] ~ $beanDefinition")
 
+        val parameters = Parameters(paramsValue)
         resolutionStack.add(beanDefinition)
-        val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition)
+
+        val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, parameters)
         if (created) {
             logger.log("$indent(*) Created")
         }
@@ -94,11 +97,11 @@ class KoinContext(val beanRegistry: BeanRegistry,
     /**
      * Check the all the loaded definitions - Try to resolve each definition
      */
-    fun dryRun() {
+    fun dryRun(defaultParameters: ParameterMap) {
         logger.log("(DRY RUN)")
         beanRegistry.definitions.forEach { def ->
             Koin.logger.log("Testing $def ...")
-            instanceFactory.retrieveInstance<Any>(def)
+            instanceFactory.retrieveInstance<Any>(def, Parameters(defaultParameters))
         }
     }
 
@@ -154,3 +157,6 @@ class KoinContext(val beanRegistry: BeanRegistry,
         propertyResolver.clear()
     }
 }
+
+typealias ParameterMap = Map<String, Any>
+typealias StackItem = BeanDefinition<*>
