@@ -28,8 +28,6 @@ android {
 dependencies {
     // Koin
     compile "org.koin:koin-core:$koin_version"
-    // Support
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
 
     testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
