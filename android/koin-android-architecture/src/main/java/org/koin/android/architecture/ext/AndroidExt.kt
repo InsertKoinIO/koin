@@ -28,7 +28,7 @@ fun <T : ViewModel> Fragment.getViewModel(clazz: KClass<T>): T {
  * Lazy get view model
  * @param fromActivity - reuse ViewModel from parent Activity or create new one
  */
-inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = true): Lazy<ViewModel> = viewModel(T::class, fromActivity)
+inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = true): Lazy<T> = viewModel(T::class, fromActivity)
 
 /**
  * Lazy get view model
@@ -36,7 +36,7 @@ inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = tr
  *
  * @param fromActivity - reuse ViewModel from parent Activity or create new one
  */
-fun <T : ViewModel> Fragment.viewModel(clazz: KClass<T>, fromActivity: Boolean = true): Lazy<ViewModel> = lazy {
+fun <T : ViewModel> Fragment.viewModel(clazz: KClass<T>, fromActivity: Boolean = true): Lazy<T> = lazy {
     val currentActivity = activity
     if (fromActivity && currentActivity != null) currentActivity.getViewModel(clazz) else getViewModel(clazz)
 }
@@ -61,13 +61,13 @@ fun <T : ViewModel> FragmentActivity.getViewModel(clazz: KClass<T>): T {
 /**
  * Lazy get a ViewModel - for Activity
  */
-inline fun <reified T : ViewModel> FragmentActivity.viewModel(): Lazy<ViewModel> = lazy { getViewModel<T>() }
+inline fun <reified T : ViewModel> FragmentActivity.viewModel(): Lazy<T> = lazy { getViewModel<T>() }
 
 /**
  * Lazy get a ViewModel - for Activity
  * version that avoid inline parameter and take KClass to instantiate
  */
-fun <T : ViewModel> FragmentActivity.viewModel(clazz: KClass<T>): Lazy<ViewModel> = lazy { getViewModel(clazz) }
+fun <T : ViewModel> FragmentActivity.viewModel(clazz: KClass<T>): Lazy<T> = lazy { getViewModel(clazz) }
 
 
 /**
