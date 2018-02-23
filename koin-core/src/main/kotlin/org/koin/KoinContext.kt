@@ -56,7 +56,7 @@ class KoinContext(val beanRegistry: BeanRegistry,
     fun <T> resolveInstance(clazz: KClass<*>, paramsValue: ParameterMap, definitionResolver: () -> List<BeanDefinition<*>>): T = synchronized(this) {
         if (resolutionStack.any { it.isCompatibleWith(clazz) }) {
             System.err.println("resolutionStack : $resolutionStack")
-            throw DependencyResolutionException("Cyclic dependency detected while resolving $clazz")
+            throw DependencyResolutionException("Cyclic dependency detected while resolving $clazz - $resolutionStack")
         }
 
         val lastInStack: BeanDefinition<*>? = if (resolutionStack.size > 0) resolutionStack.peek() else null
@@ -75,7 +75,7 @@ class KoinContext(val beanRegistry: BeanRegistry,
         }
 
         val indent = resolutionStack.joinToString(separator = "") { "\t" }
-        logger.log("${indent}Resolve [${clazz.java.canonicalName}] ~ $beanDefinition")
+        logger.log("${indent}Resolve class[${clazz.java.canonicalName}] with $beanDefinition")
 
         val parameters = Parameters(paramsValue)
         resolutionStack.add(beanDefinition)
