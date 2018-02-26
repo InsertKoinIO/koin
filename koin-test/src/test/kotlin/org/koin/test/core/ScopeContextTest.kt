@@ -65,11 +65,13 @@ class ScopeContextTest : AutoCloseKoinTest() {
             get<ComponentA>()
             fail()
         } catch (e: Exception) {
+            e.printStackTrace()
         }
         try {
             get<ComponentB>()
             fail()
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -94,6 +96,7 @@ class ScopeContextTest : AutoCloseKoinTest() {
             get<ComponentA>()
             fail()
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

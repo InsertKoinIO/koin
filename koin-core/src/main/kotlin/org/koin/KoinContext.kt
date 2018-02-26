@@ -70,7 +70,7 @@ class KoinContext(val beanRegistry: BeanRegistry,
             candidates.first()
         } else {
             when {
-                candidates.isEmpty() -> throw DependencyResolutionException("No definition found for $clazz - Check yours definitions and context visibility")
+                candidates.isEmpty() -> throw DependencyResolutionException("No definition found for $clazzName - Check your definitions and contexts visibility")
                 else -> throw DependencyResolutionException("Multiple definitions found for $clazzName - $candidates")
             }
         }
