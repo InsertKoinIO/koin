@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '0.9.0-alpha-16'
+    koin_version = '0.9.0-alpha-17'
 
     // Kotlin
     kotlin_version = '1.2.21'

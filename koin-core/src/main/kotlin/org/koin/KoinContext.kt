@@ -54,9 +54,10 @@ class KoinContext(val beanRegistry: BeanRegistry,
      * Resolve a dependency for its bean definition
      */
     fun <T> resolveInstance(clazz: KClass<*>, paramsValue: ParameterMap, definitionResolver: () -> List<BeanDefinition<*>>): T = synchronized(this) {
+        val clazzName = clazz.java.canonicalName
         if (resolutionStack.any { it.isCompatibleWith(clazz) }) {
             System.err.println("resolutionStack : $resolutionStack")
-            throw DependencyResolutionException("Cyclic dependency detected while resolving $clazz - $resolutionStack")
+            throw DependencyResolutionException("Cyclic dependency detected while resolving $clazzName - $resolutionStack")
         }
 
         val lastInStack: BeanDefinition<*>? = if (resolutionStack.size > 0) resolutionStack.peek() else null
@@ -69,13 +70,13 @@ class KoinContext(val beanRegistry: BeanRegistry,
             candidates.first()
         } else {
             when {
-                candidates.isEmpty() -> throw DependencyResolutionException("No definition found for $clazz")
-                else -> throw DependencyResolutionException("Multiple definitions found for $clazz - $candidates")
+                candidates.isEmpty() -> throw DependencyResolutionException("No definition found for $clazz - Check yours definitions and context visibility")
+                else -> throw DependencyResolutionException("Multiple definitions found for $clazzName - $candidates")
             }
         }
 
         val indent = resolutionStack.joinToString(separator = "") { "\t" }
-        logger.log("${indent}Resolve class[${clazz.java.canonicalName}] with $beanDefinition")
+        logger.log("${indent}Resolve class[$clazzName] with $beanDefinition")
 
         val parameters = Parameters(paramsValue)
         resolutionStack.add(beanDefinition)
@@ -89,7 +90,7 @@ class KoinContext(val beanRegistry: BeanRegistry,
 
         if (!head.isCompatibleWith(clazz)) {
             resolutionStack.clear()
-            throw IllegalStateException("Stack resolution error : was $head but should be $clazz")
+            throw IllegalStateException("Stack resolution error : was $head but should be $clazzName")
         }
         return instance
     }
