@@ -20,8 +20,14 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
         viewModel { MyViewModel(get()) }
     }
 
+    val module2 = applicationContext {
+        viewModel { p -> MyViewModel2(p["url"]) }
+    }
+
     class MyService
     class MyViewModel(val service: MyService) : ViewModel()
+
+    class MyViewModel2(val url: String) : ViewModel()
 
     @Test
     fun should_inject_view_model() {
@@ -51,5 +57,20 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
         assertContexts(1)
         assertDefinitions(2)
         assertRemainingInstances(1)
+    }
+
+    @Test
+    fun view_model_parameters() {
+        startKoin(listOf(module2))
+
+        val url = "http://..."
+
+        val vm1 = get<MyViewModel2>(parameters = mapOf("url" to url))
+
+        assertEquals(url, vm1.url)
+
+        assertContexts(1)
+        assertDefinitions(1)
+        assertRemainingInstances(0)
     }
 }
