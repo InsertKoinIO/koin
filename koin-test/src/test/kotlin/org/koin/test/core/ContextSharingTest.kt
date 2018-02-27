@@ -4,8 +4,8 @@ import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.Koin
 import org.koin.dsl.module.applicationContext
+import org.koin.standalone.StandAloneContext.runModules
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -27,9 +27,8 @@ class ContextSharingTest : AutoCloseKoinTest() {
 
     @Test
     fun `allow context sharing`() {
-        Koin.allowKoinContextShare = true
         startKoin(listOf(module1))
-        startKoin(listOf(module2))
+        runModules(module2)
 
         assertDefinitions(2)
         assertContexts(1)
@@ -41,7 +40,6 @@ class ContextSharingTest : AutoCloseKoinTest() {
 
     @Test
     fun `allow context not sharing`() {
-        Koin.allowKoinContextShare = false
         startKoin(listOf(module1))
         try {
             startKoin(listOf(module2))

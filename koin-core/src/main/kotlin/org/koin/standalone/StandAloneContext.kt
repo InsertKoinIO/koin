@@ -22,36 +22,68 @@ object StandAloneContext {
     lateinit var koinContext: StandAloneKoinContext
 
     /**
-     * Koin starter
+     * Load Koin modules
      */
-    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
-        if (isStarted && !Koin.allowKoinContextShare) {
-            throw AlreadyStartedException()
-        }
+    fun runModules(vararg modules: Module): Koin = synchronized(this) {
+        createContextIfNeeded()
+        return KoinContext().build(modules.toList())
+    }
 
-        val koin = if (!isStarted) {
-            Koin.logger.log("[start] create context")
+    /**
+     * Get koin context
+     */
+    private fun KoinContext() = Koin(koinContext as KoinContext)
+
+    /**
+     * Create Koin context if needed :)
+     */
+    private fun createContextIfNeeded() = synchronized(this) {
+        if (!isStarted) {
+            Koin.logger.log("[context] create")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
             val instanceFactory = InstanceFactory()
-            val newContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
-            initProperties(Koin(newContext), useEnvironmentProperties, properties)
-        } else {
-            Koin.logger.log("[start] reuse context")
-            val currentContext = koinContext as KoinContext
-            initProperties(Koin(currentContext), useEnvironmentProperties, properties)
+            koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
+            isStarted = true
         }
-        koinContext = koin.koinContext
-        isStarted = true
-        return koin.build(list)
     }
 
-    private fun initProperties(k: Koin, useEnvironmentProperties: Boolean, properties: Map<String, Any>): Koin {
-        var koin = k.bindKoinProperties().bindAdditionalProperties(properties)
+    /**
+     * Load Koin properties
+     * @param useEnvironmentProperties - environment properties
+     * @param additionalProperties - additional properties
+     */
+    fun loadProperties(useEnvironmentProperties: Boolean = false, additionalProperties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
+        createContextIfNeeded()
+
+        val koin = KoinContext()
+
+        Koin.logger.log("[properties] load koin.properties")
+        koin.bindKoinProperties()
+
+        if (additionalProperties.isNotEmpty()) {
+            Koin.logger.log("[properties] load extras properties : ${additionalProperties.size}")
+            koin.bindAdditionalProperties(additionalProperties)
+        }
+
         if (useEnvironmentProperties) {
-            koin = koin.bindEnvironmentProperties()
+            Koin.logger.log("[properties] load environment properties")
+            koin.bindEnvironmentProperties()
         }
         return koin
+    }
+
+    /**
+     * Koin starter
+     */
+    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
+        if (isStarted) {
+            throw AlreadyStartedException("Koin is already started. Run startKoin only once or use runModules")
+        }
+        createContextIfNeeded()
+        runModules(*list.toTypedArray())
+        loadProperties(useEnvironmentProperties, properties)
+        return KoinContext()
     }
 
     /**

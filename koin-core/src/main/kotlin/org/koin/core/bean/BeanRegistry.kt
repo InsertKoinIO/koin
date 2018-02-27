@@ -28,20 +28,15 @@ class BeanRegistry {
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
         val existingBean = definitions.firstOrNull { it == def }
+        val override = existingBean != null
         existingBean?.let {
-            Koin.logger.log("[Override] $def override $existingBean")
             definitions.remove(existingBean)
         }
         val definition = def.copy(scope = scope)
         definitions += definition
-        Koin.logger.log("[init] declare : $definition")
+        val kw = if (override) "override" else "declare"
+        Koin.logger.log("[module] $kw $definition")
     }
-
-    /**
-     * Retrieve context scope for given bean definition
-     */
-    fun getScopeForDefinition(beanDefinition: BeanDefinition<*>): Scope = beanDefinition.scope
-
 
     /**
      * Retrieve context scope for given name
@@ -63,7 +58,7 @@ class BeanRegistry {
      * Create context scope
      */
     fun createScope(scope: String, parentScope: String?): Scope {
-        Koin.logger.log("[Scope] create [$scope] with parent [$parentScope]")
+        Koin.logger.log("[scope] create [$scope] with parent [$parentScope]")
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
         return s

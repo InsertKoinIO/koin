@@ -33,7 +33,7 @@ class Koin(val koinContext: KoinContext) {
             val koinProperties = Properties()
             koinProperties.load(content.byteInputStream())
             val nb = propertyResolver.import(koinProperties)
-            logger.log("[init] loaded $nb properties from '$koinFile' file")
+            logger.log("[properties] loaded $nb properties from '$koinFile' file")
         }
         return this
     }
@@ -43,9 +43,9 @@ class Koin(val koinContext: KoinContext) {
      */
     fun bindEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())
-        logger.log("[init] loaded $n1 properties from properties")
+        logger.log("[properties] loaded $n1 properties from properties")
         val n2 = propertyResolver.import(System.getenv().toProperties())
-        logger.log("[init] loaded $n2 properties from env properties")
+        logger.log("[properties] loaded $n2 properties from env properties")
         return this
     }
 
@@ -57,11 +57,7 @@ class Koin(val koinContext: KoinContext) {
             registerDefinitions(module())
         }
 
-        logger.log("[init] loaded ${beanRegistry.definitions.size} definitions")
-
-        if (Koin.useContextIsolation) {
-            logger.log("[init] context isolation activated")
-        }
+        logger.log("[modules] loaded ${beanRegistry.definitions.size} definitions")
         return this
     }
 
@@ -86,15 +82,5 @@ class Koin(val koinContext: KoinContext) {
          * Koin Logger
          */
         var logger: Logger = PrintLogger()
-
-        /**
-         * Context isolation/visibility check
-         */
-        var useContextIsolation = true
-
-        /**
-         * Allow to run startKoin several times and share the same context
-         */
-        var allowKoinContextShare = false
     }
 }

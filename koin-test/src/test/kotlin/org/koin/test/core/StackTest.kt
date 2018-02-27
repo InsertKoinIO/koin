@@ -2,7 +2,6 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
-import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.core.scope.Scope
@@ -67,10 +66,6 @@ class StackTest : AutoCloseKoinTest() {
     class ComponentC(val componentA: ComponentA)
     class ComponentD(val componentB: ComponentB)
 
-    @Before
-    fun before() {
-        Koin.useContextIsolation = true
-    }
 
     @Test
     fun `has flat visibility`() {
