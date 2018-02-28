@@ -27,12 +27,12 @@ class BeanRegistry {
      * @param def : Bean definition
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
-        val existingBean = definitions.firstOrNull { it == def }
+        val definition = def.copy(scope = scope)
+        val existingBean = definitions.firstOrNull { it == definition }
         val override = existingBean != null
         existingBean?.let {
             definitions.remove(existingBean)
         }
-        val definition = def.copy(scope = scope)
         definitions += definition
         val kw = if (override) "override" else "declare"
         Koin.logger.log("[module] $kw $definition")
