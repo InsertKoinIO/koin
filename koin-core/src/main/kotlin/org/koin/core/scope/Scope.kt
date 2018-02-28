@@ -20,4 +20,14 @@ data class Scope(val name: String, val parent: Scope? = null) {
     fun isVisible(p: Scope): Boolean = this == p || if (p.parent != null) {
         isVisible(p.parent)
     } else false
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Scope) {
+            name == other.name
+        } else false
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
 }

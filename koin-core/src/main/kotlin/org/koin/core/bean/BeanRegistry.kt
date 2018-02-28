@@ -2,10 +2,8 @@ package org.koin.core.bean
 
 import org.koin.Koin
 import org.koin.core.scope.Scope
-import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NoScopeFoundException
 import java.util.*
-import kotlin.reflect.KClass
 
 /**
  * Bean registry
@@ -15,7 +13,7 @@ import kotlin.reflect.KClass
  */
 class BeanRegistry {
 
-    val definitions = HashMap<BeanDefinition<*>, Scope>()
+    val definitions = ArrayList<BeanDefinition<*>>()
     val scopes = arrayListOf<Scope>()
     val rootScope = Scope.root()
 
@@ -29,23 +27,16 @@ class BeanRegistry {
      * @param def : Bean definition
      */
     fun declare(def: BeanDefinition<*>, scope: Scope) {
-        val existingBean = definitions.keys.firstOrNull { it == def }
+        val definition = def.copy(scope = scope)
+        val existingBean = definitions.firstOrNull { it == definition }
+        val override = existingBean != null
         existingBean?.let {
-            Koin.logger.log("[Override] $def override $existingBean")
             definitions.remove(existingBean)
         }
-        definitions += Pair(def, scope)
+        definitions += definition
+        val kw = if (override) "override" else "declare"
+        Koin.logger.log("[module] $kw $definition")
     }
-
-    /**
-     * Retrieve context scope for given bean definition
-     */
-    fun getScopeForDefinition(beanDefinition: BeanDefinition<*>) = definitions[beanDefinition]
-
-    /**
-     * Retrieve context scope for given class
-     */
-    private fun getScopeForClass(clazz: KClass<*>) = definitions[definitions.keys.first { it.clazz == clazz || it.bindTypes.contains(clazz) }]
 
     /**
      * Retrieve context scope for given name
@@ -67,7 +58,7 @@ class BeanRegistry {
      * Create context scope
      */
     fun createScope(scope: String, parentScope: String?): Scope {
-        Koin.logger.log("[Scope] create [$scope] with parent [$parentScope]")
+        Koin.logger.log("[scope] create [$scope] with parent [$parentScope]")
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
         return s
@@ -76,35 +67,29 @@ class BeanRegistry {
     /**
      * Search bean by its name
      */
-    fun searchByName(name: String): BeanDefinition<*> = searchDefinition { it.name == name }.firstOrNull()
-            ?: throw NoBeanDefFoundException("No bean definition found for name $name")
+    fun searchByName(name: String): List<BeanDefinition<*>> = searchDefinition { it.name == name }
 
     /**
      * Search for any bean definition
      */
-    fun searchAll(clazz: kotlin.reflect.KClass<*>): BeanDefinition<*> {
+    fun searchAll(clazz: kotlin.reflect.KClass<*>): List<BeanDefinition<*>> {
         val concreteTypes = searchDefinition { it.clazz == clazz }
-        val extraBindTypes = searchDefinition { it.bindTypes.contains(clazz) }
-        val found = (concreteTypes + extraBindTypes).distinct()
-        return when {
-            found.size > 1 -> throw NoBeanDefFoundException("Multiple definition found for class $clazz : \n\t$concreteTypes\n\t$extraBindTypes")
-            found.isEmpty() -> throw NoBeanDefFoundException("No bean definition found for class $clazz")
-            found.size == 1 -> found.first()
-            else -> error(IllegalStateException("Can't find bean for class $clazz"))
-        }
+        val extraBindTypes = searchDefinition { it.types.contains(clazz) }
+        val found = (concreteTypes + extraBindTypes)
+        return found
     }
 
     /**
      * Search definition with given filter function
      */
-    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean): List<BeanDefinition<*>> = definitions.keys.filter(filter)
+    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean): List<BeanDefinition<*>> = definitions.filter(filter)
 
     /**
      * Get bean definitions from given scope context & child
      */
     fun getDefinitionsFromScope(name: String): List<BeanDefinition<*>> {
         val scopes = allScopesfrom(name).toSet()
-        return definitions.keys.filter { def -> definitions[def] in scopes }
+        return definitions.filter { def -> definitions.first { it == def }.scope in scopes }
     }
 
     /**
@@ -117,31 +102,11 @@ class BeanRegistry {
     }
 
     /**
-     * Is class/bean definition visible with given class list context
-     */
-    fun isVisible(clazz: KClass<*>, resolutionStack: List<KClass<*>>): Boolean {
-        return if (resolutionStack.isEmpty()) true
-        else {
-            val pop = resolutionStack.last()
-            if (resolutionStack.isNotEmpty()) {
-                isVisibleScope(clazz, pop) && isVisible(clazz, resolutionStack - pop)
-            } else {
-                isVisibleScope(clazz, pop)
-            }
-        }
-    }
-
-    private fun isVisibleScope(clazz: KClass<*>, parentClass: KClass<*>): Boolean {
-        val child = getScopeForClass(clazz) ?: error("$clazz has no scope")
-        val parent = getScopeForClass(parentClass) ?: error("$parentClass has no Scope")
-        return child.isVisible(parent)
-    }
-
-    /**
      * Clear resources
      */
     fun clear() {
         definitions.clear()
         scopes.clear()
     }
+
 }

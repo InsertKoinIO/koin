@@ -7,39 +7,39 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 
-class BadInstanceCreationTest : AbstractKoinTest() {
+class BadInstanceCreationTest : AutoCloseKoinTest() {
 
     val module1 = applicationContext {
-        provide { ComponentA() as MyInterface }
-        provide { ComponentB() } bind MyInterface::class
+        bean { ComponentA() as MyInterface }
+        bean { ComponentB() } bind MyInterface::class
     }
 
     val module2 = applicationContext {
-        provide { ComponentA() } bind MyInterface::class
-        provide { ComponentB() } bind MyInterface::class
+        bean { ComponentA() } bind MyInterface::class
+        bean { ComponentB() } bind MyInterface::class
     }
 
     val module3 = applicationContext {
-        provide { ComponentC(get()) }
+        bean { ComponentC(get()) }
     }
 
     val module4 = applicationContext {
-        provide { ComponentD(get()) }
-        provide { ComponentE(get()) }
+        bean { ComponentD(get()) }
+        bean { ComponentE(get()) }
     }
 
     val module5 = applicationContext {
-        provide { ComponentError() }
+        bean { ComponentError() }
     }
 
     val module6 = applicationContext {
-        provide { ComponentA() as MyInterface } bind MyInterface::class
+        bean { ComponentA() as MyInterface } bind MyInterface::class
     }
 
     interface MyInterface

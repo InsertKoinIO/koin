@@ -9,27 +9,27 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
 import org.koin.standalone.releaseContext
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class MVPArchitectureTest : AbstractKoinTest() {
+class MVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule =
             applicationContext {
-                provide { Repository(get()) }
+                bean { Repository(get()) }
 
                 context("View") {
-                    provide { View() }
-                    provide { Presenter(get()) }
+                    bean { View() }
+                    bean { Presenter(get()) }
                 }
             }
 
     val DataSourceModule =
             applicationContext {
-                provide { DebugDatasource() } bind (Datasource::class)
+                bean { DebugDatasource() } bind (Datasource::class)
             }
 
 

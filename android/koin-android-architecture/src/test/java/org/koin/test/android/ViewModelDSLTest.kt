@@ -8,20 +8,26 @@ import org.koin.android.architecture.ext.viewModel
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class ViewModelDSLTest : AbstractKoinTest() {
+class ViewModelDSLTest : AutoCloseKoinTest() {
 
     val module = applicationContext {
         bean { MyService() }
         viewModel { MyViewModel(get()) }
     }
 
+    val module2 = applicationContext {
+        viewModel { p -> MyViewModel2(p["url"]) }
+    }
+
     class MyService
     class MyViewModel(val service: MyService) : ViewModel()
+
+    class MyViewModel2(val url: String) : ViewModel()
 
     @Test
     fun should_inject_view_model() {
@@ -51,5 +57,20 @@ class ViewModelDSLTest : AbstractKoinTest() {
         assertContexts(1)
         assertDefinitions(2)
         assertRemainingInstances(1)
+    }
+
+    @Test
+    fun view_model_parameters() {
+        startKoin(listOf(module2))
+
+        val url = "http://..."
+
+        val vm1 = get<MyViewModel2>(parameters = mapOf("url" to url))
+
+        assertEquals(url, vm1.url)
+
+        assertContexts(1)
+        assertDefinitions(1)
+        assertRemainingInstances(0)
     }
 }

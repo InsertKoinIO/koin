@@ -5,12 +5,12 @@ import org.junit.Test
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 
-class OverrideTest : AbstractKoinTest() {
+class OverrideTest : AutoCloseKoinTest() {
 
     val sampleModule1 = applicationContext {
-        provide { ComponentA() } bind MyInterface::class
+        bean { ComponentA() } bind MyInterface::class
         bean { ComponentA() }
     }
 
@@ -21,7 +21,7 @@ class OverrideTest : AbstractKoinTest() {
 
     val sampleModule3 = applicationContext {
         bean { ComponentB() as MyInterface }
-        provide { ComponentA() as MyInterface }
+        bean { ComponentA() as MyInterface }
     }
 
     val sampleModule4 = applicationContext {

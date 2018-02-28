@@ -2,14 +2,14 @@ package org.koin.ktor.ext
 
 import io.ktor.application.Application
 import org.koin.KoinContext
-import org.koin.standalone.KoinComponent
+import org.koin.ParameterMap
 import org.koin.standalone.StandAloneContext
 
 /**
  * inject lazily given dependency
  * @param name - bean name / optional
  */
-inline fun <reified T> Application.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
+inline fun <reified T> Application.inject(name: String = "", parameters: ParameterMap = emptyMap()) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
  * lazy inject given property
@@ -32,7 +32,7 @@ inline fun <reified T> Application.property(key: String, defaultValue: T) = lazy
  * Retrieve given dependency for KoinComponent
  * @param name - bean name / optional
  */
-inline fun <reified T> Application.get(name: String = "") = (StandAloneContext.koinContext as KoinContext).get<T>(name)
+inline fun <reified T> Application.get(name: String = "", parameters: ParameterMap = emptyMap()) = (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
 
 /**
  * Retrieve given property for KoinComponent

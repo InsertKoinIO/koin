@@ -6,19 +6,19 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class FactoryInstanceCreationTest : AbstractKoinTest() {
+class FactoryInstanceCreationTest : AutoCloseKoinTest() {
 
     val FlatModule =
             applicationContext {
                 factory { ComponentA() }
-                provide { ComponentB(get()) }
-                provide { ComponentC(get(), get()) }
+                bean { ComponentB(get()) }
+                bean { ComponentC(get(), get()) }
             }
 
     val HierarchicModule =
@@ -26,10 +26,10 @@ class FactoryInstanceCreationTest : AbstractKoinTest() {
                 factory { ComponentA() }
 
                 context("B") {
-                    provide { ComponentB(get()) }
+                    bean { ComponentB(get()) }
 
                     context("C") {
-                        provide { ComponentC(get(), get()) }
+                        bean { ComponentC(get(), get()) }
                     }
                 }
             }

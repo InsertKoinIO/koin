@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.ComponentCallbacks
 import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.ParameterMap
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.dsl.module.Module
+import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
 
 
@@ -22,8 +24,8 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  *
  * will be soon deprecated for starKoin() with <application>
  */
-fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap()) {
-    Koin.logger = AndroidLogger()
+fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap(), logger: Logger = AndroidLogger()) {
+    Koin.logger = logger
     StandAloneContext.startKoin(modules, properties = properties) with application
 }
 
@@ -32,7 +34,7 @@ fun Application.startKoin(application: Application, modules: List<Module>, prope
  * @param id - Android resource String id
  * @param key - Koin property key
  */
-fun ComponentCallbacks.bindString(id: Int, key: String) {
+fun Application.bindString(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().getString(id))
 }
 
@@ -41,7 +43,7 @@ fun ComponentCallbacks.bindString(id: Int, key: String) {
  * @param id - Android resource Int id
  * @param key - Koin property key
  */
-fun ComponentCallbacks.bindInt(id: Int, key: String) {
+fun Application.bindInt(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().resources.getInteger(id))
 }
 
@@ -50,15 +52,16 @@ fun ComponentCallbacks.bindInt(id: Int, key: String) {
  * @param id - Android resource Boolean id
  * @param key - Koin property key
  */
-fun ComponentCallbacks.bindBool(id: Int, key: String) {
+fun Application.bindBool(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().resources.getBoolean(id))
 }
+
 
 /**
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
  */
-inline fun <reified T> ComponentCallbacks.inject(name: String = "") = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
+inline fun <reified T> ComponentCallbacks.inject(name: String = "", parameters: ParameterMap = emptyMap()) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
  * lazy inject given property for Android component
@@ -79,6 +82,7 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
 
 /**
  * Set a property
+ *
  * @param key
  * @param value
  */

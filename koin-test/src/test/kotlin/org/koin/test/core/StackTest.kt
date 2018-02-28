@@ -2,7 +2,6 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
-import org.junit.Before
 import org.junit.Test
 import org.koin.Koin
 import org.koin.core.scope.Scope
@@ -12,53 +11,53 @@ import org.koin.error.DependencyResolutionException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertScopeParent
 
-class StackTest : AbstractKoinTest() {
+class StackTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = applicationContext {
 
-        provide { ComponentA() }
+        bean { ComponentA() }
 
         context(name = "B") {
-            provide { ComponentB(get()) }
+            bean { ComponentB(get()) }
         }
 
         context(name = "C") {
-            provide { ComponentC(get()) }
+            bean { ComponentC(get()) }
         }
     }
 
     val HierarchyContextsModule = applicationContext {
         context(name = "A") {
-            provide { ComponentA() }
+            bean { ComponentA() }
 
             context(name = "B") {
-                provide { ComponentB(get()) }
+                bean { ComponentB(get()) }
 
                 context(name = "C") {
-                    provide { ComponentC(get()) }
+                    bean { ComponentC(get()) }
                 }
             }
 
         }
-        provide { ComponentD(get()) }
+        bean { ComponentD(get()) }
     }
 
     val NotVisibleContextsModule = applicationContext {
 
-        provide { ComponentB(get()) }
+        bean { ComponentB(get()) }
 
         context(name = "A") {
-            provide { ComponentA() }
+            bean { ComponentA() }
         }
 
         context(name = "D") {
-            provide { ComponentD(get()) }
+            bean { ComponentD(get()) }
         }
     }
 
@@ -67,10 +66,6 @@ class StackTest : AbstractKoinTest() {
     class ComponentC(val componentA: ComponentA)
     class ComponentD(val componentB: ComponentB)
 
-    @Before
-    fun before() {
-        Koin.useContextIsolation = true
-    }
 
     @Test
     fun `has flat visibility`() {
@@ -102,7 +97,7 @@ class StackTest : AbstractKoinTest() {
             get<ComponentD>()
             fail()
         } catch (e: BeanInstanceCreationException) {
-
+            e.printStackTrace()
         }
     }
 
@@ -116,11 +111,13 @@ class StackTest : AbstractKoinTest() {
             get<ComponentB>()
             fail()
         } catch (e: BeanInstanceCreationException) {
+            e.printStackTrace()
         }
         try {
             get<ComponentD>()
             fail()
         } catch (e: DependencyResolutionException) {
+            e.printStackTrace()
         }
     }
 

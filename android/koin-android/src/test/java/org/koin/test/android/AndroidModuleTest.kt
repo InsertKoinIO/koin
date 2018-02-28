@@ -14,7 +14,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.releaseContext
 import org.koin.standalone.setProperty
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContextInstances
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
@@ -24,7 +24,7 @@ import org.mockito.Mockito.mock
 /**
  * Android Module Tests
  */
-class AndroidModuleTest : AbstractKoinTest() {
+class AndroidModuleTest : AutoCloseKoinTest() {
 
     companion object {
         val URL = "URL"
@@ -53,7 +53,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_inject_by_scope() {
-        startKoin(listOf(SampleModule, ActivityModule)) with(mock(Application::class.java))
+        startKoin(listOf(SampleModule, ActivityModule)) with (mock(Application::class.java))
 
         assertContexts(2)
         assertDefinitions(3)
@@ -99,7 +99,7 @@ class AndroidModuleTest : AbstractKoinTest() {
 
     @Test
     fun should_init_context_and_dependency() {
-        startKoin(listOf(SampleModule)) with(mock(Application::class.java))
+        startKoin(listOf(SampleModule)) with (mock(Application::class.java))
 
         assertDefinitions(2)
         assertRemainingInstances(0)

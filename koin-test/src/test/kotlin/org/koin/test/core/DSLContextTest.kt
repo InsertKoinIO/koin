@@ -4,36 +4,36 @@ import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.test.AbstractKoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertScopeParent
 
-class DSLContextTest : AbstractKoinTest() {
+class DSLContextTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = applicationContext {
 
-        provide { ComponentA() }
+        bean { ComponentA() }
 
         context(name = "B") {
-            provide { ComponentB() }
+            bean { ComponentB() }
         }
 
         context(name = "C") {
-            provide { ComponentC() }
+            bean { ComponentC() }
         }
     }
 
     val HierarchyContextsModule = applicationContext {
         context(name = "A") {
-            provide { ComponentA() }
+            bean { ComponentA() }
 
             context(name = "B") {
-                provide { ComponentB() }
+                bean { ComponentB() }
 
                 context(name = "C") {
-                    provide { ComponentC() }
+                    bean { ComponentC() }
                 }
             }
         }

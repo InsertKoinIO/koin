@@ -3,7 +3,7 @@ package org.koin.test
 import org.junit.After
 import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.error.BeanInstanceCreationException
+import org.koin.ParameterMap
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
@@ -14,21 +14,21 @@ import org.koin.standalone.StandAloneContext.closeKoin
 interface KoinTest : KoinComponent
 
 /**
- * Koin Test - embed autoclose @after method to close Koin after every test
+ * Make a Dry Run - Test if each definition is injectable
  */
-abstract class AbstractKoinTest(val autoCloseKoin: Boolean = true) : KoinTest {
-    @After
-    fun autoClose() {
-        if (autoCloseKoin) {
-            Koin.logger.log("AutoClose Koin")
-            closeKoin()
-        }
-    }
+fun KoinTest.dryRun(defaultParameters: ParameterMap = emptyMap()) {
+    (StandAloneContext.koinContext as KoinContext).dryRun(defaultParameters)
 }
 
 /**
- * Make a Dry Run - Test if each definition is injectable
+ * Koin Test - embed autoclose @after method to close Koin after every test
  */
-fun KoinTest.dryRun() {
-    (StandAloneContext.koinContext as KoinContext).dryRun()
+abstract class AutoCloseKoinTest() : KoinTest {
+
+    @After
+    fun autoClose() {
+        Koin.logger.log("AutoClose Koin")
+        closeKoin()
+    }
 }
+

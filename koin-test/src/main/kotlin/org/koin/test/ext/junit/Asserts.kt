@@ -24,7 +24,7 @@ fun KoinTest.assertDefinitions(definitionCount: Int) {
  */
 fun KoinTest.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String) {
     val definition = context().definition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", context().beanRegistry.getScope(scopeName), context().beanRegistry.definitions[definition])
+    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", scopeName, definition?.scope?.name ?: "")
 }
 
 /**
@@ -34,7 +34,7 @@ fun KoinTest.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String)
  */
 fun KoinTest.assertContextInstances(scopeName: String, instanceCount: Int) {
     val scope = context().getScope(scopeName)
-    val definitions = context().AllDefinitions().filter { it.value == scope }.map { it.key }.toSet()
+    val definitions = context().AllDefinitions().filter { it.scope == scope }.toSet()
     val instances = context().allInstances().filter { it.first in definitions }
     Assert.assertEquals("scope $scopeName must have $instanceCount instances", instanceCount, instances.size)
 }

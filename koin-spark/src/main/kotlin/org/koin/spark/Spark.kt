@@ -4,6 +4,7 @@ import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.dsl.module.Module
 import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import spark.Spark
 import spark.kotlin.after
@@ -51,6 +52,7 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: () -> Un
  */
 fun stop(sleep: Long = 100) {
     stop()
+    closeKoin()
 
     // Need to sleep in order to let the server stops
     // It's done in another thread (cf. spark.Service.stop())

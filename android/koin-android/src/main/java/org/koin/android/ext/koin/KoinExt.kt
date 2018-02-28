@@ -24,7 +24,7 @@ infix fun Koin.with(application: Application) {
 fun Koin.init(application: Application): Koin {
     Koin.logger.log("[init] ~ added Android application bean reference")
     // provide Application defintion
-    beanRegistry.declare(BeanDefinition(clazz = Application::class, bindTypes = listOf(Context::class), definition = { application }), Scope.root())
+    beanRegistry.declare(BeanDefinition(clazz = Application::class, types = listOf(Context::class), definition = { application }), Scope.root())
     return this
 }
 
