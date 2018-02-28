@@ -1,5 +1,6 @@
 package org.koin.standalone
 
+import org.koin.ContextCallback
 import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.core.bean.BeanRegistry
@@ -47,6 +48,15 @@ object StandAloneContext {
             koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
             isStarted = true
         }
+    }
+
+    /**
+     * Register Context callback notifications
+     * @see ContextCallback
+     */
+    fun registerContextCallBack(contextCallback: ContextCallback) {
+        Koin.logger.log("[context] callback registering with $contextCallback")
+        KoinContext().koinContext.contextCallback = contextCallback
     }
 
     /**

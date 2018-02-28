@@ -27,6 +27,8 @@ class KoinContext(val beanRegistry: BeanRegistry,
      */
     private val resolutionStack = Stack<StackItem>()
 
+    var contextCallback: ContextCallback? = null
+
     /**
      * Retrieve a bean instance
      */
@@ -62,9 +64,9 @@ class KoinContext(val beanRegistry: BeanRegistry,
 
         val lastInStack: BeanDefinition<*>? = if (resolutionStack.size > 0) resolutionStack.peek() else null
 
-        val candidates: List<BeanDefinition<*>> = if (lastInStack != null) {
+        val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
             definitionResolver().filter { it.scope.isVisible(lastInStack.scope) }
-        } else definitionResolver()
+        } else definitionResolver()).distinct()
 
         val beanDefinition: BeanDefinition<*> = if (candidates.size == 1) {
             candidates.first()
@@ -115,6 +117,8 @@ class KoinContext(val beanRegistry: BeanRegistry,
 
         val definitions: List<BeanDefinition<*>> = beanRegistry.getDefinitionsFromScope(name)
         instanceFactory.dropAllInstances(definitions)
+
+        contextCallback?.onContextReleased(name)
     }
 
     /**
@@ -157,6 +161,18 @@ class KoinContext(val beanRegistry: BeanRegistry,
         beanRegistry.clear()
         propertyResolver.clear()
     }
+}
+
+/**
+ * Context callback
+ */
+interface ContextCallback {
+
+    /**
+     * Notify on context release
+     * @param contextName - context name
+     */
+    fun onContextReleased(contextName: String)
 }
 
 typealias ParameterMap = Map<String, Any>

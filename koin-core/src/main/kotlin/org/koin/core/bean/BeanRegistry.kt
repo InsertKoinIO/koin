@@ -75,7 +75,7 @@ class BeanRegistry {
     fun searchAll(clazz: kotlin.reflect.KClass<*>): List<BeanDefinition<*>> {
         val concreteTypes = searchDefinition { it.clazz == clazz }
         val extraBindTypes = searchDefinition { it.types.contains(clazz) }
-        val found = (concreteTypes + extraBindTypes).distinct()
+        val found = (concreteTypes + extraBindTypes)
         return found
     }
 
