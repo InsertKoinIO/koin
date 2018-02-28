@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * Get a ViewModel for given Fragment
  */
-inline fun <reified T : ViewModel> Fragment.getViewModel(key: String, parameters: ParameterMap = emptyMap()): T {
+inline fun <reified T : ViewModel> Fragment.getViewModel(key: String? = null, parameters: ParameterMap = emptyMap()): T {
     return getViewModel(T::class, key, parameters)
 }
 
@@ -20,7 +20,7 @@ inline fun <reified T : ViewModel> Fragment.getViewModel(key: String, parameters
  * Get a ViewModel for given Fragment
  * version that avoid inline parameter and take KClass to instantiate
  */
-fun <T : ViewModel> Fragment.getViewModel(clazz: KClass<T>, key: String, parameters: ParameterMap = emptyMap()): T {
+fun <T : ViewModel> Fragment.getViewModel(clazz: KClass<T>, key: String? = null, parameters: ParameterMap = emptyMap()): T {
     KoinFactory.parameters = parameters
     return ViewModelProvider(ViewModelStores.of(this), KoinFactory).getK(key, clazz)
 }
@@ -29,7 +29,7 @@ fun <T : ViewModel> Fragment.getViewModel(clazz: KClass<T>, key: String, paramet
  * Lazy get view model
  * @param fromActivity - reuse ViewModel from parent Activity or create new one
  */
-inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = true, key: String, parameters: ParameterMap = emptyMap()): Lazy<T> = viewModel(T::class, fromActivity, key, parameters)
+inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = true, key: String? = null, parameters: ParameterMap = emptyMap()): Lazy<T> = viewModel(T::class, fromActivity, key, parameters)
 
 /**
  * Lazy get view model
@@ -37,7 +37,7 @@ inline fun <reified T : ViewModel> Fragment.viewModel(fromActivity: Boolean = tr
  *
  * @param fromActivity - reuse ViewModel from parent Activity or create new one
  */
-fun <T : ViewModel> Fragment.viewModel(clazz: KClass<T>, fromActivity: Boolean = true, key: String, parameters: ParameterMap = emptyMap()): Lazy<T> = lazy {
+fun <T : ViewModel> Fragment.viewModel(clazz: KClass<T>, fromActivity: Boolean = true, key: String? = null, parameters: ParameterMap = emptyMap()): Lazy<T> = lazy {
     val currentActivity = activity
     if (fromActivity && currentActivity != null) currentActivity.getViewModel(clazz, key, parameters) else getViewModel(clazz, key, parameters)
 }
@@ -58,7 +58,7 @@ internal fun <T : ViewModel> ViewModelProvider.getK(key: String? = null, clazz: 
 /**
  * Get a ViewModel for given Activity
  */
-inline fun <reified T : ViewModel> FragmentActivity.getViewModel(key: String, parameters: ParameterMap): T {
+inline fun <reified T : ViewModel> FragmentActivity.getViewModel(key: String? = null, parameters: ParameterMap): T {
     return getViewModel(T::class, key, parameters)
 }
 
@@ -66,7 +66,7 @@ inline fun <reified T : ViewModel> FragmentActivity.getViewModel(key: String, pa
  * Get a ViewModel for given Activity - from given class
  * version that avoid inline parameter and take KClass to instantiate
  */
-fun <T : ViewModel> FragmentActivity.getViewModel(clazz: KClass<T>, key: String, parameters: ParameterMap): T {
+fun <T : ViewModel> FragmentActivity.getViewModel(clazz: KClass<T>, key: String? = null, parameters: ParameterMap): T {
     KoinFactory.parameters = parameters
     return ViewModelProvider(ViewModelStores.of(this), KoinFactory).getK(key, clazz)
 }
@@ -74,13 +74,13 @@ fun <T : ViewModel> FragmentActivity.getViewModel(clazz: KClass<T>, key: String,
 /**
  * Lazy get a ViewModel - for Activity
  */
-inline fun <reified T : ViewModel> FragmentActivity.viewModel(key: String, parameters: ParameterMap = emptyMap()): Lazy<T> = lazy { getViewModel<T>(key, parameters) }
+inline fun <reified T : ViewModel> FragmentActivity.viewModel(key: String? = null, parameters: ParameterMap = emptyMap()): Lazy<T> = lazy { getViewModel<T>(key, parameters) }
 
 /**
  * Lazy get a ViewModel - for Activity
  * version that avoid inline parameter and take KClass to instantiate
  */
-fun <T : ViewModel> FragmentActivity.viewModel(clazz: KClass<T>, key: String, parameters: ParameterMap = emptyMap()): Lazy<T> = lazy { getViewModel(clazz, key, parameters) }
+fun <T : ViewModel> FragmentActivity.viewModel(clazz: KClass<T>, key: String? = null, parameters: ParameterMap = emptyMap()): Lazy<T> = lazy { getViewModel(clazz, key, parameters) }
 
 /**
  * Koin ViewModel factory
