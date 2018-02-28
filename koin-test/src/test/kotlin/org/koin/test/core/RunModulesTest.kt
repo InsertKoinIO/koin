@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.applicationContext
-import org.koin.standalone.StandAloneContext.runModules
+import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -39,7 +39,7 @@ class RunModulesTest : AutoCloseKoinTest() {
         } catch (e: Exception) {
         }
 
-        runModules(moduleB)
+        loadKoinModules(moduleB)
         Assert.assertNotNull(get<ComponentB>())
     }
 
@@ -47,7 +47,7 @@ class RunModulesTest : AutoCloseKoinTest() {
     fun `load and override`() {
         startKoin(listOf(moduleA))
 
-        runModules(moduleC,moduleB)
+        loadKoinModules(moduleC,moduleB)
 
         val b = get<ComponentB>()
         Assert.assertNotNull(b)

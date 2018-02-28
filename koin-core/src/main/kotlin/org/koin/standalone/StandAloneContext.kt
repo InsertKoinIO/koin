@@ -22,9 +22,10 @@ object StandAloneContext {
     lateinit var koinContext: StandAloneKoinContext
 
     /**
-     * Load Koin modules
+     * Load Koin modules - whether Koin is already started or not
+     * allow late module definition load (e.g: libraries ...)
      */
-    fun runModules(vararg modules: Module): Koin = synchronized(this) {
+    fun loadKoinModules(vararg modules: Module): Koin = synchronized(this) {
         createContextIfNeeded()
         return KoinContext().build(modules.toList())
     }
@@ -49,7 +50,7 @@ object StandAloneContext {
     }
 
     /**
-     * Load Koin properties
+     * Load Koin properties - whether Koin is already started or not
      * @param useEnvironmentProperties - environment properties
      * @param additionalProperties - additional properties
      */
@@ -74,14 +75,15 @@ object StandAloneContext {
     }
 
     /**
-     * Koin starter
+     * Koin starter function to load modules and properties
+     * Throw AlreadyStartedException if already started
      */
     fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
         if (isStarted) {
-            throw AlreadyStartedException("Koin is already started. Run startKoin only once or use runModules")
+            throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
         }
         createContextIfNeeded()
-        runModules(*list.toTypedArray())
+        loadKoinModules(*list.toTypedArray())
         loadProperties(useEnvironmentProperties, properties)
         return KoinContext()
     }
