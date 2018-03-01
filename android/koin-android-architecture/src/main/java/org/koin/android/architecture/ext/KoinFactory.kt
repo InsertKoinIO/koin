@@ -11,9 +11,23 @@ import org.koin.standalone.KoinComponent
  */
 object KoinFactory : ViewModelProvider.Factory, KoinComponent {
 
+    /**
+     * Parameters
+     */
     internal var parameters: ParameterMap = emptyMap()
 
+    /**
+     * Bean name
+     */
+    internal var name: String? = null
+
+    /**
+     * Create instance for ViewModelProvider Factory
+     */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return get(modelClass, parameters)
+        val beanName = name
+        return if (beanName != null) {
+            getByName(beanName, parameters)
+        } else get(modelClass, parameters)
     }
 }
