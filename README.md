@@ -17,7 +17,7 @@ The essentials of Koin API for Android developer
 
 ## Getting Started
 
-You can check the [getting started section](insert-koin.io/docs/1.0/getting-started/introduction/) from our website, to discover Koin with the favorite platofrm. Or follow the snippets below.
+You can check the [getting started section](https://insert-koin.io/docs/1.0/getting-started/introduction/) from our website, to discover Koin with the favorite platform. Or follow the snippets below.
 
 ### Actual Version
 
@@ -145,7 +145,7 @@ class MyViewModel(val service : BusinessService) : ViewModel() {
 // Bind it to your Activity
 class MyActivity() : AppCompatActivity() {
 
-  val viewModel : MyViewModel by viewModel()
+  val myViewModel : MyViewModel by viewModel()
 
   override fun onCreate(){
     super.onCreate()
