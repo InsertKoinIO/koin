@@ -25,6 +25,8 @@ object StandAloneContext {
     /**
      * Load Koin modules - whether Koin is already started or not
      * allow late module definition load (e.g: libraries ...)
+     *
+     * @param modules : List of Module
      */
     fun loadKoinModules(vararg modules: Module): Koin = synchronized(this) {
         createContextIfNeeded()
@@ -51,8 +53,8 @@ object StandAloneContext {
     }
 
     /**
-     * Register Context callback notifications
-     * @see ContextCallback
+     * Register Context callbacks
+     * @see ContextCallback - Context CallBack
      */
     fun registerContextCallBack(contextCallback: ContextCallback) {
         Koin.logger.log("[context] callback registering with $contextCallback")
@@ -61,6 +63,8 @@ object StandAloneContext {
 
     /**
      * Load Koin properties - whether Koin is already started or not
+     * Will look at koin.properties file
+     *
      * @param useEnvironmentProperties - environment properties
      * @param additionalProperties - additional properties
      */

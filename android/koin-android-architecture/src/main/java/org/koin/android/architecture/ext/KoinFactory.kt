@@ -12,12 +12,12 @@ import org.koin.standalone.KoinComponent
 object KoinFactory : ViewModelProvider.Factory, KoinComponent {
 
     /**
-     * Parameters
+     * Current Parameters
      */
     internal var parameters: ParameterMap = emptyMap()
 
     /**
-     * Bean name
+     * Current BeanDefinition name
      */
     internal var name: String? = null
 

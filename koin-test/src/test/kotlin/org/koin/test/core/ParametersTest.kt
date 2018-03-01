@@ -21,6 +21,11 @@ class ParametersTest : AutoCloseKoinTest() {
         bean { params -> ComponentA(params[PARAM_URL]) }
     }
 
+    val simpleModule3 = applicationContext {
+
+        bean { params -> ComponentA(params.getOrNUll(PARAM_URL) ?: DEFAULT_URL) }
+    }
+
     class ComponentA(val url: String)
 
     class Component1 : KoinComponent {
@@ -29,6 +34,10 @@ class ParametersTest : AutoCloseKoinTest() {
 
     class Component2 : KoinComponent {
         val compA: ComponentA by inject(parameters = mapOf(PARAM_URL to URL2))
+    }
+
+    class Component3 : KoinComponent {
+        val compA: ComponentA by inject()
     }
 
     @Test
@@ -60,10 +69,20 @@ class ParametersTest : AutoCloseKoinTest() {
         dryRun(defaultParameters = mapOf(PARAM_URL to "DEFAULT"))
     }
 
+    @Test
+    fun `should inject default params with bean`() {
+        startKoin(listOf(simpleModule3))
+
+        val c1 = Component3()
+
+        Assert.assertEquals(DEFAULT_URL, c1.compA.url)
+    }
+
     companion object {
         const val PARAM_URL = "URL"
         const val URL1 = "URL_1"
         const val URL2 = "URL_2"
+        const val DEFAULT_URL = "DEFAULT"
     }
 
 }
