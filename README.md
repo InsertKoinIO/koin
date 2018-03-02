@@ -20,6 +20,14 @@ You can check the **[getting started](https://insert-koin.io/docs/1.0/getting-st
 koin_version = '0.9.0'
 ```
 
+## New features
+
+* DSL upgrade: now use the `bean` and `factory` keywords
+* Context scope isolation
+* Context callbacks - be notified when a context is release with `registerContextCallBack()`
+* Inject dynamic parameters into your definitions: `bean { params -> MyPresenter(params["activity"])}` and inject parameters with `by inject(parameters=mapOf("activity" to ...))`
+
+
 # Table of Content
 
 Getting Started
@@ -531,6 +539,7 @@ Below the Koin DSL keywords:
 - Create a `context` to declare a logical context for a subset of components
 - resolve component with `get()`
 - resolve Koin properties with `getProperty()`
+- definition functions can use parameters:  `bean { params -> MyPresenter(params["activity"])}`
 
 **All your declared components are injected by constructor**
 
@@ -551,7 +560,7 @@ You can also provide additional properties with `startKoin` function, with `prop
 Two ways of injecting your components:
 
 * Components declared in Koin DSL, injection is made **by constructor**.
-* Inside Android components classes (Activity,Fragment ...): use `by inject()` `by viewModel()`
+* Inside Android components classes (Activity,Fragment ...): use `by inject()` `by viewModel()` - inject can handle parameters
 * By Tagging your class as `KoinComponent`, you can unlock `by inject()` and `releaseContext` functions
 
 ### [Architecture Recipes](https://insert-koin.io/docs/1.0/developer-guides/android/)
