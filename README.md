@@ -32,15 +32,15 @@ koin_version = '0.9.0'
 Getting Started
 
 * [Your first dependency with Android](#your-first-dependency-with-android)
-* [Your first dependency with Android ViewModel]()
-* [Your first dependency with Spark]()
-* [Unit Testing with Koin]()
+* [Your first dependency with Android ViewModel](#your-first-dependency-with-android-viewmodel)
+* [Your first SparkJava Controller with Koin](#your-first-sparkjava-controller-with-koin)
+* [Unit Testing with Koin](#unit-testing-with-koin)
 
 Koin Quick reference
 
-* [The Koin DSL in 5 minutes]()
-* [The Android Quick Reference]()
-* [The Spark Quick Reference]()
+* [The Koin DSL in 5 minutes](#the-koin-dsl-in-5-minutes)
+* [The Android Quick Reference](#android)
+* [The Spark Quick Reference](#sparkjava)
 
 
 # Setup
