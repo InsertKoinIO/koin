@@ -20,14 +20,6 @@ You can check the **[getting started](https://insert-koin.io/docs/1.0/getting-st
 koin_version = '0.9.0'
 ```
 
-## New features Highlight
-
-* Android ViewModel - 
-* Parameters
-* Context & Scopes
-* Start API
-
-
 # Table of Content
 
 Getting Started
