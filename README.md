@@ -598,6 +598,7 @@ Components declared in Koin DSL, injection is made **by constructor**
 
 # Articles
 
+* [Unlock your Android ViewModel power with Koin](https://medium.com/@giuliani.arnaud/unlock-your-android-viewmodel-power-with-koin-23eda8f493be)
 * [Koin + Spark = ❤️](https://www.ekito.fr/people/sparkjava-and-koin/)
 * [koin 0.8.2 Improvements bugfixes and crash fix](https://medium.com/koin-developers/koin-0-8-2-improvements-bugfixes-and-crash-fix-6b6809fc1dd2)
 * [Koin release 0.8.0](https://medium.com/koin-developers/koin-released-in-0-8-0-welcome-to-koin-spark-koin-android-architecture-f6270a7d4808)
