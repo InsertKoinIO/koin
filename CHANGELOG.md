@@ -4,10 +4,12 @@
 
 _DSL_
 
+`[deprecated]` - provide - can be directly replace with `bean` 
 
 
 _Core_
 
+* Context resolution and scope
 
 _Android_
 
