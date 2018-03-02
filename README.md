@@ -25,6 +25,7 @@ koin_version = '0.9.0'
 * Android ViewModel - 
 * Parameters
 * Context & Scopes
+* Start API
 
 
 # Table of Content
@@ -32,7 +33,7 @@ koin_version = '0.9.0'
 Getting Started
 
 * [Your first dependency with Android](#your-first-dependency-with-android)
-* [Your first dependency with Android ViewModel](#your-first-dependency-with-android-viewmodel)
+* [Your first dependency with Android and ViewModel](#your-first-dependency-with-android-viewmodel)
 * [Your first SparkJava Controller with Koin](#your-first-sparkjava-controller-with-koin)
 * [Unit Testing with Koin](#unit-testing-with-koin)
 
@@ -492,16 +493,110 @@ val myModule = applicationContext {
 
 ## Using multiple modules
 
+Every definition and module is lazy be default in Koin. This means that you can assemble several modules, by using the list of desired modules. Given some classes:
 
+```kotlin
+class ComponentA()
+class ComponentB(val componentA : ComponentA)
+```
 
+And the two modules to declare it:
 
-# Quick reference
+```kotlin
+val myModule1 = applicationContext {
+   bean { ComponentA() }
+}
+```
+
+```kotlin
+val myModule2 = applicationContext {
+   bean { ComponentB(get()) }
+}
+```
+
+Just start the module list together: 
+
+```kotlin
+// Android Start
+startKoin(this,listOf(module1,module2))
+```
+
+```kotlin
+// Kotlin/Spark Start
+startKoin(listOf(module1,module2))
+```
+
+# Cheat Sheet
 
 ## Android
 
+### Declare your module
+
+Below the Koin DSL keywords:
+
+- declare component with `bean`, `factory` and a lmabda function to declare your component instance
+- Use `viewModel`- to declare a `ViewModel` component (Android Architecture only)
+- Create a `context` to declare a logical context for a subset of components
+- resolve component with `get()`
+- resolve Koin properties with `getProperty()`
+
+**All your declared components are injected by constructor**
+
+### Start Koin
+
+Use `startKoin()` function to start Koin, from your `Application` class.
+
+### Load Properties
+
+By default, Koin look at the `assets/koin.properties` file to load Properties.
+
+### Additional properties
+
+You can also provide additional properties with `startKoin` function, with `properties` parameter.
+
+### Inject your components
+
+Two ways of injecting your components:
+
+* Components declared in Koin DSL, injection is made **by constructor**.
+* Inside Android components classes (Activity,Fragment ...): use `by inject()` `by viewModel()`
+* By Tagging your class as `KoinComponent`, you can unlock `by inject()` and `releaseContext` functions
+
+### [Architecture Recipes](https://insert-koin.io/docs/1.0/developer-guides/android/)
+
+
+## Spark
+
+### Declare your module
+
+Below the Koin DSL keywords:
+
+- declare component with `bean`, `factory` and a lmabda function to declare your component instance
+- Use the `controller` keyword to declare a component with Spark HTTP routing
+- resolve component with `get()`
+- resolve Koin properties with `getProperty()`
+
+**All your declared components are injected by constructor**
+
+### Start Koin
+
+Use `start()` function to start Koin And Spark.
+
+#### Load Properties
+
+By default, Koin look at the `resources/koin.properties` file to load Properties.
+
+#### Additional properties
+
+You can also provide additional properties with `start` function, with `properties` parameter.
+
+### Inject your components
+
+Components declared in Koin DSL, injection is made **by constructor**
 
 
 # Articles
+
 
 * [Koin release 0.8.0](https://medium.com/koin-developers/koin-released-in-0-8-0-welcome-to-koin-spark-koin-android-architecture-f6270a7d4808)
 * [Push SparkJava to the next level](https://medium.com/koin-developers/pushing-sparkjava-to-the-next-level-with-koin-ed1f0b80953e) ([Kotlin Weekly issue 73](http://mailchi.mp/kotlinweekly/kotlin-weekly-73), [DZone.com](https://dzone.com/articles/push-sparkjava-to-the-next-level-with-koin) )
