@@ -4,18 +4,32 @@
 
 _DSL_
 
-`[deprecated]` - provide - can be directly replace with `bean` 
-
+* `[DEPRECATED]` - `provide` - can be directly replace with `bean` 
+* `[UPDATED]` - `bean` and `factory` can now use `bind`
+* `[ADDED]` - defintion function inside `bean` or `factory` can now have parameters
 
 _Core_
 
-* Context resolution and scope
+* `[FIXED]` Context resolution and scope isolation reworked - now fully functionnal
+* `[FIXED]` Stack resolution
+* `[ADDED]` `StandAloneContext` function `loadKoinModules` to load Koin modules wether Koin is already started
+* `[ADDED]` `StandAloneContext` function `loadProperties` to load Koin properties wether Koin is already started
+* `[ADDED]` `by inject()` function handle parameters to definition ([#59](https://github.com/Ekito/koin/issues/59))
+* `[FIXED]` Logging with class name need introspection
+* `[ADDED]` Context lifecycle notification callback - to allow a callback when `releaseContext()` is called on a context. You can register with `StandAloneContext.registerContextCallBack()` ([#58](https://github.com/Ekito/koin/pull/58))
 
 _Android_
+
+* `[FIXED]` StartKoin have a `logger` parameter, with default as AndroidLogger(), to allow specify logging implementation to use with Koin ([#50](https://github.com/Ekito/koin/issues/50)) - allow no logging at startKoin of logger is set to `EmptyLogger()`
+* `[ADDED]` `by inject()` function handle parameters to definition ([#49](https://github.com/Ekito/koin/issues/49))
 
 
 _Android Architecture_
 
+* `[FIXED]` fix viewModel extensions rewritten from `LifecycleOwner` interface
+* `[FIXED]` fix `by viewModel()` API to allow use KClass object argument instead of type inference - offers now `getViewModelByclass()` and `viewModelByClass()` ([#56](https://github.com/Ekito/koin/issues/56))
+* `[ADDED]` `by viewModel()` function handle parameters to definition ([#49](https://github.com/Ekito/koin/issues/49))
+* `[ADDED]` `by viewModel()` function handle key instance for Android ViewModelFactory ([#49](https://github.com/Ekito/koin/issues/49))
 
 
 ## [0.8.2]()
