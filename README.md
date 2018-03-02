@@ -560,7 +560,7 @@ You can also provide additional properties with `startKoin` function, with `prop
 Two ways of injecting your components:
 
 * Components declared in Koin DSL, injection is made **by constructor**.
-* Inside Android components classes (Activity,Fragment ...): use `by inject()` `by viewModel()` - inject can handle parameters
+* Inside Android components classes (Activity,Fragment ...): use `by inject()` `by viewModel()` - inject can handle dynamic parameters with `parameters` argument
 * By Tagging your class as `KoinComponent`, you can unlock `by inject()` and `releaseContext` functions
 
 ### [Architecture Recipes](https://insert-koin.io/docs/1.0/developer-guides/android/)
