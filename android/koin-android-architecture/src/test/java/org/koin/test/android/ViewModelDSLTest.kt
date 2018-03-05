@@ -65,7 +65,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         val url = "http://..."
 
-        val vm1 = get<MyViewModel2>(parameters = mapOf("url" to url))
+        val vm1 = get<MyViewModel2> { mapOf("url" to url) }
 
         assertEquals(url, vm1.url)
 
