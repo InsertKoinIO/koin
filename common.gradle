@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '0.9.0'
+    koin_version = '0.9.1-alpha-1'
 
     // Kotlin
     kotlin_version = '1.2.30'
@@ -9,7 +9,7 @@ ext {
     dokka_version = '0.9.15'
 
     // Ktor
-    ktor_version = '0.9.0'
+    ktor_version = '0.9.1'
 
     // Spark
     spark_kotlin_version = '1.0.0-alpha'
