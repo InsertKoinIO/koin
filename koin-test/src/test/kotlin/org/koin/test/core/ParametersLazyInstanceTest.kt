@@ -18,13 +18,9 @@ class ParametersLazyInstanceTest : AutoCloseKoinTest() {
     class ComponentA(val url: String)
     class ComponentB : KoinComponent {
 
-        init {
-            println("Ctor B")
-        }
+        lateinit var url: String
 
-        var url: String? = null
-
-        val a: ComponentA by inject(parameters = { mapOf(URL to url!!) })
+        val a: ComponentA by inject { mapOf(URL to url) }
 
         fun getAWithUrl(url: String) {
             this.url = url

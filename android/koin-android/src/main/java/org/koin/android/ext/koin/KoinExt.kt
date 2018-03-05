@@ -24,7 +24,12 @@ infix fun Koin.with(application: Application) {
 fun Koin.init(application: Application): Koin {
     Koin.logger.log("[init] ~ added Android application bean reference")
     // provide Application defintion
-    beanRegistry.declare(BeanDefinition(clazz = Application::class, types = listOf(Context::class), definition = { application }), Scope.root())
+    beanRegistry.declare(
+        BeanDefinition(
+            clazz = Application::class,
+            types = listOf(Context::class),
+            definition = { application }), Scope.root()
+    )
     return this
 }
 
@@ -33,7 +38,10 @@ fun Koin.init(application: Application): Koin {
  * @param application
  * @param koinPropertyFile
  */
-fun Koin.bindAndroidProperties(application: Application, koinPropertyFile: String = "koin.properties"): Koin {
+fun Koin.bindAndroidProperties(
+    application: Application,
+    koinPropertyFile: String = "koin.properties"
+): Koin {
     val koinProperties = Properties()
     try {
         val hasFile = application.assets.list("").contains(koinPropertyFile)

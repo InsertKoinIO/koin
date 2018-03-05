@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.ComponentCallbacks
 import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.ParameterMap
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
+import org.koin.core.parameter.ParameterMap
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
@@ -24,7 +24,12 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  *
  * will be soon deprecated for starKoin() with <application>
  */
-fun Application.startKoin(application: Application, modules: List<Module>, properties: Map<String, Any> = HashMap(), logger: Logger = AndroidLogger()) {
+fun Application.startKoin(
+    application: Application,
+    modules: List<Module>,
+    properties: Map<String, Any> = HashMap(),
+    logger: Logger = AndroidLogger()
+) {
     Koin.logger = logger
     StandAloneContext.startKoin(modules, properties = properties) with application
 }
@@ -61,14 +66,18 @@ fun Application.bindBool(id: Int, key: String) {
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
  */
-inline fun <reified T> ComponentCallbacks.inject(name: String = "", parameters: ParameterMap = emptyMap()): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
+inline fun <reified T> ComponentCallbacks.inject(
+    name: String = "",
+    noinline parameters: ParameterMap = { emptyMap() }
+): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
  * lazy inject given property for Android component
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> ComponentCallbacks.property(key: String): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
+inline fun <reified T> ComponentCallbacks.property(key: String): Lazy<T> =
+    lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
 
 /**
  * lazy inject  given property for Android component
@@ -78,7 +87,8 @@ inline fun <reified T> ComponentCallbacks.property(key: String): Lazy<T> = lazy 
  * @param defaultValue - default value if property is missing
  *
  */
-inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
+inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T): Lazy<T> =
+    lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
 /**
  * Set a property
@@ -86,7 +96,8 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
  * @param key
  * @param value
  */
-fun ComponentCallbacks.setProperty(key: String, value: Any): Unit = context().setProperty(key, value)
+fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
+    context().setProperty(key, value)
 
 /**
  * Release a context
@@ -98,4 +109,5 @@ fun ComponentCallbacks.releaseContext(name: String): Unit = context().releaseCon
  * Release properties
  * @param keys - property keys
  */
-fun ComponentCallbacks.releaseProperties(vararg keys: String): Unit = context().releaseProperties(*keys)
+fun ComponentCallbacks.releaseProperties(vararg keys: String): Unit =
+    context().releaseProperties(*keys)

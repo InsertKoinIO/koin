@@ -2,9 +2,9 @@ package org.koin.android.architecture.ext
 
 import android.arch.lifecycle.ViewModel
 import org.koin.KoinContext
-import org.koin.ParameterMap
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
+import org.koin.core.parameter.ParameterMap
 import org.koin.dsl.context.Context
 import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.KoinComponent
@@ -15,7 +15,10 @@ import org.koin.standalone.StandAloneContext
  * ViewModel DSL Extension
  * Allow to declare a vieModel - be later inject into Activity/Fragment with dedicated injector
  */
-inline fun <reified T : ViewModel> Context.viewModel(name: String = "", noinline definition: Definition<T>) {
+inline fun <reified T : ViewModel> Context.viewModel(
+    name: String = "",
+    noinline definition: Definition<T>
+) {
     val bean = factory(name, definition)
     bean.bind(ViewModel::class)
 }
@@ -24,7 +27,8 @@ inline fun <reified T : ViewModel> Context.viewModel(name: String = "", noinline
  * Retrieve an instance by its class canonical name
  */
 fun <T> KoinContext.getByTypeName(canonicalName: String, parameters: ParameterMap): T {
-    val foundDefinitions = beanRegistry.definitions.filter { it.clazz.java.canonicalName == canonicalName }.distinct()
+    val foundDefinitions =
+        beanRegistry.definitions.filter { it.clazz.java.canonicalName == canonicalName }.distinct()
     return getWithDefinitions(foundDefinitions, parameters, "for class name '$canonicalName'")
 }
 
@@ -40,7 +44,11 @@ fun <T> KoinContext.getByName(name: String, parameters: ParameterMap): T {
 /**
  * Retrieve bean definition instance from given definitions
  */
-private fun <T> KoinContext.getWithDefinitions(foundDefinitions: List<BeanDefinition<*>>, parameters: ParameterMap, message: String): T {
+private fun <T> KoinContext.getWithDefinitions(
+    foundDefinitions: List<BeanDefinition<*>>,
+    parameters: ParameterMap,
+    message: String
+): T {
     return when (foundDefinitions.size) {
         0 -> throw NoBeanDefFoundException("No bean definition found $message")
         1 -> {
@@ -54,9 +62,14 @@ private fun <T> KoinContext.getWithDefinitions(foundDefinitions: List<BeanDefini
 /**
  * Resolve an instance by its canonical name
  */
-fun <T> KoinComponent.get(modelClass: Class<T>, parameters: ParameterMap): T = (StandAloneContext.koinContext as KoinContext).getByTypeName(modelClass.canonicalName, parameters)
+fun <T> KoinComponent.get(modelClass: Class<T>, parameters: ParameterMap): T =
+    (StandAloneContext.koinContext as KoinContext).getByTypeName(
+        modelClass.canonicalName,
+        parameters
+    )
 
 /**
  * Resolve an instance by its canonical name
  */
-fun <T> KoinComponent.getByName(name: String, parameters: ParameterMap): T = (StandAloneContext.koinContext as KoinContext).getByName(name, parameters)
+fun <T> KoinComponent.getByName(name: String, parameters: ParameterMap): T =
+    (StandAloneContext.koinContext as KoinContext).getByName(name, parameters)

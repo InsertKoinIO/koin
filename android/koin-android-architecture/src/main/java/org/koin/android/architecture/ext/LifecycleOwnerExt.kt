@@ -7,7 +7,7 @@ import android.arch.lifecycle.ViewModelStores
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.Koin
-import org.koin.ParameterMap
+import org.koin.core.parameter.ParameterMap
 import kotlin.reflect.KClass
 
 
@@ -19,7 +19,12 @@ import kotlin.reflect.KClass
  * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
-inline fun <reified T : ViewModel> LifecycleOwner.viewModel(fromActivity: Boolean = true, key: String? = null, name: String? = null, parameters: ParameterMap = emptyMap()): Lazy<T> {
+inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
+    fromActivity: Boolean = true,
+    key: String? = null,
+    name: String? = null,
+    noinline parameters: ParameterMap = { emptyMap() }
+): Lazy<T> {
     return viewModelByClass(fromActivity, T::class, key, name, parameters)
 }
 
@@ -32,7 +37,13 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(fromActivity: Boolea
  * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
-fun <T : ViewModel> LifecycleOwner.viewModelByClass(fromActivity: Boolean = true, clazz: KClass<T>, key: String? = null, name: String? = null, parameters: ParameterMap = emptyMap()): Lazy<T> {
+fun <T : ViewModel> LifecycleOwner.viewModelByClass(
+    fromActivity: Boolean = true,
+    clazz: KClass<T>,
+    key: String? = null,
+    name: String? = null,
+    parameters: ParameterMap = { emptyMap() }
+): Lazy<T> {
     return lazy { getViewModelByClass(fromActivity, clazz, key, name, parameters) }
 }
 
@@ -43,7 +54,11 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(fromActivity: Boolean = true
  * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
-inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(key: String? = null, name: String? = null, parameters: ParameterMap = emptyMap()): T {
+inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
+    key: String? = null,
+    name: String? = null,
+    noinline parameters: ParameterMap = { emptyMap() }
+): T {
     return getViewModelByClass(false, T::class, key, name, parameters)
 }
 
@@ -56,7 +71,13 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(key: String? = nu
  * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
-fun <T : ViewModel> LifecycleOwner.getViewModelByClass(fromActivity: Boolean = false, clazz: KClass<T>, key: String? = null, name: String? = null, parameters: ParameterMap = emptyMap()): T {
+fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
+    fromActivity: Boolean = false,
+    clazz: KClass<T>,
+    key: String? = null,
+    name: String? = null,
+    parameters: ParameterMap = { emptyMap() }
+): T {
     KoinFactory.apply {
         this.parameters = parameters
         this.name = name
@@ -70,13 +91,15 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(fromActivity: Boolean = f
             if (fromActivity) {
                 Koin.logger.log("[ViewModel] get for FragmentActivity @ ${this.activity}")
                 ViewModelProvider(ViewModelStores.of(this.activity), KoinFactory)
-            }
-            else {
+            } else {
                 Koin.logger.log("[ViewModel] get for Fragment @ $this")
                 ViewModelProvider(ViewModelStores.of(this), KoinFactory)
             }
         }
         else -> error("Can't get ViewModel on $this - Is not a FragmentActivity nor a Fragment")
     }
-    return if (key != null) viewModelProvider.get(key, clazz.java) else viewModelProvider.get(clazz.java)
+    return if (key != null) viewModelProvider.get(
+        key,
+        clazz.java
+    ) else viewModelProvider.get(clazz.java)
 }
