@@ -7,6 +7,7 @@ import org.koin.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.error.BeanInstanceCreationException
+import org.koin.error.ContextVisibilityException
 import org.koin.error.DependencyResolutionException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
@@ -116,7 +117,7 @@ class StackTest : AutoCloseKoinTest() {
         try {
             get<ComponentD>()
             fail()
-        } catch (e: DependencyResolutionException) {
+        } catch (e: ContextVisibilityException) {
             e.printStackTrace()
         }
     }
