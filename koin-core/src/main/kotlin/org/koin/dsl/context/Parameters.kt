@@ -18,24 +18,27 @@ interface ParametersProvider {
      */
     fun <T> getOrNUll(key: String): T?
 
-    val values: ParameterMap
+    /**
+     * Real values
+     */
+    val values: Map<String, Any>
 }
 
 /**
  * Parameters holder
  */
-data class Parameters(override inline val values: ParameterMap = { emptyMap() }) : ParametersProvider {
+data class Parameters(val internal: ParameterMap = { emptyMap() }) : ParametersProvider {
 
-    private val unfoldValues by lazy { values() }
+    override val values by lazy { internal() }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getOrNUll(key: String): T? {
-        return unfoldValues[key] as? T
+        return values[key] as? T
     }
 
     @Suppress("UNCHECKED_CAST")
     override operator fun <T> get(key: String): T =
-        if (!unfoldValues.containsKey(key)) throw MissingParameterException("Parameter '$key' is missing")
-        else unfoldValues[key] as T
+        if (!values.containsKey(key)) throw MissingParameterException("Parameter '$key' is missing")
+        else values[key] as T
 
 }

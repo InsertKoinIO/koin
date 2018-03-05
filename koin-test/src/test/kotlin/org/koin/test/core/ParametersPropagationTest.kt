@@ -13,7 +13,7 @@ class ParametersPropagationTest : AutoCloseKoinTest() {
 
     val simpleModule1 = applicationContext {
         bean { params -> ComponentA(params["this"]) }
-        bean { params -> ComponentB(get(parameters = params.values)) }
+        bean { params -> ComponentB(get { params.values }) }
     }
 
     class ComponentA(val componentC: ComponentC)
