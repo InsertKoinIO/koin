@@ -1,8 +1,10 @@
 package org.koin.test.core
 
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.applicationContext
+import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
@@ -22,6 +24,11 @@ class ParametersInstanceTest : AutoCloseKoinTest() {
         val compA: ComponentA by inject { mapOf("this" to this) }
     }
 
+    class ComponentC : KoinComponent {
+
+        val compA: ComponentA by inject()
+    }
+
     @Test
     fun `should inject parameters with factory`() {
         startKoin(listOf(simpleModule1))
@@ -33,5 +40,20 @@ class ParametersInstanceTest : AutoCloseKoinTest() {
 
         assertRemainingInstances(1)
         Assert.assertEquals(b, b.compA.componentB)
+    }
+
+    @Test
+    fun `missing parameters`() {
+        startKoin(listOf(simpleModule1))
+
+        val c = ComponentC()
+
+        assertRemainingInstances(0)
+        try {
+            c.compA
+            fail()
+        } catch (e: BeanInstanceCreationException) {
+            e.printStackTrace()
+        }
     }
 }

@@ -1,6 +1,7 @@
 package org.koin.dsl.context
 
 import org.koin.core.parameter.ParameterMap
+import org.koin.error.MissingParameterException
 
 /**
  * Provide a parameter
@@ -33,6 +34,8 @@ data class Parameters(override inline val values: ParameterMap = { emptyMap() })
     }
 
     @Suppress("UNCHECKED_CAST")
-    override operator fun <T> get(key: String): T = unfoldValues[key] as T
+    override operator fun <T> get(key: String): T =
+        if (!unfoldValues.containsKey(key)) throw MissingParameterException("Parameter '$key' is missing")
+        else unfoldValues[key] as T
 
 }
