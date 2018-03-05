@@ -6,8 +6,10 @@ import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.context.Parameters
+import org.koin.error.ContextVisibilityException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.MissingPropertyException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.StandAloneKoinContext
 import java.util.*
 import kotlin.reflect.KClass
@@ -58,22 +60,24 @@ class KoinContext(val beanRegistry: BeanRegistry,
     fun <T> resolveInstance(clazz: KClass<*>, paramsValue: ParameterMap, definitionResolver: () -> List<BeanDefinition<*>>): T = synchronized(this) {
         val clazzName = clazz.java.canonicalName
         if (resolutionStack.any { it.isCompatibleWith(clazz) }) {
-            System.err.println("resolutionStack : $resolutionStack")
-            throw DependencyResolutionException("Cyclic dependency detected while resolving $clazzName - $resolutionStack")
+            throw DependencyResolutionException("Cyclic call while resolving $clazzName. Definition is already in resolution in current call:\n\t${resolutionStack.joinToString("\n\t")}")
         }
 
         val lastInStack: BeanDefinition<*>? = if (resolutionStack.size > 0) resolutionStack.peek() else null
 
         val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
-            definitionResolver().filter { it.scope.isVisible(lastInStack.scope) }
+            val found = definitionResolver()
+            val filtered = found.filter { it.scope.isVisible(lastInStack.scope) }
+            if (found.isNotEmpty() && filtered.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.scope}")
+            filtered
         } else definitionResolver()).distinct()
 
         val beanDefinition: BeanDefinition<*> = if (candidates.size == 1) {
             candidates.first()
         } else {
             when {
-                candidates.isEmpty() -> throw DependencyResolutionException("No definition found for $clazzName - Check your definitions and contexts visibility")
-                else -> throw DependencyResolutionException("Multiple definitions found for $clazzName - $candidates")
+                candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to resolve type '$clazzName'. Check your module definition")
+                else -> throw DependencyResolutionException("Multiple definitions found to resolve type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString("\n\t")}\n\tCheck your modules definition or use name attribute to resolve components.")
             }
         }
 

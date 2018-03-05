@@ -15,6 +15,11 @@ class ErrorLoggingTest : AutoCloseKoinTest() {
         bean { ComponentB(get()) }
     }
 
+    val cyclicModule = applicationContext {
+        bean { ComponentAA(get()) }
+        bean { ComponentAB(get()) }
+    }
+
     class ComponentA {
         init {
             error("Boom !")
@@ -22,6 +27,9 @@ class ErrorLoggingTest : AutoCloseKoinTest() {
     }
 
     class ComponentB(val a: ComponentA)
+
+    class ComponentAA(val componentAB: ComponentAB)
+    class ComponentAB(val componentAA: ComponentAA)
 
     @Test
     fun `should not inject generic interface component`() {
@@ -41,6 +49,18 @@ class ErrorLoggingTest : AutoCloseKoinTest() {
 
         try {
             get<ComponentB>()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `should not inject cyclic deps`() {
+        startKoin(listOf(cyclicModule))
+
+        try {
+            get<ComponentAA>()
             fail()
         } catch (e: Exception) {
             e.printStackTrace()

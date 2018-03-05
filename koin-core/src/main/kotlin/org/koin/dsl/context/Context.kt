@@ -1,6 +1,7 @@
 package org.koin.dsl.context
 
 import org.koin.KoinContext
+import org.koin.ParameterMap
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
 import org.koin.core.scope.Scope
@@ -66,13 +67,13 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(): T = koinContext.resolveByClass(emptyMap())
+    inline fun <reified T : Any> get(parameters: ParameterMap = emptyMap()): T = koinContext.resolveByClass(parameters)
 
     /**
      * Resolve a component
      * @param name : component name
      */
-    inline fun <reified T : Any> get(name: String): T = koinContext.resolveByName(name, emptyMap())
+    inline fun <reified T : Any> get(name: String, parameters: ParameterMap = emptyMap()): T = koinContext.resolveByName(name, parameters)
 
     /**
      * Retrieve a property

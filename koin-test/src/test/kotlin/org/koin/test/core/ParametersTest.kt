@@ -8,6 +8,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.dryRun
+import org.koin.test.ext.junit.assertRemainingInstances
 
 class ParametersTest : AutoCloseKoinTest() {
 
@@ -29,14 +30,29 @@ class ParametersTest : AutoCloseKoinTest() {
     class ComponentA(val url: String)
 
     class Component1 : KoinComponent {
+
+        init {
+            println("Ctor Component1")
+        }
+
         val compA: ComponentA by inject(parameters = mapOf(PARAM_URL to URL1))
     }
 
     class Component2 : KoinComponent {
+
+        init {
+            println("Ctor Component2")
+        }
+
         val compA: ComponentA by inject(parameters = mapOf(PARAM_URL to URL2))
     }
 
     class Component3 : KoinComponent {
+
+        init {
+            println("Ctor Component3")
+        }
+
         val compA: ComponentA by inject()
     }
 
@@ -46,6 +62,8 @@ class ParametersTest : AutoCloseKoinTest() {
 
         val c1 = Component1()
         val c2 = Component2()
+
+        assertRemainingInstances(0)
 
         Assert.assertEquals(URL1, c1.compA.url)
         Assert.assertEquals(URL2, c2.compA.url)
@@ -57,6 +75,8 @@ class ParametersTest : AutoCloseKoinTest() {
 
         val c1 = Component1()
         val c2 = Component2()
+
+        assertRemainingInstances(0)
 
         Assert.assertEquals(URL1, c1.compA.url)
         Assert.assertEquals(URL1, c2.compA.url)
@@ -74,6 +94,8 @@ class ParametersTest : AutoCloseKoinTest() {
         startKoin(listOf(simpleModule3))
 
         val c1 = Component3()
+
+        assertRemainingInstances(0)
 
         Assert.assertEquals(DEFAULT_URL, c1.compA.url)
     }

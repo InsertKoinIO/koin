@@ -1,5 +1,7 @@
 package org.koin.dsl.context
 
+import org.koin.ParameterMap
+
 /**
  * Provide a parameter
  */
@@ -14,12 +16,14 @@ interface ParametersProvider {
      * Returns the value or null if key is missing, corresponding to the given [key] - cast to type T
      */
     fun <T> getOrNUll(key: String): T?
+
+    val values: ParameterMap
 }
 
 /**
  * Parameters holder
  */
-data class Parameters(private val values: Map<String, Any> = emptyMap()) : ParametersProvider {
+data class Parameters(override val values: ParameterMap = emptyMap()) : ParametersProvider {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getOrNUll(key: String): T? {

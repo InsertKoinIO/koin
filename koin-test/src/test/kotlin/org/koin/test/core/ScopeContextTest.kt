@@ -10,6 +10,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
+import org.koin.test.ext.junit.assertRemainingInstances
 import org.koin.test.ext.junit.assertScopeParent
 
 class ScopeContextTest : AutoCloseKoinTest() {
@@ -44,6 +45,13 @@ class ScopeContextTest : AutoCloseKoinTest() {
         }
     }
 
+    val badVisibility = applicationContext {
+        context(name = "A") {
+            bean { ComponentA() }
+        }
+
+        bean { ComponentB(get()) }
+    }
 
     class ComponentA
     class ComponentB(val componentA: ComponentA)
@@ -98,6 +106,20 @@ class ScopeContextTest : AutoCloseKoinTest() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    @Test
+    fun `bad visibility`() {
+        startKoin(listOf(badVisibility))
+
+        try {
+            get<ComponentB>()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        assertRemainingInstances(0)
     }
 
 }
