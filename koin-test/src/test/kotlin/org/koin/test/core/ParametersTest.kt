@@ -2,6 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.core.parameter.valuesOf
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -35,7 +36,7 @@ class ParametersTest : AutoCloseKoinTest() {
             println("Ctor Component1")
         }
 
-        val compA: ComponentA by inject(parameters = mapOf(PARAM_URL to URL1))
+        val compA: ComponentA by inject(parameters = valuesOf(PARAM_URL to URL1))
     }
 
     class Component2 : KoinComponent {
@@ -44,7 +45,7 @@ class ParametersTest : AutoCloseKoinTest() {
             println("Ctor Component2")
         }
 
-        val compA: ComponentA by inject(parameters = mapOf(PARAM_URL to URL2))
+        val compA: ComponentA by inject(parameters = valuesOf(PARAM_URL to URL2))
     }
 
     class Component3 : KoinComponent {
@@ -86,7 +87,7 @@ class ParametersTest : AutoCloseKoinTest() {
     fun `should dry run default parameters`() {
         startKoin(listOf(simpleModule1))
 
-        dryRun(defaultParameters = mapOf(PARAM_URL to "DEFAULT"))
+        dryRun(defaultParameters = valuesOf(PARAM_URL to "DEFAULT"))
     }
 
     @Test

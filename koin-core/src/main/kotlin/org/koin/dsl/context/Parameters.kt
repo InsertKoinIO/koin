@@ -1,6 +1,6 @@
 package org.koin.dsl.context
 
-import org.koin.ParameterMap
+import org.koin.core.parameter.ParameterMap
 
 /**
  * Provide a parameter
@@ -23,14 +23,16 @@ interface ParametersProvider {
 /**
  * Parameters holder
  */
-data class Parameters(override val values: ParameterMap = emptyMap()) : ParametersProvider {
+data class Parameters(override inline val values: ParameterMap = { emptyMap() }) : ParametersProvider {
+
+    private val unfoldValues by lazy { values() }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getOrNUll(key: String): T? {
-        return values[key] as? T
+        return unfoldValues[key] as? T
     }
 
     @Suppress("UNCHECKED_CAST")
-    override operator fun <T> get(key: String): T = values[key] as T
+    override operator fun <T> get(key: String): T = unfoldValues[key] as T
 
 }

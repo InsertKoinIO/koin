@@ -2,21 +2,23 @@ package org.koin.ktor.ext
 
 import io.ktor.application.Application
 import org.koin.KoinContext
-import org.koin.ParameterMap
+import org.koin.core.parameter.ParameterMap
 import org.koin.standalone.StandAloneContext
 
 /**
  * inject lazily given dependency
  * @param name - bean name / optional
  */
-inline fun <reified T> Application.inject(name: String = "", parameters: ParameterMap = emptyMap()) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
+inline fun <reified T> Application.inject(name: String = "", noinline parameters: ParameterMap = { emptyMap() }) =
+    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
  * lazy inject given property
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Application.property(key: String) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
+inline fun <reified T> Application.property(key: String) =
+    lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
 
 /**
  * lazy inject  given property
@@ -26,20 +28,23 @@ inline fun <reified T> Application.property(key: String) = lazy { (StandAloneCon
  * @param defaultValue - default value if property is missing
  *
  */
-inline fun <reified T> Application.property(key: String, defaultValue: T) = lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
+inline fun <reified T> Application.property(key: String, defaultValue: T) =
+    lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
 /**
  * Retrieve given dependency for KoinComponent
  * @param name - bean name / optional
  */
-inline fun <reified T> Application.get(name: String = "", parameters: ParameterMap = emptyMap()) = (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
+inline fun <reified T> Application.get(name: String = "", noinline parameters: ParameterMap = { emptyMap() }) =
+    (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
 
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Application.getProperty(key: String) = (StandAloneContext.koinContext as KoinContext).getProperty<T>(key)
+inline fun <reified T> Application.getProperty(key: String) =
+    (StandAloneContext.koinContext as KoinContext).getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -49,7 +54,8 @@ inline fun <reified T> Application.getProperty(key: String) = (StandAloneContext
  * @param defaultValue - default value if property is missing
  *
  */
-inline fun <reified T> Application.getProperty(key: String, defaultValue: T) = (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue)
+inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
+    (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue)
 
 
 /**

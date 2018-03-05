@@ -2,6 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.core.parameter.valuesOf
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -24,7 +25,7 @@ class ParametersPropagationTest : AutoCloseKoinTest() {
             println("Ctor Component1")
         }
 
-        val componentB: ComponentB by inject(parameters = mapOf("this" to this))
+        val componentB: ComponentB by inject(parameters = valuesOf("this" to this))
     }
 
     @Test

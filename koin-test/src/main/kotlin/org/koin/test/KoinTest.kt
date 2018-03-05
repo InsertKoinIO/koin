@@ -3,7 +3,7 @@ package org.koin.test
 import org.junit.After
 import org.koin.Koin
 import org.koin.KoinContext
-import org.koin.ParameterMap
+import org.koin.core.parameter.ParameterMap
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
@@ -16,7 +16,7 @@ interface KoinTest : KoinComponent
 /**
  * Make a Dry Run - Test if each definition is injectable
  */
-fun KoinTest.dryRun(defaultParameters: ParameterMap = emptyMap()) {
+fun KoinTest.dryRun(defaultParameters: ParameterMap = { emptyMap() }) {
     (StandAloneContext.koinContext as KoinContext).dryRun(defaultParameters)
 }
 
