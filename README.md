@@ -227,6 +227,22 @@ class MyActivity : AppCompatActivity(){
 }
 ```
 
+Or if you want to create eagerly your ViewModel, just use the `getViewModel()`:
+
+```kotlin
+class MyActivity : AppCompatActivity(){
+
+    override fun onCreate() {
+        super.onCreate()
+        
+        val myViewModel : MyViewModel = getViewModel()
+
+        // Let's use our ViewModel
+        Log.i("MyActivity","ViewModel : ${myViewModel.sayHello()}")
+    }
+}
+```
+
 ## Your first SparkJava Controller with Koin
 
 ### Gradle Setup
