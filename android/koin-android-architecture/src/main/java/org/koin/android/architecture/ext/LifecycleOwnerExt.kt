@@ -14,18 +14,31 @@ import kotlin.reflect.KClass
 /**
  * Lazy get a viewModel instance
  *
- * @param fromActivity - create it from Activity (default true)
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
-    fromActivity: Boolean = true,
     key: String? = null,
     name: String? = null,
     noinline parameters: ParameterMap = { emptyMap() }
 ): Lazy<T> {
-    return viewModelByClass(fromActivity, T::class, key, name, parameters)
+    return viewModelByClass(false, T::class, key, name, parameters)
+}
+
+/**
+ * Lazy get a viewModel instance shared with Activity
+ *
+ * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> Fragment.sharedViewModel(
+    key: String? = null,
+    name: String? = null,
+    noinline parameters: ParameterMap = { emptyMap() }
+): Lazy<T> {
+    return viewModelByClass(true, T::class, key, name, parameters)
 }
 
 /**
@@ -38,7 +51,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.viewModelByClass(
-    fromActivity: Boolean = true,
+    fromActivity: Boolean,
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
@@ -48,7 +61,7 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
 }
 
 /**
- * Get a viewModel instance from underlying component (Activity or Fragment)
+ * Get a viewModel instance
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
@@ -60,6 +73,21 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     noinline parameters: ParameterMap = { emptyMap() }
 ): T {
     return getViewModelByClass(false, T::class, key, name, parameters)
+}
+
+/**
+ * Get a shared viewModel instance from underlying Activity
+ *
+ * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
+    key: String? = null,
+    name: String? = null,
+    noinline parameters: ParameterMap = { emptyMap() }
+): T {
+    return getViewModelByClass(true, T::class, key, name, parameters)
 }
 
 /**
