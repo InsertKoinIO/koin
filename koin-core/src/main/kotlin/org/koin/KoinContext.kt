@@ -199,4 +199,7 @@ interface ContextCallback {
     fun onContextReleased(contextName: String)
 }
 
+/**
+ * Resolution Stack Item
+ */
 typealias StackItem = BeanDefinition<*>
