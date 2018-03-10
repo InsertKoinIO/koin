@@ -76,13 +76,15 @@ class KoinContext(
         val beanDefinition: BeanDefinition<*> =
             getVisibleBeanDefinition(clazzName, definitionResolver, resolutionStack.last())
 
-        resolutionStack.resolve(beanDefinition) { stack ->
+        val logIndent = resolutionStack.indent()
+        resolutionStack.resolve(beanDefinition) {
+
+            // Resolution log
+            logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
 
             val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, ParameterHolder(parameters))
 
-            // Log resolution
-            val logIndent = stack.joinToString(separator = "") { "\t" }
-            logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
+            // Log creation
             if (created) {
                 logger.log("$logIndent(*) Created")
             }

@@ -9,18 +9,18 @@ class ResolutionStack {
     /**
      * call stack - bean definition resolution
      */
-    val stack = Stack<StackItem>()
+    private val stack = Stack<StackItem>()
 
     /**
      * Allow to execute the execution function if the bean definition is well defined on stack
      * @param beanDefinition - bean definition
      * @param execution - executed code once bean definition has been stacked
      */
-    fun resolve(beanDefinition: BeanDefinition<*>, execution: (Stack<StackItem>) -> Unit) {
+    fun resolve(beanDefinition: BeanDefinition<*>, execution: () -> Unit) {
         checkStackEnter(beanDefinition)
 
         stack.add(beanDefinition)
-        execution(stack)
+        execution()
 
         checkStackExit(beanDefinition)
     }
@@ -51,8 +51,19 @@ class ResolutionStack {
         }
     }
 
+    /**
+     * For log indentation
+     */
+    fun indent(): String = stack.joinToString(separator = "") { "\t" }
+
+    /**
+     * Last stack item
+     */
     fun last(): StackItem? = if (stack.size > 0) stack.peek() else null
 
+    /**
+     * Clear stack
+     */
     fun clear() = stack.clear()
 }
 
