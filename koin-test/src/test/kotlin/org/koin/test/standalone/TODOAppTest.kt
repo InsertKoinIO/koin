@@ -18,8 +18,8 @@ class TODOAppTest : KoinTest {
     }
 
     val RepositoryModule = applicationContext {
-        bean("remoteDataSource") { FakeTasksRemoteDataSource() }
-        bean("localDataSource") { TasksLocalDataSource() }
+        bean("remoteDataSource") { FakeTasksRemoteDataSource() as TasksDataSource }
+        bean("localDataSource") { TasksLocalDataSource() as TasksDataSource }
         bean { TasksRepository(get("remoteDataSource"), get("localDataSource")) } bind TasksDataSource::class
     }
 
@@ -27,9 +27,11 @@ class TODOAppTest : KoinTest {
         interface View
         interface Presenter
     }
+
     class TasksView() : KoinComponent, TasksContract.View {
         val taskPreenter by inject<TasksContract.Presenter>()
     }
+
     class TasksPresenter(val tasksRepository: TasksRepository) : TasksContract.Presenter
     interface TasksDataSource
     class FakeTasksRemoteDataSource() : TasksDataSource
