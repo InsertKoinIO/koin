@@ -59,6 +59,7 @@ class InstanceFactory() {
             instance as T
             return instance
         } catch (e: Throwable) {
+            e.printStackTrace()
             throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e")
         }
     }
