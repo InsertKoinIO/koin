@@ -55,10 +55,6 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
     override fun hashCode(): Int {
         return name.hashCode() + clazz.hashCode() + scope.hashCode()
     }
-
-    fun isCompatibleWith(clazz: KClass<*>): Boolean {
-        return this.clazz == clazz || types.contains(clazz)
-    }
 }
 
 typealias Definition<T> = (ParametersProvider) -> T

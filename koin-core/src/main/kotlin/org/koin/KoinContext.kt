@@ -45,7 +45,8 @@ class KoinContext(
      * @param name bean definition name
      */
     inline fun <reified T> resolveByName(name: String, noinline parameters: ParameterMap): T =
-        resolveInstance(T::class, parameters) { beanRegistry.searchByName(name) }
+        resolveInstance(T::class, parameters, {bean -> (bean.clazz == T::class || bean.types.contains(T::class)) && bean.name == name})
+        { beanRegistry.searchByName(name) }
 
     /**
      * Resolve a dependency for its bean definition
@@ -67,10 +68,11 @@ class KoinContext(
     inline fun <T> resolveInstance(
         clazz: KClass<*>,
         noinline paramsValue: ParameterMap,
+        isCompatible: (BeanDefinition<*>) -> Boolean = {bean -> bean.clazz == clazz || bean.types.contains(clazz)},
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
         val clazzName = clazz.java.canonicalName
-        if (resolutionStack.any { it.isCompatibleWith(clazz) }) {
+        if (resolutionStack.any { isCompatible(it) }) {
             throw DependencyResolutionException(
                 "Cyclic call while resolving $clazzName. Definition is already in resolution in current call:\n\t${resolutionStack.joinToString(
                     "\n\t"
@@ -113,7 +115,7 @@ class KoinContext(
 
         val head: BeanDefinition<*> = resolutionStack.pop()
 
-        if (!head.isCompatibleWith(clazz)) {
+        if (!isCompatible(head)) {
             resolutionStack.clear()
             throw IllegalStateException("Stack resolution error : was $head but should be $clazzName")
         }
