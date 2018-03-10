@@ -2,7 +2,7 @@ package org.koin.android.architecture.ext
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import org.koin.core.parameter.ParameterMap
+import org.koin.core.parameter.Parameters
 import org.koin.standalone.KoinComponent
 
 
@@ -14,7 +14,7 @@ object KoinFactory : ViewModelProvider.Factory, KoinComponent {
     /**
      * Current Parameters
      */
-    internal var parameters: ParameterMap = { emptyMap() }
+    internal var parameters: Parameters = { emptyMap() }
 
     /**
      * Current BeanDefinition name

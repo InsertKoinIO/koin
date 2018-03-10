@@ -57,7 +57,7 @@ class BeanRegistry {
     /**
      * Create context scope
      */
-    fun createScope(scope: String, parentScope: String?): Scope {
+    private fun createScope(scope: String, parentScope: String?): Scope {
         Koin.logger.log("[scope] create [$scope] with parent [$parentScope]")
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
@@ -75,8 +75,7 @@ class BeanRegistry {
     fun searchAll(clazz: kotlin.reflect.KClass<*>): List<BeanDefinition<*>> {
         val concreteTypes = searchDefinition { it.clazz == clazz }
         val extraBindTypes = searchDefinition { it.types.contains(clazz) }
-        val found = (concreteTypes + extraBindTypes)
-        return found
+        return (concreteTypes + extraBindTypes)
     }
 
     /**

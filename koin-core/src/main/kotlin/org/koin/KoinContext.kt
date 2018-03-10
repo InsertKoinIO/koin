@@ -12,7 +12,6 @@ import org.koin.error.DependencyResolutionException
 import org.koin.error.MissingPropertyException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.StandAloneKoinContext
-import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -27,10 +26,7 @@ class KoinContext(
     val instanceFactory: InstanceFactory
 ) : StandAloneKoinContext {
 
-    /**
-     * call stack - bean definition resolution
-     */
-    val resolutionStack = Stack<StackItem>()
+    private val resolutionStack = ResolutionStack()
 
     var contextCallback: ContextCallback? = null
 
@@ -63,31 +59,58 @@ class KoinContext(
 
     /**
      * Resolve a dependency for its bean definition
+     * @param clazz - Class
+     * @param parameters - Parameters
+     * @param definitionResolver - function to find bean definitions
      */
-    inline fun <T> resolveInstance(
+    fun <T> resolveInstance(
         clazz: KClass<*>,
-        noinline parameters: Parameters,
+        parameters: Parameters,
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
+
         val clazzName = clazz.java.canonicalName
-        if (resolutionStack.any { it.isCompatibleWith(clazz) }) {
-            throw DependencyResolutionException(
-                "Cyclic call while resolving $clazzName. Definition is already in resolution in current call:\n\t${resolutionStack.joinToString(
-                    "\n\t"
-                )}"
-            )
+
+        var resultInstance: T? = null
+
+        val beanDefinition: BeanDefinition<*> =
+            getVisibleBeanDefinition(clazzName, definitionResolver, resolutionStack.last())
+
+        resolutionStack.resolve(beanDefinition) { stack ->
+
+            val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, ParameterHolder(parameters))
+
+            // Log resolution
+            val logIndent = stack.joinToString(separator = "") { "\t" }
+            logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
+            if (created) {
+                logger.log("$logIndent(*) Created")
+            }
+
+            resultInstance = instance
         }
+        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
+    }
 
-        val lastInStack: BeanDefinition<*>? = if (resolutionStack.size > 0) resolutionStack.peek() else null
-
+    /**
+     * retrieve bean definition
+     * @param clazzName - class name
+     * @param definitionResolver - function to find bean definition
+     * @param lastInStack - to check visibility with last bean in stack
+     */
+    fun getVisibleBeanDefinition(
+        clazzName: String,
+        definitionResolver: () -> List<BeanDefinition<*>>,
+        lastInStack: BeanDefinition<*>?
+    ): BeanDefinition<*> {
         val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
             val found = definitionResolver()
-            val filtered = found.filter { it.scope.isVisible(lastInStack.scope) }
-            if (found.isNotEmpty() && filtered.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.scope}")
-            filtered
+            val filteredByVisibility = found.filter { it.scope.isVisible(lastInStack.scope) }
+            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.scope}")
+            filteredByVisibility
         } else definitionResolver()).distinct()
 
-        val beanDefinition: BeanDefinition<*> = if (candidates.size == 1) {
+        return if (candidates.size == 1) {
             candidates.first()
         } else {
             when {
@@ -99,25 +122,6 @@ class KoinContext(
                 )
             }
         }
-
-        val indent = resolutionStack.joinToString(separator = "") { "\t" }
-        logger.log("${indent}Resolve class[$clazzName] with $beanDefinition")
-
-        val parameters = ParameterHolder(parameters)
-        resolutionStack.add(beanDefinition)
-
-        val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, parameters)
-        if (created) {
-            logger.log("$indent(*) Created")
-        }
-
-        val head: BeanDefinition<*> = resolutionStack.pop()
-
-        if (!head.isCompatibleWith(clazz)) {
-            resolutionStack.clear()
-            throw IllegalStateException("Stack resolution error : was $head but should be $clazzName")
-        }
-        return instance
     }
 
     /**
@@ -198,8 +202,3 @@ interface ContextCallback {
      */
     fun onContextReleased(contextName: String)
 }
-
-/**
- * Resolution Stack Item
- */
-typealias StackItem = BeanDefinition<*>

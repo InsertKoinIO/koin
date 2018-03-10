@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModel
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
-import org.koin.core.parameter.ParameterMap
+import org.koin.core.parameter.Parameters
 import org.koin.dsl.context.Context
 import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.KoinComponent
@@ -26,7 +26,7 @@ inline fun <reified T : ViewModel> Context.viewModel(
 /**
  * Retrieve an instance by its class canonical name
  */
-fun <T> KoinContext.getByTypeName(canonicalName: String, parameters: ParameterMap): T {
+fun <T> KoinContext.getByTypeName(canonicalName: String, parameters: Parameters): T {
     val foundDefinitions =
         beanRegistry.definitions.filter { it.clazz.java.canonicalName == canonicalName }.distinct()
     return getWithDefinitions(foundDefinitions, parameters, "for class name '$canonicalName'")
@@ -35,7 +35,7 @@ fun <T> KoinContext.getByTypeName(canonicalName: String, parameters: ParameterMa
 /**
  * Retrieve an instance by its bean definition name
  */
-fun <T> KoinContext.getByName(name: String, parameters: ParameterMap): T {
+fun <T> KoinContext.getByName(name: String, parameters: Parameters): T {
     val foundDefinitions = beanRegistry.definitions.filter { it.name == name }.distinct()
     return getWithDefinitions(foundDefinitions, parameters, "for bean name '$name'")
 }
@@ -46,7 +46,7 @@ fun <T> KoinContext.getByName(name: String, parameters: ParameterMap): T {
  */
 private fun <T> KoinContext.getWithDefinitions(
     foundDefinitions: List<BeanDefinition<*>>,
-    parameters: ParameterMap,
+    parameters: Parameters,
     message: String
 ): T {
     return when (foundDefinitions.size) {
@@ -62,7 +62,7 @@ private fun <T> KoinContext.getWithDefinitions(
 /**
  * Resolve an instance by its canonical name
  */
-fun <T> KoinComponent.get(modelClass: Class<T>, parameters: ParameterMap): T =
+fun <T> KoinComponent.get(modelClass: Class<T>, parameters: Parameters): T =
     (StandAloneContext.koinContext as KoinContext).getByTypeName(
         modelClass.canonicalName,
         parameters
@@ -71,5 +71,5 @@ fun <T> KoinComponent.get(modelClass: Class<T>, parameters: ParameterMap): T =
 /**
  * Resolve an instance by its canonical name
  */
-fun <T> KoinComponent.getByName(name: String, parameters: ParameterMap): T =
+fun <T> KoinComponent.getByName(name: String, parameters: Parameters): T =
     (StandAloneContext.koinContext as KoinContext).getByName(name, parameters)

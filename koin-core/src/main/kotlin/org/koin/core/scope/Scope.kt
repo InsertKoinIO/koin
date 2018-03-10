@@ -19,7 +19,7 @@ data class Scope(val name: String, val parent: Scope? = null) {
 
     override fun toString(): String {
         val p = if (parent != null) ", parent = $parent" else ""
-        return "Scope[$name]"
+        return "Scope[$name$p]"
     }
 
     fun isVisible(p: Scope): Boolean = this == p || if (p.parent != null) {

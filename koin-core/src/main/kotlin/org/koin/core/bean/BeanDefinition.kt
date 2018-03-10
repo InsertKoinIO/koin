@@ -20,7 +20,14 @@ import kotlin.reflect.KClass
  * @param types - list of assignable types
  * @param definition - bean definition function
  */
-data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, var types: List<KClass<*>> = arrayListOf(), val scope: Scope = Scope.root(), val isSingleton: Boolean = true, val definition: Definition<T>) {
+data class BeanDefinition<out T>(
+    val name: String = "",
+    val clazz: KClass<*>,
+    var types: List<KClass<*>> = arrayListOf(),
+    val scope: Scope = Scope.root(),
+    val isSingleton: Boolean = true,
+    val definition: Definition<T>
+) {
 
     /**
      * Add a compatible type to current bounded definition
@@ -54,10 +61,6 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
 
     override fun hashCode(): Int {
         return name.hashCode() + clazz.hashCode() + scope.hashCode()
-    }
-
-    fun isCompatibleWith(clazz: KClass<*>): Boolean {
-        return this.clazz == clazz || types.contains(clazz)
     }
 }
 

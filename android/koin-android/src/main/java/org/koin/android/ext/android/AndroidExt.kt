@@ -6,7 +6,7 @@ import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
-import org.koin.core.parameter.ParameterMap
+import org.koin.core.parameter.Parameters
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
@@ -68,7 +68,7 @@ fun Application.bindBool(id: Int, key: String) {
  */
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = "",
-    noinline parameters: ParameterMap = { emptyMap() }
+    noinline parameters: Parameters = { emptyMap() }
 ): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
