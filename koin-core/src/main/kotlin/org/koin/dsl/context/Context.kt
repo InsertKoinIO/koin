@@ -3,7 +3,7 @@ package org.koin.dsl.context
 import org.koin.KoinContext
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
-import org.koin.core.parameter.ParameterMap
+import org.koin.core.parameter.Parameters
 import org.koin.core.scope.Scope
 
 /**
@@ -71,14 +71,14 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     /**
      * Resolve a component
      */
-    inline fun <reified T : Any> get(noinline parameters: ParameterMap = { emptyMap() }): T =
+    inline fun <reified T : Any> get(noinline parameters: Parameters = { emptyMap() }): T =
         koinContext.resolveByClass(parameters)
 
     /**
      * Resolve a component
      * @param name : component name
      */
-    inline fun <reified T : Any> get(name: String, noinline parameters: ParameterMap = { emptyMap() }): T =
+    inline fun <reified T : Any> get(name: String, noinline parameters: Parameters = { emptyMap() }): T =
         koinContext.resolveByName(name, parameters)
 
     /**

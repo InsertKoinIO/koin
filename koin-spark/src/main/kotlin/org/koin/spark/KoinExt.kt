@@ -4,7 +4,7 @@ import org.koin.Koin
 import org.koin.KoinContext
 import org.koin.core.bean.Definition
 import org.koin.dsl.context.Context
-import org.koin.dsl.context.Parameters
+import org.koin.dsl.context.ParameterHolder
 
 /**
  * Declare a Spark controller
@@ -36,6 +36,6 @@ fun KoinContext.runSparkControllers() {
             .filter { it.types.contains(SparkController::class) }
             .forEach { def ->
                 Koin.logger.log("Creating $def ...")
-                instanceFactory.retrieveInstance<Any>(def, Parameters())
+                instanceFactory.retrieveInstance<Any>(def, ParameterHolder())
             }
 }

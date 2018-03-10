@@ -1,7 +1,7 @@
 package org.koin.core.parameter
 
 
-        /**
-         * Parameter type to be passsed to BeanDefinition
-         */
-typealias ParameterMap = () -> Map<String, Any>
+/**
+ * Map (key/value) - Parameters to be passed to BeanDefinition instance
+ */
+typealias Parameters = () -> Map<String, Any>

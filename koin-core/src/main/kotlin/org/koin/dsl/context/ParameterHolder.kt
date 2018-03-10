@@ -1,12 +1,12 @@
 package org.koin.dsl.context
 
-import org.koin.core.parameter.ParameterMap
+import org.koin.core.parameter.Parameters
 import org.koin.error.MissingParameterException
 
 /**
  * Provide a parameter
  */
-interface ParametersProvider {
+interface ParameterProvider {
 
     /**
      * Returns the value corresponding to the given [key] - cast to type T
@@ -25,9 +25,9 @@ interface ParametersProvider {
 }
 
 /**
- * Parameters holder
+ * ParameterHolder holder
  */
-data class Parameters(val internal: ParameterMap = { emptyMap() }) : ParametersProvider {
+data class ParameterHolder(private val internal: Parameters = { emptyMap() }) : ParameterProvider {
 
     override val values by lazy { internal() }
 

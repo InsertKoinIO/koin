@@ -1,7 +1,7 @@
 package org.koin.core.bean
 
 import org.koin.core.scope.Scope
-import org.koin.dsl.context.ParametersProvider
+import org.koin.dsl.context.ParameterProvider
 import kotlin.reflect.KClass
 
 /**
@@ -61,4 +61,4 @@ data class BeanDefinition<out T>(val name: String = "", val clazz: KClass<*>, va
     }
 }
 
-typealias Definition<T> = (ParametersProvider) -> T
+typealias Definition<T> = (ParameterProvider) -> T
