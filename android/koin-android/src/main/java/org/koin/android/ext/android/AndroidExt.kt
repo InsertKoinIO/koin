@@ -10,6 +10,8 @@ import org.koin.android.logger.AndroidLogger
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 
 /**
@@ -99,3 +101,20 @@ fun ComponentCallbacks.releaseContext(name: String) = context().releaseContext(n
  * @param keys - property keys
  */
 fun ComponentCallbacks.releaseProperties(vararg keys: String) = context().releaseProperties(*keys)
+
+/**
+ * Request given dependency on every call for Android component
+ * @param name - bean name / optional
+ */
+@Suppress("unused")
+inline fun <reified T> ComponentCallbacks.provider(
+    name: String = "",
+    parameters: ParameterMap = emptyMap()
+): ReadOnlyProperty<ComponentCallbacks, T> {
+    return object : ReadOnlyProperty<ComponentCallbacks, T> {
+
+        override fun getValue(thisRef: ComponentCallbacks, property: KProperty<*>): T {
+            return (StandAloneContext.koinContext as KoinContext).get(name, parameters)
+        }
+    }
+}

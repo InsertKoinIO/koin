@@ -2,6 +2,8 @@ package org.koin.standalone
 
 import org.koin.KoinContext
 import org.koin.ParameterMap
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 /**
  * Koin component
@@ -79,3 +81,19 @@ fun KoinComponent.releaseContext(name: String) = context().releaseContext(name)
  */
 fun KoinComponent.releaseProperties(vararg keys: String) = context().releaseProperties(*keys)
 
+/**
+ * Request given dependency on every call for [KoinComponent]
+ * @param name - bean name / optional
+ */
+@Suppress("unused")
+inline fun <reified T> KoinComponent.provider(
+        name: String = "",
+        parameters: ParameterMap = emptyMap()
+): ReadOnlyProperty<KoinComponent, T> {
+    return object : ReadOnlyProperty<KoinComponent, T> {
+
+        override fun getValue(thisRef: KoinComponent, property: KProperty<*>): T {
+            return (StandAloneContext.koinContext as KoinContext).get(name, parameters)
+        }
+    }
+}

@@ -3,7 +3,10 @@ package org.koin.ktor.ext
 import io.ktor.application.Application
 import org.koin.KoinContext
 import org.koin.ParameterMap
+import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 /**
  * inject lazily given dependency
@@ -65,3 +68,20 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  *
  */
 fun Application.setProperty(key: String, value: Any) = context().setProperty(key, value)
+
+/**
+ * Request given dependency on every call for [Application]
+ * @param name - bean name / optional
+ */
+@Suppress("unused")
+inline fun <reified T> Application.provider(
+        name: String = "",
+        parameters: ParameterMap = emptyMap()
+): ReadOnlyProperty<Application, T> {
+    return object : ReadOnlyProperty<Application, T> {
+
+        override fun getValue(thisRef: Application, property: KProperty<*>): T {
+            return (StandAloneContext.koinContext as KoinContext).get(name, parameters)
+        }
+    }
+}
