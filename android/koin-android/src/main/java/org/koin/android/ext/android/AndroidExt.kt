@@ -61,7 +61,6 @@ fun Application.bindBool(id: Int, key: String) {
     context().setProperty(key, context().get<Application>().resources.getBoolean(id))
 }
 
-
 /**
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
@@ -69,7 +68,17 @@ fun Application.bindBool(id: Int, key: String) {
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = "",
     noinline parameters: Parameters = { emptyMap() }
-): Lazy<T> = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
+): Lazy<T> = lazy { get<T>(name, parameters) }
+
+/**
+ * get given dependency for Android component
+ * @param name - bean name / optional
+ */
+inline fun <reified T> ComponentCallbacks.get(
+    name: String = "",
+    noinline parameters: Parameters = { emptyMap() }
+): T = (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
+
 
 /**
  * lazy inject given property for Android component
