@@ -1,5 +1,30 @@
 # Change Log
 
+## [0.9.1]()
+
+_DSL_
+
+* `[FIXED]` Parameter propagation - You can now reuse params in `get()` to propagate it [#66](https://github.com/Ekito/koin/issues/66)
+
+_Core_
+
+* `[ADDED]` Parameters are now expressed via Kotlin function to allow lazy evaluation [#67](https://github.com/Ekito/koin/issues/67)
+* `[UPDATED]` Parameter propagation [#66](https://github.com/Ekito/koin/issues/66)
+* `[FIXED]` Stack resolution engine fixed [#72](https://github.com/Ekito/koin/issues/72)
+* `[FIXED]` Better Logs, Error & Stacktraces
+* `[FIXED]` Properties loading from external `properties` file can read values as String/Integer/Float
+
+_Android_
+
+* `[ADDED]` `get()` direct dependency eager fetching function for Activity/Fragment/Service [#78](https://github.com/Ekito/koin/issues/78)
+
+
+_Android Architecture_
+
+* `[ADDED]` To help misuse the Koin ViewModel API, we introduce the `getSharedViewModel()` and `sharedViewModel()` from Fragment, to reuse `ViewModel` from parent `Activity`. `getViewModel()` and `viewModel()` now creates `ViewModel` instance (no `FromActivity` parameter anymore)
+* `[UPDATED]` ViewModel factory logs to see what Activity/Fragment is getting `ViewModel` instance
+
+
 ## [0.9.0]()
 
 _DSL_

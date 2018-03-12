@@ -44,6 +44,22 @@ class PropertyTest : AutoCloseKoinTest() {
     class ComponentB(val componentA: ComponentA)
 
     @Test
+    fun `should load integer value`() {
+        startKoin(listOf(SimpleModule))
+
+        val number = getProperty<Int>("number")
+        Assert.assertEquals(1234, number)
+    }
+
+    @Test
+    fun `should load float value`() {
+        startKoin(listOf(SimpleModule))
+
+        val decimal = getProperty<Float>("decimal")
+        Assert.assertEquals(1.42f, decimal)
+    }
+
+    @Test
     fun `should inject external property`() {
         startKoin(listOf(SimpleModule))
         setProperty(KEY, VALUE)
@@ -61,7 +77,7 @@ class PropertyTest : AutoCloseKoinTest() {
         assertContexts(1)
         assertDefinedInScope(ComponentA::class, Scope.ROOT)
         assertDefinedInScope(ComponentB::class, Scope.ROOT)
-        assertProperties(1)
+        assertProperties(3)
     }
 
 
@@ -82,7 +98,7 @@ class PropertyTest : AutoCloseKoinTest() {
         assertContexts(1)
         assertDefinedInScope(ComponentA::class, Scope.ROOT)
         assertDefinedInScope(ComponentB::class, Scope.ROOT)
-        assertProperties(1)
+        assertProperties(3)
     }
 
     @Test
@@ -103,7 +119,7 @@ class PropertyTest : AutoCloseKoinTest() {
         assertContexts(2)
         assertDefinedInScope(ComponentA::class, "A")
         assertDefinedInScope(ComponentB::class, "A")
-        assertProperties(1)
+        assertProperties(3)
     }
 
     @Test
@@ -147,7 +163,7 @@ class PropertyTest : AutoCloseKoinTest() {
         assertContexts(1)
         assertDefinedInScope(ComponentA::class, Scope.ROOT)
         assertDefinedInScope(ComponentB::class, Scope.ROOT)
-        assertProperties(0)
+        assertProperties(2)
     }
 
     @Test
@@ -178,7 +194,7 @@ class PropertyTest : AutoCloseKoinTest() {
         assertDefinitions(2)
 
         assertContexts(2)
-        assertProperties(1)
+        assertProperties(3)
         assertDefinedInScope(ComponentA::class, "A")
         assertDefinedInScope(ComponentB::class, "A")
     }

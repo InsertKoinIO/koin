@@ -17,7 +17,7 @@ You can check the **[getting started](https://insert-koin.io/docs/1.0/getting-st
 ## Actual Version
 
 ```gradle
-koin_version = '0.9.0'
+koin_version = '0.9.1'
 ```
 
 ## New features
@@ -72,6 +72,9 @@ compile "org.koin:koin-spark:$koin_version"
 
 // Koin for Ktor Kotlin
 compile "org.koin:koin-ktor:$koin_version"
+
+// Koin for JUnit tests
+testCompile "org.koin:koin-test:$koin_version"
 ```
 
 
@@ -136,7 +139,7 @@ class MyApplication : Application(){
 
 ### Injecting dependencies
 
-The `MyPresenter` component will be created with `Repository` instance. To get it from our Activity, let's inject it with the `by inject()` delegate injector (we can't create Activitiy instances): 
+The `MyPresenter` component will be created with `Repository` instance. To get it from our Activity, let's inject it with the `by inject()` delegate injector (we can't directly create Activitiy instances from Koin): 
 
 ```kotlin
 class MyActivity : AppCompatActivity(){
@@ -151,6 +154,7 @@ class MyActivity : AppCompatActivity(){
     }
 }
 ```
+
 
 ## Your first dependency with Android ViewModel
 
@@ -193,7 +197,7 @@ val myModule : Module = applicationContext {
 }
 ```
 
-We are also using the `viewModel` keyword to declare an Android ViewModel.
+We are also using the `viewModel` keyword to declare an Android ViewModel component.
 
 ### Start Koin
 
@@ -211,7 +215,7 @@ class MyApplication : Application(){
 
 ### Injecting dependencies
 
-The `MyViewModel` component will be created with `Repository` instance. To get it from our Activity, let's inject it with the `by viewModel()` delegate injector (we can't create Activitiy instances): 
+The `MyViewModel` component will be created with `Repository` instance. To get it from our Activity, let's inject it with the `by viewModel()` delegate injector (we can't directly create Activitiy instances from Koin): 
 
 ```kotlin
 class MyActivity : AppCompatActivity(){
@@ -227,7 +231,7 @@ class MyActivity : AppCompatActivity(){
 }
 ```
 
-Or if you want to create eagerly your ViewModel, just use the `getViewModel()`:
+Or if you want to eagerly create your ViewModel in a function, just use the `getViewModel()`:
 
 ```kotlin
 class MyActivity : AppCompatActivity(){
@@ -421,6 +425,11 @@ A quick recap of the Koin DSL keywords:
 * `getProperty` - resolve a property
 * `context` - declare a logical context
 
+Special keywords:
+
+* `viewModel` - declare an Android ViewModel (koin-android-architetcure only)
+* `controller` - declare a SparkJava controller (koin-spark only)
+
 **Deprecated**: `provide` has been deprecated in favor to aliases. `bean ~ provide` and `factory ~ provide(isSingleton=false)`
 
 
@@ -469,6 +478,7 @@ We can write it:
 
 *You can use the `bind` keyword with a class several times: `bind Class1::class bind Class2::class`
 
+
 ## Multiple definitions of the same type
 
 If you have mulitple definitions of the same type, Koin can't guess which instance to use. Then, you have to name each instance to clearly specify which instance to use. `bean` and `factory` have the `name` parameter (default parameter).
@@ -507,7 +517,7 @@ val myModule = applicationContext {
 }
 ```
 
-## Using multiple modules
+## Using multiple modules / Module import
 
 Every definition and module is lazy be default in Koin. This means that you can assemble several modules, by using the list of desired modules. Given some classes:
 
@@ -542,78 +552,15 @@ startKoin(this,listOf(module1,module2))
 startKoin(listOf(module1,module2))
 ```
 
-# Cheat Sheet
 
-## Android
+# Developer Guides
 
-### Declare your module
-
-Below the Koin DSL keywords:
-
-- declare component with `bean`, `factory` and a lmabda function to declare your component instance
-- Use `viewModel`- to declare a `ViewModel` component (Android Architecture only)
-- Create a `context` to declare a logical context for a subset of components
-- resolve component with `get()`
-- resolve Koin properties with `getProperty()`
-- definition functions can use parameters:  `bean { params -> MyPresenter(params["activity"])}`
-
-**All your declared components are injected by constructor**
-
-### Start Koin
-
-Use `startKoin()` function to start Koin, from your `Application` class.
-
-### Load Properties
-
-By default, Koin look at the `assets/koin.properties` file to load Properties.
-
-### Additional properties
-
-You can also provide additional properties with `startKoin` function, with `properties` parameter.
-
-### Inject your components
-
-Two ways of injecting your components:
-
-* Components declared in Koin DSL, injection is made **by constructor**.
-* Inside Android components classes (Activity,Fragment ...): use `by inject()` `by viewModel()` - inject can handle dynamic parameters with `parameters` argument
-* By Tagging your class as `KoinComponent`, you can unlock `by inject()` and `releaseContext` functions
-
-### [Architecture Recipes](https://insert-koin.io/docs/1.0/developer-guides/android/)
-
-
-## Spark
-
-### Declare your module
-
-Below the Koin DSL keywords:
-
-- declare component with `bean`, `factory` and a lmabda function to declare your component instance
-- Use the `controller` keyword to declare a component with Spark HTTP routing
-- resolve component with `get()`
-- resolve Koin properties with `getProperty()`
-
-**All your declared components are injected by constructor**
-
-### Start Koin
-
-Use `start()` function to start Koin And Spark.
-
-#### Load Properties
-
-By default, Koin look at the `resources/koin.properties` file to load Properties.
-
-#### Additional properties
-
-You can also provide additional properties with `start` function, with `properties` parameter.
-
-### Inject your components
-
-Components declared in Koin DSL, injection is made **by constructor**
+### [Android Developer Guide](https://insert-koin.io/docs/1.0/developer-guides/android/) - Application samples about MVP & MVVM styles
 
 
 # Articles
 
+* [Koin 0.9.0 - Getting close to stable](https://medium.com/koin-developers/koin-0-9-0-getting-close-to-stable-release-74df9bb9e181)
 * [Unlock your Android ViewModel power with Koin](https://medium.com/@giuliani.arnaud/unlock-your-android-viewmodel-power-with-koin-23eda8f493be)
 * [Koin + Spark = ❤️](https://www.ekito.fr/people/sparkjava-and-koin/)
 * [koin 0.8.2 Improvements bugfixes and crash fix](https://medium.com/koin-developers/koin-0-8-2-improvements-bugfixes-and-crash-fix-6b6809fc1dd2)
