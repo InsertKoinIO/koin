@@ -10,7 +10,7 @@ A small library for writing dependency injection in a concise and pragmatic way.
 
 * All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
 * Koin samples project are located here: [koin-samples @ github](https://github.com/Ekito/koin-samples)
-* The essentials of Koin API for Android developer: [Android Developer Quick Reference](https://insert-koin.io/docs/1.0/quick-reference/android/) 
+* The essentials of Koin API for Android developer: [Android API Reference](http://insert-koin.io/docs/1.0/reference/android/) 
 
 You can check the **[getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/)** section from our website, to discover Koin with the favorite platform. Or follow the snippets below.
 
@@ -26,7 +26,7 @@ koin_version = '0.9.1'
 * Context scope isolation
 * Context callbacks - be notified when a context is release with `registerContextCallBack()`
 * Inject dynamic parameters into your definitions: `bean { params -> MyPresenter(params["activity"])}` and inject parameters with `by inject(parameters=mapOf("activity" to ...))`
-
+* viewModel & sharedViewModel
 
 # Table of Content
 
