@@ -112,18 +112,19 @@ class KoinContext(
             filteredByVisibility
         } else definitionResolver()).distinct()
 
-        return if (candidates.size == 1) {
-            candidates.first()
-        } else {
-            when {
-                candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to resolve type '$clazzName'. Check your module definition")
-                else -> throw DependencyResolutionException(
-                    "Multiple definitions found to resolve type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
-                        "\n\t"
-                    )}\n\tCheck your modules definition or use name attribute to resolve components."
-                )
-            }
+        if (candidates.size == 1) {
+            return candidates.first()
         }
+
+        if (candidates.isEmpty())
+            throw NoBeanDefFoundException("No definition found to resolve type '$clazzName'. Check your module definition")
+
+        throw DependencyResolutionException(
+            "Multiple definitions found to resolve type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
+                "\n\t"
+            )}\n\tCheck your modules definition or use name attribute to resolve components."
+        )
+
     }
 
     /**
