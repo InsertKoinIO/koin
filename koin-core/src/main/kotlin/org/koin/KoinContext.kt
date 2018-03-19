@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 
 /**
  * Koin Application Context
- * Context from where you can get beans defines in modules
+ * Context from where you can get beans defined in modules
  *
  * @author Arnaud GIULIANI
  */
@@ -45,7 +45,7 @@ class KoinContext(
 
     /**
      * Resolve a dependency for its bean definition
-     * byt Its inferred type
+     * by its inferred type
      */
     inline fun <reified T> resolveByClass(noinline parameters: Parameters): T =
         resolveByClass(T::class, parameters)
@@ -95,7 +95,7 @@ class KoinContext(
     }
 
     /**
-     * retrieve bean definition
+     * Retrieve bean definition
      * @param clazzName - class name
      * @param definitionResolver - function to find bean definition
      * @param lastInStack - to check visibility with last bean in stack
@@ -127,7 +127,7 @@ class KoinContext(
     }
 
     /**
-     * Check the all the loaded definitions - Try to resolve each definition
+     * Check all loaded definitions by resolving them one by one
      */
     fun dryRun(defaultParameters: Parameters) {
         logger.log("(DRY RUN)")
@@ -168,14 +168,11 @@ class KoinContext(
 
     /**
      * Set a property
-     * @param key
-     * @param value
      */
     fun setProperty(key: String, value: Any) = propertyResolver.add(key, value)
 
     /**
      * Delete properties from keys
-     * @param keys
      */
     fun releaseProperties(vararg keys: String) {
         propertyResolver.deleteAll(keys)
