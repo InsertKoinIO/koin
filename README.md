@@ -290,7 +290,7 @@ class HelloRepositoryImpl : HelloRepository {
 }
 ```
 
-Finally, we need an HTTP Controller to ceathe the HTTP Route
+Finally, we need an HTTP Controller to create the HTTP Route
 
 ```kotlin
 class HelloController(val service: HelloService){
