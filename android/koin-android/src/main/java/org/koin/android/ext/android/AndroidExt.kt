@@ -24,14 +24,32 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  *
  * will be soon deprecated for starKoin() with <application>
  */
+@Deprecated(
+    "application parameter is overhead",
+    replaceWith = ReplaceWith("startKoin(modules, properties, logger)", "org.koin.android.ext.android.startKoin")
+)
 fun Application.startKoin(
     application: Application,
     modules: List<Module>,
     properties: Map<String, Any> = HashMap(),
     logger: Logger = AndroidLogger()
 ) {
+    startKoin(modules, properties, logger)
+}
+
+/**
+ * Create a new Koin Context
+ * @param modules - list of AndroidModule
+ *
+ * will be soon deprecated for starKoin() with <application>
+ */
+fun Application.startKoin(
+    modules: List<Module>,
+    properties: Map<String, Any> = HashMap(),
+    logger: Logger = AndroidLogger()
+) {
     Koin.logger = logger
-    StandAloneContext.startKoin(modules, properties = properties) with application
+    StandAloneContext.startKoin(modules, properties = properties) with this
 }
 
 /**
