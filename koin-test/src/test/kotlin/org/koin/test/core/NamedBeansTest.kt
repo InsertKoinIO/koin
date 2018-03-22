@@ -14,20 +14,26 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class NamedBeansTest : AutoCloseKoinTest() {
 
     val DataSourceModule = applicationContext {
-        bean(name = "debugDatasource") { DebugDatasource() } bind (Datasource::class)
-        bean(name = "ProdDatasource") { ProdDatasource() } bind (Datasource::class)
+        bean(name = "debug") { DebugDatasource() } bind (Datasource::class)
+        bean(name = "prod") { ProdDatasource() } bind (Datasource::class)
+    }
+
+    val ServiceModule = applicationContext {
+        bean(name = "debug") { Service(get("debug")) } bind (Service::class)
     }
 
     interface Datasource
     class DebugDatasource : Datasource
     class ProdDatasource : Datasource
 
+    class Service(val datasource: Datasource)
+
     @Test
     fun `should get named bean`() {
         startKoin(listOf(DataSourceModule))
 
-        val debug = get<Datasource>("debugDatasource")
-        val prod = get<Datasource>("ProdDatasource")
+        val debug = get<Datasource>("debug")
+        val prod = get<Datasource>("prod")
 
         Assert.assertNotNull(debug)
         Assert.assertNotNull(prod)
@@ -49,6 +55,22 @@ class NamedBeansTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertRemainingInstances(0)
+        assertContexts(1)
+    }
+
+    @Test
+    fun `should resolve different types for same bean name`() {
+        startKoin(listOf(DataSourceModule, ServiceModule))
+
+        val debug = get<Datasource>("debug")
+        val debugService = get<Service> ("debug")
+
+        Assert.assertNotNull(debug)
+        Assert.assertNotNull(debugService)
+        Assert.assertEquals(debug, debugService.datasource)
+
+        assertDefinitions(3)
+        assertRemainingInstances(2)
         assertContexts(1)
     }
 }

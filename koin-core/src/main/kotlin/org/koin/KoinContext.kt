@@ -41,7 +41,7 @@ class KoinContext(
      * @param name bean definition name
      */
     inline fun <reified T> resolveByName(name: String, noinline parameters: Parameters): T =
-        resolveInstance(T::class, parameters) { beanRegistry.searchByName(name) }
+        resolveInstance(T::class, parameters) { beanRegistry.searchByName(name, T::class) }
 
     /**
      * Resolve a dependency for its bean definition
