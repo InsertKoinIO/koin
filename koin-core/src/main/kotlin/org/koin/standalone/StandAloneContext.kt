@@ -34,6 +34,17 @@ object StandAloneContext {
     }
 
     /**
+     * Load Koin modules - whether Koin is already started or not
+     * allow late module definition load (e.g: libraries ...)
+     *
+     * @param modules : List of Module
+     */
+    fun loadKoinModules(modules: List<Module>): Koin = synchronized(this) {
+        createContextIfNeeded()
+        return KoinContext().build(modules)
+    }
+
+    /**
      * Get koin context
      */
     private fun KoinContext() = Koin(koinContext as KoinContext)
@@ -68,7 +79,10 @@ object StandAloneContext {
      * @param useEnvironmentProperties - environment properties
      * @param additionalProperties - additional properties
      */
-    fun loadProperties(useEnvironmentProperties: Boolean = false, additionalProperties: Map<String, Any> = HashMap()): Koin = synchronized(this) {
+    fun loadProperties(
+        useEnvironmentProperties: Boolean = false,
+        additionalProperties: Map<String, Any> = HashMap()
+    ): Koin = synchronized(this) {
         createContextIfNeeded()
 
         val koin = KoinContext()
@@ -92,7 +106,11 @@ object StandAloneContext {
      * Koin starter function to load modules and properties
      * Throw AlreadyStartedException if already started
      */
-    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
+    fun startKoin(
+        list: List<Module>,
+        useEnvironmentProperties: Boolean = false,
+        properties: Map<String, Any> = HashMap()
+    ): Koin {
         if (isStarted) {
             throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
         }
