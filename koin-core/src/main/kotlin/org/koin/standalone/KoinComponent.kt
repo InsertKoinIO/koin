@@ -10,9 +10,17 @@ interface KoinComponent
 
 /**
  * inject lazily given dependency for KoinComponent
- * @param name - bean name / optional
+ * @param name - bean name
  */
-inline fun <reified T> KoinComponent.inject(name: String = "", noinline parameters: Parameters = { emptyMap() }) =
+inline fun <reified T> KoinComponent.inject(name: String = "") =
+    kotlin.lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, { emptyMap() }) }
+
+/**
+ * inject lazily given dependency for KoinComponent
+ * @param name - bean name
+ * @param parameters - dynamic parameters
+ */
+inline fun <reified T> KoinComponent.inject(name: String = "", noinline parameters: Parameters) =
     kotlin.lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
 
 /**
@@ -42,9 +50,17 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Retrieve given dependency for KoinComponent
- * @param name - bean name / optional
+ * @param name - bean name
  */
-inline fun <reified T> KoinComponent.get(name: String = "", noinline parameters: Parameters = { emptyMap() }) =
+inline fun <reified T> KoinComponent.get(name: String = "") =
+    (StandAloneContext.koinContext as KoinContext).get<T>(name,  { emptyMap() })
+
+/**
+ * Retrieve given dependency for KoinComponent
+ * @param name - bean name
+ * @param parameters - dynamic parameters
+ */
+inline fun <reified T> KoinComponent.get(name: String = "", noinline parameters: Parameters) =
     (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
 
 /**
