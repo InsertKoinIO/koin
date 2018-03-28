@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ComponentCallbacks
 import org.koin.Koin
 import org.koin.KoinContext
+import org.koin.android.ext.koin.bindAndroidProperties
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.parameter.Parameters
@@ -31,7 +32,9 @@ fun Application.startKoin(
     logger: Logger = AndroidLogger()
 ) {
     Koin.logger = logger
-    StandAloneContext.startKoin(modules, properties = properties) with application
+    StandAloneContext.startKoin(modules, properties = properties)
+        .with(application)
+        .bindAndroidProperties(application)
 }
 
 /**

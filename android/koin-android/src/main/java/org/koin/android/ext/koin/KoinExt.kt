@@ -12,9 +12,10 @@ import java.util.*
  * - assets/koin.proeprties loading
  * - application/context binding
  */
-infix fun Koin.with(application: Application) {
+infix fun Koin.with(application: Application): Koin {
     Koin.logger.log("[init] Load Android features")
-    bindAndroidProperties(application).init(application)
+    init(application)
+    return this
 }
 
 /**
@@ -47,17 +48,17 @@ fun Koin.bindAndroidProperties(
         val hasFile = application.assets.list("").contains(koinPropertyFile)
         if (hasFile) {
             try {
-                application.assets.open("koin.properties").use { koinProperties.load(it) }
+                application.assets.open(koinPropertyFile).use { koinProperties.load(it) }
                 val nb = propertyResolver.import(koinProperties)
-                Koin.logger.log("[Properties] loaded $nb properties from assets/koin.properties")
+                Koin.logger.log("[Android-Properties] loaded $nb properties from assets/koin.properties")
             } catch (e: Exception) {
-                Koin.logger.log("[Properties] error for binding properties : $e")
+                Koin.logger.log("[Android-Properties] error for binding properties : $e")
             }
         } else {
-            Koin.logger.log("[Properties] no assets/koin.properties file to load")
+            Koin.logger.log("[Android-Properties] no assets/koin.properties file to load")
         }
     } catch (e: Exception) {
-        Koin.logger.err("[Properties] Error while loading properties : $e")
+        Koin.logger.err("[Android-Properties] error while loading properties from assets/koin.properties : $e")
     }
     return this
 }
