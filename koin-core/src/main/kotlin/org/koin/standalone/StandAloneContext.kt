@@ -92,12 +92,12 @@ object StandAloneContext {
      * Koin starter function to load modules and properties
      * Throw AlreadyStartedException if already started
      */
-    fun startKoin(list: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
+    fun startKoin(modules: List<Module>, useEnvironmentProperties: Boolean = false, properties: Map<String, Any> = HashMap()): Koin {
         if (isStarted) {
             throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
         }
         createContextIfNeeded()
-        loadKoinModules(*list.toTypedArray())
+        loadKoinModules(*modules.toTypedArray())
         loadProperties(useEnvironmentProperties, properties)
         return KoinContext()
     }
