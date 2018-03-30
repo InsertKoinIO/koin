@@ -9,7 +9,7 @@ import java.util.*
 
 /**
  * Start Koin Android features
- * - assets/koin.proeprties loading
+ * - assets/koin.properties loading
  * - application/context binding
  */
 infix fun Koin.with(application: Application) {
