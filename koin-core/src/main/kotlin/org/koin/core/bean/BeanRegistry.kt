@@ -65,9 +65,10 @@ class BeanRegistry {
     }
 
     /**
-     * Search bean by its name
+     * Search bean by its name, respectfully to requested type.
      */
-    fun searchByName(name: String): List<BeanDefinition<*>> = searchDefinition { it.name == name }
+    fun searchByName(name: String, clazz: kotlin.reflect.KClass<*>): List<BeanDefinition<*>> =
+        searchDefinition { it.name == name && (it.clazz == clazz || it.types.contains(clazz)) }
 
     /**
      * Search for any bean definition
