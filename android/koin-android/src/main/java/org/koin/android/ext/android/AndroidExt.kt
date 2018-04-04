@@ -8,6 +8,7 @@ import org.koin.android.ext.koin.bindAndroidProperties
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.parameter.Parameters
+import org.koin.dsl.context.emptyParameters
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
@@ -40,8 +41,6 @@ fun Application.startKoin(
 /**
  * Create a new Koin Context
  * @param modules - list of AndroidModule
- *
- * will be soon deprecated for starKoin() with <application>
  */
 fun Application.startKoin(
     modules: List<Module>,
@@ -87,7 +86,7 @@ fun Application.bindBool(id: Int, key: String) {
  */
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = ""
-): Lazy<T> = lazy { get<T>(name, { emptyMap() }) }
+): Lazy<T> = lazy { get<T>(name, emptyParameters()) }
 
 /**
  * inject lazily given dependency for Android component
@@ -105,7 +104,7 @@ inline fun <reified T> ComponentCallbacks.inject(
  */
 inline fun <reified T> ComponentCallbacks.get(
     name: String = ""
-): T = (StandAloneContext.koinContext as KoinContext).get(name, { emptyMap() })
+): T = (StandAloneContext.koinContext as KoinContext).get(name, emptyParameters())
 
 /**
  * get given dependency for Android component
