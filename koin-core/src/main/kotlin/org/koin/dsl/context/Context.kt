@@ -70,16 +70,19 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     /**
      * Resolve a component
+     * @param name : component name
      */
-    inline fun <reified T : Any> get(noinline parameters: Parameters = { emptyMap() }): T =
-        koinContext.resolveByClass(parameters)
+    inline fun <reified T : Any> get(name: String? = null): T = if (name != null) koinContext.resolveByName(
+        name,
+        { emptyMap() }) else koinContext.resolveByClass({ emptyMap() })
 
     /**
      * Resolve a component
      * @param name : component name
+     * @param parameters - dynamic parameters
      */
-    inline fun <reified T : Any> get(name: String, noinline parameters: Parameters = { emptyMap() }): T =
-        koinContext.resolveByName(name, parameters)
+    inline fun <reified T : Any> get(name: String? = null, noinline parameters: Parameters): T =
+        if (name != null) koinContext.resolveByName(name, parameters) else koinContext.resolveByClass(parameters)
 
     /**
      * Retrieve a property
