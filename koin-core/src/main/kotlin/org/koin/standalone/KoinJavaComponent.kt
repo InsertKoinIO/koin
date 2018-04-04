@@ -10,7 +10,10 @@ import kotlin.jvm.internal.Reflection
 object KoinJavaComponent {
 
     /**
-     * inject lazily given dependency
+     * Retrieve given dependency lazily
+     * @param clazz - dependency class
+     * @param name - bean name / optional
+     * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
     @JvmStatic
@@ -24,6 +27,9 @@ object KoinJavaComponent {
 
     /**
      * Retrieve given dependency
+     * @param clazz - dependency class
+     * @param name - bean name / optional
+     * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
     @JvmStatic
@@ -48,6 +54,7 @@ object KoinJavaComponent {
 
     /**
      * inject lazily given property
+     * @param key - key property
      */
     @JvmOverloads
     @JvmStatic
@@ -57,6 +64,7 @@ object KoinJavaComponent {
 
     /**
      * Retrieve given property
+     * @param key - key property
      */
     @Suppress("UNCHECKED_CAST")
     @JvmOverloads
