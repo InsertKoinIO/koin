@@ -8,8 +8,22 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.Koin
 import org.koin.core.parameter.Parameters
+import org.koin.dsl.context.emptyParameters
 import kotlin.reflect.KClass
 
+
+/**
+ * Lazy get a viewModel instance
+ *
+ * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ */
+inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
+    key: String? = null,
+    name: String? = null
+): Lazy<T> {
+    return viewModelByClass(false, T::class, key, name, emptyParameters())
+}
 
 /**
  * Lazy get a viewModel instance
@@ -21,9 +35,22 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
     name: String? = null,
-    noinline parameters: Parameters = { emptyMap() }
+    noinline parameters: Parameters
 ): Lazy<T> {
     return viewModelByClass(false, T::class, key, name, parameters)
+}
+
+/**
+ * Lazy get a viewModel instance shared with Activity
+ *
+ * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ */
+inline fun <reified T : ViewModel> Fragment.sharedViewModel(
+    key: String? = null,
+    name: String? = null
+): Lazy<T> {
+    return viewModelByClass(true, T::class, key, name, emptyParameters())
 }
 
 /**
@@ -36,7 +63,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
-    noinline parameters: Parameters = { emptyMap() }
+    noinline parameters: Parameters
 ): Lazy<T> {
     return viewModelByClass(true, T::class, key, name, parameters)
 }
@@ -55,9 +82,22 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
-    parameters: Parameters = { emptyMap() }
+    parameters: Parameters = emptyParameters()
 ): Lazy<T> {
     return lazy { getViewModelByClass(fromActivity, clazz, key, name, parameters) }
+}
+
+/**
+ * Get a viewModel instance
+ *
+ * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ */
+inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
+    key: String? = null,
+    name: String? = null
+): T {
+    return getViewModelByClass(false, T::class, key, name, emptyParameters())
 }
 
 /**
@@ -70,9 +110,22 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
     name: String? = null,
-    noinline parameters: Parameters = { emptyMap() }
+    noinline parameters: Parameters
 ): T {
     return getViewModelByClass(false, T::class, key, name, parameters)
+}
+
+/**
+ * Get a shared viewModel instance from underlying Activity
+ *
+ * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ */
+inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
+    key: String? = null,
+    name: String? = null
+): T {
+    return getViewModelByClass(true, T::class, key, name, emptyParameters())
 }
 
 /**
@@ -85,7 +138,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
-    noinline parameters: Parameters = { emptyMap() }
+    noinline parameters: Parameters = emptyParameters()
 ): T {
     return getViewModelByClass(true, T::class, key, name, parameters)
 }
@@ -104,7 +157,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
-    parameters: Parameters = { emptyMap() }
+    parameters: Parameters = emptyParameters()
 ): T {
     KoinFactory.apply {
         this.parameters = parameters
