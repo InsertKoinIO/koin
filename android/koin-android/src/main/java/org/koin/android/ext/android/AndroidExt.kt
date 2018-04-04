@@ -38,6 +38,23 @@ fun Application.startKoin(
 }
 
 /**
+ * Create a new Koin Context
+ * @param modules - list of AndroidModule
+ *
+ * will be soon deprecated for starKoin() with <application>
+ */
+fun Application.startKoin(
+    modules: List<Module>,
+    properties: Map<String, Any> = HashMap(),
+    logger: Logger = AndroidLogger()
+) {
+    Koin.logger = logger
+    StandAloneContext.startKoin(modules, properties = properties)
+        .with(this)
+        .bindAndroidProperties(this)
+}
+
+/**
  * Bind an Android String to Koin property
  * @param id - Android resource String id
  * @param key - Koin property key
@@ -69,8 +86,17 @@ fun Application.bindBool(id: Int, key: String) {
  * @param name - bean name / optional
  */
 inline fun <reified T> ComponentCallbacks.inject(
+    name: String = ""
+): Lazy<T> = lazy { get<T>(name, { emptyMap() }) }
+
+/**
+ * inject lazily given dependency for Android component
+ * @param name - bean name / optional
+ * @param parameters - dynamic parameters
+ */
+inline fun <reified T> ComponentCallbacks.inject(
     name: String = "",
-    noinline parameters: Parameters = { emptyMap() }
+    noinline parameters: Parameters
 ): Lazy<T> = lazy { get<T>(name, parameters) }
 
 /**
@@ -78,10 +104,18 @@ inline fun <reified T> ComponentCallbacks.inject(
  * @param name - bean name / optional
  */
 inline fun <reified T> ComponentCallbacks.get(
-    name: String = "",
-    noinline parameters: Parameters = { emptyMap() }
-): T = (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
+    name: String = ""
+): T = (StandAloneContext.koinContext as KoinContext).get(name, { emptyMap() })
 
+/**
+ * get given dependency for Android component
+ * @param name - bean name
+ * @param parameters - dynamic parameters
+ */
+inline fun <reified T> ComponentCallbacks.get(
+    name: String = "",
+    noinline parameters: Parameters
+): T = (StandAloneContext.koinContext as KoinContext).get(name, parameters)
 
 /**
  * lazy inject given property for Android component
