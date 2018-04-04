@@ -23,6 +23,9 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  * Create a new Koin Context
  * @param application - Android application
  * @param modules - list of AndroidModule
+ * @param properties - extra properties
+ * @param loadProperties - laod properties from asset/koin.properties
+ * @param logger - default Koin logger
  *
  * will be soon deprecated for starKoin() with <application>
  */
@@ -30,27 +33,31 @@ fun Application.startKoin(
     application: Application,
     modules: List<Module>,
     properties: Map<String, Any> = HashMap(),
+    loadProperties: Boolean = true,
     logger: Logger = AndroidLogger()
 ) {
     Koin.logger = logger
-    StandAloneContext.startKoin(modules, properties = properties)
+    val koin = StandAloneContext.startKoin(modules, properties = properties)
         .with(application)
-        .bindAndroidProperties(application)
+    if (loadProperties) koin.bindAndroidProperties(application)
 }
 
 /**
  * Create a new Koin Context
  * @param modules - list of AndroidModule
+ * @param properties - extra properties
+ * @param loadProperties - laod properties from asset/koin.properties
+ * @param logger - default Koin logger
+ *
+ * will be soon deprecated for starKoin() with <application>
  */
 fun Application.startKoin(
     modules: List<Module>,
     properties: Map<String, Any> = HashMap(),
+    loadProperties: Boolean = true,
     logger: Logger = AndroidLogger()
 ) {
-    Koin.logger = logger
-    StandAloneContext.startKoin(modules, properties = properties)
-        .with(this)
-        .bindAndroidProperties(this)
+    startKoin(this, modules, properties, loadProperties, logger)
 }
 
 /**
