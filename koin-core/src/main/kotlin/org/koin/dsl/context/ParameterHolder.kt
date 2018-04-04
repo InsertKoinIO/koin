@@ -25,9 +25,14 @@ interface ParameterProvider {
 }
 
 /**
+ * Function to return empty dynamic parameters
+ */
+fun emptyParameters(): Parameters = { emptyMap() }
+
+/**
  * ParameterHolder holder
  */
-data class ParameterHolder(private val internal: Parameters = { emptyMap() }) : ParameterProvider {
+data class ParameterHolder(private val internal: Parameters = emptyParameters()) : ParameterProvider {
 
     override val values by lazy { internal() }
 
