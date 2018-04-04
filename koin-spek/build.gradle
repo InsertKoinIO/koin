@@ -1,0 +1,43 @@
+
+archivesBaseName = 'koin-spek'
+description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+    }
+}
+
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
+}
+
+repositories {
+    maven { url "http://dl.bintray.com/jetbrains/spek" }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Koin
+    compile project(":koin-core")
+
+    compile "junit:junit:$junit_version"
+    testCompile "org.mockito:mockito-core:$mockito_version"
+
+    // Spek
+    compile "org.jetbrains.spek:spek-api:$spek_version"
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "org.jetbrains.spek:spek-api:$spek_version"
+    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"
+}
