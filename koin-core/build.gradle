@@ -7,4 +7,7 @@ dependencies {
 
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    testCompile 'junit:junit:4.12'
+    testCompile project(":koin-test")
 }
