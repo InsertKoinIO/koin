@@ -13,7 +13,6 @@ import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
 
-
 /**
  * Help work on context
  */
@@ -23,8 +22,8 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  * Create a new Koin Context
  * @param application - Android application
  * @param modules - list of AndroidModule
- * @param properties - extra properties
- * @param loadProperties - laod properties from asset/koin.properties
+ * @param extraProperties - extra extraProperties
+ * @param loadProperties - laod extraProperties from asset/koin.extraProperties
  * @param logger - default Koin logger
  *
  * will be soon deprecated for starKoin() with <application>
@@ -32,12 +31,16 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
 fun Application.startKoin(
     application: Application,
     modules: List<Module>,
-    properties: Map<String, Any> = HashMap(),
+    extraProperties: Map<String, Any> = HashMap(),
     loadProperties: Boolean = true,
     logger: Logger = AndroidLogger()
 ) {
     Koin.logger = logger
-    val koin = StandAloneContext.startKoin(modules, properties = properties)
+    val koin = StandAloneContext.startKoin(
+        modules,
+        extraProperties = extraProperties,
+        useKoinPropertiesFile = false
+    )
         .with(application)
     if (loadProperties) koin.bindAndroidProperties(application)
 }
@@ -45,19 +48,19 @@ fun Application.startKoin(
 /**
  * Create a new Koin Context
  * @param modules - list of AndroidModule
- * @param properties - extra properties
- * @param loadProperties - laod properties from asset/koin.properties
+ * @param extraProperties - extra extraProperties
+ * @param loadProperties - laod extraProperties from asset/koin.extraProperties
  * @param logger - default Koin logger
  *
  * will be soon deprecated for starKoin() with <application>
  */
 fun Application.startKoin(
     modules: List<Module>,
-    properties: Map<String, Any> = HashMap(),
+    extraProperties: Map<String, Any> = HashMap(),
     loadProperties: Boolean = true,
     logger: Logger = AndroidLogger()
 ) {
-    startKoin(this, modules, properties, loadProperties, logger)
+    startKoin(this, modules, extraProperties, loadProperties, logger)
 }
 
 /**
