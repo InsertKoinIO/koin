@@ -83,7 +83,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should inject internal property`() {
-        startKoin(listOf(SimpleModule), properties = mapOf(KEY to VALUE))
+        startKoin(listOf(SimpleModule), extraProperties = mapOf(KEY to VALUE))
 
         val url = getProperty<String>(KEY)
         val a = get<ComponentA>()

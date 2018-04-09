@@ -107,7 +107,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     fun `assert given properties are injected`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
-        startKoin(arrayListOf(SingleModule), properties = mapOf(GIVEN_PROP to VALUE_ANDROID))
+        startKoin(arrayListOf(SingleModule), extraProperties = mapOf(GIVEN_PROP to VALUE_ANDROID))
         assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
     }
 
@@ -115,7 +115,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     fun `assert given properties are injected but override koin properties`() {
 
         // Should read koin.properties file which contains OS_VERSION definition
-        startKoin(arrayListOf(SingleModule), properties = mapOf(TEST_KOIN to VALUE_ANDROID))
+        startKoin(arrayListOf(SingleModule), extraProperties = mapOf(TEST_KOIN to VALUE_ANDROID))
         assertEquals(VALUE_ANDROID, getProperty(TEST_KOIN))
         assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
@@ -126,7 +126,7 @@ class KoinContextTest : AutoCloseKoinTest() {
         // Should read koin.properties file which contains OS_VERSION definition
         startKoin(arrayListOf(SingleModule),
                 useEnvironmentProperties = true,
-                properties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
+                extraProperties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
 
         assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
         assertEquals(VALUE_ANDROID, getProperty(TEST_KOIN))

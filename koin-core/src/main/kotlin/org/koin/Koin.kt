@@ -52,7 +52,7 @@ class Koin(val koinContext: KoinContext) {
     /**
      * load given list of module instances into current StandAlone koin context
      */
-    fun build(modules: List<Module>): Koin {
+    fun build(modules: Collection<Module>): Koin {
         modules.forEach { module ->
             registerDefinitions(module())
         }

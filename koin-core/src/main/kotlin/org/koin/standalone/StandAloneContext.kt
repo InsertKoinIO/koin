@@ -77,22 +77,26 @@ object StandAloneContext {
      * Will look at koin.properties file
      *
      * @param useEnvironmentProperties - environment properties
-     * @param additionalProperties - additional properties
+     * @param useKoinPropertiesFile - koin.properties file
+     * @param extraProperties - additional properties
      */
     fun loadProperties(
         useEnvironmentProperties: Boolean = false,
-        additionalProperties: Map<String, Any> = HashMap()
+        useKoinPropertiesFile: Boolean = true,
+        extraProperties: Map<String, Any> = HashMap()
     ): Koin = synchronized(this) {
         createContextIfNeeded()
 
         val koin = KoinContext()
 
-        Koin.logger.log("[properties] load koin.properties")
-        koin.bindKoinProperties()
+        if (useKoinPropertiesFile) {
+            Koin.logger.log("[properties] load koin.properties")
+            koin.bindKoinProperties()
+        }
 
-        if (additionalProperties.isNotEmpty()) {
-            Koin.logger.log("[properties] load extras properties : ${additionalProperties.size}")
-            koin.bindAdditionalProperties(additionalProperties)
+        if (extraProperties.isNotEmpty()) {
+            Koin.logger.log("[properties] load extras properties : ${extraProperties.size}")
+            koin.bindAdditionalProperties(extraProperties)
         }
 
         if (useEnvironmentProperties) {
@@ -103,20 +107,25 @@ object StandAloneContext {
     }
 
     /**
-     * Koin starter function to load modules and properties
+     * Koin starter function to load modules and extraProperties
      * Throw AlreadyStartedException if already started
+     * @param list : Modules
+     * @param useEnvironmentProperties - use environment extraProperties
+     * @param useKoinPropertiesFile - use /koin.extraProperties file
+     * @param extraProperties - extra extraProperties
      */
     fun startKoin(
         list: List<Module>,
         useEnvironmentProperties: Boolean = false,
-        properties: Map<String, Any> = HashMap()
+        useKoinPropertiesFile: Boolean = true,
+        extraProperties: Map<String, Any> = HashMap()
     ): Koin {
         if (isStarted) {
             throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
         }
         createContextIfNeeded()
-        loadKoinModules(*list.toTypedArray())
-        loadProperties(useEnvironmentProperties, properties)
+        loadKoinModules(list)
+        loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
         return KoinContext()
     }
 
