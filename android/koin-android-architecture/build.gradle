@@ -31,7 +31,9 @@ dependencies {
     testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.mockito:mockito-core:$mockito_version"
     // Architecture
-    compile "android.arch.lifecycle:extensions:$architectureComponents"
+    compile ("android.arch.lifecycle:extensions:$architectureComponents"){
+        exclude module : "livedata"
+    }
 }
 
 repositories {
