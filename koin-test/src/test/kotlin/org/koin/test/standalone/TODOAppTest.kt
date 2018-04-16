@@ -7,10 +7,10 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
-import org.koin.test.KoinTest
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class TODOAppTest : KoinTest {
+class TODOAppTest : AutoCloseKoinTest() {
 
     val TodoAppModule = applicationContext {
         bean { TasksView() } bind TasksContract.View::class
