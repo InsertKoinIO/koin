@@ -1,5 +1,28 @@
 # Change Log
 
+## [0.9.2]()
+
+_Core_
+
+* `[UPDATED]` build updated to Kotlin 1.2.31
+* `[UPDATED]` dissociate overload with dynamic parameters on `get()` and `inject()` for better autocomplete suggestions
+* `[FIXED]` fix `startKoin()` property loading from boolean `loadProperties`
+* `[FIXED]` inject by name take now care of injected type [#92](https://github.com/Ekito/koin/issues/92)
+
+_Android_
+
+* `[FIXED]` `startKoin()` doesn't break RestrictMode anymore and you can avoid properties load directly from koin.properties [#96](https://github.com/Ekito/koin/issues/96)
+* `[UPDATED]` dissociate overload with dynamic parameters on `get()` and `inject()` for better autocomplete suggestions
+
+_Android Architecture_
+
+* `[UPDATED]` dissociate overload with dynamic parameters on `viewModel(), `getViewModel()` and `getSharedViewModel()` for better autocomplete suggestions
+* `[UPDATED]` now exclude gradle dependency against `LiveData`
+
+_Samples_
+
+* `FIXED` Ktor hello appp sample
+
 ## [0.9.1]()
 
 _DSL_

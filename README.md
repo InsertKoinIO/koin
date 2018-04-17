@@ -1,50 +1,34 @@
-![logo](./img/insert_koin_android_logo.jpg)
+![logo](./img/banner_2000.png)
 
-## What's KOIN?
+## What is KOIN?
 
 A small library for writing dependency injection in a concise and pragmatic way. No proxy, no code generation, no introspection. Just DSL and functional Kotlin magic!
 
 `Declare, Start, Inject`
 
-## Official website - https://insert-koin.io
+### Official Documentation now on https://insert-koin.io
 
-* All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io)
-* Koin samples project are located here: [koin-samples @ github](https://github.com/Ekito/koin-samples)
-* The essentials of Koin API for Android developer: [Android API Reference](http://insert-koin.io/docs/1.0/reference/android/) 
+All documentation, sample and references has been move to our website. Check the official website to get started: [insert-koin.io](https://insert-koin.io). Koin samples project are located here: [koin-samples](https://github.com/Ekito/koin-samples)
 
-You can check the **[getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/)** section from our website, to discover Koin with the favorite platform. Or follow the snippets below.
+You can check the [getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform. Or follow the snippets below.
+
+
+### Contact & Support
+
+Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
+
+Need help? Come on slack [Koin channel](https://kotlinlang.org/messages/koin) from Kotlin slack. Or just open an issue on [Github issues](https://github.com/Ekito/issues) to share your problem.
+
+
+# Setup
 
 ## Actual Version
 
 ```gradle
-koin_version = '0.9.1'
+koin_version = '0.9.2'
 ```
 
-## New features
-
-* DSL upgrade: now use the `bean` and `factory` keywords
-* Context scope isolation
-* Context callbacks - be notified when a context is release with `registerContextCallBack()`
-* Inject dynamic parameters into your definitions: `bean { params -> MyPresenter(params["activity"])}` and inject parameters with `by inject(parameters=mapOf("activity" to ...))`
-* viewModel & sharedViewModel
-
-# Table of Content
-
-Getting Started
-
-* [Your first dependency with Android](#your-first-dependency-with-android)
-* [Your first dependency with Android and ViewModel](#your-first-dependency-with-android-viewmodel)
-* [Your first SparkJava Controller with Koin](#your-first-sparkjava-controller-with-koin)
-* [Unit Testing with Koin](#unit-testing-with-koin)
-
-Koin Quick reference
-
-* [The Koin DSL in 5 minutes](#the-koin-dsl-in-5-minutes)
-* [The Android Quick Reference](#android)
-* [The Spark Quick Reference](#sparkjava)
-
-
-# Setup
+## Gradle 
 
 Check that you have the `jcenter` repository. 
 
@@ -77,6 +61,12 @@ compile "org.koin:koin-ktor:$koin_version"
 testCompile "org.koin:koin-test:$koin_version"
 ```
 
+# Quickstart
+
+* [Your first dependency with Android](#your-first-dependency-with-android)
+* [Your first dependency with Android and ViewModel](#your-first-dependency-with-android-viewmodel)
+* [Unit Testing with Koin](#unit-testing-with-koin)
+* [The Koin DSL in 5 minutes](#the-koin-dsl-in-5-minutes)
 
 # Getting Started
 
@@ -246,93 +236,6 @@ class MyActivity : AppCompatActivity(){
     }
 }
 ```
-
-## Your first SparkJava Controller with Koin
-
-### Gradle Setup
-
-First, add the Koin dependency like below:
-
-```kotlin
-// Add Jcenter to your repositories if needed
-repositories {
-    jcenter()    
-}
-dependencies {
-    // Koin for Kotlin apps
-    compile 'org.koin:koin-spark:{{ site.current_version }}'
-}
-```
-
-### Service & Repository
-
-Let's write our Service, a component that will ask Repository for data:
-
-```kotlin
-interface HelloService {
-    fun sayHello(): String
-}
-
-class HelloServiceImpl(val helloRepository: HelloRepository) : HelloService {
-    override fun sayHello() = "Hello ${helloRepository.getHello()} !"
-}
-```
-
-and our Repository, which provide data:
-
-```kotlin
-interface HelloRepository {
-    fun getHello(): String
-}
-
-class HelloRepositoryImpl : HelloRepository {
-    override fun getHello(): String = "Spark & Koin"
-}
-```
-
-Finally, we need an HTTP Controller to create the HTTP Route
-
-```kotlin
-class HelloController(val service: HelloService){
-    init {
-        get("/hello") {
-            service.sayHello()
-        }
-    }
-}
-```
-
-### Declare your dependencies
-
-Let's assemble our components with a Koin module:
-
-```kotlin
-val helloAppModule = applicationContext {
-    bean { HelloServiceImpl(get()) as HelloService } // get() Will resolve HelloRepository
-    bean { HelloRepositoryImpl() as HelloRepository }
-    controller { HelloController(get()) } // get() Will resolve HelloService
-}
-```
-
-### Start and Inject
-
-Finally, let's start Koin:
-
-```kotlin
-fun main(vararg args: String) {
-    // Start Spark server & Koin with given modules
-    start(modules = listOf(helloAppModule)) {
-        // will run HelloController
-        runControllers()
-    }
-}
-```
-
-<div class="alert alert-primary" role="alert">
-The <b>runControllers()</b> instantiate any component declared with <b>controller</b> keyword.
-</div>
-
-That's it! You're ready to go.
 
 ## Unit Testing with Koin
 
@@ -553,13 +456,14 @@ startKoin(listOf(module1,module2))
 ```
 
 
-# Developer Guides
-
-### [Android Developer Guide](https://insert-koin.io/docs/1.0/developer-guides/android/) - Application samples about MVP & MVVM styles
-
-
 # Articles
 
+
+### Koin on Medium: [Koin Developers Hub](https://medium.com/koin-developers)
+
+### Last articles
+
+* [Koin 0.9.1 - Bug fixes & Improvments](https://medium.com/koin-developers/koin-0-9-1-bug-fixes-improvements-bug-fixes-d257cd2766fa)
 * [Koin 0.9.0 - Getting close to stable](https://medium.com/koin-developers/koin-0-9-0-getting-close-to-stable-release-74df9bb9e181)
 * [Unlock your Android ViewModel power with Koin](https://medium.com/@giuliani.arnaud/unlock-your-android-viewmodel-power-with-koin-23eda8f493be)
 * [Koin + Spark = ❤️](https://www.ekito.fr/people/sparkjava-and-koin/)
@@ -571,17 +475,6 @@ startKoin(listOf(module1,module2))
 * [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
-
-
-# Follow us
-
-### Website - [https://insert-koin.io](https://insert-koin.io)
-
-### Twitter - [@insertkoin_io](https://twitter.com/insertkoin_io)
-
-### Medium - [Koin Developers Hub](https://medium.com/koin-developers)
-
-### Slack - [Kotlin Slack](https://kotlinlang.org/community/) on **#koin** channel
 
 
 
