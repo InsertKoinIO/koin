@@ -330,7 +330,7 @@ A quick recap of the Koin DSL keywords:
 
 Special keywords:
 
-* `viewModel` - declare an Android ViewModel (koin-android-architetcure only)
+* `viewModel` - declare an Android ViewModel (koin-android-architecture only)
 * `controller` - declare a SparkJava controller (koin-spark only)
 
 **Deprecated**: `provide` has been deprecated in favor to aliases. `bean ~ provide` and `factory ~ provide(isSingleton=false)`
