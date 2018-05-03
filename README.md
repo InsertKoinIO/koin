@@ -2,9 +2,11 @@
 
 ## What is KOIN?
 
-A small library for writing dependency injection in a concise and pragmatic way. No proxy, no code generation, no introspection. Just DSL and functional Kotlin magic!
+A pragmatic lightweight dependency injection framework for Kotlin developers.
 
-`Koin, the Kotlin DI that just works.`
+Written in pure Kotlin, using functional resolution only: no proxy, no code generation, no reflection.
+
+`Koin is a DSL, a light container and a pragmatic API`
 
 ### Official Documentation now on https://insert-koin.io
 
