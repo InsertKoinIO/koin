@@ -60,7 +60,7 @@ class InstanceFactory() {
             return instance
         } catch (e: Throwable) {
             e.printStackTrace()
-            throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e; ${e.message}")
+            throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e; ${e.stackTrace}")
         }
     }
 
