@@ -1,7 +1,5 @@
 #!/bin/sh
 
-gradle clean install
-
-cd android/ 
-gradle assembleRelease publishToMavenLocal
+./gradlew clean install
+./gradlew assembleRelease publishToMavenLocal
 

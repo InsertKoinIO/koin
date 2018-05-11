@@ -22,13 +22,13 @@ android {
 
 dependencies {
     // Koin
-    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
+    implementation project(":koin-android") //"org.koin:koin-android:$koin_version"
     // Test
-    testCompile project(":koin-test")
+    testImplementation project(":koin-test")
 
-    testCompile "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
     // Architecture
-    compile ("android.arch.lifecycle:extensions:$android_architecture_components_version"){
+    implementation ("android.arch.lifecycle:extensions:$android_architecture_components_version"){
         exclude module : "livedata"
     }
 }

@@ -1,6 +1,5 @@
 #!/bin/sh
 
-gradle clean test bintrayUpload --info
-
-cd android/
-gradle test assembleRelease bintrayUpload --info
+./gradlew clean 
+./gradlew install 
+./gradlew assembleRelease dokka publishToMavenLocal bintrayUpload --info -Dorg.gradle.parallel=false
