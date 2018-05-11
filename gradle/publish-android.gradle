@@ -19,7 +19,7 @@ task dokkaJar(type: Jar) {
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     duplicatesStrategy = "exclude"
-    from android.sourceSets.main.java.sourceFiles
+    from android.sourceSets.main.java.source
 }
 
 publishing {
