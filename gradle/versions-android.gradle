@@ -1,0 +1,15 @@
+ext {
+    // Sdk and tools
+    android_min_version = 14
+    android_target_version = 27
+    android_compile_version = 27
+
+    android_gradle_version = "3.0.1"
+
+    android_build_tools_version  = '27.0.2'
+
+    android_support_library_version = '27.0.2'
+
+	android_architecture_components_version = '1.1.1'
+
+}

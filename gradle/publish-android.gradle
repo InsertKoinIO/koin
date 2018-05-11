@@ -1,8 +1,8 @@
-group = 'org.koin'
+apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'digital.wup.android-maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 // Dokka
-apply plugin: 'org.jetbrains.dokka'
-
 dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
@@ -16,8 +16,6 @@ task dokkaJar(type: Jar) {
 
 
 // Android Publish local
-apply plugin: 'digital.wup.android-maven-publish'
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     duplicatesStrategy = "exclude"
@@ -35,8 +33,6 @@ publishing {
 }
 
 // Bintray
-apply plugin: 'com.jfrog.bintray'
-
 bintray {
     user = bintray_user
     key = bintray_apikey

@@ -1,3 +1,4 @@
+apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-test'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
@@ -20,3 +21,5 @@ kotlin {
         coroutines "enable"
     }
 }
+
+apply from: '../gradle/publish.gradle'

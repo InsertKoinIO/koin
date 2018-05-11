@@ -6,7 +6,10 @@ ext {
     kotlin_version = '1.2.41'
 
     // Dokka
-    dokka_version = '0.9.15'
+    dokka_version = '0.9.16'
+
+    // Bintray
+    bintray_version = "1.8.0"
 
     // Ktor
     ktor_version = '0.9.1'

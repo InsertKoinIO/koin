@@ -1,3 +1,4 @@
+apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-ktor'
 description = 'Koin - simple dependency injection for Ktor'
@@ -16,3 +17,5 @@ dependencies {
     // Ktor
     compile "io.ktor:ktor-server-core:$ktor_version"
 }
+
+apply from: '../gradle/publish.gradle'
