@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build_android:
+  build:
     docker:
       # specify the version you desire here
       - image: circleci/android:api-27-alpha
