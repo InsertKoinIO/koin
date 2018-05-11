@@ -8,12 +8,15 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$androidGradlePlugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
+        classpath 'digital.wup:android-maven-publish:3.3.0'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.16'
     }
 }
 

@@ -50,4 +50,4 @@ artifacts {
     archives generateSourcesJar
 }
 
-apply from: 'publish.gradle'
+//apply from: 'publish.gradle'
