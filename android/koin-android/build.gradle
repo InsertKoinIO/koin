@@ -40,5 +40,9 @@ repositories {
 
 
 version = "$rootProject.ext.koin_version"
-
-apply from: 'publish.gradle'
+ext {
+    android_sourceSet = true
+    pom_name = "koin-android"
+    pom_description = "Koin project - koin-android"
+}
+apply from: '../publish.gradle'

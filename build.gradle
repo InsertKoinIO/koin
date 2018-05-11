@@ -54,7 +54,6 @@ subprojects {
             user = properties.getProperty('bintray_user')
             key = properties.getProperty('bintray_apikey')
 
-
             configurations = ['archives']
 
             publish = true //[Default: false] Whether version should be auto published after an upload

@@ -41,13 +41,10 @@ repositories {
     mavenLocal()
 }
 
-task generateSourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier 'sources'
+version = "$rootProject.ext.koin_version"
+ext {
+    android_sourceSet = true
+    pom_name = "koin-android-architecture"
+    pom_description = "Koin project - koin-android-architecture"
 }
-
-artifacts {
-    archives generateSourcesJar
-}
-
-//apply from: 'publish.gradle'
+apply from: '../publish.gradle'

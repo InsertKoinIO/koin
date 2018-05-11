@@ -1,12 +1,5 @@
 group = 'org.koin'
 
-ext {
-    android_sourceSet = true
-    pom_name = "koin-android"
-    pom_description = "Koin project - koin-android"
-}
-
-
 // Dokka
 apply plugin: 'org.jetbrains.dokka'
 
@@ -47,7 +40,7 @@ apply plugin: 'com.jfrog.bintray'
 bintray {
     user = bintray_user
     key = bintray_apikey
-    
+
     pkg {
         repo = 'koin'
         name = pom_name
@@ -55,6 +48,7 @@ bintray {
 
         description = pom_description
         publish = true
+        override = true
 
         publicDownloadNumbers = true
         licenses = ['Apache-2.0']
