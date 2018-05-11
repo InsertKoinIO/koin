@@ -33,25 +33,27 @@ publishing {
 }
 
 // Bintray
-bintray {
-    user = bintray_user
-    key = bintray_apikey
+if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
+    bintray {
+        user = bintray_user
+        key = bintray_apikey
 
-    pkg {
-        repo = 'koin'
-        name = pom_name
-        userOrg = 'ekito'
+        pkg {
+            repo = 'koin'
+            name = pom_name
+            userOrg = 'ekito'
 
-        description = pom_description
-        publish = true
-        override = true
+            description = pom_description
+            publish = true
+            override = true
 
-        publicDownloadNumbers = true
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/ekito/koin.git'
-        websiteUrl = 'https://insert-koin.io'
-        dryRun = false
+            publicDownloadNumbers = true
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/ekito/koin.git'
+            websiteUrl = 'https://insert-koin.io'
+            dryRun = false
 
-        publications = ['Production']
+            publications = ['Production']
+        }
     }
 }

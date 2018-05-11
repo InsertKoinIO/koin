@@ -23,19 +23,21 @@ dokka {
     outputDirectory = "$buildDir/javadoc"
 }
 
-bintray {
-    user = bintray_user
-    key = bintray_apikey
+if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
+    bintray {
+        user = bintray_user
+        key = bintray_apikey
 
-    configurations = ['archives']
+        configurations = ['archives']
 
-    publish = true
-    override = true
-    pkg {
-        repo = 'koin'
-        name = archivesBaseName
-        userOrg = 'ekito'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Ekito/koin.git'
+        publish = true
+        override = true
+        pkg {
+            repo = 'koin'
+            name = archivesBaseName
+            userOrg = 'ekito'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/Ekito/koin.git'
+        }
     }
 }

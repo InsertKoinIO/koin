@@ -35,4 +35,4 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./gradlew test testRelease
+          command: ./gradlew test
