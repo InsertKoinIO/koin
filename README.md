@@ -27,7 +27,7 @@ Need help? Come on slack [Koin channel](https://kotlinlang.org/messages/koin) fr
 ## Actual Version
 
 ```gradle
-koin_version = '0.9.2'
+koin_version = '0.9.3'
 ```
 
 ## Gradle 
