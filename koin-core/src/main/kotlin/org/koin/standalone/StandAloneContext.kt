@@ -1,8 +1,8 @@
 package org.koin.standalone
 
-import org.koin.ContextCallback
-import org.koin.Koin
-import org.koin.KoinContext
+import org.koin.core.ContextCallback
+import org.koin.core.Koin
+import org.koin.core.KoinContext
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
@@ -47,7 +47,7 @@ object StandAloneContext {
     /**
      * Get koin context
      */
-    private fun KoinContext() = Koin(koinContext as KoinContext)
+    private fun KoinContext(): Koin = Koin(koinContext as KoinContext)
 
     /**
      * Create Koin context if needed :)

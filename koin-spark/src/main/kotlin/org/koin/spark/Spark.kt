@@ -1,7 +1,7 @@
 package org.koin.spark
 
-import org.koin.Koin
-import org.koin.KoinContext
+import org.koin.core.Koin
+import org.koin.core.KoinContext
 import org.koin.dsl.module.Module
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
@@ -57,4 +57,11 @@ fun stop(sleep: Long = 100) {
     // Need to sleep in order to let the server stops
     // It's done in another thread (cf. spark.Service.stop())
     Thread.sleep(sleep)
+}
+
+/**
+ * Run all Spark controllers (function)
+ */
+fun runControllers() {
+    (org.koin.standalone.StandAloneContext.koinContext as KoinContext).runSparkControllers()
 }

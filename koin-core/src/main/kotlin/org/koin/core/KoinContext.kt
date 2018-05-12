@@ -1,11 +1,12 @@
-package org.koin
+package org.koin.core
 
-import org.koin.Koin.Companion.logger
+import org.koin.core.Koin.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.Parameters
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.stack.ResolutionStack
 import org.koin.dsl.context.ParameterHolder
 import org.koin.error.ContextVisibilityException
 import org.koin.error.DependencyResolutionException
@@ -29,6 +30,12 @@ class KoinContext(
     private val resolutionStack = ResolutionStack()
 
     var contextCallback: ContextCallback? = null
+
+    /**
+     * Lazy bean instance
+     */
+    inline fun <reified T> inject(name: String = "", noinline parameters: Parameters = { emptyMap() }): Lazy<T> =
+        kotlin.lazy { get<T>(name, parameters) }
 
     /**
      * Retrieve a bean instance

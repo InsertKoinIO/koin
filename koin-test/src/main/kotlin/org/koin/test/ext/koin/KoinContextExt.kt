@@ -1,6 +1,6 @@
 package org.koin.test.ext.koin
 
-import org.koin.KoinContext
+import org.koin.core.KoinContext
 import org.koin.core.bean.BeanDefinition
 import kotlin.reflect.KClass
 

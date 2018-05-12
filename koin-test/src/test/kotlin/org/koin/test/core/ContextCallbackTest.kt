@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.ContextCallback
+import org.koin.core.ContextCallback
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.registerContextCallBack
 import org.koin.standalone.StandAloneContext.startKoin

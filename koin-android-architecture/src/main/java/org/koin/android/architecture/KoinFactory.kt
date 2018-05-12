@@ -1,7 +1,9 @@
-package org.koin.android.architecture.ext
+package org.koin.android.architecture
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import org.koin.android.architecture.ext.koin.get
+import org.koin.android.architecture.ext.koin.getByName
 import org.koin.core.parameter.Parameters
 import org.koin.standalone.KoinComponent
 

@@ -1,4 +1,4 @@
-package org.koin
+package org.koin.core.stack
 
 import org.koin.core.bean.BeanDefinition
 import org.koin.error.DependencyResolutionException

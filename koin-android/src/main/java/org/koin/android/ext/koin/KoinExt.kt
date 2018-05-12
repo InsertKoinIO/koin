@@ -2,7 +2,7 @@ package org.koin.android.ext.koin
 
 import android.app.Application
 import android.content.Context
-import org.koin.Koin
+import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.scope.Scope
 import java.util.*

@@ -3,8 +3,8 @@ package org.koin.test.android
 import android.arch.lifecycle.ViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.koin.android.architecture.ext.KoinFactory
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.architecture.KoinFactory
+import org.koin.android.architecture.ext.koin.viewModel
 import org.koin.dsl.module.applicationContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get

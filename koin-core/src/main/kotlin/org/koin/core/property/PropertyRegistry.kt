@@ -1,6 +1,6 @@
 package org.koin.core.property
 
-import org.koin.Koin
+import org.koin.core.Koin
 import org.koin.error.MissingPropertyException
 import java.util.*
 

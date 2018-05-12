@@ -1,6 +1,6 @@
 package org.koin.dsl.context
 
-import org.koin.KoinContext
+import org.koin.core.KoinContext
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
 import org.koin.core.parameter.Parameters
@@ -39,7 +39,6 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * @param name
      * @param isSingleton
      */
-    @Deprecated("use `bean` (for singleton instances) or `factory` (for factory instances)")
     inline fun <reified T : Any> provide(
         name: String = "",
         isSingleton: Boolean = true,

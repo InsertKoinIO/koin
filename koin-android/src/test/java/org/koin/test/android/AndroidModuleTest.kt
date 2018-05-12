@@ -5,9 +5,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.koin.Koin
-import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.android.androidApplication
 import org.koin.android.ext.koin.with
+import org.koin.core.Koin
 import org.koin.dsl.module.applicationContext
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin

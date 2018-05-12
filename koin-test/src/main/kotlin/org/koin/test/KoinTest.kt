@@ -1,12 +1,9 @@
 package org.koin.test
 
-import org.junit.After
-import org.koin.Koin
-import org.koin.KoinContext
+import org.koin.core.KoinContext
 import org.koin.core.parameter.Parameters
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
-import org.koin.standalone.StandAloneContext.closeKoin
 
 /**
  * Koin Test Component
@@ -18,17 +15,5 @@ interface KoinTest : KoinComponent
  */
 fun KoinTest.dryRun(defaultParameters: Parameters = { emptyMap() }) {
     (StandAloneContext.koinContext as KoinContext).dryRun(defaultParameters)
-}
-
-/**
- * Koin Test - embed autoclose @after method to close Koin after every test
- */
-abstract class AutoCloseKoinTest() : KoinTest {
-
-    @After
-    fun autoClose() {
-        Koin.logger.log("AutoClose Koin")
-        closeKoin()
-    }
 }
 

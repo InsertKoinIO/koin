@@ -1,4 +1,4 @@
-package org.koin.android.architecture.ext
+package org.koin.android.architecture.ext.android
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
@@ -6,7 +6,8 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelStores
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import org.koin.Koin
+import org.koin.android.architecture.KoinFactory
+import org.koin.core.Koin
 import org.koin.core.parameter.Parameters
 import org.koin.dsl.context.emptyParameters
 import kotlin.reflect.KClass
@@ -38,34 +39,6 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     noinline parameters: Parameters
 ): Lazy<T> {
     return viewModelByClass(false, T::class, key, name, parameters)
-}
-
-/**
- * Lazy get a viewModel instance shared with Activity
- *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
- */
-inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-    key: String? = null,
-    name: String? = null
-): Lazy<T> {
-    return viewModelByClass(true, T::class, key, name, emptyParameters())
-}
-
-/**
- * Lazy get a viewModel instance shared with Activity
- *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
- * @param parameters - parameters to pass to the BeanDefinition
- */
-inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-    key: String? = null,
-    name: String? = null,
-    noinline parameters: Parameters
-): Lazy<T> {
-    return viewModelByClass(true, T::class, key, name, parameters)
 }
 
 /**
@@ -116,34 +89,6 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 }
 
 /**
- * Get a shared viewModel instance from underlying Activity
- *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
- */
-inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-    key: String? = null,
-    name: String? = null
-): T {
-    return getViewModelByClass(true, T::class, key, name, emptyParameters())
-}
-
-/**
- * Get a shared viewModel instance from underlying Activity
- *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
- * @param parameters - parameters to pass to the BeanDefinition
- */
-inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-    key: String? = null,
-    name: String? = null,
-    noinline parameters: Parameters = emptyParameters()
-): T {
-    return getViewModelByClass(true, T::class, key, name, parameters)
-}
-
-/**
  * Get a viewModel instance
  *
  * @param fromActivity - create it from Activity (default false) - not used if on Activity
@@ -160,8 +105,8 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     parameters: Parameters = emptyParameters()
 ): T {
     KoinFactory.apply {
-        this.parameters = parameters
-        this.name = name
+        KoinFactory.parameters = parameters
+        KoinFactory.name = name
     }
     val viewModelProvider = when {
         this is FragmentActivity -> {

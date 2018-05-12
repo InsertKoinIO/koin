@@ -1,6 +1,6 @@
 package org.koin.core.bean
 
-import org.koin.Koin
+import org.koin.core.Koin
 import org.koin.core.scope.Scope
 import org.koin.error.NoScopeFoundException
 import java.util.*
@@ -15,7 +15,7 @@ class BeanRegistry {
 
     val definitions = ArrayList<BeanDefinition<*>>()
     val scopes = arrayListOf<Scope>()
-    val rootScope = Scope.root()
+    private val rootScope = Scope.root()
 
     init {
         scopes += rootScope
@@ -41,7 +41,7 @@ class BeanRegistry {
     /**
      * Retrieve context scope for given name
      */
-    fun getScope(name: String) = scopes.firstOrNull { it.name == name }
+    fun getScope(name: String): Scope = scopes.firstOrNull { it.name == name }
             ?: throw NoScopeFoundException("Context scope '$name' not found")
 
     /**

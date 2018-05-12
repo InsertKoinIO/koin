@@ -1,6 +1,6 @@
 package org.koin.dsl.module
 
-import org.koin.KoinContext
+import org.koin.core.KoinContext
 import org.koin.core.scope.Scope
 import org.koin.dsl.context.Context
 import org.koin.standalone.StandAloneContext

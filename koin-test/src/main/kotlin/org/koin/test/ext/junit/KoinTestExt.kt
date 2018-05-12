@@ -1,7 +1,7 @@
 package org.koin.test.ext.junit
 
 import org.junit.Assert
-import org.koin.KoinContext
+import org.koin.core.KoinContext
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
 import org.koin.test.ext.koin.*

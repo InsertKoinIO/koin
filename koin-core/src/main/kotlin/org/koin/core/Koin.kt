@@ -1,4 +1,4 @@
-package org.koin
+package org.koin.core
 
 import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module

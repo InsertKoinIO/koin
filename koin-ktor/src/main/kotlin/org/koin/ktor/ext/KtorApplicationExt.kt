@@ -1,7 +1,7 @@
 package org.koin.ktor.ext
 
 import io.ktor.application.Application
-import org.koin.KoinContext
+import org.koin.core.KoinContext
 import org.koin.core.parameter.Parameters
 import org.koin.standalone.StandAloneContext
 

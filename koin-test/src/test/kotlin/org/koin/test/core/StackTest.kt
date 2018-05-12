@@ -3,12 +3,11 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.Koin
+import org.koin.core.Koin
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.ContextVisibilityException
-import org.koin.error.DependencyResolutionException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get

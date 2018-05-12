@@ -40,7 +40,7 @@ data class BeanDefinition<out T>(
     /**
      * Bean definition is not a singleton, but a factory
      */
-    fun isNotASingleton() = !isSingleton
+    fun isNotASingleton() : Boolean = !isSingleton
 
     private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
