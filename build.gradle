@@ -21,6 +21,9 @@ buildscript {
 
         // Dokka
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+
+        classpath "org.asciidoctor:asciidoctor-gradle-plugin:$asciidoctor_version"
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.15'
     }
 }
 
@@ -33,5 +36,11 @@ allprojects {
 
     group = 'org.koin'
     version = "$koin_version"
+
+    apply plugin: 'org.asciidoctor.convert'
+
+    asciidoctor {
+        backends = ["html5"]
+    }
 }
 

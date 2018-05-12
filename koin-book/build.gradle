@@ -1,0 +1,6 @@
+archivesBaseName = 'koin-book'
+
+asciidoctor {
+    backends = ["html5","pdf"]
+}
+
