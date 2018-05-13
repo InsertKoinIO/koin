@@ -9,7 +9,7 @@ import org.koin.dsl.context.emptyParameters
  * Lazy get a viewModel instance shared with Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
@@ -22,7 +22,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  * Lazy get a viewModel instance shared with Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
@@ -37,7 +37,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  * Get a shared viewModel instance from underlying Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
@@ -50,7 +50,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
  * Get a shared viewModel instance from underlying Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(

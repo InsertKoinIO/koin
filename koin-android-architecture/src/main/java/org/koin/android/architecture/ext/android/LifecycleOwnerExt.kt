@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  * Lazy get a viewModel instance
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
@@ -30,7 +30,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * Lazy get a viewModel instance
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
@@ -47,7 +47,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * @param fromActivity - create it from Activity (default true)
  * @param clazz - Class of the BeanDefinition to retrieve
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.viewModelByClass(
@@ -64,7 +64,7 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
  * Get a viewModel instance
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
@@ -77,7 +77,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
  * Get a viewModel instance
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
@@ -94,7 +94,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
  * @param fromActivity - create it from Activity (default false) - not used if on Activity
  * @param clazz - Class of the BeanDefinition to retrieve
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel definition of the same type)
+ * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModelByClass(

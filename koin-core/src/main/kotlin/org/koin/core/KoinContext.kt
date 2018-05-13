@@ -6,6 +6,7 @@ import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.Parameters
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.ScopeRegistry
 import org.koin.core.stack.ResolutionStack
 import org.koin.dsl.context.ParameterHolder
 import org.koin.error.ContextVisibilityException
@@ -16,20 +17,21 @@ import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
 
 /**
- * Koin Application Context
- * Context from where you can get beans defined in modules
+ * Koin Application ModuleDefinition
+ * ModuleDefinition from where you can get beans defined in modules
  *
  * @author Arnaud GIULIANI
  */
 class KoinContext(
     val beanRegistry: BeanRegistry,
+    val scopeRegistry: ScopeRegistry,
     val propertyResolver: PropertyRegistry,
     val instanceFactory: InstanceFactory
 ) : StandAloneKoinContext {
 
     private val resolutionStack = ResolutionStack()
 
-    var contextCallback: ContextCallback? = null
+    var contextCallback: ScopeCallbacks? = null
 
     /**
      * Lazy bean instance
@@ -145,16 +147,18 @@ class KoinContext(
     }
 
     /**
-     * Drop all instances for given context
-     * @param name
+     * Drop all instances for path context
+     * @param path
      */
-    fun releaseContext(name: String) {
-        logger.log("Release context : $name")
+    fun release(path: String) {
+        logger.log("Release instances : $path")
 
-        val definitions: List<BeanDefinition<*>> = beanRegistry.getDefinitionsFromScope(name)
-        instanceFactory.dropAllInstances(definitions)
+        val definitions: List<BeanDefinition<*>> =
+            beanRegistry.getDefinitions(scopeRegistry.allScopesfrom(path).toSet())
 
-        contextCallback?.onContextReleased(name)
+        instanceFactory.releaseInstances(definitions)
+
+        contextCallback?.onScopeReleased(path)
     }
 
     /**
@@ -193,18 +197,19 @@ class KoinContext(
         resolutionStack.clear()
         instanceFactory.clear()
         beanRegistry.clear()
+        scopeRegistry.clear()
         propertyResolver.clear()
     }
 }
 
 /**
- * Context callback
+ * ModuleDefinition callback
  */
-interface ContextCallback {
+interface ScopeCallbacks {
 
     /**
      * Notify on context release
-     * @param contextName - context name
+     * @param path - context name
      */
-    fun onContextReleased(contextName: String)
+    fun onScopeReleased(path: String)
 }

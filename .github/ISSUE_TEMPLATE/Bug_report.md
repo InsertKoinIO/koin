@@ -20,5 +20,5 @@ A clear and concise description of what you expected to happen.
 **Koin project used and used version (please complete the following information):**
  [e.g]: `koin-core version 0.9.2`
 
-**Additional context**
-Add any other context about the problem here.
+**Additional moduleDefinition**
+Add any other moduleDefinition about the problem here.

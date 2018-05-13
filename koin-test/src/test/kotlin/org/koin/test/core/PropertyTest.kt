@@ -27,14 +27,14 @@ class PropertyTest : AutoCloseKoinTest() {
     }
 
     val ComplexModule = applicationContext {
-        context("A") {
+        module("A") {
             bean { ComponentB(get()) }
             bean { ComponentA(getProperty(KEY)) }
         }
     }
 
     val MoreComplexModule = applicationContext {
-        context("A") {
+        module("A") {
             bean { ComponentB(get()) }
             factory { ComponentA(getProperty(KEY)) }
         }

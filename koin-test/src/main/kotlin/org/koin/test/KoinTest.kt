@@ -11,7 +11,7 @@ import org.koin.standalone.StandAloneContext
 interface KoinTest : KoinComponent
 
 /**
- * Make a Dry Run - Test if each definition is injectable
+ * Make a Dry Run - Test if each beanDefinition is injectable
  */
 fun KoinTest.dryRun(defaultParameters: Parameters = { emptyMap() }) {
     (StandAloneContext.koinContext as KoinContext).dryRun(defaultParameters)

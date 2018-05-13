@@ -59,7 +59,7 @@ inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
 
 
 /**
- * Help work on Context
+ * Help work on ModuleDefinition
  */
 private fun context() = (StandAloneContext.koinContext as KoinContext)
 

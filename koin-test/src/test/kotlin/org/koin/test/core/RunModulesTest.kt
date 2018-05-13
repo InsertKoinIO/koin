@@ -27,7 +27,7 @@ class RunModulesTest : AutoCloseKoinTest() {
     }
 
     val moduleD = applicationContext {
-        context("D") {
+        module("D") {
             bean { ComponentA("D") }
         }
     }

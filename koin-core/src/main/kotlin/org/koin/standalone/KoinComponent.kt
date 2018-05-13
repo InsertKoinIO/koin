@@ -91,10 +91,10 @@ inline fun <reified T> KoinComponent.getProperty(key: String, defaultValue: T): 
 fun KoinComponent.setProperty(key: String, value: Any) = context().setProperty(key, value)
 
 /**
- * Release a Koin context
- * @param name
+ * Release instances at given module scope
+ * @param path
  */
-fun KoinComponent.releaseContext(name: String) = context().releaseContext(name)
+fun KoinComponent.release(path: String) = context().release(path)
 
 /**
  * Release properties

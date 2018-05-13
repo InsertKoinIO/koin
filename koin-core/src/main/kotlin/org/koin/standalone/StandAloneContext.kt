@@ -1,11 +1,12 @@
 package org.koin.standalone
 
-import org.koin.core.ContextCallback
+import org.koin.core.ScopeCallbacks
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.ScopeRegistry
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 
@@ -18,7 +19,7 @@ object StandAloneContext {
     private var isStarted = false
 
     /**
-     * Koin Context
+     * Koin ModuleDefinition
      */
     lateinit var koinContext: StandAloneKoinContext
 
@@ -57,17 +58,18 @@ object StandAloneContext {
             Koin.logger.log("[context] create")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
+            val scopeRegistry = ScopeRegistry()
             val instanceFactory = InstanceFactory()
-            koinContext = KoinContext(beanRegistry, propertyResolver, instanceFactory)
+            koinContext = KoinContext(beanRegistry, scopeRegistry, propertyResolver, instanceFactory)
             isStarted = true
         }
     }
 
     /**
-     * Register Context callbacks
-     * @see ContextCallback - Context CallBack
+     * Register ModuleDefinition callbacks
+     * @see ScopeCallbacks - ModuleDefinition CallBack
      */
-    fun registerContextCallBack(contextCallback: ContextCallback) {
+    fun registerContextCallBack(contextCallback: ScopeCallbacks) {
         Koin.logger.log("[context] callback registering with $contextCallback")
         KoinContext().koinContext.contextCallback = contextCallback
     }

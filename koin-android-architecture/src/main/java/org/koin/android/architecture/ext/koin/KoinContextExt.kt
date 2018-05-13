@@ -15,7 +15,7 @@ fun <T> KoinContext.getByTypeName(canonicalName: String, parameters: Parameters)
 }
 
 /**
- * Retrieve an instance by its bean definition name
+ * Retrieve an instance by its bean beanDefinition name
  */
 fun <T> KoinContext.getByName(name: String, parameters: Parameters): T {
     val foundDefinitions = beanRegistry.definitions.filter { it.name == name }.distinct()
@@ -23,7 +23,7 @@ fun <T> KoinContext.getByName(name: String, parameters: Parameters): T {
 }
 
 /**
- * Retrieve bean definition instance from given definitions
+ * Retrieve bean beanDefinition instance from given definitions
  */
 private fun <T> KoinContext.getWithDefinitions(
     foundDefinitions: List<BeanDefinition<*>>,
@@ -31,7 +31,7 @@ private fun <T> KoinContext.getWithDefinitions(
     message: String
 ): T {
     return when (foundDefinitions.size) {
-        0 -> throw NoBeanDefFoundException("No bean definition found $message")
+        0 -> throw NoBeanDefFoundException("No bean beanDefinition found $message")
         1 -> {
             val def = foundDefinitions.first()
             resolveInstance(def.clazz, parameters, { listOf(def) })

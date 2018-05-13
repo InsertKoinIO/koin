@@ -3,12 +3,12 @@ package org.koin.test.standalone
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
-import org.koin.standalone.releaseContext
+import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -18,26 +18,26 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class MVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule =
-            applicationContext {
-                bean { Repository(get()) }
+        module {
+            bean { Repository(get()) }
 
-                context("View") {
-                    bean { View() }
-                    bean { Presenter(get()) }
-                }
+            module("view") {
+                bean { View() }
+                bean { Presenter(get()) }
             }
+        }
 
     val DataSourceModule =
-            applicationContext {
-                bean { DebugDatasource() } bind (Datasource::class)
-            }
+        module {
+            bean { DebugDatasource() } bind (Datasource::class)
+        }
 
 
     class View() : KoinComponent {
         val presenter: Presenter by inject()
 
         fun onDestroy() {
-            releaseContext("View")
+            release("view")
         }
     }
 
@@ -65,8 +65,8 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         assertContexts(2)
         assertDefinedInScope(Repository::class, Scope.ROOT)
         assertDefinedInScope(DebugDatasource::class, Scope.ROOT)
-        assertDefinedInScope(View::class, "View")
-        assertDefinedInScope(Presenter::class, "View")
+        assertDefinedInScope(View::class, "view")
+        assertDefinedInScope(Presenter::class, "view")
 
         view.onDestroy()
         assertRemainingInstances(2)

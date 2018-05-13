@@ -23,10 +23,10 @@ class InstanceCreationTest : AutoCloseKoinTest() {
     val HierarchicModule = applicationContext {
         bean { ComponentA() }
 
-        context("B") {
+        module("B") {
             bean { ComponentB(get()) }
 
-            context("C") {
+            module("C") {
                 bean { ComponentC(get(), get()) }
             }
         }

@@ -16,23 +16,23 @@ class DSLContextTest : AutoCloseKoinTest() {
 
         bean { ComponentA() }
 
-        context(name = "B") {
+        module(path = "B") {
             bean { ComponentB() }
         }
 
-        context(name = "C") {
+        module(path = "C") {
             bean { ComponentC() }
         }
     }
 
     val HierarchyContextsModule = applicationContext {
-        context(name = "A") {
+        module(path = "A") {
             bean { ComponentA() }
 
-            context(name = "B") {
+            module(path = "B") {
                 bean { ComponentB() }
 
-                context(name = "C") {
+                module(path = "C") {
                     bean { ComponentC() }
                 }
             }

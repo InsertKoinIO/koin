@@ -82,4 +82,4 @@ fun ComponentCallbacks.releaseProperties(vararg keys: String): Unit =
  * Release a context
  * @param name
  */
-fun ComponentCallbacks.releaseContext(name: String): Unit = context().releaseContext(name)
+fun ComponentCallbacks.releaseContext(name: String): Unit = context().release(name)

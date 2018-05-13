@@ -1,7 +1,7 @@
 package org.koin.core.scope
 
 /**
- * Context Scope - Define hierarchy between contexts
+ * ModuleDefinition Scope - Define hierarchy between contexts
  * Help define logical separation for group of definitions
  *
  *

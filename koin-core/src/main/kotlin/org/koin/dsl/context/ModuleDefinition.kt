@@ -7,12 +7,12 @@ import org.koin.core.parameter.Parameters
 import org.koin.core.scope.Scope
 
 /**
- * Koin Context
- * Define dependencies & properties for actual context
+ * Koin Module Definition
+ * Gather dependencies & properties definitions
  *
  * @author - Arnaud GIULIANI
  */
-class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
+class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
 
     /**
      * bean definitions
@@ -20,17 +20,17 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     val definitions = arrayListOf<BeanDefinition<*>>()
 
     /**
-     * sub contexts
+     * sub modules
      */
-    val subContexts = arrayListOf<Context>()
+    val subModules = arrayListOf<ModuleDefinition>()
 
     /**
-     * Create a sub context in actual context
-     * @param name
+     * Create a inner sub module in actual module
+     * @param path
      */
-    fun context(name: String, init: Context.() -> Unit): Context {
-        val newContext = Context(name, koinContext)
-        subContexts += newContext
+    fun module(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition {
+        val newContext = ModuleDefinition(path, koinContext)
+        subModules += newContext
         return newContext.apply(init)
     }
 
@@ -98,5 +98,5 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
         koinContext.propertyResolver.getProperty(key, defaultValue)
 
     // String display
-    override fun toString(): String = "Context[$name]"
+    override fun toString(): String = "ModuleDefinition[$path]"
 }

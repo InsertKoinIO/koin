@@ -16,37 +16,37 @@ import org.koin.test.ext.junit.assertScopeParent
 class ScopeContextTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = applicationContext {
-        context(name = "B") {
+        module(path = "B") {
             bean { ComponentA() }
             bean("B_B") { ComponentB(get()) }
         }
 
-        context(name = "C") {
+        module(path = "C") {
             bean { ComponentA() }
             bean("B_C") { ComponentB(get()) }
         }
     }
 
     val HierarchyContextsModule = applicationContext {
-        context(name = "A") {
+        module(path = "A") {
             bean { ComponentA() }
 
-            context(name = "B") {
+            module(path = "B") {
                 bean { ComponentB(get()) }
 
-                context(name = "C") {
+                module(path = "C") {
                     bean { ComponentC(get()) }
                 }
             }
 
         }
-        context(name = "A_2") {
+        module(path = "A_2") {
             bean { ComponentA() }
         }
     }
 
     val badVisibility = applicationContext {
-        context(name = "A") {
+        module(path = "A") {
             bean { ComponentA() }
         }
 

@@ -99,7 +99,7 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
     }
 
 //    @Test
-//    fun `multiple definition for same type`() {
+//    fun `multiple beanDefinition for same type`() {
 //        startKoin(listOf(module1))
 //        try {
 //            dryRun()
@@ -110,7 +110,7 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 //    }
 //
 //    @Test
-//    fun `multiple definition for same type - binds`() {
+//    fun `multiple beanDefinition for same type - binds`() {
 //        startKoin(listOf(module2))
 //        try {
 //            dryRun()

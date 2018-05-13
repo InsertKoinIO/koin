@@ -1,18 +1,20 @@
 package org.koin.core
 
-import org.koin.dsl.context.Context
+import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
 import java.util.*
 
 /**
- * Koin Context Builder
+ * Koin ModuleDefinition Builder
  * @author - Arnaud GIULIANI
  */
 class Koin(val koinContext: KoinContext) {
+
     val propertyResolver = koinContext.propertyResolver
     val beanRegistry = koinContext.beanRegistry
+    val scopeRegistry = koinContext.scopeRegistry
 
     /**
      * Inject properties to context
@@ -62,19 +64,20 @@ class Koin(val koinContext: KoinContext) {
     }
 
     /**
-     * Register context definitions & subContexts
+     * Register moduleDefinition definitions & subModules
      */
-    private fun registerDefinitions(context: Context, parentContext: Context? = null) {
-        // Create or reuse getScopeForDefinition context
-        val scope = beanRegistry.findOrCreateScope(context.name, parentContext?.name)
+    private fun registerDefinitions(moduleDefinition: ModuleDefinition, parentModuleDefinition: ModuleDefinition? = null) {
+
+        // Create or reuse getScopeForDefinition moduleDefinition
+        val scope = scopeRegistry.findOrCreateScope(moduleDefinition.path, parentModuleDefinition?.path)
 
         // Add definitions
-        context.definitions.forEach { definition ->
+        moduleDefinition.definitions.forEach { definition ->
             beanRegistry.declare(definition, scope)
         }
 
         // Check sub contexts
-        context.subContexts.forEach { subContext -> registerDefinitions(subContext, context) }
+        moduleDefinition.subModules.forEach { subContext -> registerDefinitions(subContext, moduleDefinition) }
     }
 
     companion object {

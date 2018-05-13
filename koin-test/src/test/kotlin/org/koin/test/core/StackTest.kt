@@ -23,23 +23,23 @@ class StackTest : AutoCloseKoinTest() {
 
         bean { ComponentA() }
 
-        context(name = "B") {
+        module(path = "B") {
             bean { ComponentB(get()) }
         }
 
-        context(name = "C") {
+        module(path = "C") {
             bean { ComponentC(get()) }
         }
     }
 
     val HierarchyContextsModule = applicationContext {
-        context(name = "A") {
+        module(path = "A") {
             bean { ComponentA() }
 
-            context(name = "B") {
+            module(path = "B") {
                 bean { ComponentB(get()) }
 
-                context(name = "C") {
+                module(path = "C") {
                     bean { ComponentC(get()) }
                 }
             }
@@ -52,11 +52,11 @@ class StackTest : AutoCloseKoinTest() {
 
         bean { ComponentB(get()) }
 
-        context(name = "A") {
+        module(path = "A") {
             bean { ComponentA() }
         }
 
-        context(name = "D") {
+        module(path = "D") {
             bean { ComponentD(get()) }
         }
     }

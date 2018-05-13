@@ -8,20 +8,20 @@ import org.koin.dsl.module.applicationContext
 import org.koin.error.NoScopeFoundException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.standalone.releaseContext
+import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
 class ContextReleaseTest : AutoCloseKoinTest() {
 
     val HierarchyContextsModule = applicationContext {
-        context(name = "A") {
+        module(path = "A") {
             bean { ComponentA() }
 
-            context(name = "B") {
+            module(path = "B") {
                 bean { ComponentB() }
 
-                context(name = "C") {
+                module(path = "C") {
                     bean { ComponentC() }
                 }
             }
@@ -55,7 +55,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
-        releaseContext("B")
+        release("B")
 
         assertRemainingInstances(1)
         assertContextInstances("A", 1)
@@ -99,7 +99,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
-        releaseContext("A")
+        release("A")
 
         assertRemainingInstances(0)
         assertContextInstances("A", 0)
@@ -143,7 +143,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
-        releaseContext(Scope.ROOT)
+        release(Scope.ROOT)
 
         assertRemainingInstances(0)
         assertContextInstances("A", 0)
@@ -187,7 +187,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
-        releaseContext("C")
+        release("C")
 
         assertRemainingInstances(2)
         assertContextInstances("A", 1)
@@ -232,7 +232,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContextInstances("C", 1)
 
         try {
-            releaseContext("D")
+            release("D")
             fail()
         } catch (e: NoScopeFoundException) {
         }

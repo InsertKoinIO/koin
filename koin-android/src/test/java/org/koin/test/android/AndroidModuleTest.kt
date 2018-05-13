@@ -12,7 +12,7 @@ import org.koin.dsl.module.applicationContext
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.standalone.releaseContext
+import org.koin.standalone.release
 import org.koin.standalone.setProperty
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContextInstances
@@ -35,7 +35,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
     }
 
     val ActivityModule = applicationContext {
-        context(CTX_ACTIVITY_MODULE) {
+        module(CTX_ACTIVITY_MODULE) {
             provide { OtherService(get(), getProperty(URL)) }
         }
 
@@ -72,7 +72,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         assertDefinitions(3)
         assertRemainingInstances(3)
 
-        releaseContext(CTX_ACTIVITY_MODULE)
+        release(CTX_ACTIVITY_MODULE)
         assertContextInstances(CTX_ACTIVITY_MODULE, 0)
         assertDefinitions(3)
         assertRemainingInstances(2)

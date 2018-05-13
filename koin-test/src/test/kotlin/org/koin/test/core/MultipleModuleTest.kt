@@ -29,7 +29,7 @@ class MultipleModuleTest : AutoCloseKoinTest() {
     }
 
     val SimpleModuleC = applicationContext {
-        context(name = "C") {
+        module(path = "C") {
             bean { ComponentC(get(), get()) }
         }
     }

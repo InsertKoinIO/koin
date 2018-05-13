@@ -10,7 +10,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
-import org.koin.standalone.releaseContext
+import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinedInScope
@@ -23,7 +23,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
         applicationContext {
             bean { Repository(get()) }
 
-            context("View") {
+            module("View") {
                 bean { View() }
                 bean { Presenter(get()) }
             }
@@ -39,7 +39,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
         val presenter: Presenter by inject()
 
         fun onDestroy() {
-            releaseContext("View")
+            release("View")
         }
     }
 

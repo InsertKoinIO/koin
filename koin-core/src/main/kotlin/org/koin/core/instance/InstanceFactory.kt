@@ -67,7 +67,7 @@ class InstanceFactory() {
     /**
      * Drop all instances for definitions
      */
-    fun dropAllInstances(definitions: List<BeanDefinition<*>>) {
+    fun releaseInstances(definitions: List<BeanDefinition<*>>) {
         definitions.forEach { instances.remove(it) }
     }
 

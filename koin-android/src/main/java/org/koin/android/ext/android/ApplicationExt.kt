@@ -11,7 +11,7 @@ import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
 
 /**
- * Create a new Koin Context
+ * Create a new Koin ModuleDefinition
  * @param application - Android application
  * @param modules - list of AndroidModule
  * @param extraProperties - extra extraProperties
@@ -38,7 +38,7 @@ fun Application.startKoin(
 }
 
 /**
- * Create a new Koin Context
+ * Create a new Koin ModuleDefinition
  * @param modules - list of AndroidModule
  * @param extraProperties - extra extraProperties
  * @param loadProperties - laod extraProperties from asset/koin.extraProperties

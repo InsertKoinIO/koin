@@ -1,6 +1,6 @@
 package org.koin.error
 
 /**
- * Context Visibility Error
+ * ModuleDefinition Visibility Error
  */
 class ContextVisibilityException(msg : String) : Exception(msg)
