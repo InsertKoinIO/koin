@@ -6,6 +6,7 @@ import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.Parameters
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.ScopeCallbacks
 import org.koin.core.scope.ScopeRegistry
 import org.koin.core.stack.ResolutionStack
 import org.koin.dsl.context.ParameterHolder
@@ -153,8 +154,9 @@ class KoinContext(
     fun release(path: String) {
         logger.log("Release instances : $path")
 
+        val scopes = scopeRegistry.getAllScopesFrom(path)
         val definitions: List<BeanDefinition<*>> =
-            beanRegistry.getDefinitions(scopeRegistry.allScopesfrom(path).toSet())
+            beanRegistry.getDefinitions(scopes)
 
         instanceFactory.releaseInstances(definitions)
 
@@ -200,16 +202,4 @@ class KoinContext(
         scopeRegistry.clear()
         propertyResolver.clear()
     }
-}
-
-/**
- * ModuleDefinition callback
- */
-interface ScopeCallbacks {
-
-    /**
-     * Notify on context release
-     * @param path - context name
-     */
-    fun onScopeReleased(path: String)
 }

@@ -69,7 +69,7 @@ class Koin(val koinContext: KoinContext) {
     private fun registerDefinitions(moduleDefinition: ModuleDefinition, parentModuleDefinition: ModuleDefinition? = null) {
 
         // Create or reuse getScopeForDefinition moduleDefinition
-        val scope = scopeRegistry.findOrCreateScope(moduleDefinition.path, parentModuleDefinition?.path)
+        val scope = scopeRegistry.makeScope(moduleDefinition.path, parentModuleDefinition?.path)
 
         // Add definitions
         moduleDefinition.definitions.forEach { definition ->
@@ -77,7 +77,7 @@ class Koin(val koinContext: KoinContext) {
         }
 
         // Check sub contexts
-        moduleDefinition.subModules.forEach { subContext -> registerDefinitions(subContext, moduleDefinition) }
+        moduleDefinition.subModules.forEach { subModule -> registerDefinitions(subModule, moduleDefinition) }
     }
 
     companion object {

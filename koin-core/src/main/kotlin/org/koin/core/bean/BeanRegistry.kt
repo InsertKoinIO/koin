@@ -12,7 +12,7 @@ import java.util.*
  */
 class BeanRegistry() {
 
-    val definitions = ArrayList<BeanDefinition<*>>()
+    val definitions = hashSetOf<BeanDefinition<*>>()
 
     /**
      * Add/Replace an existing bean

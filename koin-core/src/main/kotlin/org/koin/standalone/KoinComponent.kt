@@ -43,12 +43,6 @@ inline fun <reified T> KoinComponent.property(key: String): Lazy<T> =
 inline fun <reified T> KoinComponent.property(key: String, defaultValue: T): Lazy<T> =
     kotlin.lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
 
-
-/**
- * Help to Access context
- */
-private fun context() = (StandAloneContext.koinContext as KoinContext)
-
 /**
  * Retrieve given dependency for KoinComponent
  * @param name - bean name
@@ -88,17 +82,17 @@ inline fun <reified T> KoinComponent.getProperty(key: String, defaultValue: T): 
  * @param key
  * @param value
  */
-fun KoinComponent.setProperty(key: String, value: Any) = context().setProperty(key, value)
+fun KoinComponent.setProperty(key: String, value: Any) = getContext().setProperty(key, value)
 
 /**
  * Release instances at given module scope
  * @param path
  */
-fun KoinComponent.release(path: String) = context().release(path)
+fun KoinComponent.release(path: String) = getContext().release(path)
 
 /**
  * Release properties
  * @param keys - key properties
  */
-fun KoinComponent.releaseProperties(vararg keys: String) = context().releaseProperties(*keys)
+fun KoinComponent.releaseProperties(vararg keys: String) = getContext().releaseProperties(*keys)
 

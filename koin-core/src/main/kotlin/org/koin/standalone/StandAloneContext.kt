@@ -1,11 +1,11 @@
 package org.koin.standalone
 
-import org.koin.core.ScopeCallbacks
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.ScopeCallbacks
 import org.koin.core.scope.ScopeRegistry
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
@@ -69,9 +69,9 @@ object StandAloneContext {
      * Register ModuleDefinition callbacks
      * @see ScopeCallbacks - ModuleDefinition CallBack
      */
-    fun registerContextCallBack(contextCallback: ScopeCallbacks) {
-        Koin.logger.log("[context] callback registering with $contextCallback")
-        KoinContext().koinContext.contextCallback = contextCallback
+    fun registerScopeCallBack(scopeCallbacks: ScopeCallbacks) {
+        Koin.logger.log("[context] callback registering with $scopeCallbacks")
+        KoinContext().koinContext.contextCallback = scopeCallbacks
     }
 
     /**
@@ -142,6 +142,11 @@ object StandAloneContext {
         }
     }
 }
+
+/**
+ * Help to Access context
+ */
+internal fun getContext() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Stand alone Koin context

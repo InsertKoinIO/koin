@@ -4,7 +4,7 @@ import org.koin.core.Koin
 import org.koin.error.NoScopeFoundException
 
 class ScopeRegistry {
-    val scopes = arrayListOf<Scope>()
+    val scopes = hashSetOf<Scope>()
     private val rootScope = Scope.root()
 
     init {
@@ -12,15 +12,22 @@ class ScopeRegistry {
     }
 
     /**
-     * Retrieve context scope for given name
+     * Retrieve scope for given path
      */
-    fun getScope(name: String): Scope = scopes.firstOrNull { it.name == name }
-            ?: throw NoScopeFoundException("ModuleDefinition scope '$name' not found")
+    fun getScope(path: String): Scope {
+        return if (path == "") Scope.root()
+        else {
+            val paths = path.split(".")
+            var scope: Scope? = null
+            paths.forEach { current -> scope = scopes.firstOrNull { it.name == current } }
+            scope ?: throw NoScopeFoundException("no scope found for '$path'")
+        }
+    }
 
     /**
      * Find or create context scope
      */
-    fun findOrCreateScope(scopeName: String?, parentScopeName: String? = null): Scope {
+    private fun findOrCreateScope(scopeName: String?, parentScopeName: String? = null): Scope {
         return if (scopeName == null) rootScope
         else {
             scopes.firstOrNull { it.name == scopeName } ?: createScope(scopeName, parentScopeName)
@@ -30,23 +37,39 @@ class ScopeRegistry {
     /**
      * Create context scope
      */
-    fun createScope(scope: String, parentScope: String?): Scope {
-        Koin.logger.log("[scope] create [$scope] with parent [$parentScope]")
+    private fun createScope(scope: String, parentScope: String?): Scope {
+        val parentLog = if (parentScope != null) "with parent [$parentScope]" else ""
+        Koin.logger.log("[scope] create [$scope] $parentLog")
         val s = Scope(scope, parent = findOrCreateScope(parentScope))
         scopes += s
         return s
     }
 
     /**
-     * Retrieve scope and child for given name
+     * Make scope from path
      */
-    fun allScopesfrom(name: String): List<Scope> {
-        val scope = getScope(name)
+    fun makeScope(path: String, parentPath: String? = null): Scope {
+        val paths = path.split(".")
+        var parent: String? = parentPath
+        var createdScope: Scope = Scope.root()
+        paths.forEach {
+            createdScope = findOrCreateScope(it, parent)
+            parent = it
+        }
+        return createdScope
+    }
+
+    /**
+     * Retrieve scopes (with children scope)
+     */
+    fun getAllScopesFrom(path: String): Set<Scope> {
+        val scope = getScope(path)
         val firstChild = scopes.filter { it.parent == scope }
-        return listOf(scope) + firstChild + firstChild.flatMap { allScopesfrom(it.name) }
+        return setOf(scope) + firstChild + firstChild.flatMap { getAllScopesFrom(it.name) }
     }
 
     fun clear() {
         scopes.clear()
+        scopes += rootScope
     }
 }

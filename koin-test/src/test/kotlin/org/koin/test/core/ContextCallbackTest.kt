@@ -2,16 +2,16 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.core.ScopeCallbacks
-import org.koin.dsl.module.applicationContext
-import org.koin.standalone.StandAloneContext.registerContextCallBack
+import org.koin.core.scope.ScopeCallbacks
+import org.koin.dsl.module.module
+import org.koin.standalone.StandAloneContext.registerScopeCallBack
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 
 class ContextCallbackTest : AutoCloseKoinTest() {
 
-    val module = applicationContext {
+    val module = module {
         module(path = "A") {
             bean { ComponentA() }
         }
@@ -25,7 +25,7 @@ class ContextCallbackTest : AutoCloseKoinTest() {
 
         var name = ""
 
-        registerContextCallBack(object : ScopeCallbacks {
+        registerScopeCallBack(object : ScopeCallbacks {
             override fun onScopeReleased(path: String) {
                 name = path
             }
