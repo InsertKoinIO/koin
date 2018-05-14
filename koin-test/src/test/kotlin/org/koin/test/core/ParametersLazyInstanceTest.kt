@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
@@ -11,8 +11,8 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class ParametersLazyInstanceTest : AutoCloseKoinTest() {
 
-    val module = applicationContext {
-        bean { params -> ComponentA(params[URL]) }
+    val module = module {
+        single { params -> ComponentA(params[URL]) }
     }
 
     class ComponentA(val url: String)

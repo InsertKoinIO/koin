@@ -5,6 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -14,28 +15,27 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
 class PropertyTest : AutoCloseKoinTest() {
-    val SimpleModule = applicationContext {
-
-        bean { ComponentA(getProperty(KEY)) }
-        bean { ComponentB(get()) }
+    val SimpleModule = module {
+        single { ComponentA(getProperty(KEY)) }
+        single { ComponentB(get()) }
     }
 
-    val NoPropertyModule = applicationContext {
+    val NoPropertyModule = module {
 
-        bean { ComponentA(getProperty(KEY)) }
-        bean { ComponentB(get()) }
+        single { ComponentA(getProperty(KEY)) }
+        single { ComponentB(get()) }
     }
 
-    val ComplexModule = applicationContext {
+    val ComplexModule = module {
         module("A") {
-            bean { ComponentB(get()) }
-            bean { ComponentA(getProperty(KEY)) }
+            single { ComponentB(get()) }
+            single { ComponentA(getProperty(KEY)) }
         }
     }
 
     val MoreComplexModule = applicationContext {
         module("A") {
-            bean { ComponentB(get()) }
+            single { ComponentB(get()) }
             factory { ComponentA(getProperty(KEY)) }
         }
     }

@@ -2,7 +2,7 @@ package org.koin.test.standalone
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -12,15 +12,15 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class TODOAppTest : AutoCloseKoinTest() {
 
-    val TodoAppModule = applicationContext {
-        bean { TasksView() } bind TasksContract.View::class
-        bean { TasksPresenter(get()) as TasksContract.Presenter }
+    val TodoAppModule = module {
+        single { TasksView() } bind TasksContract.View::class
+        single { TasksPresenter(get()) as TasksContract.Presenter }
     }
 
-    val RepositoryModule = applicationContext {
-        bean("remoteDataSource") { FakeTasksRemoteDataSource() as TasksDataSource }
-        bean("localDataSource") { TasksLocalDataSource() as TasksDataSource }
-        bean { TasksRepository(get("remoteDataSource"), get("localDataSource")) } bind TasksDataSource::class
+    val RepositoryModule = module {
+        single("remoteDataSource") { FakeTasksRemoteDataSource() as TasksDataSource }
+        single("localDataSource") { TasksLocalDataSource() as TasksDataSource }
+        single { TasksRepository(get("remoteDataSource"), get("localDataSource")) } bind TasksDataSource::class
     }
 
     interface TasksContract {

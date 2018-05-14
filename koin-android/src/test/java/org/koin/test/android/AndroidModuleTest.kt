@@ -8,7 +8,7 @@ import org.junit.Test
 import org.koin.android.ext.android.androidApplication
 import org.koin.android.ext.koin.with
 import org.koin.core.Koin
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -30,13 +30,13 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         val URL = "URL"
     }
 
-    val SampleModule = applicationContext {
-        provide { AndroidComponent(androidApplication()) }
+    val SampleModule = module {
+        single { AndroidComponent(androidApplication()) }
     }
 
-    val ActivityModule = applicationContext {
+    val ActivityModule = module {
         module(CTX_ACTIVITY_MODULE) {
-            provide { OtherService(get(), getProperty(URL)) }
+            single { OtherService(get(), getProperty(URL)) }
         }
 
     }

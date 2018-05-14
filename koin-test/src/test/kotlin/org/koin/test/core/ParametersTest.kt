@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
@@ -12,19 +12,19 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class ParametersTest : AutoCloseKoinTest() {
 
-    val simpleModule1 = applicationContext {
+    val simpleModule1 = module {
 
         factory { params -> ComponentA(params[PARAM_URL]) }
     }
 
-    val simpleModule2 = applicationContext {
+    val simpleModule2 = module {
 
-        bean { params -> ComponentA(params[PARAM_URL]) }
+        single { params -> ComponentA(params[PARAM_URL]) }
     }
 
-    val simpleModule3 = applicationContext {
+    val simpleModule3 = module {
 
-        bean { params -> ComponentA(params.getOrNUll(PARAM_URL) ?: DEFAULT_URL) }
+        single { params -> ComponentA(params.getOrNUll(PARAM_URL) ?: DEFAULT_URL) }
     }
 
     class ComponentA(val url: String)

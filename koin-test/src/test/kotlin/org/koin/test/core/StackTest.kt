@@ -5,7 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.Koin
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.ContextVisibilityException
 import org.koin.log.PrintLogger
@@ -19,45 +19,45 @@ import org.koin.test.ext.junit.assertScopeParent
 
 class StackTest : AutoCloseKoinTest() {
 
-    val FlatContextsModule = applicationContext {
+    val FlatContextsModule = module {
 
-        bean { ComponentA() }
+        single { ComponentA() }
 
         module(path = "B") {
-            bean { ComponentB(get()) }
+            single { ComponentB(get()) }
         }
 
         module(path = "C") {
-            bean { ComponentC(get()) }
+            single { ComponentC(get()) }
         }
     }
 
-    val HierarchyContextsModule = applicationContext {
+    val HierarchyContextsModule = module {
         module(path = "A") {
-            bean { ComponentA() }
+            single { ComponentA() }
 
             module(path = "B") {
-                bean { ComponentB(get()) }
+                single { ComponentB(get()) }
 
                 module(path = "C") {
-                    bean { ComponentC(get()) }
+                    single { ComponentC(get()) }
                 }
             }
 
         }
-        bean { ComponentD(get()) }
+        single { ComponentD(get()) }
     }
 
-    val NotVisibleContextsModule = applicationContext {
+    val NotVisibleContextsModule = module {
 
-        bean { ComponentB(get()) }
+        single { ComponentB(get()) }
 
         module(path = "A") {
-            bean { ComponentA() }
+            single { ComponentA() }
         }
 
         module(path = "D") {
-            bean { ComponentD(get()) }
+            single { ComponentD(get()) }
         }
     }
 

@@ -17,40 +17,40 @@ class ScopeContextTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = module {
         module(path = "B") {
-            bean { ComponentA() }
-            bean("B_B") { ComponentB(get()) }
+            single { ComponentA() }
+            single("B_B") { ComponentB(get()) }
         }
 
         module(path = "C") {
-            bean { ComponentA() }
-            bean("B_C") { ComponentB(get()) }
+            single { ComponentA() }
+            single("B_C") { ComponentB(get()) }
         }
     }
 
     val HierarchyContextsModule = module {
         module(path = "A") {
-            bean { ComponentA() }
+            single { ComponentA() }
 
             module(path = "B") {
-                bean { ComponentB(get()) }
+                single { ComponentB(get()) }
 
                 module(path = "C") {
-                    bean { ComponentC(get()) }
+                    single { ComponentC(get()) }
                 }
             }
 
         }
         module(path = "A_2") {
-            bean { ComponentA() }
+            single { ComponentA() }
         }
     }
 
     val badVisibility = module {
         module(path = "A") {
-            bean { ComponentA() }
+            single { ComponentA() }
         }
 
-        bean { ComponentB(get()) }
+        single { ComponentB(get()) }
     }
 
     class ComponentA

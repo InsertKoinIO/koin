@@ -72,13 +72,6 @@ fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
     context().setProperty(key, value)
 
 /**
- * Release properties
- * @param keys - property keys
- */
-fun ComponentCallbacks.releaseProperties(vararg keys: String): Unit =
-    context().releaseProperties(*keys)
-
-/**
  * Release a context
  * @param name
  */

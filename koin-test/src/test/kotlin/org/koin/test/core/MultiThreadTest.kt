@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -12,13 +12,13 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class MultiThreadTest : AutoCloseKoinTest() {
 
-    val module1 = applicationContext {
-        bean { ComponentA() }
-        bean { ComponentB(get()) }
+    val module1 = module {
+        single { ComponentA() }
+        single { ComponentB(get()) }
     }
 
-    val module2 = applicationContext {
-        bean { ComponentA() }
+    val module2 = module {
+        single { ComponentA() }
         factory { ComponentB(get()) }
     }
 

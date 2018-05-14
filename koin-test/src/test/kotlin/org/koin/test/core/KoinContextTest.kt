@@ -3,6 +3,7 @@ package org.koin.test.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
@@ -15,16 +16,15 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class KoinContextTest : AutoCloseKoinTest() {
 
-    val CircularDeps = applicationContext {
-        bean { ComponentA(get()) }
-        bean { ComponentB(get()) }
+    val CircularDeps = module {
+        single { ComponentA(get()) }
+        single { ComponentB(get()) }
     }
 
 
-    val SingleModule = applicationContext {
-        bean { ComponentA(get()) }
+    val SingleModule = module {
+        single { ComponentA(get()) }
     }
-
 
     class ComponentA(val componentB: ComponentB)
     class ComponentB(val componentA: ComponentA)

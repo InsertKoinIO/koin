@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.android.architecture.KoinFactory
 import org.koin.android.architecture.ext.koin.viewModel
-import org.koin.dsl.module.applicationContext
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -18,7 +17,7 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class ViewModelFactoryTest : AutoCloseKoinTest() {
 
     val module = module {
-        bean { MyService() }
+        single { MyService() }
         viewModel { MyViewModel(get()) }
     }
 

@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -15,31 +15,31 @@ import org.koin.test.ext.junit.assertDefinitions
 
 class BadInstanceCreationTest : AutoCloseKoinTest() {
 
-    val module1 = applicationContext {
-        bean { ComponentA() as MyInterface }
-        bean { ComponentB() } bind MyInterface::class
+    val module1 = module {
+        single { ComponentA() as MyInterface }
+        single { ComponentB() } bind MyInterface::class
     }
 
-    val module2 = applicationContext {
-        bean { ComponentA() } bind MyInterface::class
-        bean { ComponentB() } bind MyInterface::class
+    val module2 = module {
+        single { ComponentA() } bind MyInterface::class
+        single { ComponentB() } bind MyInterface::class
     }
 
-    val module3 = applicationContext {
-        bean { ComponentC(get()) }
+    val module3 = module {
+        single { ComponentC(get()) }
     }
 
-    val module4 = applicationContext {
-        bean { ComponentD(get()) }
-        bean { ComponentE(get()) }
+    val module4 = module {
+        single { ComponentD(get()) }
+        single { ComponentE(get()) }
     }
 
-    val module5 = applicationContext {
-        bean { ComponentError() }
+    val module5 = module {
+        single { ComponentError() }
     }
 
-    val module6 = applicationContext {
-        bean { ComponentA() as MyInterface } bind MyInterface::class
+    val module6 = module {
+        single { ComponentA() as MyInterface } bind MyInterface::class
     }
 
     interface MyInterface
@@ -99,7 +99,7 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
     }
 
 //    @Test
-//    fun `multiple beanDefinition for same type`() {
+//    fun `multiple singleDefinition for same type`() {
 //        startKoin(listOf(module1))
 //        try {
 //            dryRun()
@@ -110,7 +110,7 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 //    }
 //
 //    @Test
-//    fun `multiple beanDefinition for same type - binds`() {
+//    fun `multiple singleDefinition for same type - binds`() {
 //        startKoin(listOf(module2))
 //        try {
 //            dryRun()
@@ -143,7 +143,7 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `bean internal error`() {
+    fun `single internal error`() {
         startKoin(listOf(module5))
         try {
             dryRun()
@@ -154,7 +154,7 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `multiple bean definitions`(){
+    fun `multiple single definitions`() {
         startKoin(listOf(module6))
         dryRun()
         Assert.assertNotNull(get<MyInterface>())

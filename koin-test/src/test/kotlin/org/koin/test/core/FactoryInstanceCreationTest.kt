@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -14,25 +14,23 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class FactoryInstanceCreationTest : AutoCloseKoinTest() {
 
-    val FlatModule =
-            applicationContext {
-                factory { ComponentA() }
-                bean { ComponentB(get()) }
-                bean { ComponentC(get(), get()) }
+    val FlatModule = module {
+        factory { ComponentA() }
+        single { ComponentB(get()) }
+        single { ComponentC(get(), get()) }
+    }
+
+    val HierarchicModule = module {
+        factory { ComponentA() }
+
+        module("B") {
+            single { ComponentB(get()) }
+
+            module("C") {
+                single { ComponentC(get(), get()) }
             }
-
-    val HierarchicModule =
-            applicationContext {
-                factory { ComponentA() }
-
-                module("B") {
-                    bean { ComponentB(get()) }
-
-                    module("C") {
-                        bean { ComponentC(get(), get()) }
-                    }
-                }
-            }
+        }
+    }
 
     class ComponentA
     class ComponentB(val componentA: ComponentA)

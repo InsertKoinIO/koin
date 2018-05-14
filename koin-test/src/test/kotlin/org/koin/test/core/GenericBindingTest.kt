@@ -3,23 +3,22 @@ package org.koin.test.core
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 
-
 class GenericBindingTest : AutoCloseKoinTest() {
 
-    val module = applicationContext {
-        bean("a") { ComponentA() as InterfaceComponent<String> }
-        bean("b") { ComponentB() as InterfaceComponent<Int> }
+    val module = module {
+        single("a") { ComponentA() as InterfaceComponent<String> }
+        single("b") { ComponentB() as InterfaceComponent<Int> }
 
     }
 
-    val badModule = applicationContext {
-        bean { ComponentA() as InterfaceComponent<String> }
-        bean { ComponentB() as InterfaceComponent<Int> }
+    val badModule = module {
+        single { ComponentA() as InterfaceComponent<String> }
+        single { ComponentB() as InterfaceComponent<Int> }
 
     }
 
@@ -40,7 +39,7 @@ class GenericBindingTest : AutoCloseKoinTest() {
         startKoin(listOf(badModule))
 
         val a = get<InterfaceComponent<String>>()
-        // Bean has been overridden
+        // single has been overridden
         assertFalse(a is ComponentA)
     }
 }

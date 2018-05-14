@@ -3,7 +3,7 @@ package org.koin.spark
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -14,8 +14,8 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class SparkDSLTest : AutoCloseKoinTest() {
 
-    val module = applicationContext {
-        bean { HelloService() }
+    val module = module {
+        single { HelloService() }
         controller { HelloController(get()) }
     }
 

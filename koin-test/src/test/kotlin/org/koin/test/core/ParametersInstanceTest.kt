@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -13,9 +13,9 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class ParametersInstanceTest : AutoCloseKoinTest() {
 
-    val simpleModule1 = applicationContext {
+    val simpleModule1 = module {
 
-        bean { params -> ComponentA(params["this"]) }
+        single { params -> ComponentA(params["this"]) }
     }
 
     class ComponentA(val componentB: ComponentB)

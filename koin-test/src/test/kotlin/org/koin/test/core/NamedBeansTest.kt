@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -13,13 +13,13 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class NamedBeansTest : AutoCloseKoinTest() {
 
-    val DataSourceModule = applicationContext {
-        bean(name = "debug") { DebugDatasource() } bind (Datasource::class)
-        bean(name = "prod") { ProdDatasource() } bind (Datasource::class)
+    val DataSourceModule = module {
+        single(name = "debug") { DebugDatasource() } bind (Datasource::class)
+        single(name = "prod") { ProdDatasource() } bind (Datasource::class)
     }
 
-    val ServiceModule = applicationContext {
-        bean(name = "debug") { Service(get("debug")) } bind (Service::class)
+    val ServiceModule = module {
+        single(name = "debug") { Service(get("debug")) } bind (Service::class)
     }
 
     interface Datasource
@@ -63,7 +63,7 @@ class NamedBeansTest : AutoCloseKoinTest() {
         startKoin(listOf(DataSourceModule, ServiceModule))
 
         val debug = get<Datasource>("debug")
-        val debugService = get<Service> ("debug")
+        val debugService = get<Service>("debug")
 
         Assert.assertNotNull(debug)
         Assert.assertNotNull(debugService)

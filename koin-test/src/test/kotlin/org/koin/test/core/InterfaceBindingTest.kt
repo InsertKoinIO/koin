@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -16,10 +16,10 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class InterfaceBindingTest : AutoCloseKoinTest() {
 
-    val InterfacesModule = applicationContext {
-        bean { ComponentA() as InterfaceComponent }
-        bean("B") { ComponentB() as OtherInterfaceComponent }
-        bean("C") { ComponentC() as OtherInterfaceComponent }
+    val InterfacesModule = module {
+        single { ComponentA() as InterfaceComponent }
+        single("B") { ComponentB() as OtherInterfaceComponent }
+        single("C") { ComponentC() as OtherInterfaceComponent }
     }
 
     interface InterfaceComponent

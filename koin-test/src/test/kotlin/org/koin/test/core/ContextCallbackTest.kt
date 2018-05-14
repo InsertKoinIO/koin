@@ -13,7 +13,7 @@ class ContextCallbackTest : AutoCloseKoinTest() {
 
     val module = module {
         module(path = "A") {
-            bean { ComponentA() }
+            single { ComponentA() }
         }
     }
 

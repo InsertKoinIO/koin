@@ -17,20 +17,18 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class MVPArchitectureTest : AutoCloseKoinTest() {
 
-    val MVPModule =
-        module {
-            bean { Repository(get()) }
+    val MVPModule = module {
+        single { Repository(get()) }
 
-            module("view") {
-                bean { View() }
-                bean { Presenter(get()) }
-            }
+        module("view") {
+            single { View() }
+            single { Presenter(get()) }
         }
+    }
 
-    val DataSourceModule =
-        module {
-            bean { DebugDatasource() } bind (Datasource::class)
-        }
+    val DataSourceModule = module {
+        single { DebugDatasource() } bind Datasource::class
+    }
 
 
     class View() : KoinComponent {

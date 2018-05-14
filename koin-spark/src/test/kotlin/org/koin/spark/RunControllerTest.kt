@@ -4,7 +4,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
@@ -17,7 +17,7 @@ var ctor = 0
 
 class RunControllerTest : KoinTest {
 
-    val module = applicationContext {
+    val module = module {
         controller { HelloController() }
     }
 
@@ -28,7 +28,7 @@ class RunControllerTest : KoinTest {
     }
 
     @After
-    fun after(){
+    fun after() {
         closeKoin()
     }
 

@@ -5,7 +5,7 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -19,23 +19,20 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class CoroutinesMVPTest : AutoCloseKoinTest() {
 
-    val MVPModule =
-        applicationContext {
-            bean { Repository(get()) }
+    val MVPModule = module {
+        single { Repository(get()) }
 
-            module("View") {
-                bean { View() }
-                bean { Presenter(get()) }
-            }
+        module("View") {
+            single { View() }
+            single { Presenter(get()) }
         }
+    }
 
-    val DataSourceModule =
-        applicationContext {
-            bean { DebugDatasource() } bind (Datasource::class)
-        }
+    val DataSourceModule = module {
+        single { DebugDatasource() } bind (Datasource::class)
+    }
 
-
-    class View() : KoinComponent {
+    class View : KoinComponent {
         val presenter: Presenter by inject()
 
         fun onDestroy() {

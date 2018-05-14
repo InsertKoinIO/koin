@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -16,21 +16,21 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class AdditionalBindingTest : AutoCloseKoinTest() {
 
-    val BoundModule = applicationContext {
-        bean { ComponentA() } bind InterfaceComponent::class
+    val BoundModule = module {
+        single { ComponentA() } bind InterfaceComponent::class
     }
 
-    val NotBoundModule = applicationContext {
-        bean { ComponentA() }
+    val NotBoundModule = module {
+        single { ComponentA() }
     }
 
-    val GenericBoundModule = applicationContext {
-        bean { ComponentB() } bind OtherInterfaceComponent::class
+    val GenericBoundModule = module {
+        single { ComponentB() } bind OtherInterfaceComponent::class
     }
 
-    val TwoBoundModule = applicationContext {
-        bean { ComponentB() } bind OtherInterfaceComponent::class
-        bean { ComponentC() } bind OtherInterfaceComponent::class
+    val TwoBoundModule = module {
+        single { ComponentB() } bind OtherInterfaceComponent::class
+        single { ComponentC() } bind OtherInterfaceComponent::class
     }
 
     class ComponentA : InterfaceComponent

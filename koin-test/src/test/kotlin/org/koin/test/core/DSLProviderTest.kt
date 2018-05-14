@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert.*
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -11,17 +11,17 @@ import org.koin.test.ext.junit.assertDefinitions
 
 class DSLProviderTest : AutoCloseKoinTest() {
 
-    val sampleModule = applicationContext {
+    val sampleModule = module {
 
-        bean { ComponentA() } bind MyInterface::class
+        single { ComponentA() } bind MyInterface::class
 
-        bean { ComponentB() }
+        single { ComponentB() }
 
         factory { ComponentC() }
     }
 
-    val sampleModule2 = applicationContext {
-        bean { ComponentA() as MyInterface }
+    val sampleModule2 = module {
+        single { ComponentA() as MyInterface }
     }
 
     interface MyInterface

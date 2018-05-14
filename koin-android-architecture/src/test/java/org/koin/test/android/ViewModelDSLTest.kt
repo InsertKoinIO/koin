@@ -16,7 +16,7 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class ViewModelDSLTest : AutoCloseKoinTest() {
 
     val module = module {
-        bean { MyService() }
+        single { MyService() }
         viewModel { MyViewModel(get()) }
     }
 

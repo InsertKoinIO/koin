@@ -185,13 +185,6 @@ class KoinContext(
     fun setProperty(key: String, value: Any) = propertyResolver.add(key, value)
 
     /**
-     * Delete properties from keys
-     */
-    fun releaseProperties(vararg keys: String) {
-        propertyResolver.deleteAll(keys)
-    }
-
-    /**
      * Close res
      */
     fun close() {

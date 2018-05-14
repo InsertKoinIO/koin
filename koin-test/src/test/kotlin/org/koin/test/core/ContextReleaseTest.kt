@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.error.NoScopeFoundException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -14,15 +14,15 @@ import org.koin.test.ext.junit.*
 
 class ContextReleaseTest : AutoCloseKoinTest() {
 
-    val HierarchyContextsModule = applicationContext {
+    val HierarchyContextsModule = module {
         module(path = "A") {
-            bean { ComponentA() }
+            single { ComponentA() }
 
             module(path = "B") {
-                bean { ComponentB() }
+                single { ComponentB() }
 
                 module(path = "C") {
-                    bean { ComponentC() }
+                    single { ComponentC() }
                 }
             }
         }

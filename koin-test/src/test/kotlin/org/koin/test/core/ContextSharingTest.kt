@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -14,12 +14,12 @@ import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
 class ContextSharingTest : AutoCloseKoinTest() {
-    val module1 = applicationContext {
-        bean { ComponentA() }
+    val module1 = module {
+        single { ComponentA() }
     }
 
-    val module2 = applicationContext {
-        bean { ComponentB() }
+    val module2 = module {
+        single { ComponentB() }
     }
 
     class ComponentA

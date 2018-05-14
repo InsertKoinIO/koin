@@ -13,8 +13,7 @@ interface KoinComponent
  * inject lazily given dependency for KoinComponent
  * @param name - bean name
  */
-inline fun <reified T> KoinComponent.inject(name: String = ""): Lazy<T> =
-    (StandAloneContext.koinContext as KoinContext).inject(name, emptyParameters())
+inline fun <reified T> KoinComponent.inject(name: String = ""): Lazy<T> = inject(name, emptyParameters())
 
 /**
  * inject lazily given dependency for KoinComponent
@@ -47,8 +46,7 @@ inline fun <reified T> KoinComponent.property(key: String, defaultValue: T): Laz
  * Retrieve given dependency for KoinComponent
  * @param name - bean name
  */
-inline fun <reified T> KoinComponent.get(name: String = ""): T =
-    (StandAloneContext.koinContext as KoinContext).get(name, emptyParameters())
+inline fun <reified T> KoinComponent.get(name: String = ""): T = get(name, emptyParameters())
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -89,10 +87,4 @@ fun KoinComponent.setProperty(key: String, value: Any) = getContext().setPropert
  * @param path
  */
 fun KoinComponent.release(path: String) = getContext().release(path)
-
-/**
- * Release properties
- * @param keys - key properties
- */
-fun KoinComponent.releaseProperties(vararg keys: String) = getContext().releaseProperties(*keys)
 

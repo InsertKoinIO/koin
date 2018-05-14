@@ -28,6 +28,17 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * Create a inner sub module in actual module
      * @param path
      */
+    @Deprecated("use module { }")
+    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition {
+        val newContext = ModuleDefinition(path, koinContext)
+        subModules += newContext
+        return newContext.apply(init)
+    }
+
+    /**
+     * Create a inner sub module in actual module
+     * @param path
+     */
     fun module(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition {
         val newContext = ModuleDefinition(path, koinContext)
         subModules += newContext
@@ -35,7 +46,7 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
     }
 
     /**
-     * Provide a bean definition - default provider definition
+     * Provide a singleton definition - default provider definition
      * @param name
      * @param isSingleton
      */
@@ -50,10 +61,19 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
     }
 
     /**
+     * Provide a singleton definition - alias to provide
+     * @param name
+     */
+    @Deprecated("use single { } instead")
+    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
+        return provide(name, true, definition)
+    }
+
+    /**
      * Provide a bean definition - alias to provide
      * @param name
      */
-    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
+    inline fun <reified T : Any> single(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
         return provide(name, true, definition)
     }
 

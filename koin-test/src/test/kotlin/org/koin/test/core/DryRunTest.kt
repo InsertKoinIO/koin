@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -15,13 +15,13 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class DryRunTest : AutoCloseKoinTest() {
 
-    val SimpleModule = applicationContext {
-        bean { ComponentA() }
-        bean { ComponentB(get()) }
+    val SimpleModule = module {
+        single { ComponentA() }
+        single { ComponentB(get()) }
     }
 
-    val BrokenModule = applicationContext {
-        bean { ComponentB(get()) }
+    val BrokenModule = module {
+        single { ComponentB(get()) }
     }
 
     class ComponentA()

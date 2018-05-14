@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
@@ -11,9 +11,9 @@ import org.koin.test.ext.junit.assertRemainingInstances
 
 class ParametersPropagationTest : AutoCloseKoinTest() {
 
-    val simpleModule1 = applicationContext {
-        bean { params -> ComponentA(params["this"]) }
-        bean { params -> ComponentB(get { params.values }) }
+    val simpleModule1 = module {
+        single { params -> ComponentA(params["this"]) }
+        single { params -> ComponentB(get { params.values }) }
     }
 
     class ComponentA(val componentC: ComponentC)
