@@ -4,7 +4,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -60,8 +60,8 @@ class MultipleModuleTest : AutoCloseKoinTest() {
         assertRemainingInstances(3)
         assertDefinitions(3)
         assertContexts(2)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
         assertDefinedInScope(ComponentC::class, "C")
     }
 }

@@ -58,7 +58,7 @@ _DSL_
 
 _Core_
 
-* `[FIXED]` Context resolution and scope isolation reworked - now fully functionnal
+* `[FIXED]` Context resolution and modulePath isolation reworked - now fully functionnal
 * `[FIXED]` Stack resolution
 * `[ADDED]` `StandAloneContext` function `loadKoinModules` to load Koin modules wether Koin is already started
 * `[ADDED]` `StandAloneContext` function `loadProperties` to load Koin properties wether Koin is already started
@@ -297,7 +297,7 @@ The **dry run** feature, allows to run all of you modules in order to check if d
 _DSL_
 
 * replaced `declareContext{}` has been renamed `applicationContext{}`, and behind gives a better idea that you are describing your application context (the root context of your app)
-* Updated `scope(){}`has been dropped for `context(){}` - *context* describes a sub context of your application, has a a name and can have also sub context itself (sub contexts are hierarchicals)
+* Updated `modulePath(){}`has been dropped for `context(){}` - *context* describes a sub context of your application, has a a name and can have also sub context itself (sub contexts are hierarchicals)
 * Updated `bind{}` doesn't need lambda anymore to declare your bound class, but just the class in argument: `bind()`
 * Added `provideFactory` is a DSL keyword to provide a factory definition instead of singleton
 
@@ -369,15 +369,15 @@ class MykModule : Module() {
 
 _Scope_
 
-* You can declare/reuse scopes in your modules, with `scope {}` operator. See scopes section
-* Release scope instances with `release()` on a KoinContext
+* You can declare/reuse scopes in your modules, with `modulePath {}` operator. See scopes section
+* Release modulePath instances with `release()` on a KoinContext
 
 ```kotlin
 class MainActivityModule : Module() {
     override fun context() =
             declareContext {
                 // Scope MainActivity
-                scope { MainActivity::class }
+                modulePath { MainActivity::class }
                 // provided WeatherService
                 provide { WeatherService(get()) }
             }
@@ -430,7 +430,7 @@ val ctx = Koin().init(applicationContext).build(Module1(),Module2()...)
 ```
 Internal rework for simpler use with Scopes:
 * `Koin().build()` return KoinContext
-* factory, stack operators have been removed, for the scope fatures
+* factory, stack operators have been removed, for the modulePath fatures
 * delete/remove replcaed with `release()` Scope operation
 * import is replaced with module instances load
 * All reflection & kotlin-reflect code have been removed

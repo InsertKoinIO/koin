@@ -1,6 +1,6 @@
 package org.koin.core.instance
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.context.ParameterProvider
 import org.koin.error.BeanInstanceCreationException
 
@@ -8,7 +8,7 @@ import org.koin.error.BeanInstanceCreationException
  * Instance factory - handle objects creation against BeanRegistry
  * @author - Arnaud GIULIANI
  */
-class InstanceFactory() {
+class InstanceFactory {
 
     val instances = HashMap<BeanDefinition<*>, Any>()
 

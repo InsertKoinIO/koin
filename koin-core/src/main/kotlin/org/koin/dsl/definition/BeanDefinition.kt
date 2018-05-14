@@ -1,6 +1,6 @@
-package org.koin.core.bean
+package org.koin.dsl.definition
 
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.context.ParameterProvider
 import kotlin.reflect.KClass
 
@@ -24,7 +24,7 @@ data class BeanDefinition<out T>(
     val name: String = "",
     val clazz: KClass<*>,
     var types: List<KClass<*>> = arrayListOf(),
-    val scope: Scope = Scope.root(),
+    val modulePath: ModulePath = ModulePath.root(),
     val isSingleton: Boolean = true,
     val definition: Definition<T>
 ) {
@@ -49,18 +49,18 @@ data class BeanDefinition<out T>(
         val c = "class=${clazz.java.canonicalName}"
         val s = if (isSingleton) "Bean" else "Factory"
         val b = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
-        val sn = if (scope != Scope.root()) ", scope:${scope.name}" else ""
+        val sn = if (modulePath != ModulePath.root()) ", module:${modulePath.fullName}" else ""
         return "$s[$n$c$b$sn]"
     }
 
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {
-            name == other.name && clazz == other.clazz && scope == other.scope
+            name == other.name && clazz == other.clazz && modulePath == other.modulePath
         } else false
     }
 
     override fun hashCode(): Int {
-        return name.hashCode() + clazz.hashCode() + scope.hashCode()
+        return name.hashCode() + clazz.hashCode() + modulePath.hashCode()
     }
 }
 

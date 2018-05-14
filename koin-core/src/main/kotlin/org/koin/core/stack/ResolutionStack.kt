@@ -1,6 +1,6 @@
 package org.koin.core.stack
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.DependencyResolutionException
 import java.util.*
 

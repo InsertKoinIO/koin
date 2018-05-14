@@ -2,7 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -55,9 +55,9 @@ class FactoryInstanceCreationTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(3)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
-        assertDefinedInScope(ComponentC::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentC::class, ModulePath.ROOT)
     }
 
     @Test
@@ -78,7 +78,7 @@ class FactoryInstanceCreationTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(3)
         assertContexts(3)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
         assertDefinedInScope(ComponentB::class, "B")
         assertDefinedInScope(ComponentC::class, "C")
     }

@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -71,8 +71,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(MyInterface::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(MyInterface::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
     }
 
     @Test
@@ -94,8 +94,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
     }
 
 //    @Test

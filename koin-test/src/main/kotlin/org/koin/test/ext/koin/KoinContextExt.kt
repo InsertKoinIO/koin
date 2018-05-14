@@ -1,7 +1,7 @@
 package org.koin.test.ext.koin
 
 import org.koin.core.KoinContext
-import org.koin.core.bean.BeanDefinition
+import org.koin.dsl.definition.BeanDefinition
 import kotlin.reflect.KClass
 
 
@@ -14,12 +14,13 @@ fun KoinContext.beanDefinitions() = beanRegistry.definitions
  * return beanDefinition for given class
  * @param clazz - bean class
  */
-fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? = beanDefinitions().firstOrNull() { it.clazz == clazz }
+fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? =
+    beanDefinitions().firstOrNull() { it.clazz == clazz }
 
 /**
  * Return all contexts of Koin
  */
-fun KoinContext.allScopes() = scopeRegistry.scopes
+fun KoinContext.allScopes() = pathRegistry.paths
 
 /**
  * Return all instances of Koin

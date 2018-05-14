@@ -28,7 +28,7 @@ fun KoinTest.assertDefinitions(definitionCount: Int) {
  */
 fun KoinTest.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String) {
     val definition = context().beanDefinition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", scopeName, definition?.scope?.name ?: "")
+    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", scopeName, definition?.modulePath?.name ?: "")
 }
 
 /**
@@ -38,21 +38,21 @@ fun KoinTest.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String)
  */
 fun KoinTest.assertContextInstances(scopeName: String, instanceCount: Int) {
     val scope = context().getScope(scopeName)
-    val definitions = context().beanDefinitions().filter { it.scope == scope }.toSet()
+    val definitions = context().beanDefinitions().filter { it.modulePath == scope }.toSet()
     val instances = context().allInstances().filter { it.first in definitions }
     Assert.assertEquals("scope $scopeName must have $instanceCount instances", instanceCount, instances.size)
 }
 
 /**
- * Assert scope has given parent scope
- * @param scopeName - target scope name
- * @param scopeParent - parent scope name
+ * Assert path has given parent path
+ * @param path - target scope name
+ * @param parentPath - parent scope name
  */
-fun KoinTest.assertScopeParent(scopeName: String, scopeParent: String) {
+fun KoinTest.assertScopeParent(path: String, parentPath: String) {
     Assert.assertEquals(
-        "Scope '$scopeName' must have parent '$scopeName'",
-        scopeParent,
-        context().scopeRegistry.getScope(scopeName).parent?.name
+        "Scope '$path' must have parent '$path'",
+        parentPath,
+        context().pathRegistry.getPath(path).parent?.name
     )
 }
 

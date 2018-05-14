@@ -2,11 +2,11 @@ package org.koin.standalone
 
 import org.koin.core.Koin
 import org.koin.core.KoinContext
+import org.koin.core.ModuleCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.path.ModulePathRegistry
 import org.koin.core.property.PropertyRegistry
-import org.koin.core.scope.ScopeCallbacks
-import org.koin.core.scope.ScopeRegistry
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 
@@ -31,7 +31,7 @@ object StandAloneContext {
      */
     fun loadKoinModules(vararg modules: Module): Koin = synchronized(this) {
         createContextIfNeeded()
-        return KoinContext().build(modules.toList())
+        return getKoin().build(modules.toList())
     }
 
     /**
@@ -42,13 +42,8 @@ object StandAloneContext {
      */
     fun loadKoinModules(modules: List<Module>): Koin = synchronized(this) {
         createContextIfNeeded()
-        return KoinContext().build(modules)
+        return getKoin().build(modules)
     }
-
-    /**
-     * Get koin context
-     */
-    private fun KoinContext(): Koin = Koin(koinContext as KoinContext)
 
     /**
      * Create Koin context if needed :)
@@ -58,7 +53,7 @@ object StandAloneContext {
             Koin.logger.log("[context] create")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
-            val scopeRegistry = ScopeRegistry()
+            val scopeRegistry = ModulePathRegistry()
             val instanceFactory = InstanceFactory()
             koinContext = KoinContext(beanRegistry, scopeRegistry, propertyResolver, instanceFactory)
             isStarted = true
@@ -67,11 +62,11 @@ object StandAloneContext {
 
     /**
      * Register ModuleDefinition callbacks
-     * @see ScopeCallbacks - ModuleDefinition CallBack
+     * @see ModuleCallback - ModuleDefinition CallBack
      */
-    fun registerScopeCallBack(scopeCallbacks: ScopeCallbacks) {
-        Koin.logger.log("[context] callback registering with $scopeCallbacks")
-        KoinContext().koinContext.contextCallback = scopeCallbacks
+    fun registerCallBack(moduleCallback: ModuleCallback) {
+        Koin.logger.log("[context] callback registering with $moduleCallback")
+        getKoinContext().contextCallback.add(moduleCallback)
     }
 
     /**
@@ -89,7 +84,7 @@ object StandAloneContext {
     ): Koin = synchronized(this) {
         createContextIfNeeded()
 
-        val koin = KoinContext()
+        val koin = getKoin()
 
         if (useKoinPropertiesFile) {
             Koin.logger.log("[properties] load koin.properties")
@@ -128,7 +123,7 @@ object StandAloneContext {
         createContextIfNeeded()
         loadKoinModules(list)
         loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
-        return KoinContext()
+        return getKoin()
     }
 
     /**
@@ -137,16 +132,28 @@ object StandAloneContext {
     fun closeKoin() = synchronized(this) {
         if (isStarted) {
             // Close all
-            (koinContext as KoinContext).close()
+            getKoinContext().close()
             isStarted = false
         }
     }
-}
 
-/**
- * Help to Access context
- */
-internal fun getContext() = (StandAloneContext.koinContext as KoinContext)
+    /**
+     * Displays paths
+     */
+    fun dumpScopes() {
+        getKoinContext().pathRegistry.paths.forEach { Koin.logger.log("Scope : $it") }
+    }
+
+    /**
+     * Get Koin
+     */
+    private fun getKoin(): Koin = Koin(koinContext as KoinContext)
+
+    /**
+     * Get KoinContext
+     */
+    private fun getKoinContext(): KoinContext = (koinContext as KoinContext)
+}
 
 /**
  * Stand alone Koin context

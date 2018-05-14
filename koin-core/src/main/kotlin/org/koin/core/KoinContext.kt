@@ -1,15 +1,14 @@
 package org.koin.core
 
 import org.koin.core.Koin.Companion.logger
-import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.Parameters
+import org.koin.core.path.ModulePathRegistry
 import org.koin.core.property.PropertyRegistry
-import org.koin.core.scope.ScopeCallbacks
-import org.koin.core.scope.ScopeRegistry
 import org.koin.core.stack.ResolutionStack
 import org.koin.dsl.context.ParameterHolder
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.ContextVisibilityException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.MissingPropertyException
@@ -25,14 +24,14 @@ import kotlin.reflect.KClass
  */
 class KoinContext(
     val beanRegistry: BeanRegistry,
-    val scopeRegistry: ScopeRegistry,
+    val pathRegistry: ModulePathRegistry,
     val propertyResolver: PropertyRegistry,
     val instanceFactory: InstanceFactory
 ) : StandAloneKoinContext {
 
     private val resolutionStack = ResolutionStack()
 
-    var contextCallback: ScopeCallbacks? = null
+    var contextCallback: ArrayList<ModuleCallback> = arrayListOf()
 
     /**
      * Lazy bean instance
@@ -117,8 +116,8 @@ class KoinContext(
     ): BeanDefinition<*> {
         val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
             val found = definitionResolver()
-            val filteredByVisibility = found.filter { it.scope.isVisible(lastInStack.scope) }
-            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.scope}")
+            val filteredByVisibility = found.filter { it.modulePath.isVisible(lastInStack.modulePath) }
+            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.modulePath}")
             filteredByVisibility
         } else definitionResolver()).distinct()
 
@@ -154,13 +153,13 @@ class KoinContext(
     fun release(path: String) {
         logger.log("Release instances : $path")
 
-        val scopes = scopeRegistry.getAllScopesFrom(path)
+        val scopes = pathRegistry.getAllPathsFrom(path)
         val definitions: List<BeanDefinition<*>> =
             beanRegistry.getDefinitions(scopes)
 
         instanceFactory.releaseInstances(definitions)
 
-        contextCallback?.onScopeReleased(path)
+        contextCallback.forEach { it.onRelease(path) }
     }
 
     /**
@@ -192,7 +191,7 @@ class KoinContext(
         resolutionStack.clear()
         instanceFactory.clear()
         beanRegistry.clear()
-        scopeRegistry.clear()
+        pathRegistry.clear()
         propertyResolver.clear()
     }
 }

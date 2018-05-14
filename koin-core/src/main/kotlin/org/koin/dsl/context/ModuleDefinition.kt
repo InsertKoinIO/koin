@@ -1,10 +1,9 @@
 package org.koin.dsl.context
 
 import org.koin.core.KoinContext
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.Definition
+import org.koin.dsl.definition.BeanDefinition
+import org.koin.dsl.definition.Definition
 import org.koin.core.parameter.Parameters
-import org.koin.core.scope.Scope
 
 /**
  * Koin Module Definition
@@ -55,7 +54,8 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
         isSingleton: Boolean = true,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
+        val beanDefinition =
+            BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
         definitions += beanDefinition
         return beanDefinition
     }

@@ -1,7 +1,7 @@
 package org.koin.test.core
 
 import org.junit.Test
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
@@ -50,12 +50,12 @@ class DSLContextTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
         assertDefinedInScope(ComponentB::class, "B")
         assertDefinedInScope(ComponentC::class, "C")
 
-        assertScopeParent("B", Scope.ROOT)
-        assertScopeParent("C", Scope.ROOT)
+        assertScopeParent("B", ModulePath.ROOT)
+        assertScopeParent("C", ModulePath.ROOT)
     }
 
     @Test
@@ -69,7 +69,7 @@ class DSLContextTest : AutoCloseKoinTest() {
         assertDefinedInScope(ComponentB::class, "B")
         assertDefinedInScope(ComponentC::class, "C")
 
-        assertScopeParent("A", Scope.ROOT)
+        assertScopeParent("A", ModulePath.ROOT)
         assertScopeParent("B", "A")
         assertScopeParent("C", "B")
     }

@@ -3,9 +3,8 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.core.scope.Scope
-import org.koin.dsl.module.applicationContext
 import org.koin.dsl.module.module
+import org.koin.dsl.path.ModulePath
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -33,7 +32,7 @@ class PropertyTest : AutoCloseKoinTest() {
         }
     }
 
-    val MoreComplexModule = applicationContext {
+    val MoreComplexModule = module {
         module("A") {
             single { ComponentB(get()) }
             factory { ComponentA(getProperty(KEY)) }
@@ -75,8 +74,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
         assertProperties(3)
     }
 
@@ -96,8 +95,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
         assertProperties(3)
     }
 
@@ -161,8 +160,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(0)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
-        assertDefinedInScope(ComponentB::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
+        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
         assertProperties(2)
     }
 

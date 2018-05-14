@@ -80,11 +80,18 @@ inline fun <reified T> KoinComponent.getProperty(key: String, defaultValue: T): 
  * @param key
  * @param value
  */
-fun KoinComponent.setProperty(key: String, value: Any) = getContext().setProperty(key, value)
+fun KoinComponent.setProperty(key: String, value: Any) = getKoinContext().setProperty(key, value)
 
 /**
  * Release instances at given module scope
  * @param path
  */
-fun KoinComponent.release(path: String) = getContext().release(path)
+fun KoinComponent.release(path: String) = getKoinContext().release(path)
+
+
+/**
+ * Help to Access context
+ */
+private fun getKoinContext() = (StandAloneContext.koinContext as KoinContext)
+
 

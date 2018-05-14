@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -13,7 +13,7 @@ import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 import org.koin.test.ext.junit.assertScopeParent
 
-class ScopeContextTest : AutoCloseKoinTest() {
+class ModuleModulePathContextTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = module {
         module(path = "B") {
@@ -64,8 +64,8 @@ class ScopeContextTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(4)
 
-        assertScopeParent("B", Scope.ROOT)
-        assertScopeParent("C", Scope.ROOT)
+        assertScopeParent("B", ModulePath.ROOT)
+        assertScopeParent("C", ModulePath.ROOT)
 
         Assert.assertNotNull(get<ComponentB>("B_B"))
         Assert.assertNotNull(get<ComponentB>("B_C"))
@@ -90,7 +90,7 @@ class ScopeContextTest : AutoCloseKoinTest() {
         assertContexts(5)
         assertDefinitions(4)
 
-        assertScopeParent("A", Scope.ROOT)
+        assertScopeParent("A", ModulePath.ROOT)
         assertScopeParent("B", "A")
         assertScopeParent("C", "B")
 

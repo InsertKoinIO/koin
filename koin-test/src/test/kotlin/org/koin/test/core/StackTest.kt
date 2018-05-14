@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.Koin
-import org.koin.core.scope.Scope
+import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.ContextVisibilityException
@@ -74,12 +74,12 @@ class StackTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, Scope.ROOT)
+        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
         assertDefinedInScope(ComponentB::class, "B")
         assertDefinedInScope(ComponentC::class, "C")
 
-        assertScopeParent("B", Scope.ROOT)
-        assertScopeParent("C", Scope.ROOT)
+        assertScopeParent("B", ModulePath.ROOT)
+        assertScopeParent("C", ModulePath.ROOT)
 
         Assert.assertNotNull(get<ComponentC>())
         Assert.assertNotNull(get<ComponentB>())
