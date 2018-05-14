@@ -53,9 +53,9 @@ object StandAloneContext {
             Koin.logger.log("[context] create")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
-            val scopeRegistry = ModulePathRegistry()
+            val pathRegistry = ModulePathRegistry()
             val instanceFactory = InstanceFactory()
-            koinContext = KoinContext(beanRegistry, scopeRegistry, propertyResolver, instanceFactory)
+            koinContext = KoinContext(beanRegistry, pathRegistry, propertyResolver, instanceFactory)
             isStarted = true
         }
     }
@@ -138,10 +138,10 @@ object StandAloneContext {
     }
 
     /**
-     * Displays paths
+     * Displays Module paths
      */
-    fun dumpScopes() {
-        getKoinContext().pathRegistry.paths.forEach { Koin.logger.log("Scope : $it") }
+    fun dumpModulePaths() {
+        getKoinContext().pathRegistry.paths.forEach { Koin.logger.log("Module [${it.fullName}]") }
     }
 
     /**

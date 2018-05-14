@@ -5,7 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.path.ModulePath
 import org.koin.dsl.module.module
-import org.koin.error.NoScopeFoundException
+import org.koin.error.NoModulePathException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.release
@@ -39,12 +39,12 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContexts(4)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("B", "A")
+        assertPath("C", "B")
 
         val a1 = get<ComponentA>()
         val b1 = get<ComponentB>()
@@ -83,12 +83,12 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContexts(4)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("B", "A")
+        assertPath("C", "B")
 
         val a1 = get<ComponentA>()
         val b1 = get<ComponentB>()
@@ -127,12 +127,12 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContexts(4)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("B", "A")
+        assertPath("C", "B")
 
         val a1 = get<ComponentA>()
         val b1 = get<ComponentB>()
@@ -171,12 +171,12 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContexts(4)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("B", "A")
+        assertPath("C", "B")
 
         val a1 = get<ComponentA>()
         val b1 = get<ComponentB>()
@@ -215,12 +215,12 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContexts(4)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("B", "A")
+        assertPath("C", "B")
 
         Assert.assertNotNull(get<ComponentA>())
         Assert.assertNotNull(get<ComponentB>())
@@ -234,7 +234,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         try {
             release("D")
             fail()
-        } catch (e: NoScopeFoundException) {
+        } catch (e: NoModulePathException) {
         }
 
         assertRemainingInstances(3)

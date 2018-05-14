@@ -3,8 +3,8 @@ package org.koin.android.ext.koin
 import android.app.Application
 import android.content.Context
 import org.koin.core.Koin
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.scope.Scope
+import org.koin.dsl.definition.BeanDefinition
+import org.koin.dsl.path.ModulePath
 import java.util.*
 
 /**
@@ -29,7 +29,7 @@ fun Koin.init(application: Application): Koin {
         BeanDefinition(
             clazz = Application::class,
             types = listOf(Context::class),
-            definition = { application }), Scope.root()
+            definition = { application }), ModulePath.root()
     )
     return this
 }

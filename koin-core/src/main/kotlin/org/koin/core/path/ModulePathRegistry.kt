@@ -2,7 +2,7 @@ package org.koin.core.path
 
 import org.koin.core.Koin
 import org.koin.dsl.path.ModulePath
-import org.koin.error.NoScopeFoundException
+import org.koin.error.NoModulePathException
 
 /**
  * Create & Handle all module paths
@@ -11,6 +11,7 @@ import org.koin.error.NoScopeFoundException
  */
 class ModulePathRegistry {
     val paths = hashSetOf<ModulePath>()
+
     private val root = ModulePath.root()
 
     init {
@@ -19,6 +20,7 @@ class ModulePathRegistry {
 
     /**
      * Retrieve ModulePath for given path
+     * @param path
      */
     fun getPath(path: String): ModulePath {
         return if (path == "") ModulePath.root()
@@ -26,7 +28,7 @@ class ModulePathRegistry {
             val paths = path.split(".")
             var moduleModulePath: ModulePath? = null
             paths.forEach { current -> moduleModulePath = this.paths.firstOrNull { it.name == current } }
-            moduleModulePath ?: throw NoScopeFoundException("no module path found for '$path'")
+            moduleModulePath ?: throw NoModulePathException("no module path found for '$path'")
         }
     }
 
@@ -38,7 +40,7 @@ class ModulePathRegistry {
     private fun findOrCreatePath(path: String?, parentPath: String? = null): ModulePath {
         return if (path == null) root
         else {
-            paths.firstOrNull { it.name == path } ?: createScope(path, parentPath)
+            paths.firstOrNull { it.name == path } ?: createPath(path, parentPath)
         }
     }
 
@@ -47,18 +49,28 @@ class ModulePathRegistry {
      * @param path
      * @param parentPath
      */
-    private fun createScope(scope: String, parentScope: String?): ModulePath {
-        val parentLog = if (parentScope != null) "with parent [$parentScope]" else ""
-        Koin.logger.debug("[scope] create [$scope] $parentLog")
-        val s = ModulePath(scope, parent = findOrCreatePath(parentScope))
+    private fun createPath(path: String, parentPath: String?): ModulePath {
+        if (parentPath != null) {
+            Koin.logger.debug("[module] create path [$parentPath.$path] ")
+        } else {
+            Koin.logger.debug("[module] create path [$path] ")
+        }
+        val s = ModulePath(path, parent = findOrCreatePath(parentPath))
         paths += s
         return s
     }
 
     /**
      * Make ModulePath from path
+     * @param path
+     * @param parentPath
      */
     fun makePath(path: String, parentPath: String? = null): ModulePath {
+        if (parentPath != null) {
+            Koin.logger.debug("[module] make path [$parentPath.$path] ")
+        } else {
+            Koin.logger.debug("[module] make path [$path] ")
+        }
         val paths = path.split(".")
         var parent: String? = parentPath
         var createdModulePath: ModulePath = ModulePath.root()
@@ -71,11 +83,12 @@ class ModulePathRegistry {
 
     /**
      * Retrieve paths (with children paths)
+     * @param path
      */
     fun getAllPathsFrom(path: String): Set<ModulePath> {
-        val scope = getPath(path)
-        val firstChild = paths.filter { it.parent == scope }
-        return setOf(scope) + firstChild + firstChild.flatMap { getAllPathsFrom(it.name) }
+        val mainPath = getPath(path)
+        val firstChild = paths.filter { it.parent == mainPath }
+        return setOf(mainPath) + firstChild + firstChild.flatMap { getAllPathsFrom(it.name) }
     }
 
     fun clear() {

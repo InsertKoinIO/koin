@@ -1,8 +1,8 @@
 package org.koin.android.architecture.ext.koin
 
 import org.koin.core.KoinContext
-import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.Parameters
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.NoBeanDefFoundException
 
 /**

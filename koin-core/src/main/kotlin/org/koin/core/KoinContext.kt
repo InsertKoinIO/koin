@@ -117,7 +117,7 @@ class KoinContext(
         val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
             val found = definitionResolver()
             val filteredByVisibility = found.filter { it.modulePath.isVisible(lastInStack.modulePath) }
-            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.modulePath}")
+            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from module path ${lastInStack.modulePath}")
             filteredByVisibility
         } else definitionResolver()).distinct()
 
@@ -153,9 +153,9 @@ class KoinContext(
     fun release(path: String) {
         logger.log("Release instances : $path")
 
-        val scopes = pathRegistry.getAllPathsFrom(path)
+        val paths = pathRegistry.getAllPathsFrom(path)
         val definitions: List<BeanDefinition<*>> =
-            beanRegistry.getDefinitions(scopes)
+            beanRegistry.getDefinitions(paths)
 
         instanceFactory.releaseInstances(definitions)
 

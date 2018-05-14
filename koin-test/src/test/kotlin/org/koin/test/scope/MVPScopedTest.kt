@@ -4,12 +4,12 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.StandAloneContext.dumpScopes
+import org.koin.standalone.StandAloneContext.dumpModulePaths
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertDefinedInScope
+import org.koin.test.ext.junit.assertIsInModulePath
 
 class MVPScopedTest : AutoCloseKoinTest() {
 
@@ -32,10 +32,10 @@ class MVPScopedTest : AutoCloseKoinTest() {
     @Test
     fun `inject view`() {
         startKoin(listOf(mainModule))
-        dumpScopes()
+        dumpModulePaths()
 
-        assertDefinedInScope(Repository::class, "koin")
-        assertDefinedInScope(Presenter::class, "view")
+        assertIsInModulePath(Repository::class, "koin")
+        assertIsInModulePath(Presenter::class, "view")
 
         val view = View()
         Assert.assertEquals(view.presenter, get<Presenter>())

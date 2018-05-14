@@ -1,8 +1,8 @@
 package org.koin.android.architecture.ext.koin
 
 import android.arch.lifecycle.ViewModel
-import org.koin.core.bean.Definition
 import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.definition.Definition
 
 
 /**

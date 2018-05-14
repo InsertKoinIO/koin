@@ -13,9 +13,9 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinedInScope
+import org.koin.test.ext.junit.assertIsInModulePath
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertScopeParent
+import org.koin.test.ext.junit.assertPath
 
 class StackTest : AutoCloseKoinTest() {
 
@@ -74,12 +74,12 @@ class StackTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", ModulePath.ROOT)
-        assertScopeParent("C", ModulePath.ROOT)
+        assertPath("B", ModulePath.ROOT)
+        assertPath("C", ModulePath.ROOT)
 
         Assert.assertNotNull(get<ComponentC>())
         Assert.assertNotNull(get<ComponentB>())

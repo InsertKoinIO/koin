@@ -1,13 +1,13 @@
 package org.koin.spark
 
-import org.koin.core.bean.Definition
 import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.definition.Definition
 
 /**
  * Declare a Spark controller
  */
 inline fun <reified T : Any> ModuleDefinition.controller(name: String = "", noinline definition: Definition<T>) {
-    val def = bean(name, definition)
+    val def = single(name, definition)
     def.bind(SparkController::class)
 }
 

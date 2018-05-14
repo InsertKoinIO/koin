@@ -14,7 +14,7 @@ class Koin(val koinContext: KoinContext) {
 
     val propertyResolver = koinContext.propertyResolver
     val beanRegistry = koinContext.beanRegistry
-    val scopeRegistry = koinContext.pathRegistry
+    val pathRegistry = koinContext.pathRegistry
 
     /**
      * Inject properties to context
@@ -70,9 +70,7 @@ class Koin(val koinContext: KoinContext) {
         moduleDefinition: ModuleDefinition,
         parentModuleDefinition: ModuleDefinition? = null
     ) {
-
-        // Create or reuse getScopeForDefinition moduleDefinition
-        val modulePath = scopeRegistry.makePath(moduleDefinition.path, parentModuleDefinition?.path)
+        val modulePath = pathRegistry.makePath(moduleDefinition.path, parentModuleDefinition?.path)
 
         // Add definitions
         moduleDefinition.definitions.forEach { definition ->

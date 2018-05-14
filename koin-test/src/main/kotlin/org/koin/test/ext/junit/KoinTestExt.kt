@@ -22,35 +22,35 @@ fun KoinTest.assertDefinitions(definitionCount: Int) {
 }
 
 /**
- * Assert definitionClazz is defined in given scope
+ * Assert definitionClazz is defined in given module path
  * @param definitionClazz - bean beanDefinition class
- * @param scopeName - scope name
+ * @param path
  */
-fun KoinTest.assertDefinedInScope(definitionClazz: KClass<*>, scopeName: String) {
+fun KoinTest.assertIsInModulePath(definitionClazz: KClass<*>, path: String) {
     val definition = context().beanDefinition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in scope '$scopeName'", scopeName, definition?.modulePath?.name ?: "")
+    Assert.assertEquals("$definitionClazz must be in path '$path'", path, definition?.modulePath?.name ?: "")
 }
 
 /**
  * Assert context has beanDefinition instanceCount
- * @param scopeName - scope name
+ * @param pathName
  * @param instanceCount - number of instances
  */
-fun KoinTest.assertContextInstances(scopeName: String, instanceCount: Int) {
-    val scope = context().getScope(scopeName)
-    val definitions = context().beanDefinitions().filter { it.modulePath == scope }.toSet()
+fun KoinTest.assertContextInstances(pathName: String, instanceCount: Int) {
+    val path = context().getPath(pathName)
+    val definitions = context().beanDefinitions().filter { it.modulePath == path }.toSet()
     val instances = context().allInstances().filter { it.first in definitions }
-    Assert.assertEquals("scope $scopeName must have $instanceCount instances", instanceCount, instances.size)
+    Assert.assertEquals("path $pathName must have $instanceCount instances", instanceCount, instances.size)
 }
 
 /**
  * Assert path has given parent path
- * @param path - target scope name
- * @param parentPath - parent scope name
+ * @param path
+ * @param parentPath
  */
-fun KoinTest.assertScopeParent(path: String, parentPath: String) {
+fun KoinTest.assertPath(path: String, parentPath: String) {
     Assert.assertEquals(
-        "Scope '$path' must have parent '$path'",
+        "Path '$path' must have parent '$parentPath'",
         parentPath,
         context().pathRegistry.getPath(path).parent?.name
     )
@@ -78,5 +78,5 @@ fun KoinTest.assertProperties(propertyCount: Int) {
  * @param contextCount - context count
  */
 fun KoinTest.assertContexts(contextCount: Int) {
-    Assert.assertEquals("context must have $contextCount contexts", contextCount, context().allScopes().size)
+    Assert.assertEquals("context must have $contextCount contexts", contextCount, context().allPaths().size)
 }

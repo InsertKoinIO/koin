@@ -6,9 +6,9 @@ import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinedInScope
+import org.koin.test.ext.junit.assertIsInModulePath
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertScopeParent
+import org.koin.test.ext.junit.assertPath
 
 class DSLContextTest : AutoCloseKoinTest() {
 
@@ -50,12 +50,12 @@ class DSLContextTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("B", ModulePath.ROOT)
-        assertScopeParent("C", ModulePath.ROOT)
+        assertPath("B", ModulePath.ROOT)
+        assertPath("C", ModulePath.ROOT)
     }
 
     @Test
@@ -65,13 +65,13 @@ class DSLContextTest : AutoCloseKoinTest() {
         assertContexts(4)
         assertDefinitions(3)
 
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "B")
-        assertDefinedInScope(ComponentC::class, "C")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "B")
+        assertIsInModulePath(ComponentC::class, "C")
 
-        assertScopeParent("A", ModulePath.ROOT)
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("A", ModulePath.ROOT)
+        assertPath("B", "A")
+        assertPath("C", "B")
     }
 
 }

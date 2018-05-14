@@ -74,8 +74,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
         assertProperties(3)
     }
 
@@ -95,8 +95,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
         assertProperties(3)
     }
 
@@ -116,8 +116,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(2)
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "A")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "A")
         assertProperties(3)
     }
 
@@ -160,8 +160,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(0)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
         assertProperties(2)
     }
 
@@ -194,8 +194,8 @@ class PropertyTest : AutoCloseKoinTest() {
 
         assertContexts(2)
         assertProperties(3)
-        assertDefinedInScope(ComponentA::class, "A")
-        assertDefinedInScope(ComponentB::class, "A")
+        assertIsInModulePath(ComponentA::class, "A")
+        assertIsInModulePath(ComponentB::class, "A")
     }
 
     companion object {

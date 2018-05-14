@@ -369,7 +369,7 @@ class MykModule : Module() {
 
 _Scope_
 
-* You can declare/reuse scopes in your modules, with `modulePath {}` operator. See scopes section
+* You can declare/reuse paths in your modules, with `modulePath {}` operator. See paths section
 * Release modulePath instances with `release()` on a KoinContext
 
 ```kotlin

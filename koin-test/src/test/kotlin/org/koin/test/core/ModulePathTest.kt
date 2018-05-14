@@ -11,9 +11,9 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
-import org.koin.test.ext.junit.assertScopeParent
+import org.koin.test.ext.junit.assertPath
 
-class ModuleModulePathContextTest : AutoCloseKoinTest() {
+class ModulePathTest : AutoCloseKoinTest() {
 
     val FlatContextsModule = module {
         module(path = "B") {
@@ -64,8 +64,8 @@ class ModuleModulePathContextTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(4)
 
-        assertScopeParent("B", ModulePath.ROOT)
-        assertScopeParent("C", ModulePath.ROOT)
+        assertPath("B", ModulePath.ROOT)
+        assertPath("C", ModulePath.ROOT)
 
         Assert.assertNotNull(get<ComponentB>("B_B"))
         Assert.assertNotNull(get<ComponentB>("B_C"))
@@ -90,9 +90,9 @@ class ModuleModulePathContextTest : AutoCloseKoinTest() {
         assertContexts(5)
         assertDefinitions(4)
 
-        assertScopeParent("A", ModulePath.ROOT)
-        assertScopeParent("B", "A")
-        assertScopeParent("C", "B")
+        assertPath("A", ModulePath.ROOT)
+        assertPath("B", "A")
+        assertPath("C", "B")
 
         val c = get<ComponentC>()
         Assert.assertNotNull(c)

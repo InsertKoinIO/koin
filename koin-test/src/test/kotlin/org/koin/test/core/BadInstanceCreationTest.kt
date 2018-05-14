@@ -10,7 +10,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinedInScope
+import org.koin.test.ext.junit.assertIsInModulePath
 import org.koin.test.ext.junit.assertDefinitions
 
 class BadInstanceCreationTest : AutoCloseKoinTest() {
@@ -71,8 +71,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(MyInterface::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(MyInterface::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
     }
 
     @Test
@@ -94,8 +94,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(ComponentA::class, ModulePath.ROOT)
-        assertDefinedInScope(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
     }
 
 //    @Test

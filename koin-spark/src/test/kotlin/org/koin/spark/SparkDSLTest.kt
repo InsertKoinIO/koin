@@ -2,14 +2,14 @@ package org.koin.spark
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.koin.core.scope.Scope
 import org.koin.dsl.module.module
+import org.koin.dsl.path.ModulePath
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinedInScope
 import org.koin.test.ext.junit.assertDefinitions
+import org.koin.test.ext.junit.assertIsInModulePath
 import org.koin.test.ext.junit.assertRemainingInstances
 
 class SparkDSLTest : AutoCloseKoinTest() {
@@ -34,8 +34,8 @@ class SparkDSLTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(HelloController::class, Scope.ROOT)
-        assertDefinedInScope(HelloService::class, Scope.ROOT)
+        assertIsInModulePath(HelloController::class, ModulePath.ROOT)
+        assertIsInModulePath(HelloService::class, ModulePath.ROOT)
 
         assertEquals(controller, get<SparkController>())
     }
@@ -55,7 +55,7 @@ class SparkDSLTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertDefinedInScope(HelloController::class, Scope.ROOT)
-        assertDefinedInScope(HelloService::class, Scope.ROOT)
+        assertIsInModulePath(HelloController::class, ModulePath.ROOT)
+        assertIsInModulePath(HelloService::class, ModulePath.ROOT)
     }
 }

@@ -53,7 +53,7 @@ class BeanRegistry() {
         definitions.filter(filter)
 
     /**
-     * Get bean definitions from given scope context & child
+     * Get bean definitions from given path
      */
     fun getDefinitions(modulePaths: Set<ModulePath>): List<BeanDefinition<*>> {
         return definitions.filter { def -> definitions.first { it == def }.modulePath in modulePaths }

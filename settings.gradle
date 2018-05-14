@@ -1,1 +1,1 @@
-include ':koin-core', ':koin-test'//,':koin-android', ':koin-android-architecture', ':koin-ktor', 'koin-spark', ':koin-book'
+include ':koin-core', ':koin-test',':koin-android', ':koin-android-architecture', ':koin-ktor', 'koin-spark', ':koin-book'

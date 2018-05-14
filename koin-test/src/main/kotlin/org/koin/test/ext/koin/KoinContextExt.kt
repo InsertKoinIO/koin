@@ -20,7 +20,7 @@ fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? =
 /**
  * Return all contexts of Koin
  */
-fun KoinContext.allScopes() = pathRegistry.paths
+fun KoinContext.allPaths() = pathRegistry.paths
 
 /**
  * Return all instances of Koin
@@ -33,7 +33,7 @@ fun KoinContext.allInstances() = instanceFactory.instances.toList()
 fun KoinContext.allProperties() = propertyResolver.properties
 
 /**
- * return scope
- * @param scopeName - scope name
+ * return path
+ * @param path
  */
-fun KoinContext.getScope(scopeName: String) = allScopes().first { it.name == scopeName }
+fun KoinContext.getPath(path: String) = allPaths().first { it.name == path }
