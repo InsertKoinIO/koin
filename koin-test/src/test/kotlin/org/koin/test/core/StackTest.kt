@@ -7,7 +7,7 @@ import org.koin.core.Koin
 import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
-import org.koin.error.ContextVisibilityException
+import org.koin.error.ModuleVisibilityException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -116,7 +116,7 @@ class StackTest : AutoCloseKoinTest() {
         try {
             get<ComponentD>()
             fail()
-        } catch (e: ContextVisibilityException) {
+        } catch (e: ModuleVisibilityException) {
             e.printStackTrace()
         }
     }

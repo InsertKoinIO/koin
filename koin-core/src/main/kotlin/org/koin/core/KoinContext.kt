@@ -9,10 +9,7 @@ import org.koin.core.property.PropertyRegistry
 import org.koin.core.stack.ResolutionStack
 import org.koin.dsl.context.ParameterHolder
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.error.ContextVisibilityException
-import org.koin.error.DependencyResolutionException
 import org.koin.error.MissingPropertyException
-import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
 
@@ -36,43 +33,53 @@ class KoinContext(
     /**
      * Lazy bean instance
      */
-    inline fun <reified T> inject(name: String = "", noinline parameters: Parameters = { emptyMap() }): Lazy<T> =
-        kotlin.lazy { get<T>(name, parameters) }
+    inline fun <reified T> inject(
+        name: String = "",
+        module: String = "",
+        noinline parameters: Parameters = { emptyMap() }
+    ): Lazy<T> =
+        kotlin.lazy { get<T>(name, module, parameters) }
 
     /**
      * Retrieve a bean instance
      */
-    inline fun <reified T> get(name: String = "", noinline parameters: Parameters = { emptyMap() }): T =
-        if (name.isEmpty()) resolveByClass(parameters) else resolveByName(name, parameters)
+    inline fun <reified T> get(
+        name: String = "",
+        module: String = "",
+        noinline parameters: Parameters = { emptyMap() }
+    ): T =
+        if (name.isEmpty()) resolveByClass(module, parameters) else resolveByName(name, module, parameters)
 
     /**
      * Resolve a dependency for its bean definition
      * @param name bean definition name
      */
-    inline fun <reified T> resolveByName(name: String, noinline parameters: Parameters): T =
-        resolveInstance(T::class, parameters) { beanRegistry.searchByName(name, T::class) }
+    inline fun <reified T> resolveByName(name: String, module: String = "", noinline parameters: Parameters): T =
+        resolveInstance(module, T::class, parameters) { beanRegistry.searchByName(name, T::class) }
 
     /**
      * Resolve a dependency for its bean definition
      * by its inferred type
      */
-    inline fun <reified T> resolveByClass(noinline parameters: Parameters): T =
-        resolveByClass(T::class, parameters)
+    inline fun <reified T> resolveByClass(module: String = "", noinline parameters: Parameters): T =
+        resolveByClass(module, T::class, parameters)
 
     /**
      * Resolve a dependency for its bean definition
      * byt its type
      */
-    inline fun <reified T> resolveByClass(clazz: KClass<*>, noinline parameters: Parameters): T =
-        resolveInstance(clazz, parameters) { beanRegistry.searchAll(clazz) }
+    inline fun <reified T> resolveByClass(module: String = "", clazz: KClass<*>, noinline parameters: Parameters): T =
+        resolveInstance(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
 
     /**
      * Resolve a dependency for its bean definition
+     * @param module - module path
      * @param clazz - Class
      * @param parameters - Parameters
      * @param definitionResolver - function to find bean definitions
      */
     fun <T> resolveInstance(
+        module: String = "",
         clazz: KClass<*>,
         parameters: Parameters,
         definitionResolver: () -> List<BeanDefinition<*>>
@@ -83,7 +90,12 @@ class KoinContext(
         var resultInstance: T? = null
 
         val beanDefinition: BeanDefinition<*> =
-            getVisibleBeanDefinition(clazzName, definitionResolver, resolutionStack.last())
+            beanRegistry.getVisibleBean(
+                clazzName,
+                pathRegistry.getPath(module),
+                definitionResolver,
+                resolutionStack.last()
+            )
 
         val logIndent = resolutionStack.indent()
         resolutionStack.resolve(beanDefinition) {
@@ -101,38 +113,6 @@ class KoinContext(
             resultInstance = instance
         }
         return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
-    }
-
-    /**
-     * Retrieve bean definition
-     * @param clazzName - class name
-     * @param definitionResolver - function to find bean definition
-     * @param lastInStack - to check visibility with last bean in stack
-     */
-    fun getVisibleBeanDefinition(
-        clazzName: String,
-        definitionResolver: () -> List<BeanDefinition<*>>,
-        lastInStack: BeanDefinition<*>?
-    ): BeanDefinition<*> {
-        val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
-            val found = definitionResolver()
-            val filteredByVisibility = found.filter { it.path.isVisible(lastInStack.path) }
-            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from module path ${lastInStack.path}")
-            filteredByVisibility
-        } else definitionResolver()).distinct()
-
-        return if (candidates.size == 1) {
-            candidates.first()
-        } else {
-            when {
-                candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to resolve type '$clazzName'. Check your module definition")
-                else -> throw DependencyResolutionException(
-                    "Multiple definitions found to resolve type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
-                        "\n\t"
-                    )}\n\tCheck your modules definition or use name attribute to resolve components."
-                )
-            }
-        }
     }
 
     /**

@@ -92,8 +92,8 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param name : component name
      */
     inline fun <reified T : Any> get(name: String? = null): T = if (name != null) koinContext.resolveByName(
-        name,
-        { emptyMap() }) else koinContext.resolveByClass({ emptyMap() })
+        name, parameters =
+        { emptyMap() }) else koinContext.resolveByClass(parameters = emptyParameters())
 
     /**
      * Resolve a component
@@ -101,7 +101,7 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param parameters - dynamic parameters
      */
     inline fun <reified T : Any> get(name: String? = null, noinline parameters: Parameters): T =
-        if (name != null) koinContext.resolveByName(name, parameters) else koinContext.resolveByClass(parameters)
+        if (name != null) koinContext.resolveByName(name, parameters =parameters) else koinContext.resolveByClass(parameters =parameters)
 
     /**
      * Retrieve a property

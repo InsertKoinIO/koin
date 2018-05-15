@@ -13,15 +13,35 @@ interface KoinComponent
  * inject lazily given dependency for KoinComponent
  * @param name - bean name
  */
-inline fun <reified T> KoinComponent.inject(name: String = ""): Lazy<T> = inject(name, emptyParameters())
+inline fun <reified T> KoinComponent.inject(name: String = "", module: String = ""): Lazy<T> =
+    inject(name, module, emptyParameters())
 
 /**
  * inject lazily given dependency for KoinComponent
  * @param name - bean name
  * @param parameters - dynamic parameters
  */
-inline fun <reified T> KoinComponent.inject(name: String = "", noinline parameters: Parameters): Lazy<T> =
-    (StandAloneContext.koinContext as KoinContext).inject(name, parameters)
+inline fun <reified T> KoinComponent.inject(
+    name: String = "",
+    module: String = "",
+    noinline parameters: Parameters
+): Lazy<T> =
+    (StandAloneContext.koinContext as KoinContext).inject(name, module, parameters)
+
+
+/**
+ * Retrieve given dependency for KoinComponent
+ * @param name - bean name
+ */
+inline fun <reified T> KoinComponent.get(name: String = "", module: String = ""): T = get(name, module, emptyParameters())
+
+/**
+ * Retrieve given dependency for KoinComponent
+ * @param name - bean name
+ * @param parameters - dynamic parameters
+ */
+inline fun <reified T> KoinComponent.get(name: String = "", module: String = "", noinline parameters: Parameters): T =
+    (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 
 /**
  * inject lazily given property for KoinComponent
@@ -41,20 +61,6 @@ inline fun <reified T> KoinComponent.property(key: String): Lazy<T> =
  */
 inline fun <reified T> KoinComponent.property(key: String, defaultValue: T): Lazy<T> =
     kotlin.lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
-
-/**
- * Retrieve given dependency for KoinComponent
- * @param name - bean name
- */
-inline fun <reified T> KoinComponent.get(name: String = ""): T = get(name, emptyParameters())
-
-/**
- * Retrieve given dependency for KoinComponent
- * @param name - bean name
- * @param parameters - dynamic parameters
- */
-inline fun <reified T> KoinComponent.get(name: String = "", noinline parameters: Parameters): T =
-    (StandAloneContext.koinContext as KoinContext).get(name, parameters)
 
 /**
  * Retrieve given property for KoinComponent
