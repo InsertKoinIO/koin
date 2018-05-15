@@ -23,7 +23,7 @@ class ModulePathRegistry {
      * @param path
      */
     fun getPath(path: String): ModulePath {
-        return if (path == "") ModulePath.root()
+        return if (path == ModulePath.ROOT) root
         else {
             val paths = path.split(".")
             var moduleModulePath: ModulePath? = null
@@ -33,52 +33,36 @@ class ModulePathRegistry {
     }
 
     /**
-     * Find or create ModulePath for given path & parentPath
-     * @param path
-     * @param parentPath
-     */
-    private fun findOrCreatePath(path: String?, parentPath: String? = null): ModulePath {
-        return if (path == null) root
-        else {
-            paths.firstOrNull { it.name == path } ?: createPath(path, parentPath)
-        }
-    }
-
-    /**
-     * create ModulePath for given path & parentPath
-     * @param path
-     * @param parentPath
-     */
-    private fun createPath(path: String, parentPath: String?): ModulePath {
-        if (parentPath != null) {
-            Koin.logger.debug("[module] create path [$parentPath.$path] ")
-        } else {
-            Koin.logger.debug("[module] create path [$path] ")
-        }
-        val s = ModulePath(path, parent = findOrCreatePath(parentPath))
-        paths += s
-        return s
-    }
-
-    /**
      * Make ModulePath from path
      * @param path
      * @param parentPath
      */
     fun makePath(path: String, parentPath: String? = null): ModulePath {
         if (parentPath != null) {
-            Koin.logger.debug("[module] make path [$parentPath.$path] ")
+            Koin.logger.debug("[module] path [$parentPath.$path] ")
         } else {
-            Koin.logger.debug("[module] make path [$path] ")
+            Koin.logger.debug("[module] path [$path] ")
         }
-        val paths = path.split(".")
-        var parent: String? = parentPath
-        var createdModulePath: ModulePath = ModulePath.root()
-        paths.forEach {
-            createdModulePath = findOrCreatePath(it, parent)
-            parent = it
+        return if (path == ModulePath.ROOT) root
+        else {
+            val completePath = if (!parentPath.isNullOrEmpty()) "$parentPath.$path" else path
+            val paths = completePath.split(".")
+            val modulePath = paths.fold(root, { acc: ModulePath, s: String ->
+                ModulePath(s, acc)
+            })
+            savePath(modulePath)
+            return modulePath
         }
-        return createdModulePath
+    }
+
+    /**
+     * Save path
+     */
+    private fun savePath(modulePath: ModulePath) {
+        paths.add(modulePath)
+        modulePath.parent?.let {
+            savePath(it)
+        }
     }
 
     /**

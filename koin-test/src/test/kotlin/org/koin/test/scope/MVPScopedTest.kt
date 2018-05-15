@@ -13,21 +13,32 @@ import org.koin.test.ext.junit.assertIsInModulePath
 
 class MVPScopedTest : AutoCloseKoinTest() {
 
-    val mainModule = module("org.koin") {
+    val mainModule = module {
+        module("org.koin") {
+            single { Repository() }
 
-        single { Repository() }
+            module("view") {
+                single { Presenter(get()) }
+            }
+        }
+    }
 
-        module("view") {
-            single { Presenter(get()) }
+    val module2 = module {
+        module(path = "A") {
+            module(path = "B") {
+                single { Repository() }
+                module(path = "C") {
+                    single { Presenter(get()) }
+                }
+            }
         }
     }
 
     class Repository()
+    class Presenter(val repository: Repository)
     class View : KoinComponent {
         val presenter by inject<Presenter>()
     }
-
-    class Presenter(val repository: Repository)
 
     @Test
     fun `inject view`() {
@@ -36,6 +47,18 @@ class MVPScopedTest : AutoCloseKoinTest() {
 
         assertIsInModulePath(Repository::class, "koin")
         assertIsInModulePath(Presenter::class, "view")
+
+        val view = View()
+        Assert.assertEquals(view.presenter, get<Presenter>())
+    }
+
+    @Test
+    fun `inject view from A B C`() {
+        startKoin(listOf(module2))
+        dumpModulePaths()
+
+        assertIsInModulePath(Repository::class, "B")
+        assertIsInModulePath(Presenter::class, "C")
 
         val view = View()
         Assert.assertEquals(view.presenter, get<Presenter>())
