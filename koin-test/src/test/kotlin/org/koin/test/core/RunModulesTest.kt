@@ -22,12 +22,12 @@ class RunModulesTest : AutoCloseKoinTest() {
         bean { ComponentB(get()) }
     }
 
-    val moduleC = applicationContext {
+    val moduleC = applicationContext(override = true) {
         bean { ComponentA("A2") }
     }
 
     val moduleD = applicationContext {
-        context("D") {
+        context("D", override = true) {
             bean { ComponentA("D") }
         }
     }

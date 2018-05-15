@@ -11,13 +11,13 @@ import org.koin.test.AutoCloseKoinTest
 
 class GenericBindingTest : AutoCloseKoinTest() {
 
-    val module = applicationContext {
+    val module = applicationContext(override = true) {
         bean("a") { ComponentA() as InterfaceComponent<String> }
         bean("b") { ComponentB() as InterfaceComponent<Int> }
 
     }
 
-    val badModule = applicationContext {
+    val badModule = applicationContext(override = true) {
         bean { ComponentA() as InterfaceComponent<String> }
         bean { ComponentB() as InterfaceComponent<Int> }
 

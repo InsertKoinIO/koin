@@ -2,6 +2,7 @@ package org.koin.core.bean
 
 import org.koin.Koin
 import org.koin.core.scope.Scope
+import org.koin.error.BeanOverrideException
 import org.koin.error.NoScopeFoundException
 import java.util.*
 
@@ -30,6 +31,9 @@ class BeanRegistry {
         val definition = def.copy(scope = scope)
         val existingBean = definitions.firstOrNull { it == definition }
         val override = existingBean != null
+        if (override && !definition.override) {
+            throw BeanOverrideException("$definition would override $existingBean but override flag is false")
+        }
         existingBean?.let {
             definitions.remove(existingBean)
         }
@@ -88,17 +92,17 @@ class BeanRegistry {
      * Get bean definitions from given scope context & child
      */
     fun getDefinitionsFromScope(name: String): List<BeanDefinition<*>> {
-        val scopes = allScopesfrom(name).toSet()
+        val scopes = allScopesFrom(name).toSet()
         return definitions.filter { def -> definitions.first { it == def }.scope in scopes }
     }
 
     /**
      * Retrieve scope and child for given name
      */
-    private fun allScopesfrom(name: String): List<Scope> {
+    private fun allScopesFrom(name: String): List<Scope> {
         val scope = getScope(name)
         val firstChild = scopes.filter { it.parent == scope }
-        return listOf(scope) + firstChild + firstChild.flatMap { allScopesfrom(it.name) }
+        return listOf(scope) + firstChild + firstChild.flatMap { allScopesFrom(it.name) }
     }
 
     /**

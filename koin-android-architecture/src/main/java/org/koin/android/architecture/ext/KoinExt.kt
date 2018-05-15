@@ -17,9 +17,10 @@ import org.koin.standalone.StandAloneContext
  */
 inline fun <reified T : ViewModel> Context.viewModel(
     name: String = "",
+    override: Boolean = false,
     noinline definition: Definition<T>
 ) {
-    val bean = factory(name, definition)
+    val bean = factory(name, override, definition)
     bean.bind(ViewModel::class)
 }
 

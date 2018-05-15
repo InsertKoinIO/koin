@@ -9,8 +9,8 @@ import org.koin.dsl.context.ParameterHolder
 /**
  * Declare a Spark controller
  */
-inline fun <reified T : Any> Context.controller(name: String = "", noinline definition: Definition<T>) {
-    val def = bean(name, definition)
+inline fun <reified T : Any> Context.controller(name: String = "", override: Boolean = false, noinline definition: Definition<T>) {
+    val def = bean(name, override, definition)
     def.bind(SparkController::class)
 }
 
