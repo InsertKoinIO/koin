@@ -2,7 +2,6 @@ package org.koin.test.scope
 
 import org.junit.Assert
 import org.junit.Assert.fail
-import org.junit.Ignore
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
@@ -51,7 +50,7 @@ class KoinComponentPathTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `inject view`() {
+    fun `inject with module path`() {
         startKoin(listOf(module1))
 
         val view1 = View1()
@@ -64,5 +63,17 @@ class KoinComponentPathTest : AutoCloseKoinTest() {
             fail()
         } catch (e: Exception) {
         }
+
+        Assert.assertNotNull(get<Presenter>(module = "org.koin.view"))
+        Assert.assertNotNull(get<Repository>(module = "org.koin"))
+    }
+
+    @Test
+    fun `inject with module path 2`() {
+        startKoin(listOf(module2))
+
+        Assert.assertNotNull(get<Presenter>(module = "A.B.C"))
+        Assert.assertNotNull(get<Presenter2>(module = "A.B.D"))
+        Assert.assertNotNull(get<Repository>(module = "A.B"))
     }
 }
