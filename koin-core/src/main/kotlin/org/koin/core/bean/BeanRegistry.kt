@@ -1,7 +1,7 @@
 package org.koin.core.bean
 
 import org.koin.core.Koin
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.dsl.definition.BeanDefinition
 
 /**
@@ -19,8 +19,8 @@ class BeanRegistry() {
      *
      * @param def : Bean definition
      */
-    fun declare(def: BeanDefinition<*>, modulePath: ModulePath) {
-        val definition = def.copy(modulePath = modulePath)
+    fun declare(def: BeanDefinition<*>, path: Path) {
+        val definition = def.copy(path = path)
         val existingBean = definitions.firstOrNull { it == definition }
         val override = existingBean != null
         existingBean?.let {
@@ -55,8 +55,8 @@ class BeanRegistry() {
     /**
      * Get bean definitions from given path
      */
-    fun getDefinitions(modulePaths: Set<ModulePath>): List<BeanDefinition<*>> {
-        return definitions.filter { def -> definitions.first { it == def }.modulePath in modulePaths }
+    fun getDefinitions(paths: Set<Path>): List<BeanDefinition<*>> {
+        return definitions.filter { def -> definitions.first { it == def }.path in paths }
     }
 
     /**

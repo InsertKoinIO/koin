@@ -5,7 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.path.ModulePathRegistry
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 
 class PathBuildingTest {
 
@@ -50,7 +50,7 @@ class PathBuildingTest {
         Assert.assertEquals("org", pathRegistry.getPath("org").name)
         Assert.assertEquals("koin", pathRegistry.getPath("org.koin").name)
         Assert.assertEquals("test", pathRegistry.getPath("org.koin.test").name)
-        Assert.assertEquals(ModulePath.ROOT, pathRegistry.getPath("").name)
+        Assert.assertEquals(Path.ROOT, pathRegistry.getPath("").name)
     }
 
     @Test

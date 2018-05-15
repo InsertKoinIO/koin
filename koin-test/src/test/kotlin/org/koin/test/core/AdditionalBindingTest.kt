@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -64,7 +64,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertRemainingInstances(1)
         assertDefinitions(1)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
     }
 
     @Test
@@ -84,7 +84,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertRemainingInstances(1)
         assertDefinitions(1)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
     }
 
     @Test
@@ -101,7 +101,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertRemainingInstances(1)
         assertDefinitions(1)
         assertContexts(1)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
     }
 
     @Test
@@ -117,8 +117,8 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertRemainingInstances(0)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
-        assertIsInModulePath(ComponentC::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInModulePath(ComponentC::class, Path.ROOT)
     }
 
 }

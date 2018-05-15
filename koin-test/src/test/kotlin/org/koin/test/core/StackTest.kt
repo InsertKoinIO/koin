@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.Koin
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.ContextVisibilityException
@@ -74,12 +74,12 @@ class StackTest : AutoCloseKoinTest() {
         assertContexts(3)
         assertDefinitions(3)
 
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
         assertIsInModulePath(ComponentB::class, "B")
         assertIsInModulePath(ComponentC::class, "C")
 
-        assertPath("B", ModulePath.ROOT)
-        assertPath("C", ModulePath.ROOT)
+        assertPath("B", Path.ROOT)
+        assertPath("C", Path.ROOT)
 
         Assert.assertNotNull(get<ComponentC>())
         Assert.assertNotNull(get<ComponentB>())

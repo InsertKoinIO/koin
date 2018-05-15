@@ -116,8 +116,8 @@ class KoinContext(
     ): BeanDefinition<*> {
         val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
             val found = definitionResolver()
-            val filteredByVisibility = found.filter { it.modulePath.isVisible(lastInStack.modulePath) }
-            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from module path ${lastInStack.modulePath}")
+            val filteredByVisibility = found.filter { it.path.isVisible(lastInStack.path) }
+            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from module path ${lastInStack.path}")
             filteredByVisibility
         } else definitionResolver()).distinct()
 

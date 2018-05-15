@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -74,8 +74,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
         assertProperties(3)
     }
 
@@ -95,8 +95,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
         assertProperties(3)
     }
 
@@ -160,8 +160,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(0)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
         assertProperties(2)
     }
 

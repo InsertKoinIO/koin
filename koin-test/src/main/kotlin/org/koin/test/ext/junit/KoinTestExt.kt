@@ -28,7 +28,7 @@ fun KoinTest.assertDefinitions(definitionCount: Int) {
  */
 fun KoinTest.assertIsInModulePath(definitionClazz: KClass<*>, path: String) {
     val definition = context().beanDefinition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in path '$path'", path, definition?.modulePath?.name ?: "")
+    Assert.assertEquals("$definitionClazz must be in path '$path'", path, definition?.path?.name ?: "")
 }
 
 /**
@@ -38,7 +38,7 @@ fun KoinTest.assertIsInModulePath(definitionClazz: KClass<*>, path: String) {
  */
 fun KoinTest.assertContextInstances(pathName: String, instanceCount: Int) {
     val path = context().getPath(pathName)
-    val definitions = context().beanDefinitions().filter { it.modulePath == path }.toSet()
+    val definitions = context().beanDefinitions().filter { it.path == path }.toSet()
     val instances = context().allInstances().filter { it.first in definitions }
     Assert.assertEquals("path $pathName must have $instanceCount instances", instanceCount, instances.size)
 }

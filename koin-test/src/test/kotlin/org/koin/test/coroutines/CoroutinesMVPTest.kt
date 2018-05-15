@@ -4,7 +4,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -64,8 +64,8 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
         assertRemainingInstances(4)
         assertDefinitions(4)
         assertContexts(2)
-        assertIsInModulePath(Repository::class, ModulePath.ROOT)
-        assertIsInModulePath(DebugDatasource::class, ModulePath.ROOT)
+        assertIsInModulePath(Repository::class, Path.ROOT)
+        assertIsInModulePath(DebugDatasource::class, Path.ROOT)
         assertIsInModulePath(View::class, "View")
         assertIsInModulePath(Presenter::class, "View")
 

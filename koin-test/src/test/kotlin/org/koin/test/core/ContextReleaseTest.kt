@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.error.NoModulePathException
 import org.koin.standalone.StandAloneContext.startKoin
@@ -143,7 +143,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
-        release(ModulePath.ROOT)
+        release(Path.ROOT)
 
         assertRemainingInstances(0)
         assertContextInstances("A", 0)

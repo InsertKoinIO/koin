@@ -1,7 +1,7 @@
 package org.koin.core.path
 
 import org.koin.core.Koin
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.error.NoModulePathException
 
 /**
@@ -10,9 +10,9 @@ import org.koin.error.NoModulePathException
  * @author Arnaud GIULIANI
  */
 class ModulePathRegistry {
-    val paths = hashSetOf<ModulePath>()
+    val paths = hashSetOf<Path>()
 
-    private val root = ModulePath.root()
+    private val root = Path.root()
 
     init {
         paths += root
@@ -22,13 +22,13 @@ class ModulePathRegistry {
      * Retrieve ModulePath for given path
      * @param path
      */
-    fun getPath(path: String): ModulePath {
-        return if (path == ModulePath.ROOT) root
+    fun getPath(path: String): Path {
+        return if (path == Path.ROOT) root
         else {
             val paths = path.split(".")
-            var moduleModulePath: ModulePath? = null
-            paths.forEach { current -> moduleModulePath = this.paths.firstOrNull { it.name == current } }
-            moduleModulePath ?: throw NoModulePathException("no module path found for '$path'")
+            var modulePath: Path? = null
+            paths.forEach { current -> modulePath = this.paths.firstOrNull { it.name == current } }
+            modulePath ?: throw NoModulePathException("no module path found for '$path'")
         }
     }
 
@@ -37,18 +37,18 @@ class ModulePathRegistry {
      * @param path
      * @param parentPath
      */
-    fun makePath(path: String, parentPath: String? = null): ModulePath {
+    fun makePath(path: String, parentPath: String? = null): Path {
         if (parentPath != null) {
             Koin.logger.debug("[module] path [$parentPath.$path] ")
         } else {
             Koin.logger.debug("[module] path [$path] ")
         }
-        return if (path == ModulePath.ROOT) root
+        return if (path == Path.ROOT) root
         else {
             val completePath = if (!parentPath.isNullOrEmpty()) "$parentPath.$path" else path
             val paths = completePath.split(".")
-            val modulePath = paths.fold(root, { acc: ModulePath, s: String ->
-                ModulePath(s, acc)
+            val modulePath = paths.fold(root, { acc: Path, s: String ->
+                Path(s, acc)
             })
             savePath(modulePath)
             return modulePath
@@ -58,9 +58,9 @@ class ModulePathRegistry {
     /**
      * Save path
      */
-    private fun savePath(modulePath: ModulePath) {
-        paths.add(modulePath)
-        modulePath.parent?.let {
+    private fun savePath(path: Path) {
+        paths.add(path)
+        path.parent?.let {
             savePath(it)
         }
     }
@@ -69,7 +69,7 @@ class ModulePathRegistry {
      * Retrieve paths (with children paths)
      * @param path
      */
-    fun getAllPathsFrom(path: String): Set<ModulePath> {
+    fun getAllPathsFrom(path: String): Set<Path> {
         val mainPath = getPath(path)
         val firstChild = paths.filter { it.parent == mainPath }
         return setOf(mainPath) + firstChild + firstChild.flatMap { getAllPathsFrom(it.name) }

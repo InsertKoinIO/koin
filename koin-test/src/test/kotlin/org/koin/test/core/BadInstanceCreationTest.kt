@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -71,8 +71,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(MyInterface::class, ModulePath.ROOT)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(MyInterface::class, Path.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
     }
 
     @Test
@@ -94,8 +94,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, ModulePath.ROOT)
-        assertIsInModulePath(ComponentB::class, ModulePath.ROOT)
+        assertIsInModulePath(ComponentA::class, Path.ROOT)
+        assertIsInModulePath(ComponentB::class, Path.ROOT)
     }
 
 //    @Test
