@@ -4,30 +4,37 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.koin.core.path.ModulePathRegistry
+import org.koin.core.path.PathRegistry
 import org.koin.dsl.path.Path
 
 class PathBuildingTest {
 
-    lateinit var pathRegistry: ModulePathRegistry
+    lateinit var pathRegistry: PathRegistry
 
     @Before
     fun before() {
-        pathRegistry = ModulePathRegistry()
+        pathRegistry = PathRegistry()
+    }
+
+    private fun createPath(p: String): Path {
+        val path = pathRegistry.makePath(p)
+        pathRegistry.savePath(path)
+        return path
     }
 
     @Test
     fun `should create path`() {
-        val path = pathRegistry.makePath("org.koin")
+        val path = createPath("org.koin")
 
         Assert.assertEquals(3, pathRegistry.paths.size)
         Assert.assertEquals("koin", path.name)
     }
 
+
     @Test
     fun `should create several hierachical paths`() {
-        pathRegistry.makePath("org.koin")
-        val path = pathRegistry.makePath("org.koin.test")
+        createPath("org.koin")
+        val path = createPath("org.koin.test")
 
         Assert.assertEquals(4, pathRegistry.paths.size)
         Assert.assertEquals("test", path.name)
@@ -35,9 +42,9 @@ class PathBuildingTest {
 
     @Test
     fun `should create several hierachical paths without error`() {
-        pathRegistry.makePath("org.koin")
-        pathRegistry.makePath("org.koin.test")
-        val path = pathRegistry.makePath("org.koin")
+        createPath("org.koin")
+        createPath("org.koin.test")
+        val path = createPath("org.koin")
 
         Assert.assertEquals(4, pathRegistry.paths.size)
         Assert.assertEquals("koin", path.name)
@@ -45,7 +52,7 @@ class PathBuildingTest {
 
     @Test
     fun `should get paths`() {
-        pathRegistry.makePath("org.koin.test")
+        createPath("org.koin.test")
 
         Assert.assertEquals("org", pathRegistry.getPath("org").name)
         Assert.assertEquals("koin", pathRegistry.getPath("org.koin").name)
@@ -55,7 +62,7 @@ class PathBuildingTest {
 
     @Test
     fun `should get all paths from`() {
-        pathRegistry.makePath("org.koin.test")
+        createPath("org.koin.test")
 
         Assert.assertEquals(3, pathRegistry.getAllPathsFrom("org").size)
         Assert.assertEquals(2, pathRegistry.getAllPathsFrom("org.koin").size)
@@ -64,7 +71,7 @@ class PathBuildingTest {
 
     @Test
     fun `should not get all paths from`() {
-        pathRegistry.makePath("org.koin")
+        createPath("org.koin")
 
         try {
             pathRegistry.getAllPathsFrom("or")
@@ -80,8 +87,8 @@ class PathBuildingTest {
 
     @Test
     fun `should get all multi paths`() {
-        pathRegistry.makePath("org.koin.test")
-        pathRegistry.makePath("org.koin.core")
+        createPath("org.koin.test")
+        createPath("org.koin.core")
 
         Assert.assertEquals(4, pathRegistry.getAllPathsFrom("org").size)
         Assert.assertEquals(3, pathRegistry.getAllPathsFrom("org.koin").size)

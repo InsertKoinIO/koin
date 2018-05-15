@@ -4,7 +4,7 @@ import org.koin.core.Koin.Companion.logger
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.Parameters
-import org.koin.core.path.ModulePathRegistry
+import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.core.stack.ResolutionStack
 import org.koin.dsl.context.ParameterHolder
@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
  */
 class KoinContext(
     val beanRegistry: BeanRegistry,
-    val pathRegistry: ModulePathRegistry,
+    val pathRegistry: PathRegistry,
     val propertyResolver: PropertyRegistry,
     val instanceFactory: InstanceFactory
 ) : StandAloneKoinContext {

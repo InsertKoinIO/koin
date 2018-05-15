@@ -1,7 +1,7 @@
 package org.koin.dsl.definition
 
-import org.koin.dsl.path.Path
 import org.koin.dsl.context.ParameterProvider
+import org.koin.dsl.path.Path
 import kotlin.reflect.KClass
 
 /**
@@ -40,7 +40,7 @@ data class BeanDefinition<out T>(
     /**
      * Bean definition is not a singleton, but a factory
      */
-    fun isNotASingleton() : Boolean = !isSingleton
+    fun isNotASingleton(): Boolean = !isSingleton
 
     private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
@@ -49,7 +49,7 @@ data class BeanDefinition<out T>(
         val c = "class=${clazz.java.canonicalName}"
         val s = if (isSingleton) "Bean" else "Factory"
         val b = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
-        val sn = if (path != Path.root()) ", module:${path.fullName}" else ""
+        val sn = if (path != Path.root()) ", module:$path" else ""
         return "$s[$n$c$b$sn]"
     }
 

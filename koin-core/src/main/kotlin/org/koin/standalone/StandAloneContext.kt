@@ -5,7 +5,7 @@ import org.koin.core.KoinContext
 import org.koin.core.ModuleCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
-import org.koin.core.path.ModulePathRegistry
+import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
@@ -53,7 +53,7 @@ object StandAloneContext {
             Koin.logger.log("[context] create")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
-            val pathRegistry = ModulePathRegistry()
+            val pathRegistry = PathRegistry()
             val instanceFactory = InstanceFactory()
             koinContext = KoinContext(beanRegistry, pathRegistry, propertyResolver, instanceFactory)
             isStarted = true
@@ -141,7 +141,8 @@ object StandAloneContext {
      * Displays Module paths
      */
     fun dumpModulePaths() {
-        getKoinContext().pathRegistry.paths.forEach { Koin.logger.log("Module [${it.fullName}]") }
+        Koin.logger.log("Module paths:")
+        getKoinContext().pathRegistry.paths.forEach { Koin.logger.log("[$it]") }
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.koin.core.path
 
-import org.koin.core.Koin
 import org.koin.dsl.path.Path
 import org.koin.error.NoModulePathException
 
@@ -9,7 +8,7 @@ import org.koin.error.NoModulePathException
  *
  * @author Arnaud GIULIANI
  */
-class ModulePathRegistry {
+class PathRegistry {
     val paths = hashSetOf<Path>()
 
     private val root = Path.root()
@@ -38,11 +37,6 @@ class ModulePathRegistry {
      * @param parentPath
      */
     fun makePath(path: String, parentPath: String? = null): Path {
-        if (parentPath != null) {
-            Koin.logger.debug("[module] path [$parentPath.$path] ")
-        } else {
-            Koin.logger.debug("[module] path [$path] ")
-        }
         return if (path == Path.ROOT) root
         else {
             val completePath = if (!parentPath.isNullOrEmpty()) "$parentPath.$path" else path
@@ -50,7 +44,6 @@ class ModulePathRegistry {
             val modulePath = paths.fold(root, { acc: Path, s: String ->
                 Path(s, acc)
             })
-            savePath(modulePath)
             return modulePath
         }
     }
@@ -58,7 +51,7 @@ class ModulePathRegistry {
     /**
      * Save path
      */
-    private fun savePath(path: Path) {
+    fun savePath(path: Path) {
         paths.add(path)
         path.parent?.let {
             savePath(it)

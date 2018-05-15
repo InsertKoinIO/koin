@@ -57,6 +57,8 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
         release("B")
 
+        assertDefinitions(3)
+
         assertRemainingInstances(1)
         assertContextInstances("A", 1)
         assertContextInstances("B", 0)

@@ -2,6 +2,7 @@ package org.koin.core
 
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
+import org.koin.dsl.path.Path
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
 import java.util.*
@@ -68,17 +69,27 @@ class Koin(val koinContext: KoinContext) {
      */
     private fun registerDefinitions(
         moduleDefinition: ModuleDefinition,
-        parentModuleDefinition: ModuleDefinition? = null
+        parentModuleDefinition: ModuleDefinition? = null,
+        path: Path = Path.root()
     ) {
-        val modulePath = pathRegistry.makePath(moduleDefinition.path, parentModuleDefinition?.path)
+        val modulePath: Path = pathRegistry.makePath(moduleDefinition.path, parentModuleDefinition?.path)
+        val consolidatedPath = if (path != Path.root()) modulePath.copy(parent = path) else modulePath
+
+        pathRegistry.savePath(consolidatedPath)
 
         // Add definitions
         moduleDefinition.definitions.forEach { definition ->
-            beanRegistry.declare(definition, modulePath)
+            beanRegistry.declare(definition, consolidatedPath)
         }
 
         // Check sub contexts
-        moduleDefinition.subModules.forEach { subModule -> registerDefinitions(subModule, moduleDefinition) }
+        moduleDefinition.subModules.forEach { subModule ->
+            registerDefinitions(
+                subModule,
+                moduleDefinition,
+                consolidatedPath
+            )
+        }
     }
 
     companion object {
