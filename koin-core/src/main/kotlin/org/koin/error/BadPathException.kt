@@ -5,4 +5,4 @@ package org.koin.error
  *
  * @author Arnaud GIULIANI
  */
-class NoModulePathException(msg: String) : Exception(msg)
+class BadPathException(msg: String) : Exception(msg)

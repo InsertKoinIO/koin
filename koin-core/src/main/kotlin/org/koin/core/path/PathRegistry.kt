@@ -1,7 +1,7 @@
 package org.koin.core.path
 
 import org.koin.dsl.path.Path
-import org.koin.error.NoModulePathException
+import org.koin.error.BadPathException
 
 /**
  * Create & Handle all module paths
@@ -27,7 +27,7 @@ class PathRegistry {
             val paths = path.split(".")
             var modulePath: Path? = null
             paths.forEach { current -> modulePath = this.paths.firstOrNull { it.name == current } }
-            modulePath ?: throw NoModulePathException("no module path found for '$path'")
+            modulePath ?: throw BadPathException("no module path found for '$path'")
         }
     }
 

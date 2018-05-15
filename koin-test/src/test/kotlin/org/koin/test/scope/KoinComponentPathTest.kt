@@ -4,6 +4,9 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.dsl.path.Path
+import org.koin.error.BadPathException
+import org.koin.error.NotVisibleException
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -62,6 +65,7 @@ class KoinComponentPathTest : AutoCloseKoinTest() {
             println("${view2.presenter}")
             fail()
         } catch (e: Exception) {
+            Assert.assertTrue(e is NotVisibleException)
         }
 
         Assert.assertNotNull(get<Presenter>(module = "org.koin.view"))
@@ -79,5 +83,23 @@ class KoinComponentPathTest : AutoCloseKoinTest() {
         Assert.assertNotNull(get<Repository>())
         Assert.assertNotNull(get<Presenter>())
         Assert.assertNotNull(get<Presenter2>())
+
+        try {
+            get<Repository>(module = "A")
+        } catch (e: Exception) {
+            Assert.assertTrue(e is NotVisibleException)
+        }
+
+        try {
+            get<Repository>(module = "org")
+        } catch (e: Exception) {
+            Assert.assertTrue(e is BadPathException)
+        }
+
+        try {
+            get<Repository>(module = Path.ROOT)
+        } catch (e: Exception) {
+            Assert.assertTrue(e is NotVisibleException)
+        }
     }
 }

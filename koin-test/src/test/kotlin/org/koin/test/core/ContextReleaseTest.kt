@@ -5,7 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
-import org.koin.error.NoModulePathException
+import org.koin.error.BadPathException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.release
@@ -236,7 +236,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         try {
             release("D")
             fail()
-        } catch (e: NoModulePathException) {
+        } catch (e: BadPathException) {
         }
 
         assertRemainingInstances(3)

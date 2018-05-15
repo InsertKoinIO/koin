@@ -4,7 +4,7 @@ import org.koin.core.Koin
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.path.Path
 import org.koin.error.DependencyResolutionException
-import org.koin.error.ModuleVisibilityException
+import org.koin.error.NotVisibleException
 import org.koin.error.NoBeanDefFoundException
 
 /**
@@ -80,7 +80,7 @@ class BeanRegistry() {
             val found = definitionResolver()
             val filteredByVisibility = found.filter { it.path.isVisible(lastInStack.path) }
             if (found.isNotEmpty() && filteredByVisibility.isEmpty()) {
-                throw ModuleVisibilityException("Can't resolve '$clazzName' - Definition is not visible from last definition : $lastInStack")
+                throw NotVisibleException("Can't resolve '$clazzName' - Definition is not visible from last definition : $lastInStack")
             }
             filteredByVisibility
         } else {
@@ -90,7 +90,7 @@ class BeanRegistry() {
         return if (candidates.size == 1) {
             val candidate = candidates.first()
             if (modulePath != null && !candidate.path.isVisible(modulePath)) {
-                throw ModuleVisibilityException("Can't resolve '$clazzName' - Definition is not visible from module '$modulePath'")
+                throw NotVisibleException("Can't resolve '$clazzName' - Definition is not visible from module '$modulePath'")
             }
             candidate
         } else {
