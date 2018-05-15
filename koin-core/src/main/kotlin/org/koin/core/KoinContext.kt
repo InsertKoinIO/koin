@@ -35,7 +35,7 @@ class KoinContext(
      */
     inline fun <reified T> inject(
         name: String = "",
-        module: String = "",
+        module: String? = null,
         noinline parameters: Parameters = { emptyMap() }
     ): Lazy<T> =
         kotlin.lazy { get<T>(name, module, parameters) }
@@ -45,7 +45,7 @@ class KoinContext(
      */
     inline fun <reified T> get(
         name: String = "",
-        module: String = "",
+        module: String? = null,
         noinline parameters: Parameters = { emptyMap() }
     ): T =
         if (name.isEmpty()) resolveByClass(module, parameters) else resolveByName(name, module, parameters)
@@ -54,21 +54,21 @@ class KoinContext(
      * Resolve a dependency for its bean definition
      * @param name bean definition name
      */
-    inline fun <reified T> resolveByName(name: String, module: String = "", noinline parameters: Parameters): T =
+    inline fun <reified T> resolveByName(name: String, module: String? = null, noinline parameters: Parameters): T =
         resolveInstance(module, T::class, parameters) { beanRegistry.searchByName(name, T::class) }
 
     /**
      * Resolve a dependency for its bean definition
      * by its inferred type
      */
-    inline fun <reified T> resolveByClass(module: String = "", noinline parameters: Parameters): T =
+    inline fun <reified T> resolveByClass(module: String? = null, noinline parameters: Parameters): T =
         resolveByClass(module, T::class, parameters)
 
     /**
      * Resolve a dependency for its bean definition
      * byt its type
      */
-    inline fun <reified T> resolveByClass(module: String = "", clazz: KClass<*>, noinline parameters: Parameters): T =
+    inline fun <reified T> resolveByClass(module: String? = null, clazz: KClass<*>, noinline parameters: Parameters): T =
         resolveInstance(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
 
     /**
@@ -79,7 +79,7 @@ class KoinContext(
      * @param definitionResolver - function to find bean definitions
      */
     fun <T> resolveInstance(
-        module: String = "",
+        module: String? = null,
         clazz: KClass<*>,
         parameters: Parameters,
         definitionResolver: () -> List<BeanDefinition<*>>
@@ -92,7 +92,7 @@ class KoinContext(
         val beanDefinition: BeanDefinition<*> =
             beanRegistry.getVisibleBean(
                 clazzName,
-                pathRegistry.getPath(module),
+                if (module != null) pathRegistry.getPath(module) else null,
                 definitionResolver,
                 resolutionStack.last()
             )

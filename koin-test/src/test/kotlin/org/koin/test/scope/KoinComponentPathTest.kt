@@ -75,5 +75,9 @@ class KoinComponentPathTest : AutoCloseKoinTest() {
         Assert.assertNotNull(get<Presenter>(module = "A.B.C"))
         Assert.assertNotNull(get<Presenter2>(module = "A.B.D"))
         Assert.assertNotNull(get<Repository>(module = "A.B"))
+
+        Assert.assertNotNull(get<Repository>())
+        Assert.assertNotNull(get<Presenter>())
+        Assert.assertNotNull(get<Presenter2>())
     }
 }

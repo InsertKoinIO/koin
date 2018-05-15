@@ -72,7 +72,7 @@ class BeanRegistry() {
      */
     fun getVisibleBean(
         clazzName: String,
-        modulePath: Path,
+        modulePath: Path? = null,
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
     ): BeanDefinition<*> {
@@ -89,7 +89,7 @@ class BeanRegistry() {
 
         return if (candidates.size == 1) {
             val candidate = candidates.first()
-            if (modulePath != Path.root() && !candidate.path.isVisible(modulePath)) {
+            if (modulePath != null && !candidate.path.isVisible(modulePath)) {
                 throw ModuleVisibilityException("Can't resolve '$clazzName' - Definition is not visible from module '$modulePath'")
             }
             candidate
