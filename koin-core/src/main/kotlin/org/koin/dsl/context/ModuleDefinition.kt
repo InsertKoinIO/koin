@@ -1,9 +1,9 @@
 package org.koin.dsl.context
 
 import org.koin.core.KoinContext
+import org.koin.core.parameter.Parameters
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Definition
-import org.koin.core.parameter.Parameters
 
 /**
  * Koin Module Definition
@@ -62,6 +62,7 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
 
     /**
      * Provide a singleton definition - alias to provide
+     * Deprecated - @see single
      * @param name
      */
     @Deprecated("use single { } instead")
@@ -101,7 +102,9 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param parameters - dynamic parameters
      */
     inline fun <reified T : Any> get(name: String? = null, noinline parameters: Parameters): T =
-        if (name != null) koinContext.resolveByName(name, parameters =parameters) else koinContext.resolveByClass(parameters =parameters)
+        if (name != null) koinContext.resolveByName(name, parameters = parameters) else koinContext.resolveByClass(
+            parameters = parameters
+        )
 
     /**
      * Retrieve a property
