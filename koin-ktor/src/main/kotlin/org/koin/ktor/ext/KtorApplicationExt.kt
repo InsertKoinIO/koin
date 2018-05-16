@@ -3,14 +3,56 @@ package org.koin.ktor.ext
 import io.ktor.application.Application
 import org.koin.core.KoinContext
 import org.koin.core.parameter.Parameters
+import org.koin.dsl.context.emptyParameters
 import org.koin.standalone.StandAloneContext
 
 /**
  * inject lazily given dependency
  * @param name - bean name / optional
+ * @param module - module path
  */
-inline fun <reified T> Application.inject(name: String = "", noinline parameters: Parameters = { emptyMap() }) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
+inline fun <reified T> Application.inject(
+    name: String = "",
+    module: String? = null
+) =
+    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameters()) }
+
+/**
+ * inject lazily given dependency
+ * @param name - bean name / optional
+ * @param module - module path
+ * @param parameters
+ */
+inline fun <reified T> Application.inject(
+    name: String = "",
+    module: String? = null,
+    noinline parameters: Parameters
+) =
+    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+
+/**
+ * Retrieve given dependency for KoinComponent
+ * @param name - bean name / optional
+ * @param module - module path
+ */
+inline fun <reified T> Application.get(
+    name: String = "",
+    module: String? = null
+) =
+    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameters())
+
+/**
+ * Retrieve given dependency for KoinComponent
+ * @param name - bean name / optional
+ * @param module - module path
+ * @param parameters
+ */
+inline fun <reified T> Application.get(
+    name: String = "",
+    module: String? = null,
+    noinline parameters: Parameters
+) =
+    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters)
 
 /**
  * lazy inject given property
@@ -30,13 +72,6 @@ inline fun <reified T> Application.property(key: String) =
  */
 inline fun <reified T> Application.property(key: String, defaultValue: T) =
     lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
-
-/**
- * Retrieve given dependency for KoinComponent
- * @param name - bean name / optional
- */
-inline fun <reified T> Application.get(name: String = "", noinline parameters: Parameters = { emptyMap() }) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
 
 /**
  * Retrieve given property for KoinComponent

@@ -2,6 +2,7 @@ package org.koin.test.ext.junit
 
 import org.junit.Assert
 import org.koin.core.KoinContext
+import org.koin.dsl.path.Path
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
 import org.koin.test.ext.koin.*
@@ -30,6 +31,17 @@ fun KoinTest.assertIsInModulePath(definitionClazz: KClass<*>, path: String) {
     val definition = context().beanDefinition(definitionClazz)
     Assert.assertEquals("$definitionClazz must be in path '$path'", path, definition?.path?.name ?: "")
 }
+
+/**
+ * Assert definitionClazz is defined in given module path
+ * @param definitionClazz - bean beanDefinition class
+ * @param path
+ */
+fun KoinTest.assertIsInRootPath(definitionClazz: KClass<*>) {
+    val definition = context().beanDefinition(definitionClazz)
+    Assert.assertEquals("$definitionClazz must be in path " + Path.ROOT, Path.ROOT, definition?.path?.name ?: "")
+}
+
 
 /**
  * Assert context has beanDefinition instanceCount

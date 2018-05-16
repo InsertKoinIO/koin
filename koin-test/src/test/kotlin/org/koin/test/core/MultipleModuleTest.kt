@@ -9,10 +9,7 @@ import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertIsInModulePath
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.*
 
 class MultipleModuleTest : AutoCloseKoinTest() {
 
@@ -60,8 +57,8 @@ class MultipleModuleTest : AutoCloseKoinTest() {
         assertRemainingInstances(3)
         assertDefinitions(3)
         assertContexts(2)
-        assertIsInModulePath(ComponentA::class, Path.ROOT)
-        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInRootPath(ComponentA::class)
+        assertIsInRootPath(ComponentB::class)
         assertIsInModulePath(ComponentC::class, "C")
     }
 }

@@ -8,10 +8,7 @@ import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertIsInModulePath
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.*
 
 
 class InterfaceBindingTest : AutoCloseKoinTest() {
@@ -45,7 +42,7 @@ class InterfaceBindingTest : AutoCloseKoinTest() {
         assertRemainingInstances(1)
         assertDefinitions(3)
         assertContexts(1)
-        assertIsInModulePath(InterfaceComponent::class, Path.ROOT)
+        assertIsInRootPath(InterfaceComponent::class)
     }
 
     @Test
@@ -76,6 +73,6 @@ class InterfaceBindingTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(3)
         assertContexts(1)
-        assertIsInModulePath(OtherInterfaceComponent::class, Path.ROOT)
+        assertIsInRootPath(OtherInterfaceComponent::class)
     }
 }

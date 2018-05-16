@@ -12,10 +12,7 @@ import org.koin.standalone.get
 import org.koin.standalone.inject
 import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertIsInModulePath
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.*
 
 class CoroutinesMVPTest : AutoCloseKoinTest() {
 
@@ -64,8 +61,8 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
         assertRemainingInstances(4)
         assertDefinitions(4)
         assertContexts(2)
-        assertIsInModulePath(Repository::class, Path.ROOT)
-        assertIsInModulePath(DebugDatasource::class, Path.ROOT)
+        assertIsInRootPath(Repository::class)
+        assertIsInRootPath(DebugDatasource::class)
         assertIsInModulePath(View::class, "View")
         assertIsInModulePath(Presenter::class, "View")
 

@@ -8,18 +8,18 @@ import org.koin.error.NoBeanDefFoundException
 /**
  * Retrieve an instance by its class canonical name
  */
-fun <T> KoinContext.getByTypeName(canonicalName: String, parameters: Parameters): T {
+fun <T> KoinContext.getByTypeName(canonicalName: String, module: String? = null, parameters: Parameters): T {
     val foundDefinitions =
         beanRegistry.definitions.filter { it.clazz.java.canonicalName == canonicalName }.distinct()
-    return getWithDefinitions(foundDefinitions, parameters, "for class name '$canonicalName'")
+    return getWithDefinitions(foundDefinitions, module, parameters, "for class name '$canonicalName'")
 }
 
 /**
  * Retrieve an instance by its bean beanDefinition name
  */
-fun <T> KoinContext.getByName(name: String, parameters: Parameters): T {
+fun <T> KoinContext.getByName(name: String, module: String? = null, parameters: Parameters): T {
     val foundDefinitions = beanRegistry.definitions.filter { it.name == name }.distinct()
-    return getWithDefinitions(foundDefinitions, parameters, "for bean name '$name'")
+    return getWithDefinitions(foundDefinitions, module, parameters, "for bean name '$name'")
 }
 
 /**
@@ -27,6 +27,7 @@ fun <T> KoinContext.getByName(name: String, parameters: Parameters): T {
  */
 private fun <T> KoinContext.getWithDefinitions(
     foundDefinitions: List<BeanDefinition<*>>,
+    module: String? = null,
     parameters: Parameters,
     message: String
 ): T {
@@ -34,7 +35,7 @@ private fun <T> KoinContext.getWithDefinitions(
         0 -> throw NoBeanDefFoundException("No bean beanDefinition found $message")
         1 -> {
             val def = foundDefinitions.first()
-            resolveInstance(def.clazz, parameters, { listOf(def) })
+            resolveInstance(module, def.clazz, parameters, { listOf(def) })
         }
         else -> throw NoBeanDefFoundException("Multiple bean definitions found $message")
     }

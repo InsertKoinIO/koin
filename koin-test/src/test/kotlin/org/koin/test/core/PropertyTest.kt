@@ -74,8 +74,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, Path.ROOT)
-        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInRootPath(ComponentA::class)
+        assertIsInRootPath(ComponentB::class)
         assertProperties(3)
     }
 
@@ -95,8 +95,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, Path.ROOT)
-        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInRootPath(ComponentA::class)
+        assertIsInRootPath(ComponentB::class)
         assertProperties(3)
     }
 
@@ -160,8 +160,8 @@ class PropertyTest : AutoCloseKoinTest() {
         assertRemainingInstances(0)
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, Path.ROOT)
-        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInRootPath(ComponentA::class)
+        assertIsInRootPath(ComponentB::class)
         assertProperties(2)
     }
 

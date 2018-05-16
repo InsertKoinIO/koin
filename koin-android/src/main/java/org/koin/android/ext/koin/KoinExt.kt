@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import org.koin.core.Koin
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import java.util.*
 
 /**
@@ -29,7 +29,7 @@ fun Koin.init(application: Application): Koin {
         BeanDefinition(
             clazz = Application::class,
             types = listOf(Context::class),
-            definition = { application }), ModulePath.root()
+            definition = { application }), Path.root()
     )
     return this
 }

@@ -13,9 +13,10 @@ import org.koin.dsl.context.emptyParameters
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
-    name: String? = null
+    name: String? = null,
+    module: String? = null
 ): Lazy<T> {
-    return viewModelByClass(true, T::class, key, name, emptyParameters())
+    return viewModelByClass(true, T::class, key, name, module, emptyParameters())
 }
 
 /**
@@ -28,9 +29,10 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
+    module: String? = null,
     noinline parameters: Parameters
 ): Lazy<T> {
-    return viewModelByClass(true, T::class, key, name, parameters)
+    return viewModelByClass(true, T::class, key, name, module, parameters)
 }
 
 /**
@@ -41,9 +43,10 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
-    name: String? = null
+    name: String? = null,
+    module: String? = null
 ): T {
-    return getViewModelByClass(true, T::class, key, name, emptyParameters())
+    return getViewModelByClass(true, T::class, key, name, module, emptyParameters())
 }
 
 /**
@@ -56,7 +59,8 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
+    module: String? = null,
     noinline parameters: Parameters = emptyParameters()
 ): T {
-    return getViewModelByClass(true, T::class, key, name, parameters)
+    return getViewModelByClass(true, T::class, key, name, module, parameters)
 }

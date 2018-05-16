@@ -21,9 +21,10 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
-    name: String? = null
+    name: String? = null,
+    module: String? = null
 ): Lazy<T> {
-    return viewModelByClass(false, T::class, key, name, emptyParameters())
+    return viewModelByClass(false, T::class, key, name, module, emptyParameters())
 }
 
 /**
@@ -36,9 +37,10 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
     name: String? = null,
+    module: String? = null,
     noinline parameters: Parameters
 ): Lazy<T> {
-    return viewModelByClass(false, T::class, key, name, parameters)
+    return viewModelByClass(false, T::class, key, name, module, parameters)
 }
 
 /**
@@ -55,9 +57,10 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
+    module: String? = null,
     parameters: Parameters = emptyParameters()
 ): Lazy<T> {
-    return lazy { getViewModelByClass(fromActivity, clazz, key, name, parameters) }
+    return lazy { getViewModelByClass(fromActivity, clazz, key, name, module, parameters) }
 }
 
 /**
@@ -68,9 +71,10 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
-    name: String? = null
+    name: String? = null,
+    module: String? = null
 ): T {
-    return getViewModelByClass(false, T::class, key, name, emptyParameters())
+    return getViewModelByClass(false, T::class, key, name, module, emptyParameters())
 }
 
 /**
@@ -83,9 +87,10 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
     name: String? = null,
+    module: String? = null,
     noinline parameters: Parameters
 ): T {
-    return getViewModelByClass(false, T::class, key, name, parameters)
+    return getViewModelByClass(false, T::class, key, name, module, parameters)
 }
 
 /**
@@ -102,11 +107,13 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
+    module: String? = null,
     parameters: Parameters = emptyParameters()
 ): T {
     KoinFactory.apply {
         KoinFactory.parameters = parameters
         KoinFactory.name = name
+        KoinFactory.module = module
     }
     val viewModelProvider = when {
         this is FragmentActivity -> {

@@ -24,12 +24,17 @@ object KoinFactory : ViewModelProvider.Factory, KoinComponent {
     internal var name: String? = null
 
     /**
+     * Module Path
+     */
+    internal var module: String? = null
+
+    /**
      * Create instance for ViewModelProvider Factory
      */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val beanName = name
         return if (beanName != null) {
-            getByName(beanName, parameters)
-        } else get(modelClass, parameters)
+            getByName(beanName, module, parameters)
+        } else get(modelClass, module, parameters)
     }
 }

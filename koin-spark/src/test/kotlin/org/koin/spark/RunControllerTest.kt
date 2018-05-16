@@ -4,14 +4,11 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.dsl.path.ModulePath
+import org.koin.dsl.path.Path
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
-import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertIsInModulePath
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.*
 
 var ctor = 0
 
@@ -42,6 +39,6 @@ class RunControllerTest : KoinTest {
         assertRemainingInstances(1)
         assertDefinitions(1)
         assertContexts(1)
-        assertIsInModulePath(HelloController::class, ModulePath.ROOT)
+        assertIsInRootPath(HelloController::class)
     }
 }

@@ -10,7 +10,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertIsInModulePath
+import org.koin.test.ext.junit.assertIsInRootPath
 import org.koin.test.ext.junit.assertDefinitions
 
 class BadInstanceCreationTest : AutoCloseKoinTest() {
@@ -71,8 +71,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(MyInterface::class, Path.ROOT)
-        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInRootPath(MyInterface::class)
+        assertIsInRootPath(ComponentB::class)
     }
 
     @Test
@@ -94,31 +94,9 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertContexts(1)
-        assertIsInModulePath(ComponentA::class, Path.ROOT)
-        assertIsInModulePath(ComponentB::class, Path.ROOT)
+        assertIsInRootPath(ComponentA::class)
+        assertIsInRootPath(ComponentB::class)
     }
-
-//    @Test
-//    fun `multiple singleDefinition for same type`() {
-//        startKoin(listOf(module1))
-//        try {
-//            dryRun()
-//            fail()
-//        } catch (e: Exception) {
-//            System.err.println(e)
-//        }
-//    }
-//
-//    @Test
-//    fun `multiple singleDefinition for same type - binds`() {
-//        startKoin(listOf(module2))
-//        try {
-//            dryRun()
-//            fail()
-//        } catch (e: Exception) {
-//            System.err.println(e)
-//        }
-//    }
 
     @Test
     fun `missing dependency`() {
