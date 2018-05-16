@@ -65,7 +65,6 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * Deprecated - @see single
      * @param name
      */
-    @Deprecated("use single { } instead")
     inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
         return provide(name, true, definition)
     }
