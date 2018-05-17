@@ -3,6 +3,10 @@ package org.koin.core.instance
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.context.ParameterProvider
 import org.koin.error.BeanInstanceCreationException
+import java.io.PrintWriter
+import java.io.StringWriter
+
+
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -60,7 +64,10 @@ class InstanceFactory {
             return instance
         } catch (e: Throwable) {
             e.printStackTrace()
-            throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e")
+            val sw = StringWriter()
+            e.printStackTrace(PrintWriter(sw))
+            val exceptionAsString = sw.toString()
+            throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e; $exceptionAsString")
         }
     }
 
