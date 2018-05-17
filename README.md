@@ -19,7 +19,7 @@ You can check the [getting started](https://insert-koin.io/docs/1.0/getting-star
 
 Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 
-Need help? Come on slack [Koin channel](https://kotlinlang.org/messages/koin) from Kotlin slack. Or just open an issue on [Github issues](https://github.com/Ekito/issues) to share your problem.
+Need help? Come on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) from Kotlin slack. Or just open an issue on [Github issues](https://github.com/Ekito/issues) to share your problem.
 
 
 # Setup
@@ -27,7 +27,7 @@ Need help? Come on slack [Koin channel](https://kotlinlang.org/messages/koin) fr
 ## Actual Version
 
 ```gradle
-koin_version = '0.9.2'
+koin_version = '0.9.3'
 ```
 
 ## Gradle 
