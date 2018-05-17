@@ -5,23 +5,6 @@ We just haven't decided what that is yet.
 
 === What is Koin?
 
-.main.kt
-[source,kotlin]
-----
-class MyApplication : Application() {
-  override fun onCreate(){
-    super.onCreate()
-    // start Koin!
-    startKoin(this, listOf(myModule))
-  }
-}
-----
+what is Koin ...
 
-This page was built by the following command:
 
- $ ./gradlew asciidoctor
-
-=== Images
-
-[.thumb]
-image::sunset.jpg[scaledwidth=75%]

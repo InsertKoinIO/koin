@@ -1,9 +1,7 @@
-== Introduction
+== Properties
 
 This project does something.
 We just haven't decided what that is yet.
-
-=== What is Koin?
 
 .main.kt
 [source,kotlin]
@@ -20,8 +18,3 @@ class MyApplication : Application() {
 This page was built by the following command:
 
  $ ./gradlew asciidoctor
-
-=== Images
-
-[.thumb]
-image::sunset.jpg[scaledwidth=75%]

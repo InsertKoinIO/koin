@@ -13,32 +13,13 @@ Arnaud Giuliani <arnaud.g@insert-koin.io>
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-This is a user manual for an example project.
+This is a Koin-Core project manual.
 
-== Introduction
-
-This project does something.
-We just haven't decided what that is yet.
-
-=== Source Code
-
-.main.kt
-[source,kotlin]
-----
-class MyApplication : Application() {
-  override fun onCreate(){
-    super.onCreate()
-    // start Koin!
-    startKoin(this, listOf(myModule))
-  }
-}
-----
-
-This page was built by the following command:
-
- $ ./gradlew asciidoctor
-
-=== Images
-
-[.thumb]
-image::sunset.jpg[scaledwidth=75%]
+include::what-is-koin.adoc[]
+include::dsl.adoc[]
+include::modules.adoc[]
+include::start-koin.adoc[]
+include::logging.adoc[]
+include::properties.adoc[]
+include::koin-component.adoc[]
+include::injection-parameters.adoc[]
