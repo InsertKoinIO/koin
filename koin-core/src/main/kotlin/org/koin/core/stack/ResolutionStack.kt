@@ -47,7 +47,7 @@ class ResolutionStack {
         val head: BeanDefinition<*> = stack.pop()
         if (head != beanDefinition) {
             stack.clear()
-            throw IllegalStateException("Stack resolution error : was $head but should be $beanDefinition")
+            throw DependencyResolutionException("Stack resolution error : was $head but should be $beanDefinition")
         }
     }
 

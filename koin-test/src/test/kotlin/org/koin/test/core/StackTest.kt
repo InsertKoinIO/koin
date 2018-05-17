@@ -108,13 +108,13 @@ class StackTest : AutoCloseKoinTest() {
             get<ComponentB>()
             fail()
         } catch (e: BeanInstanceCreationException) {
-            e.printStackTrace()
+            Assert.assertNotNull(e)
         }
         try {
             get<ComponentD>()
             fail()
-        } catch (e: NotVisibleException) {
-            e.printStackTrace()
+        } catch (e: BeanInstanceCreationException) {
+            Assert.assertNotNull(e)
         }
     }
 
