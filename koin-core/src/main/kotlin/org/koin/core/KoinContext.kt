@@ -68,7 +68,11 @@ class KoinContext(
      * Resolve a dependency for its bean definition
      * byt its type
      */
-    inline fun <reified T> resolveByClass(module: String? = null, clazz: KClass<*>, noinline parameters: Parameters): T =
+    inline fun <reified T> resolveByClass(
+        module: String? = null,
+        clazz: KClass<*>,
+        noinline parameters: Parameters
+    ): T =
         resolveInstance(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
 
     /**
@@ -89,29 +93,38 @@ class KoinContext(
 
         var resultInstance: T? = null
 
-        val beanDefinition: BeanDefinition<*> =
-            beanRegistry.getVisibleBean(
-                clazzName,
-                if (module != null) pathRegistry.getPath(module) else null,
-                definitionResolver,
-                resolutionStack.last()
-            )
+        try {
+            val beanDefinition: BeanDefinition<*> =
+                beanRegistry.getVisibleBean(
+                    clazzName,
+                    if (module != null) pathRegistry.getPath(module) else null,
+                    definitionResolver,
+                    resolutionStack.last()
+                )
 
-        val logIndent = resolutionStack.indent()
-        resolutionStack.resolve(beanDefinition) {
+            val logIndent = resolutionStack.indent()
+            resolutionStack.resolve(beanDefinition) {
+                // Resolution log
+                logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
 
-            // Resolution log
-            logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
+                val (instance, created) = instanceFactory.retrieveInstance<T>(
+                    beanDefinition,
+                    ParameterHolder(parameters)
+                )
 
-            val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, ParameterHolder(parameters))
+                // Log creation
+                if (created) {
+                    logger.log("$logIndent(*) Created")
+                }
 
-            // Log creation
-            if (created) {
-                logger.log("$logIndent(*) Created")
+                resultInstance = instance
             }
-
-            resultInstance = instance
+        } catch (e: Exception) {
+            resolutionStack.clear()
+            logger.err("Error while resolving instance for class '${clazz.java.simpleName}' - error: $e ")
+            throw e
         }
+
         return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
     }
 
