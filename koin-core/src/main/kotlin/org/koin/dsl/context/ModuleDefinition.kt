@@ -28,11 +28,7 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param path
      */
     @Deprecated("use module { }")
-    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition {
-        val newContext = ModuleDefinition(path, koinContext)
-        subModules += newContext
-        return newContext.apply(init)
-    }
+    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, init)
 
     /**
      * Create a inner sub module in actual module
