@@ -61,9 +61,8 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * Deprecated - @see single
      * @param name
      */
-    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
-        return provide(name, true, definition)
-    }
+    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> =
+        single(name, definition)
 
     /**
      * Provide a bean definition - alias to provide
