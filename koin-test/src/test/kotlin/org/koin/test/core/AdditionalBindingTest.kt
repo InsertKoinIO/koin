@@ -32,8 +32,13 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         single { ComponentC() } bind OtherInterfaceComponent::class
     }
 
+    val badModule = module {
+        single { ComponentA() } bind InterfaceComponent2::class
+    }
+
     class ComponentA : InterfaceComponent
     interface InterfaceComponent
+    interface InterfaceComponent2
 
     class ComponentB : OtherInterfaceComponent<String> {
         override fun get() = "HELLO"
@@ -120,4 +125,15 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertIsInRootPath(ComponentC::class)
     }
 
+    @Test
+    fun `should not bind non parent class`() {
+        startKoin(listOf(badModule))
+
+        try {
+            val intf = get<InterfaceComponent2>()
+            Assert.assertTrue(intf is InterfaceComponent2)
+            fail()
+        } catch (e: ClassCastException) {
+        }
+    }
 }

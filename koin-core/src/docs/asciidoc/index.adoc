@@ -1,6 +1,4 @@
-:doctype: book
-:toc: left
-:toclevels: 4
+:stylesheet: asciidoc.css
 :icons: font
 :source-highlighter: prettify
 :numbered:

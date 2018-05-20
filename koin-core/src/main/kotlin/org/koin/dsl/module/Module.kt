@@ -1,13 +1,14 @@
 package org.koin.dsl.module
 
 import org.koin.core.KoinContext
-import org.koin.dsl.path.Path
 import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.path.Path
 import org.koin.standalone.StandAloneContext
 
 
 /**
- * Create ModuleDefinition
+ * Create a Module
+ * @Depreacted @see module
  */
 @Deprecated(
     "use module function instead", ReplaceWith(
@@ -18,9 +19,12 @@ import org.koin.standalone.StandAloneContext
         "org.koin.core.KoinContext"
     )
 )
-fun applicationContext(init: ModuleDefinition.() -> Unit): Module =
-    { ModuleDefinition(Path.ROOT, StandAloneContext.koinContext as KoinContext).apply(init) }
+fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.ROOT, init)
 
+/**
+ * Create a Module
+ * Gather definitions
+ */
 fun module(path: String = Path.ROOT, init: ModuleDefinition.() -> Unit): Module =
     { ModuleDefinition(path, StandAloneContext.koinContext as KoinContext).apply(init) }
 

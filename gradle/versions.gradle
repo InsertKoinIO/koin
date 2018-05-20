@@ -22,4 +22,7 @@ ext {
     mockito_version = "2.8.47"
 
     asciidoctor_version = "1.5.3"
+    asciidoctor_pdf_version = "1.5.0-alpha.15"
+
+    android_maven_publish = "3.3.0"
 }
