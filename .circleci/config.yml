@@ -3,7 +3,7 @@ jobs:
   build_core:
     docker:
       # specify the version you desire here
-      - image: circleci/8-jdk-node-browsers
+      - image: circleci/openjdk:8-jdk-node-browsers
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
