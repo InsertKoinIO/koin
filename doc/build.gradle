@@ -1,0 +1,42 @@
+buildscript {
+    apply from: "./gradle/versions.gradle"
+    apply from: "./gradle/versions-android.gradle"
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        google()
+    }
+    dependencies {
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Bintray
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
+        // Dokka
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+        classpath "org.asciidoctor:asciidoctor-gradle-plugin:$asciidoctor_version"
+        classpath "org.asciidoctor:asciidoctorj-pdf:$asciidoctor_pdf_version"
+
+        // Android
+        classpath "com.android.tools.build:gradle:$android_gradle_version"
+        classpath "digital.wup:android-maven-publish:$android_maven_publish"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        google()
+    }
+
+    group = 'org.koin'
+    version = "$koin_version"
+
+    apply plugin: 'org.asciidoctor.convert'
+
+    asciidoctor {
+        backends = ["html5"]
+    }
+}
+
