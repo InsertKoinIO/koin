@@ -2,8 +2,6 @@ archivesBaseName = 'koin-core'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

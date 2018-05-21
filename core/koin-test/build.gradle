@@ -2,8 +2,6 @@ archivesBaseName = 'koin-test'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
     // Koin
     compile project(":koin-core")
 
