@@ -1,6 +1,43 @@
 version: 2
 jobs:
-  build:
+  build_core:
+    docker:
+      # specify the version you desire here
+      - image: circleci/8-jdk-node-browsers
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: 
+          command: ./gradlew -b ./core/build.gradle dependencies
+      
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+        
+      # run tests!
+      - run: 
+          command: ./gradlew -b ./core/build.gradle clean test
+
+  build_android:
     docker:
       # specify the version you desire here
       - image: circleci/android:api-27-alpha
@@ -26,7 +63,7 @@ jobs:
           - v1-dependencies-
 
       - run: 
-          command: ./gradlew dependencies androidDependencies
+          command: ./gradlew -b ./android/build.gradle clean androidDependencies
       
       - save_cache:
           paths:
@@ -35,4 +72,14 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./gradlew test
+          command: ./gradlew -b ./core/android.gradle clean testRelease
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build_core
+      - build_android:
+          requires:
+            - build_core
+
