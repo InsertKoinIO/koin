@@ -1,6 +1,6 @@
 buildscript {
-    apply from: "./gradle/versions.gradle"
-    apply from: "./gradle/versions-android.gradle"
+    apply from: "../gradle/versions.gradle"
+    apply from: "../gradle/versions-android.gradle"
 
     repositories {
         mavenLocal()
@@ -24,6 +24,7 @@ buildscript {
 }
 
 allprojects {
+
     repositories {
         mavenLocal()
         jcenter()
@@ -34,7 +35,6 @@ allprojects {
     version = "$koin_version"
 
     apply plugin: 'org.asciidoctor.convert'
-
     asciidoctor {
         backends = ["html5"]
     }

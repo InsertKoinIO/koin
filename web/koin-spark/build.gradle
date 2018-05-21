@@ -1,16 +1,12 @@
-apply plugin: 'kotlin'
-
 archivesBaseName = 'koin-spark'
 description = 'Koin - simple dependency injection for SparkJava'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile project(":koin-core")
-    testCompile project(":koin-test")
+    compile "$group:koin-core:$koin_version"
+    testCompile "$group:koin-test:$koin_version"
 
     // Spark
     compile "com.sparkjava:spark-kotlin:$spark_kotlin_version"
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: '../../gradle/publish.gradle'

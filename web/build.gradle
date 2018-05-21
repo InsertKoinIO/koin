@@ -1,6 +1,5 @@
 buildscript {
-    apply from: "./gradle/versions.gradle"
-    apply from: "./gradle/versions-android.gradle"
+    apply from: "../gradle/versions.gradle"
 
     repositories {
         mavenLocal()
@@ -16,14 +15,12 @@ buildscript {
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
         classpath "org.asciidoctor:asciidoctor-gradle-plugin:$asciidoctor_version"
         classpath "org.asciidoctor:asciidoctorj-pdf:$asciidoctor_pdf_version"
-
-        // Android
-        classpath "com.android.tools.build:gradle:$android_gradle_version"
-        classpath "digital.wup:android-maven-publish:$android_maven_publish"
     }
 }
 
 allprojects {
+    apply plugin: 'kotlin'
+
     repositories {
         mavenLocal()
         jcenter()
@@ -39,4 +36,3 @@ allprojects {
         backends = ["html5"]
     }
 }
-
