@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./gradlew clean asciidoctor
+./gradlew -b ./doc/build.gradle clean asciidoctor

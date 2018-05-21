@@ -1,3 +1,5 @@
 #!/bin/sh
 
-./gradlew clean test
+./gradlew -b ./core/build.gradle clean test
+./gradlew -b ./android/build.gradle clean testRelease
+./gradlew -b ./web/build.gradle clean test

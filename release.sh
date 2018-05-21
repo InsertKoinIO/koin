@@ -1,5 +1,8 @@
 #!/bin/sh
 
-./gradlew clean 
-./gradlew test install 
-./gradlew assembleRelease dokka publishToMavenLocal bintrayUpload --info -Dorg.gradle.parallel=false
+./test.sh
+./install.sh
+
+./gradlew -b ./core/build.gradle dokka bintrayUpload --info -Dorg.gradle.parallel=false
+./gradlew -b ./android/build.gradle bintrayUpload --info -Dorg.gradle.parallel=false
+./gradlew -b ./web/build.gradle bintrayUpload --info -Dorg.gradle.parallel=false
