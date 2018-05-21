@@ -63,7 +63,7 @@ jobs:
           - v1-dependencies-
 
       - run: 
-          command: ./gradlew -b ./web/build.gradle dependencies
+          command: ./gradlew -b ./web/build.gradle clean
       
       - save_cache:
           paths:
@@ -101,7 +101,7 @@ jobs:
           - v1-dependencies-
 
       - run: 
-          command: ./gradlew -b ./android/build.gradle clean androidDependencies
+          command: ./gradlew -b ./android/build.gradle clean
       
       - save_cache:
           paths:
