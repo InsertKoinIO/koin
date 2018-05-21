@@ -71,7 +71,8 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
-      - run: 
+      - run:
+          command: ./gradlew -b ./core/build.gradle clean install
           command: ./gradlew -b ./web/build.gradle clean test
 
   build_android:
@@ -109,6 +110,7 @@ jobs:
         
       # run tests!
       - run: 
+          command: ./gradlew -b ./core/build.gradle clean install
           command: ./gradlew -b ./android/build.gradle clean testRelease
 
 workflows:
