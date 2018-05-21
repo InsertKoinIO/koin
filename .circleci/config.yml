@@ -54,22 +54,6 @@ jobs:
     
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: 
-          command: ./gradlew -b ./core/build.gradle clean install
-          command: ./gradlew -b ./web/build.gradle clean
-      
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
       - run:
@@ -93,22 +77,6 @@ jobs:
     
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: 
-          command: ./gradlew -b ./core/build.gradle clean install
-          command: ./gradlew -b ./android/build.gradle clean
-      
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
       - run: 
