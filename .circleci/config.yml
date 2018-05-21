@@ -63,6 +63,7 @@ jobs:
           - v1-dependencies-
 
       - run: 
+          command: ./gradlew -b ./core/build.gradle clean install
           command: ./gradlew -b ./web/build.gradle clean
       
       - save_cache:
@@ -101,6 +102,7 @@ jobs:
           - v1-dependencies-
 
       - run: 
+          command: ./gradlew -b ./core/build.gradle clean install
           command: ./gradlew -b ./android/build.gradle clean
       
       - save_cache:
