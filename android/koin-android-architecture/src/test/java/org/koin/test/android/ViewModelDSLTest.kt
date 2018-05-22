@@ -5,6 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.koin.android.architecture.ext.koin.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -21,7 +22,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
     }
 
     val module2 = module {
-        viewModel { p -> MyViewModel2(p["url"]) }
+        viewModel { (url: String) -> MyViewModel2(url) }
     }
 
     class MyService
@@ -65,7 +66,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         val url = "http://..."
 
-        val vm1 = get<MyViewModel2> { mapOf("url" to url) }
+        val vm1 = get<MyViewModel2> { parametersOf(url) }
 
         assertEquals(url, vm1.url)
 

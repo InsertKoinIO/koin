@@ -3,8 +3,8 @@ package org.koin.android.ext.android
 import android.content.ComponentCallbacks
 import org.koin.android.ext.koin.context
 import org.koin.core.KoinContext
-import org.koin.core.parameter.Parameters
-import org.koin.dsl.context.emptyParameters
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.standalone.StandAloneContext
 
 /**
@@ -13,7 +13,7 @@ import org.koin.standalone.StandAloneContext
  */
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = "", module: String? = null
-): Lazy<T> = inject(name, module, emptyParameters())
+): Lazy<T> = inject(name, module, emptyParameterDefinition())
 
 /**
  * inject lazily given dependency for Android component
@@ -23,7 +23,7 @@ inline fun <reified T> ComponentCallbacks.inject(
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = "",
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): Lazy<T> = (StandAloneContext.koinContext as KoinContext).inject(name, module, parameters)
 
 /**
@@ -32,7 +32,7 @@ inline fun <reified T> ComponentCallbacks.inject(
  */
 inline fun <reified T> ComponentCallbacks.get(
     name: String = "", module: String? = null
-): T = get(name, module, emptyParameters())
+): T = get(name, module, emptyParameterDefinition())
 
 /**
  * get given dependency for Android component
@@ -42,7 +42,7 @@ inline fun <reified T> ComponentCallbacks.get(
 inline fun <reified T> ComponentCallbacks.get(
     name: String = "",
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): T = (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 
 /**

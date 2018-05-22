@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.android.architecture.KoinFactory
 import org.koin.core.Koin
-import org.koin.core.parameter.Parameters
-import org.koin.dsl.context.emptyParameters
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import kotlin.reflect.KClass
 
 
@@ -24,7 +24,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     name: String? = null,
     module: String? = null
 ): Lazy<T> {
-    return viewModelByClass(false, T::class, key, name, module, emptyParameters())
+    return viewModelByClass(false, T::class, key, name, module, emptyParameterDefinition())
 }
 
 /**
@@ -38,7 +38,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): Lazy<T> {
     return viewModelByClass(false, T::class, key, name, module, parameters)
 }
@@ -58,7 +58,7 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    parameters: Parameters = emptyParameters()
+    parameters: ParameterDefinition = emptyParameterDefinition()
 ): Lazy<T> {
     return lazy { getViewModelByClass(fromActivity, clazz, key, name, module, parameters) }
 }
@@ -74,7 +74,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     name: String? = null,
     module: String? = null
 ): T {
-    return getViewModelByClass(false, T::class, key, name, module, emptyParameters())
+    return getViewModelByClass(false, T::class, key, name, module, emptyParameterDefinition())
 }
 
 /**
@@ -88,7 +88,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): T {
     return getViewModelByClass(false, T::class, key, name, module, parameters)
 }
@@ -108,7 +108,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    parameters: Parameters = emptyParameters()
+    parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
     KoinFactory.apply {
         KoinFactory.parameters = parameters

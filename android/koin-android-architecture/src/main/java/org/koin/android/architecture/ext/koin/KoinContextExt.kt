@@ -1,14 +1,14 @@
 package org.koin.android.architecture.ext.koin
 
 import org.koin.core.KoinContext
-import org.koin.core.parameter.Parameters
+import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.NoBeanDefFoundException
 
 /**
  * Retrieve an instance by its class canonical name
  */
-fun <T> KoinContext.getByTypeName(canonicalName: String, module: String? = null, parameters: Parameters): T {
+fun <T> KoinContext.getByTypeName(canonicalName: String, module: String? = null, parameters: ParameterDefinition): T {
     val foundDefinitions =
         beanRegistry.definitions.filter { it.clazz.java.canonicalName == canonicalName }.distinct()
     return getWithDefinitions(foundDefinitions, module, parameters, "for class name '$canonicalName'")
@@ -17,7 +17,7 @@ fun <T> KoinContext.getByTypeName(canonicalName: String, module: String? = null,
 /**
  * Retrieve an instance by its bean beanDefinition name
  */
-fun <T> KoinContext.getByName(name: String, module: String? = null, parameters: Parameters): T {
+fun <T> KoinContext.getByName(name: String, module: String? = null, parameters: ParameterDefinition): T {
     val foundDefinitions = beanRegistry.definitions.filter { it.name == name }.distinct()
     return getWithDefinitions(foundDefinitions, module, parameters, "for bean name '$name'")
 }
@@ -28,7 +28,7 @@ fun <T> KoinContext.getByName(name: String, module: String? = null, parameters: 
 private fun <T> KoinContext.getWithDefinitions(
     foundDefinitions: List<BeanDefinition<*>>,
     module: String? = null,
-    parameters: Parameters,
+    parameters: ParameterDefinition,
     message: String
 ): T {
     return when (foundDefinitions.size) {

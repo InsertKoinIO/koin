@@ -2,8 +2,8 @@ package org.koin.android.architecture.ext.android
 
 import android.arch.lifecycle.ViewModel
 import android.support.v4.app.Fragment
-import org.koin.core.parameter.Parameters
-import org.koin.dsl.context.emptyParameters
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 
 /**
  * Lazy get a viewModel instance shared with Activity
@@ -16,7 +16,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     name: String? = null,
     module: String? = null
 ): Lazy<T> {
-    return viewModelByClass(true, T::class, key, name, module, emptyParameters())
+    return viewModelByClass(true, T::class, key, name, module, emptyParameterDefinition())
 }
 
 /**
@@ -30,7 +30,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): Lazy<T> {
     return viewModelByClass(true, T::class, key, name, module, parameters)
 }
@@ -46,7 +46,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     name: String? = null,
     module: String? = null
 ): T {
-    return getViewModelByClass(true, T::class, key, name, module, emptyParameters())
+    return getViewModelByClass(true, T::class, key, name, module, emptyParameterDefinition())
 }
 
 /**
@@ -60,7 +60,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    noinline parameters: Parameters = emptyParameters()
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
     return getViewModelByClass(true, T::class, key, name, module, parameters)
 }
