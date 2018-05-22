@@ -2,7 +2,7 @@ package org.koin.spark
 
 import org.koin.core.Koin
 import org.koin.core.KoinContext
-import org.koin.dsl.context.ParameterHolder
+import org.koin.core.parameter.emptyParameterDefinition
 
 /**
  * Run all Spark controllers
@@ -13,6 +13,6 @@ fun KoinContext.runSparkControllers() {
         .filter { it.types.contains(SparkController::class) }
         .forEach { def ->
             Koin.logger.log("Creating $def ...")
-            instanceFactory.retrieveInstance<Any>(def, ParameterHolder())
+            instanceFactory.retrieveInstance<Any>(def, emptyParameterDefinition())
         }
 }

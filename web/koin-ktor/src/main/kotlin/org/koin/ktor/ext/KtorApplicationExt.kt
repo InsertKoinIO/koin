@@ -2,8 +2,8 @@ package org.koin.ktor.ext
 
 import io.ktor.application.Application
 import org.koin.core.KoinContext
-import org.koin.core.parameter.Parameters
-import org.koin.dsl.context.emptyParameters
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.standalone.StandAloneContext
 
 /**
@@ -15,7 +15,7 @@ inline fun <reified T> Application.inject(
     name: String = "",
     module: String? = null
 ) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameters()) }
+    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameterDefinition()) }
 
 /**
  * inject lazily given dependency
@@ -26,7 +26,7 @@ inline fun <reified T> Application.inject(
 inline fun <reified T> Application.inject(
     name: String = "",
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ) =
     lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
 
@@ -39,7 +39,7 @@ inline fun <reified T> Application.get(
     name: String = "",
     module: String? = null
 ) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameters())
+    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameterDefinition())
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -50,7 +50,7 @@ inline fun <reified T> Application.get(
 inline fun <reified T> Application.get(
     name: String = "",
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ) =
     (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters)
 
