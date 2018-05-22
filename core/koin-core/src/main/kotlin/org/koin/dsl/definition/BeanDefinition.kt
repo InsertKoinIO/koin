@@ -64,4 +64,7 @@ data class BeanDefinition<out T>(
     }
 }
 
+/**
+ * Type Definition function - what's build a given component T
+ */
 typealias Definition<T> = (ParameterList) -> T

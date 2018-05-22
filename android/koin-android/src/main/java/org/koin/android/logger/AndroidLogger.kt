@@ -10,6 +10,7 @@ import org.koin.log.Logger
  */
 class AndroidLogger : Logger {
     val TAG = "KOIN"
+
     override fun debug(msg: String) {
         Log.d(TAG, msg)
     }

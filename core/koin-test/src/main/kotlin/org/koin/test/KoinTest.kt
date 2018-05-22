@@ -5,6 +5,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
+import org.koin.test.ext.koin.dryRun
 
 /**
  * Koin Test Component

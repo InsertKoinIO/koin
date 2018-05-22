@@ -28,7 +28,7 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * Create a inner sub module in actual module
      * @param path
      */
-    @Deprecated("use module { }")
+    @Deprecated("use module { } function instead")
     fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, init)
 
     /**
@@ -94,7 +94,7 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
     /**
      * Resolve a component
      * @param name : component name
-     * @param parameters - dynamic parameters
+     * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(name: String? = null, noinline parameters: ParameterDefinition): T =
         if (name != null) koinContext.resolveByName(name, parameters = parameters) else koinContext.resolveByClass(

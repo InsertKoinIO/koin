@@ -18,7 +18,7 @@ inline fun <reified T> ComponentCallbacks.inject(
 /**
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
- * @param parameters - dynamic parameters
+ * @param parameters - injection parameters
  */
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = "",
@@ -37,7 +37,7 @@ inline fun <reified T> ComponentCallbacks.get(
 /**
  * get given dependency for Android component
  * @param name - bean name
- * @param parameters - dynamic parameters
+ * @param parameters - injection parameters
  */
 inline fun <reified T> ComponentCallbacks.get(
     name: String = "",
@@ -74,7 +74,7 @@ fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
     context().setProperty(key, value)
 
 /**
- * Release a context
- * @param name
+ * Release a Module from given Path
+ * @param path
  */
-fun ComponentCallbacks.releaseContext(name: String): Unit = context().release(name)
+fun ComponentCallbacks.release(path: String): Unit = context().release(path)

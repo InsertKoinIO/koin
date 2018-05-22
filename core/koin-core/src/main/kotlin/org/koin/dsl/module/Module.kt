@@ -24,6 +24,7 @@ fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.
 /**
  * Create a Module
  * Gather definitions
+ * @param path : Path of the module
  */
 fun module(path: String = Path.ROOT, init: ModuleDefinition.() -> Unit): Module =
     { ModuleDefinition(path, StandAloneContext.koinContext as KoinContext).apply(init) }

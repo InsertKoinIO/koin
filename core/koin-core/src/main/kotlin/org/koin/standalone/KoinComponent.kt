@@ -19,7 +19,7 @@ inline fun <reified T> KoinComponent.inject(name: String = "", module: String? =
 /**
  * inject lazily given dependency for KoinComponent
  * @param name - bean name
- * @param parameters - dynamic parameters
+ * @param parameters - injection parameters
  */
 inline fun <reified T> KoinComponent.inject(
     name: String = "",
@@ -39,7 +39,7 @@ inline fun <reified T> KoinComponent.get(name: String = "", module: String? = nu
 /**
  * Retrieve given dependency for KoinComponent
  * @param name - bean name
- * @param parameters - dynamic parameters
+ * @param parameters - injection parameters
  */
 inline fun <reified T> KoinComponent.get(
     name: String = "",

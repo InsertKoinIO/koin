@@ -133,17 +133,6 @@ class KoinContext(
     }
 
     /**
-     * Check all loaded definitions by resolving them one by one
-     */
-    fun dryRun(defaultParameters: ParameterDefinition) {
-        logger.log("(DRY RUN)")
-        beanRegistry.definitions.forEach { def ->
-            Koin.logger.log("Testing $def ...")
-            instanceFactory.retrieveInstance<Any>(def, defaultParameters)
-        }
-    }
-
-    /**
      * Drop all instances for path context
      * @param path
      */
