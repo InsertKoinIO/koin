@@ -1,7 +1,7 @@
 package org.koin.core.instance
 
+import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.context.ParameterProvider
 import org.koin.error.BeanInstanceCreationException
 
 /**
@@ -16,7 +16,7 @@ class InstanceFactory {
      * Retrieve or create bean instance
      * @return Instance / has been created
      */
-    fun <T> retrieveInstance(def: BeanDefinition<*>, p: ParameterProvider): Pair<T, Boolean> {
+    fun <T> retrieveInstance(def: BeanDefinition<*>, p: ParameterDefinition): Pair<T, Boolean> {
         // Factory
         return if (def.isNotASingleton()) {
             Pair(createInstance(def, p), true)
@@ -53,9 +53,10 @@ class InstanceFactory {
      * create instance for given bean definition
      */
     @Suppress("UNCHECKED_CAST")
-    private fun <T> createInstance(def: BeanDefinition<*>, p: ParameterProvider): T {
+    private fun <T> createInstance(def: BeanDefinition<*>, p: ParameterDefinition): T {
         try {
-            val instance = def.definition.invoke(p) as Any
+            val parameterList = p()
+            val instance = def.definition.invoke(parameterList) as Any
             instance as T
             return instance
         } catch (e: Throwable) {

@@ -2,6 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -12,7 +13,7 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class ParametersLazyInstanceTest : AutoCloseKoinTest() {
 
     val module = module {
-        single { params -> ComponentA(params[URL]) }
+        single { (url: String) -> ComponentA(url) }
     }
 
     class ComponentA(val url: String)
@@ -20,7 +21,7 @@ class ParametersLazyInstanceTest : AutoCloseKoinTest() {
 
         lateinit var url: String
 
-        val a: ComponentA by inject { mapOf(URL to url) }
+        val a: ComponentA by inject { parametersOf(url) }
 
         fun getAWithUrl(url: String) {
             this.url = url
@@ -40,9 +41,5 @@ class ParametersLazyInstanceTest : AutoCloseKoinTest() {
 
         assertRemainingInstances(1)
         Assert.assertEquals(url, b.a.url)
-    }
-
-    companion object {
-        const val URL = "URL"
     }
 }

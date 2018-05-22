@@ -1,7 +1,8 @@
 package org.koin.dsl.context
 
 import org.koin.core.KoinContext
-import org.koin.core.parameter.Parameters
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Definition
 
@@ -87,15 +88,15 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param name : component name
      */
     inline fun <reified T : Any> get(name: String? = null): T = if (name != null) koinContext.resolveByName(
-        name, parameters =
-        { emptyMap() }) else koinContext.resolveByClass(parameters = emptyParameters())
+        name, parameters = emptyParameterDefinition()
+    ) else koinContext.resolveByClass(parameters = emptyParameterDefinition())
 
     /**
      * Resolve a component
      * @param name : component name
      * @param parameters - dynamic parameters
      */
-    inline fun <reified T : Any> get(name: String? = null, noinline parameters: Parameters): T =
+    inline fun <reified T : Any> get(name: String? = null, noinline parameters: ParameterDefinition): T =
         if (name != null) koinContext.resolveByName(name, parameters = parameters) else koinContext.resolveByClass(
             parameters = parameters
         )

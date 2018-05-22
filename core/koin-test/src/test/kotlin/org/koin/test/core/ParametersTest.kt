@@ -2,6 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -14,17 +15,12 @@ class ParametersTest : AutoCloseKoinTest() {
 
     val simpleModule1 = module {
 
-        factory { params -> ComponentA(params[PARAM_URL]) }
+        factory { (url: String) -> ComponentA(url) }
     }
 
     val simpleModule2 = module {
 
-        single { params -> ComponentA(params[PARAM_URL]) }
-    }
-
-    val simpleModule3 = module {
-
-        single { params -> ComponentA(params.getOrNUll(PARAM_URL) ?: DEFAULT_URL) }
+        single { (url: String) -> ComponentA(url) }
     }
 
     class ComponentA(val url: String)
@@ -35,7 +31,7 @@ class ParametersTest : AutoCloseKoinTest() {
             println("Ctor Component1")
         }
 
-        val compA: ComponentA by inject { mapOf(PARAM_URL to URL1) }
+        val compA: ComponentA by inject { parametersOf(URL1) }
     }
 
     class Component2 : KoinComponent {
@@ -44,7 +40,7 @@ class ParametersTest : AutoCloseKoinTest() {
             println("Ctor Component2")
         }
 
-        val compA: ComponentA by inject { mapOf(PARAM_URL to URL2) }
+        val compA: ComponentA by inject { parametersOf(URL2) }
     }
 
     class Component3 : KoinComponent {
@@ -86,18 +82,7 @@ class ParametersTest : AutoCloseKoinTest() {
     fun `should dry run default parameters`() {
         startKoin(listOf(simpleModule1))
 
-        dryRun { mapOf(PARAM_URL to "DEFAULT") }
-    }
-
-    @Test
-    fun `should inject default params with bean`() {
-        startKoin(listOf(simpleModule3))
-
-        val c1 = Component3()
-
-        assertRemainingInstances(0)
-
-        Assert.assertEquals(DEFAULT_URL, c1.compA.url)
+        dryRun { parametersOf("DEFAULT") }
     }
 
     companion object {

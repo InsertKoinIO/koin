@@ -1,8 +1,8 @@
 package org.koin.standalone
 
 import org.koin.core.KoinContext
-import org.koin.core.parameter.Parameters
-import org.koin.dsl.context.emptyParameters
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 
 /**
  * Koin component
@@ -14,7 +14,7 @@ interface KoinComponent
  * @param name - bean name
  */
 inline fun <reified T> KoinComponent.inject(name: String = "", module: String? = null): Lazy<T> =
-    inject(name, module, emptyParameters())
+    inject(name, module, emptyParameterDefinition())
 
 /**
  * inject lazily given dependency for KoinComponent
@@ -24,7 +24,7 @@ inline fun <reified T> KoinComponent.inject(name: String = "", module: String? =
 inline fun <reified T> KoinComponent.inject(
     name: String = "",
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): Lazy<T> =
     (StandAloneContext.koinContext as KoinContext).inject(name, module, parameters)
 
@@ -34,7 +34,7 @@ inline fun <reified T> KoinComponent.inject(
  * @param name - bean name
  */
 inline fun <reified T> KoinComponent.get(name: String = "", module: String? = null): T =
-    get(name, module, emptyParameters())
+    get(name, module, emptyParameterDefinition())
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -44,7 +44,7 @@ inline fun <reified T> KoinComponent.get(name: String = "", module: String? = nu
 inline fun <reified T> KoinComponent.get(
     name: String = "",
     module: String? = null,
-    noinline parameters: Parameters
+    noinline parameters: ParameterDefinition
 ): T =
     (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 

@@ -1,6 +1,6 @@
 package org.koin.dsl.definition
 
-import org.koin.dsl.context.ParameterProvider
+import org.koin.core.parameter.ParameterList
 import org.koin.dsl.path.Path
 import kotlin.reflect.KClass
 
@@ -64,4 +64,4 @@ data class BeanDefinition<out T>(
     }
 }
 
-typealias Definition<T> = (ParameterProvider) -> T
+typealias Definition<T> = (ParameterList) -> T

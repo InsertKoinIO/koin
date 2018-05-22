@@ -2,6 +2,7 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -12,8 +13,8 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class ParametersPropagationTest : AutoCloseKoinTest() {
 
     val simpleModule1 = module {
-        single { params -> ComponentA(params["this"]) }
-        single { params -> ComponentB(get { params.values }) }
+        single { (c : ComponentC) -> ComponentA(c) }
+        single { params -> ComponentB(get { params }) }
     }
 
     class ComponentA(val componentC: ComponentC)
@@ -24,7 +25,7 @@ class ParametersPropagationTest : AutoCloseKoinTest() {
             println("Ctor Component1")
         }
 
-        val componentB: ComponentB by inject { mapOf("this" to this) }
+        val componentB: ComponentB by inject { parametersOf(this) }
     }
 
     @Test

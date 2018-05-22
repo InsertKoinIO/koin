@@ -125,15 +125,15 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertIsInRootPath(ComponentC::class)
     }
 
-    @Test
-    fun `should not bind non parent class`() {
-        startKoin(listOf(badModule))
-
-        try {
-            val intf = get<InterfaceComponent2>()
-            Assert.assertTrue(intf is InterfaceComponent2)
-            fail()
-        } catch (e: ClassCastException) {
-        }
-    }
+//    @Test
+//    fun `should not bind non parent class`() {
+//        startKoin(listOf(badModule))
+//
+//        try {
+//            val intf = get<InterfaceComponent2>()
+//            Assert.assertTrue(intf is InterfaceComponent2)
+//            fail()
+//        } catch (e: ClassCastException) {
+//        }
+//    }
 }

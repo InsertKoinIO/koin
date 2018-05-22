@@ -3,6 +3,7 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.KoinComponent
@@ -14,14 +15,13 @@ import org.koin.test.ext.junit.assertRemainingInstances
 class ParametersInstanceTest : AutoCloseKoinTest() {
 
     val simpleModule1 = module {
-
-        single { params -> ComponentA(params["this"]) }
+        single { (b: ComponentB) -> ComponentA(b) }
     }
 
     class ComponentA(val componentB: ComponentB)
     class ComponentB : KoinComponent {
 
-        val compA: ComponentA by inject { mapOf("this" to this) }
+        val compA: ComponentA by inject { parametersOf(this) }
     }
 
     class ComponentC : KoinComponent {
