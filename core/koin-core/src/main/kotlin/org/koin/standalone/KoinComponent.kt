@@ -12,29 +12,13 @@ interface KoinComponent
 /**
  * inject lazily given dependency for KoinComponent
  * @param name - bean name
- */
-inline fun <reified T> KoinComponent.inject(name: String = "", module: String? = null): Lazy<T> =
-    inject(name, module, emptyParameterDefinition())
-
-/**
- * inject lazily given dependency for KoinComponent
- * @param name - bean name
  * @param parameters - injection parameters
  */
 inline fun <reified T> KoinComponent.inject(
     name: String = "",
     module: String? = null,
-    noinline parameters: ParameterDefinition
-): Lazy<T> =
-    (StandAloneContext.koinContext as KoinContext).inject(name, module, parameters)
-
-
-/**
- * Retrieve given dependency for KoinComponent
- * @param name - bean name
- */
-inline fun <reified T> KoinComponent.get(name: String = "", module: String? = null): T =
-    get(name, module, emptyParameterDefinition())
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -44,7 +28,7 @@ inline fun <reified T> KoinComponent.get(name: String = "", module: String? = nu
 inline fun <reified T> KoinComponent.get(
     name: String = "",
     module: String? = null,
-    noinline parameters: ParameterDefinition
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
     (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 

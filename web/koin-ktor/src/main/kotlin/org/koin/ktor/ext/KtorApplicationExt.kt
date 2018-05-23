@@ -10,23 +10,12 @@ import org.koin.standalone.StandAloneContext
  * inject lazily given dependency
  * @param name - bean name / optional
  * @param module - module path
- */
-inline fun <reified T> Application.inject(
-    name: String = "",
-    module: String? = null
-) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameterDefinition()) }
-
-/**
- * inject lazily given dependency
- * @param name - bean name / optional
- * @param module - module path
  * @param parameters
  */
 inline fun <reified T> Application.inject(
     name: String = "",
     module: String? = null,
-    noinline parameters: ParameterDefinition
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
     lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
 
@@ -34,23 +23,12 @@ inline fun <reified T> Application.inject(
  * Retrieve given dependency for KoinComponent
  * @param name - bean name / optional
  * @param module - module path
- */
-inline fun <reified T> Application.get(
-    name: String = "",
-    module: String? = null
-) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, emptyParameterDefinition())
-
-/**
- * Retrieve given dependency for KoinComponent
- * @param name - bean name / optional
- * @param module - module path
  * @param parameters
  */
 inline fun <reified T> Application.get(
     name: String = "",
     module: String? = null,
-    noinline parameters: ParameterDefinition
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
     (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters)
 

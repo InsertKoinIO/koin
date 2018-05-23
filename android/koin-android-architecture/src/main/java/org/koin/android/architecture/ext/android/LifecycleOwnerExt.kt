@@ -18,30 +18,14 @@ import kotlin.reflect.KClass
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
- */
-inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
-    key: String? = null,
-    name: String? = null,
-    module: String? = null
-): Lazy<T> {
-    return viewModelByClass(false, T::class, key, name, module, emptyParameterDefinition())
-}
-
-/**
- * Lazy get a viewModel instance
- *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    noinline parameters: ParameterDefinition
-): Lazy<T> {
-    return viewModelByClass(false, T::class, key, name, module, parameters)
-}
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+) = lazy { viewModelByClass(false, T::class, key, name, module, parameters) }
 
 /**
  * Lazy get a viewModel instance
@@ -59,23 +43,7 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
     name: String? = null,
     module: String? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
-): Lazy<T> {
-    return lazy { getViewModelByClass(fromActivity, clazz, key, name, module, parameters) }
-}
-
-/**
- * Get a viewModel instance
- *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
- */
-inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
-    key: String? = null,
-    name: String? = null,
-    module: String? = null
-): T {
-    return getViewModelByClass(false, T::class, key, name, module, emptyParameterDefinition())
-}
+) = lazy { getViewModelByClass(fromActivity, clazz, key, name, module, parameters) }
 
 /**
  * Get a viewModel instance
@@ -88,7 +56,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
-    noinline parameters: ParameterDefinition
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
     return getViewModelByClass(false, T::class, key, name, module, parameters)
 }

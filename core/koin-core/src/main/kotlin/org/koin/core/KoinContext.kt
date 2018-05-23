@@ -31,16 +31,6 @@ class KoinContext(
     var contextCallback: ArrayList<ModuleCallback> = arrayListOf()
 
     /**
-     * Lazy bean instance
-     */
-    inline fun <reified T> inject(
-        name: String = "",
-        module: String? = null,
-        noinline parameters: ParameterDefinition = emptyParameterDefinition()
-    ): Lazy<T> =
-        kotlin.lazy { get<T>(name, module, parameters) }
-
-    /**
      * Retrieve a bean instance
      */
     inline fun <reified T> get(

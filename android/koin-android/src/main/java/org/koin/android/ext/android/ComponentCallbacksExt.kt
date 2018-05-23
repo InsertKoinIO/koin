@@ -7,13 +7,6 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.standalone.StandAloneContext
 
-/**
- * inject lazily given dependency for Android component
- * @param name - bean name / optional
- */
-inline fun <reified T> ComponentCallbacks.inject(
-    name: String = "", module: String? = null
-): Lazy<T> = inject(name, module, emptyParameterDefinition())
 
 /**
  * inject lazily given dependency for Android component
@@ -23,16 +16,8 @@ inline fun <reified T> ComponentCallbacks.inject(
 inline fun <reified T> ComponentCallbacks.inject(
     name: String = "",
     module: String? = null,
-    noinline parameters: ParameterDefinition
-): Lazy<T> = (StandAloneContext.koinContext as KoinContext).inject(name, module, parameters)
-
-/**
- * get given dependency for Android component
- * @param name - bean name / optional
- */
-inline fun <reified T> ComponentCallbacks.get(
-    name: String = "", module: String? = null
-): T = get(name, module, emptyParameterDefinition())
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
 
 /**
  * get given dependency for Android component
@@ -42,7 +27,7 @@ inline fun <reified T> ComponentCallbacks.get(
 inline fun <reified T> ComponentCallbacks.get(
     name: String = "",
     module: String? = null,
-    noinline parameters: ParameterDefinition
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T = (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 
 /**

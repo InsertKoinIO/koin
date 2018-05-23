@@ -86,17 +86,12 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
     /**
      * Resolve a component
      * @param name : component name
-     */
-    inline fun <reified T : Any> get(name: String? = null): T = if (name != null) koinContext.resolveByName(
-        name, parameters = emptyParameterDefinition()
-    ) else koinContext.resolveByClass(parameters = emptyParameterDefinition())
-
-    /**
-     * Resolve a component
-     * @param name : component name
      * @param parameters - injection parameters
      */
-    inline fun <reified T : Any> get(name: String? = null, noinline parameters: ParameterDefinition): T =
+    inline fun <reified T : Any> get(
+        name: String? = null,
+        noinline parameters: ParameterDefinition = emptyParameterDefinition()
+    ): T =
         if (name != null) koinContext.resolveByName(name, parameters = parameters) else koinContext.resolveByClass(
             parameters = parameters
         )
