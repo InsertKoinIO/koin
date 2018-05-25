@@ -1,10 +1,13 @@
 == Introduction
 
-This project does something.
-We just haven't decided what that is yet.
+This is the `koin-core` project manual. This project brings the core feature ok Koin, ready to be embedded in any Kotlin Runtime/SDK.
 
 === What is Koin?
 
-what is Koin ...
+Koin is pragmatic lightweight dependency injection framework for Kotlin developers. Written in pure Kotlin, using functional resolution only: no proxy, no code generation, no reflection. Koin is a DSL, a lightweight container and a pragmatic API.
+
+
+
+
 
 

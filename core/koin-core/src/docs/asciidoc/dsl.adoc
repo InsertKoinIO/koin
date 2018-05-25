@@ -1,9 +1,36 @@
 == Koin DSL
 
-This project does something.
-We just haven't decided what that is yet.
+Koin provides a DSL to help your describe your components with 'definitions' and start the Koin container
+with those definitions and to instantiate them when needed.
 
-=== keywords ...
+=== Why a DSL?
+
+Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it. Those annotations need introspection analyze,
+proxying/code generation. Whereas with Kotlin DSL, we can use smart functional API to achieve the same goal: make dependency injection.
+
+=== Koin DSL
+
+Below are the Koin DSL keywords:
+
+* `module` - create a Koin Module
+* `factory` - provide a factory bean definition
+* `single` - provide a singleton bean definition (also aliases as `bean`)
+* `bind` - add type to bind for given bean definition
+* `get` - resolve a component dependency
+* `getProperty` - resolve a property value
+
+==== Writing a module
+
+==== Defining a singleton
+
+==== Defining a factory
+
+==== Resolving dependency - aka dependency injection
+
+==== Binding interface
+
+==== Binding additional type
+
 
 
 
