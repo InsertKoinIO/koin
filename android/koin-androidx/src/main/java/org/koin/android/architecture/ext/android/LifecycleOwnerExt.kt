@@ -88,7 +88,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
         this is Fragment -> {
             if (fromActivity) {
                 Koin.logger.log("[ViewModel] get for FragmentActivity @ ${this.activity}")
-                ViewModelProvider(this.viewModelStore, KoinFactory)
+                ViewModelProvider(this.activity?.viewModelStore ?: error("Can't create ViewModel instance - Parent activity is null"), KoinFactory)
             } else {
                 Koin.logger.log("[ViewModel] get for Fragment @ $this")
                 ViewModelProvider(this.viewModelStore, KoinFactory)
