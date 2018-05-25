@@ -17,9 +17,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     name: String? = null,
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-): Lazy<T> {
-    return viewModelByClass(true, T::class, key, name, module, parameters)
-}
+) = viewModelByClass(true, T::class, key, name, module, parameters)
 
 /**
  * Get a shared viewModel instance from underlying Activity
@@ -33,6 +31,4 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     name: String? = null,
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-): T {
-    return getViewModelByClass(true, T::class, key, name, module, parameters)
-}
+) = getViewModelByClass(true, T::class, key, name, module, parameters)

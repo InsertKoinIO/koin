@@ -25,7 +25,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     name: String? = null,
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { viewModelByClass(false, T::class, key, name, module, parameters) }
+) = viewModelByClass(false, T::class, key, name, module, parameters)
 
 /**
  * Lazy get a viewModel instance
