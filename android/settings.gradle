@@ -1,1 +1,1 @@
-include ':koin-android', ':koin-android-architecture'
+include ':koin-android', ':koin-android-architecture', ':koin-androidx'
