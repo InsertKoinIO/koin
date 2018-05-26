@@ -14,22 +14,106 @@ Below are the Koin DSL keywords:
 
 * `module` - create a Koin Module
 * `factory` - provide a factory bean definition
-* `single` - provide a singleton bean definition (also aliases as `bean`)
+* `single` - provide a singleton bean definition (also aliased as `bean`)
 * `bind` - add type to bind for given bean definition
 * `get` - resolve a component dependency
 * `getProperty` - resolve a property value
 
 ==== Writing a module
 
+A Koin module is the space to declare all your components. Use the `module` function to declare a Koin module:
+
+[source,kotlin]
+----
+val myModule = module {
+   // your dependencies here
+}
+----
+
+In this module, you can declare components with `single` or `factory` functions, or declare inner modules with `module` function.
+
 ==== Defining a singleton
+
+To declare a singleton component, means that Koin container will keep a unique instance of your declared component. Just use the `single` function in a module:
+
+[source,kotlin]
+----
+//Given a simple class `MyService`
+class MyService()
+
+val myModule = module {
+
+    // declare single instance for MyService class
+    single { MyService() }
+}
+----
+
+[IMPORTANT]
+====
+`single` & `factory` keywords help you declare your components through a lambda expression. this lambda describe
+the way that you build your component. Usually we instantiate components via their constructors, but you can also use any expression.
+
+`factory or single { Class constructor / expression }`
+
+The result type of your lambda is the main type of your component
+====
+
 
 ==== Defining a factory
 
-==== Resolving dependency - aka dependency injection
+A factory component declaration is a definition that will gives you a new instance each time you ask for this definition. Use the `factory` function
+with a lambda expression to build a component, like `single` definition above.
 
-==== Binding interface
+[source,kotlin]
+----
+//Given a simple class `Presenter`
+class Presenter()
 
-==== Binding additional type
+val myModule = module {
+
+    // declare factory instance for Presenter class
+    factory { Presenter() }
+}
+----
+
+[NOTE]
+====
+Koin containter doesn't retain factory instances as it will give a new instance each time the definition is asked. Then, there is no need to keep in the Koin container.
+====
+
+==== Resolving & injecting dependencies
+
+Now that we can declare components definitions, we want to link instances: dependency injection. To resolve an instance in the Koin module, just use the `get()`
+function to retrieve the needed component instance.
+
+[IMPORTANT]
+====
+To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve depdendencies in class constructors. This way, your instance will be created with injected intances from Koin.
+====
+
+Let's take an example with several classes:
+
+[source,kotlin]
+----
+// Given View & Presenter classes
+// Presenter need a View class intance
+class View()
+class Presenter(val view : View)
+
+val myModule = module {
+
+    // declare View single intance
+    single { View() }
+    // declare Presenter single instance, resolving View instance
+    single { Presenter(get()) }
+}
+----
+
+==== Binding an interface
+
+
+
+==== Binding an additional type
 
 
 
