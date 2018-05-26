@@ -2,9 +2,9 @@
 
 ## [0.9.3]()
 
-Gradle & Integration test
+Gradle & Continuous Integration
 
-*no code fix*
+*version published with new build chain*
 
 ## [0.9.2]()
 
