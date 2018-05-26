@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.9.3]()
+
+Gradle & Continuous Integration
+
+*version published with new build chain*
+
 ## [0.9.2]()
 
 _Core_
