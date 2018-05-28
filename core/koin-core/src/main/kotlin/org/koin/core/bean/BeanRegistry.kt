@@ -98,7 +98,9 @@ class BeanRegistry() {
             when {
                 candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to resolve type '$clazzName'. Check your module definition")
                 else -> throw DependencyResolutionException(
-                    "Multiple definitions found to resolve type '$clazzName'. Check your modules definition or use name attribute to resolve components."
+                    "Multiple definitions found to resolve type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
+                        "\n\t"
+                    )}\n\tCheck your modules definition or use name attribute to resolve components."
                 )
             }
         }
