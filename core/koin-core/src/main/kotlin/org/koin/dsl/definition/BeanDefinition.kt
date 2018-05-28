@@ -46,22 +46,22 @@ data class BeanDefinition<out T>(
     private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
     override fun toString(): String {
-        val n = if (name.isBlank()) "" else "name='$name', "
-        val c = "class=${clazz.java.canonicalName}"
-        val s = if (isSingleton) "Bean" else "Factory"
-        val b = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
-        val sn = if (path != Path.root()) ", module:$path" else ""
-        return "$s[$n$c$b$sn]"
+        val beanName = if (name.isEmpty()) "" else "name='$name',"
+        val clazz = "class=${clazz.java.canonicalName}"
+        val type = if (isSingleton) "Single" else "Factory"
+        val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
+        val path = if (path != Path.root()) ", path:$path" else ""
+        return "$type [$beanName$clazz$binds$path]"
     }
 
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {
-            name == other.name && clazz == other.clazz && path == other.path
+            name == other.name &&
+                    clazz == other.clazz &&
+                    path == other.path &&
+                    types == other.types &&
+                    isSingleton == other.isSingleton
         } else false
-    }
-
-    override fun hashCode(): Int {
-        return name.hashCode() + clazz.hashCode() + path.hashCode()
     }
 }
 
