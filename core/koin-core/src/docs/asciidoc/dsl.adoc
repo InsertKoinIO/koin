@@ -95,17 +95,17 @@ Let's take an example with several classes:
 
 [source,kotlin]
 ----
-// Given View & Presenter classes
-// Presenter need a View class intance
-class View()
-class Presenter(val view : View)
+// Given Service & Controller classes
+// Presenter <- Service
+class Service()
+class Controller(val view : View)
 
 val myModule = module {
 
-    // declare View single intance
-    single { View() }
-    // declare Presenter single instance, resolving View instance
-    single { Presenter(get()) }
+    // declare Service as single intance
+    single { Service() }
+    // declare Controller as single instance, resolving View instance with get()
+    single { Controller(get()) }
 }
 ----
 
