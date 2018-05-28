@@ -5,13 +5,12 @@
 
 = Koin-Core Project Manual
 Arnaud Giuliani <arnaud.g@insert-koin.io>
-2017-09-11
 :revnumber: {project-version}
 :example-caption!:
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-This is a Koin-Core project manual.
+This is the koin-core project manual.
 
 include::what-is-koin.adoc[]
 include::dsl.adoc[]
@@ -21,3 +20,4 @@ include::logging.adoc[]
 include::properties.adoc[]
 include::koin-component.adoc[]
 include::injection-parameters.adoc[]
+include::examples.adoc[]

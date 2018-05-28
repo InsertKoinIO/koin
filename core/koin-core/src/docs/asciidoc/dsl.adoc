@@ -1,6 +1,6 @@
 == Koin DSL
 
-Koin provides a DSL to help your describe your components with 'definitions' and start the Koin container
+Koin provides a DSL to help your describe your components with definitions and start the Koin container
 with those definitions and to instantiate them when needed.
 
 === Why a DSL?
@@ -8,7 +8,7 @@ with those definitions and to instantiate them when needed.
 Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it. Those annotations need introspection analyze,
 proxying/code generation. Whereas with Kotlin DSL, we can use smart functional API to achieve the same goal: make dependency injection.
 
-=== Koin DSL
+=== The Koin DSL
 
 Below are the Koin DSL keywords:
 
@@ -17,9 +17,8 @@ Below are the Koin DSL keywords:
 * `single` - provide a singleton bean definition (also aliased as `bean`)
 * `bind` - add type to bind for given bean definition
 * `get` - resolve a component dependency
-* `getProperty` - resolve a property value
 
-==== Writing a module
+=== Writing a module
 
 A Koin module is the space to declare all your components. Use the `module` function to declare a Koin module:
 
@@ -32,9 +31,9 @@ val myModule = module {
 
 In this module, you can declare components with `single` or `factory` functions, or declare inner modules with `module` function.
 
-==== Defining a singleton
+=== Defining a singleton
 
-To declare a singleton component, means that Koin container will keep a unique instance of your declared component. Just use the `single` function in a module:
+Declaring a singleton component means that Koin container will keep a unique instance of your declared component. Use the `single` function in a module to declare a singleton:
 
 [source,kotlin]
 ----
@@ -59,20 +58,20 @@ The result type of your lambda is the main type of your component
 ====
 
 
-==== Defining a factory
+=== Defining a factory
 
 A factory component declaration is a definition that will gives you a new instance each time you ask for this definition. Use the `factory` function
 with a lambda expression to build a component, like `single` definition above.
 
 [source,kotlin]
 ----
-//Given a simple class `Presenter`
-class Presenter()
+//Given a simple class `Controller`
+class Controller()
 
 val myModule = module {
 
-    // declare factory instance for Presenter class
-    factory { Presenter() }
+    // declare factory instance for Controller class
+    factory { Controller() }
 }
 ----
 
@@ -81,10 +80,10 @@ val myModule = module {
 Koin containter doesn't retain factory instances as it will give a new instance each time the definition is asked. Then, there is no need to keep in the Koin container.
 ====
 
-==== Resolving & injecting dependencies
+=== Resolving & injecting dependencies
 
-Now that we can declare components definitions, we want to link instances: dependency injection. To resolve an instance in the Koin module, just use the `get()`
-function to retrieve the needed component instance.
+Now that we can declare components definitions, we want to link instances with dependency injection. To resolve an instance in the Koin module, just use the `get()`
+function to the requested needed component instance.
 
 [IMPORTANT]
 ====
@@ -109,13 +108,75 @@ val myModule = module {
 }
 ----
 
-==== Binding an interface
+=== Binding an interface
+
+A `single` or a `factory` definition use the type from the their given lambda definition: i.e  `single { type T }`
+The matched type of the definition is the only matched type from this expression.
+
+Let's take an example with a class and interface:
+
+[source,kotlin]
+----
+// Service interface
+interface Service{
+
+    fun doSomething()
+}
+
+// Service Implementation
+class ServiceImp() : Service{
+
+    fun doSomething() { ... }
+}
+----
+
+In a Koin module we can use the `as` cast Kotlin operator as follow:
+
+[source,kotlin]
+----
+val myModule = module {
+
+    // Will match type ServiceImp only
+    single { ServiceImp() }
+
+    // Will match type Service only
+    single { ServiceImp() as Service }
+
+}
+----
+
+=== Binding an additional type
+
+In some cases, we want to match several types from one definition.
+
+Let's take an example with a class and interface:
+
+[source,kotlin]
+----
+// Service interface
+interface Service{
+
+    fun doSomething()
+}
+
+// Service Implementation
+class ServiceImp() : Service{
+
+    fun doSomething() { ... }
+}
+----
+
+To make a definition that can match additional types, we use the `bind` operator with a class:
+
+[source,kotlin]
+----
+val myModule = module {
+
+    // Will match types ServiceImp & Service
+    single { ServiceImp() } bind Service::class
+}
+----
 
 
-
-==== Binding an additional type
-
-
-
-
+=== Conflicting definitions
 
