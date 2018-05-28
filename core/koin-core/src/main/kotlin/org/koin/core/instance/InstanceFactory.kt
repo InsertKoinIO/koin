@@ -61,8 +61,8 @@ class InstanceFactory {
             instance as T
             return instance
         } catch (e: Throwable) {
-            e.printStackTrace()
-            throw BeanInstanceCreationException("Can't create bean $def due to error :\n\t$e")
+            val stack = e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }.joinToString("\n\t\t")
+            throw BeanInstanceCreationException("Can't create definition '$def' due to error :\n\t\t${e.message}\n\t\t$stack")
         }
     }
 
