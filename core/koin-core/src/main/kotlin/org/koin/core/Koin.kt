@@ -10,6 +10,7 @@ import java.util.*
 /**
  * Koin ModuleDefinition Builder
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class Koin(val koinContext: KoinContext) {
 

@@ -9,6 +9,9 @@ import org.koin.standalone.StandAloneContext
 /**
  * Create a Module
  * @Depreacted @see module
+ *
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 @Deprecated(
     "use module function instead", ReplaceWith(

@@ -11,6 +11,7 @@ import org.koin.dsl.definition.Definition
  * Gather dependencies & properties definitions
  *
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
 

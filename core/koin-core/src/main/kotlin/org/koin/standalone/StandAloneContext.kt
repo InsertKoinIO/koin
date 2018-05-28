@@ -13,6 +13,7 @@ import org.koin.error.AlreadyStartedException
 /**
  * Koin agnostic context support
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 object StandAloneContext {
 

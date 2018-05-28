@@ -3,6 +3,8 @@ package org.koin.core
 
 /**
  * Module callback
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 interface ModuleCallback {
 

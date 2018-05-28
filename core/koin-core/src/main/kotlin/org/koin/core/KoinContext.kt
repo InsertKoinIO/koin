@@ -17,7 +17,8 @@ import kotlin.reflect.KClass
  * Koin Application ModuleDefinition
  * ModuleDefinition from where you can get beans defined in modules
  *
- * @author Arnaud GIULIANI
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class KoinContext(
     val beanRegistry: BeanRegistry,

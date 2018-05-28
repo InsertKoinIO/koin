@@ -6,7 +6,8 @@ import org.koin.log.Logger
 /**
  * Logger that uses Android Log.i
  *
- * @author Arnaud Giuliani
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class AndroidLogger : Logger {
     val TAG = "KOIN"

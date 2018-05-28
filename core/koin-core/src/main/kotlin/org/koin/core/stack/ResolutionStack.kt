@@ -4,6 +4,10 @@ import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.DependencyResolutionException
 import java.util.*
 
+/*
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
+ */
 class ResolutionStack {
 
     /**

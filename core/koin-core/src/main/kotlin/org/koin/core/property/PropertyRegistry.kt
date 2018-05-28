@@ -7,6 +7,7 @@ import java.util.*
 /**
  * Resolve properties for a context
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class PropertyRegistry {
 

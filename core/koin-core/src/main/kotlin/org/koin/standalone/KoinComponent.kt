@@ -6,6 +6,8 @@ import org.koin.core.parameter.emptyParameterDefinition
 
 /**
  * Koin component
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 interface KoinComponent
 

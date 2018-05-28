@@ -2,6 +2,8 @@ package org.koin.log
 
 /**
  * Logger that print on system.out
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class PrintLogger : Logger {
     override fun debug(msg: String) {

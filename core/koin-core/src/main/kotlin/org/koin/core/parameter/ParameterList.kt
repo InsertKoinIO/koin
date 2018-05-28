@@ -3,6 +3,9 @@ package org.koin.core.parameter
 /**
  * ParameterList - List of parameter
  * Usable with exploded declaration
+ *
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 @Suppress("UNCHECKED_CAST")
 class ParameterList(vararg value: Any) {

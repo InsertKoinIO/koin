@@ -2,6 +2,8 @@ package org.koin.log
 
 /**
  * A simple Logger
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 interface Logger {
     /**

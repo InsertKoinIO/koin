@@ -7,6 +7,7 @@ import kotlin.reflect.KClass
 /**
  * Bean definition
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  *
  * Gather type of T
  * defined by lazy/function

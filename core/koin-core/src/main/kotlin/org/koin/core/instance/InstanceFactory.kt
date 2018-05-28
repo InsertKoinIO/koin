@@ -7,6 +7,7 @@ import org.koin.error.BeanInstanceCreationException
 /**
  * Instance factory - handle objects creation against BeanRegistry
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class InstanceFactory {
 

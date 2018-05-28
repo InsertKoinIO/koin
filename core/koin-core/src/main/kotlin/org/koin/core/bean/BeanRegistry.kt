@@ -12,6 +12,7 @@ import org.koin.error.NoBeanDefFoundException
  * gather definitions of beans & communicate with instance factory to handle instances
  *
  * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class BeanRegistry() {
 

@@ -3,7 +3,8 @@ package org.koin.dsl.path
 /**
  * Path to localise a Module
  *
- * @author Arnaud Giuliani
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 data class Path(val name: String, val parent: Path? = null) {
 

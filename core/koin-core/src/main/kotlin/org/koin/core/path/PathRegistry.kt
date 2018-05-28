@@ -6,7 +6,8 @@ import org.koin.error.BadPathException
 /**
  * Create & Handle all module paths
  *
- * @author Arnaud GIULIANI
+ * @author - Arnaud GIULIANI
+ * @author - Laurent BARESSE
  */
 class PathRegistry {
     val paths = hashSetOf<Path>()
