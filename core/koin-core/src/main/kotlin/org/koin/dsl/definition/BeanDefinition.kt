@@ -47,10 +47,10 @@ data class BeanDefinition<out T>(
 
     override fun toString(): String {
         val beanName = if (name.isEmpty()) "" else "name='$name',"
-        val clazz = "class=${clazz.java.canonicalName}"
+        val clazz = "class='${clazz.java.canonicalName}'"
         val type = if (isSingleton) "Single" else "Factory"
         val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
-        val path = if (path != Path.root()) ", path:$path" else ""
+        val path = if (path != Path.root()) ", path:'$path'" else ""
         return "$type [$beanName$clazz$binds$path]"
     }
 
