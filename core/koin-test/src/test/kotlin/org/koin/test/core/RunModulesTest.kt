@@ -55,14 +55,10 @@ class RunModulesTest : AutoCloseKoinTest() {
     @Test
     fun `load and override`() {
         startKoin(listOf(moduleA))
-
         loadKoinModules(moduleC, moduleB)
 
-        val b = get<ComponentB>()
-        Assert.assertNotNull(b)
-        val a2 = get<ComponentA>()
-        Assert.assertEquals(a2, b.componentA)
-        Assert.assertEquals("A2", a2.name)
+        Assert.assertNotNull("A2", get<ComponentB>().componentA.name)
+        Assert.assertNotNull("A2", get<ComponentA>().name)
     }
 
     @Test

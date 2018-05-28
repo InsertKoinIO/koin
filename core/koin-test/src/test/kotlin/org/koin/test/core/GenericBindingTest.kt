@@ -1,9 +1,9 @@
 package org.koin.test.core
 
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.error.DependencyResolutionException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -38,8 +38,9 @@ class GenericBindingTest : AutoCloseKoinTest() {
     fun `should not inject generic interface component`() {
         startKoin(listOf(badModule))
 
-        val a = get<InterfaceComponent<String>>()
-        // single has been overridden
-        assertFalse(a is ComponentA)
+        try {
+            get<InterfaceComponent<String>>()
+        } catch (e: DependencyResolutionException) {
+        }
     }
 }

@@ -1,8 +1,11 @@
 package org.koin.test.core
 
-import org.junit.Assert.*
+import org.junit.Assert
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.error.DependencyResolutionException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -26,7 +29,7 @@ class OverrideTest : AutoCloseKoinTest() {
 
     val sampleModule4 = module {
         single { ComponentB() as MyInterface }
-        factory { ComponentA() as MyInterface }
+        factory { ComponentA() } bind MyInterface::class
     }
 
     class ComponentA : MyInterface
@@ -37,13 +40,13 @@ class OverrideTest : AutoCloseKoinTest() {
     fun `override provide with bind`() {
         startKoin(listOf(sampleModule1))
 
-        assertNotNull(get<ComponentA>())
-
         try {
-            get<MyInterface>()
+            get<ComponentA>()
             fail()
-        } catch (e: Exception) {
+        } catch (e: DependencyResolutionException) {
         }
+
+        Assert.assertNotNull(get<MyInterface>())
     }
 
     @Test
@@ -57,19 +60,17 @@ class OverrideTest : AutoCloseKoinTest() {
     fun `override provide with bean`() {
         startKoin(listOf(sampleModule3))
 
-        val intf = get<MyInterface>()
-        assertNotNull(intf)
-        assertTrue(intf is ComponentA)
-
+        Assert.assertNotNull(get<MyInterface>())
     }
 
     @Test
     fun `override provide with factory`() {
         startKoin(listOf(sampleModule4))
 
-        val intf = get<MyInterface>()
-        assertNotNull(intf)
-        assertTrue(intf is ComponentA)
-        assertNotEquals(intf, get<MyInterface>())
+        try {
+            get<MyInterface>()
+            fail()
+        } catch (e: DependencyResolutionException) {
+        }
     }
 }

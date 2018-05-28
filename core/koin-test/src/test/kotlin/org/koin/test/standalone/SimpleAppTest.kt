@@ -15,8 +15,8 @@ class SimpleAppTest : AutoCloseKoinTest() {
         single { TasksPresenter(get()) }
     }
 
-    class TasksView()
-    class TasksPresenter(view: TasksView)
+    class TasksView
+    class TasksPresenter(val view: TasksView)
 
     val view by inject<TasksView>()
     val presenter by inject<TasksPresenter>()
@@ -27,6 +27,7 @@ class SimpleAppTest : AutoCloseKoinTest() {
 
         Assert.assertNotNull(view)
         Assert.assertNotNull(presenter)
+        Assert.assertEquals(view, presenter.view)
 
         assertRemainingInstances(2)
     }
