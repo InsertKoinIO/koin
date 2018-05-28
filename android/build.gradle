@@ -3,9 +3,9 @@ buildscript {
     apply from: "../gradle/versions-android.gradle"
 
     repositories {
-        mavenLocal()
-        jcenter()
         google()
+        jcenter()
+        mavenLocal()
     }
     dependencies {
         // Kotlin
@@ -26,9 +26,9 @@ buildscript {
 allprojects {
 
     repositories {
-        mavenLocal()
-        jcenter()
         google()
+        jcenter()
+        mavenLocal()
     }
 
     group = 'org.koin'
