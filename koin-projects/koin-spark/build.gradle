@@ -11,4 +11,4 @@ dependencies {
     compile "com.sparkjava:spark-kotlin:$spark_kotlin_version"
 }
 
-apply from: '../../gradle/publish.gradle'
+apply from: '../gradle/publish.gradle'

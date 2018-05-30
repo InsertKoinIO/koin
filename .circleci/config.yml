@@ -20,8 +20,4 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./gradlew -b ./core/build.gradle clean install test
-      - run:
-          command: ./gradlew -b ./android/build.gradle clean testRelease
-      - run:
-          command: ./gradlew -b ./web/build.gradle clean test
+          command: ./koin-projects/gradlew -p ./koin-projects clean test
