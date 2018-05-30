@@ -1,7 +1,6 @@
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'org.jetbrains.dokka'
 
 // custom tasks for creating source/javadoc jars
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -9,18 +8,8 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
 artifacts {
-    archives sourcesJar, javadocJar
-}
-
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+    archives sourcesJar, dokkaJar
 }
 
 if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {

@@ -1,18 +1,5 @@
-apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'digital.wup.android-maven-publish'
 apply plugin: 'com.jfrog.bintray'
-
-// Dokka
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-    reportUndocumented = true
-}
-
-task dokkaJar(type: Jar) {
-    classifier = 'javadoc'
-    from dokka
-}
 
 
 // Android Publish local

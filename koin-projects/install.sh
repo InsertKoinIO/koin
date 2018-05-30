@@ -1,5 +1,5 @@
 #!/bin/sh
 
-./gradlew clean install
+./gradlew clean dokka install
 ./gradlew assembleRelease publishToMavenLocal
 

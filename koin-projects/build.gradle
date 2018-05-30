@@ -33,9 +33,21 @@ allprojects {
     group = 'org.koin'
     version = "$koin_version"
 
+    // asciidoctor
     apply plugin: 'org.asciidoctor.convert'
-
     asciidoctor {
         backends = ["html5"]
+    }
+
+    // Dokka
+    apply plugin: 'org.jetbrains.dokka'
+    dokka {
+        outputFormat = 'html'
+        outputDirectory = "$buildDir/javadoc"
+        reportUndocumented = true
+    }
+    task dokkaJar(type: Jar) {
+        classifier = 'javadoc'
+        from dokka
     }
 }
