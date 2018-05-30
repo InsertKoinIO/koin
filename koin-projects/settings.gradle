@@ -1,0 +1,4 @@
+include 'koin-core', 'koin-test'
+include 'koin-android','koin-android-architecture','koin-androidx'
+include 'koin-ktor', 'koin-spark'
+include 'koin-book'

@@ -1,3 +1,5 @@
+apply plugin: 'kotlin'
+
 archivesBaseName = 'koin-spark'
 description = 'Koin - simple dependency injection for SparkJava'
 

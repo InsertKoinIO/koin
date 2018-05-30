@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-android-architecture"
-    pom_description = "Koin project - koin-android-architecture"
+    pom_name = "koin-androidx"
+    pom_description = "Koin project - koin-androidx"
 }
 
 android {
-    compileSdkVersion android_compile_version
+    compileSdkVersion 'android-P'
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
@@ -25,9 +25,9 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockito_version"
 
     // Architecture
-    implementation ("android.arch.lifecycle:extensions:$android_architecture_version"){
-        exclude module : "livedata"
+    implementation("androidx.lifecycle:lifecycle-extensions:$androidx_version") {
+        exclude module: "lifecycle-livedata"
     }
 }
 
-apply from: '../../gradle/publish-android.gradle'
+apply from: '../gradle/publish-android.gradle'

@@ -25,4 +25,4 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockito_version"
 }
 
-apply from: '../../gradle/publish-android.gradle'
+apply from: '../gradle/publish-android.gradle'
