@@ -58,7 +58,7 @@ val aModule = module {
 
 The example above is the equivalent of previous section's example.
 
-=== Linking modules & definitions
+=== Linking definitions between modules
 
 Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
 module. Definition are lazy, and then are resolved only when Koin container is started.
@@ -67,7 +67,6 @@ Let's take an example, with linked components in separate modules:
 
 [source,kotlin]
 ----
-// Give classes
 // ComponentB <- ComponentA
 class ComponentA()
 class ComponentB(val componentA : ComponentA)
@@ -100,6 +99,48 @@ startKoin(listOf(moduleA,moduleB))
 ----
 
 Koin will then resolve dependencies from all given modules.
+
+=== Assembling modules for implementation strategy
+
+As definitions between modules are lazy, we can use modules to implement different strategy implementation: declare an implementation per module
+
+Let's take an example, of a Repository and Datasource. A repsotiry need a Datasource, and a Datasource can be implemented in 2 ways: Local or Remote.
+
+[source,kotlin]
+----
+class Repository(val datasource : Datasource)
+interface Datasource
+class LocalDatasource() : Datasource
+class RemoteDatasource() : Datasource
+----
+
+We can declare those components in 3 modules: Repository and one per Datasource implementation:
+
+[source,kotlin]
+----
+val repositoryModule = module {
+    single { Repository(get()) }
+}
+
+val localDatasourceModule = module {
+    single { LocalDatasource() as Datasource }
+}
+
+val remoteDatasourceModule = module {
+    single { RemoteDatasource() as Datasource }
+}
+----
+
+Then we just need to launch Koin with the right combination of modules:
+
+[source,kotlin]
+----
+// Load Repository + Local Datasource definitions
+startKoin(listOf(repositoryModule,localDatasourceModule))
+
+// Load Repository + Remote Datasource definitions
+startKoin(listOf(repositoryModule,remoteDatasourceModule))
+----
 
 === Hierarchy & visibility
 
@@ -135,7 +176,17 @@ We have the following resolution possibility:
 * `ComponentC` can see definitions from sample, org & root (can see `/`, `/org`, `/org/sample` - can resolve `ComponentA`, `ComponentB` - can't  see `ComponentD`)
 * `ComponentD` can see definitions from demo, org & root (can see `/`, `/org`, `/org/demo` - can resolve ComponentA`, `ComponentB` - can't  see `ComponentC`)
 
+=== Module isolation
 
-=== Isolation: resolving definition from a path
+By declaring definitions in a module with a path, all your component are then not visible from outside of this namespace.
+This is then very useful to protect visibility between modules.
 
+When you are requesting a definition from a `KoinComponent` with `get()` or `by inject()`, you can specify the module in which you want to resolve. If you don't specify it, Koin will resolve it from all modules.
+Else Koin will resolve it from the specified module namespace.
 
+[source,kotlin]
+----
+val sampleModule = module("org.sample") {
+    // ...
+}
+----

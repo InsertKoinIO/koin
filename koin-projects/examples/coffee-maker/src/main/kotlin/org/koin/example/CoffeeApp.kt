@@ -17,6 +17,5 @@ fun main(vararg args: String) {
 
     startKoin(listOf(coffeeMakerModule))
 
-
     CoffeeApp().run()
 }

@@ -14,9 +14,9 @@ buildscript {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
         // Dokka
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+        // AsciiDoc
         classpath "org.asciidoctor:asciidoctor-gradle-plugin:$asciidoctor_version"
         classpath "org.asciidoctor:asciidoctorj-pdf:$asciidoctor_pdf_version"
-
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
         classpath "digital.wup:android-maven-publish:$android_maven_publish"
