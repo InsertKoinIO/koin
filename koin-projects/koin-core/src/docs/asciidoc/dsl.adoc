@@ -20,7 +20,7 @@ Below are the Koin DSL keywords:
 
 === Writing a module
 
-A Koin module is the space to declare all your components. Use the `module` function to declare a Koin module:
+A Koin module is the *space to declare all your components*. Use the `module` function to declare a Koin module:
 
 [source,kotlin]
 ----
@@ -33,11 +33,10 @@ In this module, you can declare components with `single` or `factory` functions,
 
 === Defining a singleton
 
-Declaring a singleton component means that Koin container will keep a unique instance of your declared component. Use the `single` function in a module to declare a singleton:
+Declaring a singleton component means that Koin container will keep a *unique instance* of your declared component. Use the `single` function in a module to declare a singleton:
 
 [source,kotlin]
 ----
-//Given a simple class `MyService`
 class MyService()
 
 val myModule = module {
@@ -60,12 +59,11 @@ The result type of your lambda is the main type of your component
 
 === Defining a factory
 
-A factory component declaration is a definition that will gives you a new instance each time you ask for this definition. Use the `factory` function
+A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition. Use the `factory` function
 with a lambda expression to build a component, like `single` definition above.
 
 [source,kotlin]
 ----
-//Given a simple class `Controller`
 class Controller()
 
 val myModule = module {
@@ -82,7 +80,7 @@ Koin containter doesn't retain factory instances as it will give a new instance 
 
 === Resolving & injecting dependencies
 
-Now that we can declare components definitions, we want to link instances with dependency injection. To resolve an instance in the Koin module, just use the `get()`
+Now that we can declare components definitions, we want to link instances with dependency injection. To *resolve an instance* in a Koin module, just use the `get()`
 function to the requested needed component instance.
 
 [IMPORTANT]
@@ -94,7 +92,6 @@ Let's take an example with several classes:
 
 [source,kotlin]
 ----
-// Given Service & Controller classes
 // Presenter <- Service
 class Service()
 class Controller(val view : View)
@@ -145,7 +142,7 @@ val myModule = module {
 }
 ----
 
-=== Binding an additional type
+=== Binding additional type
 
 In some cases, we want to match several types from one definition.
 
@@ -177,6 +174,60 @@ val myModule = module {
 }
 ----
 
+=== Overriding a definition
+
+TBD
+
+=== Naming a definition
+
+A definition has by default an empty name. But you can declare a name to your definition, to help you distinguish two definitions about the same type:
+
+Just request your definition with its name:
+
+[source,kotlin]
+----
+val myModule = module {
+    single("default") { ServiceImpl() as Service}
+    single("test") { ServiceImpl() as Service }
+}
+
+val service : Service by inject(name = "default")
+----
+
+`get()` and `by inject()` functions let you specify a definition name if needed.
+
+
+=== Injection parameters
+
+TBD
 
 === Conflicting definitions
+
+Conflicting definitions occurs when you have:
+
+* several definitions that are matching the same type
+* defined a circular dependency
+
+In the first case, you can name your definition to distinguish them. You can also use modules to alter resolution visibility. In last case, you can also speify a module path when you request a dependency from a KoinComponent.
+
+[source,kotlin]
+----
+val myModule = module("org.sample") {
+
+
+    module("org.demo"){
+        single{ ServiceImpl() as Service}
+    }
+
+    module("org.sample"){
+        single{ ServiceImpl() as Service}
+    }
+}
+
+// Request dependency from /org/sample namespace
+val service : Service by inject(module = "org.sample")
+----
+
+For a circular dependency problem, you are in the situation where `A<-B` & `B<-A`. You have to review your relation between A & B, and break the circularity  to resolve your situation.
+
 
