@@ -10,8 +10,8 @@ repositories {
 }
 
 dependencies {
-    compile "$group:koin-core:$koin_version"
-    testCompile "$group:koin-test:$koin_version"
+    compile project(":koin-core")
+    testImplementation project(":koin-test")
 
     // Ktor
     compile "io.ktor:ktor-server-core:$ktor_version"

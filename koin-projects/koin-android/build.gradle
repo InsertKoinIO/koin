@@ -20,8 +20,7 @@ android {
 dependencies {
     // Koin
     api project(":koin-core")
-
-    testImplementation "$group:koin-test:$koin_version"
+    testImplementation project(":koin-test")
 
     testImplementation "org.mockito:mockito-core:$mockito_version"
 }
