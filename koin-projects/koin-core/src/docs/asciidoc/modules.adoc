@@ -176,7 +176,7 @@ We have the following resolution possibility:
 * `ComponentC` can see definitions from sample, org & root (can see `/`, `/org`, `/org/sample` - can resolve `ComponentA`, `ComponentB` - can't  see `ComponentD`)
 * `ComponentD` can see definitions from demo, org & root (can see `/`, `/org`, `/org/demo` - can resolve ComponentA`, `ComponentB` - can't  see `ComponentC`)
 
-=== isolation
+=== Visibility & isolation
 
 By declaring definitions in a module with a path, your component *are then not visible from outside of this namespace*.
 This is then very useful to protect visibility between modules.
@@ -206,10 +206,43 @@ val service : Service by inject(module = "org.sample")
 
 We can resolve definitions from this module with `get()` or `get(module = "org.sample")` (idem for `by inject()`).
 
+=== Definition instances & modules
 
-=== Releasing a module
+When the Koin container is instantiating a definition from a given module, this instance will be attached to the module's path.
 
-The other interest of a module, is the ability to *drop instances for a given module path*. This means that you can organize your components with modules.
+For a given module defined in `/org/sample`, all definitions will be instantiated in its module path.
+
+[source,kotlin]
+----
+val myModule = module("org.sample") {
+    // Service instance will be in /org/sample
+    single{ Service() }
+}
+----
+
+That also mean, that each definition is located in its namespace:
+
+[source,kotlin]
+----
+class Datasource()
+class Repository(val datasource : Datasource)
+
+
+val myModule = module {
+
+    // Datasource instance will be in /
+    single { Datasource() }
+
+    module("org.sample") {
+        // Repository instance will be in /org/sample
+        single{ Repository(get()) }
+    }
+}
+----
+
+=== Releasing module instances
+
+The other interest of a module, is the ability to *drop instances for a given module path*. This means that you can organize your components with modules and manage instances lifecycle.
 When you don't need instances from a given module, you can drop them with the `release` function (KoinComponent).
 
 [source,kotlin]

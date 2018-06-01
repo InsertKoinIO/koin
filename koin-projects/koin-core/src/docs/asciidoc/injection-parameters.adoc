@@ -1,4 +1,4 @@
-== Injection Parameters
+== Using injection parameters
 
 This project does something.
 We just haven't decided what that is yet.
