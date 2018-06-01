@@ -210,7 +210,7 @@ We can resolve definitions from this module with `get()` or `get(module = "org.s
 
 When the Koin container is instantiating a definition from a given module, this instance will be attached to the module's path.
 
-For a given module defined in `/org/sample`, all definitions will be instantiated in its module path.
+For a given module defined in `/org/sample`, *all definitions are instantiated in its module path*.
 
 [source,kotlin]
 ----

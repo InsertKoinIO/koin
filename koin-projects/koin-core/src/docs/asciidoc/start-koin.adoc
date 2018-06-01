@@ -7,6 +7,23 @@ Koin is a DSL, a lightweight container and a pragmatic API. Once you have delcar
 The `startKoin()` function is the main entry point to launch Koin container. It need a *list of Koin modules* to run.
 Those modules are read and definitions are ready to be resolved by the Koin container.
 
+.Starting Koin
+[source,kotlin]
+----
+startKoin(listOf(module1,module2 ...))
+----
+
+Once `startKoin` has been called, Koin will read all your modules, definitions and will register them to be ready for any `get()` or `by inject()` call.
+
+At start you can also specify several options:
+
+* logging - see <<logging.adoc#_logging,logging>> section
+* properties loading (environment, koin.properties file, extra properties ...) - see <<properties.adoc#_lproperties,properties>> section
+
+[IMPORTANT]
+====
+The `startKoin()` can't be called more than once.
+====
 
 
 === Behind the start
@@ -14,8 +31,7 @@ Those modules are read and definitions are ready to be resolved by the Koin cont
 Buidling Koin...
 
 
-=== Logging, Properties and other options
+=== Loading modules manually
 
-...
 
 

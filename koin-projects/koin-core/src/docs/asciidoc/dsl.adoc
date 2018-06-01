@@ -210,7 +210,7 @@ val myModule = module {
 }
 ----
 
-In contrary to resolved dependencies (resolved with with `get()`), injection parameters are parameters passed through the resolution API.
+In contrary to resolved dependencies (resolved with with `get()`), injection parameters are *parameters passed through the resolution API*.
 This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf` function:
 
 
