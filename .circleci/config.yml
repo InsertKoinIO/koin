@@ -44,6 +44,9 @@ jobs:
       - run: 
           command: ./koin-projects/gradlew -p ./koin-projects/koin-book clean asciidoctor
 
+      - store_artifacts:
+          path: ./koin-projects/koin-book/build/asciidoc/
+
 workflows:
   version: 2
   build_and_publish:
