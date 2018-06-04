@@ -24,9 +24,10 @@ dependencies {
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-core:$mockito_version"
 
-    // Architecture
-    implementation ("android.arch.lifecycle:extensions:$android_architecture_version"){
-        exclude module : "livedata"
+    // Architecture ViewModel
+    implementation("android.arch.lifecycle:extensions:$android_arch_version") {
+        exclude module: "livedata"
+        exclude module: "runtime"
     }
 }
 
