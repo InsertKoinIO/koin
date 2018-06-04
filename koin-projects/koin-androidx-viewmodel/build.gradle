@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 ext {
     android_sourceSet = true
     pom_name = "koin-androidx"
-    pom_description = "Koin project - koin-androidx"
+    pom_description = "Koin project - koin-androidx-viewmodel"
 }
 
 android {
@@ -19,7 +19,7 @@ android {
 
 dependencies {
     // Koin
-    implementation project(":koin-android") //"org.koin:koin-android:$koin_version"
+    api project(":koin-androidx-scope") //"org.koin:koin-android:$koin_version"
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-core:$mockito_version"

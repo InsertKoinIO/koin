@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-android-viewmodel"
-    pom_description = "Koin project - koin-android-viewmodel"
+    pom_name = "koin-androidx"
+    pom_description = "Koin project - koin-androidx-viewmodel"
 }
 
 android {
-    compileSdkVersion android_compile_version
+    compileSdkVersion 'android-P'
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
@@ -19,15 +19,14 @@ android {
 
 dependencies {
     // Koin
-    api project(":koin-android-scope") //"org.koin:koin-android:$koin_version"
+    api project(":koin-android") //"org.koin:koin-android:$koin_version"
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-core:$mockito_version"
 
     // Architecture ViewModel
-    implementation("android.arch.lifecycle:extensions:$android_arch_version") {
-        exclude module: "livedata"
-        exclude module: "runtime"
+    implementation("androidx.lifecycle:lifecycle-common:$androidx_arch_version"){
+        exclude group: "core-runtime"
     }
 }
 

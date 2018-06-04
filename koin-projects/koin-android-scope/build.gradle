@@ -19,16 +19,13 @@ android {
 
 dependencies {
     // Koin
-    api project(":koin-android-scope") //"org.koin:koin-android:$koin_version"
+    api project(":koin-android") //"org.koin:koin-android:$koin_version"
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-core:$mockito_version"
 
-    // Architecture ViewModel
-    implementation("android.arch.lifecycle:extensions:$android_arch_version") {
-        exclude module: "livedata"
-        exclude module: "runtime"
-    }
+    // Architecture Lifecycle
+    implementation("android.arch.lifecycle:common:$android_arch_version")
 }
 
 apply from: '../gradle/publish-android.gradle'
