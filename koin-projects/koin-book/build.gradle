@@ -4,3 +4,11 @@ asciidoctor {
     backends = ["html5","pdf"]
 }
 
+task copyResources(type: Copy) {
+    from ("src/resources") {
+        include '**'
+    }
+    into("${buildDir}/asciidoc/html5")
+}
+asciidoctor.dependsOn copyResources
+
