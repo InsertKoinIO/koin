@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import org.koin.android.architecture.ext.koin.viewModel
+import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
