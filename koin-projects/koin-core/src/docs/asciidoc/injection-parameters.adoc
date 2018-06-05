@@ -30,4 +30,29 @@ class MyComponent : View, KoinComponent {
 }
 ----
 
+=== Multiple parameters
+
+If we want to have multiple parameters in our definition, we can write use a data class to be able to use the *destructured declaration*:
+
+[source,kotlin]
+----
+class Presenter(val view : View)
+
+val myModule = module {
+    single{ (view : View, id : String) -> Presenter(view,id) }
+}
+----
+
+In the `KoinComponent`, just use the `parametersOf` function with your arguments like below:
+
+[source,kotlin]
+----
+class MyComponent : View, KoinComponent {
+
+    val id : String ...
+
+    // inject view & id via PresenterHolder
+    val presenter : Presenter by inject { parametersOf(this,id) }
+}
+----
 

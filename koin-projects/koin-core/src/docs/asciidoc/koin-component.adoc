@@ -3,7 +3,7 @@
 Koin is a DSL to help describe your modules & definitions, a container to make definition resolution. What we need now is
 an API to retrieve our instances outside of the container. That's the goal of Koin components.
 
-=== Making a Koin Component
+=== Create a Koin Component
 
 To give a class the capacity to use Koin instance, we need to *tag it* with `KoinComponent` interface. Let's take an example.
 
@@ -51,8 +51,8 @@ class MyComponent : KoinComponent {
 
 Koin offers two ways of retrieving instances from the Koin container:
 
-* `by inject()`
-* `get()`
+* `val t : T by inject()` - lazy evaluated delegated instance
+* `val t : T = get()` - eager access for instance
 
 [source,kotlin]
 ----

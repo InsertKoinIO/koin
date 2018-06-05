@@ -1,5 +1,10 @@
 == Extending Koin
 
-This project does something.
-We just haven't decided what that is yet.
+=== Extend the DSL
+
+=== Bring KoinComponent powers to your SDK
+
+=== Need a new startKoin?
+
+
 
