@@ -1,8 +1,39 @@
 == Extending Koin
 
+Koin is an agnostic dependency injection framework, offering a DSL, a lightweight container and a simple API.
+
 === Extend the DSL
 
-=== Bring KoinComponent powers to your SDK
+The DSL is mainly defined in `org.koin.dsl.context.ModuleDefinition` class. Just make a Kotlin extension on type `ModuleDefinition` to make a new keyword.
+Below, an example of `viewModel` keyword for `koin-android-viewmodel`
+
+.viewModel keyword example to provide a new way to a definition
+[source,kotlin]
+----
+inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
+    name: String = "",
+    noinline definition: Definition<T>
+) { ... }
+----
+
+=== Bring Koin to your SDK
+
+You can extend your actual Runtime/SDK to add Kotlin extension, to bring `KoinComponent` powers. Check the ``
+
+.viewModel keyword example to provide a new way to a definition
+[source,kotlin]
+----
+/**
+ * inject lazily given dependency for Android component
+ * @param name - bean name / optional
+ * @param parameters - injection parameters
+ */
+inline fun <reified T> ComponentCallbacks.inject(
+    name: String = "",
+    module: String? = null,
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+----
 
 === Need a new startKoin?
 
