@@ -10,7 +10,7 @@ You can load several type of properties at start:
 * koin.properties file - load properties from `/src/main/resources/koin.properties` file
 * "extra" start properties - map of values passed at `startKoin` function
 
-=== Read property from a module
+=== Read property within a module
 
 In a Koin module, you can get a property by its key:
 
@@ -31,7 +31,7 @@ val myModule = module {
 }
 ----
 
-=== Read/Write property from a KoinComponent
+=== Read/Write property with a KoinComponent
 
 If your class is a `KoinComponent`, you can interact with Koin properties directly from it, with `getProperty()` and `setProperty`:
 

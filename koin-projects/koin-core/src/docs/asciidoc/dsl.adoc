@@ -219,7 +219,7 @@ This means that those parameters are values passed with `get()` and `by inject()
 val presenter : Presenter by inject { parametersOf(view) }
 ----
 
-Further reading in the <<injection-parameters.adoc#_using_injection_parameters,using injection parameters>> section.
+Further reading in the <<injection-parameters.adoc#_injection_parameters,using injection parameters>> section.
 
 === Conflicting definitions
 

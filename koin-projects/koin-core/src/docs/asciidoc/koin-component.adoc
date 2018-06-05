@@ -1,5 +1,71 @@
 == Koin Components
 
-This project does something.
-We just haven't decided what that is yet.
+Koin is a DSL to help describe your modules & definitions, a container to make definition resolution. What we need now is
+an API to retrieve our instances outside of the container. That's the goal of Koin components.
+
+=== Making a Koin Component
+
+To give a class the capacity to use Koin instance, we need to *tag it* with `KoinComponent` interface. Let's take an example.
+
+.A module to define MyService instance
+[source,kotlin]
+----
+class MyService
+
+val myModule = module {
+    // Define a singleton for MyService
+    single { MyService() }
+}
+----
+
+we start Koin before using definition.
+
+.Start Koin with myModule
+[source,kotlin]
+----
+fun main(vararg args : String){
+    // Start Koin
+    startKoin(listOf(myModule))
+
+    // Create MyComponent instance and inject from Koin container
+    MyComponent()
+}
+----
+
+Here is how we can write our `MyComponent` to retrieve dependencies.
+
+.Use get() & by inject() to inject MyService instance
+[source,kotlin]
+----
+class MyComponent : KoinComponent {
+
+    // lazy inject Koin instance
+    val myService : MyService by inject()
+
+    // eager inject Koin instance
+    val myService : MyService get()
+}
+----
+
+=== Retrieving definitions with get & inject
+
+Koin offers two ways of retrieving instances from the Koin container:
+
+* `by inject()`
+* `get()`
+
+[source,kotlin]
+----
+// is lazy evaluated
+val myService : MyService by inject()
+
+// retrieve directly the instance
+val myService : MyService get()
+----
+
+[NOTE]
+====
+The lazy inject form is better to define property that need lazy evaluation.
+====
+
 

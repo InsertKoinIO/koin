@@ -1,6 +1,33 @@
-== Using injection parameters
+== Injection parameters
 
-This project does something.
-We just haven't decided what that is yet.
+In any `single` or `factory` definition, you can use injection parameters: parameters that will be injected and used by your definition:
+
+=== Defining an injection parameter
+
+[source,kotlin]
+----
+class Presenter(val view : View)
+
+val myModule = module {
+    single{ view : View -> Presenter(view) }
+}
+----
+
+Multiple parameters:
+
+
+=== Injecting with values
+
+In contrary to resolved dependencies (resolved with with `get()`), injection parameters are *parameters passed through the resolution API*.
+This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf` function:
+
+[source,kotlin]
+----
+class MyComponent : View, KoinComponent {
+
+    // inject this as View value
+    val presenter : Presenter by inject { parametersOf(this) }
+}
+----
 
 
