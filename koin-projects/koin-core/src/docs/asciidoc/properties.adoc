@@ -1,20 +1,53 @@
 == Properties
 
-This project does something.
-We just haven't decided what that is yet.
+Koin can handle properties from external property file, to help you inject values into your definitions.
 
-.main.kt
+=== Loading properties at start
+
+You can load several type of properties at start:
+
+* environment properties - load *system* properties
+* koin.properties file - load properties from `/src/main/resources/koin.properties` file
+* "extra" start properties - map of values passed at `startKoin` function
+
+=== Read property from a module
+
+In a Koin module, you can get a property by its key:
+
+[source,java]
+----
+// Key - value
+server_url=http://service_url
+----
+
+Just load it with `getProperty` function:
+
 [source,kotlin]
 ----
-class MyApplication : Application() {
-  override fun onCreate(){
-    super.onCreate()
-    // start Koin!
-    startKoin(this, listOf(myModule))
-  }
+val myModule = module {
+
+    // use the "server_url" key to retrieve its value
+    single { MyService(getProperty("server_url")) }
 }
 ----
 
-This page was built by the following command:
+=== Read/Write property from a KoinComponent
 
- $ ./gradlew asciidoctor
+If your class is a `KoinComponent`, you can interact with Koin properties directly from it, with `getProperty()` and `setProperty`:
+
+[source,kotlin]
+----
+class MyComponent : KoinComponent {
+
+    fun doSomething(){
+
+        // Read a Koin property
+        val serviceUrl = getProperty("server_url")
+
+        // Set a Koin property
+        setProperty("isDebug",false)
+
+    }
+}
+----
+

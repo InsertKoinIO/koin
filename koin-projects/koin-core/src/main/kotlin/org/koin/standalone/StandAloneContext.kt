@@ -9,6 +9,8 @@ import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
+import org.koin.log.Logger
+import org.koin.log.PrintLogger
 
 /**
  * Koin agnostic context support
@@ -111,16 +113,19 @@ object StandAloneContext {
      * @param useEnvironmentProperties - use environment extraProperties
      * @param useKoinPropertiesFile - use /koin.extraProperties file
      * @param extraProperties - extra extraProperties
+     * @param logger - Koin logger
      */
     fun startKoin(
         list: List<Module>,
         useEnvironmentProperties: Boolean = false,
         useKoinPropertiesFile: Boolean = true,
-        extraProperties: Map<String, Any> = HashMap()
+        extraProperties: Map<String, Any> = HashMap(),
+        logger: Logger = PrintLogger()
     ): Koin {
         if (isStarted) {
             throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
         }
+        Koin.logger = logger
         createContextIfNeeded()
         loadKoinModules(list)
         loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)

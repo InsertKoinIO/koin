@@ -30,13 +30,18 @@ The `startKoin()` can't be called more than once.
 
 When we start Koin, we create a `KoinContext` instance in the `StandAloneContext` holder instance which allows us to be agnostic.
 
-This `KoinContext` instance gather all components that forms the Koin container. This will call the `Koin` class, that is an API builder for Koin.
+This `KoinContext` instance gather all components that forms the Koin container. This class is built by the `Koin` class, the Koin instance builder.
 The `Koin` class is responsible to read modules, properties and build a `KoinContext` instance. This instance is then stored in our `StandAloneContext` holder.
 
 
-=== Loading Koin modules
+=== Loading modules without startKoin function
 
 You can't call the `startKoin()` function more than once. But you can use directly the `loadKoinModules()` functions.
 
 This function is interesting for SDK makers who want to use Koin, because they don't need to use the `starKoin()` function and just use the `loadKoinModules` at the start of their library.
 
+.Load Koin modules
+[source,kotlin]
+----
+loadKoinModules(module1,module2 ...)
+----

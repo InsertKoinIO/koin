@@ -55,29 +55,29 @@ fun Application.startKoin(
     startKoin(this, modules, extraProperties, loadProperties, logger)
 }
 
-/**
- * Bind an Android String to Koin property
- * @param id - Android resource String id
- * @param key - Koin property key
- */
-fun Application.bindString(id: Int, key: String) {
-    context().setProperty(key, context().get<Application>().getString(id))
-}
-
-/**
- * Bind an Android Integer to Koin property
- * @param id - Android resource Int id
- * @param key - Koin property key
- */
-fun Application.bindInt(id: Int, key: String) {
-    context().setProperty(key, context().get<Application>().resources.getInteger(id))
-}
-
-/**
- * Bind an Android Boolean to Koin property
- * @param id - Android resource Boolean id
- * @param key - Koin property key
- */
-fun Application.bindBool(id: Int, key: String) {
-    context().setProperty(key, context().get<Application>().resources.getBoolean(id))
-}
+///**
+// * Bind an Android String to Koin property
+// * @param id - Android resource String id
+// * @param key - Koin property key
+// */
+//fun Application.bindString(id: Int, key: String) {
+//    context().setProperty(key, context().get<Application>().getString(id))
+//}
+//
+///**
+// * Bind an Android Integer to Koin property
+// * @param id - Android resource Int id
+// * @param key - Koin property key
+// */
+//fun Application.bindInt(id: Int, key: String) {
+//    context().setProperty(key, context().get<Application>().resources.getInteger(id))
+//}
+//
+///**
+// * Bind an Android Boolean to Koin property
+// * @param id - Android resource Boolean id
+// * @param key - Koin property key
+// */
+//fun Application.bindBool(id: Int, key: String) {
+//    context().setProperty(key, context().get<Application>().resources.getBoolean(id))
+//}
