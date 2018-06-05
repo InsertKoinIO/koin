@@ -1,6 +1,6 @@
 == Properties
 
-Koin can handle properties from external property file, to help you inject values into your definitions.
+Koin can handle properties from environment or external property file, to help you inject values into your definitions.
 
 === Loading properties at start
 
@@ -14,6 +14,7 @@ You can load several type of properties at start:
 
 In a Koin module, you can get a property by its key:
 
+.in /src/main/resoucres/koin.propertie file
 [source,java]
 ----
 // Key - value
@@ -33,7 +34,7 @@ val myModule = module {
 
 === Read/Write property from a KoinComponent
 
-If your class is a `KoinComponent`, you can interact with Koin properties directly from it, with `getProperty()` and `setProperty`:
+If your class is a `KoinComponent`, you can interact with Koin properties directly from it with `getProperty()` and `setProperty`:
 
 [source,kotlin]
 ----
@@ -46,7 +47,6 @@ class MyComponent : KoinComponent {
 
         // Set a Koin property
         setProperty("isDebug",false)
-
     }
 }
 ----

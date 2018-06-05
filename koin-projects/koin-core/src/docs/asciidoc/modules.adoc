@@ -1,6 +1,6 @@
 == Koin Modules
 
-By using Koin, you describe definitions in Koin modules. In this section, we will see how to declare, organize & link your modules.
+By using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
 
 === What is a Koin Module?
 
@@ -15,7 +15,7 @@ val myModule = module {
 
 === Module's path
 
-A module has a `path`, which represents a namespace to help organize Koin definitions.
+A module has a `path`, which represents a namespace to help you organize your definitions.
 The path is an optional parameter from the `module { }` function and its default value is root namespace.
 
 .Modules with paths:
@@ -58,10 +58,26 @@ val aModule = module {
 
 The example above is the equivalent of previous section's example.
 
+.Modules path equivalent:
+[source,kotlin]
+----
+
+val sampleModule = module("org.sample") { ... }
+
+// is equivalent to
+val sampleModule = module {
+    module("org") {
+        module("sample") {
+            // ...
+        }
+    }
+}
+----
+
 === Linking definitions between modules
 
 Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
-module. Definition are lazy, and then are resolved only when Koin container is started.
+module. Definitions are lazy, and then are resolved only when a a component is requesting it.
 
 Let's take an example, with linked components in separate modules:
 
@@ -202,7 +218,6 @@ val myModule = module {
 // Request dependency from /org/sample namespace
 val service : Service by inject(module = "org.sample")
 ----
-
 
 We can resolve definitions from this module with `get()` or `get(module = "org.sample")` (idem for `by inject()`).
 

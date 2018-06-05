@@ -1,11 +1,11 @@
 == Start Koin
 
-Koin is a DSL, a lightweight container and a pragmatic API. Once you have delcared your definitions wthin Koin modules, your are ready to start the Koi container.
+Koin is a DSL, a lightweight container and a pragmatic API. Once you have declared your definitions within Koin modules, your are ready to start the Koi container.
 
 === The startKoin function
 
 The `startKoin()` function is the main entry point to launch Koin container. It need a *list of Koin modules* to run.
-Those modules are read and definitions are ready to be resolved by the Koin container.
+Modules are loaded and definitions are ready to be resolved by the Koin container.
 
 .Starting Koin
 [source,kotlin]
@@ -13,7 +13,7 @@ Those modules are read and definitions are ready to be resolved by the Koin cont
 startKoin(listOf(module1,module2 ...))
 ----
 
-Once `startKoin` has been called, Koin will read all your modules, definitions and will register them to be ready for any `get()` or `by inject()` call.
+Once `startKoin` has been called, Koin will read all your modules & definitions. Koin is then ready for any `get()` or `by inject()` call to retrieve the needed instance.
 
 At start you can also specify several options:
 
@@ -22,7 +22,7 @@ At start you can also specify several options:
 
 [IMPORTANT]
 ====
-The `startKoin()` can't be called more than once.
+The `startKoin()` can't be called more than once. If you need several point to load modules, use the `loadKoinModules` function.
 ====
 
 
