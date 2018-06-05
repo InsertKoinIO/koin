@@ -1,6 +1,6 @@
 == Logging Koin activity
 
-Koin has a small logging API to log any activity (allocation, lookup ...).
+Koin has a simple logging API to log any Koin activity (allocation, lookup ...). The logging API is represented by the interface below:
 
 .Koin Logger
 [source,kotlin]
@@ -25,7 +25,7 @@ interface Logger {
 
 === Set logging at start
 
-By default, koin-core is logging directly into default console output. But you can specify the `logger` parameter to setup
+By default, koin-core logs directly into default console output. But you can specify a `logger` parameter to setup
 your own `Logger` implementation:
 
 [source,kotlin]

@@ -5,7 +5,7 @@ with those definitions and to instantiate them when needed.
 
 === Why a DSL?
 
-Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it. Those annotations need introspection analyze,
+Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it or generate code for it. Those annotations need introspection analyze,
 proxying/code generation. Whereas with Kotlin DSL, we can use smart functional API to achieve the same goal: make dependency injection.
 
 === The Koin DSL
@@ -59,8 +59,8 @@ The result type of your lambda is the main type of your component
 
 === Defining a factory
 
-A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition. Use the `factory` function
-with a lambda expression to build a component, like `single` definition above.
+A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition (this instance is not retrained by Koin container, as it won't inject this instance in other definitions later).
+Use the `factory` function with a lambda expression to build a component.
 
 [source,kotlin]
 ----
@@ -75,13 +75,13 @@ val myModule = module {
 
 [NOTE]
 ====
-Koin containter doesn't retain factory instances as it will give a new instance each time the definition is asked. Then, there is no need to keep in the Koin container.
+Koin containter doesn't retain factory instances as it will give a new instance each time the definition is asked.
 ====
 
 === Resolving & injecting dependencies
 
 Now that we can declare components definitions, we want to link instances with dependency injection. To *resolve an instance* in a Koin module, just use the `get()`
-function to the requested needed component instance.
+function to the requested needed component instance. This `get()` function is usually used into constructor, to inject constructor values.
 
 [IMPORTANT]
 ====
@@ -107,10 +107,10 @@ val myModule = module {
 
 === Binding an interface
 
-A `single` or a `factory` definition use the type from the their given lambda definition: i.e  `single { type T }`
+A `single` or a `factory` definition use the type from the their given lambda definition: i.e  `single { T }`
 The matched type of the definition is the only matched type from this expression.
 
-Let's take an example with a class and interface:
+Let's take an example with a class and implemented interface:
 
 [source,kotlin]
 ----
@@ -142,9 +142,24 @@ val myModule = module {
 }
 ----
 
+You can also use the inferred type form, to tell the requested type:
+
+[source,kotlin]
+----
+val myModule = module {
+
+    // Will match type ServiceImp only
+    single { ServiceImp() }
+
+    // Will match type Service only
+    single<Service> { ServiceImp() }
+
+}
+----
+
 === Binding additional type
 
-In some cases, we want to match several types from one definition.
+In some cases, we want to match several types from just one definition.
 
 Let's take an example with a class and interface:
 
@@ -163,7 +178,7 @@ class ServiceImp() : Service{
 }
 ----
 
-To make a definition that can match additional types, we use the `bind` operator with a class:
+To make a definition bind additional types, we use the `bind` operator with a class:
 
 [source,kotlin]
 ----
@@ -178,6 +193,39 @@ val myModule = module {
 
 TBD
 
+By default, if you load several modules with the same definitions (type,name,path ...), then the last loaded definition will override the existing definition.
+
+[source,kotlin]
+----
+val myModule = module {
+
+    single { ServiceImp() as Service }
+
+    // Will override definition above
+    single { TestServiceImp() as Service }
+}
+----
+
+Note, that this override is done also across modules:
+
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single { ServiceImp() as Service }
+}
+
+val myModuleB = module {
+
+    single { TestServiceImp() as Service }
+}
+
+// Will override Service with TestServiceImp definition
+startKoin(listOf(myModuleA,myModuleB))
+----
+
+
+
 === Naming a definition
 
 A definition has by default an empty name. But you can declare a name to your definition, to help you distinguish two definitions about the same type:
@@ -187,7 +235,7 @@ Just request your definition with its name:
 [source,kotlin]
 ----
 val myModule = module {
-    single("default") { ServiceImpl() as Service}
+    single("default") { ServiceImpl() as Service }
     single("test") { ServiceImpl() as Service }
 }
 
@@ -228,7 +276,7 @@ Conflicting definitions occurs when you have:
 * several definitions that are matching the same type
 * defined a circular dependency
 
-In the first case, you can name your definition to distinguish them. You can also use modules to alter resolution visibility. In last case, you can also speify a module path when you request a dependency from a KoinComponent.
+In the first case, you can name your definition to distinguish them. You can also use modules to alter resolution visibility. In last case, you can also specify a module path when you request a dependency from a KoinComponent.
 
 [source,kotlin]
 ----

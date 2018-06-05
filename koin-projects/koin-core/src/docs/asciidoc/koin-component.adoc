@@ -5,7 +5,7 @@ an API to retrieve our instances outside of the container. That's the goal of Ko
 
 === Create a Koin Component
 
-To give a class the capacity to use Koin instance, we need to *tag it* with `KoinComponent` interface. Let's take an example.
+To give a class the capacity to use Koin features, we need to *tag it* with `KoinComponent` interface. Let's take an example.
 
 .A module to define MyService instance
 [source,kotlin]
@@ -32,7 +32,7 @@ fun main(vararg args : String){
 }
 ----
 
-Here is how we can write our `MyComponent` to retrieve dependencies.
+Here is how we can write our `MyComponent` to retrieve instances from Koin container.
 
 .Use get() & by inject() to inject MyService instance
 [source,kotlin]
@@ -42,10 +42,21 @@ class MyComponent : KoinComponent {
     // lazy inject Koin instance
     val myService : MyService by inject()
 
+    // or
     // eager inject Koin instance
     val myService : MyService get()
 }
 ----
+
+=== Unlock the Koin API with KoinComponents
+
+Once you have tagged your class as `KoinComponent`, you gain access to:
+
+* `by inject()` - lazy evaluated instance from Koin container
+* `get()` - eager fetch instance from Koin container
+* `release()` - release module's instances from its path
+* `getProperty()`/`setProperty()` - get/set property
+
 
 === Retrieving definitions with get & inject
 

@@ -4,6 +4,8 @@ In any `single` or `factory` definition, you can use injection parameters: param
 
 === Defining an injection parameter
 
+Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class:
+
 [source,kotlin]
 ----
 class Presenter(val view : View)
@@ -13,13 +15,11 @@ val myModule = module {
 }
 ----
 
-Multiple parameters:
-
 
 === Injecting with values
 
 In contrary to resolved dependencies (resolved with with `get()`), injection parameters are *parameters passed through the resolution API*.
-This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf` function:
+This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf()` function:
 
 [source,kotlin]
 ----
@@ -32,7 +32,7 @@ class MyComponent : View, KoinComponent {
 
 === Multiple parameters
 
-If we want to have multiple parameters in our definition, we can write use a data class to be able to use the *destructured declaration*:
+If we want to have multiple parameters in our definition, we can use the *destructured declaration* to list our parameters:
 
 [source,kotlin]
 ----
@@ -43,7 +43,7 @@ val myModule = module {
 }
 ----
 
-In the `KoinComponent`, just use the `parametersOf` function with your arguments like below:
+In a `KoinComponent`, just use the `parametersOf` function with your arguments like below:
 
 [source,kotlin]
 ----
@@ -51,7 +51,7 @@ class MyComponent : View, KoinComponent {
 
     val id : String ...
 
-    // inject view & id via PresenterHolder
+    // inject with view & id
     val presenter : Presenter by inject { parametersOf(this,id) }
 }
 ----
