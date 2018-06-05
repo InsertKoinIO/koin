@@ -86,7 +86,7 @@ Let's create a Repository to provide some data (`giveHello()`):
 
 ```kotlin
 interface Repository {
-    fun giveHello()
+    fun giveHello(): String
 }
 
 class MyRepository() : Repository {
