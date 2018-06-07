@@ -12,7 +12,7 @@ import org.koin.core.scope.Scope
  *
  * @author - Arnaud GIULIANI
  */
-class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
+class Context(val name: String = Scope.ROOT, val koinContext: KoinContext, val override: Boolean) {
 
     /**
      * bean definitions
@@ -27,9 +27,10 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     /**
      * Create a sub context in actual context
      * @param name
+     * @param override
      */
-    fun context(name: String, init: Context.() -> Unit): Context {
-        val newContext = Context(name, koinContext)
+    fun context(name: String, override: Boolean? = null, init: Context.() -> Unit): Context {
+        val newContext = Context(name, koinContext, override ?: this@Context.override)
         subContexts += newContext
         return newContext.apply(init)
     }
@@ -43,9 +44,14 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
     inline fun <reified T : Any> provide(
         name: String = "",
         isSingleton: Boolean = true,
+        override: Boolean? = null,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
+        val beanDefinition = BeanDefinition(
+            name, T::class,
+            isSingleton = isSingleton,
+            override = override ?: this@Context.override,
+            definition = definition)
         definitions += beanDefinition
         return beanDefinition
     }
@@ -54,8 +60,8 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      * Provide a bean definition - alias to provide
      * @param name
      */
-    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
-        return provide(name, true, definition)
+    inline fun <reified T : Any> bean(name: String = "", override: Boolean? = null, noinline definition: Definition<T>): BeanDefinition<T> {
+        return provide(name, true, override, definition)
     }
 
     /**
@@ -64,8 +70,8 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
      *
      * @param name
      */
-    inline fun <reified T : Any> factory(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
-        return provide(name, false, definition)
+    inline fun <reified T : Any> factory(name: String = "", override: Boolean? = null, noinline definition: Definition<T>): BeanDefinition<T> {
+        return provide(name, false, override, definition)
     }
 
     /**

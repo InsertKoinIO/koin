@@ -26,6 +26,7 @@ data class BeanDefinition<out T>(
     var types: List<KClass<*>> = arrayListOf(),
     val scope: Scope = Scope.root(),
     val isSingleton: Boolean = true,
+    val override: Boolean = false,
     val definition: Definition<T>
 ) {
 
@@ -42,7 +43,7 @@ data class BeanDefinition<out T>(
      */
     fun isNotASingleton() = !isSingleton
 
-    private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
+    private fun boundTypes(): String = "(" + types.joinToString { it.java.canonicalName } + ")"
 
     override fun toString(): String {
         val n = if (name.isBlank()) "" else "name='$name', "
@@ -50,7 +51,8 @@ data class BeanDefinition<out T>(
         val s = if (isSingleton) "Bean" else "Factory"
         val b = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
         val sn = if (scope != Scope.root()) ", scope:${scope.name}" else ""
-        return "$s[$n$c$b$sn]"
+        val o = ", override=$override"
+        return "$s[$n$c$b$sn$o]"
     }
 
     override fun equals(other: Any?): Boolean {

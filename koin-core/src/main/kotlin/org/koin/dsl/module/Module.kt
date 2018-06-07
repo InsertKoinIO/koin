@@ -9,7 +9,8 @@ import org.koin.standalone.StandAloneContext
 /**
  * Create Context
  */
-fun applicationContext(init: Context.() -> Unit): Module = { Context(Scope.ROOT, StandAloneContext.koinContext as KoinContext).apply(init) }
+fun applicationContext(override: Boolean = false,
+                       init: Context.() -> Unit): Module = { Context(Scope.ROOT, StandAloneContext.koinContext as KoinContext, override).apply(init) }
 
 /**
  * Module - function that gives a module
