@@ -2,7 +2,7 @@ ext {
     // Sdk and tools
     android_min_version = 14
     android_target_version = 27
-    androidx_target_version = 27//"android-P"
+    androidx_target_version = "android-P"
 
     android_gradle_version = "3.1.2"
 
