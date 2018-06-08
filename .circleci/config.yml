@@ -42,7 +42,7 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./koin-projects/gradlew -p ./koin-projects/koin-book clean dokka
+          command: ./koin-projects/gradlew -p ./koin-projects clean dokka
 
       - store_artifacts:
           path: ./koin-projects/koin-book/build/javadoc/
