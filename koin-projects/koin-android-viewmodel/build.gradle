@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         minSdkVersion android_min_version
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 

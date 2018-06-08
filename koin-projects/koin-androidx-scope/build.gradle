@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 ext {
     android_sourceSet = true
     pom_name = "koin-androidx-scope"
-    pom_description = "Koin project - koin-androidx-viewmodel"
+    pom_description = "Koin project - koin-androidx-scope"
 }
 
 android {
@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         minSdkVersion android_min_version
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
