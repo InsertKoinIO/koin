@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-android-viewmodel"
+    pom_name = "koin-android-scope"
     pom_description = "Koin project - koin-android-viewmodel"
 }
 

@@ -1,7 +1,6 @@
 include 'koin-core', 'koin-test'
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-viewmodel'
-include 'koin-ktor'
-include 'koin-spark'
+include 'koin-ktor','koin-spark'
 include 'koin-book'
 include 'examples:coffee-maker'

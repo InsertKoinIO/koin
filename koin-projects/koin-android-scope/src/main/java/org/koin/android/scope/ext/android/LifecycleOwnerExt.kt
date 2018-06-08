@@ -9,6 +9,6 @@ import org.koin.android.scope.ScopeObserver
  *
  * @param module : module names
  */
-fun LifecycleOwner.scope(vararg module: String) {
+fun LifecycleOwner.scopedWith(vararg module: String) {
     lifecycle.addObserver(ScopeObserver(this.javaClass.canonicalName, module))
 }
