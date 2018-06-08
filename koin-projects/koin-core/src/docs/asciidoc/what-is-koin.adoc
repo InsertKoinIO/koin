@@ -6,8 +6,19 @@ This is the `koin-core` project manual. This project brings the core feature ok 
 
 Koin is pragmatic lightweight dependency injection framework for Kotlin developers. Written in pure Kotlin, using functional resolution only: no proxy, no code generation, no reflection. Koin is a DSL, a lightweight container and a pragmatic API.
 
+=== Gradle setup
 
+Add the `koin-core` dependency to your Gradle project:
 
-
-
+[source,gradle]
+----
+// Add Jcenter to your repositories if needed
+repositories {
+    jcenter()
+}
+dependencies {
+    // Koin for Android
+    compile 'org.koin:koin-core:${project-version}'
+}
+----
 

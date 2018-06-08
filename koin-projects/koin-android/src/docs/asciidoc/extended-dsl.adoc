@@ -1,0 +1,4 @@
+== Koin DSL Extension
+
+The `koin-android` project is dedicated to provide Koin powers to Android world.
+

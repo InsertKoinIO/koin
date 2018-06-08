@@ -79,4 +79,7 @@ val myService : MyService get()
 The lazy inject form is better to define property that need lazy evaluation.
 ====
 
+=== No inject() or get() in your API?
+
+If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
 

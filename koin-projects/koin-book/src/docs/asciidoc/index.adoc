@@ -17,5 +17,6 @@ Arnaud Giuliani <arnaud.g@insert-koin.io>
 This is a user manual for all koin projects.
 
 include::../../../../koin-core/src/docs/asciidoc/index.adoc[]
+include::../../../../koin-android/src/docs/asciidoc/index.adoc[]
 
 
