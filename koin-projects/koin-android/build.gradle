@@ -8,7 +8,7 @@ ext {
 }
 
 android {
-    compileSdkVersion android_compile_version
+    compileSdkVersion android_target_version
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
