@@ -22,9 +22,6 @@ jobs:
       - run: 
           command: ./koin-projects/gradlew -p ./koin-projects clean build
 
-      - store_artifacts:
-          path: ./koin-projects/koin-book/build/javadoc/
-
   doc:
     docker:
       # specify the version you desire here

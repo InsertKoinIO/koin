@@ -1,4 +1,4 @@
 #!/bin/sh
 
-./gradlew clean build install publishToMavenLocal
+./gradlew clean build dokka install publishToMavenLocal
 
