@@ -25,7 +25,7 @@ jobs:
   javadoc:
     docker:
       # specify the version you desire here
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-27-alpha
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -76,7 +76,7 @@ workflows:
   build_and_publish:
     jobs:
       - build
-      - javadoc
+      - javadoc:
           requires:
             - build
       - doc:
