@@ -20,7 +20,7 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./koin-projects/gradlew -p ./koin-projects clean test
+          command: ./koin-projects/gradlew -p ./koin-projects clean build
 
       - store_artifacts:
           path: ./koin-projects/koin-book/build/javadoc/
