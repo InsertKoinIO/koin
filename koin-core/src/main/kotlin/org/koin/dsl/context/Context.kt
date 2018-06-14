@@ -85,6 +85,11 @@ class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
         if (name != null) koinContext.resolveByName(name, parameters) else koinContext.resolveByClass(parameters)
 
     /**
+     * Get all components of type
+     */
+    inline fun <reified T : Any> getAll(): Set<T> = koinContext.getAll()
+
+    /**
      * Retrieve a property
      * @param key - property key
      */

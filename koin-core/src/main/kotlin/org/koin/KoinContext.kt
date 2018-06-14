@@ -19,6 +19,7 @@ import kotlin.reflect.KClass
  * Context from where you can get beans defined in modules
  *
  * @author Arnaud GIULIANI
+ * @author Amir Abiri
  */
 class KoinContext(
     val beanRegistry: BeanRegistry,
@@ -58,6 +59,13 @@ class KoinContext(
         resolveInstance(clazz, parameters) { beanRegistry.searchAll(clazz) }
 
     /**
+     * Resolve all dependencies for their bean definitions for a given type
+     */
+    inline fun <reified T> getAll(noinline parameters: Parameters = { emptyMap() }): Set<T>  {
+        return resolveAllInstances(T::class, parameters) { beanRegistry.searchAll(T::class) }
+    }
+
+    /**
      * Resolve a dependency for its bean definition
      * @param clazz - Class
      * @param parameters - Parameters
@@ -71,27 +79,41 @@ class KoinContext(
 
         val clazzName = clazz.java.canonicalName
 
-        var resultInstance: T? = null
-
         val beanDefinition: BeanDefinition<*> =
             getVisibleBeanDefinition(clazzName, definitionResolver, resolutionStack.last())
 
+        val instance = resolveBeanDefinition<T>(clazzName, beanDefinition, parameters, resolutionStack.indent())
+
+        return instance ?: error("Could not create instance for $clazz")
+    }
+
+    /**
+     * Resolve all dependencies for their bean definitions
+     * @param clazz - Class
+     * @param parameters - Parameters
+     * @param definitionResolver - function to find bean definitions
+     */
+    fun <T> resolveAllInstances(
+        clazz: KClass<*>,
+        parameters: Parameters,
+        definitionResolver: () -> List<BeanDefinition<*>>
+    ): Set<T> = synchronized(this) {
+
+        val clazzName = clazz.java.canonicalName
+
+        val instances: MutableSet<T> = HashSet()
+
+        val beanDefinitions = getAllVisibleBeanDefinitions(clazzName, definitionResolver, resolutionStack.last())
+
         val logIndent = resolutionStack.indent()
-        resolutionStack.resolve(beanDefinition) {
-
-            // Resolution log
-            logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
-
-            val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, ParameterHolder(parameters))
-
-            // Log creation
-            if (created) {
-                logger.log("$logIndent(*) Created")
+        for (beanDefinition in beanDefinitions) {
+            val instance = resolveBeanDefinition<T>(clazzName, beanDefinition, parameters, logIndent)
+            if (instance != null) {
+                instances += instance
             }
-
-            resultInstance = instance
         }
-        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
+
+        return instances
     }
 
     /**
@@ -105,12 +127,7 @@ class KoinContext(
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
     ): BeanDefinition<*> {
-        val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
-            val found = definitionResolver()
-            val filteredByVisibility = found.filter { it.scope.isVisible(lastInStack.scope) }
-            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.scope}")
-            filteredByVisibility
-        } else definitionResolver()).distinct()
+        val candidates = getAllVisibleBeanDefinitions(clazzName, definitionResolver, lastInStack)
 
         return if (candidates.size == 1) {
             candidates.first()
@@ -124,6 +141,43 @@ class KoinContext(
                 )
             }
         }
+    }
+
+    /**
+     * Retrieve all bean definitions
+     * @param clazzName - class name
+     * @param definitionResolver - function to find bean definition
+     * @param lastInStack - to check visibility with last bean in stack
+     */
+    fun getAllVisibleBeanDefinitions(
+        clazzName: String,
+        definitionResolver: () -> List<BeanDefinition<*>>,
+        lastInStack: BeanDefinition<*>?
+    ): List<BeanDefinition<*>> {
+        return (if (lastInStack != null) {
+            val found = definitionResolver()
+            val filteredByVisibility = found.filter { it.scope.isVisible(lastInStack.scope) }
+            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) throw ContextVisibilityException("Can't resolve '$clazzName' for definition $lastInStack.\n\tClass '$clazzName' is not visible from context scope ${lastInStack.scope}")
+            filteredByVisibility
+        } else definitionResolver()).distinct()
+    }
+
+    private fun <T> resolveBeanDefinition(clazzName: String, beanDefinition: BeanDefinition<*>, parameters: Parameters, logIndent: String): T? {
+        var resultInstance: T? = null
+        resolutionStack.resolve(beanDefinition) {
+            // Resolution log
+            logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
+
+            val (instance, created) = instanceFactory.retrieveInstance<T>(beanDefinition, ParameterHolder(parameters))
+
+            // Log creation
+            if (created) {
+                logger.log("$logIndent(*) Created")
+            }
+
+            resultInstance = instance
+        }
+        return resultInstance
     }
 
     /**
