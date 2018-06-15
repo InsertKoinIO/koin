@@ -45,6 +45,11 @@ data class BeanDefinition<out T>(
 
     private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
+    /**
+     * Check visibility if "this" can see "other"
+     */
+    fun canSee(other : BeanDefinition<*>) = other.path.isVisible(this.path)
+
     override fun toString(): String {
         val beanName = if (name.isEmpty()) "" else "name='$name',"
         val clazz = "class='${clazz.java.canonicalName}'"
