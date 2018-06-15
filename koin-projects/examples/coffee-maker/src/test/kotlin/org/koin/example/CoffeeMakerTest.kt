@@ -18,7 +18,7 @@ class CoffeeMakerTest : KoinTest {
     val heater: Heater by inject()
     val coffeeMaker: CoffeeMaker by inject()
 
-    val mockHeaterModule = module {
+    val mockHeaterModule = module(override = true) {
         single { mock(Heater::class.java) }
     }
 

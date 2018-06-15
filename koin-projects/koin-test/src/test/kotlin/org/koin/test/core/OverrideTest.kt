@@ -1,10 +1,12 @@
 package org.koin.test.core
 
+import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.error.BeanOverrideException
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertDefinitions
 
@@ -43,12 +45,12 @@ class OverrideTest : AutoCloseKoinTest() {
         }
     }
 
-    val moduleA = module {
-        single { ComponentA() as MyInterface}
+    val moduleA = module("org.koin.sample") {
+        single { ComponentA() as MyInterface }
     }
 
-    val moduleB = module(override = true) {
-        single { ComponentB() as MyInterface}
+    val moduleB = module("org.koin.sample", override = true) {
+        single { ComponentB() as MyInterface }
     }
 
     class ComponentA : MyInterface
@@ -57,8 +59,11 @@ class OverrideTest : AutoCloseKoinTest() {
 
     @Test
     fun `module override`() {
-        startKoin(listOf(moduleA,moduleB))
+        startKoin(listOf(moduleA, moduleB))
         assertDefinitions(1)
+
+        val b = get<MyInterface>()
+        Assert.assertTrue(b is ComponentB)
     }
 
     @Test
