@@ -11,7 +11,6 @@ import org.koin.standalone.StandAloneContext
  * @Depreacted @see module
  *
  * @author - Arnaud GIULIANI
- * @author - Laurent BARESSE
  */
 @Deprecated(
     "use module function instead", ReplaceWith(
@@ -22,15 +21,16 @@ import org.koin.standalone.StandAloneContext
         "org.koin.core.KoinContext"
     )
 )
-fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.ROOT, init)
+fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.ROOT, false, init)
 
 /**
  * Create a Module
  * Gather definitions
  * @param path : Path of the module
+ * @param eager : module definitions will be tagged as `eager`
  */
-fun module(path: String = Path.ROOT, init: ModuleDefinition.() -> Unit): Module =
-    { ModuleDefinition(path, StandAloneContext.koinContext as KoinContext).apply(init) }
+fun module(path: String = Path.ROOT, eager: Boolean = false, init: ModuleDefinition.() -> Unit): Module =
+    { ModuleDefinition(path, eager, StandAloneContext.koinContext as KoinContext).apply(init) }
 
 /**
  * Module - function that gives a module

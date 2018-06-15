@@ -5,6 +5,8 @@ import org.koin.core.KoinContext
 import org.koin.core.ModuleCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.module.Module
@@ -130,6 +132,19 @@ object StandAloneContext {
         loadKoinModules(list)
         loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
         return getKoin()
+    }
+
+    /**
+     * Create instances for definitions tagged as `eager`
+     *
+     * @param defaultParameters - default injection parameters
+     */
+    fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
+        val context = getKoinContext()
+        val eagerDefs = context.beanRegistry.definitions.filter { it.isEager }
+        eagerDefs.forEach { def ->
+            context.resolveInstance(def.path.toString(), def.clazz, defaultParameters, { listOf(def) })
+        }
     }
 
     /**

@@ -13,6 +13,6 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     name: String = "",
     noinline definition: Definition<T>
 ) {
-    val bean = factory(name, definition)
+    val bean = factory(name, false, definition)
     bean.bind(ViewModel::class)
 }

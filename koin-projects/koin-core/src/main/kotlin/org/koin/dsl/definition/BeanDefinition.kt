@@ -27,6 +27,7 @@ data class BeanDefinition<out T>(
     var types: List<KClass<*>> = arrayListOf(),
     val path: Path = Path.root(),
     val isSingleton: Boolean = true,
+    val isEager: Boolean = false,
     val definition: Definition<T>
 ) {
 
@@ -48,7 +49,7 @@ data class BeanDefinition<out T>(
     /**
      * Check visibility if "this" can see "other"
      */
-    fun canSee(other : BeanDefinition<*>) = other.path.isVisible(this.path)
+    fun canSee(other: BeanDefinition<*>) = other.path.isVisible(this.path)
 
     override fun toString(): String {
         val beanName = if (name.isEmpty()) "" else "name='$name',"
@@ -67,6 +68,16 @@ data class BeanDefinition<out T>(
                     types == other.types &&
                     isSingleton == other.isSingleton
         } else false
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + clazz.hashCode()
+        result = 31 * result + types.hashCode()
+        result = 31 * result + path.hashCode()
+        result = 31 * result + isSingleton.hashCode()
+        result = 31 * result + isEager.hashCode()
+        return result
     }
 }
 

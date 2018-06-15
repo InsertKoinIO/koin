@@ -11,9 +11,8 @@ import org.koin.dsl.definition.Definition
  * Gather dependencies & properties definitions
  *
  * @author - Arnaud GIULIANI
- * @author - Laurent BARESSE
  */
-class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
+class ModuleDefinition(val path: String = "", val eager: Boolean = false, val koinContext: KoinContext) {
 
     /**
      * bean definitions
@@ -30,14 +29,15 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param path
      */
     @Deprecated("use module { } function instead")
-    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, init)
+    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, false, init)
 
     /**
      * Create a inner sub module in actual module
-     * @param path
+     * @param path - module path
+     * @param eager - all definition are eager
      */
-    fun module(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition {
-        val newContext = ModuleDefinition(path, koinContext)
+    fun module(path: String, eager: Boolean = false, init: ModuleDefinition.() -> Unit): ModuleDefinition {
+        val newContext = ModuleDefinition(path, eager,koinContext)
         subModules += newContext
         return newContext.apply(init)
     }
@@ -45,15 +45,17 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
     /**
      * Provide a singleton definition - default provider definition
      * @param name
+     * @param eager - need to be created at start
      * @param isSingleton
      */
     inline fun <reified T : Any> provide(
         name: String = "",
+        eager: Boolean = false,
         isSingleton: Boolean = true,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition =
-            BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
+            BeanDefinition(name, T::class, isSingleton = isSingleton, isEager = eager, definition = definition)
         definitions += beanDefinition
         return beanDefinition
     }
@@ -64,14 +66,19 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * @param name
      */
     inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> =
-        single(name, definition)
+        single(name, false, definition)
 
     /**
      * Provide a bean definition - alias to provide
      * @param name
+     * @param eager - need to be created at start
      */
-    inline fun <reified T : Any> single(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
-        return provide(name, true, definition)
+    inline fun <reified T : Any> single(
+        name: String = "",
+        eager: Boolean = false,
+        noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        return provide(name, eager, true, definition)
     }
 
     /**
@@ -79,9 +86,14 @@ class ModuleDefinition(val path: String = "", val koinContext: KoinContext) {
      * (recreate instance each time)
      *
      * @param name
+     * @param eager - need to be created at start
      */
-    inline fun <reified T : Any> factory(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
-        return provide(name, false, definition)
+    inline fun <reified T : Any> factory(
+        name: String = "",
+        eager: Boolean = false,
+        noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        return provide(name, eager, false, definition)
     }
 
     /**

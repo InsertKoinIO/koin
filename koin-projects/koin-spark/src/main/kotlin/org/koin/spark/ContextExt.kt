@@ -7,7 +7,7 @@ import org.koin.dsl.definition.Definition
  * Declare a Spark controller
  */
 inline fun <reified T : Any> ModuleDefinition.controller(name: String = "", noinline definition: Definition<T>) {
-    val def = single(name, definition)
+    val def = single(name, true, definition)
     def.bind(SparkController::class)
 }
 

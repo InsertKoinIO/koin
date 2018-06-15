@@ -80,7 +80,10 @@ class Koin(val koinContext: KoinContext) {
 
         // Add definitions
         moduleDefinition.definitions.forEach { definition ->
-            beanRegistry.declare(definition, consolidatedPath)
+            val def = if (moduleDefinition.eager)
+                definition.copy(isEager = moduleDefinition.eager) else definition
+
+            beanRegistry.declare(def, consolidatedPath)
         }
 
         // Check sub contexts
