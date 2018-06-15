@@ -41,6 +41,17 @@ class CheckTest : AutoCloseKoinTest() {
         single { ComponentD(get("default")) }
     }
 
+    val module1 = module {
+        module("otherModule") {
+            single { ComponentC() as Component }
+        }
+        single { ComponentD(get()) }
+    }
+
+    val module2 = module {
+        single { ComponentC() as Component }
+    }
+
     class ComponentA()
     class ComponentB(val componentA: ComponentA)
 
@@ -87,6 +98,17 @@ class CheckTest : AutoCloseKoinTest() {
     @Test
     fun `multiple interface & module definition check`() {
         startKoin(listOf(multipleInterfaceModule))
+        check()
+
+        assertDefinitions(3)
+        assertRemainingInstances(0)
+
+        dryRun()
+    }
+
+    @Test
+    fun `mutiple module defs - check`() {
+        startKoin(listOf(module1,module2))
         check()
 
         assertDefinitions(3)

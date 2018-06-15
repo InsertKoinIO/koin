@@ -16,7 +16,7 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
     Koin.logger.log("(DRY RUN)")
     beanRegistry.definitions.forEach { def ->
         Koin.logger.log("Testing instance $def ...")
-        instanceFactory.retrieveInstance<Any>(def, defaultParameters)
+        resolveInstance<Any>(def.path.toString(), def.clazz, defaultParameters, { listOf(def) })
     }
 }
 
