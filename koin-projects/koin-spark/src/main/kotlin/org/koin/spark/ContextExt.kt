@@ -9,7 +9,7 @@ import org.koin.dsl.definition.Definition
  * @param name
  * @param override - allow definition override
  */
-inline fun <reified T : Any> ModuleDefinition.controller(
+inline fun <reified T : SparkController> ModuleDefinition.controller(
     name: String = "",
     override: Boolean = false,
     noinline definition: Definition<T>
@@ -21,4 +21,4 @@ inline fun <reified T : Any> ModuleDefinition.controller(
 /**
  * Tag interface for Spark controllers
  */
-internal interface SparkController
+interface SparkController

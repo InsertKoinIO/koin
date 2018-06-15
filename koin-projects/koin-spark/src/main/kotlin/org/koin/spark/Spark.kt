@@ -3,6 +3,7 @@ package org.koin.spark
 import org.koin.core.KoinContext
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.module.Module
+import org.koin.log.Logger.SLF4JLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.createEagerInstances
@@ -22,7 +23,7 @@ val DEFAULT_PORT = 0
 fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> Unit)? = null): Int {
 
     // Start Koin
-    startKoin(modules, useEnvironmentProperties = true, logger = Log4JLogger())
+    startKoin(modules, useEnvironmentProperties = true, logger = SLF4JLogger())
     // Get port from properties
     val foundPort = (StandAloneContext.koinContext as KoinContext).getProperty("server.port", "4567").toInt()
     if (port != DEFAULT_PORT) {
