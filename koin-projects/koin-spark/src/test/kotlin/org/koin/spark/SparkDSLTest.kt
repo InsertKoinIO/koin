@@ -19,7 +19,7 @@ class SparkDSLTest : AutoCloseKoinTest() {
     }
 
     class HelloService
-    class HelloController(val service: HelloService)
+    class HelloController(val service: HelloService) : SparkController
 
     @Test
     fun `check controller is well injected`() {

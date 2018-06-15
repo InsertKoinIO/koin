@@ -4,6 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.error.DefinitionBindingException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -125,15 +126,12 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         assertIsInRootPath(ComponentC::class)
     }
 
-//    @Test
-//    fun `should not bind non parent class`() {
-//        startKoin(listOf(badModule))
-//
-//        try {
-//            val intf = get<InterfaceComponent2>()
-//            Assert.assertTrue(intf is InterfaceComponent2)
-//            fail()
-//        } catch (e: ClassCastException) {
-//        }
-//    }
+    @Test
+    fun `should not bind non parent class`() {
+        try {
+            startKoin(listOf(badModule))
+            fail()
+        } catch (e: DefinitionBindingException) {
+        }
+    }
 }

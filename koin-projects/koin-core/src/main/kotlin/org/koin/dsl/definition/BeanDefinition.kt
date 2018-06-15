@@ -2,6 +2,7 @@ package org.koin.dsl.definition
 
 import org.koin.core.parameter.ParameterList
 import org.koin.dsl.path.Path
+import org.koin.error.DefinitionBindingException
 import kotlin.reflect.KClass
 
 /**
@@ -38,7 +39,11 @@ data class BeanDefinition<out T>(
      * Add a compatible type to current bounded definition
      */
     infix fun bind(clazz: KClass<*>): BeanDefinition<*> {
-        types += clazz
+        if (!clazz.java.isAssignableFrom(this.clazz.java)) {
+            throw DefinitionBindingException("Can't bind type '$clazz' for definition $this")
+        } else {
+            types += clazz
+        }
         return this
     }
 
