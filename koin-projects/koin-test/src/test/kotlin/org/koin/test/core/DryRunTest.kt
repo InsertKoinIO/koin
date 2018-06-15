@@ -1,15 +1,12 @@
 package org.koin.test.core
 
-import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.dryRun
-import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
@@ -34,12 +31,6 @@ class DryRunTest : AutoCloseKoinTest() {
 
         assertDefinitions(2)
         assertRemainingInstances(2)
-
-        Assert.assertNotNull(get<ComponentA>())
-        Assert.assertNotNull(get<ComponentB>())
-
-        assertRemainingInstances(2)
-        assertContexts(1)
     }
 
     @Test
@@ -54,19 +45,5 @@ class DryRunTest : AutoCloseKoinTest() {
 
         assertDefinitions(1)
         assertRemainingInstances(0)
-
-        try {
-            get<ComponentA>()
-            fail()
-        } catch (e: Exception) {
-        }
-        try {
-            get<ComponentB>()
-            fail()
-        } catch (e: Exception) {
-        }
-
-        assertRemainingInstances(0)
-        assertContexts(1)
     }
 }

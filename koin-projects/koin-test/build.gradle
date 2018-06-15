@@ -4,6 +4,9 @@ archivesBaseName = 'koin-test'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
+    // Kt
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     // Koin
     compile project(":koin-core")
 

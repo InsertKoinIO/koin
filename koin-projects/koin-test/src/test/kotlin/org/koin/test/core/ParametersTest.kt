@@ -8,7 +8,6 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.dryRun
 import org.koin.test.ext.junit.assertRemainingInstances
 
 class ParametersTest : AutoCloseKoinTest() {
@@ -76,13 +75,6 @@ class ParametersTest : AutoCloseKoinTest() {
 
         Assert.assertEquals(URL1, c1.compA.url)
         Assert.assertEquals(URL1, c2.compA.url)
-    }
-
-    @Test
-    fun `should dry run default parameters`() {
-        startKoin(listOf(simpleModule1))
-
-        dryRun { parametersOf("DEFAULT") }
     }
 
     companion object {
