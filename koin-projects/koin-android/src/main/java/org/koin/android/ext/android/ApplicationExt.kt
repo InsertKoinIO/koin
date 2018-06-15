@@ -2,10 +2,10 @@ package org.koin.android.ext.android
 
 import android.app.Application
 import org.koin.android.ext.koin.bindAndroidProperties
-import org.koin.android.ext.koin.context
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.Koin
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
@@ -25,16 +25,24 @@ fun Application.startKoin(
     modules: List<Module>,
     extraProperties: Map<String, Any> = HashMap(),
     loadProperties: Boolean = true,
-    logger: Logger = AndroidLogger()
+    logger: Logger = AndroidLogger(),
+    createEagerInstances: Boolean = false
 ) {
     Koin.logger = logger
+
     val koin = StandAloneContext.startKoin(
         modules,
         extraProperties = extraProperties,
         useKoinPropertiesFile = false
-    )
-        .with(application)
-    if (loadProperties) koin.bindAndroidProperties(application)
+    ).with(application)
+
+    if (loadProperties) {
+        koin.bindAndroidProperties(application)
+    }
+
+    if (createEagerInstances) {
+        StandAloneContext.createEagerInstances(emptyParameterDefinition())
+    }
 }
 
 /**

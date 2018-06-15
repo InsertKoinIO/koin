@@ -1,9 +1,11 @@
 package org.koin.spark
 
 import org.koin.core.KoinContext
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.module.Module
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
+import org.koin.standalone.StandAloneContext.createEagerInstances
 import org.koin.standalone.StandAloneContext.startKoin
 import spark.Spark
 import spark.kotlin.after
@@ -17,7 +19,7 @@ val DEFAULT_PORT = 0
  * @param port - server port /default 4567
  * @param controllers - function to run Koin
  */
-fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: () -> Unit): Int {
+fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> Unit)? = null): Int {
 
     // Start Koin
     startKoin(modules, useEnvironmentProperties = true, logger = Log4JLogger())
@@ -35,7 +37,11 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: () -> Un
     }
 
     // launch controllers initialization
-    controllers()
+    if (controllers != null) {
+        controllers()
+    } else {
+        createEagerInstances(emptyParameterDefinition())
+    }
 
     // This is the important line. It must be *after* creating the routes and *before* the call to port()
     Spark.awaitInitialization()
