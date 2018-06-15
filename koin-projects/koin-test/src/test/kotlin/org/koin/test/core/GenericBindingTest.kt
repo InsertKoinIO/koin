@@ -3,7 +3,7 @@ package org.koin.test.core
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.error.DependencyResolutionException
+import org.koin.error.BeanOverrideException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -36,11 +36,10 @@ class GenericBindingTest : AutoCloseKoinTest() {
 
     @Test
     fun `should not inject generic interface component`() {
-        startKoin(listOf(badModule))
-
         try {
+            startKoin(listOf(badModule))
             get<InterfaceComponent<String>>()
-        } catch (e: DependencyResolutionException) {
+        } catch (e: BeanOverrideException) {
         }
     }
 }

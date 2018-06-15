@@ -1,35 +1,54 @@
 package org.koin.test.core
 
-import org.junit.Assert
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.error.DependencyResolutionException
+import org.koin.error.BeanOverrideException
 import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.ext.junit.assertDefinitions
 
 class OverrideTest : AutoCloseKoinTest() {
 
-    val sampleModule1 = module {
+    val diffBind = module {
         single { ComponentA() } bind MyInterface::class
         single { ComponentA() }
     }
 
-    val sampleModule2 = module {
+    val diffName = module {
         single("A") { ComponentA() as MyInterface }
         single("B") { ComponentB() as MyInterface }
     }
 
-    val sampleModule3 = module {
-        single { ComponentB() as MyInterface }
-        single { ComponentA() as MyInterface }
+    val sameType = module {
+        single { ComponentA() }
+        single { ComponentA() }
     }
 
-    val sampleModule4 = module {
+    val overrideSameType = module {
+        single { ComponentA() }
+        single(override = true) { ComponentA() }
+    }
+
+    val diffKind = module {
         single { ComponentB() as MyInterface }
-        factory { ComponentA() } bind MyInterface::class
+        factory { ComponentB() as MyInterface }
+    }
+
+    val diffPath = module {
+        single { ComponentA() }
+
+        module("aModule") {
+            single { ComponentA() }
+        }
+    }
+
+    val moduleA = module {
+        single { ComponentA() as MyInterface}
+    }
+
+    val moduleB = module(override = true) {
+        single { ComponentB() as MyInterface}
     }
 
     class ComponentA : MyInterface
@@ -37,40 +56,55 @@ class OverrideTest : AutoCloseKoinTest() {
     interface MyInterface
 
     @Test
-    fun `override provide with bind`() {
-        startKoin(listOf(sampleModule1))
+    fun `module override`() {
+        startKoin(listOf(moduleA,moduleB))
+        assertDefinitions(1)
+    }
 
+    @Test
+    fun `can't override same type`() {
         try {
-            get<ComponentA>()
+            startKoin(listOf(sameType))
             fail()
-        } catch (e: DependencyResolutionException) {
+        } catch (e: BeanOverrideException) {
+            e.printStackTrace()
         }
 
-        Assert.assertNotNull(get<MyInterface>())
+        assertDefinitions(1)
     }
 
     @Test
-    fun `no override but conflicting def`() {
-        startKoin(listOf(sampleModule2))
+    fun `override same type`() {
+        startKoin(listOf(overrideSameType))
 
-        assertNotEquals(get<MyInterface>("A"), get<MyInterface>("B"))
+        assertDefinitions(1)
     }
 
     @Test
-    fun `override provide with bean`() {
-        startKoin(listOf(sampleModule3))
+    fun `no override - bind `() {
+        startKoin(listOf(diffBind))
 
-        Assert.assertNotNull(get<MyInterface>())
+        assertDefinitions(2)
     }
 
     @Test
-    fun `override provide with factory`() {
-        startKoin(listOf(sampleModule4))
+    fun `no override - name `() {
+        startKoin(listOf(diffName))
 
-        try {
-            get<MyInterface>()
-            fail()
-        } catch (e: DependencyResolutionException) {
-        }
+        assertDefinitions(2)
+    }
+
+    @Test
+    fun `no override - Kind `() {
+        startKoin(listOf(diffKind))
+
+        assertDefinitions(2)
+    }
+
+    @Test
+    fun `no override - Module path `() {
+        startKoin(listOf(diffPath))
+
+        assertDefinitions(2)
     }
 }

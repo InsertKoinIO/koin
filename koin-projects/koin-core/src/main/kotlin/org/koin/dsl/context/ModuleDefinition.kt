@@ -11,8 +11,18 @@ import org.koin.dsl.definition.Definition
  * Gather dependencies & properties definitions
  *
  * @author - Arnaud GIULIANI
+ *
+ * @param path - module path
+ * @param eager - module's definition are eager
+ * @param override - module's definition can override
+ * @param koinContext
  */
-class ModuleDefinition(val path: String = "", val eager: Boolean = false, val koinContext: KoinContext) {
+class ModuleDefinition(
+    val path: String = "",
+    val eager: Boolean = false,
+    val override: Boolean = false,
+    val koinContext: KoinContext
+) {
 
     /**
      * bean definitions
@@ -29,15 +39,20 @@ class ModuleDefinition(val path: String = "", val eager: Boolean = false, val ko
      * @param path
      */
     @Deprecated("use module { } function instead")
-    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, false, init)
+    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, false, false, init)
 
     /**
      * Create a inner sub module in actual module
      * @param path - module path
      * @param eager - all definition are eager
      */
-    fun module(path: String, eager: Boolean = false, init: ModuleDefinition.() -> Unit): ModuleDefinition {
-        val newContext = ModuleDefinition(path, eager,koinContext)
+    fun module(
+        path: String,
+        eager: Boolean = false,
+        override: Boolean = false,
+        init: ModuleDefinition.() -> Unit
+    ): ModuleDefinition {
+        val newContext = ModuleDefinition(path, eager, override, koinContext)
         subModules += newContext
         return newContext.apply(init)
     }
@@ -46,16 +61,25 @@ class ModuleDefinition(val path: String = "", val eager: Boolean = false, val ko
      * Provide a singleton definition - default provider definition
      * @param name
      * @param eager - need to be created at start
+     * @param override - allow override of the definition
      * @param isSingleton
      */
     inline fun <reified T : Any> provide(
         name: String = "",
         eager: Boolean = false,
+        override: Boolean = false,
         isSingleton: Boolean = true,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition =
-            BeanDefinition(name, T::class, isSingleton = isSingleton, isEager = eager, definition = definition)
+            BeanDefinition(
+                name,
+                T::class,
+                isSingleton = isSingleton,
+                isEager = eager,
+                allowOverride = override,
+                definition = definition
+            )
         definitions += beanDefinition
         return beanDefinition
     }
@@ -66,19 +90,22 @@ class ModuleDefinition(val path: String = "", val eager: Boolean = false, val ko
      * @param name
      */
     inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> =
-        single(name, false, definition)
+        single(name, false, false, definition)
 
     /**
      * Provide a bean definition - alias to provide
      * @param name
      * @param eager - need to be created at start
+     * @param override - allow definition override
+     * @param definition
      */
     inline fun <reified T : Any> single(
         name: String = "",
         eager: Boolean = false,
+        override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, eager, true, definition)
+        return provide(name, eager, override, true, definition)
     }
 
     /**
@@ -87,13 +114,16 @@ class ModuleDefinition(val path: String = "", val eager: Boolean = false, val ko
      *
      * @param name
      * @param eager - need to be created at start
+     * @param override - allow definition override
+     * @param definition
      */
     inline fun <reified T : Any> factory(
         name: String = "",
         eager: Boolean = false,
+        override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, eager, false, definition)
+        return provide(name, eager, override, false, definition)
     }
 
     /**

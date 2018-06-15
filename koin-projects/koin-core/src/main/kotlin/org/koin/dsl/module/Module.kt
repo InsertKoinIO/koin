@@ -8,7 +8,7 @@ import org.koin.standalone.StandAloneContext
 
 /**
  * Create a Module
- * @Depreacted @see module
+ * @Deprecated @see module
  *
  * @author - Arnaud GIULIANI
  */
@@ -21,16 +21,22 @@ import org.koin.standalone.StandAloneContext
         "org.koin.core.KoinContext"
     )
 )
-fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.ROOT, false, init)
+fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.ROOT, false, false, init)
 
 /**
  * Create a Module
  * Gather definitions
  * @param path : Path of the module
  * @param eager : module definitions will be tagged as `eager`
+ * @param override : allow all definitions from module to override definitions
  */
-fun module(path: String = Path.ROOT, eager: Boolean = false, init: ModuleDefinition.() -> Unit): Module =
-    { ModuleDefinition(path, eager, StandAloneContext.koinContext as KoinContext).apply(init) }
+fun module(
+    path: String = Path.ROOT,
+    eager: Boolean = false,
+    override: Boolean = false,
+    init: ModuleDefinition.() -> Unit
+): Module =
+    { ModuleDefinition(path, eager, override, StandAloneContext.koinContext as KoinContext).apply(init) }
 
 /**
  * Module - function that gives a module

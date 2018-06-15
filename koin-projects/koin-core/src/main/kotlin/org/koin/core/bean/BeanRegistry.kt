@@ -3,6 +3,7 @@ package org.koin.core.bean
 import org.koin.core.Koin
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.path.Path
+import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
@@ -26,12 +27,18 @@ class BeanRegistry() {
     fun declare(def: BeanDefinition<*>, path: Path) {
         val definition = def.copy(path = path)
         val existingBean = definitions.firstOrNull { it == definition }
-        val override = existingBean != null
+
+        val isOverriding = existingBean != null
+        if (isOverriding && !definition.allowOverride){
+            throw BeanOverrideException("Try to override definition $existingBean with $definition, but override is not allowed. Use 'override' option in your definition or module.")
+        }
+
         existingBean?.let {
             definitions.remove(existingBean)
         }
         definitions += definition
-        val kw = if (override) "override" else "declare"
+
+        val kw = if (isOverriding) "override" else "declare"
         Koin.logger.log("[module] $kw $definition")
     }
 

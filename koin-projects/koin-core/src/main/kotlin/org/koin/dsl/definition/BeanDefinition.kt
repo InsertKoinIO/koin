@@ -19,6 +19,8 @@ import kotlin.reflect.KClass
  * @param clazz - bean class
  * @param isSingleton - is the bean a singleton
  * @param types - list of assignable types
+ * @param isEager - definition tagged to be created with `createEagerInstances()`
+ * @param allowOverride - definition tagged to allow definition override or not
  * @param definition - bean definition function
  */
 data class BeanDefinition<out T>(
@@ -28,6 +30,7 @@ data class BeanDefinition<out T>(
     val path: Path = Path.root(),
     val isSingleton: Boolean = true,
     val isEager: Boolean = false,
+    val allowOverride: Boolean = false,
     val definition: Definition<T>
 ) {
 
@@ -66,6 +69,7 @@ data class BeanDefinition<out T>(
                     clazz == other.clazz &&
                     path == other.path &&
                     types == other.types &&
+                    isEager == other.isEager &&
                     isSingleton == other.isSingleton
         } else false
     }
@@ -77,6 +81,7 @@ data class BeanDefinition<out T>(
         result = 31 * result + path.hashCode()
         result = 31 * result + isSingleton.hashCode()
         result = 31 * result + isEager.hashCode()
+        result = 31 * result + allowOverride.hashCode()
         return result
     }
 }
