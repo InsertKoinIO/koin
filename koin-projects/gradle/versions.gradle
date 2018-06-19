@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '1.0.0-alpha-22'
+    koin_version = '1.0.0-alpha-23'
 
     // Kotlin
     kotlin_version = '1.2.50'
@@ -24,5 +24,5 @@ ext {
     asciidoctor_version = "1.5.3"
     asciidoctor_pdf_version = "1.5.0-alpha.15"
 
-    android_maven_publish = "3.3.0"
+    android_maven_publish = "3.6.1"
 }
