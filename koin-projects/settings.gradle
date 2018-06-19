@@ -1,4 +1,4 @@
-include 'koin-core', 'koin-test'
+include 'koin-core', 'koin-test', 'koin-java'
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-viewmodel'
 include 'koin-logger-slf4j'
