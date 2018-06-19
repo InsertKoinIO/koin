@@ -1,0 +1,59 @@
+== Start Koin with Android
+
+The `koin-android` project is dedicated to provide Koin powers to Android world.
+
+=== startKoin() from your Application
+
+From your `Application` class you can use the `startKoin()` function:
+
+[source,kotlin]
+----
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin(this, myAppModules)
+    }
+}
+----
+
+
+=== Koin Logging
+
+With the `startKoin()` function, we have a parameter `logger` which has a default value: `AndroidLogger()`.
+This logger is an Android implementation of the Koin logger.
+
+Up to you to change this logger if it doesn't suits to your needs.
+
+.Shut off Koin Logger
+[source,kotlin]
+----
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin(this, myAppModules, logger = EmptyLogger())
+    }
+}
+----
+
+=== Properties
+
+You can use Koin properties in the `assets/koin.properties` file, to store keys/values. You can also use extraProperties at start:
+
+.Use Koin extra properties
+[source,kotlin]
+----
+// Shut off Koin Logger
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin(this, myAppModules, extraProperties = mapOf( ... ))
+    }
+}
+----
+

@@ -1,0 +1,283 @@
+== Koin Modules
+
+By using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
+
+=== What is a Koin Module?
+
+A Koin module is a space to gather Koin definition. It's declared with the `module` function.
+
+[source,kotlin]
+----
+val myModule = module {
+    // Your definitions ...
+}
+----
+
+=== Module's path
+
+A module has a `path`, which represents a namespace to help you organize your definitions.
+The path is an optional parameter from the `module { }` function and its default value is root namespace.
+
+.Modules with paths:
+[source,kotlin]
+----
+// definitions in / (root) namespace
+val aRootModule = module { ... }
+
+// definitions in /org/sample namespace
+val sampleModule = module("org.sample") { ... }
+----
+
+[NOTE]
+====
+The default namespace separator is "."
+====
+
+If several modules are declaring the same namespace, their definitions will be in the same namespace.
+
+The Koin module's path is also a good way to separate definitions in Koin.
+
+=== Inner modules
+
+A module can also contains *inner modules*. An inner is a module declaration inside an
+existing module declaration. It's also declared with `module` function, be an inner module
+must specify a path.
+
+.Module and an inner module:
+[source,kotlin]
+----
+// definitions in / (root) namespace
+val aModule = module {
+
+    // definitions in /org/sample namespace
+    module("org.sample") {
+
+    }
+}
+----
+
+The example above is the equivalent of previous section's example.
+
+.Modules path equivalent:
+[source,kotlin]
+----
+
+val sampleModule = module("org.sample") { ... }
+
+// is equivalent to
+val sampleModule = module {
+    module("org") {
+        module("sample") {
+            // ...
+        }
+    }
+}
+----
+
+=== Linking definitions between modules
+
+Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
+module. Definitions are lazy, and then are resolved only when a a component is requesting it.
+
+Let's take an example, with linked components in separate modules:
+
+[source,kotlin]
+----
+// ComponentB <- ComponentA
+class ComponentA()
+class ComponentB(val componentA : ComponentA)
+
+val moduleA = module {
+    // Singleton ComponentA
+    single { ComponentA() }
+}
+
+val moduleB = module {
+    // Singleton ComponentB with linked instance ComponentA
+    single { ComponentB(get()) }
+}
+----
+
+
+[NOTE]
+====
+Koin does't have any import concept. Koin definitions are lazy: a Koin definition is started
+with Koin container but is not instanciated. An instance is created only a request for its type
+has been done.
+====
+
+We just have to declare list of used modules when we start our Koin container:
+
+[source,kotlin]
+----
+// Start Koin with moduleA & moduleB
+startKoin(listOf(moduleA,moduleB))
+----
+
+Koin will then resolve dependencies from all given modules.
+
+=== Assembling modules for implementation strategy
+
+*As definitions between modules are lazy*, we can use modules to implement different strategy implementation: declare an implementation per module.
+
+Let's take an example, of a Repository and Datasource. A repository need a Datasource, and a Datasource can be implemented in 2 ways: Local or Remote.
+
+[source,kotlin]
+----
+class Repository(val datasource : Datasource)
+interface Datasource
+class LocalDatasource() : Datasource
+class RemoteDatasource() : Datasource
+----
+
+We can declare those components in 3 modules: Repository and one per Datasource implementation:
+
+[source,kotlin]
+----
+val repositoryModule = module {
+    single { Repository(get()) }
+}
+
+val localDatasourceModule = module {
+    single { LocalDatasource() as Datasource }
+}
+
+val remoteDatasourceModule = module {
+    single { RemoteDatasource() as Datasource }
+}
+----
+
+Then we just need to launch Koin with the right combination of modules:
+
+[source,kotlin]
+----
+// Load Repository + Local Datasource definitions
+startKoin(listOf(repositoryModule,localDatasourceModule))
+
+// Load Repository + Remote Datasource definitions
+startKoin(listOf(repositoryModule,remoteDatasourceModule))
+----
+
+=== Hierarchy & visibility
+
+Visibility rule is quite simple: *child modules can see their parents, but not the inverse*. A definition from a child module,
+can see definitions in parents modules. Modules can't share their definitions in divergent paths.
+
+Let's take an example:
+
+[source,kotlin]
+----
+// definitions in /
+val rootModule = module {
+    single { ComponentA() }
+}
+// definitions in /org
+val orgModule = module("org") {
+    single { ComponentB(...) }
+}
+// definitions in /org/sample
+val sampleModule = module("org.sample") {
+    single { ComponentC(...) }
+}
+// definitions in /org/demo
+val demoModule = module("org.demo") {
+    single { ComponentD(...) }
+}
+----
+
+We have the following resolution possibility:
+
+* `ComponentA can only see definitions from root (can only see `/`, can't see `ComponentB`, `ComponentC` & `ComponentD)
+* `ComponentB` can see definitions from org & root (can see `/` and `/org` - can resolve ComponentA - can't see `ComponentC` & `ComponentD )
+* `ComponentC` can see definitions from sample, org & root (can see `/`, `/org`, `/org/sample` - can resolve `ComponentA`, `ComponentB` - can't  see `ComponentD`)
+* `ComponentD` can see definitions from demo, org & root (can see `/`, `/org`, `/org/demo` - can resolve ComponentA`, `ComponentB` - can't  see `ComponentC`)
+
+=== Visibility & isolation
+
+By declaring definitions in a module with a path, your component *are then not visible from outside of this namespace*.
+This is then very useful to protect visibility between modules.
+
+When you are requesting a definition from a `KoinComponent` with `get()` or `by inject()`, you can specify the module in which you want to resolve. If you don't specify it, Koin will resolve it from all modules.
+Else Koin will resolve it from the specified module namespace.
+
+If we have modules as follow:
+
+[source,kotlin]
+----
+val myModule = module {
+
+    module("org.demo"){
+        single{ ServiceImpl() as Service}
+    }
+
+    module("org.sample"){
+        single{ ServiceImpl() as Service}
+    }
+}
+
+// Request dependency from /org/sample namespace
+val service : Service by inject(module = "org.sample")
+----
+
+We can resolve definitions from this module with `get()` or `get(module = "org.sample")` (idem for `by inject()`).
+
+=== Definition instances & modules
+
+When the Koin container is instantiating a definition from a given module, this instance will be attached to the module's path.
+
+For a given module defined in `/org/sample`, *all definitions are instantiated in its module path*.
+
+[source,kotlin]
+----
+val myModule = module("org.sample") {
+    // Service instance will be in /org/sample
+    single{ Service() }
+}
+----
+
+That also mean, that each definition is located in its namespace:
+
+[source,kotlin]
+----
+class Datasource()
+class Repository(val datasource : Datasource)
+
+
+val myModule = module {
+
+    // Datasource instance will be in /
+    single { Datasource() }
+
+    module("org.sample") {
+        // Repository instance will be in /org/sample
+        single{ Repository(get()) }
+    }
+}
+----
+
+=== Releasing module instances
+
+The other interest of a module, is the ability to *drop instances for a given module path*. This means that you can organize your components with modules and manage instances lifecycle.
+When you don't need instances from a given module, you can drop them with the `release` function (KoinComponent).
+
+[source,kotlin]
+----
+val myModule = module {
+    module("org.sample"){
+        //...
+    }
+}
+// drop instances from /org/sample module
+release("org.sample")
+----
+
+=== Conflicting module declaration
+
+When resoling a definition, if two definitions are defining the same type you will have a conflict.
+You can update your modules to change their paths. Or check about definition naming to specify a definition, a keep both definitions.
+
+[NOTE]
+====
+If two modules declare the same path, definitions will be in the same namespace.
+====
+

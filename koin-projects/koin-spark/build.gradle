@@ -1,0 +1,15 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'koin-spark'
+description = 'Koin - simple dependency injection for SparkJava'
+
+dependencies {
+    compile project(":koin-core")
+    compile project(":koin-logger-slf4j")
+    testImplementation project(":koin-test")
+
+    // Spark
+    compile "com.sparkjava:spark-kotlin:$spark_kotlin_version"
+}
+
+apply from: '../gradle/publish.gradle'

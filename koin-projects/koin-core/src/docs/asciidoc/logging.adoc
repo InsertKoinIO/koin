@@ -1,0 +1,41 @@
+== Logging Koin activity
+
+Koin has a simple logging API to log any Koin activity (allocation, lookup ...). The logging API is represented by the interface below:
+
+.Koin Logger
+[source,kotlin]
+----
+interface Logger {
+    /**
+     * Normal log
+     */
+    fun log(msg : String)
+
+    /**
+     * Debug log
+     */
+    fun debug(msg : String)
+
+    /**
+     * Error log
+     */
+    fun err(msg : String)
+}
+----
+
+=== Set logging at start
+
+By default, koin-core logs directly into default console output. But you can specify a `logger` parameter to setup
+your own `Logger` implementation:
+
+[source,kotlin]
+----
+startKoin(listof(...), logger = EmptyLogger())
+----
+
+=== Loggers implementation
+
+If you don't want to log any info, you can use the `EmptyLogger` class.
+
+You can easily implement the `Logger` interface to adapt to your logging technology.
+

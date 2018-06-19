@@ -1,0 +1,14 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'koin-logger-slf4j'
+description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+
+dependencies {
+    // Koin
+    compile project(":koin-core")
+
+    // SLF4J
+    compile "org.slf4j:slf4j-api:1.7.25"
+}
+
+apply from: '../gradle/publish.gradle'

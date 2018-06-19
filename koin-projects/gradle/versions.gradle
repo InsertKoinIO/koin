@@ -1,0 +1,28 @@
+ext {
+    // Koin
+    koin_version = '1.0.0-alpha-23'
+
+    // Kotlin
+    kotlin_version = '1.2.50'
+
+    // Dokka
+    dokka_version = '0.9.16'
+
+    // Bintray
+    bintray_version = "1.8.0"
+
+    // Ktor
+    ktor_version = '0.9.1'
+
+    // Spark
+    spark_kotlin_version = '1.0.0-alpha'
+
+    // Test
+    junit_version = "4.12"
+    mockito_version = "2.8.47"
+
+    asciidoctor_version = "1.5.3"
+    asciidoctor_pdf_version = "1.5.0-alpha.15"
+
+    android_maven_publish = "3.4.0"
+}
