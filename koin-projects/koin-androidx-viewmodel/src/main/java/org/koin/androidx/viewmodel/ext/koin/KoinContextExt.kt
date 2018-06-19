@@ -15,6 +15,7 @@
  */
 package org.koin.androidx.viewmodel.ext.koin
 
+import org.koin.androidx.viewmodel.error.ViewModelDefinitionException
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
@@ -51,13 +52,15 @@ private fun <T> KoinContext.getWithDefinitions(
     module: String? = null,
     parameters: ParameterDefinition,
     message: String
-): T {
-    return when (foundDefinitions.size) {
-        0 -> throw NoBeanDefFoundException("No bean beanDefinition found $message")
-        1 -> {
-            val def = foundDefinitions.first()
-            resolveInstance(module, def.clazz, parameters, { listOf(def) })
+): T = when (foundDefinitions.size) {
+    0 -> throw NoBeanDefFoundException("No bean beanDefinition found $message")
+    1 -> {
+        val def = foundDefinitions.first()
+        if (def.isViewModel()) {
+            resolveInstance<T>(module, def.clazz, parameters) { listOf(def) }
+        } else {
+            throw ViewModelDefinitionException("Definition $def is not declared as 'ViewModel'. Please use 'viewModel' to define your component instead of 'single'/'factory' in your module!")
         }
-        else -> throw NoBeanDefFoundException("Multiple bean definitions found $message")
     }
+    else -> throw NoBeanDefFoundException("Multiple bean definitions found $message")
 }

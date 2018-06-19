@@ -22,9 +22,6 @@ import android.arch.lifecycle.ViewModelStores
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.android.viewmodel.ViewModelFactory
-import org.koin.android.viewmodel.ViewModelFactory._module
-import org.koin.android.viewmodel.ViewModelFactory._name
-import org.koin.android.viewmodel.ViewModelFactory._parameters
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -80,9 +77,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     name: String? = null,
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-): T {
-    return getViewModelByClass(false, T::class, key, name, module, parameters)
-}
+) = getViewModelByClass(false, T::class, key, name, module, parameters)
 
 /**
  * Get a viewModel instance
@@ -101,26 +96,27 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     module: String? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
-    ViewModelFactory.let {
+    ViewModelFactory.apply {
         _parameters = parameters
         _name = name
         _module = module
     }
+    val clazzName = clazz.java.simpleName
     val viewModelProvider = when {
         this is FragmentActivity -> {
-            Koin.logger.log("[ViewModel] get for FragmentActivity @ $this")
+            Koin.logger.log("[ViewModel] get '$clazzName' for FragmentActivity @ $this")
             ViewModelProvider(ViewModelStores.of(this), ViewModelFactory)
         }
         this is Fragment -> {
             if (fromActivity) {
-                Koin.logger.log("[ViewModel] get for FragmentActivity @ ${this.activity}")
+                Koin.logger.log("[ViewModel] get '$clazzName' for FragmentActivity @ ${this.activity}")
                 ViewModelProvider(ViewModelStores.of(this.activity), ViewModelFactory)
             } else {
-                Koin.logger.log("[ViewModel] get for Fragment @ $this")
+                Koin.logger.log("[ViewModel] get '$clazzName' for Fragment @ $this")
                 ViewModelProvider(ViewModelStores.of(this), ViewModelFactory)
             }
         }
-        else -> error("Can't get ViewModel on $this - Is not a FragmentActivity nor a Fragment")
+        else -> error("Can't get ViewModel '$clazzName' on $this - Is not a FragmentActivity nor a Fragment")
     }
     return if (key != null) viewModelProvider.get(
         key,
