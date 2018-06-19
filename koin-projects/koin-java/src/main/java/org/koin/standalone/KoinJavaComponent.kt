@@ -1,6 +1,8 @@
 package org.koin.standalone
 
-import org.koin.KoinContext
+import org.koin.core.KoinContext
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import kotlin.jvm.internal.Reflection
 
 
@@ -13,6 +15,7 @@ object KoinJavaComponent {
      * Retrieve given dependency lazily
      * @param clazz - dependency class
      * @param name - bean name / optional
+     * @param module - module path / optional
      * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
@@ -20,15 +23,17 @@ object KoinJavaComponent {
     fun <T> inject(
         clazz: Class<T>,
         name: String = "",
-        parameters: InjectParameters = emptyParameters
+        module: String? = null,
+        parameters: ParameterDefinition = emptyParameterDefinition()
     ): Lazy<T> {
-        return lazy { get(clazz, name, parameters) }
+        return lazy { get(clazz, name, module, parameters) }
     }
 
     /**
      * Retrieve given dependency
      * @param clazz - dependency class
      * @param name - bean name / optional
+     * @param module - module path / optional
      * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
@@ -36,20 +41,22 @@ object KoinJavaComponent {
     fun <T> get(
         clazz: Class<T>,
         name: String = "",
-        parameters: InjectParameters = emptyParameters
+        module: String? = null,
+        parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
         val kclazz = Reflection.getOrCreateKotlinClass(clazz)
         val koinContext = (StandAloneContext.koinContext as KoinContext)
 
-        val beanDefinition = if (name.isBlank())
+        val beanDefinitions = if (name.isBlank())
             koinContext.beanRegistry.searchAll(kclazz)
         else
-            koinContext.beanRegistry.searchByName(name)
+            koinContext.beanRegistry.searchByName(name, kclazz)
 
         return koinContext.resolveInstance(
+            module,
             kclazz,
-            { parameters.getParameters() },
-            { beanDefinition }) as T
+            parameters,
+            { beanDefinitions }) as T
     }
 
     /**
@@ -73,12 +80,4 @@ object KoinJavaComponent {
         val koinContext = (StandAloneContext.koinContext as KoinContext)
         return koinContext.propertyResolver.properties[key] as T? ?: defaultValue
     }
-}
-
-interface InjectParameters {
-    fun getParameters(): Map<String, Any>
-}
-
-private val emptyParameters = object : InjectParameters {
-    override fun getParameters(): Map<String, Any> = emptyMap()
 }

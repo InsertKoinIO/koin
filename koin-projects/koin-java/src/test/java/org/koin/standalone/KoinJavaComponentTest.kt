@@ -3,7 +3,7 @@ package org.koin.standalone
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
 
@@ -15,12 +15,12 @@ open class KoinJavaComponentTest : AutoCloseKoinTest() {
     @Before
     fun before() {
         startKoin(
-            listOf(applicationContext {
-                bean("db") { LocalDbImplementation() as DataSource }
-                bean("api") { RemoteApiImplementation() as DataSource }
-                bean { params -> DataConverter(params["separator"]) }
+            listOf(module {
+                single("db") { LocalDbImplementation() as DataSource }
+                single("api") { RemoteApiImplementation() as DataSource }
+                single { (separator: String) -> DataConverter(separator) }
             }),
-            properties = mapOf("PrefixProp" to "_", "SeparatorProp" to "|")
+            extraProperties = mapOf("PrefixProp" to "_", "SeparatorProp" to "|")
         )
     }
 
