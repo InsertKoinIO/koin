@@ -15,13 +15,17 @@
  */
 package org.koin.test
 
+import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 import org.koin.test.ext.koin.check
 import org.koin.test.ext.koin.dryRun
+import org.mockito.Mockito.mock
 
 
 /**
@@ -47,4 +51,44 @@ fun KoinTest.check() {
  */
 fun KoinTest.dryRun(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
     (StandAloneContext.koinContext as KoinContext).dryRun(defaultParameters)
+}
+
+/**
+ * Declare & Create a mock in Koin container for given type
+ */
+inline fun <reified T : Any> KoinTest.createMock(isFactory: Boolean = false) {
+    val clazz = T::class.java
+    Koin.logger.log("Declare mock for $clazz")
+    StandAloneContext.loadKoinModules(
+        module {
+            if (!isFactory) {
+                single(override = true) {
+                    createMock(clazz)
+                }
+            } else {
+                factory(override = true) {
+                    createMock(clazz)
+                }
+            }
+        }
+    )
+}
+
+/**
+ * Create & log mock
+ */
+fun <T : Any> createMock(clazz: Class<T>): T {
+    Koin.logger.log("Create mock for $clazz")
+    return mock<T>(clazz)
+}
+
+/**
+ * Declare a definition to be included in Koin container
+ */
+fun KoinTest.declare(moduleExpression: ModuleDefinition.() -> Unit) {
+    StandAloneContext.loadKoinModules(
+        module {
+            moduleExpression()
+        }
+    )
 }
