@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.koin.core.bean
 
 import org.koin.core.Koin
@@ -8,12 +23,12 @@ import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
 
+
 /**
  * Bean registry
  * gather definitions of beans & communicate with instance factory to handle instances
  *
  * @author - Arnaud GIULIANI
- * @author - Laurent BARESSE
  */
 class BeanRegistry() {
 
@@ -29,7 +44,7 @@ class BeanRegistry() {
         val existingBean = definitions.firstOrNull { it == definition }
 
         val isOverriding = existingBean != null
-        if (isOverriding && !definition.allowOverride){
+        if (isOverriding && !definition.allowOverride) {
             throw BeanOverrideException("Try to override definition $existingBean with $definition, but override is not allowed. Use 'override' option in your definition or module.")
         }
 
