@@ -9,6 +9,10 @@ dependencies {
 
     // Koin
     compile project(":koin-core")
+	
+	// Test
+	testCompile 'junit:junit:4.12'
+    testCompile project(":koin-test")
 }
 
 apply from: '../gradle/publish.gradle'
