@@ -189,43 +189,6 @@ val myModule = module {
 }
 ----
 
-=== Overriding a definition
-
-TBD
-
-By default, if you load several modules with the same definitions (type,name,path ...), then the last loaded definition will override the existing definition.
-
-[source,kotlin]
-----
-val myModule = module {
-
-    single { ServiceImp() as Service }
-
-    // Will override definition above
-    single { TestServiceImp() as Service }
-}
-----
-
-Note, that this override is done also across modules:
-
-[source,kotlin]
-----
-val myModuleA = module {
-
-    single { ServiceImp() as Service }
-}
-
-val myModuleB = module {
-
-    single { TestServiceImp() as Service }
-}
-
-// Will override Service with TestServiceImp definition
-startKoin(listOf(myModuleA,myModuleB))
-----
-
-
-
 === Naming a definition
 
 A definition has by default an empty name. But you can declare a name to your definition, to help you distinguish two definitions about the same type:
@@ -299,3 +262,106 @@ val service : Service by inject(module = "org.sample")
 For a circular dependency problem, you are in the situation where `A<-B` & `B<-A`. You have to review your relation between A & B, and break the circularity  to resolve your situation.
 
 
+=== Definition flags
+
+Koin DSL also proposes some flags.
+
+==== Create instances at start
+
+A definition or a module can be flagged as `eager`, to be created at start (or when you want). First set the `eager` flag on your module
+or on your definition.
+
+
+.Eager flag at definition level
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single { ServiceImp() as Service }
+}
+
+val myModuleB = module {
+
+    // eager creation for this definition
+    single(eager=true) { TestServiceImp() as Service }
+}
+----
+
+.Eager flag at module level
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single { ServiceImp() as Service }
+}
+
+val myModuleB = module(eager=true) {
+
+    single{ TestServiceImp() as Service }
+}
+----
+
+Create eager instances with `createEagerInstances()` function:
+
+.Override not allowed
+[source,kotlin]
+----
+// Start Koin modules
+startKoin(listOf(myModuleA,myModuleB))
+// Create eager instances
+createEagerInstances()
+----
+
+
+==== Overriding a definition or a module
+
+Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an an error if you try this:
+
+.Override not allowed
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single { ServiceImp() as Service }
+}
+
+val myModuleB = module {
+
+    single { TestServiceImp() as Service }
+}
+
+// Will throw an BeanOverrideException
+startKoin(listOf(myModuleA,myModuleB))
+----
+
+To allow definition overriding, you have to use the `override` parameter:
+
+.Override at definition level
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single { ServiceImp() as Service }
+}
+
+val myModuleB = module {
+
+    // override for this definition
+    single(override=true) { TestServiceImp() as Service }
+}
+----
+
+.Override at module level
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single { ServiceImp() as Service }
+}
+
+// Allow override for all definitions from module
+val myModuleB = module(override=true) {
+
+    single { TestServiceImp() as Service }
+}
+----
