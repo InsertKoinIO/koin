@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.android.viewmodel.ViewModelFactory
+import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
@@ -28,7 +29,10 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
     fun should_create_view_model() {
         startKoin(listOf(module))
 
+        ViewModelFactory.viewModelParameters = ViewModelParameters()
         val vm1 = ViewModelFactory.create(MyViewModel::class.java)
+
+        ViewModelFactory.viewModelParameters = ViewModelParameters()
         val vm2 = ViewModelFactory.create(MyViewModel::class.java)
         val service = get<MyService>()
 

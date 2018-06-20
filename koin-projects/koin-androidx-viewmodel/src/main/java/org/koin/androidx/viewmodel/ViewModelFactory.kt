@@ -65,5 +65,5 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
 data class ViewModelParameters(
     val name: String? = null,
     val module: String? = null,
-    val parameters: ParameterDefinition
+    val parameters: ParameterDefinition = emptyParameterDefinition()
 )
