@@ -31,28 +31,39 @@ import org.koin.standalone.KoinComponent
  */
 object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
 
-    /**
-     * Current Parameters
-     */
-    internal var _parameters: ParameterDefinition = emptyParameterDefinition()
-
-    /**
-     * Current BeanDefinition name
-     */
-    internal var _name: String? = null
-
-    /**
-     * Module Path
-     */
-    internal var _module: String? = null
+    var viewModelParameters: ViewModelParameters? = null
 
     /**
      * Create instance for ViewModelProvider Factory
      */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val beanName = _name
-        return if (beanName != null) {
-            getByName(beanName, _module, _parameters)
-        } else get(modelClass, _module, _parameters)
+        return if (viewModelParameters != null) {
+            // Get params to pass to factory
+            val name = viewModelParameters?.name
+            val module = viewModelParameters?.module
+            val params = viewModelParameters?.parameters ?: emptyParameterDefinition()
+            // Clear local stuff
+            clear()
+
+            if (name != null) {
+                getByName(name, module, params)
+            } else get(modelClass, module, params)
+        } else error("Can't get ViewModel from ViewModelFactory with empty parameters")
+    }
+
+    /**
+     * clear current call params
+     */
+    private fun clear() {
+        viewModelParameters = null
     }
 }
+
+/**
+ * Data holder for ViewModel Factory
+ */
+data class ViewModelParameters(
+    val name: String? = null,
+    val module: String? = null,
+    val parameters: ParameterDefinition
+)

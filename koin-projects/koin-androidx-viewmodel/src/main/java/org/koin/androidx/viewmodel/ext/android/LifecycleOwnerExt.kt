@@ -21,6 +21,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.ViewModelFactory
+import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -95,11 +96,8 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     module: String? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
-    ViewModelFactory.apply {
-        _parameters = parameters
-        _name = name
-        _module = module
-    }
+
+    ViewModelFactory.viewModelParameters = ViewModelParameters(name,module,parameters)
     val clazzName = clazz.java.simpleName
     val viewModelProvider = when {
         this is FragmentActivity -> {
