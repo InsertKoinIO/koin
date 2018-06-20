@@ -149,7 +149,7 @@ object StandAloneContext {
         loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
 
         if (createOnStart) {
-            StandAloneContext.createEagerInstances(emptyParameterDefinition())
+            createEagerInstances(emptyParameterDefinition())
         }
         return getKoin()
     }
@@ -161,9 +161,11 @@ object StandAloneContext {
      */
     fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
         val context = getKoinContext()
-        val eagerDefs = context.beanRegistry.definitions.filter { it.isEager }
-        Koin.logger.log("Creating instances ...")
-        eagerDefs.forEach { def ->
+        val definitions = context.beanRegistry.definitions.filter { it.isEager }
+        if (definitions.isNotEmpty()) {
+            Koin.logger.log("Creating instances ...")
+        }
+        definitions.forEach { def ->
             context.resolveInstance(
                 def.path.toString(),
                 def.clazz,

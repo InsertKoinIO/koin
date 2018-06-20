@@ -3,14 +3,16 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
+apply from: '../../gradle/versions-examples.gradle'
+
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "koin.sampleapp"
+        targetSdkVersion android_target_version
+        applicationId "koin.sampleapp.mvvm"
         versionCode 1
         versionName "1.0"
 
@@ -47,8 +49,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Android Support
-    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
-    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support:appcompat-v7:$support_lib_version"
+    implementation "com.android.support:design:$support_lib_version"
 
     // Android Test
     testImplementation "junit:junit:$junit_version"
@@ -61,22 +63,27 @@ dependencies {
     // Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     // Koin
-//    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-android-viewmodel:$koin_version"
-    testImplementation "org.koin:koin-test:$koin_version"
-    androidTestImplementation "org.koin:koin-test:$koin_version"
+    implementation project(":koin-android-viewmodel")
+    testImplementation project(":koin-test")
+    androidTestImplementation project(":koin-test")
 
     // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:$androidArchitectureVersion"
-//    annotationProcessor "android.arch.lifecycle:compiler:$androidArchitectureVersion"
-    testImplementation "android.arch.core:core-testing:$androidArchitectureVersion"
+    implementation "android.arch.lifecycle:extensions:$android_arch_version"
+    testImplementation "android.arch.core:core-testing:$android_arch_version"
 
     // Room
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
-    implementation "android.arch.persistence.room:rxjava2:$roomVersion"
-    kapt "android.arch.persistence.room:compiler:$roomVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
-    testImplementation "android.arch.persistence.room:testing:$roomVersion"
+    implementation "android.arch.persistence.room:runtime:$room_version"
+    implementation "android.arch.persistence.room:rxjava2:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
+    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
+    testImplementation "android.arch.persistence.room:testing:$room_version"
+
+    // UI
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.2'
 
     // Networking
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -88,12 +95,9 @@ dependencies {
     // Rx
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
-    // UI
-    implementation 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
-
-    // Gson
-    implementation 'com.google.code.gson:gson:2.8.2'
+    // Canary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }
 
