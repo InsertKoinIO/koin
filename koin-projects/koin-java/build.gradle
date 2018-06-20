@@ -4,11 +4,11 @@ archivesBaseName = 'koin-java'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
-    // Kt
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
     // Koin
     compile project(":koin-core")
+
+    // Test
+    testCompile project(":koin-test")
 }
 
 apply from: '../gradle/publish.gradle'
