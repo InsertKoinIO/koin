@@ -22,22 +22,24 @@ class DetailPresenterMockTest {
     @Mock
     lateinit var repository: WeatherRepository
 
+    val id = "ID"
+
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
 
-        presenter = DetailPresenter(repository, TestSchedulerProvider())
+        presenter = DetailPresenter(id, repository, TestSchedulerProvider())
         presenter.view = view
     }
 
     @Test
     fun testGetLastWeather() {
         val weather = mock(DailyForecastModel::class.java)
-        val id = "ID"
+
 
         given(repository.getWeatherDetail(id)).willReturn(Single.just(weather))
 
-        presenter.getDetail(id)
+        presenter.getDetail()
 
         verify(view, never()).showError(MockitoHelper.any())
         verify(view).showDetail(weather)
@@ -50,7 +52,7 @@ class DetailPresenterMockTest {
 
         given(repository.getWeatherDetail(id)).willReturn(Single.error(error))
 
-        presenter.getDetail(id)
+        presenter.getDetail()
 
         verify(view, never()).showDetail(MockitoHelper.any())
         verify(view).showError(error)

@@ -18,27 +18,31 @@ import org.koin.dsl.module.module
  * App Components
  */
 val weatherAppModule = module {
+
     // Presenter for Search View
     factory {
         SplashPresenter(get(), get()) as SplashContract.Presenter
     }
 
-    // Presenter for ResultHeader View
-    factory {
-        WeatherHeaderPresenter(get(), get()) as WeatherHeaderContract.Presenter
-    }
-    // Presenter for ResultList View
-    factory {
-        WeatherListPresenter(get(), get()) as WeatherListContract.Presenter
+    // scoped module example
+    module("weather") {
+        // Presenter for ResultHeader View
+        single {
+            WeatherHeaderPresenter(get(), get()) as WeatherHeaderContract.Presenter
+        }
+        // Presenter for ResultList View
+        single {
+            WeatherListPresenter(get(), get()) as WeatherListContract.Presenter
+        }
     }
 
-    // Presenter for Detail View
-    factory {
-        DetailPresenter(get(), get()) as DetailContract.Presenter
+    // Presenter with injection parameter for Detail View
+    factory { (id: String) ->
+        DetailPresenter(id, get(), get()) as DetailContract.Presenter
     }
 
     // Weather Data Repository
-    single { WeatherRepositoryImpl(get()) as WeatherRepository }
+    single(eager = true) { WeatherRepositoryImpl(get()) as WeatherRepository }
 
     // Rx Schedulers
     single { ApplicationSchedulerProvider() as SchedulerProvider }

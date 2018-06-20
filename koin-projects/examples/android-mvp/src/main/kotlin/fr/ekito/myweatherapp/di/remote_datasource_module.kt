@@ -13,13 +13,12 @@ import java.util.concurrent.TimeUnit
 /**
  * Remote Web Service datasource
  */
-val remoteDatasourceModule = module {
+val remoteDatasourceModule = module(eager = true) {
     // provided web components
     single { createOkHttpClient() }
     // Fill property
     single { createWebService<WeatherWebDatasource>(get(), getProperty(SERVER_URL)) }
 }
-
 
 object DatasourceProperties {
     const val SERVER_URL = "SERVER_URL"

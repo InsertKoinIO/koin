@@ -11,7 +11,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
 
-class WeatherRepositoryTest : KoinTest {
+class WeatherRepositoryHeadlessTest : KoinTest {
 
     val repository by inject<WeatherRepository>()
 
@@ -20,6 +20,7 @@ class WeatherRepositoryTest : KoinTest {
     @Before
     fun before() {
         startKoin(testWeatherApp)
+        println("")
     }
 
     @After

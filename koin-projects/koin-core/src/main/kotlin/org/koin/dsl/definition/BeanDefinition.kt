@@ -67,7 +67,8 @@ data class BeanDefinition<out T>(
      */
     fun isNotASingleton(): Boolean = !isSingleton
 
-    private fun boundTypes(): String = "(" + types.map { it.java.canonicalName }.joinToString() + ")"
+    private fun boundTypes(): String =
+        "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
     /**
      * Check visibility if "this" can see "other"
@@ -89,7 +90,6 @@ data class BeanDefinition<out T>(
                     clazz == other.clazz &&
                     path == other.path &&
                     types == other.types &&
-                    isEager == other.isEager &&
                     isSingleton == other.isSingleton
         } else false
     }
@@ -100,8 +100,6 @@ data class BeanDefinition<out T>(
         result = 31 * result + types.hashCode()
         result = 31 * result + path.hashCode()
         result = 31 * result + isSingleton.hashCode()
-        result = 31 * result + isEager.hashCode()
-        result = 31 * result + allowOverride.hashCode()
         return result
     }
 }

@@ -10,6 +10,7 @@ import fr.ekito.myweatherapp.util.ext.argument
 import fr.ekito.myweatherapp.view.IntentArguments.ARG_WEATHER_ITEM_ID
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * Weather Detail View
@@ -19,12 +20,12 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
     // Detail id passed by argument
     private val detailId by argument<String>(ARG_WEATHER_ITEM_ID)
 
-    override val presenter: DetailContract.Presenter by inject()
+    override val presenter: DetailContract.Presenter by inject { parametersOf(detailId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        presenter.getDetail(detailId)
+        presenter.getDetail()
     }
 
     override fun onStart() {
@@ -38,7 +39,11 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
     }
 
     override fun showError(error: Throwable) {
-        Snackbar.make(weatherItem, getString(R.string.loading_error)+" $error", Snackbar.LENGTH_LONG).show()
+        Snackbar.make(
+            weatherItem,
+            getString(R.string.loading_error) + " $error",
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     override fun showDetail(weather: DailyForecastModel) {
