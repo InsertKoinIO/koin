@@ -1,15 +1,34 @@
-package org.koin.standalone
+/*
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.koin.java.standalone
 
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext
 import kotlin.jvm.internal.Reflection
 
-
 /**
+ * Koin Java Helper - inject/get into Java code
+ *
  * @author @fredy-mederos
+ * @author Arnaud Giuliani
  */
-object KoinJavaComponent {
+object KoinJavaComponent : KoinComponent {
 
     /**
      * Retrieve given dependency lazily
@@ -45,6 +64,7 @@ object KoinJavaComponent {
         parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
         val kclazz = Reflection.getOrCreateKotlinClass(clazz)
+
         val koinContext = (StandAloneContext.koinContext as KoinContext)
 
         val beanDefinitions = if (name.isBlank())
@@ -55,8 +75,18 @@ object KoinJavaComponent {
         return koinContext.resolveInstance(
             module,
             kclazz,
-            parameters,
-            { beanDefinitions }) as T
+            parameters
+        ) { beanDefinitions } as T
+    }
+
+    /**
+     * Release module instances from its path
+     *
+     * @param path - module's path
+     */
+    @JvmStatic
+    fun release(path: String) {
+        (StandAloneContext.koinContext as KoinContext).release(path)
     }
 
     /**
