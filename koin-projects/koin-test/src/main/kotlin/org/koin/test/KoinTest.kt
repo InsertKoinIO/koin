@@ -58,7 +58,7 @@ fun KoinTest.dryRun(defaultParameters: ParameterDefinition = emptyParameterDefin
  */
 inline fun <reified T : Any> KoinTest.createMock(isFactory: Boolean = false) {
     val clazz = T::class.java
-    Koin.logger.log("Declare mock for $clazz")
+    Koin.logger.log("<> declare mock for $clazz")
     StandAloneContext.loadKoinModules(
         module {
             if (!isFactory) {

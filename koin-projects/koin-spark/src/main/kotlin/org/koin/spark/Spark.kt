@@ -20,6 +20,7 @@ import org.koin.dsl.module.Module
 import org.koin.log.Logger.SLF4JLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.closeKoin
+import org.koin.standalone.StandAloneContext.createEagerInstances
 import org.koin.standalone.StandAloneContext.startKoin
 import spark.Spark
 import spark.kotlin.after
@@ -27,7 +28,7 @@ import spark.kotlin.port
 import spark.kotlin.stop
 
 
-val DEFAULT_PORT = 0
+const val DEFAULT_PORT = 0
 
 /**
  * Start Spark server
@@ -38,6 +39,13 @@ val DEFAULT_PORT = 0
  */
 fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> Unit)? = null): Int {
 
+    // launch controllers initialization
+    startKoin(
+        modules,
+        useEnvironmentProperties = true,
+        logger = SLF4JLogger(),
+        createOnStart = false
+    )
 
     // Get port from properties
     val foundPort =
@@ -48,24 +56,18 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> U
         port(foundPort)
     }
 
+    if (controllers != null) {
+        // Start Koin
+        controllers()
+    } else {
+        // Create Koin instances
+        createEagerInstances()
+    }
+
+
     // Logging filter
     after("*") {
         println(request.requestMethod() + " " + request.pathInfo() + " - " + response.raw().status)
-    }
-
-    // launch controllers initialization
-    if (controllers != null) {
-        // Start Koin
-        startKoin(
-            modules,
-            useEnvironmentProperties = true,
-            logger = SLF4JLogger(),
-            createOnStart = false
-        )
-        controllers()
-    } else {
-        // Start Koin
-        startKoin(modules, useEnvironmentProperties = true, logger = SLF4JLogger())
     }
 
     // This is the important line. It must be *after* creating the routes and *before* the call to port()
@@ -79,8 +81,8 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> U
  * Stop spark server and wait
  */
 fun stop(sleep: Long = 100) {
-    stop()
     closeKoin()
+    stop()
 
     // Need to sleep in order to let the server stops
     // It's done in another thread (cf. spark.Service.stop())

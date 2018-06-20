@@ -4,11 +4,10 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.koin.sample.Constants.WAIT_STOP
 import org.koin.sample.util.SparkTestUtil
 import org.koin.spark.start
 import org.koin.spark.stop
-import org.koin.standalone.StandAloneContext.closeKoin
-import org.koin.standalone.get
 import org.koin.test.KoinTest
 
 class HelloControllerTest : KoinTest {
@@ -17,15 +16,13 @@ class HelloControllerTest : KoinTest {
 
     @Before()
     fun before() {
-        val port = start(0, modules = listOf(helloAppModule)) {
-            get<HelloController>()
-        }
+        val port = start(0, modules = listOf(helloAppModule))
         sparkTest = SparkTestUtil(port)
     }
 
     @After
     fun after() {
-        stop(200)
+        stop(WAIT_STOP)
     }
 
     @Test
