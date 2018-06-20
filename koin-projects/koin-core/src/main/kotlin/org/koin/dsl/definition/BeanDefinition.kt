@@ -35,7 +35,7 @@ import kotlin.reflect.KClass
  * @param clazz - bean class
  * @param isSingleton - is the bean a singleton
  * @param types - list of assignable types
- * @param isEager - definition tagged to be created with `createEagerInstances()`
+ * @param isEager - definition tagged to be created on start
  * @param allowOverride - definition tagged to allow definition override or not
  * @param definition - bean definition function
  */

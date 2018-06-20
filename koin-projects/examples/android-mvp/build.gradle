@@ -9,7 +9,7 @@ android {
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
-        minSdkVersion android_min_version
+        minSdkVersion 21
         targetSdkVersion android_target_version
         applicationId "koin.sampleapp.mvp"
         versionCode 1

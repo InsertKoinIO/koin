@@ -42,7 +42,7 @@ val weatherAppModule = module {
     }
 
     // Weather Data Repository
-    single(eager = true) { WeatherRepositoryImpl(get()) as WeatherRepository }
+    single(createOnStart = true) { WeatherRepositoryImpl(get()) as WeatherRepository }
 
     // Rx Schedulers
     single { ApplicationSchedulerProvider() as SchedulerProvider }

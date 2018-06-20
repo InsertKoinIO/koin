@@ -37,7 +37,7 @@ object KoinJavaStarter {
      * @param useKoinPropertiesFile - use /koin.extraProperties file
      * @param extraProperties - extra extraProperties
      * @param logger - Koin logger
-     * @param createEagerInstances - create eager instances (eager = true in beandefinition)
+     * @param createOnStart - create eager instances (eager = true in beandefinition)
      */
     @JvmOverloads
     @JvmStatic
@@ -47,14 +47,14 @@ object KoinJavaStarter {
         useKoinPropertiesFile: Boolean = true,
         extraProperties: Map<String, Any> = HashMap(),
         logger: Logger = PrintLogger(),
-        createEagerInstances: Boolean = false
+        createOnStart: Boolean = false
     ): Koin = StandAloneContext.startKoin(
         list,
         useEnvironmentProperties,
         useKoinPropertiesFile,
         extraProperties,
         logger,
-        createEagerInstances
+        createOnStart
     )
 
 }

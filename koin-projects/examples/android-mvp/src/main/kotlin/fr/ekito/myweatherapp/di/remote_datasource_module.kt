@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Remote Web Service datasource
  */
-val remoteDatasourceModule = module(eager = true) {
+val remoteDatasourceModule = module(createOnStart = true) {
     // provided web components
     single { createOkHttpClient() }
     // Fill property

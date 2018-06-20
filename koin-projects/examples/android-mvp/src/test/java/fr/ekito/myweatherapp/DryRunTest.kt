@@ -27,19 +27,19 @@ class DryRunTest : KoinTest {
 
     @Test
     fun testRemoteConfiguration() {
-        startKoin(onlineWeatherApp) with mock(Application::class.java)
+        startKoin(onlineWeatherApp, createOnStart = false) with mock(Application::class.java)
         check()
     }
 
     @Test
     fun testLocalConfiguration() {
-        startKoin(offlineWeatherApp) with mock(Application::class.java)
+        startKoin(offlineWeatherApp, createOnStart = false) with mock(Application::class.java)
         check()
     }
 
     @Test
     fun testTestConfiguration() {
-        startKoin(testWeatherApp) with mock(Application::class.java)
+        startKoin(testWeatherApp, createOnStart = false) with mock(Application::class.java)
         check()
         dryRun { parametersOf("ID") }
     }

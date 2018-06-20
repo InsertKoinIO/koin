@@ -30,13 +30,13 @@ import org.koin.dsl.definition.Definition
  * @author - Laurent Baresse
  *
  * @param path - module path
- * @param eager - module's definition are eager
+ * @param createOnStart - module's definition are created on Koin's start
  * @param override - module's definition can override
  * @param koinContext
  */
 class ModuleDefinition(
     val path: String = "",
-    val eager: Boolean = false,
+    val createOnStart: Boolean = false,
     val override: Boolean = false,
     val koinContext: KoinContext
 ) {
@@ -61,15 +61,15 @@ class ModuleDefinition(
     /**
      * Create a inner sub module in actual module
      * @param path - module path
-     * @param eager - all definition are eager
+     * @param createOnStart - all definition are created On Start
      */
     fun module(
         path: String,
-        eager: Boolean = false,
+        createOnStart: Boolean = false,
         override: Boolean = false,
         init: ModuleDefinition.() -> Unit
     ): ModuleDefinition {
-        val newContext = ModuleDefinition(path, eager, override, koinContext)
+        val newContext = ModuleDefinition(path, createOnStart, override, koinContext)
         subModules += newContext
         return newContext.apply(init)
     }
@@ -77,13 +77,13 @@ class ModuleDefinition(
     /**
      * Provide a singleton definition - default provider definition
      * @param name
-     * @param eager - need to be created at start
+     * @param createOnStart - need to be created at start
      * @param override - allow override of the definition
      * @param isSingleton
      */
     inline fun <reified T : Any> provide(
         name: String = "",
-        eager: Boolean = false,
+        createOnStart: Boolean = false,
         override: Boolean = false,
         isSingleton: Boolean = true,
         noinline definition: Definition<T>
@@ -93,7 +93,7 @@ class ModuleDefinition(
                 name,
                 T::class,
                 isSingleton = isSingleton,
-                isEager = eager,
+                isEager = createOnStart,
                 allowOverride = override,
                 definition = definition
             )
@@ -114,17 +114,17 @@ class ModuleDefinition(
     /**
      * Provide a bean definition - alias to provide
      * @param name
-     * @param eager - need to be created at start
+     * @param createOnStart - need to be created at start
      * @param override - allow definition override
      * @param definition
      */
     inline fun <reified T : Any> single(
         name: String = "",
-        eager: Boolean = false,
+        createOnStart: Boolean = false,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, eager, override, true, definition)
+        return provide(name, createOnStart, override, true, definition)
     }
 
     /**
@@ -132,17 +132,17 @@ class ModuleDefinition(
      * (recreate instance each time)
      *
      * @param name
-     * @param eager - need to be created at start
+     * @param createOnStart - need to be created at start
      * @param override - allow definition override
      * @param definition
      */
     inline fun <reified T : Any> factory(
         name: String = "",
-        eager: Boolean = false,
+        createOnStart: Boolean = false,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, eager, override, false, definition)
+        return provide(name, createOnStart, override, false, definition)
     }
 
     /**

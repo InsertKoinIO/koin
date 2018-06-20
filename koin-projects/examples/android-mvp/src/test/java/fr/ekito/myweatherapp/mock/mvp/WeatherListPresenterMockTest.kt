@@ -34,7 +34,6 @@ class WeatherListPresenterMockTest {
 
     @Test
     fun testDisplayList() {
-        val location = "DEFAULT_LOCATION"
         given(repository.getWeather()).willReturn(Single.just(mockList))
 
         presenter.getWeatherList()
@@ -47,7 +46,6 @@ class WeatherListPresenterMockTest {
     @Test
     fun testDisplayListFailed() {
         val error = Throwable("Got an error")
-        val location = "DEFAULT_LOCATION"
         given(repository.getWeather()).willReturn(Single.error(error))
 
         presenter.getWeatherList()

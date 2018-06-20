@@ -30,7 +30,6 @@ import org.koin.log.Logger
 import org.koin.log.PrintLogger
 
 
-
 /**
  * Koin agnostic context support
  * @author - Arnaud GIULIANI
@@ -132,7 +131,6 @@ object StandAloneContext {
      * @param useKoinPropertiesFile - use /koin.extraProperties file
      * @param extraProperties - extra extraProperties
      * @param logger - Koin logger
-     * @param createEagerInstances - create eager instances (eager = true in beandefinition)
      */
     fun startKoin(
         list: List<Module>,
@@ -140,7 +138,7 @@ object StandAloneContext {
         useKoinPropertiesFile: Boolean = true,
         extraProperties: Map<String, Any> = HashMap(),
         logger: Logger = PrintLogger(),
-        createEagerInstances: Boolean = false
+        createOnStart: Boolean = true
     ): Koin {
         if (isStarted) {
             throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
@@ -149,7 +147,8 @@ object StandAloneContext {
         createContextIfNeeded()
         loadKoinModules(list)
         loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
-        if (createEagerInstances) {
+
+        if (createOnStart) {
             StandAloneContext.createEagerInstances(emptyParameterDefinition())
         }
         return getKoin()
@@ -163,8 +162,13 @@ object StandAloneContext {
     fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
         val context = getKoinContext()
         val eagerDefs = context.beanRegistry.definitions.filter { it.isEager }
+        Koin.logger.log("Creating instances ...")
         eagerDefs.forEach { def ->
-            context.resolveInstance(def.path.toString(), def.clazz, defaultParameters, { listOf(def) })
+            context.resolveInstance(
+                def.path.toString(),
+                def.clazz,
+                defaultParameters
+            ) { listOf(def) }
         }
     }
 

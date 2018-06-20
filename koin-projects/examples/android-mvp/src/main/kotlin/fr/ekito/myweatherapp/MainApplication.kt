@@ -22,7 +22,7 @@ class MainApplication : Application() {
         LeakCanary.install(this)
 
         // start Koin context
-        startKoin(this, offlineWeatherApp, createEagerInstances = true)
+        startKoin(this, offlineWeatherApp)
 
         Iconify
             .with(WeathericonsModule())

@@ -44,7 +44,7 @@ fun Application.main() {
     }
 }
 
-val helloAppModule = module(eager = true) {
+val helloAppModule = module(createOnStart = true) {
     single { HelloServiceImpl(get()) as HelloService }
     single { HelloRepository() }
 }

@@ -46,16 +46,16 @@ fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.
  * Create a Module
  * Gather definitions
  * @param path : Path of the module
- * @param eager : module definitions will be tagged as `eager`
+ * @param createOnStart : module definitions will be tagged as `createOnStart`
  * @param override : allow all definitions from module to override definitions
  */
 fun module(
     path: String = Path.ROOT,
-    eager: Boolean = false,
+    createOnStart: Boolean = false,
     override: Boolean = false,
     init: ModuleDefinition.() -> Unit
 ): Module =
-    { ModuleDefinition(path, eager, override, StandAloneContext.koinContext as KoinContext).apply(init) }
+    { ModuleDefinition(path, createOnStart, override, StandAloneContext.koinContext as KoinContext).apply(init) }
 
 /**
  * Module - function that gives a module
