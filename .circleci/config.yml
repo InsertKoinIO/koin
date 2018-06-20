@@ -20,8 +20,6 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./koin-projects/gradlew -p ./koin-projects clean
-      - run: 
           command: ./koin-projects/gradlew -p ./koin-projects clean test
 
   doc:
