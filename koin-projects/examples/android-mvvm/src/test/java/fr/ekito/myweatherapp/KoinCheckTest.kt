@@ -9,6 +9,7 @@ import org.koin.android.ext.koin.with
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check
+import org.koin.test.createMock
 import org.mockito.Mockito.mock
 
 /**
@@ -18,19 +19,22 @@ class KoinCheckTest : AutoCloseKoinTest() {
 
     @Test
     fun testRemoteConfiguration() {
-        startKoin(onlineWeatherApp) with mock(Application::class.java)
+        startKoin(onlineWeatherApp, createOnStart = false) with mock(Application::class.java)
+        createMock<String>()
         check()
     }
 
     @Test
     fun testLocalConfiguration() {
-        startKoin(offlineWeatherApp) with mock(Application::class.java)
+        startKoin(offlineWeatherApp, createOnStart = false) with mock(Application::class.java)
+        createMock<String>()
         check()
     }
 
     @Test
     fun testTestConfiguration() {
-        startKoin(testWeatherApp) with mock(Application::class.java)
+        startKoin(testWeatherApp, createOnStart = false) with mock(Application::class.java)
+        createMock<String>()
         check()
     }
 }

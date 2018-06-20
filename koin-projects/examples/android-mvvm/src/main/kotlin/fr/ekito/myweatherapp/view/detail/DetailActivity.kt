@@ -12,6 +12,7 @@ import fr.ekito.myweatherapp.view.ErrorState
 import fr.ekito.myweatherapp.view.IntentArguments.ARG_WEATHER_ITEM_ID
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 /**
  * Weather Detail View
@@ -20,7 +21,8 @@ class DetailActivity : AppCompatActivity() {
 
     // Detail id passed by argument
     private val detailId by argument<String>(ARG_WEATHER_ITEM_ID)
-    val viewModel: DetailViewModel by viewModel()
+
+    val viewModel: DetailViewModel by viewModel { parametersOf(detailId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class DetailActivity : AppCompatActivity() {
                 }
             }
         })
-        viewModel.getDetail(detailId)
+        viewModel.getDetail()
     }
 
     private fun showError(error: Throwable) {

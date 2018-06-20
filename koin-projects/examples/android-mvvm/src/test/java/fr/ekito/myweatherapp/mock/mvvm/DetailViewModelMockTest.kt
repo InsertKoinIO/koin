@@ -31,22 +31,23 @@ class DetailViewModelMockTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    val id = "ID"
+
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
 
-        viewModel = DetailViewModel(repository, TestSchedulerProvider())
+        viewModel = DetailViewModel(id, repository, TestSchedulerProvider())
         viewModel.states.observeForever(view)
     }
 
     @Test
     fun testGetLastWeather() {
         val weather = mock(DailyForecastModel::class.java)
-        val id = "ID"
 
         given(repository.getWeatherDetail(id)).willReturn(Single.just(weather))
 
-        viewModel.getDetail(id)
+        viewModel.getDetail()
 
         val arg = argumentCaptor<ViewModelState>()
         // Here we expect 2 calls on view.onChanged
@@ -66,7 +67,7 @@ class DetailViewModelMockTest {
 
         given(repository.getWeatherDetail(id)).willReturn(Single.error(error))
 
-        viewModel.getDetail(id)
+        viewModel.getDetail()
 
         val arg = argumentCaptor<ViewModelState>()
         // Here we expect 2 calls on view.onChanged

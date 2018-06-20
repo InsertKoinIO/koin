@@ -19,14 +19,16 @@ import org.koin.dsl.module.module
 val weatherAppModule = module {
 
     // ViewModel for Detail view
-    viewModel { DetailViewModel(get(), get()) }
+    viewModel { (id: String) -> DetailViewModel(id, get(), get()) }
 
     // ViewModel for Search View
     viewModel { SplashViewModel(get(), get()) }
 
     // WeatherViewModel declaration for Weather View components
     viewModel { WeatherViewModel(get(), get()) }
+}
 
+val dataModule = module(createOnStart = true) {
     // Weather Data Repository
     single { WeatherRepositoryImpl(get(), get()) as WeatherRepository }
 
@@ -44,5 +46,5 @@ val weatherAppModule = module {
 }
 
 // Gather all app modules
-val onlineWeatherApp = listOf(weatherAppModule, remoteDatasourceModule)
-val offlineWeatherApp = listOf(weatherAppModule, localAndroidDatasourceModule)
+val onlineWeatherApp = listOf(weatherAppModule, dataModule, remoteDatasourceModule)
+val offlineWeatherApp = listOf(weatherAppModule, dataModule, localAndroidDatasourceModule)
