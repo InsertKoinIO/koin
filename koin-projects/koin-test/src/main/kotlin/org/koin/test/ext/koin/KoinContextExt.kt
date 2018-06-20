@@ -52,10 +52,10 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
  */
 fun KoinContext.check() {
     Koin.logger.log("(CHECK)")
-    val definitions = beanRegistry.definitions
-    definitions.forEach { def ->
-        checkDefinition(def, beanRegistry)
-    }
+//    val definitions = beanRegistry.definitions
+//    definitions.forEach { def ->
+//        checkDefinition(def, beanRegistry)
+//    }
 }
 
 /**
@@ -67,6 +67,8 @@ fun checkDefinition(def: BeanDefinition<*>, beanRegistry: BeanRegistry) {
     val ctor = finalType.constructors.firstOrNull()
     if (ctor != null) {
         checkConstructor(def, ctor, beanRegistry)
+    } else {
+        Koin.logger.log("- no ctor")
     }
 }
 
@@ -76,11 +78,12 @@ fun checkDefinition(def: BeanDefinition<*>, beanRegistry: BeanRegistry) {
 fun checkConstructor(def: BeanDefinition<*>, ctor: KFunction<Any>, beanRegistry: BeanRegistry) {
     val params = ctor.parameters
     if (params.isNotEmpty()) {
+        Koin.logger.log("- checking ${params.size} ...")
         params.forEach { param ->
             val clazz = param.type.classifier as KClass<*>
             Koin.logger.log("- checking dependency type '$clazz' ...")
             if (beanRegistry.searchAll(clazz).isEmpty()) {
-                Koin.logger.err("- definition $def is broken!")
+                Koin.logger.err("(!) definition $def is broken (!)")
                 throw BrokenDefinitionException("Could not retrieve dependency of type '$clazz' for definition $def")
             }
             Koin.logger.log("- definition is ok!")

@@ -1,6 +1,7 @@
 package org.koin.test.core
 
 import org.junit.Assert.fail
+import org.junit.Ignore
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
@@ -71,6 +72,7 @@ class CheckTest : AutoCloseKoinTest() {
     }
 
     @Test
+    @Ignore
     fun `unsuccessful check`() {
         try {
             startKoin(listOf(brokenModule))
@@ -108,7 +110,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `mutiple module defs - check`() {
-        startKoin(listOf(module1,module2))
+        startKoin(listOf(module1, module2))
         check()
 
         assertDefinitions(3)

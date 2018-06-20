@@ -12,6 +12,7 @@ import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.check
+import org.koin.test.createMock
 import org.koin.test.dryRun
 import org.mockito.Mockito.mock
 

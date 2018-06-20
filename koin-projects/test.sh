@@ -1,3 +1,4 @@
 #!/bin/sh
 
-./gradlew clean test
+./gradlew clean
+./gradlew test
