@@ -1,0 +1,64 @@
+{
+  "status": "OK",
+  "results": [
+    {
+      "address_components": [
+        {
+          "lang_name": null,
+          "short_name": "Paris",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "Paris",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "Île-de-France",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "FR",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Paris, France",
+      "geometry": {
+        "location": {
+          "lat": 48.856614,
+          "lng": 2.3522219
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 48.9021449,
+            "lng": 2.4699208
+          },
+          "southwest": {
+            "lat": 48.815573,
+            "lng": 2.225193
+          }
+        }
+      },
+      "place_id": "ChIJD7fiBh9u5kcRYJSMaMOCCwQ",
+      "types": [
+        "locality",
+        "political"
+      ]
+    }
+  ]
+}

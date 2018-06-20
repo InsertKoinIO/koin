@@ -103,9 +103,11 @@ class ModuleDefinition(
 
     /**
      * Provide a singleton definition - alias to provide
+     *
      * Deprecated - @see single
      * @param name
      */
+    @Deprecated("use single { } function instead")
     inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> =
         single(name, false, false, definition)
 

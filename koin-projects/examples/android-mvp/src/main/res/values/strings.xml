@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Weather App</string>
+    <string name="loading_error">Error while loading weather</string>
+    <string name="enter_location">Enter your location</string>
+    <string name="location_hint">e.g: Paris</string>
+    <string name="search">SEARCH</string>
+    <string name="cancel">CANCEL</string>
+    <string name="retry">Retry</string>
+    <string name="loading_location">Loading location</string>
+</resources>

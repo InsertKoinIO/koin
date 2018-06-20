@@ -1,8 +1,12 @@
-include 'koin-core', 'koin-test', 'koin-java'
+include 'koin-core', 'koin-test', 'koin-java','examples:coffee-maker'
+
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-viewmodel'
+include 'examples:android-mvp'
+
 include 'koin-logger-slf4j'
 include 'koin-ktor'
 include 'koin-spark'
-include 'examples:coffee-maker','examples:hello-ktor', 'examples:hello-spark'
+include 'examples:hello-ktor', 'examples:hello-spark'
+
 include 'koin-book'
