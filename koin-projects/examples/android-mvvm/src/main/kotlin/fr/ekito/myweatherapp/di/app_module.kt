@@ -26,14 +26,14 @@ val weatherAppModule = module {
 
     // WeatherViewModel declaration for Weather View components
     viewModel { WeatherViewModel(get(), get()) }
+
+    // Rx Schedulers
+    single { ApplicationSchedulerProvider() as SchedulerProvider }
 }
 
 val dataModule = module(createOnStart = true) {
     // Weather Data Repository
     single { WeatherRepositoryImpl(get(), get()) as WeatherRepository }
-
-    // Rx Schedulers
-    single { ApplicationSchedulerProvider() as SchedulerProvider }
 
     // Room Database
     single {
