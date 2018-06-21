@@ -24,7 +24,7 @@ import org.koin.error.BeanInstanceCreationException
  * Instance factory - handle objects creation against BeanRegistry
  * @author - Arnaud GIULIANI
  */
-class InstanceFactory {
+open class InstanceFactory {
 
     val instances = HashMap<BeanDefinition<*>, Any>()
 
@@ -69,14 +69,15 @@ class InstanceFactory {
      * create instance for given bean definition
      */
     @Suppress("UNCHECKED_CAST")
-    private fun <T> createInstance(def: BeanDefinition<*>, p: ParameterDefinition): T {
+    open fun <T> createInstance(def: BeanDefinition<*>, p: ParameterDefinition): T {
         try {
             val parameterList = p()
             val instance = def.definition.invoke(parameterList) as Any
             instance as T
             return instance
         } catch (e: Throwable) {
-            val stack = e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }.joinToString("\n\t\t")
+            val stack = e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                .joinToString("\n\t\t")
             throw BeanInstanceCreationException("Can't create definition '$def' due to error :\n\t\t${e.message}\n\t\t$stack")
         }
     }

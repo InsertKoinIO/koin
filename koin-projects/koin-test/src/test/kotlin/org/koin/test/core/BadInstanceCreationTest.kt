@@ -7,7 +7,7 @@ import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.dryRun
+import org.koin.test.check
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertIsInRootPath
@@ -99,9 +99,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
     @Test
     fun `missing dependency`() {
-        startKoin(listOf(module3))
         try {
-            dryRun()
+            check(listOf(module3))
             fail()
         } catch (e: Exception) {
             System.err.println(e)
@@ -110,9 +109,8 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
     @Test
     fun `cyclic dependency`() {
-        startKoin(listOf(module4))
         try {
-            dryRun()
+            check(listOf(module4))
             fail()
         } catch (e: Exception) {
             System.err.println(e)
@@ -121,19 +119,12 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
 
     @Test
     fun `single internal error`() {
-        startKoin(listOf(module5))
-        try {
-            dryRun()
-            fail()
-        } catch (e: Exception) {
-            System.err.println(e)
-        }
+        check(listOf(module5))
     }
 
     @Test
     fun `multiple single definitions`() {
-        startKoin(listOf(module6))
-        dryRun()
+        check(listOf(module6))
         Assert.assertNotNull(get<MyInterface>())
     }
 }

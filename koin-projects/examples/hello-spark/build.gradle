@@ -3,8 +3,8 @@ apply plugin: 'kotlin'
 archivesBaseName = 'hello-spark'
 
 dependencies {
-    // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+//    // Kotlin
+//    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     compile project(":koin-logger-slf4j")
     compile project(":koin-spark")

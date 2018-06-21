@@ -18,15 +18,12 @@
 package org.koin.test
 
 import org.koin.core.Koin
-import org.koin.core.KoinContext
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
-import org.koin.test.ext.koin.check
-import org.koin.test.ext.koin.dryRun
+import org.koin.test.core.check
 import org.mockito.Mockito.mock
 import kotlin.reflect.KClass
 
@@ -45,21 +42,15 @@ interface KoinTest : KoinComponent
 /**
  * Check all definition's dependencies
  */
-fun KoinTest.check() {
-    (StandAloneContext.koinContext as KoinContext).check()
-}
-
-/**
- * Dry Run - Try to create each definition
- */
-fun KoinTest.dryRun(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
-    (StandAloneContext.koinContext as KoinContext).dryRun(defaultParameters)
-}
+fun KoinTest.check(list: List<Module>) = StandAloneContext.check(list)
 
 /**
  * Declare & Create a mock in Koin container for given type
  */
-inline fun <reified T : Any> KoinTest.createMock(isFactory: Boolean = false, binds: List<KClass<*>> = emptyList()) {
+inline fun <reified T : Any> KoinTest.createMock(
+    isFactory: Boolean = false,
+    binds: List<KClass<*>> = emptyList()
+) {
     val clazz = T::class.java
     Koin.logger.log("<> declare mock for $clazz")
     StandAloneContext.loadKoinModules(

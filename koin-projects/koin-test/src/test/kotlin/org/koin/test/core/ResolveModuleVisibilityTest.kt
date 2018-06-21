@@ -4,7 +4,7 @@ import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.dryRun
+import org.koin.test.check
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstances
 
@@ -43,26 +43,21 @@ class ResolveModuleVisibilityTest : AutoCloseKoinTest() {
 
     @Test
     fun `should resolve only visibile definition - 2 defs one module`() {
-        startKoin(listOf(multipleWithModule))
-        dryRun()
+        check(listOf(multipleWithModule))
         assertDefinitions(3)
         assertRemainingInstances(3)
     }
 
     @Test
     fun `should resolve only visibile definition - 2 defs with name`() {
-        startKoin(listOf(multipleModule))
-
-        dryRun()
+        check(listOf(multipleModule))
         assertDefinitions(3)
         assertRemainingInstances(3)
     }
 
     @Test
     fun `should resolve only parent`() {
-        startKoin(listOf(multipleModules))
-
-        dryRun()
+        check(listOf(multipleModules))
         assertDefinitions(3)
         assertRemainingInstances(3)
     }
