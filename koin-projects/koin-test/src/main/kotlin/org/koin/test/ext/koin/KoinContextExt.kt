@@ -52,10 +52,10 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
  */
 fun KoinContext.check() {
     Koin.logger.log("(CHECK)")
-//    val definitions = beanRegistry.definitions
-//    definitions.forEach { def ->
-//        checkDefinition(def, beanRegistry)
-//    }
+    val definitions = beanRegistry.definitions
+    definitions.forEach { def ->
+        checkDefinition(def, beanRegistry)
+    }
 }
 
 /**
@@ -64,12 +64,12 @@ fun KoinContext.check() {
 fun checkDefinition(def: BeanDefinition<*>, beanRegistry: BeanRegistry) {
     val finalType = def.clazz
     Koin.logger.log("Checking definition: $def ...")
-    val ctor = finalType.constructors.firstOrNull()
-    if (ctor != null) {
-        checkConstructor(def, ctor, beanRegistry)
-    } else {
-        Koin.logger.log("- no ctor")
-    }
+//    val ctor = finalType.constructors.firstOrNull()
+//    if (ctor != null) {
+//        checkConstructor(def, ctor, beanRegistry)
+//    } else {
+//        Koin.logger.log("- no ctor")
+//    }
 }
 
 /**

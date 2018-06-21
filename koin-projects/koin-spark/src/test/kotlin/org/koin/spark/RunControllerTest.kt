@@ -34,7 +34,7 @@ class RunControllerTest : KoinTest {
     @Test
     fun `check controller is well injected`() {
         startKoin(listOf(module))
-        runControllers()
+//        runControllers()
 
         assertEquals(1, ctor)
 

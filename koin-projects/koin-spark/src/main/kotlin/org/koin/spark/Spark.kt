@@ -88,10 +88,3 @@ fun stop(sleep: Long = 100) {
     // It's done in another thread (cf. spark.Service.stop())
     Thread.sleep(sleep)
 }
-
-/**
- * Run all Spark controllers (function)
- */
-fun runControllers() {
-    (org.koin.standalone.StandAloneContext.koinContext as KoinContext).runSparkControllers()
-}

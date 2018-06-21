@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package org.koin.test
 
 import org.koin.core.Koin
@@ -26,6 +28,7 @@ import org.koin.standalone.StandAloneContext
 import org.koin.test.ext.koin.check
 import org.koin.test.ext.koin.dryRun
 import org.mockito.Mockito.mock
+import kotlin.reflect.KClass
 
 
 /**
@@ -56,12 +59,12 @@ fun KoinTest.dryRun(defaultParameters: ParameterDefinition = emptyParameterDefin
 /**
  * Declare & Create a mock in Koin container for given type
  */
-inline fun <reified T : Any> KoinTest.createMock(isFactory: Boolean = false) {
+inline fun <reified T : Any> KoinTest.createMock(isFactory: Boolean = false, binds: List<KClass<*>> = emptyList()) {
     val clazz = T::class.java
     Koin.logger.log("<> declare mock for $clazz")
     StandAloneContext.loadKoinModules(
         module {
-            if (!isFactory) {
+            val def = if (!isFactory) {
                 single(override = true) {
                     createMock(clazz)
                 }
@@ -70,6 +73,7 @@ inline fun <reified T : Any> KoinTest.createMock(isFactory: Boolean = false) {
                     createMock(clazz)
                 }
             }
+            binds.forEach { def.bind(it) }
         }
     )
 }

@@ -1,6 +1,7 @@
 package org.koin.test.core
 
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
@@ -14,8 +15,27 @@ import org.mockito.Mockito.mock
 
 class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
 
-    class ComponentA()
+    interface InterfaceA
+    class ComponentA() : InterfaceA
     class ComponentB(val componentA: ComponentA)
+
+    @Test
+    fun `successful override with an interface mock`() {
+        startKoin(listOf(
+            module {
+                single { ComponentA() } bind InterfaceA::class
+                single { ComponentB(get()) }
+            }
+        ))
+
+        createMock<ComponentA>(binds = listOf(InterfaceA::class))
+
+        val mockA = get<InterfaceA>()
+        Assert.assertEquals(mockA, get<ComponentB>().componentA)
+
+        assertDefinitions(2)
+        assertRemainingInstances(2)
+    }
 
     @Test
     fun `successful create a mock`() {
