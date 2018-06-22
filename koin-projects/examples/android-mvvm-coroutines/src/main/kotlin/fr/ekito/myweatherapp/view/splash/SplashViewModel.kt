@@ -19,18 +19,18 @@ class SplashViewModel(
      * We use SingleLiveEvent to publish "events"
      * No need to publish and retain any view state
      */
-    private val mEvents = SingleLiveEvent<Event>()
+    private val _events = SingleLiveEvent<Event>()
     val events: LiveData<Event>
-        get() = mEvents
+        get() = _events
 
     fun getLastWeather() {
-        mEvents.value = LoadingEvent
+        _events.value = LoadingEvent
         launch {
             try {
                 weatherRepository.getWeather().await()
-                mEvents.value = SuccessEvent
+                _events.value = SuccessEvent
             } catch (error: Throwable) {
-                mEvents.value = FailedEvent(error)
+                _events.value = FailedEvent(error)
             }
         }
     }

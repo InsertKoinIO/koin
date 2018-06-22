@@ -15,24 +15,22 @@ import org.mockito.Mockito.mock
  */
 class KoinCheckTest : AutoCloseKoinTest() {
 
+    val mockAndroid = module {
+        single { mock(Application::class.java) }
+    }
+
     @Test
     fun testRemoteConfiguration() {
-        check(onlineWeatherApp + module {
-            single { mock(Application::class.java) }
-        })
+        check(onlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testLocalConfiguration() {
-        check(offlineWeatherApp + module {
-            single { mock(Application::class.java) }
-        })
+        check(offlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testTestConfiguration() {
-        check(testWeatherApp + module {
-            single { mock(Application::class.java) }
-        })
+        check(testWeatherApp + mockAndroid)
     }
 }

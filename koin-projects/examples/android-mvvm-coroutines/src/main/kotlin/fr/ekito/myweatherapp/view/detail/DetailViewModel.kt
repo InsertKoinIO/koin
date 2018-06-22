@@ -15,18 +15,18 @@ class DetailViewModel(
     schedulerProvider: SchedulerProvider
 ) : CoroutineViewModel(schedulerProvider) {
 
-    private val mStates = MutableLiveData<State>()
+    private val _states = MutableLiveData<State>()
     val states: LiveData<State>
-        get() = mStates
+        get() = _states
 
     fun getDetail(id: String) {
-        mStates.value = LoadingState
+        _states.value = LoadingState
         launch {
             try {
                 val detail = weatherRepository.getWeatherDetail(id).await()
-                mStates.value = WeatherDetailState(detail)
+                _states.value = WeatherDetailState(detail)
             } catch (error: Throwable) {
-                mStates.value = ErrorState(error)
+                _states.value = ErrorState(error)
             }
         }
     }

@@ -15,7 +15,11 @@ import org.mockito.Mockito.mock
 /**
  * Test Koin modules
  */
-class DryRunTest : KoinTest {
+class CheckKoinTest : KoinTest {
+
+    val mockAndroid = module {
+        single { mock(Application::class.java) }
+    }
 
     @After
     fun after() {
@@ -24,22 +28,16 @@ class DryRunTest : KoinTest {
 
     @Test
     fun testRemoteConfiguration() {
-        check(onlineWeatherApp + module {
-            single { mock(Application::class.java) }
-        })
+        check(onlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testLocalConfiguration() {
-        check(offlineWeatherApp + module {
-            single { mock(Application::class.java) }
-        })
+        check(offlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testTestConfiguration() {
-        check(testWeatherApp + module {
-            single { mock(Application::class.java) }
-        })
+        check(testWeatherApp + mockAndroid)
     }
 }

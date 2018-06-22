@@ -17,13 +17,13 @@ class WeatherViewModel(
     schedulerProvider: SchedulerProvider
 ) : CoroutineViewModel(schedulerProvider) {
 
-    private val mStates = MutableLiveData<State>()
+    private val _states = MutableLiveData<State>()
     val states: LiveData<State>
-        get() = mStates
+        get() = _states
 
-    private val mEvents = SingleLiveEvent<Event>()
+    private val _events = SingleLiveEvent<Event>()
     val events: LiveData<Event>
-        get() = mEvents
+        get() = _events
 
     /**
      * Load new weather for given location
@@ -32,12 +32,12 @@ class WeatherViewModel(
      */
     fun loadNewLocation(newLocation: String) {
         launch {
-            mEvents.value = LoadingLocationEvent(newLocation)
+            _events.value = LoadingLocationEvent(newLocation)
             try {
                 val weather = weatherRepository.getWeather(newLocation).await()
-                mStates.value = WeatherListState.from(weather)
+                _states.value = WeatherListState.from(weather)
             } catch (error: Throwable) {
-                mEvents.value = LoadLocationFailedEvent(newLocation, error)
+                _events.value = LoadLocationFailedEvent(newLocation, error)
             }
         }
     }
@@ -47,12 +47,12 @@ class WeatherViewModel(
      */
     fun getWeather() {
         launch {
-            mStates.value = LoadingState
+            _states.value = LoadingState
             try {
                 val weather = weatherRepository.getWeather().await()
-                mStates.value = WeatherListState.from(weather)
+                _states.value = WeatherListState.from(weather)
             } catch (error: Throwable) {
-                mStates.value = ErrorState(error)
+                _states.value = ErrorState(error)
             }
         }
     }
