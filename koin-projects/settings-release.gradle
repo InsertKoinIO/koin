@@ -1,17 +1,17 @@
 // Core
 include 'koin-core', 'koin-test', 'koin-java'
-include 'examples:coffee-maker'
+//include 'examples:coffee-maker'
 
 // Android
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-viewmodel'
-include 'examples:android-mvp','examples:android-mvvm','examples:android-mvvm-coroutines'
+//include 'examples:android-mvp','examples:android-mvvm','examples:android-mvvm-coroutines'
 
 // Web
 include 'koin-logger-slf4j'
 include 'koin-ktor'
 include 'koin-spark'
-include 'examples:hello-ktor', 'examples:hello-spark'
+//include 'examples:hello-ktor', 'examples:hello-spark'
 
 // Doc
-include 'koin-book'
+//include 'koin-book'

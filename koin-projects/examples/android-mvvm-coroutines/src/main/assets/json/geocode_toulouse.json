@@ -1,0 +1,64 @@
+{
+  "status": "OK",
+  "results": [
+    {
+      "address_components": [
+        {
+          "lang_name": null,
+          "short_name": "Toulouse",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "Haute-Garonne",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "Occitanie",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "lang_name": null,
+          "short_name": "FR",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Toulouse, France",
+      "geometry": {
+        "location": {
+          "lat": 43.604652,
+          "lng": 1.444209
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 43.6686919,
+            "lng": 1.515354
+          },
+          "southwest": {
+            "lat": 43.532708,
+            "lng": 1.350328
+          }
+        }
+      },
+      "place_id": "ChIJ_1J17G-7rhIRMBBBL5z2BgQ",
+      "types": [
+        "locality",
+        "political"
+      ]
+    }
+  ]
+}

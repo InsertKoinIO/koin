@@ -14,7 +14,7 @@ dependencies {
     compile "org.mockito:mockito-core:$mockito_version"
 
     // Coroutines
-    testCompile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5'// Coroutines
+    testCompile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"// Coroutines
 }
 
 kotlin {
