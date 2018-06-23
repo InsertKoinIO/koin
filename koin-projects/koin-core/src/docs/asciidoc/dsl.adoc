@@ -268,11 +268,11 @@ Koin DSL also proposes some flags.
 
 ==== Create instances at start
 
-A definition or a module can be flagged as `eager`, to be created at start (or when you want). First set the `eager` flag on your module
+A definition or a module can be flagged as `createOnStart`, to be created at start (or when you want). First set the `createOnStart` flag on your module
 or on your definition.
 
 
-.Eager flag at definition level
+.CreateOnStart flag at definition level
 [source,kotlin]
 ----
 val myModuleA = module {
@@ -283,11 +283,11 @@ val myModuleA = module {
 val myModuleB = module {
 
     // eager creation for this definition
-    single(eager=true) { TestServiceImp() as Service }
+    single(createOnStart=true) { TestServiceImp() as Service }
 }
 ----
 
-.Eager flag at module level
+.CreateOnStart flag at module level
 [source,kotlin]
 ----
 val myModuleA = module {
@@ -295,23 +295,32 @@ val myModuleA = module {
     single { ServiceImp() as Service }
 }
 
-val myModuleB = module(eager=true) {
+val myModuleB = module(createOnStart=true) {
 
     single{ TestServiceImp() as Service }
 }
 ----
 
-Create eager instances with `createEagerInstances()` function:
+The `startKoin` function will automatically create definition instances flagged with `createOnStart`.
 
-.Override not allowed
 [source,kotlin]
 ----
 // Start Koin modules
 startKoin(listOf(myModuleA,myModuleB))
-// Create eager instances
-createEagerInstances()
 ----
 
+If you don't want to create instances at start, jus use the `createOnStart` at false from the `startKoin()` function:
+
+[source,kotlin]
+----
+// Start Koin modules
+startKoin(listOf(myModuleA,myModuleB), createOnStart = false)
+----
+
+[NOTE]
+====
+if you need to load some definition at a special time (in a background thread instead of UI for example), just get/inject the desired components.
+====
 
 ==== Overriding a definition or a module
 
