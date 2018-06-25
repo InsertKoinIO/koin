@@ -1,4 +1,4 @@
 #!/bin/sh
 
-./gradlew clean test dokka install publishToMavenLocal -c settings-release.gradle
+./gradlew install publishToMavenLocal -c settings-release.gradle
 
