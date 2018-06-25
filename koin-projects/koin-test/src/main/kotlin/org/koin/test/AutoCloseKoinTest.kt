@@ -28,7 +28,7 @@ abstract class AutoCloseKoinTest() : KoinTest {
 
     @After
     fun autoClose() {
-        Koin.logger.log("AutoClose Koin")
+        Koin.logger.info("AutoClose Koin")
         closeKoin()
     }
 }

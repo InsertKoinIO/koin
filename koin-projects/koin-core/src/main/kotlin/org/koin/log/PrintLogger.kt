@@ -20,16 +20,23 @@ package org.koin.log
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger : Logger {
-    override fun debug(msg: String) {
-        println("(KOIN) :: [DEBUG] :: $msg")
+class PrintLogger(private val showDebug: Boolean = false) : Logger {
+
+    init {
+        info("[Logger] display debug = $showDebug")
     }
 
-    override fun log(msg: String) {
-        println("(KOIN) :: [INFO] :: $msg")
+    override fun debug(msg: String) {
+        if (showDebug) {
+            println("(KOIN)::[dbg] $msg")
+        }
+    }
+
+    override fun info(msg: String) {
+        println("(KOIN)::[inf] $msg")
     }
 
     override fun err(msg: String) {
-        System.err.println("(KOIN) :: [ERROR] :: $msg")
+        System.err.println("(KOIN)::[err] $msg")
     }
 }

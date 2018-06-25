@@ -70,7 +70,7 @@ object StandAloneContext {
      */
     private fun createContextIfNeeded() = synchronized(this) {
         if (!isStarted) {
-            Koin.logger.log("[context] create")
+            Koin.logger.info("[context] create")
             val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
             val pathRegistry = PathRegistry()
@@ -85,7 +85,7 @@ object StandAloneContext {
      * @see ModuleCallback - ModuleDefinition CallBack
      */
     fun registerCallBack(moduleCallback: ModuleCallback) {
-        Koin.logger.log("[context] callback registering with $moduleCallback")
+        Koin.logger.info("[context] callback registering with $moduleCallback")
         getKoinContext().contextCallback.add(moduleCallback)
     }
 
@@ -107,17 +107,17 @@ object StandAloneContext {
         val koin = getKoin()
 
         if (useKoinPropertiesFile) {
-            Koin.logger.log("[properties] load koin.properties")
+            Koin.logger.info("[properties] load koin.properties")
             koin.bindKoinProperties()
         }
 
         if (extraProperties.isNotEmpty()) {
-            Koin.logger.log("[properties] load extras properties : ${extraProperties.size}")
+            Koin.logger.info("[properties] load extras properties : ${extraProperties.size}")
             koin.bindAdditionalProperties(extraProperties)
         }
 
         if (useEnvironmentProperties) {
-            Koin.logger.log("[properties] load environment properties")
+            Koin.logger.info("[properties] load environment properties")
             koin.bindEnvironmentProperties()
         }
         return koin
@@ -163,7 +163,7 @@ object StandAloneContext {
         val context = getKoinContext()
         val definitions = context.beanRegistry.definitions.filter { it.isEager }
         if (definitions.isNotEmpty()) {
-            Koin.logger.log("Creating instances ...")
+            Koin.logger.info("Creating instances ...")
         }
         definitions.forEach { def ->
             context.resolveInstance(
@@ -189,8 +189,8 @@ object StandAloneContext {
      * Displays Module paths
      */
     fun dumpModulePaths() {
-        Koin.logger.log("Module paths:")
-        getKoinContext().pathRegistry.paths.forEach { Koin.logger.log("[$it]") }
+        Koin.logger.info("Module paths:")
+        getKoinContext().pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
     }
 
     /**

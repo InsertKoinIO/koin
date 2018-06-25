@@ -23,7 +23,7 @@ package org.koin.log
 class EmptyLogger : Logger {
     override fun debug(msg: String) {}
 
-    override fun log(msg: String) {}
+    override fun info(msg: String) {}
 
     override fun err(msg: String) {}
 }

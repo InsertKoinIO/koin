@@ -36,10 +36,10 @@ import kotlin.reflect.KClass
  * Check all loaded definitions by resolving them one by one
  */
 fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
-    Koin.logger.log("[Check Modules]")
+    Koin.logger.info("[Check Modules]")
 
     beanRegistry.definitions.forEach { def ->
-        Koin.logger.log("Check '$def' ...")
+        Koin.logger.info("Check '$def' ...")
         resolveInstance<Any>(def.path.toString(), def.clazz, defaultParameters) { listOf(def) }
     }
 }
@@ -49,7 +49,7 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
 // * Ensure that your definitions are consistent (no missing dependency)
 // */
 //fun KoinContext.check() {
-//    Koin.logger.log("(CHECK)")
+//    Koin.logger.info("(CHECK)")
 //    val definitions = beanRegistry.definitions
 //    definitions.forEach { def ->
 //        checkDefinition(def, beanRegistry)
@@ -61,12 +61,12 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
 // */
 //fun checkDefinition(def: BeanDefinition<*>, beanRegistry: BeanRegistry) {
 //    val finalType = def.clazz
-//    Koin.logger.log("Checking definition: $def ...")
+//    Koin.logger.info("Checking definition: $def ...")
 ////    val ctor = finalType.constructors.firstOrNull()
 ////    if (ctor != null) {
 ////        checkConstructor(def, ctor, beanRegistry)
 ////    } else {
-////        Koin.logger.log("- no ctor")
+////        Koin.logger.info("- no ctor")
 ////    }
 //}
 //
@@ -76,18 +76,18 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
 //fun checkConstructor(def: BeanDefinition<*>, ctor: KFunction<Any>, beanRegistry: BeanRegistry) {
 //    val params = ctor.parameters
 //    if (params.isNotEmpty()) {
-//        Koin.logger.log("- checking ${params.size} ...")
+//        Koin.logger.info("- checking ${params.size} ...")
 //        params.forEach { param ->
 //            val clazz = param.type.classifier as KClass<*>
-//            Koin.logger.log("- checking dependency type '$clazz' ...")
+//            Koin.logger.info("- checking dependency type '$clazz' ...")
 //            if (beanRegistry.searchAll(clazz).isEmpty()) {
 //                Koin.logger.err("(!) definition $def is broken (!)")
 //                throw BrokenDefinitionException("Could not retrieve dependency of type '$clazz' for definition $def")
 //            }
-//            Koin.logger.log("- definition is ok!")
+//            Koin.logger.info("- definition is ok!")
 //        }
 //    } else {
-//        Koin.logger.log("- no needed dependency")
+//        Koin.logger.info("- no needed dependency")
 //    }
 //}
 

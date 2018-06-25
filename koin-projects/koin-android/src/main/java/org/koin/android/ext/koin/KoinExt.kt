@@ -35,7 +35,7 @@ import java.util.*
  * - application/context binding
  */
 infix fun Koin.with(application: Application): Koin {
-    Koin.logger.log("[init] Load Android features")
+    Koin.logger.info("[init] Load Android features")
     init(application)
     return this
 }
@@ -45,7 +45,7 @@ infix fun Koin.with(application: Application): Koin {
  * @param application - Android Application instance
  */
 fun Koin.init(application: Application): Koin {
-    Koin.logger.log("[init] ~ added Android application bean reference")
+    Koin.logger.info("[init] ~ added Android application bean reference")
     // provide Application defintion
     beanRegistry.declare(
         BeanDefinition(
@@ -72,12 +72,12 @@ fun Koin.bindAndroidProperties(
             try {
                 application.assets.open(koinPropertyFile).use { koinProperties.load(it) }
                 val nb = propertyResolver.import(koinProperties)
-                Koin.logger.log("[Android-Properties] loaded $nb properties from assets/koin.properties")
+                Koin.logger.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
             } catch (e: Exception) {
-                Koin.logger.log("[Android-Properties] error for binding properties : $e")
+                Koin.logger.info("[Android-Properties] error for binding properties : $e")
             }
         } else {
-            Koin.logger.log("[Android-Properties] no assets/koin.properties file to load")
+            Koin.logger.info("[Android-Properties] no assets/koin.properties file to load")
         }
     } catch (e: Exception) {
         Koin.logger.err("[Android-Properties] error while loading properties from assets/koin.properties : $e")

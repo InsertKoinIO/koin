@@ -22,17 +22,17 @@ package org.koin.log
  */
 interface Logger {
     /**
-     * Normal log
+     * Normal info
      */
-    fun log(msg : String)
+    fun info(msg : String)
 
     /**
-     * Debug log
+     * Debug info
      */
     fun debug(msg : String)
 
     /**
-     * Error log
+     * Error info
      */
     fun err(msg : String)
 }

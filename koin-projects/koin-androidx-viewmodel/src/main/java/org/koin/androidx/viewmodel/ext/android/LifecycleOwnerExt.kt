@@ -96,23 +96,21 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     module: String? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
-    ViewModelFactory.viewModelParameters = ViewModelParameters(name,module,parameters)
+    ViewModelFactory.viewModelParameters = ViewModelParameters(name, module, parameters)
     val clazzName = clazz.java.simpleName
-    Koin.logger.log("[ViewModel] get VM '$clazzName' with name:'$name' key:'$key'")
+    Koin.logger.info("[ViewModel] ~ '$clazzName'(name:'$name' key:'$key') - $this")
     val viewModelProvider = when {
         this is FragmentActivity -> {
-            Koin.logger.log("[ViewModel] get '$clazzName' for FragmentActivity @ $this")
             ViewModelProvider(this.viewModelStore, ViewModelFactory)
         }
         this is Fragment -> {
             if (fromActivity) {
-                Koin.logger.log("[ViewModel] get '$clazzName' for Fragment (shared) @ $this")
+                Koin.logger.info("[ViewModel] shared with parent activity")
                 ViewModelProvider(
                     this.activity?.viewModelStore ?: error("Can't create ViewModel instance - Parent activity is null"),
                     ViewModelFactory
                 )
             } else {
-                Koin.logger.log("[ViewModel] get '$clazzName' for Fragment @ $this")
                 ViewModelProvider(this.viewModelStore, ViewModelFactory)
             }
         }
@@ -122,6 +120,6 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
         key,
         clazz.java
     ) else viewModelProvider.get(clazz.java)
-    Koin.logger.log("[ViewModel] instance ~ $vmInstance")
+    Koin.logger.debug("[ViewModel] instance ~ $vmInstance")
     return vmInstance
 }

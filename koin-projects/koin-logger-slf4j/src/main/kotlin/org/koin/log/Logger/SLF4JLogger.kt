@@ -28,7 +28,7 @@ class SLF4JLogger : Logger {
 
     private val logger: org.slf4j.Logger = LoggerFactory.getLogger("Koin")
 
-    override fun log(msg: String) {
+    override fun info(msg: String) {
         logger.info(msg)
     }
 

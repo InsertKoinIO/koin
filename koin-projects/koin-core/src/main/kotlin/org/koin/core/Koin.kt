@@ -18,8 +18,8 @@ package org.koin.core
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.path.Path
+import org.koin.log.EmptyLogger
 import org.koin.log.Logger
-import org.koin.log.PrintLogger
 import java.util.*
 
 
@@ -54,7 +54,7 @@ class Koin(val koinContext: KoinContext) {
             val koinProperties = Properties()
             koinProperties.load(content.byteInputStream())
             val nb = propertyResolver.import(koinProperties)
-            logger.log("[properties] loaded $nb properties from '$koinFile' file")
+            logger.info("[properties] loaded $nb properties from '$koinFile' file")
         }
         return this
     }
@@ -64,9 +64,9 @@ class Koin(val koinContext: KoinContext) {
      */
     fun bindEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())
-        logger.log("[properties] loaded $n1 properties from properties")
+        logger.info("[properties] loaded $n1 properties from properties")
         val n2 = propertyResolver.import(System.getenv().toProperties())
-        logger.log("[properties] loaded $n2 properties from env properties")
+        logger.info("[properties] loaded $n2 properties from env properties")
         return this
     }
 
@@ -78,7 +78,7 @@ class Koin(val koinContext: KoinContext) {
             registerDefinitions(module())
         }
 
-        logger.log("[modules] loaded ${beanRegistry.definitions.size} definitions")
+        logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
         return this
     }
 
@@ -117,6 +117,6 @@ class Koin(val koinContext: KoinContext) {
         /**
          * Koin Logger
          */
-        var logger: Logger = PrintLogger()
+        var logger: Logger = EmptyLogger()
     }
 }

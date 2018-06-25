@@ -73,9 +73,9 @@ class ResolutionStack {
     }
 
     /**
-     * For log indentation
+     * For info indentation
      */
-    fun indent(): String = stack.joinToString(separator = "") { "\t" }
+    fun indent(): String = stack.joinToString(separator = "") { "|\t" }
 
     /**
      * Last stack item
@@ -86,8 +86,13 @@ class ResolutionStack {
      * Clear stack
      */
     fun clear() = stack.clear()
-}
 
+    /**
+     * Is Stack empty
+     */
+    fun isEmpty() = stack.isEmpty()
+
+}
 
 /**
  * Resolution Stack Item

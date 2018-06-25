@@ -113,21 +113,24 @@ class KoinContext(
                     resolutionStack.last()
                 )
 
-            val logIndent = resolutionStack.indent()
-            resolutionStack.resolve(beanDefinition) {
-                // Resolution log
-                logger.log("${logIndent}Resolve class[$clazzName] with $beanDefinition")
+            val logIndent: String = resolutionStack.indent()
+            val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
+            val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
+            Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
+            Koin.logger.debug("$logIndent|-- [$beanDefinition]")
+
+            resolutionStack.resolve(beanDefinition) {
                 val (instance, created) = instanceFactory.retrieveInstance<T>(
                     beanDefinition,
                     parameters
                 )
 
+                Koin.logger.debug("$logIndent|-- $instance")
                 // Log creation
                 if (created) {
-                    logger.log("$logIndent(*) Created")
+                    Koin.logger.info("$logIndent\\-- (*)")
                 }
-
                 resultInstance = instance
             }
         } catch (e: Exception) {
@@ -144,7 +147,7 @@ class KoinContext(
      * @param path
      */
     fun release(path: String) {
-        logger.log("Release instances : $path")
+        logger.info("Release instances : $path")
 
         val paths = pathRegistry.getAllPathsFrom(path)
         val definitions: List<BeanDefinition<*>> =
@@ -180,7 +183,7 @@ class KoinContext(
      * Close res
      */
     fun close() {
-        logger.log("[Close] Closing Koin context")
+        logger.info("[Close] Closing Koin context")
         resolutionStack.clear()
         instanceFactory.clear()
         beanRegistry.clear()

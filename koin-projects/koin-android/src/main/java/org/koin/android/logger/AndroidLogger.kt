@@ -34,7 +34,7 @@ class AndroidLogger : Logger {
         Log.e(TAG, "[ERROR] - $msg")
     }
 
-    override fun log(msg: String) {
+    override fun info(msg: String) {
         Log.i(TAG, msg)
     }
 }

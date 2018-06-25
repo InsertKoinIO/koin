@@ -99,18 +99,16 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
 ): T {
     ViewModelFactory.viewModelParameters = ViewModelParameters(name, module, parameters)
     val clazzName = clazz.java.simpleName
-    Koin.logger.log("[ViewModel] get VM '$clazzName' with name:'$name' key:'$key'")
+    Koin.logger.info("[ViewModel] ~ '$clazzName'(name:'$name' key:'$key') - $this")
     val viewModelProvider = when {
         this is FragmentActivity -> {
-            Koin.logger.log("[ViewModel] get '$clazzName' for FragmentActivity @ $this")
             ViewModelProvider(ViewModelStores.of(this), ViewModelFactory)
         }
         this is Fragment -> {
             if (fromActivity) {
-                Koin.logger.log("[ViewModel] get '$clazzName' for Fragment (shared) @ $this")
+                Koin.logger.info("[ViewModel] shared with parent activity")
                 ViewModelProvider(ViewModelStores.of(this.activity), ViewModelFactory)
             } else {
-                Koin.logger.log("[ViewModel] get '$clazzName' for Fragment @ $this")
                 ViewModelProvider(ViewModelStores.of(this), ViewModelFactory)
             }
         }
@@ -120,6 +118,6 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
         key,
         clazz.java
     ) else viewModelProvider.get(clazz.java)
-    Koin.logger.log("[ViewModel] instance ~ $vmInstance")
+    Koin.logger.debug("[ViewModel] instance ~ $vmInstance")
     return vmInstance
 }

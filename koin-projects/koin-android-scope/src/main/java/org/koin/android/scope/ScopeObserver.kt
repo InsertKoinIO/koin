@@ -37,7 +37,7 @@ class ScopeObserver(val className: String, val module: Array<out String>) : Life
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        Koin.logger.log("received ON_DESTROY for $className")
+        Koin.logger.info("received ON_DESTROY for $className")
         module.forEach { release(it) }
     }
 }

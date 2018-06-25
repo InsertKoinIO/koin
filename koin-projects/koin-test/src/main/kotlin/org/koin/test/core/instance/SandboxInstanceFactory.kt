@@ -28,7 +28,7 @@ class SandboxInstanceFactory() : InstanceFactory() {
             }
         }
         val clazz = def.clazz.java
-        Koin.logger.log(" + ['$clazz']")
+//        Koin.logger.info("|--['$clazz']")
         return mock(clazz) as T
     }
 

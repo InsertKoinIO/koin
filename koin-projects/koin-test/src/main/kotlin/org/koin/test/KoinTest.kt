@@ -52,7 +52,7 @@ inline fun <reified T : Any> KoinTest.createMock(
     binds: List<KClass<*>> = emptyList()
 ) {
     val clazz = T::class.java
-    Koin.logger.log("<> declare mock for $clazz")
+    Koin.logger.info("<> declare mock for $clazz")
     StandAloneContext.loadKoinModules(
         module {
             val def = if (!isFactory) {
@@ -70,10 +70,10 @@ inline fun <reified T : Any> KoinTest.createMock(
 }
 
 /**
- * Create & log mock
+ * Create & info mock
  */
 fun <T : Any> createMock(clazz: Class<T>): T {
-    Koin.logger.log("Create mock for $clazz")
+    Koin.logger.info("Create mock for $clazz")
     return mock<T>(clazz)
 }
 

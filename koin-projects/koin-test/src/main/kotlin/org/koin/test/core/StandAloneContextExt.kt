@@ -15,7 +15,7 @@ import org.koin.test.ext.koin.dryRun
  * Check all definition's dependencies
  */
 fun StandAloneContext.check(list: List<Module>) {
-    Koin.logger.log("[Sandbox]")
+    Koin.logger.info("[Sandbox]")
     koinContext = KoinContext(BeanRegistry(), PathRegistry(), PropertyRegistry(), SandboxInstanceFactory())
 
     // Build list
