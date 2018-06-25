@@ -1,0 +1,47 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+apply from: '../../gradle/versions-examples.gradle'
+
+android {
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion android_target_version
+        applicationId "org.koin.sample.navigation"
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Koin
+    implementation project(":koin-android-viewmodel")
+
+    testImplementation 'junit:junit:4.12'
+
+    // Android Support
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation "com.android.support:appcompat-v7:$support_lib_version"
+    implementation "com.android.support:design:$support_lib_version"
+
+    // ViewModel
+    implementation "android.arch.lifecycle:extensions:$android_arch_version"
+
+    // Navigation
+    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha02"
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha02'
+////    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha02'
+
+}

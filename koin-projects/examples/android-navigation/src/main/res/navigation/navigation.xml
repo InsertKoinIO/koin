@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/firstView">
+
+    <fragment
+        android:id="@+id/thirdView"
+        android:name="org.koin.sample.navigation.ThirdView"
+        android:label="ThirdView" >
+        <action
+            android:id="@+id/action_thirdView_to_firstView"
+            app:destination="@id/firstView" />
+    </fragment>
+    <fragment
+        android:id="@+id/secondView"
+        android:name="org.koin.sample.navigation.SecondView"
+        android:label="SecondView" >
+        <action
+            android:id="@+id/action_secondView_to_thirdView"
+            app:destination="@id/thirdView" />
+    </fragment>
+    <fragment
+        android:id="@+id/firstView"
+        android:name="org.koin.sample.navigation.FirstView"
+        android:label="view_second"
+        tools:layout="@layout/view_second" >
+        <action
+            android:id="@+id/action_firstView_to_secondView"
+            app:destination="@id/secondView" />
+    </fragment>
+</navigation>
