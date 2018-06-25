@@ -1,6 +1,5 @@
 package fr.ekito.myweatherapp.data.datasource.webservice
 
-import io.reactivex.Single
 import fr.ekito.myweatherapp.data.datasource.webservice.json.geocode.Geocode
 import fr.ekito.myweatherapp.data.datasource.webservice.json.weather.Weather
 import kotlinx.coroutines.experimental.Deferred
