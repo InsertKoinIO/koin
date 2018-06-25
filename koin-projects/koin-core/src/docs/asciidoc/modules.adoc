@@ -271,6 +271,11 @@ val myModule = module {
 release("org.sample")
 ----
 
+[NOTE]
+====
+Releasing a module will also release all its children.
+====
+
 === Conflicting module declaration
 
 When resoling a definition, if two definitions are defining the same type you will have a conflict.
