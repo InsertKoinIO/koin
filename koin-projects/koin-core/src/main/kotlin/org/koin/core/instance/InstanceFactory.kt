@@ -15,6 +15,7 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.BeanInstanceCreationException
@@ -86,7 +87,11 @@ open class InstanceFactory {
      * Drop all instances for definitions
      */
     fun releaseInstances(definitions: List<BeanDefinition<*>>) {
-        definitions.forEach { instances.remove(it) }
+        definitions.forEach {
+            val instance = instances[it]
+            Koin.logger.debug("released $instance")
+            instances.remove(it)
+        }
     }
 
     /**

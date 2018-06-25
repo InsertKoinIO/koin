@@ -1,5 +1,6 @@
 package org.koin.test.android
 
+import android.arch.lifecycle.Lifecycle
 import org.junit.Assert
 import org.junit.Test
 import org.koin.android.scope.ScopeObserver
@@ -26,7 +27,7 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
         val service = get<MyService>()
         Assert.assertNotNull(service)
 
-        val observer = ScopeObserver("testClass", arrayOf("module1"))
+        val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", listOf("module1"))
 
         assertDefinitions(1)
         assertRemainingInstances(1)

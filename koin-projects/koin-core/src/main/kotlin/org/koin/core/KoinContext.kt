@@ -147,7 +147,7 @@ class KoinContext(
      * @param path
      */
     fun release(path: String) {
-        logger.info("Release instances : $path")
+        logger.info("release module '$path'")
 
         val paths = pathRegistry.getAllPathsFrom(path)
         val definitions: List<BeanDefinition<*>> =
