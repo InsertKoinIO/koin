@@ -27,13 +27,15 @@ import org.koin.dsl.definition.Definition
  * @author Arnaud Giuliani
  *
  * @param name - definition name
+ * @param isSingleton - is single or factory
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     name: String = "",
+    isSingleton: Boolean = false,
     override: Boolean = false,
     noinline definition: Definition<T>
 ) {
-    val bean = factory(name, false, override, definition)
+    val bean = provide(name, false, override, isSingleton, definition)
     bean.bind(ViewModel::class)
 }

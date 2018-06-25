@@ -118,8 +118,10 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
         }
         else -> error("Can't get ViewModel on $this - Is not a FragmentActivity nor a Fragment")
     }
-    return if (key != null) viewModelProvider.get(
+    val vmInstance = if (key != null) viewModelProvider.get(
         key,
         clazz.java
     ) else viewModelProvider.get(clazz.java)
+    Koin.logger.log("[ViewModel] instance ~ $vmInstance")
+    return vmInstance
 }
