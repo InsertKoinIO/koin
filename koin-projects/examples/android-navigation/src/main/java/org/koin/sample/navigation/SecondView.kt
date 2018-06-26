@@ -19,10 +19,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
  */
 class SecondView : Fragment() {
 
-    // reuse shared FirstViewModel
-    val vm: FirstViewModel by viewModel()
-
-//    val vm : SecondViewModel by viewModel()
+    val vm: SecondViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
