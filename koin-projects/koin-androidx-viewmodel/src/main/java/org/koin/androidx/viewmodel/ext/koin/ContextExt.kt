@@ -32,10 +32,9 @@ import org.koin.dsl.definition.Definition
  */
 inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     name: String = "",
-    isSingleton: Boolean = false,
     override: Boolean = false,
     noinline definition: Definition<T>
 ) {
-    val bean = provide(name, false, override, isSingleton, definition)
+    val bean = factory(name, false, override, definition)
     bean.bind(ViewModel::class)
 }
