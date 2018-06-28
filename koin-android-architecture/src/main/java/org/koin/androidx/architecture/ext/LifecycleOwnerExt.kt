@@ -164,15 +164,15 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     val viewModelProvider = when {
         this is FragmentActivity -> {
             Koin.logger.log("[ViewModel] get for FragmentActivity @ $this")
-            ViewModelProvider(viewModelStore, KoinFactory)
+            ViewModelProvider(this.viewModelStore, KoinFactory)
         }
         this is Fragment -> {
             if (fromActivity) {
                 Koin.logger.log("[ViewModel] get for FragmentActivity @ ${this.activity}")
-                ViewModelProvider(viewModelStore, KoinFactory)
+                ViewModelProvider(this.activity!!.viewModelStore, KoinFactory)
             } else {
                 Koin.logger.log("[ViewModel] get for Fragment @ $this")
-                ViewModelProvider(viewModelStore, KoinFactory)
+                ViewModelProvider(this.viewModelStore, KoinFactory)
             }
         }
         else -> error("Can't get ViewModel on $this - Is not a FragmentActivity nor a Fragment")
