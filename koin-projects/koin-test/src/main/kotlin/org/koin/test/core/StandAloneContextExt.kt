@@ -7,6 +7,7 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.dsl.module.Module
+import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.test.core.instance.SandboxInstanceFactory
 import org.koin.test.ext.koin.dryRun
@@ -15,6 +16,7 @@ import org.koin.test.ext.koin.dryRun
  * Check all definition's dependencies
  */
 fun StandAloneContext.check(list: List<Module>) {
+    Koin.logger = PrintLogger(showDebug = true)
     Koin.logger.info("[Sandbox]")
     koinContext = KoinContext(BeanRegistry(), PathRegistry(), PropertyRegistry(), SandboxInstanceFactory())
 
