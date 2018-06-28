@@ -10,7 +10,7 @@ Koin is pragmatic lightweight dependency injection framework for Kotlin develope
 
 Add the `koin-core` dependency to your Gradle project:
 
-[source,gradle]
+[source,gradle,subs="attributes"]
 ----
 // Add Jcenter to your repositories if needed
 repositories {
@@ -18,7 +18,7 @@ repositories {
 }
 dependencies {
     // Koin for Android
-    compile 'org.koin:koin-core:${project-version}'
+    compile 'org.koin:koin-core:{revnumber}'
 }
 ----
 

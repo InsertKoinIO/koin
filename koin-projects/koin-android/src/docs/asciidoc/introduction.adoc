@@ -9,7 +9,7 @@ For general Koin concepts, check the `koin-core` manual.
 
 Add the `koin-android` dependency to your Gradle project:
 
-[source,gradle]
+[source,gradle,subs="attributes"]
 ----
 // Add Jcenter to your repositories if needed
 repositories {
@@ -17,6 +17,6 @@ repositories {
 }
 dependencies {
     // Koin for Android
-    compile 'org.koin:koin-android:${project-version}'
+    compile 'org.koin:koin-android:{revnumber}'
 }
 ----
