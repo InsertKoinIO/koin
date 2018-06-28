@@ -1,25 +1,20 @@
-package org.koin.test.standalone
+package org.koin.reflect
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
-import org.koin.standalone.inject
-import org.koin.standalone.release
+import org.koin.standalone.*
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
 class MVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule = module {
-        single { Repository(get()) }
+        single { build<Repository>() }
 
         module("view") {
             single { View() }
-            single { Presenter(get()) }
+            single { build<Presenter>() }
         }
     }
 
@@ -42,12 +37,13 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        startKoin(listOf(MVPModule, DataSourceModule))
+        StandAloneContext.startKoin(listOf(MVPModule, DataSourceModule))
 
         val view = get<View>()
         val presenter = get<Presenter>()
         val repository = get<Repository>()
-        val datasource = get<DebugDatasource>()
+        val dbgDS = get<DebugDatasource>()
+        val datasource = get<Datasource>()
 
         Assert.assertEquals(presenter, view.presenter)
         Assert.assertEquals(repository, presenter.repository)

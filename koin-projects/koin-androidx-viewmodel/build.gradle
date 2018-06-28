@@ -19,6 +19,7 @@ android {
 
 dependencies {
     // Koin
+    api project(":koin-reflect")
     api project(":koin-androidx-scope") //"org.koin:koin-android:$koin_version"
     // Test
     testImplementation project(":koin-test")

@@ -17,10 +17,12 @@ package org.koin.androidx.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.koin.androidx.viewmodel.ext.koin.get
-import org.koin.androidx.viewmodel.ext.koin.getByName
+import org.koin.androidx.viewmodel.ext.koin.isViewModel
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.dsl.definition.BeanDefinition
+import org.koin.reflect.getByClass
+import org.koin.reflect.getByTypeName
 import org.koin.standalone.KoinComponent
 
 
@@ -45,9 +47,10 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
             // Clear local stuff
             clear()
 
+            val filterIsViewModel = { def: BeanDefinition<*> -> def.isViewModel() }
             if (name != null) {
-                getByName(name, module, params)
-            } else get(modelClass, module, params)
+                getByTypeName(name, module, params, filterIsViewModel)
+            } else getByClass(modelClass, module, params, filterIsViewModel)
         } else error("Can't get ViewModel from ViewModelFactory with empty parameters")
     }
 

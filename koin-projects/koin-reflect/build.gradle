@@ -1,23 +1,15 @@
 apply plugin: 'kotlin'
 
-archivesBaseName = 'koin-test'
+archivesBaseName = 'koin-reflect'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
     // Koin
     compile project(":koin-core")
+    testCompile project(":koin-test")
 
     compile "junit:junit:$junit_version"
     compile "org.mockito:mockito-core:$mockito_version"
-
-    // Coroutines
-    testCompile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"// Coroutines
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }
 
 apply from: '../gradle/publish.gradle'

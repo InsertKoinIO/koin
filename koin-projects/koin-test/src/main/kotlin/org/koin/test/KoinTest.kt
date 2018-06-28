@@ -18,12 +18,17 @@
 package org.koin.test
 
 import org.koin.core.Koin
+import org.koin.core.KoinContext
+import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
+import org.koin.dsl.path.Path
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 import org.koin.test.core.check
+import org.koin.test.ext.koin.dryRun
 import org.mockito.Mockito.mock
 import kotlin.reflect.KClass
 
@@ -40,6 +45,13 @@ import kotlin.reflect.KClass
 interface KoinTest : KoinComponent
 
 /**
+ * Dry Run
+ * Try to instantiate all definitions
+ */
+fun KoinTest.dryRun(parameters: ParameterDefinition = emptyParameterDefinition()) =
+    (StandAloneContext.koinContext as KoinContext).dryRun(parameters)
+
+/**
  * Check all definition's dependencies
  */
 fun KoinTest.check(list: List<Module>) = StandAloneContext.check(list)
@@ -49,12 +61,13 @@ fun KoinTest.check(list: List<Module>) = StandAloneContext.check(list)
  */
 inline fun <reified T : Any> KoinTest.declareMock(
     isFactory: Boolean = false,
+    module: String? = null,
     binds: List<KClass<*>> = emptyList()
 ) {
     val clazz = T::class.java
     Koin.logger.info("[mock] declare mock for $clazz")
     StandAloneContext.loadKoinModules(
-        module {
+        module(module ?: Path.ROOT) {
             val def = if (!isFactory) {
                 single(override = true) {
                     createMock(clazz)
@@ -79,9 +92,9 @@ fun <T : Any> createMock(clazz: Class<T>): T {
 /**
  * Declare a definition to be included in Koin container
  */
-fun KoinTest.declare(moduleExpression: ModuleDefinition.() -> Unit) {
+fun KoinTest.declare(module: String? = null, moduleExpression: ModuleDefinition.() -> Unit) {
     StandAloneContext.loadKoinModules(
-        module {
+        module(module ?: Path.ROOT) {
             moduleExpression()
         }
     )

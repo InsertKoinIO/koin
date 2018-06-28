@@ -35,7 +35,7 @@ import kotlin.reflect.KClass
  */
 
 /**
- * Lazy get a viewModel instance
+ * Lazy getByClass a viewModel instance
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
@@ -49,7 +49,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
 ) = viewModelByClass(false, T::class, key, name, module, parameters)
 
 /**
- * Lazy get a viewModel instance
+ * Lazy getByClass a viewModel instance
  *
  * @param fromActivity - create it from Activity (default true)
  * @param clazz - Class of the BeanDefinition to retrieve
@@ -112,7 +112,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
                 ViewModelProvider(ViewModelStores.of(this), ViewModelFactory)
             }
         }
-        else -> error("Can't get ViewModel '$clazzName' on $this - Is not a FragmentActivity nor a Fragment")
+        else -> error("Can't getByClass ViewModel '$clazzName' on $this - Is not a FragmentActivity nor a Fragment")
     }
     val vmInstance = if (key != null) viewModelProvider.get(
         key,

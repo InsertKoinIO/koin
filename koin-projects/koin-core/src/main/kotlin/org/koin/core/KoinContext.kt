@@ -66,7 +66,7 @@ class KoinContext(
         module: String? = null,
         noinline parameters: ParameterDefinition
     ): T =
-        resolveInstance(module, T::class, parameters) { beanRegistry.searchByName(name, T::class) }
+        resolveInstanceFromDefinitions(module, T::class, parameters) { beanRegistry.searchByName(name, T::class) }
 
     /**
      * Resolve a dependency for its bean definition
@@ -84,7 +84,7 @@ class KoinContext(
         clazz: KClass<*>,
         noinline parameters: ParameterDefinition
     ): T =
-        resolveInstance(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
+        resolveInstanceFromDefinitions(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
 
     /**
      * Resolve a dependency for its bean definition
@@ -93,7 +93,7 @@ class KoinContext(
      * @param parameters - Parameters
      * @param definitionResolver - function to find bean definitions
      */
-    fun <T> resolveInstance(
+    fun <T> resolveInstanceFromDefinitions(
         module: String? = null,
         clazz: KClass<*>,
         parameters: ParameterDefinition,

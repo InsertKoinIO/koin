@@ -15,7 +15,7 @@ import java.util.*
 interface WeatherRepository {
     /**
      * Get weather from given location
-     * if location is null, get last weather or default
+     * if location is null, getByClass last weather or default
      */
     fun getWeather(location: String? = null): Single<List<DailyForecastModel>>
 

@@ -1,5 +1,5 @@
 // Core
-include 'koin-core', 'koin-test', 'koin-java'
+include 'koin-core', 'koin-test', 'koin-java', 'koin-reflect'
 //include 'examples:coffee-maker'
 
 // Android

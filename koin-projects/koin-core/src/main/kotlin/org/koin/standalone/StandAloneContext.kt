@@ -166,7 +166,7 @@ object StandAloneContext {
             Koin.logger.info("Creating instances ...")
         }
         definitions.forEach { def ->
-            context.resolveInstance(
+            context.resolveInstanceFromDefinitions(
                 def.path.toString(),
                 def.clazz,
                 defaultParameters

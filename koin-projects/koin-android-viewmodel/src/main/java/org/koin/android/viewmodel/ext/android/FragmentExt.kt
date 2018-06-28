@@ -27,7 +27,7 @@ import org.koin.core.parameter.emptyParameterDefinition
  */
 
 /**
- * Lazy get a viewModel instance shared with Activity
+ * Lazy getByClass a viewModel instance shared with Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)

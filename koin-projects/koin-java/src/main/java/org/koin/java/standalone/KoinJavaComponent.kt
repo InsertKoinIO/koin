@@ -72,7 +72,7 @@ object KoinJavaComponent : KoinComponent {
         else
             koinContext.beanRegistry.searchByName(name, kclazz)
 
-        return koinContext.resolveInstance(
+        return koinContext.resolveInstanceFromDefinitions(
             module,
             kclazz,
             parameters
