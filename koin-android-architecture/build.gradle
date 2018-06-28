@@ -31,6 +31,8 @@ dependencies {
     implementation ("android.arch.lifecycle:extensions:$android_architecture_components_version"){
         exclude module : "livedata"
     }
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extensions_version"
 }
 
 repositories {
