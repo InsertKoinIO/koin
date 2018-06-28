@@ -11,7 +11,7 @@
 //import org.koin.standalone.get
 //import org.koin.standalone.inject
 //import org.koin.test.KoinTest
-//import org.koin.test.createMock
+//import org.koin.test.declareMock
 //import org.mockito.Mockito.*
 //
 //class HelloControllerMockTest : KoinTest {
@@ -24,7 +24,7 @@
 //    fun before() {
 //        stop(WAIT_STOP)
 //        val port = start(0, modules = emptyList()) {
-//            createMock<HelloService>()
+//            declareMock<HelloService>()
 //            HelloController(get())
 //        }
 //
