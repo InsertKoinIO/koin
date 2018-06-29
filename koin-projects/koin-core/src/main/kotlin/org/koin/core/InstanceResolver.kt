@@ -53,6 +53,11 @@ class InstanceResolver(
         }
     }
 
+    inline fun <reified T> resolve(request: CustomRequest): T {
+        return proceedResolution(request.module, T::class.java, request.parameters) {
+            request.defininitionFilter(beanRegistry)
+        }
+    }
 
 //    /**
 //     * Resolve a dependency for its bean definition

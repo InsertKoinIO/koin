@@ -17,12 +17,6 @@ package org.koin.android.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import org.koin.android.viewmodel.ext.koin.isViewModel
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.dsl.definition.BeanDefinition
-import org.koin.reflect.getByClass
-import org.koin.reflect.getByTypeName
 import org.koin.standalone.KoinComponent
 
 
@@ -39,19 +33,12 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
      * Create instance for ViewModelProvider Factory
      */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return if (viewModelParameters != null) {
-            // Get params to pass to factory
-            val name = viewModelParameters?.name
-            val module = viewModelParameters?.module
-            val params = viewModelParameters?.parameters ?: emptyParameterDefinition()
-            // Clear local stuff
-            clear()
-
-            val filterIsViewModel = { def: BeanDefinition<*> -> def.isViewModel() }
-            if (name != null) {
-                getByTypeName(name, module, params, filterIsViewModel)
-            } else getByClass(modelClass, module, params, filterIsViewModel)
-        } else error("Can't getByClass ViewModel from ViewModelFactory with empty parameters")
+        val params = viewModelParameters
+        clear()
+        return createInstance(
+            params ?: error("Can't getByClass ViewModel from ViewModelFactory with empty parameters"),
+            modelClass
+        )
     }
 
     /**
@@ -61,12 +48,3 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
         viewModelParameters = null
     }
 }
-
-/**
- * Data holder for ViewModel Factory
- */
-data class ViewModelParameters(
-    val name: String? = null,
-    val module: String? = null,
-    val parameters: ParameterDefinition = emptyParameterDefinition()
-)

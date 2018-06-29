@@ -21,7 +21,6 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.property.PropertyRegistry
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneKoinContext
-import kotlin.reflect.KClass
 
 
 /**
@@ -39,7 +38,7 @@ class KoinContext(
     val contextCallback: ArrayList<ModuleCallback> = arrayListOf()
 
     /**
-     * Retrieve a bean instance
+     * Retrieve an instance from its name/class
      */
     inline fun <reified T> get(
         name: String = "",
@@ -55,9 +54,18 @@ class KoinContext(
     )
 
     /**
-     * Retrieve a bean instance
+     * Retrieve an instance from its class
      */
     fun <T> get(request: ClassRequest): T = instanceResolver.resolve(request)
+
+    /**
+     * Retrieve an instance from a given filter
+     */
+    fun <T> get(request: CustomRequest): T = instanceResolver.proceedResolution(
+        request.module,
+        request.clazz,
+        request.parameters
+    ) { request.defininitionFilter(instanceResolver.beanRegistry) }
 
 //    /**
 //     * Retrieve instance by type canonicalName
@@ -149,24 +157,3 @@ class KoinContext(
         propertyResolver.clear()
     }
 }
-
-//typealias DefinitionFilter = (BeanDefinition<*>) -> Boolean
-
-/**
- * Instance Resolution request
- */
-sealed class ResolutionRequest
-
-data class InstanceRequest(
-    val name: String = "",
-    val clazz: KClass<*>,
-    val module: String? = null,
-    val parameters: ParameterDefinition
-) : ResolutionRequest()
-
-data class ClassRequest(
-    val name: String = "",
-    val clazz: Class<*>,
-    val module: String? = null,
-    val parameters: ParameterDefinition
-) : ResolutionRequest()

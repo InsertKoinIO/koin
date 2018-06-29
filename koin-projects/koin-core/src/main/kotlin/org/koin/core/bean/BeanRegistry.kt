@@ -62,7 +62,13 @@ class BeanRegistry() {
      * Search bean by its canonicalName, respectfully to requested type.
      */
     fun search(name: String, clazz: KClass<*>): List<BeanDefinition<*>> =
-        searchDefinition { it.name == name && (it.clazz == clazz || it.types.contains(clazz)) }
+        searchDefinition { filterByNameAndClass(it, name, clazz) }
+
+    fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: KClass<*>): Boolean =
+        it.name == name && filterByClass(it,clazz)
+
+    fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: Class<*>): Boolean =
+        it.name == name && filterByClass(it,clazz)
 
     /**
      * Search by name and class
@@ -74,10 +80,14 @@ class BeanRegistry() {
      * Search for any bean definition
      */
     fun searchAll(clazz: KClass<*>): List<BeanDefinition<*>> {
-        val concreteTypes = searchDefinition { it.clazz == clazz }
-        val extraBindTypes = searchDefinition { it.types.contains(clazz) }
-        return (concreteTypes + extraBindTypes)
+        return searchDefinition { filterByClass(it, clazz) }
     }
+
+    fun filterByClass(it: BeanDefinition<*>, clazz: KClass<*>): Boolean =
+        it.clazz == clazz || it.types.contains(clazz)
+
+    fun filterByClass(it: BeanDefinition<*>, clazz: Class<*>): Boolean =
+        it.clazz.java == clazz || it.types.map { it.java }.contains(clazz)
 
     /**
      * Search definition with given filter function

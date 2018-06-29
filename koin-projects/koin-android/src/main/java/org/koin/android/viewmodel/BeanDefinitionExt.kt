@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.koin.android.viewmodel.ext.koin
+package org.koin.android.viewmodel
 
 import org.koin.dsl.definition.BeanDefinition
 

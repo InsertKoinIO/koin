@@ -20,8 +20,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.ViewModelFactory
-import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition

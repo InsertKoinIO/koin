@@ -15,7 +15,9 @@
  */
 package org.koin.standalone
 
+import org.koin.core.CustomRequest
 import org.koin.core.KoinContext
+import org.koin.core.ResolutionRequest
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 
@@ -49,6 +51,10 @@ inline fun <reified T> KoinComponent.get(
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
     (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
+
+
+fun <T> KoinComponent.getWith(request : CustomRequest): T =
+    (StandAloneContext.koinContext as KoinContext).get(request)
 
 ///**
 // * Resolve an instance by its class canonical canonicalName

@@ -5,8 +5,8 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import org.koin.android.viewmodel.ext.koin.isViewModel
 import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.android.viewmodel.isViewModel
 import org.koin.core.KoinContext
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
