@@ -152,7 +152,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     }
 
     companion object {
-        const val OS_NAME = "os.name"
+        const val OS_NAME = "os.canonicalName"
         const val OS_VERSION = "os.version"
         const val GIVEN_PROP = "given.prop"
         const val TEST_KOIN = "test.koin"

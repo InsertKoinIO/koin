@@ -16,14 +16,9 @@
 package org.koin.core
 
 import org.koin.core.Koin.Companion.logger
-import org.koin.core.bean.BeanRegistry
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
-import org.koin.core.stack.ResolutionStack
-import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
@@ -37,15 +32,11 @@ import kotlin.reflect.KClass
  * @author - Laurent Baresse
  */
 class KoinContext(
-    val beanRegistry: BeanRegistry,
-    val pathRegistry: PathRegistry,
-    val propertyResolver: PropertyRegistry,
-    val instanceFactory: InstanceFactory
+    val instanceResolver: InstanceResolver,
+    val propertyResolver: PropertyRegistry
 ) : StandAloneKoinContext {
 
-    private val resolutionStack = ResolutionStack()
-
-    var contextCallback: ArrayList<ModuleCallback> = arrayListOf()
+    val contextCallback: ArrayList<ModuleCallback> = arrayListOf()
 
     /**
      * Retrieve a bean instance
@@ -54,93 +45,68 @@ class KoinContext(
         name: String = "",
         module: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
-    ): T =
-        if (name.isEmpty()) resolveByClass(module, parameters) else resolveByName(name, module, parameters)
+    ): T = instanceResolver.resolve(
+        InstanceRequest(
+            name = name,
+            module = module,
+            clazz = T::class,
+            parameters = parameters
+        )
+    )
 
     /**
-     * Resolve a dependency for its bean definition
-     * @param name bean definition name
+     * Retrieve a bean instance
      */
-    inline fun <reified T> resolveByName(
-        name: String,
-        module: String? = null,
-        noinline parameters: ParameterDefinition
-    ): T =
-        resolveInstanceFromDefinitions(module, T::class, parameters) { beanRegistry.searchByName(name, T::class) }
+    fun <T> get(request: ClassRequest): T = instanceResolver.resolve(request)
 
-    /**
-     * Resolve a dependency for its bean definition
-     * by its inferred type
-     */
-    inline fun <reified T> resolveByClass(module: String? = null, noinline parameters: ParameterDefinition): T =
-        resolveByClass(module, T::class, parameters)
+//    /**
+//     * Retrieve instance by type canonicalName
+//     *
+//     * @param canonicalName - type full canonicalName
+//     * @param module
+//     * @param parameters
+//     */
+//    fun <T> get(
+//        canonicalName: String,
+//        module: String? = null,
+//        parameters: ParameterDefinition,
+//        extraDefinitionFilter: DefinitionFilter? = null
+//    ): T {
+//        val definitions =
+//            if (extraDefinitionFilter != null) beanRegistry.definitions.filter(extraDefinitionFilter) else beanRegistry.definitions
+//
+//        val foundDefinitions =
+//            definitions.filter { it.clazz.java.canonicalName == canonicalName || it.types.filter { it.java.canonicalName == canonicalName }.isNotEmpty() }
+//                .distinct()
+//
+//        try {
+//            return resolveInstanceFromDefinitions(foundDefinitions, module, parameters)
+//        } catch (e: NoBeanDefFoundException) {
+//            throw NoBeanDefFoundException("Can't create instance for class '$canonicalName'")
+//        }
+//    }
 
-    /**
-     * Resolve a dependency for its bean definition
-     * byt its type
-     */
-    inline fun <reified T> resolveByClass(
-        module: String? = null,
-        clazz: KClass<*>,
-        noinline parameters: ParameterDefinition
-    ): T =
-        resolveInstanceFromDefinitions(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
-
-    /**
-     * Resolve a dependency for its bean definition
-     * @param module - module path
-     * @param clazz - Class
-     * @param parameters - Parameters
-     * @param definitionResolver - function to find bean definitions
-     */
-    fun <T> resolveInstanceFromDefinitions(
-        module: String? = null,
-        clazz: KClass<*>,
-        parameters: ParameterDefinition,
-        definitionResolver: () -> List<BeanDefinition<*>>
-    ): T = synchronized(this) {
-
-        val clazzName = clazz.java.canonicalName
-
-        var resultInstance: T? = null
-
-        try {
-            val beanDefinition: BeanDefinition<*> =
-                beanRegistry.getVisibleBean(
-                    clazzName,
-                    if (module != null) pathRegistry.getPath(module) else null,
-                    definitionResolver,
-                    resolutionStack.last()
-                )
-
-            val logIndent: String = resolutionStack.indent()
-            val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
-            val startChar = if (resolutionStack.isEmpty()) "+" else "+"
-
-            Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
-            Koin.logger.debug("$logIndent|-- [$beanDefinition]")
-
-            resolutionStack.resolve(beanDefinition) {
-                val (instance, created) = instanceFactory.retrieveInstance<T>(
-                    beanDefinition,
-                    parameters
-                )
-
-                Koin.logger.debug("$logIndent|-- $instance")
-                // Log creation
-                if (created) {
-                    Koin.logger.info("$logIndent\\-- (*)")
-                }
-                resultInstance = instance
-            }
-        } catch (e: Exception) {
-            resolutionStack.clear()
-            logger.err("Error while resolving instance for class '${clazz.java.simpleName}' - error: $e ")
-            throw e
-        }
-
-        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
-    }
+//    /**
+//     * Retrieve an instance by its bean beanDefinition canonicalName
+//     */
+//    fun <T> getByTypeName(
+//        canonicalName: String,
+//        module: String? = null,
+//        parameters: ParameterDefinition,
+//        extraDefinitionFilter: DefinitionFilter? = null
+//    ): T {
+//        val definitions =
+//            if (extraDefinitionFilter != null) beanRegistry.definitions.filter(extraDefinitionFilter) else beanRegistry.definitions
+//
+//        val foundDefinitions =
+//            definitions.filter { it.canonicalName == canonicalName || it.types.filter { it.java.simpleName == canonicalName }.isNotEmpty() }
+//                .distinct()
+//        try {
+//            return resolveInstanceFromDefinitions(foundDefinitions, module, parameters)
+//        } catch (e: Exception) {
+//            throw NoBeanDefFoundException("Can't create instance for class '$canonicalName'")
+//        }
+//    }
 
     /**
      * Drop all instances for path context
@@ -149,12 +115,7 @@ class KoinContext(
     fun release(path: String) {
         logger.info("release module '$path'")
 
-        val paths = pathRegistry.getAllPathsFrom(path)
-        val definitions: List<BeanDefinition<*>> =
-            beanRegistry.getDefinitions(paths)
-
-        instanceFactory.releaseInstances(definitions)
-
+        instanceResolver.release(path)
         contextCallback.forEach { it.onRelease(path) }
     }
 
@@ -184,10 +145,28 @@ class KoinContext(
      */
     fun close() {
         logger.info("[Close] Closing Koin context")
-        resolutionStack.clear()
-        instanceFactory.clear()
-        beanRegistry.clear()
-        pathRegistry.clear()
+        instanceResolver.close()
         propertyResolver.clear()
     }
 }
+
+//typealias DefinitionFilter = (BeanDefinition<*>) -> Boolean
+
+/**
+ * Instance Resolution request
+ */
+sealed class ResolutionRequest
+
+data class InstanceRequest(
+    val name: String = "",
+    val clazz: KClass<*>,
+    val module: String? = null,
+    val parameters: ParameterDefinition
+) : ResolutionRequest()
+
+data class ClassRequest(
+    val name: String = "",
+    val clazz: Class<*>,
+    val module: String? = null,
+    val parameters: ParameterDefinition
+) : ResolutionRequest()

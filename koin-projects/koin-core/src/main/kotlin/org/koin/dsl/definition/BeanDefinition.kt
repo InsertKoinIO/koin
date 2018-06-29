@@ -29,9 +29,9 @@ import kotlin.reflect.KClass
  * defined by lazy/function
  * has a type (clazz)
  * has a BeanType : default singleton
- * has a name, if specified
+ * has a canonicalName, if specified
  *
- * @param name - bean name
+ * @param name - bean canonicalName
  * @param clazz - bean class
  * @param isSingleton - is the bean a singleton
  * @param types - list of assignable types
@@ -76,7 +76,7 @@ data class BeanDefinition<out T>(
     fun canSee(other: BeanDefinition<*>) = other.path.isVisible(this.path)
 
     override fun toString(): String {
-        val beanName = if (name.isEmpty()) "" else "name='$name',"
+        val beanName = if (name.isEmpty()) "" else "canonicalName='$name',"
         val clazz = "class='${clazz.java.canonicalName}'"
         val type = if (isSingleton) "Single" else "Factory"
         val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"

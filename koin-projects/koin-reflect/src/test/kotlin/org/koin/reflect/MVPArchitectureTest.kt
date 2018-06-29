@@ -3,8 +3,13 @@ package org.koin.reflect
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.*
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
+import org.koin.standalone.inject
+import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.check
 import org.koin.test.ext.junit.*
 
 class MVPArchitectureTest : AutoCloseKoinTest() {
@@ -37,7 +42,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        StandAloneContext.startKoin(listOf(MVPModule, DataSourceModule))
+        startKoin(listOf(MVPModule, DataSourceModule))
 
         val view = get<View>()
         val presenter = get<Presenter>()
@@ -62,5 +67,10 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         assertRemainingInstances(2)
         assertDefinitions(4)
         assertContexts(2)
+    }
+
+    @Test
+    fun `check MVP hierarchy`() {
+        check(listOf(MVPModule, DataSourceModule))
     }
 }

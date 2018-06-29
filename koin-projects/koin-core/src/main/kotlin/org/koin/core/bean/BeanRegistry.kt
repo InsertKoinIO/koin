@@ -22,6 +22,7 @@ import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
+import kotlin.reflect.KClass
 
 
 /**
@@ -58,15 +59,21 @@ class BeanRegistry() {
     }
 
     /**
-     * Search bean by its name, respectfully to requested type.
+     * Search bean by its canonicalName, respectfully to requested type.
      */
-    fun searchByName(name: String, clazz: kotlin.reflect.KClass<*>): List<BeanDefinition<*>> =
+    fun search(name: String, clazz: KClass<*>): List<BeanDefinition<*>> =
         searchDefinition { it.name == name && (it.clazz == clazz || it.types.contains(clazz)) }
+
+    /**
+     * Search by name and class
+     */
+    fun search(name: String, clazz: Class<*>): List<BeanDefinition<*>> =
+        searchDefinition { it.name == name && (it.clazz.java == clazz || it.types.map { it.java }.contains(clazz)) }
 
     /**
      * Search for any bean definition
      */
-    fun searchAll(clazz: kotlin.reflect.KClass<*>): List<BeanDefinition<*>> {
+    fun searchAll(clazz: KClass<*>): List<BeanDefinition<*>> {
         val concreteTypes = searchDefinition { it.clazz == clazz }
         val extraBindTypes = searchDefinition { it.types.contains(clazz) }
         return (concreteTypes + extraBindTypes)
@@ -88,7 +95,7 @@ class BeanRegistry() {
 
     /**
      * Retrieve bean definition
-     * @param clazzName - class name
+     * @param clazzName - class canonicalName
      * @param modulePath - Module path
      * @param definitionResolver - function to find bean definition
      * @param lastInStack - to check visibility with last bean in stack
@@ -103,7 +110,7 @@ class BeanRegistry() {
             val found = definitionResolver()
             val filteredByVisibility = found.filter { lastInStack.canSee(it) }
             if (found.isNotEmpty() && filteredByVisibility.isEmpty()) {
-                throw NotVisibleException("Can't resolve '$clazzName' - Definition is not visible from last definition : $lastInStack")
+                throw NotVisibleException("Can't proceedResolution '$clazzName' - Definition is not visible from last definition : $lastInStack")
             }
             filteredByVisibility
         } else {
@@ -113,16 +120,16 @@ class BeanRegistry() {
         return if (candidates.size == 1) {
             val candidate = candidates.first()
             if (modulePath != null && !candidate.path.isVisible(modulePath)) {
-                throw NotVisibleException("Can't resolve '$clazzName' - Definition is not visible from module '$modulePath'")
+                throw NotVisibleException("Can't proceedResolution '$clazzName' - Definition is not visible from module '$modulePath'")
             }
             candidate
         } else {
             when {
-                candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to resolve type '$clazzName'. Check your module definition")
+                candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to proceedResolution type '$clazzName'. Check your module definition")
                 else -> throw DependencyResolutionException(
-                    "Multiple definitions found to resolve type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
+                    "Multiple definitions found to proceedResolution type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
                         "\n\t"
-                    )}\n\tCheck your modules definition or use name attribute to resolve components."
+                    )}\n\tCheck your modules definition or use canonicalName attribute to proceedResolution components."
                 )
             }
         }

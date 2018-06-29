@@ -15,12 +15,12 @@
  */
 package org.koin.java.standalone
 
+import org.koin.core.ClassRequest
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
-import kotlin.jvm.internal.Reflection
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -33,7 +33,7 @@ object KoinJavaComponent : KoinComponent {
     /**
      * Retrieve given dependency lazily
      * @param clazz - dependency class
-     * @param name - bean name / optional
+     * @param name - bean canonicalName / optional
      * @param module - module path / optional
      * @param parameters - dependency parameters / optional
      */
@@ -51,7 +51,7 @@ object KoinJavaComponent : KoinComponent {
     /**
      * Retrieve given dependency
      * @param clazz - dependency class
-     * @param name - bean name / optional
+     * @param name - bean canonicalName / optional
      * @param module - module path / optional
      * @param parameters - dependency parameters / optional
      */
@@ -63,20 +63,14 @@ object KoinJavaComponent : KoinComponent {
         module: String? = null,
         parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
-        val kclazz = Reflection.getOrCreateKotlinClass(clazz)
-
-        val koinContext = (StandAloneContext.koinContext as KoinContext)
-
-        val beanDefinitions = if (name.isBlank())
-            koinContext.beanRegistry.searchAll(kclazz)
-        else
-            koinContext.beanRegistry.searchByName(name, kclazz)
-
-        return koinContext.resolveInstanceFromDefinitions(
-            module,
-            kclazz,
-            parameters
-        ) { beanDefinitions } as T
+        return (StandAloneContext.koinContext as KoinContext).get(
+            ClassRequest(
+                name,
+                clazz,
+                module,
+                parameters
+            )
+        )
     }
 
     /**

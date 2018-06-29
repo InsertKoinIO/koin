@@ -15,6 +15,7 @@
  */
 package org.koin.standalone
 
+import org.koin.core.InstanceResolver
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.ModuleCallback
@@ -71,11 +72,9 @@ object StandAloneContext {
     private fun createContextIfNeeded() = synchronized(this) {
         if (!isStarted) {
             Koin.logger.info("[context] create")
-            val beanRegistry = BeanRegistry()
             val propertyResolver = PropertyRegistry()
-            val pathRegistry = PathRegistry()
-            val instanceFactory = InstanceFactory()
-            koinContext = KoinContext(beanRegistry, pathRegistry, propertyResolver, instanceFactory)
+            val instanceResolver = InstanceResolver(BeanRegistry(), InstanceFactory(), PathRegistry())
+            koinContext = KoinContext(instanceResolver, propertyResolver)
             isStarted = true
         }
     }
@@ -161,14 +160,14 @@ object StandAloneContext {
      */
     fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
         val context = getKoinContext()
-        val definitions = context.beanRegistry.definitions.filter { it.isEager }
+        val definitions = context.instanceResolver.beanRegistry.definitions.filter { it.isEager }
         if (definitions.isNotEmpty()) {
             Koin.logger.info("Creating instances ...")
         }
         definitions.forEach { def ->
-            context.resolveInstanceFromDefinitions(
+            context.instanceResolver.proceedResolution(
                 def.path.toString(),
-                def.clazz,
+                def.clazz.java,
                 defaultParameters
             ) { listOf(def) }
         }
@@ -190,7 +189,7 @@ object StandAloneContext {
      */
     fun dumpModulePaths() {
         Koin.logger.info("Module paths:")
-        getKoinContext().pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
+        getKoinContext().instanceResolver.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package org.koin.dsl.context
 
+import org.koin.core.ClassRequest
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -147,16 +148,27 @@ class ModuleDefinition(
 
     /**
      * Resolve a component
-     * @param name : component name
+     * @param name : component canonicalName
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
         name: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T =
-        if (name != null) koinContext.resolveByName(name, parameters = parameters) else koinContext.resolveByClass(
-            parameters = parameters
-        )
+        if (name != null) koinContext.get(name, parameters = parameters) else koinContext.get(parameters = parameters)
+
+    /**
+     * Resolve a component from its class
+     *
+     * @param clazz - java class
+     * @param module
+     * @param parameters
+     */
+    fun <T> get(
+        name: String = "",
+        clazz: Class<T>,
+        parameters: ParameterDefinition = emptyParameterDefinition()
+    ): T = koinContext.get(ClassRequest(name, clazz, parameters = parameters))
 
     /**
      * Retrieve a property

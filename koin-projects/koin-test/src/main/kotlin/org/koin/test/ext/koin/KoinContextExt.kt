@@ -38,16 +38,16 @@ import kotlin.reflect.KClass
 fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
     Koin.logger.info("[Check Modules]")
 
-    beanRegistry.definitions.forEach { def ->
+    instanceResolver.beanRegistry.definitions.forEach { def ->
         Koin.logger.info("Check '$def' ...")
-        resolveInstanceFromDefinitions<Any>(def.path.toString(), def.clazz, defaultParameters) { listOf(def) }
+        instanceResolver.proceedResolution<Any>(def.path.toString(), def.clazz.java, defaultParameters) { listOf(def) }
     }
 }
 
 /**
  * Return all definitions of Koin
  */
-fun KoinContext.beanDefinitions() = beanRegistry.definitions
+fun KoinContext.beanDefinitions() = instanceResolver.beanRegistry.definitions
 
 /**
  * return beanDefinition for given class
@@ -59,12 +59,12 @@ fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? =
 /**
  * Return all contexts of Koin
  */
-fun KoinContext.allPaths() = pathRegistry.paths
+fun KoinContext.allPaths() = instanceResolver.pathRegistry.paths
 
 /**
  * Return all instances of Koin
  */
-fun KoinContext.allInstances() = instanceFactory.instances.toList()
+fun KoinContext.allInstances() = instanceResolver.instanceFactory.instances.toList()
 
 /**
  * Return all properties of Koin
