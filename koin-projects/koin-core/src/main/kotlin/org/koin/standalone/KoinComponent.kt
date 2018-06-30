@@ -52,41 +52,11 @@ inline fun <reified T> KoinComponent.get(
 ): T =
     (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 
-
+/**
+ * Special instance getter for integration / CustomRequest
+ */
 fun <T> KoinComponent.getWith(request : CustomRequest): T =
     (StandAloneContext.koinContext as KoinContext).get(request)
-
-///**
-// * Resolve an instance by its class canonical canonicalName
-// *
-// * @param class
-// * @param module
-// * @param parameters
-// * @param filter - additional filter on definitions
-// */
-//fun <T> KoinComponent.getByClass(
-//    clazz: Class<T>,
-//    module: String? = null,
-//    parameters: ParameterDefinition,
-//    filter: DefinitionFilter? = null
-//): T =
-//    (StandAloneContext.koinContext as KoinContext).getByCanonicalName(clazz.canonicalName, module, parameters, filter)
-//
-///**
-// * Resolve an instance by its class simple canonicalName
-// *
-// * @param typeName
-// * @param module
-// * @param parameters
-// * @param filter - additional filter on definitions
-// */
-//fun <T> KoinComponent.getByTypeName(
-//    typeName: String,
-//    module: String? = null,
-//    parameters: ParameterDefinition,
-//    filter: DefinitionFilter? = null
-//): T =
-//    (StandAloneContext.koinContext as KoinContext).getByTypeName(typeName, module, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent

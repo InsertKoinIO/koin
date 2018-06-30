@@ -1,0 +1,15 @@
+= Advanced features with Koin
+
+Arnaud Giuliani <arnaud.g@insert-koin.io>
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../kotlin]
+
+Covers Koin reflect features.
+
+include::features.adoc[]
+
+
+
+

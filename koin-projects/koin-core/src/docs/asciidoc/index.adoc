@@ -8,14 +8,15 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin-Core Project Manual
+= Koin core features: DSL, Container & API
+
 Arnaud Giuliani <arnaud.g@insert-koin.io>
 :revnumber: {project-version}
 
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-This is the koin-core project manual.
+Cover the core project features and core sub projects.
 
 include::what-is-koin.adoc[]
 include::dsl.adoc[]
@@ -27,3 +28,6 @@ include::koin-component.adoc[]
 include::injection-parameters.adoc[]
 include::extending-koin.adoc[]
 include::examples.adoc[]
+
+include::../../../../koin-test/src/docs/asciidoc/index.adoc[]
+include::../../../../koin-reflect/src/docs/asciidoc/index.adoc[]

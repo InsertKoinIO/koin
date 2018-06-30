@@ -35,7 +35,15 @@ startKoin(listof(...), logger = EmptyLogger())
 
 === Loggers implementation
 
+Koin proposes some implementation of logging, in function of the target platform:
+
+* `PrintLogger` - directly log into console (included in `koin-core`)
+* `EmptyLogger` - log nothing (included in `koin-core`)
+* `SLF4JLogger` - Log with SLF4J. Used by ktor and spark (`koin-logger-slf4j`project)
+* `AndroidLogger` - log into Android Logger (included in `koin-android`)
+
+=== Your own Logger
+
 If you don't want to log any info, you can use the `EmptyLogger` class.
 
 You can easily implement the `Logger` interface to adapt to your logging technology.
-

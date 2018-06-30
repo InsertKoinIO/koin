@@ -160,12 +160,13 @@ object StandAloneContext {
      */
     fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
         val context = getKoinContext()
-        val definitions = context.instanceResolver.beanRegistry.definitions.filter { it.isEager }
+        val instanceResolver = context.instanceResolver
+        val definitions = instanceResolver.beanRegistry.definitions.filter { it.isEager }
         if (definitions.isNotEmpty()) {
             Koin.logger.info("Creating instances ...")
         }
         definitions.forEach { def ->
-            context.instanceResolver.proceedResolution(
+            instanceResolver.proceedResolution(
                 def.path.toString(),
                 def.clazz.java,
                 defaultParameters

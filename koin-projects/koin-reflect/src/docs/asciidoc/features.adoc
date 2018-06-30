@@ -1,0 +1,65 @@
+== About koin-reflect
+
+The `koin-reflect` project is dedicated to bring enhancement features which use java reflection.
+
+=== Gradle setup
+
+Add the `koin-android` dependency to your Gradle project:
+
+[source,gradle,subs="attributes"]
+----
+// Add Jcenter to your repositories if needed
+repositories {
+    jcenter()
+}
+dependencies {
+    // Testing with Koin
+    compile 'org.koin:koin-reflect:{revnumber}'
+}
+----
+
+== DSL enhancements
+
+Below are some DSL related features.
+
+=== Easily build your definition
+
+It's possible to avoid inject your definition using `get()` in your definitions to simplify your writing. The `build()` function
+will help you build your component by taking it's first constructor and injecting dependencies.
+
+Below you can compare the two ways of injecting inside definitions:
+
+[source,kotlin]
+----
+    class ComponentA
+    class ComponentB(val a: ComponentA)
+    class ComponentC(val a: ComponentA, val b: ComponentB)
+
+    // directly inject definitions with get()
+    val noReflect = module {
+           single { ComponentA() }
+           single { ComponentB(get()) }
+           single { ComponentC(get(),get()) }
+       }
+
+    // don't use get
+    val buildwithReflect = module {
+           single { ComponentA() }
+           single { build<ComponentB>() }
+           single { build<ComponentC>() }
+       }
+----
+
+[IMPORTANT]
+====
+Keep in mind that `build()` function is not just magic, it has also a very small cost (the time to take yoru constructor and inject each argument). If you care about performances,
+don't hesitate to switch your definition writing between get or build to compare the their performances for you.
+====
+
+
+
+
+
+
+
+

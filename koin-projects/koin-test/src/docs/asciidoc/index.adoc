@@ -1,0 +1,15 @@
+= Testing with Koin
+
+Arnaud Giuliani <arnaud.g@insert-koin.io>
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../kotlin]
+
+Covers Koin testing features.
+
+include::starting-with-koin-test.adoc[]
+
+
+
+

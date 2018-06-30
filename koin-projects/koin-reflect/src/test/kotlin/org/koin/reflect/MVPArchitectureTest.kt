@@ -10,6 +10,7 @@ import org.koin.standalone.inject
 import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check
+import org.koin.test.dryRun
 import org.koin.test.ext.junit.*
 
 class MVPArchitectureTest : AutoCloseKoinTest() {
@@ -72,5 +73,11 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
     @Test
     fun `check MVP hierarchy`() {
         check(listOf(MVPModule, DataSourceModule))
+    }
+
+    @Test
+    fun `dry run MVP hierarchy`() {
+        startKoin(listOf(MVPModule, DataSourceModule))
+        dryRun()
     }
 }
