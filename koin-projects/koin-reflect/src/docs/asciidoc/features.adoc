@@ -52,7 +52,7 @@ Below you can compare the two ways of injecting inside definitions:
 
 [IMPORTANT]
 ====
-Keep in mind that `build()` function is not just magic, it has also a very small cost (the time to take yoru constructor and inject each argument). If you care about performances,
+Keep in mind that `build()` function is not just magic, it has also a very small cost (the time to take your constructor and inject each argument). If you care about performances,
 don't hesitate to switch your definition writing between get or build to compare the their performances for you.
 ====
 

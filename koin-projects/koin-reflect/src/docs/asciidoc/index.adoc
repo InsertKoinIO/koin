@@ -1,4 +1,4 @@
-= Advanced features with Koin
+= Advanced features for Koin
 
 Arnaud Giuliani <arnaud.g@insert-koin.io>
 :revnumber: {project-version}
@@ -6,7 +6,7 @@ Arnaud Giuliani <arnaud.g@insert-koin.io>
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-Covers Koin reflect features.
+Covers Koin side features with reflection.
 
 include::features.adoc[]
 
