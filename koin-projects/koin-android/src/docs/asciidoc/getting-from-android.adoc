@@ -57,7 +57,4 @@ class DetailActivity : AppCompatActivity() {
 
 If you need to `inject()` or `get()` an instance from another class, just tag it with `KoinComponent` interface.
 
-=== Android Lifecycle: Single or Factory?
-
-
 

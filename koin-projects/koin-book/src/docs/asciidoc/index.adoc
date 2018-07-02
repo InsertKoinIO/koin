@@ -8,13 +8,13 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin Manual
+= Koin Reference Documentation
 Arnaud Giuliani <arnaud.g@insert-koin.io>
 2017-09-11
 :revnumber: {project-version}
 :example-caption!:
 
-This is a user manual for all koin projects.
+This document covers the all koin projects.
 
 include::../../../../koin-core/src/docs/asciidoc/index.adoc[]
 include::../../../../koin-android/src/docs/asciidoc/index.adoc[]

@@ -1,4 +1,4 @@
-= Advanced core features
+= Features for Java developers
 
 Arnaud Giuliani <arnaud.g@insert-koin.io>
 :revnumber: {project-version}
@@ -6,7 +6,7 @@ Arnaud Giuliani <arnaud.g@insert-koin.io>
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-Covers Koin side features with reflection.
+Covers Java Koin features.
 
 include::features.adoc[]
 

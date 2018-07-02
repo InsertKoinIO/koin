@@ -1,10 +1,10 @@
-== About koin-reflect
+== Scope features for Android
 
-The `koin-reflect` project is dedicated to bring enhancement features which use java reflection.
+The `koin-android-scope` project is dedicated to bring Android scope features.
 
 === Gradle setup
 
-Add the `koin-android` dependency to your Gradle project:
+Choose the `koin-android-scope` dependency to add to your Gradle project (android or androix version):
 
 [source,gradle,subs="attributes"]
 ----
@@ -13,16 +13,18 @@ repositories {
     jcenter()
 }
 dependencies {
-    // Reflection features for Koin
-    compile 'org.koin:koin-reflect:{revnumber}'
+    // Scope for Android
+    compile 'org.koin:koin-android-scope:{revnumber}'
+    // or Scope for AndroidX
+    compile 'org.koin:koin-androidx-scope:{revnumber}'
 }
 ----
 
-== DSL enhancements
+=== Binding with Android lifecycle
 
 Below are some DSL related features.
 
-=== Easily build your definition
+=== Using the scopedWith function
 
 It's possible to avoid inject your definition using `get()` in your definitions to simplify your writing. The `build()` function
 will help you build your component by taking it's first constructor and injecting dependencies.

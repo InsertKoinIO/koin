@@ -8,7 +8,7 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin core features: DSL, Container & API
+= Koin core: DSL, Container & API
 
 Arnaud Giuliani <arnaud.g@insert-koin.io>
 :revnumber: {project-version}
@@ -31,3 +31,4 @@ include::examples.adoc[]
 
 include::../../../../koin-test/src/docs/asciidoc/index.adoc[]
 include::../../../../koin-reflect/src/docs/asciidoc/index.adoc[]
+include::../../../../koin-java/src/docs/asciidoc/index.adoc[]

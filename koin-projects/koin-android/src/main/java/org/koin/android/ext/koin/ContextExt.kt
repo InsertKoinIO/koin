@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.ext.android
+package org.koin.android.ext.koin
 
 import android.app.Application
 import org.koin.dsl.context.ModuleDefinition

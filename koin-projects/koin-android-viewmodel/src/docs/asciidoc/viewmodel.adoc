@@ -1,10 +1,10 @@
-== About koin-reflect
+== Architecture Components with Koin: ViewModel
 
-The `koin-reflect` project is dedicated to bring enhancement features which use java reflection.
+The `koin-android-viewmodel` project is dedicated to bring Android Architecture VieModel features.
 
 === Gradle setup
 
-Add the `koin-android` dependency to your Gradle project:
+Choose the `koin-android-viewmodel` dependency to add to your Gradle project (android or androix version):
 
 [source,gradle,subs="attributes"]
 ----
@@ -13,12 +13,14 @@ repositories {
     jcenter()
 }
 dependencies {
-    // Reflection features for Koin
-    compile 'org.koin:koin-reflect:{revnumber}'
+    // ViewModel for Android
+    compile 'org.koin:koin-android-viewmodel:{revnumber}'
+    // or ViewModel for AndroidX
+    compile 'org.koin:koin-androidx-viewmodel:{revnumber}'
 }
 ----
 
-== DSL enhancements
+=== DSL enhancements
 
 Below are some DSL related features.
 

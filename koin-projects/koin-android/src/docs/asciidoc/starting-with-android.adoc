@@ -19,6 +19,26 @@ class MainApplication : Application() {
 ----
 
 
+=== Starting Koin with Android context from elsewhere?
+
+If you need to start Koin from elsewhere, you can just use the static `statrKoin()` function and provide your Android `Application`
+instance with the `with` operator:
+
+[source,kotlin]
+----
+// Start Koin and init Application instance definition
+startKoin(myAppModules) with (application)
+----
+
+This `with` operator can also be done to specify a mocked Android Application context in a Junit:
+
+.Example of mocking Androic onctext in a JUnit
+[source,kotlin]
+----
+// Start Koin and init Application instance definition
+startKoin(myAppModules) with (mock(Application::class.java))
+----
+
 === Koin Logging
 
 With the `startKoin()` function, we have a parameter `logger` which has a default value: `AndroidLogger()`.

@@ -8,7 +8,7 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin for Android
+= Koin for Android developers
 
 Arnaud Giuliani <arnaud.g@insert-koin.io>
 :revnumber: {project-version}
@@ -16,9 +16,11 @@ Arnaud Giuliani <arnaud.g@insert-koin.io>
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-Covers Koin for Android features.
+Covers Koin features for Android.
 
 include::introduction.adoc[]
 include::starting-with-android.adoc[]
 include::getting-from-android.adoc[]
 include::extended-dsl.adoc[]
+include::../../../../koin-android-scope/src/docs/asciidoc/scope.adoc[]
+include::../../../../koin-android-viewmodel/src/docs/asciidoc/viewmodel.adoc[]
