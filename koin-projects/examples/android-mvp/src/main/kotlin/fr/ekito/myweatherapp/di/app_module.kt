@@ -8,10 +8,8 @@ import fr.ekito.myweatherapp.view.detail.DetailContract
 import fr.ekito.myweatherapp.view.detail.DetailPresenter
 import fr.ekito.myweatherapp.view.splash.SplashContract
 import fr.ekito.myweatherapp.view.splash.SplashPresenter
-import fr.ekito.myweatherapp.view.weather.WeatherHeaderContract
-import fr.ekito.myweatherapp.view.weather.WeatherHeaderPresenter
-import fr.ekito.myweatherapp.view.weather.WeatherListContract
-import fr.ekito.myweatherapp.view.weather.WeatherListPresenter
+import fr.ekito.myweatherapp.view.weather.*
+import org.koin.android.scope.path
 import org.koin.dsl.module.module
 
 /**
@@ -25,7 +23,7 @@ val weatherAppModule = module {
     }
 
     // scoped module example
-    module("weather") {
+    module(WeatherActivity::class.path()) {
         // Presenter for ResultHeader View
         single {
             WeatherHeaderPresenter(get(), get()) as WeatherHeaderContract.Presenter

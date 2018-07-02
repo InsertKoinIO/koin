@@ -32,10 +32,8 @@ class FirstView : Fragment() {
 
         activity?.title = "First"
 
-        view?.apply {
-            val navigation = Navigation.findNavController(this)
-            text1.text = "First $navigation."
-        }
+        val navigation = Navigation.findNavController(view)
+        text1.text = "First $navigation."
 
         text1.setOnClickListener {
             Navigation.findNavController(it)

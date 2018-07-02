@@ -33,7 +33,7 @@ class SecondView : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // on ON_STOP release instances
-        scopedWith(Lifecycle.Event.ON_STOP, listOf("org.sample.fragments"))
+        scopedWith("org.sample.fragments", Lifecycle.Event.ON_STOP)
 
         activity?.title = "Second"
 
