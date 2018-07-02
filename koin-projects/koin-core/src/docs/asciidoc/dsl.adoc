@@ -208,7 +208,7 @@ val service : Service by inject(name = "default")
 `get()` and `by inject()` functions let you specify a definition name if needed.
 
 
-=== Injection parameters
+=== Declaring injection parameters
 
 In any `single` or `factory` definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
@@ -230,7 +230,7 @@ This means that those parameters are values passed with `get()` and `by inject()
 val presenter : Presenter by inject { parametersOf(view) }
 ----
 
-Further reading in the <<injection-parameters.adoc#_injection_parameters,using injection parameters>> section.
+Further reading in the <<injection-parameters.adoc#_injection_parameters,injection parameters section>>.
 
 === Conflicting definitions
 
