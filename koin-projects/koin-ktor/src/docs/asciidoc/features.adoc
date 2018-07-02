@@ -1,4 +1,4 @@
-== About koin-spark
+== About koin-ktor
 
 The `koin-ktor` project is dedicated to bring dependency injection for Ktor.
 
@@ -18,12 +18,38 @@ dependencies {
 }
 ----
 
-=== DSL enhancements
+=== Start Koin & just inject
 
-`controller` keyword + `SparkController` interface
+Just start Koin container before starting ktor:
 
-=== Spark & Koin
+[source,kotlin]
+----
+fun main(args: Array<String>) {
+    // Start Koin
+    startKoin(listOf(helloAppModule), logger = SLF4JLogger())
+    // Start Ktor
+    embeddedServer(Netty, commandLineEnvironment(args)).start()
+}
+----
 
+KoinComponent powers are available from `Application` class:
+
+[source,kotlin]
+----
+fun Application.main() {
+    //...
+
+    // Lazy inject HelloService
+    val service by inject<HelloService>()
+
+    // Routing section
+    routing {
+        get("/hello") {
+            call.respondText(service.sayHello())
+        }
+    }
+}
+----
 
 
 

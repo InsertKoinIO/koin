@@ -20,11 +20,44 @@ dependencies {
 
 === DSL enhancements
 
-`controller` keyword + `SparkController` interface
+The project brings the `controller` keyword to declare a single instance of your controller:
+
+[source,kotlin]
+----
+val helloAppModule = module {
+    single { HelloServiceImpl(get()) as HelloService }
+    single { HelloRepositoryImpl() as HelloRepository }
+
+    // Declare a controller
+    controller { HelloController(get()) }
+}
+----
+
+You controller class must extend `SparkController` interface:
+
+[source,kotlin]
+----
+class HelloController(val service: HelloService) : SparkController {
+    init {
+        get("/hello") {
+            service.sayHello()
+        }
+    }
+}
+----
 
 === Spark & Koin
 
+The `koin-spark` project also introduces `start()` and `stop()` function. This first help you start Spark server with Koin
+modules:
 
+[source,kotlin]
+----
+fun main(vararg args: String) {
+    // Spark with Koin
+    start(modules = listOf(helloAppModule))
+}
+----
 
 
 
