@@ -1,6 +1,6 @@
 == Koin DSL Extension for Android
 
-In this section, the added keywords for Koin DSL.
+Below, the added keywords for Koin DSL.
 
 === Getting Android context inside a Module
 

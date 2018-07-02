@@ -1,0 +1,36 @@
+== About koin-spark
+
+The `koin-ktor` project is dedicated to bring dependency injection for Ktor.
+
+=== Gradle setup
+
+Add the `koin-android` dependency to your Gradle project:
+
+[source,gradle,subs="attributes"]
+----
+// Add Jcenter to your repositories if needed
+repositories {
+    jcenter()
+}
+dependencies {
+    // Reflection features for Koin
+    compile 'org.koin:koin-ktor:{revnumber}'
+}
+----
+
+=== DSL enhancements
+
+`controller` keyword + `SparkController` interface
+
+=== Spark & Koin
+
+
+
+
+
+
+
+
+
+
+

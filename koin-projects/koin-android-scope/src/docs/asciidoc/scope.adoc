@@ -20,48 +20,125 @@ dependencies {
 }
 ----
 
-=== Binding with Android lifecycle
+=== Taming the Android lifecycle
 
-Below are some DSL related features.
+Android components are mainly managed by their lifecycle: we can't directly instantiate an Activity nor a Fragment. The system
+make all creation and management for us, and make callbacks on methods: onCreate, onStart...
 
-=== Using the scopedWith function
+That's why we can't describe our Activity/Fragment/Service in a Koin module. We need then to inject dependencies into properties and also
+respect the lifecycle: Components related to the UI parts must be released on soon as we don't need them anymore.
 
-It's possible to avoid inject your definition using `get()` in your definitions to simplify your writing. The `build()` function
-will help you build your component by taking it's first constructor and injecting dependencies.
+Then we have:
 
-Below you can compare the two ways of injecting inside definitions:
+* long live components (Services, Data Repository ...) - used by several screens, never dropped
+* medium live components (user sessions ...) - used by several screens, must be dropped after an amount of time
+* short live components (views) - used by only one screen & must be dropped at the end of the screen
+
+
+Long live components can be easily described as `single` definitions. For medium and short live components we can have several approaches.
+
+In the case of MVP architecture style, the `Presenter` is a short live component to help/support the UI. The presenter must be created each time the screen is showing,
+and dropped once the screen is gone.
+
+.A new Presenter is created each time
+[source,kotlin]
+----
+class DetailActivity : AppCompatActivity() {
+
+    // injected Presenter
+    override val presenter : Presenter by inject()
+----
+
+We can describe it in a module:
+
+
+* as `factory` - to produce a new instance each time the `by inject()` or `get()` is called
 
 [source,kotlin]
 ----
-    class ComponentA
-    class ComponentB(val a: ComponentA)
-    class ComponentC(val a: ComponentA, val b: ComponentB)
+val androidModule = module {
 
-    // directly inject definitions with get()
-    val noReflect = module {
-           single { ComponentA() }
-           single { ComponentB(get()) }
-           single { ComponentC(get(),get()) }
-       }
-
-    // don't use get
-    val buildwithReflect = module {
-           single { ComponentA() }
-           single { build<ComponentB>() }
-           single { build<ComponentC>() }
-       }
+    // Facvtory instance of Presenter
+    factory { Presenter() }
+}
 ----
+
+* as `single` & `module` - to produce an instance when called and manually drop it when needed
+
+[source,kotlin]
+----
+val androidModule = module {
+
+    // a dedicated module for Presenter
+    module("org.samples.detail"){
+        single { Presenter() }
+    }
+}
+
+// Call release() to release Presenter instance when needed
+release("org.samples.detail")
+----
+
 
 [IMPORTANT]
 ====
-Keep in mind that `build()` function is not just magic, it has also a very small cost (the time to take your constructor and inject each argument). If you care about performances,
-don't hesitate to switch your definition writing between get or build to compare the their performances for you.
+Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. Th system keeps a reference
+on it and can't totally drop it via garbage collection.
 ====
 
 
+=== Binding to lifecycle with scopedWith
 
+Koin gives the `scopedWith` function to bind the actual Android component to listen its lifecycle and release instances of a module.
 
+[source,kotlin]
+----
+class DetailActivity : AppCompatActivity() {
 
+    // Lazy injected Presenter instance
+    override val presenter : Presenter by inject()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // on ON_DESTROY release org.samples.detail module instances
+        scopedWith("org.samples.detail")
+    }
+----
+
+[NOTE]
+====
+When using the `scopedWith` function, you can specify the end signal on which you want to react: ON_DESTROY | ON_STOP
+====
+
+A little function to help you write your scoped module, you can use the `path()` function on a class to help declare your module:
+
+[source,kotlin]
+----
+val androidModule = module {
+
+    // DetailActivity module for Presenter
+    module(DetailActivity::class.path()){
+        single { Presenter() }
+    }
+}
+----
+
+Then you can use the `path()` function to easily scope a component:
+
+[source,kotlin]
+----
+class DetailActivity : AppCompatActivity() {
+
+    // Lazy injected Presenter instance
+    override val presenter : Presenter by inject()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // on ON_DESTROY release DetailActivity module instances
+        scopedWith(this::class.path())
+    }
+----
 
 

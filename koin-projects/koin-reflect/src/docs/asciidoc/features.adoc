@@ -4,7 +4,7 @@ The `koin-reflect` project is dedicated to bring enhancement features which use 
 
 === Gradle setup
 
-Add the `koin-android` dependency to your Gradle project:
+Add the `koin-reflect` dependency to your Gradle project:
 
 [source,gradle,subs="attributes"]
 ----

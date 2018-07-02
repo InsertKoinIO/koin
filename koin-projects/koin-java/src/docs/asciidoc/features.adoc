@@ -1,6 +1,6 @@
 == About koin-java
 
-The `koin-reflect` project is dedicated to bring enhancement features to help java developers.
+The `koin-java` project is dedicated to bring enhancement features to help java developers.
 
 === Gradle setup
 

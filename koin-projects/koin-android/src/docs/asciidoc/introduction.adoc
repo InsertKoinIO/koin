@@ -1,7 +1,6 @@
 == About koin-android
 
-The `koin-android` project is dedicated to provide Koin powers to Android world. In this manual you will find how to inject
-dependencies from Koin inside your Android components.
+The `koin-android` project is dedicated to provide Koin powers to Android world. 
 
 For general Koin concepts, check the `koin-core` manual.
 
