@@ -1,26 +1,21 @@
 package org.koin.standalone;
 
+import kotlin.Lazy;
 import org.junit.Before;
 import org.junit.Test;
-import org.koin.java.standalone.KoinJavaStarter;
 import org.koin.test.AutoCloseKoinTest;
 
-import kotlin.Lazy;
-
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.koin.java.standalone.KoinJavaComponent.get;
-import static org.koin.java.standalone.KoinJavaComponent.inject;
-import static org.koin.java.standalone.KoinJavaComponent.release;
+import static org.junit.Assert.*;
+import static org.koin.java.standalone.KoinJavaComponent.*;
+import static org.koin.java.standalone.KoinJavaStarter.startKoin;
 import static org.koin.standalone.UnitJavaStuffKt.koinModule;
 
 public class UnitJavaTest extends AutoCloseKoinTest {
 
     @Before
     public void before() {
-        KoinJavaStarter.startKoin(singletonList(koinModule));
+        startKoin(singletonList(koinModule));
     }
 
     @Test

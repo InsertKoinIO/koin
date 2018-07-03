@@ -47,3 +47,4 @@ Koin proposes some implementation of logging, in function of the target platform
 If you don't want to log any info, you can use the `EmptyLogger` class.
 
 You can easily implement the `Logger` interface to adapt to your logging technology.
+
