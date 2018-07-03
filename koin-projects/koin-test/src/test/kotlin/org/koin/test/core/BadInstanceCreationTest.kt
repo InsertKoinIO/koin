@@ -118,13 +118,12 @@ class BadInstanceCreationTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `single internal error`() {
+    fun `single internal error - checked`() {
         check(listOf(module5))
     }
 
     @Test
     fun `multiple single definitions`() {
         check(listOf(module6))
-        Assert.assertNotNull(get<MyInterface>())
     }
 }

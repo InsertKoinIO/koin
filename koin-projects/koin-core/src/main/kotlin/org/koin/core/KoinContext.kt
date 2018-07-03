@@ -67,55 +67,6 @@ class KoinContext(
         request.parameters
     ) { request.defininitionFilter(instanceResolver.beanRegistry) }
 
-//    /**
-//     * Retrieve instance by type canonicalName
-//     *
-//     * @param canonicalName - type full canonicalName
-//     * @param module
-//     * @param parameters
-//     */
-//    fun <T> get(
-//        canonicalName: String,
-//        module: String? = null,
-//        parameters: ParameterDefinition,
-//        extraDefinitionFilter: DefinitionFilter? = null
-//    ): T {
-//        val definitions =
-//            if (extraDefinitionFilter != null) beanRegistry.definitions.filter(extraDefinitionFilter) else beanRegistry.definitions
-//
-//        val foundDefinitions =
-//            definitions.filter { it.clazz.java.canonicalName == canonicalName || it.types.filter { it.java.canonicalName == canonicalName }.isNotEmpty() }
-//                .distinct()
-//
-//        try {
-//            return resolveInstanceFromDefinitions(foundDefinitions, module, parameters)
-//        } catch (e: NoBeanDefFoundException) {
-//            throw NoBeanDefFoundException("Can't create instance for class '$canonicalName'")
-//        }
-//    }
-
-//    /**
-//     * Retrieve an instance by its bean beanDefinition canonicalName
-//     */
-//    fun <T> getByTypeName(
-//        canonicalName: String,
-//        module: String? = null,
-//        parameters: ParameterDefinition,
-//        extraDefinitionFilter: DefinitionFilter? = null
-//    ): T {
-//        val definitions =
-//            if (extraDefinitionFilter != null) beanRegistry.definitions.filter(extraDefinitionFilter) else beanRegistry.definitions
-//
-//        val foundDefinitions =
-//            definitions.filter { it.canonicalName == canonicalName || it.types.filter { it.java.simpleName == canonicalName }.isNotEmpty() }
-//                .distinct()
-//        try {
-//            return resolveInstanceFromDefinitions(foundDefinitions, module, parameters)
-//        } catch (e: Exception) {
-//            throw NoBeanDefFoundException("Can't create instance for class '$canonicalName'")
-//        }
-//    }
-
     /**
      * Drop all instances for path context
      * @param path

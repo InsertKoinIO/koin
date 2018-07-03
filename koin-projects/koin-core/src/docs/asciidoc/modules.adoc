@@ -33,9 +33,16 @@ val sampleModule = module("org.sample") { ... }
 The default namespace separator is "."
 ====
 
-If several modules are declaring the same namespace, their definitions will be in the same namespace.
+If several modules are declaring the same namespace, their definitions will be in the same namespace. The Koin module's path is also a good way to separate definitions in Koin.
 
-The Koin module's path is also a good way to separate definitions in Koin.
+You can also directly use a class to reuse its path as module name, with `path()` function:
+
+.Modules from class:
+[source,kotlin]
+----
+// definitions in /org/sample/UserSession
+val sampleModule = module(UserSession::class.path()) { ... }
+----
 
 === Inner modules
 
@@ -267,6 +274,7 @@ val myModule = module {
         //...
     }
 }
+
 // drop instances from /org/sample module
 release("org.sample")
 ----
@@ -275,6 +283,20 @@ release("org.sample")
 ====
 Releasing a module will also release all its children.
 ====
+
+Module release can also be done with class module and `path()` function:
+
+[source,kotlin]
+----
+val myModule = module {
+    module(Usersession::class.path()){
+        //...
+    }
+}
+
+// drop instances from /org/sample/UserSession module
+release(Usersession::class.path())
+----
 
 === Conflicting module declaration
 

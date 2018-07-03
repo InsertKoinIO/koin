@@ -9,8 +9,8 @@ import fr.ekito.myweatherapp.view.detail.DetailPresenter
 import fr.ekito.myweatherapp.view.splash.SplashContract
 import fr.ekito.myweatherapp.view.splash.SplashPresenter
 import fr.ekito.myweatherapp.view.weather.*
-import org.koin.android.scope.path
 import org.koin.dsl.module.module
+import org.koin.dsl.path.path
 
 /**
  * App Components

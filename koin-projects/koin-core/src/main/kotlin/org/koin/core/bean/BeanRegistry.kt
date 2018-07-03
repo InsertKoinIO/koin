@@ -65,10 +65,10 @@ class BeanRegistry() {
         searchDefinition { filterByNameAndClass(it, name, clazz) }
 
     fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: KClass<*>): Boolean =
-        it.name == name && filterByClass(it,clazz)
+        it.name == name && filterByClass(it, clazz)
 
     fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: Class<*>): Boolean =
-        it.name == name && filterByClass(it,clazz)
+        it.name == name && filterByClass(it, clazz)
 
     /**
      * Search by name and class
@@ -127,21 +127,17 @@ class BeanRegistry() {
             definitionResolver()
         }).distinct()
 
-        return if (candidates.size == 1) {
-            val candidate = candidates.first()
-            if (modulePath != null && !candidate.path.isVisible(modulePath)) {
-                throw NotVisibleException("Can't proceedResolution '$clazzName' - Definition is not visible from module '$modulePath'")
-            }
-            candidate
-        } else {
-            when {
-                candidates.isEmpty() -> throw NoBeanDefFoundException("No definition found to proceedResolution type '$clazzName'. Check your module definition")
-                else -> throw DependencyResolutionException(
-                    "Multiple definitions found to proceedResolution type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
-                        "\n\t"
-                    )}\n\tCheck your modules definition or use canonicalName attribute to proceedResolution components."
-                )
-            }
+        val filteredCandidates =
+            if (modulePath != null) candidates.filter { it.path.isVisible(modulePath) } else candidates
+
+        return when {
+            filteredCandidates.size == 1 -> filteredCandidates.first()
+            filteredCandidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazzName'. Check your module definition")
+            else -> throw DependencyResolutionException(
+                "Multiple definitions found for type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
+                    "\n\t"
+                )}\n\tCheck your modules definition, use inner modules visibility or definition names."
+            )
         }
     }
 

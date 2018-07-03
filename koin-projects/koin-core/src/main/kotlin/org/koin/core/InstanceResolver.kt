@@ -35,7 +35,9 @@ class InstanceResolver(
 
     private val resolutionStack = ResolutionStack()
 
-
+    /**
+     * resolve instance from InstanceRequest
+     */
     fun <T> resolve(req: InstanceRequest): T {
         return req.run {
             when {
@@ -47,64 +49,23 @@ class InstanceResolver(
         }
     }
 
+    /**
+     * Resolve instance from ClassRequest
+     */
     fun <T> resolve(req: ClassRequest): T {
         return proceedResolution(req.module, req.clazz, req.parameters) {
             beanRegistry.search(req.name, req.clazz)
         }
     }
 
+    /**
+     * Resolve instance from CustomRequest
+     */
     inline fun <reified T> resolve(request: CustomRequest): T {
         return proceedResolution(request.module, T::class.java, request.parameters) {
             request.defininitionFilter(beanRegistry)
         }
     }
-
-//    /**
-//     * Resolve a dependency for its bean definition
-//     * @param canonicalName bean definition canonicalName
-//     */
-//    inline fun <reified T> resolve(
-//        canonicalName: String,
-//        module: String? = null,
-//        noinline parameters: ParameterDefinition
-//    ): T =
-//        proceedResolution(module, T::class, parameters) { beanRegistry.search(canonicalName, T::class) }
-//
-//    /**
-//     * Resolve a dependency for its bean definition
-//     * byt its type
-//     */
-//    fun <T> resolve(
-//        clazz: KClass<*>,
-//        module: String? = null,
-//        parameters: ParameterDefinition
-//    ): T = proceedResolution(module, clazz, parameters) { beanRegistry.searchAll(clazz) }
-//
-//
-//    /**
-//     * Resolve a dependency for its bean definition
-//     * by its inferred type
-//     */
-//    inline fun <reified T> resolve(module: String? = null, noinline parameters: ParameterDefinition): T =
-//        resolve(T::class, module, parameters)
-
-//    /**
-//     * Resolve instance from
-//     */
-//    fun <T> resolveInstanceFromDefinitions(
-//        foundDefinitions: List<BeanDefinition<*>>,
-//        module: String?,
-//        parameters: ParameterDefinition
-//    ): T {
-//        return when (foundDefinitions.size) {
-//            0 -> throw NoBeanDefFoundException("No bean beanDefinition found")
-//            1 -> {
-//                val def = foundDefinitions.first()
-//                proceedResolution(module, def.clazz, parameters) { listOf(def) }
-//            }
-//            else -> throw NoBeanDefFoundException("Multiple bean definitions found")
-//        }
-//    }
 
     /**
      * Resolve a dependency for its bean definition
