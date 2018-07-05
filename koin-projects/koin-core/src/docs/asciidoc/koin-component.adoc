@@ -79,7 +79,44 @@ val myService : MyService get()
 The lazy inject form is better to define property that need lazy evaluation.
 ====
 
+=== Resolving instance from a name or a module
+
+If you need to filter about visibility (search a definition by name or module), you can specify the following parameter with `get()` or `by inject()`
+
+* `name` - name of the definition (when specified name parameter in your definition)
+* `module` - path of the module
+
+Example of module using classes names as modules:
+
+[source,kotlin]
+----
+val module = module {
+    module(ComponentB::class.moduleName) {
+        single { ComponentA() }
+        single { ComponentB(get()) }
+    }
+
+    module(ComponentC::class.moduleName) {
+        single { ComponentA() }
+        single { ComponentC(get()) }
+    }
+}
+
+class ComponentA
+class ComponentB(val componentA: ComponentA)
+class ComponentC(val componentA: ComponentA)
+----
+
+We can make the following resolutions:
+
+[source,kotlin]
+----
+// retrieve from given module
+val a_b = get<ComponentA>(module = ComponentB::class.moduleName)
+val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
+----
+
+
 === No inject() or get() in your API?
 
 If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
-

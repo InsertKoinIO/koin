@@ -111,20 +111,20 @@ class DetailActivity : AppCompatActivity() {
 When using the `scopedWith` function, you can specify the end signal on which you want to react: ON_DESTROY | ON_STOP
 ====
 
-A little function to help you write your scoped module, you can use the `path()` function on a class to help declare your module:
+A little function to help you write your scoped module, you can use the `moduleName` property on a class to help declare your module:
 
 [source,kotlin]
 ----
 val androidModule = module {
 
     // DetailActivity module for Presenter
-    module(DetailActivity::class.path()){
+    module(DetailActivity::class.moduleName){
         single { Presenter() }
     }
 }
 ----
 
-Then you can use the `path()` function to easily scope a component:
+Then you can use the `moduleName` property to easily scope a component:
 
 [source,kotlin]
 ----
@@ -137,7 +137,7 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // on ON_DESTROY release DetailActivity module instances
-        scopedWith(this::class.path())
+        scopedWith(this::class.moduleName)
     }
 ----
 
