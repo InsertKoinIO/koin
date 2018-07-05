@@ -10,7 +10,7 @@ import fr.ekito.myweatherapp.view.splash.SplashContract
 import fr.ekito.myweatherapp.view.splash.SplashPresenter
 import fr.ekito.myweatherapp.view.weather.*
 import org.koin.dsl.module.module
-import org.koin.dsl.path.path
+import org.koin.dsl.path.moduleName
 
 /**
  * App Components
@@ -23,7 +23,7 @@ val weatherAppModule = module {
     }
 
     // scoped module example
-    module(WeatherActivity::class.path()) {
+    module(WeatherActivity::class.moduleName) {
         // Presenter for ResultHeader View
         single {
             WeatherHeaderPresenter(get(), get()) as WeatherHeaderContract.Presenter

@@ -18,8 +18,8 @@ package org.koin.dsl.path
 import kotlin.reflect.KClass
 
 /**
- * Provide canonical name of the class to be used as Koin Module path
+ * Provide name of the class to be used as Koin Module path
  *
  * @author Arnaud Giuliani
  */
-fun KClass<*>.path() = java.canonicalName ?: error("Can't get class canonical name from $this")
+val KClass<*>.moduleName get() = java.simpleName ?: error("Can't get the class name $this")

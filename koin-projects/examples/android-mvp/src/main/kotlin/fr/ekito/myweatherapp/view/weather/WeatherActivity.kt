@@ -12,7 +12,7 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.koin.android.scope.ext.android.scopedWith
-import org.koin.dsl.path.path
+import org.koin.dsl.path.moduleName
 
 /**
  * Weather Result View
@@ -24,7 +24,7 @@ class WeatherActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
-        scopedWith(this::class.path())
+        scopedWith(this::class.moduleName)
 
         val weatherTitleFragment = WeatherHeaderFragment()
         val resultListFragment = WeatherListFragment()
