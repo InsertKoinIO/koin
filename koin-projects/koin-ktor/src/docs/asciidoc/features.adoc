@@ -51,9 +51,66 @@ fun Application.main() {
 }
 ----
 
+From `Routing` class:
+
+[source,kotlin]
+----
+fun Application.main() {
+    //...
+
+    // Lazy inject HelloService
+    val service by inject<HelloService>()
+
+    // Routing section
+    routing {
+        v1()
+    }
+}
+
+fun Routing.v1() {
+
+    // Lazy inject HelloService from within a Ktor Routing Node
+    val service by inject<HelloService>()
+
+    get("/v1/hello") {
+        call.respondText("[/v1/hello] " + service.sayHello())
+    }
+}
+
+----
 
 
+From `Route` class:
 
+[source,kotlin]
+----
+fun Application.main() {
+    //...
+
+    // Lazy inject HelloService
+    val service by inject<HelloService>()
+
+    // Routing section
+    routing {
+        v1()
+    }
+}
+
+fun Routing.v1() {
+    hello()
+}
+
+fun Route.hello() {
+
+    // Lazy inject HelloService from within a Ktor Route
+    val service by inject<HelloService>()
+
+    get("/v1/bye") {
+        call.respondText("[/v1/bye] " + service.sayHello())
+    }
+}
+
+----
 
 
 
