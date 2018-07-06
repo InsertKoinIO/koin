@@ -7,6 +7,4 @@ ext {
     okhttp_version = '3.8.1'
     retrofit_version = '2.2.0'
     rxjava_version = '2.1.7'
-
-
 }
