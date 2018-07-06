@@ -21,22 +21,22 @@ class MainApplication : Application() {
 
 === Starting Koin with Android context from elsewhere?
 
-If you need to start Koin from elsewhere, you can just use the static `statrKoin()` function and provide your Android `Application`
-instance with the `with` operator:
+If you need to start Koin from another Android class, you can use the `startKoin()` function and provide your Android `Context`
+instance with just like:
 
 [source,kotlin]
 ----
 // Start Koin and init Application instance definition
-startKoin(myAppModules) with (application)
+startKoin(androidContext, myAppModules)
 ----
 
-This `with` operator can also be done to specify a mocked Android Application context in a Junit:
+Also, there is a `with` operator that can help you bind the `Context` instance in the case of non Android class (Junit for example). It can help like follow:
 
-.Example of mocking Androic onctext in a JUnit
+.Example of mocking Androic context in a JUnit
 [source,kotlin]
 ----
-// Start Koin and init Application instance definition
-startKoin(myAppModules) with (mock(Application::class.java))
+// Start Koin and init Context instance definition
+startKoin(myAppModules) with (mock(Context::class.java))
 ----
 
 === Koin Logging

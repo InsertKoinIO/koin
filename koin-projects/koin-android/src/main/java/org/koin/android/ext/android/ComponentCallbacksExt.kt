@@ -16,10 +16,17 @@
 package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
+import android.content.Context
+import org.koin.android.ext.koin.bindAndroidProperties
 import org.koin.android.ext.koin.context
+import org.koin.android.ext.koin.with
+import org.koin.android.logger.AndroidLogger
+import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.dsl.module.Module
+import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
 
 /**
@@ -27,6 +34,45 @@ import org.koin.standalone.StandAloneContext
  *
  * @author Arnaud Giuliani
  */
+
+/**
+ * Create a new Koin ModuleDefinition
+ * @param context - Android context
+ * @param modules - list of AndroidModule
+ * @param extraProperties - extra extraProperties
+ * @param loadProperties - laod extraProperties from asset/koin.extraProperties
+ * @param logger - default Koin logger
+ * @param createOnStart - create flagged instances on start
+ *
+ * will be soon deprecated for starKoin() with <context>
+ */
+fun ComponentCallbacks.startKoin(
+    context: Context,
+    modules: List<Module>,
+    extraProperties: Map<String, Any> = HashMap(),
+    loadProperties: Boolean = true,
+    logger: Logger = AndroidLogger(),
+    createOnStart: Boolean = true
+) {
+    Koin.logger = logger
+
+    val koin = StandAloneContext.startKoin(
+        modules,
+        false,
+        false,
+        extraProperties,
+        logger,
+        false
+    ).with(context)
+
+    if (createOnStart) {
+        StandAloneContext.createEagerInstances()
+    }
+
+    if (loadProperties) {
+        koin.bindAndroidProperties(context)
+    }
+}
 
 /**
  * inject lazily given dependency for Android component

@@ -1,6 +1,6 @@
 package fr.ekito.myweatherapp
 
-import android.app.Application
+import android.content.Context
 import fr.ekito.myweatherapp.di.offlineWeatherApp
 import fr.ekito.myweatherapp.di.onlineWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
@@ -18,7 +18,7 @@ import org.mockito.Mockito.mock
 class CheckKoinTest : KoinTest {
 
     val mockAndroid = module {
-        single { mock(Application::class.java) }
+        single { mock(Context::class.java) }
     }
 
     @After

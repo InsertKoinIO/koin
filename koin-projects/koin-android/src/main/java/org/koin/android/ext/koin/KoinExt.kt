@@ -16,7 +16,6 @@
 
 package org.koin.android.ext.koin
 
-import android.app.Application
 import android.content.Context
 import org.koin.core.Koin
 import org.koin.dsl.definition.BeanDefinition
@@ -29,48 +28,32 @@ import java.util.*
  * @author Arnaud Giuliani
  */
 
-/**
- * Start Koin Android features
- * - assets/koin.properties loading
- * - application/context binding
- */
-infix fun Koin.with(application: Application): Koin {
-    Koin.logger.info("[init] Load Android features")
-    init(application)
-    return this
-}
 
-/**
- * init android Application dependency in Koin context
- * @param application - Android Application instance
- */
-fun Koin.init(application: Application): Koin {
-    Koin.logger.info("[init] ~ added Android application bean reference")
-    // provide Application defintion
+infix fun Koin.with(androidContext: Context): Koin {
+    Koin.logger.info("[init] declare Android Context")
     beanRegistry.declare(
         BeanDefinition(
-            clazz = Application::class,
-            types = listOf(Context::class),
-            definition = { application }), Path.root()
+            clazz = Context::class,
+            definition = { androidContext }), Path.root()
     )
     return this
 }
 
 /**
  * Load properties file from Assets
- * @param application
+ * @param androidContext
  * @param koinPropertyFile
  */
 fun Koin.bindAndroidProperties(
-    application: Application,
+    androidContext: Context,
     koinPropertyFile: String = "koin.properties"
 ): Koin {
     val koinProperties = Properties()
     try {
-        val hasFile = application.assets.list("").contains(koinPropertyFile)
+        val hasFile = androidContext.assets.list("").contains(koinPropertyFile)
         if (hasFile) {
             try {
-                application.assets.open(koinPropertyFile).use { koinProperties.load(it) }
+                androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }
                 val nb = propertyResolver.import(koinProperties)
                 Koin.logger.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
             } catch (e: Exception) {
