@@ -1,11 +1,12 @@
 package org.koin.test.android
 
 import android.app.Application
+import android.content.Context
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.with
 import org.koin.core.Koin
 import org.koin.dsl.module.module
@@ -31,7 +32,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
     }
 
     val SampleModule = module {
-        single { AndroidComponent(androidApplication()) }
+        single { AndroidComponent(androidContext()) }
     }
 
     val ActivityModule = module {
@@ -42,8 +43,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
     }
     val CTX_ACTIVITY_MODULE = "ActivityModule"
 
-    class AndroidComponent(val application: Application)
-
+    class AndroidComponent(val androidContext: Context)
     class OtherService(val androidComponent: AndroidComponent, val url: String)
 
     @Before
@@ -53,7 +53,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
     @Test
     fun should_inject_by_scope() {
-        startKoin(listOf(SampleModule, ActivityModule)) with (mock(Application::class.java))
+        startKoin(listOf(SampleModule, ActivityModule)) with (mock(Context::class.java))
 
         assertContexts(2)
         assertDefinitions(3)
@@ -66,7 +66,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         val component = get<AndroidComponent>()
 
         assertEquals(component, service.androidComponent)
-        assertEquals(get<Application>(), component.application)
+        assertEquals(get<Context>(), component.androidContext)
 
         assertContextInstances(CTX_ACTIVITY_MODULE, 1)
         assertDefinitions(3)
@@ -106,7 +106,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
         val component = get<AndroidComponent>()
 
-        assertEquals(get<Application>(), component.application)
+        assertEquals(get<Context>(), component.androidContext)
 
         assertDefinitions(2)
         assertRemainingInstances(2)
