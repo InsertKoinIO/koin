@@ -6,6 +6,8 @@ import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
 import io.ktor.response.respondText
+import io.ktor.routing.Route
+import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
@@ -41,6 +43,30 @@ fun Application.main() {
         get("/hello") {
             call.respondText(service.sayHello())
         }
+
+        v1()
+     }
+}
+
+fun Routing.v1() {
+
+    // Lazy inject HelloService from within a Ktor Routing Node
+    val service by inject<HelloService>()
+
+    get("/v1/hello") {
+        call.respondText("[/v1/hello] " + service.sayHello())
+    }
+
+    bye()
+}
+
+fun Route.bye() {
+
+    // Lazy inject HelloService from within a Ktor Route
+    val service by inject<HelloService>()
+
+    get("/v1/bye") {
+        call.respondText("[/v1/bye] " + service.sayHello())
     }
 }
 
