@@ -45,6 +45,7 @@ _Android_
 * `[ADDED]` - support AndroidX packages with `koin-androidx-scope` & `koin-androidx-viewmodel` - [#138](https://github.com/InsertKoinIO/koin/issues/138) - [#122](https://github.com/InsertKoinIO/koin/issues/122) - [#154](https://github.com/InsertKoinIO/koin/issues/154)
 * `[ADDED]` - scoping feature with Android lifecycle with `koin-android-scope` - [#142](https://github.com/InsertKoinIO/koin/issues/142)
 * `[UPDATED]`- Open startKoin() for other Android context & use `Context` instead of `Application` - [#156](https://github.com/InsertKoinIO/koin/issues/156)
+* `[UPDATED]`- androix version to `2.0.0-beta01`
 
 _Ktor_
 
