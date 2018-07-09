@@ -1,3 +1,4 @@
+
 == Injection parameters
 
 In any `single` or `factory` definition, you can use injection parameters: parameters that will be injected and used by your definition:
@@ -36,7 +37,7 @@ If we want to have multiple parameters in our definition, we can use the *destru
 
 [source,kotlin]
 ----
-class Presenter(val view : View)
+class Presenter(val view : View, id : String)
 
 val myModule = module {
     single{ (view : View, id : String) -> Presenter(view,id) }

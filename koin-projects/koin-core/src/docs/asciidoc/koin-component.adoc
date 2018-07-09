@@ -120,3 +120,4 @@ val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
 === No inject() or get() in your API?
 
 If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
+
