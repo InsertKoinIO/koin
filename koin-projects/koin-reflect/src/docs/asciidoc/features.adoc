@@ -42,7 +42,7 @@ Below you can compare the two ways of injecting inside definitions:
            single { ComponentC(get(),get()) }
        }
 
-    // without get but build() instead
+    // without get() but with build() instead
     val buildwithReflect = module {
            single { ComponentA() }
            single { build<ComponentB>() }
