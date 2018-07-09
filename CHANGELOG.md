@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.0.0]()
+
+_Core_
+
+_Android_
+
+_Samples_
+
+
 ## [0.9.3]()
 
 Gradle & Continuous Integration
