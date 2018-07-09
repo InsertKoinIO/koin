@@ -45,6 +45,10 @@ Choose your Koin dependency:
 compile "org.koin:koin-core:$koin_version"
 // Koin for Unit tests
 testCompile "org.koin:koin-test:$koin_version"
+// Koin for Java developers
+compile "org.koin:koin-java:$koin_version"
+// Advanaced features
+compile "org.koin:koin-reflect:$koin_version"
 
 // Koin for Android
 compile "org.koin:koin-android:$koin_version"
