@@ -1,22 +1,87 @@
 # Change Log
 
-## [1.0.0]()
+Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
+
+## [1.0.0-beta3]()
+
+_Scripts_
+
+* `[UPDATED]` - rework all gradle structure and scripts - [#126](https://github.com/InsertKoinIO/koin/issues/126)
+* `[ADDED]` - asciidoc integration - [#127](https://github.com/InsertKoinIO/koin/issues/127)
+* `[ADDED]` - CI integration with CircleCI
 
 
 _Core_
 
+* `[UPDATED]` - compilation with Kotlin 1.2.50
+* `[UPDATED]` - Update DSL keywords: `module` & `single` (replaces `applicationContext`, `context` & `bean`) - [#131](https://github.com/InsertKoinIO/koin/issues/131)
+* `[FIXED]` - Fixed Scope API, aka module visibility resolution
+* `[ADDED]` - SLF4J Logger implementation (`koin-logger-slf4j`), used by `koin-spark` & `koin-ktor` - [#130](https://github.com/InsertKoinIO/koin/issues/130)
+* `[FIXED]` - Resolution & error check/catch for display - [#110](https://github.com/InsertKoinIO/koin/issues/110)
+* `[FIXED]` - BeanDefinition equals()
+* `[FIXED]` - Instance creation error display - [#124](https://github.com/InsertKoinIO/koin/issues/124)
+* `[UPDATED]` - logging tree resolution (with debug data if needed)
+* `[ADDED]` - asciidoc doc updated - [#121](https://github.com/InsertKoinIO/koin/issues/121) - [#100](https://github.com/InsertKoinIO/koin/issues/100) - [#102](https://github.com/InsertKoinIO/koin/issues/102) - [#103](https://github.com/InsertKoinIO/koin/issues/103)
+* `[UPDATED]` - Injection parameter API with destructured declaration - [#133](https://github.com/InsertKoinIO/koin/issues/133)
+* `[ADDED]` - Preload instances with `createAtStart` - [#141](https://github.com/InsertKoinIO/koin/issues/141)
+* `[UPDATED]` - Explicit bean/module overide - [#123](https://github.com/InsertKoinIO/koin/issues/123)
+* `[FIXED]` - bind operator check assignable types
+* `[FIXED]` - ViewModel factory instance creation bugfix - [#145](https://github.com/InsertKoinIO/koin/issues/145)
+* `[FIXED]` - ViewModel factory injection params leak - [#149](https://github.com/InsertKoinIO/koin/issues/149)
+
+
+_Test_
+
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - check() feature to check all configuration (does not create instances like dryRun)
+* `[ADDED]` - declare mock or other definition out of the box with `declareMock` & `declare`- [#151](https://github.com/InsertKoinIO/koin/issues/151) - [#119](https://github.com/InsertKoinIO/koin/issues/119)
+
+
 _Android_
+
+* `[BREAKING]` - Package & project renaming -> `koin-android`,`koin-android-scope` & `koin-android-viewmodel` - [#144](https://github.com/InsertKoinIO/koin/issues/144)
+* `[REMOVED]` - bindString(), bindBool() & bindInt()
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - support AndroidX packages with `koin-androidx-scope` & `koin-androidx-viewmodel` - [#138](https://github.com/InsertKoinIO/koin/issues/138) - [#122](https://github.com/InsertKoinIO/koin/issues/122) - [#154](https://github.com/InsertKoinIO/koin/issues/154)
+* `[ADDED]` - scoping feature with Android lifecycle with `koin-android-scope` - [#142](https://github.com/InsertKoinIO/koin/issues/142)
+* `[UPDATED]`- Open startKoin() for other Android context & use `Context` instead of `Application` - [#156](https://github.com/InsertKoinIO/koin/issues/156)
 
 _Ktor_
 
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - use `koin-logger-slf4j`
+* `[UPDATED]` - ktor `0.9.2`
+* `[ADDED]`- add `Route` & `Routing` class extensions - [#128](https://github.com/InsertKoinIO/koin/issues/128)
+
 _Spark_
+
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - use `koin-logger-slf4j`
+* `[UPDATED]` - `controller` keyword now need your class to extend `SparkController`
+
 
 _Java_
 
+* `[ADDED]` - add `koin-java` project - [#106](https://github.com/InsertKoinIO/koin/issues/106)
+* `[ADDED]` - asciidoc doc
+
 _Reflect_
+
+* `[ADDED]` - add `koin-reflect` project
+* `[ADDED]` - add `build()` DSL function to allow smarter way of building definition
+* `[ADDED]` - asciidoc doc
+
+_Website_
+
+* `[ADDED]` - Doc integration
+* `[ADDED]` - Getting started integration
+* `[FIXED]` - Kotlin slack URL - [#125](https://github.com/InsertKoinIO/koin/issues/125)
+
 
 _Samples_
 
+* `[ADDED]` - Added `examples` folder, gathering examples application 
+* `[ADDED]` - Thermosiphon example - [#116](https://github.com/InsertKoinIO/koin/issues/116)
 
 
 ## [0.9.3]()
