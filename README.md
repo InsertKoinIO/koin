@@ -40,6 +40,8 @@ repositories {
 
 Choose your Koin dependency:
 
+* Core features
+
 ```gradle
 // Koin for Kotlin
 compile "org.koin:koin-core:$koin_version"
@@ -47,25 +49,43 @@ compile "org.koin:koin-core:$koin_version"
 testCompile "org.koin:koin-test:$koin_version"
 // Koin for Java developers
 compile "org.koin:koin-java:$koin_version"
-// Advanaced features
+// Advanced features
 compile "org.koin:koin-reflect:$koin_version"
+```
 
+* Android
+
+```gradle
 // Koin for Android
 compile "org.koin:koin-android:$koin_version"
 // Koin Android Scope feature
 compile "org.koin:koin-android-scope:$koin_version"
 // Koin Android ViewModel feature
 compile "org.koin:koin-android-viewmodel:$koin_version"
+```
 
-// AndroidX
+* AndroidX
+
+```gradle
+
+// AndroidX (based on koin-android)
 // Koin AndroidX Scope feature
 compile "org.koin:koin-androidx-scope:$koin_version"
 // Koin AndroidX ViewModel feature
 compile "org.koin:koin-androidx-viewmodel:$koin_version"
+```
+
+* SparkJava
+
+```gradle
 
 // Koin for Spark Kotlin
 compile "org.koin:koin-spark:$koin_version"
+```
 
+* Ktor
+
+```gradle
 // Koin for Ktor Kotlin
 compile "org.koin:koin-ktor:$koin_version"
 ```
