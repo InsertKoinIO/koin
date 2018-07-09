@@ -35,14 +35,14 @@ Below you can compare the two ways of injecting inside definitions:
     class ComponentB(val a: ComponentA)
     class ComponentC(val a: ComponentA, val b: ComponentB)
 
-    // directly inject definitions with get()
+    // inject definitions with get()
     val noReflect = module {
            single { ComponentA() }
            single { ComponentB(get()) }
            single { ComponentC(get(),get()) }
        }
 
-    // don't use get
+    // without get but build() instead
     val buildwithReflect = module {
            single { ComponentA() }
            single { build<ComponentB>() }
