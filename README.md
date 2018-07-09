@@ -29,6 +29,8 @@ koin_version = '1.0.0-beta-3'
 
 ## Gradle 
 
+### Jcenter 
+
 Check that you have the `jcenter` repository. 
 
 ```gradle
@@ -38,9 +40,11 @@ repositories {
 }
 ```
 
+### Dependencies
+
 Choose your Koin dependency:
 
-* Core features
+#### Core features
 
 ```gradle
 // Koin for Kotlin
@@ -53,7 +57,7 @@ compile "org.koin:koin-java:$koin_version"
 compile "org.koin:koin-reflect:$koin_version"
 ```
 
-* Android
+#### Android
 
 ```gradle
 // Koin for Android
@@ -64,7 +68,7 @@ compile "org.koin:koin-android-scope:$koin_version"
 compile "org.koin:koin-android-viewmodel:$koin_version"
 ```
 
-* AndroidX
+#### AndroidX
 
 ```gradle
 
@@ -75,7 +79,7 @@ compile "org.koin:koin-androidx-scope:$koin_version"
 compile "org.koin:koin-androidx-viewmodel:$koin_version"
 ```
 
-* SparkJava
+#### SparkJava
 
 ```gradle
 
@@ -83,7 +87,7 @@ compile "org.koin:koin-androidx-viewmodel:$koin_version"
 compile "org.koin:koin-spark:$koin_version"
 ```
 
-* Ktor
+#### Ktor
 
 ```gradle
 // Koin for Ktor Kotlin
