@@ -4,7 +4,7 @@ Below, the added keywords for Koin DSL.
 
 === Getting Android context inside a Module
 
-The `androidApplication()` function allows you to get the `Application` instance in a Koin module, to help you simply
+The `androidContext()` function allows you to get the `Context` instance in a Koin module, to help you simply
 write expression that requires the `Application` instance.
 
 [source,kotlin]
@@ -13,7 +13,7 @@ val appModule = module {
 
     // create a Presenter instance with injection of R.string.mystring resources from Android
     factory {
-        MyPresenter(androidApplication().resources.getString(R.string.mystring))
+        MyPresenter(androidContext().resources.getString(R.string.mystring))
     }
 }
 ----
