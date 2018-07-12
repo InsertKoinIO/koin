@@ -121,3 +121,24 @@ val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
 
 If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
 
+=== Releasing instances
+
+From a `KoinComponent` you can use the `release()` function to drop instances for a given module path:
+
+[source,kotlin]
+----
+val module = module {
+    module("ComponentB") {
+        single { ComponentA() }
+        single { ComponentB(get()) }
+    }
+}
+
+// Will release all instances from /ComponentB
+release("ComponentB")
+----
+
+==== release() vs closeKoin()
+
+The `release()` function release instances for a given module path. The `closeKoin()` function drop every thing in Koin, from definitions to instances.
+
