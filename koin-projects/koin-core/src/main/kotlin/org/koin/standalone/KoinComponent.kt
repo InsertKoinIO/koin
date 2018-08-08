@@ -17,7 +17,6 @@ package org.koin.standalone
 
 import org.koin.core.CustomRequest
 import org.koin.core.KoinContext
-import org.koin.core.ResolutionRequest
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 
@@ -55,7 +54,7 @@ inline fun <reified T> KoinComponent.get(
 /**
  * Special instance getter for integration / CustomRequest
  */
-fun <T> KoinComponent.getWith(request : CustomRequest): T =
+fun <T> KoinComponent.getWith(request: CustomRequest): T =
     (StandAloneContext.koinContext as KoinContext).get(request)
 
 /**
@@ -109,6 +108,12 @@ fun KoinComponent.setProperty(key: String, value: Any) = getKoinContext().setPro
  */
 fun KoinComponent.release(path: String) = getKoinContext().release(path)
 
+/**
+ * Release instances at given module scope
+ * @param path
+ */
+@Deprecated("function renamed - use release() function instead", ReplaceWith("release(path)"))
+fun KoinComponent.releaseContext(path: String) = getKoinContext().release(path)
 
 /**
  * Help to Access context

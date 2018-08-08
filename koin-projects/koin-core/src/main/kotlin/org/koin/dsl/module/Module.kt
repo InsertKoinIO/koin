@@ -31,16 +31,10 @@ import org.koin.standalone.StandAloneContext
  * Create a Module
  * @Deprecated @see module
  */
-@Deprecated(
-    "use module function instead", ReplaceWith(
-        "module { ModuleDefinition(Path.ROOT, StandAloneContext.koinContext as KoinContext).apply(init) }",
-        "org.koin.dsl.context.ModuleDefinition",
-        "org.koin.core.path.Path",
-        "org.koin.standalone.StandAloneContext",
-        "org.koin.core.KoinContext"
-    )
+@Deprecated("Use the module() function instead.",
+    ReplaceWith("module(init = init)")
 )
-fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(Path.ROOT, false, false, init)
+fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(init = init)
 
 /**
  * Create a Module

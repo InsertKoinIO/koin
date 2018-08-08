@@ -56,8 +56,8 @@ class ModuleDefinition(
      * Create a inner sub module in actual module
      * @param path
      */
-    @Deprecated("use module { } function instead")
-    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, false, false, init)
+    @Deprecated("Use module() function instead", ReplaceWith("module(path, init = init)"))
+    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, init = init)
 
     /**
      * Create a inner sub module in actual module
@@ -107,10 +107,11 @@ class ModuleDefinition(
      *
      * Deprecated - @see single
      * @param name
+     * @param definition
      */
-    @Deprecated("use single { } function instead")
+    @Deprecated("Use single() function instead", ReplaceWith("single(name,definition = definition)"))
     inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> =
-        single(name, false, false, definition)
+        single(name, definition = definition)
 
     /**
      * Provide a bean definition - alias to provide
