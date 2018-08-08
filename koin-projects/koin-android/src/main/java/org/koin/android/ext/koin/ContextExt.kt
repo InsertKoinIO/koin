@@ -15,6 +15,7 @@
  */
 package org.koin.android.ext.koin
 
+import android.app.Application
 import android.content.Context
 import org.koin.dsl.context.ModuleDefinition
 
@@ -24,3 +25,13 @@ import org.koin.dsl.context.ModuleDefinition
  * @author Arnaud Giuliani
  */
 fun ModuleDefinition.androidContext(): Context = get()
+
+/**
+ * DSL extension - Resolve Android Context instance
+ *
+ * @author Arnaud Giuliani
+ */
+@Deprecated("Application is not injected anymore by Koin. Please use androidContext() function instead, to inject Context.",
+    ReplaceWith("androidContext()")
+)
+fun ModuleDefinition.androidApplication(): Application = get()

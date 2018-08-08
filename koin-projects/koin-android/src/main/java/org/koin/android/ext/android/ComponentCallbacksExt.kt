@@ -129,3 +129,14 @@ fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
  * @param path
  */
 fun ComponentCallbacks.release(path: String): Unit = context().release(path)
+
+
+/**
+ * Release a Module from given Path
+ * @param path
+ */
+@Deprecated(
+    "function renamed - use release() function instead",
+    ReplaceWith("release(path)")
+)
+fun ComponentCallbacks.releaseContext(path: String): Unit = context().release(path)
