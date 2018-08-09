@@ -17,7 +17,7 @@ package org.koin.test
 
 import org.junit.After
 import org.koin.core.Koin
-import org.koin.standalone.StandAloneContext.closeKoin
+import org.koin.standalone.StandAloneContext.stopKoin
 
 /**
  * Koin Test - embed autoclose @after method to close Koin after every test
@@ -29,7 +29,7 @@ abstract class AutoCloseKoinTest() : KoinTest {
     @After
     fun autoClose() {
         Koin.logger.info("AutoClose Koin")
-        closeKoin()
+        stopKoin()
     }
 }
 

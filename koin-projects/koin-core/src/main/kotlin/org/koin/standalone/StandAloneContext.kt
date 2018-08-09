@@ -177,7 +177,16 @@ object StandAloneContext {
     /**
      * Close actual Koin context
      */
-    fun closeKoin() = synchronized(this) {
+    @Deprecated("Renamed, use stopKoin() instead.",
+        ReplaceWith("stopKoin()", "org.koin.standalone.StandAloneContext.stopKoin")
+    )
+    fun closeKoin() = stopKoin()
+
+    /**
+     * Close actual Koin context
+     * - drop akk instances & definitions
+     */
+    fun stopKoin() = synchronized(this) {
         if (isStarted) {
             // Close all
             getKoinContext().close()

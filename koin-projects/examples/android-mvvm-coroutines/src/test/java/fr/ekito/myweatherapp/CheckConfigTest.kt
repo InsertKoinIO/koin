@@ -7,7 +7,7 @@ import fr.ekito.myweatherapp.di.testWeatherApp
 import org.junit.After
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.closeKoin
+import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.check
 import org.mockito.Mockito.mock
@@ -19,7 +19,7 @@ class CheckConfigTest : KoinTest {
 
     @After
     fun after() {
-        closeKoin()
+        stopKoin()
     }
 
     val mockAndroid = module {
