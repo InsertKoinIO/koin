@@ -10,6 +10,10 @@ import org.koin.error.NoBeanDefFoundException
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito.mock
 
+/**
+ * Sandbox Instance Factory
+ * Create mock version of each dependency to help resolve all dependency graph without executing the real instance
+ */
 @Suppress("UNCHECKED_CAST")
 class SandboxInstanceFactory() : InstanceFactory() {
 

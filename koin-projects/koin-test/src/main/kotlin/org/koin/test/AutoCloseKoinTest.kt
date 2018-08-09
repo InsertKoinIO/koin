@@ -20,7 +20,7 @@ import org.koin.core.Koin
 import org.koin.standalone.StandAloneContext.stopKoin
 
 /**
- * Koin Test - embed autoclose @after method to close Koin after every test
+ * Extended Koin Test - embed autoclose @after method to close Koin after every test
  *
  * @author Arnaud Giuliani
  */
