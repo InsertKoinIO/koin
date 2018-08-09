@@ -32,9 +32,9 @@ import org.koin.standalone.StandAloneContext
  * @Deprecated @see module
  */
 @Deprecated("Use the module() function instead.",
-    ReplaceWith("module(init = init)")
+    ReplaceWith("module(definition = moduleDefinition)")
 )
-fun applicationContext(init: ModuleDefinition.() -> Unit): Module = module(init = init)
+fun applicationContext(moduleDefinition: ModuleDefinition.() -> Unit): Module = module(definition = moduleDefinition)
 
 /**
  * Create a Module
@@ -47,9 +47,9 @@ fun module(
     path: String = Path.ROOT,
     createOnStart: Boolean = false,
     override: Boolean = false,
-    init: ModuleDefinition.() -> Unit
+    definition: ModuleDefinition.() -> Unit
 ): Module =
-    { ModuleDefinition(path, createOnStart, override, StandAloneContext.koinContext as KoinContext).apply(init) }
+    { ModuleDefinition(path, createOnStart, override, StandAloneContext.koinContext as KoinContext).apply(definition) }
 
 /**
  * Module - function that gives a module
