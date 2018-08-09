@@ -374,3 +374,8 @@ val myModuleB = module(override=true) {
     single { TestServiceImp() as Service }
 }
 ----
+
+[IMPORTANT]
+====
+Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
+====
