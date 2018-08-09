@@ -20,7 +20,7 @@ ext {
 
     // Test
     junit_version = "4.12"
-    mockito_version = "2.8.47"
+    mockito_version = "2.18.3"
 
     asciidoctor_version = "1.5.3"
     asciidoctor_pdf_version = "1.5.0-alpha.15"
