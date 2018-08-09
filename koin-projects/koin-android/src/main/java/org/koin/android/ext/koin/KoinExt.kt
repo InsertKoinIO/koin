@@ -28,7 +28,10 @@ import java.util.*
  * @author Arnaud Giuliani
  */
 
-
+/**
+ * Add Context instance to Koin container
+ * @param androidContext - Context
+ */
 infix fun Koin.with(androidContext: Context): Koin {
     Koin.logger.info("[init] declare Android Context")
     beanRegistry.declare(

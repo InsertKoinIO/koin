@@ -32,6 +32,6 @@ fun ModuleDefinition.androidContext(): Context = get()
  * @author Arnaud Giuliani
  */
 @Deprecated("Application is not injected anymore by Koin. Please use androidContext() function instead, to inject Context.",
-    ReplaceWith("androidContext()")
+    ReplaceWith("androidContext()"), level = DeprecationLevel.ERROR
 )
-fun ModuleDefinition.androidApplication(): Application = get()
+fun ModuleDefinition.androidApplication(): Application = error("androidApplication() is not available anymore in Koin. PLease use androidContext()")
