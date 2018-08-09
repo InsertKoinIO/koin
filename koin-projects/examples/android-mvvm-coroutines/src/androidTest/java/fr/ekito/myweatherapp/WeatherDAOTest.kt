@@ -13,8 +13,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
 import java.util.*
@@ -44,7 +44,7 @@ class WeatherDAOTest : KoinTest {
     @After
     fun after() {
         weatherDatabase.close()
-        closeKoin()
+        stopKoin()
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
 
@@ -32,7 +33,7 @@ class WeatherRepositoryTest : KoinTest {
 
     @After
     fun after() {
-        closeKoin()
+        stopKoin()
     }
 
     @Test
