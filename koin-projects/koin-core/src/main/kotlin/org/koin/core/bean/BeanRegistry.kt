@@ -65,7 +65,7 @@ class BeanRegistry() {
         searchDefinition { filterByNameAndClass(it, name, clazz) }
 
     fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: KClass<*>): Boolean =
-        it.name == name && filterByClass(it, clazz)
+        filterByNameAndClass(it,name,clazz.java)
 
     fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: Class<*>): Boolean =
         it.name == name && filterByClass(it, clazz)
@@ -74,7 +74,7 @@ class BeanRegistry() {
      * Search by name and class
      */
     fun search(name: String, clazz: Class<*>): List<BeanDefinition<*>> =
-        searchDefinition { it.name == name && (it.clazz.java == clazz || it.types.map { it.java }.contains(clazz)) }
+        searchDefinition { it.name == name && filterByClass(it, clazz) }
 
     /**
      * Search for any bean definition
@@ -87,7 +87,7 @@ class BeanRegistry() {
         it.clazz == clazz || it.types.contains(clazz)
 
     fun filterByClass(it: BeanDefinition<*>, clazz: Class<*>): Boolean =
-        it.clazz.java == clazz || it.types.map { it.java }.contains(clazz)
+        it.clazz.java.canonicalName == clazz.canonicalName || it.types.map { it.java.canonicalName }.contains(clazz.canonicalName)
 
     /**
      * Search definition with given filter function

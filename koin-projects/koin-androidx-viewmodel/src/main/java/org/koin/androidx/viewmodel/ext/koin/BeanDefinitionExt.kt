@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.koin.android.viewmodel
+package org.koin.androidx.viewmodel.ext.koin
 
+import androidx.lifecycle.ViewModel
 import org.koin.dsl.definition.BeanDefinition
 
 /**
@@ -24,4 +25,7 @@ import org.koin.dsl.definition.BeanDefinition
  * @author Arnaud Giuliani
  */
 fun <T> BeanDefinition<T>.isViewModel(): Boolean =
-    types.firstOrNull { it.java.simpleName == "ViewModel" } != null
+    types.firstOrNull { it == ViewModel::class } != null
+
+// reusable filter
+internal val isViewModel = { def: BeanDefinition<*> -> def.isViewModel() }

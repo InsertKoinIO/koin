@@ -18,7 +18,7 @@ package org.koin.androidx.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.android.viewmodel.ViewModelParameters
-import org.koin.android.viewmodel.createInstance
+import org.koin.androidx.viewmodel.ext.koin.createInstance
 import org.koin.standalone.KoinComponent
 
 /**

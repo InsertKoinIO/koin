@@ -17,6 +17,8 @@ package org.koin.android.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import org.koin.android.viewmodel.ext.koin.createInstance
+import org.koin.core.Koin
 import org.koin.standalone.KoinComponent
 
 
@@ -35,6 +37,7 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val params = viewModelParameters
         clear()
+        Koin.logger.info("[ViewModelFactory] create $modelClass")
         return createInstance(
             params ?: error("Can't getByClass ViewModel from ViewModelFactory with empty parameters"),
             modelClass
@@ -48,3 +51,4 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
         viewModelParameters = null
     }
 }
+
