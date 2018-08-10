@@ -45,7 +45,7 @@ This function is interesting for SDK makers who want to use Koin, because they d
 loadKoinModules(module1,module2 ...)
 ----
 
-=== Close Koin
+=== Stop Koin - closing all resources
 
-You can close all the Koin resources and drop instances & definitions. For this you can use the `closeKoin()` function from anywhere.
+You can close all the Koin resources and drop instances & definitions. For this you can use the `stopKoin()` function from anywhere.
 
