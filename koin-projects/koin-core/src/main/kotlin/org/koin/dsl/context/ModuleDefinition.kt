@@ -56,8 +56,8 @@ class ModuleDefinition(
      * Create a inner sub module in actual module
      * @param path
      */
-    @Deprecated("Use module() function instead", ReplaceWith("module(path, init = init)"))
-    fun context(path: String, init: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, init = init)
+    @Deprecated("Use module() function instead", ReplaceWith("module(path, init = definition)"))
+    fun context(path: String, definition: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, definition = definition)
 
     /**
      * Create a inner sub module in actual module
@@ -68,11 +68,11 @@ class ModuleDefinition(
         path: String,
         createOnStart: Boolean = false,
         override: Boolean = false,
-        init: ModuleDefinition.() -> Unit
+        definition: ModuleDefinition.() -> Unit
     ): ModuleDefinition {
         val newContext = ModuleDefinition(path, createOnStart, override, koinContext)
         subModules += newContext
-        return newContext.apply(init)
+        return newContext.apply(definition)
     }
 
     /**
