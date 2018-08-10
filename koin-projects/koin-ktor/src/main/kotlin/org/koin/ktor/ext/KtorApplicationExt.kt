@@ -19,6 +19,9 @@ import io.ktor.application.Application
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.dsl.module.Module
+import org.koin.log.Logger
+import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
 
 
@@ -28,6 +31,32 @@ import org.koin.standalone.StandAloneContext
  * @author Arnaud Giuliani
  * @author Laurent Baresse
  */
+
+/**
+ * Help start Koin cntofor Ktor
+ * @param name - bean name / optional
+ * @param module - module path
+ * @param parameters
+ */
+fun Application.installKoin(
+    list: List<Module>,
+    useEnvironmentProperties: Boolean = false,
+    useKoinPropertiesFile: Boolean = true,
+    extraProperties: Map<String, Any> = HashMap(),
+    logger: Logger = PrintLogger(),
+    createOnStart: Boolean = true
+) {
+    StandAloneContext.stopKoin()
+    StandAloneContext.startKoin(
+        list,
+        useEnvironmentProperties,
+        useKoinPropertiesFile,
+        extraProperties,
+        logger,
+        createOnStart
+    )
+}
+
 
 /**
  * inject lazily given dependency

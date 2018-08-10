@@ -15,11 +15,6 @@ import kotlin.test.assertFalse
 
 class ApplicationJobRoutesTest : AutoCloseKoinTest() {
 
-    @Before
-    fun before() {
-        startKoin(listOf(helloAppModule), logger = SLF4JLogger())
-    }
-
     @Test
     fun testHelloRequest() = withTestApplication(Application::main) {
         with(handleRequest(HttpMethod.Get, "/hello")) {
