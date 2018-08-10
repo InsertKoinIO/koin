@@ -18,19 +18,26 @@ dependencies {
 }
 ----
 
-=== Start Koin & just inject
+=== Install Koin & inject
 
-Just start Koin container before starting ktor:
+To start Koin container, use the `installKoin()` starter function:
 
 [source,kotlin]
 ----
-fun main(args: Array<String>) {
-    // Start Koin
-    startKoin(listOf(helloAppModule), logger = SLF4JLogger())
-    // Start Ktor
-    embeddedServer(Netty, commandLineEnvironment(args)).start()
+fun Application.main() {
+    // Install Ktor features
+    install(DefaultHeaders)
+    install(CallLogging)
+    installKoin(listOf(helloAppModule), logger = SLF4JLogger())
+
+    //...
 }
 ----
+
+[NOTE]
+====
+You can also start it from outside of Ktor, but you won't be compatible with `autoreload` feature.
+====
 
 KoinComponent powers are available from `Application` class:
 
