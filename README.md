@@ -424,7 +424,7 @@ val myModule = applicationContext {
 
 ## Using multiple modules / Module import
 
-Every definition and module is lazy be default in Koin. This means that you can assemble several modules, by using the list of desired modules. Given some classes:
+Every definition and module is lazy by default in Koin. This means that you can assemble several modules, by using the list of desired modules. Given some classes:
 
 ```kotlin
 class ComponentA()
