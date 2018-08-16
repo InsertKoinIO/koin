@@ -252,7 +252,7 @@ repositories {
 }
 dependencies {
     // Koin testing tools
-    testcompile 'org.koin:koin-test:{{ site.current_version }}'
+    testCompile 'org.koin:koin-test:{{ site.current_version }}'
 }
 ```
 
