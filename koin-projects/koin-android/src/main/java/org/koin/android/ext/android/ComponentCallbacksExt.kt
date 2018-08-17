@@ -42,7 +42,6 @@ import org.koin.standalone.StandAloneContext
  * @param extraProperties - extra extraProperties
  * @param loadProperties - laod extraProperties from asset/koin.extraProperties
  * @param logger - default Koin logger
- * @param createOnStart - create flagged instances on start
  *
  * will be soon deprecated for starKoin() with <context>
  */
@@ -50,24 +49,18 @@ fun ComponentCallbacks.startKoin(
     context: Context,
     modules: List<Module>,
     extraProperties: Map<String, Any> = HashMap(),
-    loadProperties: Boolean = true,
-    logger: Logger = AndroidLogger(),
-    createOnStart: Boolean = true
+    loadProperties: Boolean = false,
+    logger: Logger = AndroidLogger()
 ) {
     Koin.logger = logger
 
     val koin = StandAloneContext.startKoin(
         modules,
         false,
-        false,
+        loadProperties,
         extraProperties,
-        logger,
-        false
+        logger
     ).with(context)
-
-    if (createOnStart) {
-        StandAloneContext.createEagerInstances()
-    }
 
     if (loadProperties) {
         koin.bindAndroidProperties(context)

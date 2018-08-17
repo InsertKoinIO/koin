@@ -25,7 +25,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
-import org.koin.core.time.Duration
+import org.koin.core.time.measureDuration
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 import org.koin.log.Logger
@@ -132,28 +132,26 @@ object StandAloneContext {
     fun startKoin(
         list: List<Module>,
         useEnvironmentProperties: Boolean = false,
-        useKoinPropertiesFile: Boolean = true,
+        useKoinPropertiesFile: Boolean = false,
         extraProperties: Map<String, Any> = HashMap(),
-        logger: Logger = PrintLogger(),
-        createOnStart: Boolean = true
+        logger: Logger = PrintLogger()
     ): Koin {
-        val duration = Duration()
-        duration.start()
+        val duration = measureDuration {
+            if (isStarted) {
+                throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
+            }
+            Koin.logger = logger
+            createContextIfNeeded()
+            loadKoinModules(list)
 
-        if (isStarted) {
-            throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
-        }
-        Koin.logger = logger
-        createContextIfNeeded()
-        loadKoinModules(list)
-        loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
+            if (useKoinPropertiesFile || useEnvironmentProperties || extraProperties.isNotEmpty()) {
+                loadProperties(useEnvironmentProperties, useKoinPropertiesFile, extraProperties)
+            }
 
-        if (createOnStart) {
             createEagerInstances(emptyParameterDefinition())
         }
-        duration.stop()
 
-        Koin.logger.debug("Koin started in ${duration.durationInMs()} ms")
+        Koin.logger.debug("Koin started in $duration ms")
         return getKoin()
     }
 
@@ -166,22 +164,24 @@ object StandAloneContext {
         val context = getKoinContext()
         val instanceResolver = context.instanceResolver
         val definitions = instanceResolver.beanRegistry.definitions.filter { it.isEager }
+
         if (definitions.isNotEmpty()) {
             Koin.logger.info("Creating instances ...")
-        }
-        definitions.forEach { def ->
-            instanceResolver.proceedResolution(
-                def.path.toString(),
-                def.clazz.java,
-                defaultParameters
-            ) { listOf(def) }
+            definitions.forEach { def ->
+                instanceResolver.proceedResolution(
+                    def.path.toString(),
+                    def.clazz.java,
+                    defaultParameters
+                ) { listOf(def) }
+            }
         }
     }
 
     /**
      * Close actual Koin context
      */
-    @Deprecated("Renamed, use stopKoin() instead.",
+    @Deprecated(
+        "Renamed, use stopKoin() instead.",
         ReplaceWith("stopKoin()", "org.koin.standalone.StandAloneContext.stopKoin")
     )
     fun closeKoin() = stopKoin()

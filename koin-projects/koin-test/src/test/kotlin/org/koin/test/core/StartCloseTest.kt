@@ -3,8 +3,8 @@ package org.koin.test.core
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.error.AlreadyStartedException
-import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
@@ -21,7 +21,7 @@ class StartCloseTest : KoinTest {
         assertDefinitions(0)
         assertContexts(1)
 
-        closeKoin()
+        stopKoin()
     }
 
     @Test
@@ -32,6 +32,6 @@ class StartCloseTest : KoinTest {
             fail()
         } catch (e: AlreadyStartedException) {
         }
-        closeKoin()
+        stopKoin()
     }
 }

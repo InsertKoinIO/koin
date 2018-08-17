@@ -48,7 +48,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         val view = get<View>()
         val presenter = get<Presenter>()
         val repository = get<Repository>()
-        val dbgDS = get<DebugDatasource>()
+//        val dbgDS = get<DebugDatasource>()
         val datasource = get<Datasource>()
 
         Assert.assertEquals(presenter, view.presenter)

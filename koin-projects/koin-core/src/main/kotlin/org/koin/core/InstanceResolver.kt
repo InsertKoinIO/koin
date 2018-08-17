@@ -20,7 +20,7 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.stack.ResolutionStack
-import org.koin.core.time.Duration
+import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
 
 /**
@@ -82,50 +82,49 @@ class InstanceResolver(
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
 
-        val duration = Duration()
-        duration.start()
-
-        val clazzName = clazz.canonicalName
-
         var resultInstance: T? = null
+        val duration = measureDuration {
 
-        try {
-            val beanDefinition: BeanDefinition<*> =
-                beanRegistry.getVisibleBean(
-                    clazzName,
-                    if (module != null) pathRegistry.getPath(module) else null,
-                    definitionResolver,
-                    resolutionStack.last()
-                )
+            val clazzName = clazz.canonicalName
 
-            val logIndent: String = resolutionStack.indent()
-            val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
-            val startChar = if (resolutionStack.isEmpty()) "+" else "+"
+            try {
+                val beanDefinition: BeanDefinition<*> =
+                    beanRegistry.getVisibleBean(
+                        clazzName,
+                        if (module != null) pathRegistry.getPath(module) else null,
+                        definitionResolver,
+                        resolutionStack.last()
+                    )
 
-            Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
-            Koin.logger.debug("$logIndent|-- [$beanDefinition]")
+                val logIndent: String = resolutionStack.indent()
+                val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
+                val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
-            resolutionStack.resolve(beanDefinition) {
-                val (instance, created) = instanceFactory.retrieveInstance<T>(
-                    beanDefinition,
-                    parameters
-                )
+                Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
+                Koin.logger.debug("$logIndent|-- [$beanDefinition]")
 
-                Koin.logger.debug("$logIndent|-- $instance")
-                // Log creation
-                if (created) {
-                    Koin.logger.info("$logIndent\\-- (*)")
+                resolutionStack.resolve(beanDefinition) {
+                    val (instance, created) = instanceFactory.retrieveInstance<T>(
+                        beanDefinition,
+                        parameters
+                    )
+
+                    Koin.logger.debug("$logIndent|-- $instance")
+                    // Log creation
+                    if (created) {
+                        Koin.logger.info("$logIndent\\-- (*)")
+                    }
+                    resultInstance = instance
                 }
-                resultInstance = instance
+            } catch (e: Exception) {
+                resolutionStack.clear()
+                Koin.logger.err("Error while resolving instance for class '${clazz.simpleName}' - error: $e ")
+                throw e
             }
-        } catch (e: Exception) {
-            resolutionStack.clear()
-            Koin.logger.err("Error while resolving instance for class '${clazz.simpleName}' - error: $e ")
-            throw e
         }
 
-        duration.stop()
-        Koin.logger.debug("$clazz resolved in ${duration.durationInMs()} ms")
+        Koin.logger.debug(" * [${clazz.simpleName}] resolved in $duration ms")
+
         return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
     }
 

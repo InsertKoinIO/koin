@@ -4,8 +4,8 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
@@ -28,7 +28,7 @@ class RunControllerTest : KoinTest {
 
     @After
     fun after() {
-        closeKoin()
+        stopKoin()
     }
 
     @Test

@@ -15,8 +15,6 @@
  */
 package org.koin.reflect
 
-import org.koin.core.Koin
-import org.koin.core.time.Duration
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.definition.BeanDefinition
 
@@ -24,18 +22,17 @@ import org.koin.dsl.definition.BeanDefinition
  * Build instance with Koin injected dependencies
  */
 inline fun <reified T : Any> ModuleDefinition.build(): T {
-    val duration = Duration()
-    duration.start()
-
+//    lateinit var instance: T
     val clazz = T::class.java
+
+//    val duration = measureDuration {
     val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
     val args = ctor.parameterTypes.map { get(clazz = it) }.toTypedArray()
-    val instance = ctor.newInstance(*args) as T
+    return ctor.newInstance(*args) as T
+//    }
 
-    duration.stop()
-
-    Koin.logger.debug("$clazz built in ${duration.durationInMs()} ms")
-    return instance
+//    Koin.logger.debug("[$clazz] built in $duration ms")
+//    return instance
 }
 
 inline fun <reified T : Any> ModuleDefinition.single(
@@ -51,7 +48,7 @@ inline fun <reified T : Any, reified R : Any> ModuleDefinition.singleOf(
     createOnStart: Boolean = false,
     override: Boolean = false
 ): BeanDefinition<*> {
-    return single(name, createOnStart, override) { build<T>() }.bind(R::class)
+    return single(name, createOnStart, override) { build<T>() as R }
 }
 
 inline fun <reified T : Any> ModuleDefinition.factory(
@@ -65,5 +62,5 @@ inline fun <reified T : Any, reified R : Any> ModuleDefinition.factoryOf(
     name: String = "",
     override: Boolean = false
 ): BeanDefinition<*> {
-    return factory(name, override) { build<T>() }.bind(R::class)
+    return factory(name, override) { build<T>() as R }
 }

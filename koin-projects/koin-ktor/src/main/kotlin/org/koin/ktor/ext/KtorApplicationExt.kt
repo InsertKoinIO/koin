@@ -43,8 +43,7 @@ fun Application.installKoin(
     useEnvironmentProperties: Boolean = false,
     useKoinPropertiesFile: Boolean = true,
     extraProperties: Map<String, Any> = HashMap(),
-    logger: Logger = PrintLogger(),
-    createOnStart: Boolean = true
+    logger: Logger = PrintLogger()
 ) {
     StandAloneContext.stopKoin()
     StandAloneContext.startKoin(
@@ -52,8 +51,7 @@ fun Application.installKoin(
         useEnvironmentProperties,
         useKoinPropertiesFile,
         extraProperties,
-        logger,
-        createOnStart
+        logger
     )
 }
 

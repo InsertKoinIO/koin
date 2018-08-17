@@ -2,7 +2,6 @@ package org.koin.test.core
 
 import org.junit.Assert.*
 import org.junit.Test
-import org.koin.dsl.module.applicationContext
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.error.MissingPropertyException
@@ -115,7 +114,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     fun `assert given properties are injected but override koin properties`() {
 
         // Should read koin.properties file which contains OS_VERSION beanDefinition
-        startKoin(arrayListOf(SingleModule), extraProperties = mapOf(TEST_KOIN to VALUE_ANDROID))
+        startKoin(arrayListOf(SingleModule), extraProperties = mapOf(TEST_KOIN to VALUE_ANDROID),useKoinPropertiesFile = true)
         assertEquals(VALUE_ANDROID, getProperty(TEST_KOIN))
         assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
@@ -124,9 +123,11 @@ class KoinContextTest : AutoCloseKoinTest() {
     fun `assert given properties are injected and overridden by koin properties and system properties`() {
 
         // Should read koin.properties file which contains OS_VERSION beanDefinition
-        startKoin(arrayListOf(SingleModule),
-                useEnvironmentProperties = true,
-                extraProperties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID))
+        startKoin(
+            arrayListOf(SingleModule),
+            useEnvironmentProperties = true,
+            extraProperties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID)
+        )
 
         assertEquals(VALUE_ANDROID, getProperty(GIVEN_PROP))
         assertEquals(VALUE_ANDROID, getProperty(TEST_KOIN))
@@ -137,7 +138,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     fun `assert koin properties are injected`() {
 
         // Should read koin.properties file which contains OS_VERSION beanDefinition
-        startKoin(arrayListOf(SingleModule))
+        startKoin(arrayListOf(SingleModule), false, true)
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
@@ -145,7 +146,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     @Test
     fun `assert system properties are not overridden by koin properties`() {
 
-        startKoin(arrayListOf(SingleModule), true)
+        startKoin(arrayListOf(SingleModule), true, true)
         assertNotNull(getProperty(OS_NAME))
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))

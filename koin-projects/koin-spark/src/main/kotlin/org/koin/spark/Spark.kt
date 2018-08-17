@@ -19,9 +19,9 @@ import org.koin.core.KoinContext
 import org.koin.dsl.module.Module
 import org.koin.log.Logger.SLF4JLogger
 import org.koin.standalone.StandAloneContext
-import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.createEagerInstances
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.StandAloneContext.stopKoin
 import spark.Spark
 import spark.kotlin.after
 import spark.kotlin.port
@@ -43,8 +43,8 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> U
     startKoin(
         modules,
         useEnvironmentProperties = true,
-        logger = SLF4JLogger(),
-        createOnStart = false
+        useKoinPropertiesFile = true,
+        logger = SLF4JLogger()
     )
 
     // Get port from properties
@@ -81,7 +81,7 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> U
  * Stop spark server and wait
  */
 fun stop(sleep: Long = 100) {
-    closeKoin()
+    stopKoin()
     stop()
 
     // Need to sleep in order to let the server stops

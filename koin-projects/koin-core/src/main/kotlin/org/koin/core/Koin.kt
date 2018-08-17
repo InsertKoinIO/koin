@@ -15,6 +15,7 @@
  */
 package org.koin.core
 
+import org.koin.core.time.measureDuration
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.path.Path
@@ -74,11 +75,14 @@ class Koin(val koinContext: KoinContext) {
      * load given list of module instances into current StandAlone koin context
      */
     fun build(modules: Collection<Module>): Koin {
-        modules.forEach { module ->
-            registerDefinitions(module())
-        }
+        val duration = measureDuration {
+            modules.forEach { module ->
+                registerDefinitions(module())
+            }
 
-        logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
+            logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
+        }
+        logger.debug("[modules] loaded in $duration ms")
         return this
     }
 
@@ -96,11 +100,12 @@ class Koin(val koinContext: KoinContext) {
         pathRegistry.savePath(consolidatedPath)
 
         // Add definitions & propagate eager/override
-        moduleDefinition.definitions.forEach { definition ->
+        moduleDefinition.definitions.map { definition ->
             val eager = if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
             val override = if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
             val def = definition.copy(isEager = eager, allowOverride = override)
             beanRegistry.declare(def, consolidatedPath)
+            definition.isEager
         }
 
         // Check sub contexts

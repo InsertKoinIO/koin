@@ -44,7 +44,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should load integer value`() {
-        startKoin(listOf(SimpleModule))
+        startKoin(listOf(SimpleModule), useEnvironmentProperties = true, useKoinPropertiesFile = true)
 
         val number = getProperty<Int>("number")
         Assert.assertEquals(1234, number)
@@ -52,7 +52,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should load float value`() {
-        startKoin(listOf(SimpleModule))
+        startKoin(listOf(SimpleModule), useEnvironmentProperties = true, useKoinPropertiesFile = true)
 
         val decimal = getProperty<Float>("decimal")
         Assert.assertEquals(1.42f, decimal)
@@ -60,7 +60,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should inject external property`() {
-        startKoin(listOf(SimpleModule))
+        startKoin(listOf(SimpleModule), useKoinPropertiesFile = true)
         setProperty(KEY, VALUE)
 
         val url = getProperty<String>(KEY)
@@ -82,7 +82,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should inject internal property`() {
-        startKoin(listOf(SimpleModule), extraProperties = mapOf(KEY to VALUE))
+        startKoin(listOf(SimpleModule), extraProperties = mapOf(KEY to VALUE), useKoinPropertiesFile = true)
 
         val url = getProperty<String>(KEY)
         val a = get<ComponentA>()
@@ -102,7 +102,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should inject property - complex module`() {
-        startKoin(listOf(ComplexModule))
+        startKoin(listOf(ComplexModule), useKoinPropertiesFile = true)
         setProperty(KEY, VALUE)
 
         val url = getProperty<String>(KEY)
@@ -123,7 +123,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should not inject property but get default value as return`() {
-        startKoin(listOf(NoPropertyModule))
+        startKoin(listOf(NoPropertyModule),useKoinPropertiesFile = true)
 
         try {
             getProperty<String>(KEY)
@@ -138,7 +138,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should not inject property`() {
-        startKoin(listOf(NoPropertyModule))
+        startKoin(listOf(NoPropertyModule), useKoinPropertiesFile = true)
 
         try {
             getProperty<String>(KEY)
@@ -167,7 +167,7 @@ class PropertyTest : AutoCloseKoinTest() {
 
     @Test
     fun `should overwrite property`() {
-        startKoin(listOf(MoreComplexModule))
+        startKoin(listOf(MoreComplexModule), useKoinPropertiesFile = true)
         setProperty(KEY, VALUE)
 
         var url = getProperty<String>(KEY)
