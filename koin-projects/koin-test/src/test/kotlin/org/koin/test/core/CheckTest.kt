@@ -32,6 +32,16 @@ class CheckTest : AutoCloseKoinTest() {
     }
 
     @Test
+    fun `successful check with injection params`() {
+        check(listOf(module {
+            single { (a : ComponentA) -> ComponentB(a) }
+        }))
+
+        assertDefinitions(1)
+        assertRemainingInstances(1)
+    }
+
+    @Test
     fun `successful check with interface`() {
         check(listOf(module {
             single { ComponentC() }
