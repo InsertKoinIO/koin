@@ -38,6 +38,23 @@ inline fun <reified T : SparkController> ModuleDefinition.controller(
 }
 
 /**
+ * Declare a Spark controller
+ *
+ * @param name
+ * @param override - allow definition override
+ *
+ *
+ * @author Arnaud Giuliani
+ */
+inline fun <reified T : SparkController> ModuleDefinition.controller(
+    name: String = "",
+    override: Boolean = false
+) {
+    val def = single(name, true, override) { build<T>() }
+    def.bind(SparkController::class)
+}
+
+/**
  * Tag interface for Spark controllers
  */
 interface SparkController

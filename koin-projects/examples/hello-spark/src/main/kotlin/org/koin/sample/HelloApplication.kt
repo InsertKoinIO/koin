@@ -7,9 +7,9 @@ import org.koin.spark.start
 import spark.kotlin.get
 
 val helloAppModule = module {
-    single { HelloServiceImpl(get()) as HelloService }
-    single { HelloRepositoryImpl() as HelloRepository }
-    controller { HelloController(get()) }
+    single<HelloServiceImpl>()
+    single<HelloRepositoryImpl>()
+    controller<HelloController>()
 }
 
 interface HelloRepository {

@@ -38,3 +38,21 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     val bean = factory(name, override, definition)
     bean.bind(ViewModel::class)
 }
+
+/**
+ * ViewModel DSL Extension
+ * Allow to build a vieModel - be later inject into Activity/Fragment with dedicated injector
+ *
+ * @author Arnaud Giuliani
+ *
+ * @param name - definition name
+ * @param isSingleton - is single or factory
+ * @param override - allow definition override
+ */
+inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
+    name: String = "",
+    override: Boolean = false
+) {
+    val bean = factory(name, override) { build<T>() }
+    bean.bind(ViewModel::class)
+}

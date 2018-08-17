@@ -83,6 +83,7 @@ class InstanceResolver(
     ): T = synchronized(this) {
 
         var resultInstance: T? = null
+        val logIndent: String = resolutionStack.indent()
         val duration = measureDuration {
 
             val clazzName = clazz.canonicalName
@@ -96,7 +97,6 @@ class InstanceResolver(
                         resolutionStack.last()
                     )
 
-                val logIndent: String = resolutionStack.indent()
                 val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
@@ -112,7 +112,7 @@ class InstanceResolver(
                     Koin.logger.debug("$logIndent|-- $instance")
                     // Log creation
                     if (created) {
-                        Koin.logger.info("$logIndent\\-- (*)")
+                        Koin.logger.info("$logIndent\\-- (*) Created")
                     }
                     resultInstance = instance
                 }
@@ -123,7 +123,7 @@ class InstanceResolver(
             }
         }
 
-        Koin.logger.debug(" * [${clazz.simpleName}] resolved in $duration ms")
+        Koin.logger.debug("$logIndent!-- [${clazz.simpleName}] resolved in $duration ms")
 
         return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
     }
