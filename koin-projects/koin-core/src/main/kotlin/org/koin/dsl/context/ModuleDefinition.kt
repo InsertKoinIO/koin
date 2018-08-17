@@ -140,11 +140,10 @@ class ModuleDefinition(
      */
     inline fun <reified T : Any> factory(
         name: String = "",
-        createOnStart: Boolean = false,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, createOnStart, override, false, definition)
+        return provide(name, false, override, false, definition)
     }
 
     /**

@@ -25,6 +25,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.time.Duration
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 import org.koin.log.Logger
@@ -61,10 +62,7 @@ object StandAloneContext {
      *
      * @param modules : List of Module
      */
-    fun loadKoinModules(modules: List<Module>): Koin = synchronized(this) {
-        createContextIfNeeded()
-        return getKoin().build(modules)
-    }
+    fun loadKoinModules(modules: List<Module>): Koin = loadKoinModules(*modules.toTypedArray())
 
     /**
      * Create Koin context if needed :)
@@ -139,6 +137,9 @@ object StandAloneContext {
         logger: Logger = PrintLogger(),
         createOnStart: Boolean = true
     ): Koin {
+        val duration = Duration()
+        duration.start()
+
         if (isStarted) {
             throw AlreadyStartedException("Koin is already started. Run startKoin only once or use loadKoinModules")
         }
@@ -150,6 +151,9 @@ object StandAloneContext {
         if (createOnStart) {
             createEagerInstances(emptyParameterDefinition())
         }
+        duration.stop()
+
+        Koin.logger.debug("Koin started in ${duration.durationInMs()} ms")
         return getKoin()
     }
 

@@ -20,6 +20,7 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.stack.ResolutionStack
+import org.koin.core.time.Duration
 import org.koin.dsl.definition.BeanDefinition
 
 /**
@@ -81,6 +82,9 @@ class InstanceResolver(
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
 
+        val duration = Duration()
+        duration.start()
+
         val clazzName = clazz.canonicalName
 
         var resultInstance: T? = null
@@ -120,6 +124,8 @@ class InstanceResolver(
             throw e
         }
 
+        duration.stop()
+        Koin.logger.debug("$clazz resolved in ${duration.durationInMs()} ms")
         return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
     }
 

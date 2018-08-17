@@ -35,6 +35,6 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     override: Boolean = false,
     noinline definition: Definition<T>
 ) {
-    val bean = factory(name, false, override, definition)
+    val bean = factory(name, override, definition)
     bean.bind(ViewModel::class)
 }
