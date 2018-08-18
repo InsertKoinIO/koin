@@ -2,6 +2,7 @@ package org.koin.test.builder
 
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import org.koin.dsl.ext.single
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.StandAloneContext.startKoin
@@ -9,7 +10,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertRemainingInstances
 
-class BuilderTest : AutoCloseKoinTest() {
+class AutoBuilderTest : AutoCloseKoinTest() {
 
     class ComponentA
     class ComponentB(val a: ComponentA)
@@ -21,9 +22,9 @@ class BuilderTest : AutoCloseKoinTest() {
     @Test
     fun `should find 1st constructor and build`() {
         startKoin(listOf(module {
-            single { ComponentA() }
-            single { build<ComponentB>() }
-            single { build<ComponentC>() }
+            single<ComponentA>()
+            single<ComponentB>()
+            single<ComponentC>()
         }))
 
         assertRemainingInstances(0)
@@ -38,8 +39,8 @@ class BuilderTest : AutoCloseKoinTest() {
     @Test
     fun `should not dependency`() {
         startKoin(listOf(module {
-            single { ComponentA() }
-            single { build<ComponentC>() }
+            single<ComponentA>()
+            single<ComponentC>()
         }))
 
         try {
@@ -61,7 +62,7 @@ class BuilderTest : AutoCloseKoinTest() {
     fun `should get interface instance`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            single { build<ComponentD>() as Component }
+            single<ComponentD, Component>()
         }))
 
         assertNotNull(get<Component>())

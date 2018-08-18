@@ -1,4 +1,4 @@
-package org.koin.reflect
+package org.koin.test.builder
 
 import org.junit.Assert
 import org.junit.Test

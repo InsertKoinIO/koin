@@ -31,26 +31,13 @@ import org.koin.dsl.definition.Definition
 inline fun <reified T : SparkController> ModuleDefinition.controller(
     name: String = "",
     override: Boolean = false,
-    noinline definition: Definition<T>
+    noinline definition: Definition<T>? = null
 ) {
-    val def = single(name, true, override, definition)
-    def.bind(SparkController::class)
-}
-
-/**
- * Declare a Spark controller
- *
- * @param name
- * @param override - allow definition override
- *
- *
- * @author Arnaud Giuliani
- */
-inline fun <reified T : SparkController> ModuleDefinition.controller(
-    name: String = "",
-    override: Boolean = false
-) {
-    val def = single(name, true, override) { build<T>() }
+    val def = if (definition == null) {
+        single(name, true, override) { build<T>() }
+    } else {
+        single(name, true, override, definition)
+    }
     def.bind(SparkController::class)
 }
 

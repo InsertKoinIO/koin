@@ -28,6 +28,9 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.createEagerInstances
+import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.standalone.StandAloneContext.loadProperties
 
 /**
  * ComponentCallbacks extensions for Android
@@ -54,17 +57,14 @@ fun ComponentCallbacks.startKoin(
 ) {
     Koin.logger = logger
 
-    val koin = StandAloneContext.startKoin(
-        modules,
-        false,
-        loadProperties,
-        extraProperties,
-        logger
-    ).with(context)
+    val koin = loadKoinModules(modules).with(context)
 
-    if (loadProperties) {
+    if (loadProperties || extraProperties.isNotEmpty()) {
+        loadProperties(false, loadProperties, extraProperties)
         koin.bindAndroidProperties(context)
     }
+
+    createEagerInstances(emptyParameterDefinition())
 }
 
 /**

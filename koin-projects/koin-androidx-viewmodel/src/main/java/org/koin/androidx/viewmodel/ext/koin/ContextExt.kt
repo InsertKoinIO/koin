@@ -27,32 +27,17 @@ import org.koin.dsl.definition.Definition
  * @author Arnaud Giuliani
  *
  * @param name - definition name
- * @param isSingleton - is single or factory
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     name: String = "",
     override: Boolean = false,
-    noinline definition: Definition<T>
+    noinline definition: Definition<T>? = null
 ) {
-    val bean = factory(name, override, definition)
-    bean.bind(ViewModel::class)
-}
-
-/**
- * ViewModel DSL Extension
- * Allow to build a vieModel - be later inject into Activity/Fragment with dedicated injector
- *
- * @author Arnaud Giuliani
- *
- * @param name - definition name
- * @param isSingleton - is single or factory
- * @param override - allow definition override
- */
-inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
-    name: String = "",
-    override: Boolean = false
-) {
-    val bean = factory(name, override) { build<T>() }
+    val bean = if (definition == null) {
+        factory(name, override) { build<T>() }
+    } else {
+        factory(name, override, definition)
+    }
     bean.bind(ViewModel::class)
 }

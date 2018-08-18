@@ -1,5 +1,6 @@
 package org.koin.sample
 
+import org.koin.dsl.ext.single
 import org.koin.dsl.module.module
 import org.koin.spark.SparkController
 import org.koin.spark.controller
@@ -7,8 +8,8 @@ import org.koin.spark.start
 import spark.kotlin.get
 
 val helloAppModule = module {
-    single<HelloServiceImpl>()
-    single<HelloRepositoryImpl>()
+    single<HelloServiceImpl>() bind HelloService::class
+    single<HelloRepositoryImpl, HelloRepository>()
     controller<HelloController>()
 }
 

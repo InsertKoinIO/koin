@@ -57,7 +57,8 @@ class ModuleDefinition(
      * @param path
      */
     @Deprecated("Use module() function instead", ReplaceWith("module(path, init = definition)"))
-    fun context(path: String, definition: ModuleDefinition.() -> Unit): ModuleDefinition = module(path, definition = definition)
+    fun context(path: String, definition: ModuleDefinition.() -> Unit): ModuleDefinition =
+        module(path, definition = definition)
 
     /**
      * Create a inner sub module in actual module
@@ -124,9 +125,10 @@ class ModuleDefinition(
         name: String = "",
         createOnStart: Boolean = false,
         override: Boolean = false,
-        noinline definition: Definition<T>
+        noinline definition: Definition<T>? = null
     ): BeanDefinition<T> {
-        return provide(name, createOnStart, override, true, definition)
+        return if (definition == null) provide(name, createOnStart, override) { build<T>() }
+        else provide(name, createOnStart, override, true, definition)
     }
 
     /**
@@ -134,56 +136,26 @@ class ModuleDefinition(
      * (recreate instance each time)
      *
      * @param name
-     * @param createOnStart - need to be created at start
      * @param override - allow definition override
      * @param definition
      */
     inline fun <reified T : Any> factory(
         name: String = "",
         override: Boolean = false,
-        noinline definition: Definition<T>
+        noinline definition: Definition<T>? = null
     ): BeanDefinition<T> {
-        return provide(name, false, override, false, definition)
+        return if (definition == null) provide(name, false, override, false) { build<T>() }
+        else provide(name, false, override, false, definition)
     }
 
     /**
-     * Build instance with Koin injected dependencies
+     * Build instance for type T and inject dependencies into 1st constructor
      */
     inline fun <reified T : Any> build(): T {
         val clazz = T::class.java
         val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
         val args = ctor.parameterTypes.map { get(clazz = it) }.toTypedArray()
         return ctor.newInstance(*args) as T
-    }
-
-    inline fun <reified T : Any> single(
-        name: String = "",
-        createOnStart: Boolean = false,
-        override: Boolean = false
-    ): BeanDefinition<T> {
-        return single(name, createOnStart, override) { build<T>() }
-    }
-
-    inline fun <reified T : Any, reified R : Any> singleOf(
-        name: String = "",
-        createOnStart: Boolean = false,
-        override: Boolean = false
-    ): BeanDefinition<*> {
-        return single(name, createOnStart, override) { build<T>() as R }
-    }
-
-    inline fun <reified T : Any> factory(
-        name: String = "",
-        override: Boolean = false
-    ): BeanDefinition<T> {
-        return factory(name, override) { build<T>() }
-    }
-
-    inline fun <reified T : Any, reified R : Any> factoryOf(
-        name: String = "",
-        override: Boolean = false
-    ): BeanDefinition<*> {
-        return factory(name, override) { build<T>() as R }
     }
 
     /**
