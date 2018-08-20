@@ -31,6 +31,9 @@ val appModule = module {
 
     // ViewModel for Detail View
     viewModel { DetailViewModel(get(), get()) }
+    // or
+    viewModel<DetailViewModel>()
+
 }
 ----
 
@@ -81,6 +84,8 @@ val weatherAppModule = module {
 
     // WeatherViewModel declaration for Weather View components
     viewModel { WeatherViewModel(get(), get()) }
+    // or
+    viewModel<WeatherViewModel>()
 }
 ----
 

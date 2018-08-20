@@ -146,11 +146,11 @@ val repositoryModule = module {
 }
 
 val localDatasourceModule = module {
-    single { LocalDatasource() as Datasource }
+    single<Datasource> { LocalDatasource() }
 }
 
 val remoteDatasourceModule = module {
-    single { RemoteDatasource() as Datasource }
+    single<Datasource> { RemoteDatasource() }
 }
 ----
 
@@ -214,11 +214,11 @@ If we have modules as follow:
 val myModule = module {
 
     module("org.demo"){
-        single{ ServiceImpl() as Service}
+        single<Service>{ ServiceImpl() }
     }
 
     module("org.sample"){
-        single{ ServiceImpl() as Service}
+        single<Service>{ ServiceImpl() }
     }
 }
 

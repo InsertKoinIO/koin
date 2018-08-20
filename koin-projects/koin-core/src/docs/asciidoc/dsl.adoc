@@ -17,6 +17,7 @@ Below are the Koin DSL keywords:
 * `single` - provide a singleton bean definition (also aliased as `bean`)
 * `bind` - add type to bind for given bean definition
 * `get` - resolve a component dependency
+* `create` - create an instance of given type, by injecting its constructor with dependencies
 
 === Writing a module
 
@@ -157,6 +158,11 @@ val myModule = module {
 }
 ----
 
+[NOTE]
+====
+This 2nd way of style declaration is prefered and will be used for the rest of the documentation.
+====
+
 === Binding additional type
 
 In some cases, we want to match several types from just one definition.
@@ -198,8 +204,8 @@ Just request your definition with its name:
 [source,kotlin]
 ----
 val myModule = module {
-    single("default") { ServiceImpl() as Service }
-    single("test") { ServiceImpl() as Service }
+    single<Service>("default") { ServiceImpl() }
+    single<Service>("test") { ServiceImpl() }
 }
 
 val service : Service by inject(name = "default")
@@ -207,6 +213,59 @@ val service : Service by inject(name = "default")
 
 `get()` and `by inject()` functions let you specify a definition name if needed.
 
+=== Create instances using the create() function
+
+Koin has the `create<T>()` function that allows you to create an instance of type `T` and inject its first constructor.
+Note that if you don"t provide any definition lambda to your single/factory definition, will be able to create it for you:
+
+[source,kotlin]
+----
+single<T>() == single { create<T>() }
+factory<T>() == factory { create<T>() }
+----
+
+When you need to specify the projected type:
+
+[source,kotlin]
+----
+single<T> { R() } == single<T> { create<R>() }
+factory<T>() { R() } == factory<T> { create<R>() }
+----
+
+This help write definition without having to fill manually the constructor with `get()` functions. Compare from the 'manual'
+to the 'automated' created instances.
+
+.definitions without create() function
+[source,kotlin]
+----
+// Presenter <- Service
+class Service()
+class Controller(val view : View)
+
+val myModule = module {
+
+    // declare Service as single intance
+    single { Service() }
+    // declare Controller as single instance, resolving View instance with get()
+    single<Controller> { ControllerImpl(get()) }
+}
+----
+
+.definitions with create() function
+[source,kotlin]
+----
+// Presenter <- Service
+class Service()
+class Controller(val view : View)
+
+val myModule = module {
+
+    // declare Service as single intance
+    single<Service>()
+    // declare Controller as single instance, resolving View instance with get()
+    single<Controller> { create<ControllerImpl>() }
+}
+----
 
 === Declaring injection parameters
 
@@ -217,7 +276,7 @@ In any `single` or `factory` definition, you can use injection parameters: param
 class Presenter(val view : View)
 
 val myModule = module {
-    single{ view : View -> Presenter(view) }
+    single{ (view : View) -> Presenter(view) }
 }
 ----
 
@@ -247,11 +306,11 @@ val myModule = module("org.sample") {
 
 
     module("org.demo"){
-        single{ ServiceImpl() as Service}
+        single<Service>{ ServiceImpl() }
     }
 
     module("org.sample"){
-        single{ ServiceImpl() as Service}
+        single<Service>{ ServiceImpl() }
     }
 }
 
@@ -277,13 +336,13 @@ or on your definition.
 ----
 val myModuleA = module {
 
-    single { ServiceImp() as Service }
+    single<Service> { ServiceImp() }
 }
 
 val myModuleB = module {
 
     // eager creation for this definition
-    single(createOnStart=true) { TestServiceImp() as Service }
+    single<Service>(createOnStart=true) { TestServiceImp() }
 }
 ----
 
@@ -292,12 +351,12 @@ val myModuleB = module {
 ----
 val myModuleA = module {
 
-    single { ServiceImp() as Service }
+    single<Service> { ServiceImp() }
 }
 
 val myModuleB = module(createOnStart=true) {
 
-    single{ TestServiceImp() as Service }
+    single<Service>{ TestServiceImp() }
 }
 ----
 
@@ -331,12 +390,12 @@ Koin won't allow you to redefinition an already existing definition (type,name,p
 ----
 val myModuleA = module {
 
-    single { ServiceImp() as Service }
+    single<Service> { ServiceImp() }
 }
 
 val myModuleB = module {
 
-    single { TestServiceImp() as Service }
+    single<Service> { TestServiceImp() }
 }
 
 // Will throw an BeanOverrideException
@@ -350,13 +409,13 @@ To allow definition overriding, you have to use the `override` parameter:
 ----
 val myModuleA = module {
 
-    single { ServiceImp() as Service }
+    single<Service> { ServiceImp() }
 }
 
 val myModuleB = module {
 
     // override for this definition
-    single(override=true) { TestServiceImp() as Service }
+    single<Service>(override=true) { TestServiceImp() }
 }
 ----
 
@@ -365,13 +424,13 @@ val myModuleB = module {
 ----
 val myModuleA = module {
 
-    single { ServiceImp() as Service }
+    single<Service> { ServiceImp() }
 }
 
 // Allow override for all definitions from module
 val myModuleB = module(override=true) {
 
-    single { TestServiceImp() as Service }
+    single<Service> { TestServiceImp() }
 }
 ----
 
