@@ -14,7 +14,7 @@ repositories {
 }
 dependencies {
     // Koin Java features
-    compile 'org.koin:koin-java:{revnumber}'
+    implementation 'org.koin:koin-java:{revnumber}'
 }
 ----
 

@@ -14,9 +14,9 @@ repositories {
 }
 dependencies {
     // Scope for Android
-    compile 'org.koin:koin-android-scope:{revnumber}'
+    implementation 'org.koin:koin-android-scope:{revnumber}'
     // or Scope for AndroidX
-    compile 'org.koin:koin-androidx-scope:{revnumber}'
+    implementation 'org.koin:koin-androidx-scope:{revnumber}'
 }
 ----
 

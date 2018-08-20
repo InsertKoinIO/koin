@@ -14,9 +14,9 @@ repositories {
 }
 dependencies {
     // ViewModel for Android
-    compile 'org.koin:koin-android-viewmodel:{revnumber}'
+    implementation 'org.koin:koin-android-viewmodel:{revnumber}'
     // or ViewModel for AndroidX
-    compile 'org.koin:koin-androidx-viewmodel:{revnumber}'
+    implementation 'org.koin:koin-androidx-viewmodel:{revnumber}'
 }
 ----
 

@@ -48,24 +48,22 @@ Choose your Koin dependency:
 
 ```gradle
 // Koin for Kotlin
-compile "org.koin:koin-core:$koin_version"
+implementation "org.koin:koin-core:$koin_version"
 // Koin for Unit tests
-testCompile "org.koin:koin-test:$koin_version"
+testImplementation "org.koin:koin-test:$koin_version"
 // Koin for Java developers
-compile "org.koin:koin-java:$koin_version"
-// Advanced features
-compile "org.koin:koin-reflect:$koin_version"
+implementation "org.koin:koin-java:$koin_version"
 ```
 
 #### Android
 
 ```gradle
 // Koin for Android
-compile "org.koin:koin-android:$koin_version"
+implementation "org.koin:koin-android:$koin_version"
 // Koin Android Scope feature
-compile "org.koin:koin-android-scope:$koin_version"
+implementation "org.koin:koin-android-scope:$koin_version"
 // Koin Android ViewModel feature
-compile "org.koin:koin-android-viewmodel:$koin_version"
+implementation "org.koin:koin-android-viewmodel:$koin_version"
 ```
 
 #### AndroidX
@@ -74,9 +72,9 @@ compile "org.koin:koin-android-viewmodel:$koin_version"
 
 // AndroidX (based on koin-android)
 // Koin AndroidX Scope feature
-compile "org.koin:koin-androidx-scope:$koin_version"
+implementation "org.koin:koin-androidx-scope:$koin_version"
 // Koin AndroidX ViewModel feature
-compile "org.koin:koin-androidx-viewmodel:$koin_version"
+implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 ```
 
 #### SparkJava
@@ -84,14 +82,14 @@ compile "org.koin:koin-androidx-viewmodel:$koin_version"
 ```gradle
 
 // Koin for Spark Kotlin
-compile "org.koin:koin-spark:$koin_version"
+implementation "org.koin:koin-spark:$koin_version"
 ```
 
 #### Ktor
 
 ```gradle
 // Koin for Ktor Kotlin
-compile "org.koin:koin-ktor:$koin_version"
+implementation "org.koin:koin-ktor:$koin_version"
 ```
 
 # Quickstart
@@ -108,8 +106,8 @@ class BusinessService()
 
 // just declare it 
 val myModule = module { 
-  single { Controller(get()) } 
-  single { BusinessService() } 
+  single<Controller>() 
+  single<BusinessService>() 
 } 
 ```
 
@@ -192,8 +190,8 @@ Want to use Android Architecture ViewModel? No problem, it's already available a
 ```kotlin
 // declare ViewModel using the viewModel keyword
 val myModule : Module = module {
-  viewModel { MyViewModel(get()) }
-  single { MyRepository() }
+  viewModel<MyViewModel>()
+  single<MyRepository>()
 }
 ```
 ```kotlin
