@@ -45,22 +45,22 @@ Choose your the Koin module:
 
 ```gradle
 // Koin for Kotlin
-compile "org.koin:koin-core:$koin_version"
+implementation "org.koin:koin-core:$koin_version"
 
 // Koin for Android
-compile "org.koin:koin-android:$koin_version"
+implementation "org.koin:koin-android:$koin_version"
 
 // Koin for Android Architecture Components
-compile "org.koin:koin-android-architecture:$koin_version"
+implementation "org.koin:koin-android-architecture:$koin_version"
 
 // Koin for Spark Kotlin
-compile "org.koin:koin-spark:$koin_version"
+implementation "org.koin:koin-spark:$koin_version"
 
 // Koin for Ktor Kotlin
-compile "org.koin:koin-ktor:$koin_version"
+implementation "org.koin:koin-ktor:$koin_version"
 
 // Koin for JUnit tests
-testCompile "org.koin:koin-test:$koin_version"
+testImplementation "org.koin:koin-test:$koin_version"
 ```
 
 # Quickstart
@@ -77,7 +77,7 @@ testCompile "org.koin:koin-test:$koin_version"
 ### Gradle
 
 ```gradle
-compile "org.koin:koin-android:$koin_version"
+implementation "org.koin:koin-android:$koin_version"
 ```
 
 ### Declaring our first dependencies
@@ -153,7 +153,7 @@ class MyActivity : AppCompatActivity(){
 ### Gradle
 
 ```gradle
-compile "org.koin:koin-android-architecture:$koin_version"
+implementation "org.koin:koin-android-architecture:$koin_version"
 ```
 
 ### Declaring our first dependencies
@@ -252,7 +252,7 @@ repositories {
 }
 dependencies {
     // Koin testing tools
-    testCompile 'org.koin:koin-test:{{ site.current_version }}'
+    testImplementation 'org.koin:koin-test:{{ site.current_version }}'
 }
 ```
 
