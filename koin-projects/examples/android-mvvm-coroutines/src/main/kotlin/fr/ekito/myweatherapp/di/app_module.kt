@@ -18,19 +18,19 @@ import org.koin.dsl.module.module
  */
 val weatherAppModule = module {
 
-    viewModel { DetailViewModel(get(), get()) }
+    viewModel<DetailViewModel>()
 
     // ViewModel for Search View
-    viewModel { SplashViewModel(get(), get()) }
+    viewModel<SplashViewModel>()
 
     // WeatherViewModel declaration for Weather View components
-    viewModel { WeatherViewModel(get(), get()) }
+    viewModel<WeatherViewModel>()
 
     // Weather Data Repository
-    single { WeatherRepositoryImpl(get(), get()) as WeatherRepository }
+    single<WeatherRepository> { create<WeatherRepositoryImpl>() }
 
     // Rx Schedulers
-    single { ApplicationSchedulerProvider() as SchedulerProvider }
+    single<SchedulerProvider> { ApplicationSchedulerProvider() }
 
     // Room Database
     single {

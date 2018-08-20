@@ -13,8 +13,8 @@ import org.koin.dsl.module.module
  * Local java json repository
  */
 val localJavaDatasourceModule = module(override = true) {
-    single { JavaReader() as JsonReader }
-    single { LocalFileDataSource(get(), false) as WeatherWebDatasource }
+    single<JsonReader> { JavaReader() }
+    single<WeatherWebDatasource> { LocalFileDataSource(get(), false) }
 }
 
 /**
@@ -22,7 +22,7 @@ val localJavaDatasourceModule = module(override = true) {
  */
 val testRxModule = module(override = true) {
     // provided components
-    single { TestSchedulerProvider() as SchedulerProvider }
+    single<SchedulerProvider> { TestSchedulerProvider() }
 }
 
 val testWeatherApp = offlineWeatherApp + testRxModule + localJavaDatasourceModule

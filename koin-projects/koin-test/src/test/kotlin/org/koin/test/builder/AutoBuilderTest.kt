@@ -2,7 +2,6 @@ package org.koin.test.builder
 
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import org.koin.dsl.ext.single
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
 import org.koin.standalone.StandAloneContext.startKoin
@@ -52,7 +51,7 @@ class AutoBuilderTest : AutoCloseKoinTest() {
     @Test
     fun `should get instance - empty ctor`() {
         startKoin(listOf(module {
-            single { build<ComponentA>() }
+            single { create<ComponentA>() }
         }))
 
         assertNotNull(get<ComponentA>())
@@ -62,7 +61,7 @@ class AutoBuilderTest : AutoCloseKoinTest() {
     fun `should get interface instance`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            single<ComponentD, Component>()
+            single<Component> { create<ComponentD>() }
         }))
 
         assertNotNull(get<Component>())

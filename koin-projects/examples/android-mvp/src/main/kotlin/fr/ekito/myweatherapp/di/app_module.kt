@@ -9,7 +9,6 @@ import fr.ekito.myweatherapp.view.detail.DetailPresenter
 import fr.ekito.myweatherapp.view.splash.SplashContract
 import fr.ekito.myweatherapp.view.splash.SplashPresenter
 import fr.ekito.myweatherapp.view.weather.*
-import org.koin.dsl.ext.*
 import org.koin.dsl.module.module
 import org.koin.dsl.path.moduleName
 
@@ -19,27 +18,25 @@ import org.koin.dsl.path.moduleName
 val weatherAppModule = module {
 
     // Presenter for Search View
-    factory<SplashPresenter, SplashContract.Presenter>()
+    factory<SplashContract.Presenter> { create<SplashPresenter>() }
 
     // scoped module example
     module(WeatherActivity::class.moduleName) {
         // Presenter for ResultHeader View
-        single<WeatherHeaderPresenter, WeatherHeaderContract.Presenter>()
+        single<WeatherHeaderContract.Presenter> { create<WeatherHeaderPresenter>() }
 
         // Presenter for ResultList View
-        single<WeatherListPresenter,WeatherListContract.Presenter>()
+        single<WeatherListContract.Presenter> { create<WeatherListPresenter>() }
     }
 
     // Presenter with injection parameter for Detail View
-    factory { (id: String) ->
-        DetailPresenter(id, get(), get()) as DetailContract.Presenter
-    }
+    factory<DetailContract.Presenter> { (id: String) -> DetailPresenter(id, get(), get()) }
 
     // Weather Data Repository
-    single<WeatherRepositoryImpl, WeatherRepository>(createOnStart = true)
+    single<WeatherRepository>(createOnStart = true) { create<WeatherRepositoryImpl>() }
 
     // Rx Schedulers
-    single<ApplicationSchedulerProvider, SchedulerProvider>()
+    single<SchedulerProvider> { ApplicationSchedulerProvider() }
 }
 
 // Gather all app modules

@@ -127,7 +127,7 @@ class ModuleDefinition(
         override: Boolean = false,
         noinline definition: Definition<T>? = null
     ): BeanDefinition<T> {
-        return if (definition == null) provide(name, createOnStart, override) { build<T>() }
+        return if (definition == null) provide(name, createOnStart, override) { create<T>() }
         else provide(name, createOnStart, override, true, definition)
     }
 
@@ -144,14 +144,14 @@ class ModuleDefinition(
         override: Boolean = false,
         noinline definition: Definition<T>? = null
     ): BeanDefinition<T> {
-        return if (definition == null) provide(name, false, override, false) { build<T>() }
+        return if (definition == null) provide(name, false, override, false) { create<T>() }
         else provide(name, false, override, false, definition)
     }
 
     /**
      * Build instance for type T and inject dependencies into 1st constructor
      */
-    inline fun <reified T : Any> build(): T {
+    inline fun <reified T : Any> create(): T {
         val clazz = T::class.java
         val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
         val args = ctor.parameterTypes.map { get(clazz = it) }.toTypedArray()

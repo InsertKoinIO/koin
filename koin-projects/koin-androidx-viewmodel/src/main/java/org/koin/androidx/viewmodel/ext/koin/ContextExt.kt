@@ -35,7 +35,7 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     noinline definition: Definition<T>? = null
 ) {
     val bean = if (definition == null) {
-        factory(name, override) { build<T>() }
+        factory(name, override) { create<T>() }
     } else {
         factory(name, override, definition)
     }

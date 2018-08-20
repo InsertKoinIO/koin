@@ -16,11 +16,11 @@ import org.koin.test.ext.junit.*
 class MVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule = module {
-        single { build<Repository>() }
+        single { create<Repository>() }
 
         module("view") {
             single { View() }
-            single { build<Presenter>() }
+            single { create<Presenter>() }
         }
     }
 

@@ -13,7 +13,6 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.koin.dsl.ext.single
 import org.koin.dsl.module.module
 import org.koin.ktor.ext.inject
 import org.koin.ktor.ext.installKoin
@@ -73,7 +72,7 @@ fun Route.bye() {
 }
 
 val helloAppModule = module(createOnStart = true) {
-    single<HelloServiceImpl,HelloService>()
+    single<HelloService> { create<HelloServiceImpl>() }
     single<HelloRepository>()
 }
 

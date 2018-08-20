@@ -22,8 +22,8 @@ class BuilderTest : AutoCloseKoinTest() {
     fun `should find 1st constructor and build`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            single { build<ComponentB>() }
-            single { build<ComponentC>() }
+            single { create<ComponentB>() }
+            single { create<ComponentC>() }
         }))
 
         assertRemainingInstances(0)
@@ -39,7 +39,7 @@ class BuilderTest : AutoCloseKoinTest() {
     fun `should not dependency`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            single { build<ComponentC>() }
+            single { create<ComponentC>() }
         }))
 
         try {
@@ -51,7 +51,7 @@ class BuilderTest : AutoCloseKoinTest() {
     @Test
     fun `should get instance - empty ctor`() {
         startKoin(listOf(module {
-            single { build<ComponentA>() }
+            single { create<ComponentA>() }
         }))
 
         assertNotNull(get<ComponentA>())
@@ -61,7 +61,7 @@ class BuilderTest : AutoCloseKoinTest() {
     fun `should get interface instance`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            single { build<ComponentD>() as Component }
+            single { create<ComponentD>() as Component }
         }))
 
         assertNotNull(get<Component>())

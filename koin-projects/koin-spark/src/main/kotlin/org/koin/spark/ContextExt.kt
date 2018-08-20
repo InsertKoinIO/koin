@@ -34,7 +34,7 @@ inline fun <reified T : SparkController> ModuleDefinition.controller(
     noinline definition: Definition<T>? = null
 ) {
     val def = if (definition == null) {
-        single(name, true, override) { build<T>() }
+        single(name, true, override) { create<T>() }
     } else {
         single(name, true, override, definition)
     }
