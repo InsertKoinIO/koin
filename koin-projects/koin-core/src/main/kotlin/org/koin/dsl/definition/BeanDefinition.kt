@@ -50,6 +50,9 @@ data class BeanDefinition<out T>(
     val definition: Definition<T>
 ) {
 
+    // Available classes to match
+    internal val classes = listOf<String>(clazz.java.canonicalName) + types.map { it.java.canonicalName }
+
     /**
      * Add a compatible type to current bounded definition
      */

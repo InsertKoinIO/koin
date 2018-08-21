@@ -22,7 +22,6 @@ import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
-import kotlin.reflect.KClass
 
 
 /**
@@ -58,47 +57,22 @@ class BeanRegistry() {
         Koin.logger.info("[module] $kw $definition")
     }
 
-    /**
-     * Search bean by its canonicalName, respectfully to requested type.
-     */
-    fun search(name: String, clazz: KClass<*>): List<BeanDefinition<*>> =
-        searchDefinition { filterByNameAndClass(it, name, clazz) }
-
-    fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: KClass<*>): Boolean =
-        filterByNameAndClass(it,name,clazz.java)
-
-    fun filterByNameAndClass(it: BeanDefinition<*>, name: String, clazz: Class<*>): Boolean =
-        it.name == name && filterByClass(it, clazz)
-
-    /**
-     * Search by name and class
-     */
-    fun search(name: String, clazz: Class<*>): List<BeanDefinition<*>> =
-        searchDefinition { it.name == name && filterByClass(it, clazz) }
-
-    /**
-     * Search for any bean definition
-     */
-    fun searchAll(clazz: KClass<*>): List<BeanDefinition<*>> {
-        return searchDefinition { filterByClass(it, clazz) }
+    fun searchByClass(definitions: List<BeanDefinition<*>>, clazzName: String): List<BeanDefinition<*>> {
+        return definitions.filter { clazzName in it.classes }
     }
 
-    fun filterByClass(it: BeanDefinition<*>, clazz: KClass<*>): Boolean =
-        it.clazz == clazz || it.types.contains(clazz)
-
-    fun filterByClass(it: BeanDefinition<*>, clazz: Class<*>): Boolean =
-        it.clazz.java.canonicalName == clazz.canonicalName || it.types.map { it.java.canonicalName }.contains(clazz.canonicalName)
-
-    /**
-     * Search definition with given filter function
-     */
-    private fun searchDefinition(filter: (BeanDefinition<*>) -> Boolean): List<BeanDefinition<*>> =
-        definitions.filter(filter)
+    fun searchByNameAndClass(
+        definitions: List<BeanDefinition<*>>,
+        name: String,
+        clazzName: String
+    ): List<BeanDefinition<*>> {
+        return definitions.filter { name == it.name && clazzName in it.classes }
+    }
 
     /**
      * Get bean definitions from given path
      */
-    fun getDefinitions(paths: Set<Path>): List<BeanDefinition<*>> {
+    fun getDefinitionsInPaths(paths: Set<Path>): List<BeanDefinition<*>> {
         return definitions.filter { def -> definitions.first { it == def }.path in paths }
     }
 
@@ -110,7 +84,7 @@ class BeanRegistry() {
      * @param definitionResolver - function to find bean definition
      * @param lastInStack - to check visibility with last bean in stack
      */
-    fun getVisibleBean(
+    fun retrieveDefinition(
         clazzName: String,
         modulePath: Path? = null,
         definitionResolver: () -> List<BeanDefinition<*>>,
@@ -147,5 +121,4 @@ class BeanRegistry() {
     fun clear() {
         definitions.clear()
     }
-
 }

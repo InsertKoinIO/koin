@@ -1,10 +1,9 @@
 package org.koin.android.viewmodel.ext.koin
 
 import org.koin.android.viewmodel.ViewModelParameters
-import org.koin.core.CustomRequest
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.getWith
+import org.koin.standalone.getForClass
 
 /**
  * Create instance with parameters for ViewModelFactory
@@ -33,9 +32,7 @@ internal fun <T> KoinComponent.retrieveViewModel(
     name: String,
     module: String?,
     params: ParameterDefinition
-): T = getWith(CustomRequest({ registry ->
-    registry.definitions.filter(isViewModel).filter { registry.filterByNameAndClass(it, name, clazz) }.distinct()
-}, module, clazz, params))
+): T = getForClass(name, clazz.canonicalName, module, params, isViewModel)
 
 /**
  * Retrieve ViewModel Instance from class
@@ -44,6 +41,4 @@ internal fun <T> KoinComponent.retrieveViewModel(
     clazz: Class<T>,
     module: String?,
     params: ParameterDefinition
-): T = getWith(CustomRequest({ registry ->
-    registry.definitions.filter(isViewModel).filter { registry.filterByClass(it, clazz) }.distinct()
-}, module, clazz, params))
+): T = getForClass(className = clazz.canonicalName, module = module, parameters = params, filter = isViewModel)

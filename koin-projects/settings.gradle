@@ -1,13 +1,14 @@
 // Core
-include 'koin-core', 'koin-test', 'koin-java'
+include 'koin-core', 'koin-test'
 include 'examples:coffee-maker'
+include 'koin-java'
 
 // Android
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-viewmodel'
 include 'examples:android-mvp','examples:android-mvvm','examples:android-mvvm-coroutines','examples:android-navigation'
 
-// Web
+//// Web
 include 'koin-logger-slf4j'
 include 'koin-ktor'
 include 'koin-spark'

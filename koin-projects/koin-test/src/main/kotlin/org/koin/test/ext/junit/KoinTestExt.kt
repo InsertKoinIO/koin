@@ -87,7 +87,7 @@ fun KoinTest.assertPath(path: String, parentPath: String) {
     Assert.assertEquals(
         "Path '$path' must have parent '$parentPath'",
         parentPath,
-        context().instanceResolver.pathRegistry.getPath(path).parent?.name
+        context().instanceManager.pathRegistry.getPath(path).parent?.name
     )
 }
 

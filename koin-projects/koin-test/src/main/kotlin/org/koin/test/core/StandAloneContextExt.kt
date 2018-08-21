@@ -1,6 +1,6 @@
 package org.koin.test.core
 
-import org.koin.core.InstanceResolver
+import org.koin.core.InstanceManager
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.bean.BeanRegistry
@@ -20,7 +20,7 @@ fun StandAloneContext.check(list: List<Module>) {
     Koin.logger = PrintLogger(showDebug = true)
     Koin.logger.info("[Sandbox]")
     koinContext =
-            KoinContext(InstanceResolver(BeanRegistry(), SandboxInstanceFactory(), PathRegistry()), PropertyRegistry())
+            KoinContext(InstanceManager(BeanRegistry(), SandboxInstanceFactory(), PathRegistry()), PropertyRegistry())
 
     // Build list
     Koin(koinContext as KoinContext).build(list)

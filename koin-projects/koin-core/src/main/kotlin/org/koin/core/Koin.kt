@@ -33,8 +33,8 @@ import java.util.*
 class Koin(val koinContext: KoinContext) {
 
     val propertyResolver = koinContext.propertyResolver
-    val beanRegistry = koinContext.instanceResolver.beanRegistry
-    val pathRegistry = koinContext.instanceResolver.pathRegistry
+    val beanRegistry = koinContext.instanceManager.beanRegistry
+    val pathRegistry = koinContext.instanceManager.pathRegistry
 
     /**
      * Inject properties to context

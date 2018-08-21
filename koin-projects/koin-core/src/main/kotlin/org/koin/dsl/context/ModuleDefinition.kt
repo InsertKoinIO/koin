@@ -15,7 +15,6 @@
  */
 package org.koin.dsl.context
 
-import org.koin.core.ClassRequest
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -149,16 +148,6 @@ class ModuleDefinition(
     }
 
     /**
-     * Build instance for type T and inject dependencies into 1st constructor
-     */
-    inline fun <reified T : Any> create(): T {
-        val clazz = T::class.java
-        val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
-        val args = ctor.parameterTypes.map { get(clazz = it) }.toTypedArray()
-        return ctor.newInstance(*args) as T
-    }
-
-    /**
      * Resolve a component
      * @param name : component canonicalName
      * @param parameters - injection parameters
@@ -169,6 +158,17 @@ class ModuleDefinition(
     ): T =
         if (name != null) koinContext.get(name, parameters = parameters) else koinContext.get(parameters = parameters)
 
+
+    /**
+     * Build instance for type T and inject dependencies into 1st constructor
+     */
+    inline fun <reified T : Any> create(): T {
+        val clazz = T::class.java
+        val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
+        val args = ctor.parameterTypes.map { getForClass(clazz = it) }.toTypedArray()
+        return ctor.newInstance(*args) as T
+    }
+
     /**
      * Resolve a component from its class
      *
@@ -176,11 +176,11 @@ class ModuleDefinition(
      * @param module
      * @param parameters
      */
-    fun <T> get(
+    fun <T> getForClass(
         name: String = "",
         clazz: Class<T>,
         parameters: ParameterDefinition = emptyParameterDefinition()
-    ): T = koinContext.get(ClassRequest(name, clazz, parameters = parameters))
+    ): T = koinContext.getForClass(name, clazz.canonicalName, parameters = parameters)
 
     /**
      * Retrieve a property

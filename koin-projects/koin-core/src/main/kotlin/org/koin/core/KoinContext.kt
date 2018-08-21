@@ -31,7 +31,7 @@ import org.koin.standalone.StandAloneKoinContext
  * @author - Laurent Baresse
  */
 class KoinContext(
-    val instanceResolver: InstanceResolver,
+    val instanceManager: InstanceManager,
     val propertyResolver: PropertyRegistry
 ) : StandAloneKoinContext {
 
@@ -44,28 +44,47 @@ class KoinContext(
         name: String = "",
         module: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
-    ): T = instanceResolver.resolve(
+    ): T = instanceManager.resolve(
         InstanceRequest(
             name = name,
             module = module,
-            clazz = T::class,
+            clazzName = T::class.java.canonicalName,
             parameters = parameters
         )
     )
 
     /**
-     * Retrieve an instance from its class
+     * Retrieve an instance from its name/class
      */
-    fun <T> get(request: ClassRequest): T = instanceResolver.resolve(request)
+    fun <T> getForClass(
+        name: String = "",
+        clazzName: String,
+        module: String? = null,
+        parameters: ParameterDefinition = emptyParameterDefinition(),
+        filter: DefinitionFilter? = null
+    ): T = instanceManager.resolve(
+        InstanceRequest(
+            name = name,
+            module = module,
+            clazzName = clazzName,
+            parameters = parameters
+        ),
+        filter
+    )
 
-    /**
-     * Retrieve an instance from a given filter
-     */
-    fun <T> get(request: CustomRequest): T = instanceResolver.proceedResolution(
-        request.module,
-        request.clazz,
-        request.parameters
-    ) { request.defininitionFilter(instanceResolver.beanRegistry) }
+//    /**
+//     * Retrieve an instance from its class
+//     */
+//    fun <T> get(request: ClassRequest): T = instanceManager.resolve(request)
+//
+//    /**
+//     * Retrieve an instance from a given filter
+//     */
+//    fun <T> get(request: CustomRequest): T = instanceManager.proceedResolution(
+//        request.module,
+//        request.clazz,
+//        request.parameters
+//    ) { request.defininitionFilter(instanceManager.beanRegistry) }
 
     /**
      * Drop all instances for path context
@@ -74,7 +93,7 @@ class KoinContext(
     fun release(path: String) {
         logger.info("release module '$path'")
 
-        instanceResolver.release(path)
+        instanceManager.release(path)
         contextCallback.forEach { it.onRelease(path) }
     }
 
@@ -104,7 +123,7 @@ class KoinContext(
      */
     fun close() {
         logger.info("[Close] Closing Koin context")
-        instanceResolver.close()
+        instanceManager.close()
         propertyResolver.clear()
     }
 }

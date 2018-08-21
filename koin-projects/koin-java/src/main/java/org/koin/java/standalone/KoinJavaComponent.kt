@@ -15,7 +15,6 @@
  */
 package org.koin.java.standalone
 
-import org.koin.core.ClassRequest
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -63,13 +62,11 @@ object KoinJavaComponent : KoinComponent {
         module: String? = null,
         parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
-        return (StandAloneContext.koinContext as KoinContext).get(
-            ClassRequest(
-                name,
-                clazz,
-                module,
-                parameters
-            )
+        return (StandAloneContext.koinContext as KoinContext).getForClass(
+            name,
+            clazz.canonicalName,
+            module,
+            parameters
         )
     }
 

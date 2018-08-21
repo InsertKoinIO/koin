@@ -28,7 +28,7 @@ import org.koin.dsl.definition.BeanDefinition
  *
  * @author Arnaud Giuliani
  */
-class InstanceResolver(
+class InstanceManager(
     val beanRegistry: BeanRegistry,
     val instanceFactory: InstanceFactory,
     val pathRegistry: PathRegistry
@@ -39,32 +39,22 @@ class InstanceResolver(
     /**
      * resolve instance from InstanceRequest
      */
-    fun <T> resolve(req: InstanceRequest): T {
-        return req.run {
-            when {
-                name.isNotEmpty() -> proceedResolution(module, clazz.java, parameters) {
-                    beanRegistry.search(name, clazz)
+    fun <T> resolve(request: InstanceRequest, filterFunction: DefinitionFilter? = null): T {
+
+        val definitions = (if (filterFunction != null) {
+            beanRegistry.definitions.filter(filterFunction)
+        } else beanRegistry.definitions).toList()
+
+        return request.run {
+            val search = when {
+                name.isNotEmpty() -> {
+                    { beanRegistry.searchByNameAndClass(definitions,name, clazzName) }
                 }
-                else -> proceedResolution(module, clazz.java, parameters) { beanRegistry.searchAll(clazz) }
+                else -> {
+                    { beanRegistry.searchByClass(definitions,clazzName) }
+                }
             }
-        }
-    }
-
-    /**
-     * Resolve instance from ClassRequest
-     */
-    fun <T> resolve(req: ClassRequest): T {
-        return proceedResolution(req.module, req.clazz, req.parameters) {
-            beanRegistry.search(req.name, req.clazz)
-        }
-    }
-
-    /**
-     * Resolve instance from CustomRequest
-     */
-    inline fun <reified T> resolve(request: CustomRequest): T {
-        return proceedResolution(request.module, T::class.java, request.parameters) {
-            request.defininitionFilter(beanRegistry)
+            proceedResolution(module, clazzName, parameters, search)
         }
     }
 
@@ -77,7 +67,7 @@ class InstanceResolver(
      */
     fun <T> proceedResolution(
         module: String? = null,
-        clazz: Class<*>,
+        clazzName: String,
         parameters: ParameterDefinition,
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
@@ -86,11 +76,9 @@ class InstanceResolver(
         val logIndent: String = resolutionStack.indent()
         val duration = measureDuration {
 
-            val clazzName = clazz.canonicalName
-
             try {
                 val beanDefinition: BeanDefinition<*> =
-                    beanRegistry.getVisibleBean(
+                    beanRegistry.retrieveDefinition(
                         clazzName,
                         if (module != null) pathRegistry.getPath(module) else null,
                         definitionResolver,
@@ -118,14 +106,49 @@ class InstanceResolver(
                 }
             } catch (e: Exception) {
                 resolutionStack.clear()
-                Koin.logger.err("Error while resolving instance for class '${clazz.simpleName}' - error: $e ")
+                Koin.logger.err("Error while resolving instance for class '$clazzName' - error: $e ")
                 throw e
             }
         }
 
-        Koin.logger.debug("$logIndent!-- [${clazz.simpleName}] resolved in $duration ms")
+        Koin.logger.debug("$logIndent!-- [$clazzName] resolved in $duration ms")
 
-        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
+        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazzName")
+    }
+
+    /**
+     * Create instances at start - tagged eager
+     * @param defaultParameters
+     */
+    fun createEagerInstances(defaultParameters: ParameterDefinition) {
+        val definitions = beanRegistry.definitions.filter { it.isEager }
+
+        if (definitions.isNotEmpty()) {
+            Koin.logger.info("Creating instances ...")
+            createInstances(definitions, defaultParameters)
+        }
+    }
+
+    /**
+     * Create instances for given definition list & params
+     * @param definitions
+     * @param params
+     */
+    private fun createInstances(definitions: List<BeanDefinition<*>>, params: ParameterDefinition) {
+        definitions.forEach { def ->
+            proceedResolution(
+                def.path.toString(),
+                def.clazz.java.canonicalName,
+                params
+            ) { listOf(def) }
+        }
+    }
+
+    /**
+     * Dry Run - run each definition
+     */
+    fun dryRun(defaultParameters: ParameterDefinition) {
+        createInstances(beanRegistry.definitions.toList(), defaultParameters)
     }
 
     /**
@@ -137,7 +160,7 @@ class InstanceResolver(
 
         val paths = pathRegistry.getAllPathsFrom(path)
         val definitions: List<BeanDefinition<*>> =
-            beanRegistry.getDefinitions(paths)
+            beanRegistry.getDefinitionsInPaths(paths)
 
         instanceFactory.releaseInstances(definitions)
     }
@@ -152,3 +175,5 @@ class InstanceResolver(
         beanRegistry.clear()
     }
 }
+
+typealias DefinitionFilter = (BeanDefinition<*>) -> Boolean

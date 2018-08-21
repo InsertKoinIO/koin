@@ -15,7 +15,7 @@
  */
 package org.koin.standalone
 
-import org.koin.core.CustomRequest
+import org.koin.core.DefinitionFilter
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -52,10 +52,18 @@ inline fun <reified T> KoinComponent.get(
     (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
 
 /**
- * Special instance getter for integration / CustomRequest
+ * Retrieve given dependency for KoinComponent
+ * @param name - bean canonicalName
+ * @param parameters - injection parameters
  */
-fun <T> KoinComponent.getWith(request: CustomRequest): T =
-    (StandAloneContext.koinContext as KoinContext).get(request)
+fun <T> KoinComponent.getForClass(
+    name: String = "",
+    className: String,
+    module: String? = null,
+    parameters: ParameterDefinition = emptyParameterDefinition(),
+    filter: DefinitionFilter? = null
+): T =
+    (StandAloneContext.koinContext as KoinContext).getForClass(name, className, module, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent

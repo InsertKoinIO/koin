@@ -15,7 +15,7 @@
  */
 package org.koin.standalone
 
-import org.koin.core.InstanceResolver
+import org.koin.core.InstanceManager
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.ModuleCallback
@@ -71,7 +71,7 @@ object StandAloneContext {
         if (!isStarted) {
             Koin.logger.info("[context] create")
             val propertyResolver = PropertyRegistry()
-            val instanceResolver = InstanceResolver(BeanRegistry(), InstanceFactory(), PathRegistry())
+            val instanceResolver = InstanceManager(BeanRegistry(), InstanceFactory(), PathRegistry())
             koinContext = KoinContext(instanceResolver, propertyResolver)
             isStarted = true
         }
@@ -161,20 +161,7 @@ object StandAloneContext {
      * @param defaultParameters - default injection parameters
      */
     fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
-        val context = getKoinContext()
-        val instanceResolver = context.instanceResolver
-        val definitions = instanceResolver.beanRegistry.definitions.filter { it.isEager }
-
-        if (definitions.isNotEmpty()) {
-            Koin.logger.info("Creating instances ...")
-            definitions.forEach { def ->
-                instanceResolver.proceedResolution(
-                    def.path.toString(),
-                    def.clazz.java,
-                    defaultParameters
-                ) { listOf(def) }
-            }
-        }
+        getKoinContext().instanceManager.createEagerInstances(defaultParameters)
     }
 
     /**
@@ -203,7 +190,7 @@ object StandAloneContext {
      */
     fun dumpModulePaths() {
         Koin.logger.info("Module paths:")
-        getKoinContext().instanceResolver.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
+        getKoinContext().instanceManager.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
     }
 
     /**
