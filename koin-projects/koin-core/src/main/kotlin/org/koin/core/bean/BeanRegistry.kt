@@ -39,18 +39,13 @@ class BeanRegistry() {
      *
      * @param def : Bean definition
      */
-    fun declare(def: BeanDefinition<*>, path: Path) {
-        val definition = def.copy(path = path)
-        val existingBean = definitions.firstOrNull { it == definition }
+    fun declare(definition: BeanDefinition<*>) {
+        val isOverriding = definitions.remove(definition)
 
-        val isOverriding = existingBean != null
         if (isOverriding && !definition.allowOverride) {
-            throw BeanOverrideException("Try to override definition $existingBean with $definition, but override is not allowed. Use 'override' option in your definition or module.")
+            throw BeanOverrideException("Try to override definition with $definition, but override is not allowed. Use 'override' option in your definition or module.")
         }
 
-        existingBean?.let {
-            definitions.remove(existingBean)
-        }
         definitions += definition
 
         val kw = if (isOverriding) "override" else "declare"

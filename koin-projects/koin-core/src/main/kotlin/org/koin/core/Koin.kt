@@ -100,12 +100,11 @@ class Koin(val koinContext: KoinContext) {
         pathRegistry.savePath(consolidatedPath)
 
         // Add definitions & propagate eager/override
-        moduleDefinition.definitions.map { definition ->
+        moduleDefinition.definitions.forEach { definition ->
             val eager = if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
             val override = if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
-            val def = definition.copy(isEager = eager, allowOverride = override)
-            beanRegistry.declare(def, consolidatedPath)
-            definition.isEager
+            val def = definition.copy(isEager = eager, allowOverride = override, path = consolidatedPath)
+            beanRegistry.declare(def)
         }
 
         // Check sub contexts

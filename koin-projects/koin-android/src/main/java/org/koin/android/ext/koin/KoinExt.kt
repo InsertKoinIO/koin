@@ -37,7 +37,8 @@ infix fun Koin.with(androidContext: Context): Koin {
     beanRegistry.declare(
         BeanDefinition(
             clazz = Context::class,
-            definition = { androidContext }), Path.root()
+            definition = { androidContext }
+        )
     )
     return this
 }

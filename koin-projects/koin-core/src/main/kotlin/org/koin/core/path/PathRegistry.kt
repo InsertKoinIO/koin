@@ -57,9 +57,9 @@ class PathRegistry {
         else {
             val completePath = if (!parentPath.isNullOrEmpty()) "$parentPath.$path" else path
             val paths = completePath.split(".")
-            val modulePath = paths.fold(root, { acc: Path, s: String ->
+            val modulePath = paths.fold(root) { acc: Path, s: String ->
                 Path(s, acc)
-            })
+            }
             return modulePath
         }
     }
