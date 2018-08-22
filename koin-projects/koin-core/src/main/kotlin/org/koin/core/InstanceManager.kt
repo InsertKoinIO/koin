@@ -43,7 +43,7 @@ class InstanceManager(
 
         val definitions = (if (filterFunction != null) {
             beanRegistry.definitions.filter(filterFunction)
-        } else beanRegistry.definitions).toList()
+        } else beanRegistry.definitions)
 
         return request.run {
             val search = when {
@@ -134,7 +134,7 @@ class InstanceManager(
      * @param definitions
      * @param params
      */
-    private fun createInstances(definitions: List<BeanDefinition<*>>, params: ParameterDefinition) {
+    private fun createInstances(definitions: Collection<BeanDefinition<*>>, params: ParameterDefinition) {
         definitions.forEach { def ->
             proceedResolution(
                 def.path.toString(),
@@ -148,7 +148,7 @@ class InstanceManager(
      * Dry Run - run each definition
      */
     fun dryRun(defaultParameters: ParameterDefinition) {
-        createInstances(beanRegistry.definitions.toList(), defaultParameters)
+        createInstances(beanRegistry.definitions, defaultParameters)
     }
 
     /**

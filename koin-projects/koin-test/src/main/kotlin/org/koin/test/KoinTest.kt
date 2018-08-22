@@ -83,6 +83,14 @@ inline fun <reified T : Any> KoinTest.declareMock(
 }
 
 /**
+ * Displays Module paths
+ */
+fun dumpModulePaths() {
+    Koin.logger.info("Module paths:")
+    (StandAloneContext.koinContext as KoinContext).instanceManager.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
+}
+
+/**
  * Create & info mock
  */
 fun <T : Any> createMock(clazz: Class<T>): T {

@@ -4,11 +4,11 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.StandAloneContext.dumpModulePaths
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.dumpModulePaths
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertIsInModulePath
 

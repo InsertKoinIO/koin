@@ -186,14 +186,6 @@ object StandAloneContext {
     }
 
     /**
-     * Displays Module paths
-     */
-    fun dumpModulePaths() {
-        Koin.logger.info("Module paths:")
-        getKoinContext().instanceManager.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
-    }
-
-    /**
      * Get Koin
      */
     private fun getKoin(): Koin = Koin(koinContext as KoinContext)

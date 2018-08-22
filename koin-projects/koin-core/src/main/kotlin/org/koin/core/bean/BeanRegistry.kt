@@ -52,12 +52,12 @@ class BeanRegistry() {
         Koin.logger.info("[module] $kw $definition")
     }
 
-    fun searchByClass(definitions: List<BeanDefinition<*>>, clazzName: String): List<BeanDefinition<*>> {
+    fun searchByClass(definitions: Collection<BeanDefinition<*>>, clazzName: String): List<BeanDefinition<*>> {
         return definitions.filter { clazzName in it.classes }
     }
 
     fun searchByNameAndClass(
-        definitions: List<BeanDefinition<*>>,
+        definitions: Collection<BeanDefinition<*>>,
         name: String,
         clazzName: String
     ): List<BeanDefinition<*>> {
