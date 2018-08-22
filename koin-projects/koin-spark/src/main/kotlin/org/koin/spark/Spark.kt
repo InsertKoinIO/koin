@@ -15,11 +15,13 @@
  */
 package org.koin.spark
 
+import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.dsl.module.Module
 import org.koin.log.Logger.SLF4JLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.createEagerInstances
+import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.StandAloneContext.stopKoin
 import spark.Spark
@@ -39,14 +41,8 @@ const val DEFAULT_PORT = 0
  */
 fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> Unit)? = null): Int {
 
-    // launch controllers initialization
-    startKoin(
-        modules,
-        useEnvironmentProperties = true,
-        useKoinPropertiesFile = true,
-        logger = SLF4JLogger()
-    )
-
+    Koin.logger = SLF4JLogger()
+    StandAloneContext.loadProperties(true,true, emptyMap())
     // Get port from properties
     val foundPort =
         (StandAloneContext.koinContext as KoinContext).getProperty("server.port", "4567").toInt()
@@ -55,6 +51,9 @@ fun start(port: Int = DEFAULT_PORT, modules: List<Module>, controllers: (() -> U
     } else {
         port(foundPort)
     }
+
+    // launch controllers initialization
+    loadKoinModules(modules)
 
     if (controllers != null) {
         // Start Koin
