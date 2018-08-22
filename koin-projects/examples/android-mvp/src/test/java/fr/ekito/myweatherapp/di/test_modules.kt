@@ -8,12 +8,11 @@ import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.util.rx.SchedulerProvider
 import org.koin.dsl.module.module
 
-
 /**
  * Local java json repository
  */
 val javaDatasourceModule = module(override = true) {
-    single<JsonReader> { create<JavaReader>() }
+    single<JsonReader> { JavaReader() }
     single<WeatherWebDatasource> { LocalFileDataSource(get(), false) }
 }
 

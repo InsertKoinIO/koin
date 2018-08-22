@@ -22,18 +22,18 @@ val weatherAppModule = module {
     viewModel { (id: String) -> DetailViewModel(id, get(), get()) }
 
     // ViewModel for Search View
-    viewModel<SplashViewModel>()
+    viewModel { SplashViewModel(get(), get()) }
 
     // WeatherViewModel declaration for Weather View components
-    viewModel<WeatherViewModel>()
-
-    // Rx Schedulers
-    single<SchedulerProvider> { ApplicationSchedulerProvider() }
+    viewModel { WeatherViewModel(get(), get()) }
 }
 
 val dataModule = module(createOnStart = true) {
     // Weather Data Repository
-    single<WeatherRepository> { create<WeatherRepositoryImpl>() }
+    single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
+
+    // Rx Schedulers
+    single<SchedulerProvider> { ApplicationSchedulerProvider() }
 
     // Room Database
     single {

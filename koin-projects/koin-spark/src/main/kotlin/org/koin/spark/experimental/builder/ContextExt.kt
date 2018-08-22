@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.spark
+package org.koin.spark.experimental.builder
 
 import org.koin.dsl.context.ModuleDefinition
-import org.koin.dsl.definition.Definition
+import org.koin.experimental.builder.create
+import org.koin.spark.SparkController
 
 
 /**
@@ -30,13 +31,7 @@ import org.koin.dsl.definition.Definition
  */
 inline fun <reified T : SparkController> ModuleDefinition.controller(
     name: String = "",
-    override: Boolean = false,
-    noinline definition: Definition<T>
+    override: Boolean = false
 ) {
-    single(name, true, override, definition) bind (SparkController::class)
+    single(name, true, override) { create<T>() } bind (SparkController::class)
 }
-
-/**
- * Tag interface for Spark controllers
- */
-interface SparkController

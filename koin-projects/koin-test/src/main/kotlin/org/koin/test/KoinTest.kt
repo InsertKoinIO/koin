@@ -47,12 +47,15 @@ interface KoinTest : KoinComponent
 /**
  * Dry Run
  * Try to instantiate all definitions
+ * @Deprecated
  */
-fun KoinTest.dryRun(parameters: ParameterDefinition = emptyParameterDefinition()) =
-    (StandAloneContext.koinContext as KoinContext).dryRun(parameters)
+@Deprecated("Please use the check() function to check your list of modules")
+fun KoinTest.dryRun(parameters: ParameterDefinition = emptyParameterDefinition()) = (StandAloneContext.koinContext as KoinContext).dryRun(parameters)
 
 /**
- * Check all definition's dependencies
+ * Check all definition's dependencies - run all modules in a test sandbox
+ * and check if definitions can run
+ * @param list of modules
  */
 fun KoinTest.check(list: List<Module>) = StandAloneContext.check(list)
 
@@ -70,11 +73,11 @@ inline fun <reified T : Any> KoinTest.declareMock(
         module(module ?: Path.ROOT) {
             val def = if (!isFactory) {
                 single(override = true) {
-                    createMock(clazz)
+                    mock<T>(clazz)
                 }
             } else {
                 factory(override = true) {
-                    createMock(clazz)
+                    mock<T>(clazz)
                 }
             }
             binds.forEach { def.bind(it) }
@@ -88,13 +91,6 @@ inline fun <reified T : Any> KoinTest.declareMock(
 fun dumpModulePaths() {
     Koin.logger.info("Module paths:")
     (StandAloneContext.koinContext as KoinContext).instanceManager.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
-}
-
-/**
- * Create & info mock
- */
-fun <T : Any> createMock(clazz: Class<T>): T {
-    return mock<T>(clazz)
 }
 
 /**

@@ -1,8 +1,9 @@
 package org.koin.sample
 
 import org.koin.dsl.module.module
+import org.koin.experimental.builder.create
 import org.koin.spark.SparkController
-import org.koin.spark.controller
+import org.koin.spark.experimental.builder.controller
 import org.koin.spark.start
 import spark.kotlin.get
 

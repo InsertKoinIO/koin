@@ -10,7 +10,8 @@ import fr.ekito.myweatherapp.view.detail.DetailViewModel
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.android.viewmodel.experimental.builder.viewModel
+import org.koin.experimental.builder.create
 import org.koin.dsl.module.module
 
 /**
@@ -30,7 +31,7 @@ val weatherAppModule = module {
     single<WeatherRepository> { create<WeatherRepositoryImpl>() }
 
     // Rx Schedulers
-    single<SchedulerProvider> { ApplicationSchedulerProvider() }
+    single<SchedulerProvider> { create<ApplicationSchedulerProvider>() }
 
     // Room Database
     single {

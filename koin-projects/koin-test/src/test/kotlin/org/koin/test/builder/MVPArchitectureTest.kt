@@ -3,6 +3,7 @@ package org.koin.test.builder
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.experimental.builder.create
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get

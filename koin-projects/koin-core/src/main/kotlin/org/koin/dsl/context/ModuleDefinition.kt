@@ -124,10 +124,9 @@ class ModuleDefinition(
         name: String = "",
         createOnStart: Boolean = false,
         override: Boolean = false,
-        noinline definition: Definition<T>? = null
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return if (definition == null) provide(name, createOnStart, override) { create<T>() }
-        else provide(name, createOnStart, override, true, definition)
+        return provide(name, createOnStart, override, true, definition)
     }
 
     /**
@@ -141,10 +140,9 @@ class ModuleDefinition(
     inline fun <reified T : Any> factory(
         name: String = "",
         override: Boolean = false,
-        noinline definition: Definition<T>? = null
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return if (definition == null) provide(name, false, override, false) { create<T>() }
-        else provide(name, false, override, false, definition)
+        return provide(name, false, override, false, definition)
     }
 
     /**
@@ -157,30 +155,6 @@ class ModuleDefinition(
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T =
         if (name != null) koinContext.get(name, parameters = parameters) else koinContext.get(parameters = parameters)
-
-
-    /**
-     * Build instance for type T and inject dependencies into 1st constructor
-     */
-    inline fun <reified T : Any> create(): T {
-        val clazz = T::class.java
-        val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
-        val args = ctor.parameterTypes.map { getForClass(clazz = it) }.toTypedArray()
-        return ctor.newInstance(*args) as T
-    }
-
-    /**
-     * Resolve a component from its class
-     *
-     * @param clazz - java class
-     * @param module
-     * @param parameters
-     */
-    fun <T> getForClass(
-        name: String = "",
-        clazz: Class<T>,
-        parameters: ParameterDefinition = emptyParameterDefinition()
-    ): T = koinContext.getForClass(name, clazz.canonicalName, parameters = parameters)
 
     /**
      * Retrieve a property

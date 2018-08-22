@@ -14,6 +14,8 @@ import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.koin.dsl.module.module
+import org.koin.experimental.builder.create
+import org.koin.experimental.builder.single
 import org.koin.ktor.ext.inject
 import org.koin.ktor.ext.installKoin
 import org.koin.log.Logger.SLF4JLogger
