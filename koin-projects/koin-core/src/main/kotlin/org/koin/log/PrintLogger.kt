@@ -15,6 +15,9 @@
  */
 package org.koin.log
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 /**
  * Logger that print on system.out
@@ -22,21 +25,24 @@ package org.koin.log
  */
 class PrintLogger(private val showDebug: Boolean = false) : Logger {
 
+    private val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS")
     init {
-        info("[Logger] display debug = $showDebug")
+        info("[PrintLogger] display debug = $showDebug")
     }
+
+    private fun date() = df.format(Date()).toString()
 
     override fun debug(msg: String) {
         if (showDebug) {
-            println("(KOIN)::[dbg] $msg")
+            println("${date()} (KOIN)::[d] $msg")
         }
     }
 
     override fun info(msg: String) {
-        println("(KOIN)::[inf] $msg")
+        println("${date()} (KOIN)::[i] $msg")
     }
 
     override fun err(msg: String) {
-        System.err.println("(KOIN)::[err] $msg")
+        System.err.println("${date()} (KOIN)::[e] $msg")
     }
 }
