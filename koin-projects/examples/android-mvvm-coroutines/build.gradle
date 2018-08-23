@@ -17,14 +17,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // used by Room, to test migrations
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation":
-                                     "$projectDir/schemas".toString()]
-            }
-        }
     }
     testOptions {
         execution 'ANDROID_TEST_ORCHESTRATOR'
@@ -38,10 +30,6 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
-
-        // used by Room, to test migrations
-        androidTest.assets.srcDirs +=
-                files("$projectDir/schemas".toString())
     }
 }
 
@@ -75,13 +63,6 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$android_arch_version"
     testImplementation "android.arch.core:core-testing:$android_arch_version"
 
-    // Room
-    implementation "android.arch.persistence.room:runtime:$room_version"
-    implementation "android.arch.persistence.room:rxjava2:$room_version"
-    kapt "android.arch.persistence.room:compiler:$room_version"
-    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
-    testImplementation "android.arch.persistence.room:testing:$room_version"
-
     // UI
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
@@ -96,7 +77,6 @@ dependencies {
 
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-
 
     // Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'

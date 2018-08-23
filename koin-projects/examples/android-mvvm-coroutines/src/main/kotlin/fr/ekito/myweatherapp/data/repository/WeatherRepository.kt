@@ -1,14 +1,11 @@
 package fr.ekito.myweatherapp.data.repository
 
-import fr.ekito.myweatherapp.data.datasource.room.WeatherDAO
-import fr.ekito.myweatherapp.data.datasource.room.WeatherEntity
 import fr.ekito.myweatherapp.data.datasource.webservice.WeatherWebDatasource
 import fr.ekito.myweatherapp.data.datasource.webservice.json.geocode.getLocation
 import fr.ekito.myweatherapp.data.datasource.webservice.json.weather.getDailyForecasts
 import fr.ekito.myweatherapp.domain.DailyForecastModel
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
-import java.util.*
 
 /**
  * Weather repository
@@ -30,45 +27,28 @@ interface WeatherRepository {
  * Weather repository
  * Make use of WeatherWebDatasource & add some cache
  */
-class WeatherRepositoryImpl(
-    private val weatherDatasource: WeatherWebDatasource,
-    private val weatherDAO: WeatherDAO
-) : WeatherRepository {
+class WeatherRepositoryImpl(private val weatherDatasource: WeatherWebDatasource) :
+    WeatherRepository {
+
+    private fun lastLocationFromCache() = weatherCache.firstOrNull()?.location
+
+    private val weatherCache = arrayListOf<DailyForecastModel>()
 
     override fun getWeatherDetail(id: String): Deferred<DailyForecastModel> = async {
-        DailyForecastModel.from(weatherDAO.findWeatherById(id))
+        weatherCache.first { it.id == id }
     }
 
-    private fun getWeatherFromLatest(latest: WeatherEntity): Deferred<List<DailyForecastModel>> =
-        async {
-            weatherDAO.findAllBy(latest.location, latest.date)
-                .map {
-                    DailyForecastModel.from(it)
-                }
+    override fun getWeather(location: String?): Deferred<List<DailyForecastModel>> = async {
+        if (location == null && weatherCache.isNotEmpty()) weatherCache
+        else {
+            val targetLocation: String = location ?: lastLocationFromCache() ?: DEFAULT_LOCATION
+            weatherCache.clear()
+            val loc = weatherDatasource.geocode(targetLocation).await().getLocation() ?: error("")
+            val forecasts =
+                weatherDatasource.weather(loc.lat, loc.lng, DEFAULT_LANG).await().getDailyForecasts(targetLocation)
+            weatherCache.addAll(forecasts)
+            forecasts
         }
-
-    override fun getWeather(
-        location: String?
-    ): Deferred<List<DailyForecastModel>> = async {
-        val req = if (location == null) {
-            val latest = weatherDAO.findLatestWeather()
-            if (latest.isEmpty()) getNewWeather(DEFAULT_LOCATION)
-            else getWeatherFromLatest(latest.first())
-        } else {
-            getNewWeather(location)
-        }
-        req.await()
-    }
-
-    private fun getNewWeather(location: String): Deferred<List<DailyForecastModel>> = async {
-        val now = Date()
-        val loc = weatherDatasource.geocode(location).await().getLocation() ?: error("No Location date")
-        val geoloc = weatherDatasource.weather(loc.lat, loc.lng, DEFAULT_LANG).await()
-        val list = geoloc.getDailyForecasts(location)
-        async {
-            weatherDAO.saveAll(list.map { item -> WeatherEntity.from(item, now) })
-        }
-        list
     }
 
     companion object {
