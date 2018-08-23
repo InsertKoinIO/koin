@@ -3,8 +3,6 @@ package org.koin.example
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.log.EmptyLogger
-import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.standalone.inject
