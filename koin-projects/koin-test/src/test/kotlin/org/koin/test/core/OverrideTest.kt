@@ -34,7 +34,7 @@ class OverrideTest : AutoCloseKoinTest() {
 
     val diffKind = module {
         single { ComponentB() as MyInterface }
-        factory { ComponentB() as MyInterface }
+        factory(override = true) { ComponentB() as MyInterface }
     }
 
     val diffPath = module {
@@ -103,7 +103,7 @@ class OverrideTest : AutoCloseKoinTest() {
     fun `no override - Kind `() {
         startKoin(listOf(diffKind))
 
-        assertDefinitions(2)
+        assertDefinitions(1)
     }
 
     @Test

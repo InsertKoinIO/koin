@@ -92,8 +92,7 @@ data class BeanDefinition<out T>(
             name == other.name &&
                     clazz == other.clazz &&
                     path == other.path &&
-                    types == other.types &&
-                    isSingleton == other.isSingleton
+                    types == other.types
         } else false
     }
 
@@ -102,7 +101,6 @@ data class BeanDefinition<out T>(
         result = 31 * result + clazz.hashCode()
         result = 31 * result + types.hashCode()
         result = 31 * result + path.hashCode()
-        result = 31 * result + isSingleton.hashCode()
         return result
     }
 }
