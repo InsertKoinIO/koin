@@ -167,10 +167,7 @@ object StandAloneContext {
     /**
      * Close actual Koin context
      */
-    @Deprecated(
-        "Renamed, use stopKoin() instead.",
-        ReplaceWith("stopKoin()", "org.koin.standalone.StandAloneContext.stopKoin")
-    )
+    @Deprecated("Renamed, please use stopKoin() instead.")
     fun closeKoin() = stopKoin()
 
     /**
