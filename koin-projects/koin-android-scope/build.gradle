@@ -22,7 +22,7 @@ dependencies {
     api project(":koin-android") //"org.koin:koin-android:$koin_version"
     // Test
     testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
     // Architecture Lifecycle
     implementation("android.arch.lifecycle:common:$android_arch_version")

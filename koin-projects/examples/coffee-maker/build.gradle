@@ -6,5 +6,5 @@ dependencies {
     compile project(":koin-core")
     testImplementation project(":koin-test")
 
-    testCompile "org.mockito:mockito-core:$mockito_version"
+    testCompile "org.mockito:mockito-inline:$mockito_version"
 }

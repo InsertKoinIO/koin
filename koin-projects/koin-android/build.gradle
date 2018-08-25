@@ -22,7 +22,7 @@ dependencies {
     api project(":koin-core")
     testImplementation project(":koin-test")
 
-    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
 apply from: '../gradle/publish-android.gradle'
