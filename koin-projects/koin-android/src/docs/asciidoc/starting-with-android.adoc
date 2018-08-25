@@ -46,6 +46,12 @@ This logger is an Android implementation of the Koin logger.
 
 Up to you to change this logger if it doesn't suits to your needs.
 
+A `TimberLogger` is also available in the `koin-logger-timber` artifact:
+
+----
+`startKoin(context, modules, logger = TimberLogger())`
+----
+
 .Shut off Koin Logger
 [source,kotlin]
 ----

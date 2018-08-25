@@ -41,6 +41,7 @@ Koin proposes some implementation of logging, in function of the target platform
 * `EmptyLogger` - log nothing (included in `koin-core`)
 * `SLF4JLogger` - Log with SLF4J. Used by ktor and spark (`koin-logger-slf4j` project)
 * `AndroidLogger` - log into Android Logger (included in `koin-android`)
+* `TimberLogger` - log with Timber (included in `koin-logger-timber`)
 
 === Your own Logger
 

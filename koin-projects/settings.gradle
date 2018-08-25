@@ -6,6 +6,7 @@ include 'koin-java'
 // Android
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-viewmodel'
+include 'koin-logger-timber'
 include 'examples:android-mvp','examples:android-mvvm','examples:android-mvvm-coroutines','examples:android-navigation'
 
 //// Web

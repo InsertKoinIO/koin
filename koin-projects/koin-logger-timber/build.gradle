@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+ext {
+    android_sourceSet = true
+    pom_name = "koin-logger-timber"
+    pom_description = "Koin project - koin-logger-timber"
+}
+
+android {
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
+
+    defaultConfig {
+        minSdkVersion android_min_version
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    // Koin
+    implementation project(":koin-core")
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+}
+
+apply from: '../gradle/publish-android.gradle'
