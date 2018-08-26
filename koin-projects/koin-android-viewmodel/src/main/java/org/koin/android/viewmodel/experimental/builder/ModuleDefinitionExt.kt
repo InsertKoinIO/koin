@@ -17,5 +17,5 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     name: String = "",
     override: Boolean = false
 ) {
-    factory(name, override) { create<T>() }.bind(ViewModel::class)
+    factory(name, override) { create<T>(it) }.bind(ViewModel::class)
 }
