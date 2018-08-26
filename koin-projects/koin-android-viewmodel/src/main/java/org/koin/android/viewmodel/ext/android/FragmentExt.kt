@@ -16,6 +16,7 @@
 package org.koin.android.viewmodel.ext.android
 
 import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelStoreOwner
 import android.support.v4.app.Fragment
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -31,25 +32,29 @@ import org.koin.core.parameter.emptyParameterDefinition
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
+    noinline from: ViewModelStoreOwnerDefinition = { activity!! as ViewModelStoreOwner },
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = viewModelByClass(true, T::class, key, name, module, parameters)
+) = viewModelByClass(T::class, key, name, module, from, parameters)
 
 /**
  * Get a shared viewModel instance from underlying Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
     module: String? = null,
+    noinline from: ViewModelStoreOwnerDefinition = {activity!! as ViewModelStoreOwner},
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = getViewModelByClass(true, T::class, key, name, module, parameters)
+) = getViewModelByClass(T::class, key, name, module, from, parameters)
