@@ -100,9 +100,9 @@ Here is how we assemble it with Koin:
 [source,kotlin]
 ----
 val coffeeMakerModule = module {
-    single<CoffeeMaker>()
-    single<Heater> { create<ElectricHeater>() }
-    single<Pump> { create<Thermosiphon>() }
+    single { CoffeeMaker(get()) }
+    single<Pump> { Thermosiphon(get()) }
+    single<Heater> { ElectricHeater() }
 }
 ----
 
