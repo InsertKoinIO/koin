@@ -1,6 +1,9 @@
 package fr.ekito.myweatherapp.view.weather
 
 import android.app.AlertDialog
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -10,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import fr.ekito.myweatherapp.R
+import fr.ekito.myweatherapp.di.Memory
 import fr.ekito.myweatherapp.domain.DailyForecastModel
 import fr.ekito.myweatherapp.domain.getColorFromCode
 import fr.ekito.myweatherapp.view.IntentArguments
@@ -22,6 +26,8 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
     override val presenter: WeatherHeaderContract.Presenter by inject()
 
+    val shared = Memory.getShared()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,10 +36,22 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
         return inflater.inflate(R.layout.fragment_result_header, container, false) as ViewGroup
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        println("GOT SHARED - $this got - $shared")
+        lifecycle.addObserver(object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+            fun onDestroy() {
+                println("t$this DESTROY")
+                Memory.release()
+            }
+        })
+    }
+
     override fun onResume() {
+        super.onResume()
         presenter.subscribe(this)
         presenter.getWeatherOfTheDay()
-        super.onResume()
     }
 
     override fun onPause() {

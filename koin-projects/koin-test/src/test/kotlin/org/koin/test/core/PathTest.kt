@@ -10,7 +10,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 import org.koin.test.ext.junit.assertPath
 
 class PathTest : AutoCloseKoinTest() {
@@ -119,7 +119,7 @@ class PathTest : AutoCloseKoinTest() {
             e.printStackTrace()
         }
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(1)
     }
 
 }

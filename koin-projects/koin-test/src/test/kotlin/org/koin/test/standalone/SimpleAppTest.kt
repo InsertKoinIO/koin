@@ -6,7 +6,7 @@ import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class SimpleAppTest : AutoCloseKoinTest() {
 
@@ -29,6 +29,6 @@ class SimpleAppTest : AutoCloseKoinTest() {
         Assert.assertNotNull(presenter)
         Assert.assertEquals(view, presenter.view)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 }

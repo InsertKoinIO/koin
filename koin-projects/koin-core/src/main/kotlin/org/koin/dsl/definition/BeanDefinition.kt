@@ -18,6 +18,7 @@ package org.koin.dsl.definition
 import org.koin.core.parameter.ParameterList
 import org.koin.dsl.path.Path
 import org.koin.error.DefinitionBindingException
+import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -49,7 +50,8 @@ data class BeanDefinition<out T>(
     val allowOverride: Boolean = false,
     val definition: Definition<T>
 ) {
-
+    // For instance match
+    internal val id : BeanDefinitionId = UUID.randomUUID().toString()
     // Available classes to match
     internal val classes : List<String> = listOf<String>(clazz.java.canonicalName) + types.map { it.java.canonicalName }
 
@@ -109,3 +111,4 @@ data class BeanDefinition<out T>(
  * Type Definition function - what's build a given component T
  */
 typealias Definition<T> = (ParameterList) -> T
+typealias BeanDefinitionId = String

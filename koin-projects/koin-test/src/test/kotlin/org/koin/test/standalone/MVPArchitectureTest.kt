@@ -2,7 +2,6 @@ package org.koin.test.standalone
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
@@ -54,7 +53,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         Assert.assertEquals(repository, view.presenter.repository)
         Assert.assertEquals(datasource, repository.datasource)
 
-        assertRemainingInstances(4)
+        assertRemainingInstanceHolders(4)
         assertDefinitions(4)
         assertContexts(2)
         assertIsInRootPath(Repository::class)
@@ -63,7 +62,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         assertIsInModulePath(Presenter::class, "view")
 
         view.onDestroy()
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(4)
         assertContexts(2)
     }

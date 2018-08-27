@@ -11,7 +11,7 @@ import org.koin.standalone.getProperty
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class KoinContextTest : AutoCloseKoinTest() {
 
@@ -34,7 +34,7 @@ class KoinContextTest : AutoCloseKoinTest() {
         startKoin(listOf(CircularDeps))
 
         assertDefinitions(2)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         try {
             get<ComponentA>()
@@ -49,7 +49,7 @@ class KoinContextTest : AutoCloseKoinTest() {
             System.err.println(e)
         }
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 
@@ -58,7 +58,7 @@ class KoinContextTest : AutoCloseKoinTest() {
         startKoin(listOf(SingleModule))
 
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         try {
             get<ComponentA>()
@@ -67,7 +67,7 @@ class KoinContextTest : AutoCloseKoinTest() {
             System.err.println(e)
         }
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -75,14 +75,14 @@ class KoinContextTest : AutoCloseKoinTest() {
         startKoin(listOf(SingleModule))
 
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         try {
             get<ComponentA>()
             fail("should not inject ")
         } catch (e: BeanInstanceCreationException) {
             System.err.println(e)
         }
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test

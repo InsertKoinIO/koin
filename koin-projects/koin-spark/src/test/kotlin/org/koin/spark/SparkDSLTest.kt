@@ -9,7 +9,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertIsInRootPath
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class SparkDSLTest : AutoCloseKoinTest() {
 
@@ -30,7 +30,7 @@ class SparkDSLTest : AutoCloseKoinTest() {
 
         assertEquals(service, controller.service)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
         assertContexts(1)
         assertIsInRootPath(HelloController::class)
@@ -51,7 +51,7 @@ class SparkDSLTest : AutoCloseKoinTest() {
         assertEquals(controller2, controller)
 
         assertEquals(controller, get<SparkController>())
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
         assertContexts(1)
         assertIsInRootPath(HelloController::class)

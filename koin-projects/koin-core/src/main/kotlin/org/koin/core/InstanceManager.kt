@@ -48,10 +48,10 @@ class InstanceManager(
         return request.run {
             val search = when {
                 name.isNotEmpty() -> {
-                    { beanRegistry.searchByNameAndClass(definitions,name, clazzName) }
+                    { beanRegistry.searchByNameAndClass(definitions, name, clazzName) }
                 }
                 else -> {
-                    { beanRegistry.searchByClass(definitions,clazzName) }
+                    { beanRegistry.searchByClass(definitions, clazzName) }
                 }
             }
             proceedResolution(module, clazzName, parameters, search)
@@ -77,7 +77,7 @@ class InstanceManager(
         val duration = measureDuration {
 
             try {
-                val beanDefinition: BeanDefinition<*> =
+                val beanDefinition: BeanDefinition<T> =
                     beanRegistry.retrieveDefinition(
                         clazzName,
                         if (module != null) pathRegistry.getPath(module) else null,
@@ -162,7 +162,7 @@ class InstanceManager(
         val definitions: List<BeanDefinition<*>> =
             beanRegistry.getDefinitionsInPaths(paths)
 
-        instanceFactory.releaseInstances(definitions)
+        instanceFactory.release(definitions)
     }
 
     /**

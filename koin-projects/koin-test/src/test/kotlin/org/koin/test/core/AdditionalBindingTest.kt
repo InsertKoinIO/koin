@@ -11,7 +11,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertIsInRootPath
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 
 class AdditionalBindingTest : AutoCloseKoinTest() {
@@ -66,7 +66,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         Assert.assertNotNull(intf)
         Assert.assertEquals(a, intf)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         assertDefinitions(1)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -86,7 +86,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
 
         Assert.assertNotNull(a)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         assertDefinitions(1)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -103,7 +103,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         Assert.assertNotNull(intf)
         Assert.assertEquals("HELLO", intf.get())
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         assertDefinitions(1)
         assertContexts(1)
         assertIsInRootPath(ComponentB::class)
@@ -119,7 +119,7 @@ class AdditionalBindingTest : AutoCloseKoinTest() {
         } catch (e: Exception) {
         }
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         assertDefinitions(2)
         assertContexts(1)
         assertIsInRootPath(ComponentB::class)

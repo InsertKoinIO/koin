@@ -8,7 +8,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class ParametersLazyInstanceTest : AutoCloseKoinTest() {
 
@@ -36,10 +36,10 @@ class ParametersLazyInstanceTest : AutoCloseKoinTest() {
         val url = "https://..."
         val b = ComponentB()
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         b.getAWithUrl(url)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         Assert.assertEquals(url, b.a.url)
     }
 }

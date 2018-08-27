@@ -61,7 +61,7 @@ fun KoinContext.allPaths() = instanceManager.pathRegistry.paths
 /**
  * Return all instances of Koin
  */
-fun KoinContext.allInstances() = instanceManager.instanceFactory.instances.toList()
+fun KoinContext.allInstances() = instanceManager.instanceFactory.instanceHolders.toList()
 
 /**
  * Return all properties of Koin

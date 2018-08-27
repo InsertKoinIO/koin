@@ -10,7 +10,7 @@ import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertIsInRootPath
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 var ctor = 0
 
@@ -38,7 +38,7 @@ class RunControllerTest : KoinTest {
 
         assertEquals(1, ctor)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         assertDefinitions(1)
         assertContexts(1)
         assertIsInRootPath(HelloController::class)

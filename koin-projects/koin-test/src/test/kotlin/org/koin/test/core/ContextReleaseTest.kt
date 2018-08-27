@@ -50,7 +50,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b1 = get<ComponentB>()
         val c1 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
@@ -59,7 +59,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
         assertDefinitions(3)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         assertContextInstances("A", 1)
         assertContextInstances("B", 0)
         assertContextInstances("C", 0)
@@ -68,7 +68,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b2 = get<ComponentB>()
         val c2 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
@@ -96,14 +96,14 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b1 = get<ComponentB>()
         val c1 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
         release("A")
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         assertContextInstances("A", 0)
         assertContextInstances("B", 0)
         assertContextInstances("C", 0)
@@ -112,7 +112,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b2 = get<ComponentB>()
         val c2 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
@@ -140,14 +140,14 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b1 = get<ComponentB>()
         val c1 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
         release(Path.ROOT)
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         assertContextInstances("A", 0)
         assertContextInstances("B", 0)
         assertContextInstances("C", 0)
@@ -156,7 +156,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b2 = get<ComponentB>()
         val c2 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
@@ -184,14 +184,14 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b1 = get<ComponentB>()
         val c1 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
 
         release("C")
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 0)
@@ -200,7 +200,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         val b2 = get<ComponentB>()
         val c2 = get<ComponentC>()
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
@@ -228,7 +228,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         Assert.assertNotNull(get<ComponentB>())
         Assert.assertNotNull(get<ComponentC>())
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)
@@ -239,7 +239,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
         } catch (e: BadPathException) {
         }
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
         assertContextInstances("C", 1)

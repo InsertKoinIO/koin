@@ -12,7 +12,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 
 class ViewModelFactoryTest : AutoCloseKoinTest() {
@@ -41,6 +41,6 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(2)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 }

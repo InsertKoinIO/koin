@@ -9,7 +9,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class NamedBeansTest : AutoCloseKoinTest() {
 
@@ -39,7 +39,7 @@ class NamedBeansTest : AutoCloseKoinTest() {
         Assert.assertNotNull(prod)
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 
@@ -54,7 +54,7 @@ class NamedBeansTest : AutoCloseKoinTest() {
         }
 
         assertDefinitions(2)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         assertContexts(1)
     }
 
@@ -70,7 +70,7 @@ class NamedBeansTest : AutoCloseKoinTest() {
         Assert.assertEquals(debug, debugService.datasource)
 
         assertDefinitions(3)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 }

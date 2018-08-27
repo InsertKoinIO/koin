@@ -2,7 +2,6 @@ package org.koin.test.core
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -49,7 +48,7 @@ class FactoryInstanceCreationTest : AutoCloseKoinTest() {
         Assert.assertNotEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(3)
         assertDefinitions(3)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -72,7 +71,7 @@ class FactoryInstanceCreationTest : AutoCloseKoinTest() {
         Assert.assertNotEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(3)
         assertDefinitions(3)
         assertContexts(3)
         assertIsInRootPath(ComponentA::class)

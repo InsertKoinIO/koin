@@ -24,7 +24,6 @@ import org.koin.test.ext.koin.*
 import kotlin.reflect.KClass
 
 
-
 /**
  * KoinTest extensions for Junit asserts & tools
  *
@@ -74,7 +73,7 @@ fun KoinTest.assertIsInRootPath(definitionClazz: KClass<*>) {
 fun KoinTest.assertContextInstances(pathName: String, instanceCount: Int) {
     val path = context().getPath(pathName)
     val definitions = context().beanDefinitions().filter { it.path == path }.toSet()
-    val instances = context().allInstances().filter { it.first in definitions }
+    val instances = context().allInstances().map { it.second.bean }.filter { it in definitions }
     Assert.assertEquals("path $pathName must have $instanceCount instances", instanceCount, instances.size)
 }
 
@@ -95,7 +94,7 @@ fun KoinTest.assertPath(path: String, parentPath: String) {
  * Assert Koin has reminaing instances
  * @param instanceCount - instances count
  */
-fun KoinTest.assertRemainingInstances(instanceCount: Int) {
+fun KoinTest.assertRemainingInstanceHolders(instanceCount: Int) {
     Assert.assertEquals("context must have $instanceCount instances", instanceCount, context().allInstances().size)
 }
 

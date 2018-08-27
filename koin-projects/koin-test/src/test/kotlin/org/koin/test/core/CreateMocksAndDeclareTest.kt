@@ -9,7 +9,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.declareMock
 import org.koin.test.declare
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 import org.mockito.Mockito.mock
 
 class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
@@ -33,7 +33,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
         Assert.assertEquals(mockA, get<ComponentB>().componentA)
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -45,7 +45,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
         Assert.assertNotNull(get<ComponentA>())
 
         assertDefinitions(1)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -63,7 +63,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
         Assert.assertEquals(mockA, get<ComponentB>().componentA)
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -77,7 +77,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
         Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
 
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -89,6 +89,6 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
         Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
 
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(1)
     }
 }

@@ -8,7 +8,7 @@ import org.koin.experimental.builder.create
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class BuilderTest : AutoCloseKoinTest() {
 
@@ -27,13 +27,13 @@ class BuilderTest : AutoCloseKoinTest() {
             single { create<ComponentC>() }
         }))
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         assertNotNull(get<ComponentB>())
         assertNotNull(get<ComponentB>())
         assertNotNull(get<ComponentC>())
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
     }
 
     @Test
@@ -66,7 +66,7 @@ class BuilderTest : AutoCloseKoinTest() {
         }))
 
         assertNotNull(get<Component>())
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
 }

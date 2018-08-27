@@ -8,7 +8,7 @@ import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 import org.koin.test.ext.koin.beanDefinitions
 
 class EagerTest : AutoCloseKoinTest() {
@@ -68,7 +68,7 @@ class EagerTest : AutoCloseKoinTest() {
         Assert.assertFalse(a.isEager)
         Assert.assertFalse(b.isEager)
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
     }
 
     @Test
@@ -83,7 +83,7 @@ class EagerTest : AutoCloseKoinTest() {
         Assert.assertTrue(a.isEager)
         Assert.assertFalse(b.isEager)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -98,7 +98,7 @@ class EagerTest : AutoCloseKoinTest() {
         Assert.assertTrue(a.isEager)
         Assert.assertTrue(b.isEager)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -113,7 +113,7 @@ class EagerTest : AutoCloseKoinTest() {
         Assert.assertTrue(a.isEager)
         Assert.assertTrue(b.isEager)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -128,7 +128,7 @@ class EagerTest : AutoCloseKoinTest() {
         Assert.assertFalse(a.isEager)
         Assert.assertTrue(b.isEager)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -143,6 +143,6 @@ class EagerTest : AutoCloseKoinTest() {
         Assert.assertTrue(a.isEager)
         Assert.assertFalse(b.isEager)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 }

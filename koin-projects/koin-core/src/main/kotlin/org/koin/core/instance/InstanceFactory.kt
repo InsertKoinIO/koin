@@ -15,11 +15,9 @@
  */
 package org.koin.core.instance
 
-import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.error.BeanInstanceCreationException
-
+import org.koin.dsl.definition.BeanDefinitionId
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -27,78 +25,43 @@ import org.koin.error.BeanInstanceCreationException
  */
 open class InstanceFactory {
 
-    val instances = HashMap<BeanDefinition<*>, Any>()
+    val instanceHolders = HashMap<BeanDefinitionId, InstanceHolder<*>>()
 
     /**
      * Retrieve or create bean instance
      * @return Instance / has been created
      */
-    fun <T> retrieveInstance(def: BeanDefinition<*>, p: ParameterDefinition): Pair<T, Boolean> {
-        // Factory
-        return if (def.isNotASingleton()) {
-            Pair(createInstance(def, p), true)
-        } else {
-            // Singleton
-            val found: T? = findInstance<T>(def)
-            val instance: T = found ?: createInstance(def, p)
-            val created = found == null
-            if (created) {
-                saveInstance(def, instance)
-            }
-            Pair(instance, created)
+    fun <T> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition): Instance<T> {
+        // find holder
+        var holder = find(def)
+        if (holder == null) {
+            holder = create(def)
+            // save it
+            instanceHolders[def.id] = holder
         }
+        return holder.get(p)
     }
 
-    private fun <T> saveInstance(def: BeanDefinition<*>, instance: T) {
-        instances[def] = instance as Any
-    }
-
-    /**
-     * Find existing instance
-     */
     @Suppress("UNCHECKED_CAST")
-    private fun <T> findInstance(def: BeanDefinition<*>): T? {
-        val existingClass = instances.keys.firstOrNull { it == def }
-        return if (existingClass != null) {
-            instances[existingClass] as? T
-        } else {
-            null
-        }
+    fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? = instanceHolders[def.id] as? InstanceHolder<T>
+
+    open fun <T> create(def: BeanDefinition<T>): InstanceHolder<T> {
+        return if (def.isSingleton) SingleInstanceHolder(def)
+        else FactoryInstanceHolder(def)
     }
 
-    /**
-     * create instance for given bean definition
-     */
-    @Suppress("UNCHECKED_CAST")
-    open fun <T> createInstance(def: BeanDefinition<*>, p: ParameterDefinition): T {
-        try {
-            val parameterList = p()
-            val instance = def.definition.invoke(parameterList) as Any
-            instance as T
-            return instance
-        } catch (e: Throwable) {
-            val stack = e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                .joinToString("\n\t\t")
-            throw BeanInstanceCreationException("Can't create definition '$def' due to error :\n\t\t${e.message}\n\t\t$stack")
-        }
+    fun release(definitions: List<BeanDefinition<*>>) {
+        definitions.forEach { release(it) }
     }
 
-    /**
-     * Drop all instances for definitions
-     */
-    fun releaseInstances(definitions: List<BeanDefinition<*>>) {
-        definitions.forEach {
-            val instance = instances[it]
-            Koin.logger.debug("released $instance")
-            instances.remove(it)
-        }
+    fun release(definition: BeanDefinition<*>) {
+        instanceHolders.remove(definition.id)?.delete()
     }
 
     /**
      * Clear all resources
      */
     fun clear() {
-        instances.clear()
+        instanceHolders.clear()
     }
-
 }

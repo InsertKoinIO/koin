@@ -35,6 +35,7 @@ class Koin(val koinContext: KoinContext) {
     val propertyResolver = koinContext.propertyResolver
     val beanRegistry = koinContext.instanceManager.beanRegistry
     val pathRegistry = koinContext.instanceManager.pathRegistry
+    val instanceFactory = koinContext.instanceManager.instanceFactory
 
     /**
      * Inject properties to context
@@ -105,6 +106,7 @@ class Koin(val koinContext: KoinContext) {
             val override = if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
             val def = definition.copy(isEager = eager, allowOverride = override, path = consolidatedPath)
             beanRegistry.declare(def)
+            instanceFactory.release(def)
         }
 
         // Check sub contexts

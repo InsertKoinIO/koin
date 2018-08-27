@@ -16,7 +16,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 import org.koin.test.ext.koin.beanDefinition
 
 class ViewModelDSLTest : AutoCloseKoinTest() {
@@ -48,7 +48,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(2)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -62,7 +62,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(2)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -77,7 +77,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
     }
 
     @Test

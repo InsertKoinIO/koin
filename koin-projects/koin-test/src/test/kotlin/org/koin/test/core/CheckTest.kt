@@ -7,7 +7,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check
 import org.koin.test.error.BrokenDefinitionException
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class CheckTest : AutoCloseKoinTest() {
 
@@ -28,7 +28,7 @@ class CheckTest : AutoCloseKoinTest() {
         }))
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -38,7 +38,7 @@ class CheckTest : AutoCloseKoinTest() {
         }))
 
         assertDefinitions(1)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -49,7 +49,7 @@ class CheckTest : AutoCloseKoinTest() {
         }))
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
 
     }
 
@@ -75,7 +75,7 @@ class CheckTest : AutoCloseKoinTest() {
         }))
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -89,7 +89,7 @@ class CheckTest : AutoCloseKoinTest() {
         }))
 
         assertDefinitions(3)
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
 
 
     }
@@ -109,7 +109,7 @@ class CheckTest : AutoCloseKoinTest() {
         ))
 
         assertDefinitions(3)
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
 
     }
 
@@ -122,7 +122,7 @@ class CheckTest : AutoCloseKoinTest() {
         }))
 
         assertDefinitions(3)
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
 
     }
 }

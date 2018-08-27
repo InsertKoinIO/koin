@@ -72,19 +72,20 @@ class BeanRegistry() {
     }
 
 
-    /**
+    @Suppress("UNCHECKED_CAST")
+            /**
      * Retrieve bean definition
      * @param clazzName - class canonicalName
      * @param modulePath - Module path
      * @param definitionResolver - function to find bean definition
      * @param lastInStack - to check visibility with last bean in stack
      */
-    fun retrieveDefinition(
+    fun <T> retrieveDefinition(
         clazzName: String,
         modulePath: Path? = null,
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
-    ): BeanDefinition<*> {
+    ): BeanDefinition<T> {
         val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
             val found = definitionResolver()
             val filteredByVisibility = found.filter { lastInStack.canSee(it) }
@@ -100,7 +101,7 @@ class BeanRegistry() {
             if (modulePath != null) candidates.filter { it.path.isVisible(modulePath) } else candidates
 
         return when {
-            filteredCandidates.size == 1 -> filteredCandidates.first()
+            filteredCandidates.size == 1 -> filteredCandidates.first() as BeanDefinition<T>
             filteredCandidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazzName'. Check your module definition")
             else -> throw DependencyResolutionException(
                 "Multiple definitions found for type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(

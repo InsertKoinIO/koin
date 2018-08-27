@@ -8,7 +8,7 @@ import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 
 class StartCloseTest : KoinTest {
@@ -17,7 +17,7 @@ class StartCloseTest : KoinTest {
     fun `start and close Koin`() {
         startKoin(listOf())
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         assertDefinitions(0)
         assertContexts(1)
 

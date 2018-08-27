@@ -3,7 +3,6 @@ package org.koin.test.core
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -39,7 +38,7 @@ class InterfaceBindingTest : AutoCloseKoinTest() {
         } catch (e: Exception) {
         }
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
         assertDefinitions(3)
         assertContexts(1)
         assertIsInRootPath(InterfaceComponent::class)
@@ -70,7 +69,7 @@ class InterfaceBindingTest : AutoCloseKoinTest() {
         } catch (e: Exception) {
         }
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(3)
         assertContexts(1)
         assertIsInRootPath(OtherInterfaceComponent::class)

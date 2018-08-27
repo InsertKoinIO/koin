@@ -19,7 +19,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContextInstances
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 import org.mockito.Mockito.mock
 
 /**
@@ -57,7 +57,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
         assertContexts(2)
         assertDefinitions(3)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
         assertContextInstances(CTX_ACTIVITY_MODULE, 0)
 
         setProperty(URL, "URL")
@@ -70,12 +70,12 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
         assertContextInstances(CTX_ACTIVITY_MODULE, 1)
         assertDefinitions(3)
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
 
         release(CTX_ACTIVITY_MODULE)
         assertContextInstances(CTX_ACTIVITY_MODULE, 0)
         assertDefinitions(3)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -84,7 +84,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         try {
             get<AndroidComponent>()
@@ -94,7 +94,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
     }
 
     @Test
@@ -102,14 +102,14 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         startKoin(listOf(SampleModule)) with (mock(Application::class.java))
 
         assertDefinitions(2)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         val component = get<AndroidComponent>()
 
         assertEquals(get<Context>(), component.androidContext)
 
         assertDefinitions(2)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -117,7 +117,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         startKoin(listOf(SampleModule))
 
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         try {
             get<AndroidComponent>()
@@ -126,6 +126,6 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         }
 
         assertDefinitions(1)
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
     }
 }

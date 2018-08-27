@@ -10,7 +10,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class ClassPathTest : AutoCloseKoinTest() {
 
@@ -43,7 +43,7 @@ class ClassPathTest : AutoCloseKoinTest() {
         val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
         assertNotEquals(a_b, a_c)
 
-        assertRemainingInstances(4)
+        assertRemainingInstanceHolders(4)
     }
 
     @Test

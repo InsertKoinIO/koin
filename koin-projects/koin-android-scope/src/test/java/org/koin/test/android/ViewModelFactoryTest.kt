@@ -9,7 +9,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 
 class ViewModelFactoryTest : AutoCloseKoinTest() {
@@ -30,9 +30,9 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
         val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", listOf("module1"))
 
         assertDefinitions(1)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
 
         observer.onDestroy()
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
     }
 }

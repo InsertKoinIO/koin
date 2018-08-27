@@ -8,7 +8,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class ParametersTest : AutoCloseKoinTest() {
 
@@ -58,7 +58,7 @@ class ParametersTest : AutoCloseKoinTest() {
         val c1 = Component1()
         val c2 = Component2()
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         Assert.assertEquals(URL1, c1.compA.url)
         Assert.assertEquals(URL2, c2.compA.url)
@@ -71,7 +71,7 @@ class ParametersTest : AutoCloseKoinTest() {
         val c1 = Component1()
         val c2 = Component2()
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(0)
 
         Assert.assertEquals(URL1, c1.compA.url)
         Assert.assertEquals(URL1, c2.compA.url)

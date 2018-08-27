@@ -8,7 +8,7 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class TODOAppTest : AutoCloseKoinTest() {
 
@@ -44,6 +44,6 @@ class TODOAppTest : AutoCloseKoinTest() {
 
         val view = get<TasksView>()
         Assert.assertNotNull(view.taskPreenter)
-        assertRemainingInstances(5)
+        assertRemainingInstanceHolders(5)
     }
 }

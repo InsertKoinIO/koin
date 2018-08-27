@@ -4,7 +4,6 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.dsl.path.Path
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -71,7 +70,7 @@ class PropertyTest : AutoCloseKoinTest() {
         Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -92,7 +91,7 @@ class PropertyTest : AutoCloseKoinTest() {
         Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -113,7 +112,7 @@ class PropertyTest : AutoCloseKoinTest() {
         Assert.assertEquals(VALUE, a.url)
         Assert.assertEquals(url, a.url)
 
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
         assertContexts(2)
         assertIsInModulePath(ComponentA::class, "A")
@@ -157,7 +156,7 @@ class PropertyTest : AutoCloseKoinTest() {
         } catch (e: Exception) {
         }
 
-        assertRemainingInstances(0)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -178,7 +177,7 @@ class PropertyTest : AutoCloseKoinTest() {
         Assert.assertEquals(url, a.url)
         Assert.assertEquals(b.componentA.url, a.url)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
 
         setProperty(KEY, VALUE_2)
@@ -189,7 +188,7 @@ class PropertyTest : AutoCloseKoinTest() {
         Assert.assertEquals(url, a.url)
         Assert.assertEquals(VALUE_2, a.url)
 
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(2)
         assertDefinitions(2)
 
         assertContexts(2)

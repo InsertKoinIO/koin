@@ -47,7 +47,7 @@ class InstanceCreationTest : AutoCloseKoinTest() {
         Assert.assertEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertDefinitions(3)
         assertContexts(1)
         assertIsInRootPath(ComponentA::class)
@@ -70,7 +70,7 @@ class InstanceCreationTest : AutoCloseKoinTest() {
         Assert.assertEquals(a, c.componentA)
         Assert.assertEquals(b, c.componentB)
 
-        assertRemainingInstances(3)
+        assertRemainingInstanceHolders(3)
         assertDefinitions(3)
         assertContexts(3)
         assertIsInRootPath(ComponentA::class)

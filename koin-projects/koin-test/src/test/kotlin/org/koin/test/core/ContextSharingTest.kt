@@ -11,7 +11,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class ContextSharingTest : AutoCloseKoinTest() {
     val module1 = module {
@@ -35,7 +35,7 @@ class ContextSharingTest : AutoCloseKoinTest() {
 
         Assert.assertNotNull(get<ComponentA>())
         Assert.assertNotNull(get<ComponentB>())
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -56,6 +56,6 @@ class ContextSharingTest : AutoCloseKoinTest() {
             fail()
         } catch (e: Exception) {
         }
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(1)
     }
 }

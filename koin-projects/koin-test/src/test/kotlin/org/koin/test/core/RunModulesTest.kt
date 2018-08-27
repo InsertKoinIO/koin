@@ -8,9 +8,6 @@ import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
 
 class RunModulesTest : AutoCloseKoinTest() {
 
@@ -65,22 +62,22 @@ class RunModulesTest : AutoCloseKoinTest() {
 //    fun `several loads and override with contexts`() {
 //        startKoin(listOf(moduleD))
 //
-//        assertRemainingInstances(0)
+//        assertRemainingInstanceHolders(0)
 //        assertDefinitions(1)
 //        assertContexts(2)
 //
 //        loadKoinModules(moduleD)
 //
-//        assertRemainingInstances(0)
+//        assertRemainingInstanceHolders(0)
 //        assertDefinitions(1)
 //        assertContexts(2)
 //
 //        Assert.assertNotNull(get<ComponentA>())
-//        assertRemainingInstances(1)
+//        assertRemainingInstanceHolders(1)
 //
 //        loadKoinModules(moduleD)
 //
-//        assertRemainingInstances(1)
+//        assertRemainingInstanceHolders(1)
 //        assertDefinitions(1)
 //        assertContexts(2)
 //    }

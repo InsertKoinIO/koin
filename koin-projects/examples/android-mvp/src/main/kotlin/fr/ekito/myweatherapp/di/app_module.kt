@@ -11,6 +11,8 @@ import fr.ekito.myweatherapp.view.splash.SplashPresenter
 import fr.ekito.myweatherapp.view.weather.*
 import org.koin.dsl.module.module
 import org.koin.dsl.path.moduleName
+import java.lang.ref.ReferenceQueue
+import java.lang.ref.WeakReference
 
 /**
  * App Components
@@ -42,3 +44,33 @@ val weatherAppModule = module {
 // Gather all app modules
 val onlineWeatherApp = listOf(weatherAppModule, remoteDatasourceModule)
 val offlineWeatherApp = listOf(weatherAppModule, localAndroidDatasourceModule)
+
+class Shared
+
+object Memory {
+    lateinit var wr: WeakReference<Shared> //(Shared(), ReferenceQueue())
+
+    fun getShared(): Shared {
+        if (!this::wr.isInitialized) {
+            create()
+        }
+        if (wr.isEnqueued || wr.get() == null) {
+            create()
+        }
+        val shared = wr.get() ?: error("Can't be null")
+        println(" SHARED -> $shared")
+        return shared
+    }
+
+    fun release(){
+        println("UNSUB")
+        wr.enqueue()
+    }
+
+    private fun create() {
+        println("CREATE")
+        wr = WeakReference(Shared(), ReferenceQueue())
+    }
+
+
+}

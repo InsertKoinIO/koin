@@ -8,7 +8,7 @@ import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstances
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class MultiThreadTest : AutoCloseKoinTest() {
 
@@ -46,7 +46,7 @@ class MultiThreadTest : AutoCloseKoinTest() {
         val default = get<ComponentB>()
 
         Assert.assertEquals(0, values.filter { it != default }.size)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 
@@ -73,7 +73,7 @@ class MultiThreadTest : AutoCloseKoinTest() {
         val default = get<ComponentB>()
 
         Assert.assertEquals(0, values.filter { it != default }.size)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 
@@ -99,7 +99,7 @@ class MultiThreadTest : AutoCloseKoinTest() {
         val default = get<ComponentB>()
 
         Assert.assertEquals(0, values.filter { it != default }.size)
-        assertRemainingInstances(2)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 
@@ -124,7 +124,7 @@ class MultiThreadTest : AutoCloseKoinTest() {
         val default = get<ComponentB>()
 
         Assert.assertEquals(3, values.filter { it != default }.size)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 
@@ -150,7 +150,7 @@ class MultiThreadTest : AutoCloseKoinTest() {
 
         val default = get<ComponentB>()
         Assert.assertEquals(size, values.filter { it != default }.size)
-        assertRemainingInstances(1)
+        assertRemainingInstanceHolders(2)
         assertContexts(1)
     }
 }
