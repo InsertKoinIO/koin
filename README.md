@@ -24,7 +24,7 @@ Need help? Come on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fm
 ## Actual Version
 
 ```gradle
-koin_version = '1.0.0-beta-3'
+koin_version = '1.0.0-beta-9'
 ```
 
 ## Gradle 
@@ -106,8 +106,8 @@ class BusinessService()
 
 // just declare it 
 val myModule = module { 
-  single<Controller>() 
-  single<BusinessService>() 
+  single { Controller(get()) } 
+  single { BusinessService() } 
 } 
 ```
 
@@ -188,17 +188,19 @@ Koin can be easily embedded with your favorite Java/Kotlin SDK, and already prov
 Want to use Android Architecture ViewModel? No problem, it's already available and easy to use:
 
 ```kotlin
-// declare ViewModel using the viewModel keyword
-val myModule : Module = module {
-  viewModel<MyViewModel>()
-  single<MyRepository>()
-}
-```
-```kotlin
 // Injected by constructor
 class MyViewModel(val repo : MyRepository) : ViewModel(){
 }
 ```
+
+```kotlin
+// declare ViewModel using the viewModel keyword
+val myModule : Module = module {
+  viewModel { MyViewModel(get()) }
+  single { MyRepository() }
+}
+```
+
 ```kotlin
 // Just get it
 class MyActivity() : AppCompatActivity() {
