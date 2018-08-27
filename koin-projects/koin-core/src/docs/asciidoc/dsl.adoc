@@ -15,9 +15,8 @@ Below are the Koin DSL keywords:
 * `module` - create a Koin Module
 * `factory` - provide a factory bean definition
 * `single` - provide a singleton bean definition (also aliased as `bean`)
-* `bind` - add type to bind for given bean definition
 * `get` - resolve a component dependency
-* `create` - create an instance of given type, by injecting its constructor with dependencies
+* `bind` - add type to bind for given bean definition
 
 === Writing a module
 
@@ -213,60 +212,6 @@ val service : Service by inject(name = "default")
 
 `get()` and `by inject()` functions let you specify a definition name if needed.
 
-=== Create instances using the create() function
-
-Koin has the `create<T>()` function that allows you to create an instance of type `T` and inject its first constructor.
-Note that if you don"t provide any definition lambda to your single/factory definition, will be able to create it for you:
-
-[source,kotlin]
-----
-single<T>() == single { create<T>() }
-factory<T>() == factory { create<T>() }
-----
-
-When you need to specify the projected type:
-
-[source,kotlin]
-----
-single<T> { R() } == single<T> { create<R>() }
-factory<T>() { R() } == factory<T> { create<R>() }
-----
-
-This help write definition without having to fill manually the constructor with `get()` functions. Compare from the 'manual'
-to the 'automated' created instances.
-
-.definitions without create() function
-[source,kotlin]
-----
-// Presenter <- Service
-class Service()
-class Controller(val view : View)
-
-val myModule = module {
-
-    // declare Service as single intance
-    single { Service() }
-    // declare Controller as single instance, resolving View instance with get()
-    single<Controller> { ControllerImpl(get()) }
-}
-----
-
-.definitions with create() function
-[source,kotlin]
-----
-// Presenter <- Service
-class Service()
-class Controller(val view : View)
-
-val myModule = module {
-
-    // declare Service as single intance
-    single<Service>()
-    // declare Controller as single instance, resolving View instance with get()
-    single<Controller> { create<ControllerImpl>() }
-}
-----
-
 === Declaring injection parameters
 
 In any `single` or `factory` definition, you can use injection parameters: parameters that will be injected and used by your definition:
@@ -438,3 +383,84 @@ val myModuleB = module(override=true) {
 ====
 Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
 ====
+
+
+==== Dealing with generics
+
+Koin definitions doesn't take in accounts generics type argument. For example, the module below tries to define 2 definitions of List:
+
+[source,kotlin]
+----
+module {
+    single { ArrayList<Int>() }
+    single { ArrayList<String>() }
+}
+----
+
+Koin won't start with such definitions, understanding that you want to override one definition for the other.
+
+To allow you, use the 2 definitions you will have to differentiate them via their name, or location (module). For example:
+
+[source,kotlin]
+----
+module {
+    single(name="Ints") { ArrayList<Int>() }
+    single(name="Strings") { ArrayList<String>() }
+}
+----
+
+=== Experimental features
+
+==== Create instances using the create() function
+
+Koin has the `create<T>()` function that allows you to create an instance of type `T` and inject its first constructor.
+Note that if you don"t provide any definition lambda to your single/factory definition, will be able to create it for you:
+
+[source,kotlin]
+----
+single<T>() == single { create<T>() }
+factory<T>() == factory { create<T>() }
+----
+
+When you need to specify the projected type:
+
+[source,kotlin]
+----
+single<T> { R() } == single<T> { create<R>() }
+factory<T>() { R() } == factory<T> { create<R>() }
+----
+
+This help write definition without having to fill manually the constructor with `get()` functions. Compare from the 'manual'
+to the 'automated' created instances.
+
+.definitions without create() function
+[source,kotlin]
+----
+// Presenter <- Service
+class Service()
+class Controller(val view : View)
+
+val myModule = module {
+
+    // declare Service as single intance
+    single { Service() }
+    // declare Controller as single instance, resolving View instance with get()
+    single<Controller> { ControllerImpl(get()) }
+}
+----
+
+.definitions with create() function
+[source,kotlin]
+----
+// Presenter <- Service
+class Service()
+class Controller(val view : View)
+
+val myModule = module {
+
+    // declare Service as single intance
+    single<Service>()
+    // declare Controller as single instance, resolving View instance with get()
+    single<Controller> { create<ControllerImpl>() }
+}
+----
