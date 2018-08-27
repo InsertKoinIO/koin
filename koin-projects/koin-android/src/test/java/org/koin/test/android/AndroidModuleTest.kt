@@ -94,7 +94,7 @@ class AndroidModuleTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(1)
-        assertRemainingInstanceHolders(0)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
@@ -126,6 +126,6 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         }
 
         assertDefinitions(1)
-        assertRemainingInstanceHolders(0)
+        assertRemainingInstanceHolders(1)
     }
 }

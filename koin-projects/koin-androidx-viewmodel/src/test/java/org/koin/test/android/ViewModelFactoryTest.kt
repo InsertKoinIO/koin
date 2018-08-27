@@ -42,6 +42,6 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(2)
-        assertRemainingInstanceHolders(1)
+        assertRemainingInstanceHolders(2)
     }
 }

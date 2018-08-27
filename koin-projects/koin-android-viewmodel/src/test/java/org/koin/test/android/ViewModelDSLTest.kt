@@ -48,7 +48,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(2)
-        assertRemainingInstanceHolders(1)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -62,7 +62,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(2)
-        assertRemainingInstanceHolders(1)
+        assertRemainingInstanceHolders(2)
     }
 
     @Test
@@ -77,7 +77,7 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
 
         assertContexts(1)
         assertDefinitions(1)
-        assertRemainingInstanceHolders(0)
+        assertRemainingInstanceHolders(1)
     }
 
     @Test
