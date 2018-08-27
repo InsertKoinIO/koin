@@ -15,9 +15,11 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.BeanDefinitionId
+import org.koin.dsl.definition.Kind
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -43,11 +45,14 @@ open class InstanceFactory {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? = instanceHolders[def.id] as? InstanceHolder<T>
+    fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? =
+        instanceHolders[def.id] as? InstanceHolder<T>
 
     open fun <T> create(def: BeanDefinition<T>): InstanceHolder<T> {
-        return if (def.isSingleton) SingleInstanceHolder(def)
-        else FactoryInstanceHolder(def)
+        return when (def.kind) {
+            Kind.Single -> SingleInstanceHolder(def)
+            Kind.Factory -> FactoryInstanceHolder(def)
+        }
     }
 
     fun release(definitions: List<BeanDefinition<*>>) {
@@ -55,7 +60,13 @@ open class InstanceFactory {
     }
 
     fun release(definition: BeanDefinition<*>) {
-        instanceHolders.remove(definition.id)?.delete()
+        Koin.logger.debug("release $definition")
+        find(definition)?.release()
+    }
+
+    fun delete(definition: BeanDefinition<*>) {
+//        Koin.logger.debug("delete $definition")
+        instanceHolders.remove(definition.id)?.release()
     }
 
     /**

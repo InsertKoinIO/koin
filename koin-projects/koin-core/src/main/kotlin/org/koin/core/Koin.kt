@@ -105,8 +105,8 @@ class Koin(val koinContext: KoinContext) {
             val eager = if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
             val override = if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
             val def = definition.copy(isEager = eager, allowOverride = override, path = consolidatedPath)
+            instanceFactory.delete(def)
             beanRegistry.declare(def)
-            instanceFactory.release(def)
         }
 
         // Check sub contexts

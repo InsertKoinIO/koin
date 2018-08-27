@@ -72,27 +72,11 @@ class KoinContext(
         filter
     )
 
-//    /**
-//     * Retrieve an instance from its class
-//     */
-//    fun <T> get(request: ClassRequest): T = instanceManager.resolve(request)
-//
-//    /**
-//     * Retrieve an instance from a given filter
-//     */
-//    fun <T> get(request: CustomRequest): T = instanceManager.proceedResolution(
-//        request.module,
-//        request.clazz,
-//        request.parameters
-//    ) { request.defininitionFilter(instanceManager.beanRegistry) }
-
     /**
      * Drop all instances for path context
      * @param path
      */
     fun release(path: String) {
-        logger.info("release module '$path'")
-
         instanceManager.release(path)
         contextCallback.forEach { it.onRelease(path) }
     }

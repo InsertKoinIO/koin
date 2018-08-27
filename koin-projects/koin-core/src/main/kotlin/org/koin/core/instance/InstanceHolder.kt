@@ -24,7 +24,7 @@ interface InstanceHolder<T> {
         }
     }
 
-    fun delete()
+    fun release()
 }
 
 data class Instance<T>(val value: T, val created: Boolean)

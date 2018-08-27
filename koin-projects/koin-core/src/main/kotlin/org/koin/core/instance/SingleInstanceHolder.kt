@@ -16,7 +16,7 @@ class SingleInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceHo
         return Instance(instance as T, needCreation)
     }
 
-    override fun delete() {
+    override fun release() {
         instance = null
     }
 }

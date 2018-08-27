@@ -19,6 +19,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.definition.BeanDefinition
+import org.koin.dsl.definition.Kind
 
 /**
  * Create a Single definition for given type T
@@ -31,7 +32,7 @@ inline fun <reified T : Any> ModuleDefinition.single(
     createOnStart: Boolean = false,
     override: Boolean = false
 ): BeanDefinition<T> {
-    return provide(name, createOnStart, override) { create<T>() }
+    return provide(name, createOnStart, override, Kind.Single) { create<T>() }
 }
 
 /**
@@ -44,7 +45,7 @@ inline fun <reified T : Any> ModuleDefinition.factory(
     name: String = "",
     override: Boolean = false
 ): BeanDefinition<T> {
-    return provide(name, false, override, false) { create<T>() }
+    return provide(name, false, override, Kind.Factory) { create<T>() }
 }
 
 /**

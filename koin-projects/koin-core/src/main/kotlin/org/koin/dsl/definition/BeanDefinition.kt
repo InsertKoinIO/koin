@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
  *
  * @param name - bean canonicalName
  * @param clazz - bean class
- * @param isSingleton - is the bean a singleton
+ * @param kind - bean definition Kind
  * @param types - list of assignable types
  * @param isEager - definition tagged to be created on start
  * @param allowOverride - definition tagged to allow definition override or not
@@ -45,15 +45,15 @@ data class BeanDefinition<out T>(
     val clazz: KClass<*>,
     var types: List<KClass<*>> = arrayListOf(),
     val path: Path = Path.root(),
-    val isSingleton: Boolean = true,
+    val kind: Kind = Kind.Single,
     val isEager: Boolean = false,
     val allowOverride: Boolean = false,
     val definition: Definition<T>
 ) {
     // For instance match
-    internal val id : BeanDefinitionId = UUID.randomUUID().toString()
+    internal val id: BeanDefinitionId = UUID.randomUUID().toString()
     // Available classes to match
-    internal val classes : List<String> = listOf<String>(clazz.java.canonicalName) + types.map { it.java.canonicalName }
+    internal val classes: List<String> = listOf<String>(clazz.java.canonicalName) + types.map { it.java.canonicalName }
 
     /**
      * Add a compatible type to current bounded definition
@@ -68,14 +68,6 @@ data class BeanDefinition<out T>(
     }
 
     /**
-     * Bean definition is not a singleton, but a factory
-     */
-    fun isNotASingleton(): Boolean = !isSingleton
-
-    private fun boundTypes(): String =
-        "(" + types.map { it.java.canonicalName }.joinToString() + ")"
-
-    /**
      * Check visibility if "this" can see "other"
      */
     fun canSee(other: BeanDefinition<*>) = other.path.isVisible(this.path)
@@ -83,11 +75,14 @@ data class BeanDefinition<out T>(
     override fun toString(): String {
         val beanName = if (name.isEmpty()) "" else "canonicalName='$name',"
         val clazz = "class='${clazz.java.canonicalName}'"
-        val type = if (isSingleton) "Single" else "Factory"
+        val type = "$kind" //if (isSingleton) "Single" else "Factory"
         val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
         val path = if (path != Path.root()) ", path:'$path'" else ""
         return "$type [$beanName$clazz$binds$path]"
     }
+
+    private fun boundTypes(): String =
+        "(" + types.map { it.java.canonicalName }.joinToString() + ")"
 
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {
@@ -111,4 +106,14 @@ data class BeanDefinition<out T>(
  * Type Definition function - what's build a given component T
  */
 typealias Definition<T> = (ParameterList) -> T
+
 typealias BeanDefinitionId = String
+
+/**
+ * Bean definition Kind
+ * - single
+ * - factory
+ */
+enum class Kind {
+    Single, Factory
+}

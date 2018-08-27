@@ -8,5 +8,5 @@ class FactoryInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceH
         return Instance(create(parameters), true)
     }
 
-    override fun delete() {}
+    override fun release() {}
 }

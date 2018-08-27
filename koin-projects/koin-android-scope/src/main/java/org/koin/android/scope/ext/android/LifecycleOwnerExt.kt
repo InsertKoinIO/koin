@@ -31,19 +31,8 @@ import org.koin.android.scope.ScopeObserver
  *
  * @see ScopeObserver
  * @param event : lifecycle event - default ON_DESTROY
- * @param modules : modules names
- */
-fun LifecycleOwner.scopedWith(modules: List<String>, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
-    lifecycle.addObserver(ScopeObserver(event, this.javaClass.canonicalName, modules))
-}
-
-/**
- * Set a Scope Observer onto the actual LifecycleOwner component
- *
- * @see ScopeObserver
- * @param event : lifecycle event - default ON_DESTROY
  * @param module : module names
  */
 fun LifecycleOwner.scopedWith(module: String, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
-    lifecycle.addObserver(ScopeObserver(event, this.javaClass.canonicalName, listOf(module)))
+    lifecycle.addObserver(ScopeObserver(event, this::class.java.simpleName, module))
 }

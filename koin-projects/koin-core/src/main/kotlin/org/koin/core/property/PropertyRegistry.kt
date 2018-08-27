@@ -99,7 +99,7 @@ class PropertyRegistry {
      * Delete a property
      */
     fun delete(key: String) {
-        Koin.logger.debug("[Property] delete $key")
+        Koin.logger.debug("[Property] release $key")
         properties.remove(key)
     }
 

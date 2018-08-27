@@ -10,6 +10,6 @@ import org.koin.dsl.definition.BeanDefinition
  */
 class SandboxInstanceFactory() : InstanceFactory() {
 
-    override fun <T> create(def: BeanDefinition<T>): InstanceHolder<T> = SandboxedInstanceHolder(def)
+    override fun <T> create(def: BeanDefinition<T>): InstanceHolder<T> = SandboxInstanceHolder(def)
 
 }

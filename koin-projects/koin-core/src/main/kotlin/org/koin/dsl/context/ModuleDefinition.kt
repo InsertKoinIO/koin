@@ -20,6 +20,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Definition
+import org.koin.dsl.definition.Kind
 
 
 /**
@@ -86,14 +87,14 @@ class ModuleDefinition(
         name: String = "",
         createOnStart: Boolean = false,
         override: Boolean = false,
-        isSingleton: Boolean = true,
+        kind: Kind,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition =
             BeanDefinition(
                 name,
                 T::class,
-                isSingleton = isSingleton,
+                kind = kind,
                 isEager = createOnStart,
                 allowOverride = override,
                 definition = definition
@@ -126,7 +127,7 @@ class ModuleDefinition(
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, createOnStart, override, true, definition)
+        return provide(name, createOnStart, override, Kind.Single, definition)
     }
 
     /**
@@ -142,8 +143,24 @@ class ModuleDefinition(
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, false, override, false, definition)
+        return provide(name, false, override, Kind.Factory, definition)
     }
+
+//    /**
+//     * Provide a Shared bean definition -
+//     * (shared instance)
+//     *
+//     * @param name
+//     * @param override - allow definition override
+//     * @param definition
+//     */
+//    inline fun <reified T : Any> shared(
+//        name: String = "",
+//        override: Boolean = false,
+//        noinline definition: Definition<T>
+//    ): BeanDefinition<T> {
+//        return provide(name, false, override, Kind.Shared, definition)
+//    }
 
     /**
      * Resolve a component
