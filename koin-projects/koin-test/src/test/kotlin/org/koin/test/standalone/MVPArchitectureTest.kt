@@ -62,7 +62,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         assertIsInModulePath(Presenter::class, "view")
 
         view.onDestroy()
-        assertRemainingInstanceHolders(2)
+        assertRemainingInstanceHolders(4)
         assertDefinitions(4)
         assertContexts(2)
     }

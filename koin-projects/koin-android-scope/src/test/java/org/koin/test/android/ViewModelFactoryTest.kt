@@ -27,12 +27,12 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
         val service = get<MyService>()
         Assert.assertNotNull(service)
 
-        val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", listOf("module1"))
+        val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", "module1")
 
         assertDefinitions(1)
         assertRemainingInstanceHolders(1)
 
         observer.onDestroy()
-        assertRemainingInstanceHolders(0)
+        assertRemainingInstanceHolders(1)
     }
 }

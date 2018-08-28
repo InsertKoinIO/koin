@@ -6,7 +6,7 @@ ext {
 
     android_gradle_version = "3.2.0-rc02"
 
-    android_build_tools_version  = '27.0.3'
+    android_build_tools_version  = '28.0.2'
 
 	android_arch_version = '1.1.1'
 	androidx_arch_version = '2.0.0-beta01'

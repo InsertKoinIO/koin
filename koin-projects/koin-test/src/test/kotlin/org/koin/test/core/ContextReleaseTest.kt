@@ -59,10 +59,10 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
         assertDefinitions(3)
 
-        assertRemainingInstanceHolders(1)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
-        assertContextInstances("B", 0)
-        assertContextInstances("C", 0)
+        assertContextInstances("B", 1)
+        assertContextInstances("C", 1)
 
         val a2 = get<ComponentA>()
         val b2 = get<ComponentB>()
@@ -103,10 +103,10 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
         release("A")
 
-        assertRemainingInstanceHolders(0)
-        assertContextInstances("A", 0)
-        assertContextInstances("B", 0)
-        assertContextInstances("C", 0)
+        assertRemainingInstanceHolders(3)
+        assertContextInstances("A", 1)
+        assertContextInstances("B", 1)
+        assertContextInstances("C", 1)
 
         val a2 = get<ComponentA>()
         val b2 = get<ComponentB>()
@@ -147,10 +147,10 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
         release(Path.ROOT)
 
-        assertRemainingInstanceHolders(0)
-        assertContextInstances("A", 0)
-        assertContextInstances("B", 0)
-        assertContextInstances("C", 0)
+        assertRemainingInstanceHolders(3)
+        assertContextInstances("A", 1)
+        assertContextInstances("B", 1)
+        assertContextInstances("C", 1)
 
         val a2 = get<ComponentA>()
         val b2 = get<ComponentB>()
@@ -191,10 +191,10 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
         release("C")
 
-        assertRemainingInstanceHolders(2)
+        assertRemainingInstanceHolders(3)
         assertContextInstances("A", 1)
         assertContextInstances("B", 1)
-        assertContextInstances("C", 0)
+        assertContextInstances("C", 1)
 
         val a2 = get<ComponentA>()
         val b2 = get<ComponentB>()

@@ -66,7 +66,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
         assertIsInModulePath(Presenter::class, "View")
 
         view.onDestroy()
-        assertRemainingInstanceHolders(2)
+        assertRemainingInstanceHolders(4)
         assertDefinitions(4)
         assertContexts(2)
     }

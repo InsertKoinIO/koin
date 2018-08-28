@@ -30,7 +30,7 @@ open class InstanceFactory {
     val instanceHolders = HashMap<BeanDefinitionId, InstanceHolder<*>>()
 
     /**
-     * Retrieve or create bean instance
+     * Retrieve or create instance from bean definition
      * @return Instance / has been created
      */
     fun <T> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition): Instance<T> {
@@ -44,6 +44,9 @@ open class InstanceFactory {
         return holder.get(p)
     }
 
+    /**
+     * Find actual InstanceHolder
+     */
     @Suppress("UNCHECKED_CAST")
     fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? =
         instanceHolders[def.id] as? InstanceHolder<T>
@@ -55,15 +58,24 @@ open class InstanceFactory {
         }
     }
 
+    /**
+     * Release definitions instances
+     */
     fun release(definitions: List<BeanDefinition<*>>) {
         definitions.forEach { release(it) }
     }
 
+    /**
+     * Release definition instance
+     */
     fun release(definition: BeanDefinition<*>) {
         Koin.logger.debug("release $definition")
         find(definition)?.release()
     }
 
+    /**
+     * Delete Instance Holder
+     */
     fun delete(definition: BeanDefinition<*>) {
 //        Koin.logger.debug("delete $definition")
         instanceHolders.remove(definition.id)?.release()

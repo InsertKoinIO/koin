@@ -11,6 +11,10 @@ import org.koin.error.NoBeanDefFoundException
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito
 
+/**
+ * SandboxInstance - InstanceHolder
+ * create mock instance of given type
+ */
 class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceHolder<T> {
 
     override fun <T> get(parameters: ParameterDefinition): Instance<T> = Instance(create(parameters), true)
