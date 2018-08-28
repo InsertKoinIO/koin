@@ -8,7 +8,7 @@ dependencies {
     compile project(":koin-core")
 
     compile "junit:junit:$junit_version"
-    compile "org.mockito:mockito-core:$mockito_version"
+    compile "org.mockito:mockito-inline:$mockito_version"
 
     // Coroutines
     testCompile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"// Coroutines
