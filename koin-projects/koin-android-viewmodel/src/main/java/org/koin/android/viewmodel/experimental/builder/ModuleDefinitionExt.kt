@@ -2,7 +2,7 @@ package org.koin.android.viewmodel.experimental.builder
 
 import android.arch.lifecycle.ViewModel
 import org.koin.dsl.context.ModuleDefinition
-import org.koin.experimental.builder.create
+import org.koin.experimental.builder.factory
 
 /**
  * Create ViewModel for Given type T
@@ -17,5 +17,5 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     name: String = "",
     override: Boolean = false
 ) {
-    factory(name, override) { create<T>() }.bind(ViewModel::class)
+    factory<T>(name, override).bind(ViewModel::class)
 }
