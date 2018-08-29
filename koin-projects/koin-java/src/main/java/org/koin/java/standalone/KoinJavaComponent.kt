@@ -38,7 +38,7 @@ object KoinJavaComponent : KoinComponent {
      */
     @JvmOverloads
     @JvmStatic
-    fun <T> inject(
+    fun <T : Any> inject(
         clazz: Class<T>,
         name: String = "",
         module: String? = null,
@@ -56,7 +56,7 @@ object KoinJavaComponent : KoinComponent {
      */
     @JvmOverloads
     @JvmStatic
-    fun <T> get(
+    fun <T : Any> get(
         clazz: Class<T>,
         name: String = "",
         module: String? = null,
