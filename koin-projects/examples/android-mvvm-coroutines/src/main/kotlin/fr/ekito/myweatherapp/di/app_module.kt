@@ -7,28 +7,27 @@ import fr.ekito.myweatherapp.util.rx.SchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailViewModel
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
-import org.koin.android.viewmodel.experimental.builder.viewModel
+import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
-import org.koin.experimental.builder.create
 
 /**
  * App Components
  */
 val weatherAppModule = module {
 
-    viewModel<DetailViewModel>()
+    viewModel { DetailViewModel(get(), get()) }
 
     // ViewModel for Search View
-    viewModel<SplashViewModel>()
+    viewModel { SplashViewModel(get(), get()) }
 
     // WeatherViewModel declaration for Weather View components
-    viewModel<WeatherViewModel>()
+    viewModel { WeatherViewModel(get(), get()) }
 
     // Weather Data Repository
-    single<WeatherRepository> { create<WeatherRepositoryImpl>() }
+    single<WeatherRepository> { WeatherRepositoryImpl(get()) }
 
     // Rx Schedulers
-    single<SchedulerProvider> { create<ApplicationSchedulerProvider>() }
+    single<SchedulerProvider> { ApplicationSchedulerProvider() }
 }
 
 // Gather all app modules
