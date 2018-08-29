@@ -22,6 +22,7 @@ import org.koin.core.path.PathRegistry
 import org.koin.core.stack.ResolutionStack
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
+import kotlin.reflect.KClass
 
 /**
  * Instance Resolver
@@ -48,13 +49,13 @@ class InstanceManager(
         return request.run {
             val search = when {
                 name.isNotEmpty() -> {
-                    { beanRegistry.searchByNameAndClass(definitions, name, clazzName) }
+                    { beanRegistry.searchByNameAndClass(definitions, name, clazz) }
                 }
                 else -> {
-                    { beanRegistry.searchByClass(definitions, clazzName) }
+                    { beanRegistry.searchByClass(definitions, clazz) }
                 }
             }
-            proceedResolution(module, clazzName, parameters, search)
+            proceedResolution(module, clazz, parameters, search)
         }
     }
 
@@ -67,7 +68,7 @@ class InstanceManager(
      */
     fun <T> proceedResolution(
         module: String? = null,
-        clazzName: String,
+        clazz: KClass<*>,
         parameters: ParameterDefinition,
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
@@ -79,7 +80,7 @@ class InstanceManager(
             try {
                 val beanDefinition: BeanDefinition<T> =
                     beanRegistry.retrieveDefinition(
-                        clazzName,
+                        clazz,
                         if (module != null) pathRegistry.getPath(module) else null,
                         definitionResolver,
                         resolutionStack.last()
@@ -88,7 +89,7 @@ class InstanceManager(
                 val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
-                Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
+                Koin.logger.info("$logIndent$startChar-- '$clazz' $logPath") // @ [$beanDefinition]")
                 Koin.logger.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
@@ -106,14 +107,14 @@ class InstanceManager(
                 }
             } catch (e: Exception) {
                 resolutionStack.clear()
-                Koin.logger.err("Error while resolving instance for class '$clazzName' - error: $e ")
+                Koin.logger.err("Error while resolving instance for class '$clazz' - error: $e ")
                 throw e
             }
         }
 
-        Koin.logger.debug("$logIndent!-- [$clazzName] resolved in $duration ms")
+        Koin.logger.debug("$logIndent!-- [$clazz] resolved in $duration ms")
 
-        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazzName")
+        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
     }
 
     /**
@@ -138,7 +139,7 @@ class InstanceManager(
         definitions.forEach { def ->
             proceedResolution(
                 def.path.toString(),
-                def.clazz.java.canonicalName,
+                def.clazz,
                 params
             ) { listOf(def) }
         }

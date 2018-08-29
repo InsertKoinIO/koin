@@ -21,6 +21,7 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.property.PropertyRegistry
 import org.koin.error.MissingPropertyException
 import org.koin.standalone.StandAloneKoinContext
+import kotlin.reflect.KClass
 
 
 /**
@@ -48,7 +49,7 @@ class KoinContext(
         InstanceRequest(
             name = name,
             module = module,
-            clazzName = T::class.java.canonicalName,
+            clazz = T::class,
             parameters = parameters
         )
     )
@@ -56,9 +57,9 @@ class KoinContext(
     /**
      * Retrieve an instance from its name/class
      */
-    fun <T> getForClass(
+    fun <T> get(
         name: String = "",
-        clazzName: String,
+        clazz: KClass<*>,
         module: String? = null,
         parameters: ParameterDefinition = emptyParameterDefinition(),
         filter: DefinitionFilter? = null
@@ -66,7 +67,7 @@ class KoinContext(
         InstanceRequest(
             name = name,
             module = module,
-            clazzName = clazzName,
+            clazz = clazz,
             parameters = parameters
         ),
         filter

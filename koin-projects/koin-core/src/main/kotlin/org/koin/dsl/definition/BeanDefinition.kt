@@ -53,7 +53,7 @@ data class BeanDefinition<out T>(
     // For instance match
     internal val id: BeanDefinitionId = UUID.randomUUID().toString()
     // Available classes to match
-    internal val classes: List<String> = listOf<String>(clazz.java.canonicalName) + types.map { it.java.canonicalName }
+    internal val classes: List<KClass<*>> = listOf(clazz) + types
 
     /**
      * Add a compatible type to current bounded definition

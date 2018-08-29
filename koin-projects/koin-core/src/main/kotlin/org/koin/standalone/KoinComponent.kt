@@ -19,6 +19,7 @@ import org.koin.core.DefinitionFilter
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import kotlin.reflect.KClass
 
 
 /**
@@ -56,14 +57,14 @@ inline fun <reified T> KoinComponent.get(
  * @param name - bean canonicalName
  * @param parameters - injection parameters
  */
-fun <T> KoinComponent.getForClass(
+fun <T> KoinComponent.get(
     name: String = "",
-    className: String,
+    clazz: KClass<*>,
     module: String? = null,
     parameters: ParameterDefinition = emptyParameterDefinition(),
     filter: DefinitionFilter? = null
 ): T =
-    (StandAloneContext.koinContext as KoinContext).getForClass(name, className, module, parameters, filter)
+    (StandAloneContext.koinContext as KoinContext).get(name, clazz, module, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent

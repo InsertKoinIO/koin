@@ -22,6 +22,7 @@ import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
+import kotlin.reflect.KClass
 
 
 /**
@@ -52,16 +53,16 @@ class BeanRegistry() {
         Koin.logger.info("[module] $kw $definition")
     }
 
-    fun searchByClass(definitions: Collection<BeanDefinition<*>>, clazzName: String): List<BeanDefinition<*>> {
-        return definitions.filter { clazzName in it.classes }
+    fun searchByClass(definitions: Collection<BeanDefinition<*>>, clazz: KClass<*>): List<BeanDefinition<*>> {
+        return definitions.filter { clazz in it.classes }
     }
 
     fun searchByNameAndClass(
         definitions: Collection<BeanDefinition<*>>,
         name: String,
-        clazzName: String
+        clazz: KClass<*>
     ): List<BeanDefinition<*>> {
-        return definitions.filter { name == it.name && clazzName in it.classes }
+        return definitions.filter { name == it.name && clazz in it.classes }
     }
 
     /**
@@ -81,7 +82,7 @@ class BeanRegistry() {
      * @param lastInStack - to check visibility with last bean in stack
      */
     fun <T> retrieveDefinition(
-        clazzName: String,
+        clazz: KClass<*>,
         modulePath: Path? = null,
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
@@ -90,7 +91,7 @@ class BeanRegistry() {
             val found = definitionResolver()
             val filteredByVisibility = found.filter { lastInStack.canSee(it) }
             if (found.isNotEmpty() && filteredByVisibility.isEmpty()) {
-                throw NotVisibleException("Can't proceedResolution '$clazzName' - Definition is not visible from last definition : $lastInStack")
+                throw NotVisibleException("Can't proceedResolution '$clazz' - Definition is not visible from last definition : $lastInStack")
             }
             filteredByVisibility
         } else {
@@ -102,9 +103,9 @@ class BeanRegistry() {
 
         return when {
             filteredCandidates.size == 1 -> filteredCandidates.first() as BeanDefinition<T>
-            filteredCandidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazzName'. Check your module definition")
+            filteredCandidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazz'. Check your module definition")
             else -> throw DependencyResolutionException(
-                "Multiple definitions found for type '$clazzName' - Koin can't choose between :\n\t${candidates.joinToString(
+                "Multiple definitions found for type '$clazz' - Koin can't choose between :\n\t${candidates.joinToString(
                     "\n\t"
                 )}\n\tCheck your modules definition, use inner modules visibility or definition names."
             )

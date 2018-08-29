@@ -62,9 +62,9 @@ object KoinJavaComponent : KoinComponent {
         module: String? = null,
         parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
-        return (StandAloneContext.koinContext as KoinContext).getForClass(
+        return (StandAloneContext.koinContext as KoinContext).get(
             name,
-            clazz.canonicalName,
+            clazz.kotlin,
             module,
             parameters
         )
