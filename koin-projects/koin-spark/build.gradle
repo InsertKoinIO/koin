@@ -4,7 +4,7 @@ archivesBaseName = 'koin-spark'
 description = 'Koin - simple dependency injection for SparkJava'
 
 dependencies {
-    compile project(":koin-core")
+    compile project(":koin-reflect")
     compile project(":koin-logger-slf4j")
     testImplementation project(":koin-test")
 

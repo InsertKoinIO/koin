@@ -96,11 +96,10 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
     ViewModelFactory.viewModelParameters = ViewModelParameters(name, module, parameters)
-    val clazzName = clazz.java.simpleName
-    Koin.logger.info("[ViewModel] ~ '$clazzName'(name:'$name' key:'$key') - $this")
+    Koin.logger.info("[ViewModel] ~ '$clazz'(name:'$name' key:'$key') - $this")
 
     val vmStoreOwner = from?.invoke() ?: this as? ViewModelStoreOwner
-    ?: error("Can't getByClass ViewModel '$clazzName' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
+    ?: error("Can't getByClass ViewModel '$clazz' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
 
     val viewModelProvider = ViewModelProvider(vmStoreOwner, ViewModelFactory)
     val vmInstance =

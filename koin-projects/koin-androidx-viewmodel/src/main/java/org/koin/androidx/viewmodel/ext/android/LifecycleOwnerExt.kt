@@ -97,8 +97,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
     ViewModelFactory.viewModelParameters = ViewModelParameters(name, module, parameters)
-    val clazzName = clazz.java.simpleName
-    Koin.logger.info("[ViewModel] ~ '$clazzName'(name:'$name' key:'$key') - $this")
+    Koin.logger.info("[ViewModel] ~ '$clazz'(name:'$name' key:'$key') - $this")
     val viewModelProvider = when {
         this is FragmentActivity -> {
             ViewModelProvider(this.viewModelStore, ViewModelFactory)

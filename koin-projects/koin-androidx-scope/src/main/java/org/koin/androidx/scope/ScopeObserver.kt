@@ -29,7 +29,7 @@ import org.koin.standalone.release
  *
  * release module instances from signals : ON_STOP, ON_DESTROY
  */
-class ScopeObserver(val event: Lifecycle.Event, val name : String, val module: String) :
+class ScopeObserver(val event: Lifecycle.Event, val target : Any, val module: String) :
     LifecycleObserver, KoinComponent {
 
     /**
@@ -38,7 +38,7 @@ class ScopeObserver(val event: Lifecycle.Event, val name : String, val module: S
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
         if (event == Lifecycle.Event.ON_STOP) {
-            Koin.logger.info("$name received ON_STOP for $module")
+            Koin.logger.info("$target received ON_STOP for $module")
             release(module)
         }
     }
@@ -49,7 +49,7 @@ class ScopeObserver(val event: Lifecycle.Event, val name : String, val module: S
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         if (event == Lifecycle.Event.ON_DESTROY) {
-            Koin.logger.info("$name received ON_DESTROY for $module")
+            Koin.logger.info("$target received ON_DESTROY for $module")
             release(module)
         }
     }

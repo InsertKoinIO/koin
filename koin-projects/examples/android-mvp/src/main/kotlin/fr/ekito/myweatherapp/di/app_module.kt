@@ -8,9 +8,11 @@ import fr.ekito.myweatherapp.view.detail.DetailContract
 import fr.ekito.myweatherapp.view.detail.DetailPresenter
 import fr.ekito.myweatherapp.view.splash.SplashContract
 import fr.ekito.myweatherapp.view.splash.SplashPresenter
-import fr.ekito.myweatherapp.view.weather.*
+import fr.ekito.myweatherapp.view.weather.WeatherHeaderContract
+import fr.ekito.myweatherapp.view.weather.WeatherHeaderPresenter
+import fr.ekito.myweatherapp.view.weather.WeatherListContract
+import fr.ekito.myweatherapp.view.weather.WeatherListPresenter
 import org.koin.dsl.module.module
-import org.koin.dsl.path.moduleName
 import java.lang.ref.ReferenceQueue
 import java.lang.ref.WeakReference
 
@@ -23,7 +25,7 @@ val weatherAppModule = module {
     factory<SplashContract.Presenter> { SplashPresenter(get(), get()) }
 
     // scoped module example
-    module(WeatherActivity::class.moduleName) {
+    module("WeatherActivity") {
         // Presenter for ResultHeader View
         single<WeatherHeaderContract.Presenter> { WeatherHeaderPresenter(get(), get()) }
 
@@ -62,7 +64,7 @@ object Memory {
         return shared
     }
 
-    fun release(){
+    fun release() {
         println("UNSUB")
         wr.enqueue()
     }

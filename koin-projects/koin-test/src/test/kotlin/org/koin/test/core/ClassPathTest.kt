@@ -5,7 +5,6 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.dsl.path.moduleName
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -15,12 +14,12 @@ import org.koin.test.ext.junit.assertRemainingInstanceHolders
 class ClassPathTest : AutoCloseKoinTest() {
 
     val module = module {
-        module(ComponentB::class.moduleName) {
+        module(ComponentB::class.java.simpleName) {
             single { ComponentA() }
             single { ComponentB(get()) }
         }
 
-        module(ComponentC::class.moduleName) {
+        module(ComponentC::class.java.simpleName) {
             single { ComponentA() }
             single { ComponentC(get()) }
         }
@@ -39,8 +38,8 @@ class ClassPathTest : AutoCloseKoinTest() {
         Assert.assertNotNull(get<ComponentB>())
         Assert.assertNotNull(get<ComponentC>())
 
-        val a_b = get<ComponentA>(module = ComponentB::class.moduleName)
-        val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
+        val a_b = get<ComponentA>(module = ComponentB::class.java.simpleName)
+        val a_c = get<ComponentA>(module = ComponentC::class.java.simpleName)
         assertNotEquals(a_b, a_c)
 
         assertRemainingInstanceHolders(4)
@@ -52,7 +51,7 @@ class ClassPathTest : AutoCloseKoinTest() {
 
         get<ComponentB>()
         try {
-            get<ComponentB>(module = ComponentC::class.moduleName)
+            get<ComponentB>(module = ComponentC::class.java.simpleName)
             fail()
         } catch (e: Exception) {
         }
