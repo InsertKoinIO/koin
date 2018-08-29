@@ -7,36 +7,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import kotlinx.android.synthetic.main.view_third.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import kotlinx.android.synthetic.main.view_four_five.*
+import org.koin.android.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 
 
 /**
  * A simple [Fragment] subclass.
  *
  */
-class ThirdView : Fragment() {
-
-    val vm : ThirdViewModel by viewModel()
+class FourFiveView : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        getViewModel<FourFiveSharedViewModel> { parametersOf("DATA ONLY FOR WE FRAGMENTS") }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.view_third, container, false)
+        return inflater.inflate(R.layout.view_four_five, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        activity?.title = "Third"
-
-        text3.setOnClickListener {
+        navigateText.setOnClickListener {
             Navigation.findNavController(it)
-                .navigate(R.id.action_thirdView_to_fourFiveView)
+                .navigate(R.id.action_fourFiveView_to_firstView)
         }
-
-        vm.sayHello()
     }
 }
+
