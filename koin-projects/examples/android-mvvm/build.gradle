@@ -54,7 +54,7 @@ dependencies {
 
     // Android Test
     testImplementation "junit:junit:$junit_version"
-    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.2'
 
