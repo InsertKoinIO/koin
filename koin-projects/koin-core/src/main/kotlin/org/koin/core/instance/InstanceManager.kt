@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core
+package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.bean.BeanRegistry
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.stack.ResolutionStack
@@ -76,7 +76,6 @@ class InstanceManager(
         var resultInstance: T? = null
         val logIndent: String = resolutionStack.indent()
         val duration = measureDuration {
-
             try {
                 val beanDefinition: BeanDefinition<T> =
                     beanRegistry.retrieveDefinition(

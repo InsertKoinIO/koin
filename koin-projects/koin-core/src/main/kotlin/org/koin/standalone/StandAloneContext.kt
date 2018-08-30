@@ -15,7 +15,7 @@
  */
 package org.koin.standalone
 
-import org.koin.core.InstanceManager
+import org.koin.core.instance.InstanceManager
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.ModuleCallback
@@ -71,7 +71,11 @@ object StandAloneContext {
         if (!isStarted) {
             Koin.logger.info("[context] create")
             val propertyResolver = PropertyRegistry()
-            val instanceResolver = InstanceManager(BeanRegistry(), InstanceFactory(), PathRegistry())
+            val instanceResolver = InstanceManager(
+                BeanRegistry(),
+                InstanceFactory(),
+                PathRegistry()
+            )
             koinContext = KoinContext(instanceResolver, propertyResolver)
             isStarted = true
         }

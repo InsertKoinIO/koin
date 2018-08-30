@@ -15,8 +15,8 @@
  */
 package org.koin.standalone
 
-import org.koin.core.DefinitionFilter
 import org.koin.core.KoinContext
+import org.koin.core.instance.DefinitionFilter
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import kotlin.reflect.KClass
@@ -38,7 +38,7 @@ inline fun <reified T> KoinComponent.inject(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+) = lazy { getKoin().get<T>(name, module, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -50,7 +50,7 @@ inline fun <reified T> KoinComponent.get(
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
-    (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
+    getKoin().get(name, module, parameters)
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -64,7 +64,7 @@ fun <T> KoinComponent.get(
     parameters: ParameterDefinition = emptyParameterDefinition(),
     filter: DefinitionFilter? = null
 ): T =
-    (StandAloneContext.koinContext as KoinContext).get(name, clazz, module, parameters, filter)
+    getKoin().get(name, clazz, module, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent
@@ -72,7 +72,7 @@ fun <T> KoinComponent.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> KoinComponent.property(key: String): Lazy<T> =
-    kotlin.lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
+    kotlin.lazy { getKoin().getProperty<T>(key) }
 
 /**
  * inject lazily given property for KoinComponent
@@ -83,7 +83,7 @@ inline fun <reified T> KoinComponent.property(key: String): Lazy<T> =
  *
  */
 inline fun <reified T> KoinComponent.property(key: String, defaultValue: T): Lazy<T> =
-    kotlin.lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
+    kotlin.lazy { getKoin().getProperty(key, defaultValue) }
 
 /**
  * Retrieve given property for KoinComponent
@@ -91,7 +91,7 @@ inline fun <reified T> KoinComponent.property(key: String, defaultValue: T): Laz
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> KoinComponent.getProperty(key: String): T =
-    (StandAloneContext.koinContext as KoinContext).getProperty(key)
+    getKoin().getProperty(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -102,31 +102,31 @@ inline fun <reified T> KoinComponent.getProperty(key: String): T =
  *
  */
 inline fun <reified T> KoinComponent.getProperty(key: String, defaultValue: T): T =
-    (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue)
+    getKoin().getProperty(key, defaultValue)
 
 /**
  * set a property
  * @param key
  * @param value
  */
-fun KoinComponent.setProperty(key: String, value: Any) = getKoinContext().setProperty(key, value)
+fun KoinComponent.setProperty(key: String, value: Any) = getKoin().setProperty(key, value)
 
 /**
  * Release instances at given module scope
  * @param path
  */
-fun KoinComponent.release(path: String) = getKoinContext().release(path)
+fun KoinComponent.release(path: String) = getKoin().release(path)
 
 /**
  * Release instances at given module scope
  * @param path
  */
 @Deprecated("function renamed - use release() function instead", ReplaceWith("release(path)"))
-fun KoinComponent.releaseContext(path: String) = getKoinContext().release(path)
+fun KoinComponent.releaseContext(path: String) = getKoin().release(path)
 
 /**
- * Help to Access context
+ * Access to Koin context
  */
-private fun getKoinContext() = (StandAloneContext.koinContext as KoinContext)
+fun KoinComponent.getKoin() = (StandAloneContext.koinContext as KoinContext)
 
 

@@ -15,6 +15,8 @@
  */
 package org.koin.core.parameter
 
+import org.koin.error.NoParameterFoundException
+
 
 /**
  * ParameterList - List of parameter
@@ -27,7 +29,8 @@ class ParameterList(vararg value: Any) {
 
     val values: List<*> = value.toList()
 
-    private fun <T> elementAt(i: Int) = if (values.size > i) values[i] as T else error("Parameter element #$i is empty")
+    private fun <T> elementAt(i: Int): T =
+        if (values.size > i) values[i] as T else throw NoParameterFoundException("Can't get parameter value #$i from $this")
 
     operator fun <T> component1(): T = elementAt(0)
     operator fun <T> component2(): T = elementAt(1)

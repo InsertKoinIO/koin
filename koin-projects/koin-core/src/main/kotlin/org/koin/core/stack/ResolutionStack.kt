@@ -65,10 +65,15 @@ class ResolutionStack {
      */
     @Throws(IllegalStateException::class)
     private fun checkStackExit(beanDefinition: BeanDefinition<*>) {
-        val head: BeanDefinition<*> = stack.pop()
-        if (head != beanDefinition) {
-            stack.clear()
-            throw DependencyResolutionException("Stack resolution error : was $head but should be $beanDefinition")
+        val head: BeanDefinition<*>
+        try {
+            head = stack.pop()
+            if (head != beanDefinition) {
+                stack.clear()
+                throw DependencyResolutionException("Stack resolution error : was $head but should be $beanDefinition")
+            }
+        } catch (e: EmptyStackException) {
+            throw DependencyResolutionException("Stack resolution error while resolving $beanDefinition")
         }
     }
 

@@ -16,6 +16,9 @@
 package org.koin.core
 
 import org.koin.core.Koin.Companion.logger
+import org.koin.core.instance.DefinitionFilter
+import org.koin.core.instance.InstanceManager
+import org.koin.core.instance.InstanceRequest
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.property.PropertyRegistry
@@ -40,6 +43,9 @@ class KoinContext(
 
     /**
      * Retrieve an instance from its name/class
+     * @param name
+     * @param module
+     * @param parameters
      */
     inline fun <reified T> get(
         name: String = "",
@@ -56,6 +62,12 @@ class KoinContext(
 
     /**
      * Retrieve an instance from its name/class
+     *
+     * @param name
+     * @param clazz
+     * @param module
+     * @param parameters
+     * @param filter
      */
     fun <T> get(
         name: String = "",
@@ -72,6 +84,11 @@ class KoinContext(
         ),
         filter
     )
+
+    //TODO deplacer release()
+
+    //partie module
+    //partie scope
 
     /**
      * Drop all instances for path context
@@ -104,7 +121,7 @@ class KoinContext(
     fun setProperty(key: String, value: Any) = propertyResolver.add(key, value)
 
     /**
-     * Close res
+     * Close all resources
      */
     fun close() {
         logger.info("[Close] Closing Koin context")

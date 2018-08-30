@@ -1,4 +1,4 @@
-package org.koin.core
+package org.koin.core.instance
 
 import org.koin.core.parameter.ParameterDefinition
 import kotlin.reflect.KClass
