@@ -54,7 +54,7 @@ inline fun <reified T : Any> ModuleDefinition.factory(
 inline fun <reified T : Any> ModuleDefinition.create(): T {
     val clazz = T::class.java
     val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
-    val args = ctor.parameterTypes.map { get(clazz = it) }.toTypedArray()
+    val args = ctor.parameterTypes.map { getForClass(clazz = it) }.toTypedArray()
     return ctor.newInstance(*args) as T
 }
 
@@ -65,7 +65,7 @@ inline fun <reified T : Any> ModuleDefinition.create(): T {
  * @param clazz - java class
  * @param parameters
  */
-fun <T : Any> ModuleDefinition.get(
+fun <T : Any> ModuleDefinition.getForClass(
     name: String = "",
     clazz: Class<T>,
     parameters: ParameterDefinition = emptyParameterDefinition()
