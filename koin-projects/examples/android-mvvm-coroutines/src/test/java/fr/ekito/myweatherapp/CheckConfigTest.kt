@@ -9,7 +9,7 @@ import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
-import org.koin.test.check
+import org.koin.test.checkModules
 import org.mockito.Mockito.mock
 
 /**
@@ -28,16 +28,16 @@ class CheckConfigTest : KoinTest {
 
     @Test
     fun testRemoteConfiguration() {
-        check(onlineWeatherApp + mockAndroid)
+        checkModules(onlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testLocalConfiguration() {
-        check(offlineWeatherApp + mockAndroid)
+        checkModules(offlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testTestConfiguration() {
-        check(testWeatherApp + mockAndroid)
+        checkModules(testWeatherApp + mockAndroid)
     }
 }

@@ -10,6 +10,7 @@ import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito
+import java.util.*
 
 /**
  * SandboxInstance - InstanceHolder
@@ -17,7 +18,8 @@ import org.mockito.Mockito
  */
 class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceHolder<T> {
 
-    override fun <T> get(parameters: ParameterDefinition): Instance<T> = Instance(create(parameters), true)
+    override fun <T> get(parameters: ParameterDefinition): Instance<T> =
+        Instance(create(parameters), true)
 
     /**
      * Create Sandbox instance
@@ -29,8 +31,10 @@ class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceH
             bean.definition.invoke(parameterList)
         } catch (e: Exception) {
             when (e) {
-                is NoBeanDefFoundException, is DependencyResolutionException, is BeanInstanceCreationException ->
+                is NoBeanDefFoundException, is DependencyResolutionException, is BeanInstanceCreationException -> {
+//                    e.printStackTrace()
                     throw BrokenDefinitionException("Definition $bean is broken due to error : $e")
+                }
                 else -> Koin.logger.err("sandbox ~ intercepted error : $e")
             }
         }

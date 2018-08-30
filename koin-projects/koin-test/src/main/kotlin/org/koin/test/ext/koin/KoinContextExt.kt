@@ -25,8 +25,8 @@ import kotlin.reflect.KClass
 /**
  * KoinContext extensions for tests & tools
  *
- * dryrun - run modules & check each instance is ok
- * check - check each dependency described in module
+ * dryrun - run modules & checkModules each instance is ok
+ * checkModules - checkModules each dependency described in module
  *
  * @author Arnaud Giuliani
  */

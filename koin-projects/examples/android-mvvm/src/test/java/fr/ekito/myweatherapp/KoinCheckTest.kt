@@ -7,7 +7,7 @@ import fr.ekito.myweatherapp.di.testWeatherApp
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.check
+import org.koin.test.checkModules
 import org.mockito.Mockito.mock
 
 /**
@@ -21,16 +21,16 @@ class KoinCheckTest : AutoCloseKoinTest() {
 
     @Test
     fun testRemoteConfiguration() {
-        check(onlineWeatherApp + mockAndroid)
+        checkModules(onlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testLocalConfiguration() {
-        check(offlineWeatherApp + mockAndroid)
+        checkModules(offlineWeatherApp + mockAndroid)
     }
 
     @Test
     fun testTestConfiguration() {
-        check(testWeatherApp + mockAndroid)
+        checkModules(testWeatherApp + mockAndroid)
     }
 }

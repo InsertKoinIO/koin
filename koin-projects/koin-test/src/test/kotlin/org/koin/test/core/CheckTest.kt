@@ -4,7 +4,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.check
+import org.koin.test.checkModules
 import org.koin.test.error.BrokenDefinitionException
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstanceHolders
@@ -22,7 +22,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `successful check`() {
-        check(listOf(module {
+        checkModules(listOf(module {
             single { ComponentA() }
             single { ComponentB(get()) }
         }))
@@ -33,7 +33,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `successful check with injection params`() {
-        check(listOf(module {
+        checkModules(listOf(module {
             single { (a : ComponentA) -> ComponentB(a) }
         }))
 
@@ -43,7 +43,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `successful check with interface`() {
-        check(listOf(module {
+        checkModules(listOf(module {
             single { ComponentC() }
             single { ComponentE(get()) as Component }
         }))
@@ -56,7 +56,7 @@ class CheckTest : AutoCloseKoinTest() {
     @Test
     fun `unsuccessful check`() {
         try {
-            check(listOf(module {
+            checkModules(listOf(module {
                 single { ComponentB(get()) }
             }))
             fail()
@@ -69,7 +69,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `interface definition check`() {
-        check(listOf(module {
+        checkModules(listOf(module {
             single { ComponentC() as Component }
             single { ComponentD(get()) }
         }))
@@ -80,7 +80,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `multiple interface & module definition check`() {
-        check(listOf(module {
+        checkModules(listOf(module {
             single { ComponentC() as Component }
             module("otherModule") {
                 single { ComponentC() as Component }
@@ -96,7 +96,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `mutiple module defs - check`() {
-        check(listOf(
+        checkModules(listOf(
             module {
                 module("otherModule") {
                     single { ComponentC() as Component }
@@ -115,7 +115,7 @@ class CheckTest : AutoCloseKoinTest() {
 
     @Test
     fun `multiple interface definition check`() {
-        check(listOf(module {
+        checkModules(listOf(module {
             single("default") { ComponentC() as Component }
             single("other") { ComponentC() as Component }
             single { ComponentD(get("default")) }

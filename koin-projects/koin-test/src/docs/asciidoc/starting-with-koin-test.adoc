@@ -106,10 +106,7 @@ When a mock is not enough and don't want to create a module just for this, you c
 
 == Checking your Koin configuration
 
-Koin offers several ways to test if you Koin modules are good:
-
-* `check` - walk through your definition tree and check if each definition is bound
-* `dryRun` - run all your modules and try to instantiate each definition
+Koin offers a way to test if you Koin modules are good: `checkModules` - walk through your definition tree and check if each definition is bound
 
 [source,kotlin]
 ----
@@ -129,22 +126,10 @@ Koin offers several ways to test if you Koin modules are good:
     @Test
     fun `check MVP hierarchy`() {
         // Check the Koin modules binding
-        check(listOf(MVPModule, DataSourceModule))
-    }
-
-    @Test
-    fun `dry run MVP hierarchy`() {
-        // Run each definition
-        startKoin(listOf(MVPModule, DataSourceModule))
-        dryRun()
+        checkModules(listOf(MVPModule, DataSourceModule))
     }
 ----
 
-[NOTE]
-====
-check and dryRun run your entire module definitions. DryRun will ty to make each definition. It's sometimes not possible
-to run your configuration in JUnit (Android context needed). Then use the check configuration.
-====
 
 
 

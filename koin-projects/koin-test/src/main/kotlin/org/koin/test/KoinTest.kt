@@ -25,9 +25,12 @@ import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 import org.koin.dsl.path.Path
+import org.koin.log.EmptyLogger
+import org.koin.log.Logger
+import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
-import org.koin.test.core.check
+import org.koin.test.core.checkModules
 import org.koin.test.ext.koin.dryRun
 import org.mockito.Mockito.mock
 import kotlin.reflect.KClass
@@ -49,15 +52,19 @@ interface KoinTest : KoinComponent
  * Try to instantiate all definitions
  * @Deprecated
  */
-@Deprecated("Please use the check() function to check your list of modules")
-fun KoinTest.dryRun(parameters: ParameterDefinition = emptyParameterDefinition()) = (StandAloneContext.koinContext as KoinContext).dryRun(parameters)
+@Deprecated("Please use the checkModules() function to checkModules your list of modules")
+fun KoinTest.dryRun(parameters: ParameterDefinition = emptyParameterDefinition()) =
+    (StandAloneContext.koinContext as KoinContext).dryRun(parameters)
 
 /**
  * Check all definition's dependencies - run all modules in a test sandbox
- * and check if definitions can run
+ * and checkModules if definitions can run
+ *
  * @param list of modules
+ * @param logger - default is EmptyLogger
  */
-fun KoinTest.check(list: List<Module>) = StandAloneContext.check(list)
+fun KoinTest.checkModules(list: List<Module>, logger: Logger = PrintLogger()) =
+    StandAloneContext.checkModules(list, logger)
 
 /**
  * Declare & Create a mock in Koin container for given type
@@ -90,7 +97,11 @@ inline fun <reified T : Any> KoinTest.declareMock(
  */
 fun dumpModulePaths() {
     Koin.logger.info("Module paths:")
-    (StandAloneContext.koinContext as KoinContext).instanceManager.pathRegistry.paths.forEach { Koin.logger.info("[$it]") }
+    (StandAloneContext.koinContext as KoinContext).instanceManager.pathRegistry.paths.forEach {
+        Koin.logger.info(
+            "[$it]"
+        )
+    }
 }
 
 /**
