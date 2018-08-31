@@ -34,7 +34,7 @@ interface KoinComponent
  * @param name - bean canonicalName
  * @param parameters - injection parameters
  */
-inline fun <reified T> KoinComponent.inject(
+inline fun <reified T: Any> KoinComponent.inject(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
@@ -45,7 +45,7 @@ inline fun <reified T> KoinComponent.inject(
  * @param name - bean canonicalName
  * @param parameters - injection parameters
  */
-inline fun <reified T> KoinComponent.get(
+inline fun <reified T : Any> KoinComponent.get(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
@@ -57,7 +57,7 @@ inline fun <reified T> KoinComponent.get(
  * @param name - bean canonicalName
  * @param parameters - injection parameters
  */
-fun <T> KoinComponent.get(
+fun <T: Any> KoinComponent.get(
     name: String = "",
     clazz: KClass<*>,
     module: String? = null,
@@ -127,6 +127,6 @@ fun KoinComponent.releaseContext(path: String) = getKoin().release(path)
 /**
  * Access to Koin context
  */
-fun KoinComponent.getKoin() = (StandAloneContext.koinContext as KoinContext)
+fun KoinComponent.getKoin() : KoinContext = (StandAloneContext.koinContext as KoinContext)
 
 

@@ -33,7 +33,7 @@ open class InstanceFactory {
      * Retrieve or create instance from bean definition
      * @return Instance / has been created
      */
-    fun <T> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition): Instance<T> {
+    fun <T: Any> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition): Instance<T> {
         // find holder
         var holder = find(def)
         if (holder == null) {
@@ -51,10 +51,11 @@ open class InstanceFactory {
     fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? =
         instanceHolders[def.id] as? InstanceHolder<T>
 
-    open fun <T> create(def: BeanDefinition<T>): InstanceHolder<T> {
+    open fun <T: Any> create(def: BeanDefinition<T>): InstanceHolder<T> {
         return when (def.kind) {
             Kind.Single -> SingleInstanceHolder(def)
             Kind.Factory -> FactoryInstanceHolder(def)
+            Kind.Scope -> ScopeInstanceHolder(def)
         }
     }
 
@@ -77,7 +78,6 @@ open class InstanceFactory {
      * Delete Instance Holder
      */
     fun delete(definition: BeanDefinition<*>) {
-//        Koin.logger.debug("delete $definition")
         instanceHolders.remove(definition.id)?.release()
     }
 

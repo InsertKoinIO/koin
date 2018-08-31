@@ -45,7 +45,7 @@ data class BeanDefinition<out T>(
     val clazz: KClass<*>,
     var types: List<KClass<*>> = arrayListOf(),
     val path: Path = Path.root(),
-    val kind: Kind = Kind.Single,
+    val kind: Kind,
     val isEager: Boolean = false,
     val allowOverride: Boolean = false,
     val definition: Definition<T>
@@ -113,7 +113,8 @@ typealias BeanDefinitionId = String
  * Bean definition Kind
  * - single
  * - factory
+ * - scope
  */
 enum class Kind {
-    Single, Factory
+    Single, Factory, Scope
 }

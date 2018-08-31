@@ -40,7 +40,7 @@ class InstanceManager(
     /**
      * resolve instance from InstanceRequest
      */
-    fun <T> resolve(request: InstanceRequest, filterFunction: DefinitionFilter? = null): T {
+    fun <T : Any> resolve(request: InstanceRequest, filterFunction: DefinitionFilter? = null): T {
 
         val definitions = (if (filterFunction != null) {
             beanRegistry.definitions.filter(filterFunction)
@@ -66,7 +66,7 @@ class InstanceManager(
      * @param parameters - Parameters
      * @param definitionResolver - function to find bean definitions
      */
-    fun <T> proceedResolution(
+    fun <T : Any> proceedResolution(
         module: String? = null,
         clazz: KClass<*>,
         parameters: ParameterDefinition,
@@ -85,7 +85,8 @@ class InstanceManager(
                         resolutionStack.last()
                     )
 
-                val logPath = if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
+                val logPath =
+                    if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
                 Koin.logger.info("$logIndent$startChar-- '$clazz' $logPath") // @ [$beanDefinition]")
@@ -134,7 +135,10 @@ class InstanceManager(
      * @param definitions
      * @param params
      */
-    private fun createInstances(definitions: Collection<BeanDefinition<*>>, params: ParameterDefinition) {
+    private fun createInstances(
+        definitions: Collection<BeanDefinition<*>>,
+        params: ParameterDefinition
+    ) {
         definitions.forEach { def ->
             proceedResolution(
                 def.path.toString(),

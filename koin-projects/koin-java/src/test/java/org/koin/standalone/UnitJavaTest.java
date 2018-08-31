@@ -59,6 +59,6 @@ public class UnitJavaTest extends AutoCloseKoinTest {
 
         assertEquals(b, d_2.getComponentB());
 
-        assertNotEquals(d_1, d_2);
+        assertEquals(d_1, d_2);
     }
 }

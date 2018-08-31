@@ -35,7 +35,7 @@ import org.koin.standalone.StandAloneContext
  * @param module - module path
  * @param parameters
  */
-inline fun <reified T> Routing.inject(
+inline fun <reified T: Any> Routing.inject(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
@@ -48,7 +48,7 @@ inline fun <reified T> Routing.inject(
  * @param module - module path
  * @param parameters
  */
-inline fun <reified T> Routing.get(
+inline fun <reified T: Any> Routing.get(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()

@@ -6,6 +6,7 @@ import org.junit.Test
 import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.error.BadPathException
+import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.release
@@ -16,13 +17,13 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
     val HierarchyContextsModule = module {
         module(path = "A") {
-            single { ComponentA() }
+            scope { ComponentA() }
 
             module(path = "B") {
-                single { ComponentB() }
+                scope { ComponentB() }
 
                 module(path = "C") {
-                    single { ComponentC() }
+                    scope { ComponentC() }
                 }
             }
         }
@@ -34,7 +35,7 @@ class ContextReleaseTest : AutoCloseKoinTest() {
 
     @Test
     fun `should release context - from B`() {
-        startKoin(listOf(HierarchyContextsModule))
+        startKoin(listOf(HierarchyContextsModule), logger = PrintLogger(showDebug = true))
 
         assertContexts(4)
         assertDefinitions(3)

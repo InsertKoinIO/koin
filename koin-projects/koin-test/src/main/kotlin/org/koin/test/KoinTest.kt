@@ -25,7 +25,6 @@ import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 import org.koin.dsl.path.Path
-import org.koin.log.EmptyLogger
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent

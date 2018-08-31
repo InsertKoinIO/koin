@@ -47,7 +47,7 @@ class KoinContext(
      * @param module
      * @param parameters
      */
-    inline fun <reified T> get(
+    inline fun <reified T : Any> get(
         name: String = "",
         module: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
@@ -69,7 +69,7 @@ class KoinContext(
      * @param parameters
      * @param filter
      */
-    fun <T> get(
+    fun <T: Any> get(
         name: String = "",
         clazz: KClass<*>,
         module: String? = null,

@@ -62,7 +62,7 @@ fun Application.installKoin(
  * @param module - module path
  * @param parameters
  */
-inline fun <reified T> Application.inject(
+inline fun <reified T: Any> Application.inject(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
@@ -75,7 +75,7 @@ inline fun <reified T> Application.inject(
  * @param module - module path
  * @param parameters
  */
-inline fun <reified T> Application.get(
+inline fun <reified T: Any> Application.get(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()

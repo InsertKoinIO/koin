@@ -115,7 +115,9 @@ class ModuleDefinition(
         single(name, definition = definition)
 
     /**
-     * Provide a bean definition - alias to provide
+     * Provide a single instance definition
+     * (unique instance)
+     *
      * @param name
      * @param createOnStart - need to be created at start
      * @param override - allow definition override
@@ -131,7 +133,7 @@ class ModuleDefinition(
     }
 
     /**
-     * Provide a factory bean definition - factory provider
+     * Provide a factory instance definition - factory provider
      * (recreate instance each time)
      *
      * @param name
@@ -146,21 +148,21 @@ class ModuleDefinition(
         return provide(name, false, override, Kind.Factory, definition)
     }
 
-//    /**
-//     * Provide a Shared bean definition -
-//     * (shared instance)
-//     *
-//     * @param name
-//     * @param override - allow definition override
-//     * @param definition
-//     */
-//    inline fun <reified T : Any> shared(
-//        name: String = "",
-//        override: Boolean = false,
-//        noinline definition: Definition<T>
-//    ): BeanDefinition<T> {
-//        return provide(name, false, override, Kind.Shared, definition)
-//    }
+    /**
+     * Provide a Scope bean definition - scope provider
+     * (can be released/recreated with Scope API)
+     *
+     * @param name
+     * @param override - allow definition override
+     * @param definition
+     */
+    inline fun <reified T : Any> scope(
+        name: String = "",
+        override: Boolean = false,
+        noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        return provide(name, false, override, Kind.Scope, definition)
+    }
 
     /**
      * Resolve a component

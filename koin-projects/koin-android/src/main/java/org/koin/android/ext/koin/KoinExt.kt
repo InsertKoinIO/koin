@@ -19,7 +19,7 @@ package org.koin.android.ext.koin
 import android.content.Context
 import org.koin.core.Koin
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.path.Path
+import org.koin.dsl.definition.Kind
 import java.util.*
 
 /**
@@ -37,7 +37,8 @@ infix fun Koin.with(androidContext: Context): Koin {
     beanRegistry.declare(
         BeanDefinition(
             clazz = Context::class,
-            definition = { androidContext }
+            definition = { androidContext },
+            kind = Kind.Single
         )
     )
     return this

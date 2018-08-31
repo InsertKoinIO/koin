@@ -72,7 +72,7 @@ fun ComponentCallbacks.startKoin(
  * @param name - bean name / optional
  * @param parameters - injection parameters
  */
-inline fun <reified T> ComponentCallbacks.inject(
+inline fun <reified T: Any> ComponentCallbacks.inject(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
@@ -83,7 +83,7 @@ inline fun <reified T> ComponentCallbacks.inject(
  * @param name - bean name
  * @param parameters - injection parameters
  */
-inline fun <reified T> ComponentCallbacks.get(
+inline fun <reified T: Any> ComponentCallbacks.get(
     name: String = "",
     module: String? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
