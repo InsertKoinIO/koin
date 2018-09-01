@@ -1,4 +1,4 @@
-package org.koin.test.core
+package org.koin.test.module
 
 import org.junit.Test
 import org.koin.dsl.module.module

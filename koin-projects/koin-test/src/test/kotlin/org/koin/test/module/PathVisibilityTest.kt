@@ -1,4 +1,4 @@
-package org.koin.test.core
+package org.koin.test.module
 
 import org.junit.Assert
 import org.junit.Test

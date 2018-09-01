@@ -13,12 +13,12 @@ import org.koin.test.ext.junit.assertRemainingInstanceHolders
 class ImplicitNamingTest : AutoCloseKoinTest() {
 
     val module = module {
-        module(ComponentB::class.java.simpleName) {
+        module("B") {
             single { ComponentA() }
             single { ComponentB(get()) }
         }
 
-        module(ComponentC::class.java.simpleName) {
+        module("C") {
             single { ComponentA() }
             single { ComponentC(get()) }
         }
@@ -37,8 +37,8 @@ class ImplicitNamingTest : AutoCloseKoinTest() {
         Assert.assertNotNull(get<ComponentB>())
         Assert.assertNotNull(get<ComponentC>())
 
-        val a_b = get<ComponentA>()
-        val a_c = get<ComponentA>()
+        val a_b = get<ComponentA>(name = "B.ComponentA")
+        val a_c = get<ComponentA>(name = "C.ComponentA")
         assertNotEquals(a_b, a_c)
 
         assertRemainingInstanceHolders(4)

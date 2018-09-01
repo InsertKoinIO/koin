@@ -1,4 +1,4 @@
-package org.koin.test.coroutines
+package org.koin.test.scope
 
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking

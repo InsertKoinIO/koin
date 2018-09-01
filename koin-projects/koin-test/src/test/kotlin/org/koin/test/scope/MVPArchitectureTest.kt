@@ -1,8 +1,9 @@
-package org.koin.test.standalone
+package org.koin.test.scope
 
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.log.PrintLogger
 import org.koin.standalone.*
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
@@ -39,7 +40,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        startKoin(listOf(MVPModule, DataSourceModule))
+        startKoin(listOf(MVPModule, DataSourceModule),logger = PrintLogger(showDebug = true))
 
         val view = get<View>()
         val presenter = get<Presenter>(scope = view.session)

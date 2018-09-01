@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.bean.BeanRegistry
+import org.koin.core.fullname
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.scope.Scope
@@ -75,6 +76,7 @@ class InstanceRegistry(
     ): T = synchronized(this) {
 
         var resultInstance: T? = null
+        val clazzName = clazz.fullname()
         val logIndent: String = resolutionStack.indent()
         val duration = measureDuration {
             try {
@@ -89,7 +91,7 @@ class InstanceRegistry(
                     if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
-                Koin.logger.info("$logIndent$startChar-- '$clazz' $logPath") // @ [$beanDefinition]")
+                Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
                 Koin.logger.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
@@ -108,14 +110,14 @@ class InstanceRegistry(
                 }
             } catch (e: Exception) {
                 resolutionStack.clear()
-                Koin.logger.err("Error while resolving instance for class '$clazz' - error: $e ")
+                Koin.logger.err("Error while resolving instance for class '$clazzName' - error: $e ")
                 throw e
             }
         }
 
-        Koin.logger.debug("$logIndent!-- [$clazz] resolved in $duration ms")
+        Koin.logger.debug("$logIndent!-- [$clazzName] resolved in $duration ms")
 
-        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazz")
+        return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazzName")
     }
 
     /**

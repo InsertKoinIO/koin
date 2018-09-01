@@ -1,4 +1,4 @@
-package org.koin.test.core
+package org.koin.test.module
 
 import org.junit.Assert.fail
 import org.junit.Test
@@ -9,7 +9,7 @@ import org.koin.test.error.BrokenDefinitionException
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
-class CheckTest : AutoCloseKoinTest() {
+class CheckModulesTest : AutoCloseKoinTest() {
 
     class ComponentA()
     class ComponentB(val componentA: ComponentA)

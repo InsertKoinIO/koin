@@ -22,6 +22,7 @@ import org.koin.dsl.path.Path
 import org.koin.log.EmptyLogger
 import org.koin.log.Logger
 import java.util.*
+import kotlin.reflect.KClass
 
 
 /**
@@ -104,7 +105,11 @@ class Koin(val koinContext: KoinContext) {
         moduleDefinition.definitions.forEach { definition ->
             val eager = if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
             val override = if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
-            val def = definition.copy(isEager = eager, allowOverride = override, path = consolidatedPath)
+            val name = if (definition.name.isEmpty()){
+                val pathString = if (consolidatedPath == Path.Companion.root()) "" else "$consolidatedPath."
+                "$pathString${definition.clazz.name()}"
+            } else definition.name
+            val def = definition.copy(name = name, isEager = eager, allowOverride = override, path = consolidatedPath)
             instanceFactory.delete(def)
             beanRegistry.declare(def)
         }
@@ -126,3 +131,12 @@ class Koin(val koinContext: KoinContext) {
         var logger: Logger = EmptyLogger()
     }
 }
+
+/**
+ * Help Get/display name
+ */
+internal fun <T : Any> KClass<T>.name() : String = java.simpleName
+/**
+ * Help Get/display name
+ */
+internal fun <T : Any> KClass<T>.fullname() : String = java.canonicalName

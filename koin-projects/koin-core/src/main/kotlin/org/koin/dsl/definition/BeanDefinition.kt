@@ -73,9 +73,9 @@ data class BeanDefinition<out T>(
     fun canSee(other: BeanDefinition<*>) = other.path.isVisible(this.path)
 
     override fun toString(): String {
-        val beanName = if (name.isEmpty()) "" else "canonicalName='$name',"
+        val beanName = if (name.isEmpty()) "" else "name='$name',"
         val clazz = "class='${clazz.java.canonicalName}'"
-        val type = "$kind" //if (isSingleton) "Single" else "Factory"
+        val type = "$kind"
         val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
         val path = if (path != Path.root()) ", path:'$path'" else ""
         return "$type [$beanName$clazz$binds$path]"
