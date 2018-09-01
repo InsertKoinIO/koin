@@ -19,6 +19,7 @@ import io.ktor.routing.Routing
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import org.koin.standalone.StandAloneContext
 
 
@@ -37,10 +38,10 @@ import org.koin.standalone.StandAloneContext
  */
 inline fun <reified T: Any> Routing.inject(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -50,10 +51,10 @@ inline fun <reified T: Any> Routing.inject(
  */
 inline fun <reified T: Any> Routing.get(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters)
+    (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters)
 
 /**
  * lazy inject given property

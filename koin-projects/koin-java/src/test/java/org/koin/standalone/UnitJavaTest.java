@@ -3,10 +3,12 @@ package org.koin.standalone;
 import kotlin.Lazy;
 import org.junit.Before;
 import org.junit.Test;
+import org.koin.core.scope.Scope;
 import org.koin.test.AutoCloseKoinTest;
 
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.koin.java.standalone.KoinJavaComponent.*;
 import static org.koin.java.standalone.KoinJavaStarter.startKoin;
 import static org.koin.standalone.UnitJavaStuffKt.koinModule;
@@ -43,22 +45,11 @@ public class UnitJavaTest extends AutoCloseKoinTest {
 
         assertEquals(lazy_a.getValue(), lazy_b.getValue().getComponentA());
         assertEquals(lazy_a.getValue(), lazy_c.getValue().getA());
-    }
 
-    @Test
-    public void successful_release_module() {
-        ComponentB b = get(ComponentB.class);
+        Scope session = getKoin().createScope("session");
 
-        ComponentD d_1 = get(ComponentD.class);
+        assertNotNull(get(ComponentD.class, "", session));
 
-        assertEquals(b, d_1.getComponentB());
-
-        release("anotherModule");
-
-        ComponentD d_2 = get(ComponentD.class);
-
-        assertEquals(b, d_2.getComponentB());
-
-        assertEquals(d_1, d_2);
+        session.close();
     }
 }

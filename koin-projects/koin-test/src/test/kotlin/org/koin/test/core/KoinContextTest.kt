@@ -124,7 +124,7 @@ class KoinContextTest : AutoCloseKoinTest() {
 
         // Should read koin.properties file which contains OS_VERSION beanDefinition
         startKoin(
-            arrayListOf(SingleModule),
+            listOf(),
             useEnvironmentProperties = true,
             extraProperties = mapOf(GIVEN_PROP to VALUE_ANDROID, TEST_KOIN to VALUE_ANDROID)
         )
@@ -138,7 +138,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     fun `assert koin properties are injected`() {
 
         // Should read koin.properties file which contains OS_VERSION beanDefinition
-        startKoin(arrayListOf(SingleModule), false, true)
+        startKoin(listOf(), false, true)
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertEquals(VALUE_WEIRD, getProperty(OS_VERSION))
     }
@@ -146,7 +146,7 @@ class KoinContextTest : AutoCloseKoinTest() {
     @Test
     fun `assert system properties are not overridden by koin properties`() {
 
-        startKoin(arrayListOf(SingleModule), true, true)
+        startKoin(listOf(), true, true)
         assertNotNull(getProperty(OS_NAME))
         assertEquals(VALUE_DONE, getProperty(TEST_KOIN))
         assertNotEquals(VALUE_WEIRD, getProperty(OS_VERSION))

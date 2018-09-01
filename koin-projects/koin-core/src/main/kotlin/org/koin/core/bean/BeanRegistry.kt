@@ -16,6 +16,7 @@
 package org.koin.core.bean
 
 import org.koin.core.Koin
+import org.koin.core.name
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.path.Path
 import org.koin.error.BeanOverrideException
@@ -99,7 +100,7 @@ class BeanRegistry() {
 
         return when {
             candidates.size == 1 -> candidates.first() as BeanDefinition<T>
-            candidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazz'. Check your module definition")
+            candidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '${clazz.name()}'. Check your module definition")
             else -> throw DependencyResolutionException(
                 "Multiple definitions found for type '$clazz' - Koin can't choose between :\n\t${candidates.joinToString(
                     "\n\t"

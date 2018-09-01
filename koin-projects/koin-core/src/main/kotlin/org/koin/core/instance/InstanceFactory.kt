@@ -82,13 +82,12 @@ open class InstanceFactory {
     }
 
 
-    /**
-     * Release definitions instances
-     */
-    //TODO use scope
-    fun release(definitions: List<BeanDefinition<*>>, scope: Scope? = null) {
-        definitions.forEach { release(it) }
-    }
+//    /**
+//     * Release definitions instances
+//     */
+//    fun release(definitions: List<BeanDefinition<*>>, scope: Scope? = null) {
+//        definitions.forEach { release(it) }
+//    }
 
     /**
      * Release definition instance

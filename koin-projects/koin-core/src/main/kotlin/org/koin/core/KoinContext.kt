@@ -48,7 +48,7 @@ class KoinContext(
     /**
      * Retrieve an instance from its name/class
      * @param name
-     * @param module
+     * @param scope
      * @param parameters
      */
     inline fun <reified T : Any> get(
@@ -69,7 +69,7 @@ class KoinContext(
      *
      * @param name
      * @param clazz
-     * @param module
+     * @param scope
      * @param parameters
      * @param filter
      */

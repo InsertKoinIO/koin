@@ -11,7 +11,7 @@ class ScopeRegistry {
         if (found == null) {
             found = Scope(id, this)
             scopes[id] = found
-            Koin.logger.debug("[Scope] create $id")
+            Koin.logger.info("[Scope] create $id")
         }
         else{
             error("Already created scope with id '$id'")

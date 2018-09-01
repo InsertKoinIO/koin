@@ -7,10 +7,3 @@ val coffeeMakerModule = module {
     single<Pump> { Thermosiphon(get()) }
     single<Heater> { ElectricHeater() }
 }
-
-//// exp
-//val ecoffeeMakerModule = module {
-//    single<CoffeeMaker>()
-//    single<Pump> { create<Thermosiphon>() }
-//    single<Heater> { create<ElectricHeater>() }
-//}

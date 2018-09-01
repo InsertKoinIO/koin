@@ -19,6 +19,7 @@ import io.ktor.application.Application
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
@@ -59,28 +60,28 @@ fun Application.installKoin(
 /**
  * inject lazily given dependency
  * @param name - bean name / optional
- * @param module - module path
+ * @param scope
  * @param parameters
  */
-inline fun <reified T: Any> Application.inject(
+inline fun <reified T : Any> Application.inject(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
  * @param name - bean name / optional
- * @param module - module path
+ * @param scope
  * @param parameters
  */
-inline fun <reified T: Any> Application.get(
+inline fun <reified T : Any> Application.get(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters)
+    (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters)
 
 /**
  * lazy inject given property
