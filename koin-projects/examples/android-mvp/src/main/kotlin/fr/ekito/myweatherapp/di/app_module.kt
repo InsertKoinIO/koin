@@ -2,6 +2,7 @@ package fr.ekito.myweatherapp.di
 
 import fr.ekito.myweatherapp.data.repository.WeatherRepository
 import fr.ekito.myweatherapp.data.repository.WeatherRepositoryImpl
+import fr.ekito.myweatherapp.domain.UserSession
 import fr.ekito.myweatherapp.util.rx.ApplicationSchedulerProvider
 import fr.ekito.myweatherapp.util.rx.SchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailContract
@@ -13,8 +14,6 @@ import fr.ekito.myweatherapp.view.weather.WeatherHeaderPresenter
 import fr.ekito.myweatherapp.view.weather.WeatherListContract
 import fr.ekito.myweatherapp.view.weather.WeatherListPresenter
 import org.koin.dsl.module.module
-import java.lang.ref.ReferenceQueue
-import java.lang.ref.WeakReference
 
 /**
  * App Components
@@ -26,11 +25,22 @@ val weatherAppModule = module {
 
     // scoped module example
     module("WeatherActivity") {
+
+        // Shared session
+        // shared with WeatherActivity WeatherHeaderFragment & WeatherHeaderPresenter
+        scope { UserSession() }
+
         // Presenter for ResultHeader View
-        single<WeatherHeaderContract.Presenter> { WeatherHeaderPresenter(get(), get()) }
+        scope<WeatherHeaderContract.Presenter> {
+            WeatherHeaderPresenter(
+                get(),
+                get(),
+                get(scope = getScope("session"))
+            )
+        }
 
         // Presenter for ResultList View
-        single<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
+        scope<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
     }
 
     // Presenter with injection parameter for Detail View
@@ -46,33 +56,3 @@ val weatherAppModule = module {
 // Gather all app modules
 val onlineWeatherApp = listOf(weatherAppModule, remoteDatasourceModule)
 val offlineWeatherApp = listOf(weatherAppModule, localAndroidDatasourceModule)
-
-class Shared
-
-object Memory {
-    lateinit var wr: WeakReference<Shared> //(Shared(), ReferenceQueue())
-
-    fun getShared(): Shared {
-        if (!this::wr.isInitialized) {
-            create()
-        }
-        if (wr.isEnqueued || wr.get() == null) {
-            create()
-        }
-        val shared = wr.get() ?: error("Can't be null")
-        println(" SHARED -> $shared")
-        return shared
-    }
-
-    fun release() {
-        println("UNSUB")
-        wr.enqueue()
-    }
-
-    private fun create() {
-        println("CREATE")
-        wr = WeakReference(Shared(), ReferenceQueue())
-    }
-
-
-}

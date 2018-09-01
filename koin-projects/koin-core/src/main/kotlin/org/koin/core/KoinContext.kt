@@ -95,9 +95,15 @@ class KoinContext(
     fun createScope(id: String): Scope = scopeRegistry.createScope(id)
 
     /**
+     * Create a scope
+     */
+    fun getOrCreateScope(id: String): Scope = scopeRegistry.getOrCreateScope(id)
+
+    /**
      * retrieve a scope
      */
     fun getScope(id: String): Scope = scopeRegistry.getScope(id) ?: throw NoScopeFoundException("Scope '$id' not found")
+
 
 
     /**

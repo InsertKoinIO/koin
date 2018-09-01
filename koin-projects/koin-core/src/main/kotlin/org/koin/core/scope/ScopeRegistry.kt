@@ -6,14 +6,23 @@ class ScopeRegistry {
 
     private val scopes = HashMap<String, Scope>()
 
-    fun createScope(id: String): Scope {
+    fun getOrCreateScope(id: String): Scope {
         var found = getScope(id)
         if (found == null) {
             found = Scope(id, this)
             scopes[id] = found
             Koin.logger.info("[Scope] create $id")
         }
-        else{
+        return found
+    }
+
+    fun createScope(id: String): Scope {
+        var found = getScope(id)
+        if (found == null) {
+            found = Scope(id, this)
+            scopes[id] = found
+            Koin.logger.info("[Scope] create $id")
+        } else {
             error("Already created scope with id '$id'")
         }
         return found
@@ -21,7 +30,7 @@ class ScopeRegistry {
 
     fun getScope(id: String) = scopes[id]
 
-    fun closeScope(scope : Scope) {
+    fun closeScope(scope: Scope) {
         val id = scope.id
         scopes.remove(id)
     }

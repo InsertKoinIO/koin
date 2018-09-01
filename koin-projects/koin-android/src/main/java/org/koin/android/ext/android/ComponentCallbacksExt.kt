@@ -25,6 +25,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
@@ -70,24 +71,26 @@ fun ComponentCallbacks.startKoin(
 /**
  * inject lazily given dependency for Android component
  * @param name - bean name / optional
+ * @param scope
  * @param parameters - injection parameters
  */
 inline fun <reified T: Any> ComponentCallbacks.inject(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters) }
 
 /**
  * get given dependency for Android component
  * @param name - bean name
+ * @param scope
  * @param parameters - injection parameters
  */
 inline fun <reified T: Any> ComponentCallbacks.get(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-): T = (StandAloneContext.koinContext as KoinContext).get(name, module, parameters)
+): T = (StandAloneContext.koinContext as KoinContext).get(name, scope, parameters)
 
 /**
  * lazy inject given property for Android component
@@ -121,15 +124,13 @@ fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
  * Release a Module from given Path
  * @param path
  */
-fun ComponentCallbacks.release(path: String): Unit = context().release(path)
+@Deprecated("release() deprecated! Please use Scope API.")
+fun ComponentCallbacks.release(path: String): Unit = error("release() deprecated! Please use Scope API.")
 
 
 /**
  * Release a Module from given Path
  * @param path
  */
-@Deprecated(
-    "function renamed - use release() function instead",
-    ReplaceWith("release(path)")
-)
-fun ComponentCallbacks.releaseContext(path: String): Unit = context().release(path)
+@Deprecated("release() deprecated! Please use Scope API.")
+fun ComponentCallbacks.releaseContext(path: String): Unit = error("release() deprecated! Please use Scope API.")

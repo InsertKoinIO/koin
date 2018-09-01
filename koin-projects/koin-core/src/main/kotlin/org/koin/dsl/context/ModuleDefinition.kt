@@ -18,6 +18,7 @@ package org.koin.dsl.context
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Definition
 import org.koin.dsl.definition.Kind
@@ -110,8 +111,14 @@ class ModuleDefinition(
      * @param name
      * @param definition
      */
-    @Deprecated("Use single() function instead", ReplaceWith("single(name,definition = definition)"))
-    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> =
+    @Deprecated(
+        "Use single() function instead",
+        ReplaceWith("single(name,definition = definition)")
+    )
+    inline fun <reified T : Any> bean(
+        name: String = "",
+        noinline definition: Definition<T>
+    ): BeanDefinition<T> =
         single(name, definition = definition)
 
     /**
@@ -171,15 +178,28 @@ class ModuleDefinition(
      */
     inline fun <reified T : Any> get(
         name: String? = null,
+        scope: Scope? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T =
-        if (name != null) koinContext.get(name, parameters = parameters) else koinContext.get(parameters = parameters)
+        if (name != null) koinContext.get(
+            name,
+            scope = scope,
+            parameters = parameters
+        ) else koinContext.get(scope = scope, parameters = parameters)
+
+    /**
+     * Get scope for id
+     */
+    fun getScope(id: String): Scope =
+        koinContext.getScope(id)
+
 
     /**
      * Retrieve a property
      * @param key - property key
      */
-    inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
+    inline fun <reified T> getProperty(key: String): T =
+        koinContext.propertyResolver.getProperty(key)
 
     /**
      * Retrieve a property

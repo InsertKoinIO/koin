@@ -1,21 +1,20 @@
 package fr.ekito.myweatherapp.view.weather
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.di.Memory
+import fr.ekito.myweatherapp.domain.UserSession
 import kotlinx.android.synthetic.main.activity_result.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
-import org.koin.android.scope.ext.android.scopedWith
+import org.koin.android.ext.android.get
+import org.koin.android.scope.ext.android.bindScope
+import org.koin.android.scope.ext.android.getKoin
 
 /**
  * Weather Result View
@@ -23,22 +22,13 @@ import org.koin.android.scope.ext.android.scopedWith
 class WeatherActivity : AppCompatActivity() {
 
     val TAG = this::class.java.simpleName
-
-    val shared = Memory.getShared()
+    val session = getKoin().createScope("session")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
-        scopedWith("WeatherActivity")
 
-        println("GOT SHARED - $this got - $shared")
-        lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                println("t$this DESTROY")
-                Memory.release()
-            }
-        })
+        bindScope(session)
 
         val weatherTitleFragment = WeatherHeaderFragment()
         val resultListFragment = WeatherListFragment()
@@ -51,6 +41,12 @@ class WeatherActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.weather_list, resultListFragment)
             .commit()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val userSession = get<UserSession>(scope = session)
+        println("UserSession : $this got $userSession")
     }
 
     fun showError(error: Throwable) {

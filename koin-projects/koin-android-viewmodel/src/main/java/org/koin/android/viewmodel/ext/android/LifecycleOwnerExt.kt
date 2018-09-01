@@ -24,6 +24,7 @@ import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -42,9 +43,9 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope : Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = viewModelByClass(T::class, key, name, module, null, parameters)
+) = viewModelByClass(T::class, key, name, scope, null, parameters)
 
 /**
  * Lazy getByClass a viewModel instance
@@ -59,10 +60,10 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope : Scope? = null,
     from: ViewModelStoreOwnerDefinition? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { getViewModelByClass(clazz, key, name, module, from, parameters) }
+) = lazy { getViewModelByClass(clazz, key, name, scope, from, parameters) }
 
 /**
  * Get a viewModel instance
@@ -74,9 +75,9 @@ fun <T : ViewModel> LifecycleOwner.viewModelByClass(
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope : Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = getViewModelByClass(T::class, key, name, module, null, parameters)
+) = getViewModelByClass(T::class, key, name, scope, null, parameters)
 
 /**
  * Get a viewModel instance
@@ -91,11 +92,11 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     clazz: KClass<T>,
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope : Scope? = null,
     from: ViewModelStoreOwnerDefinition? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
-    ViewModelFactory.viewModelParameters = ViewModelParameters(name, module, parameters)
+    ViewModelFactory.viewModelParameters = ViewModelParameters(name, scope, parameters)
     Koin.logger.info("[ViewModel] ~ '$clazz'(name:'$name' key:'$key') - $this")
 
     val vmStoreOwner = from?.invoke() ?: this as? ViewModelStoreOwner

@@ -51,6 +51,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
         val session1_1: Scope = koin.createScope("session1")
 
         val b_1 = get<B>(scope = session1_1)
+        assertNotNull(b_1)
 
         session1_1.close()
 

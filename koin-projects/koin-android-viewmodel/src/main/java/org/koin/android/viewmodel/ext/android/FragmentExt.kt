@@ -20,6 +20,7 @@ import android.arch.lifecycle.ViewModelStoreOwner
 import android.support.v4.app.Fragment
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 
 /**
  * Fragment extensiosn to help for Viewmodel
@@ -38,10 +39,10 @@ import org.koin.core.parameter.emptyParameterDefinition
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope : Scope? = null,
     noinline from: ViewModelStoreOwnerDefinition = { activity!! as ViewModelStoreOwner },
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = viewModelByClass(T::class, key, name, module, from, parameters)
+) = viewModelByClass(T::class, key, name, scope, from, parameters)
 
 /**
  * Get a shared viewModel instance from underlying Activity
@@ -54,7 +55,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope : Scope? = null,
     noinline from: ViewModelStoreOwnerDefinition = {activity!! as ViewModelStoreOwner},
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = getViewModelByClass(T::class, key, name, module, from, parameters)
+) = getViewModelByClass(T::class, key, name, scope, from, parameters)

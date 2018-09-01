@@ -1,6 +1,7 @@
 package fr.ekito.myweatherapp.mock.mvp
 
 import fr.ekito.myweatherapp.data.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.UserSession
 import fr.ekito.myweatherapp.mock.MockedData.mockList
 import fr.ekito.myweatherapp.util.MockitoHelper
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
@@ -28,7 +29,7 @@ class WeatherHeaderPresenterMockTest {
         MockitoAnnotations.initMocks(this)
 
         presenter =
-                WeatherHeaderPresenter(repository, TestSchedulerProvider())
+                WeatherHeaderPresenter(repository, TestSchedulerProvider(), UserSession())
         presenter.view = view
     }
 

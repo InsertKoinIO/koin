@@ -1,9 +1,6 @@
 package fr.ekito.myweatherapp.view.weather
 
 import android.app.AlertDialog
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -13,20 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.di.Memory
 import fr.ekito.myweatherapp.domain.DailyForecastModel
+import fr.ekito.myweatherapp.domain.UserSession
 import fr.ekito.myweatherapp.domain.getColorFromCode
 import fr.ekito.myweatherapp.view.IntentArguments
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.ext.android.bindScope
+import org.koin.android.scope.ext.android.getCurrentScope
+import org.koin.android.scope.ext.android.getKoin
 
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
-    override val presenter: WeatherHeaderContract.Presenter by inject()
-
-    val shared = Memory.getShared()
+    override val presenter: WeatherHeaderContract.Presenter by inject(scope = getCurrentScope())
+    val userSession by inject<UserSession>(scope = getKoin().getScope("session"))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,14 +37,8 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("GOT SHARED - $this got - $shared")
-        lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                println("t$this DESTROY")
-                Memory.release()
-            }
-        })
+        bindScope(getCurrentScope())
+        println("UserSession : $this got $userSession")
     }
 
     override fun onResume() {
@@ -106,6 +99,9 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
     }
 
     override fun showLocationSearchSucceed(location: String) {
+        // close session when reloading new location
+        getKoin().getScope("session").close()
+
         activity?.apply {
             startActivity(
                 intentFor<WeatherActivity>().clearTop().clearTask().newTask()

@@ -68,7 +68,7 @@ inline fun <reified T : Any> Application.inject(
     scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters) }
+    lazy { get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -81,7 +81,7 @@ inline fun <reified T : Any> Application.get(
     scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, scope, parameters)
+    getKoin().get<T>(name, scope, parameters)
 
 /**
  * lazy inject given property
@@ -89,7 +89,7 @@ inline fun <reified T : Any> Application.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Application.property(key: String) =
-    lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
+    lazy { getKoin().getProperty<T>(key) }
 
 /**
  * lazy inject  given property
@@ -100,7 +100,7 @@ inline fun <reified T> Application.property(key: String) =
  *
  */
 inline fun <reified T> Application.property(key: String, defaultValue: T) =
-    lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
+    lazy { getKoin().getProperty(key, defaultValue) }
 
 /**
  * Retrieve given property for KoinComponent
@@ -108,7 +108,7 @@ inline fun <reified T> Application.property(key: String, defaultValue: T) =
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Application.getProperty(key: String) =
-    (StandAloneContext.koinContext as KoinContext).getProperty<T>(key)
+    getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -119,13 +119,13 @@ inline fun <reified T> Application.getProperty(key: String) =
  *
  */
 inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
-    (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue)
+    getKoin().getProperty(key, defaultValue)
 
 
 /**
  * Help work on ModuleDefinition
  */
-private fun context() = (StandAloneContext.koinContext as KoinContext)
+fun getKoin() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Set property value
@@ -134,4 +134,4 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  * @param value - property value
  *
  */
-fun Application.setProperty(key: String, value: Any) = context().setProperty(key, value)
+fun Application.setProperty(key: String, value: Any) = getKoin().setProperty(key, value)

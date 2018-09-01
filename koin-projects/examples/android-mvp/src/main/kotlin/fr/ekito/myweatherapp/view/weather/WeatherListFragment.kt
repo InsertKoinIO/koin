@@ -1,8 +1,5 @@
 package fr.ekito.myweatherapp.view.weather
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.di.Memory
 import fr.ekito.myweatherapp.view.IntentArguments
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.weather.list.WeatherItem
@@ -18,12 +14,12 @@ import fr.ekito.myweatherapp.view.weather.list.WeatherListAdapter
 import kotlinx.android.synthetic.main.fragment_result_list.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.ext.android.bindScope
+import org.koin.android.scope.ext.android.getCurrentScope
 
 class WeatherListFragment : Fragment(), WeatherListContract.View {
 
-    override val presenter by inject<WeatherListContract.Presenter>()
-
-    val shared = Memory.getShared()
+    override val presenter by inject<WeatherListContract.Presenter>(scope = getCurrentScope())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,14 +32,8 @@ class WeatherListFragment : Fragment(), WeatherListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("GOT SHARED - $this got - $shared")
-        lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                println("t$this DESTROY")
-                Memory.release()
-            }
-        })
+        bindScope(getCurrentScope())
+
         prepareListView()
     }
 

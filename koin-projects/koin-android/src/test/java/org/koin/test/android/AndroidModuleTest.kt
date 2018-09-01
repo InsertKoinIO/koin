@@ -72,10 +72,10 @@ class AndroidModuleTest : AutoCloseKoinTest() {
         assertDefinitions(3)
         assertRemainingInstanceHolders(3)
 
-        release(CTX_ACTIVITY_MODULE)
-        assertContextInstances(CTX_ACTIVITY_MODULE, 1)
-        assertDefinitions(3)
-        assertRemainingInstanceHolders(3)
+//        release(CTX_ACTIVITY_MODULE)
+//        assertContextInstances(CTX_ACTIVITY_MODULE, 1)
+//        assertDefinitions(3)
+//        assertRemainingInstanceHolders(3)
     }
 
     @Test
