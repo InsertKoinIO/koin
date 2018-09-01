@@ -19,37 +19,42 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 
 /**
- * Fragment / ViewModel extension
+ * Fragment extensiosn to help for Viewmodel
  *
  * @author Arnaud Giuliani
  */
 
 /**
- * Lazy get a viewModel instance shared with Activity
+ * Lazy getByClass a viewModel instance shared with Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope: Scope? = null,
+    noinline from: ViewModelStoreOwnerDefinition = { activity },
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = viewModelByClass(true, T::class, key, name, module, parameters)
+) = viewModelByClass(T::class, key, name, scope, from, parameters)
 
 /**
  * Get a shared viewModel instance from underlying Activity
  *
  * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
-    module: String? = null,
+    scope: Scope? = null,
+    noinline from: ViewModelStoreOwnerDefinition = { activity },
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = getViewModelByClass(true, T::class, key, name, module, parameters)
+) = getViewModelByClass(T::class, key, name, scope, from, parameters)

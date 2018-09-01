@@ -5,7 +5,7 @@ include 'koin-java','koin-reflect'
 
 // Android
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
-//include 'koin-androidx-scope','koin-androidx-viewmodel'
+include 'koin-androidx-scope','koin-androidx-viewmodel'
 include 'examples:android-mvp','examples:android-mvvm','examples:android-mvvm-coroutines'
 include 'examples:android-navigation'
 
