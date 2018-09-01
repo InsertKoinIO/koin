@@ -3,11 +3,8 @@ package org.koin.test.standalone
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.KoinComponent
+import org.koin.standalone.*
 import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
-import org.koin.standalone.inject
-import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
@@ -18,7 +15,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
         module("view") {
             single { View() }
-            single { Presenter(get()) }
+            scope { Presenter(get()) }
         }
     }
 
@@ -27,10 +24,11 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
     }
 
     class View() : KoinComponent {
-        val presenter: Presenter by inject()
+        val session = getKoin().createScope("session")
+        val presenter: Presenter by inject(scope = session)
 
         fun onDestroy() {
-            release("view")
+            session.close()
         }
     }
 
@@ -44,7 +42,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         startKoin(listOf(MVPModule, DataSourceModule))
 
         val view = get<View>()
-        val presenter = get<Presenter>()
+        val presenter = get<Presenter>(scope = view.session)
         val repository = get<Repository>()
         val datasource = get<DebugDatasource>()
 
@@ -62,7 +60,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         assertIsInModulePath(Presenter::class, "view")
 
         view.onDestroy()
-        assertRemainingInstanceHolders(4)
+        assertRemainingInstanceHolders(3)
         assertDefinitions(4)
         assertContexts(2)
     }

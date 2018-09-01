@@ -1,6 +1,7 @@
 package org.koin.core.instance
 
 import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -15,7 +16,7 @@ sealed class ResolutionRequest
 data class InstanceRequest(
     val name: String = "",
     val clazz: KClass<*>,
-    val module: String? = null,
+    val scope: Scope? = null,
     val parameters: ParameterDefinition
 ) : ResolutionRequest()
 

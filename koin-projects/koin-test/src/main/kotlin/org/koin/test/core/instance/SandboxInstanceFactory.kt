@@ -2,6 +2,7 @@ package org.koin.test.core.instance
 
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.InstanceHolder
+import org.koin.core.scope.Scope
 import org.koin.dsl.definition.BeanDefinition
 
 /**
@@ -10,6 +11,6 @@ import org.koin.dsl.definition.BeanDefinition
  */
 class SandboxInstanceFactory() : InstanceFactory() {
 
-    override fun <T: Any> create(def: BeanDefinition<T>): InstanceHolder<T> = SandboxInstanceHolder(def)
+    override fun <T: Any> create(def: BeanDefinition<T>, scope: Scope?): InstanceHolder<T> = SandboxInstanceHolder(def)
 
 }

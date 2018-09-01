@@ -17,9 +17,12 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.scope.Scope
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.definition.BeanDefinitionId
 import org.koin.dsl.definition.Kind
+import org.koin.error.ClosedScopeException
+import org.koin.error.NoScopeException
+import java.util.*
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -27,19 +30,22 @@ import org.koin.dsl.definition.Kind
  */
 open class InstanceFactory {
 
-    val instanceHolders = HashMap<BeanDefinitionId, InstanceHolder<*>>()
+    val instances = ArrayList<InstanceHolder<*>>()
 
     /**
      * Retrieve or create instance from bean definition
      * @return Instance / has been created
      */
-    fun <T: Any> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition): Instance<T> {
+    fun <T : Any> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition, scope: Scope? = null): Instance<T> {
         // find holder
-        var holder = find(def)
+        var holder = find(def, scope)
         if (holder == null) {
-            holder = create(def)
+            holder = create(def, scope)
             // save it
-            instanceHolders[def.id] = holder
+            instances += holder
+        }
+        if (holder is ScopeInstanceHolder) {
+            if (holder.scope.isClosed) throw ClosedScopeException("Can't reuse a closed scope : $scope")
         }
         return holder.get(p)
     }
@@ -48,43 +54,68 @@ open class InstanceFactory {
      * Find actual InstanceHolder
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? =
-        instanceHolders[def.id] as? InstanceHolder<T>
+    fun <T> find(def: BeanDefinition<T>, scope: Scope? = null): InstanceHolder<T>? =
+        instances
+            .filter { it.bean == def }
+            .firstOrNull { if (it is ScopeInstanceHolder) it.scope == scope else true } as InstanceHolder<T>?
 
-    open fun <T: Any> create(def: BeanDefinition<T>): InstanceHolder<T> {
+    /**
+     * Create InstanceHolder
+     */
+    open fun <T : Any> create(def: BeanDefinition<T>, scope: Scope? = null): InstanceHolder<T> {
         return when (def.kind) {
             Kind.Single -> SingleInstanceHolder(def)
             Kind.Factory -> FactoryInstanceHolder(def)
-            Kind.Scope -> ScopeInstanceHolder(def)
+            Kind.Scope -> {
+                if (scope != null && !scope.isClosed) {
+                    scope.instanceFactory = this
+                    ScopeInstanceHolder(
+                        def,
+                        scope
+                    )
+                } else {
+                    if (scope == null) throw NoScopeException("Definition '$def' has to be used with a scope. Please create and specify a scope to use with your definition")
+                    else throw ClosedScopeException("Can't reuse a closed scope : $scope")
+                }
+            }
         }
     }
+
 
     /**
      * Release definitions instances
      */
-    fun release(definitions: List<BeanDefinition<*>>) {
+    //TODO use scope
+    fun release(definitions: List<BeanDefinition<*>>, scope: Scope? = null) {
         definitions.forEach { release(it) }
     }
 
     /**
      * Release definition instance
      */
-    fun release(definition: BeanDefinition<*>) {
-        Koin.logger.debug("release $definition")
-        find(definition)?.release()
+    //TODO use scope
+    fun release(definition: BeanDefinition<*>, scope: Scope? = null) {
+        if (definition.kind == Kind.Scope) {
+            Koin.logger.debug("release $definition")
+            val holder = find(definition, scope)
+            holder?.let {
+                instances.remove(it)
+            }
+        }
     }
 
     /**
      * Delete Instance Holder
      */
     fun delete(definition: BeanDefinition<*>) {
-        instanceHolders.remove(definition.id)?.release()
+        val found = instances.filter { it.bean == definition }
+        instances.removeAll(found)
     }
 
     /**
      * Clear all resources
      */
     fun clear() {
-        instanceHolders.clear()
+        instances.clear()
     }
 }

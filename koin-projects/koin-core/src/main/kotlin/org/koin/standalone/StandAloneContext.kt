@@ -15,16 +15,17 @@
  */
 package org.koin.standalone
 
-import org.koin.core.instance.InstanceManager
 import org.koin.core.Koin
 import org.koin.core.KoinContext
 import org.koin.core.ModuleCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.InstanceRegistry
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.ScopeRegistry
 import org.koin.core.time.measureDuration
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
@@ -71,12 +72,13 @@ object StandAloneContext {
         if (!isStarted) {
             Koin.logger.info("[context] create")
             val propertyResolver = PropertyRegistry()
-            val instanceResolver = InstanceManager(
+            val instanceResolver = InstanceRegistry(
                 BeanRegistry(),
                 InstanceFactory(),
                 PathRegistry()
             )
-            koinContext = KoinContext(instanceResolver, propertyResolver)
+            val scopeRegistry = ScopeRegistry()
+            koinContext = KoinContext(instanceResolver, scopeRegistry, propertyResolver)
             isStarted = true
         }
     }
@@ -165,7 +167,7 @@ object StandAloneContext {
      * @param defaultParameters - default injection parameters
      */
     fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
-        getKoinContext().instanceManager.createEagerInstances(defaultParameters)
+        getKoinContext().instanceRegistry.createEagerInstances(defaultParameters)
     }
 
     /**

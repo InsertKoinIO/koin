@@ -96,7 +96,7 @@ inline fun <reified T : Any> KoinTest.declareMock(
  */
 fun dumpModulePaths() {
     Koin.logger.info("Module paths:")
-    (StandAloneContext.koinContext as KoinContext).instanceManager.pathRegistry.paths.forEach {
+    (StandAloneContext.koinContext as KoinContext).instanceRegistry.pathRegistry.paths.forEach {
         Koin.logger.info(
             "[$it]"
         )

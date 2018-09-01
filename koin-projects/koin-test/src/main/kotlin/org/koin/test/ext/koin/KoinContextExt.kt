@@ -38,13 +38,13 @@ import kotlin.reflect.KClass
 fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
     Koin.logger.info("[Check Modules]")
 
-    instanceManager.dryRun(defaultParameters)
+    instanceRegistry.dryRun(defaultParameters)
 }
 
 /**
  * Return all definitions of Koin
  */
-fun KoinContext.beanDefinitions() = instanceManager.beanRegistry.definitions
+fun KoinContext.beanDefinitions() = instanceRegistry.beanRegistry.definitions
 
 /**
  * return beanDefinition for given class
@@ -56,12 +56,12 @@ fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? =
 /**
  * Return all contexts of Koin
  */
-fun KoinContext.allPaths() = instanceManager.pathRegistry.paths
+fun KoinContext.allPaths() = instanceRegistry.pathRegistry.paths
 
 /**
  * Return all instances of Koin
  */
-fun KoinContext.allInstances() = instanceManager.instanceFactory.instanceHolders.toList()
+fun KoinContext.allInstances() = instanceRegistry.instanceFactory.instances.toList()
 
 /**
  * Return all properties of Koin

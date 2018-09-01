@@ -51,7 +51,7 @@ data class BeanDefinition<out T>(
     val definition: Definition<T>
 ) {
     // For instance match
-    internal val id: BeanDefinitionId = UUID.randomUUID().toString()
+//    internal val id: BeanDefinitionId = UUID.randomUUID().toString()
     // Available classes to match
     internal val classes: List<KClass<*>> = listOf(clazz) + types
 
@@ -107,7 +107,7 @@ data class BeanDefinition<out T>(
  */
 typealias Definition<T> = (ParameterList) -> T
 
-typealias BeanDefinitionId = String
+//typealias BeanDefinitionId = String
 
 /**
  * Bean definition Kind

@@ -83,7 +83,6 @@ class BeanRegistry() {
      */
     fun <T> retrieveDefinition(
         clazz: KClass<*>,
-        modulePath: Path? = null,
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
     ): BeanDefinition<T> {
@@ -98,12 +97,9 @@ class BeanRegistry() {
             definitionResolver()
         }).distinct()
 
-        val filteredCandidates =
-            if (modulePath != null) candidates.filter { it.path.isVisible(modulePath) } else candidates
-
         return when {
-            filteredCandidates.size == 1 -> filteredCandidates.first() as BeanDefinition<T>
-            filteredCandidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazz'. Check your module definition")
+            candidates.size == 1 -> candidates.first() as BeanDefinition<T>
+            candidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '$clazz'. Check your module definition")
             else -> throw DependencyResolutionException(
                 "Multiple definitions found for type '$clazz' - Koin can't choose between :\n\t${candidates.joinToString(
                     "\n\t"

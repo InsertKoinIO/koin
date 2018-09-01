@@ -17,12 +17,15 @@ package org.koin.core
 
 import org.koin.core.Koin.Companion.logger
 import org.koin.core.instance.DefinitionFilter
-import org.koin.core.instance.InstanceManager
+import org.koin.core.instance.InstanceRegistry
 import org.koin.core.instance.InstanceRequest
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeRegistry
 import org.koin.error.MissingPropertyException
+import org.koin.error.NoScopeFoundException
 import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
 
@@ -35,7 +38,8 @@ import kotlin.reflect.KClass
  * @author - Laurent Baresse
  */
 class KoinContext(
-    val instanceManager: InstanceManager,
+    val instanceRegistry: InstanceRegistry,
+    val scopeRegistry: ScopeRegistry,
     val propertyResolver: PropertyRegistry
 ) : StandAloneKoinContext {
 
@@ -49,12 +53,12 @@ class KoinContext(
      */
     inline fun <reified T : Any> get(
         name: String = "",
-        module: String? = null,
+        scope: Scope? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
-    ): T = instanceManager.resolve(
+    ): T = instanceRegistry.resolve(
         InstanceRequest(
             name = name,
-            module = module,
+            scope = scope,
             clazz = T::class,
             parameters = parameters
         )
@@ -69,35 +73,43 @@ class KoinContext(
      * @param parameters
      * @param filter
      */
-    fun <T: Any> get(
+    fun <T : Any> get(
         name: String = "",
         clazz: KClass<*>,
-        module: String? = null,
+        scope: Scope? = null,
         parameters: ParameterDefinition = emptyParameterDefinition(),
         filter: DefinitionFilter? = null
-    ): T = instanceManager.resolve(
+    ): T = instanceRegistry.resolve(
         InstanceRequest(
             name = name,
-            module = module,
+            scope = scope,
             clazz = clazz,
             parameters = parameters
         ),
         filter
     )
 
-    //TODO deplacer release()
+    /**
+     * Create a scope
+     */
+    fun createScope(id: String): Scope = scopeRegistry.createScope(id)
 
-    //partie module
-    //partie scope
+    /**
+     * retrieve a scope
+     */
+    fun getScope(id: String): Scope = scopeRegistry.getScope(id) ?: throw NoScopeFoundException("Scope '$id' not found")
+
 
     /**
      * Drop all instances for path context
      * @param path
      */
-    fun release(path: String) {
-        instanceManager.release(path)
-        contextCallback.forEach { it.onRelease(path) }
-    }
+    @Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
+    fun release(path: String) : Unit = error("release() function is now deprecated. Please use the Scope API.")
+//    {
+//        instanceRegistry.release(path)
+//        contextCallback.forEach { it.onRelease(path) }
+//    }
 
     /**
      * Retrieve a property by its key
@@ -125,7 +137,8 @@ class KoinContext(
      */
     fun close() {
         logger.info("[Close] Closing Koin context")
-        instanceManager.close()
+        instanceRegistry.close()
+        scopeRegistry.close()
         propertyResolver.clear()
     }
 }

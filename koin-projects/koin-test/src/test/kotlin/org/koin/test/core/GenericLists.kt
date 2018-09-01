@@ -9,12 +9,12 @@ import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 
-class Type1
-class Type2
-class Type3(val list: List<Type1>)
-
 
 class GenericLists : AutoCloseKoinTest() {
+
+    class Type1
+    class Type2
+    class Type3(val list: List<Type1>)
 
     @Test
     fun `list resolution failure`() {

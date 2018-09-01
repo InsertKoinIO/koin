@@ -5,11 +5,8 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.KoinComponent
+import org.koin.standalone.*
 import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
-import org.koin.standalone.inject
-import org.koin.standalone.release
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
@@ -20,7 +17,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
 
         module("View") {
             single { View() }
-            single { Presenter(get()) }
+            scope { Presenter(get()) }
         }
     }
 
@@ -29,10 +26,11 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
     }
 
     class View : KoinComponent {
-        val presenter: Presenter by inject()
+        val session = getKoin().createScope("session")
+        val presenter: Presenter by inject(scope = session)
 
         fun onDestroy() {
-            release("View")
+            session.close()
         }
     }
 
@@ -47,7 +45,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
 
         val view = async { get<View>() }.await()
         async {
-            val presenter = async { get<Presenter>() }.await()
+            val presenter = async { get<Presenter>(scope = view.session) }.await()
             Assert.assertEquals(presenter, view.presenter)
 
             val repository = get<Repository>()
@@ -66,7 +64,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
         assertIsInModulePath(Presenter::class, "View")
 
         view.onDestroy()
-        assertRemainingInstanceHolders(4)
+        assertRemainingInstanceHolders(3)
         assertDefinitions(4)
         assertContexts(2)
     }

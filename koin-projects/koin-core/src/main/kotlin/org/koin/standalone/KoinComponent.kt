@@ -19,6 +19,7 @@ import org.koin.core.KoinContext
 import org.koin.core.instance.DefinitionFilter
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 
@@ -36,9 +37,9 @@ interface KoinComponent
  */
 inline fun <reified T: Any> KoinComponent.inject(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { getKoin().get<T>(name, module, parameters) }
+) = lazy { getKoin().get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -47,10 +48,10 @@ inline fun <reified T: Any> KoinComponent.inject(
  */
 inline fun <reified T : Any> KoinComponent.get(
     name: String = "",
-    module: String? = null,
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
-    getKoin().get(name, module, parameters)
+    getKoin().get(name, scope, parameters)
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -60,11 +61,11 @@ inline fun <reified T : Any> KoinComponent.get(
 fun <T: Any> KoinComponent.get(
     name: String = "",
     clazz: KClass<*>,
-    module: String? = null,
+    scope: Scope? = null,
     parameters: ParameterDefinition = emptyParameterDefinition(),
     filter: DefinitionFilter? = null
 ): T =
-    getKoin().get(name, clazz, module, parameters, filter)
+    getKoin().get(name, clazz, scope, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent
@@ -115,14 +116,15 @@ fun KoinComponent.setProperty(key: String, value: Any) = getKoin().setProperty(k
  * Release instances at given module scope
  * @param path
  */
-fun KoinComponent.release(path: String) = getKoin().release(path)
+@Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
+fun KoinComponent.release(path: String): Unit = error("release() function is now deprecated. Please use the Scope API.")
 
 /**
  * Release instances at given module scope
  * @param path
  */
-@Deprecated("function renamed - use release() function instead", ReplaceWith("release(path)"))
-fun KoinComponent.releaseContext(path: String) = getKoin().release(path)
+@Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
+fun KoinComponent.releaseContext(path: String) : Unit = error("release() function is now deprecated. Please use the Scope API.")
 
 /**
  * Access to Koin context

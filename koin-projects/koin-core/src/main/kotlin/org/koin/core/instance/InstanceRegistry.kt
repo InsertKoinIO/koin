@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
+import org.koin.core.scope.Scope
 import org.koin.core.stack.ResolutionStack
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
@@ -29,7 +30,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-class InstanceManager(
+class InstanceRegistry(
     val beanRegistry: BeanRegistry,
     val instanceFactory: InstanceFactory,
     val pathRegistry: PathRegistry
@@ -55,19 +56,19 @@ class InstanceManager(
                     { beanRegistry.searchByClass(definitions, clazz) }
                 }
             }
-            proceedResolution(module, clazz, parameters, search)
+            proceedResolution(scope, clazz, parameters, search)
         }
     }
 
     /**
      * Resolve a dependency for its bean definition
-     * @param module - module path
+     * @param scope - associated scope
      * @param clazz - Class
      * @param parameters - Parameters
      * @param definitionResolver - function to find bean definitions
      */
     fun <T : Any> proceedResolution(
-        module: String? = null,
+        scope: Scope? = null,
         clazz: KClass<*>,
         parameters: ParameterDefinition,
         definitionResolver: () -> List<BeanDefinition<*>>
@@ -80,7 +81,6 @@ class InstanceManager(
                 val beanDefinition: BeanDefinition<T> =
                     beanRegistry.retrieveDefinition(
                         clazz,
-                        if (module != null) pathRegistry.getPath(module) else null,
                         definitionResolver,
                         resolutionStack.last()
                     )
@@ -93,9 +93,10 @@ class InstanceManager(
                 Koin.logger.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
-                    val (instance, created) = instanceFactory.retrieveInstance<T>(
+                    val (instance, created) = instanceFactory.retrieveInstance(
                         beanDefinition,
-                        parameters
+                        parameters,
+                        scope
                     )
 
                     Koin.logger.debug("$logIndent|-- $instance")
@@ -141,7 +142,7 @@ class InstanceManager(
     ) {
         definitions.forEach { def ->
             proceedResolution(
-                def.path.toString(),
+                null,
                 def.clazz,
                 params
             ) { listOf(def) }
@@ -177,6 +178,7 @@ class InstanceManager(
         resolutionStack.clear()
         instanceFactory.clear()
         beanRegistry.clear()
+
     }
 }
 

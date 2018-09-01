@@ -73,7 +73,7 @@ fun KoinTest.assertIsInRootPath(definitionClazz: KClass<*>) {
 fun KoinTest.assertContextInstances(pathName: String, instanceCount: Int) {
     val path = context().getPath(pathName)
     val definitions = context().beanDefinitions().filter { it.path == path }.toSet()
-    val instances = context().allInstances().map { it.second.bean }.filter { it in definitions }
+    val instances = context().allInstances().map { it.bean }.filter { it in definitions }
     Assert.assertEquals("path $pathName must have $instanceCount instances", instanceCount, instances.size)
 }
 
@@ -86,7 +86,7 @@ fun KoinTest.assertPath(path: String, parentPath: String) {
     Assert.assertEquals(
         "Path '$path' must have parent '$parentPath'",
         parentPath,
-        context().instanceManager.pathRegistry.getPath(path).parent?.name
+        context().instanceRegistry.pathRegistry.getPath(path).parent?.name
     )
 }
 
