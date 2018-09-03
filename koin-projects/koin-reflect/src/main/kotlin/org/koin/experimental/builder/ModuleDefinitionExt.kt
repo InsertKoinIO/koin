@@ -49,6 +49,19 @@ inline fun <reified T : Any> ModuleDefinition.factory(
 }
 
 /**
+ * Create a Scope definition for given type T
+ *
+ * @param name
+ * @param override - allow definition override
+ */
+inline fun <reified T : Any> ModuleDefinition.scope(
+    name: String = "",
+    override: Boolean = false
+): BeanDefinition<T> {
+    return provide(name, false, override, Kind.Scope) { create<T>() }
+}
+
+/**
  * Create instance for type T and inject dependencies into 1st constructor
  */
 inline fun <reified T : Any> ModuleDefinition.create(): T {
@@ -56,6 +69,46 @@ inline fun <reified T : Any> ModuleDefinition.create(): T {
     val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
     val args = ctor.parameterTypes.map { getForClass(clazz = it) }.toTypedArray()
     return ctor.newInstance(*args) as T
+}
+
+/**
+ * Create a Single definition for given type T to build and cast as R
+ * @param name
+ * @param createOnStart - need to be created at start
+ * @param override - allow definition override
+ */
+inline fun <reified T : Any, reified R : Any> ModuleDefinition.singleBy(
+    name: String = "",
+    createOnStart: Boolean = false,
+    override: Boolean = false
+): BeanDefinition<R> {
+    return provide(name, createOnStart, override, Kind.Single) { create<T>() as R }
+}
+
+/**
+ * Create a Factory definition for given type T to build and cast as R
+ *
+ * @param name
+ * @param override - allow definition override
+ */
+inline fun <reified T : Any, reified R : Any> ModuleDefinition.factoryBy(
+    name: String = "",
+    override: Boolean = false
+): BeanDefinition<R> {
+    return provide(name, false, override, Kind.Factory) { create<T>() as R }
+}
+
+/**
+ * Create a Scope definition for given type T, applied to R
+ *
+ * @param name
+ * @param override - allow definition override
+ */
+inline fun <reified T : Any, reified R : Any> ModuleDefinition.scopeBy(
+    name: String = "",
+    override: Boolean = false
+): BeanDefinition<R> {
+    return provide(name, false, override, Kind.Scope) { create<T>() as R }
 }
 
 /**

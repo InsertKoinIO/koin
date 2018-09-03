@@ -3,8 +3,11 @@ package org.koin.experimental.builder
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.*
+import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
+import org.koin.standalone.getKoin
+import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.checkModules
 import org.koin.test.ext.junit.*
@@ -12,11 +15,11 @@ import org.koin.test.ext.junit.*
 class MVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule = module {
-        single { create<Repository>() }
+        single<Repository>()
 
         module("view") {
-            single { View() }
-            single { create<Presenter>() }
+            single<View>()
+            single<Presenter>()
         }
     }
 

@@ -4,7 +4,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
-import org.koin.experimental.builder.ext.single
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
@@ -62,7 +61,7 @@ class AutoBuilderTest : AutoCloseKoinTest() {
     fun `should get interface instance`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            single<ComponentD,Component>()
+            singleBy<ComponentD, Component>()
         }))
 
         assertNotNull(get<Component>())
