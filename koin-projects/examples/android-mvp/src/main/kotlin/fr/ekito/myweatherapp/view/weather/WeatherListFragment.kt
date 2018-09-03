@@ -19,7 +19,7 @@ import org.koin.android.scope.ext.android.getCurrentScope
 
 class WeatherListFragment : Fragment(), WeatherListContract.View {
 
-    override val presenter by inject<WeatherListContract.Presenter>(scope = getCurrentScope())
+    override val presenter by inject<WeatherListContract.Presenter>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

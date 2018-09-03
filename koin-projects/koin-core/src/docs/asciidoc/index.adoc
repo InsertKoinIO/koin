@@ -21,6 +21,7 @@ Cover the core project features and core sub projects.
 include::what-is-koin.adoc[]
 include::dsl.adoc[]
 include::modules.adoc[]
+include::scope-api.adoc[]
 include::start-koin.adoc[]
 include::logging.adoc[]
 include::properties.adoc[]

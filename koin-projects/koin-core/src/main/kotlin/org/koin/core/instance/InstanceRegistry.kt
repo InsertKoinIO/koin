@@ -158,20 +158,6 @@ class InstanceRegistry(
         createInstances(beanRegistry.definitions, defaultParameters)
     }
 
-//    /**
-//     * Drop all instances for path context
-//     * @param path
-//     */
-//    fun release(path: String) {
-//        Koin.logger.info("release module '$path'")
-//
-//        val paths = pathRegistry.getAllPathsFrom(path)
-//        val definitions: List<BeanDefinition<*>> =
-//            beanRegistry.getDefinitionsInPaths(paths)
-//
-//        instanceFactory.release(definitions)
-//    }
-
     /**
      * Close res
      */

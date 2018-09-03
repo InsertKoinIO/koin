@@ -18,10 +18,10 @@ package org.koin.android.scope.ext.android
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
+import android.content.ComponentCallbacks
+import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.ScopeObserver
-import org.koin.core.KoinContext
 import org.koin.core.scope.Scope
-import org.koin.standalone.StandAloneContext
 
 /**
  * LifecycleOwner extensions
@@ -36,21 +36,17 @@ import org.koin.standalone.StandAloneContext
  * @param event : lifecycle event - default ON_DESTROY
  * @param scopes
  */
-fun LifecycleOwner.bindScope(scope : Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
+fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
     lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
 
 /**
- * Get Koin context
- */
-fun LifecycleOwner.getKoin(): KoinContext = (StandAloneContext.koinContext as KoinContext)
-
-/**
  * Get/Create scope for current Activity/Fragment
  */
-fun LifecycleOwner.getCurrentScope() = this.getKoin().getOrCreateScope(getCurrentScopeId())
+fun LifecycleOwner.getCurrentScope() =
+    (this as ComponentCallbacks).getKoin().getOrCreateScope(getCurrentScopeId())
 
 /**
  * Current scope Id
  */
-fun LifecycleOwner.getCurrentScopeId() : String = this.hashCode().toString()
+fun LifecycleOwner.getCurrentScopeId(): String = "android_session_${hashCode()}"

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core
+package org.koin.core.scope
 
 
 /**
  * Module callback
  * @author - Arnaud GIULIANI
  */
-interface ModuleCallback {
+interface ScopeCallback {
 
     /**
-     * Notify on module release
-     * @param path - module path
+     * Notify on scope closing
+     * @param id : scope Id
      */
-    fun onRelease(path: String)
+    fun onClose(id: String)
 }

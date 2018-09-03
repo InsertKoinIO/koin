@@ -81,18 +81,9 @@ open class InstanceFactory {
         }
     }
 
-
-//    /**
-//     * Release definitions instances
-//     */
-//    fun release(definitions: List<BeanDefinition<*>>, scope: Scope? = null) {
-//        definitions.forEach { release(it) }
-//    }
-
     /**
      * Release definition instance
      */
-    //TODO use scope
     fun release(definition: BeanDefinition<*>, scope: Scope? = null) {
         if (definition.kind == Kind.Scope) {
             Koin.logger.debug("release $definition")

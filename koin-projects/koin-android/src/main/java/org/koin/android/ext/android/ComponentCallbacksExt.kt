@@ -120,6 +120,12 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
 fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
     context().setProperty(key, value)
 
+
+/**
+ * Get Koin context
+ */
+fun ComponentCallbacks.getKoin(): KoinContext = (org.koin.standalone.StandAloneContext.koinContext as KoinContext)
+
 /**
  * Release a Module from given Path
  * @param path

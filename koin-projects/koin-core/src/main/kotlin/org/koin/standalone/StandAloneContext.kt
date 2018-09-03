@@ -17,7 +17,7 @@ package org.koin.standalone
 
 import org.koin.core.Koin
 import org.koin.core.KoinContext
-import org.koin.core.ModuleCallback
+import org.koin.core.scope.ScopeCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.InstanceRegistry
@@ -85,11 +85,10 @@ object StandAloneContext {
 
     /**
      * Register ModuleDefinition callbacks
-     * @see ModuleCallback - ModuleDefinition CallBack
+     * @see ScopeCallback - ModuleDefinition CallBack
      */
-    fun registerCallBack(moduleCallback: ModuleCallback) {
-        Koin.logger.info("[context] callback registering with $moduleCallback")
-        getKoinContext().contextCallback.add(moduleCallback)
+    fun registerScopeCallback(callback: ScopeCallback) {
+        getKoinContext().scopeRegistry.register(callback)
     }
 
     /**

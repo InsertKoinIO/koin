@@ -31,7 +31,7 @@ val weatherAppModule = module {
         scope { UserSession() }
 
         // Presenter for ResultHeader View
-        scope<WeatherHeaderContract.Presenter> {
+        factory<WeatherHeaderContract.Presenter> {
             WeatherHeaderPresenter(
                 get(),
                 get(),
@@ -40,7 +40,7 @@ val weatherAppModule = module {
         }
 
         // Presenter for ResultList View
-        scope<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
+        factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
     }
 
     // Presenter with injection parameter for Detail View

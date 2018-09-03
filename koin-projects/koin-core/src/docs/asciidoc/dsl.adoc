@@ -196,7 +196,21 @@ val myModule = module {
 
 === Naming a definition
 
-A definition has by default an empty name. But you can declare a name to your definition, to help you distinguish two definitions about the same type:
+By default, Koin will name your definition depending on modules path & class name.
+
+[source,kotlin]
+----
+module {
+    single { ComponentA() }
+    module("A") {
+        single { ComponentB() }
+    }
+}
+----
+
+The name of `ComponentA` definition will be `ComponentA`, and for `ComponentB` you will have `A.ComponentB`.
+
+But you can declare a name to your definition, to help you distinguish two definitions about the same type:
 
 Just request your definition with its name:
 
@@ -211,6 +225,8 @@ val service : Service by inject(name = "default")
 ----
 
 `get()` and `by inject()` functions let you specify a definition name if needed.
+
+
 
 === Declaring injection parameters
 

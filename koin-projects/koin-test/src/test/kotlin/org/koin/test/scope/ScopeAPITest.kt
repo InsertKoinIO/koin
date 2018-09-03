@@ -3,11 +3,13 @@ package org.koin.test.scope
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.module.module
 import org.koin.error.ClosedScopeException
 import org.koin.error.NoScopeException
 import org.koin.error.NoScopeFoundException
 import org.koin.log.PrintLogger
+import org.koin.standalone.StandAloneContext.registerScopeCallback
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.standalone.getKoin
@@ -182,6 +184,32 @@ class ScopeAPITest : AutoCloseKoinTest() {
         assertEquals(a_1, a_3)
 
         session1_1.close()
+    }
+
+    @Test
+    fun `scope close callback`() {
+        startKoin(listOf(module {
+            scope { B() }
+        }), logger = PrintLogger(showDebug = true))
+
+        var closed : String? = null
+        registerScopeCallback(object : ScopeCallback{
+            override fun onClose(id: String) {
+                closed = id
+            }
+        })
+
+        val koin = getKoin()
+
+        val id = "session"
+        val session: Scope = koin.createScope(id)
+
+        val b = get<B>(scope = session)
+        assertNotNull(b)
+
+        session.close()
+
+        assertEquals(id,closed)
     }
 
 }

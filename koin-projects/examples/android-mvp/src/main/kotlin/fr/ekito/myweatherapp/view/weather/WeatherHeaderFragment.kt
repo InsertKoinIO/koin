@@ -17,14 +17,14 @@ import fr.ekito.myweatherapp.view.IntentArguments
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.*
+import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.ext.android.bindScope
 import org.koin.android.scope.ext.android.getCurrentScope
-import org.koin.android.scope.ext.android.getKoin
 
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
-    override val presenter: WeatherHeaderContract.Presenter by inject(scope = getCurrentScope())
+    override val presenter: WeatherHeaderContract.Presenter by inject()
     val userSession by inject<UserSession>(scope = getKoin().getScope("session"))
 
     override fun onCreateView(

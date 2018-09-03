@@ -2,7 +2,7 @@
 //
 //import org.junit.Assert
 //import org.junit.Test
-//import org.koin.core.ModuleCallback
+//import org.koin.core.scope.ScopeCallback
 //import org.koin.dsl.module.module
 //import org.koin.standalone.StandAloneContext.registerCallBack
 //import org.koin.standalone.StandAloneContext.startKoin
@@ -25,7 +25,7 @@
 //
 //        var name = ""
 //
-//        registerCallBack(object : ModuleCallback {
+//        registerCallBack(object : ScopeCallback {
 //            override fun onRelease(path: String) {
 //                name = path
 //            }

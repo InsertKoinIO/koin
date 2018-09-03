@@ -1,6 +1,6 @@
 == Scope features for Android
 
-The `koin-android-scope` project is dedicated to bring Android scope features.
+The `koin-android-scope` project is dedicated to bring Android scope features to the existing Scope API.
 
 === Gradle setup
 
@@ -58,27 +58,23 @@ We can describe it in a module:
 ----
 val androidModule = module {
 
-    // Facvtory instance of Presenter
+    // Factory instance of Presenter
     factory { Presenter() }
 }
 ----
 
-* as `single` & `module` - to produce an instance when called and manually drop it when needed
+* as `scope` - to produce an instance tied to a scope
 
 [source,kotlin]
 ----
 val androidModule = module {
 
-    // a dedicated module for Presenter
-    module("org.samples.detail"){
-        single { Presenter() }
-    }
+    scope { Presenter() }
 }
 
-// Call release() to release Presenter instance when needed
-release("org.samples.detail")
+// Resolve the Presenter instance with a previously created scope
+get<Presenter>(scope = /* your scope */)
 ----
-
 
 [IMPORTANT]
 ====
@@ -87,58 +83,92 @@ on it and can't totally drop it via garbage collection.
 ====
 
 
-=== Binding to lifecycle with scopedWith
+=== Activity & Fragment scopes
 
-Koin gives the `scopedWith` function to bind the actual Android component to listen its lifecycle and release instances of a module.
+You can retrieve (get or create) the scope associated from your Activity or Fragment with the `getCurrentScope()` function.
+
+=== Binding scope to lifecycle
+
+Koin gives the `bindScope` function to bind the actual Android component lifecycle, to a given scope. On lifecycle's end, this will close the bound scope.
+
 
 [source,kotlin]
 ----
-class DetailActivity : AppCompatActivity() {
+class MyActivity : AppCompatActivity() {
 
-    // Lazy injected Presenter instance
-    override val presenter : Presenter by inject()
+    // inject Presenter instance, tied to current MyActivity's scope
+    val presenter : Presenter by inject(scope = getCurrentScope())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // on ON_DESTROY release org.samples.detail module instances
-        scopedWith("org.samples.detail")
+        // bind current lifecycle to Activity's scope
+        bindScope(getCurrentScope())
     }
 ----
 
-[NOTE]
-====
-When using the `scopedWith` function, you can specify the end signal on which you want to react: ON_DESTROY | ON_STOP
-====
 
-A little function to help you write your scoped module, you can use the `moduleName` property on a class to help declare your module:
+=== Sharing instances between components with scopes
+
+in a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
+
+First declare a scope definition:
 
 [source,kotlin]
 ----
-val androidModule = module {
-
-    // DetailActivity module for Presenter
-    module(DetailActivity::class.moduleName){
-        single { Presenter() }
-    }
+module {
+    // Shared user session data
+    scope { UserSession() }
 }
 ----
 
-Then you can use the `moduleName` property to easily scope a component:
+When needed to begin use a `UserSession` instance, create a scope for it:
 
 [source,kotlin]
 ----
-class DetailActivity : AppCompatActivity() {
-
-    // Lazy injected Presenter instance
-    override val presenter : Presenter by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // on ON_DESTROY release DetailActivity module instances
-        scopedWith(this::class.moduleName)
-    }
+getKoin().createScope("session")
 ----
 
+Then use it anywhere you need it:
+
+[source,kotlin]
+----
+class MyActivity1 : AppCompatActivity() {
+
+    // inject Presenter instance, tied to current MyActivity's scope
+    val userSession : UserSession by inject(scope = getKoin().getScope("session"))
+}
+class MyActivity2 : AppCompatActivity() {
+
+    // inject Presenter instance, tied to current MyActivity's scope
+    val userSession : UserSession by inject(scope = getKoin().getScope("session"))
+}
+----
+
+or you can also inject it with Koin DSL. If a presenter need it:
+
+[source,kotlin]
+----
+class Presenter(val userSession : UserSession)
+----
+
+Just inject it into constructor, with teh right scope:
+
+[source,kotlin]
+----
+module {
+    // Shared user session data
+    scope { UserSession() }
+    // Inject UserSession instance from "session" Scope
+    factory { Presenter(get(scope = getScope("session")))}
+}
+----
+
+When you have to finish with your scope, just close it:
+
+[source,kotlin]
+----
+val session = getKoin().getScope("session")
+session.close()
+----
 

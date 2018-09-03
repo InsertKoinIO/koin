@@ -23,6 +23,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeCallback
 import org.koin.core.scope.ScopeRegistry
 import org.koin.error.MissingPropertyException
 import org.koin.error.NoScopeFoundException
@@ -42,8 +43,6 @@ class KoinContext(
     val scopeRegistry: ScopeRegistry,
     val propertyResolver: PropertyRegistry
 ) : StandAloneKoinContext {
-
-    val contextCallback: ArrayList<ModuleCallback> = arrayListOf()
 
     /**
      * Retrieve an instance from its name/class
@@ -104,18 +103,12 @@ class KoinContext(
      */
     fun getScope(id: String): Scope = scopeRegistry.getScope(id) ?: throw NoScopeFoundException("Scope '$id' not found")
 
-
-
     /**
      * Drop all instances for path context
      * @param path
      */
     @Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
     fun release(path: String) : Unit = error("release() function is now deprecated. Please use the Scope API.")
-//    {
-//        instanceRegistry.release(path)
-//        contextCallback.forEach { it.onRelease(path) }
-//    }
 
     /**
      * Retrieve a property by its key

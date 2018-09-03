@@ -13,8 +13,8 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.ext.android.bindScope
-import org.koin.android.scope.ext.android.getKoin
 
 /**
  * Weather Result View
@@ -36,9 +36,6 @@ class WeatherActivity : AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.weather_title, weatherTitleFragment)
-            .commit()
-        supportFragmentManager
-            .beginTransaction()
             .replace(R.id.weather_list, resultListFragment)
             .commit()
     }
