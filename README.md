@@ -2,6 +2,8 @@
 
 ## What is KOIN?
 
+[![Kotlin](https://img.shields.io/badge/koin-1.0-orange.svg)]()
+[![Kotlin](https://img.shields.io/badge/kotlin-powered-blue.svg)]()
 [![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
  [![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
  
