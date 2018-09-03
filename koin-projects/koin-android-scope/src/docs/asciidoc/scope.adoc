@@ -110,7 +110,7 @@ class MyActivity : AppCompatActivity() {
 
 === Sharing instances between components with scopes
 
-in a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
+In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
 
 First declare a scope definition:
 
