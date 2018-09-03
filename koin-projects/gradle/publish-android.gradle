@@ -1,0 +1,46 @@
+apply plugin: 'digital.wup.android-maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+
+// Android Publish local
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    duplicatesStrategy = "exclude"
+    from android.sourceSets.main.java.source
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            from components.android
+            artifact sourcesJar
+            artifact dokkaJar
+        }
+    }
+}
+
+// Bintray
+if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
+    bintray {
+        user = bintray_user
+        key = bintray_apikey
+
+        pkg {
+            repo = 'koin'
+            name = pom_name
+            userOrg = 'ekito'
+
+            description = pom_description
+            publish = true
+            override = true
+
+            publicDownloadNumbers = true
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/ekito/koin.git'
+            websiteUrl = 'https://insert-koin.io'
+            dryRun = false
+
+            publications = ['Production']
+        }
+    }
+}

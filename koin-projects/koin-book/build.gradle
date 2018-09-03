@@ -1,0 +1,14 @@
+archivesBaseName = 'koin-book'
+
+asciidoctor {
+    backends = ["html5"]
+}
+
+task copyResources(type: Copy) {
+    from ("src/resources") {
+        include '**'
+    }
+    into("${buildDir}/asciidoc/html5")
+}
+asciidoctor.dependsOn copyResources
+

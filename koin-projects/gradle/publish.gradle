@@ -1,0 +1,32 @@
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar, dokkaJar
+}
+
+if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
+    bintray {
+        user = bintray_user
+        key = bintray_apikey
+
+        configurations = ['archives']
+
+        publish = true
+        override = true
+        pkg {
+            repo = 'koin'
+            name = archivesBaseName
+            userOrg = 'ekito'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/Ekito/koin.git'
+        }
+    }
+}

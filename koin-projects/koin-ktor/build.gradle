@@ -1,0 +1,20 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'koin-ktor'
+description = 'Koin - simple dependency injection for Ktor'
+
+repositories {
+    mavenCentral()
+    maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
+}
+
+dependencies {
+    compile project(":koin-reflect")
+    testImplementation project(":koin-test")
+
+    // Ktor
+    compile "io.ktor:ktor-server-core:$ktor_version"
+}
+
+apply from: '../gradle/publish.gradle'

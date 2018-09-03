@@ -1,5 +1,90 @@
 # Change Log
 
+Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
+
+## [1.0.0-beta3]()
+
+_Scripts_
+
+* `[UPDATED]` - rework all gradle structure and scripts - [#126](https://github.com/InsertKoinIO/koin/issues/126)
+* `[ADDED]` - asciidoc integration - [#127](https://github.com/InsertKoinIO/koin/issues/127)
+* `[ADDED]` - CI integration with CircleCI
+
+
+_Core_
+
+* `[UPDATED]` - compilation with Kotlin 1.2.50
+* `[UPDATED]` - Update DSL keywords: `module` & `single` (replaces `applicationContext`, `context` & `bean`) - [#131](https://github.com/InsertKoinIO/koin/issues/131)
+* `[FIXED]` - Fixed Scope API, aka module visibility resolution
+* `[ADDED]` - SLF4J Logger implementation (`koin-logger-slf4j`), used by `koin-spark` & `koin-ktor` - [#130](https://github.com/InsertKoinIO/koin/issues/130)
+* `[FIXED]` - Resolution & error check/catch for display - [#110](https://github.com/InsertKoinIO/koin/issues/110)
+* `[FIXED]` - BeanDefinition equals()
+* `[FIXED]` - Instance creation error display - [#124](https://github.com/InsertKoinIO/koin/issues/124)
+* `[UPDATED]` - logging tree resolution (with debug data if needed)
+* `[ADDED]` - asciidoc doc updated - [#121](https://github.com/InsertKoinIO/koin/issues/121) - [#100](https://github.com/InsertKoinIO/koin/issues/100) - [#102](https://github.com/InsertKoinIO/koin/issues/102) - [#103](https://github.com/InsertKoinIO/koin/issues/103)
+* `[UPDATED]` - Injection parameter API with destructured declaration - [#133](https://github.com/InsertKoinIO/koin/issues/133)
+* `[ADDED]` - Preload instances with `createAtStart` - [#141](https://github.com/InsertKoinIO/koin/issues/141)
+* `[UPDATED]` - Explicit bean/module overide - [#123](https://github.com/InsertKoinIO/koin/issues/123)
+* `[FIXED]` - bind operator check assignable types
+
+
+_Test_
+
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - check() feature to check all configuration (does not create instances like dryRun)
+* `[ADDED]` - declare mock or other definition out of the box with `declareMock` & `declare`- [#151](https://github.com/InsertKoinIO/koin/issues/151) - [#119](https://github.com/InsertKoinIO/koin/issues/119)
+
+
+_Android_
+
+* `[BREAKING]` - Package & project renaming -> `koin-android`,`koin-android-scope` & `koin-android-viewmodel` - [#144](https://github.com/InsertKoinIO/koin/issues/144)
+* `[REMOVED]` - bindString(), bindBool() & bindInt()
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - support AndroidX packages with `koin-androidx-scope` & `koin-androidx-viewmodel` - [#138](https://github.com/InsertKoinIO/koin/issues/138) - [#122](https://github.com/InsertKoinIO/koin/issues/122) - [#154](https://github.com/InsertKoinIO/koin/issues/154)
+* `[ADDED]` - scoping feature with Android lifecycle with `koin-android-scope` - [#142](https://github.com/InsertKoinIO/koin/issues/142)
+* `[UPDATED]`- Open startKoin() for other Android context & use `Context` instead of `Application` - [#156](https://github.com/InsertKoinIO/koin/issues/156)
+* `[FIXED]` - ViewModel factory instance creation bugfix - [#145](https://github.com/InsertKoinIO/koin/issues/145)
+* `[FIXED]` - ViewModel factory injection params leak - [#149](https://github.com/InsertKoinIO/koin/issues/149)
+* `[UPDATED]`- androix version to `2.0.0-beta01`
+
+_Ktor_
+
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - use `koin-logger-slf4j`
+* `[UPDATED]` - ktor `0.9.2`
+* `[ADDED]`- add `Route` & `Routing` class extensions - [#128](https://github.com/InsertKoinIO/koin/issues/128)
+
+_Spark_
+
+* `[ADDED]` - asciidoc doc
+* `[ADDED]` - use `koin-logger-slf4j`
+* `[UPDATED]` - `controller` keyword now need your class to extend `SparkController`
+
+
+_Java_
+
+* `[ADDED]` - add `koin-java` project - [#106](https://github.com/InsertKoinIO/koin/issues/106)
+* `[ADDED]` - asciidoc doc
+
+_Reflect_
+
+* `[ADDED]` - add `koin-reflect` project
+* `[ADDED]` - add `build()` DSL function to allow smarter way of building definition
+* `[ADDED]` - asciidoc doc
+
+_Website_
+
+* `[ADDED]` - Doc integration
+* `[ADDED]` - Getting started integration
+* `[FIXED]` - Kotlin slack URL - [#125](https://github.com/InsertKoinIO/koin/issues/125)
+
+
+_Samples_
+
+* `[ADDED]` - Added `examples` folder, gathering examples application 
+* `[ADDED]` - Thermosiphon example - [#116](https://github.com/InsertKoinIO/koin/issues/116)
+
+
 ## [0.9.3]()
 
 Gradle & Continuous Integration
@@ -64,7 +149,7 @@ _DSL_
 
 _Core_
 
-* `[FIXED]` Context resolution and scope isolation reworked - now fully functionnal
+* `[FIXED]` Context resolution and modulePath isolation reworked - now fully functionnal
 * `[FIXED]` Stack resolution
 * `[ADDED]` `StandAloneContext` function `loadKoinModules` to load Koin modules wether Koin is already started
 * `[ADDED]` `StandAloneContext` function `loadProperties` to load Koin properties wether Koin is already started
@@ -303,7 +388,7 @@ The **dry run** feature, allows to run all of you modules in order to check if d
 _DSL_
 
 * replaced `declareContext{}` has been renamed `applicationContext{}`, and behind gives a better idea that you are describing your application context (the root context of your app)
-* Updated `scope(){}`has been dropped for `context(){}` - *context* describes a sub context of your application, has a a name and can have also sub context itself (sub contexts are hierarchicals)
+* Updated `modulePath(){}`has been dropped for `context(){}` - *context* describes a sub context of your application, has a a name and can have also sub context itself (sub contexts are hierarchicals)
 * Updated `bind{}` doesn't need lambda anymore to declare your bound class, but just the class in argument: `bind()`
 * Added `provideFactory` is a DSL keyword to provide a factory definition instead of singleton
 
@@ -375,15 +460,15 @@ class MykModule : Module() {
 
 _Scope_
 
-* You can declare/reuse scopes in your modules, with `scope {}` operator. See scopes section
-* Release scope instances with `release()` on a KoinContext
+* You can declare/reuse paths in your modules, with `modulePath {}` operator. See paths section
+* Release modulePath instances with `release()` on a KoinContext
 
 ```kotlin
 class MainActivityModule : Module() {
     override fun context() =
             declareContext {
                 // Scope MainActivity
-                scope { MainActivity::class }
+                modulePath { MainActivity::class }
                 // provided WeatherService
                 provide { WeatherService(get()) }
             }
@@ -436,7 +521,7 @@ val ctx = Koin().init(applicationContext).build(Module1(),Module2()...)
 ```
 Internal rework for simpler use with Scopes:
 * `Koin().build()` return KoinContext
-* factory, stack operators have been removed, for the scope fatures
+* factory, stack operators have been removed, for the modulePath fatures
 * delete/remove replcaed with `release()` Scope operation
 * import is replaced with module instances load
 * All reflection & kotlin-reflect code have been removed

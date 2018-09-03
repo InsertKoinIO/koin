@@ -1,0 +1,61 @@
+== Building instances with reflection
+
+The `koin-reflect` is a separated project to brings some reflection features. Why use a reflection API? Typically help build instance without using DSL using constructor or `get()` function.
+
+[IMPORTANT]
+====
+Using reflection is not costless. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on
+performances constraints platform (Android for example)
+====
+
+=== Instance builder with create()
+
+The first introduced function is the `create()` function.
+
+Instead of declaring a definition with instantiating its constructor and retrieving instances with get()
+
+[source,kotlin]
+----
+module {
+    single { ComponentA(get() ...) }
+}
+----
+
+You can use instead, the `create()` function to build an instance from its primary constructor, and fill the needed dependencies.
+
+[source,kotlin]
+----
+module {
+    single { create<ComponentA>() }
+}
+----
+
+=== More simple definitions
+
+You can also use the more "compact" notation that will use the `create()` function. Just use the single function without any expression:
+
+[source,kotlin]
+----
+module {
+    single<ComponentA>()
+}
+----
+
+If you have an implementation type and want to resolve with a target type, you can use the following `singleBy` function:
+
+[source,kotlin]
+----
+module {
+    singleBy<Implementation, Target>()
+}
+----
+
+[NOTE]
+====
+Works for single, factory & scope
+====
+
+[IMPORTANT]
+====
+If you use custom constructors expression like injection parameters or others, don't use the reflection API.
+====

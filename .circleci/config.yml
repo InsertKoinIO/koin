@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -17,22 +17,41 @@ jobs:
     
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: 
-          command: ./gradlew dependencies androidDependencies
-      
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
       - run: 
-          command: ./gradlew test
+          command: ./koin-projects/gradlew -p ./koin-projects clean test
+
+  doc:
+    docker:
+      # specify the version you desire here
+      - image: circleci/android:api-28-alpha
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    
+    steps:
+      - checkout
+        
+      # run tests!
+      - run: 
+          command: ./koin-projects/gradlew -p ./koin-projects/koin-book clean asciidoctor
+
+      - store_artifacts:
+          path: ./koin-projects/koin-book/build/asciidoc/
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build
+      - doc:
+          requires:
+            - build

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/firstView">
+
+    <fragment
+        tools:layout="@layout/view_third"
+        android:id="@+id/thirdView"
+        android:name="org.koin.sample.navigation.ThirdView"
+        android:label="ThirdView" >
+        <action
+            android:id="@+id/action_thirdView_to_fourFiveView"
+            app:destination="@id/fourFiveView" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/view_second"
+        android:id="@+id/secondView"
+        android:name="org.koin.sample.navigation.SecondView"
+        android:label="SecondView" >
+        <action
+            android:id="@+id/action_secondView_to_thirdView"
+            app:destination="@id/thirdView" />
+    </fragment>
+    <fragment
+        android:id="@+id/firstView"
+        android:name="org.koin.sample.navigation.FirstView"
+        android:label="view_second"
+        tools:layout="@layout/view_first">
+        <action
+            android:id="@+id/action_firstView_to_secondView"
+            app:destination="@id/secondView" />
+    </fragment>
+    <fragment
+        android:id="@+id/fourFiveView"
+        android:name="org.koin.sample.navigation.FourFiveView"
+        android:label="FourFiveView"
+        tools:layout="@layout/view_four_five">
+        <action
+            android:id="@+id/action_fourFiveView_to_firstView"
+            app:destination="@id/firstView" />
+    </fragment>
+</navigation>

@@ -1,0 +1,10 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'example-coffee-maker'
+
+dependencies {
+    compile project(":koin-core")
+    testImplementation project(":koin-test")
+
+    testCompile "org.mockito:mockito-inline:$mockito_version"
+}

@@ -1,0 +1,69 @@
+== About koin-spark
+
+The `koin-spark` project is dedicated to bring dependency injection for Spark.
+
+=== Gradle setup
+
+Add the `koin-ktor` dependency to your Gradle project:
+
+[source,gradle,subs="attributes"]
+----
+// Add Jcenter to your repositories if needed
+repositories {
+    jcenter()
+}
+dependencies {
+    // Reflection features for Koin
+    compile 'org.koin:koin-spark:{revnumber}'
+}
+----
+
+=== DSL enhancements
+
+The project brings the `controller` keyword to declare a single instance of your controller:
+
+[source,kotlin]
+----
+val helloAppModule = module {
+    single { HelloServiceImpl(get()) as HelloService }
+    single { HelloRepositoryImpl() as HelloRepository }
+
+    // Declare a controller
+    controller { HelloController(get()) }
+}
+----
+
+You controller class must extend `SparkController` interface:
+
+[source,kotlin]
+----
+class HelloController(val service: HelloService) : SparkController {
+    init {
+        get("/hello") {
+            service.sayHello()
+        }
+    }
+}
+----
+
+=== Spark & Koin
+
+The `koin-spark` project also introduces `start()` and `stop()` function. This first help you start Spark server with Koin
+modules:
+
+[source,kotlin]
+----
+fun main(vararg args: String) {
+    // Spark with Koin
+    start(modules = listOf(helloAppModule))
+}
+----
+
+
+
+
+
+
+
+
+

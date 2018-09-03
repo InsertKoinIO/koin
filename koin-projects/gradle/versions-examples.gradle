@@ -1,0 +1,10 @@
+ext {
+    // Android Support
+    support_lib_version = "27.1.1"
+    room_version = "1.1.1"
+
+    anko_version='0.10.4'
+    okhttp_version = '3.8.1'
+    retrofit_version = '2.2.0'
+    rxjava_version = '2.1.7'
+}

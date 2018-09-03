@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+ext {
+    android_sourceSet = true
+    pom_name = "koin-android"
+    pom_description = "Koin project - koin-android"
+}
+
+android {
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
+
+    defaultConfig {
+        minSdkVersion android_min_version
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    // Koin
+    api project(":koin-core")
+    testImplementation project(":koin-test")
+
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+}
+
+apply from: '../gradle/publish-android.gradle'

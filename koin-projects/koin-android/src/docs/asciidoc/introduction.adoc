@@ -1,0 +1,21 @@
+== About koin-android
+
+The `koin-android` project is dedicated to provide Koin powers to Android world. 
+
+For general Koin concepts, check the `koin-core` manual.
+
+=== Gradle setup
+
+Add the `koin-android` dependency to your Gradle project:
+
+[source,gradle,subs="attributes"]
+----
+// Add Jcenter to your repositories if needed
+repositories {
+    jcenter()
+}
+dependencies {
+    // Koin for Android
+    implementation 'org.koin:koin-android:{revnumber}'
+}
+----

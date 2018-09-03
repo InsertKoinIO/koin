@@ -1,0 +1,388 @@
+{
+  "response": {
+    "version": "0.1",
+    "termsofService": "http://www.wunderground.com/weather/api/d/terms.html",
+    "features": {
+      "forecast": 1
+    }
+  },
+  "forecast": {
+    "txtForecast": {
+      "date": "2:15 PM GMT",
+      "forecastday": [
+        {
+          "period": 0,
+          "icon": "partlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/partlycloudy.gif",
+          "title": "Friday",
+          "fcttext": "A mix of clouds and sun. High 56F. Winds light and variable.",
+          "fcttextMetric": "Sunshine and clouds mixed. High 13C. Winds light and variable.",
+          "pop": "0"
+        },
+        {
+          "period": 1,
+          "icon": "nt_mostlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/nt_mostlycloudy.gif",
+          "title": "Friday Night",
+          "fcttext": "Partly cloudy skies early will give way to cloudy skies late. Areas of patchy fog. Low near 40F. Winds light and variable.",
+          "fcttextMetric": "Partly cloudy early followed by cloudy skies overnight. Areas of patchy fog. Low 4C. Winds light and variable.",
+          "pop": "20"
+        },
+        {
+          "period": 2,
+          "icon": "clear",
+          "iconUrl": "http://icons.wxug.com/i/c/k/clear.gif",
+          "title": "Saturday",
+          "fcttext": "A few passing clouds, otherwise generally sunny. High 53F. Winds SSW at 5 to 10 mph.",
+          "fcttextMetric": "Sun and a few passing clouds. High 12C. Winds SSW at 10 to 15 km/h.",
+          "pop": "10"
+        },
+        {
+          "period": 3,
+          "icon": "nt_mostlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/nt_mostlycloudy.gif",
+          "title": "Saturday Night",
+          "fcttext": "Partly cloudy skies during the evening will give way to cloudy skies overnight. Areas of patchy fog. Low near 40F. Winds WSW at 5 to 10 mph.",
+          "fcttextMetric": "Partly cloudy skies in the evening, then becoming cloudy overnight. Areas of patchy fog. Low around 5C. Winds WSW at 10 to 15 km/h.",
+          "pop": "10"
+        },
+        {
+          "period": 4,
+          "icon": "mostlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/mostlycloudy.gif",
+          "title": "Sunday",
+          "fcttext": "Mostly cloudy. High 53F. Winds W at 5 to 10 mph.",
+          "fcttextMetric": "Mostly cloudy skies. High 12C. Winds W at 10 to 15 km/h.",
+          "pop": "10"
+        },
+        {
+          "period": 5,
+          "icon": "nt_mostlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/nt_mostlycloudy.gif",
+          "title": "Sunday Night",
+          "fcttext": "Partly cloudy skies early will become overcast later during the night. Low 43F. Winds WSW at 5 to 10 mph.",
+          "fcttextMetric": "Partly cloudy during the evening followed by cloudy skies overnight. Low 6C. Winds WSW at 10 to 15 km/h.",
+          "pop": "20"
+        },
+        {
+          "period": 6,
+          "icon": "cloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/cloudy.gif",
+          "title": "Monday",
+          "fcttext": "Cloudy skies. High 59F. Winds W at 10 to 20 mph.",
+          "fcttextMetric": "Cloudy. High near 15C. Winds W at 15 to 30 km/h.",
+          "pop": "20"
+        },
+        {
+          "period": 7,
+          "icon": "nt_partlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/nt_partlycloudy.gif",
+          "title": "Monday Night",
+          "fcttext": "Cloudy skies early, then partly cloudy after midnight. Low 47F. Winds W at 10 to 15 mph.",
+          "fcttextMetric": "Cloudy early with partial clearing expected late. Low 8C. Winds W at 15 to 25 km/h.",
+          "pop": "10"
+        }
+      ]
+    },
+    "simpleforecast": {
+      "forecastday": [
+        {
+          "date": {
+            "epoch": "1487358000",
+            "pretty": "7:00 PM GMT on February 17, 2017",
+            "day": 17,
+            "month": 2,
+            "year": 2017,
+            "yday": 47,
+            "hour": 19,
+            "min": "00",
+            "sec": 0,
+            "isdst": "0",
+            "monthname": "February",
+            "monthnameShort": "Feb",
+            "weekdayShort": "Fri",
+            "weekday": "Friday",
+            "ampm": "PM",
+            "tzShort": "GMT",
+            "tzLong": "Europe/London"
+          },
+          "period": 1,
+          "high": {
+            "fahrenheit": "56",
+            "celsius": "13"
+          },
+          "low": {
+            "fahrenheit": "40",
+            "celsius": "4"
+          },
+          "conditions": "Partly Cloudy",
+          "icon": "partlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/partlycloudy.gif",
+          "skyicon": "",
+          "pop": 0,
+          "qpfAllday": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfDay": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfNight": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "snowAllday": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowDay": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowNight": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "maxwind": {
+            "mph": 5,
+            "kph": 8,
+            "dir": "SW",
+            "degrees": 226
+          },
+          "avewind": {
+            "mph": 4,
+            "kph": 6,
+            "dir": "SW",
+            "degrees": 226
+          },
+          "avehumidity": 65,
+          "maxhumidity": 0,
+          "minhumidity": 0
+        },
+        {
+          "date": {
+            "epoch": "1487444400",
+            "pretty": "7:00 PM GMT on February 18, 2017",
+            "day": 18,
+            "month": 2,
+            "year": 2017,
+            "yday": 48,
+            "hour": 19,
+            "min": "00",
+            "sec": 0,
+            "isdst": "0",
+            "monthname": "February",
+            "monthnameShort": "Feb",
+            "weekdayShort": "Sat",
+            "weekday": "Saturday",
+            "ampm": "PM",
+            "tzShort": "GMT",
+            "tzLong": "Europe/London"
+          },
+          "period": 2,
+          "high": {
+            "fahrenheit": "53",
+            "celsius": "12"
+          },
+          "low": {
+            "fahrenheit": "40",
+            "celsius": "4"
+          },
+          "conditions": "Clear",
+          "icon": "clear",
+          "iconUrl": "http://icons.wxug.com/i/c/k/clear.gif",
+          "skyicon": "",
+          "pop": 10,
+          "qpfAllday": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfDay": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfNight": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "snowAllday": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowDay": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowNight": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "maxwind": {
+            "mph": 10,
+            "kph": 16,
+            "dir": "SSW",
+            "degrees": 197
+          },
+          "avewind": {
+            "mph": 9,
+            "kph": 14,
+            "dir": "SSW",
+            "degrees": 197
+          },
+          "avehumidity": 83,
+          "maxhumidity": 0,
+          "minhumidity": 0
+        },
+        {
+          "date": {
+            "epoch": "1487530800",
+            "pretty": "7:00 PM GMT on February 19, 2017",
+            "day": 19,
+            "month": 2,
+            "year": 2017,
+            "yday": 49,
+            "hour": 19,
+            "min": "00",
+            "sec": 0,
+            "isdst": "0",
+            "monthname": "February",
+            "monthnameShort": "Feb",
+            "weekdayShort": "Sun",
+            "weekday": "Sunday",
+            "ampm": "PM",
+            "tzShort": "GMT",
+            "tzLong": "Europe/London"
+          },
+          "period": 3,
+          "high": {
+            "fahrenheit": "53",
+            "celsius": "12"
+          },
+          "low": {
+            "fahrenheit": "43",
+            "celsius": "6"
+          },
+          "conditions": "Mostly Cloudy",
+          "icon": "mostlycloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/mostlycloudy.gif",
+          "skyicon": "",
+          "pop": 10,
+          "qpfAllday": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfDay": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfNight": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "snowAllday": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowDay": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowNight": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "maxwind": {
+            "mph": 10,
+            "kph": 16,
+            "dir": "W",
+            "degrees": 279
+          },
+          "avewind": {
+            "mph": 8,
+            "kph": 13,
+            "dir": "W",
+            "degrees": 279
+          },
+          "avehumidity": 82,
+          "maxhumidity": 0,
+          "minhumidity": 0
+        },
+        {
+          "date": {
+            "epoch": "1487617200",
+            "pretty": "7:00 PM GMT on February 20, 2017",
+            "day": 20,
+            "month": 2,
+            "year": 2017,
+            "yday": 50,
+            "hour": 19,
+            "min": "00",
+            "sec": 0,
+            "isdst": "0",
+            "monthname": "February",
+            "monthnameShort": "Feb",
+            "weekdayShort": "Mon",
+            "weekday": "Monday",
+            "ampm": "PM",
+            "tzShort": "GMT",
+            "tzLong": "Europe/London"
+          },
+          "period": 4,
+          "high": {
+            "fahrenheit": "59",
+            "celsius": "15"
+          },
+          "low": {
+            "fahrenheit": "47",
+            "celsius": "8"
+          },
+          "conditions": "Overcast",
+          "icon": "cloudy",
+          "iconUrl": "http://icons.wxug.com/i/c/k/cloudy.gif",
+          "skyicon": "",
+          "pop": 20,
+          "qpfAllday": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfDay": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "qpfNight": {
+            "in": 0.0,
+            "mm": 0
+          },
+          "snowAllday": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowDay": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "snowNight": {
+            "in": 0.0,
+            "cm": 0.0
+          },
+          "maxwind": {
+            "mph": 20,
+            "kph": 32,
+            "dir": "W",
+            "degrees": 264
+          },
+          "avewind": {
+            "mph": 14,
+            "kph": 23,
+            "dir": "W",
+            "degrees": 264
+          },
+          "avehumidity": 89,
+          "maxhumidity": 0,
+          "minhumidity": 0
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:gravity="center"
+    android:id="@+id/splash"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TextDisplay1"
+        android:id="@+id/splashTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/app_name"
+        android:textColor="@color/t_white"
+        android:textSize="42sp" />
+
+    <com.joanzapata.iconify.widget.IconTextView
+        android:id="@+id/splashIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="{wi_day_sunny spin}"
+        android:textColor="@color/t_white"
+        android:textSize="80sp" />
+
+    <com.joanzapata.iconify.widget.IconTextView
+        android:id="@+id/splashIconFail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="{wi_rain}"
+        android:visibility="gone"
+        android:textColor="@color/t_white"
+        android:textSize="80sp" />
+
+</LinearLayout>
