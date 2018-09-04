@@ -25,7 +25,7 @@ import org.koin.android.scope.ext.android.getCurrentScope
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
     override val presenter: WeatherHeaderContract.Presenter by inject()
-    val userSession by inject<UserSession>(scope = getKoin().getScope("session"))
+    val userSession by inject<UserSession>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

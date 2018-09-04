@@ -28,14 +28,14 @@ val weatherAppModule = module {
 
         // Shared session
         // shared with WeatherActivity WeatherHeaderFragment & WeatherHeaderPresenter
-        scope { UserSession() }
+        scope("session") { UserSession() }
 
         // Presenter for ResultHeader View
         factory<WeatherHeaderContract.Presenter> {
             WeatherHeaderPresenter(
                 get(),
                 get(),
-                get(scope = getScope("session"))
+                get()
             )
         }
 

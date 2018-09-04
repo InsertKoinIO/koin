@@ -1,8 +1,10 @@
 package org.koin.test.scope
 
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.error.NoScopeException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.get
@@ -42,7 +44,11 @@ class ScopeDSLTest : AutoCloseKoinTest() {
         val session = koin.createScope("session")
         session.close()
 
-       get<B>()
+        try {
+            get<B>()
+            fail()
+        } catch (e: NoScopeException) {
+        }
     }
 
     @Test

@@ -9,8 +9,8 @@ import org.koin.standalone.inject
 import org.koin.test.KoinTest
 import org.koin.test.declareMock
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
 import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 
 class CoffeeMakerTest : KoinTest {
 
@@ -32,8 +32,8 @@ class CoffeeMakerTest : KoinTest {
     fun testHeaterIsTurnedOnAndThenOff() {
         given(heater.isHot()).will { true }
         coffeeMaker.brew()
-        Mockito.verify(heater, times(1)).on()
-        Mockito.verify(heater, times(1)).off()
+        verify(heater, times(1)).on()
+        verify(heater, times(1)).off()
     }
 
 }
