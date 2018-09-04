@@ -23,7 +23,6 @@ import org.koin.dsl.definition.Kind
 import org.koin.dsl.path.Path
 import org.koin.error.ClosedScopeException
 import org.koin.error.NoScopeException
-import java.util.*
 
 /**
  * Instance factory - handle objects creation against BeanRegistry
@@ -32,6 +31,7 @@ import java.util.*
 open class InstanceFactory {
 
     val instances = ArrayList<InstanceHolder<*>>()
+    val callbacks = ArrayList<ModuleCallBack>()
 
     /**
      * Retrieve or create instance from bean definition
@@ -122,5 +122,14 @@ open class InstanceFactory {
         val singeInstances =
             instances.filter { it.bean.kind == Kind.Single && path.isVisible(it.bean.path) }
         instances.removeAll(singeInstances)
+        callbacks.forEach { it.onRelease(path.name) }
+    }
+
+    /**
+     * Register ModuleCallBack
+     */
+    @Deprecated("Uset he Scope API.")
+    fun register(callback: ModuleCallBack) {
+        callbacks += callback
     }
 }

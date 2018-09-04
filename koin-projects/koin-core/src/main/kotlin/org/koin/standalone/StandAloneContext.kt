@@ -21,6 +21,7 @@ import org.koin.core.scope.ScopeCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.InstanceRegistry
+import org.koin.core.instance.ModuleCallBack
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
@@ -84,11 +85,22 @@ object StandAloneContext {
     }
 
     /**
-     * Register ModuleDefinition callbacks
-     * @see ScopeCallback - ModuleDefinition CallBack
+     * Register ScopeCallback - being notified on Scope closing
+     * @see ScopeCallback - ScopeCallback
      */
     fun registerScopeCallback(callback: ScopeCallback) {
         getKoinContext().scopeRegistry.register(callback)
+    }
+
+    /**
+     * Register ModuleCallBack - being notified on Path release
+     * @see ScopeCallback - ModuleCallBack
+     *
+     * Deprecared - Use the Scope API
+     */
+    @Deprecated("Please use the Scope API instead.")
+    fun registerModuleCallBack(callback: ModuleCallBack) {
+        getKoinContext().instanceRegistry.instanceFactory.register(callback)
     }
 
     /**
