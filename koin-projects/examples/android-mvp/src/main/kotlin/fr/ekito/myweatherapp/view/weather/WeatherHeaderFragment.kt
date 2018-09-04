@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
-import org.koin.android.scope.ext.android.bindScope
-import org.koin.android.scope.ext.android.getCurrentScope
 
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
@@ -37,7 +35,6 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindScope(getCurrentScope())
         println("UserSession : $this got $userSession")
     }
 

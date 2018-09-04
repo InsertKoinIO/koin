@@ -48,7 +48,7 @@ public class UnitJavaTest extends AutoCloseKoinTest {
 
         Scope session = getKoin().createScope("session");
 
-        assertNotNull(get(ComponentD.class, "", session));
+        assertNotNull(get(ComponentD.class));
 
         session.close();
     }

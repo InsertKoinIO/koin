@@ -17,7 +17,7 @@ import org.koin.test.ext.junit.assertRemainingInstanceHolders
 class AndroidObserverTest : AutoCloseKoinTest() {
 
     val module = module("module1") {
-        scope { MyService() }
+        scope("session") { MyService() }
     }
 
     class MyService

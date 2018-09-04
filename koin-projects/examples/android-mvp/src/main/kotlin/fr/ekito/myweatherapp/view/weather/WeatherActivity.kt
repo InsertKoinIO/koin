@@ -12,10 +12,9 @@ import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.ext.android.bindScope
+import org.koin.android.scope.ext.android.createScope
 
 /**
  * Weather Result View
@@ -24,15 +23,14 @@ class WeatherActivity : AppCompatActivity() {
 
     val TAG = this::class.java.simpleName
 
-    val userSession : UserSession by inject()
-    val session = getKoin().createScope("session")
-
+    val userSession: UserSession by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
-        bindScope(session)
+        // Bind "session" scope to WeatherActivity lifecycle
+        bindScope(createScope("session"))
 
         val weatherTitleFragment = WeatherHeaderFragment()
         val resultListFragment = WeatherListFragment()

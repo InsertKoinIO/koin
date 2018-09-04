@@ -165,21 +165,15 @@ class ModuleDefinition(
      * @param definition
      */
     inline fun <reified T : Any> scope(
-        scopeId: String? = null,
+        scopeId: String,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = provide("", false, override, Kind.Scope, definition)
-        scopeId?.let { beanDefinition.setScope(scopeId) }
+        beanDefinition.setScope(scopeId)
         return beanDefinition
     }
-
-    /**
-     * Get scope for id
-     */
-    fun getScope(id: String): Scope =
-        koinContext.getScope(id)
-
+    
     /**
      * Resolve a component
      * @param name : component canonicalName

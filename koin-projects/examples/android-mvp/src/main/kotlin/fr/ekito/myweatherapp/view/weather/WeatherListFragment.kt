@@ -14,8 +14,6 @@ import fr.ekito.myweatherapp.view.weather.list.WeatherListAdapter
 import kotlinx.android.synthetic.main.fragment_result_list.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.ext.android.inject
-import org.koin.android.scope.ext.android.bindScope
-import org.koin.android.scope.ext.android.getCurrentScope
 
 class WeatherListFragment : Fragment(), WeatherListContract.View {
 
@@ -32,8 +30,6 @@ class WeatherListFragment : Fragment(), WeatherListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindScope(getCurrentScope())
-
         prepareListView()
     }
 

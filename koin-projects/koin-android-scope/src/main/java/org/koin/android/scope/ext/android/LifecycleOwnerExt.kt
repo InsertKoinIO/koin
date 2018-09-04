@@ -40,13 +40,28 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
     lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
 
-/**
- * Get/Create scope for current Activity/Fragment
- */
-fun LifecycleOwner.getCurrentScope() =
-    (this as ComponentCallbacks).getKoin().getOrCreateScope(getCurrentScopeId())
+private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
 /**
- * Current scope Id
+ * Get or create Scope
+ * @param scope Id
  */
-fun LifecycleOwner.getCurrentScopeId(): String = "android_session_${hashCode()}"
+fun LifecycleOwner.getOrCreateScope(id : String) : Scope {
+    return getKoin().getOrCreateScope(id)
+}
+
+/**
+ * Get Scope
+ * @param scope Id
+ */
+fun LifecycleOwner.getScope(id : String) : Scope {
+    return getKoin().getScope(id)
+}
+
+/**
+ * Create Scope
+ * @param scope Id
+ */
+fun LifecycleOwner.createScope(id : String) : Scope {
+    return getKoin().createScope(id)
+}

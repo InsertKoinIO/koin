@@ -45,22 +45,22 @@ class ScopeAPITest : AutoCloseKoinTest() {
     @Test
     fun `get instance with closed scope`() {
         startKoin(listOf(module {
-            scope { B() }
+            scope("session1") { B() }
         }), logger = PrintLogger(showDebug = true))
 
         val koin = getKoin()
 
         val session1_1: Scope = koin.createScope("session1")
 
-        val b_1 = get<B>(scope = session1_1)
+        val b_1 = get<B>()
         assertNotNull(b_1)
 
         session1_1.close()
 
         try {
-            get<B>(scope = session1_1)
+            get<B>()
             fail()
-        } catch (e: ClosedScopeException) {
+        } catch (e: NoScopeException) {
         }
     }
 
@@ -68,7 +68,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
     @Test
     fun `get scope instance with no scope`() {
         startKoin(listOf(module {
-            scope { B() }
+            scope("session1") { B() }
         }))
         try {
             get<B>()
@@ -90,18 +90,23 @@ class ScopeAPITest : AutoCloseKoinTest() {
     @Test
     fun `get & release from diff scope`() {
         startKoin(listOf(module {
-            scope { B() }
+            module("mod1") {
+                scope("session1") { B() }
+            }
+            module("mod2") {
+                scope("session2") { B() }
+            }
         }), logger = PrintLogger(showDebug = true))
 
         val koin = getKoin()
 
         val session1_1: Scope = koin.createScope("session1")
 
-        val b_1 = get<B>(scope = session1_1)
+        val b_1 = get<B>(name = "mod1.B")
 
         val session1_2: Scope = koin.createScope("session2")
 
-        val b_2 = get<B>(scope = session1_2)
+        val b_2 = get<B>(name = "mod2.B")
 
         assertNotEquals(b_1, b_2)
 
@@ -112,14 +117,14 @@ class ScopeAPITest : AutoCloseKoinTest() {
     @Test
     fun `get & release from same scope`() {
         startKoin(listOf(module {
-            scope { B() }
+            scope("session1") { B() }
         }), logger = PrintLogger(showDebug = true))
 
         val koin = getKoin()
 
         val session1_1: Scope = koin.createScope("session1")
 
-        val b_1 = get<B>(scope = session1_1)
+        val b_1 = get<B>()
 
         val session1_2: Scope = koin.getScope("session1")
 
@@ -134,7 +139,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
     fun `mixed single & scope`() {
         startKoin(listOf(module {
             single { A() }
-            scope { B() }
+            scope("session1") { B() }
         }), logger = PrintLogger(showDebug = true))
 
         val koin = getKoin()
@@ -162,7 +167,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
     fun `mixed same scope`() {
         startKoin(listOf(module {
             single { A() }
-            scope { B() }
+            scope("session1") { B() }
         }), logger = PrintLogger(showDebug = true))
 
         val koin = getKoin()
@@ -189,11 +194,11 @@ class ScopeAPITest : AutoCloseKoinTest() {
     @Test
     fun `scope close callback`() {
         startKoin(listOf(module {
-            scope { B() }
+            scope("session") { B() }
         }), logger = PrintLogger(showDebug = true))
 
-        var closed : String? = null
-        registerScopeCallback(object : ScopeCallback{
+        var closed: String? = null
+        registerScopeCallback(object : ScopeCallback {
             override fun onClose(id: String) {
                 closed = id
             }
@@ -209,7 +214,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
 
         session.close()
 
-        assertEquals(id,closed)
+        assertEquals(id, closed)
     }
 
 }

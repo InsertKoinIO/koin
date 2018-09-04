@@ -15,8 +15,10 @@
  */
 package org.koin.androidx.scope.ext.android
 
+import android.content.ComponentCallbacks
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeObserver
 import org.koin.core.KoinContext
 import org.koin.core.scope.Scope
@@ -36,22 +38,33 @@ import org.koin.standalone.StandAloneContext
  * @param event : lifecycle event - default ON_DESTROY
  * @param scopes
  */
-fun LifecycleOwner.bindScope(scope : Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
+fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
     lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
 
-/**
- * Get Koin context
- */
-fun LifecycleOwner.getKoin(): KoinContext = (StandAloneContext.koinContext as KoinContext)
+private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
 /**
- * Get/Create scope for current Activity/Fragment
+ * Get or create Scope
+ * @param scope Id
  */
-fun LifecycleOwner.getCurrentScope() = this.getKoin().getOrCreateScope(getCurrentScopeId())
+fun LifecycleOwner.getOrCreateScope(id : String) : Scope {
+    return getKoin().getOrCreateScope(id)
+}
 
 /**
- * Current scope Id
+ * Get Scope
+ * @param scope Id
  */
-fun LifecycleOwner.getCurrentScopeId() : String = this.hashCode().toString()
+fun LifecycleOwner.getScope(id : String) : Scope {
+    return getKoin().getScope(id)
+}
+
+/**
+ * Create Scope
+ * @param scope Id
+ */
+fun LifecycleOwner.createScope(id : String) : Scope {
+    return getKoin().createScope(id)
+}
 

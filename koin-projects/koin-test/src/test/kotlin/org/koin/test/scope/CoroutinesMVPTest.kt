@@ -17,7 +17,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
 
         module("View") {
             single { View() }
-            scope { Presenter(get()) }
+            scope("session") { Presenter(get()) }
         }
     }
 
