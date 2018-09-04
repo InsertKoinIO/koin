@@ -23,25 +23,21 @@ val weatherAppModule = module {
     // Presenter for Search View
     factory<SplashContract.Presenter> { SplashPresenter(get(), get()) }
 
-    // scoped module example
-    module("WeatherActivity") {
+    // Shared session
+    // shared with WeatherActivity WeatherHeaderFragment & WeatherHeaderPresenter
+    scope("session") { UserSession() }
 
-        // Shared session
-        // shared with WeatherActivity WeatherHeaderFragment & WeatherHeaderPresenter
-        scope("session") { UserSession() }
-
-        // Presenter for ResultHeader View
-        factory<WeatherHeaderContract.Presenter> {
-            WeatherHeaderPresenter(
-                get(),
-                get(),
-                get()
-            )
-        }
-
-        // Presenter for ResultList View
-        factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
+    // Presenter for ResultHeader View
+    factory<WeatherHeaderContract.Presenter> {
+        WeatherHeaderPresenter(
+            get(),
+            get(),
+            get()
+        )
     }
+
+    // Presenter for ResultList View
+    factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
 
     // Presenter with injection parameter for Detail View
     factory<DetailContract.Presenter> { (id: String) -> DetailPresenter(id, get(), get()) }
