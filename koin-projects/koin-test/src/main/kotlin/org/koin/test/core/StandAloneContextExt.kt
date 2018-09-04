@@ -20,13 +20,15 @@ import org.koin.test.ext.koin.dryRun
 fun StandAloneContext.checkModules(list: List<Module>, logger: Logger) {
     Koin.logger = logger //PrintLogger(showDebug = true)
     Koin.logger.info("[Sandbox]")
+    val scopeRegistry = ScopeRegistry()
     koinContext =
             KoinContext(
                 InstanceRegistry(
                     BeanRegistry(),
                     SandboxInstanceFactory(),
-                    PathRegistry()
-                ), ScopeRegistry(), PropertyRegistry()
+                    PathRegistry(),
+                    scopeRegistry
+                ), scopeRegistry, PropertyRegistry()
             )
 
     // Build list

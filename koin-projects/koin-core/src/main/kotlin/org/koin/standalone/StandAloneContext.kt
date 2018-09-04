@@ -73,12 +73,13 @@ object StandAloneContext {
         if (!isStarted) {
             Koin.logger.info("[context] create")
             val propertyResolver = PropertyRegistry()
+            val scopeRegistry = ScopeRegistry()
             val instanceResolver = InstanceRegistry(
                 BeanRegistry(),
                 InstanceFactory(),
-                PathRegistry()
+                PathRegistry(),
+                scopeRegistry
             )
-            val scopeRegistry = ScopeRegistry()
             koinContext = KoinContext(instanceResolver, scopeRegistry, propertyResolver)
             isStarted = true
         }

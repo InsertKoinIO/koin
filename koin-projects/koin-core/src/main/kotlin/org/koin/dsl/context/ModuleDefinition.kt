@@ -19,6 +19,7 @@ import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.Scope
+import org.koin.core.scope.setScope
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Definition
 import org.koin.dsl.definition.Kind
@@ -164,12 +165,20 @@ class ModuleDefinition(
      * @param definition
      */
     inline fun <reified T : Any> scope(
-        name: String = "",
+        scopeId: String? = null,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return provide(name, false, override, Kind.Scope, definition)
+        val beanDefinition = provide("", false, override, Kind.Scope, definition)
+        scopeId?.let { beanDefinition.setScope(scopeId) }
+        return beanDefinition
     }
+
+    /**
+     * Get scope for id
+     */
+    fun getScope(id: String): Scope =
+        koinContext.getScope(id)
 
     /**
      * Resolve a component
@@ -186,13 +195,6 @@ class ModuleDefinition(
             scope = scope,
             parameters = parameters
         ) else koinContext.get(scope = scope, parameters = parameters)
-
-    /**
-     * Get scope for id
-     */
-    fun getScope(id: String): Scope =
-        koinContext.getScope(id)
-
 
     /**
      * Retrieve a property

@@ -21,6 +21,8 @@ import org.koin.core.fullname
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeRegistry
+import org.koin.core.scope.getScope
 import org.koin.core.stack.ResolutionStack
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
@@ -34,7 +36,8 @@ import kotlin.reflect.KClass
 class InstanceRegistry(
     val beanRegistry: BeanRegistry,
     val instanceFactory: InstanceFactory,
-    val pathRegistry: PathRegistry
+    val pathRegistry: PathRegistry,
+    private val scopeRegistry: ScopeRegistry
 ) {
 
     private val resolutionStack = ResolutionStack()
@@ -87,8 +90,12 @@ class InstanceRegistry(
                         resolutionStack.last()
                     )
 
+                // Retrieve scope from DSL
+                val associatedScopeId = beanDefinition.getScope()
+                val targetScope : Scope? = scope ?: if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(associatedScopeId) else null
+
                 val logPath =
-                    if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
+                        if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
                 Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
@@ -98,7 +105,7 @@ class InstanceRegistry(
                     val (instance, created) = instanceFactory.retrieveInstance(
                         beanDefinition,
                         parameters,
-                        scope
+                        targetScope
                     )
 
                     Koin.logger.debug("$logIndent|-- $instance")

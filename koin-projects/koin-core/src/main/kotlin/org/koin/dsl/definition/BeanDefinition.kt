@@ -47,10 +47,9 @@ data class BeanDefinition<out T>(
     val kind: Kind,
     val isEager: Boolean = false,
     val allowOverride: Boolean = false,
+    val attributes : HashMap<String,Any> = HashMap(),
     val definition: Definition<T>
 ) {
-    // implicit naming / alias?
-
     internal val classes: List<KClass<*>> = listOf(clazz) + types
 
     /**
@@ -80,13 +79,14 @@ data class BeanDefinition<out T>(
     }
 
     private fun boundTypes(): String =
-        "(" + types.map { it.java.canonicalName }.joinToString() + ")"
+        "(" + types.joinToString { it.java.canonicalName } + ")"
 
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {
             name == other.name &&
                     clazz == other.clazz &&
                     path == other.path &&
+                    attributes == other.attributes &&
                     types == other.types
         } else false
     }
@@ -95,6 +95,7 @@ data class BeanDefinition<out T>(
         var result = name.hashCode()
         result = 31 * result + clazz.hashCode()
         result = 31 * result + types.hashCode()
+        result = 31 * result + attributes.hashCode()
         result = 31 * result + path.hashCode()
         return result
     }
