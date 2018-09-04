@@ -26,7 +26,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     class View() : KoinComponent {
         val session = getKoin().createScope("session")
-        val presenter: Presenter by inject(scope = session)
+        val presenter: Presenter by inject()
 
         fun onDestroy() {
             session.close()
@@ -43,7 +43,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         startKoin(listOf(MVPModule, DataSourceModule),logger = PrintLogger(showDebug = true))
 
         val view = get<View>()
-        val presenter = get<Presenter>(scope = view.session)
+        val presenter = get<Presenter>()
         val repository = get<Repository>()
         val datasource = get<DebugDatasource>()
 

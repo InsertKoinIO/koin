@@ -37,9 +37,8 @@ interface KoinComponent
  */
 inline fun <reified T: Any> KoinComponent.inject(
     name: String = "",
-    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { getKoin().get<T>(name, scope, parameters) }
+) = lazy { getKoin().get<T>(name, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -48,10 +47,9 @@ inline fun <reified T: Any> KoinComponent.inject(
  */
 inline fun <reified T : Any> KoinComponent.get(
     name: String = "",
-    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
-    getKoin().get(name, scope, parameters)
+    getKoin().get(name, parameters)
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -61,11 +59,10 @@ inline fun <reified T : Any> KoinComponent.get(
 fun <T: Any> KoinComponent.get(
     name: String = "",
     clazz: KClass<*>,
-    scope: Scope? = null,
     parameters: ParameterDefinition = emptyParameterDefinition(),
     filter: DefinitionFilter? = null
 ): T =
-    getKoin().get(name, clazz, scope, parameters, filter)
+    getKoin().get(name, clazz, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent

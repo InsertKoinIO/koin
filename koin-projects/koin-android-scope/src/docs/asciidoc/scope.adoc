@@ -34,7 +34,6 @@ Then we have:
 * medium live components (user sessions ...) - used by several screens, must be dropped after an amount of time
 * short live components (views) - used by only one screen & must be dropped at the end of the screen
 
-
 Long live components can be easily described as `single` definitions. For medium and short live components we can have several approaches.
 
 In the case of MVP architecture style, the `Presenter` is a short live component to help/support the UI. The presenter must be created each time the screen is showing,
@@ -69,11 +68,8 @@ val androidModule = module {
 ----
 val androidModule = module {
 
-    scope { Presenter() }
+    scope("scope_id") { Presenter() }
 }
-
-// Resolve the Presenter instance with a previously created scope
-get<Presenter>(scope = /* your scope */)
 ----
 
 [IMPORTANT]
@@ -81,11 +77,6 @@ get<Presenter>(scope = /* your scope */)
 Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. Th system keeps a reference
 on it and can't totally drop it via garbage collection.
 ====
-
-
-=== Activity & Fragment scopes
-
-You can retrieve (get or create) the scope associated from your Activity or Fragment with the `getCurrentScope()` function.
 
 === Binding scope to lifecycle
 
@@ -96,14 +87,14 @@ Koin gives the `bindScope` function to bind the actual Android component lifecyc
 ----
 class MyActivity : AppCompatActivity() {
 
-    // inject Presenter instance, tied to current MyActivity's scope
-    val presenter : Presenter by inject(scope = getCurrentScope())
+    // inject Presenter instance, tied to current "scope_id" scope
+    val presenter : Presenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // bind current lifecycle to Activity's scope
-        bindScope(getCurrentScope())
+        bindScope(getScope("scope_id"))
     }
 ----
 
@@ -118,7 +109,7 @@ First declare a scope definition:
 ----
 module {
     // Shared user session data
-    scope { UserSession() }
+    scope("session") { UserSession() }
 }
 ----
 
@@ -136,12 +127,12 @@ Then use it anywhere you need it:
 class MyActivity1 : AppCompatActivity() {
 
     // inject Presenter instance, tied to current MyActivity's scope
-    val userSession : UserSession by inject(scope = getKoin().getScope("session"))
+    val userSession : UserSession by inject()
 }
 class MyActivity2 : AppCompatActivity() {
 
     // inject Presenter instance, tied to current MyActivity's scope
-    val userSession : UserSession by inject(scope = getKoin().getScope("session"))
+    val userSession : UserSession by inject()
 }
 ----
 
@@ -158,9 +149,9 @@ Just inject it into constructor, with teh right scope:
 ----
 module {
     // Shared user session data
-    scope { UserSession() }
+    scope("session") { UserSession() }
     // Inject UserSession instance from "session" Scope
-    factory { Presenter(get(scope = getScope("session")))}
+    factory { Presenter(get())}
 }
 ----
 

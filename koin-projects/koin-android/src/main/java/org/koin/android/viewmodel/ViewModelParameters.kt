@@ -17,7 +17,6 @@ package org.koin.android.viewmodel
 
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.core.scope.Scope
 
 /**
  * Data holder for ViewModelFactory call
@@ -26,6 +25,5 @@ import org.koin.core.scope.Scope
  */
 data class ViewModelParameters(
     val name: String? = null,
-    val scope: Scope? = null,
     val parameters: ParameterDefinition = emptyParameterDefinition()
 )

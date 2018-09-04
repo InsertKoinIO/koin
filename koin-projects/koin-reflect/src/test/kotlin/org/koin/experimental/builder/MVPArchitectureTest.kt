@@ -29,7 +29,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     class View() : KoinComponent {
         val session = getKoin().createScope("session")
-        val presenter: Presenter by inject(scope = session)
+        val presenter: Presenter by inject()
 
         fun onDestroy() {
             session.close()

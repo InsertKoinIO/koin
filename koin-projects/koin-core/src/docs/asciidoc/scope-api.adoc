@@ -13,22 +13,21 @@ When the scope context ends, any objects bound under that scope cannot be inject
 By default in Koin, we have 3 kind of scopes:
 
 - `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
-- `factory` definition, create a new object each time. No persistence in the container (can't be shared).
+- `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).
 - `scope` definition, create an object that persistent tied to the associated scope lifetime.
 
-To declare a scope definition, use the `scope` function:
+To declare a scope definition, use the `scope` function with a given scope Id:
 
 [source,kotlin]
 ----
 module {
-    scope { Presenter() }
+    scope("scope_id") { Presenter() }
 }
 ----
 
 [IMPORTANT]
 ====
-A scope definition can't be resolved without any scope: `get<Presenter>()` will result in an error. You have to create or retrieve a previously created scope,
-and give it when resolving instance: `get<Presenter>(scope = /* your scope */)``
+A scope definition can't be resolved if associated scope has not been created. Then `get<Presenter>()` return an error.
 ====
 
 === Create & retrieve a scope
@@ -41,26 +40,30 @@ From a `KoinComponent` class, just use the `getKoin()` function to have access t
 
 === Using a scope
 
-Once you have your `Scope` instance, let use it to resolve a component:
+Once you have create a `Scope` instance, let use it to resolve a component:
 
 .from a KoinComponent class
 [source,kotlin]
 ----
+module {
+    scope("scope_id") { Presenter() }
+}
+
 // create a scope
-val session = getKoin().createScope("session")
+val session = getKoin().createScope("scope_id")
 
 // or get scope if already created before
-val session = getKoin().getScope("session")
+val session = getKoin().getScope("scope_id")
 
-// will return the same instance of Presenter until 'session' is closed
-val presenter = get<Presenter>(scope = session)
+// will return the same instance of Presenter until Scope 'scope_id' is closed
+val presenter = get<Presenter>()
 ----
 
-Just specify which scope to use when resolving it: `by inject(scope = /* your scope */)` or `get(scope = /* your scope */)`
+Just resolving it: `by inject()` or `get()`. The DSL will indicate which scope to use.
 
 === Inject it with DSL
 
-If one of your definition need to inject a scope instance, just resolve it by precising the needed scope:
+If one of your definition need to inject a scope instance, just resolve it ... but be sure to have created the scope before:
 
 [source,kotlin]
 ----
@@ -75,7 +78,7 @@ module {
     // Shared user session data
     scope { UserSession() }
     // Inject UserSession instance from "session" Scope
-    factory { Presenter(get(scope = getScope("session")))}
+    factory { Presenter(get())}
 }
 ----
 
@@ -88,7 +91,7 @@ Once your scope is finished, just closed it with the `Scope.close()` function:
 // from a KoinComponent
 val session = getKoin().createScope("session")
 // will return the same instance of Presenter until 'session' is closed
-val presenter = get<Presenter>(scope = session)
+val presenter = get<Presenter>()
 
 // close it
 session.close()

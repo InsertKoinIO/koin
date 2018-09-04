@@ -173,7 +173,7 @@ class ModuleDefinition(
         beanDefinition.setScope(scopeId)
         return beanDefinition
     }
-    
+
     /**
      * Resolve a component
      * @param name : component canonicalName
@@ -181,14 +181,12 @@ class ModuleDefinition(
      */
     inline fun <reified T : Any> get(
         name: String? = null,
-        scope: Scope? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T =
         if (name != null) koinContext.get(
             name,
-            scope = scope,
             parameters = parameters
-        ) else koinContext.get(scope = scope, parameters = parameters)
+        ) else koinContext.get(parameters = parameters)
 
     /**
      * Retrieve a property

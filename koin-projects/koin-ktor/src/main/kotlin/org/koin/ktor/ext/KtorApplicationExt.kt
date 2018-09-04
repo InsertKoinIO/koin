@@ -65,10 +65,9 @@ fun Application.installKoin(
  */
 inline fun <reified T : Any> Application.inject(
     name: String = "",
-    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    lazy { get<T>(name, scope, parameters) }
+    lazy { get<T>(name, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -78,10 +77,9 @@ inline fun <reified T : Any> Application.inject(
  */
 inline fun <reified T : Any> Application.get(
     name: String = "",
-    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    getKoin().get<T>(name, scope, parameters)
+    getKoin().get<T>(name, parameters)
 
 /**
  * lazy inject given property

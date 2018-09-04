@@ -76,9 +76,8 @@ fun ComponentCallbacks.startKoin(
  */
 inline fun <reified T: Any> ComponentCallbacks.inject(
     name: String = "",
-    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { get<T>(name, scope, parameters) }
+) = lazy { get<T>(name, parameters) }
 
 /**
  * get given dependency for Android component
@@ -88,9 +87,8 @@ inline fun <reified T: Any> ComponentCallbacks.inject(
  */
 inline fun <reified T: Any> ComponentCallbacks.get(
     name: String = "",
-    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-): T = getKoin().get(name, scope, parameters)
+): T = getKoin().get(name, parameters)
 
 /**
  * lazy inject given property for Android component

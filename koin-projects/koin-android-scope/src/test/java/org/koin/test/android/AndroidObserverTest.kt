@@ -27,7 +27,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         startKoin(listOf(module))
 
         val session = getKoin().createScope("session")
-        val service = get<MyService>(scope = session)
+        val service = get<MyService>()
         Assert.assertNotNull(service)
 
         val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", session)

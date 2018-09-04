@@ -5,8 +5,11 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.koin.dsl.module.module
-import org.koin.standalone.*
+import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.standalone.get
+import org.koin.standalone.getKoin
+import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.*
 
@@ -27,7 +30,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
 
     class View : KoinComponent {
         val session = getKoin().createScope("session")
-        val presenter: Presenter by inject(scope = session)
+        val presenter: Presenter by inject()
 
         fun onDestroy() {
             session.close()
@@ -45,7 +48,7 @@ class CoroutinesMVPTest : AutoCloseKoinTest() {
 
         val view = async { get<View>() }.await()
         async {
-            val presenter = async { get<Presenter>(scope = view.session) }.await()
+            val presenter = async { get<Presenter>() }.await()
             Assert.assertEquals(presenter, view.presenter)
 
             val repository = get<Repository>()
