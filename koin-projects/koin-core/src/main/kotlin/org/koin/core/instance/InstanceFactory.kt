@@ -20,6 +20,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.scope.Scope
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Kind
+import org.koin.dsl.path.Path
 import org.koin.error.ClosedScopeException
 import org.koin.error.NoScopeException
 import java.util.*
@@ -36,7 +37,11 @@ open class InstanceFactory {
      * Retrieve or create instance from bean definition
      * @return Instance / has been created
      */
-    fun <T : Any> retrieveInstance(def: BeanDefinition<T>, p: ParameterDefinition, scope: Scope? = null): Instance<T> {
+    fun <T : Any> retrieveInstance(
+        def: BeanDefinition<T>,
+        p: ParameterDefinition,
+        scope: Scope? = null
+    ): Instance<T> {
         // find holder
         var holder = find(def, scope)
         if (holder == null) {
@@ -107,5 +112,15 @@ open class InstanceFactory {
      */
     fun clear() {
         instances.clear()
+    }
+
+    /**
+     * Release single instance from their Path
+     */
+    @Deprecated("Release path should not be use anymore. Use Scope API instead")
+    fun releasePath(path: Path) {
+        val singeInstances =
+            instances.filter { it.bean.kind == Kind.Single && path.isVisible(it.bean.path) }
+        instances.removeAll(singeInstances)
     }
 }

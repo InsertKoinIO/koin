@@ -107,8 +107,11 @@ class KoinContext(
      * Drop all instances for path context
      * @param path
      */
-    @Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
-    fun release(path: String) : Unit = error("release() function is now deprecated. Please use the Scope API.")
+    @Deprecated("Please use Scope API.")
+    fun release(path: String) : Unit {
+        val p = instanceRegistry.pathRegistry.getPath(path)
+        instanceRegistry.instanceFactory.releasePath(p)
+    }
 
     /**
      * Retrieve a property by its key

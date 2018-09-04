@@ -115,16 +115,18 @@ fun KoinComponent.setProperty(key: String, value: Any) = getKoin().setProperty(k
 /**
  * Release instances at given module scope
  * @param path
+ *
+ * Deprecated - use the Scope API instead
  */
-@Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
-fun KoinComponent.release(path: String): Unit = error("release() function is now deprecated. Please use the Scope API.")
+@Deprecated("Please use the new Scope API instead.")
+fun KoinComponent.release(path: String): Unit = getKoin().release(path)
 
 /**
  * Release instances at given module scope
  * @param path
  */
-@Deprecated("Please use Scope API.",level = DeprecationLevel.ERROR)
-fun KoinComponent.releaseContext(path: String) : Unit = error("release() function is now deprecated. Please use the Scope API.")
+@Deprecated("Please use Scope API.")
+fun KoinComponent.releaseContext(path: String) : Unit = release(path)
 
 /**
  * Access to Koin context
