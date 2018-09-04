@@ -241,3 +241,33 @@ We have the following resolution possibility:
 By declaring definitions in a module with a path, your component *are then not visible from outside of this namespace*.
 This is then very useful to protect visibility between modules.
 
+
+=== (Deprecated) Releasing instances from a path
+
+From a KoinComponent, you can the `release()` function to release single instances for a given path. For example;
+
+[source,kotlin]
+----
+module {
+    module(path = "A") {
+        single { ComponentA() }
+
+        module(path = "B") {
+            single { ComponentB() }
+
+            module(path = "C") {
+                single { ComponentC() }
+            }
+        }
+    }
+}
+----
+
+- release("A"): will release ComponentA, ComponentB & ComponentC
+- release("B"): will release ComponentB & ComponentC
+- release("C"): will release ComponentC
+
+[IMPORTANT]
+====
+This API is deprecated. In next version, Koin won't allow to drop single. Better use the Scope API
+====
