@@ -28,7 +28,9 @@ Any question about Koin usage?
 - Come talk on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin).
 - Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin).
 
-Found a bug or an issue on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues).
+### Reporting issues
+
+Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues).
 
 # Setup
 
