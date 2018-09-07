@@ -28,10 +28,10 @@ class CoffeeApp : KoinComponent, Runnable {
 
 [source,kotlin]
 ----
-class CoffeeMaker(val pump: Pump) : KoinComponent {
+class CoffeeMaker(val pump: Pump, val lazyHeater: Lazy<Heater>) {
 
     // Don't want to create a possibly costly heater until we need it.
-    val heater: Heater by inject()
+    val heater: Heater by lazy { lazyHeater.value }
 
     fun brew() {
         heater.on()
@@ -100,7 +100,7 @@ Here is how we assemble it with Koin:
 [source,kotlin]
 ----
 val coffeeMakerModule = module {
-    single { CoffeeMaker(get()) }
+    single { CoffeeMaker(get(), lazy { get<Heater>() }) }
     single<Pump> { Thermosiphon(get()) }
     single<Heater> { ElectricHeater() }
 }
