@@ -61,7 +61,7 @@ class BuilderTest : AutoCloseKoinTest() {
     fun `should get interface instance`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            singleBy<ComponentD, Component>()
+            singleBy<Component, ComponentD>()
         }))
 
         assertNotNull(get<Component>())
@@ -72,7 +72,7 @@ class BuilderTest : AutoCloseKoinTest() {
     fun `should get interface instance - factory`() {
         startKoin(listOf(module {
             single { ComponentA() }
-            factoryBy<ComponentD, Component>()
+            factoryBy<Component, ComponentD>()
         }))
 
         assertNotNull(get<Component>())

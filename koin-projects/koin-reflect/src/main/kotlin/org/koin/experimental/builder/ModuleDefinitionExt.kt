@@ -77,7 +77,7 @@ inline fun <reified T : Any> ModuleDefinition.create(): T {
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
-inline fun <reified T : Any, reified R : Any> ModuleDefinition.singleBy(
+inline fun <reified R : Any, reified T : R> ModuleDefinition.singleBy(
     name: String = "",
     createOnStart: Boolean = false,
     override: Boolean = false
@@ -91,7 +91,7 @@ inline fun <reified T : Any, reified R : Any> ModuleDefinition.singleBy(
  * @param name
  * @param override - allow definition override
  */
-inline fun <reified T : Any, reified R : Any> ModuleDefinition.factoryBy(
+inline fun <reified R : Any, reified T : R> ModuleDefinition.factoryBy(
     name: String = "",
     override: Boolean = false
 ): BeanDefinition<R> {
@@ -104,7 +104,7 @@ inline fun <reified T : Any, reified R : Any> ModuleDefinition.factoryBy(
  * @param name
  * @param override - allow definition override
  */
-inline fun <reified T : Any, reified R : Any> ModuleDefinition.scopeBy(
+inline fun <reified R : Any, reified T : R> ModuleDefinition.scopeBy(
     name: String = "",
     override: Boolean = false
 ): BeanDefinition<R> {

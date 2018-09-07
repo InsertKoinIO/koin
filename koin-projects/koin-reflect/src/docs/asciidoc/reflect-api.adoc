@@ -46,7 +46,7 @@ If you have an implementation type and want to resolve with a target type, you c
 [source,kotlin]
 ----
 module {
-    singleBy<Implementation, Target>()
+    singleBy<Target,Implementation>()
 }
 ----
 
