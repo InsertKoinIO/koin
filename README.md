@@ -13,9 +13,9 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-### Website - [insert-koin.io](https://beta.insert-koin.io)
+### Official Website 👉 [insert-koin.io](https://insert-koin.io)
 
-Official website to get started: [insert-koin.io](https://beta.insert-koin.io). Check the [getting started](https://beta.insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
+Check the [getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
 
 ### Contact & Latest News
 
