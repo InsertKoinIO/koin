@@ -25,8 +25,8 @@ Check the [getting started](https://insert-koin.io/docs/1.0/getting-started/intr
 ### Getting Help 🚒
 
 Any question about Koin usage? 
-- Come talk on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
-- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
+- Come talk on slack [#koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
+- Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
 ### Reporting issues 🛠
 
