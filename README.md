@@ -17,18 +17,18 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 Check the [getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
 
-### Contact & Latest News
+### Contact & Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
 
-### Getting Help
+### Getting Help 🚒
 
 Any question about Koin usage? 
 - Come talk on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin).
 - Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin).
 
-### Reporting issues
+### Reporting issues 🛠
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues).
 
