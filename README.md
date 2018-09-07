@@ -15,21 +15,27 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ### Website - [insert-koin.io](https://beta.insert-koin.io)
 
-Official website to get started: [insert-koin.io](https://beta.insert-koin.io). Check the [getting started](https://beta.insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform. Or follow the snippets below.
+Official website to get started: [insert-koin.io](https://beta.insert-koin.io). Check the [getting started](https://beta.insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
 
-### Contact & Support
+### Contact & latest news
 
-Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
+- Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
+- Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
 
-Need help? Come on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) from Kotlin slack. Or just open an issue on [Github issues](https://github.com/Ekito/issues) to share your problem.
+### Getting Help
 
+Any question about Koin usage? 
+- Come talk on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin).
+- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin).
+
+Found a bug or an issue on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues).
 
 # Setup
 
 ## Actual Version
 
 ```gradle
-koin_version = '1.0.0-RC-1'
+koin_version = '1.0.0-RC-2'
 ```
 
 ## Gradle 
