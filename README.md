@@ -17,7 +17,7 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 Official website to get started: [insert-koin.io](https://beta.insert-koin.io). Check the [getting started](https://beta.insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
 
-### Contact & latest news
+### Contact & Latest News
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
