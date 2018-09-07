@@ -25,12 +25,12 @@ Check the [getting started](https://insert-koin.io/docs/1.0/getting-started/intr
 ### Getting Help 🚒
 
 Any question about Koin usage? 
-- Come talk on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin).
-- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin).
+- Come talk on slack [Koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
+- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
 
 ### Reporting issues 🛠
 
-Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues).
+Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues)
 
 # Setup
 
