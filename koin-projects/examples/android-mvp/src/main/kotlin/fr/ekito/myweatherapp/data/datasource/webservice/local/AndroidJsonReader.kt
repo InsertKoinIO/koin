@@ -1,5 +1,6 @@
 package fr.ekito.myweatherapp.data.datasource.webservice.local
 
+import android.app.Application
 import android.content.Context
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -7,7 +8,7 @@ import java.io.InputStreamReader
 /**
  * Read Json File from assets/json
  */
-class AndroidJsonReader(val androidContext: Context) : BaseReader() {
+class AndroidJsonReader(val androidContext: Application) : BaseReader() {
 
     override fun getAllFiles(): List<String> = androidContext.assets.list("json").toList()
 

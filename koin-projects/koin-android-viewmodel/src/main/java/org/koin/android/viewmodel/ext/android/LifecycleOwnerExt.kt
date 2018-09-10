@@ -91,7 +91,8 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     from: ViewModelStoreOwnerDefinition? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
-    ViewModelFactory.viewModelParameters = ViewModelParameters(name, parameters)
+    ViewModelFactory.postParameters(name, parameters)
+
     Koin.logger.info("[ViewModel] ~ '$clazz'(name:'$name' key:'$key') - $this")
 
     val vmStoreOwner = from?.invoke() ?: this as? ViewModelStoreOwner

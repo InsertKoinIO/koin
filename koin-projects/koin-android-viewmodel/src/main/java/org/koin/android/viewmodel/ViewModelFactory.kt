@@ -18,7 +18,10 @@ package org.koin.android.viewmodel
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import org.koin.android.viewmodel.ext.koin.createInstance
+import org.koin.core.parameter.ParameterDefinition
 import org.koin.standalone.KoinComponent
+import java.lang.ref.ReferenceQueue
+import java.lang.ref.WeakReference
 
 
 /**
@@ -28,16 +31,17 @@ import org.koin.standalone.KoinComponent
  */
 object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
 
-    var viewModelParameters: ViewModelParameters? = null
+    private var viewModelParameters: WeakReference<ViewModelParameters>? = null
 
     /**
      * Create instance for ViewModelProvider Factory
      */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val params = viewModelParameters
+        val params = viewModelParameters?.get()
         clear()
         return createInstance(
-            params ?: error("Can't getByClass ViewModel from ViewModelFactory with empty parameters"),
+            params
+                ?: error("Can't getByClass ViewModel from ViewModelFactory with empty parameters"),
             modelClass
         )
     }
@@ -46,7 +50,12 @@ object ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
      * clear current call params
      */
     private fun clear() {
+        viewModelParameters?.enqueue()
         viewModelParameters = null
+    }
+
+    fun postParameters(name: String?, parameters: ParameterDefinition) {
+        viewModelParameters = WeakReference(ViewModelParameters(name, parameters), ReferenceQueue())
     }
 }
 

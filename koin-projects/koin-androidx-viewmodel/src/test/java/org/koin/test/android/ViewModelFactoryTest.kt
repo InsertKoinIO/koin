@@ -6,6 +6,7 @@ import org.junit.Test
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.ViewModelFactory
 import org.koin.androidx.viewmodel.ext.koin.viewModel
+import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
@@ -29,10 +30,10 @@ class ViewModelFactoryTest : AutoCloseKoinTest() {
     fun should_create_view_model() {
         startKoin(listOf(module))
 
-        ViewModelFactory.viewModelParameters = ViewModelParameters()
+        ViewModelFactory.postParameters(null, emptyParameterDefinition())
         val vm1 = ViewModelFactory.create(MyViewModel::class.java)
 
-        ViewModelFactory.viewModelParameters = ViewModelParameters()
+        ViewModelFactory.postParameters(null, emptyParameterDefinition())
         val vm2 = ViewModelFactory.create(MyViewModel::class.java)
 
         val service = get<MyService>()
