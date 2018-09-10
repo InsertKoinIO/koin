@@ -37,7 +37,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 ## Actual Version
 
 ```gradle
-koin_version = '1.0.0-RC-2'
+koin_version = '1.0.0-RC-3'
 ```
 
 ## Gradle 
