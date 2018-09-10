@@ -20,38 +20,10 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./koin-projects/gradlew -p ./koin-projects clean test
-
-  doc:
-    docker:
-      # specify the version you desire here
-      - image: circleci/android:api-28-alpha
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-    
-    steps:
-      - checkout
-        
-      # run tests!
-      - run: 
-          command: ./koin-projects/gradlew -p ./koin-projects/koin-book clean asciidoctor
-
-      - store_artifacts:
-          path: ./koin-projects/koin-book/build/asciidoc/
+          command: ./koin-projects/gradlew -p ./koin-projects clean test -Dorg.gradle.parallel=false
 
 workflows:
   version: 2
   build_and_publish:
     jobs:
       - build
-      - doc:
-          requires:
-            - build
