@@ -16,6 +16,7 @@
 
 package org.koin.android.ext.koin
 
+import android.app.Application
 import android.content.Context
 import org.koin.core.Koin
 import org.koin.dsl.definition.BeanDefinition
@@ -34,13 +35,23 @@ import java.util.*
  */
 infix fun Koin.with(androidContext: Context): Koin {
     Koin.logger.info("[init] declare Android Context")
-    beanRegistry.declare(
-        BeanDefinition(
-            clazz = Context::class,
-            definition = { androidContext },
-            kind = Kind.Single
+    val definition =
+        beanRegistry.declare(
+            BeanDefinition(
+                clazz = Context::class,
+                definition = { androidContext },
+                kind = Kind.Single
+            )
         )
-    )
+    if (androidContext is Application) {
+        beanRegistry.declare(
+            BeanDefinition(
+                clazz = Application::class,
+                definition = { androidContext },
+                kind = Kind.Single
+            )
+        )
+    }
     return this
 }
 

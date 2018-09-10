@@ -101,14 +101,13 @@ class AndroidModuleTest : AutoCloseKoinTest() {
     fun should_init_context_and_dependency() {
         startKoin(listOf(SampleModule)) with (mock(Application::class.java))
 
-        assertDefinitions(2)
+        assertDefinitions(3)
         assertRemainingInstanceHolders(0)
 
         val component = get<AndroidComponent>()
 
         assertEquals(get<Context>(), component.androidContext)
 
-        assertDefinitions(2)
         assertRemainingInstanceHolders(2)
     }
 
