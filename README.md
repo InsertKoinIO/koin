@@ -253,7 +253,7 @@ class SimpleTest : KoinTest {
 
 And more: check your configuration with a simple unit test, easily create mocks...
 
-* [Test with Koin - Docuentation](https://beta.insert-koin.io/docs/1.0/documentation/reference/index.html#_testing_with_koin)
+* [Test with Koin - Documentation](https://beta.insert-koin.io/docs/1.0/documentation/reference/index.html#_testing_with_koin)
 
 
 
