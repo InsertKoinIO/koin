@@ -35,10 +35,11 @@ interface KoinComponent
  * @param name - bean canonicalName
  * @param parameters - injection parameters
  */
-inline fun <reified T: Any> KoinComponent.inject(
+inline fun <reified T : Any> KoinComponent.inject(
     name: String = "",
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { getKoin().get<T>(name, parameters) }
+) = lazy { getKoin().get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -47,22 +48,24 @@ inline fun <reified T: Any> KoinComponent.inject(
  */
 inline fun <reified T : Any> KoinComponent.get(
     name: String = "",
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
-    getKoin().get(name, parameters)
+    getKoin().get(name, scope, parameters)
 
 /**
  * Retrieve given dependency for KoinComponent
  * @param name - bean canonicalName
  * @param parameters - injection parameters
  */
-fun <T: Any> KoinComponent.get(
+fun <T : Any> KoinComponent.get(
     name: String = "",
     clazz: KClass<*>,
+    scope: Scope? = null,
     parameters: ParameterDefinition = emptyParameterDefinition(),
     filter: DefinitionFilter? = null
 ): T =
-    getKoin().get(name, clazz, parameters, filter)
+    getKoin().get(name, clazz, scope, parameters, filter)
 
 /**
  * inject lazily given property for KoinComponent
@@ -123,11 +126,11 @@ fun KoinComponent.release(path: String): Unit = getKoin().release(path)
  * @param path
  */
 @Deprecated("Please use Scope API.")
-fun KoinComponent.releaseContext(path: String) : Unit = release(path)
+fun KoinComponent.releaseContext(path: String): Unit = release(path)
 
 /**
  * Access to Koin context
  */
-fun KoinComponent.getKoin() : KoinContext = (StandAloneContext.koinContext as KoinContext)
+fun KoinComponent.getKoin(): KoinContext = (StandAloneContext.koinContext as KoinContext)
 
 

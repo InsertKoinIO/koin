@@ -17,6 +17,8 @@ package org.koin.core.bean
 
 import org.koin.core.Koin
 import org.koin.core.name
+import org.koin.core.scope.Scope
+import org.koin.core.scope.isVisibleToScope
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.path.Path
 import org.koin.error.BeanOverrideException
@@ -54,7 +56,10 @@ class BeanRegistry() {
         Koin.logger.info("[module] $kw $definition")
     }
 
-    fun searchByClass(definitions: Collection<BeanDefinition<*>>, clazz: KClass<*>): List<BeanDefinition<*>> {
+    fun searchByClass(
+        definitions: Collection<BeanDefinition<*>>,
+        clazz: KClass<*>
+    ): List<BeanDefinition<*>> {
         return definitions.filter { clazz in it.classes }
     }
 
@@ -76,14 +81,15 @@ class BeanRegistry() {
 
     @Suppress("UNCHECKED_CAST")
             /**
-     * Retrieve bean definition
-     * @param clazzName - class canonicalName
-     * @param modulePath - Module path
-     * @param definitionResolver - function to find bean definition
-     * @param lastInStack - to check visibility with last bean in stack
-     */
+             * Retrieve bean definition
+             * @param clazzName - class canonicalName
+             * @param modulePath - Module path
+             * @param definitionResolver - function to find bean definition
+             * @param lastInStack - to check visibility with last bean in stack
+             */
     fun <T> retrieveDefinition(
         clazz: KClass<*>,
+        scope: Scope?,
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
     ): BeanDefinition<T> {
@@ -98,11 +104,15 @@ class BeanRegistry() {
             definitionResolver()
         }).distinct()
 
+        val filterByScope = if (scope != null){
+            candidates.filter { it.isVisibleToScope(scope) }
+        } else candidates
+
         return when {
-            candidates.size == 1 -> candidates.first() as BeanDefinition<T>
-            candidates.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '${clazz.name()}'. Check your module definition")
+            filterByScope.size == 1 -> filterByScope.first() as BeanDefinition<T>
+            filterByScope.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '${clazz.name()}'. Check your module definition")
             else -> throw DependencyResolutionException(
-                "Multiple definitions found for type '$clazz' - Koin can't choose between :\n\t${candidates.joinToString(
+                "Multiple definitions found for type '$clazz' - Koin can't choose between :\n\t${filterByScope.joinToString(
                     "\n\t"
                 )}\n\tCheck your modules definition, use inner modules visibility or definition names."
             )

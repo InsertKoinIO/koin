@@ -60,7 +60,7 @@ class InstanceRegistry(
                     { beanRegistry.searchByClass(definitions, clazz) }
                 }
             }
-            proceedResolution(clazz, parameters, search)
+            proceedResolution(clazz, scope,parameters, search)
         }
     }
 
@@ -73,6 +73,7 @@ class InstanceRegistry(
      */
     fun <T : Any> proceedResolution(
         clazz: KClass<*>,
+        scope : Scope?,
         parameters: ParameterDefinition,
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
@@ -85,13 +86,14 @@ class InstanceRegistry(
                 val beanDefinition: BeanDefinition<T> =
                     beanRegistry.retrieveDefinition(
                         clazz,
+                        scope,
                         definitionResolver,
                         resolutionStack.last()
                     )
 
                 // Retrieve scope from DSL
                 val associatedScopeId = beanDefinition.getScope()
-                val targetScope : Scope? = if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(associatedScopeId) else null
+                val targetScope : Scope? = scope ?: if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(associatedScopeId) else null
 
                 val logPath =
                         if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
@@ -151,6 +153,7 @@ class InstanceRegistry(
         definitions.forEach { def ->
             proceedResolution(
                 def.clazz,
+                null,
                 params
             ) { listOf(def) }
         }

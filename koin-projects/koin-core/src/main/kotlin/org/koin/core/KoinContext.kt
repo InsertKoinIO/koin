@@ -52,11 +52,13 @@ class KoinContext(
      */
     inline fun <reified T : Any> get(
         name: String = "",
+        scope : Scope? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T = instanceRegistry.resolve(
         InstanceRequest(
             name = name,
             clazz = T::class,
+            scope = scope,
             parameters = parameters
         )
     )
@@ -73,12 +75,14 @@ class KoinContext(
     fun <T : Any> get(
         name: String = "",
         clazz: KClass<*>,
+        scope : Scope? = null,
         parameters: ParameterDefinition = emptyParameterDefinition(),
         filter: DefinitionFilter? = null
     ): T = instanceRegistry.resolve(
         InstanceRequest(
             name = name,
             clazz = clazz,
+            scope = scope,
             parameters = parameters
         ),
         filter
