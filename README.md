@@ -124,7 +124,7 @@ val myModule = module {
 } 
 ```
 
-* [Learn Koin DSL in 5 min](https://beta.insert-koin.io/docs/1.0/quick-references/koin-dsl/)
+* [Learn Koin DSL in 5 min](https://insert-koin.io/docs/1.0/quick-references/koin-dsl/)
 
 ## Start Koin
 
@@ -151,8 +151,8 @@ class MyApplication : Application() {
 } 
 ```
 
-* [Write your app with Koin](https://beta.insert-koin.io/docs/1.0/getting-started/introduction/)
-* [Quick References](https://beta.insert-koin.io/docs/1.0/quick-references/koin-core/)
+* [Write your app with Koin](https://insert-koin.io/docs/1.0/getting-started/introduction/)
+* [Quick References](https://insert-koin.io/docs/1.0/quick-references/koin-core/)
 
 ## Inject in Android
 
@@ -174,8 +174,8 @@ class MyActivity() : AppCompatActivity() {
 }
 ```
 
-* [Android Quick References](https://beta.insert-koin.io/docs/1.0/quick-references/koin-android/)
-* [Getting started with Android](https://beta.insert-koin.io/docs/1.0/getting-started/android/)
+* [Android Quick References](https://insert-koin.io/docs/1.0/quick-references/koin-android/)
+* [Getting started with Android](https://insert-koin.io/docs/1.0/getting-started/android/)
 
 ## Inject by constructor
 
@@ -194,7 +194,7 @@ class Controller(val service : BusinessService){
 
 Koin can be easily embedded with your favorite Java/Kotlin SDK, and already provide some dedicated support module.
 
-* [Explore the documentation](https://beta.insert-koin.io/docs/1.0/documentation/reference/index.html)
+* [Explore the documentation](https://insert-koin.io/docs/1.0/documentation/reference/index.html)
 
 ## Ready for ViewModel
 
@@ -223,8 +223,8 @@ class MyActivity() : AppCompatActivity() {
 }
 ```
 
-* [Android ViewModel Documentation](https://beta.insert-koin.io/docs/1.0/documentation/reference/index.html#_architecture_components_with_koin_viewmodel)
-* [Getting started with Android ViewModel](https://beta.insert-koin.io/docs/1.0/getting-started/android-viewmodel/)
+* [Android ViewModel Documentation](https://insert-koin.io/docs/1.0/documentation/reference/index.html#_architecture_components_with_koin_viewmodel)
+* [Getting started with Android ViewModel](https://insert-koin.io/docs/1.0/getting-started/android-viewmodel/)
 
 ## Easy testing
 
@@ -253,7 +253,7 @@ class SimpleTest : KoinTest {
 
 And more: check your configuration with a simple unit test, easily create mocks...
 
-* [Test with Koin - Docuentation](https://beta.insert-koin.io/docs/1.0/documentation/reference/index.html#_testing_with_koin)
+* [Test with Koin - Docuentation](https://insert-koin.io/docs/1.0/documentation/reference/index.html#_testing_with_koin)
 
 
 
