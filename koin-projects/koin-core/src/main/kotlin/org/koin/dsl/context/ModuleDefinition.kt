@@ -180,13 +180,13 @@ class ModuleDefinition(
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        name: String? = null,
+        name: String = "",
+        scopeId: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
-    ): T =
-        if (name != null) koinContext.get(
-            name,
-            parameters = parameters
-        ) else koinContext.get(parameters = parameters)
+    ): T {
+        val scope: Scope? = scopeId?.let { koinContext.getScope(scopeId) }
+        return koinContext.get(name, scope, parameters)
+    }
 
     /**
      * Retrieve a property

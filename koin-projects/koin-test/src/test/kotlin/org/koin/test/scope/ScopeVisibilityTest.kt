@@ -18,10 +18,17 @@ class ScopeVisibilityTest : AutoCloseKoinTest() {
     class AnonSession() : Session
 
     class A
+    class Component(val session: Session)
 
     val appModule = module {
         scope<Session>("auth_session") { UserSession() }
         scope<Session>("anon_session") { AnonSession() }
+    }
+
+    val appModuleWithDSL = module {
+        scope<Session>("auth_session") { UserSession() }
+        scope<Session>("anon_session") { AnonSession() }
+        factory { Component(get(scopeId = "auth_session")) }
     }
 
     @Test
@@ -59,5 +66,20 @@ class ScopeVisibilityTest : AutoCloseKoinTest() {
         assertTrue(anon_session is AnonSession)
 
         authSessionScope.close()
+    }
+
+    @Test
+    fun `DSL resolution - ambiguous scope visibility`() {
+        StandAloneContext.startKoin(listOf(appModuleWithDSL), logger = PrintLogger(showDebug = true))
+
+        val koin = getKoin()
+
+        val authSessionScope = koin.createScope("auth_session")
+
+        val comp = get<Component>()
+        val auth_session = get<Session>(scope = authSessionScope)
+
+        assertTrue(auth_session is UserSession)
+        assertEquals(auth_session, comp.session)
     }
 }

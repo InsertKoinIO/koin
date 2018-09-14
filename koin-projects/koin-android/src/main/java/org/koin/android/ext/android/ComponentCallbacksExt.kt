@@ -28,7 +28,6 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
-import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.createEagerInstances
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.loadProperties
@@ -74,10 +73,11 @@ fun ComponentCallbacks.startKoin(
  * @param scope
  * @param parameters - injection parameters
  */
-inline fun <reified T: Any> ComponentCallbacks.inject(
+inline fun <reified T : Any> ComponentCallbacks.inject(
     name: String = "",
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = lazy { get<T>(name, parameters) }
+) = lazy { get<T>(name, scope, parameters) }
 
 /**
  * get given dependency for Android component
@@ -85,10 +85,11 @@ inline fun <reified T: Any> ComponentCallbacks.inject(
  * @param scope
  * @param parameters - injection parameters
  */
-inline fun <reified T: Any> ComponentCallbacks.get(
+inline fun <reified T : Any> ComponentCallbacks.get(
     name: String = "",
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
-): T = getKoin().get(name, parameters)
+): T = getKoin().get(name, scope, parameters)
 
 /**
  * lazy inject given property for Android component
@@ -122,7 +123,8 @@ fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
 /**
  * Get Koin context
  */
-fun ComponentCallbacks.getKoin(): KoinContext = (org.koin.standalone.StandAloneContext.koinContext as KoinContext)
+fun ComponentCallbacks.getKoin(): KoinContext =
+    (org.koin.standalone.StandAloneContext.koinContext as KoinContext)
 
 /**
  * Release a Module from given Path

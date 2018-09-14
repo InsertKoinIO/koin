@@ -42,9 +42,10 @@ object KoinJavaComponent : KoinComponent {
     fun <T : Any> inject(
         clazz: Class<T>,
         name: String = "",
+        scope: Scope? = null,
         parameters: ParameterDefinition = emptyParameterDefinition()
     ): Lazy<T> {
-        return lazy { get(clazz, name, parameters) }
+        return lazy { get(clazz, name, scope, parameters) }
     }
 
     /**
@@ -59,11 +60,13 @@ object KoinJavaComponent : KoinComponent {
     fun <T : Any> get(
         clazz: Class<T>,
         name: String = "",
+        scope: Scope? = null,
         parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
         return getKoin().get(
             name,
             clazz.kotlin,
+            scope,
             parameters
         )
     }
