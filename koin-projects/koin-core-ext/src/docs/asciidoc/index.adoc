@@ -8,7 +8,7 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin reflect
+= Koin Core Ext
 
 Arnaud Giuliani <arnaud.g@insert-koin.io> - and on twitter: @arnogiu
 :revnumber: {project-version}
@@ -16,7 +16,7 @@ Arnaud Giuliani <arnaud.g@insert-koin.io> - and on twitter: @arnogiu
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../kotlin]
 
-Cover the koin-reflect project features.
+Cover the extended features for koin-core project.
 
 
 include::reflect-api.adoc[]

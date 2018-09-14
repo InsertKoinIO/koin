@@ -2,7 +2,6 @@ package org.koin.androidx.viewmodel.ext.koin
 
 import androidx.lifecycle.ViewModel
 import org.koin.android.viewmodel.ViewModelParameters
-import org.koin.core.parameter.ParameterDefinition
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 
@@ -19,24 +18,5 @@ fun <T : ViewModel> KoinComponent.createInstance(p: ViewModelParameters, clazz: 
     val params = p.parameters
     // Clear local stuff
 
-    return if (name != null) {
-        retrieveViewModel(clazz, name, params)
-    } else retrieveViewModel(clazz, params)
+    return get(name ?: "", clazz = clazz.kotlin, parameters = params, filter = isViewModel)
 }
-
-/**
- * Retrieve ViewModel Instance from class/name
- */
-internal fun <T : ViewModel> KoinComponent.retrieveViewModel(
-    clazz: Class<T>,
-    name: String,
-    params: ParameterDefinition
-): T = get(name, clazz.kotlin, params, isViewModel)
-
-/**
- * Retrieve ViewModel Instance from class
- */
-internal fun <T : ViewModel> KoinComponent.retrieveViewModel(
-    clazz: Class<T>,
-    params: ParameterDefinition
-): T = get(clazz = clazz.kotlin, parameters = params, filter = isViewModel)

@@ -65,9 +65,10 @@ fun Application.installKoin(
  */
 inline fun <reified T : Any> Application.inject(
     name: String = "",
+    scope : Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    lazy { get<T>(name, parameters) }
+    lazy { get<T>(name,scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -77,9 +78,10 @@ inline fun <reified T : Any> Application.inject(
  */
 inline fun <reified T : Any> Application.get(
     name: String = "",
+    scope : Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    getKoin().get<T>(name, parameters)
+    getKoin().get<T>(name, scope, parameters)
 
 /**
  * lazy inject given property
@@ -123,7 +125,7 @@ inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun getKoin() = (StandAloneContext.koinContext as KoinContext)
+fun Application.getKoin() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Set property value

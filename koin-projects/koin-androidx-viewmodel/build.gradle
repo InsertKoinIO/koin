@@ -19,7 +19,9 @@ android {
 
 dependencies {
     // Koin
-    api project(":koin-androidx-scope") //"org.koin:koin-android:$koin_version"
+    api project(":koin-core-ext")
+    api project(":koin-androidx-scope")
+
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"

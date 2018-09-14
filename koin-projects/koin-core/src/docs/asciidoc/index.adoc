@@ -31,5 +31,5 @@ include::extending-koin.adoc[]
 include::examples.adoc[]
 
 include::../../../../koin-test/src/docs/asciidoc/index.adoc[]
-include::../../../../koin-reflect/src/docs/asciidoc/index.adoc[]
+include::../../../../koin-core-ext/src/docs/asciidoc/index.adoc[]
 include::../../../../koin-java/src/docs/asciidoc/index.adoc[]

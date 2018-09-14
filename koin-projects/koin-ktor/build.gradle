@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile project(":koin-reflect")
+    compile project(':koin-core-ext')
     testImplementation project(":koin-test")
 
     // Ktor

@@ -5,6 +5,7 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
+import org.koin.androidx.viewmodel.experimental.builder.viewModel
 import org.koin.androidx.viewmodel.ext.koin.isViewModel
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.core.KoinContext
@@ -26,6 +27,11 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
         viewModel { MyViewModel(get()) }
     }
 
+    val moduleAB = module {
+        single { MyService() }
+        viewModel<MyViewModel>()
+    }
+
     val module2 = module {
         viewModel { (url: String) -> MyViewModel2(url) }
     }
@@ -38,6 +44,22 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
     @Test
     fun should_inject_view_model() {
         startKoin(listOf(module))
+
+        val vm1 = get<MyViewModel>()
+        val vm2 = get<MyViewModel>()
+        val service = get<MyService>()
+
+        assertEquals(vm1.service, vm2.service)
+        assertEquals(service, vm2.service)
+
+        assertContexts(1)
+        assertDefinitions(2)
+        assertRemainingInstanceHolders(2)
+    }
+
+    @Test
+    fun should_inject_built_view_model() {
+        startKoin(listOf(moduleAB))
 
         val vm1 = get<MyViewModel>()
         val vm2 = get<MyViewModel>()

@@ -1,6 +1,11 @@
-== Building instances with reflection
+== Extensions & Experimental features
 
-The `koin-reflect` is a separated project to brings some reflection features. Why use a reflection API? Typically help build instance without using DSL using constructor or `get()` function.
+The `koin-core-ext` brings extensions & experimental features to Koin.
+
+=== Better definition declaration (Experimental)
+
+Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters
+or special scope Id), we can go with more compact writing style thanks to API below.
 
 [IMPORTANT]
 ====
@@ -8,7 +13,7 @@ Using reflection is not costless. it replaces what you don"t want to write with 
 performances constraints platform (Android for example)
 ====
 
-=== Instance builder with create()
+=== Build any instance with create()
 
 The first introduced function is the `create()` function.
 
@@ -30,7 +35,7 @@ module {
 }
 ----
 
-=== More simple definitions
+=== Even more simple definitions
 
 You can also use the more "compact" notation that will use the `create()` function. Just use the single function without any expression:
 

@@ -19,6 +19,7 @@ import io.ktor.routing.Route
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.Scope
 import org.koin.standalone.StandAloneContext
 
 
@@ -37,9 +38,10 @@ import org.koin.standalone.StandAloneContext
  */
 inline fun <reified T : Any> Route.inject(
     name: String = "",
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters) }
+    lazy { get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -49,9 +51,10 @@ inline fun <reified T : Any> Route.inject(
  */
 inline fun <reified T : Any> Route.get(
     name: String = "",
+    scope: Scope? = null,
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) =
-    (StandAloneContext.koinContext as KoinContext).get<T>(name, parameters)
+    getKoin().get<T>(name, scope, parameters)
 
 /**
  * lazy inject given property
@@ -59,7 +62,7 @@ inline fun <reified T : Any> Route.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Route.property(key: String) =
-    lazy { (StandAloneContext.koinContext as KoinContext).getProperty<T>(key) }
+    lazy { getKoin().getProperty<T>(key) }
 
 /**
  * lazy inject  given property
@@ -70,7 +73,7 @@ inline fun <reified T> Route.property(key: String) =
  *
  */
 inline fun <reified T> Route.property(key: String, defaultValue: T) =
-    lazy { (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue) }
+    lazy { getKoin().getProperty(key, defaultValue) }
 
 /**
  * Retrieve given property for KoinComponent
@@ -78,7 +81,7 @@ inline fun <reified T> Route.property(key: String, defaultValue: T) =
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Route.getProperty(key: String) =
-    (StandAloneContext.koinContext as KoinContext).getProperty<T>(key)
+    getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -89,13 +92,12 @@ inline fun <reified T> Route.getProperty(key: String) =
  *
  */
 inline fun <reified T> Route.getProperty(key: String, defaultValue: T) =
-    (StandAloneContext.koinContext as KoinContext).getProperty(key, defaultValue)
-
+    getKoin().getProperty(key, defaultValue)
 
 /**
  * Help work on ModuleDefinition
  */
-private fun context() = (StandAloneContext.koinContext as KoinContext)
+fun Route.getKoin() = (StandAloneContext.koinContext as KoinContext)
 
 /**
  * Set property value
@@ -104,4 +106,4 @@ private fun context() = (StandAloneContext.koinContext as KoinContext)
  * @param value - property value
  *
  */
-fun Route.setProperty(key: String, value: Any) = context().setProperty(key, value)
+fun Route.setProperty(key: String, value: Any) = getKoin().setProperty(key, value)

@@ -17,7 +17,6 @@ import org.koin.dsl.module.module
  * App Components
  */
 val weatherAppModule = module {
-
     // ViewModel for Detail view
     viewModel { (id: String) -> DetailViewModel(id, get(), get()) }
 

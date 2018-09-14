@@ -1,9 +1,9 @@
 ext {
     // Koin
-    koin_version = '1.0.0-RC-4'
+    koin_version = '1.0.0'
 
     // Kotlin
-    kotlin_version = '1.2.61'
+    kotlin_version = '1.2.70'
     coroutines_version = "0.23.3"
 
     // Dokka
