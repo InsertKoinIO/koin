@@ -2,6 +2,31 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [1.0.0]()
+
+Core_
+
+* `[UPDATED]` - compilation with Kotlin 1.2.70
+* `[ADDED]` - new Scope API
+* `[FIXED]` - fixed scope visibility resolution - https://github.com/InsertKoinIO/koin/issues/228
+* `[FIXED]` - `koin-android-viewmodel` parameters leak
+
+_Core-Ext_
+
+* `[ADDED]` - Renamed `koin-reflect` to `koin-core-ext`
+
+_Android_
+
+* `[FIXED]` - `koin-android-viewmodel` parameters leak fixed - https://github.com/InsertKoinIO/koin/issues/220
+* `[ADDED]` - `koin-android-viewmodel` added `viewModel` automatic builder keyword
+* `[FIXED]` - `koin-android` added back `androidApplication()`
+* `[ADDED]` - `koin-android-scope` updated `bindScope` function now bind a `Scope`
+
+_Test_
+
+* `[FIXED]` - `check()` renamed to `checkModules()`
+
+
 ## [1.0.0-beta3]()
 
 _Scripts_
