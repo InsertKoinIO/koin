@@ -62,6 +62,8 @@ Choose your Koin dependency:
 ```gradle
 // Koin for Kotlin
 implementation "org.koin:koin-core:$koin_version"
+// Koin extended & experimental features
+implementation "org.koin:koin-core-ext:$koin_version"
 // Koin for Unit tests
 testImplementation "org.koin:koin-test:$koin_version"
 // Koin for Java developers
