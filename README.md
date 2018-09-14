@@ -259,8 +259,8 @@ And more: check your configuration with a simple unit test, easily create mocks.
 
 # Articles
 
-### They talk about Koin
-
+### Articles & resouces about Koin
+* [A brief look at Koin on Android](https://overflow.buffer.com/2018/09/13/a-brief-look-at-koin-on-android/)
 * [Bye bye Dagger](https://medium.com/@charbgr/bye-bye-dagger-1494118dcd41)
 * [Testing with Koin](https://proandroiddev.com/testing-with-koin-ade8a46eb4d)
 * [Painless Android testing with Room & Koin](https://android.jlelse.eu/painless-android-testing-with-room-koin-bb949eefcbee)
@@ -274,6 +274,10 @@ And more: check your configuration with a simple unit test, easily create mocks.
 * [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
+
+### Talks & podcasts
+
+* [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
 
 ### Koin developers hub
 
