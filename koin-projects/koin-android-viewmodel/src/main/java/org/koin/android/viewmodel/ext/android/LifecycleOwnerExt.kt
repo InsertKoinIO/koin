@@ -19,11 +19,12 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelStoreOwner
-import org.koin.android.viewmodel.ViewModelFactory
-import org.koin.android.viewmodel.ViewModelParameters
+import org.koin.android.viewmodel.ext.koin.isViewModel
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 import kotlin.reflect.KClass
 
 /**
@@ -91,18 +92,25 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     from: ViewModelStoreOwnerDefinition? = null,
     parameters: ParameterDefinition = emptyParameterDefinition()
 ): T {
-    ViewModelFactory.postParameters(name, parameters)
-
     Koin.logger.info("[ViewModel] ~ '$clazz'(name:'$name' key:'$key') - $this")
 
     val vmStoreOwner = from?.invoke() ?: this as? ViewModelStoreOwner
     ?: error("Can't getByClass ViewModel '$clazz' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
 
-    val viewModelProvider = ViewModelProvider(vmStoreOwner, ViewModelFactory)
+    val viewModelProvider =
+        ViewModelProvider(vmStoreOwner, object : ViewModelProvider.Factory, KoinComponent {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return get(name ?: "", clazz, parameters = parameters, filter = isViewModel)
+            }
+        })
+
     val vmInstance =
-        if (key != null)
+        if (key != null){
             viewModelProvider.get(key, clazz.java)
-        else viewModelProvider.get(clazz.java)
+        } else {
+            viewModelProvider.get(clazz.java)
+        }
+
     Koin.logger.debug("[ViewModel] instance ~ $vmInstance")
     return vmInstance
 }
