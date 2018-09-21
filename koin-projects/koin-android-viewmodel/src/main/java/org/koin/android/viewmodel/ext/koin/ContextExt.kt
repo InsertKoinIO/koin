@@ -22,7 +22,7 @@ import org.koin.dsl.definition.Definition
 
 /**
  * ViewModel DSL Extension
- * Allow to declare a vieModel - be later inject into Activity/Fragment with dedicated injector
+ * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
  *
  * @author Arnaud Giuliani
  *

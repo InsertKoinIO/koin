@@ -32,7 +32,7 @@ startKoin(androidContext, myAppModules)
 
 Also, there is a `with` operator that can help you bind the `Context` instance in the case of non Android class (Junit for example). It can help like follow:
 
-.Example of mocking Androic context in a JUnit
+.Example of mocking Android context in a JUnit
 [source,kotlin]
 ----
 // Start Koin and init Context instance definition
