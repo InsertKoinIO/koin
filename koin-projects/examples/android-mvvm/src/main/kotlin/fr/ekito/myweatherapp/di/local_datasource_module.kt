@@ -13,3 +13,11 @@ val localAndroidDatasourceModule = module(createOnStart = true) {
     single<JsonReader> { AndroidJsonReader(get()) }
     single<WeatherWebDatasource> { LocalFileDataSource(get(), true) }
 }
+
+///**
+// * Local Json Files Datasource
+// */
+//val localAndroidDatasourceModule = module(createOnStart = true) {
+//    singleBy<JsonReader, AndroidJsonReader>()
+//    single<WeatherWebDatasource> { LocalFileDataSource(get(), true) }
+//}

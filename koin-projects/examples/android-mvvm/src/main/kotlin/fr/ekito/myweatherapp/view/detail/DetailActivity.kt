@@ -22,7 +22,7 @@ class DetailActivity : AppCompatActivity() {
     // Detail id passed by argument
     private val detailId by argument<String>(ARG_WEATHER_ITEM_ID)
 
-    val viewModel: DetailViewModel by viewModel { parametersOf(detailId) }
+    val viewModel: DetailViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +36,7 @@ class DetailActivity : AppCompatActivity() {
                 }
             }
         })
-        viewModel.getDetail()
+        viewModel.getDetail(detailId)
     }
 
     private fun showError(error: Throwable) {

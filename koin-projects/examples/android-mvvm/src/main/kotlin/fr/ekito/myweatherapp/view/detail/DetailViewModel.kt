@@ -12,7 +12,6 @@ import fr.ekito.myweatherapp.view.LoadingState
 import fr.ekito.myweatherapp.view.ViewModelState
 
 class DetailViewModel(
-    val id: String,
     val weatherRepository: WeatherRepository,
     val schedulerProvider: SchedulerProvider
 ) : RxViewModel() {
@@ -21,7 +20,7 @@ class DetailViewModel(
     val states: LiveData<ViewModelState>
         get() = _states
 
-    fun getDetail() {
+    fun getDetail(id: String) {
         _states.value = LoadingState
         launch {
             weatherRepository.getWeatherDetail(id).with(schedulerProvider).subscribe(
