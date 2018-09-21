@@ -37,7 +37,7 @@ class DetailViewModelMockTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
 
-        viewModel = DetailViewModel(id, repository, TestSchedulerProvider())
+        viewModel = DetailViewModel(repository, TestSchedulerProvider())
         viewModel.states.observeForever(view)
     }
 
@@ -47,7 +47,7 @@ class DetailViewModelMockTest {
 
         given(repository.getWeatherDetail(id)).willReturn(Single.just(weather))
 
-        viewModel.getDetail()
+        viewModel.getDetail(id)
 
         val arg = argumentCaptor<ViewModelState>()
         // Here we expect 2 calls on view.onChanged
@@ -63,11 +63,10 @@ class DetailViewModelMockTest {
     @Test
     fun testGeLasttWeatherFailed() {
         val error = Throwable("Got error")
-        val id = "ID"
 
         given(repository.getWeatherDetail(id)).willReturn(Single.error(error))
 
-        viewModel.getDetail()
+        viewModel.getDetail(id)
 
         val arg = argumentCaptor<ViewModelState>()
         // Here we expect 2 calls on view.onChanged
