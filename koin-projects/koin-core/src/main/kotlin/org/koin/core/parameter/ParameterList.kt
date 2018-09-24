@@ -25,7 +25,7 @@ import org.koin.error.NoParameterFoundException
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-class ParameterList(vararg value: Any) {
+class ParameterList(vararg value: Any?) {
 
     val values: List<*> = value.toList()
 
@@ -63,7 +63,7 @@ typealias ParameterDefinition = () -> ParameterList
  * @see ParameterList
  * return ParameterList
  */
-fun parametersOf(vararg value: Any) = ParameterList(*value)
+fun parametersOf(vararg value: Any?) = ParameterList(*value)
 
 /**
  * Empty Parameter List
