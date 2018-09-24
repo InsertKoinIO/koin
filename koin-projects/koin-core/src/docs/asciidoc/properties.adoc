@@ -14,7 +14,7 @@ You can load several type of properties at start:
 
 In a Koin module, you can get a property by its key:
 
-.in /src/main/resoucres/koin.propertie file
+.in /src/main/resoucres/koin.properties file
 [source,java]
 ----
 // Key - value

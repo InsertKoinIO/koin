@@ -62,6 +62,8 @@ Choose your Koin dependency:
 ```gradle
 // Koin for Kotlin
 implementation "org.koin:koin-core:$koin_version"
+// Koin extended & experimental features
+implementation "org.koin:koin-core-ext:$koin_version"
 // Koin for Unit tests
 testImplementation "org.koin:koin-test:$koin_version"
 // Koin for Java developers
@@ -281,6 +283,7 @@ And more: check your configuration with a simple unit test, easily create mocks.
 
 ### Koin developers hub
 
+* [Koin 1.0.0 Unleashed](https://medium.com/koin-developers/koin-1-0-0-unleashed-dcc15b293a3a)
 * [Opening Koin 1.0.0 Beta](https://medium.com/koin-developers/opening-the-koin-1-0-0-beta-version-99cb8be1c308)
 * [On the road to Koin 1.0](https://medium.com/koin-developers/on-the-road-to-koin-1-0-0-a624af55d07)
 * [Koin 0.9.2 — Maintenance fixes, new branding, roadmap for 1.0.0 & some other nice announces](https://medium.com/koin-developers/koin-0-9-2-maintenance-fixes-new-branding-roadmap-for-1-0-0-some-other-nice-announces-94f14648e4ad)

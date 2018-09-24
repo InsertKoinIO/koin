@@ -74,7 +74,7 @@ val androidModule = module {
 
 [IMPORTANT]
 ====
-Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. Th system keeps a reference
+Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
 ====
 
@@ -143,7 +143,7 @@ or you can also inject it with Koin DSL. If a presenter need it:
 class Presenter(val userSession : UserSession)
 ----
 
-Just inject it into constructor, with teh right scope:
+Just inject it into constructor, with the right scope:
 
 [source,kotlin]
 ----
