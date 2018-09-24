@@ -70,7 +70,7 @@ If one of your definition need to inject a scope instance, just resolve it ... b
 class Presenter(val userSession : UserSession)
 ----
 
-Just inject it into constructor, with teh right scope:
+Just inject it into constructor, with the right scope:
 
 [source,kotlin]
 ----

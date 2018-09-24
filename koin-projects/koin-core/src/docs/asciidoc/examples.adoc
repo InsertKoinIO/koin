@@ -69,7 +69,7 @@ class ElectricHeater : Heater {
 }
 ----
 
-* `Thermosiphon` - is a implmentation of Pump using a `Heater`
+* `Thermosiphon` - is a implementation of Pump using a `Heater`
 
 [source,kotlin]
 ----

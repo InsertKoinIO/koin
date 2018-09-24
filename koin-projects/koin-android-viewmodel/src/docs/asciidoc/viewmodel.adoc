@@ -1,6 +1,6 @@
 == Architecture Components with Koin: ViewModel
 
-The `koin-android-viewmodel` project is dedicated to bring Android Architecture VieModel features.
+The `koin-android-viewmodel` project is dedicated to bring Android Architecture ViewModel features.
 
 === Gradle setup
 
@@ -22,7 +22,7 @@ dependencies {
 
 === ViewModel DSL
 
-The `koin-android-viewmodel` introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory, to help declare a ViewModel
+The `koin-android-viewmodel` introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel
 component and bind it to an Android Component lifecycle.
 
 [source,kotlin]
@@ -42,7 +42,7 @@ and use the `get()` function to inject dependencies.
 
 [NOTE]
 ====
-The `viewModel` help declare a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance
+The `viewModel` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance
 if needed.
 ====
 
@@ -120,7 +120,7 @@ class WeatherListFragment : Fragment() {
 
 [NOTE]
 ====
-The Activity sharing its ViewModel inject it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
+The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
 ====
 
 
