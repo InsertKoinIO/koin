@@ -2,6 +2,13 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [1.0.1]()
+
+_Android_
+
+* `[FIXED]` - `koin-android-viewmodel` & `koin-androidx-viewmodel` parameter & factory review - https://github.com/InsertKoinIO/koin/issues/236
+
+
 ## [1.0.0]()
 
 Core_
