@@ -35,8 +35,12 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 class BeanRegistry() {
+    private val definitionsByClass = hashMapOf<KClass<*>, HashSet<BeanDefinition<*>>>()
+    private val definitionsByNameAndClass =
+            hashMapOf<String, HashMap<KClass<*>, HashSet<BeanDefinition<*>>>>()
 
     val definitions = hashSetOf<BeanDefinition<*>>()
+
 
     /**
      * Add/Replace an existing bean
@@ -52,6 +56,20 @@ class BeanRegistry() {
 
         definitions += definition
 
+        if (definition.name.isNotEmpty()) {
+            val classMap = definitionsByNameAndClass.getOrPut(definition.name) { hashMapOf() }
+            definition.classes.forEach {
+                val definitionSet = classMap.getOrPut(it) { hashSetOf() }
+                definitionSet.remove(definition)
+                definitionSet.add(definition)
+            }
+        }
+        definition.classes.forEach {
+            val definitionSet = definitionsByClass.getOrPut(it) { hashSetOf() }
+            definitionSet.remove(definition)
+            definitionSet.add(definition)
+        }
+
         val kw = if (isOverriding) "override" else "declare"
         Koin.logger.info("[module] $kw $definition")
     }
@@ -60,7 +78,7 @@ class BeanRegistry() {
         definitions: Collection<BeanDefinition<*>>,
         clazz: KClass<*>
     ): List<BeanDefinition<*>> {
-        return definitions.filter { clazz in it.classes }
+        return definitionsByClass[clazz]?.filter { clazz in it.classes } ?: emptyList()
     }
 
     fun searchByNameAndClass(
@@ -68,7 +86,8 @@ class BeanRegistry() {
         name: String,
         clazz: KClass<*>
     ): List<BeanDefinition<*>> {
-        return definitions.filter { name == it.name && clazz in it.classes }
+        return definitionsByNameAndClass[name]?.get(clazz)?.filter { clazz in it.classes }
+                ?: emptyList()
     }
 
     /**
