@@ -147,8 +147,8 @@ class InstanceRegistry(
      * @param params
      */
     private fun createInstances(
-            definitions: List<BeanDefinition<*>>,
-            params: ParameterDefinition
+        definitions: List<BeanDefinition<*>>,
+        params: ParameterDefinition
     ) {
         definitions.forEach { def ->
             proceedResolution(
