@@ -82,7 +82,7 @@ class Koin(val koinContext: KoinContext) {
                 registerDefinitions(module())
             }
 
-            logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
+            logger.info("[modules] loaded ${beanRegistry.definitionsHashMap.size} definitions")
         }
         logger.debug("[modules] loaded in $duration ms")
         return this

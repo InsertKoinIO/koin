@@ -44,7 +44,7 @@ fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
 /**
  * Return all definitions of Koin
  */
-fun KoinContext.beanDefinitions() = instanceRegistry.beanRegistry.definitions
+fun KoinContext.beanDefinitions() = instanceRegistry.beanRegistry.definitionsHashMap.keys.distinct()
 
 /**
  * return beanDefinition for given class

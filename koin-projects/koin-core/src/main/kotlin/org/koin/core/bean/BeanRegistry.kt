@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
  */
 class BeanRegistry() {
 
-    val definitions = hashSetOf<BeanDefinition<*>>()
+    val definitionsHashMap: java.util.concurrent.ConcurrentHashMap<BeanDefinition<*>,Boolean> = java.util.concurrent.ConcurrentHashMap()
 
     /**
      * Add/Replace an existing bean
@@ -44,13 +44,13 @@ class BeanRegistry() {
      * @param def : Bean definition
      */
     fun declare(definition: BeanDefinition<*>) {
-        val isOverriding = definitions.remove(definition)
+        val isOverriding = definitionsHashMap.keys.remove(definition)
 
         if (isOverriding && !definition.allowOverride) {
             throw BeanOverrideException("Try to override definition with $definition, but override is not allowed. Use 'override' option in your definition or module.")
         }
 
-        definitions += definition
+        definitionsHashMap[definition] = true
 
         val kw = if (isOverriding) "override" else "declare"
         Koin.logger.info("[module] $kw $definition")
@@ -75,6 +75,7 @@ class BeanRegistry() {
      * Get bean definitions from given path
      */
     fun getDefinitionsInPaths(paths: Set<Path>): List<BeanDefinition<*>> {
+        val definitions = definitionsHashMap.keys
         return definitions.filter { def -> definitions.first { it == def }.path in paths }
     }
 
@@ -123,6 +124,6 @@ class BeanRegistry() {
      * Clear resources
      */
     fun clear() {
-        definitions.clear()
+        definitionsHashMap.clear()
     }
 }

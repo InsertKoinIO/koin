@@ -48,8 +48,8 @@ class InstanceRegistry(
     fun <T : Any> resolve(request: InstanceRequest, filterFunction: DefinitionFilter? = null): T {
 
         val definitions = (if (filterFunction != null) {
-            beanRegistry.definitions.filter(filterFunction)
-        } else beanRegistry.definitions)
+            beanRegistry.definitionsHashMap.keys.filter(filterFunction)
+        } else beanRegistry.definitionsHashMap.keys)
 
         return request.run {
             val search = when {
@@ -133,7 +133,7 @@ class InstanceRegistry(
      * @param defaultParameters
      */
     fun createEagerInstances(defaultParameters: ParameterDefinition) {
-        val definitions = beanRegistry.definitions.filter { it.isEager }
+        val definitions = beanRegistry.definitionsHashMap.keys.filter { it.isEager }
 
         if (definitions.isNotEmpty()) {
             Koin.logger.info("Creating instances ...")
@@ -147,8 +147,8 @@ class InstanceRegistry(
      * @param params
      */
     private fun createInstances(
-        definitions: Collection<BeanDefinition<*>>,
-        params: ParameterDefinition
+            definitions: List<BeanDefinition<*>>,
+            params: ParameterDefinition
     ) {
         definitions.forEach { def ->
             proceedResolution(
@@ -163,7 +163,7 @@ class InstanceRegistry(
      * Dry Run - run each definition
      */
     fun dryRun(defaultParameters: ParameterDefinition) {
-        createInstances(beanRegistry.definitions, defaultParameters)
+        createInstances(beanRegistry.definitionsHashMap.keys.distinct(), defaultParameters)
     }
 
     /**

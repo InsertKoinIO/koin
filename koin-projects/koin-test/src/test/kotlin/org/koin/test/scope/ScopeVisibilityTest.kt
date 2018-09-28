@@ -42,7 +42,7 @@ class ScopeVisibilityTest : AutoCloseKoinTest() {
         val koin = getKoin()
         val scope = getKoin().createScope("auth_session")
 
-        val definitions = koin.instanceRegistry.beanRegistry.definitions
+        val definitions = koin.instanceRegistry.beanRegistry.definitionsHashMap.keys
         val filter = definitions.filter { it.isVisibleToScope(scope) }
         assertEquals(2, filter.count())
     }
