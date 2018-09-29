@@ -16,6 +16,7 @@
 package org.koin.experimental.builder
 
 import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.parameter.ParameterList
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.definition.BeanDefinition
@@ -68,6 +69,34 @@ inline fun <reified T : Any> ModuleDefinition.create(): T {
     val clazz = T::class.java
     val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
     val args = ctor.parameterTypes.map { getForClass(clazz = it) }.toTypedArray()
+    return ctor.newInstance(*args) as T
+}
+
+/**
+ * Create instance for type T and inject dependencies into 1st constructor.
+ * The first constructor dependencies will be searched in [params] and in the other stored definitions.
+ * In parameters of the same type, order matters in the object creation, so they should have the same order as they are in the primary constructor.
+ * @param params Parameters to be used in the object creation.
+ */
+inline fun <reified T : Any> ModuleDefinition.create(params: ParameterList): T {
+    //creating mutable paramsArray
+    val paramsArray = ArrayList<Any>().apply { addAll(params.values.filterNotNull()) }
+    val clazz = T::class.java
+    val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
+    val args = ctor.parameterTypes.map { clz ->
+        //first, look in params
+        val index = paramsArray.indexOfFirst {
+            //checking for [class.java], [class.javaPrimitiveType] and if arg is an instance of param
+            it::class.java == clz || it::class.javaPrimitiveType == clz || clz.isInstance(it)
+        }
+        if (index != -1) {
+            //when resolving the argument from params always remove it from paramsArray
+            paramsArray.removeAt(index)
+        } else {
+            //if not founded in params, then look in definitions
+            getForClass(clazz = clz, parameters = { params })
+        }
+    }.toTypedArray()
     return ctor.newInstance(*args) as T
 }
 
