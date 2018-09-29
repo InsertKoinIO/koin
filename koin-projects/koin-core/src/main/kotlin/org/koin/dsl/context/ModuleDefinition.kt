@@ -160,16 +160,18 @@ class ModuleDefinition(
      * Provide a Scope bean definition - scope provider
      * (can be released/recreated with Scope API)
      *
+     * @param scopeId
      * @param name
      * @param override - allow definition override
      * @param definition
      */
     inline fun <reified T : Any> scope(
         scopeId: String,
+        name: String = "",
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = provide("", false, override, Kind.Scope, definition)
+        val beanDefinition = provide(name, false, override, Kind.Scope, definition)
         beanDefinition.setScope(scopeId)
         return beanDefinition
     }
