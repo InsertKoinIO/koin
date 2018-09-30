@@ -9,7 +9,8 @@ import org.koin.dsl.definition.BeanDefinition
  * Scope - InstanceHolder
  * create a unique instance
  */
-class ScopeInstanceHolder<T>(override val bean: BeanDefinition<T>, val scope : Scope) : InstanceHolder<T> {
+class ScopeInstanceHolder<T>(override val bean: BeanDefinition<T>, val scope: Scope) :
+    InstanceHolder<T> {
 
     init {
         scope.register(this)
@@ -19,11 +20,11 @@ class ScopeInstanceHolder<T>(override val bean: BeanDefinition<T>, val scope : S
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(parameters: ParameterDefinition): Instance<T> {
-        val needCreation= (instance == null)
-        if (needCreation){
+        val needCreation = (instance == null)
+        if (needCreation) {
             instance = create(parameters)
         }
-        Koin.logger.debug("[Scope] get '$instance' from $scope")
+        Koin.logger.debug("[Scope] get '${bean.clazz}' from $scope")
         return Instance(instance as T, needCreation)
     }
 
