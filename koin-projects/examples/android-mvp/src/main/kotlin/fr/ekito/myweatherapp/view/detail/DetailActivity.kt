@@ -9,6 +9,7 @@ import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.util.android.argument
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * Weather Detail View
@@ -18,17 +19,17 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
     // Get all needed data
     private val detailId by argument<String>(INTENT_WEATHER_ID)
 
-    override val presenter: DetailContract.Presenter by inject()
+    override val presenter: DetailContract.Presenter by inject { parametersOf(detailId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        presenter.getDetail(detailId)
     }
 
     override fun onStart() {
         super.onStart()
         presenter.subscribe(this)
+        presenter.getDetail()
     }
 
     override fun onStop() {

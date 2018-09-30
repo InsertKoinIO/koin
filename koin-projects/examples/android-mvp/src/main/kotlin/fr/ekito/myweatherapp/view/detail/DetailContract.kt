@@ -10,6 +10,6 @@ interface DetailContract {
     }
 
     interface Presenter : BasePresenter<View> {
-        fun getDetail(id: String)
+        fun getDetail()
     }
 }

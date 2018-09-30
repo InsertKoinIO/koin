@@ -28,7 +28,7 @@ val weatherAppModule = module {
     factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
 
     // Presenter for Detail View
-    factory<DetailContract.Presenter> { DetailPresenter(get(), get()) }
+    factory<DetailContract.Presenter> { (id : String) -> DetailPresenter(id, get(), get()) }
 
     // Weather Data Repository
     single<DailyForecastRepository> { DailyForecastRepositoryImpl(get()) }
