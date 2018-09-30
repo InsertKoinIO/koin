@@ -1,9 +1,9 @@
 package fr.ekito.myweatherapp
 
 import android.support.test.runner.AndroidJUnit4
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
+import junit.framework.Assert
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,18 +12,10 @@ import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
 
-/**
- * WeatherRepositoryTest is a KoinTest with AndroidJUnit4 runner
- *
- * KoinTest help inject Koin components from actual runtime
- */
 @RunWith(AndroidJUnit4::class)
 class WeatherRepositoryTest : KoinTest {
 
-    /*
-     * Inject WeatherRepository from Koin
-     */
-    val weatherRepository: WeatherRepository by inject()
+    private val weatherRepository: DailyForecastRepository by inject()
 
     @Before()
     fun before() {

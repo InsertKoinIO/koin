@@ -2,13 +2,12 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.DailyForecastModel
-import fr.ekito.myweatherapp.util.MockitoHelper.argumentCaptor
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
-import fr.ekito.myweatherapp.view.FailedEvent
-import fr.ekito.myweatherapp.view.LoadingEvent
-import fr.ekito.myweatherapp.view.SuccessEvent
+import fr.ekito.myweatherapp.view.Error
+import fr.ekito.myweatherapp.view.Pending
+import fr.ekito.myweatherapp.view.Success
 import fr.ekito.myweatherapp.view.ViewModelEvent
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import io.reactivex.Single
@@ -16,6 +15,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.Mockito.*
@@ -24,10 +24,12 @@ import org.mockito.MockitoAnnotations
 class SplashViewModelMockTest {
 
     lateinit var viewModel: SplashViewModel
+
     @Mock
     lateinit var view: Observer<ViewModelEvent>
+
     @Mock
-    lateinit var repository: WeatherRepository
+    lateinit var repository: DailyForecastRepository
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -37,27 +39,28 @@ class SplashViewModelMockTest {
         MockitoAnnotations.initMocks(this)
 
         viewModel = SplashViewModel(repository, TestSchedulerProvider())
+
         viewModel.events.observeForever(view)
     }
 
     @Test
     fun testGetLastWeather() {
-        val list = listOf(mock(DailyForecastModel::class.java))
+        val list = listOf(mock(DailyForecast::class.java))
 
         given(repository.getWeather()).willReturn(Single.just(list))
 
         viewModel.getLastWeather()
 
         // setup ArgumentCaptor
-        val arg = argumentCaptor<ViewModelEvent>()
+        val arg = ArgumentCaptor.forClass(ViewModelEvent::class.java)
         // Here we expect 2 calls on view.onChanged
         verify(view, times(2)).onChanged(arg.capture())
 
         val values = arg.allValues
         // Test obtained values in order
         Assert.assertEquals(2, values.size)
-        Assert.assertEquals(LoadingEvent, values[0])
-        Assert.assertEquals(SuccessEvent, values[1])
+        Assert.assertEquals(Pending, values[0])
+        Assert.assertEquals(Success, values[1])
     }
 
     @Test
@@ -68,14 +71,14 @@ class SplashViewModelMockTest {
         viewModel.getLastWeather()
 
         // setup ArgumentCaptor
-        val arg = argumentCaptor<ViewModelEvent>()
+        val arg = ArgumentCaptor.forClass(ViewModelEvent::class.java)
         // Here we expect 2 calls on view.onChanged
         verify(view, times(2)).onChanged(arg.capture())
 
         val values = arg.allValues
         // Test obtained values in order
         Assert.assertEquals(2, values.size)
-        Assert.assertEquals(LoadingEvent, values[0])
-        Assert.assertEquals(FailedEvent(error), values[1])
+        Assert.assertEquals(Pending, values[0])
+        Assert.assertEquals(Error(error), values[1])
     }
 }

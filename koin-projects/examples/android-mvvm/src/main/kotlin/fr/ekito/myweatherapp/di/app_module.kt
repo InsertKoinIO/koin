@@ -1,15 +1,12 @@
 package fr.ekito.myweatherapp.di
 
-import android.arch.persistence.room.Room
-import fr.ekito.myweatherapp.data.datasource.room.WeatherDatabase
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.data.repository.WeatherRepositoryImpl
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepositoryImpl
 import fr.ekito.myweatherapp.util.rx.ApplicationSchedulerProvider
 import fr.ekito.myweatherapp.util.rx.SchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailViewModel
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -17,64 +14,23 @@ import org.koin.dsl.module.module
  * App Components
  */
 val weatherAppModule = module {
-    // ViewModel for Detail view
-    viewModel { DetailViewModel(get(), get()) }
-
-    // ViewModel for Search View
+    // SplashViewModel for Splash View
     viewModel { SplashViewModel(get(), get()) }
 
-    // WeatherViewModel declaration for Weather View components
     viewModel { WeatherViewModel(get(), get()) }
-}
 
-val dataModule = module(createOnStart = true) {
+    viewModel { (id: String) -> DetailViewModel(id, get(), get()) }
+
+    scope("session") { }
+
     // Weather Data Repository
-    single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
+    single<DailyForecastRepository> { DailyForecastRepositoryImpl(get()) }
 
     // Rx Schedulers
     single<SchedulerProvider> { ApplicationSchedulerProvider() }
-
-    // Room Database
-    single {
-        Room.databaseBuilder(androidContext(), WeatherDatabase::class.java, "weather-db")
-            .build()
-    }
-
-    // Expose WeatherDAO directly
-    single { get<WeatherDatabase>().weatherDAO() }
 }
 
-///**
-// * App Components
-// */
-//val weatherAppModule = module {
-//    // ViewModel for Detail view
-//    viewModel<DetailViewModel>()
-//
-//    // ViewModel for Search View
-//    viewModel<SplashViewModel>()
-//
-//    // WeatherViewModel declaration for Weather View components
-//    viewModel<WeatherViewModel>()
-//}
-//
-//val dataModule = module(createOnStart = true) {
-//    // Weather Data Repository
-//    singleBy<WeatherRepository, WeatherRepositoryImpl>()
-//
-//    // Rx Schedulers
-//    singleBy<SchedulerProvider, ApplicationSchedulerProvider>()
-//
-//    // Room Database
-//    single {
-//        Room.databaseBuilder(androidContext(), WeatherDatabase::class.java, "weather-db")
-//            .build()
-//    }
-//
-//    // Expose WeatherDAO directly
-//    single { get<WeatherDatabase>().weatherDAO() }
-//}
-
 // Gather all app modules
-val onlineWeatherApp = listOf(weatherAppModule, dataModule, remoteDatasourceModule)
-val offlineWeatherApp = listOf(weatherAppModule, dataModule, localAndroidDatasourceModule)
+val onlineWeatherApp = listOf(weatherAppModule, remoteDataSourceModule)
+val offlineWeatherApp = listOf(weatherAppModule, localAndroidDataSourceModule)
+val roomWeatherApp = listOf(weatherAppModule, localAndroidDataSourceModule, roomDataSourceModule)

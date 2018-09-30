@@ -1,7 +1,7 @@
 package fr.ekito.myweatherapp.di
 
-import fr.ekito.myweatherapp.data.datasource.webservice.WeatherWebDatasource
-import fr.ekito.myweatherapp.di.DatasourceProperties.SERVER_URL
+import fr.ekito.myweatherapp.data.WeatherDataSource
+import fr.ekito.myweatherapp.di.Properties.SERVER_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module.module
@@ -13,15 +13,14 @@ import java.util.concurrent.TimeUnit
 /**
  * Remote Web Service datasource
  */
-val remoteDatasourceModule = module(createOnStart = true) {
+val remoteDataSourceModule = module {
     // provided web components
     single { createOkHttpClient() }
     // Fill property
-    single { createWebService<WeatherWebDatasource>(get(), getProperty(SERVER_URL)) }
+    single { createWebService<WeatherDataSource>(get(), getProperty(SERVER_URL)) }
 }
 
-
-object DatasourceProperties {
+object Properties {
     const val SERVER_URL = "SERVER_URL"
 }
 

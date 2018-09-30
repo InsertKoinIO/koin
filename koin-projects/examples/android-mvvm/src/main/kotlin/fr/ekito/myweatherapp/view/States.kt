@@ -1,17 +1,17 @@
 package fr.ekito.myweatherapp.view
 
 /**
- * Abstract ViewModel State
+ * Abstract State pushed by ViewModel
  */
 open class ViewModelState
 
 /**
- * Generic Loading ViewModel State
+ * Generic Loading State
  */
-object LoadingState : ViewModelState()
+object Loading : ViewModelState()
 
 /**
- * Generic Error ViewModel State
+ * Generic Error state
  * @param error - caught error
  */
-data class ErrorState(val error: Throwable) : ViewModelState()
+data class Failed(val error: Throwable) : ViewModelState()

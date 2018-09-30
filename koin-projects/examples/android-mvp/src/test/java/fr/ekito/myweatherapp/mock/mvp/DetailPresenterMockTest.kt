@@ -22,6 +22,8 @@ class DetailPresenterMockTest {
     @Mock
     lateinit var repository: DailyForecastRepository
 
+    val id = "ID"
+
     // TODO uncomment to use LiveData in Test
 //    @get:Rule
 //    val rule = InstantTaskExecutorRule()
@@ -30,18 +32,17 @@ class DetailPresenterMockTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
 
-        presenter = DetailPresenter(repository, TestSchedulerProvider())
+        presenter = DetailPresenter(id, repository, TestSchedulerProvider())
         presenter.view = view
     }
 
     @Test
     fun testGetLastWeather() {
         val weather = mock(DailyForecast::class.java)
-        val id = "ID"
 
         given(repository.getWeatherDetail(id)).willReturn(Single.just(weather))
 
-        presenter.getDetail(id)
+        presenter.getDetail()
 
         verify(view, never()).showError(MockitoHelper.any())
         verify(view).showDetail(weather)
@@ -50,11 +51,10 @@ class DetailPresenterMockTest {
     @Test
     fun testGeLasttWeatherFailed() {
         val error = Throwable("Got error")
-        val id = "ID"
 
         given(repository.getWeatherDetail(id)).willReturn(Single.error(error))
 
-        presenter.getDetail(id)
+        presenter.getDetail()
 
         verify(view, never()).showDetail(MockitoHelper.any())
         verify(view).showError(error)

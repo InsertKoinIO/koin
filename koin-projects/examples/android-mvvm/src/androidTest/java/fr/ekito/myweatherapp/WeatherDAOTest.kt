@@ -1,14 +1,14 @@
 package fr.ekito.myweatherapp
 
 import android.support.test.runner.AndroidJUnit4
-import fr.ekito.myweatherapp.data.datasource.room.WeatherDAO
-import fr.ekito.myweatherapp.data.datasource.room.WeatherDatabase
-import fr.ekito.myweatherapp.data.datasource.room.WeatherEntity
-import fr.ekito.myweatherapp.data.datasource.webservice.WeatherWebDatasource
-import fr.ekito.myweatherapp.data.datasource.webservice.json.geocode.getLocation
-import fr.ekito.myweatherapp.data.datasource.webservice.json.weather.getDailyForecasts
+import fr.ekito.myweatherapp.data.WeatherDataSource
+import fr.ekito.myweatherapp.data.room.WeatherDAO
+import fr.ekito.myweatherapp.data.room.WeatherDatabase
+import fr.ekito.myweatherapp.data.room.WeatherEntity
+import fr.ekito.myweatherapp.domain.ext.getDailyForecasts
+import fr.ekito.myweatherapp.domain.ext.getLocation
+import junit.framework.Assert
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,24 +18,15 @@ import org.koin.standalone.inject
 import org.koin.test.KoinTest
 import java.util.*
 
-/**
- * WeatherDAOTest is a KoinTest with AndroidJUnit4 runner
- *
- * KoinTest help inject Koin components from actual runtime
- */
 @RunWith(AndroidJUnit4::class)
 class WeatherDAOTest : KoinTest {
 
-    /*
-     * Inject needed components from Koin
-     */
     val weatherDatabase: WeatherDatabase by inject()
-    val weatherWebDatasource: WeatherWebDatasource by inject()
+    val weatherWebDatasource: WeatherDataSource by inject()
     val weatherDAO: WeatherDAO by inject()
 
     @Before()
     fun before() {
-        // Replace default WeatherDatabase definition with in-memory definition
         loadKoinModules(roomTestModule)
     }
 

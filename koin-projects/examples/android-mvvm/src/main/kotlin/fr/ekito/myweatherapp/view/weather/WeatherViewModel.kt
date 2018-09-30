@@ -2,78 +2,69 @@ package fr.ekito.myweatherapp.view.weather
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.DailyForecastModel
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.mvvm.RxViewModel
 import fr.ekito.myweatherapp.util.mvvm.SingleLiveEvent
 import fr.ekito.myweatherapp.util.rx.SchedulerProvider
 import fr.ekito.myweatherapp.util.rx.with
-import fr.ekito.myweatherapp.view.ErrorState
-import fr.ekito.myweatherapp.view.LoadingState
+import fr.ekito.myweatherapp.view.Failed
+import fr.ekito.myweatherapp.view.Loading
 import fr.ekito.myweatherapp.view.ViewModelEvent
 import fr.ekito.myweatherapp.view.ViewModelState
 
 class WeatherViewModel(
-    private val weatherRepository: WeatherRepository,
+    private val dailyForecastRepository: DailyForecastRepository,
     private val schedulerProvider: SchedulerProvider
 ) : RxViewModel() {
-
-    private val _states = MutableLiveData<ViewModelState>()
-    val states: LiveData<ViewModelState>
-        get() = _states
 
     private val _events = SingleLiveEvent<ViewModelEvent>()
     val events: LiveData<ViewModelEvent>
         get() = _events
 
-    /**
-     * Load new weather for given location
-     * notify for loading: LoadingLocationEvent / LoadLocationFailedEvent
-     * push WeatherListState if it succeed
-     */
-    fun loadNewLocation(newLocation: String) {
-        _events.value = LoadingLocationEvent(newLocation)
+    private val _states = MutableLiveData<ViewModelState>()
+    val states: LiveData<ViewModelState>
+        get() = _states
+
+    fun loadNewLocation(location: String) {
+        _events.value = ProceedLocation(location)
         launch {
-            weatherRepository.getWeather(newLocation)
+            dailyForecastRepository.getWeather(location)
                 .with(schedulerProvider)
                 .subscribe(
-                    { weather -> _states.value = WeatherListState.from(weather) },
-                    { error -> _events.value = LoadLocationFailedEvent(newLocation, error) })
+                    { list -> _states.value = WeatherListLoaded.from(list) },
+                    { error -> _events.value = ProceedLocationError(location, error)  })
         }
     }
 
-    /**
-     * Retrieve previously loaded weather and push view states
-     */
     fun getWeather() {
-        _states.value = LoadingState
+        _states.value = Loading
         launch {
-            weatherRepository.getWeather()
+            dailyForecastRepository.getWeather()
                 .with(schedulerProvider)
                 .subscribe(
-                    { weather -> _states.value = WeatherListState.from(weather) },
-                    { error -> _states.value = ErrorState(error) })
+                    { list -> _states.value = WeatherListLoaded.from(list) },
+                    { error -> _states.value = Failed(error) })
         }
     }
 
-    data class WeatherListState(
+    data class WeatherListLoaded(
         val location: String,
-        val first: DailyForecastModel,
-        val lasts: List<DailyForecastModel>
+        val first: DailyForecast,
+        val lasts: List<DailyForecast>
     ) : ViewModelState() {
         companion object {
-            fun from(list: List<DailyForecastModel>): WeatherListState {
+            fun from(list: List<DailyForecast>): WeatherListLoaded {
                 return if (list.isEmpty()) error("weather list should not be empty")
                 else {
                     val first = list.first()
                     val location = first.location
-                    WeatherListState(location, first, list.takeLast(list.size - 1))
+                    WeatherListLoaded(location, first, list.takeLast(list.size - 1))
                 }
             }
         }
     }
 
-    data class LoadingLocationEvent(val location: String) : ViewModelEvent()
-    data class LoadLocationFailedEvent(val location: String, val error: Throwable) :
-        ViewModelEvent()
+    data class ProceedLocation(val location: String) : ViewModelEvent()
+    data class ProceedLocationError(val location: String, val error: Throwable) : ViewModelEvent()
 }

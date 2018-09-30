@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.view.ErrorState
+import fr.ekito.myweatherapp.view.Failed
 import kotlinx.android.synthetic.main.activity_result.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
@@ -20,12 +20,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
  */
 class WeatherActivity : AppCompatActivity() {
 
-    /*
-     * Declare WeatherViewModel with Koin and allow constructor dependency injection
-     */
-    private val viewModel by viewModel<WeatherViewModel>()
+    private val TAG = this::class.java.simpleName
 
-    val TAG = this::class.java.simpleName
+    private val viewModel : WeatherViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,15 +40,12 @@ class WeatherActivity : AppCompatActivity() {
             .replace(R.id.weather_list, resultListFragment)
             .commit()
 
-        // Observe ErrorState
+
         viewModel.states.observe(this, Observer { state ->
-            state?.let {
-                when (state) {
-                    is ErrorState -> showError(state.error)
-                }
+            when(state){
+                is Failed -> showError(state.error)
             }
         })
-        // Launch load of weather data
         viewModel.getWeather()
     }
 
@@ -61,12 +55,12 @@ class WeatherActivity : AppCompatActivity() {
         weather_error.visibility = View.VISIBLE
         Snackbar.make(
             weather_result,
-            getString(R.string.loading_error) + "  $error",
+            "WeatherActivity got error : $error",
             Snackbar.LENGTH_INDEFINITE
         )
-            .setAction(R.string.retry, {
+            .setAction(R.string.retry) {
                 startActivity(intentFor<WeatherActivity>().clearTop().clearTask().newTask())
-            })
+            }
             .show()
     }
 }

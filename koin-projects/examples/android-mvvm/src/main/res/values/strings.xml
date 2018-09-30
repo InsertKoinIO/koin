@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">MVVM Weather App - MVVM</string>
-    <string name="loading_error">Error while loading weather -</string>
+    <string name="app_name">My Weather App - MVVM</string>
+    <string name="loading_error">Error while loading weather</string>
     <string name="enter_location">Enter your location</string>
     <string name="location_hint">e.g: Paris</string>
     <string name="search">SEARCH</string>

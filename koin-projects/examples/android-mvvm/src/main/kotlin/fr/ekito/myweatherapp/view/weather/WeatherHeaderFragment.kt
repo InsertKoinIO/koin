@@ -11,20 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.domain.DailyForecastModel
-import fr.ekito.myweatherapp.domain.getColorFromCode
-import fr.ekito.myweatherapp.view.IntentArguments
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.view.detail.DetailActivity
+import fr.ekito.myweatherapp.view.detail.DetailActivity.Companion.INTENT_WEATHER_ID
 import kotlinx.android.synthetic.main.fragment_result_header.*
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class WeatherHeaderFragment : Fragment() {
 
-    /*
-     * Declare shared WeatherViewModel with WeatherActivity
-     */
-    private val viewModel by sharedViewModel<WeatherViewModel>()
+    private val viewModel: WeatherViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,29 +33,20 @@ class WeatherHeaderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Observe WeatherListState
         viewModel.states.observe(this, Observer { state ->
-            state?.let {
-                when (state) {
-                    is WeatherViewModel.WeatherListState -> showWeather(state.location, state.first)
-                }
+            when (state) {
+                is WeatherViewModel.WeatherListLoaded -> showWeather(state.location, state.first)
             }
         })
-        // Observe LoadingLocationEvent & LoadLocationFailedEvent
-        viewModel.events.observe(this, Observer { event ->
-            event?.let {
-                when (event) {
-                    is WeatherViewModel.LoadingLocationEvent -> showLoadingLocation(event.location)
-                    is WeatherViewModel.LoadLocationFailedEvent -> showLocationSearchFailed(
-                        event.location,
-                        event.error
-                    )
-                }
+        viewModel.events.observe(this , Observer { event ->
+            when(event){
+                is WeatherViewModel.ProceedLocation -> showLoadingLocation(event.location)
+                is WeatherViewModel.ProceedLocationError -> showLocationSearchFailed(event.location,event.error)
             }
         })
     }
 
-    private fun showWeather(location: String, weather: DailyForecastModel) {
+    private fun showWeather(location: String, weather: DailyForecast) {
         weatherCity.text = location
         weatherCityCard.setOnClickListener {
             promptLocationDialog()
@@ -74,7 +62,7 @@ class WeatherHeaderFragment : Fragment() {
 
         weatherHeader.setOnClickListener {
             activity?.startActivity<DetailActivity>(
-                IntentArguments.ARG_WEATHER_ITEM_ID to weather.id
+                INTENT_WEATHER_ID to weather.id
             )
         }
     }
@@ -108,14 +96,10 @@ class WeatherHeaderFragment : Fragment() {
     }
 
     private fun showLocationSearchFailed(location: String, error: Throwable) {
-        Snackbar.make(
-            weatherHeader,
-            getString(R.string.loading_error) + " $error",
-            Snackbar.LENGTH_LONG
-        )
-            .setAction(R.string.retry, {
+        Snackbar.make(weatherHeader, getString(R.string.loading_error), Snackbar.LENGTH_LONG)
+            .setAction(R.string.retry) {
                 viewModel.loadNewLocation(location)
-            })
+            }
             .show()
     }
 }

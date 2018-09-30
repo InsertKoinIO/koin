@@ -1,12 +1,10 @@
 package fr.ekito.myweatherapp
 
 import android.arch.persistence.room.Room
-import fr.ekito.myweatherapp.data.datasource.room.WeatherDatabase
+import fr.ekito.myweatherapp.data.room.WeatherDatabase
 import org.koin.dsl.module.module
 
-/**
- * In-Memory Room Database definition
- */
+// Room In memroy database
 val roomTestModule = module(override = true) {
     single {
         Room.inMemoryDatabaseBuilder(get(), WeatherDatabase::class.java)

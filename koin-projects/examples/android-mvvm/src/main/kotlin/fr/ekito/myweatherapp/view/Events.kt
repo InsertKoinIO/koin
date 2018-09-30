@@ -6,16 +6,16 @@ package fr.ekito.myweatherapp.view
 open class ViewModelEvent
 
 /**
- * Generic Loading Event
+ * Generic Pending Event
  */
-object LoadingEvent : ViewModelEvent()
+object Pending : ViewModelEvent()
 
 /**
  * Generic Success Event
  */
-object SuccessEvent : ViewModelEvent()
+object Success : ViewModelEvent()
 
 /**
  * Generic Failed Event
  */
-data class FailedEvent(val error: Throwable) : ViewModelEvent()
+data class Error(val error: Throwable) : ViewModelEvent()
