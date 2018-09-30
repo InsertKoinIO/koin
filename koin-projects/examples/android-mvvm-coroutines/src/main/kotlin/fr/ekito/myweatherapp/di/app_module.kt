@@ -1,33 +1,34 @@
 package fr.ekito.myweatherapp.di
 
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.data.repository.WeatherRepositoryImpl
-import fr.ekito.myweatherapp.util.rx.ApplicationSchedulerProvider
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.repository.WeatherRepositoryImpl
+import fr.ekito.myweatherapp.util.coroutines.ApplicationSchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailViewModel
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
-import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.android.viewmodel.experimental.builder.viewModel
 import org.koin.dsl.module.module
+import org.koin.experimental.builder.singleBy
 
 /**
  * App Components
  */
 val weatherAppModule = module {
 
-    viewModel { DetailViewModel(get(), get()) }
+    viewModel<DetailViewModel>()
 
     // ViewModel for Search View
-    viewModel { SplashViewModel(get(), get()) }
+    viewModel<SplashViewModel>()
 
     // WeatherViewModel declaration for Weather View components
-    viewModel { WeatherViewModel(get(), get()) }
+    viewModel<WeatherViewModel>()
 
     // Weather Data Repository
-    single<WeatherRepository> { WeatherRepositoryImpl(get()) }
+    singleBy<WeatherRepository, WeatherRepositoryImpl>()
 
     // Rx Schedulers
-    single<SchedulerProvider> { ApplicationSchedulerProvider() }
+    singleBy<SchedulerProvider, ApplicationSchedulerProvider>()
 }
 
 // Gather all app modules

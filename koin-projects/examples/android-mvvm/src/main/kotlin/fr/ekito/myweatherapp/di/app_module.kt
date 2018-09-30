@@ -1,9 +1,10 @@
 package fr.ekito.myweatherapp.di
 
+import fr.ekito.myweatherapp.domain.entity.UserSession
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepositoryImpl
-import fr.ekito.myweatherapp.util.rx.ApplicationSchedulerProvider
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.ApplicationSchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailViewModel
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
@@ -17,11 +18,11 @@ val weatherAppModule = module {
     // SplashViewModel for Splash View
     viewModel { SplashViewModel(get(), get()) }
 
-    viewModel { WeatherViewModel(get(), get()) }
+    viewModel { WeatherViewModel(get(), get(), get()) }
 
     viewModel { (id: String) -> DetailViewModel(id, get(), get()) }
 
-    scope("session") { }
+    scope("session") { UserSession() }
 
     // Weather Data Repository
     single<DailyForecastRepository> { DailyForecastRepositoryImpl(get()) }

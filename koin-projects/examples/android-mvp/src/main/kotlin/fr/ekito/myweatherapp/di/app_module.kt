@@ -2,8 +2,8 @@ package fr.ekito.myweatherapp.di
 
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepositoryImpl
-import fr.ekito.myweatherapp.util.rx.ApplicationSchedulerProvider
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.ApplicationSchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailContract
 import fr.ekito.myweatherapp.view.detail.DetailPresenter
 import fr.ekito.myweatherapp.view.splash.SplashContract

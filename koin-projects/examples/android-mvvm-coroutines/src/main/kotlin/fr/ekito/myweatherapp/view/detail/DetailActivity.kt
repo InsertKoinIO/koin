@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.domain.DailyForecastModel
-import fr.ekito.myweatherapp.domain.getColorFromCode
-import fr.ekito.myweatherapp.util.ext.argument
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.entity.getColorFromCode
+import fr.ekito.myweatherapp.util.android.argument
 import fr.ekito.myweatherapp.view.ErrorState
-import fr.ekito.myweatherapp.view.IntentArguments.ARG_WEATHER_ITEM_ID
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -46,7 +45,7 @@ class DetailActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun showDetail(weather: DailyForecastModel) {
+    private fun showDetail(weather: DailyForecast) {
         weatherIcon.text = weather.icon
         weatherDay.text = weather.day
         weatherText.text = weather.fullText
@@ -58,5 +57,9 @@ class DetailActivity : AppCompatActivity() {
         weatherItem.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    companion object {
+        const val ARG_WEATHER_ITEM_ID: String = "WEATHER_ID"
     }
 }

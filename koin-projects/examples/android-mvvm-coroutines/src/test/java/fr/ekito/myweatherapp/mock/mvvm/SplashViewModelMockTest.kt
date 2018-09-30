@@ -2,8 +2,8 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.DailyForecastModel
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
 import fr.ekito.myweatherapp.util.MockitoHelper.argumentCaptor
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.view.Event
@@ -42,7 +42,7 @@ class SplashViewModelMockTest {
 
     @Test
     fun testGetLastWeather() {
-        val list = listOf(mock(DailyForecastModel::class.java))
+        val list = listOf(mock(DailyForecast::class.java))
 
         given(repository.getWeather()).willReturn(async { list })
 

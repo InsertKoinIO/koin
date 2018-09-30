@@ -4,8 +4,8 @@ import android.arch.lifecycle.LiveData
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.mvvm.RxViewModel
 import fr.ekito.myweatherapp.util.mvvm.SingleLiveEvent
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
-import fr.ekito.myweatherapp.util.rx.with
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.with
 import fr.ekito.myweatherapp.view.Error
 import fr.ekito.myweatherapp.view.Pending
 import fr.ekito.myweatherapp.view.Success

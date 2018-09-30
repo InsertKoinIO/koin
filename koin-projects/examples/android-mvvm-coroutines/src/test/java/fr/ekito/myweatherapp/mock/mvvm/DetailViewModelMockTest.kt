@@ -2,8 +2,8 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.DailyForecastModel
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
 import fr.ekito.myweatherapp.util.MockitoHelper.argumentCaptor
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.view.ErrorState
@@ -42,7 +42,7 @@ class DetailViewModelMockTest {
 
     @Test
     fun testGetLastWeather() = runBlocking {
-        val weather = mock(DailyForecastModel::class.java)
+        val weather = mock(DailyForecast::class.java)
         val id = "ID"
 
         given(repository.getWeatherDetail(id)).willReturn(async { weather })

@@ -3,11 +3,12 @@ package fr.ekito.myweatherapp.view.weather
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.entity.UserSession
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.mvvm.RxViewModel
 import fr.ekito.myweatherapp.util.mvvm.SingleLiveEvent
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
-import fr.ekito.myweatherapp.util.rx.with
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.with
 import fr.ekito.myweatherapp.view.Failed
 import fr.ekito.myweatherapp.view.Loading
 import fr.ekito.myweatherapp.view.ViewModelEvent
@@ -15,8 +16,13 @@ import fr.ekito.myweatherapp.view.ViewModelState
 
 class WeatherViewModel(
     private val dailyForecastRepository: DailyForecastRepository,
-    private val schedulerProvider: SchedulerProvider
+    private val schedulerProvider: SchedulerProvider,
+    private val userSession: UserSession
 ) : RxViewModel() {
+
+    init {
+        println("Got session : $userSession")
+    }
 
     private val _events = SingleLiveEvent<ViewModelEvent>()
     val events: LiveData<ViewModelEvent>

@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import fr.ekito.myweatherapp.R
+import fr.ekito.myweatherapp.domain.entity.UserSession
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.weather.list.WeatherItem
 import fr.ekito.myweatherapp.view.weather.list.WeatherListAdapter
 import kotlinx.android.synthetic.main.fragment_result_list.*
 import org.jetbrains.anko.startActivity
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class WeatherListFragment : Fragment() {

@@ -1,7 +1,7 @@
 package fr.ekito.myweatherapp.di
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
-import fr.ekito.myweatherapp.data.datasource.webservice.WeatherWebDatasource
+import fr.ekito.myweatherapp.data.WeatherDatasource
 import fr.ekito.myweatherapp.di.DatasourceProperties.SERVER_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,7 +17,7 @@ val remoteDatasourceModule = module {
     // provided web components
     single { createOkHttpClient() }
     // Fill property
-    single { createWebService<WeatherWebDatasource>(get(), getProperty(SERVER_URL)) }
+    single { createWebService<WeatherDatasource>(get(), getProperty(SERVER_URL)) }
 }
 
 

@@ -2,8 +2,8 @@ package fr.ekito.myweatherapp.view.detail
 
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.mvp.RxPresenter
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
-import fr.ekito.myweatherapp.util.rx.with
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.with
 
 class DetailPresenter(
     private val id: String,

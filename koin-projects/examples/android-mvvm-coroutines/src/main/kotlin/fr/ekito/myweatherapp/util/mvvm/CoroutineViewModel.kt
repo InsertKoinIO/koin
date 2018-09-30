@@ -1,7 +1,7 @@
 package fr.ekito.myweatherapp.util.mvvm
 
 import android.arch.lifecycle.ViewModel
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Job
 

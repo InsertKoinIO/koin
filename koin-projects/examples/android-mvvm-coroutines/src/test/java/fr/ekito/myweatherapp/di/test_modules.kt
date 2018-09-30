@@ -1,20 +1,21 @@
 package fr.ekito.myweatherapp.di
 
-import fr.ekito.myweatherapp.data.datasource.webservice.WeatherWebDatasource
-import fr.ekito.myweatherapp.data.datasource.webservice.local.JavaReader
-import fr.ekito.myweatherapp.data.datasource.webservice.local.JsonReader
-import fr.ekito.myweatherapp.data.datasource.webservice.local.LocalFileDataSource
+import fr.ekito.myweatherapp.data.WeatherDatasource
+import fr.ekito.myweatherapp.data.local.JavaReader
+import fr.ekito.myweatherapp.data.local.JsonReader
+import fr.ekito.myweatherapp.data.local.LocalFileDataSource
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
 import org.koin.dsl.module.module
+import org.koin.experimental.builder.singleBy
 
 
 /**
  * Local java json repository
  */
 val localJavaDatasourceModule = module(override = true) {
-    single<JsonReader> { JavaReader() }
-    single<WeatherWebDatasource> { LocalFileDataSource(get(), false) }
+    singleBy<JsonReader, JavaReader>()
+    single<WeatherDatasource> { LocalFileDataSource(get(), false) }
 }
 
 /**

@@ -11,9 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.domain.DailyForecastModel
-import fr.ekito.myweatherapp.domain.getColorFromCode
-import fr.ekito.myweatherapp.view.IntentArguments
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.startActivity
@@ -58,7 +57,7 @@ class WeatherHeaderFragment : Fragment() {
         })
     }
 
-    private fun showWeather(location: String, weather: DailyForecastModel) {
+    private fun showWeather(location: String, weather: DailyForecast) {
         weatherCity.text = location
         weatherCityCard.setOnClickListener {
             promptLocationDialog()
@@ -74,7 +73,7 @@ class WeatherHeaderFragment : Fragment() {
 
         weatherHeader.setOnClickListener {
             activity?.startActivity<DetailActivity>(
-                IntentArguments.ARG_WEATHER_ITEM_ID to weather.id
+                DetailActivity.ARG_WEATHER_ITEM_ID to weather.id
             )
         }
     }

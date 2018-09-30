@@ -2,7 +2,7 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
 import fr.ekito.myweatherapp.mock.MockedData
 import fr.ekito.myweatherapp.mock.MockedData.mockList
 import fr.ekito.myweatherapp.util.MockitoHelper

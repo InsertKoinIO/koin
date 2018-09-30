@@ -1,10 +1,10 @@
 package fr.ekito.myweatherapp.view.splash
 
 import android.arch.lifecycle.LiveData
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
 import fr.ekito.myweatherapp.util.mvvm.CoroutineViewModel
 import fr.ekito.myweatherapp.util.mvvm.SingleLiveEvent
-import fr.ekito.myweatherapp.util.rx.SchedulerProvider
+import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
 import fr.ekito.myweatherapp.view.Event
 import fr.ekito.myweatherapp.view.FailedEvent
 import fr.ekito.myweatherapp.view.LoadingEvent
