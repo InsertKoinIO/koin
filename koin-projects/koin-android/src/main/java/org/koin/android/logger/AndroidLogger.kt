@@ -23,11 +23,13 @@ import org.koin.log.Logger
  *
  * @author - Arnaud GIULIANI
  */
-class AndroidLogger : Logger {
+class AndroidLogger(val showDebug: Boolean = false) : Logger {
     val TAG = "KOIN"
 
     override fun debug(msg: String) {
-        Log.d(TAG, msg)
+        if (showDebug) {
+            Log.d(TAG, msg)
+        }
     }
 
     override fun err(msg: String) {

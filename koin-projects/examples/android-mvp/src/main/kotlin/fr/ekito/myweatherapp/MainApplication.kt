@@ -5,6 +5,7 @@ import com.joanzapata.iconify.Iconify
 import com.joanzapata.iconify.fonts.WeathericonsModule
 import fr.ekito.myweatherapp.di.offlineWeatherApp
 import org.koin.android.ext.android.startKoin
+import org.koin.android.logger.AndroidLogger
 
 /**
  * Main Application
@@ -15,7 +16,7 @@ class MainApplication : Application() {
         super.onCreate()
 
         // start Koin context
-        startKoin(this, offlineWeatherApp)
+        startKoin(this, offlineWeatherApp, logger = AndroidLogger(showDebug = true))
 
         Iconify
             .with(WeathericonsModule())
