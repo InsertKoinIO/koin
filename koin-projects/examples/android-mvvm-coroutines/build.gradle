@@ -33,10 +33,9 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     // Android Support
     implementation "com.android.support:appcompat-v7:$support_lib_version"
+    implementation "com.android.support:support-v4:$support_lib_version"
     implementation "com.android.support:design:$support_lib_version"
 
     // Android Test
@@ -63,7 +62,7 @@ dependencies {
     testImplementation "android.arch.core:core-testing:$android_arch_version"
 
     // UI
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
     implementation 'com.joanzapata.iconify:android-iconify-weathericons:2.2.2'
 
     // Gson
@@ -78,8 +77,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     // Canary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leak_canary_version"
 }
 
 kotlin {

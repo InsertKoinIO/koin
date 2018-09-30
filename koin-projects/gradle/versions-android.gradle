@@ -1,10 +1,10 @@
 ext {
     // Sdk and tools
     android_min_version = 14
-    android_target_version = 27
+    android_target_version = 28
     androidx_target_version = 28
 
-    android_gradle_version = "3.2.0-rc03"
+    android_gradle_version = "3.2.0"
 
     android_build_tools_version  = '28.0.2'
 
