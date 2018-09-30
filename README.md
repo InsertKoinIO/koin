@@ -276,6 +276,7 @@ And more: check your configuration with a simple unit test, easily create mocks.
 * [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
+* [What is up with Koin](https://medium.com/@stoltmanjan/what-is-up-with-koin-719d1248562c)
 
 ### Talks & podcasts
 
