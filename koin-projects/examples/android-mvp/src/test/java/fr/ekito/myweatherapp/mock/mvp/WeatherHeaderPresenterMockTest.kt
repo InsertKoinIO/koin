@@ -1,7 +1,6 @@
 package fr.ekito.myweatherapp.mock.mvp
 
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.UserSession
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.mock.MockedData.mockList
 import fr.ekito.myweatherapp.util.MockitoHelper
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
@@ -22,14 +21,18 @@ class WeatherHeaderPresenterMockTest {
     @Mock
     lateinit var view: WeatherHeaderContract.View
     @Mock
-    lateinit var repository: WeatherRepository
+    lateinit var repository: DailyForecastRepository
+
+    // TODO uncomment to use LiveData in Test
+//    @get:Rule
+//    val rule = InstantTaskExecutorRule()
 
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
 
         presenter =
-                WeatherHeaderPresenter(repository, TestSchedulerProvider(), UserSession())
+                WeatherHeaderPresenter(repository, TestSchedulerProvider())
         presenter.view = view
     }
 

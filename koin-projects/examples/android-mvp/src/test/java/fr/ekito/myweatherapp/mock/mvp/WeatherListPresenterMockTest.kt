@@ -1,6 +1,6 @@
 package fr.ekito.myweatherapp.mock.mvp
 
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.mock.MockedData.mockList
 import fr.ekito.myweatherapp.util.MockitoHelper
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
@@ -22,7 +22,11 @@ class WeatherListPresenterMockTest {
     @Mock
     lateinit var view: WeatherListContract.View
     @Mock
-    lateinit var repository: WeatherRepository
+    lateinit var repository: DailyForecastRepository
+
+    // TODO uncomment to use LiveData in Test
+//    @get:Rule
+//    val rule = InstantTaskExecutorRule()
 
     @Before
     fun before() {
@@ -34,6 +38,7 @@ class WeatherListPresenterMockTest {
 
     @Test
     fun testDisplayList() {
+        val location = "DEFAULT_LOCATION"
         given(repository.getWeather()).willReturn(Single.just(mockList))
 
         presenter.getWeatherList()
@@ -46,6 +51,7 @@ class WeatherListPresenterMockTest {
     @Test
     fun testDisplayListFailed() {
         val error = Throwable("Got an error")
+        val location = "DEFAULT_LOCATION"
         given(repository.getWeather()).willReturn(Single.error(error))
 
         presenter.getWeatherList()

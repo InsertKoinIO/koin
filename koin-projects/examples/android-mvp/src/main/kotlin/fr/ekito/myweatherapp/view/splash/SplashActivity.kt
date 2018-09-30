@@ -52,11 +52,7 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
     override fun showError(error: Throwable) {
         splashIcon.visibility = View.GONE
         splashIconFail.visibility = View.VISIBLE
-        Snackbar.make(
-            splash,
-            getString(R.string.loading_error) + " $error",
-            Snackbar.LENGTH_INDEFINITE
-        )
+        Snackbar.make(splash, "SplashActivity got error : $error", Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.retry) {
                 presenter.getLastWeather()
             }

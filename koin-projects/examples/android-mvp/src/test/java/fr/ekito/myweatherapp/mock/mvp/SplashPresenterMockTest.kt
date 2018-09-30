@@ -1,7 +1,7 @@
 package fr.ekito.myweatherapp.mock.mvp
 
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.DailyForecastModel
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.MockitoHelper
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.view.splash.SplashContract
@@ -20,7 +20,11 @@ class SplashPresenterMockTest {
     @Mock
     lateinit var view: SplashContract.View
     @Mock
-    lateinit var repository: WeatherRepository
+    lateinit var repository: DailyForecastRepository
+
+    // TODO uncomment to use LiveData in Test
+//    @get:Rule
+//    val rule = InstantTaskExecutorRule()
 
     @Before
     fun before() {
@@ -32,7 +36,7 @@ class SplashPresenterMockTest {
 
     @Test
     fun testGetLastWeather() {
-        val list = listOf(mock(DailyForecastModel::class.java))
+        val list = listOf(mock(DailyForecast::class.java))
 
         given(repository.getWeather()).willReturn(Single.just(list))
 

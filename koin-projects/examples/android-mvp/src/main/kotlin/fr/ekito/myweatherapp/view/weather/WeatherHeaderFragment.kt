@@ -10,20 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.domain.DailyForecastModel
-import fr.ekito.myweatherapp.domain.UserSession
-import fr.ekito.myweatherapp.domain.getColorFromCode
-import fr.ekito.myweatherapp.view.IntentArguments
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.view.detail.DetailActivity
+import fr.ekito.myweatherapp.view.detail.DetailActivity.Companion.INTENT_WEATHER_ID
 import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.*
-import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
     override val presenter: WeatherHeaderContract.Presenter by inject()
-    val userSession by inject<UserSession>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,15 +30,10 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
         return inflater.inflate(R.layout.fragment_result_header, container, false) as ViewGroup
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        println("UserSession : $this got $userSession")
-    }
-
     override fun onResume() {
-        super.onResume()
         presenter.subscribe(this)
         presenter.getWeatherOfTheDay()
+        super.onResume()
     }
 
     override fun onPause() {
@@ -49,7 +41,7 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
         super.onPause()
     }
 
-    override fun showWeather(location: String, weather: DailyForecastModel) {
+    override fun showWeather(location: String, weather: DailyForecast) {
         weatherCity.text = location
         weatherCityCard.setOnClickListener {
             promptLocationDialog()
@@ -65,7 +57,7 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
         weatherHeader.setOnClickListener {
             activity?.startActivity<DetailActivity>(
-                IntentArguments.ARG_WEATHER_ITEM_ID to weather.id
+                INTENT_WEATHER_ID to weather.id
             )
         }
     }
@@ -96,9 +88,6 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
     }
 
     override fun showLocationSearchSucceed(location: String) {
-        // close session when reloading new location
-        getKoin().getScope("session").close()
-
         activity?.apply {
             startActivity(
                 intentFor<WeatherActivity>().clearTop().clearTask().newTask()

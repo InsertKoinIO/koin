@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.joanzapata.iconify.widget.IconTextView
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.domain.getColorFromCode
+import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 
 class WeatherListAdapter(
     val context: Context,

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.view.IntentArguments
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.weather.list.WeatherItem
 import fr.ekito.myweatherapp.view.weather.list.WeatherListAdapter
@@ -27,7 +26,6 @@ class WeatherListFragment : Fragment(), WeatherListContract.View {
         return inflater.inflate(R.layout.fragment_result_list, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareListView()
@@ -45,7 +43,7 @@ class WeatherListFragment : Fragment(), WeatherListContract.View {
 
     private fun onWeatherItemSelected(resultItem: WeatherItem) {
         activity?.startActivity<DetailActivity>(
-            IntentArguments.ARG_WEATHER_ITEM_ID to resultItem.id
+            DetailActivity.INTENT_WEATHER_ID to resultItem.id
         )
     }
 

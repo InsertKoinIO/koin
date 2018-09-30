@@ -1,26 +1,20 @@
 package fr.ekito.myweatherapp.view.weather
 
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.UserSession
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.mvp.RxPresenter
 import fr.ekito.myweatherapp.util.rx.SchedulerProvider
 import fr.ekito.myweatherapp.util.rx.with
 
 class WeatherHeaderPresenter(
-    private val weatherRepository: WeatherRepository,
-    private val schedulerProvider: SchedulerProvider,
-    private val userSession: UserSession
+    private val dailyForecastRepository: DailyForecastRepository,
+    private val schedulerProvider: SchedulerProvider
 ) : RxPresenter<WeatherHeaderContract.View>(), WeatherHeaderContract.Presenter {
 
     override var view: WeatherHeaderContract.View? = null
 
-    init {
-        println("UserSession : $this got $userSession")
-    }
-
     override fun loadNewLocation(location: String) {
         launch {
-            weatherRepository.getWeather(location).toCompletable()
+            dailyForecastRepository.getWeather(location).toCompletable()
                 .with(schedulerProvider)
                 .subscribe(
                     { view?.showLocationSearchSucceed(location) },
@@ -30,7 +24,7 @@ class WeatherHeaderPresenter(
 
     override fun getWeatherOfTheDay() {
         launch {
-            weatherRepository.getWeather()
+            dailyForecastRepository.getWeather()
                 .map { it.first() }
                 .with(schedulerProvider)
                 .subscribe(

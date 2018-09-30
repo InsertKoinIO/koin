@@ -1,7 +1,7 @@
 package fr.ekito.myweatherapp.mock.mvp
 
-import fr.ekito.myweatherapp.data.repository.WeatherRepository
-import fr.ekito.myweatherapp.domain.DailyForecastModel
+import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.util.MockitoHelper
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.view.detail.DetailContract
@@ -20,26 +20,28 @@ class DetailPresenterMockTest {
     @Mock
     lateinit var view: DetailContract.View
     @Mock
-    lateinit var repository: WeatherRepository
+    lateinit var repository: DailyForecastRepository
 
-    val id = "ID"
+    // TODO uncomment to use LiveData in Test
+//    @get:Rule
+//    val rule = InstantTaskExecutorRule()
 
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)
 
-        presenter = DetailPresenter(id, repository, TestSchedulerProvider())
+        presenter = DetailPresenter(repository, TestSchedulerProvider())
         presenter.view = view
     }
 
     @Test
     fun testGetLastWeather() {
-        val weather = mock(DailyForecastModel::class.java)
-
+        val weather = mock(DailyForecast::class.java)
+        val id = "ID"
 
         given(repository.getWeatherDetail(id)).willReturn(Single.just(weather))
 
-        presenter.getDetail()
+        presenter.getDetail(id)
 
         verify(view, never()).showError(MockitoHelper.any())
         verify(view).showDetail(weather)
@@ -52,7 +54,7 @@ class DetailPresenterMockTest {
 
         given(repository.getWeatherDetail(id)).willReturn(Single.error(error))
 
-        presenter.getDetail()
+        presenter.getDetail(id)
 
         verify(view, never()).showDetail(MockitoHelper.any())
         verify(view).showError(error)
