@@ -17,9 +17,9 @@ import org.koin.test.ext.koin.dryRun
 /**
  * Check all definition's dependencies
  */
-fun StandAloneContext.checkModules(list: List<Module>, logger: Logger) {
+fun StandAloneContext.checkModules(list: List<Module>, logger: Logger?) {
     Koin.logger = logger //PrintLogger(showDebug = true)
-    Koin.logger.info("[Sandbox]")
+    Koin.logger?.info("[Sandbox]")
     val scopeRegistry = ScopeRegistry()
     koinContext =
             KoinContext(

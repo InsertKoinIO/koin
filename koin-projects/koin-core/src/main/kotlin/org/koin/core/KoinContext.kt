@@ -23,7 +23,6 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeCallback
 import org.koin.core.scope.ScopeRegistry
 import org.koin.error.MissingPropertyException
 import org.koin.error.NoScopeFoundException
@@ -138,7 +137,7 @@ class KoinContext(
      * Close all resources
      */
     fun close() {
-        logger.info("[Close] Closing Koin context")
+        logger?.info("[Close] Closing Koin context")
         instanceRegistry.close()
         scopeRegistry.close()
         propertyResolver.clear()

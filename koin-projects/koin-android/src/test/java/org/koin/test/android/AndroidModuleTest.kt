@@ -13,7 +13,6 @@ import org.koin.dsl.module.module
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.standalone.release
 import org.koin.standalone.setProperty
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContextInstances

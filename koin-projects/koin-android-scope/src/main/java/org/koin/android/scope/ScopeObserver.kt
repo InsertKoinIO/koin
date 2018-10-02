@@ -39,7 +39,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
         if (event == Lifecycle.Event.ON_STOP) {
-            Koin.logger.info("$target received ON_STOP")
+            Koin.logger?.info("$target received ON_STOP")
             scope.close()
         }
     }
@@ -50,7 +50,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         if (event == Lifecycle.Event.ON_DESTROY) {
-            Koin.logger.info("$target received ON_DESTROY")
+            Koin.logger?.info("$target received ON_DESTROY")
             scope.close()
         }
     }

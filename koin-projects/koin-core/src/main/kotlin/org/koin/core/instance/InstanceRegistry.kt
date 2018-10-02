@@ -99,8 +99,8 @@ class InstanceRegistry(
                         if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
-                Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
-                Koin.logger.debug("$logIndent|-- [$beanDefinition]")
+                Koin.logger?.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
+                Koin.logger?.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
                     val (instance, created) = instanceFactory.retrieveInstance(
@@ -109,21 +109,21 @@ class InstanceRegistry(
                         targetScope
                     )
 
-                    Koin.logger.debug("$logIndent|-- $instance")
+                    Koin.logger?.debug("$logIndent|-- $instance")
                     // Log creation
                     if (created) {
-                        Koin.logger.info("$logIndent\\-- (*) Created")
+                        Koin.logger?.info("$logIndent\\-- (*) Created")
                     }
                     resultInstance = instance
                 }
             } catch (e: Exception) {
                 resolutionStack.clear()
-                Koin.logger.err("Error while resolving instance for class '$clazzName' - error: $e ")
+                Koin.logger?.err("Error while resolving instance for class '$clazzName' - error: $e ")
                 throw e
             }
         }
 
-        Koin.logger.debug("$logIndent!-- [$clazzName] resolved in $duration ms")
+        Koin.logger?.debug("$logIndent!-- [$clazzName] resolved in $duration ms")
 
         return if (resultInstance != null) resultInstance!! else error("Could not create instance for $clazzName")
     }
@@ -136,7 +136,7 @@ class InstanceRegistry(
         val definitions = beanRegistry.definitions.filter { it.isEager }
 
         if (definitions.isNotEmpty()) {
-            Koin.logger.info("Creating instances ...")
+            Koin.logger?.info("Creating instances ...")
             createInstances(definitions, defaultParameters)
         }
     }
@@ -170,7 +170,7 @@ class InstanceRegistry(
      * Close res
      */
     fun close() {
-        Koin.logger.debug("[Close] Closing instance resolver")
+        Koin.logger?.debug("[Close] Closing instance resolver")
         resolutionStack.clear()
         instanceFactory.clear()
         beanRegistry.clear()

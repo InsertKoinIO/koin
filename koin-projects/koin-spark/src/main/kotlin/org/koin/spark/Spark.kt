@@ -22,7 +22,6 @@ import org.koin.log.Logger.SLF4JLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.createEagerInstances
 import org.koin.standalone.StandAloneContext.loadKoinModules
-import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.StandAloneContext.stopKoin
 import spark.Spark
 import spark.kotlin.after

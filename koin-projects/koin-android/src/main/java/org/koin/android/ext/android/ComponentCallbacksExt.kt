@@ -53,7 +53,7 @@ fun ComponentCallbacks.startKoin(
     modules: List<Module>,
     extraProperties: Map<String, Any> = HashMap(),
     loadProperties: Boolean = false,
-    logger: Logger = AndroidLogger()
+    logger: Logger? = AndroidLogger()
 ) {
     Koin.logger = logger
 

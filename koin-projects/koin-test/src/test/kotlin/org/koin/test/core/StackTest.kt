@@ -7,7 +7,6 @@ import org.koin.core.Koin
 import org.koin.dsl.path.Path
 import org.koin.dsl.module.module
 import org.koin.error.BeanInstanceCreationException
-import org.koin.error.NotVisibleException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get

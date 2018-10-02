@@ -33,7 +33,7 @@ class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceH
                 is NoBeanDefFoundException, is DependencyResolutionException, is BeanInstanceCreationException -> {
                     throw BrokenDefinitionException("Definition $bean is broken due to error : $e")
                 }
-                else -> Koin.logger.err("sandbox ~ intercepted error : $e")
+                else -> Koin.logger?.err("sandbox ~ intercepted error : $e")
             }
         }
         val clazz = bean.clazz.java

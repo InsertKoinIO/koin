@@ -19,7 +19,6 @@ import org.koin.core.time.measureDuration
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.path.Path
-import org.koin.log.EmptyLogger
 import org.koin.log.Logger
 import java.util.*
 import kotlin.reflect.KClass
@@ -57,7 +56,7 @@ class Koin(val koinContext: KoinContext) {
             val koinProperties = Properties()
             koinProperties.load(content.byteInputStream())
             val nb = propertyResolver.import(koinProperties)
-            logger.info("[properties] loaded $nb properties from '$koinFile' file")
+            logger?.info("[properties] loaded $nb properties from '$koinFile' file")
         }
         return this
     }
@@ -67,9 +66,9 @@ class Koin(val koinContext: KoinContext) {
      */
     fun bindEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())
-        logger.info("[properties] loaded $n1 properties from properties")
+        logger?.info("[properties] loaded $n1 properties from properties")
         val n2 = propertyResolver.import(System.getenv().toProperties())
-        logger.info("[properties] loaded $n2 properties from env properties")
+        logger?.info("[properties] loaded $n2 properties from env properties")
         return this
     }
 
@@ -82,9 +81,9 @@ class Koin(val koinContext: KoinContext) {
                 registerDefinitions(module())
             }
 
-            logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
+            logger?.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
         }
-        logger.debug("[modules] loaded in $duration ms")
+        logger?.debug("[modules] loaded in $duration ms")
         return this
     }
 
@@ -128,7 +127,7 @@ class Koin(val koinContext: KoinContext) {
         /**
          * Koin Logger
          */
-        var logger: Logger = EmptyLogger()
+        var logger: Logger? = null
     }
 }
 

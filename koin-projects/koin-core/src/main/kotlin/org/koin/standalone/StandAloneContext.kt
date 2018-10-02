@@ -17,7 +17,6 @@ package org.koin.standalone
 
 import org.koin.core.Koin
 import org.koin.core.KoinContext
-import org.koin.core.scope.ScopeCallback
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.InstanceRegistry
@@ -26,6 +25,7 @@ import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
+import org.koin.core.scope.ScopeCallback
 import org.koin.core.scope.ScopeRegistry
 import org.koin.core.time.measureDuration
 import org.koin.dsl.module.Module
@@ -71,7 +71,7 @@ object StandAloneContext {
      */
     private fun createContextIfNeeded() = synchronized(this) {
         if (!isStarted) {
-            Koin.logger.info("[context] create")
+            Koin.logger?.info("[context] create")
             val propertyResolver = PropertyRegistry()
             val scopeRegistry = ScopeRegistry()
             val instanceResolver = InstanceRegistry(
@@ -122,17 +122,17 @@ object StandAloneContext {
         val koin = getKoin()
 
         if (useKoinPropertiesFile) {
-            Koin.logger.info("[properties] load koin.properties")
+            Koin.logger?.info("[properties] load koin.properties")
             koin.bindKoinProperties()
         }
 
         if (extraProperties.isNotEmpty()) {
-            Koin.logger.info("[properties] load extras properties : ${extraProperties.size}")
+            Koin.logger?.info("[properties] load extras properties : ${extraProperties.size}")
             koin.bindAdditionalProperties(extraProperties)
         }
 
         if (useEnvironmentProperties) {
-            Koin.logger.info("[properties] load environment properties")
+            Koin.logger?.info("[properties] load environment properties")
             koin.bindEnvironmentProperties()
         }
         return koin
@@ -152,7 +152,7 @@ object StandAloneContext {
         useEnvironmentProperties: Boolean = false,
         useKoinPropertiesFile: Boolean = false,
         extraProperties: Map<String, Any> = HashMap(),
-        logger: Logger = PrintLogger()
+        logger: Logger? = PrintLogger()
     ): Koin {
         val duration = measureDuration {
             if (isStarted) {
@@ -169,7 +169,7 @@ object StandAloneContext {
             createEagerInstances(emptyParameterDefinition())
         }
 
-        Koin.logger.debug("Koin started in $duration ms")
+        Koin.logger?.debug("Koin started in $duration ms")
         return getKoin()
     }
 

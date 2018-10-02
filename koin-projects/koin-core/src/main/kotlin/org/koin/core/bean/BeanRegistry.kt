@@ -53,7 +53,7 @@ class BeanRegistry() {
         definitions += definition
 
         val kw = if (isOverriding) "override" else "declare"
-        Koin.logger.info("[module] $kw $definition")
+        Koin.logger?.info("[module] $kw $definition")
     }
 
     fun searchByClass(

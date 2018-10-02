@@ -34,7 +34,7 @@ import java.util.*
  * @param androidContext - Context
  */
 infix fun Koin.with(androidContext: Context): Koin {
-    Koin.logger.info("[init] declare Android Context")
+    Koin.logger?.info("[init] declare Android Context")
     val definition =
         beanRegistry.declare(
             BeanDefinition(
@@ -71,15 +71,15 @@ fun Koin.bindAndroidProperties(
             try {
                 androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }
                 val nb = propertyResolver.import(koinProperties)
-                Koin.logger.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
+                Koin.logger?.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
             } catch (e: Exception) {
-                Koin.logger.info("[Android-Properties] error for binding properties : $e")
+                Koin.logger?.info("[Android-Properties] error for binding properties : $e")
             }
         } else {
-            Koin.logger.info("[Android-Properties] no assets/koin.properties file to load")
+            Koin.logger?.info("[Android-Properties] no assets/koin.properties file to load")
         }
     } catch (e: Exception) {
-        Koin.logger.err("[Android-Properties] error while loading properties from assets/koin.properties : $e")
+        Koin.logger?.err("[Android-Properties] error while loading properties from assets/koin.properties : $e")
     }
     return this
 }

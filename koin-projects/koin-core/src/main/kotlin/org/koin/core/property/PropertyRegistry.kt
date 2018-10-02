@@ -59,7 +59,7 @@ class PropertyRegistry {
      */
     inline fun <reified T> getProperty(key: String, defaultValue: T): T {
         val value = getValue(key) ?: defaultValue
-        Koin.logger.debug("[Property] get $key << '$value'")
+        Koin.logger?.debug("[Property] get $key << '$value'")
         return value
     }
 
@@ -67,7 +67,7 @@ class PropertyRegistry {
      * Add properties
      */
     fun addAll(props: Map<String, Any>) {
-        Koin.logger.debug("[Property] add properties ${props.size}")
+        Koin.logger?.debug("[Property] add properties ${props.size}")
         properties += props
     }
 
@@ -91,7 +91,7 @@ class PropertyRegistry {
      * Add property
      */
     fun add(key: String, value: Any) {
-        Koin.logger.debug("[Property] set $key >> '$value'")
+        Koin.logger?.debug("[Property] set $key >> '$value'")
         properties += Pair(key, value)
     }
 
@@ -99,7 +99,7 @@ class PropertyRegistry {
      * Delete a property
      */
     fun delete(key: String) {
-        Koin.logger.debug("[Property] release $key")
+        Koin.logger?.debug("[Property] release $key")
         properties.remove(key)
     }
 

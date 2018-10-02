@@ -23,7 +23,7 @@ class ScopeInstanceHolder<T>(override val bean: BeanDefinition<T>, val scope : S
         if (needCreation){
             instance = create(parameters)
         }
-        Koin.logger.debug("[Scope] get '$instance' from $scope")
+        Koin.logger?.debug("[Scope] get '$instance' from $scope")
         return Instance(instance as T, needCreation)
     }
 

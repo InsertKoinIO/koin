@@ -33,7 +33,7 @@ class Scope(val id : String, val scopeRegistry: ScopeRegistry) {
     lateinit var instanceFactory: InstanceFactory
 
     fun close(){
-        Koin.logger.info("[Scope] closing '$id'")
+        Koin.logger?.info("[Scope] closing '$id'")
         holders.forEach {
             it.release()
             instanceFactory.release(it.bean,this)
