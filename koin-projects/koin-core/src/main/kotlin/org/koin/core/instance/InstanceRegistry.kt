@@ -80,7 +80,7 @@ class InstanceRegistry(
 
         var resultInstance: T? = null
         val clazzName = clazz.fullname()
-        val logIndent: String = resolutionStack.indent()
+        val logIndent: String by lazy(LazyThreadSafetyMode.NONE) { resolutionStack.indent() }
         val duration = measureDuration {
             try {
                 val beanDefinition: BeanDefinition<T> =
@@ -95,9 +95,10 @@ class InstanceRegistry(
                 val associatedScopeId = beanDefinition.getScope()
                 val targetScope : Scope? = scope ?: if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(associatedScopeId) else null
 
-                val logPath =
-                        if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
-                val startChar = if (resolutionStack.isEmpty()) "+" else "+"
+                val logPath: String by lazy(LazyThreadSafetyMode.NONE) {
+                    if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
+                }
+                val startChar: String by lazy(LazyThreadSafetyMode.NONE) { if (resolutionStack.isEmpty()) "+" else "+" }
 
                 Koin.logger?.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
                 Koin.logger?.debug("$logIndent|-- [$beanDefinition]")
