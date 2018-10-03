@@ -16,6 +16,7 @@
 package org.koin.core.bean
 
 import org.koin.core.Koin
+import org.koin.core.instance.DefinitionFilter
 import org.koin.core.name
 import org.koin.core.scope.Scope
 import org.koin.core.scope.isVisibleToScope
@@ -34,7 +35,10 @@ import kotlin.reflect.KClass
  *
  * @author - Arnaud GIULIANI
  */
-class BeanRegistry() {
+class BeanRegistry {
+    private val definitionsByClass = hashMapOf<KClass<*>, HashSet<BeanDefinition<*>>>()
+    private val definitionsByNameAndClass =
+        hashMapOf<String, HashMap<KClass<*>, HashSet<BeanDefinition<*>>>>()
 
     val definitions = hashSetOf<BeanDefinition<*>>()
 
@@ -52,23 +56,57 @@ class BeanRegistry() {
 
         definitions += definition
 
+        cacheDefinitionByClass(definition)
+        cacheDefinitionByNameAndClass(definition)
+
         val kw = if (isOverriding) "override" else "declare"
         Koin.logger.info("[module] $kw $definition")
     }
 
+    private fun cacheDefinitionByClass(definition: BeanDefinition<*>) {
+        definition.classes.forEach {
+            val definitionSet = definitionsByClass.getOrPut(it) { hashSetOf() }
+            definitionSet.remove(definition)
+            definitionSet.add(definition)
+        }
+    }
+
+    private fun cacheDefinitionByNameAndClass(definition: BeanDefinition<*>) {
+        if (definition.name.isNotEmpty()) {
+            val classMap = definitionsByNameAndClass.getOrPut(definition.name) { hashMapOf() }
+            definition.classes.forEach {
+                val definitionSet = classMap.getOrPut(it) { hashSetOf() }
+                definitionSet.remove(definition)
+                definitionSet.add(definition)
+            }
+        }
+    }
+
     fun searchByClass(
-        definitions: Collection<BeanDefinition<*>>,
-        clazz: KClass<*>
+        clazz: KClass<*>,
+        filterFunction: DefinitionFilter? = null
     ): List<BeanDefinition<*>> {
-        return definitions.filter { clazz in it.classes }
+        val candidatesByClass = definitionsByClass[clazz]
+
+        val filteredCandidates = (if (filterFunction != null) {
+            candidatesByClass?.filter(filterFunction)
+        } else candidatesByClass) ?: emptyList()
+
+        return filteredCandidates.filter { clazz in it.classes }
     }
 
     fun searchByNameAndClass(
-        definitions: Collection<BeanDefinition<*>>,
         name: String,
-        clazz: KClass<*>
+        clazz: KClass<*>,
+        filterFunction: DefinitionFilter? = null
     ): List<BeanDefinition<*>> {
-        return definitions.filter { name == it.name && clazz in it.classes }
+        val candidatesByNameAndClass = definitionsByNameAndClass[name]?.get(clazz)
+
+        val filteredCandidates = (if (filterFunction != null) {
+            candidatesByNameAndClass?.filter(filterFunction)
+        } else candidatesByNameAndClass) ?: emptyList()
+
+        return filteredCandidates.filter { clazz in it.classes }
     }
 
     /**

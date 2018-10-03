@@ -46,18 +46,13 @@ class InstanceRegistry(
      * resolve instance from InstanceRequest
      */
     fun <T : Any> resolve(request: InstanceRequest, filterFunction: DefinitionFilter? = null): T {
-
-        val definitions = (if (filterFunction != null) {
-            beanRegistry.definitions.filter(filterFunction)
-        } else beanRegistry.definitions)
-
         return request.run {
             val search = when {
                 name.isNotEmpty() -> {
-                    { beanRegistry.searchByNameAndClass(definitions, name, clazz) }
+                    { beanRegistry.searchByNameAndClass(name, clazz, filterFunction) }
                 }
                 else -> {
-                    { beanRegistry.searchByClass(definitions, clazz) }
+                    { beanRegistry.searchByClass(clazz, filterFunction) }
                 }
             }
             proceedResolution(clazz, scope,parameters, search)
