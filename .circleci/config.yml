@@ -18,8 +18,12 @@ jobs:
     steps:
       - checkout
         
+      - run:
+          name: Code style check
+          command: ./koin-projects/gradlew -p ./koin-projects ktlintCheck
       # run tests!
-      - run: 
+      - run:
+          name: Tests check
           command: ./koin-projects/gradlew -p ./koin-projects clean test -Dorg.gradle.parallel=false
 
 workflows:
