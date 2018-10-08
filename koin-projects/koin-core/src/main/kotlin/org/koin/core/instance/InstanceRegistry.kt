@@ -98,9 +98,8 @@ class InstanceRegistry(
                 val logPath: String by lazy(LazyThreadSafetyMode.NONE) {
                     if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 }
-                val startChar: String by lazy(LazyThreadSafetyMode.NONE) { if (resolutionStack.isEmpty()) "+" else "+" }
 
-                Koin.logger?.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
+                Koin.logger?.info("$logIndent+-- '$clazzName' $logPath") // @ [$beanDefinition]")
                 Koin.logger?.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
