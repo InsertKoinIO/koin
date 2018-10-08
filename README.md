@@ -5,7 +5,8 @@
 [![Kotlin](https://img.shields.io/badge/koin-1.0-orange.svg)]()
 [![Kotlin](https://img.shields.io/badge/kotlin-powered-blue.svg)]()
 [![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
+[![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
  
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
