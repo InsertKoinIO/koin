@@ -5,6 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        gradlePluginPortal()
     }
     dependencies {
         // Kotlin
@@ -19,6 +20,8 @@ buildscript {
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
         classpath "digital.wup:android-maven-publish:$android_maven_publish"
+        // Ktlint code style
+        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradle_version"
     }
 }
 
@@ -47,5 +50,13 @@ allprojects {
     task dokkaJar(type: Jar) {
         classifier = 'javadoc'
         from dokka
+    }
+
+    // ktlint code style
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
+
+    ktlint {
+        version = ktlint_version
+        outputToConsole = true
     }
 }

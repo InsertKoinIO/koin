@@ -26,4 +26,7 @@ ext {
     asciidoctor_pdf_version = "1.5.0-alpha.15"
 
     android_maven_publish = "3.4.0"
+
+    ktlint_version = "0.29.0"
+    ktlintGradle_version = "6.1.0"
 }
