@@ -48,7 +48,7 @@ val sampleModule = module(UserSession::class.moduleName) { ... }
 === Inner modules
 
 A module can also contains *inner modules*. An inner is a module declaration inside an
-existing module declaration. It's also declared with `module` function, be an inner module
+existing module declaration. It's also declared with `module` function, but an inner module
 must specify a path.
 
 .Module and an inner module:
@@ -232,10 +232,10 @@ val demoModule = module("org.demo") {
 
 We have the following resolution possibility:
 
-* `ComponentA can only see definitions from root (can only see `/`, can't see `ComponentB`, `ComponentC` & `ComponentD)
-* `ComponentB` can see definitions from org & root (can see `/` and `/org` - can resolve ComponentA - can't see `ComponentC` & `ComponentD )
+* `ComponentA can only see definitions from root (can only see `/`, can't see `ComponentB`, `ComponentC` & `ComponentD`)
+* `ComponentB` can see definitions from org & root (can see `/` and `/org` - can resolve `ComponentA` - can't see `ComponentC` & `ComponentD` )
 * `ComponentC` can see definitions from sample, org & root (can see `/`, `/org`, `/org/sample` - can resolve `ComponentA`, `ComponentB` - can't  see `ComponentD`)
-* `ComponentD` can see definitions from demo, org & root (can see `/`, `/org`, `/org/demo` - can resolve ComponentA`, `ComponentB` - can't  see `ComponentC`)
+* `ComponentD` can see definitions from demo, org & root (can see `/`, `/org`, `/org/demo` - can resolve `ComponentA`, `ComponentB` - can't  see `ComponentC`)
 
 
 By declaring definitions in a module with a path, your component *are then not visible from outside of this namespace*.

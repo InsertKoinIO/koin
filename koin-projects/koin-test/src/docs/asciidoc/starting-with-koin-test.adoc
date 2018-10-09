@@ -115,7 +115,7 @@ Koin offers a way to test if you Koin modules are good: `checkModules` - walk th
 
         module("view") {
             single { View() }
-            single { Presenter(get§)) }
+            single { Presenter(get()) }
         }
     }
 
