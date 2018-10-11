@@ -480,3 +480,7 @@ val myModule = module {
     single<Controller> { create<ControllerImpl>() }
 }
 ----
+
+===== Using ProGuard/R8 with create()
+
+When using ProGuard or R8, non-used classes and methods are removed. If you never use the constructor of a class other than with `create()`, ProGuard will remove the constructor because it does not see any usage of it. Fix it by either not using `create()` for such cases, or by adapting your ProGuard rules.
