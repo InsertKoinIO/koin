@@ -1,16 +1,21 @@
 package org.koin.experimental.builder
 
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.AutoCloseKoinTestRule
 import org.koin.test.check.checkModules
 import org.koin.test.get
 
-class MVPArchitectureTest : AutoCloseKoinTest() {
+class MVPArchitectureTest {
+
+    @get:Rule
+    val rule = AutoCloseKoinTestRule()
 
     val MVPModule = module {
         single<Repository>()
@@ -29,10 +34,10 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
             modules(MVPModule, DataSourceModule)
         }
 
-        val view = get<View>()
-        val presenter = get<Presenter>()
-        val repository = get<Repository>()
-        val datasource = get<Datasource>()
+        val view = rule.get<View>()
+        val presenter = rule.get<Presenter>()
+        val repository = rule.get<Repository>()
+        val datasource = rule.get<Datasource>()
 
         Assert.assertEquals(presenter, view.presenter)
         Assert.assertEquals(repository, presenter.repository)
