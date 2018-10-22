@@ -8,7 +8,6 @@ import org.koin.dsl.module.module
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.get
-import org.koin.standalone.getKoin
 import org.koin.test.AutoCloseKoinTest
 
 class ScopeVisibilityTest : AutoCloseKoinTest() {
@@ -70,7 +69,10 @@ class ScopeVisibilityTest : AutoCloseKoinTest() {
 
     @Test
     fun `DSL resolution - ambiguous scope visibility`() {
-        StandAloneContext.startKoin(listOf(appModuleWithDSL), logger = PrintLogger(showDebug = true))
+        StandAloneContext.startKoin(
+            listOf(appModuleWithDSL),
+            logger = PrintLogger(showDebug = true)
+        )
 
         val koin = getKoin()
 

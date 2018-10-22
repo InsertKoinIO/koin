@@ -28,7 +28,14 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  * @author - Laurent BARESSE
  */
-interface KoinComponent
+interface KoinComponent {
+
+    /**
+     * Get Koin context
+     * @return KoinContext
+     */
+    fun getKoin(): KoinContext = getKoinContext()
+}
 
 /**
  * inject lazily given dependency for KoinComponent
@@ -131,6 +138,6 @@ fun KoinComponent.releaseContext(path: String): Unit = release(path)
 /**
  * Access to Koin context
  */
-fun KoinComponent.getKoin(): KoinContext = (StandAloneContext.koinContext as KoinContext)
+internal fun getKoinContext(): KoinContext = (StandAloneContext.koinContext as KoinContext)
 
 

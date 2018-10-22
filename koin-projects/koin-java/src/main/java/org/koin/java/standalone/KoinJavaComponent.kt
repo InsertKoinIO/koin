@@ -19,7 +19,6 @@ import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.Scope
-import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 
 /**
@@ -28,7 +27,7 @@ import org.koin.standalone.StandAloneContext
  * @author @fredy-mederos
  * @author Arnaud Giuliani
  */
-object KoinJavaComponent : KoinComponent {
+object KoinJavaComponent {
 
     /**
      * Retrieve given dependency lazily
