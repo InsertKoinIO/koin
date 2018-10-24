@@ -24,6 +24,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeRegistry
 import org.koin.core.scope.getScope
 import org.koin.core.stack.ResolutionStack
+import org.koin.core.time.logDuration
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
 import kotlin.reflect.KClass
@@ -84,12 +85,15 @@ class InstanceRegistry(
         val duration = measureDuration {
             try {
                 val beanDefinition: BeanDefinition<T> =
-                    beanRegistry.retrieveDefinition(
-                        clazz,
-                        scope,
-                        definitionResolver,
-                        resolutionStack.last()
-                    )
+                    logDuration("$logIndent|-- definition"){
+                        beanRegistry.retrieveDefinition(
+                            clazz,
+                            scope,
+                            definitionResolver,
+                            resolutionStack.last()
+                        )
+                    }
+
 
                 // Retrieve scope from DSL
                 val associatedScopeId = beanDefinition.getScope()
@@ -103,11 +107,13 @@ class InstanceRegistry(
                 Koin.logger.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
-                    val (instance, created) = instanceFactory.retrieveInstance(
-                        beanDefinition,
-                        parameters,
-                        targetScope
-                    )
+                    val (instance, created) = logDuration("$logIndent|-- instance") {
+                         instanceFactory.retrieveInstance(
+                            beanDefinition,
+                            parameters,
+                            targetScope
+                        )
+                    }
 
                     Koin.logger.debug("$logIndent|-- $instance")
                     // Log creation

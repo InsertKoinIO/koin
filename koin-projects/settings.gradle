@@ -12,8 +12,8 @@ include 'examples:android-navigation'
 // Web
 include 'koin-logger-slf4j'
 include 'koin-ktor'
-include 'koin-spark'
-include 'examples:hello-ktor', 'examples:hello-spark'
+//include 'koin-spark'
+include 'examples:hello-ktor'//, 'examples:hello-spark'
 
 // Doc
 include 'koin-book'
