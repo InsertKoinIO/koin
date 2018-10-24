@@ -25,7 +25,7 @@ val weatherAppModule = module {
     scope("session") { UserSession() }
 
     // Weather Data Repository
-    single<DailyForecastRepository> { DailyForecastRepositoryImpl(get()) }
+    single<DailyForecastRepository>(createOnStart = true) { DailyForecastRepositoryImpl(get()) }
 
     // Rx Schedulers
     single<SchedulerProvider> { ApplicationSchedulerProvider() }
