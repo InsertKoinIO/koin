@@ -186,6 +186,7 @@ class Koin private constructor(val koinContext: KoinContext) {
      * Close Koin instance
      */
     fun close() {
+        logger.info("[Koin] Closing context")
         koinContext.close()
     }
 

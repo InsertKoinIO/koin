@@ -15,7 +15,6 @@
  */
 package org.koin.core
 
-import org.koin.core.Koin.Companion.logger
 import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.DefinitionFilter
 import org.koin.core.instance.InstanceFactory
@@ -26,11 +25,9 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeCallback
 import org.koin.core.scope.ScopeRegistry
 import org.koin.error.MissingPropertyException
 import org.koin.error.NoScopeFoundException
-import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
 
@@ -56,7 +53,7 @@ class KoinContext private constructor(
      */
     inline fun <reified T : Any> get(
         name: String = "",
-        scope : Scope? = null,
+        scope: Scope? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T = instanceRegistry.resolve(
         InstanceRequest(
@@ -79,7 +76,7 @@ class KoinContext private constructor(
     fun <T : Any> get(
         name: String = "",
         clazz: KClass<*>,
-        scope : Scope? = null,
+        scope: Scope? = null,
         parameters: ParameterDefinition = emptyParameterDefinition(),
         filter: DefinitionFilter? = null
     ): T = instanceRegistry.resolve(
@@ -105,14 +102,15 @@ class KoinContext private constructor(
     /**
      * retrieve a scope
      */
-    fun getScope(id: String): Scope = scopeRegistry.getScope(id) ?: throw NoScopeFoundException("Scope '$id' not found")
+    fun getScope(id: String): Scope =
+        scopeRegistry.getScope(id) ?: throw NoScopeFoundException("Scope '$id' not found")
 
     /**
      * Drop all instances for path context
      * @param path
      */
     @Deprecated("Please use Scope API.")
-    fun release(path: String) : Unit {
+    fun release(path: String): Unit {
         val p = instanceRegistry.pathRegistry.getPath(path)
         instanceRegistry.instanceFactory.releasePath(p)
     }
@@ -123,14 +121,14 @@ class KoinContext private constructor(
      * @param key
      * @throws MissingPropertyException if key is not found
      */
-     fun < T> getProperty(key: String): T = propertyResolver.getProperty(key)
+    fun <T> getProperty(key: String): T = propertyResolver.getProperty(key)
 
     /**
      * Retrieve a property by its key or return provided default value
      * @param key - property key
      * @param defaultValue - default value if property is not found
      */
-     fun < T> getProperty(key: String, defaultValue: T): T =
+    fun <T> getProperty(key: String, defaultValue: T): T =
         propertyResolver.getProperty(key, defaultValue)
 
     /**
@@ -142,7 +140,6 @@ class KoinContext private constructor(
      * Close all resources
      */
     fun close() {
-        logger.info("[Close] Closing Koin context")
         instanceRegistry.close()
         scopeRegistry.close()
         propertyResolver.clear()

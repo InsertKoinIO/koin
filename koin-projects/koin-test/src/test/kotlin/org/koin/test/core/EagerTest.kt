@@ -54,12 +54,10 @@ class EagerTest : AutoCloseKoinTest() {
     class A
     class B
 
-    private fun KoinContext() = (StandAloneContext.koinContext as KoinContext)
-
     @Test
     fun `default no eager`() {
         startKoin(listOf(noEager))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -74,7 +72,7 @@ class EagerTest : AutoCloseKoinTest() {
     @Test
     fun `one def eager`() {
         startKoin(listOf(onlyA))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -89,7 +87,7 @@ class EagerTest : AutoCloseKoinTest() {
     @Test
     fun `two def eager`() {
         startKoin(listOf(two))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -104,7 +102,7 @@ class EagerTest : AutoCloseKoinTest() {
     @Test
     fun `module def eager`() {
         startKoin(listOf(module))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -119,7 +117,7 @@ class EagerTest : AutoCloseKoinTest() {
     @Test
     fun `submodule eager`() {
         startKoin(listOf(submodule1))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -134,7 +132,7 @@ class EagerTest : AutoCloseKoinTest() {
     @Test
     fun `submodule2 eager`() {
         startKoin(listOf(submodule2))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 

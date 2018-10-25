@@ -6,7 +6,6 @@ import org.koin.dsl.module.module
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
-import org.koin.standalone.getKoin
 import org.koin.standalone.inject
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.checkModules

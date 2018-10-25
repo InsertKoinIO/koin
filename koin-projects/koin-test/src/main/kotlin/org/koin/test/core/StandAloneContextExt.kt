@@ -16,6 +16,7 @@ fun StandAloneContext.checkModules(list: List<Module>, logger: Logger) {
     Koin.logger.info("[Koin] create sandbox")
 
     val koin = createKoinSandbox()
+    StandAloneContext.setup(koin)
 
     // Build list
     koin.loadModules(list)

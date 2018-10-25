@@ -58,12 +58,11 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     class A
     class B
 
-    private fun KoinContext() = (StandAloneContext.koinContext as KoinContext)
 
     @Test
     fun `can see each other - flat definitions`() {
         startKoin(listOf(flat))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -74,7 +73,7 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     @Test
     fun `can see each other - same module`() {
         startKoin(listOf(sameModule))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -85,7 +84,7 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     @Test
     fun `can see each other - deep module`() {
         startKoin(listOf(deepModule1))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -96,7 +95,7 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     @Test
     fun `can see each other - deep module 2`() {
         startKoin(listOf(deepModule2))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -107,7 +106,7 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     @Test
     fun `can see one - one module`() {
         startKoin(listOf(oneModule))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
@@ -118,7 +117,7 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     @Test
     fun `can't see each other - seperate modules`() {
         startKoin(listOf(twoModules))
-        val definitions = KoinContext().beanDefinitions()
+        val definitions = getKoin().beanDefinitions()
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 

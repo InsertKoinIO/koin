@@ -64,8 +64,15 @@ object StandAloneContext {
     /**
      * Get Koin instance
      */
-    fun getKoin(): Koin = koin ?:
-        error("StandAloneContext Koin instance is null")
+    fun getKoin(): Koin = koin ?: error("StandAloneContext Koin instance is null")
+
+    /**
+     * Setup new Koin instance
+     */
+    fun setup(newKoinInstance: Koin) {
+        koin = newKoinInstance
+    }
+
 
     private fun createFullKoin(
         properties: KoinProperties,
@@ -91,6 +98,7 @@ object StandAloneContext {
      */
     fun stopKoin() = synchronized(this) {
         koin?.close()
+        koin = null
     }
 
     /**
