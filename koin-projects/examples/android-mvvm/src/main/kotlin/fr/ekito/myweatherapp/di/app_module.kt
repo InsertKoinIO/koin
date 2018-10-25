@@ -26,9 +26,8 @@ val weatherAppModule = module {
 
     // Weather Data Repository
     single<DailyForecastRepository>(createOnStart = true) { DailyForecastRepositoryImpl(get()) }
-
     // Rx Schedulers
-    single<SchedulerProvider> { ApplicationSchedulerProvider() }
+    single<SchedulerProvider>(createOnStart = true) { ApplicationSchedulerProvider() }
 }
 
 // Gather all app modules

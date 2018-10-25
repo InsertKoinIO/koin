@@ -31,10 +31,9 @@ val weatherAppModule = module {
     factory<DetailContract.Presenter> { (id : String) -> DetailPresenter(id, get(), get()) }
 
     // Weather Data Repository
-    single<DailyForecastRepository> { DailyForecastRepositoryImpl(get()) }
-
+    single<DailyForecastRepository>(createOnStart = true) { DailyForecastRepositoryImpl(get()) }
     // Rx Schedulers
-    single<SchedulerProvider> { ApplicationSchedulerProvider() }
+    single<SchedulerProvider>(createOnStart = true) { ApplicationSchedulerProvider() }
 }
 
 // Gather all app modules

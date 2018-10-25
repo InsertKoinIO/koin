@@ -25,10 +25,9 @@ val weatherAppModule = module {
     viewModel<WeatherViewModel>()
 
     // Weather Data Repository
-    singleBy<WeatherRepository, WeatherRepositoryImpl>()
-
-    // Rx Schedulers
-    singleBy<SchedulerProvider, ApplicationSchedulerProvider>()
+    singleBy<WeatherRepository, WeatherRepositoryImpl>(createOnStart = true)
+    // Schedulers
+    singleBy<SchedulerProvider, ApplicationSchedulerProvider>(createOnStart = true)
 }
 
 // Gather all app modules
