@@ -85,7 +85,7 @@ class InstanceRegistry(
         val duration = measureDuration {
             try {
                 val beanDefinition: BeanDefinition<T> =
-                    logDuration("$logIndent|-- definition") {
+                    logDuration("$logIndent|-- find definition") {
                         beanRegistry.retrieveDefinition(
                             clazz,
                             scope,
@@ -110,7 +110,7 @@ class InstanceRegistry(
                 Koin.logger.debug("$logIndent|-- [$beanDefinition]")
 
                 resolutionStack.resolve(beanDefinition) {
-                    val (instance, created) = logDuration("$logIndent|-- instance") {
+                    val (instance, created) = logDuration("$logIndent|-- get instance") {
                         instanceFactory.retrieveInstance(
                             beanDefinition,
                             parameters,

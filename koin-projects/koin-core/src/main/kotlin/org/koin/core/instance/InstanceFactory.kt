@@ -18,6 +18,7 @@ package org.koin.core.instance
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.scope.Scope
+import org.koin.core.time.logDuration
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Kind
 import org.koin.dsl.path.Path
@@ -43,7 +44,9 @@ open class InstanceFactory {
         scope: Scope? = null
     ): Instance<T> {
         // find holder
-        var holder = find(def, scope)
+        var holder = logDuration("|-- find instance") {
+            find(def, scope)
+        }
         if (holder == null) {
             holder = create(def, scope)
             // save it

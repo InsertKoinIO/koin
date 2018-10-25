@@ -9,11 +9,11 @@ import org.koin.dsl.definition.BeanDefinition
  */
 class SingleInstanceHolder<T : Any>(override val bean: BeanDefinition<T>) : InstanceHolder<T> {
 
-    lateinit var instance: T
+    var instance: T? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(parameters: ParameterDefinition): Instance<T> {
-        val needCreation = (!this::instance.isInitialized)
+        val needCreation = instance == null
         if (needCreation) {
             instance = create(parameters)
         }
