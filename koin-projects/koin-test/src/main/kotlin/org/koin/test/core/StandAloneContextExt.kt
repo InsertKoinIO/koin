@@ -7,6 +7,7 @@ import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.standalone.StandAloneContext
 import org.koin.test.core.instance.SandboxInstanceFactory
+import org.koin.test.ext.koin.beanDefinitions
 
 /**
  * Check all definition's dependencies
@@ -22,7 +23,15 @@ fun StandAloneContext.checkModules(list: List<Module>, logger: Logger) {
     koin.loadModules(list)
 
     // Run checks
-    koin.createEagerInstances(emptyParameterDefinition())
+    runAllInstances(koin)
+}
+
+private fun runAllInstances(koin: Koin) {
+    val koinContext = koin.koinContext
+    koinContext.instanceRegistry.createInstances(
+        koinContext.beanDefinitions(),
+        emptyParameterDefinition()
+    )
 }
 
 private fun createKoinSandbox() = Koin.create(KoinContext.create(SandboxInstanceFactory()))

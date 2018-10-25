@@ -155,7 +155,7 @@ class InstanceRegistry(
      * @param definitions
      * @param params
      */
-    private fun createInstances(
+    fun createInstances(
         definitions: Collection<BeanDefinition<*>>,
         params: ParameterDefinition
     ) {
