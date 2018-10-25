@@ -57,7 +57,7 @@ infix fun Koin.with(androidContext: Context): Koin {
  * @param androidContext
  * @param koinPropertyFile
  */
-fun Koin.bindAndroidProperties(
+fun Koin.loadAndroidProperties(
     androidContext: Context,
     koinPropertyFile: String = "koin.properties"
 ): Koin {

@@ -26,5 +26,5 @@ interface ScopeCallback {
      * Notify on scope closing
      * @param id : scope Id
      */
-    fun onClose(id: String)
+    fun onClose(id: String, uuid : String)
 }

@@ -27,6 +27,7 @@ import org.koin.core.stack.ResolutionStack
 import org.koin.core.time.logDuration
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
+import org.koin.error.ClosedScopeException
 import org.koin.ext.fullname
 import kotlin.reflect.KClass
 
@@ -146,11 +147,17 @@ class InstanceRegistry(
         beanDefinition: BeanDefinition<T>,
         scope: Scope?
     ): Scope? {
-        val associatedScopeId = beanDefinition.getScope()
-        return scope ?: if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(
-            associatedScopeId
-        ) else null
+        return if (scope != null){
+            if (isScopeRegistered(scope)) scope
+            else throw ClosedScopeException("No open scoped '${scope.id}'")
+        } else {
+            val associatedScopeId = beanDefinition.getScope()
+            return scope ?: scopeRegistry.getScope(associatedScopeId)
+        }
     }
+
+    private fun isScopeRegistered(scope: Scope) =
+        scopeRegistry.getScope(scope.id) != null || scopeRegistry.getDetachScope(scope.uuid) != null
 
     /**
      * Create instances at start - tagged eager

@@ -16,60 +16,84 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.error.ScopeAlreadyExistsException
 
 /**
  * Scope Registry
- * Coordinates all scopes
+ * Coordinates all registeredScopes
  */
 class ScopeRegistry {
 
-    private val scopes = HashMap<String, Scope>()
+    private val registeredScopes = HashMap<String, Scope>()
+    private val allScopes = HashMap<String, Scope>()
     private val scopeCallbacks: ArrayList<ScopeCallback> = arrayListOf()
 
 
     fun getOrCreateScope(id: String): Scope {
         var found = getScope(id)
         if (found == null) {
-            found = create(id)
+            found = createAndRegisterScope(id)
         }
         return found
     }
 
-    private fun create(
+    private fun createAndRegisterScope(
         id: String
     ): Scope {
-        val scope = Scope(id, this)
-        scopes[id] = scope
-        Koin.logger.debug("[Scope] create $id")
+        val scope = Scope(id)
+        registerScope(scope)
+        saveScope(scope)
+        Koin.logger.debug("[Scope] declare $scope")
         return scope
+    }
+
+    private fun registerScope(scope: Scope) {
+        registeredScopes[scope.id] = scope
+    }
+
+    private fun saveScope(scope: Scope) {
+        allScopes[scope.uuid] = scope
     }
 
     fun createScope(id: String): Scope {
         var found = getScope(id)
         if (found == null) {
-            found = create(id)
+            found = createAndRegisterScope(id)
         } else {
-            error("Already created scope with id '$id'")
+            throw ScopeAlreadyExistsException("Scope id '$id' is already created")
         }
         return found
     }
 
-    fun getScope(id: String) = scopes[id]
+    fun getScope(id: String): Scope? = registeredScopes[id]
 
-    fun closeScope(scope: Scope) {
-        val id = scope.id
-        scopes.remove(id)
-        // callback
-        scopeCallbacks.forEach { it.onClose(id) }
+    fun getDetachScope(uuid: String): Scope? = allScopes[uuid]
+
+    fun createAndDetachScope(id: String): Scope {
+        val scope = Scope(id, isDetached = true)
+        saveScope(scope)
+        Koin.logger.debug("[Scope] detached $scope")
+        return scope
     }
 
     fun close() {
-        scopes.values.forEach { it.holders.clear() }
-        scopes.clear()
+        val all = registeredScopes.values + allScopes.values
+        all.forEach { it.close() }
+
+        registeredScopes.clear()
+        allScopes.clear()
     }
 
     fun register(callback: ScopeCallback) {
-        Koin.logger.debug("[Scope] callback with $callback")
         scopeCallbacks += callback
+    }
+
+    fun deleteScope(id: String, uuid: String) {
+        registeredScopes.remove(id)
+        allScopes.remove(uuid)
+
+        scopeCallbacks.forEach {
+            it.onClose(id, uuid)
+        }
     }
 }

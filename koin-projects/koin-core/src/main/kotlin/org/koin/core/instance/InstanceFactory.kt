@@ -16,11 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.Koin
-import org.koin.core.instance.holder.FactoryInstanceHolder
-import org.koin.core.instance.holder.Instance
-import org.koin.core.instance.holder.InstanceHolder
-import org.koin.core.instance.holder.ScopeInstanceHolder
-import org.koin.core.instance.holder.SingleInstanceHolder
+import org.koin.core.instance.holder.*
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.scope.Scope
 import org.koin.dsl.definition.BeanDefinition
@@ -48,14 +44,11 @@ open class InstanceFactory {
         scope: Scope? = null
     ): Instance<T> {
         // find holder
-        var holder = find(def)
+        var holder = find(def, scope)
         if (holder == null) {
             holder = create(def, scope)
             // save it
             instances += holder
-        }
-        if (holder is ScopeInstanceHolder) {
-            if (holder.scope.isClosed) throw ClosedScopeException("Can't reuse a closed scope : $scope")
         }
         return holder.get(p)
     }
@@ -64,9 +57,15 @@ open class InstanceFactory {
      * Find actual InstanceHolder
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? =
-        instances
-            .firstOrNull { it.bean == def } as InstanceHolder<T>?
+    fun <T> find(def: BeanDefinition<T>, scope: Scope?): InstanceHolder<T>? {
+        val found =
+            if (scope == null) {
+                instances.firstOrNull { it.bean == def }
+            } else {
+                instances.firstOrNull { it is ScopeInstanceHolder && it.bean == def && it.scope == scope }
+            }
+        return found as InstanceHolder<T>?
+    }
 
     /**
      * Create InstanceHolder
@@ -76,15 +75,13 @@ open class InstanceFactory {
             Kind.Single -> SingleInstanceHolder(def)
             Kind.Factory -> FactoryInstanceHolder(def)
             Kind.Scope -> {
-                if (scope != null && !scope.isClosed) {
-                    scope.instanceFactory = this
+                if (scope != null) {
                     ScopeInstanceHolder(
                         def,
                         scope
                     )
                 } else {
-                    if (scope == null) throw NoScopeException("Definition '$def' has to be used with a scope. Please create and specify a scope to use with your definition")
-                    else throw ClosedScopeException("Can't reuse a closed scope : $scope")
+                    throw NoScopeException("Definition '$def' has to be used with a scope. Please create and specify a scope to use with your definition")
                 }
             }
         }
@@ -93,10 +90,10 @@ open class InstanceFactory {
     /**
      * Release definition instance
      */
-    fun release(definition: BeanDefinition<*>) {
+    fun release(definition: BeanDefinition<*>, scope: Scope?) {
         if (definition.kind == Kind.Scope) {
             Koin.logger.debug("release $definition")
-            val holder = find(definition)
+            val holder = find(definition, scope)
             holder?.let {
                 instances.remove(it)
             }

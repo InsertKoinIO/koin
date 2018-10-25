@@ -12,6 +12,7 @@ import org.koin.standalone.StandAloneContext.registerScopeCallback
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
+import java.util.*
 
 class ScopeAPITest : AutoCloseKoinTest() {
 
@@ -192,7 +193,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
 
         var closed: String? = null
         registerScopeCallback(object : ScopeCallback {
-            override fun onClose(id: String) {
+            override fun onClose(id: String, uuid: String) {
                 closed = id
             }
         })
@@ -207,7 +208,7 @@ class ScopeAPITest : AutoCloseKoinTest() {
 
         session.close()
 
-        assertEquals(id, closed)
+        assertEquals(session.id, closed)
     }
 
 }

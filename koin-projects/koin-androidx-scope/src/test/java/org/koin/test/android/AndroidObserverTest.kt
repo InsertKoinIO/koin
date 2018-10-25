@@ -34,7 +34,5 @@ class AndroidObserverTest : AutoCloseKoinTest() {
 
         observer.onDestroy()
         assertRemainingInstanceHolders(0)
-
-        Assert.assertTrue(session.isClosed)
     }
 }

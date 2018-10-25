@@ -7,6 +7,7 @@ import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.ext.junit.assertRemainingInstanceHolders
 
 class KoinComponentPathTest : AutoCloseKoinTest() {
 
@@ -42,10 +43,12 @@ class KoinComponentPathTest : AutoCloseKoinTest() {
         assertEquals(p1.repository, p2.repository)
         assertEquals(p1.repository, get<Repository>())
 
-        assertEquals(1, session1.size())
-        assertEquals(1, session2.size())
+
+        assertRemainingInstanceHolders(3)
 
         session1.close()
         session2.close()
+
+        assertRemainingInstanceHolders(1)
     }
 }

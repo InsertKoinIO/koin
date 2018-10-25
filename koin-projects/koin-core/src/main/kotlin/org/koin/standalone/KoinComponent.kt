@@ -16,7 +16,6 @@
 package org.koin.standalone
 
 import org.koin.core.KoinContext
-import org.koin.core.instance.DefinitionFilter
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.Scope

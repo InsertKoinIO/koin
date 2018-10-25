@@ -2,7 +2,6 @@ package org.koin.test.android
 
 import android.arch.lifecycle.Lifecycle
 import org.junit.Assert
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.android.scope.ScopeObserver
 import org.koin.dsl.module.module
@@ -36,7 +35,5 @@ class AndroidObserverTest : AutoCloseKoinTest() {
 
         observer.onDestroy()
         assertRemainingInstanceHolders(0)
-
-        assertTrue(session.isClosed)
     }
 }

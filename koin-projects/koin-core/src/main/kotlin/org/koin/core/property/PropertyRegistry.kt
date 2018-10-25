@@ -16,6 +16,7 @@
 package org.koin.core.property
 
 import org.koin.error.MissingPropertyException
+import org.koin.ext.checkedStringValue
 import java.util.*
 
 
@@ -42,17 +43,7 @@ class PropertyRegistry {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T> getValue(key: String): T? {
-        //TODO check for properties parsing from files :/
-//        val clazzName = T::class.java.simpleName
-//        val value = properties[key]
-//        return if (value is String && clazzName != "String") {
-//            when (clazzName) {
-//                "Integer" -> value.toIntOrNull()
-//                "Float" -> value.toFloatOrNull()
-//                else -> value
-//            } as T?
-//        } else value as? T?
-        return properties[key] as? T
+        return properties[key] as? T?
     }
 
     /**
@@ -76,10 +67,18 @@ class PropertyRegistry {
      * Inject all properties to context
      */
     fun import(properties: Properties): Int {
-        return properties.keys
-            .filter { it is String && properties[it] != null }
-            .map { add(it as String, properties[it]!!) }
-            .count()
+        val convertedProperties: Map<String, Any> = prepareImport(properties)
+
+        convertedProperties.forEach { (key, value) ->
+            add(key, value)
+        }
+        return convertedProperties.count()
+    }
+
+    private fun prepareImport(properties: Properties): Map<String, Any> {
+        return properties.map { (key, value) ->
+            Pair(key as String, value.checkedStringValue())
+        }.toMap()
     }
 
     /**

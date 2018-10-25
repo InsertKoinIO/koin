@@ -12,10 +12,6 @@ import org.koin.dsl.definition.BeanDefinition
 class ScopeInstanceHolder<T>(override val bean: BeanDefinition<T>, val scope: Scope) :
     InstanceHolder<T> {
 
-    init {
-        scope.register(this)
-    }
-
     private var instance: T? = null
 
     @Suppress("UNCHECKED_CAST")

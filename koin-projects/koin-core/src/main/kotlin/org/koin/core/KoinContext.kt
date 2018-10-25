@@ -16,7 +16,6 @@
 package org.koin.core
 
 import org.koin.core.bean.BeanRegistry
-import org.koin.core.instance.DefinitionFilter
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.InstanceRegistry
 import org.koin.core.instance.InstanceRequest
@@ -71,7 +70,6 @@ class KoinContext private constructor(
      * @param clazz
      * @param scope
      * @param parameters
-     * @param filter
      */
     fun <T : Any> get(
         name: String = "",
@@ -97,6 +95,12 @@ class KoinContext private constructor(
      */
     fun getOrCreateScope(id: String): Scope = scopeRegistry.getOrCreateScope(id)
 
+
+    /**
+     * Create a detached scope
+     */
+    fun detachScope(id: String): Scope = scopeRegistry.createAndDetachScope(id)
+
     /**
      * retrieve a scope
      */
@@ -108,7 +112,7 @@ class KoinContext private constructor(
      * @param path
      */
     @Deprecated("Please use Scope API.")
-    fun release(path: String): Unit {
+    fun release(path: String) {
         val p = instanceRegistry.pathRegistry.getPath(path)
         instanceRegistry.instanceFactory.releasePath(p)
     }

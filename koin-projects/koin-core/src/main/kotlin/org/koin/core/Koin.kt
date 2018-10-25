@@ -21,6 +21,7 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.ScopeCallback
 import org.koin.core.time.measureDuration
 import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.path.Path
 import org.koin.log.EmptyLogger
@@ -52,7 +53,7 @@ class Koin private constructor(val koinContext: KoinContext) {
     fun loadProperties(koinProps: KoinProperties): Koin = synchronized(this) {
         if (koinProps.useKoinPropertiesFile) {
             Koin.logger.info("[properties] load koin.properties")
-            bindKoinProperties()
+            loadKoinProperties()
         }
 
         if (koinProps.extraProperties.isNotEmpty()) {
@@ -62,7 +63,7 @@ class Koin private constructor(val koinContext: KoinContext) {
 
         if (koinProps.useEnvironmentProperties) {
             Koin.logger.info("[properties] load environment properties")
-            bindEnvironmentProperties()
+            loadEnvironmentProperties()
         }
         return this
     }
@@ -79,7 +80,7 @@ class Koin private constructor(val koinContext: KoinContext) {
     }
 
 
-    private fun bindKoinProperties(koinFile: String = "/koin.properties"): Koin {
+    private fun loadKoinProperties(koinFile: String = "/koin.properties"): Koin {
         val content = Koin::class.java.getResource(koinFile)?.readText()
         content?.let {
             val koinProperties = Properties()
@@ -91,7 +92,7 @@ class Koin private constructor(val koinContext: KoinContext) {
     }
 
 
-    private fun bindEnvironmentProperties(): Koin {
+    private fun loadEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())
         val n2 = propertyResolver.import(System.getenv().toProperties())
         logger.debug("[properties] loaded $n1 properties from properties")
@@ -180,6 +181,13 @@ class Koin private constructor(val koinContext: KoinContext) {
      */
     fun registerModuleCallBack(callback: ModuleCallBack) {
         koinContext.instanceRegistry.instanceFactory.register(callback)
+    }
+
+    /**
+     * Declare a component on the fly
+     */
+    fun <T> declare(definition: BeanDefinition<T>) {
+        beanRegistry.declare(definition)
     }
 
     /**

@@ -16,8 +16,11 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.holder.ScopeInstanceHolder
+import org.koin.dsl.definition.BeanDefinition
+import org.koin.dsl.definition.Kind
+import org.koin.standalone.StandAloneContext
+import java.util.*
 
 /**
  * Scope - a lifetime limited persistence space to resolve instances
@@ -25,32 +28,61 @@ import org.koin.core.instance.holder.ScopeInstanceHolder
  *
  * @author Arnaud Giuliani
  */
-class Scope(val id : String, val scopeRegistry: ScopeRegistry) {
+data class Scope(
+    val id: String,
+    val uuid: String = UUID.randomUUID().toString(),
+    val isDetached: Boolean = false
+) {
+    val parameters = hashMapOf<String, Any>()
 
-    internal val holders = ArrayList<ScopeInstanceHolder<*>>()
+    fun close() {
+        val koin = StandAloneContext.getKoin()
 
-    var isClosed = false
-    lateinit var instanceFactory: InstanceFactory
+        removeInstanceHolders(koin)
 
-    fun close(){
-        Koin.logger.info("[Scope] closing '$id'")
-        holders.forEach {
-            it.release()
-            instanceFactory.release(it.bean)
-        }
-        holders.clear()
-        scopeRegistry.closeScope(this)
+        removeAddedDefinitions(koin)
 
-        isClosed = true
+        removeScope(koin)
     }
 
-    fun size() = holders.size
+    private fun removeScope(koin: Koin) {
+        koin.koinContext.scopeRegistry.deleteScope(id,uuid)
+    }
 
-    fun register(holder: ScopeInstanceHolder<*>) {
-        holders += holder
+    private fun removeAddedDefinitions(koin: Koin) {
+        val addedDefinitions = koin.beanRegistry.definitions.filter {
+            it.getScope() == id && it.isAddedToScope()
+        }
+        addedDefinitions.forEach {
+            koin.beanRegistry.definitions.remove(it)
+        }
+    }
+
+    private fun removeInstanceHolders(koin: Koin) {
+        val scopedInstances = koin.instanceFactory.instances.filter {
+            it is ScopeInstanceHolder && it.scope == this
+        }
+        scopedInstances.forEach { it.release() }
+        koin.instanceFactory.instances.removeAll(scopedInstances)
+    }
+
+    inline fun <reified T> addInstance(instance: T) {
+        if (!isDetached) {
+            val definition = BeanDefinition(
+                primaryType = T::class,
+                definition = { instance },
+                kind = Kind.Scope,
+                allowOverride = true
+            )
+            definition.setScope(id)
+            definition.setAddedToScope()
+            StandAloneContext.getKoin().declare(definition)
+        } else {
+            error("Can't add extra instances on detached scope")
+        }
     }
 
     override fun toString(): String {
-        return "Scope['$id']"
+        return "Scope['$id'-$uuid]"
     }
 }

@@ -17,7 +17,7 @@ package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
 import android.content.Context
-import org.koin.android.ext.koin.bindAndroidProperties
+import org.koin.android.ext.koin.loadAndroidProperties
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.Koin
@@ -59,7 +59,7 @@ fun ComponentCallbacks.startKoin(
 
     koin.apply {
         if (loadPropertiesFromFile) {
-            bindAndroidProperties(androidContext)
+            loadAndroidProperties(androidContext)
         }
         if (extraProperties.isNotEmpty()) {
             loadExtraProperties(extraProperties)

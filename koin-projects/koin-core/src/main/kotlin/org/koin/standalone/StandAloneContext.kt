@@ -21,6 +21,7 @@ import org.koin.core.instance.ModuleCallBack
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.ScopeCallback
 import org.koin.core.time.measureDuration
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.module.Module
 import org.koin.error.AlreadyStartedException
 import org.koin.log.Logger
