@@ -87,9 +87,11 @@ class OverrideTest : AutoCloseKoinTest() {
 
     @Test
     fun `no override - bind `() {
-        startKoin(listOf(diffBind))
-
-        assertDefinitions(2)
+        try {
+            startKoin(listOf(diffBind))
+            fail()
+        } catch (e: BeanOverrideException) {
+        }
     }
 
     @Test

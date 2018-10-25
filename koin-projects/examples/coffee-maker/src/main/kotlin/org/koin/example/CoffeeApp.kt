@@ -1,6 +1,5 @@
 package org.koin.example
 
-import org.koin.log.EmptyLogger
 import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext.startKoin
