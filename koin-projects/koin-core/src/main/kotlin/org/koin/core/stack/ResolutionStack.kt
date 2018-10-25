@@ -37,13 +37,14 @@ class ResolutionStack {
      * @param beanDefinition - bean definition
      * @param execution - executed code once bean definition has been stacked
      */
-    fun resolve(beanDefinition: BeanDefinition<*>, execution: () -> Unit) {
+    fun <T> resolve(beanDefinition: BeanDefinition<*>, execution: () -> T): T {
         checkStackEnter(beanDefinition)
 
         stack.add(beanDefinition)
-        execution()
+        val result: T = execution()
 
         checkStackExit(beanDefinition)
+        return result
     }
 
     /**
@@ -77,10 +78,19 @@ class ResolutionStack {
         }
     }
 
+//    /**
+//     * For info indentation
+//     */
+//    fun indent(tabs: Int = stack.size): String = indentString(tabs)
+
     /**
      * For info indentation
      */
-    fun indent(): String = stack.joinToString(separator = "") { "|\t" }
+    fun indent(tabs: Int = stack.size - 1): String = indentString(tabs)
+
+    private fun indentString(tabs: Int): String {
+        return (0..tabs).joinToString(separator = "") { "|\t" }
+    }
 
     /**
      * Last stack item

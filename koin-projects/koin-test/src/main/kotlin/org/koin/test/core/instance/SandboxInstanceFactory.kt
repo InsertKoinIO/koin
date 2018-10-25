@@ -9,8 +9,9 @@ import org.koin.dsl.definition.BeanDefinition
  * Sandbox Instance Factory
  * Create mock version of each dependency to help resolve all dependency graph without executing the real instance
  */
-class SandboxInstanceFactory() : InstanceFactory() {
+class SandboxInstanceFactory : InstanceFactory() {
 
-    override fun <T: Any> create(def: BeanDefinition<T>, scope: Scope?): InstanceHolder<T> = SandboxInstanceHolder(def)
+    override fun <T> create(def: BeanDefinition<T>, scope: Scope?): InstanceHolder<T>  =
+        SandboxInstanceHolder(def)
 
 }

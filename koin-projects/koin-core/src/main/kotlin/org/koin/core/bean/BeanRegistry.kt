@@ -57,14 +57,12 @@ class BeanRegistry() {
     }
 
     fun searchByClass(
-        definitions: Collection<BeanDefinition<*>>,
         clazz: KClass<*>
     ): List<BeanDefinition<*>> {
         return definitions.filter { clazz in it.classes }
     }
 
     fun searchByNameAndClass(
-        definitions: Collection<BeanDefinition<*>>,
         name: String,
         clazz: KClass<*>
     ): List<BeanDefinition<*>> {
@@ -72,21 +70,13 @@ class BeanRegistry() {
     }
 
     /**
-     * Get bean definitions from given path
+     * Retrieve bean definition
+     * @param clazzName - class canonicalName
+     * @param modulePath - Module path
+     * @param definitionResolver - function to find bean definition
+     * @param lastInStack - to check visibility with last bean in stack
      */
-    fun getDefinitionsInPaths(paths: Set<Path>): List<BeanDefinition<*>> {
-        return definitions.filter { def -> definitions.first { it == def }.path in paths }
-    }
-
-
     @Suppress("UNCHECKED_CAST")
-            /**
-             * Retrieve bean definition
-             * @param clazzName - class canonicalName
-             * @param modulePath - Module path
-             * @param definitionResolver - function to find bean definition
-             * @param lastInStack - to check visibility with last bean in stack
-             */
     fun <T> retrieveDefinition(
         clazz: KClass<*>,
         scope: Scope?,

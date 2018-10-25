@@ -38,15 +38,13 @@ open class InstanceFactory {
      * Retrieve or create instance from bean definition
      * @return Instance / has been created
      */
-    fun <T : Any> retrieveInstance(
+    fun <T> retrieveInstance(
         def: BeanDefinition<T>,
         p: ParameterDefinition,
         scope: Scope? = null
     ): Instance<T> {
         // find holder
-        var holder = logDuration("|-- find instance") {
-            find(def, scope)
-        }
+        var holder = find(def)
         if (holder == null) {
             holder = create(def, scope)
             // save it
@@ -62,15 +60,14 @@ open class InstanceFactory {
      * Find actual InstanceHolder
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T> find(def: BeanDefinition<T>, scope: Scope? = null): InstanceHolder<T>? =
+    fun <T> find(def: BeanDefinition<T>): InstanceHolder<T>? =
         instances
-            .filter { it.bean == def }
-            .firstOrNull { if (it is ScopeInstanceHolder) it.scope == scope else true } as InstanceHolder<T>?
+            .firstOrNull { it.bean == def } as InstanceHolder<T>?
 
     /**
      * Create InstanceHolder
      */
-    open fun <T : Any> create(def: BeanDefinition<T>, scope: Scope? = null): InstanceHolder<T> {
+    open fun <T> create(def: BeanDefinition<T>, scope: Scope? = null): InstanceHolder<T> {
         return when (def.kind) {
             Kind.Single -> SingleInstanceHolder(def)
             Kind.Factory -> FactoryInstanceHolder(def)
@@ -92,10 +89,10 @@ open class InstanceFactory {
     /**
      * Release definition instance
      */
-    fun release(definition: BeanDefinition<*>, scope: Scope? = null) {
+    fun release(definition: BeanDefinition<*>) {
         if (definition.kind == Kind.Scope) {
             Koin.logger.debug("release $definition")
-            val holder = find(definition, scope)
+            val holder = find(definition)
             holder?.let {
                 instances.remove(it)
             }

@@ -77,16 +77,14 @@ class KoinContext private constructor(
         name: String = "",
         clazz: KClass<*>,
         scope: Scope? = null,
-        parameters: ParameterDefinition = emptyParameterDefinition(),
-        filter: DefinitionFilter? = null
+        parameters: ParameterDefinition = emptyParameterDefinition()
     ): T = instanceRegistry.resolve(
         InstanceRequest(
             name = name,
             clazz = clazz,
             scope = scope,
             parameters = parameters
-        ),
-        filter
+        )
     )
 
     /**

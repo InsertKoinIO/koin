@@ -1,24 +1,19 @@
 package org.koin.test.android
 
 import androidx.lifecycle.ViewModel
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.koin.androidx.viewmodel.experimental.builder.viewModel
-import org.koin.androidx.viewmodel.ext.koin.isViewModel
 import org.koin.androidx.viewmodel.ext.koin.viewModel
-import org.koin.core.KoinContext
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.junit.assertContexts
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstanceHolders
-import org.koin.test.ext.koin.beanDefinition
 
 class ViewModelDSLTest : AutoCloseKoinTest() {
 
@@ -100,15 +95,5 @@ class ViewModelDSLTest : AutoCloseKoinTest() {
         assertContexts(1)
         assertDefinitions(1)
         assertRemainingInstanceHolders(1)
-    }
-
-    @Test
-    fun `is a ViewModel`() {
-        startKoin(listOf(module))
-
-        val vm = (StandAloneContext.koinContext as KoinContext).beanDefinition(MyViewModel::class)
-        val def = (StandAloneContext.koinContext as KoinContext).beanDefinition(MyService::class)
-        Assert.assertTrue(vm!!.isViewModel())
-        Assert.assertFalse(def!!.isViewModel())
     }
 }

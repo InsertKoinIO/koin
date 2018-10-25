@@ -7,7 +7,7 @@ import org.koin.dsl.definition.BeanDefinition
  * Single - InstanceHolder
  * create a unique instance
  */
-class SingleInstanceHolder<T : Any>(override val bean: BeanDefinition<T>) : InstanceHolder<T> {
+class SingleInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceHolder<T> {
 
     var instance: T? = null
 

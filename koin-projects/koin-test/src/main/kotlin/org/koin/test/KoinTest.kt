@@ -50,7 +50,7 @@ interface KoinTest : KoinComponent
  * @Deprecated
  */
 @Deprecated("Please use the checkModules() function to checkModules your list of modules")
-fun KoinTest.dryRun(parameters: ParameterDefinition = emptyParameterDefinition()) =
+fun KoinTest.dryRun() =
     StandAloneContext.getKoin().createEagerInstances()
 
 /**

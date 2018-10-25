@@ -74,10 +74,9 @@ fun <T : Any> KoinComponent.get(
     name: String = "",
     clazz: KClass<*>,
     scope: Scope? = null,
-    parameters: ParameterDefinition = emptyParameterDefinition(),
-    filter: DefinitionFilter? = null
+    parameters: ParameterDefinition = emptyParameterDefinition()
 ): T =
-    getKoin().get(name, clazz, scope, parameters, filter)
+    getKoin().get(name, clazz, scope, parameters)
 
 /**
  * inject lazily given property for KoinComponent

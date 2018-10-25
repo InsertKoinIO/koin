@@ -34,5 +34,5 @@ inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
     override: Boolean = false,
     noinline definition: Definition<T>
 ) {
-    factory(name, override, definition) bind ViewModel::class
+    factory(name, override, definition)
 }

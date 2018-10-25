@@ -19,7 +19,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ext.koin.isViewModel
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -100,7 +99,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
     val viewModelProvider =
         ViewModelProvider(vmStoreOwner, object : ViewModelProvider.Factory, KoinComponent {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return get(name ?: "", clazz, parameters = parameters, filter = isViewModel)
+                return get(name ?: "", clazz, parameters = parameters)
             }
         })
 
