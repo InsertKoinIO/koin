@@ -59,7 +59,7 @@ class ParameterList(vararg value: Any) {
 typealias ParameterDefinition = () -> ParameterList
 
 /**
- * Help build a Parameter list
+ * Help loadModules a Parameter list
  * @see ParameterList
  * return ParameterList
  */

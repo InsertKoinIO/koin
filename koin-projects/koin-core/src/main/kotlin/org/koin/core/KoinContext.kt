@@ -16,17 +16,21 @@
 package org.koin.core
 
 import org.koin.core.Koin.Companion.logger
+import org.koin.core.bean.BeanRegistry
 import org.koin.core.instance.DefinitionFilter
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.InstanceRegistry
 import org.koin.core.instance.InstanceRequest
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.path.PathRegistry
 import org.koin.core.property.PropertyRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
 import org.koin.core.scope.ScopeRegistry
 import org.koin.error.MissingPropertyException
 import org.koin.error.NoScopeFoundException
+import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
 
@@ -38,7 +42,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  * @author - Laurent Baresse
  */
-class KoinContext(
+class KoinContext private constructor(
     val instanceRegistry: InstanceRegistry,
     val scopeRegistry: ScopeRegistry,
     val propertyResolver: PropertyRegistry
@@ -119,14 +123,14 @@ class KoinContext(
      * @param key
      * @throws MissingPropertyException if key is not found
      */
-    inline fun <reified T> getProperty(key: String): T = propertyResolver.getProperty(key)
+     fun < T> getProperty(key: String): T = propertyResolver.getProperty(key)
 
     /**
      * Retrieve a property by its key or return provided default value
      * @param key - property key
      * @param defaultValue - default value if property is not found
      */
-    inline fun <reified T> getProperty(key: String, defaultValue: T): T =
+     fun < T> getProperty(key: String, defaultValue: T): T =
         propertyResolver.getProperty(key, defaultValue)
 
     /**
@@ -142,5 +146,23 @@ class KoinContext(
         instanceRegistry.close()
         scopeRegistry.close()
         propertyResolver.clear()
+    }
+
+    companion object {
+
+        /**
+         * Create context instance
+         */
+        fun create(instanceFactory: InstanceFactory = InstanceFactory()): KoinContext {
+            val propertyResolver = PropertyRegistry()
+            val scopeRegistry = ScopeRegistry()
+            val instanceResolver = InstanceRegistry(
+                BeanRegistry(),
+                instanceFactory,
+                PathRegistry(),
+                scopeRegistry
+            )
+            return KoinContext(instanceResolver, scopeRegistry, propertyResolver)
+        }
     }
 }

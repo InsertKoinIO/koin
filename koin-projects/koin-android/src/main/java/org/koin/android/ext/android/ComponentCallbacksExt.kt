@@ -18,7 +18,6 @@ package org.koin.android.ext.android
 import android.content.ComponentCallbacks
 import android.content.Context
 import org.koin.android.ext.koin.bindAndroidProperties
-import org.koin.android.ext.koin.context
 import org.koin.android.ext.koin.with
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.Koin
@@ -28,9 +27,8 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.Scope
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
-import org.koin.standalone.StandAloneContext.createEagerInstances
+import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.loadKoinModules
-import org.koin.standalone.StandAloneContext.loadProperties
 
 /**
  * ComponentCallbacks extensions for Android
@@ -40,32 +38,40 @@ import org.koin.standalone.StandAloneContext.loadProperties
 
 /**
  * Create a new Koin ModuleDefinition
- * @param context - Android context
+ * @param androidContext - Android androidContext
  * @param modules - list of AndroidModule
  * @param extraProperties - extra extraProperties
- * @param loadProperties - laod extraProperties from asset/koin.extraProperties
+ * @param loadPropertiesFromFile - laod extraProperties from asset/koin.extraProperties
  * @param logger - default Koin logger
  *
- * will be soon deprecated for starKoin() with <context>
+ * will be soon deprecated for starKoin() with <androidContext>
  */
 fun ComponentCallbacks.startKoin(
-    context: Context,
+    androidContext: Context,
     modules: List<Module>,
     extraProperties: Map<String, Any> = HashMap(),
-    loadProperties: Boolean = false,
+    loadPropertiesFromFile: Boolean = false,
     logger: Logger = AndroidLogger()
 ) {
     Koin.logger = logger
 
-    val koin = loadKoinModules(modules).with(context)
+    val koin: Koin = loadKoinModules(modules).with(androidContext)
 
-    if (loadProperties || extraProperties.isNotEmpty()) {
-        loadProperties(false, loadProperties, extraProperties)
-        koin.bindAndroidProperties(context)
+    koin.apply {
+        if (loadPropertiesFromFile) {
+            bindAndroidProperties(androidContext)
+        }
+        if (extraProperties.isNotEmpty()) {
+            loadExtraProperties(extraProperties)
+        }
+        createEagerInstances(emptyParameterDefinition())
     }
-
-    createEagerInstances(emptyParameterDefinition())
 }
+
+/**
+ * Get Koin context
+ */
+fun ComponentCallbacks.getKoin(): KoinContext = StandAloneContext.getKoin().koinContext
 
 /**
  * inject lazily given dependency for Android component
@@ -117,14 +123,7 @@ inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T)
  * @param value
  */
 fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
-    context().setProperty(key, value)
-
-
-/**
- * Get Koin context
- */
-fun ComponentCallbacks.getKoin(): KoinContext =
-    (org.koin.standalone.StandAloneContext.koinContext as KoinContext)
+    getKoin().setProperty(key, value)
 
 /**
  * Release a Module from given Path

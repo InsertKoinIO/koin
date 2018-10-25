@@ -31,16 +31,6 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
-
-/**
- * Check all loaded definitions by resolving them one by one
- */
-fun KoinContext.dryRun(defaultParameters: ParameterDefinition) {
-    Koin.logger.info("[Check Modules]")
-
-    instanceRegistry.dryRun(defaultParameters)
-}
-
 /**
  * Return all definitions of Koin
  */

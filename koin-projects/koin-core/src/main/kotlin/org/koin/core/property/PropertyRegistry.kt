@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.error.MissingPropertyException
 import java.util.*
 
+
 /**
  * Resolve properties for a context
  * @author - Arnaud GIULIANI
@@ -33,23 +34,26 @@ class PropertyRegistry {
      * @param key - key property
      * @throws MissingPropertyException if property is missing
      */
-    inline fun <reified T> getProperty(key: String): T =
+    fun <T> getProperty(key: String): T =
         getValue<T>(key) ?: throw MissingPropertyException("Can't find property '$key'")
 
     /**
      * Retrieve value or null
      * @param key
      */
-    inline fun <reified T> getValue(key: String): T? {
-        val clazzName = T::class.java.simpleName
-        val value = properties[key]
-        return if (value is String && clazzName != "String") {
-            when (clazzName) {
-                "Integer" -> value.toIntOrNull()
-                "Float" -> value.toFloatOrNull()
-                else -> value
-            } as T?
-        } else value as? T?
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getValue(key: String): T? {
+        //TODO check for properties parsing from files :/
+//        val clazzName = T::class.java.simpleName
+//        val value = properties[key]
+//        return if (value is String && clazzName != "String") {
+//            when (clazzName) {
+//                "Integer" -> value.toIntOrNull()
+//                "Float" -> value.toFloatOrNull()
+//                else -> value
+//            } as T?
+//        } else value as? T?
+        return properties[key] as? T
     }
 
     /**
@@ -57,7 +61,7 @@ class PropertyRegistry {
      * @param key - key property
      * @param defaultValue - default value for key
      */
-    inline fun <reified T> getProperty(key: String, defaultValue: T): T {
+    fun <T> getProperty(key: String, defaultValue: T): T {
         val value = getValue(key) ?: defaultValue
         Koin.logger.debug("[Property] get $key << '$value'")
         return value

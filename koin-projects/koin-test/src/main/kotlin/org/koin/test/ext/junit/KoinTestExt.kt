@@ -16,7 +16,6 @@
 package org.koin.test.ext.junit
 
 import org.junit.Assert
-import org.koin.core.KoinContext
 import org.koin.dsl.path.Path
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
@@ -30,7 +29,7 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
-internal fun context() = (StandAloneContext.koinContext as KoinContext)
+private fun context() = StandAloneContext.getKoin().koinContext
 
 /**
  * Assert context beanDefinition definitionCount
@@ -51,7 +50,11 @@ fun KoinTest.assertDefinitions(definitionCount: Int) {
  */
 fun KoinTest.assertIsInModulePath(definitionClazz: KClass<*>, path: String) {
     val definition = context().beanDefinition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in path '$path'", path, definition?.path?.name ?: "")
+    Assert.assertEquals(
+        "$definitionClazz must be in path '$path'",
+        path,
+        definition?.path?.name ?: ""
+    )
 }
 
 /**
@@ -61,7 +64,11 @@ fun KoinTest.assertIsInModulePath(definitionClazz: KClass<*>, path: String) {
  */
 fun KoinTest.assertIsInRootPath(definitionClazz: KClass<*>) {
     val definition = context().beanDefinition(definitionClazz)
-    Assert.assertEquals("$definitionClazz must be in path " + Path.ROOT, Path.ROOT, definition?.path?.name ?: "")
+    Assert.assertEquals(
+        "$definitionClazz must be in path " + Path.ROOT,
+        Path.ROOT,
+        definition?.path?.name ?: ""
+    )
 }
 
 
@@ -74,7 +81,11 @@ fun KoinTest.assertContextInstances(pathName: String, instanceCount: Int) {
     val path = context().getPath(pathName)
     val definitions = context().beanDefinitions().filter { it.path == path }.toSet()
     val instances = context().allInstances().map { it.bean }.filter { it in definitions }
-    Assert.assertEquals("path $pathName must have $instanceCount instances", instanceCount, instances.size)
+    Assert.assertEquals(
+        "path $pathName must have $instanceCount instances",
+        instanceCount,
+        instances.size
+    )
 }
 
 /**
@@ -95,7 +106,11 @@ fun KoinTest.assertPath(path: String, parentPath: String) {
  * @param instanceCount - instances count
  */
 fun KoinTest.assertRemainingInstanceHolders(instanceCount: Int) {
-    Assert.assertEquals("context must have $instanceCount instances", instanceCount, context().allInstances().size)
+    Assert.assertEquals(
+        "context must have $instanceCount instances",
+        instanceCount,
+        context().allInstances().size
+    )
 }
 
 /**
@@ -103,8 +118,13 @@ fun KoinTest.assertRemainingInstanceHolders(instanceCount: Int) {
  * @param propertyCount - properties count
  */
 fun KoinTest.assertProperties(propertyCount: Int) {
-    val nonKoinProps = context().allProperties().filterKeys { it != "test.koin" && it != "os.version" }
-    Assert.assertEquals("context must have $propertyCount properties", propertyCount, nonKoinProps.size)
+    val nonKoinProps =
+        context().allProperties().filterKeys { it != "test.koin" && it != "os.version" }
+    Assert.assertEquals(
+        "context must have $propertyCount properties",
+        propertyCount,
+        nonKoinProps.size
+    )
 }
 
 /**
@@ -112,5 +132,9 @@ fun KoinTest.assertProperties(propertyCount: Int) {
  * @param contextCount - context count
  */
 fun KoinTest.assertContexts(contextCount: Int) {
-    Assert.assertEquals("context must have $contextCount contexts", contextCount, context().allPaths().size)
+    Assert.assertEquals(
+        "context must have $contextCount contexts",
+        contextCount,
+        context().allPaths().size
+    )
 }

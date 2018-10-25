@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.ext.koin
 
-import org.koin.core.KoinContext
-import org.koin.standalone.StandAloneContext
+package org.koin.core
 
 /**
- * Help work on context
- *
+ * Properties holder for Koin start
  * @author Arnaud Giuliani
  */
-internal fun context(): KoinContext = (StandAloneContext.koinContext as KoinContext)
+data class KoinProperties(val useEnvironmentProperties: Boolean = false,
+                          val useKoinPropertiesFile: Boolean = false,
+                          val extraProperties: Map<String, Any> = HashMap())

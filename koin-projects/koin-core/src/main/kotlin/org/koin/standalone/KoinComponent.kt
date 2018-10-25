@@ -38,6 +38,11 @@ interface KoinComponent {
 }
 
 /**
+ * Access to Koin context
+ */
+private fun getKoinContext(): KoinContext = StandAloneContext.getKoin().koinContext
+
+/**
  * inject lazily given dependency for KoinComponent
  * @param name - bean canonicalName
  * @param parameters - injection parameters
@@ -134,10 +139,5 @@ fun KoinComponent.release(path: String): Unit = getKoin().release(path)
  */
 @Deprecated("Please use Scope API.")
 fun KoinComponent.releaseContext(path: String): Unit = release(path)
-
-/**
- * Access to Koin context
- */
-internal fun getKoinContext(): KoinContext = (StandAloneContext.koinContext as KoinContext)
 
 

@@ -72,7 +72,7 @@ inline fun <reified T : Any> ModuleDefinition.create(): T {
 }
 
 /**
- * Create a Single definition for given type T to build and cast as R
+ * Create a Single definition for given type T to loadModules and cast as R
  * @param name
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
@@ -86,7 +86,7 @@ inline fun <reified R : Any, reified T : R> ModuleDefinition.singleBy(
 }
 
 /**
- * Create a Factory definition for given type T to build and cast as R
+ * Create a Factory definition for given type T to loadModules and cast as R
  *
  * @param name
  * @param override - allow definition override

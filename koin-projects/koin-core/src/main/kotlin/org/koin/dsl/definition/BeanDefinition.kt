@@ -15,10 +15,10 @@
  */
 package org.koin.dsl.definition
 
-import org.koin.core.name
 import org.koin.core.parameter.ParameterList
 import org.koin.dsl.path.Path
 import org.koin.error.DefinitionBindingException
+import org.koin.ext.name
 import kotlin.reflect.KClass
 
 
@@ -45,13 +45,13 @@ data class BeanDefinition<out T>(
     val primaryType: KClass<*>,
     var types: List<KClass<*>> = arrayListOf(),
     val path: Path = Path.root(),
-    val kind: Kind,
+    val kind: Kind = Kind.Single,
     val isEager: Boolean = false,
     val allowOverride: Boolean = false,
     val attributes: HashMap<String, Any> = HashMap(),
     val definition: Definition<T>
 ) {
-    private val primaryTypeName: String = primaryType.name()
+    internal val primaryTypeName: String = primaryType.name()
     internal val classes: List<KClass<*>> = listOf(primaryType) + types
 
     /**
@@ -102,7 +102,7 @@ data class BeanDefinition<out T>(
 }
 
 /**
- * Type Definition function - what's build a given component T
+ * Type Definition function - what's loadModules a given component T
  */
 typealias Definition<T> = (ParameterList) -> T
 

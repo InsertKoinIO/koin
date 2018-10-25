@@ -17,7 +17,6 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.bean.BeanRegistry
-import org.koin.core.fullname
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.scope.Scope
@@ -27,6 +26,7 @@ import org.koin.core.stack.ResolutionStack
 import org.koin.core.time.logDuration
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
+import org.koin.ext.fullname
 import kotlin.reflect.KClass
 
 /**
@@ -61,7 +61,7 @@ class InstanceRegistry(
                     { beanRegistry.searchByClass(definitions, clazz) }
                 }
             }
-            proceedResolution(clazz, scope,parameters, search)
+            proceedResolution(clazz, scope, parameters, search)
         }
     }
 
@@ -74,7 +74,7 @@ class InstanceRegistry(
      */
     fun <T : Any> proceedResolution(
         clazz: KClass<*>,
-        scope : Scope?,
+        scope: Scope?,
         parameters: ParameterDefinition,
         definitionResolver: () -> List<BeanDefinition<*>>
     ): T = synchronized(this) {
@@ -85,7 +85,7 @@ class InstanceRegistry(
         val duration = measureDuration {
             try {
                 val beanDefinition: BeanDefinition<T> =
-                    logDuration("$logIndent|-- definition"){
+                    logDuration("$logIndent|-- definition") {
                         beanRegistry.retrieveDefinition(
                             clazz,
                             scope,
@@ -97,10 +97,13 @@ class InstanceRegistry(
 
                 // Retrieve scope from DSL
                 val associatedScopeId = beanDefinition.getScope()
-                val targetScope : Scope? = scope ?: if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(associatedScopeId) else null
+                val targetScope: Scope? =
+                    scope ?: if (associatedScopeId.isNotEmpty()) scopeRegistry.getScope(
+                        associatedScopeId
+                    ) else null
 
                 val logPath =
-                        if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
+                    if ("${beanDefinition.path}".isEmpty()) "" else "@ ${beanDefinition.path}"
                 val startChar = if (resolutionStack.isEmpty()) "+" else "+"
 
                 Koin.logger.info("$logIndent$startChar-- '$clazzName' $logPath") // @ [$beanDefinition]")
@@ -108,7 +111,7 @@ class InstanceRegistry(
 
                 resolutionStack.resolve(beanDefinition) {
                     val (instance, created) = logDuration("$logIndent|-- instance") {
-                         instanceFactory.retrieveInstance(
+                        instanceFactory.retrieveInstance(
                             beanDefinition,
                             parameters,
                             targetScope
@@ -163,13 +166,6 @@ class InstanceRegistry(
                 params
             ) { listOf(def) }
         }
-    }
-
-    /**
-     * Dry Run - run each definition
-     */
-    fun dryRun(defaultParameters: ParameterDefinition) {
-        createInstances(beanRegistry.definitions, defaultParameters)
     }
 
     /**

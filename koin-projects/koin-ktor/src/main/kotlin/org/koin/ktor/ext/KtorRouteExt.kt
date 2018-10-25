@@ -16,6 +16,7 @@
 package org.koin.ktor.ext
 
 import io.ktor.routing.Route
+import io.ktor.routing.get
 import org.koin.core.KoinContext
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
@@ -97,7 +98,7 @@ inline fun <reified T> Route.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun Route.getKoin() = (StandAloneContext.koinContext as KoinContext)
+fun Route.getKoin() = StandAloneContext.getKoin().koinContext
 
 /**
  * Set property value

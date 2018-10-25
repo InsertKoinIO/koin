@@ -18,7 +18,6 @@ package org.koin.dsl.module
 import org.koin.core.KoinContext
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.path.Path
-import org.koin.standalone.StandAloneContext
 
 
 /**
@@ -31,10 +30,12 @@ import org.koin.standalone.StandAloneContext
  * Create a Module
  * @Deprecated @see module
  */
-@Deprecated("Use the module() function instead.",
+@Deprecated(
+    "Use the module() function instead.",
     ReplaceWith("module(definition = moduleDefinition)")
 )
-fun applicationContext(moduleDefinition: ModuleDefinition.() -> Unit): Module = module(definition = moduleDefinition)
+fun applicationContext(moduleDefinition: ModuleDefinition.() -> Unit): Module =
+    module(definition = moduleDefinition)
 
 /**
  * Create a Module
@@ -49,9 +50,9 @@ fun module(
     override: Boolean = false,
     definition: ModuleDefinition.() -> Unit
 ): Module =
-    { ModuleDefinition(path, createOnStart, override, StandAloneContext.koinContext as KoinContext).apply(definition) }
+    { koinContext -> ModuleDefinition(path, createOnStart, override, koinContext).apply(definition) }
 
 /**
  * Module - function that gives a module
  */
-typealias Module = () -> ModuleDefinition
+typealias Module = (KoinContext) -> ModuleDefinition

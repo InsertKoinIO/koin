@@ -98,7 +98,7 @@ inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun Routing.getKoin() = (StandAloneContext.koinContext as KoinContext)
+fun Routing.getKoin() = StandAloneContext.getKoin().koinContext
 
 /**
  * Set property value

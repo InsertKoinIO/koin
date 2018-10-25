@@ -16,7 +16,6 @@
 package org.koin.core.bean
 
 import org.koin.core.Koin
-import org.koin.core.name
 import org.koin.core.scope.Scope
 import org.koin.core.scope.isVisibleToScope
 import org.koin.dsl.definition.BeanDefinition
@@ -25,6 +24,7 @@ import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
+import org.koin.ext.name
 import kotlin.reflect.KClass
 
 
@@ -104,7 +104,7 @@ class BeanRegistry() {
             definitionResolver()
         }).distinct()
 
-        val filterByScope = if (scope != null){
+        val filterByScope = if (scope != null) {
             candidates.filter { it.isVisibleToScope(scope) }
         } else candidates
 

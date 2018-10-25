@@ -35,20 +35,17 @@ import java.util.*
  */
 infix fun Koin.with(androidContext: Context): Koin {
     Koin.logger.info("[init] declare Android Context")
-    val definition =
-        beanRegistry.declare(
-            BeanDefinition(
-                primaryType = Context::class,
-                definition = { androidContext },
-                kind = Kind.Single
-            )
+    beanRegistry.declare(
+        BeanDefinition(
+            primaryType = Context::class,
+            definition = { androidContext }
         )
+    )
     if (androidContext is Application) {
         beanRegistry.declare(
             BeanDefinition(
                 primaryType = Application::class,
-                definition = { androidContext },
-                kind = Kind.Single
+                definition = { androidContext }
             )
         )
     }
@@ -66,7 +63,7 @@ fun Koin.bindAndroidProperties(
 ): Koin {
     val koinProperties = Properties()
     try {
-        val hasFile = androidContext.assets.list("").contains(koinPropertyFile)
+        val hasFile = androidContext.assets?.list("")?.contains(koinPropertyFile) ?: false
         if (hasFile) {
             try {
                 androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }

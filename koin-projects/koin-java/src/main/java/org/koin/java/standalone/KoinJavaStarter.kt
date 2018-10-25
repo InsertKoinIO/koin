@@ -16,6 +16,7 @@
 package org.koin.java.standalone
 
 import org.koin.core.Koin
+import org.koin.core.KoinProperties
 import org.koin.dsl.module.Module
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
@@ -33,25 +34,18 @@ object KoinJavaStarter {
      * Koin starter function to load modules and extraProperties
      * Throw AlreadyStartedException if already started
      * @param list : Modules
-     * @param useEnvironmentProperties - use environment extraProperties
-     * @param useKoinPropertiesFile - use /koin.extraProperties file
-     * @param extraProperties - extra extraProperties
+     * @param properties : KoinProperties
      * @param logger - Koin logger
      */
     @JvmOverloads
     @JvmStatic
     fun startKoin(
         list: List<Module>,
-        useEnvironmentProperties: Boolean = false,
-        useKoinPropertiesFile: Boolean = true,
-        extraProperties: Map<String, Any> = HashMap(),
+        properties : KoinProperties = KoinProperties(),
         logger: Logger = PrintLogger()
     ): Koin = StandAloneContext.startKoin(
         list,
-        useEnvironmentProperties,
-        useKoinPropertiesFile,
-        extraProperties,
+        properties,
         logger
     )
-
 }
