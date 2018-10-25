@@ -36,7 +36,7 @@ class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceH
                 else -> Koin.logger.err("sandbox ~ intercepted error : $e")
             }
         }
-        val clazz = bean.clazz.java
+        val clazz = bean.primaryType.java
         return Mockito.mock(clazz) as T
     }
 

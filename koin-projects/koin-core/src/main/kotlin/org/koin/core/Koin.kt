@@ -107,7 +107,7 @@ class Koin(val koinContext: KoinContext) {
             val override = if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
             val name = if (definition.name.isEmpty()){
                 val pathString = if (consolidatedPath == Path.Companion.root()) "" else "$consolidatedPath."
-                "$pathString${definition.clazz.name()}"
+                "$pathString${definition.primaryType.name()}"
             } else definition.name
             val def = definition.copy(name = name, isEager = eager, allowOverride = override, path = consolidatedPath)
             instanceFactory.delete(def)

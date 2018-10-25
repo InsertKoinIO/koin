@@ -19,7 +19,7 @@ class CoffeeMakerTest : KoinTest {
 
     @Before
     fun before() {
-        startKoin(listOf(coffeeMakerModule))
+        startKoin(listOf(coffeeAppModule))
         declareMock<Heater>()
     }
 

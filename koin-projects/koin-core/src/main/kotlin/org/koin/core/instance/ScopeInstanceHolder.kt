@@ -24,7 +24,7 @@ class ScopeInstanceHolder<T>(override val bean: BeanDefinition<T>, val scope: Sc
         if (needCreation) {
             instance = create(parameters)
         }
-        Koin.logger.debug("[Scope] get '${bean.clazz}' from $scope")
+        Koin.logger.debug("[Scope] get '${bean.primaryType}' from $scope")
         return Instance(instance as T, needCreation)
     }
 

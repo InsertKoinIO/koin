@@ -64,8 +64,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     fun `can see each other - flat definitions`() {
         startKoin(listOf(flat))
         val definitions = KoinContext().beanDefinitions()
-        val a = definitions.first { it.clazz == A::class }
-        val b = definitions.first { it.clazz == B::class }
+        val a = definitions.first { it.primaryType == A::class }
+        val b = definitions.first { it.primaryType == B::class }
 
         Assert.assertTrue(a.canSee(b))
         Assert.assertTrue(b.canSee(a))
@@ -75,8 +75,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     fun `can see each other - same module`() {
         startKoin(listOf(sameModule))
         val definitions = KoinContext().beanDefinitions()
-        val a = definitions.first { it.clazz == A::class }
-        val b = definitions.first { it.clazz == B::class }
+        val a = definitions.first { it.primaryType == A::class }
+        val b = definitions.first { it.primaryType == B::class }
 
         Assert.assertTrue(a.canSee(b))
         Assert.assertTrue(b.canSee(a))
@@ -86,8 +86,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     fun `can see each other - deep module`() {
         startKoin(listOf(deepModule1))
         val definitions = KoinContext().beanDefinitions()
-        val a = definitions.first { it.clazz == A::class }
-        val b = definitions.first { it.clazz == B::class }
+        val a = definitions.first { it.primaryType == A::class }
+        val b = definitions.first { it.primaryType == B::class }
 
         Assert.assertFalse(a.canSee(b))
         Assert.assertTrue(b.canSee(a))
@@ -97,8 +97,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     fun `can see each other - deep module 2`() {
         startKoin(listOf(deepModule2))
         val definitions = KoinContext().beanDefinitions()
-        val a = definitions.first { it.clazz == A::class }
-        val b = definitions.first { it.clazz == B::class }
+        val a = definitions.first { it.primaryType == A::class }
+        val b = definitions.first { it.primaryType == B::class }
 
         Assert.assertFalse(a.canSee(b))
         Assert.assertTrue(b.canSee(a))
@@ -108,8 +108,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     fun `can see one - one module`() {
         startKoin(listOf(oneModule))
         val definitions = KoinContext().beanDefinitions()
-        val a = definitions.first { it.clazz == A::class }
-        val b = definitions.first { it.clazz == B::class }
+        val a = definitions.first { it.primaryType == A::class }
+        val b = definitions.first { it.primaryType == B::class }
 
         Assert.assertFalse(a.canSee(b))
         Assert.assertTrue(b.canSee(a))
@@ -119,8 +119,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
     fun `can't see each other - seperate modules`() {
         startKoin(listOf(twoModules))
         val definitions = KoinContext().beanDefinitions()
-        val a = definitions.first { it.clazz == A::class }
-        val b = definitions.first { it.clazz == B::class }
+        val a = definitions.first { it.primaryType == A::class }
+        val b = definitions.first { it.primaryType == B::class }
 
         Assert.assertFalse(a.canSee(b))
         Assert.assertFalse(b.canSee(a))

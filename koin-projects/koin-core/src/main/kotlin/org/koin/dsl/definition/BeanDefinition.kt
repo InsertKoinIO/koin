@@ -15,6 +15,7 @@
  */
 package org.koin.dsl.definition
 
+import org.koin.core.name
 import org.koin.core.parameter.ParameterList
 import org.koin.dsl.path.Path
 import org.koin.error.DefinitionBindingException
@@ -32,7 +33,7 @@ import kotlin.reflect.KClass
  * has a canonicalName, if specified
  *
  * @param name - bean canonicalName
- * @param clazz - bean class
+ * @param primaryType - bean class
  * @param kind - bean definition Kind
  * @param types - list of assignable types
  * @param isEager - definition tagged to be created on start
@@ -41,22 +42,23 @@ import kotlin.reflect.KClass
  */
 data class BeanDefinition<out T>(
     val name: String = "",
-    val clazz: KClass<*>,
+    val primaryType: KClass<*>,
     var types: List<KClass<*>> = arrayListOf(),
     val path: Path = Path.root(),
     val kind: Kind,
     val isEager: Boolean = false,
     val allowOverride: Boolean = false,
-    val attributes : HashMap<String,Any> = HashMap(),
+    val attributes: HashMap<String, Any> = HashMap(),
     val definition: Definition<T>
 ) {
-    internal val classes: List<KClass<*>> = listOf(clazz) + types
+    private val primaryTypeName: String = primaryType.name()
+    internal val classes: List<KClass<*>> = listOf(primaryType) + types
 
     /**
      * Add a compatible type to current bounded definition
      */
     infix fun bind(clazz: KClass<*>): BeanDefinition<*> {
-        if (!clazz.java.isAssignableFrom(this.clazz.java)) {
+        if (!clazz.java.isAssignableFrom(this.primaryType.java)) {
             throw DefinitionBindingException("Can't bind type '$clazz' for definition $this")
         } else {
             types += clazz
@@ -71,7 +73,7 @@ data class BeanDefinition<out T>(
 
     override fun toString(): String {
         val beanName = if (name.isEmpty()) "" else "name='$name',"
-        val clazz = "class='${clazz.java.canonicalName}'"
+        val clazz = "class='${primaryType.java.canonicalName}'"
         val type = "$kind"
         val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
         val path = if (path != Path.root()) ", path:'$path'" else ""
@@ -84,17 +86,15 @@ data class BeanDefinition<out T>(
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {
             name == other.name &&
-                    clazz == other.clazz &&
+                    primaryType == other.primaryType &&
                     path == other.path &&
-                    attributes == other.attributes &&
-                    types == other.types
+                    attributes == other.attributes
         } else false
     }
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + clazz.hashCode()
-        result = 31 * result + types.hashCode()
+        result = 31 * result + primaryTypeName.hashCode()
         result = 31 * result + attributes.hashCode()
         result = 31 * result + path.hashCode()
         return result

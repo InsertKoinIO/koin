@@ -158,7 +158,7 @@ class InstanceRegistry(
     ) {
         definitions.forEach { def ->
             proceedResolution(
-                def.clazz,
+                def.primaryType,
                 null,
                 params
             ) { listOf(def) }

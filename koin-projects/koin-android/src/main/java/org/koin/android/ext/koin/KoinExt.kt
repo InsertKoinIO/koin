@@ -38,7 +38,7 @@ infix fun Koin.with(androidContext: Context): Koin {
     val definition =
         beanRegistry.declare(
             BeanDefinition(
-                clazz = Context::class,
+                primaryType = Context::class,
                 definition = { androidContext },
                 kind = Kind.Single
             )
@@ -46,7 +46,7 @@ infix fun Koin.with(androidContext: Context): Koin {
     if (androidContext is Application) {
         beanRegistry.declare(
             BeanDefinition(
-                clazz = Application::class,
+                primaryType = Application::class,
                 definition = { androidContext },
                 kind = Kind.Single
             )
