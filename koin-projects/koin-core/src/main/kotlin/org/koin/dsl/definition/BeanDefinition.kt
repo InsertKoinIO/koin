@@ -69,7 +69,7 @@ data class BeanDefinition<out T>(
     /**
      * Check visibility if "this" can see "other"
      */
-    fun canSee(other: BeanDefinition<*>) = other.path.isVisible(this.path)
+    fun isVisible(other: BeanDefinition<*>) = other.path.isVisible(this.path)
 
     override fun toString(): String {
         val beanName = if (name.isEmpty()) "" else "name='$name',"

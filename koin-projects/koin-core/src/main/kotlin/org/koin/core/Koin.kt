@@ -85,7 +85,7 @@ class Koin private constructor(val koinContext: KoinContext) {
             val koinProperties = Properties()
             koinProperties.load(content.byteInputStream())
             val nb = propertyResolver.import(koinProperties)
-            logger.info("[properties] loaded $nb properties from '$koinFile' file")
+            logger.debug("[properties] loaded $nb properties from '$koinFile' file")
         }
         return this
     }
@@ -94,8 +94,8 @@ class Koin private constructor(val koinContext: KoinContext) {
     private fun bindEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())
         val n2 = propertyResolver.import(System.getenv().toProperties())
-        logger.info("[properties] loaded $n1 properties from properties")
-        logger.info("[properties] loaded $n2 properties from env properties")
+        logger.debug("[properties] loaded $n1 properties from properties")
+        logger.debug("[properties] loaded $n2 properties from env properties")
         return this
     }
 
@@ -109,7 +109,7 @@ class Koin private constructor(val koinContext: KoinContext) {
             }
             logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
         }
-        logger.debug("[modules] loaded in $duration ms")
+        logger.info("[modules] loaded in $duration ms")
         return this
     }
 
@@ -186,7 +186,7 @@ class Koin private constructor(val koinContext: KoinContext) {
      * Close Koin instance
      */
     fun close() {
-        logger.info("[Koin] Closing context")
+        logger.info("[Koin] close context")
         koinContext.close()
     }
 

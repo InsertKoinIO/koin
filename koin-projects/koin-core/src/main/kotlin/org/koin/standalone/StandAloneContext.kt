@@ -57,7 +57,7 @@ object StandAloneContext {
         val duration = measureDuration {
             createFullKoin(properties, list)
         }
-        Koin.logger.debug("[Koin] started in $duration ms")
+        Koin.logger.info("[Koin] started in $duration ms")
         return getKoin()
     }
 

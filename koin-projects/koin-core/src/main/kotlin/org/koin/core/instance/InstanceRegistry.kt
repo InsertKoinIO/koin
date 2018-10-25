@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.bean.BeanRegistry
+import org.koin.core.instance.holder.Instance
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
 import org.koin.core.scope.Scope
@@ -86,7 +87,7 @@ class InstanceRegistry(
             try {
                 val beanDefinition: BeanDefinition<T> =
                     logDuration("$logIndent|-- find definition") {
-                        findDefinition(clazz, scope, definitionResolver)
+                        findDefinition(scope, definitionResolver)
                     }
 
                 val targetScope: Scope? =
@@ -117,12 +118,10 @@ class InstanceRegistry(
     }
 
     private fun <T : Any> findDefinition(
-        clazz: KClass<*>,
         scope: Scope?,
         definitionResolver: () -> List<BeanDefinition<*>>
     ): BeanDefinition<T> {
         return beanRegistry.retrieveDefinition(
-            clazz,
             scope,
             definitionResolver,
             resolutionStack.last()

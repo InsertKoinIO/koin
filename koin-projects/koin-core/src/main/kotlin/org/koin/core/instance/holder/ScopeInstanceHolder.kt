@@ -1,4 +1,4 @@
-package org.koin.core.instance
+package org.koin.core.instance.holder
 
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition

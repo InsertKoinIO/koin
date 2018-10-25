@@ -2,9 +2,7 @@ package org.koin.test.module
 
 import org.junit.Assert
 import org.junit.Test
-import org.koin.core.KoinContext
 import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.ext.koin.beanDefinitions
@@ -66,8 +64,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
-        Assert.assertTrue(a.canSee(b))
-        Assert.assertTrue(b.canSee(a))
+        Assert.assertTrue(a.isVisible(b))
+        Assert.assertTrue(b.isVisible(a))
     }
 
     @Test
@@ -77,8 +75,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
-        Assert.assertTrue(a.canSee(b))
-        Assert.assertTrue(b.canSee(a))
+        Assert.assertTrue(a.isVisible(b))
+        Assert.assertTrue(b.isVisible(a))
     }
 
     @Test
@@ -88,8 +86,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
-        Assert.assertFalse(a.canSee(b))
-        Assert.assertTrue(b.canSee(a))
+        Assert.assertFalse(a.isVisible(b))
+        Assert.assertTrue(b.isVisible(a))
     }
 
     @Test
@@ -99,8 +97,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
-        Assert.assertFalse(a.canSee(b))
-        Assert.assertTrue(b.canSee(a))
+        Assert.assertFalse(a.isVisible(b))
+        Assert.assertTrue(b.isVisible(a))
     }
 
     @Test
@@ -110,8 +108,8 @@ class PathVisibilityTest : AutoCloseKoinTest() {
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
-        Assert.assertFalse(a.canSee(b))
-        Assert.assertTrue(b.canSee(a))
+        Assert.assertFalse(a.isVisible(b))
+        Assert.assertTrue(b.isVisible(a))
     }
 
     @Test
@@ -121,7 +119,7 @@ class PathVisibilityTest : AutoCloseKoinTest() {
         val a = definitions.first { it.primaryType == A::class }
         val b = definitions.first { it.primaryType == B::class }
 
-        Assert.assertFalse(a.canSee(b))
-        Assert.assertFalse(b.canSee(a))
+        Assert.assertFalse(a.isVisible(b))
+        Assert.assertFalse(b.isVisible(a))
     }
 }

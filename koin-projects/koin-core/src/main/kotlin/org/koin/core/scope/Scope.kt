@@ -17,7 +17,7 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.instance.InstanceFactory
-import org.koin.core.instance.ScopeInstanceHolder
+import org.koin.core.instance.holder.ScopeInstanceHolder
 
 /**
  * Scope - a lifetime limited persistence space to resolve instances

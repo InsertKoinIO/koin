@@ -1,4 +1,4 @@
-package org.koin.core.instance
+package org.koin.core.instance.holder
 
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.dsl.definition.BeanDefinition
@@ -7,7 +7,8 @@ import org.koin.dsl.definition.BeanDefinition
  * Single - InstanceHolder
  * create a unique instance
  */
-class SingleInstanceHolder<T>(override val bean: BeanDefinition<T>) : InstanceHolder<T> {
+class SingleInstanceHolder<T>(override val bean: BeanDefinition<T>) :
+    InstanceHolder<T> {
 
     var instance: T? = null
 

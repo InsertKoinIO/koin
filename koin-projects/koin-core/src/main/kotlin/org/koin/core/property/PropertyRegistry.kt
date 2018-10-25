@@ -15,7 +15,6 @@
  */
 package org.koin.core.property
 
-import org.koin.core.Koin
 import org.koin.error.MissingPropertyException
 import java.util.*
 
@@ -62,16 +61,13 @@ class PropertyRegistry {
      * @param defaultValue - default value for key
      */
     fun <T> getProperty(key: String, defaultValue: T): T {
-        val value = getValue(key) ?: defaultValue
-        Koin.logger.debug("[Property] get $key << '$value'")
-        return value
+        return getValue(key) ?: defaultValue
     }
 
     /**
      * Add properties
      */
     fun addAll(props: Map<String, Any>) {
-        Koin.logger.debug("[Property] add properties ${props.size}")
         properties += props
     }
 
@@ -95,7 +91,6 @@ class PropertyRegistry {
      * Add property
      */
     fun add(key: String, value: Any) {
-        Koin.logger.debug("[Property] set $key >> '$value'")
         properties += Pair(key, value)
     }
 
@@ -103,7 +98,6 @@ class PropertyRegistry {
      * Delete a property
      */
     fun delete(key: String) {
-        Koin.logger.debug("[Property] release $key")
         properties.remove(key)
     }
 

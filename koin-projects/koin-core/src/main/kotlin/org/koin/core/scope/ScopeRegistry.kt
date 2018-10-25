@@ -30,19 +30,24 @@ class ScopeRegistry {
     fun getOrCreateScope(id: String): Scope {
         var found = getScope(id)
         if (found == null) {
-            found = Scope(id, this)
-            scopes[id] = found
-            Koin.logger.info("[Scope] create $id")
+            found = create(id)
         }
         return found
+    }
+
+    private fun create(
+        id: String
+    ): Scope {
+        val scope = Scope(id, this)
+        scopes[id] = scope
+        Koin.logger.debug("[Scope] create $id")
+        return scope
     }
 
     fun createScope(id: String): Scope {
         var found = getScope(id)
         if (found == null) {
-            found = Scope(id, this)
-            scopes[id] = found
-            Koin.logger.info("[Scope] create $id")
+            found = create(id)
         } else {
             error("Already created scope with id '$id'")
         }
@@ -61,11 +66,10 @@ class ScopeRegistry {
     fun close() {
         scopes.values.forEach { it.holders.clear() }
         scopes.clear()
-        Koin.logger.debug("[Close] Closing all scopes")
     }
 
     fun register(callback: ScopeCallback) {
-        Koin.logger.info("[Scope] callback registering with $callback")
+        Koin.logger.debug("[Scope] callback with $callback")
         scopeCallbacks += callback
     }
 }

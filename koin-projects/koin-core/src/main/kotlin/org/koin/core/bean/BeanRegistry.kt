@@ -19,12 +19,10 @@ import org.koin.core.Koin
 import org.koin.core.scope.Scope
 import org.koin.core.scope.isVisibleToScope
 import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.path.Path
 import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
-import org.koin.ext.name
 import kotlin.reflect.KClass
 
 
@@ -78,31 +76,50 @@ class BeanRegistry() {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T> retrieveDefinition(
-        clazz: KClass<*>,
         scope: Scope?,
         definitionResolver: () -> List<BeanDefinition<*>>,
         lastInStack: BeanDefinition<*>?
     ): BeanDefinition<T> {
-        val candidates: List<BeanDefinition<*>> = (if (lastInStack != null) {
-            val found = definitionResolver()
-            val filteredByVisibility = found.filter { lastInStack.canSee(it) }
-            if (found.isNotEmpty() && filteredByVisibility.isEmpty()) {
-                throw NotVisibleException("Can't proceedResolution '$clazz' - Definition is not visible from last definition : $lastInStack")
+        val definitions = definitionResolver()
+        val visibleDefinitions = filterByVisibility(lastInStack, definitions)
+        val filterByScope = filterForScope(scope, visibleDefinitions)
+
+        return checkedResult(filterByScope)
+    }
+
+    private fun filterByVisibility(
+        lastInStack: BeanDefinition<*>?,
+        definitions : List<BeanDefinition<*>>
+    ): List<BeanDefinition<*>> {
+        return if (lastInStack != null) {
+            val filteredByVisibility = definitions.filter { lastInStack.isVisible(it) }
+            if (definitions.isNotEmpty() && filteredByVisibility.isEmpty()) {
+                throw NotVisibleException("Definition is not visible from last definition : $lastInStack")
             }
             filteredByVisibility
-        } else {
-            definitionResolver()
-        }).distinct()
+        }
+        else definitions
 
-        val filterByScope = if (scope != null) {
+    }
+
+    private fun filterForScope(
+        scope: Scope?,
+        candidates: List<BeanDefinition<*>>
+    ): List<BeanDefinition<*>> {
+        return if (scope != null) {
             candidates.filter { it.isVisibleToScope(scope) }
         } else candidates
+    }
 
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> checkedResult(
+        filterByScope: List<BeanDefinition<*>>
+    ): BeanDefinition<T> {
         return when {
             filterByScope.size == 1 -> filterByScope.first() as BeanDefinition<T>
-            filterByScope.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found for type '${clazz.name()}'. Check your module definition")
+            filterByScope.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found. Check your module definition")
             else -> throw DependencyResolutionException(
-                "Multiple definitions found for type '$clazz' - Koin can't choose between :\n\t${filterByScope.joinToString(
+                "Multiple definitions found - Koin can't choose between :\n\t${filterByScope.joinToString(
                     "\n\t"
                 )}\n\tCheck your modules definition, use inner modules visibility or definition names."
             )

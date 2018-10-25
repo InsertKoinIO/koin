@@ -78,15 +78,10 @@ class ResolutionStack {
         }
     }
 
-//    /**
-//     * For info indentation
-//     */
-//    fun indent(tabs: Int = stack.size): String = indentString(tabs)
-
     /**
      * For info indentation
      */
-    fun indent(tabs: Int = stack.size - 1): String = indentString(tabs)
+    fun indent(): String = indentString(stack.size - 1)
 
     private fun indentString(tabs: Int): String {
         return (0..tabs).joinToString(separator = "") { "|\t" }

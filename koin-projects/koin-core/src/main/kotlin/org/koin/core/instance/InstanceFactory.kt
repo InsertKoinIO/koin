@@ -16,9 +16,13 @@
 package org.koin.core.instance
 
 import org.koin.core.Koin
+import org.koin.core.instance.holder.FactoryInstanceHolder
+import org.koin.core.instance.holder.Instance
+import org.koin.core.instance.holder.InstanceHolder
+import org.koin.core.instance.holder.ScopeInstanceHolder
+import org.koin.core.instance.holder.SingleInstanceHolder
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.time.logDuration
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Kind
 import org.koin.dsl.path.Path
