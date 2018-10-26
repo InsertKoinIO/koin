@@ -34,7 +34,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 
 # Setup
 
-## Actual Version
+## Current Version
 
 ```gradle
 koin_version = '1.0.1'

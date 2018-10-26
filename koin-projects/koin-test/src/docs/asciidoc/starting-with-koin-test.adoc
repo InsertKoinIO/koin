@@ -23,7 +23,7 @@ dependencies {
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
 * `by inject()` & `get()` - function to retrieve yoru instances from Koin
-* `check` & `dryRun` - help you hceck your configuration
+* `check` & `dryRun` - help you check your configuration
 * `declareMock` & `declare` - to declare a mock or a new definition in the current context
 
 [source,kotlin]
