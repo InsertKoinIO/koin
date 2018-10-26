@@ -18,8 +18,6 @@
 package org.koin.test
 
 import org.koin.core.Koin
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
@@ -63,16 +61,34 @@ fun KoinTest.dryRun() =
 fun KoinTest.checkModules(list: List<Module>, logger: Logger = PrintLogger()) =
     StandAloneContext.checkModules(list, logger)
 
+
 /**
  * Declare & Create a mock in Koin container for given type
  */
 inline fun <reified T : Any> KoinTest.declareMock(
     isFactory: Boolean = false,
     module: String? = null,
-    binds: List<KClass<*>> = emptyList()
+    binds: List<KClass<*>> = emptyList(),
+    crossinline stubbing: T.() -> Unit = {}
 ) {
     val clazz = T::class.java
     Koin.logger.info("[mock] declare mock for $clazz")
+    makeMockDeclaration(module, isFactory, clazz, binds)
+    makeStub(stubbing)
+}
+
+inline fun <reified T : Any> KoinTest.makeStub(stubbing: T.() -> Unit) {
+    getKoin().get<T>().also {
+        stubbing(it)
+    }
+}
+
+inline fun <reified T : Any> makeMockDeclaration(
+    module: String?,
+    isFactory: Boolean,
+    clazz: Class<T>,
+    binds: List<KClass<*>>
+) {
     StandAloneContext.loadKoinModules(
         module(module ?: Path.ROOT) {
             val def = if (!isFactory) {
