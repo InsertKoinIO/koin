@@ -15,7 +15,6 @@
  */
 package org.koin.error
 
-
 /**
  * Koin has already been started
  *

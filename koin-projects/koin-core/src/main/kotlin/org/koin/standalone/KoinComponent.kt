@@ -21,7 +21,6 @@ import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
-
 /**
  * Koin component
  * @author - Arnaud GIULIANI
@@ -137,5 +136,3 @@ fun KoinComponent.release(path: String): Unit = getKoin().release(path)
  */
 @Deprecated("Please use Scope API.")
 fun KoinComponent.releaseContext(path: String): Unit = release(path)
-
-

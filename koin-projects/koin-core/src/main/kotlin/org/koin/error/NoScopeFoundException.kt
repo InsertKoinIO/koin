@@ -1,3 +1,3 @@
 package org.koin.error
 
-class NoScopeFoundException(msg : String) : Exception(msg)
+class NoScopeFoundException(msg: String) : Exception(msg)

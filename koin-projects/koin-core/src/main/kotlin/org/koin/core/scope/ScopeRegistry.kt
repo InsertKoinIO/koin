@@ -28,7 +28,6 @@ class ScopeRegistry {
     private val allScopes = HashMap<String, Scope>()
     private val scopeCallbacks: ArrayList<ScopeCallback> = arrayListOf()
 
-
     fun getOrCreateScope(id: String): Scope {
         var found = getScope(id)
         if (found == null) {

@@ -17,8 +17,8 @@ package org.koin.core.stack
 
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.DependencyResolutionException
-import java.util.*
-
+import java.util.EmptyStackException
+import java.util.Stack
 
 /**
  * Dependency resolution call stack
@@ -101,7 +101,6 @@ class ResolutionStack {
      * Is Stack empty
      */
     fun isEmpty() = stack.isEmpty()
-
 }
 
 /**

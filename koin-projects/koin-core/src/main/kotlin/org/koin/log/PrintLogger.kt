@@ -16,8 +16,7 @@
 package org.koin.log
 
 import java.text.SimpleDateFormat
-import java.util.*
-
+import java.util.Date
 
 /**
  * Logger that print on system.out

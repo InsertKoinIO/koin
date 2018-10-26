@@ -25,7 +25,6 @@ import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
 import kotlin.reflect.KClass
 
-
 /**
  * Bean registry
  * gather definitions of beans & communicate with instance factory to handle instances
@@ -89,7 +88,7 @@ class BeanRegistry() {
 
     private fun filterByVisibility(
         lastInStack: BeanDefinition<*>?,
-        definitions : List<BeanDefinition<*>>
+        definitions: List<BeanDefinition<*>>
     ): List<BeanDefinition<*>> {
         return if (lastInStack != null) {
             val filteredByVisibility = definitions.filter { lastInStack.isVisible(it) }
@@ -97,9 +96,7 @@ class BeanRegistry() {
                 throw NotVisibleException("Definition is not visible from last definition : $lastInStack")
             }
             filteredByVisibility
-        }
-        else definitions
-
+        } else definitions
     }
 
     private fun filterForScope(

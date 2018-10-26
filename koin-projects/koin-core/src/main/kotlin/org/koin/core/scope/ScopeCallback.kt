@@ -15,7 +15,6 @@
  */
 package org.koin.core.scope
 
-
 /**
  * Module callback
  * @author - Arnaud GIULIANI
@@ -26,5 +25,5 @@ interface ScopeCallback {
      * Notify on scope closing
      * @param id : scope Id
      */
-    fun onClose(id: String, uuid : String)
+    fun onClose(id: String, uuid: String)
 }

@@ -17,7 +17,6 @@ package org.koin.core.parameter
 
 import org.koin.error.NoParameterFoundException
 
-
 /**
  * ParameterList - List of parameter
  * Usable with exploded declaration
@@ -49,7 +48,6 @@ class ParameterList(vararg value: Any?) {
      * return T
      */
     inline fun <reified T> get() = values.first { it is T }
-
 }
 
 /**
@@ -69,4 +67,3 @@ fun parametersOf(vararg value: Any?) = ParameterList(*value)
  * Empty Parameter List
  */
 fun emptyParameterDefinition() = { ParameterList() }
-

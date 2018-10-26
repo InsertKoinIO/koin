@@ -15,7 +15,6 @@
  */
 package org.koin.log
 
-
 /**
  * A simple Logger for Koin
  * @author - Arnaud GIULIANI
@@ -24,15 +23,15 @@ interface Logger {
     /**
      * Normal info
      */
-    fun info(msg : String)
+    fun info(msg: String)
 
     /**
      * Debug info
      */
-    fun debug(msg : String)
+    fun debug(msg: String)
 
     /**
      * Error info
      */
-    fun err(msg : String)
+    fun err(msg: String)
 }

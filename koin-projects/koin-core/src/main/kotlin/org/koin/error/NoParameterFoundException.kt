@@ -1,3 +1,3 @@
 package org.koin.error
 
-class NoParameterFoundException(msg : String) : IllegalStateException(msg)
+class NoParameterFoundException(msg: String) : IllegalStateException(msg)

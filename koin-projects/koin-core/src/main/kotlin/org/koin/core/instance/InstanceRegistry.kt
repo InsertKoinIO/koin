@@ -147,7 +147,7 @@ class InstanceRegistry(
         beanDefinition: BeanDefinition<T>,
         scope: Scope?
     ): Scope? {
-        return if (scope != null){
+        return if (scope != null) {
             if (isScopeRegistered(scope)) scope
             else throw ClosedScopeException("No open scoped '${scope.id}'")
         } else {
@@ -197,6 +197,5 @@ class InstanceRegistry(
         resolutionStack.clear()
         instanceFactory.clear()
         beanRegistry.clear()
-
     }
 }

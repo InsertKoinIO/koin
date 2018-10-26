@@ -15,7 +15,6 @@
  */
 package org.koin.error
 
-
 /**
  * Module path not found
  *

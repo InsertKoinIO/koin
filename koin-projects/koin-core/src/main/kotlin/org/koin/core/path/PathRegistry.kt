@@ -18,7 +18,6 @@ package org.koin.core.path
 import org.koin.dsl.path.Path
 import org.koin.error.BadPathException
 
-
 /**
  * Create & Handle all module paths
  *

@@ -17,8 +17,8 @@ package org.koin.core.property
 
 import org.koin.error.MissingPropertyException
 import org.koin.ext.checkedStringValue
-import java.util.*
-
+import java.util.HashMap
+import java.util.Properties
 
 /**
  * Resolve properties for a context
@@ -61,7 +61,6 @@ class PropertyRegistry {
     fun addAll(props: Map<String, Any>) {
         properties += props
     }
-
 
     /**
      * Inject all properties to context

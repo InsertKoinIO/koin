@@ -15,7 +15,6 @@
  */
 package org.koin.log
 
-
 /**
  * Logger - do nothing
  * @author - Arnaud GIULIANI

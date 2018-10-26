@@ -26,8 +26,7 @@ import org.koin.dsl.module.Module
 import org.koin.dsl.path.Path
 import org.koin.log.EmptyLogger
 import org.koin.log.Logger
-import java.util.*
-
+import java.util.Properties
 
 /**
  * Koin Context Builder API
@@ -68,7 +67,6 @@ class Koin private constructor(val koinContext: KoinContext) {
         return this
     }
 
-
     /**
      * load extra properties
      */
@@ -78,7 +76,6 @@ class Koin private constructor(val koinContext: KoinContext) {
         }
         return this
     }
-
 
     private fun loadKoinProperties(koinFile: String = "/koin.properties"): Koin {
         val content = Koin::class.java.getResource(koinFile)?.readText()
@@ -90,7 +87,6 @@ class Koin private constructor(val koinContext: KoinContext) {
         }
         return this
     }
-
 
     private fun loadEnvironmentProperties(): Koin {
         val n1 = propertyResolver.import(System.getProperties())

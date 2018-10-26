@@ -21,7 +21,6 @@ import org.koin.error.DefinitionBindingException
 import org.koin.ext.name
 import kotlin.reflect.KClass
 
-
 /**
  * Bean definition
  * @author - Arnaud GIULIANI

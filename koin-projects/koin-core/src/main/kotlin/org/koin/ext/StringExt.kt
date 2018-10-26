@@ -1,6 +1,5 @@
 package org.koin.ext
 
-
 fun Any.checkedStringValue() =
     (this as? String)?.castValue() ?: this
 
@@ -11,7 +10,6 @@ fun String.castValue(): Any {
         else -> this
     }
 }
-
 
 fun String.isFloat() = this.toFloatOrNull() != null
 

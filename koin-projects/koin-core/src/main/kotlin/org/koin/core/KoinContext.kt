@@ -30,7 +30,6 @@ import org.koin.error.NoScopeFoundException
 import org.koin.standalone.StandAloneKoinContext
 import kotlin.reflect.KClass
 
-
 /**
  * Koin Application ModuleDefinition
  * ModuleDefinition from where you can get beans defined in modules
@@ -94,7 +93,6 @@ class KoinContext private constructor(
      * Create a scope
      */
     fun getOrCreateScope(id: String): Scope = scopeRegistry.getOrCreateScope(id)
-
 
     /**
      * Create a detached scope

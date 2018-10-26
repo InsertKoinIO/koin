@@ -15,7 +15,6 @@
  */
 package org.koin.error
 
-
 /**
  * No definition for given Bean found
  * @author - Arnaud GIULIANI

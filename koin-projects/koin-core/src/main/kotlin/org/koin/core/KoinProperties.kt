@@ -20,6 +20,8 @@ package org.koin.core
  * Properties holder for Koin start
  * @author Arnaud Giuliani
  */
-data class KoinProperties(val useEnvironmentProperties: Boolean = false,
-                          val useKoinPropertiesFile: Boolean = false,
-                          val extraProperties: Map<String, Any> = HashMap())
+data class KoinProperties(
+    val useEnvironmentProperties: Boolean = false,
+    val useKoinPropertiesFile: Boolean = false,
+    val extraProperties: Map<String, Any> = HashMap()
+)

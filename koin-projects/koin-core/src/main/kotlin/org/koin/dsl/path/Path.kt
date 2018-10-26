@@ -15,7 +15,6 @@
  */
 package org.koin.dsl.path
 
-
 /**
  * Path to localise a Module
  *

@@ -19,7 +19,6 @@ import org.koin.core.KoinContext
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.path.Path
 
-
 /**
  * Koin Module creation functions
  *

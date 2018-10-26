@@ -16,7 +16,6 @@ sealed class ResolutionRequest
 data class InstanceRequest(
     val name: String,
     val clazz: KClass<*>,
-    val scope : Scope?,
+    val scope: Scope?,
     val parameters: ParameterDefinition
 ) : ResolutionRequest()
-

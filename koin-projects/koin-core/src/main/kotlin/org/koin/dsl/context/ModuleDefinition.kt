@@ -24,7 +24,6 @@ import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Definition
 import org.koin.dsl.definition.Kind
 
-
 /**
  * Koin Module Definition
  * Gather dependencies & properties definitions

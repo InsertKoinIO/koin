@@ -20,7 +20,7 @@ import org.koin.core.instance.holder.ScopeInstanceHolder
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Kind
 import org.koin.standalone.StandAloneContext
-import java.util.*
+import java.util.UUID
 
 /**
  * Scope - a lifetime limited persistence space to resolve instances
@@ -46,7 +46,7 @@ data class Scope(
     }
 
     private fun removeScope(koin: Koin) {
-        koin.koinContext.scopeRegistry.deleteScope(id,uuid)
+        koin.koinContext.scopeRegistry.deleteScope(id, uuid)
     }
 
     private fun removeAddedDefinitions(koin: Koin) {

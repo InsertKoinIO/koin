@@ -15,10 +15,9 @@
  */
 package org.koin.error
 
-
 /**
  * Missing property error
  *
  * @author - Arnaud GIULIANI
  */
-class MissingPropertyException(msg : String) : Exception(msg)
+class MissingPropertyException(msg: String) : Exception(msg)
