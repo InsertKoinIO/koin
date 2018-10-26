@@ -60,6 +60,21 @@ class AdvancedScopeAPI : AutoCloseKoinTest() {
     }
 
     @Test
+    fun `reuse detached scope`() {
+        startKoin(listOf(mod), logger = PrintLogger(showDebug = true))
+
+        val scope = getKoin().detachScope("request")
+
+        val value = "world"
+        scope.parameters["hello"] = value
+
+        val foundScope = getKoin().getDetachedScope(scope.uuid)
+
+        assertEquals(scope,foundScope)
+        assertEquals(foundScope.parameters["hello"], value)
+    }
+
+    @Test
     fun `add new component in scope`() {
         startKoin(listOf(mod))
 

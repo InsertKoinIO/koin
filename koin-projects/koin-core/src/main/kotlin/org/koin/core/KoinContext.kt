@@ -108,6 +108,12 @@ class KoinContext private constructor(
         scopeRegistry.getScope(id) ?: throw NoScopeFoundException("Scope '$id' not found")
 
     /**
+     * retrieve a detached scope
+     */
+    fun getDetachedScope(uuid: String): Scope =
+        scopeRegistry.getDetachScope(uuid) ?: throw NoScopeFoundException("Scope '$uuid' not found")
+
+    /**
      * Drop all instances for path context
      * @param path
      */
