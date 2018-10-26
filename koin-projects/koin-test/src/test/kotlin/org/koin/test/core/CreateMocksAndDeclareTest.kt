@@ -6,7 +6,7 @@ import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.makeMockDeclaration
+import org.koin.test.declareMock
 import org.koin.test.declare
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstanceHolders
@@ -27,7 +27,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
             }
         ))
 
-        makeMockDeclaration<ComponentA>(binds = listOf(InterfaceA::class))
+        declareMock<ComponentA>(binds = listOf(InterfaceA::class))
 
         val mockA = get<InterfaceA>()
         Assert.assertEquals(mockA, get<ComponentB>().componentA)
@@ -40,7 +40,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
     fun `successful create a mock`() {
         startKoin(listOf())
 
-        makeMockDeclaration<ComponentA>()
+        declareMock<ComponentA>()
 
         Assert.assertNotNull(get<ComponentA>())
 
@@ -57,7 +57,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
             }
         ))
 
-        makeMockDeclaration<ComponentA>()
+        declareMock<ComponentA>()
 
         val mockA = get<ComponentA>()
         Assert.assertEquals(mockA, get<ComponentB>().componentA)
@@ -72,7 +72,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
             factory { ComponentA() }
         }))
 
-        makeMockDeclaration<ComponentA>(isFactory = true)
+        declareMock<ComponentA>(isFactory = true)
 
         Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
 
