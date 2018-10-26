@@ -17,6 +17,7 @@ package org.koin.experimental.builder
 
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.scope.setScope
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.definition.Kind
@@ -51,14 +52,18 @@ inline fun <reified T : Any> ModuleDefinition.factory(
 /**
  * Create a Scope definition for given type T
  *
+ * @param scopeId
  * @param name
  * @param override - allow definition override
  */
 inline fun <reified T : Any> ModuleDefinition.scope(
+    scopeId: String,
     name: String = "",
     override: Boolean = false
 ): BeanDefinition<T> {
-    return provide(name, false, override, Kind.Scope) { create<T>() }
+    val beanDefinition = provide(name, false, override, Kind.Scope) { create<T>() }
+    beanDefinition.setScope(scopeId)
+    return beanDefinition
 }
 
 /**
@@ -101,14 +106,18 @@ inline fun <reified R : Any, reified T : R> ModuleDefinition.factoryBy(
 /**
  * Create a Scope definition for given type T, applied to R
  *
+ * @param scopeId
  * @param name
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> ModuleDefinition.scopeBy(
+    scopeId: String,
     name: String = "",
     override: Boolean = false
 ): BeanDefinition<R> {
-    return provide(name, false, override, Kind.Scope) { create<T>() as R }
+    val beanDefinition = provide(name, false, override, Kind.Scope) { create<T>() as R }
+    beanDefinition.setScope(scopeId)
+    return beanDefinition
 }
 
 /**
