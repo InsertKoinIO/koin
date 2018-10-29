@@ -37,7 +37,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 ## Actual Version
 
 ```gradle
-koin_version = '1.0.1'
+koin_version = '1.0.2'
 ```
 
 ## Gradle 
@@ -90,14 +90,6 @@ implementation "org.koin:koin-android-viewmodel:$koin_version"
 implementation "org.koin:koin-androidx-scope:$koin_version"
 // Koin AndroidX ViewModel feature
 implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-```
-
-#### SparkJava
-
-```gradle
-
-// Koin for Spark Kotlin
-implementation "org.koin:koin-spark:$koin_version"
 ```
 
 #### Ktor
@@ -262,6 +254,7 @@ And more: check your configuration with a simple unit test, easily create mocks.
 # Articles
 
 ### Articles & resouces about Koin
+* [Koin in Feature Modules Project](https://proandroiddev.com/koin-in-feature-modules-project-6329f069f943)
 * [A brief look at Koin on Android](https://overflow.buffer.com/2018/09/13/a-brief-look-at-koin-on-android/)
 * [Bye bye Dagger](https://medium.com/@charbgr/bye-bye-dagger-1494118dcd41)
 * [Testing with Koin](https://proandroiddev.com/testing-with-koin-ade8a46eb4d)
@@ -292,11 +285,6 @@ And more: check your configuration with a simple unit test, easily create mocks.
 * [Unlock your Android ViewModel power with Koin](https://medium.com/@giuliani.arnaud/unlock-your-android-viewmodel-power-with-koin-23eda8f493be)
 * [koin 0.8.2 Improvements bugfixes and crash fix](https://medium.com/koin-developers/koin-0-8-2-improvements-bugfixes-and-crash-fix-6b6809fc1dd2)
 * [Koin release 0.8.0](https://medium.com/koin-developers/koin-released-in-0-8-0-welcome-to-koin-spark-koin-android-architecture-f6270a7d4808)
-
-
-
-
-
 
 
 
