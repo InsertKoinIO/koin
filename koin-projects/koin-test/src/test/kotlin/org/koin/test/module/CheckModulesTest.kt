@@ -3,6 +3,7 @@ package org.koin.test.module
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.log.PrintLogger
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.checkModules
 import org.koin.test.error.BrokenDefinitionException
@@ -19,6 +20,7 @@ class CheckModulesTest : AutoCloseKoinTest() {
     class ComponentD(val component: Component)
 
     class ComponentE(val c: ComponentC) : Component
+    class MyFactory(val msg : String)
 
     @Test
     fun `successful check`() {
@@ -124,5 +126,15 @@ class CheckModulesTest : AutoCloseKoinTest() {
         assertDefinitions(3)
         assertRemainingInstanceHolders(3)
 
+    }
+
+    @Test
+    fun `successful check definition with injection params`() {
+        checkModules(listOf(module {
+            factory { (msg : String) -> MyFactory(msg) }
+        }),logger = PrintLogger(showDebug = true))
+
+        assertDefinitions(1)
+        assertRemainingInstanceHolders(1)
     }
 }

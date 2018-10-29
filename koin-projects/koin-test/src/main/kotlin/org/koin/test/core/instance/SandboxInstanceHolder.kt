@@ -27,6 +27,7 @@ class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) :
     @Suppress("UNCHECKED_CAST")
     override fun <T> create(parameters: ParameterDefinition): T {
         try {
+            Koin.logger.debug("[Sandbox] check $bean")
             val parameterList = parameters()
             bean.definition.invoke(parameterList)
         } catch (e: Exception) {
@@ -34,7 +35,7 @@ class SandboxInstanceHolder<T>(override val bean: BeanDefinition<T>) :
                 is NoBeanDefFoundException, is DependencyResolutionException, is BeanInstanceCreationException -> {
                     throw BrokenDefinitionException("Definition $bean is broken due to error : $e")
                 }
-                else -> Koin.logger.err("sandbox ~ intercepted error : $e")
+                else -> Koin.logger.debug("[Sandbox] continue on intercepted error : $e")
             }
         }
         val clazz = bean.primaryType.java
