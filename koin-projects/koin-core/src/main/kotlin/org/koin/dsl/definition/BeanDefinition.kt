@@ -19,6 +19,7 @@ import org.koin.core.parameter.ParameterList
 import org.koin.dsl.path.Path
 import org.koin.error.DefinitionBindingException
 import org.koin.ext.name
+import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -51,6 +52,7 @@ data class BeanDefinition<out T>(
     val attributes: HashMap<String, Any> = HashMap(),
     val definition: Definition<T>
 ) {
+    internal val id = UUID.randomUUID().toString()
     internal val primaryTypeName: String = primaryType.name()
     internal val classes: List<KClass<*>> = listOf(primaryType) + types
 

@@ -15,10 +15,11 @@
  */
 package org.koin.test.ext.koin
 
-import org.koin.core.Koin
 import org.koin.core.KoinContext
-import org.koin.core.parameter.ParameterDefinition
+import org.koin.core.instance.holder.InstanceHolder
 import org.koin.dsl.definition.BeanDefinition
+import org.koin.dsl.path.Path
+import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -34,7 +35,8 @@ import kotlin.reflect.KClass
 /**
  * Return all definitions of Koin
  */
-fun KoinContext.beanDefinitions() = instanceRegistry.beanRegistry.definitions
+fun KoinContext.beanDefinitions(): HashSet<BeanDefinition<*>> =
+    instanceRegistry.beanRegistry.definitions
 
 /**
  * return beanDefinition for given class
@@ -46,20 +48,21 @@ fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? =
 /**
  * Return all contexts of Koin
  */
-fun KoinContext.allPaths() = instanceRegistry.pathRegistry.paths
+fun KoinContext.allPaths(): HashSet<Path> = instanceRegistry.pathRegistry.paths
 
 /**
  * Return all instances of Koin
  */
-fun KoinContext.allInstances() = instanceRegistry.instanceFactory.instances.toList()
+fun KoinContext.allInstances(): List<InstanceHolder<*>> =
+    instanceRegistry.instanceFactory.instances.values.toList()
 
 /**
  * Return all properties of Koin
  */
-fun KoinContext.allProperties() = propertyResolver.properties
+fun KoinContext.allProperties(): HashMap<String, Any> = propertyResolver.properties
 
 /**
  * return path
  * @param path
  */
-fun KoinContext.getPath(path: String) = allPaths().first { it.name == path }
+fun KoinContext.getPath(path: String): Path = allPaths().first { it.name == path }

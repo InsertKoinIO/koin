@@ -23,6 +23,7 @@ import org.koin.error.BeanOverrideException
 import org.koin.error.DependencyResolutionException
 import org.koin.error.NoBeanDefFoundException
 import org.koin.error.NotVisibleException
+import org.koin.ext.name
 import kotlin.reflect.KClass
 
 
@@ -35,6 +36,8 @@ import kotlin.reflect.KClass
 class BeanRegistry() {
 
     val definitions = hashSetOf<BeanDefinition<*>>()
+    private val definitionsByNames = hashMapOf<String,BeanDefinition<*>>()
+    private val definitionByClassNames = hashMapOf<String,ArrayList<BeanDefinition<*>>>()
 
     /**
      * Add/Replace an existing bean
@@ -42,13 +45,44 @@ class BeanRegistry() {
      * @param def : Bean definition
      */
     fun declare(definition: BeanDefinition<*>) {
-        val isOverriding = definitions.remove(definition)
+        val isOverriding = isAnOverridingDefinition(definition)
+        if (isOverriding){
+            remove(definition)
+        }
+        saveDefinition(definition, isOverriding)
+    }
 
+    /**
+     * Remove existing definition
+     * @param definition
+     */
+    fun remove(definition: BeanDefinition<*>) {
+        definitions.remove(definition)
+        definitionsByNames.remove(definition.name)
+        val list = definitionByClassNames[definition.primaryTypeName] ?: arrayListOf()
+        list.remove(definition)
+        definitionByClassNames[definition.primaryTypeName] = list
+    }
+
+    private fun isAnOverridingDefinition(definition: BeanDefinition<*>): Boolean {
+        val isOverriding = definitions.contains(definition)
         if (isOverriding && !definition.allowOverride) {
             throw BeanOverrideException("Try to override definition with $definition, but override is not allowed. Use 'override' option in your definition or module.")
         }
+        return isOverriding
+    }
 
+    private fun saveDefinition(
+        definition: BeanDefinition<*>,
+        isOverriding: Boolean
+    ) {
         definitions += definition
+
+        definitionsByNames[definition.name] = definition
+
+        val list = definitionByClassNames[definition.primaryTypeName] ?: arrayListOf()
+        list.add(definition)
+        definitionByClassNames[definition.primaryTypeName] = list
 
         val kw = if (isOverriding) "override" else "declare"
         Koin.logger.info("[definition] $kw $definition")
@@ -57,14 +91,15 @@ class BeanRegistry() {
     fun searchByClass(
         clazz: KClass<*>
     ): List<BeanDefinition<*>> {
-        return definitions.filter { clazz in it.classes }
+        return definitionByClassNames[clazz.name()] as List<BeanDefinition<*>>
     }
 
+    // Name is unique
     fun searchByNameAndClass(
         name: String,
         clazz: KClass<*>
     ): List<BeanDefinition<*>> {
-        return definitions.filter { name == it.name && clazz in it.classes }
+        return definitionsByNames[name]?.let { listOf(it) } ?: emptyList()
     }
 
     /**
@@ -131,5 +166,7 @@ class BeanRegistry() {
      */
     fun clear() {
         definitions.clear()
+        definitionsByNames.clear()
+        definitionByClassNames.clear()
     }
 }

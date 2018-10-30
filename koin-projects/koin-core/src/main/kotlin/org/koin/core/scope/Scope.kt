@@ -46,7 +46,7 @@ data class Scope(
     }
 
     private fun removeScope(koin: Koin) {
-        koin.koinContext.scopeRegistry.deleteScope(id,uuid)
+        koin.koinContext.scopeRegistry.deleteScope(id, uuid)
     }
 
     private fun removeAddedDefinitions(koin: Koin) {
@@ -54,16 +54,16 @@ data class Scope(
             it.getScope() == id && it.isAddedToScope()
         }
         addedDefinitions.forEach {
-            koin.beanRegistry.definitions.remove(it)
+            koin.beanRegistry.remove(it)
         }
     }
 
     private fun removeInstanceHolders(koin: Koin) {
-        val scopedInstances = koin.instanceFactory.instances.filter {
+        val scopedInstances = koin.instanceFactory.instances.values.filter {
             it is ScopeInstanceHolder && it.scope == this
         }
         scopedInstances.forEach { it.release() }
-        koin.instanceFactory.instances.removeAll(scopedInstances)
+        scopedInstances.map { it.bean.id }.forEach { koin.instanceFactory.instances.remove(it) }
     }
 
     inline fun <reified T> addInstance(instance: T) {
