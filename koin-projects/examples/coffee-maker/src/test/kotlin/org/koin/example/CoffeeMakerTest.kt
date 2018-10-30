@@ -32,7 +32,6 @@ class CoffeeMakerTest : AutoCloseKoinTest() {
 
     @Test
     fun testHeaterIsTurnedOnAndThenOff() {
-
         coffeeMaker.brew()
 
         verify(heater, times(1)).on()
