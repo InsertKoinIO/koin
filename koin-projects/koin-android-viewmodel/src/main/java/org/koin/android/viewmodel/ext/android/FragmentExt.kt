@@ -38,7 +38,7 @@ import org.koin.core.parameter.emptyParameterDefinition
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     key: String? = null,
     name: String? = null,
-    noinline from: ViewModelStoreOwnerDefinition = { activity!! as ViewModelStoreOwner },
+    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) = viewModelByClass(T::class, key, name, from, parameters)
 
@@ -53,6 +53,6 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     key: String? = null,
     name: String? = null,
-    noinline from: ViewModelStoreOwnerDefinition = { activity!! as ViewModelStoreOwner },
+    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
     noinline parameters: ParameterDefinition = emptyParameterDefinition()
 ) = getViewModelByClass(T::class, key, name, from, parameters)

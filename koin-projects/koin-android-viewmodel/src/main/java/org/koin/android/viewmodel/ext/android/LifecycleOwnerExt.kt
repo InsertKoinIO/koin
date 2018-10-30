@@ -15,18 +15,15 @@
  */
 package org.koin.android.viewmodel.ext.android
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelStoreOwner
+import android.arch.lifecycle.*
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import org.koin.core.Koin
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.parameter.emptyParameterDefinition
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 import kotlin.reflect.KClass
-import android.support.v4.app.FragmentActivity
-import android.arch.lifecycle.ViewModelStores
 
 /**
  * LifecycleOwner extensions to help for ViewModel
@@ -95,32 +92,53 @@ fun <T : ViewModel> LifecycleOwner.getViewModelByClass(
 ): T {
     Koin.logger.debug("[ViewModel] ~ '$clazz'(name:'$name' key:'$key') - $this")
 
-    val vmStoreOwner = from?.invoke() ?: this as? ViewModelStoreOwner
-    var vmStore = vmStoreOwner?.getViewModelStore()
-    if (vmStoreOwner == null){
-        if (this is FragmentActivity) {
-            vmStore = ViewModelStores.of(this)
-        } else {
-            error("Can't getByClass ViewModel '$clazz' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
-        }
-    }
+    val vmStore: ViewModelStore = getViewModelStore(from, clazz)
+
     val viewModelProvider =
-        ViewModelProvider(vmStore, object : ViewModelProvider.Factory, KoinComponent {
+        makeViewModelProvider(vmStore, name, clazz, parameters)
+
+    return viewModelProvider.getInstance(key, clazz)
+}
+
+private fun <T : ViewModel> ViewModelProvider.getInstance(
+    key: String?,
+    clazz: KClass<T>
+): T {
+    return if (key != null) {
+        this.get(key, clazz.java)
+    } else {
+        this.get(clazz.java)
+    }
+}
+
+private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
+    from: ViewModelStoreOwnerDefinition?,
+    clazz: KClass<T>
+): ViewModelStore {
+    return when {
+        from != null -> from().viewModelStore
+        this is FragmentActivity -> ViewModelStores.of(this)
+        this is Fragment -> ViewModelStores.of(this)
+        else -> error("Can't getByClass ViewModel '$clazz' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
+    }
+}
+
+private fun <T : ViewModel> makeViewModelProvider(
+    vmStore: ViewModelStore,
+    name: String?,
+    clazz: KClass<T>,
+    parameters: ParameterDefinition
+): ViewModelProvider {
+    return ViewModelProvider(
+        vmStore,
+        object : ViewModelProvider.Factory, KoinComponent {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return get(name ?: "", clazz, parameters = parameters)
             }
         })
-
-    val vmInstance =
-        if (key != null) {
-            viewModelProvider.get(key, clazz.java)
-        } else {
-            viewModelProvider.get(clazz.java)
-        }
-    return vmInstance
 }
 
 /**
  * Function to define a ViewModelStoreOwner
  */
-typealias ViewModelStoreOwnerDefinition = () -> ViewModelStoreOwner?
+typealias ViewModelStoreOwnerDefinition = () -> ViewModelStoreOwner
