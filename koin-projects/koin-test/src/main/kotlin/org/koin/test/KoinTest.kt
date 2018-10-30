@@ -18,10 +18,13 @@
 package org.koin.test
 
 import org.koin.core.Koin
+import org.koin.core.bean.BeanRegistry
 import org.koin.dsl.context.ModuleDefinition
+import org.koin.dsl.definition.BeanDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 import org.koin.dsl.path.Path
+import org.koin.error.NoBeanDefFoundException
 import org.koin.log.Logger
 import org.koin.log.PrintLogger
 import org.koin.standalone.KoinComponent
@@ -61,49 +64,63 @@ fun KoinTest.dryRun() =
 fun KoinTest.checkModules(list: List<Module>, logger: Logger = PrintLogger()) =
     StandAloneContext.checkModules(list, logger)
 
-
 /**
  * Declare & Create a mock in Koin container for given type
  */
 inline fun <reified T : Any> KoinTest.declareMock(
-    isFactory: Boolean = false,
-    module: String? = null,
-    binds: List<KClass<*>> = emptyList(),
-    crossinline stubbing: T.() -> Unit = {}
-) {
-    val clazz = T::class.java
+    name: String = "",
+    noinline stubbing: (T.() -> Unit)? = null
+): T {
+    val clazz = T::class
     Koin.logger.info("[mock] declare mock for $clazz")
-    makeMockDeclaration(module, isFactory, clazz, binds)
-    makeStub(stubbing)
+
+    val koin = StandAloneContext.getKoin()
+
+    val foundDefinition: BeanDefinition<*> = getDefinition(koin, name, clazz)
+
+    declareMockedDefinition(foundDefinition, clazz, koin)
+
+    return mockInstance(koin, stubbing)
 }
 
-inline fun <reified T : Any> KoinTest.makeStub(stubbing: T.() -> Unit) {
-    getKoin().get<T>().also {
-        stubbing(it)
-    }
+inline fun <reified T : Any> mockInstance(
+    koin: Koin,
+    noinline stubbing: (T.() -> Unit)?
+): T {
+    val instance: T = koin.koinContext.get<T>()
+    stubbing?.let { instance.apply(stubbing) }
+    return instance
 }
 
-inline fun <reified T : Any> makeMockDeclaration(
-    module: String?,
-    isFactory: Boolean,
-    clazz: Class<T>,
-    binds: List<KClass<*>>
+inline fun <reified T : Any> declareMockedDefinition(
+    foundDefinition: BeanDefinition<*>,
+    clazz: KClass<T>,
+    koin: Koin
 ) {
-    StandAloneContext.loadKoinModules(
-        module(module ?: Path.ROOT) {
-            val def = if (!isFactory) {
-                single(override = true) {
-                    mock<T>(clazz)
-                }
-            } else {
-                factory(override = true) {
-                    mock<T>(clazz)
-                }
-            }
-            binds.forEach { def.bind(it) }
-        }
-    )
+    val definition: BeanDefinition<*> =
+        foundDefinition.copy(definition = { mock(clazz.java) }, allowOverride = true)
+    koin.declare(definition)
 }
+
+inline fun <reified T : Any> getDefinition(
+    koin: Koin,
+    name: String,
+    clazz: KClass<T>
+): BeanDefinition<*> {
+    val beanRegistry = koin.koinContext.instanceRegistry.beanRegistry
+    val definitions = lookAtDefinition(name, beanRegistry, clazz)
+    return if (definitions.size == 1) definitions.first() else throw NoBeanDefFoundException("Can't find definition for '$clazz' to mock")
+}
+
+inline fun <reified T : Any> lookAtDefinition(
+    name: String,
+    beanRegistry: BeanRegistry,
+    clazz: KClass<T>
+): List<BeanDefinition<*>> =
+    if (name.isNotEmpty()) beanRegistry.searchByNameAndClass(
+        name,
+        clazz
+    ) else beanRegistry.searchByClass(clazz)
 
 /**
  * Displays Module paths

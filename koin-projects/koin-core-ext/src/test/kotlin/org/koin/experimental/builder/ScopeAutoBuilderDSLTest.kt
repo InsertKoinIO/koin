@@ -8,7 +8,6 @@ import org.koin.error.NoScopeException
 import org.koin.log.PrintLogger
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.get
-import org.koin.standalone.getKoin
 import org.koin.test.AutoCloseKoinTest
 
 /**

@@ -254,7 +254,7 @@ And more: check your configuration with a simple unit test, easily create mocks.
 # Articles
 
 ### Articles & resouces about Koin
-* [The thermosiphon app — from Dagger to Koin step by step](https://medium.com/@giuliani.arnaud/the-thermosiphon-app-from-dagger-to-koin-step-by-step-a09af7f5b5b1)
+* [From Dagger to Koin, a step by step migration guide](https://medium.com/@giuliani.arnaud/the-thermosiphon-app-from-dagger-to-koin-step-by-step-a09af7f5b5b1)
 * [Koin in Feature Modules Project](https://proandroiddev.com/koin-in-feature-modules-project-6329f069f943)
 * [A brief look at Koin on Android](https://overflow.buffer.com/2018/09/13/a-brief-look-at-koin-on-android/)
 * [Bye bye Dagger](https://medium.com/@charbgr/bye-bye-dagger-1494118dcd41)

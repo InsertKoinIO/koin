@@ -41,7 +41,7 @@ fun KoinContext.beanDefinitions() = instanceRegistry.beanRegistry.definitions
  * @param clazz - bean class
  */
 fun KoinContext.beanDefinition(clazz: KClass<*>): BeanDefinition<*>? =
-    beanDefinitions().firstOrNull() { it.primaryType == clazz }
+    beanDefinitions().firstOrNull { it.primaryType == clazz }
 
 /**
  * Return all contexts of Koin

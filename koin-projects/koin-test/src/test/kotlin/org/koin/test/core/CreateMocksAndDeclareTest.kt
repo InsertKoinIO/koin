@@ -1,13 +1,15 @@
 package org.koin.test.core
 
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
+import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.declareMock
 import org.koin.test.declare
+import org.koin.test.declareMock
 import org.koin.test.ext.junit.assertDefinitions
 import org.koin.test.ext.junit.assertRemainingInstanceHolders
 import org.mockito.Mockito.mock
@@ -27,7 +29,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
             }
         ))
 
-        declareMock<ComponentA>(binds = listOf(InterfaceA::class))
+        declareMock<ComponentA>()
 
         val mockA = get<InterfaceA>()
         Assert.assertEquals(mockA, get<ComponentB>().componentA)
@@ -40,12 +42,11 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
     fun `successful create a mock`() {
         startKoin(listOf())
 
-        declareMock<ComponentA>()
-
-        Assert.assertNotNull(get<ComponentA>())
-
-        assertDefinitions(1)
-        assertRemainingInstanceHolders(1)
+        try {
+            declareMock<ComponentA>()
+            fail()
+        } catch (e: NoBeanDefFoundException) {
+        }
     }
 
     @Test
@@ -72,7 +73,7 @@ class CreateMocksAndDeclareTest : AutoCloseKoinTest() {
             factory { ComponentA() }
         }))
 
-        declareMock<ComponentA>(isFactory = true)
+        declareMock<ComponentA>()
 
         Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
 

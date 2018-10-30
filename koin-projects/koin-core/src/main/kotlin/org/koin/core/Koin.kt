@@ -22,11 +22,14 @@ import org.koin.core.scope.ScopeCallback
 import org.koin.core.time.measureDuration
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.definition.BeanDefinition
+import org.koin.dsl.definition.Definition
+import org.koin.dsl.definition.Kind
 import org.koin.dsl.module.Module
 import org.koin.dsl.path.Path
 import org.koin.log.EmptyLogger
 import org.koin.log.Logger
 import java.util.*
+import kotlin.reflect.KClass
 
 
 /**
@@ -188,6 +191,30 @@ class Koin private constructor(val koinContext: KoinContext) {
      */
     fun <T> declare(definition: BeanDefinition<T>) {
         beanRegistry.declare(definition)
+    }
+
+    /**
+     * Declare a component on the fly
+     */
+    inline fun <reified T : Any> declare(
+        noinline instance: Definition<T>,
+        name: String = "",
+        kind: Kind = Kind.Single,
+        overrideExisting: Boolean = false,
+        binds: List<KClass<*>> = emptyList()
+    ) {
+        val definition = BeanDefinition(
+            name = name,
+            kind = kind,
+            allowOverride = overrideExisting,
+            primaryType = T::class,
+            definition = instance
+        )
+        binds.forEach { definition.bind(it) }
+
+        declare(
+            definition
+        )
     }
 
     /**
