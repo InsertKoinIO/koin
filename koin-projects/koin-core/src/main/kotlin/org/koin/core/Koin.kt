@@ -138,13 +138,13 @@ class Koin private constructor(val koinContext: KoinContext) {
                 if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
             val override =
                 if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
-            val name = if (definition.name.isEmpty()) {
-                val pathString =
-                    if (consolidatedPath == Path.Companion.root()) "" else "$consolidatedPath."
-                "$pathString${definition.primaryTypeName}"
-            } else definition.name
+
+//            val name = if (definition.name.isEmpty()) {
+//                val pathString =
+//                    if (consolidatedPath == Path.Companion.root()) "" else "$consolidatedPath."
+//                "$pathString${definition.primaryTypeName}"
+//            } else definition.name
             val def = definition.copy(
-                name = name,
                 isEager = eager,
                 allowOverride = override,
                 path = consolidatedPath

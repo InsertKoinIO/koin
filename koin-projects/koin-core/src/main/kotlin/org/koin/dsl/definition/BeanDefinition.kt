@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
  * @param name - bean canonicalName
  * @param primaryType - bean class
  * @param kind - bean definition Kind
- * @param types - list of assignable types
+ * @param additionalTypes - list of assignable additionalTypes
  * @param isEager - definition tagged to be created on start
  * @param allowOverride - definition tagged to allow definition override or not
  * @param definition - bean definition function
@@ -44,7 +44,7 @@ import kotlin.reflect.KClass
 data class BeanDefinition<out T>(
     val name: String = "",
     val primaryType: KClass<*>,
-    var types: List<KClass<*>> = arrayListOf(),
+    var additionalTypes: List<KClass<*>> = arrayListOf(),
     val path: Path = Path.root(),
     val kind: Kind = Kind.Single,
     val isEager: Boolean = false,
@@ -54,7 +54,7 @@ data class BeanDefinition<out T>(
 ) {
     internal val id = UUID.randomUUID().toString()
     internal val primaryTypeName: String = primaryType.name()
-    internal val classes: List<KClass<*>> = listOf(primaryType) + types
+    internal val classes: List<KClass<*>> = listOf(primaryType) + additionalTypes
 
     /**
      * Add a compatible type to current bounded definition
@@ -63,7 +63,7 @@ data class BeanDefinition<out T>(
         if (!clazz.java.isAssignableFrom(this.primaryType.java)) {
             throw DefinitionBindingException("Can't bind type '$clazz' for definition $this")
         } else {
-            types += clazz
+            additionalTypes += clazz
         }
         return this
     }
@@ -77,13 +77,13 @@ data class BeanDefinition<out T>(
         val beanName = if (name.isEmpty()) "" else "name='$name',"
         val clazz = "class='${primaryType.java.canonicalName}'"
         val type = "$kind"
-        val binds = if (types.isEmpty()) "" else ", binds~${boundTypes()}"
+        val binds = if (additionalTypes.isEmpty()) "" else ", binds~${boundTypes()}"
         val path = if (path != Path.root()) ", path:'$path'" else ""
         return "$type [$beanName$clazz$binds$path]"
     }
 
     private fun boundTypes(): String =
-        "(" + types.joinToString { it.java.canonicalName } + ")"
+        "(" + additionalTypes.joinToString { it.java.canonicalName } + ")"
 
     override fun equals(other: Any?): Boolean {
         return if (other is BeanDefinition<*>) {

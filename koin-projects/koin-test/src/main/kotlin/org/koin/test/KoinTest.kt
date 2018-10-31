@@ -117,9 +117,8 @@ inline fun <reified T : Any> lookAtDefinition(
     beanRegistry: BeanRegistry,
     clazz: KClass<T>
 ): List<BeanDefinition<*>> =
-    if (name.isNotEmpty()) beanRegistry.searchByNameAndClass(
-        name,
-        clazz
+    if (name.isNotEmpty()) beanRegistry.searchByName(
+        name
     ) else beanRegistry.searchByClass(clazz)
 
 /**

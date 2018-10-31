@@ -5,6 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.error.DefinitionBindingException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.get
 import org.koin.test.AutoCloseKoinTest

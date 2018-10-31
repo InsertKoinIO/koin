@@ -38,7 +38,7 @@ open class InstanceFactory {
      * Retrieve or create instance from bean definition
      * @return Instance / has been created
      */
-    fun <T> retrieveInstance(
+    fun <T> resolve(
         def: BeanDefinition<T>,
         p: ParameterDefinition,
         scope: Scope? = null

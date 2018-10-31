@@ -16,7 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.Koin
-import org.koin.core.bean.BeanRegistry
+import org.koin.core.bean.*
 import org.koin.core.instance.holder.Instance
 import org.koin.core.parameter.ParameterDefinition
 import org.koin.core.path.PathRegistry
@@ -28,7 +28,9 @@ import org.koin.core.time.logDuration
 import org.koin.core.time.measureDuration
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.ClosedScopeException
+import org.koin.error.NoBeanDefFoundException
 import org.koin.ext.fullname
+import org.koin.ext.name
 import kotlin.reflect.KClass
 
 /**
@@ -50,14 +52,7 @@ class InstanceRegistry(
      */
     fun <T : Any> resolve(request: InstanceRequest): T {
         return request.run {
-            val search = when {
-                name.isNotEmpty() -> {
-                    { beanRegistry.searchByNameAndClass(name, clazz) }
-                }
-                else -> {
-                    { beanRegistry.searchByClass(clazz) }
-                }
-            }
+            val search: BeanDefinitionSearch = beanRegistry.search(request)
             proceedResolution(clazz, scope, parameters, search)
         }
     }
@@ -73,12 +68,13 @@ class InstanceRegistry(
         clazz: KClass<*>,
         scope: Scope?,
         parameters: ParameterDefinition,
-        definitionResolver: () -> List<BeanDefinition<*>>
+        search: BeanDefinitionSearch
     ): T = synchronized(this) {
 
         var resultInstance: T? = null
         val clazzName = clazz.fullname()
 
+        //TODO Extract graph indent
         val logIndent = resolutionStack.indent()
 
         val startChar = if (resolutionStack.isEmpty()) "+" else "+"
@@ -88,7 +84,7 @@ class InstanceRegistry(
             try {
                 val beanDefinition: BeanDefinition<T> =
                     logDuration("$logIndent|-- find definition") {
-                        findDefinition(scope, definitionResolver)
+                        findDefinition(scope, clazz, search)
                     }
 
                 val targetScope: Scope? =
@@ -98,7 +94,8 @@ class InstanceRegistry(
                     resolveInstance(
                         beanDefinition,
                         parameters,
-                        targetScope)
+                        targetScope
+                    )
                 }
                 resultInstance = instance
 
@@ -120,13 +117,30 @@ class InstanceRegistry(
 
     private fun <T : Any> findDefinition(
         scope: Scope?,
-        definitionResolver: () -> List<BeanDefinition<*>>
+        clazz: KClass<*>,
+        search: BeanDefinitionSearch
     ): BeanDefinition<T> {
-        return beanRegistry.retrieveDefinition(
+        val results: BeanDefinitionSearchResult = beanRegistry.findDefinition<Any>(
             scope,
-            definitionResolver,
+            search,
             resolutionStack.last()
         )
+        return checkSearchResult(results, clazz)
+    }
+
+    private fun <T : Any> checkSearchResult(
+        results: BeanDefinitionSearchResult,
+        clazz: KClass<*>
+    ): BeanDefinition<T> {
+        val clazzName = clazz.fullname()
+        return when {
+            results.size == 1 -> results.takeFirst()
+            results.size > 1 -> {
+                results.takeDefault()
+                    ?: throw NoBeanDefFoundException("Multiple definition found for class '$clazzName' - please precise your request or modify your module $results")
+            }
+            else -> throw NoBeanDefFoundException("No definition found for class '$clazzName'")
+        }
     }
 
     private fun <T> resolveInstance(
@@ -135,19 +149,19 @@ class InstanceRegistry(
         targetScope: Scope?
     ): Instance<T> {
         return resolutionStack.resolve(beanDefinition) {
-            instanceFactory.retrieveInstance(
-                    beanDefinition,
-                    parameters,
-                    targetScope
-                )
-            }
+            instanceFactory.resolve(
+                beanDefinition,
+                parameters,
+                targetScope
+            )
         }
+    }
 
     private fun <T : Any> getTargetScope(
         beanDefinition: BeanDefinition<T>,
         scope: Scope?
     ): Scope? {
-        return if (scope != null){
+        return if (scope != null) {
             if (isScopeRegistered(scope)) scope
             else throw ClosedScopeException("No open scoped '${scope.id}'")
         } else {

@@ -16,13 +16,11 @@
 package org.koin.core.bean
 
 import org.koin.core.Koin
+import org.koin.core.instance.InstanceRequest
 import org.koin.core.scope.Scope
-import org.koin.core.scope.isVisibleToScope
 import org.koin.dsl.definition.BeanDefinition
 import org.koin.error.BeanOverrideException
-import org.koin.error.DependencyResolutionException
-import org.koin.error.NoBeanDefFoundException
-import org.koin.error.NotVisibleException
+import org.koin.ext.fullname
 import org.koin.ext.name
 import kotlin.reflect.KClass
 
@@ -36,8 +34,41 @@ import kotlin.reflect.KClass
 class BeanRegistry() {
 
     val definitions = hashSetOf<BeanDefinition<*>>()
-    private val definitionsByNames = hashMapOf<String,BeanDefinition<*>>()
-    private val definitionByClassNames = hashMapOf<String,ArrayList<BeanDefinition<*>>>()
+    private val definitionsByNames = hashMapOf<String, BeanDefinition<*>>()
+    private val definitionByClassNames = hashMapOf<String, ArrayList<BeanDefinition<*>>>()
+
+    /**
+     * Remove existing definition
+     * @param definition
+     */
+    fun remove(definition: BeanDefinition<*>) {
+        definitions.remove(definition)
+
+        removeDefinitionFromItsName(definition)
+
+        removeDefinitionForItsTypes(definition)
+    }
+
+    /**
+     * extract class name
+     * @param clazz
+     */
+    fun getClazzName(clazz : KClass<*>) = clazz.fullname()
+
+    private fun removeDefinitionForItsTypes(definition: BeanDefinition<*>) {
+        val types: List<String> = definition.classes.map { getClazzName(it) }
+        types.forEach {
+            val set = definitionByClassNames[it]
+            set?.remove(definition)
+            definitionByClassNames[it] = set ?: arrayListOf()
+        }
+    }
+
+    private fun removeDefinitionFromItsName(definition: BeanDefinition<*>) {
+        if (definitionsByNames[definition.name] == definition) {
+            definitionsByNames.remove(definition.name)
+        }
+    }
 
     /**
      * Add/Replace an existing bean
@@ -46,22 +77,10 @@ class BeanRegistry() {
      */
     fun declare(definition: BeanDefinition<*>) {
         val isOverriding = isAnOverridingDefinition(definition)
-        if (isOverriding){
+        if (isOverriding) {
             remove(definition)
         }
         saveDefinition(definition, isOverriding)
-    }
-
-    /**
-     * Remove existing definition
-     * @param definition
-     */
-    fun remove(definition: BeanDefinition<*>) {
-        definitions.remove(definition)
-        definitionsByNames.remove(definition.name)
-        val list = definitionByClassNames[definition.primaryTypeName] ?: arrayListOf()
-        list.remove(definition)
-        definitionByClassNames[definition.primaryTypeName] = list
     }
 
     private fun isAnOverridingDefinition(definition: BeanDefinition<*>): Boolean {
@@ -78,27 +97,64 @@ class BeanRegistry() {
     ) {
         definitions += definition
 
-        definitionsByNames[definition.name] = definition
+        if (definition.name.isNotEmpty()) {
+            saveDefinitionByName(definition)
+        }
 
-        val list = definitionByClassNames[definition.primaryTypeName] ?: arrayListOf()
-        list.add(definition)
-        definitionByClassNames[definition.primaryTypeName] = list
+        saveDefinitionByTypes(definition)
 
         val kw = if (isOverriding) "override" else "declare"
         Koin.logger.info("[definition] $kw $definition")
     }
 
-    fun searchByClass(
-        clazz: KClass<*>
-    ): List<BeanDefinition<*>> {
-        return definitionByClassNames[clazz.name()] as List<BeanDefinition<*>>
+    private fun saveDefinitionByTypes(definition: BeanDefinition<*>) {
+        definition.classes.map { getClazzName(it) }.forEach { saveDefinitionByClassName(it, definition) }
     }
 
-    // Name is unique
-    fun searchByNameAndClass(
-        name: String,
+    private fun saveDefinitionByClassName(className: String, definition: BeanDefinition<*>) {
+        val list = definitionByClassNames[className] ?: arrayListOf()
+        list.add(definition)
+        definitionByClassNames[className] = list
+    }
+
+    private fun saveDefinitionByName(definition: BeanDefinition<*>) {
+        if (definitionsByNames[definition.name] != null) {
+            throw BeanOverrideException("Try to override name '${definition.name}' with definition $definition but already exists")
+        } else {
+            definitionsByNames[definition.name] = definition
+        }
+    }
+
+    /**
+     * Search definition against InstanceRequest
+     * @param request
+     */
+    fun search(request: InstanceRequest): BeanDefinitionSearch {
+        return when {
+            request.name.isNotEmpty() -> {
+                { searchByName(request.name) }
+            }
+            else -> {
+                { searchByClass(request.clazz) }
+            }
+        }
+    }
+
+    /**
+     * Search definitions by class
+     */
+    fun searchByClass(
         clazz: KClass<*>
-    ): List<BeanDefinition<*>> {
+    ): BeanDefinitionSearchResult {
+        return definitionByClassNames[getClazzName(clazz)] ?: emptyList()
+    }
+
+    /**
+     * Search definitions by name
+     */
+    fun searchByName(
+        name: String
+    ): BeanDefinitionSearchResult {
         return definitionsByNames[name]?.let { listOf(it) } ?: emptyList()
     }
 
@@ -109,56 +165,14 @@ class BeanRegistry() {
      * @param definitionResolver - function to find bean definition
      * @param lastInStack - to check visibility with last bean in stack
      */
-    @Suppress("UNCHECKED_CAST")
-    fun <T> retrieveDefinition(
+    fun <T> findDefinition(
         scope: Scope?,
-        definitionResolver: () -> List<BeanDefinition<*>>,
+        search: BeanDefinitionSearch,
         lastInStack: BeanDefinition<*>?
-    ): BeanDefinition<T> {
-        val definitions = definitionResolver()
-        val visibleDefinitions = filterByVisibility(lastInStack, definitions)
-        val filterByScope = filterForScope(scope, visibleDefinitions)
-
-        return checkedResult(filterByScope)
-    }
-
-    private fun filterByVisibility(
-        lastInStack: BeanDefinition<*>?,
-        definitions : List<BeanDefinition<*>>
-    ): List<BeanDefinition<*>> {
-        return if (lastInStack != null) {
-            val filteredByVisibility = definitions.filter { lastInStack.isVisible(it) }
-            if (definitions.isNotEmpty() && filteredByVisibility.isEmpty()) {
-                throw NotVisibleException("Definition is not visible from last definition : $lastInStack")
-            }
-            filteredByVisibility
-        }
-        else definitions
-
-    }
-
-    private fun filterForScope(
-        scope: Scope?,
-        candidates: List<BeanDefinition<*>>
-    ): List<BeanDefinition<*>> {
-        return if (scope != null) {
-            candidates.filter { it.isVisibleToScope(scope) }
-        } else candidates
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> checkedResult(
-        filterByScope: List<BeanDefinition<*>>
-    ): BeanDefinition<T> {
-        return when {
-            filterByScope.size == 1 -> filterByScope.first() as BeanDefinition<T>
-            filterByScope.isEmpty() -> throw NoBeanDefFoundException("No compatible definition found. Check your module definition")
-            else -> throw DependencyResolutionException(
-                "Multiple definitions found - Koin can't choose between :\n\t${filterByScope.joinToString(
-                    "\n\t"
-                )}\n\tCheck your modules definition, use inner modules visibility or definition names."
-            )
-        }
+    ): BeanDefinitionSearchResult {
+        return search()
+            .isVisibleToLastInStack(lastInStack)
+            .isVisibleToScope(scope)
     }
 
     /**
@@ -170,3 +184,4 @@ class BeanRegistry() {
         definitionByClassNames.clear()
     }
 }
+
