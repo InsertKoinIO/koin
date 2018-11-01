@@ -1,6 +1,8 @@
-package org.koin.core
+package org.koin.core.standalone
 
-object StandAlone {
+import org.koin.core.Koin
+
+object StandAloneContext {
     internal var koin: Koin? = null
 
     fun getKoin(): Koin = koin ?: error("Koin has not been initialized")

@@ -2,7 +2,7 @@ package org.koin.dsl
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.koin.core.StandAlone
+import org.koin.core.standalone.StandAloneContext
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
 
@@ -21,7 +21,7 @@ class KoinAppCreationTest {
     fun `start a Koin application standalone instance`() {
         val app = koin().start()
 
-        assertEquals(StandAlone.getKoin(), app)
+        assertEquals(StandAloneContext.getKoin(), app)
 
         app.stop()
 

@@ -59,7 +59,7 @@ class ModuleCreationTest {
     }
 
     @Test
-    fun `create a several modules`() {
+    fun `create several modules`() {
 
         val app = koin {
             loadModules(

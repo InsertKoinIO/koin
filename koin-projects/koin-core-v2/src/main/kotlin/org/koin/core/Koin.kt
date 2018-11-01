@@ -1,5 +1,6 @@
 package org.koin.core
 
+import org.koin.core.standalone.StandAloneContext
 import org.koin.core.time.logDuration
 
 
@@ -22,14 +23,14 @@ class Koin {
 
     fun start(): Koin {
         logDuration("[Koin] standalone start") {
-            StandAlone.koin = this
+            StandAloneContext.koin = this
         }
         return this
     }
 
     fun stop() {
         logDuration("[Koin] standalone stop") {
-            StandAlone.koin = null
+            StandAloneContext.koin = null
         }
     }
 
