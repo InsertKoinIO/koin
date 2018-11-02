@@ -1,0 +1,19 @@
+KoinApplication
+Koin / Resolve  - get/inject
+    BeanDefinition - Name, Primary Type, Extra Types, Options / Attributes
+    -> createSingle(), createFactory() ...
+
+KoinComponent
+get by name, clazz
+lazy inject
+DSL Rules (no more sub modules - override)
+Perfs
+
+Injection Params
+Properties
+
+Scope
+    withScope(""){
+        scope{}
+    }
+

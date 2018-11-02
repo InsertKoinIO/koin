@@ -1,4 +1,4 @@
-package org.koin.core
+package org.koin.core.module
 
 class Module {
     val definitions = arrayListOf<Definition<*>>()

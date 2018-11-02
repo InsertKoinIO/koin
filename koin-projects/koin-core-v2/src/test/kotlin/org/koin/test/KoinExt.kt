@@ -2,17 +2,17 @@ package org.koin.test
 
 import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.koin.core.Koin
-import org.koin.core.standalone.StandAloneContext
+import org.koin.core.KoinApplication
+import org.koin.core.standalone.StandAloneKoinApplication
 
 
-fun Koin.assertDefinitionsCount(count: Int) {
-    assertEquals("definitions count", count, this.definitions.size)
+fun KoinApplication.assertDefinitionsCount(count: Int) {
+    assertEquals("definitions count", count, this.koin.beanRegistry.definitions.size)
 }
 
 fun assertHasNoStandaloneInstance() {
     try {
-        StandAloneContext.getKoin()
+        StandAloneKoinApplication.get()
         Assert.fail()
     } catch (e: Exception) {
     }

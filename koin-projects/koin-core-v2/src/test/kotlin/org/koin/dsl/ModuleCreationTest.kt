@@ -7,18 +7,27 @@ class ModuleCreationTest {
 
     @Test
     fun `create an empty module`() {
-        val firstModule = module { }
-
         val app = koin {
-            loadModules(firstModule)
+            loadModules(module {})
         }
 
         app.assertDefinitionsCount(0)
     }
 
     @Test
-    fun `create a module with single`() {
+    fun `load a module once started`() {
+        val app = koin {}
 
+        app.assertDefinitionsCount(0)
+
+        app.loadModules(module {
+            single { Simple.ComponentA() }
+        })
+        app.assertDefinitionsCount(1)
+    }
+
+    @Test
+    fun `create a module with single`() {
         val app = koin {
             loadModules(
                 module {

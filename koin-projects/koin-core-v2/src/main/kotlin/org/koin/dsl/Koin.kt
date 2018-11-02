@@ -1,11 +1,10 @@
 package org.koin.dsl
 
-import org.koin.core.Koin
 import org.koin.core.KoinAppDeclaration
+import org.koin.core.KoinApplication
 
-
-fun koin(appDeclaration: KoinAppDeclaration? = null): Koin {
-    val instance = Koin.create()
-    appDeclaration?.let { instance.apply(it) }
-    return instance
+fun koin(appDeclaration: KoinAppDeclaration? = null): KoinApplication {
+    val koinApplication = KoinApplication.create()
+    appDeclaration?.let { koinApplication.apply(it) }
+    return koinApplication
 }

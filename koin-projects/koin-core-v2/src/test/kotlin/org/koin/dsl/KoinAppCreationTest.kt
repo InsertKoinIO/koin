@@ -1,15 +1,17 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.core.standalone.StandAloneContext
+import org.koin.core.error.KoinAlreadyStartedException
+import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
 
 class KoinAppCreationTest {
 
     @Test
-    fun `start a Koin application instance`() {
+    fun `make a Koin application`() {
         val app = koin()
 
         app.assertDefinitionsCount(0)
@@ -18,13 +20,24 @@ class KoinAppCreationTest {
     }
 
     @Test
-    fun `start a Koin application standalone instance`() {
+    fun `start a Koin application`() {
         val app = koin().start()
 
-        assertEquals(StandAloneContext.getKoin(), app)
+        assertEquals(StandAloneKoinApplication.get(), app)
 
         app.stop()
 
         assertHasNoStandaloneInstance()
+    }
+
+    @Test
+    fun `can't restart a Koin application`() {
+        val app = koin().start()
+        try {
+            app.start()
+            fail("should throw  KoinAlreadyStartedException")
+        } catch (e: KoinAlreadyStartedException) {
+        }
+        app.stop()
     }
 }
