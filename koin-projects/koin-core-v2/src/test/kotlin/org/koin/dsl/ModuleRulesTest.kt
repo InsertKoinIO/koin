@@ -1,20 +1,25 @@
 package org.koin.dsl
 
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.error.AlreadyExistingDefinition
 import org.koin.test.assertDefinitionsCount
 
 class ModuleRulesTest {
 
     @Test
     fun `don't allow redeclaration`() {
-        val app = koin {
-            loadModules(module {
-                single { Simple.ComponentA() }
-                single { Simple.ComponentA() }
-            })
+        try {
+            val app = koin {
+                loadModules(module {
+                    single { Simple.ComponentA() }
+                    single { Simple.ComponentA() }
+                })
+            }
+            fail("should not redeclare")
+        } catch (e: AlreadyExistingDefinition) {
         }
-        app.assertDefinitionsCount(1)
     }
 
     @Test
