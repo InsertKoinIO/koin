@@ -29,6 +29,8 @@ class BeanRegistry {
         val added = definitions.add(definition)
         if (!added) {
             throw AlreadyExistingDefinition("Already existing definition : $definition")
+        } else{
+            KoinApplication.log("[Koin] definition ~ $definition")
         }
     }
 

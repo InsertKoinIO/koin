@@ -4,6 +4,10 @@ class Simple {
     class ComponentA()
     class ComponentB(val a: ComponentA)
     class ComponentC(val b: ComponentB)
+
+    interface ComponentInterface
+    class Component1 : ComponentInterface
+    class Component2 : ComponentInterface
 }
 
 class Errors {

@@ -11,7 +11,7 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `don't allow redeclaration`() {
         try {
-            val app = koin {
+            koin {
                 loadModules(module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentA() }
@@ -19,6 +19,7 @@ class ModuleDeclarationRulesTest {
             }
             fail("should not redeclare")
         } catch (e: AlreadyExistingDefinition) {
+            e.printStackTrace()
         }
     }
 
@@ -42,5 +43,21 @@ class ModuleDeclarationRulesTest {
             })
         }
         app.assertDefinitionsCount(2)
+    }
+
+    @Test
+    fun `don't allow redeclaration with different implementation`() {
+
+        try {
+            koin {
+                loadModules(
+                    module {
+                        single<Simple.ComponentInterface> { Simple.Component1() }
+                        single<Simple.ComponentInterface> { Simple.Component2() }
+                    })
+            }
+        } catch (e: AlreadyExistingDefinition) {
+            e.printStackTrace()
+        }
     }
 }

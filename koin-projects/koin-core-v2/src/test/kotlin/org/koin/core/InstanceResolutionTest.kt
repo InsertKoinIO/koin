@@ -1,7 +1,6 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.dsl.koin
@@ -96,5 +95,23 @@ class InstanceResolutionTest {
         val a2: Simple.ComponentA = koin.get()
 
         assertNotEquals(a, a2)
+    }
+
+    @Test
+    fun `should resolve default`() {
+
+        val app = koin {
+            loadModules(
+                module {
+                    single<Simple.ComponentInterface>("2") { Simple.Component2() }
+                    single<Simple.ComponentInterface> { Simple.Component1() }
+                })
+        }
+
+        val koin = app.koin
+        val component: Simple.ComponentInterface = koin.get()
+
+        assertTrue(component is Simple.Component1)
+        assertTrue(koin.get<Simple.ComponentInterface>("2") is Simple.Component2)
     }
 }
