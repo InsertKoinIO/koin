@@ -1,13 +1,13 @@
-//package org.koin.example
+//package org.koinApplication.example
 //
 //import org.junit.After
 //import org.junit.Before
 //import org.junit.Test
-//import org.koin.standalone.StandAloneContext.startKoin
-//import org.koin.standalone.StandAloneContext.stopKoin
-//import org.koin.standalone.inject
-//import org.koin.test.AutoCloseKoinTest
-//import org.koin.test.declareMock
+//import org.koinApplication.standalone.StandAloneContext.startKoin
+//import org.koinApplication.standalone.StandAloneContext.stopKoin
+//import org.koinApplication.standalone.inject
+//import org.koinApplication.test.AutoCloseKoinTest
+//import org.koinApplication.test.declareMock
 //import org.mockito.BDDMockito.given
 //import org.mockito.Mockito.times
 //import org.mockito.Mockito.verify

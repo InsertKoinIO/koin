@@ -11,6 +11,8 @@ data class BeanDefinition<T>(
     lateinit var definition: Definition<T>
     lateinit var instance: Instance<T>
 
+    //TODO display kind?
+
     //TODO ToString()
 
     companion object {

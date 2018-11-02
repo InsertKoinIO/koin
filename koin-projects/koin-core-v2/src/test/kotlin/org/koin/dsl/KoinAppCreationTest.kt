@@ -12,7 +12,7 @@ class KoinAppCreationTest {
 
     @Test
     fun `make a Koin application`() {
-        val app = koin()
+        val app = koinApplication()
 
         app.assertDefinitionsCount(0)
 
@@ -21,7 +21,7 @@ class KoinAppCreationTest {
 
     @Test
     fun `start a Koin application`() {
-        val app = koin().start()
+        val app = koinApplication().start()
 
         assertEquals(StandAloneKoinApplication.get(), app)
 
@@ -32,7 +32,7 @@ class KoinAppCreationTest {
 
     @Test
     fun `can't restart a Koin application`() {
-        val app = koin().start()
+        val app = koinApplication().start()
         try {
             app.start()
             fail("should throw  KoinAlreadyStartedException")

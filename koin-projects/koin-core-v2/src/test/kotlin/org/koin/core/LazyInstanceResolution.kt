@@ -3,14 +3,14 @@ package org.koin.core
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class LazyInstanceResolution {
     @Test
     fun `can lazy resolve a single`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }

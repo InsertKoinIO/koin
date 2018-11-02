@@ -6,7 +6,7 @@ import org.koin.Simple
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.inject
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class MyComponent : KoinComponent {
@@ -18,7 +18,7 @@ class KoinComponentTest {
 
     @Test
     fun `can lazy inject from KoinComponent`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }

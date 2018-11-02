@@ -8,7 +8,7 @@ class ModuleCreationTest {
 
     @Test
     fun `create an empty module`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(module {})
         }
 
@@ -17,7 +17,7 @@ class ModuleCreationTest {
 
     @Test
     fun `load a module once started`() {
-        val app = koin {}
+        val app = koinApplication {}
 
         app.assertDefinitionsCount(0)
 
@@ -29,7 +29,7 @@ class ModuleCreationTest {
 
     @Test
     fun `create a module with single`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }
@@ -42,7 +42,7 @@ class ModuleCreationTest {
     @Test
     fun `create a complex single DI module`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }
@@ -56,7 +56,7 @@ class ModuleCreationTest {
     @Test
     fun `create a complex factory DI module`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }
@@ -71,7 +71,7 @@ class ModuleCreationTest {
     @Test
     fun `create several modules`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }

@@ -11,15 +11,18 @@ Errors
 - composant non decrit
 - boucle
 
---
+
 
 DSL Rules (no more sub modules - override)
 
 Bind / binds / Multiple binding
 
+--
+
 options
-    override
     createAtStart
+    override
+
 
 attributes
     scope

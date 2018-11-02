@@ -3,7 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class InstanceResolutionTest {
@@ -11,7 +11,7 @@ class InstanceResolutionTest {
     @Test
     fun `can resolve a single`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }
@@ -28,7 +28,7 @@ class InstanceResolutionTest {
     @Test
     fun `can lazy resolve a single`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.ComponentA() }
@@ -45,7 +45,7 @@ class InstanceResolutionTest {
     @Test
     fun `can resolve a singles by name`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     val componentA = Simple.ComponentA()
@@ -64,7 +64,7 @@ class InstanceResolutionTest {
     @Test
     fun `can resolve a factory by name`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     val componentA = Simple.ComponentA()
@@ -83,7 +83,7 @@ class InstanceResolutionTest {
     @Test
     fun `can resolve a factory`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     factory { Simple.ComponentA() }
@@ -100,7 +100,7 @@ class InstanceResolutionTest {
     @Test
     fun `should resolve default`() {
 
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single<Simple.ComponentInterface1>("2") { Simple.Component2() }

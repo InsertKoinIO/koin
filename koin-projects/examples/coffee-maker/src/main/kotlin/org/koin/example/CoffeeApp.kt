@@ -2,7 +2,7 @@ package org.koin.example
 
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import kotlin.system.measureTimeMillis
 
 class CoffeeApp : KoinComponent {
@@ -12,7 +12,7 @@ class CoffeeApp : KoinComponent {
 
 fun main(vararg args: String) {
 
-    koin {
+    koinApplication {
         loadModules(coffeeAppModule)
     }.start()
 

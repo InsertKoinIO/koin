@@ -17,7 +17,7 @@ class Koin {
 
     inline fun <reified T> get(name: String? = null): T {
         val clazz = T::class
-        return logDuration("[Koin] get '$clazz'") {
+        return logDuration("[Koin] got '$clazz'") {
             val definition: BeanDefinition<*>? = beanRegistry.findDefinition(name, clazz)
             instanceResolver.resolveInstance(definition, clazz)
         }

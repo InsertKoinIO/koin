@@ -13,4 +13,11 @@ class BeanDefinitionTest {
         val def2 = BeanDefinition.createSingle(definition = { Simple.ComponentA() })
         assertEquals(def1, def2)
     }
+
+    @Test
+    fun `equals definitions - but diff kind`() {
+        val def1 = BeanDefinition.createSingle(definition = { Simple.ComponentA() })
+        val def2 = BeanDefinition.createFactory(definition = { Simple.ComponentA() })
+        assertEquals(def1, def2)
+    }
 }

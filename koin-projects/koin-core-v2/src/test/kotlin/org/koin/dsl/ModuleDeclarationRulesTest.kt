@@ -4,6 +4,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.AlreadyExistingDefinition
+import org.koin.core.error.OverrideDefinitionException
 import org.koin.test.assertDefinitionsCount
 
 class ModuleDeclarationRulesTest {
@@ -11,7 +12,7 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `don't allow redeclaration`() {
         try {
-            koin {
+            koinApplication {
                 loadModules(module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentA() }
@@ -25,7 +26,7 @@ class ModuleDeclarationRulesTest {
 
     @Test
     fun `allow redeclaration - different names`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(module {
                 single("default") { Simple.ComponentA() }
                 single("other") { Simple.ComponentA() }
@@ -35,8 +36,23 @@ class ModuleDeclarationRulesTest {
     }
 
     @Test
+    fun `reject redeclaration - same names`() {
+        try {
+            koinApplication {
+                loadModules(module {
+                    single("default") { Simple.ComponentA() }
+                    single("default") { Simple.ComponentB(get()) }
+                })
+            }
+            fail("Should not allow redeclaration for same name")
+        } catch (e: OverrideDefinitionException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
     fun `allow redeclaration - default`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(module {
                 single { Simple.ComponentA() }
                 single("other") { Simple.ComponentA() }
@@ -49,7 +65,7 @@ class ModuleDeclarationRulesTest {
     fun `don't allow redeclaration with different implementation`() {
 
         try {
-            koin {
+            koinApplication {
                 loadModules(
                     module {
                         single<Simple.ComponentInterface1> { Simple.Component1() }

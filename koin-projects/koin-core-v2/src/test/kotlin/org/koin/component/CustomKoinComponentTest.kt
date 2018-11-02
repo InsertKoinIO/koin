@@ -6,7 +6,7 @@ import org.koin.Simple
 import org.koin.core.Koin
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertHasNoStandaloneInstance
 
@@ -15,7 +15,7 @@ abstract class CustomKoinComponent : KoinComponent {
     override fun getKoin(): Koin = customKoin
 
     companion object {
-        val customKoin = koin {
+        val customKoin = koinApplication {
             loadModules(module {
                 single { Simple.ComponentA() }
             })

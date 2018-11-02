@@ -10,7 +10,7 @@ interface Instance<T> {
     fun <T> get(): T
 
     fun <T> create(beanDefinition: BeanDefinition<*>): T {
-        KoinApplication.log("[Koin] create instance")
+        KoinApplication.log("[Koin] create instance ~ $beanDefinition")
         try {
             return beanDefinition.definition() as T
         } catch (e: Exception) {

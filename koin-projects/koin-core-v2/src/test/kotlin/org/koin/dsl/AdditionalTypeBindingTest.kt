@@ -11,7 +11,7 @@ class AdditionalTypeBindingTest {
 
     @Test
     fun `can resolve an additional type`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -30,7 +30,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `additional type conflict`() {
         try {
-            val app = koin {
+            koinApplication {
                 loadModules(
                     module {
                         single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -45,7 +45,7 @@ class AdditionalTypeBindingTest {
 
     @Test
     fun `should not conflict name & default type`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single<Simple.ComponentInterface1>("default") { Simple.Component2() }
@@ -58,7 +58,7 @@ class AdditionalTypeBindingTest {
 
     @Test
     fun `can resolve an additional types`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { Simple.Component1() } binds arrayOf(
@@ -82,7 +82,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `conflicting with additional types`() {
         try {
-            koin {
+            koinApplication {
                 loadModules(
                     module {
                         single<Simple.ComponentInterface1> { Simple.Component2() }

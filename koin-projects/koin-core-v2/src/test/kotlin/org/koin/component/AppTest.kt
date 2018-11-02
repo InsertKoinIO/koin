@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class TasksView
@@ -19,7 +19,7 @@ class AppTest {
 
     @Test
     fun `can run KoinComponent app`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(
                 module {
                     single { TasksView() }

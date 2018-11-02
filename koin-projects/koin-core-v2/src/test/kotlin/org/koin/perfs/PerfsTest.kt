@@ -2,7 +2,7 @@ package org.koin.perfs
 
 import org.junit.Test
 import org.koin.core.time.logDuration
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.test.assertDefinitionsCount
 
 class PerfsTest {
@@ -10,9 +10,8 @@ class PerfsTest {
     @Test
     fun `empty module perfs`() {
         val app = logDuration("Koin app created") {
-            koin().start()
+            koinApplication().start()
         }
-
         app.assertDefinitionsCount(0)
         app.stop()
     }
@@ -20,11 +19,9 @@ class PerfsTest {
     @SuppressWarnings("unused")
     @Test
     fun `perfModule400 module perfs`() {
-        val app = logDuration("Koin app created") {
-            koin {
-                loadModules(perfModule400)
-            }.start()
-        }
+        val app = koinApplication {
+            loadModules(perfModule400)
+        }.start()
 
         app.assertDefinitionsCount(400)
 

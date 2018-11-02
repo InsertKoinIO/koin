@@ -6,14 +6,14 @@ import org.koin.Errors
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoDefinitionFoundException
-import org.koin.dsl.koin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class ErrorCheckTest {
 
     @Test
     fun `unknown definition`() {
-        val app = koin {
+        val app = koinApplication {
         }
 
         try {
@@ -26,7 +26,7 @@ class ErrorCheckTest {
 
     @Test
     fun `error while creating instance`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(module {
                 single { Errors.Boom() }
             })
@@ -42,7 +42,7 @@ class ErrorCheckTest {
 
     @Test
     fun `cycle error`() {
-        val app = koin {
+        val app = koinApplication {
             loadModules(module {
                 single { Errors.CycleA(get()) }
                 single { Errors.CycleB(get()) }

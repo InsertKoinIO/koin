@@ -24,12 +24,12 @@ class KoinApplication {
     }
 
     fun start(): KoinApplication {
-        logDuration("[Koin] standalone app start") {
-            if (StandAloneKoinApplication.app != null) {
-                throw KoinAlreadyStartedException("KoinApplication is already started")
-            }
-            StandAloneKoinApplication.app = this
+        if (StandAloneKoinApplication.app != null) {
+            throw KoinAlreadyStartedException("KoinApplication is already started")
         }
+        StandAloneKoinApplication.app = this
+        KoinApplication.log("[Koin] standalone app start")
+
         //TODO launch eager instances
         return this
     }
