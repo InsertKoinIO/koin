@@ -52,8 +52,8 @@ class ModuleDeclarationRulesTest {
             koin {
                 loadModules(
                     module {
-                        single<Simple.ComponentInterface> { Simple.Component1() }
-                        single<Simple.ComponentInterface> { Simple.Component2() }
+                        single<Simple.ComponentInterface1> { Simple.Component1() }
+                        single<Simple.ComponentInterface1> { Simple.Component2() }
                     })
             }
         } catch (e: AlreadyExistingDefinition) {

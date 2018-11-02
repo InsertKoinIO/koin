@@ -5,9 +5,10 @@ class Simple {
     class ComponentB(val a: ComponentA)
     class ComponentC(val b: ComponentB)
 
-    interface ComponentInterface
-    class Component1 : ComponentInterface
-    class Component2 : ComponentInterface
+    interface ComponentInterface1
+    interface ComponentInterface2
+    class Component1 : ComponentInterface1, ComponentInterface2
+    class Component2 : ComponentInterface1
 }
 
 class Errors {

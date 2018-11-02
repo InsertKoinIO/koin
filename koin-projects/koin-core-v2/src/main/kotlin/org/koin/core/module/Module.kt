@@ -9,12 +9,16 @@ class Module() {
     internal val definitions = hashSetOf<BeanDefinition<*>>()
     lateinit var koin: Koin
 
-    inline fun <reified T> single(name: String? = null, noinline definition: Definition<T>) {
-        declareDefinition(BeanDefinition.createSingle(name, definition))
+    inline fun <reified T> single(name: String? = null, noinline definition: Definition<T>): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition.createSingle(name, definition)
+        declareDefinition(beanDefinition)
+        return beanDefinition
     }
 
-    inline fun <reified T> factory(name: String? = null, noinline definition: Definition<T>) {
-        declareDefinition(BeanDefinition.createFactory(name, definition))
+    inline fun <reified T> factory(name: String? = null, noinline definition: Definition<T>): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition.createFactory(name, definition)
+        declareDefinition(beanDefinition)
+        return beanDefinition
     }
 
     fun <T> declareDefinition(definition: BeanDefinition<T>) {

@@ -4,6 +4,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.AlreadyExistingDefinition
+import org.koin.core.error.OverrideDefinitionException
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
@@ -27,17 +28,43 @@ class BeanRegistry {
         }
     }
 
-    private fun saveDefinition(definition: BeanDefinition<*>) {
+    fun saveDefinition(definition: BeanDefinition<*>) {
         val added = definitions.add(definition)
         if (!added) {
             throw AlreadyExistingDefinition("Already existing definition : $definition")
         } else {
-            definition.name?.let {
-                definitionsNames[it] = definition
+            if (definition.name != null) {
+                saveDefinitionForName(definition)
+            } else {
+                saveDefinitionForTypes(definition)
             }
-            definitionsClass[definition.primaryType] = definition
+        }
+    }
 
-            KoinApplication.log("[Koin] definition ~ $definition")
+    private fun saveDefinitionForTypes(definition: BeanDefinition<*>) {
+        saveDefinitionForType(definition.primaryType, definition)
+        definition.secondaryTypes.forEach {
+            saveDefinitionForType(it, definition)
+        }
+    }
+
+    private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
+        if (definitionsClass[type] != null) {
+            throw OverrideDefinitionException("Try to override definition type '$type' with $definition but has already registered ${definitionsClass[type]}")
+        } else {
+            definitionsClass[type] = definition
+            KoinApplication.log("[Koin] bind type:'$type' ~ $definition")
+        }
+    }
+
+    private fun saveDefinitionForName(definition: BeanDefinition<*>) {
+        definition.name?.let {
+            if (definitionsNames[it] != null) {
+                throw OverrideDefinitionException("Try to override definition name '$it' with $definition but has already registered ${definitionsNames[it]}")
+            } else {
+                definitionsNames[it] = definition
+                KoinApplication.log("[Koin] bind name:'${definition.name}' ~ $definition")
+            }
         }
     }
 

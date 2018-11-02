@@ -7,8 +7,11 @@ data class BeanDefinition<T>(
     val name: String? = null,
     val primaryType: KClass<*>
 ) {
+    val secondaryTypes = arrayListOf<KClass<*>>()
     lateinit var definition: Definition<T>
     lateinit var instance: Instance<T>
+
+    //TODO ToString()
 
     companion object {
         inline fun <reified T> createSingle(

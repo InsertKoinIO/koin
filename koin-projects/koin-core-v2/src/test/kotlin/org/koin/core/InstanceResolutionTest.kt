@@ -103,15 +103,15 @@ class InstanceResolutionTest {
         val app = koin {
             loadModules(
                 module {
-                    single<Simple.ComponentInterface>("2") { Simple.Component2() }
-                    single<Simple.ComponentInterface> { Simple.Component1() }
+                    single<Simple.ComponentInterface1>("2") { Simple.Component2() }
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
                 })
         }
 
         val koin = app.koin
-        val component: Simple.ComponentInterface = koin.get()
+        val component: Simple.ComponentInterface1 = koin.get()
 
         assertTrue(component is Simple.Component1)
-        assertTrue(koin.get<Simple.ComponentInterface>("2") is Simple.Component2)
+        assertTrue(koin.get<Simple.ComponentInterface1>("2") is Simple.Component2)
     }
 }
