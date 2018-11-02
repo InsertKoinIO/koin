@@ -7,6 +7,11 @@ options
     override
     createAtStart
 
+attributes
+    scope
+    viewmodel
+
+
 KoinComponent
 get by name, clazz
 lazy inject
@@ -18,7 +23,11 @@ Errors
 DSL Rules (no more sub modules - override)
 Bind / binds / Multiple binding
 
+Graph logs
+Logger
+
 Perfs
+
 Multi thread / Coroutines
 
 Injection Params

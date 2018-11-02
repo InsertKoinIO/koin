@@ -6,7 +6,7 @@ import org.koin.Simple
 import org.koin.core.error.AlreadyExistingDefinition
 import org.koin.test.assertDefinitionsCount
 
-class ModuleRulesTest {
+class ModuleDeclarationRulesTest {
 
     @Test
     fun `don't allow redeclaration`() {

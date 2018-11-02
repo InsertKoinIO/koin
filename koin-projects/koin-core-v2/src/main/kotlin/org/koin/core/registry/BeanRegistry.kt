@@ -36,11 +36,17 @@ class BeanRegistry {
         it.koin = koin
     }
 
-    fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
+    fun findDefinition(
+        name: String?,
+        clazz: KClass<*>
+    ): BeanDefinition<*>? =
+        name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
+
+    private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
         return definitions.firstOrNull { it.primaryType == kClass }
     }
 
-    fun findDefinitionByName(name: String): BeanDefinition<*>? {
+    private fun findDefinitionByName(name: String): BeanDefinition<*>? {
         return definitions.firstOrNull { it.name == name }
     }
 }
