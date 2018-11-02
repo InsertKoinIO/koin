@@ -1,7 +1,7 @@
 package org.koin.core
 
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.time.logDuration
 import kotlin.reflect.KClass
@@ -25,7 +25,7 @@ class Koin {
         clazz: KClass<*>
     ): T {
         return definition?.instance?.get<T>()
-                ?: throw NoBeanDefFoundException("No definition for '$clazz' has been found. Check your module definitions.")
+                ?: throw NoDefinitionFoundException("No definition for '$clazz' has been found. Check your module definitions.")
     }
 
     fun findDefinition(

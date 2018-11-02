@@ -3,6 +3,7 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.error.AlreadyExistingDefinition
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
@@ -18,8 +19,17 @@ class BeanRegistry {
         KoinApplication.log("[Koin] ${definitions.size} definitions")
     }
 
-    private fun saveDefinitions(it: Module) {
-        definitions.addAll(it.definitions)
+    private fun saveDefinitions(module: Module) {
+        module.definitions.forEach { definition ->
+            saveDefinition(definition)
+        }
+    }
+
+    private fun saveDefinition(definition: BeanDefinition<*>) {
+        val added = definitions.add(definition)
+        if (!added) {
+            throw AlreadyExistingDefinition("Already existing definition : $definition")
+        }
     }
 
     private fun linkContext(it: Module, koin: Koin) {

@@ -17,7 +17,8 @@ class KoinApplication {
     }
 
     fun loadModules(vararg modulesToLoad: Module) {
-        logDuration("[Koin] load modules") {
+        KoinApplication.log("[Koin] load modules")
+        logDuration("[Koin] modules loaded") {
             koin.beanRegistry.loadModules(koin, *modulesToLoad)
         }
     }
