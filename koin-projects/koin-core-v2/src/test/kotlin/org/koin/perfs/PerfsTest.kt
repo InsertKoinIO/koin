@@ -17,6 +17,7 @@ class PerfsTest {
         app.stop()
     }
 
+    @SuppressWarnings("unused")
     @Test
     fun `perfModule400 module perfs`() {
         val app = logDuration("Koin app created") {
@@ -29,10 +30,10 @@ class PerfsTest {
 
         val koin = app.koin
 
-        val a27: Perfs.A27 = koin.get()
-        val b31: Perfs.B31 = koin.get()
-        val c12: Perfs.C12 = koin.get()
-        val d42: Perfs.D42 = koin.get()
+        koin.get<Perfs.A27>()
+        koin.get<Perfs.B31>()
+        koin.get<Perfs.C12>()
+        koin.get<Perfs.D42>()
 
         app.stop()
     }

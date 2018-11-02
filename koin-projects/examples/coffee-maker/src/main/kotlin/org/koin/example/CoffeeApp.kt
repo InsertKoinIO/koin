@@ -1,9 +1,8 @@
 package org.koin.example
 
-import org.koin.log.PrintLogger
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import org.koin.dsl.koin
 import kotlin.system.measureTimeMillis
 
 class CoffeeApp : KoinComponent {
@@ -13,10 +12,14 @@ class CoffeeApp : KoinComponent {
 
 fun main(vararg args: String) {
 
-    startKoin(
-        list = listOf(coffeeAppModule),
-        logger = PrintLogger(showDebug = true)
-    )
+    koin {
+        loadModules(coffeeAppModule)
+    }.start()
+
+//    startKoin(
+//        list = listOf(),
+//        logger = PrintLogger(showDebug = true)
+//    )
     val coffeeShop = CoffeeApp()
 
     val appDuration = measureTimeMillis {

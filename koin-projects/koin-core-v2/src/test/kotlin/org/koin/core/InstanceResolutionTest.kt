@@ -27,6 +27,23 @@ class InstanceResolutionTest {
     }
 
     @Test
+    fun `can lazy resolve a single`() {
+
+        val app = koin {
+            loadModules(
+                module {
+                    single { Simple.ComponentA() }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.ComponentA by koin.inject()
+        val a2: Simple.ComponentA = koin.get()
+
+        assertEquals(a, a2)
+    }
+
+    @Test
     fun `can resolve a singles by name`() {
 
         val app = koin {
@@ -42,7 +59,7 @@ class InstanceResolutionTest {
         val a: Simple.ComponentA = koin.get(name = "A")
         val b: Simple.ComponentA = koin.get(name = "B")
 
-        assertEquals(a,b)
+        assertEquals(a, b)
     }
 
     @Test
@@ -61,7 +78,7 @@ class InstanceResolutionTest {
         val a: Simple.ComponentA = koin.get(name = "A")
         val b: Simple.ComponentA = koin.get(name = "B")
 
-        assertEquals(a,b)
+        assertEquals(a, b)
     }
 
     @Test

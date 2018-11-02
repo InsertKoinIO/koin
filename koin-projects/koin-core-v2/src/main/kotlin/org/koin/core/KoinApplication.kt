@@ -23,7 +23,7 @@ class KoinApplication {
     }
 
     fun start(): KoinApplication {
-        logDuration("[Koin] standalone start") {
+        logDuration("[Koin] standalone app start") {
             if (StandAloneKoinApplication.app != null) {
                 throw KoinAlreadyStartedException("KoinApplication is already started")
             }
@@ -34,7 +34,7 @@ class KoinApplication {
 
     fun stop() {
         StandAloneKoinApplication.app = null
-        KoinApplication.log("[Koin] standalone stop")
+        KoinApplication.log("[Koin] standalone app stop")
     }
 
     companion object {
