@@ -1,4 +1,4 @@
-package org.koin.dsl
+package org.koin
 
 class Simple {
     class ComponentA()

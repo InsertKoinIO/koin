@@ -1,23 +1,40 @@
 package org.koin.core.module
 
-class Module {
-    val definitions = arrayListOf<Definition<*>>()
+import org.koin.core.Koin
+import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.Definition
+import org.koin.core.bean.FactoryInstance
+import org.koin.core.bean.SingleInstance
 
-    fun <T> single(definition: Definition<T>) {
-        declareDefinition(definition)
+class Module() {
+    val definitions = hashSetOf<BeanDefinition<*>>()
+    lateinit var koin: Koin
+
+    inline fun <reified T> single(name: String? = null, noinline definition: Definition<T>) {
+        declareDefinition(createSingle(name, definition))
     }
 
-    fun <T> factory(definition: Definition<T>) {
-        declareDefinition(definition)
+    inline fun <reified T> factory(name: String? = null, noinline definition: Definition<T>) {
+        declareDefinition(createFactory(name, definition))
     }
 
-    private fun <T> declareDefinition(definition: Definition<T>) {
+    fun <T> declareDefinition(definition: BeanDefinition<T>) {
         definitions.add(definition)
     }
 
-    fun <T> get(): T {
-        error("Not yet implemented")
+    inline fun <reified T> get(): T {
+        return koin.get()
     }
 }
 
-typealias Definition<T> = () -> T
+inline fun <reified T> createSingle(name: String? = null, noinline definition: Definition<T>): BeanDefinition<T> {
+    val beanDefinition = BeanDefinition(name, T::class, definition)
+    beanDefinition.instance = SingleInstance(beanDefinition)
+    return beanDefinition
+}
+
+inline fun <reified T> createFactory(name: String? = null, noinline definition: Definition<T>): BeanDefinition<T> {
+    val beanDefinition = BeanDefinition(name, T::class, definition)
+    beanDefinition.instance = FactoryInstance(beanDefinition)
+    return beanDefinition
+}

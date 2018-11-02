@@ -1,6 +1,7 @@
 package org.koin.dsl
 
 import org.junit.Test
+import org.koin.Simple
 import org.koin.test.assertDefinitionsCount
 
 class ModuleCreationTest {

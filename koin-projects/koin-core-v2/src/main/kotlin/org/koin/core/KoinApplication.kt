@@ -13,12 +13,12 @@ class KoinApplication {
     val koin = Koin()
 
     init {
-        logDuration("[Koin] create") { }
+        KoinApplication.log("[Koin] create")
     }
 
     fun loadModules(vararg modulesToLoad: Module) {
         logDuration("[Koin] load modules") {
-            koin.beanRegistry.loadModules(*modulesToLoad)
+            koin.beanRegistry.loadModules(koin, *modulesToLoad)
         }
     }
 
@@ -33,9 +33,8 @@ class KoinApplication {
     }
 
     fun stop() {
-        logDuration("[Koin] standalone stop") {
-            StandAloneKoinApplication.app = null
-        }
+        StandAloneKoinApplication.app = null
+        KoinApplication.log("[Koin] standalone stop")
     }
 
     companion object {

@@ -8,8 +8,8 @@ import org.koin.test.assertDefinitionsCount
 class PerfsTest {
 
     @Test
-    fun `load perfs empty module`() {
-        val app = logDuration("Koin app created"){
+    fun `empty module perfs`() {
+        val app = logDuration("Koin app created") {
             koin().start()
         }
 
@@ -18,14 +18,22 @@ class PerfsTest {
     }
 
     @Test
-    fun `load perfs module`() {
-        val app = logDuration("Koin app created"){
+    fun `perfModule400 module perfs`() {
+        val app = logDuration("Koin app created") {
             koin {
                 loadModules(perfModule400)
             }.start()
         }
 
         app.assertDefinitionsCount(400)
+
+        val koin = app.koin
+
+        val a27: Perfs.A27 = koin.get()
+        val b31: Perfs.B31 = koin.get()
+        val c12: Perfs.C12 = koin.get()
+        val d42: Perfs.D42 = koin.get()
+
         app.stop()
     }
 }

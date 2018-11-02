@@ -6,9 +6,12 @@ Koin / Resolve  - get/inject
 KoinComponent
 get by name, clazz
 lazy inject
-DSL Rules (no more sub modules - override)
-Perfs
 
+DSL Rules (no more sub modules - override)
+Bind / binds / Multiple binding
+
+Perfs
+Multi thread / Coroutines
 Injection Params
 Properties
 
