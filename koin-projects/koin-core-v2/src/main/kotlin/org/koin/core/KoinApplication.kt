@@ -30,6 +30,7 @@ class KoinApplication {
             }
             StandAloneKoinApplication.app = this
         }
+        //TODO launch eager instances
         return this
     }
 

@@ -16,10 +16,6 @@ fun main(vararg args: String) {
         loadModules(coffeeAppModule)
     }.start()
 
-//    startKoin(
-//        list = listOf(),
-//        logger = PrintLogger(showDebug = true)
-//    )
     val coffeeShop = CoffeeApp()
 
     val appDuration = measureTimeMillis {

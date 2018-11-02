@@ -10,6 +10,8 @@ import kotlin.reflect.KClass
 class BeanRegistry {
 
     internal val definitions = hashSetOf<BeanDefinition<*>>()
+    private val definitionsNames = hashMapOf<String, BeanDefinition<*>>()
+    private val definitionsClass = hashMapOf<KClass<*>, BeanDefinition<*>>()
 
     fun loadModules(koin: Koin, vararg modulesToLoad: Module) {
         modulesToLoad.forEach { module: Module ->
@@ -29,7 +31,12 @@ class BeanRegistry {
         val added = definitions.add(definition)
         if (!added) {
             throw AlreadyExistingDefinition("Already existing definition : $definition")
-        } else{
+        } else {
+            definition.name?.let {
+                definitionsNames[it] = definition
+            }
+            definitionsClass[definition.primaryType] = definition
+
             KoinApplication.log("[Koin] definition ~ $definition")
         }
     }
@@ -45,10 +52,10 @@ class BeanRegistry {
         name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
 
     private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
-        return definitions.firstOrNull { it.primaryType == kClass }
+        return definitionsClass[kClass]
     }
 
     private fun findDefinitionByName(name: String): BeanDefinition<*>? {
-        return definitions.firstOrNull { it.name == name }
+        return definitionsNames[name]
     }
 }
