@@ -1,6 +1,9 @@
-package org.koin.core.bean
+package org.koin.core.instance
 
-class FactoryInstance<T>(val beanDefinition: BeanDefinition<T>) : Instance<T> {
+import org.koin.core.bean.BeanDefinition
+
+class FactoryInstance<T>(val beanDefinition: BeanDefinition<T>) :
+    Instance<T> {
 
     var value: T? = null
 

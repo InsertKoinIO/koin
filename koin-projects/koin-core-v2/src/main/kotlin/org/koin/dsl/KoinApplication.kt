@@ -1,7 +1,8 @@
 package org.koin.dsl
 
-import org.koin.core.KoinAppDeclaration
 import org.koin.core.KoinApplication
+
+typealias KoinAppDeclaration = KoinApplication.() -> Unit
 
 fun koinApplication(appDeclaration: KoinAppDeclaration? = null): KoinApplication {
     val koinApplication = KoinApplication.create()

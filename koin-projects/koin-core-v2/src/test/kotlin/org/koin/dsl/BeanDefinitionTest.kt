@@ -1,9 +1,12 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.Kind
+import org.koin.test.getDefinition
 
 class BeanDefinitionTest {
 
@@ -19,5 +22,56 @@ class BeanDefinitionTest {
         val def1 = BeanDefinition.createSingle(definition = { Simple.ComponentA() })
         val def2 = BeanDefinition.createFactory(definition = { Simple.ComponentA() })
         assertEquals(def1, def2)
+    }
+
+    @Test
+    fun `definition kind`() {
+        val app = koinApplication {
+            loadModules(
+                module {
+                    single { Simple.ComponentA() }
+                    factory { Simple.ComponentB(get()) }
+                }
+            )
+        }
+
+        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        assertEquals(Kind.SINGLE, defA.kind)
+
+        val defB = app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
+        assertEquals(Kind.FACTORY, defB.kind)
+    }
+
+    @Test
+    fun `definition name`() {
+        val app = koinApplication {
+            loadModules(
+                module {
+                    single("A") { Simple.ComponentA() }
+                    factory { Simple.ComponentB(get()) }
+                }
+            )
+        }
+
+        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        assertEquals("A", defA.name)
+
+        val defB = app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
+        assertTrue(defB.name == null)
+    }
+
+    @Test
+    fun `definition function`() {
+        val app = koinApplication {
+            loadModules(
+                module {
+                    single { Simple.ComponentA() }
+                }
+            )
+        }
+
+        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val instance = defA.instance.get<Simple.ComponentA>()
+        assertEquals(instance,app.koin.get<Simple.ComponentA>())
     }
 }

@@ -1,4 +1,6 @@
-package org.koin.core.bean
+package org.koin.core.instance
+
+import org.koin.core.bean.BeanDefinition
 
 class SingleInstance<T>(val beanDefinition: BeanDefinition<T>) : Instance<T> {
 

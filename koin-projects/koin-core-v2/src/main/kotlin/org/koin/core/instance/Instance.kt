@@ -1,8 +1,9 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package org.koin.core.bean
+package org.koin.core.instance
 
 import org.koin.core.KoinApplication
+import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 
 interface Instance<T> {

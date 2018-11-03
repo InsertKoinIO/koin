@@ -5,9 +5,6 @@ import org.koin.core.module.Module
 import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.core.time.logDuration
 
-
-typealias KoinAppDeclaration = KoinApplication.() -> Unit
-
 class KoinApplication {
 
     val koin = Koin()

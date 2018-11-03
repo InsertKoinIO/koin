@@ -2,6 +2,8 @@ package org.koin.dsl
 
 import org.koin.core.module.Module
 
-fun module(moduleDeclaration: Module.() -> Unit): Module {
-    return Module().apply(moduleDeclaration)
+typealias ModuleDeclaration = Module.() -> Unit
+
+fun module(isCreatedAtStart : Boolean = false, override : Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
+    return Module(isCreatedAtStart,override).apply(moduleDeclaration)
 }
