@@ -4,6 +4,8 @@ import org.koin.core.bean.BeanDefinition
 
 class SingleInstance<T>(val beanDefinition: BeanDefinition<T>) : Instance<T> {
 
+    override fun isAlreadyCreated(): Boolean = (value != null)
+
     var value: T? = null
 
     override fun release() {}

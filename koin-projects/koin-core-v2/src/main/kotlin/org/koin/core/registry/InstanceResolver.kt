@@ -47,4 +47,8 @@ class InstanceResolver {
             error("CallStack cycle detected for $definition")
         }
     }
+
+    fun close() {
+        callStack.clear()
+    }
 }

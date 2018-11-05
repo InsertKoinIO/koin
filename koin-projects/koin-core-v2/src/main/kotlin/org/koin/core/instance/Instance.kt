@@ -21,5 +21,7 @@ interface Instance<T> {
         }
     }
 
+    fun isAlreadyCreated() : Boolean
+
     fun release()
 }

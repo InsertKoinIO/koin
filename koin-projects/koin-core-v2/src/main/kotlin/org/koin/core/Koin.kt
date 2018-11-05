@@ -15,11 +15,26 @@ class Koin {
 
     inline fun <reified T> inject(name: String? = null): Lazy<T> = lazy { get<T>(name) }
 
-    inline fun <reified T> get(name: String? = null): T {
+    inline fun <reified T> get(name: String? = null): T = synchronized(this){
         val clazz = T::class
         return logDuration("[Koin] got '$clazz'") {
             val definition: BeanDefinition<*>? = beanRegistry.findDefinition(name, clazz)
             instanceResolver.resolveInstance(definition, clazz)
         }
+    }
+
+    fun createEagerInstances() {
+        KoinApplication.log("[Koin] creating instances at start ...")
+        return logDuration("[Koin] created instances at start") {
+            val definitions: List<BeanDefinition<*>> = beanRegistry.findAllCreatedAtStartDefinition()
+            definitions.forEach {
+                instanceResolver.resolveInstance(it,it.primaryType)
+            }
+        }
+    }
+
+    fun close() {
+        beanRegistry.close()
+        instanceResolver.close()
     }
 }

@@ -7,6 +7,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.standalone.StandAloneKoinApplication
 import kotlin.reflect.KClass
 
+fun BeanDefinition<*>.hasBeenCreated() = this.instance.isAlreadyCreated()
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
     assertEquals("definitions count", count, this.koin.beanRegistry.definitions.size)

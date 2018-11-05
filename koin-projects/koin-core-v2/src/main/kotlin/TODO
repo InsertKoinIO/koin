@@ -17,31 +17,45 @@ DSL Rules (no more sub modules - override)
 
 Bind / binds / Multiple binding
 
---
+
 
 options
     createAtStart
     override
 
 
+Perfs
+
+--
+
+Multi thread / Coroutines
+
+--
+
+Injection Params
+
+Scope
+    withScope(""){
+        scope{}
+    }
+Scope Callbacks
+
 attributes
     scope
     viewmodel
 
+Logger / Option debug globale
 Graph logs
-Logger
-
-Perfs
-
-Multi thread / Coroutines
-
-Injection Params
 
 Properties
 
-Scope
+Projets
+-> Test
+-> Ext
+-> Java
+-> Android
+    - Scope
+    - ViewModel
+-> Ktor
 
-    withScope(""){
-        scope{}
-    }
 

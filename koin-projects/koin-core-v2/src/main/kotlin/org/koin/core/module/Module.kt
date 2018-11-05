@@ -4,10 +4,9 @@ import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
-import org.koin.core.error.AlreadyExistingDefinition
 
 class Module(internal val isCreatedAtStart: Boolean, internal val override: Boolean) {
-    internal val definitions = hashSetOf<BeanDefinition<*>>()
+    internal val definitions = arrayListOf<BeanDefinition<*>>()
     lateinit var koin: Koin
 
     inline fun <reified T> single(
@@ -33,11 +32,7 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
 
     fun <T> declareDefinition(definition: BeanDefinition<T>, options: Options) {
         definition.updateOptions(options)
-
-        val added = definitions.add(definition)
-        if (!added) {
-            throw AlreadyExistingDefinition("Already existing definition $definition")
-        }
+        definitions.add(definition)
     }
 
     private fun BeanDefinition<*>.updateOptions(options: Options) {

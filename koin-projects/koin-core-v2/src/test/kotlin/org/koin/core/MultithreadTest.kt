@@ -1,0 +1,86 @@
+package org.koin.core
+
+import org.junit.Assert.assertTrue
+import org.junit.Ignore
+import org.junit.Test
+import org.koin.Simple
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
+import org.koin.test.assertDefinitionsCount
+import org.koin.test.getDefinition
+import org.koin.test.hasBeenCreated
+import kotlin.random.Random
+
+class MultithreadTest {
+
+    @Test
+    @Ignore
+    fun `multi thread start`() {
+        val app = koinApplication {
+            loadModules(
+                module {
+                    single { Simple.ComponentA() }
+                })
+        }
+        (1..10).map {
+            Thread(Runnable {
+                app.start()
+            })
+        }.forEach {
+            it.start()
+        }
+
+        app.assertDefinitionsCount(1)
+        app.stop()
+    }
+
+    @Test
+    fun `multi thread get`() {
+        val app = koinApplication {
+            loadModules(
+                module {
+                    single { Simple.ComponentA() }
+                    single { Simple.ComponentB(get()) }
+                    single { Simple.ComponentC(get()) }
+                })
+        }.start()
+
+        val threads = arrayListOf<Thread>()
+        threads.add(Thread(Runnable {
+            randomSleep()
+            app.koin.get<Simple.ComponentA>()
+        }))
+        threads.add(Thread(Runnable {
+            randomSleep()
+            app.koin.get<Simple.ComponentB>()
+        }))
+        threads.add(Thread(Runnable {
+            randomSleep()
+            app.koin.get<Simple.ComponentC>()
+        }))
+
+        threads.forEach { it.start() }
+
+        val a = app.getDefinition(Simple.ComponentA::class)!!
+        val b = app.getDefinition(Simple.ComponentA::class)!!
+        val c = app.getDefinition(Simple.ComponentA::class)!!
+
+        while (!a.hasBeenCreated() && !b.hasBeenCreated() && !c.hasBeenCreated()) {
+            Thread.sleep(100L)
+        }
+
+        assertTrue(a.hasBeenCreated())
+        assertTrue(b.hasBeenCreated())
+        assertTrue(c.hasBeenCreated())
+        app.stop()
+    }
+
+    val MAX_TIME = 1000L
+
+    private fun randomSleep() {
+        val timer = Random.nextLong(MAX_TIME)
+        println("thread sleep  $timer")
+        Thread.sleep(timer)
+    }
+
+}

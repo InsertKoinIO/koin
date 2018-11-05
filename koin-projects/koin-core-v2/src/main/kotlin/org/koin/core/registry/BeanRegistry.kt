@@ -10,16 +10,16 @@ import kotlin.reflect.KClass
 
 class BeanRegistry {
 
-    internal val definitions = hashSetOf<BeanDefinition<*>>()
-    private val definitionsNames = hashMapOf<String, BeanDefinition<*>>()
-    private val definitionsClass = hashMapOf<KClass<*>, BeanDefinition<*>>()
+    internal val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+    private val definitionsNames: HashMap<String, BeanDefinition<*>> = hashMapOf()
+    private val definitionsClass: HashMap<KClass<*>, BeanDefinition<*>> = hashMapOf()
 
     fun loadModules(koin: Koin, vararg modulesToLoad: Module) {
         modulesToLoad.forEach { module: Module ->
             saveDefinitions(module)
             linkContext(module, koin)
         }
-        KoinApplication.log("[Koin] ${definitions.size} definitions")
+        KoinApplication.log("[Koin] registered ${definitions.size} definitions")
     }
 
     private fun saveDefinitions(module: Module) {
@@ -28,16 +28,12 @@ class BeanRegistry {
         }
     }
 
-    fun saveDefinition(definition: BeanDefinition<*>) {
-        val added = definitions.add(definition)
-        if (!added) {
-            throw AlreadyExistingDefinition("Already existing definition : $definition")
+    private fun saveDefinition(definition: BeanDefinition<*>) {
+        definitions.addDefinition(definition)
+        if (definition.name != null) {
+            saveDefinitionForName(definition)
         } else {
-            if (definition.name != null) {
-                saveDefinitionForName(definition)
-            } else {
-                saveDefinitionForTypes(definition)
-            }
+            saveDefinitionForTypes(definition)
         }
     }
 
@@ -49,7 +45,7 @@ class BeanRegistry {
     }
 
     private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
-        if (definitionsClass[type] != null) {
+        if (definitionsClass[type] != null && !definition.options.override) {
             throw OverrideDefinitionException("Try to override definition type '$type' with $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
@@ -59,7 +55,7 @@ class BeanRegistry {
 
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
         definition.name?.let {
-            if (definitionsNames[it] != null) {
+            if (definitionsNames[it] != null && !definition.options.override) {
                 throw OverrideDefinitionException("Try to override definition name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
@@ -84,5 +80,23 @@ class BeanRegistry {
 
     private fun findDefinitionByName(name: String): BeanDefinition<*>? {
         return definitionsNames[name]
+    }
+
+    internal fun findAllCreatedAtStartDefinition(): List<BeanDefinition<*>> {
+        val effectiveInstances = definitionsClass.values + definitionsNames.values
+        return effectiveInstances.distinct().filter { it.options.isCreatedAtStart }
+    }
+
+    fun close() {
+        definitions.clear()
+        definitionsClass.clear()
+        definitionsClass.clear()
+    }
+}
+
+fun HashSet<BeanDefinition<*>>.addDefinition(definition: BeanDefinition<*>) {
+    val added = add(definition)
+    if (!added && !definition.options.override) {
+        throw AlreadyExistingDefinition("Already existing definition : $definition & override is not allowed")
     }
 }
