@@ -5,15 +5,20 @@ package org.koin.core.instance
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.InstanceCreationException
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.ParametersHolder
+import org.koin.core.parameter.emptyParametersHolder
 
 interface Instance<T> {
 
-    fun <T> get(): T
+    fun <T> get(parameters: ParametersDefinition?): T
 
-    fun <T> create(beanDefinition: BeanDefinition<*>): T {
+    fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         KoinApplication.log("[Koin] create instance ~ $beanDefinition")
         try {
-            return beanDefinition.definition() as T
+            val parametersHolder: ParametersHolder = parameters?.let { parameters() } ?: emptyParametersHolder()
+            val value = beanDefinition.definition(parametersHolder)
+            return value as T
         } catch (e: Exception) {
             //TODO Format error
             e.printStackTrace()
@@ -21,7 +26,7 @@ interface Instance<T> {
         }
     }
 
-    fun isAlreadyCreated() : Boolean
+    fun isAlreadyCreated(): Boolean
 
     fun release()
 }

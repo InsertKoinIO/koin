@@ -6,6 +6,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Kind
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.test.getDefinition
 
 class BeanDefinitionTest {
@@ -71,7 +72,7 @@ class BeanDefinitionTest {
         }
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
-        val instance = defA.instance.get<Simple.ComponentA>()
-        assertEquals(instance,app.koin.get<Simple.ComponentA>())
+        val instance = defA.instance.get<Simple.ComponentA> { emptyParametersHolder() }
+        assertEquals(instance, app.koin.get<Simple.ComponentA>())
     }
 }

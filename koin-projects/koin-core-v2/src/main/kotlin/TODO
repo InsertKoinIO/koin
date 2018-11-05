@@ -26,13 +26,14 @@ options
 
 Perfs
 
---
 
 Multi thread / Coroutines
 
---
 
 Injection Params
+
+
+--
 
 Scope
     withScope(""){
@@ -42,7 +43,9 @@ Scope Callbacks
 
 attributes
     scope
-    viewmodel
+
+--
+
 
 Logger / Option debug globale
 Graph logs
@@ -56,6 +59,7 @@ Projets
 -> Android
     - Scope
     - ViewModel
+        -> bean def aatribute viewmodel
         -> gestion erreur lors de creation instance
 -> Ktor
 

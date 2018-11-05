@@ -1,13 +1,12 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
 
-class InjectionParameters {
+class ParametersHolder {
 
     @Test
     fun `create a parameters holder`() {
@@ -16,10 +15,15 @@ class InjectionParameters {
         val parameterHolder: ParametersHolder = parametersOf(myString, myInt)
 
         assertEquals(2, parameterHolder.size())
+        assertTrue(parameterHolder.isNotEmpty())
+    }
 
-        val (s: String, i: Int) = parameterHolder
+    @Test
+    fun `create an empty parameters holder`() {
+        val parameterHolder: ParametersHolder = parametersOf()
 
-
+        assertEquals(0, parameterHolder.size())
+        assertTrue(parameterHolder.isEmpty())
     }
 
     @Test

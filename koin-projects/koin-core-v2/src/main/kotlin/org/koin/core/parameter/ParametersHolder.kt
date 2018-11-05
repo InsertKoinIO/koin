@@ -33,6 +33,16 @@ class ParametersHolder internal constructor(vararg val values: Any?) {
     fun size() = values.size
 
     /**
+     * Tells if it has no parameter
+     */
+    fun isEmpty() = size() == 0
+
+    /**
+     * Tells if it has parameters
+     */
+    fun isNotEmpty() = !isEmpty()
+
+    /**
      * Get first element of given type T
      * return T
      */
@@ -51,3 +61,13 @@ class ParametersHolder internal constructor(vararg val values: Any?) {
  */
 fun parametersOf(vararg parameters: Any?) =
     if (parameters.size <= MAX_PARAMS) ParametersHolder(*parameters) else error("Can't build ParametersHolder for more than $MAX_PARAMS arguments")
+
+/**
+ *
+ */
+fun emptyParametersHolder() = ParametersHolder()
+
+/**
+ * Help define a ParametersHolder
+ */
+typealias ParametersDefinition = () -> ParametersHolder

@@ -9,10 +9,13 @@ class Simple {
     interface ComponentInterface2
     class Component1 : ComponentInterface1, ComponentInterface2
     class Component2 : ComponentInterface1
+
+    class MySingle(val id : Int)
+    class MyFactory(val id : Int)
 }
 
 class Errors {
-    class Boom(){
+    class Boom{
         init {
             error("Got error while init :(")
         }

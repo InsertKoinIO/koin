@@ -3,6 +3,7 @@ package org.koin.core.bean
 import org.koin.core.instance.FactoryInstance
 import org.koin.core.instance.Instance
 import org.koin.core.instance.SingleInstance
+import org.koin.core.parameter.ParametersHolder
 import kotlin.reflect.KClass
 
 data class BeanDefinition<T>(
@@ -54,4 +55,4 @@ enum class Kind {
     SINGLE, FACTORY
 }
 
-typealias Definition<T> = () -> T
+typealias Definition<T> = (ParametersHolder) -> T
