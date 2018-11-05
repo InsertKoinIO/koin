@@ -1,4 +1,4 @@
-package org.koin.component
+package org.koin.koincomponent
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

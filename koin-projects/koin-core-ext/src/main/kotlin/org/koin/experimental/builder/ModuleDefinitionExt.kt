@@ -121,7 +121,7 @@ inline fun <reified R : Any, reified T : R> ModuleDefinition.scopeBy(
 }
 
 /**
- * Resolve a component from its class
+ * Resolve a koincomponent from its class
  *
  * @param name
  * @param clazz - java class

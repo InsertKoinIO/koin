@@ -104,7 +104,7 @@ data class BeanDefinition<out T>(
 }
 
 /**
- * Type Definition function - what's loadModules a given component T
+ * Type Definition function - what's loadModules a given koincomponent T
  */
 typealias Definition<T> = (ParameterList) -> T
 

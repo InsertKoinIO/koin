@@ -23,7 +23,7 @@ import kotlin.reflect.KClass
 
 
 /**
- * Koin component
+ * Koin koincomponent
  * @author - Arnaud GIULIANI
  * @author - Laurent BARESSE
  */

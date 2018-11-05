@@ -32,7 +32,7 @@ import org.koin.standalone.StandAloneContext
  */
 
 /**
- * Set a Scope Observer onto the actual LifecycleOwner component
+ * Set a Scope Observer onto the actual LifecycleOwner koincomponent
  * will close the bound scopes on lifecycle event
  * @see ScopeObserver
  * @param event : lifecycle event - default ON_DESTROY

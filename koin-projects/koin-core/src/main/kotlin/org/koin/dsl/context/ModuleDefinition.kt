@@ -177,8 +177,8 @@ class ModuleDefinition(
     }
 
     /**
-     * Resolve a component
-     * @param name : component canonicalName
+     * Resolve a koincomponent
+     * @param name : koincomponent canonicalName
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(

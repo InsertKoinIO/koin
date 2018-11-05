@@ -18,7 +18,7 @@ class ErrorCheckTest {
 
         try {
             app.koin.get<Simple.ComponentA>()
-            fail("should not get undeclared component")
+            fail("should not get undeclared koincomponent")
         } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }

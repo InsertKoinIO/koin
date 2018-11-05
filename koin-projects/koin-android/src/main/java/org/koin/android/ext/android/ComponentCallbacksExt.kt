@@ -74,7 +74,7 @@ fun ComponentCallbacks.startKoin(
 fun ComponentCallbacks.getKoin(): KoinContext = StandAloneContext.getKoin().koinContext
 
 /**
- * inject lazily given dependency for Android component
+ * inject lazily given dependency for Android koincomponent
  * @param name - bean name / optional
  * @param scope
  * @param parameters - injection parameters
@@ -86,7 +86,7 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
 ) = lazy { get<T>(name, scope, parameters) }
 
 /**
- * get given dependency for Android component
+ * get given dependency for Android koincomponent
  * @param name - bean name
  * @param scope
  * @param parameters - injection parameters
@@ -98,7 +98,7 @@ inline fun <reified T : Any> ComponentCallbacks.get(
 ): T = getKoin().get(name, scope, parameters)
 
 /**
- * lazy inject given property for Android component
+ * lazy inject given property for Android koincomponent
  * @param key - key property
  * throw MissingPropertyException if property is not found
  */
@@ -106,7 +106,7 @@ inline fun <reified T> ComponentCallbacks.property(key: String): Lazy<T> =
     lazy { getKoin().getProperty<T>(key) }
 
 /**
- * lazy inject  given property for Android component
+ * lazy inject  given property for Android koincomponent
  * give a default value if property is missing
  *
  * @param key - key property

@@ -187,14 +187,14 @@ class Koin private constructor(val koinContext: KoinContext) {
     }
 
     /**
-     * Declare a component on the fly
+     * Declare a koincomponent on the fly
      */
     fun <T> declare(definition: BeanDefinition<T>) {
         beanRegistry.declare(definition)
     }
 
     /**
-     * Declare a component on the fly
+     * Declare a koincomponent on the fly
      */
     inline fun <reified T : Any> declare(
         noinline instance: Definition<T>,

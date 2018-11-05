@@ -14,27 +14,6 @@ import kotlin.random.Random
 class MultithreadTest {
 
     @Test
-    @Ignore
-    fun `multi thread start`() {
-        val app = koinApplication {
-            loadModules(
-                module {
-                    single { Simple.ComponentA() }
-                })
-        }
-        (1..10).map {
-            Thread(Runnable {
-                app.start()
-            })
-        }.forEach {
-            it.start()
-        }
-
-        app.assertDefinitionsCount(1)
-        app.stop()
-    }
-
-    @Test
     fun `multi thread get`() {
         val app = koinApplication {
             loadModules(
