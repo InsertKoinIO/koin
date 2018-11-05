@@ -1,6 +1,6 @@
 package org.koin.core
 
-import org.koin.core.error.KoinAlreadyStartedException
+import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.core.time.logDuration
@@ -30,7 +30,7 @@ class KoinApplication {
 
     private fun saveStandAloneAppInstance() {
         if (StandAloneKoinApplication.app != null) {
-            throw KoinAlreadyStartedException("KoinApplication is already started")
+            throw KoinAppAlreadyStartedException("KoinApplication is already started")
         }
         StandAloneKoinApplication.app = this
     }

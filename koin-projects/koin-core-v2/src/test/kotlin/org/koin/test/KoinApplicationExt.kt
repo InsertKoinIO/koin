@@ -1,13 +1,11 @@
 package org.koin.test
 
-import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.standalone.StandAloneKoinApplication
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
-
-fun BeanDefinition<*>.hasBeenCreated() = this.instance.isAlreadyCreated()
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
     assertEquals("definitions count", count, this.koin.beanRegistry.definitions.size)
@@ -17,10 +15,7 @@ fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
     return this.koin.beanRegistry.definitions.firstOrNull { it.primaryType == clazz || it.secondaryTypes.contains(clazz) }
 }
 
-fun assertHasNoStandaloneInstance() {
-    try {
-        StandAloneKoinApplication.get()
-        Assert.fail()
-    } catch (e: Exception) {
-    }
+fun KoinApplication.assertScopeHasBeenCreated(scope: Scope) {
+    val id = scope.id
+    assertTrue("Scope $id should be created", koin.scopeRegistry.getScope(id) != null)
 }

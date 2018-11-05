@@ -1,13 +1,15 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.scope.Scope
 import org.koin.dsl.SCOPE_ID
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.test.assertScopeHasBeenCreated
 
 class ScopeUsagesTest {
 
@@ -22,10 +24,12 @@ class ScopeUsagesTest {
 
         val scope: Scope = koin.createScope(SCOPE_ID)
         assertEquals(SCOPE_ID, scope.id)
+
+        app.assertScopeHasBeenCreated(scope)
     }
 
     @Test
-    fun `can't resolve a component from a non existing scope`() {
+    fun `can't resolve a component from a non created scope`() {
         val app = koinApplication {
             loadModules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
@@ -36,8 +40,63 @@ class ScopeUsagesTest {
         try {
             koin.get<Simple.ComponentA>()
             fail("Should not be able to resolve a scoped component without creating its scope")
-        } catch (e: Exception) {
+        } catch (e: ScopeNotCreatedException) {
             e.printStackTrace()
         }
+    }
+
+    @Test
+    fun `can't create an already created scope`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        koin.createScope(SCOPE_ID)
+        try {
+            koin.createScope(SCOPE_ID)
+            fail("should not recreate a scope")
+        } catch (e: ScopeAlreadyCreatedException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `can create & get an already created scope`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        val c1 = koin.createScope(SCOPE_ID)
+        val c2 = koin.getOrCreateScope(SCOPE_ID)
+        assertEquals(c1, c2)
+    }
+
+    @Test
+    fun `resolve a component from a created scope`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        koin.createScope(SCOPE_ID)
+        assertNotNull(koin.get<Simple.ComponentA>())
+    }
+
+    @Test
+    fun `close a scope with resolved component`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        val scope = koin.createScope(SCOPE_ID)
+
+        scope.close()
     }
 }

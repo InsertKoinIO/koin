@@ -3,7 +3,7 @@ package org.koin.dsl
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.core.error.KoinAlreadyStartedException
+import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
@@ -35,8 +35,8 @@ class KoinAppCreationTest {
         val app = koinApplication().start()
         try {
             app.start()
-            fail("should throw  KoinAlreadyStartedException")
-        } catch (e: KoinAlreadyStartedException) {
+            fail("should throw  KoinAppAlreadyStartedException")
+        } catch (e: KoinAppAlreadyStartedException) {
         }
         app.stop()
     }

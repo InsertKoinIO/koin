@@ -3,8 +3,8 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.error.AlreadyExistingDefinition
-import org.koin.core.error.OverrideDefinitionException
+import org.koin.core.error.DefinitionAlreadyExistsException
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
@@ -46,7 +46,7 @@ class BeanRegistry {
 
     private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
         if (definitionsClass[type] != null && !definition.options.override) {
-            throw OverrideDefinitionException("Try to override definition type '$type' with $definition but has already registered ${definitionsClass[type]}")
+            throw DefinitionOverrideException("Try to override definition type '$type' with $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
             KoinApplication.log("[Koin] bind type:'$type' ~ $definition")
@@ -56,7 +56,7 @@ class BeanRegistry {
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
         definition.name?.let {
             if (definitionsNames[it] != null && !definition.options.override) {
-                throw OverrideDefinitionException("Try to override definition name '$it' with $definition but has already registered ${definitionsNames[it]}")
+                throw DefinitionOverrideException("Try to override definition name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
                 KoinApplication.log("[Koin] bind name:'${definition.name}' ~ $definition")
@@ -97,6 +97,6 @@ class BeanRegistry {
 fun HashSet<BeanDefinition<*>>.addDefinition(definition: BeanDefinition<*>) {
     val added = add(definition)
     if (!added && !definition.options.override) {
-        throw AlreadyExistingDefinition("Already existing definition : $definition & override is not allowed")
+        throw DefinitionAlreadyExistsException("Already existing definition : $definition & override is not allowed")
     }
 }

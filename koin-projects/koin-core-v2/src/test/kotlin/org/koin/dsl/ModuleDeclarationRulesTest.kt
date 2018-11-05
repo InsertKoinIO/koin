@@ -3,8 +3,8 @@ package org.koin.dsl
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.error.AlreadyExistingDefinition
-import org.koin.core.error.OverrideDefinitionException
+import org.koin.core.error.DefinitionAlreadyExistsException
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.test.assertDefinitionsCount
 
 class ModuleDeclarationRulesTest {
@@ -19,7 +19,7 @@ class ModuleDeclarationRulesTest {
                 })
             }
             fail("should not redeclare")
-        } catch (e: AlreadyExistingDefinition) {
+        } catch (e: DefinitionAlreadyExistsException) {
             e.printStackTrace()
         }
     }
@@ -45,7 +45,7 @@ class ModuleDeclarationRulesTest {
                 })
             }
             fail("Should not allow redeclaration for same name")
-        } catch (e: OverrideDefinitionException) {
+        } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
         }
     }
@@ -72,7 +72,7 @@ class ModuleDeclarationRulesTest {
                         single<Simple.ComponentInterface1> { Simple.Component2() }
                     })
             }
-        } catch (e: AlreadyExistingDefinition) {
+        } catch (e: DefinitionAlreadyExistsException) {
             e.printStackTrace()
         }
     }

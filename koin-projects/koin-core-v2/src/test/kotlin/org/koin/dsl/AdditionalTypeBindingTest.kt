@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.error.OverrideDefinitionException
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.test.assertDefinitionsCount
 
 class AdditionalTypeBindingTest {
@@ -38,7 +38,7 @@ class AdditionalTypeBindingTest {
                     })
             }
             fail("should not allow conflicting type definitions")
-        } catch (e: OverrideDefinitionException) {
+        } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
         }
     }
@@ -93,7 +93,7 @@ class AdditionalTypeBindingTest {
                     })
             }
             fail("should not allow conflicting definitions")
-        } catch (e: OverrideDefinitionException) {
+        } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
         }
     }

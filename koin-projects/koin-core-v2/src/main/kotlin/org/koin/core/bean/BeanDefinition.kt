@@ -19,7 +19,12 @@ data class BeanDefinition<T>(
     val attributes = Attributes()
     lateinit var kind: Kind
 
-    //TODO ToString()
+    /**
+     * Tells if the definition is this Kind
+     */
+    fun isKind(kind: Kind): Boolean = this.kind == kind
+
+    //TODO Log & ToString()
 
     companion object {
         inline fun <reified T> createSingle(

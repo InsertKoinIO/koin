@@ -1,9 +1,7 @@
 package org.koin.core.registry
 
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -12,15 +10,14 @@ class InstanceResolver {
     private val callStack = Stack<BeanDefinition<*>>()
 
     inline fun <reified T> resolveInstance(
-        definition: BeanDefinition<*>?,
-        noinline parameters: ParametersDefinition?,
-        clazz: KClass<*>
+        definition: BeanDefinition<*>,
+        noinline parameters: ParametersDefinition?
     ): T {
         checkForCycle(definition)
 
         prepareCallStack(definition)
 
-        val instance: T = getInstance(definition, parameters, clazz)
+        val instance: T = getInstance(definition, parameters)
 
         cleanCallStack(definition)
         return instance
@@ -31,12 +28,10 @@ class InstanceResolver {
     }
 
     inline fun <reified T> getInstance(
-        definition: BeanDefinition<*>?,
-        noinline parameters: ParametersDefinition?,
-        clazz: KClass<*>
+        definition: BeanDefinition<*>,
+        noinline parameters: ParametersDefinition?
     ): T {
-        return (definition?.instance?.get<T>(parameters)
-                ?: throw NoDefinitionFoundException("No definition for '$clazz' has been found. Check your module definitions."))
+        return definition.instance.get(parameters)
     }
 
     fun cleanCallStack(definition: BeanDefinition<*>?) {

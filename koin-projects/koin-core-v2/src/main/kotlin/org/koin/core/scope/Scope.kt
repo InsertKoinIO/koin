@@ -1,9 +1,16 @@
 package org.koin.core.scope
 
-import java.util.*
+import org.koin.core.Koin
 
-class Scope(val id: String) {
+data class Scope(val id: String) {
 
-    internal val internalId: String = UUID.randomUUID().toString()
+//    internal val internalId: String = UUID.randomUUID().toString()
+
+    lateinit var koin: Koin
+
+    fun close() {
+        TODO()
+    }
+
 
 }
