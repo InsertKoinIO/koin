@@ -6,17 +6,32 @@ import org.koin.core.scope.Scope
 class ScopeRegistry {
 
     private val allScopes = hashSetOf<Scope>()
+    private val registeredScopes = hashMapOf<String, Scope>()
 
     fun getOrCreateScope(scopeId: String): Scope {
-        return getScope(scopeId) ?: createNewScope(scopeId)
+        return getScopeById(scopeId) ?: createScope(scopeId)
     }
 
     fun createScope(scopeId: String): Scope {
-        return if (isNotAlreadyCreated(scopeId)) {
-            createNewScope(scopeId)
+        return if (isNotAlreadyRegistered(scopeId)) {
+            val scope = createNewScope(scopeId)
+            registerScope(scopeId, scope)
         } else {
             throw ScopeAlreadyCreatedException("Try to create scope '$scopeId' but is alreadyCreated")
         }
+    }
+
+    private fun registerScope(scopeId: String, scope: Scope): Scope {
+        registeredScopes[scopeId] = scope
+        return scope
+    }
+
+    fun detachScope(scopeId: String): Scope {
+        return createNewScope(scopeId)
+    }
+
+    fun getScopeByInternalId(internalId: String): Scope? {
+        return allScopes.firstOrNull { it.internalId == internalId }
     }
 
     private fun createNewScope(scopeId: String): Scope {
@@ -25,13 +40,17 @@ class ScopeRegistry {
         return newScope
     }
 
-    private fun isNotAlreadyCreated(scopeId: String) = allScopes.none { it.id == scopeId }
+    private fun isNotAlreadyRegistered(scopeId: String) = registeredScopes[scopeId] == null
 
-    fun getScope(scopeId: String): Scope? {
-        return allScopes.firstOrNull { it.id == scopeId }
+    fun getScopeById(scopeId: String): Scope? {
+        return registeredScopes[scopeId]
     }
 
-    internal fun deleteScope(id: String) {
-        allScopes.removeAll { it.id == id }
+    internal fun deleteScope(scope : Scope) {
+        allScopes.remove(scope)
+        if (registeredScopes[scope.id] == scope){
+            registeredScopes.remove(scope.id)
+        }
     }
+
 }

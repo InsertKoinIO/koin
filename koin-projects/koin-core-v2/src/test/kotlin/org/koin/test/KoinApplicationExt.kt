@@ -17,5 +17,5 @@ fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
 
 fun KoinApplication.assertScopeHasBeenCreated(scope: Scope) {
     val id = scope.id
-    assertTrue("Scope $id should be created", koin.scopeRegistry.getScope(id) != null)
+    assertTrue("Scope $id should be created", koin.scopeRegistry.getScopeById(id) != null)
 }

@@ -8,10 +8,11 @@ import org.koin.core.error.InstanceCreationException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.scope.Scope
 
 interface Instance<T> {
 
-    fun <T> get(parameters: ParametersDefinition?): T
+    fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
 
     fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         KoinApplication.log("[Koin] create instance ~ $beanDefinition")
@@ -26,7 +27,7 @@ interface Instance<T> {
         }
     }
 
-    fun isAlreadyCreated(): Boolean
+    fun isCreated(scope: Scope? = null): Boolean
 
-    fun release()
+    fun release(scope: Scope? = null)
 }

@@ -1,6 +1,7 @@
 package org.koin.core
 
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.parameter.parametersOf
@@ -61,5 +62,11 @@ class ParametersInjectionTest {
 
         assertEquals(42, a.id)
         assertEquals(43, a2.id)
+    }
+
+    @Test
+    @Ignore
+    fun `chained definition injection`() {
+        TODO()
     }
 }

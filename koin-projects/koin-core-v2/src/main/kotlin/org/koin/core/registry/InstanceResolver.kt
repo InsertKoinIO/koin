@@ -2,6 +2,7 @@ package org.koin.core.registry
 
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.scope.Scope
 import java.util.*
 
 class InstanceResolver {
@@ -10,13 +11,14 @@ class InstanceResolver {
 
     inline fun <reified T> resolveInstance(
         definition: BeanDefinition<*>,
+        scope: Scope?,
         noinline parameters: ParametersDefinition?
     ): T {
         checkForCycle(definition)
 
         prepareCallStack(definition)
 
-        val instance: T = getInstance(definition, parameters)
+        val instance: T = getInstance(definition, scope, parameters)
 
         cleanCallStack(definition)
         return instance
@@ -28,9 +30,10 @@ class InstanceResolver {
 
     inline fun <reified T> getInstance(
         definition: BeanDefinition<*>,
+        scope: Scope?,
         noinline parameters: ParametersDefinition?
     ): T {
-        return definition.instance.get(parameters)
+        return definition.instance.get(scope, parameters)
     }
 
     fun cleanCallStack(definition: BeanDefinition<*>?) {

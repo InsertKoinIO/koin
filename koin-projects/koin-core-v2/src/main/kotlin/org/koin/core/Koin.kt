@@ -10,6 +10,7 @@ import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeId
 import org.koin.core.time.logDuration
+import kotlin.reflect.KClass
 
 class Koin {
 
@@ -17,28 +18,47 @@ class Koin {
     val instanceResolver = InstanceResolver()
     val scopeRegistry = ScopeRegistry()
 
-    inline fun <reified T> inject(name: String? = null, noinline parameters: ParametersDefinition? = null): Lazy<T> =
-        lazy { get<T>(name, parameters) }
+    inline fun <reified T> inject(
+        name: String? = null,
+        scope: Scope? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): Lazy<T> =
+        lazy { get<T>(name, scope, parameters) }
 
-    inline fun <reified T> get(name: String? = null, noinline parameters: ParametersDefinition? = null): T =
+    inline fun <reified T> get(
+        name: String? = null,
+        scope: Scope? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): T =
         synchronized(this) {
             val clazz = T::class
             return logDuration("[Koin] got '$clazz'") {
-
-                val definition: BeanDefinition<*> = beanRegistry.findDefinition(name, clazz)
-                        ?: throw NoDefinitionFoundException("No definition for '$clazz' has been found. Check your module definitions.")
-
-                checkScope(definition)
-                instanceResolver.resolveInstance(definition, parameters)
+                get(clazz, name, scope, parameters)
             }
         }
 
-    fun checkScope(definition: BeanDefinition<*>) {
-        if (definition.isScoped()) {
-            val scopeId = definition.getScopeId() ?: error("No scope id registered on $definition")
-            scopeRegistry.getScope(scopeId)
-                    ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created while trying to use scoped definition: $definition")
-        }
+    inline fun <reified T> get(
+        clazz: KClass<*>,
+        name: String?,
+        scope: Scope?,
+        noinline parameters: ParametersDefinition?
+    ): T {
+        val definition: BeanDefinition<*> = beanRegistry.findDefinition(name, clazz)
+                ?: throw NoDefinitionFoundException("No definition for '$clazz' has been found. Check your module definitions.")
+
+        val targetScope = prepareScope(definition, scope)
+
+        return instanceResolver.resolveInstance(definition, targetScope, parameters) as T
+    }
+
+    fun prepareScope(definition: BeanDefinition<*>, scope: Scope? = null): Scope? {
+        return if (definition.isScoped()) {
+            if (scope == null) {
+                val scopeId = definition.getScopeId() ?: error("No scope id registered on $definition")
+                scopeRegistry.getScopeById(scopeId)
+                        ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created while trying to use scoped definition: $definition")
+            } else scope
+        } else null
     }
 
     fun createEagerInstances() {
@@ -46,7 +66,7 @@ class Koin {
         return logDuration("[Koin] created instances at start") {
             val definitions: List<BeanDefinition<*>> = beanRegistry.findAllCreatedAtStartDefinition()
             definitions.forEach {
-                instanceResolver.resolveInstance(it, null)
+                instanceResolver.resolveInstance(it, null, null)
             }
         }
     }
@@ -62,10 +82,6 @@ class Koin {
         return createdScope
     }
 
-    private fun linkScope(createdScope: Scope) {
-        createdScope.koin = this
-    }
-
     fun getOrCreateScope(scopeId: String): Scope {
         val scope = scopeRegistry.getOrCreateScope(scopeId)
         if (!scope.isRegistered()) {
@@ -74,8 +90,20 @@ class Koin {
         return scope
     }
 
-    internal fun closeScope(id: String) {
-        beanRegistry.releaseInstanceForScope(id)
-        scopeRegistry.deleteScope(id)
+    fun detachScope(scopeId: String): Scope {
+        val createdScope = scopeRegistry.detachScope(scopeId)
+        createdScope.register(this)
+        return createdScope
     }
+
+    fun getDetachedScope(internalId: String): Scope? {
+        return scopeRegistry.getScopeByInternalId(internalId)
+    }
+
+    internal fun closeScope(internalId: String) {
+        val scope : Scope = scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
+        beanRegistry.releaseInstanceForScope(scope)
+        scopeRegistry.deleteScope(scope)
+    }
+
 }

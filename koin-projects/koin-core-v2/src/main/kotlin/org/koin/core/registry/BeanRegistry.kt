@@ -5,6 +5,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
+import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeId
 import kotlin.reflect.KClass
 
@@ -94,14 +95,14 @@ class BeanRegistry {
         return effectiveInstances.distinct().filter { it.options.isCreatedAtStart }
     }
 
+    internal fun releaseInstanceForScope(scope: Scope) {
+        definitions.filter { it.getScopeId() == scope.id }.forEach { it.instance.release(scope) }
+    }
+
     fun close() {
         definitions.clear()
         definitionsNames.clear()
         definitionsClass.clear()
-    }
-
-    internal fun releaseInstanceForScope(id: String) {
-        definitions.filter { it.getScopeId() == id }.forEach { it.instance.release() }
     }
 }
 

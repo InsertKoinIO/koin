@@ -115,7 +115,7 @@ class ScopeUsagesTest {
 
         scope.close()
         val def = app.getDefinition(Simple.ComponentA::class)!!
-        assertTrue(!def.instance.isAlreadyCreated())
+        assertTrue(!def.instance.isCreated())
     }
 
     @Test
@@ -132,7 +132,7 @@ class ScopeUsagesTest {
 
         scope.close()
         val def = app.getDefinition(Simple.ComponentA::class)!!
-        assertTrue(!def.instance.isAlreadyCreated())
+        assertTrue(!def.instance.isCreated())
     }
 
     @Test
@@ -153,9 +153,9 @@ class ScopeUsagesTest {
 
         scope.close()
         val defA = app.getDefinition(Simple.ComponentA::class)!!
-        assertTrue(!defA.instance.isAlreadyCreated())
+        assertTrue(!defA.instance.isCreated())
         val defB = app.getDefinition(Simple.ComponentB::class)!!
-        assertTrue(!defB.instance.isAlreadyCreated())
+        assertTrue(!defB.instance.isCreated())
     }
 
     @Test
@@ -168,7 +168,7 @@ class ScopeUsagesTest {
             })
         }
         val koin = app.koin
-        koin.createScope(SCOPE_ID)
+        val scope1 = koin.createScope(SCOPE_ID)
         val scope2 = koin.createScope(SCOPE2_ID)
 
         koin.get<Simple.ComponentA>()
@@ -177,9 +177,9 @@ class ScopeUsagesTest {
         scope2.close()
 
         val defA = app.getDefinition(Simple.ComponentA::class)!!
-        assertTrue(defA.instance.isAlreadyCreated())
+        assertTrue(defA.instance.isCreated(scope1))
 
         val defB = app.getDefinition(Simple.ComponentB::class)!!
-        assertTrue(!defB.instance.isAlreadyCreated())
+        assertTrue(!defB.instance.isCreated(scope2))
     }
 }

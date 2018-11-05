@@ -22,7 +22,7 @@ class DefinitionCreatedAtStartTest {
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
-        assertFalse(defA.instance.isAlreadyCreated())
+        assertFalse(defA.instance.isCreated())
     }
 
     @Test
@@ -37,7 +37,7 @@ class DefinitionCreatedAtStartTest {
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
-        assertTrue(defA.instance.isAlreadyCreated())
+        assertTrue(defA.instance.isCreated())
         app.stop()
     }
 
@@ -53,7 +53,7 @@ class DefinitionCreatedAtStartTest {
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertFalse(defA.options.isCreatedAtStart)
-        assertFalse(defA.instance.isAlreadyCreated())
+        assertFalse(defA.instance.isCreated())
         app.stop()
     }
 

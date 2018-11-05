@@ -3,9 +3,7 @@ package org.koin.core.scope
 import org.koin.core.Koin
 import java.util.*
 
-data class Scope(val id: String) {
-
-    internal val internalId: String = UUID.randomUUID().toString()
+data class Scope internal constructor(val id: String, internal val internalId: String = UUID.randomUUID().toString()) {
 
     internal var koin: Koin? = null
 
@@ -16,7 +14,7 @@ data class Scope(val id: String) {
 
     fun close() {
         if (koin == null) error("Can't close Scope $id without any Koin instance associated")
-        koin?.closeScope(id)
+        koin?.closeScope(internalId)
     }
 
     fun register(koin: Koin) {
