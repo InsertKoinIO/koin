@@ -3,9 +3,9 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.error.DefinitionAlreadyExistsException
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
+import org.koin.core.scope.getScopeId
 import kotlin.reflect.KClass
 
 class BeanRegistry {
@@ -37,6 +37,13 @@ class BeanRegistry {
         }
     }
 
+    private fun HashSet<BeanDefinition<*>>.addDefinition(definition: BeanDefinition<*>) {
+        val added = add(definition)
+        if (!added && !definition.options.override) {
+            throw DefinitionOverrideException("Already existing definition or try to override an existing one: $definition")
+        }
+    }
+
     private fun saveDefinitionForTypes(definition: BeanDefinition<*>) {
         saveDefinitionForType(definition.primaryType, definition)
         definition.secondaryTypes.forEach {
@@ -46,7 +53,7 @@ class BeanRegistry {
 
     private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
         if (definitionsClass[type] != null && !definition.options.override) {
-            throw DefinitionOverrideException("Try to override definition type '$type' with $definition but has already registered ${definitionsClass[type]}")
+            throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
             KoinApplication.log("[Koin] bind type:'$type' ~ $definition")
@@ -56,7 +63,7 @@ class BeanRegistry {
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
         definition.name?.let {
             if (definitionsNames[it] != null && !definition.options.override) {
-                throw DefinitionOverrideException("Try to override definition name '$it' with $definition but has already registered ${definitionsNames[it]}")
+                throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
                 KoinApplication.log("[Koin] bind name:'${definition.name}' ~ $definition")
@@ -89,14 +96,12 @@ class BeanRegistry {
 
     fun close() {
         definitions.clear()
+        definitionsNames.clear()
         definitionsClass.clear()
-        definitionsClass.clear()
+    }
+
+    internal fun releaseInstanceForScope(id: String) {
+        definitions.filter { it.getScopeId() == id }.forEach { it.instance.release() }
     }
 }
 
-fun HashSet<BeanDefinition<*>>.addDefinition(definition: BeanDefinition<*>) {
-    val added = add(definition)
-    if (!added && !definition.options.override) {
-        throw DefinitionAlreadyExistsException("Already existing definition : $definition & override is not allowed")
-    }
-}

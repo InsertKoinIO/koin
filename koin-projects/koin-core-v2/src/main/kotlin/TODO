@@ -33,7 +33,7 @@ Multi thread / Coroutines
 Injection Params
 
 
---
+
 
 Scope
     withScope(""){
@@ -44,15 +44,18 @@ Scope Callbacks
 attributes
     scope
 
+--
+
 detached scope / several scopes
 
 --
-
 
 Logger / Option debug globale
 Graph logs
 
 Properties
+
+parameters propagation / get DSL
 
 Projets
 -> Test

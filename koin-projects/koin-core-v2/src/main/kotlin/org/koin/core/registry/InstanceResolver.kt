@@ -3,7 +3,6 @@ package org.koin.core.registry
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import java.util.*
-import kotlin.reflect.KClass
 
 class InstanceResolver {
 

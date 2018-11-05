@@ -30,4 +30,8 @@ class ScopeRegistry {
     fun getScope(scopeId: String): Scope? {
         return allScopes.firstOrNull { it.id == scopeId }
     }
+
+    internal fun deleteScope(id: String) {
+        allScopes.removeAll { it.id == id }
+    }
 }

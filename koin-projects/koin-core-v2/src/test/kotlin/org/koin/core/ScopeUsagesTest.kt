@@ -9,7 +9,9 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.SCOPE_ID
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.dsl.withScope
 import org.koin.test.assertScopeHasBeenCreated
+import org.koin.test.getDefinition
 
 class ScopeUsagesTest {
 
@@ -76,6 +78,18 @@ class ScopeUsagesTest {
     }
 
     @Test
+    fun `created scope is associated to Koin instance`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        val c1 = koin.createScope(SCOPE_ID)
+        c1.close()
+    }
+
+    @Test
     fun `resolve a component from a created scope`() {
         val app = koinApplication {
             loadModules(module {
@@ -97,6 +111,75 @@ class ScopeUsagesTest {
         val koin = app.koin
         val scope = koin.createScope(SCOPE_ID)
 
+        koin.get<Simple.ComponentA>()
+
         scope.close()
+        val def = app.getDefinition(Simple.ComponentA::class)!!
+        assertTrue(!def.instance.isAlreadyCreated())
+    }
+
+    @Test
+    fun `close a scope with resolved component by name`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID, name = "default") { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        val scope = koin.createScope(SCOPE_ID)
+
+        koin.get<Simple.ComponentA>("default")
+
+        scope.close()
+        val def = app.getDefinition(Simple.ComponentA::class)!!
+        assertTrue(!def.instance.isAlreadyCreated())
+    }
+
+    @Test
+    fun `close a group scope components`() {
+        val app = koinApplication {
+            loadModules(module {
+                withScope(SCOPE_ID) {
+                    scoped { Simple.ComponentA() }
+                    scoped { Simple.ComponentB(get()) }
+                }
+            })
+        }
+        val koin = app.koin
+        val scope = koin.createScope(SCOPE_ID)
+
+        koin.get<Simple.ComponentA>()
+        koin.get<Simple.ComponentB>()
+
+        scope.close()
+        val defA = app.getDefinition(Simple.ComponentA::class)!!
+        assertTrue(!defA.instance.isAlreadyCreated())
+        val defB = app.getDefinition(Simple.ComponentB::class)!!
+        assertTrue(!defB.instance.isAlreadyCreated())
+    }
+
+    @Test
+    fun `close a scope between several`() {
+        val SCOPE2_ID = "SCOPE2"
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+                scope(SCOPE2_ID) { Simple.ComponentB(get()) }
+            })
+        }
+        val koin = app.koin
+        koin.createScope(SCOPE_ID)
+        val scope2 = koin.createScope(SCOPE2_ID)
+
+        koin.get<Simple.ComponentA>()
+        koin.get<Simple.ComponentB>()
+
+        scope2.close()
+
+        val defA = app.getDefinition(Simple.ComponentA::class)!!
+        assertTrue(defA.instance.isAlreadyCreated())
+
+        val defB = app.getDefinition(Simple.ComponentB::class)!!
+        assertTrue(!defB.instance.isAlreadyCreated())
     }
 }

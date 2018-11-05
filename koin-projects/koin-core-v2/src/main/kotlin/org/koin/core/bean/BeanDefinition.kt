@@ -24,6 +24,8 @@ data class BeanDefinition<T>(
      */
     fun isKind(kind: Kind): Boolean = this.kind == kind
 
+    fun isScoped() = isKind(Kind.SCOPE)
+
     //TODO Log & ToString()
 
     companion object {
@@ -42,8 +44,8 @@ data class BeanDefinition<T>(
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
             val beanDefinition = createDefinition(name, definition, Kind.SCOPE)
-            beanDefinition.instance = ScopeInstance(beanDefinition)
             beanDefinition.setScopeId(scopeId)
+            beanDefinition.instance = ScopeInstance(beanDefinition)
             return beanDefinition
         }
 

@@ -1,8 +1,10 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.scope.getScopeId
 import org.koin.test.getDefinition
 
@@ -20,6 +22,35 @@ class ScopeDeclarationTest {
 
         val defA = app.getDefinition(Simple.ComponentA::class)!!
         assertEquals(SCOPE_ID, defA.getScopeId())
+    }
+
+    @Test
+    fun `conflicting scope definition - same type`() {
+        try {
+            koinApplication {
+                loadModules(module {
+                    single { Simple.ComponentA() }
+                    scope(SCOPE_ID) { Simple.ComponentA() }
+                })
+            }
+            fail("should not allow scope/single for same type")
+        } catch (e: DefinitionOverrideException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `non conflicting scope definition - different names`() {
+        try {
+            koinApplication {
+                loadModules(module {
+                    scope(SCOPE_ID) { Simple.ComponentA() }
+                    scope(SCOPE_ID, name = "default") { Simple.ComponentA() }
+                })
+            }
+        } catch (e: DefinitionOverrideException) {
+            e.printStackTrace()
+        }
     }
 
     @Test

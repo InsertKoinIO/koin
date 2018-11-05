@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.Kind
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.parameter.ParametersDefinition
@@ -35,7 +34,7 @@ class Koin {
         }
 
     fun checkScope(definition: BeanDefinition<*>) {
-        if (definition.isKind(Kind.SCOPE)) {
+        if (definition.isScoped()) {
             val scopeId = definition.getScopeId() ?: error("No scope id registered on $definition")
             scopeRegistry.getScope(scopeId)
                     ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created while trying to use scoped definition: $definition")
@@ -58,10 +57,25 @@ class Koin {
     }
 
     fun createScope(scopeId: String): Scope {
-        return scopeRegistry.createScope(scopeId)
+        val createdScope = scopeRegistry.createScope(scopeId)
+        createdScope.register(this)
+        return createdScope
+    }
+
+    private fun linkScope(createdScope: Scope) {
+        createdScope.koin = this
     }
 
     fun getOrCreateScope(scopeId: String): Scope {
-        return scopeRegistry.getOrCreateScope(scopeId)
+        val scope = scopeRegistry.getOrCreateScope(scopeId)
+        if (!scope.isRegistered()) {
+            scope.register(this)
+        }
+        return scope
+    }
+
+    internal fun closeScope(id: String) {
+        beanRegistry.releaseInstanceForScope(id)
+        scopeRegistry.deleteScope(id)
     }
 }
