@@ -1,11 +1,13 @@
 package org.koin.core
 
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.test.getDefinition
 
 class KoinApplicationIsolationTest {
 
@@ -29,6 +31,20 @@ class KoinApplicationIsolationTest {
         val a2: Simple.ComponentA = app2.koin.get()
 
         assertNotEquals(a1, a2)
+    }
+
+    @Test
+    fun `koin app instance run instance `() {
+        val app = koinApplication {
+            loadModules(
+                module {
+                    single(createdAtStart = true) { Simple.ComponentA() }
+                })
+        }
+        app.createEagerInstances()
+
+        val def = app.getDefinition(Simple.ComponentA::class)!!
+        assertTrue(def.instance.isCreated())
     }
 
     @Test

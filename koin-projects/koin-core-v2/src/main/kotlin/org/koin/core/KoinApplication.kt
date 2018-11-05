@@ -20,9 +20,17 @@ class KoinApplication {
         }
     }
 
-    fun start(): KoinApplication = synchronized(this){
+    fun start(): KoinApplication = synchronized(this) {
         logDuration("[Koin] started") {
             saveStandAloneAppInstance()
+            createEagerInstances()
+        }
+        return this
+    }
+
+    fun createEagerInstances(): KoinApplication {
+        KoinApplication.log("[Koin] creating instances at start ...")
+        logDuration("[Koin] created instances at start") {
             koin.createEagerInstances()
         }
         return this
@@ -35,7 +43,7 @@ class KoinApplication {
         StandAloneKoinApplication.app = this
     }
 
-    fun stop() = synchronized(this){
+    fun stop() = synchronized(this) {
         koin.close()
         StandAloneKoinApplication.app = null
         KoinApplication.log("[Koin] stopped")

@@ -59,7 +59,7 @@ class ModuleOptions {
     fun `module definitions options non inheritance`() {
 
         val module = module {
-            single(isCreatedAtStart = true) { Simple.ComponentA() }
+            single(createdAtStart = true) { Simple.ComponentA() }
             single(override = true) { Simple.ComponentB(get()) }
         }
 

@@ -61,13 +61,10 @@ class Koin {
         } else null
     }
 
-    fun createEagerInstances() {
-        KoinApplication.log("[Koin] creating instances at start ...")
-        return logDuration("[Koin] created instances at start") {
-            val definitions: List<BeanDefinition<*>> = beanRegistry.findAllCreatedAtStartDefinition()
-            definitions.forEach {
-                instanceResolver.resolveInstance(it, null, null)
-            }
+    internal fun createEagerInstances() {
+        val definitions: List<BeanDefinition<*>> = beanRegistry.findAllCreatedAtStartDefinition()
+        definitions.forEach {
+            instanceResolver.resolveInstance(it, null, null)
         }
     }
 
@@ -101,7 +98,7 @@ class Koin {
     }
 
     internal fun closeScope(internalId: String) {
-        val scope : Scope = scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
+        val scope: Scope = scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
         beanRegistry.releaseInstanceForScope(scope)
         scopeRegistry.deleteScope(scope)
     }

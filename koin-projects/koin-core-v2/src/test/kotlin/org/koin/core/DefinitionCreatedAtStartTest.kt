@@ -15,7 +15,7 @@ class DefinitionCreatedAtStartTest {
         val app = koinApplication {
             loadModules(
                 module {
-                    single(isCreatedAtStart = true) { Simple.ComponentA() }
+                    single(createdAtStart = true) { Simple.ComponentA() }
                 }
             )
         }
@@ -30,7 +30,7 @@ class DefinitionCreatedAtStartTest {
         val app = koinApplication {
             loadModules(
                 module {
-                    single(isCreatedAtStart = true) { Simple.ComponentA() }
+                    single(createdAtStart = true) { Simple.ComponentA() }
                 }
             )
         }.start()

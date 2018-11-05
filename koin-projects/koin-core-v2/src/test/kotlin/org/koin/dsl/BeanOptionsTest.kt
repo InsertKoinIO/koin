@@ -13,7 +13,7 @@ class BeanOptionsTest {
         val app = koinApplication {
             loadModules(
                 module {
-                    single(isCreatedAtStart = true) { Simple.ComponentA() }
+                    single(createdAtStart = true) { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
                 }
             )

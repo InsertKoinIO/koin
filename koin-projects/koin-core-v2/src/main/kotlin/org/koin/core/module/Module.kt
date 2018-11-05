@@ -4,7 +4,8 @@ import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
-import org.koin.core.scope.setScopeId
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.scope.Scope
 
 class Module(internal val isCreatedAtStart: Boolean, internal val override: Boolean) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
@@ -17,12 +18,12 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
 
     inline fun <reified T> single(
         name: String? = null,
-        isCreatedAtStart: Boolean = false,
+        createdAtStart: Boolean = false,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = BeanDefinition.createSingle(name, definition)
-        declareDefinition(beanDefinition, Options(isCreatedAtStart, override))
+        declareDefinition(beanDefinition, Options(createdAtStart, override))
         return beanDefinition
     }
 
@@ -52,7 +53,11 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         this.options.override = options.override || override
     }
 
-    inline fun <reified T> get(name : String? = null): T {
-        return koin.get(name)
+    inline fun <reified T> get(
+        name: String? = null,
+        scope: Scope? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): T {
+        return koin.get(name, scope, parameters)
     }
 }

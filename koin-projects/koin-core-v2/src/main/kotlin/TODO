@@ -44,18 +44,20 @@ Scope Callbacks
 attributes
     scope
 
---
+
+parameters propagation / get DSL
+
 
 detached scope / several scopes
 
 --
 
-Logger / Option debug globale
+Logger / Option debug global
 Graph logs
 
-Properties
+--
 
-parameters propagation / get DSL
+Properties
 
 Projets
 -> Test
