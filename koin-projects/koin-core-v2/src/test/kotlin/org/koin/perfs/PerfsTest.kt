@@ -1,6 +1,7 @@
 package org.koin.perfs
 
 import org.junit.Test
+import org.koin.core.logger.Level
 import org.koin.core.time.logDuration
 import org.koin.dsl.koinApplication
 import org.koin.test.assertDefinitionsCount
@@ -21,6 +22,7 @@ class PerfsTest {
     fun `perfModule400 module perfs`() {
         val app = logDuration("Koin app started") {
             koinApplication {
+                useLogger(Level.DEBUG)
                 loadModules(perfModule400)
             }.start()
         }
@@ -29,7 +31,7 @@ class PerfsTest {
 
         val koin = app.koin
 
-        logDuration("Requests") {
+        logDuration("Requests",Level.INFO) {
             koin.get<Perfs.A27>()
             koin.get<Perfs.B31>()
             koin.get<Perfs.C12>()

@@ -1,6 +1,6 @@
 package org.koin.core.instance
 
-import org.koin.core.KoinApplication
+import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.parameter.ParametersDefinition
@@ -14,7 +14,7 @@ class ScopeInstance<T>(private val beanDefinition: BeanDefinition<T>) : Instance
 
     override fun release(scope: Scope?) {
         scope?.let {
-            KoinApplication.log("[Koin] releasing '$scope' ~ $beanDefinition ")
+            logger.debug {"[Koin] releasing '$scope' ~ $beanDefinition "}
             values.remove(scope.internalId)
         }
     }

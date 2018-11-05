@@ -6,7 +6,7 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
+    
     testCompile "junit:junit:$junit_version"
     testCompile "org.mockito:mockito-inline:$mockito_version"
 

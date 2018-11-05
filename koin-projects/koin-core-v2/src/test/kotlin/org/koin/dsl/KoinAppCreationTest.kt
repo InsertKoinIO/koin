@@ -3,7 +3,9 @@ package org.koin.dsl
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.logger.Level
 import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
@@ -39,5 +41,15 @@ class KoinAppCreationTest {
         } catch (e: KoinAppAlreadyStartedException) {
         }
         app.stop()
+    }
+
+    @Test
+    fun `allow declare a logger`() {
+        koinApplication {
+            useLogger(Level.NONE)
+        }
+        KoinApplication.logger.debug { "debug" }
+        KoinApplication.logger.info { "info" }
+        KoinApplication.logger.error { "error" }
     }
 }

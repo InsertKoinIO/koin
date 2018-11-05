@@ -2,7 +2,7 @@
 
 package org.koin.core.instance
 
-import org.koin.core.KoinApplication
+import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.parameter.ParametersDefinition
@@ -15,7 +15,7 @@ interface Instance<T> {
     fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
 
     fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
-        KoinApplication.log("[Koin] create instance ~ $beanDefinition")
+        logger.debug { "[Koin] create instance ~ $beanDefinition" }
         try {
             val parametersHolder: ParametersHolder = parameters?.let { parameters() } ?: emptyParametersHolder()
             val value = beanDefinition.definition(parametersHolder)

@@ -28,7 +28,7 @@ class ModuleOptions {
 
     @Test
     fun `module created options`() {
-        val module = module(isCreatedAtStart = true) {
+        val module = module(createdAtStart = true) {
         }
 
         assertTrue(module.isCreatedAtStart)
@@ -38,7 +38,7 @@ class ModuleOptions {
     @Test
     fun `module definitions options inheritance`() {
 
-        val module = module(isCreatedAtStart = true, override = true) {
+        val module = module(createdAtStart = true, override = true) {
             single { Simple.ComponentA() }
         }
 
