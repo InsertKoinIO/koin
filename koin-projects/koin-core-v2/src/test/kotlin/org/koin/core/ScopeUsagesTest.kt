@@ -78,6 +78,24 @@ class ScopeUsagesTest {
     }
 
     @Test
+    fun `can create close recreate a scope`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+        val c1 = koin.createScope(SCOPE_ID)
+        val a1 = koin.get<Simple.ComponentA>()
+        c1.close()
+        val c2 = koin.createScope(SCOPE_ID)
+        val a2 = koin.get<Simple.ComponentA>()
+
+        assertNotEquals(c1,c2)
+        assertNotEquals(a1,a2)
+    }
+
+    @Test
     fun `created scope is associated to Koin instance`() {
         val app = koinApplication {
             loadModules(module {

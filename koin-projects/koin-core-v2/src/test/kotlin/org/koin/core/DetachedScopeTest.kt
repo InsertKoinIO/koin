@@ -60,6 +60,27 @@ class DetachedScopeTest {
     }
 
     @Test
+    fun `closing scope don't impact other detached scopes`() {
+        val app = koinApplication {
+            loadModules(module {
+                scope(SCOPE_ID) { Simple.ComponentA() }
+            })
+        }
+        val koin = app.koin
+
+        val scope1: Scope = koin.detachScope(SCOPE_ID)
+        val scope2: Scope = koin.detachScope(SCOPE_ID)
+
+        val as1 = koin.get<Simple.ComponentA>(scope = scope1)
+        val as2 = koin.get<Simple.ComponentA>(scope = scope2)
+
+        scope1.close()
+
+        assertNotEquals(as1, as2)
+        assertEquals(as2, koin.get<Simple.ComponentA>(scope = scope2))
+    }
+
+    @Test
     fun `can resolve components from a detached and default scope`() {
         val app = koinApplication {
             loadModules(module {
