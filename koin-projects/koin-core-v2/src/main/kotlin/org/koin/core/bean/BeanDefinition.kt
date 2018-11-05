@@ -2,8 +2,10 @@ package org.koin.core.bean
 
 import org.koin.core.instance.FactoryInstance
 import org.koin.core.instance.Instance
+import org.koin.core.instance.ScopeInstance
 import org.koin.core.instance.SingleInstance
 import org.koin.core.parameter.ParametersHolder
+import org.koin.core.scope.setScopeId
 import kotlin.reflect.KClass
 
 data class BeanDefinition<T>(
@@ -26,6 +28,17 @@ data class BeanDefinition<T>(
         ): BeanDefinition<T> {
             val beanDefinition = createDefinition(name, definition)
             beanDefinition.instance = SingleInstance(beanDefinition)
+            return beanDefinition
+        }
+
+        inline fun <reified T> createScope(
+            name: String? = null,
+            scopeId: String,
+            noinline definition: Definition<T>
+        ): BeanDefinition<T> {
+            val beanDefinition = createDefinition(name, definition, Kind.SCOPE)
+            beanDefinition.instance = ScopeInstance(beanDefinition)
+            beanDefinition.setScopeId(scopeId)
             return beanDefinition
         }
 
@@ -52,7 +65,7 @@ data class BeanDefinition<T>(
 }
 
 enum class Kind {
-    SINGLE, FACTORY
+    SINGLE, FACTORY, SCOPE
 }
 
 typealias Definition<T> = (ParametersHolder) -> T

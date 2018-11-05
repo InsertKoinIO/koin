@@ -4,6 +4,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.InstanceResolver
+import org.koin.core.scope.Scope
 import org.koin.core.time.logDuration
 
 class Koin {
@@ -19,6 +20,7 @@ class Koin {
             val clazz = T::class
             return logDuration("[Koin] got '$clazz'") {
                 val definition: BeanDefinition<*>? = beanRegistry.findDefinition(name, clazz)
+                val scope : Scope? =
                 instanceResolver.resolveInstance(definition, parameters, clazz)
             }
         }
@@ -36,5 +38,9 @@ class Koin {
     fun close() {
         beanRegistry.close()
         instanceResolver.close()
+    }
+
+    fun createScope(scopeId: String): Scope {
+        return Scope(scopeId)
     }
 }

@@ -6,7 +6,7 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
 
-class ParametersHolder {
+class ParametersHolderTest {
 
     @Test
     fun `create a parameters holder`() {

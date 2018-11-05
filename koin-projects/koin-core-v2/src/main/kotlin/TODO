@@ -37,7 +37,7 @@ Injection Params
 
 Scope
     withScope(""){
-        scope{}
+        scoped { }
     }
 Scope Callbacks
 
