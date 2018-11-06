@@ -11,7 +11,9 @@ class Simple {
     class Component2 : ComponentInterface1
 
     class MySingle(val id : Int)
-    class MyFactory(val id : Int)
+    class MyIntFactory(val id : Int)
+    class MyStringFactory(val s : String)
+    class AllFactory(val ints : MyIntFactory, val strings : MyStringFactory)
 }
 
 class Errors {

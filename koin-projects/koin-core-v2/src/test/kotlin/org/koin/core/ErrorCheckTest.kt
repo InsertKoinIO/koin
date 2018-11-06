@@ -25,7 +25,7 @@ class ErrorCheckTest {
     }
 
     @Test
-    fun `unknown dependency`() {
+    fun `unknown linked dependency`() {
         val app = koinApplication {
             loadModules(module {
                 single { Simple.ComponentB(get()) }
@@ -34,7 +34,7 @@ class ErrorCheckTest {
         try {
             app.koin.get<Simple.ComponentB>()
             fail("should not get instance")
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: InstanceCreationException) {
             e.printStackTrace()
         }
     }

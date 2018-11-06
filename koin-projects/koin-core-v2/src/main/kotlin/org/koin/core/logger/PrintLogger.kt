@@ -36,7 +36,7 @@ class PrintLogger(level: Level = Level.NONE, val dateFormat: String = "HH:mm:ss:
     override fun log(level: Level, msg: MESSAGE) {
         val printer = if (level >= Level.ERROR) System.err else System.out
         if (this.level <= level) {
-            printer.println("${date()} [$level] ${msg()}")
+            printer.println("${date()} [$level] $KOIN_TAG ${msg()}")
         }
     }
 }

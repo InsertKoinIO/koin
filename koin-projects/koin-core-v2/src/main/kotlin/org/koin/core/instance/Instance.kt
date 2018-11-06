@@ -15,16 +15,17 @@ abstract class Instance {
     abstract fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
 
     fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
-        logger.debug { "[Koin] create instance ~ $beanDefinition" }
+        logger.debug { "creating instance ~ $beanDefinition" }
         try {
             val parametersHolder: ParametersHolder = parameters?.let { parameters() } ?: emptyParametersHolder()
             val value = beanDefinition.definition(parametersHolder)
             return value as T
         } catch (e: Exception) {
-            val stack = e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                .joinToString(ERROR_SEPARATOR)
-            logger.error { "[Koin] Could not create instance for $beanDefinition: \n$stack" }
-            throw InstanceCreationException("Could not create instance for $beanDefinition")
+            val stack =
+                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                    .joinToString(ERROR_SEPARATOR)
+            logger.error { "Could not create instance for $beanDefinition: \n$stack" }
+            throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }
 

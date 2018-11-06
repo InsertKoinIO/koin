@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -52,13 +53,13 @@ class ParametersInjectionTest {
         val app = koinApplication {
             loadModules(
                 module {
-                    factory { (i: Int) -> Simple.MyFactory(i) }
+                    factory { (i: Int) -> Simple.MyIntFactory(i) }
                 })
         }
 
         val koin = app.koin
-        val a: Simple.MyFactory = koin.get { parametersOf(42) }
-        val a2: Simple.MyFactory = koin.get { parametersOf(43) }
+        val a: Simple.MyIntFactory = koin.get { parametersOf(42) }
+        val a2: Simple.MyIntFactory = koin.get { parametersOf(43) }
 
         assertEquals(42, a.id)
         assertEquals(43, a2.id)
@@ -66,7 +67,24 @@ class ParametersInjectionTest {
 
     @Test
     @Ignore
-    fun `chained definition injection`() {
-        TODO()
+    fun `chained factory injection`() {
+        val koin = koinApplication {
+            useLogger(Level.DEBUG)
+            loadModules(
+                module {
+                    factory { (i: Int) -> Simple.MyIntFactory(i) }
+                    factory { (s: String) -> Simple.MyStringFactory(s) }
+                    factory { (i: Int, s: String) ->
+                        Simple.AllFactory(
+                            get { parametersOf(i) },
+                            get { parametersOf(s) })
+                    }
+                })
+        }.koin
+
+        val f = koin.get<Simple.AllFactory> { parametersOf(42, "42") }
+
+        assertEquals(42, f.ints.id)
+        assertEquals("42", f.strings.s)
     }
 }

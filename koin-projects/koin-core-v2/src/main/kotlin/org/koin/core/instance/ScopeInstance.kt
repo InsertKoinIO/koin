@@ -13,7 +13,7 @@ class ScopeInstance<T>(private val beanDefinition: BeanDefinition<T>) : Instance
 
     override fun release(scope: Scope?) {
         scope?.let {
-            logger.debug { "[Koin] releasing '$scope' ~ $beanDefinition " }
+            logger.debug { "releasing '$scope' ~ $beanDefinition " }
             values.remove(scope.internalId)
         }
     }

@@ -4,7 +4,7 @@ abstract class Logger {
 
     var level: Level = Level.INFO
 
-    abstract fun log(level : Level, msg : MESSAGE)
+    abstract fun log(level: Level, msg: MESSAGE)
 
     fun debug(msg: MESSAGE) {
         log(Level.DEBUG, msg)
@@ -18,6 +18,8 @@ abstract class Logger {
         log(Level.ERROR, msg)
     }
 }
+
+const val KOIN_TAG = "[Koin]"
 
 enum class Level {
     DEBUG, INFO, ERROR, NONE

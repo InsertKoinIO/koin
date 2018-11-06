@@ -31,8 +31,8 @@ class Koin {
         noinline parameters: ParametersDefinition? = null
     ): T {
         val clazz = T::class
-        logger.debug { "[Koin] getting '${clazz.getFullName()}'" }
-        return logDuration("[Koin] got '${clazz.getFullName()}'") {
+        logger.debug { "getting '${clazz.getFullName()}'" }
+        return logDuration("got '${clazz.getFullName()}'") {
             get(clazz, name, scope, parameters)
         }
     }

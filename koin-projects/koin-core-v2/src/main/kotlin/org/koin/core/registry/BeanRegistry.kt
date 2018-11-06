@@ -24,7 +24,7 @@ class BeanRegistry {
         logger.info {
             val size = definitions.size
             val def = if (size <= 1) "definition" else "definitions"
-            "[Koin] registered $size $def"
+            "registered $size $def"
         }
     }
 
@@ -62,7 +62,7 @@ class BeanRegistry {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
-            logger.info { "[Koin] bind type:'${type.getFullName()}' ~ $definition" }
+            logger.info { "bind type:'${type.getFullName()}' ~ $definition" }
         }
     }
 
@@ -72,7 +72,7 @@ class BeanRegistry {
                 throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
-                logger.info { "[Koin] bind name:'${definition.name}' ~ $definition" }
+                logger.info { "bind name:'${definition.name}' ~ $definition" }
             }
         }
     }

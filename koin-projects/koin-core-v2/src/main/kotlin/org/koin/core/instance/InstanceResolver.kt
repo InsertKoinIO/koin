@@ -42,7 +42,7 @@ class InstanceResolver {
     fun cleanCallStack(definition: BeanDefinition<*>?) {
         val pop = lastInStack()
         if (pop != definition) {
-            logger.error { "[Koin] call stack is inconsistent: return with $pop & should be $definition" }
+            logger.error { "call stack is inconsistent: return with $pop & should be $definition" }
             error("CallStack integrity error while resolving $definition")
         }
     }
@@ -50,7 +50,7 @@ class InstanceResolver {
     fun checkForCycle(definition: BeanDefinition<*>?) {
         if (callStack.any { it == definition }) {
             val pop = lastInStack()
-            logger.error { "[Koin] cycle dependency detected for $definition & $pop" }
+            logger.error { "cycle dependency detected for $definition & $pop" }
             error("CallStack cycle detected for $definition & $pop")
         }
     }
