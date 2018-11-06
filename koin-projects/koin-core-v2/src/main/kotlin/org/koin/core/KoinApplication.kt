@@ -6,25 +6,27 @@ import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
 import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.time.logDuration
+import org.koin.core.time.measureDurationOnly
 
 class KoinApplication {
 
     val koin = Koin()
 
     fun start(): KoinApplication = synchronized(this) {
-        logDuration("started", Level.INFO) {
+        val duration = measureDurationOnly {
             saveStandAloneAppInstance()
             createEagerInstances()
         }
+        logger.info { "started in $duration ms" }
         return this
     }
 
-    fun loadModules(vararg modulesToLoad: Module) {
-        KoinApplication.logger.info { "load modules" }
-        logDuration("modules loaded", Level.INFO) {
+    fun loadModules(vararg modulesToLoad: Module): KoinApplication {
+        val duration = measureDurationOnly {
             koin.beanRegistry.loadModules(koin, *modulesToLoad)
         }
+        logger.info { "modules loaded in $duration ms" }
+        return this
     }
 
     fun useLogger(level: Level = Level.INFO, logger: Logger = PrintLogger()) {
@@ -33,10 +35,10 @@ class KoinApplication {
     }
 
     fun createEagerInstances(): KoinApplication {
-        logger.debug { "creating instances at start ..." }
-        logDuration("created instances at start") {
+        val duration = measureDurationOnly {
             koin.createEagerInstances()
         }
+        logger.debug { "created instances in $duration ms" }
         return this
     }
 

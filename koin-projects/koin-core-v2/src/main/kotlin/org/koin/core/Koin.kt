@@ -8,7 +8,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
-import org.koin.core.time.logDuration
+import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -31,10 +31,13 @@ class Koin {
         noinline parameters: ParametersDefinition? = null
     ): T {
         val clazz = T::class
-        logger.debug { "getting '${clazz.getFullName()}'" }
-        return logDuration("got '${clazz.getFullName()}'") {
-            get(clazz, name, scope, parameters)
+        logger.debug { "+ get '${clazz.getFullName()}'" }
+
+        val (instance: T, duration: Double) = measureDuration {
+            get<T>(clazz, name, scope, parameters)
         }
+        logger.debug { "+ got '${clazz.getFullName()}' in $duration ms" }
+        return instance
     }
 
     inline fun <reified T> get(
@@ -43,7 +46,7 @@ class Koin {
         scope: Scope?,
         noinline parameters: ParametersDefinition?
     ): T = synchronized(this) {
-        val definition: BeanDefinition<*> = beanRegistry.findDefinition(name, clazz)
+        val definition = beanRegistry.findDefinition(name, clazz)
                 ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         val targetScope = scopeRegistry.prepareScope(definition, scope)

@@ -1,12 +1,14 @@
 package org.koin.core.time
 
-import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.logger.Level
+fun measureDurationOnly(code: () -> Unit): Double {
+    val start = System.nanoTime()
+    code()
+    return (System.nanoTime() - start) / 1000000.0
+}
 
-fun <T> logDuration(logMessage: String, level: Level = Level.DEBUG, code: () -> T): T {
+fun <T> measureDuration(code: () -> T): Pair<T, Double> {
     val start = System.nanoTime()
     val result = code()
     val duration = (System.nanoTime() - start) / 1000000.0
-    logger.log(level) { "$logMessage in $duration ms" }
-    return result
+    return Pair(result, duration)
 }
