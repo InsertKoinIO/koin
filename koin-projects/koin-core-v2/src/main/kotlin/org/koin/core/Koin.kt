@@ -1,5 +1,6 @@
 package org.koin.core
 
+import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.error.ScopeNotCreatedException
@@ -32,6 +33,7 @@ class Koin {
     ): T =
         synchronized(this) {
             val clazz = T::class
+            logger.debug { "[Koin] getting '$clazz'" }
             return logDuration("[Koin] got '$clazz'") {
                 get(clazz, name, scope, parameters)
             }

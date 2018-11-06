@@ -2,6 +2,7 @@ package org.koin.core
 
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
 import org.koin.core.standalone.StandAloneKoinApplication
@@ -13,13 +14,13 @@ class KoinApplication {
 
     fun loadModules(vararg modulesToLoad: Module) {
         logger.info { "[Koin] load modules" }
-        logDuration("[Koin] modules loaded",Level.INFO) {
+        logDuration("[Koin] modules loaded", Level.INFO) {
             koin.beanRegistry.loadModules(koin, *modulesToLoad)
         }
     }
 
     fun start(): KoinApplication = synchronized(this) {
-        logDuration("[Koin] started",Level.INFO) {
+        logDuration("[Koin] started", Level.INFO) {
             saveStandAloneAppInstance()
             createEagerInstances()
         }
@@ -27,15 +28,16 @@ class KoinApplication {
     }
 
     fun createEagerInstances(): KoinApplication {
-        logger.info { "[Koin] creating instances at start ..." }
-        logDuration("[Koin] created instances at start",Level.INFO) {
+        logger.debug { "[Koin] creating instances at start ..." }
+        logDuration("[Koin] created instances at start") {
             koin.createEagerInstances()
         }
         return this
     }
 
-    fun useLogger(level: Level) {
-        KoinApplication.logger = PrintLogger(level)
+    fun useLogger(level: Level, logger: Logger = PrintLogger()) {
+        KoinApplication.logger = logger
+        KoinApplication.logger.level = level
     }
 
     private fun saveStandAloneAppInstance() {
@@ -53,7 +55,7 @@ class KoinApplication {
 
     companion object {
 
-        var logger = PrintLogger(Level.NONE)
+        var logger: Logger = PrintLogger(Level.NONE)
 
         fun create() = KoinApplication()
     }

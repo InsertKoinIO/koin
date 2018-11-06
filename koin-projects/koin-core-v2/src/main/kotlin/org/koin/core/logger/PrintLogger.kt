@@ -23,33 +23,19 @@ import java.util.*
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger(val level: Level = Level.INFO) {
+class PrintLogger(level: Level = Level.NONE, val dateFormat : String = "HH:mm:ss:SSS") : Logger() {
 
-    private val df = SimpleDateFormat("HH:mm:ss:SSS")
+    init {
+        this.level = level
+    }
+
+    private val df = SimpleDateFormat(dateFormat)
 
     private fun date() = df.format(Date()).toString()
 
-    fun debug(msg: MESSAGE) {
-        log(Level.DEBUG, msg)
-    }
-
-    fun info(msg: MESSAGE) {
-        log(Level.INFO, msg)
-    }
-
-    fun error(msg: MESSAGE) {
-        log(Level.ERROR, msg)
-    }
-
-    fun log(level: Level, msg: MESSAGE) {
+    override fun log(level: Level, msg: MESSAGE) {
         if (this.level <= level) {
             println("${date()} [$level] ${msg()}")
         }
     }
 }
-
-enum class Level {
-    DEBUG, INFO, ERROR, NONE
-}
-
-typealias MESSAGE = () -> String
