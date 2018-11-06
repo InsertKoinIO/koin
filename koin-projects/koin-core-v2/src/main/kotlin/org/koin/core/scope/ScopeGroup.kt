@@ -5,6 +5,7 @@ import org.koin.core.bean.Definition
 import org.koin.core.module.Module
 
 class ScopeGroup(val scopeId: String, val module: Module) {
+
     inline fun <reified T> scoped(
         name: String? = null,
         override: Boolean = false,
@@ -12,4 +13,7 @@ class ScopeGroup(val scopeId: String, val module: Module) {
     ): BeanDefinition<T> {
         return module.scope(scopeId, name, override, definition)
     }
+
 }
+
+typealias ScopeGroupDefinition = ScopeGroup.() -> Unit

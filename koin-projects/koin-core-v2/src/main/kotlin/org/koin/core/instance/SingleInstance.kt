@@ -4,7 +4,7 @@ import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 
-class SingleInstance<T>(private val beanDefinition: BeanDefinition<T>) : Instance<T> {
+class SingleInstance<T>(private val beanDefinition: BeanDefinition<T>) : Instance() {
 
     override fun isCreated(scope: Scope?): Boolean = (value != null)
 

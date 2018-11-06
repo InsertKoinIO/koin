@@ -1,7 +1,10 @@
 package org.koin.core.registry
 
+import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.scope.Scope
+import org.koin.core.scope.getScopeId
 
 class ScopeRegistry {
 
@@ -46,11 +49,20 @@ class ScopeRegistry {
         return registeredScopes[scopeId]
     }
 
-    internal fun deleteScope(scope : Scope) {
+    internal fun deleteScope(scope: Scope) {
         allScopes.remove(scope)
-        if (registeredScopes[scope.id] == scope){
+        if (registeredScopes[scope.id] == scope) {
             registeredScopes.remove(scope.id)
         }
     }
 
+    fun prepareScope(definition: BeanDefinition<*>, scope: Scope? = null): Scope? {
+        return if (definition.isScoped()) {
+            if (scope == null) {
+                val scopeId = definition.getScopeId() ?: error("No scope id for $definition")
+                getScopeById(scopeId)
+                        ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created while trying to use scoped definition: $definition")
+            } else scope
+        } else null
+    }
 }

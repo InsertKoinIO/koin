@@ -46,7 +46,7 @@ class DefinitionCreatedAtStartTest {
         val app = koinApplication {
             loadModules(
                 module {
-                    factory{ Simple.ComponentA() }
+                    factory { Simple.ComponentA() }
                 }
             )
         }.start()

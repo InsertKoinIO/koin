@@ -12,6 +12,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `can resolve an additional type`() {
         val app = koinApplication {
+            useLogger()
             loadModules(
                 module {
                     single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -31,6 +32,7 @@ class AdditionalTypeBindingTest {
     fun `additional type conflict`() {
         try {
             koinApplication {
+                useLogger()
                 loadModules(
                     module {
                         single { Simple.Component1() } bind Simple.ComponentInterface1::class

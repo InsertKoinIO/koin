@@ -5,7 +5,7 @@ import org.junit.Test
 import org.koin.Errors
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
-import org.koin.core.error.NoDefinitionFoundException
+import org.koin.core.error.NoBeanDefFoundException
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -18,8 +18,23 @@ class ErrorCheckTest {
 
         try {
             app.koin.get<Simple.ComponentA>()
-            fail("should not get undeclared koincomponent")
-        } catch (e: NoDefinitionFoundException) {
+            fail("should not get instance")
+        } catch (e: NoBeanDefFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `unknown dependency`() {
+        val app = koinApplication {
+            loadModules(module {
+                single { Simple.ComponentB(get()) }
+            })
+        }
+        try {
+            app.koin.get<Simple.ComponentB>()
+            fail("should not get instance")
+        } catch (e: NoBeanDefFoundException) {
             e.printStackTrace()
         }
     }

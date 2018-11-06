@@ -9,7 +9,6 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.SCOPE_ID
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.dsl.withScope
 import org.koin.test.assertScopeHasBeenCreated
 import org.koin.test.getDefinition
 
@@ -91,8 +90,8 @@ class ScopeUsagesTest {
         val c2 = koin.createScope(SCOPE_ID)
         val a2 = koin.get<Simple.ComponentA>()
 
-        assertNotEquals(c1,c2)
-        assertNotEquals(a1,a2)
+        assertNotEquals(c1, c2)
+        assertNotEquals(a1, a2)
     }
 
     @Test

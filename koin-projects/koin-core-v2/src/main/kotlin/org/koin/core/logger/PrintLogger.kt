@@ -23,7 +23,7 @@ import java.util.*
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger(level: Level = Level.NONE, val dateFormat : String = "HH:mm:ss:SSS") : Logger() {
+class PrintLogger(level: Level = Level.NONE, val dateFormat: String = "HH:mm:ss:SSS") : Logger() {
 
     init {
         this.level = level
@@ -34,8 +34,9 @@ class PrintLogger(level: Level = Level.NONE, val dateFormat : String = "HH:mm:ss
     private fun date() = df.format(Date()).toString()
 
     override fun log(level: Level, msg: MESSAGE) {
+        val printer = if (level >= Level.ERROR) System.err else System.out
         if (this.level <= level) {
-            println("${date()} [$level] ${msg()}")
+            printer.println("${date()} [$level] ${msg()}")
         }
     }
 }

@@ -50,10 +50,14 @@ parameters propagation / get DSL
 
 detached scope / several scopes
 
---
+
 
 Logger / Option debug global
-Graph logs & KClass logs
+KClass logs
+
+--
+
+Graph logs
 
 --
 

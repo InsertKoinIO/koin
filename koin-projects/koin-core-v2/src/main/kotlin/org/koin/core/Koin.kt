@@ -2,15 +2,14 @@ package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.error.NoDefinitionFoundException
-import org.koin.core.error.ScopeNotCreatedException
+import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.instance.InstanceResolver
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
-import org.koin.core.registry.InstanceResolver
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
-import org.koin.core.scope.getScopeId
 import org.koin.core.time.logDuration
+import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 class Koin {
@@ -30,37 +29,26 @@ class Koin {
         name: String? = null,
         scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-    ): T =
-        synchronized(this) {
-            val clazz = T::class
-            logger.debug { "[Koin] getting '$clazz'" }
-            return logDuration("[Koin] got '$clazz'") {
-                get(clazz, name, scope, parameters)
-            }
+    ): T {
+        val clazz = T::class
+        logger.debug { "[Koin] getting '${clazz.getFullName()}'" }
+        return logDuration("[Koin] got '${clazz.getFullName()}'") {
+            get(clazz, name, scope, parameters)
         }
+    }
 
     inline fun <reified T> get(
         clazz: KClass<*>,
         name: String?,
         scope: Scope?,
         noinline parameters: ParametersDefinition?
-    ): T {
+    ): T = synchronized(this) {
         val definition: BeanDefinition<*> = beanRegistry.findDefinition(name, clazz)
-                ?: throw NoDefinitionFoundException("No definition for '$clazz' has been found. Check your module definitions.")
+                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-        val targetScope = prepareScope(definition, scope)
+        val targetScope = scopeRegistry.prepareScope(definition, scope)
 
         return instanceResolver.resolveInstance(definition, targetScope, parameters) as T
-    }
-
-    fun prepareScope(definition: BeanDefinition<*>, scope: Scope? = null): Scope? {
-        return if (definition.isScoped()) {
-            if (scope == null) {
-                val scopeId = definition.getScopeId() ?: error("No scope id registered on $definition")
-                scopeRegistry.getScopeById(scopeId)
-                        ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created while trying to use scoped definition: $definition")
-            } else scope
-        } else null
     }
 
     internal fun createEagerInstances() {

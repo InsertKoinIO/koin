@@ -7,6 +7,7 @@ import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeId
+import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 class BeanRegistry {
@@ -20,7 +21,11 @@ class BeanRegistry {
             saveDefinitions(module)
             linkContext(module, koin)
         }
-        logger.info {"[Koin] registered ${definitions.size} definitions"}
+        logger.info {
+            val size = definitions.size
+            val def = if (size <= 1) "definition" else "definitions"
+            "[Koin] registered $size $def"
+        }
     }
 
     private fun saveDefinitions(module: Module) {
@@ -57,7 +62,7 @@ class BeanRegistry {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
-            logger.info {"[Koin] bind type:'$type' ~ $definition"}
+            logger.info { "[Koin] bind type:'${type.getFullName()}' ~ $definition" }
         }
     }
 
@@ -67,7 +72,7 @@ class BeanRegistry {
                 throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
-                logger.info {"[Koin] bind name:'${definition.name}' ~ $definition"}
+                logger.info { "[Koin] bind name:'${definition.name}' ~ $definition" }
             }
         }
     }

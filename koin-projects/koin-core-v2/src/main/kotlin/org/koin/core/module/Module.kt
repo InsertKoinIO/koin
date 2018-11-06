@@ -6,6 +6,8 @@ import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeGroup
+import org.koin.core.scope.ScopeGroupDefinition
 
 class Module(internal val isCreatedAtStart: Boolean, internal val override: Boolean) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
@@ -48,16 +50,20 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         return beanDefinition
     }
 
-    private fun BeanDefinition<*>.updateOptions(options: Options) {
-        this.options.isCreatedAtStart = options.isCreatedAtStart || isCreatedAtStart
-        this.options.override = options.override || override
-    }
-
     inline fun <reified T> get(
         name: String? = null,
         scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(name, scope, parameters)
+    }
+
+    fun withScope(scopeId: String, scopeGroupDefinition: ScopeGroupDefinition) {
+        return ScopeGroup(scopeId, this).let(scopeGroupDefinition)
+    }
+
+    private fun BeanDefinition<*>.updateOptions(options: Options) {
+        this.options.isCreatedAtStart = options.isCreatedAtStart || isCreatedAtStart
+        this.options.override = options.override || override
     }
 }

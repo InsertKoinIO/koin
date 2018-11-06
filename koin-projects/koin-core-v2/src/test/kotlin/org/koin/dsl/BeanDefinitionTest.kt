@@ -26,7 +26,7 @@ class BeanDefinitionTest {
         val def1 = BeanDefinition.createScope(scopeId = scopeID, definition = { Simple.ComponentA() })
 
         assertEquals(scopeID, def1.getScopeId())
-        assertEquals(Kind.SCOPE, def1.kind)
+        assertEquals(Kind.Scope, def1.kind)
     }
 
     @Test
@@ -48,10 +48,10 @@ class BeanDefinitionTest {
         }
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
-        assertEquals(Kind.SINGLE, defA.kind)
+        assertEquals(Kind.Single, defA.kind)
 
         val defB = app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
-        assertEquals(Kind.FACTORY, defB.kind)
+        assertEquals(Kind.Factory, defB.kind)
     }
 
     @Test

@@ -12,13 +12,6 @@ class KoinApplication {
 
     val koin = Koin()
 
-    fun loadModules(vararg modulesToLoad: Module) {
-        logger.info { "[Koin] load modules" }
-        logDuration("[Koin] modules loaded", Level.INFO) {
-            koin.beanRegistry.loadModules(koin, *modulesToLoad)
-        }
-    }
-
     fun start(): KoinApplication = synchronized(this) {
         logDuration("[Koin] started", Level.INFO) {
             saveStandAloneAppInstance()
@@ -27,17 +20,24 @@ class KoinApplication {
         return this
     }
 
+    fun loadModules(vararg modulesToLoad: Module) {
+        KoinApplication.logger.info { "[Koin] load modules" }
+        logDuration("[Koin] modules loaded", Level.INFO) {
+            koin.beanRegistry.loadModules(koin, *modulesToLoad)
+        }
+    }
+
+    fun useLogger(level: Level = Level.INFO, logger: Logger = PrintLogger()) {
+        KoinApplication.logger = logger
+        KoinApplication.logger.level = level
+    }
+
     fun createEagerInstances(): KoinApplication {
         logger.debug { "[Koin] creating instances at start ..." }
         logDuration("[Koin] created instances at start") {
             koin.createEagerInstances()
         }
         return this
-    }
-
-    fun useLogger(level: Level, logger: Logger = PrintLogger()) {
-        KoinApplication.logger = logger
-        KoinApplication.logger.level = level
     }
 
     private fun saveStandAloneAppInstance() {
@@ -55,7 +55,7 @@ class KoinApplication {
 
     companion object {
 
-        var logger: Logger = PrintLogger(Level.NONE)
+        var logger: Logger = PrintLogger(Level.ERROR)
 
         fun create() = KoinApplication()
     }

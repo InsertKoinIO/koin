@@ -4,6 +4,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.logger.Level
 import org.koin.test.assertDefinitionsCount
 
 class ModuleDeclarationRulesTest {
@@ -26,6 +27,7 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `allow redeclaration - different names`() {
         val app = koinApplication {
+            useLogger(Level.INFO)
             loadModules(module {
                 single("default") { Simple.ComponentA() }
                 single("other") { Simple.ComponentA() }

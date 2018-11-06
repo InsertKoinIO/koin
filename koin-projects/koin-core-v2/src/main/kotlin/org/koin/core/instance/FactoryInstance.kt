@@ -5,7 +5,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 
 class FactoryInstance<T>(private val beanDefinition: BeanDefinition<T>) :
-    Instance<T> {
+    Instance() {
 
     var value: T? = null
 

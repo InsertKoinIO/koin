@@ -10,9 +10,9 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 
-interface Instance<T> {
+abstract class Instance {
 
-    fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
+    abstract fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
 
     fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         logger.debug { "[Koin] create instance ~ $beanDefinition" }
@@ -21,13 +21,19 @@ interface Instance<T> {
             val value = beanDefinition.definition(parametersHolder)
             return value as T
         } catch (e: Exception) {
-            //TODO Format error
-            e.printStackTrace()
-            throw InstanceCreationException("Error while creating instance for $beanDefinition")
+            val stack = e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                .joinToString(ERROR_SEPARATOR)
+            logger.error { "[Koin] Could not create instance for $beanDefinition: \n$stack" }
+            throw InstanceCreationException("Could not create instance for $beanDefinition")
         }
     }
 
-    fun isCreated(scope: Scope? = null): Boolean
 
-    fun release(scope: Scope? = null)
+    abstract fun isCreated(scope: Scope? = null): Boolean
+
+    abstract fun release(scope: Scope? = null)
+
+    companion object {
+        const val ERROR_SEPARATOR = "\n\t"
+    }
 }

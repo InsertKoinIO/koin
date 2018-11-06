@@ -1,5 +1,6 @@
-package org.koin.core.registry
+package org.koin.core.instance
 
+import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
@@ -36,16 +37,21 @@ class InstanceResolver {
         return definition.instance.get(scope, parameters)
     }
 
+    private fun lastInStack() = if (callStack.isNotEmpty()) callStack.pop() else null
+
     fun cleanCallStack(definition: BeanDefinition<*>?) {
-        val pop = callStack.pop()
+        val pop = lastInStack()
         if (pop != definition) {
+            logger.error { "[Koin] call stack is inconsistent: return with $pop & should be $definition" }
             error("CallStack integrity error while resolving $definition")
         }
     }
 
     fun checkForCycle(definition: BeanDefinition<*>?) {
         if (callStack.any { it == definition }) {
-            error("CallStack cycle detected for $definition")
+            val pop = lastInStack()
+            logger.error { "[Koin] cycle dependency detected for $definition & $pop" }
+            error("CallStack cycle detected for $definition & $pop")
         }
     }
 

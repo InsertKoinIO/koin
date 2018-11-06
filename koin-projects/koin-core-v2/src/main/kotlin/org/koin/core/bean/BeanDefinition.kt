@@ -6,6 +6,7 @@ import org.koin.core.instance.ScopeInstance
 import org.koin.core.instance.SingleInstance
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.setScopeId
+import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 data class BeanDefinition<T>(
@@ -13,7 +14,7 @@ data class BeanDefinition<T>(
     val primaryType: KClass<*>
 ) {
     val secondaryTypes = arrayListOf<KClass<*>>()
-    lateinit var instance: Instance<T>
+    lateinit var instance: Instance
     lateinit var definition: Definition<T>
     val options = Options()
     val attributes = Attributes()
@@ -24,9 +25,18 @@ data class BeanDefinition<T>(
      */
     fun isKind(kind: Kind): Boolean = this.kind == kind
 
-    fun isScoped() = isKind(Kind.SCOPE)
+    fun isScoped() = isKind(Kind.Scope)
 
-    //TODO Log & ToString()
+    override fun toString(): String {
+        val defKind = kind.toString()
+        val defName = name?.let { "name:'$name', " } ?: ""
+        val defType = "type:'${primaryType.getFullName()}'"
+        val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
+            val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
+            ", types:$typesAsString"
+        } else ""
+        return "$defKind[$defName$defType$defOtherTypes]"
+    }
 
     companion object {
         inline fun <reified T> createSingle(
@@ -43,7 +53,7 @@ data class BeanDefinition<T>(
             scopeId: String,
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
-            val beanDefinition = createDefinition(name, definition, Kind.SCOPE)
+            val beanDefinition = createDefinition(name, definition, Kind.Scope)
             beanDefinition.setScopeId(scopeId)
             beanDefinition.instance = ScopeInstance(beanDefinition)
             return beanDefinition
@@ -53,7 +63,7 @@ data class BeanDefinition<T>(
             name: String? = null,
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
-            val beanDefinition = createDefinition(name, definition, Kind.FACTORY)
+            val beanDefinition = createDefinition(name, definition, Kind.Factory)
             beanDefinition.instance = FactoryInstance(beanDefinition)
             return beanDefinition
         }
@@ -61,7 +71,7 @@ data class BeanDefinition<T>(
         inline fun <reified T> createDefinition(
             name: String?,
             noinline definition: Definition<T>,
-            kind: Kind = Kind.SINGLE
+            kind: Kind = Kind.Single
         ): BeanDefinition<T> {
             val beanDefinition = BeanDefinition<T>(name, T::class)
             beanDefinition.definition = definition
@@ -72,7 +82,7 @@ data class BeanDefinition<T>(
 }
 
 enum class Kind {
-    SINGLE, FACTORY, SCOPE
+    Single, Factory, Scope
 }
 
 typealias Definition<T> = (ParametersHolder) -> T
