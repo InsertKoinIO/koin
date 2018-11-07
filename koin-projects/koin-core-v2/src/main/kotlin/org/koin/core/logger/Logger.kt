@@ -22,7 +22,7 @@ abstract class Logger {
 const val KOIN_TAG = "[Koin]"
 
 enum class Level {
-    DEBUG, INFO, ERROR, NONE
+    DEBUG, INFO, ERROR
 }
 
-typealias MESSAGE = () -> String
+typealias MESSAGE = String

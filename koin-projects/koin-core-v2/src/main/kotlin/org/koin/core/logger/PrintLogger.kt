@@ -15,28 +15,21 @@
  */
 package org.koin.core.logger
 
-import java.text.SimpleDateFormat
-import java.util.*
-
 
 /**
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger(level: Level = Level.NONE, val dateFormat: String = "HH:mm:ss:SSS") : Logger() {
+class PrintLogger(level: Level = Level.ERROR) : Logger() {
 
     init {
         this.level = level
     }
 
-    private val df = SimpleDateFormat(dateFormat)
-
-    private fun date() = df.format(Date()).toString()
-
     override fun log(level: Level, msg: MESSAGE) {
         val printer = if (level >= Level.ERROR) System.err else System.out
         if (this.level <= level) {
-            printer.println("${date()} [$level] $KOIN_TAG ${msg()}")
+            printer.println("[$level] $KOIN_TAG $msg")
         }
     }
 }

@@ -21,11 +21,9 @@ class BeanRegistry {
             saveDefinitions(module)
             linkContext(module, koin)
         }
-        logger.info {
-            val size = definitions.size
-            val def = if (size <= 1) "definition" else "definitions"
-            "registered $size $def"
-        }
+        logger.info(
+            "registered ${definitions.size} definitions"
+        )
     }
 
     private fun saveDefinitions(module: Module) {
@@ -62,7 +60,7 @@ class BeanRegistry {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
-            logger.info { "bind type:'${type.getFullName()}' ~ $definition" }
+            logger.info("bind type:'${type.getFullName()}' ~ $definition")
         }
     }
 
@@ -72,7 +70,7 @@ class BeanRegistry {
                 throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
-                logger.info { "bind name:'${definition.name}' ~ $definition" }
+                logger.info("bind name:'${definition.name}' ~ $definition")
             }
         }
     }

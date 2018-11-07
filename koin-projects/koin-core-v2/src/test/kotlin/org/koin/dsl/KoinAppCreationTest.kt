@@ -48,8 +48,8 @@ class KoinAppCreationTest {
         koinApplication {
             useLogger(Level.NONE)
         }
-        KoinApplication.logger.debug { "debug" }
-        KoinApplication.logger.info { "info" }
-        KoinApplication.logger.error { "error" }
+        KoinApplication.logger.debug("debug")
+        KoinApplication.logger.info("info")
+        KoinApplication.logger.error("error")
     }
 }

@@ -31,12 +31,12 @@ class Koin {
         noinline parameters: ParametersDefinition? = null
     ): T {
         val clazz = T::class
-        logger.debug { "+ get '${clazz.getFullName()}'" }
+        logger.debug ("+ get '${clazz.getFullName()}'")
 
         val (instance: T, duration: Double) = measureDuration {
             get<T>(clazz, name, scope, parameters)
         }
-        logger.debug { "+ got '${clazz.getFullName()}' in $duration ms" }
+        logger.debug ("+ got '${clazz.getFullName()}' in $duration ms")
         return instance
     }
 

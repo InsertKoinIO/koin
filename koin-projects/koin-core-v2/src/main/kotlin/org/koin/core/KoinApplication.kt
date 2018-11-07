@@ -17,7 +17,7 @@ class KoinApplication {
             saveStandAloneAppInstance()
             createEagerInstances()
         }
-        logger.info { "started in $duration ms" }
+        logger.info("started in $duration ms")
         return this
     }
 
@@ -25,20 +25,20 @@ class KoinApplication {
         val duration = measureDurationOnly {
             koin.beanRegistry.loadModules(koin, *modulesToLoad)
         }
-        logger.info { "modules loaded in $duration ms" }
+        logger.info("modules loaded in $duration ms")
         return this
     }
 
-    fun useLogger(level: Level = Level.INFO, logger: Logger = PrintLogger()) {
-        KoinApplication.logger = logger
-        KoinApplication.logger.level = level
+    fun useLogger(level: Level = Level.INFO, log: Logger = PrintLogger()) {
+        logger = log
+        logger.level = level
     }
 
     fun createEagerInstances(): KoinApplication {
         val duration = measureDurationOnly {
             koin.createEagerInstances()
         }
-        logger.debug { "created instances in $duration ms" }
+        logger.debug("created instances in $duration ms")
         return this
     }
 
@@ -52,7 +52,7 @@ class KoinApplication {
     fun stop() = synchronized(this) {
         koin.close()
         StandAloneKoinApplication.app = null
-        logger.info { "stopped" }
+        logger.info("stopped")
     }
 
     companion object {
