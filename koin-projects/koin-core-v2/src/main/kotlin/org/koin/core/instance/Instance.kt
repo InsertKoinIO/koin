@@ -24,7 +24,7 @@ abstract class Instance {
             val stack =
                 e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
                     .joinToString(ERROR_SEPARATOR)
-            logger.error("Could not create instance for $beanDefinition: \n$stack")
+            logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }

@@ -14,7 +14,7 @@ class CoffeeApp : KoinComponent {
 fun main(vararg args: String) {
 
     koinApplication {
-        useLogger(Level.DEBUG)
+        useLogger()
         loadModules(coffeeAppModule)
     }.start()
 

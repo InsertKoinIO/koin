@@ -46,7 +46,7 @@ class KoinAppCreationTest {
     @Test
     fun `allow declare a logger`() {
         koinApplication {
-            useLogger(Level.NONE)
+            useLogger(Level.DEBUG)
         }
         KoinApplication.logger.debug("debug")
         KoinApplication.logger.info("info")
