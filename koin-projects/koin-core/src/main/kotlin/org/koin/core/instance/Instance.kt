@@ -14,7 +14,7 @@ abstract class Instance {
 
     abstract fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
 
-    fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
+    open fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         logger.debug("| create instance for $beanDefinition")
         try {
             val parametersHolder: ParametersHolder = parameters?.let { parameters() } ?: emptyParametersHolder()

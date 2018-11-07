@@ -18,18 +18,13 @@
 package org.koin.test
 
 import org.koin.core.Koin
-import org.koin.core.bean.BeanRegistry
-import org.koin.dsl.context.ModuleDefinition
-import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
-import org.koin.dsl.path.Path
-import org.koin.error.NoBeanDefFoundException
-import org.koin.log.Logger
-import org.koin.log.PrintLogger
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.StandAloneContext
-import org.koin.test.core.checkModules
+import org.koin.core.KoinApplication
+import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.KoinComponent
+import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.Definition
+import org.koin.core.error.NoBeanDefFoundException
+import org.koin.test.check.checkModules
 import org.mockito.Mockito.mock
 import kotlin.reflect.KClass
 
@@ -46,100 +41,59 @@ import kotlin.reflect.KClass
 interface KoinTest : KoinComponent
 
 /**
- * Dry Run
- * Try to instantiate all definitions
- * @Deprecated
- */
-@Deprecated("Please use the checkModules() function to checkModules your list of modules")
-fun KoinTest.dryRun() =
-    StandAloneContext.getKoin().createEagerInstances()
-
-/**
  * Check all definition's dependencies - run all modules in a test sandbox
  * and checkModules if definitions can run
  *
  * @param list of modules
  * @param logger - default is EmptyLogger
  */
-fun KoinTest.checkModules(list: List<Module>, logger: Logger = PrintLogger()) =
-    StandAloneContext.checkModules(list, logger)
+fun KoinApplication.checkModules() = koin.checkModules()
 
 /**
  * Declare & Create a mock in Koin container for given type
  */
-inline fun <reified T : Any> KoinTest.declareMock(
+inline fun <reified T : Any> KoinApplication.declareMock(
     name: String = "",
     noinline stubbing: (T.() -> Unit)? = null
 ): T {
     val clazz = T::class
-    Koin.logger.info("[mock] declare mock for $clazz")
+    logger.info("[mock] declare mock for $clazz")
 
-    val koin = StandAloneContext.getKoin()
-
-    val foundDefinition: BeanDefinition<*> = getDefinition(koin, name, clazz)
+    val foundDefinition: BeanDefinition<T> = koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
+            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
 
     declareMockedDefinition(foundDefinition, clazz, koin)
 
-    return mockInstance(koin, stubbing)
+    return applyStub(koin, stubbing)
 }
 
-inline fun <reified T : Any> mockInstance(
+inline fun <reified T : Any> applyStub(
     koin: Koin,
     noinline stubbing: (T.() -> Unit)?
 ): T {
-    val instance: T = koin.koinContext.get<T>()
+    val instance: T = koin.get()
     stubbing?.let { instance.apply(stubbing) }
     return instance
 }
 
 inline fun <reified T : Any> declareMockedDefinition(
-    foundDefinition: BeanDefinition<*>,
+    foundDefinition: BeanDefinition<T>,
     clazz: KClass<T>,
     koin: Koin
 ) {
-    val definition: BeanDefinition<*> =
-        foundDefinition.copy(definition = { mock(clazz.java) }, allowOverride = true)
-    koin.declare(definition)
+    val definition: BeanDefinition<T> =
+        foundDefinition.cloneForOverride({ mock(clazz.java) }, true)
+
+    koin.beanRegistry.saveDefinition(definition)
 }
 
-inline fun <reified T : Any> getDefinition(
-    koin: Koin,
-    name: String,
-    clazz: KClass<T>
-): BeanDefinition<*> {
-    val beanRegistry = koin.koinContext.instanceRegistry.beanRegistry
-    val definitions = lookAtDefinition(name, beanRegistry, clazz)
-    return if (definitions.size == 1) definitions.first() else throw NoBeanDefFoundException("Can't find definition for '$clazz' to mock")
-}
-
-inline fun <reified T : Any> lookAtDefinition(
-    name: String,
-    beanRegistry: BeanRegistry,
-    clazz: KClass<T>
-): List<BeanDefinition<*>> =
-    if (name.isNotEmpty()) beanRegistry.searchByName(
-        name
-    ) else beanRegistry.searchByClass(clazz)
-
-/**
- * Displays Module paths
- */
-fun dumpModulePaths() {
-    Koin.logger.info("Module paths:")
-    StandAloneContext.getKoin().koinContext.instanceRegistry.pathRegistry.paths.forEach {
-        Koin.logger.info(
-            "[$it]"
-        )
-    }
-}
-
-/**
- * Declare a definition to be included in Koin container
- */
-fun KoinTest.declare(module: String? = null, moduleExpression: ModuleDefinition.() -> Unit) {
-    StandAloneContext.loadKoinModules(
-        module(module ?: Path.ROOT) {
-            moduleExpression()
-        }
-    )
+fun <T : Any> BeanDefinition<T>.cloneForOverride(definition: Definition<T>, override: Boolean): BeanDefinition<T> {
+    val copy = this.copy()
+    copy.secondaryTypes = this.secondaryTypes
+    copy.definition = definition
+    copy.attributes = this.attributes.copy()
+    copy.options = this.options.copy()
+    copy.options.override = override
+    copy.kind = this.kind
+    return copy
 }

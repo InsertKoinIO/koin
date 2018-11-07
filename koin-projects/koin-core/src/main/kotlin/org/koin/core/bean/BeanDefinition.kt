@@ -13,11 +13,11 @@ data class BeanDefinition<T>(
     val name: String? = null,
     val primaryType: KClass<*>
 ) {
-    val secondaryTypes = arrayListOf<KClass<*>>()
+    var secondaryTypes = arrayListOf<KClass<*>>()
     lateinit var instance: Instance
     lateinit var definition: Definition<T>
-    val options = Options()
-    val attributes = Attributes()
+    var options = Options()
+    var attributes = Attributes()
     lateinit var kind: Kind
 
     /**

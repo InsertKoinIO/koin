@@ -1,239 +1,99 @@
-/*
- * Copyright 2017-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.koin.core
 
-import org.koin.core.instance.ModuleCallBack
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.core.scope.ScopeCallback
+import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.bean.BeanDefinition
+import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.instance.InstanceResolver
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.registry.BeanRegistry
+import org.koin.core.registry.ScopeRegistry
+import org.koin.core.scope.Scope
 import org.koin.core.time.measureDuration
-import org.koin.dsl.context.ModuleDefinition
-import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.definition.Definition
-import org.koin.dsl.definition.Kind
-import org.koin.dsl.module.Module
-import org.koin.dsl.path.Path
-import org.koin.log.EmptyLogger
-import org.koin.log.Logger
-import java.util.*
+import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
+class Koin {
 
-/**
- * Koin Context Builder API
- *
- * @author - Arnaud GIULIANI
- * @author - Laurent BARESSE
- */
-class Koin private constructor(val koinContext: KoinContext) {
+    val beanRegistry = BeanRegistry()
+    val instanceResolver = InstanceResolver()
+    val scopeRegistry = ScopeRegistry()
 
-    val propertyResolver = koinContext.propertyResolver
-    val beanRegistry = koinContext.instanceRegistry.beanRegistry
-    val pathRegistry = koinContext.instanceRegistry.pathRegistry
-    val instanceFactory = koinContext.instanceRegistry.instanceFactory
+    inline fun <reified T> inject(
+        name: String? = null,
+        scope: Scope? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): Lazy<T> =
+        lazy { get<T>(name, scope, parameters) }
 
-    /**
-     * Load Koin properties - whether Koin is already started or not
-     * Will look at koin.properties file
-     *
-     * @param useEnvironmentProperties - environment properties
-     * @param useKoinPropertiesFile - koin.properties file
-     * @param extraProperties - additional properties
-     */
-    fun loadProperties(koinProps: KoinProperties): Koin = synchronized(this) {
-        if (koinProps.useKoinPropertiesFile) {
-            Koin.logger.info("[properties] load koin.properties")
-            loadKoinProperties()
+    inline fun <reified T> get(
+        name: String? = null,
+        scope: Scope? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): T {
+        val clazz = T::class
+        logger.debug ("+ get '${clazz.getFullName()}'")
+
+        val (instance: T, duration: Double) = measureDuration {
+            get<T>(clazz, name, scope, parameters)
         }
-
-        if (koinProps.extraProperties.isNotEmpty()) {
-            Koin.logger.info("[properties] load extras properties : ${koinProps.extraProperties.size}")
-            loadExtraProperties(koinProps.extraProperties)
-        }
-
-        if (koinProps.useEnvironmentProperties) {
-            Koin.logger.info("[properties] load environment properties")
-            loadEnvironmentProperties()
-        }
-        return this
+        logger.debug ("+ got '${clazz.getFullName()}' in $duration ms")
+        return instance
     }
 
+    inline fun <reified T> get(
+        clazz: KClass<*>,
+        name: String?,
+        scope: Scope?,
+        noinline parameters: ParametersDefinition?
+    ): T = synchronized(this) {
+        val definition = beanRegistry.findDefinition(name, clazz)
+                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-    /**
-     * load extra properties
-     */
-    fun loadExtraProperties(props: Map<String, Any>): Koin {
-        if (props.isNotEmpty()) {
-            propertyResolver.addAll(props)
-        }
-        return this
+        val targetScope = scopeRegistry.prepareScope(definition, scope)
+
+        return instanceResolver.resolveInstance(definition, targetScope, parameters) as T
     }
 
-
-    private fun loadKoinProperties(koinFile: String = "/koin.properties"): Koin {
-        val content = Koin::class.java.getResource(koinFile)?.readText()
-        content?.let {
-            val koinProperties = Properties()
-            koinProperties.load(content.byteInputStream())
-            val nb = propertyResolver.import(koinProperties)
-            logger.debug("[properties] loaded $nb properties from '$koinFile' file")
-        }
-        return this
-    }
-
-
-    private fun loadEnvironmentProperties(): Koin {
-        val n1 = propertyResolver.import(System.getProperties())
-        val n2 = propertyResolver.import(System.getenv().toProperties())
-        logger.debug("[properties] loaded $n1 properties from properties")
-        logger.debug("[properties] loaded $n2 properties from env properties")
-        return this
-    }
-
-    /**
-     * load given list of module instances into current StandAlone koin context
-     */
-    fun loadModules(modules: Collection<Module>): Koin {
-        val duration = measureDuration {
-            modules.forEach { module ->
-                registerDefinitions(module(koinContext))
-            }
-            logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
-        }
-        logger.info("[modules] loaded in $duration ms")
-        return this
-    }
-
-    /**
-     * Register moduleDefinition definitions & subModules
-     */
-    private fun registerDefinitions(
-        moduleDefinition: ModuleDefinition,
-        parentModuleDefinition: ModuleDefinition? = null,
-        path: Path = Path.root()
-    ) {
-        val modulePath: Path =
-            pathRegistry.makePath(moduleDefinition.path, parentModuleDefinition?.path)
-        val consolidatedPath =
-            if (path != Path.root()) modulePath.copy(parent = path) else modulePath
-
-        pathRegistry.savePath(consolidatedPath)
-
-        // Add definitions & propagate eager/override
-        moduleDefinition.definitions.forEach { definition ->
-            val eager =
-                if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
-            val override =
-                if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
-
-//            val name = if (definition.name.isEmpty()) {
-//                val pathString =
-//                    if (consolidatedPath == Path.Companion.root()) "" else "$consolidatedPath."
-//                "$pathString${definition.primaryTypeName}"
-//            } else definition.name
-            val def = definition.copy(
-                isEager = eager,
-                allowOverride = override,
-                path = consolidatedPath
-            )
-            instanceFactory.delete(def)
-            beanRegistry.declare(def)
-        }
-
-        // Check sub contexts
-        moduleDefinition.subModules.forEach { subModule ->
-            registerDefinitions(
-                subModule,
-                moduleDefinition,
-                consolidatedPath
-            )
+    internal fun createEagerInstances() {
+        val definitions: List<BeanDefinition<*>> = beanRegistry.findAllCreatedAtStartDefinition()
+        definitions.forEach {
+            instanceResolver.resolveInstance(it, null, null)
         }
     }
 
-    /**
-     * Create instances for definitions tagged as `eager`
-     *
-     * @param defaultParameters - default injection parameters
-     */
-    fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
-        koinContext.instanceRegistry.createEagerInstances(defaultParameters)
-    }
-
-    /**
-     * Register ScopeCallback
-     */
-    fun registerScopeCallback(callback: ScopeCallback) {
-        koinContext.scopeRegistry.register(callback)
-    }
-
-    /**
-     * Register ModuleCallBack
-     */
-    fun registerModuleCallBack(callback: ModuleCallBack) {
-        koinContext.instanceRegistry.instanceFactory.register(callback)
-    }
-
-    /**
-     * Declare a koincomponent on the fly
-     */
-    fun <T> declare(definition: BeanDefinition<T>) {
-        beanRegistry.declare(definition)
-    }
-
-    /**
-     * Declare a koincomponent on the fly
-     */
-    inline fun <reified T : Any> declare(
-        noinline instance: Definition<T>,
-        name: String = "",
-        kind: Kind = Kind.Single,
-        overrideExisting: Boolean = false,
-        binds: List<KClass<*>> = emptyList()
-    ) {
-        val definition = BeanDefinition(
-            name = name,
-            kind = kind,
-            allowOverride = overrideExisting,
-            primaryType = T::class,
-            definition = instance
-        )
-        binds.forEach { definition.bind(it) }
-
-        declare(
-            definition
-        )
-    }
-
-    /**
-     * Close Koin instance
-     */
     fun close() {
-        logger.info("[Koin] close context")
-        koinContext.close()
+        beanRegistry.close()
+        instanceResolver.close()
     }
 
-    companion object {
-        /**
-         * Koin Logger
-         */
-        var logger: Logger = EmptyLogger()
-
-        /**
-         * Create Koin instance
-         */
-        fun create(koinContext: KoinContext = KoinContext.create()) = Koin(koinContext)
+    fun createScope(scopeId: String): Scope {
+        val createdScope = scopeRegistry.createScope(scopeId)
+        createdScope.register(this)
+        return createdScope
     }
+
+    fun getOrCreateScope(scopeId: String): Scope {
+        val scope = scopeRegistry.getOrCreateScope(scopeId)
+        if (!scope.isRegistered()) {
+            scope.register(this)
+        }
+        return scope
+    }
+
+    fun detachScope(scopeId: String): Scope {
+        val createdScope = scopeRegistry.detachScope(scopeId)
+        createdScope.register(this)
+        return createdScope
+    }
+
+    fun getDetachedScope(internalId: String): Scope? {
+        return scopeRegistry.getScopeByInternalId(internalId)
+    }
+
+    internal fun closeScope(internalId: String) {
+        val scope: Scope = scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
+        beanRegistry.releaseInstanceForScope(scope)
+        scopeRegistry.deleteScope(scope)
+    }
+
 }

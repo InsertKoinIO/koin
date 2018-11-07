@@ -32,7 +32,7 @@ class BeanRegistry {
         }
     }
 
-    private fun saveDefinition(definition: BeanDefinition<*>) {
+    fun saveDefinition(definition: BeanDefinition<*>) {
         definitions.addDefinition(definition)
         if (definition.name != null) {
             saveDefinitionForName(definition)

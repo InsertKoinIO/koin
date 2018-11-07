@@ -1,8 +1,6 @@
 package org.koin.core.bean
 
-class Attributes {
-
-    private val data: HashMap<String, Any> = hashMapOf()
+data class Attributes(private val data: HashMap<String, Any> = hashMapOf()) {
 
     fun <T> set(key: String, value: T) {
         data[key] = value as Any
