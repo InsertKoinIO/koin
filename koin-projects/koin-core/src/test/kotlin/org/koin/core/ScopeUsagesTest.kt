@@ -177,16 +177,16 @@ class ScopeUsagesTest {
 
     @Test
     fun `close a scope between several`() {
-        val SCOPE2_ID = "SCOPE2"
+        val otherScope = "SCOPE2"
         val app = koinApplication {
             loadModules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
-                scope(SCOPE2_ID) { Simple.ComponentB(get()) }
+                scope(otherScope) { Simple.ComponentB(get()) }
             })
         }
         val koin = app.koin
         val scope1 = koin.createScope(SCOPE_ID)
-        val scope2 = koin.createScope(SCOPE2_ID)
+        val scope2 = koin.createScope(otherScope)
 
         koin.get<Simple.ComponentA>()
         koin.get<Simple.ComponentB>()

@@ -1,5 +1,3 @@
 package org.koin.core.error
 
-class NoParameterFoundException(msg: String) : Exception(msg) {
-
-}
+class NoParameterFoundException(msg: String) : Exception(msg)

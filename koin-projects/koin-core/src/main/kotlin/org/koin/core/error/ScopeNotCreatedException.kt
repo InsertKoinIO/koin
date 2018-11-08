@@ -1,5 +1,3 @@
 package org.koin.core.error
 
-class ScopeNotCreatedException(msg: String) : Exception(msg) {
-
-}
+class ScopeNotCreatedException(msg: String) : Exception(msg)

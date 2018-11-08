@@ -16,6 +16,8 @@ class BeanRegistry {
     private val definitionsNames: HashMap<String, BeanDefinition<*>> = hashMapOf()
     private val definitionsClass: HashMap<KClass<*>, BeanDefinition<*>> = hashMapOf()
 
+    fun getDefinitions(): Set<BeanDefinition<*>> = definitions
+
     fun loadModules(koin: Koin, vararg modulesToLoad: Module) {
         modulesToLoad.forEach { module: Module ->
             saveDefinitions(module)

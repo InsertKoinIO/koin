@@ -66,7 +66,6 @@ class ParametersInjectionTest {
     }
 
     @Test
-    @Ignore
     fun `chained factory injection`() {
         val koin = koinApplication {
             useLogger(Level.DEBUG)

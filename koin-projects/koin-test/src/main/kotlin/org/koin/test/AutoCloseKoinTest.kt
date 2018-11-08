@@ -16,7 +16,6 @@
 package org.koin.test
 
 import org.junit.After
-import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.standalone.StandAloneKoinApplication
 
 /**
@@ -28,7 +27,6 @@ abstract class AutoCloseKoinTest : KoinTest {
 
     @After
     fun autoClose() {
-        logger.info("[KoinTest] closing Koin")
         StandAloneKoinApplication.get().stop()
     }
 }

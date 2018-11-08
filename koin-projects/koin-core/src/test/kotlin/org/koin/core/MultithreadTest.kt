@@ -1,15 +1,15 @@
 package org.koin.core
 
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.assertDefinitionsCount
 import org.koin.test.getDefinition
 import org.koin.test.hasBeenCreated
 import kotlin.random.Random
+
+const val MAX_TIME = 1000L
 
 class MultithreadTest {
 
@@ -53,8 +53,6 @@ class MultithreadTest {
         assertTrue(c.hasBeenCreated())
         app.stop()
     }
-
-    val MAX_TIME = 1000L
 
     private fun randomSleep() {
         val timer = Random.nextLong(MAX_TIME)

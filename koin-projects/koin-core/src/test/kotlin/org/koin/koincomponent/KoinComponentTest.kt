@@ -10,8 +10,8 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class MyComponent : KoinComponent {
-    val a_inject: Simple.ComponentA by inject()
-    val a_get: Simple.ComponentA = get()
+    val anInject: Simple.ComponentA by inject()
+    val aGet: Simple.ComponentA = get()
 }
 
 class KoinComponentTest {
@@ -29,8 +29,8 @@ class KoinComponentTest {
         val a: Simple.ComponentA = koin.get()
         val component = MyComponent()
 
-        Assert.assertEquals(component.a_inject, a)
-        Assert.assertEquals(component.a_get, a)
+        Assert.assertEquals(component.anInject, a)
+        Assert.assertEquals(component.aGet, a)
 
         app.stop()
     }

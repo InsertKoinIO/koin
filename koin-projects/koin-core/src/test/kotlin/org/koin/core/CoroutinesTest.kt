@@ -51,8 +51,6 @@ class CoroutinesTest {
 
     }
 
-    val MAX_TIME = 1000L
-
     private suspend fun randomSleep() {
         val timer = Random.nextLong(MAX_TIME)
         println("thread sleep  $timer")

@@ -25,10 +25,10 @@ class GraphLogging {
 
 
     companion object {
-        val SPACE = " "
-        val CHAR_START = "+"
-        val CHAR_CONTINUE = "|"
-        val CHAR_LEVEL = "|  "
-        val CHAR_END = "+"
+        const val SPACE = " "
+        const val CHAR_START = "+"
+        const val CHAR_CONTINUE = "|"
+        const val CHAR_LEVEL = "|  "
+        const val CHAR_END = "+"
     }
 }

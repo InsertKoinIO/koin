@@ -10,7 +10,7 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 
-abstract class Instance {
+abstract class Instance<T>(val beanDefinition : BeanDefinition<T>) {
 
     abstract fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
 

@@ -11,12 +11,14 @@ class CoffeeApp : KoinComponent {
     val maker: CoffeeMaker by inject()
 }
 
+val coffeeKoinApp = koinApplication {
+    useLogger()
+    loadModules(coffeeAppModule)
+}
+
 fun main(vararg args: String) {
 
-    koinApplication {
-        useLogger()
-        loadModules(coffeeAppModule)
-    }.start()
+    coffeeKoinApp.start()
 
     val coffeeShop = CoffeeApp()
 

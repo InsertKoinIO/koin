@@ -14,7 +14,7 @@ data class BeanDefinition<T>(
     val primaryType: KClass<*>
 ) {
     var secondaryTypes = arrayListOf<KClass<*>>()
-    lateinit var instance: Instance
+    lateinit var instance: Instance<T>
     lateinit var definition: Definition<T>
     var options = Options()
     var attributes = Attributes()
@@ -26,6 +26,14 @@ data class BeanDefinition<T>(
     fun isKind(kind: Kind): Boolean = this.kind == kind
 
     fun isScoped() = isKind(Kind.Scope)
+
+    fun createInstanceHolder() {
+        this.instance = when (kind) {
+            Kind.Single -> SingleInstance(this)
+            Kind.Scope -> ScopeInstance(this)
+            Kind.Factory -> FactoryInstance(this)
+        }
+    }
 
     override fun toString(): String {
         val defKind = kind.toString()
@@ -43,9 +51,7 @@ data class BeanDefinition<T>(
             name: String? = null,
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
-            val beanDefinition = createDefinition(name, definition)
-            beanDefinition.instance = SingleInstance(beanDefinition)
-            return beanDefinition
+            return createDefinition(name, definition)
         }
 
         inline fun <reified T> createScope(
@@ -63,9 +69,7 @@ data class BeanDefinition<T>(
             name: String? = null,
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
-            val beanDefinition = createDefinition(name, definition, Kind.Factory)
-            beanDefinition.instance = FactoryInstance(beanDefinition)
-            return beanDefinition
+            return createDefinition(name, definition, Kind.Factory)
         }
 
         inline fun <reified T> createDefinition(
@@ -76,6 +80,7 @@ data class BeanDefinition<T>(
             val beanDefinition = BeanDefinition<T>(name, T::class)
             beanDefinition.definition = definition
             beanDefinition.kind = kind
+            beanDefinition.createInstanceHolder()
             return beanDefinition
         }
     }

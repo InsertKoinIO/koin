@@ -11,18 +11,18 @@ import org.koin.core.scope.Scope
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito
 
-class SandboxInstance<T>(val beanDefinition: BeanDefinition<T>) : Instance() {
+@Suppress("UNCHECKED_CAST")
+class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
     var value: T? = null
 
     override fun <T> get(scope: Scope?, parameters: ParametersDefinition?): T {
-        if (value == null){
-            value = create(beanDefinition,parameters)
+        if (value == null) {
+            value = create(beanDefinition, parameters)
         }
-        return value ?: error("")
+        return value as? T ?: error("")
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         try {
             beanDefinition.instance.get<T>(null, parameters)

@@ -1,7 +1,9 @@
+
+
 package org.koin
 
 class Simple {
-    class ComponentA()
+    class ComponentA
     class ComponentB(val a: ComponentA)
     class ComponentC(val b: ComponentB)
 
@@ -16,6 +18,7 @@ class Simple {
     class AllFactory(val ints : MyIntFactory, val strings : MyStringFactory)
 }
 
+@Suppress("unused")
 class Errors {
     class Boom{
         init {
