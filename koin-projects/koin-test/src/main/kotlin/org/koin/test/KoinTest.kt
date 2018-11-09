@@ -33,6 +33,9 @@ interface KoinTest {
     fun getKoin() = StandAloneKoinApplication.get().koin
 }
 
+/**
+ * Get an instance from Koin
+ */
 inline fun <reified T> KoinTest.get(
     name: String? = null,
     scope: Scope? = null,
@@ -40,6 +43,9 @@ inline fun <reified T> KoinTest.get(
 ): T =
     getKoin().get(name, scope, parameters)
 
+/**
+ * Lazy inject an instance from Koin
+ */
 inline fun <reified T> KoinTest.inject(
     name: String? = null,
     scope: Scope? = null,
