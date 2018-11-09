@@ -35,7 +35,12 @@ class KoinApplication {
     }
 
     fun loadFileProperties(fileName: String = "/koin.properties"): KoinApplication {
-        koin.properyRegistry.loadFromFile(fileName)
+        koin.properyRegistry.loadPropertiesFromFile(fileName)
+        return this
+    }
+
+    fun loadEnvironmentProperties(): KoinApplication {
+        koin.properyRegistry.loadEnvironmentProperties()
         return this
     }
 

@@ -29,19 +29,19 @@ class PropertyRegistry {
         values[key] = value as Any
     }
 
-    fun loadFromFile(fileName: String) {
+    fun loadPropertiesFromFile(fileName: String) {
         val content = Koin::class.java.getResource(fileName)?.readText()
         if (content != null) {
             logger.info("loaded properties from file:'$fileName'")
             val properties = readDataFromFile(content)
-            registerStringValues(properties)
+            properties.registerStringValues()
         } else {
             throw NoPropertyFileFoundException("No properties found for file '$fileName'")
         }
     }
 
-    private fun registerStringValues(properties: Properties) {
-        val propertiesMapValues = properties.toMap() as Map<String, String>
+    private fun Properties.registerStringValues() {
+        val propertiesMapValues = this.toMap() as Map<String, String>
         propertiesMapValues.forEach { (k: String, v: String) ->
             when {
                 v.isInt() -> add(k, v.toInt())
@@ -55,5 +55,13 @@ class PropertyRegistry {
         val properties = Properties()
         properties.load(content.byteInputStream())
         return properties
+    }
+
+    fun loadEnvironmentProperties() {
+        val sysProperties = System.getProperties()
+        sysProperties.registerStringValues()
+
+        val sysEnvProperties = System.getenv().toProperties()
+        sysEnvProperties.registerStringValues()
     }
 }
