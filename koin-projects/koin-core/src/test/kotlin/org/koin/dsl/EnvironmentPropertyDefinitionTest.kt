@@ -16,7 +16,7 @@ class EnvironmentPropertyDefinitionTest {
         val osName = koin.getProperty<String>("os.name")
         val osVersion = koin.getProperty<Float>("os.version")
         println("os data from env : $osName $osVersion")
-        
+
         assertNotNull(osName)
         assertNotNull(osVersion)
     }

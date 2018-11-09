@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.koin.core.registry
 
 import org.koin.core.Koin
@@ -10,16 +25,31 @@ import org.koin.core.scope.getScopeId
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
+/**
+ * Bean Registry
+ * declare/find definitions
+ *
+ * @author Arnaud Giuliani
+ */
 class BeanRegistry {
 
     internal val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
     private val definitionsNames: HashMap<String, BeanDefinition<*>> = hashMapOf()
     private val definitionsClass: HashMap<KClass<*>, BeanDefinition<*>> = hashMapOf()
 
-    fun getDefinitions(): Set<BeanDefinition<*>> = definitions
+    /**
+     * retrieve all definitions
+     * @return definitions
+     */
+    fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
 
-    fun loadModules(koin: Koin, vararg modulesToLoad: Module) {
-        modulesToLoad.forEach { module: Module ->
+    /**
+     * Load definitions from a Module
+     * @param koin instance
+     * @param modules
+     */
+    fun loadModules(koin: Koin, vararg modules: Module) {
+        modules.forEach { module: Module ->
             saveDefinitions(module)
             linkContext(module, koin)
         }
@@ -34,6 +64,10 @@ class BeanRegistry {
         }
     }
 
+    /**
+     * Save a definition
+     * @param definition
+     */
     fun saveDefinition(definition: BeanDefinition<*>) {
         definitions.addDefinition(definition)
         if (definition.name != null) {
@@ -81,6 +115,11 @@ class BeanRegistry {
         it.koin = koin
     }
 
+    /**
+     * Find a definition
+     * @param name
+     * @param clazz
+     */
     fun findDefinition(
         name: String?,
         clazz: KClass<*>

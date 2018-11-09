@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.junit.Test
-import org.koin.core.logger.GraphLogging
 
 class GraphLoggingTest {
 

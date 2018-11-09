@@ -41,7 +41,7 @@ private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<Any>>) 
 }
 
 private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<Any>> {
-    val allDefinitions = beanRegistry.getDefinitions()
+    val allDefinitions = beanRegistry.getAllDefinitions()
         .map {
             val beanDefinition = it as BeanDefinition<Any>
             beanDefinition.cloneForSandbox(SandboxInstance(beanDefinition))

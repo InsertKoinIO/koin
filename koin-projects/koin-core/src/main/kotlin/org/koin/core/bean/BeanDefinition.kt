@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.koin.core.bean
 
 import org.koin.core.instance.FactoryInstance
@@ -9,6 +24,15 @@ import org.koin.core.scope.setScopeId
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
+/**
+ * Koin bean definition
+ * main structure to make definition in Koin
+ *
+ * @param name
+ * @param primaryType
+ *
+ * @author Arnaud Giuliani
+ */
 data class BeanDefinition<T>(
     val name: String? = null,
     val primaryType: KClass<*>
@@ -25,8 +49,14 @@ data class BeanDefinition<T>(
      */
     fun isKind(kind: Kind): Boolean = this.kind == kind
 
+    /**
+     * Is a Scope definition
+     */
     fun isScoped() = isKind(Kind.Scope)
 
+    /**
+     * Create the associated Instance Holder
+     */
     fun createInstanceHolder() {
         this.instance = when (kind) {
             Kind.Single -> SingleInstance(this)
