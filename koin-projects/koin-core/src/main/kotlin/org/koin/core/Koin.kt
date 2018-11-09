@@ -6,6 +6,7 @@ import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceResolver
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
+import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDuration
@@ -17,6 +18,7 @@ class Koin {
     val beanRegistry = BeanRegistry()
     val instanceResolver = InstanceResolver()
     val scopeRegistry = ScopeRegistry()
+    val properyRegistry = PropertyRegistry()
 
     inline fun <reified T> inject(
         name: String? = null,
@@ -31,12 +33,12 @@ class Koin {
         noinline parameters: ParametersDefinition? = null
     ): T {
         val clazz = T::class
-        logger.debug ("+ get '${clazz.getFullName()}'")
+        logger.debug("+ get '${clazz.getFullName()}'")
 
         val (instance: T, duration: Double) = measureDuration {
             get<T>(clazz, name, scope, parameters)
         }
-        logger.debug ("+ got '${clazz.getFullName()}' in $duration ms")
+        logger.debug("+ got '${clazz.getFullName()}' in $duration ms")
         return instance
     }
 
@@ -94,6 +96,14 @@ class Koin {
         val scope: Scope = scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
         beanRegistry.releaseInstanceForScope(scope)
         scopeRegistry.deleteScope(scope)
+    }
+
+    fun <T> getProperty(key: String): T? {
+        return properyRegistry.getProperty<T>(key)
+    }
+
+    fun <T> setProperty(key: String, value: T) {
+        properyRegistry.setProperty(key, value)
     }
 
 }

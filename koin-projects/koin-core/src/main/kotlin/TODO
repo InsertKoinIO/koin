@@ -61,13 +61,19 @@ Properties
 
 --
 
-usage of java.canonicalname
 
 File header
+--
+1.0.x
+-> detached instance Android/Scope/Lifecycle
+-> injection params nullable
+-> add instance in scope
+--
+
 
 Projets
 -> Test
-
+    -> KoinTest, Autoclose, declareMock & checkModules()
 -> Ext
 -> Java
 -> Android

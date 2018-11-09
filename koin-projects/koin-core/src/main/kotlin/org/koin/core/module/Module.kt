@@ -4,6 +4,7 @@ import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
+import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeGroup
@@ -56,6 +57,10 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(name, scope, parameters)
+    }
+
+    fun <T> getProperty(key: String): T {
+        return koin.getProperty(key) ?: throw MissingPropertyException("Property '$key' is missing")
     }
 
     fun withScope(scopeId: String, scopeGroupDefinition: ScopeGroupDefinition) {

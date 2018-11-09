@@ -29,6 +29,16 @@ class KoinApplication {
         return this
     }
 
+    fun loadProperties(values: Map<String, Any>): KoinApplication {
+        koin.properyRegistry.addAll(values)
+        return this
+    }
+
+    fun loadFileProperties(fileName: String = "/koin.properties"): KoinApplication {
+        koin.properyRegistry.loadFromFile(fileName)
+        return this
+    }
+
     fun useLogger(level: Level = Level.INFO, log: Logger = PrintLogger()) {
         logger = log
         logger.level = level
