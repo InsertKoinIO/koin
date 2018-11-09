@@ -121,7 +121,7 @@ class BeanRegistry {
      * @param clazz
      */
     fun findDefinition(
-        name: String?,
+        name: String? = null,
         clazz: KClass<*>
     ): BeanDefinition<*>? =
         name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)

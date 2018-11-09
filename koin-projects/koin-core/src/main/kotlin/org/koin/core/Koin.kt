@@ -66,14 +66,7 @@ class Koin {
         scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
-        val clazz = T::class
-        logger.debug("+- get '${clazz.getFullName()}'")
-
-        val (instance: T, duration: Double) = measureDuration {
-            get<T>(clazz, name, scope, parameters)
-        }
-        logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
-        return instance
+        return get(T::class, name, scope, parameters)
     }
 
     /**
@@ -83,18 +76,39 @@ class Koin {
      * @param scope
      * @param parameters
      */
-    inline fun <reified T> get(
+    fun <T> get(
         clazz: KClass<*>,
         name: String?,
         scope: Scope?,
-        noinline parameters: ParametersDefinition?
+        parameters: ParametersDefinition?
     ): T = synchronized(this) {
+        logger.debug("+- get '${clazz.getFullName()}'")
+
+        val (instance: T, duration: Double) = measureDuration {
+            val (definition, targetScope) = prepareResolution(name, clazz, scope)
+            resolveInstance<T>(definition, targetScope, parameters)
+        }
+
+        logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+        return instance
+    }
+
+    fun <T> resolveInstance(
+        definition: BeanDefinition<*>,
+        targetScope: Scope?,
+        parameters: ParametersDefinition?
+    ) = instanceResolver.resolveInstance(definition, targetScope, parameters) as T
+
+    fun prepareResolution(
+        name: String?,
+        clazz: KClass<*>,
+        scope: Scope?
+    ): Pair<BeanDefinition<*>, Scope?> {
         val definition = beanRegistry.findDefinition(name, clazz)
                 ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         val targetScope = scopeRegistry.prepareScope(definition, scope)
-
-        return instanceResolver.resolveInstance(definition, targetScope, parameters) as T
+        return Pair(definition, targetScope)
     }
 
     internal fun createEagerInstances() {

@@ -22,9 +22,10 @@ import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.Instance
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.test.error.BrokenDefinitionException
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
 
 /**
  * Sandbox Instance Holder - let execute the definition but return a mock of it
@@ -34,28 +35,29 @@ import org.mockito.Mockito
 @Suppress("UNCHECKED_CAST")
 class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
-    var value: T? = null
+    private var value: T? = null
 
     override fun <T> get(scope: Scope?, parameters: ParametersDefinition?): T {
         if (value == null) {
             value = create(beanDefinition, parameters)
         }
-        return value as? T ?: error("")
+        return value as? T ?: error("SandboxInstance should return a value for $beanDefinition")
     }
 
     override fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         try {
-            beanDefinition.instance.get<T>(null, parameters)
+            val parameters = parameters?.let { parameters() } ?: emptyParametersHolder()
+            beanDefinition.definition(parameters)
         } catch (e: Exception) {
             when (e) {
                 is NoBeanDefFoundException, is InstanceCreationException, is DefinitionOverrideException -> {
                     throw BrokenDefinitionException("Definition $beanDefinition is broken due to error : $e")
                 }
-                else -> logger.debug("[Sandbox] continue on intercepted error: $e")
+                else -> logger.debug("sandbox resolution continue on caught error: $e")
             }
         }
-        val clazz = beanDefinition.primaryType.java
-        return Mockito.mock(clazz) as T
+        logger.debug("| create sandbox for $beanDefinition")
+        return mock(beanDefinition.primaryType.java) as T
     }
 
     override fun isCreated(scope: Scope?): Boolean = (value == null)

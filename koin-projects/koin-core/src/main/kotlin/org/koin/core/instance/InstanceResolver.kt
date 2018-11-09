@@ -35,10 +35,10 @@ class InstanceResolver {
      * @param scope
      * @param parameters
      */
-    inline fun <reified T> resolveInstance(
+    fun <T> resolveInstance(
         definition: BeanDefinition<*>,
         scope: Scope?,
-        noinline parameters: ParametersDefinition?
+        parameters: ParametersDefinition?
     ): T {
         checkForCycle(definition)
 
@@ -63,10 +63,10 @@ class InstanceResolver {
      * @param scope
      * @param parameters
      */
-    inline fun <reified T> getInstance(
+    fun <T> getInstance(
         definition: BeanDefinition<*>,
         scope: Scope?,
-        noinline parameters: ParametersDefinition?
+        parameters: ParametersDefinition?
     ): T {
         return definition.instance.get(scope, parameters)
     }

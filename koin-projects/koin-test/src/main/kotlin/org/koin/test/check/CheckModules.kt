@@ -39,7 +39,7 @@ fun Koin.checkModules() {
     runDefinitions(allDefinitions)
 }
 
-private fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<Any>>) {
+fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         val clazz = it.primaryType
         val scope = if (it.isScoped()) scopeRegistry.createScope(
@@ -49,28 +49,28 @@ private fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<Any>>) {
     }
 }
 
-private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<Any>>) {
+private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         beanRegistry.saveDefinition(it)
     }
 }
 
-private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<Any>> {
-    val allDefinitions = beanRegistry.getAllDefinitions()
+private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
+    return beanRegistry.getAllDefinitions()
         .map {
-            val beanDefinition = it as BeanDefinition<Any>
-            beanDefinition.cloneForSandbox(SandboxInstance(beanDefinition))
+            KoinApplication.logger.debug("* sandbox for $it")
+            it.cloneForSandbox() as BeanDefinition<*>
         }
-    return allDefinitions
 }
 
-fun <T> BeanDefinition<T>.cloneForSandbox(sandbox: SandboxInstance<T>): BeanDefinition<T> {
+fun <T> BeanDefinition<T>.cloneForSandbox(): BeanDefinition<T> {
     val copy = this.copy()
     copy.secondaryTypes = this.secondaryTypes
-    copy.instance = sandbox
+    copy.instance = SandboxInstance(copy)
     copy.definition = definition
     copy.attributes = this.attributes.copy()
     copy.options = this.options.copy()
+    copy.options.override = true
     copy.kind = this.kind
     return copy
 }
