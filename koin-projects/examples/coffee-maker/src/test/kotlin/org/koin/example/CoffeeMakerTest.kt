@@ -18,7 +18,7 @@ class CoffeeMakerTest : AutoCloseKoinTest() {
     fun before() {
         coffeeKoinApp.start()
 
-        declareMock<Heater>() {
+        declareMock<Heater> {
             given(isHot()).will { true }
         }
     }
