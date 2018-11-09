@@ -2,6 +2,41 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [1.0.2]()
+
+_Android_
+
+* `[FIXED]` Fixed bug with appCompat v26 https://github.com/InsertKoinIO/koin/pull/268
+* `[ADDED]` Android debug logs shut off https://github.com/InsertKoinIO/koin/issues/251
+
+_Android-Scope_
+
+* `[UPDATED]` Better scope management when associated to a lifecycle https://github.com/InsertKoinIO/koin/issues/235
+
+_Android-ViewModel_
+
+* `[FIXED]` Proguard Warning https://github.com/InsertKoinIO/koin/pull/267
+
+_Core_
+
+* `[UPDATED]` - Updated KoinComponent interface to allow easily add a custom Koin instance https://github.com/InsertKoinIO/koin/issues/224
+* `[UPDATED]` - Allow nullable injection params https://github.com/InsertKoinIO/koin/pull/242
+* `[UPDATED]` - Add instance for a dedicated scope https://github.com/InsertKoinIO/koin/issues/277
+* `[FIXED]` Documentation Typo fixed https://github.com/InsertKoinIO/koin/pull/263
+* `[FIXED]` Fixed Scope toString in debug https://github.com/InsertKoinIO/koin/issues/240 
+
+_Core-Ext_
+
+* `[FIXED]` Add scopeId param in experimental API builder https://github.com/InsertKoinIO/koin/pull/252
+
+
+_Test_
+
+* `[UPDATED]` Review declareMock to add mock lambda expression https://github.com/InsertKoinIO/koin/issues/243
+* `[FIXED]` Fixed params injection with checkModules https://github.com/InsertKoinIO/koin/issues/274
+
+
+
 ## [1.0.1]()
 
 _Android_
