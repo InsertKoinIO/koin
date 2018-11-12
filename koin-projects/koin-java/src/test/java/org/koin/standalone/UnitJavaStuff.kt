@@ -1,16 +1,13 @@
 package org.koin.standalone
 
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 @JvmField
 val koinModule = module {
     single { ComponentA() }
     single { ComponentB(get()) }
     single { ComponentC(get(), get()) }
-
-    module("anotherModule") {
-        scope("session") { ComponentD(get()) }
-    }
+    scope("session") { ComponentD(get()) }
 }
 
 class ComponentA()

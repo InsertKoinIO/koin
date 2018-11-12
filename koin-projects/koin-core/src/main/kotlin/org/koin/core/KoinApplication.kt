@@ -29,7 +29,7 @@ import org.koin.core.time.measureDurationOnly
  *
  * @author Arnaud Giuliani
  */
-class KoinApplication {
+class KoinApplication private constructor() {
 
     val koin = Koin()
 
@@ -88,9 +88,11 @@ class KoinApplication {
      * @param level
      * @param log - logger
      */
-    fun useLogger(level: Level = Level.INFO, log: Logger = PrintLogger()) {
+    @JvmOverloads
+    fun useLogger(level: Level = Level.INFO, log: Logger = PrintLogger()): KoinApplication {
         logger = log
         logger.level = level
+        return this
     }
 
     /**
@@ -124,6 +126,7 @@ class KoinApplication {
 
         var logger: Logger = PrintLogger(Level.ERROR)
 
+        @JvmStatic
         fun create() = KoinApplication()
     }
 }

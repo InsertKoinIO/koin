@@ -15,11 +15,10 @@
  */
 package org.koin.java.standalone
 
-import org.koin.core.KoinContext
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.Koin
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.standalone.StandAloneContext
+import org.koin.core.standalone.StandAloneKoinApplication
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -40,9 +39,9 @@ object KoinJavaComponent {
     @JvmStatic
     fun <T : Any> inject(
         clazz: Class<T>,
-        name: String = "",
+        name: String? = null,
         scope: Scope? = null,
-        parameters: ParameterDefinition = emptyParameterDefinition()
+        parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy { get(clazz, name, scope, parameters) }
     }
@@ -58,13 +57,13 @@ object KoinJavaComponent {
     @JvmStatic
     fun <T : Any> get(
         clazz: Class<T>,
-        name: String = "",
+        name: String? = null,
         scope: Scope? = null,
-        parameters: ParameterDefinition = emptyParameterDefinition()
+        parameters: ParametersDefinition? = null
     ): T {
         return getKoin().get(
-            name,
             clazz.kotlin,
+            name,
             scope,
             parameters
         )
@@ -75,26 +74,5 @@ object KoinJavaComponent {
      * @param key - key property
      */
     @JvmStatic
-    fun getKoin(): KoinContext = StandAloneContext.getKoin().koinContext
-
-    /**
-     * inject lazily given property
-     * @param key - key property
-     */
-    @JvmOverloads
-    @JvmStatic
-    fun <T> property(key: String, defaultValue: T? = null): Lazy<T?> {
-        return lazy { getProperty(key, defaultValue) }
-    }
-
-    /**
-     * Retrieve given property
-     * @param key - key property
-     */
-    @Suppress("UNCHECKED_CAST")
-    @JvmOverloads
-    @JvmStatic
-    fun <T> getProperty(key: String, defaultValue: T? = null): T? {
-        return getKoin().getProperty(key,defaultValue)
-    }
+    fun getKoin(): Koin = StandAloneKoinApplication.get().koin
 }

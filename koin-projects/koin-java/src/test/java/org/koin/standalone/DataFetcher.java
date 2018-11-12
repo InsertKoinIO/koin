@@ -15,10 +15,9 @@
  */
 package org.koin.standalone;
 
-import org.koin.core.parameter.ParameterList;
-import org.koin.java.standalone.KoinJavaComponent;
-
 import kotlin.Lazy;
+import org.koin.core.parameter.ParametersHolder;
+import org.koin.java.standalone.KoinJavaComponent;
 
 /**
  * @author @fredy-mederos
@@ -26,13 +25,13 @@ import kotlin.Lazy;
 public class DataFetcher {
 
     //From properties
-    private Lazy<String> PREFIX = KoinJavaComponent.property("PrefixProp");
-    private String SEPARATOR = KoinJavaComponent.getProperty("SeparatorProp");
+    private String PREFIX = KoinJavaComponent.getKoin().getProperty("PrefixProp");
+    private String SEPARATOR = KoinJavaComponent.getKoin().getProperty("SeparatorProp");
 
     //From components
     private Lazy<DataSource> localDb_lazy = KoinJavaComponent.inject(DataSource.class, "db");
     private DataSource remoteApi = KoinJavaComponent.get(DataSource.class, "api");
-    private DataConverter dataConverter = KoinJavaComponent.get(DataConverter.class, "", null,() -> new ParameterList(SEPARATOR));
+    private DataConverter dataConverter = KoinJavaComponent.get(DataConverter.class, null, null, () -> new ParametersHolder(SEPARATOR));
 
     public DataFetcher() {
         //Use this constructor only for test cases.
@@ -41,6 +40,6 @@ public class DataFetcher {
     }
 
     public String getAllDataConverted() {
-        return PREFIX.getValue() + dataConverter.convert(localDb_lazy.getValue().getData(), remoteApi.getData());
+        return PREFIX + dataConverter.convert(localDb_lazy.getValue().getData(), remoteApi.getData());
     }
 }

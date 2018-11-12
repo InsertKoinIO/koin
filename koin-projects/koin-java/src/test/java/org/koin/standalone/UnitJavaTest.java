@@ -3,21 +3,24 @@ package org.koin.standalone;
 import kotlin.Lazy;
 import org.junit.Before;
 import org.junit.Test;
+import org.koin.core.KoinApplication;
 import org.koin.core.scope.Scope;
 import org.koin.test.AutoCloseKoinTest;
 
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.koin.java.standalone.KoinJavaComponent.*;
-import static org.koin.java.standalone.KoinJavaStarter.startKoin;
+import static org.koin.java.standalone.KoinJavaComponent.get;
+import static org.koin.java.standalone.KoinJavaComponent.inject;
 import static org.koin.standalone.UnitJavaStuffKt.koinModule;
 
 public class UnitJavaTest extends AutoCloseKoinTest {
 
     @Before
     public void before() {
-        startKoin(singletonList(koinModule));
+        KoinApplication.create()
+                .useLogger()
+                .loadModules(koinModule)
+                .start();
     }
 
     @Test
