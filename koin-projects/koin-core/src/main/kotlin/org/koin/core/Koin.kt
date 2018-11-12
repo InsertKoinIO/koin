@@ -18,6 +18,7 @@ package org.koin.core
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.instance.InstanceResolver
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
@@ -93,7 +94,7 @@ class Koin {
         return instance
     }
 
-    fun <T> resolveInstance(
+    private fun <T> resolveInstance(
         definition: BeanDefinition<*>,
         targetScope: Scope?,
         parameters: ParametersDefinition?
@@ -126,6 +127,16 @@ class Koin {
         val createdScope = scopeRegistry.createScope(scopeId)
         createdScope.register(this)
         return createdScope
+    }
+
+    /**
+     * Create or retrieve a scope
+     * @param scopeId
+     */
+    fun getScope(scopeId: String): Scope {
+        val scope = scopeRegistry.getScopeById(scopeId) ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created")
+        scope.register(this)
+        return scope
     }
 
     /**

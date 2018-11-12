@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.java.standalone
+package org.koin.java
 
 import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
