@@ -20,11 +20,7 @@ package org.koin.core.logger
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger(level: Level = Level.ERROR) : Logger() {
-
-    init {
-        this.level = level
-    }
+class PrintLogger(level: Level = Level.INFO) : Logger(level) {
 
     override fun log(level: Level, msg: MESSAGE) {
         val printer = if (level >= Level.ERROR) System.err else System.out

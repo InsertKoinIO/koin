@@ -16,6 +16,7 @@
 package org.koin.core
 
 import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
@@ -25,7 +26,7 @@ import org.koin.core.time.measureDurationOnly
 
 /**
  * Koin Application
- * Help prepare resources for Koin context usages
+ * Help prepare resources for Koin context
  *
  * @author Arnaud Giuliani
  */
@@ -124,8 +125,11 @@ class KoinApplication private constructor() {
 
     companion object {
 
-        var logger: Logger = PrintLogger(Level.ERROR)
+        var logger: Logger = EmptyLogger()
 
+        /**
+         * Create a new instance of KoinApplication
+         */
         @JvmStatic
         fun create() = KoinApplication()
     }

@@ -20,9 +20,7 @@ package org.koin.core.logger
  *
  * @author Arnaud Giuliani
  */
-abstract class Logger {
-
-    var level: Level = Level.INFO
+abstract class Logger(var level: Level = Level.INFO) {
 
     abstract fun log(level: Level, msg: MESSAGE)
 

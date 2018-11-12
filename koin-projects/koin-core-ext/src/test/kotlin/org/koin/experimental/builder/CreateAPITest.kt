@@ -103,7 +103,7 @@ class CreateAPITest : KoinTest {
         val koin = koinApplication {
             useLogger(Level.DEBUG)
             loadModules(module {
-                single { ComponentA() }
+                single { create<ComponentA>() }
                 factory<Component> { create<ComponentD>() }
             })
         }.koin

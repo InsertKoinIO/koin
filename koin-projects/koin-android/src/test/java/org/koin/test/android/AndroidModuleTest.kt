@@ -3,128 +3,90 @@ package org.koin.test.android
 import android.app.Application
 import android.content.Context
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
-import org.junit.Before
 import org.junit.Test
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.with
-import org.koin.core.Koin
-import org.koin.dsl.module.module
-import org.koin.log.PrintLogger
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
-import org.koin.standalone.release
-import org.koin.standalone.setProperty
-import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertContextInstances
-import org.koin.test.ext.junit.assertContexts
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstanceHolders
+import org.koin.android.ext.koin.useAndroidContext
+import org.koin.core.logger.Level
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
+import org.koin.test.KoinTest
 import org.mockito.Mockito.mock
 
 /**
  * Android Module Tests
  */
-class AndroidModuleTest : AutoCloseKoinTest() {
+class AndroidModuleTest : KoinTest {
 
     companion object {
         val URL = "URL"
     }
 
     val SampleModule = module {
-        single { AndroidComponent(androidContext()) }
+        single { AndroidComponentA(androidContext()) }
+        single { AndroidComponentB(get()) }
+        single { AndroidComponentC(androidApplication()) }
+        single { OtherService(getProperty(URL)) }
     }
 
-    val ActivityModule = module {
-        module(CTX_ACTIVITY_MODULE) {
-            single { OtherService(get(), getProperty(URL)) }
-        }
+    class AndroidComponentA(val androidContext: Context)
+    class AndroidComponentB(val androidComponent: AndroidComponentA)
+    class AndroidComponentC(val application: Application)
+    class OtherService(val url: String)
 
-    }
-    val CTX_ACTIVITY_MODULE = "ActivityModule"
+    @Test
+    fun `should inject with android context`() {
+        val mockedContext = mock(Context::class.java)
 
-    class AndroidComponent(val androidContext: Context)
-    class OtherService(val androidComponent: AndroidComponent, val url: String)
+        val koin = koinApplication {
+            useLogger(Level.DEBUG)
+            useAndroidContext(mockedContext)
+            loadModules(SampleModule)
+        }.koin
 
-    @Before
-    fun before() {
-        Koin.logger = PrintLogger()
+        koin.get<AndroidComponentA>()
     }
 
     @Test
-    fun should_inject_by_scope() {
-        startKoin(listOf(SampleModule, ActivityModule)) with (mock(Context::class.java))
+    fun `should inject with android application`() {
+        val mockedContext = mock(Application::class.java)
 
-        assertContexts(2)
-        assertDefinitions(3)
-        assertRemainingInstanceHolders(0)
-        assertContextInstances(CTX_ACTIVITY_MODULE, 0)
+        val koin = koinApplication {
+            useLogger(Level.DEBUG)
+            useAndroidContext(mockedContext)
+            loadModules(SampleModule)
+        }.koin
 
-        setProperty(URL, "URL")
-
-        val service = get<OtherService>()
-        val component = get<AndroidComponent>()
-
-        assertEquals(component, service.androidComponent)
-        assertEquals(get<Context>(), component.androidContext)
-
-        assertContextInstances(CTX_ACTIVITY_MODULE, 1)
-        assertDefinitions(3)
-        assertRemainingInstanceHolders(3)
-
-//        release(CTX_ACTIVITY_MODULE)
-//        assertContextInstances(CTX_ACTIVITY_MODULE, 1)
-//        assertDefinitions(3)
-//        assertRemainingInstanceHolders(3)
+        koin.get<AndroidComponentC>()
     }
 
     @Test
-    fun should_scope_no_scope() {
-        startKoin(listOf(SampleModule))
+    fun `should make DI with serveral components`() {
+        val mockedContext = mock(Context::class.java)
 
-        assertContexts(1)
-        assertDefinitions(1)
-        assertRemainingInstanceHolders(0)
+        val koin = koinApplication {
+            useLogger(Level.DEBUG)
+            useAndroidContext(mockedContext)
+            loadModules(SampleModule)
+        }.koin
 
-        try {
-            get<AndroidComponent>()
-            fail()
-        } catch (e: Exception) {
-        }
+        val a = koin.get<AndroidComponentA>()
+        val b = koin.get<AndroidComponentB>()
 
-        assertContexts(1)
-        assertDefinitions(1)
-        assertRemainingInstanceHolders(1)
+        assertEquals(a, b.androidComponent)
     }
 
     @Test
-    fun should_init_context_and_dependency() {
-        startKoin(listOf(SampleModule)) with (mock(Application::class.java))
+    fun `should inject property`() {
+        val value = "URL"
+        val koin = koinApplication {
+            useLogger(Level.DEBUG)
+            loadProperties(hashMapOf(URL to value))
+            loadModules(SampleModule)
+        }.koin
 
-        assertDefinitions(3)
-        assertRemainingInstanceHolders(0)
+        val s = koin.get<OtherService>()
 
-        val component = get<AndroidComponent>()
-
-        assertEquals(get<Context>(), component.androidContext)
-
-        assertRemainingInstanceHolders(2)
-    }
-
-    @Test
-    fun should_not_run() {
-        startKoin(listOf(SampleModule))
-
-        assertDefinitions(1)
-        assertRemainingInstanceHolders(0)
-
-        try {
-            get<AndroidComponent>()
-            fail()
-        } catch (e: Exception) {
-        }
-
-        assertDefinitions(1)
-        assertRemainingInstanceHolders(1)
+        assertEquals(value, s.url)
     }
 }

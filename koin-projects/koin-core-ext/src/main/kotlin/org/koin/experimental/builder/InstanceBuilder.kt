@@ -2,6 +2,7 @@ package org.koin.experimental.builder
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.module.Module
+import org.koin.core.time.measureDuration
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
@@ -10,11 +11,25 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : Any> Module.create(): T {
     val kClass = T::class
+    val kclassAsString = kClass.toString()
     logger.debug("| autocreate '$kClass'")
 
-    val ctor = kClass.getFirstJavaConstructor()
-    val args = getArguments(ctor)
-    return ctor.makeInstance(args)
+    val (ctor, ctorDuration) = measureDuration {
+        kClass.getFirstJavaConstructor()
+    }
+    logger.debug("| got ctor '$kclassAsString' in '$ctorDuration'")
+
+    val (args, argsDuration) = measureDuration {
+        getArguments(ctor)
+    }
+    logger.debug("| got args '$kclassAsString' in '$argsDuration'")
+
+    val (instance, instanceDuration) = measureDuration {
+        ctor.makeInstance<T>(args)
+    }
+    logger.debug("| got instance '$kclassAsString' in '$instanceDuration'")
+
+    return instance
 }
 
 inline fun <reified T : Any> Constructor<*>.makeInstance(args: Array<Any>) =

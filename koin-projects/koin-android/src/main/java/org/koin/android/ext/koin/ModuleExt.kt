@@ -17,18 +17,18 @@ package org.koin.android.ext.koin
 
 import android.app.Application
 import android.content.Context
-import org.koin.dsl.context.ModuleDefinition
+import org.koin.core.module.Module
 
 /**
  * DSL extension - Resolve Android Context instance
  *
  * @author Arnaud Giuliani
  */
-fun ModuleDefinition.androidContext(): Context = get()
+fun Module.androidContext(): Context = get()
 
 /**
  * DSL extension - Resolve Android Context instance
  *
  * @author Arnaud Giuliani
  */
-fun ModuleDefinition.androidApplication(): Application = get()
+fun Module.androidApplication(): Application = get()

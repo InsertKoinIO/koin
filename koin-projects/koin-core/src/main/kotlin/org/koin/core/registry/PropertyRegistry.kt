@@ -42,6 +42,20 @@ class PropertyRegistry {
     }
 
     /**
+     *Save properties values into PropertyRegister
+     */
+    fun saveProperties(properties: Properties) {
+        val propertiesMapValues = properties.toMap() as Map<String, String>
+        propertiesMapValues.forEach { (k: String, v: String) ->
+            when {
+                v.isInt() -> saveProperty(k, v.toInt())
+                v.isFloat() -> saveProperty(k, v.toFloat())
+                else -> saveProperty(k, v)
+            }
+        }
+    }
+
+    /**
      * save a property (key,value)
      */
     internal fun <T : Any> saveProperty(key: String, value: T) {
@@ -65,20 +79,9 @@ class PropertyRegistry {
         if (content != null) {
             logger.info("loaded properties from file:'$fileName'")
             val properties = readDataFromFile(content)
-            properties.registerStringValues()
+            saveProperties(properties)
         } else {
             throw NoPropertyFileFoundException("No properties found for file '$fileName'")
-        }
-    }
-
-    private fun Properties.registerStringValues() {
-        val propertiesMapValues = this.toMap() as Map<String, String>
-        propertiesMapValues.forEach { (k: String, v: String) ->
-            when {
-                v.isInt() -> saveProperty(k, v.toInt())
-                v.isFloat() -> saveProperty(k, v.toFloat())
-                else -> saveProperty(k, v)
-            }
         }
     }
 
@@ -93,10 +96,10 @@ class PropertyRegistry {
      */
     fun loadEnvironmentProperties() {
         val sysProperties = System.getProperties()
-        sysProperties.registerStringValues()
+        saveProperties(sysProperties)
 
         val sysEnvProperties = System.getenv().toProperties()
-        sysEnvProperties.registerStringValues()
+        saveProperties(sysEnvProperties)
     }
 
     fun close() {
