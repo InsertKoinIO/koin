@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : Any> Module.create(): T {
     val kClass = T::class
-    logger.debug("| autocreate for $kClass")
+    logger.debug("| autocreate '$kClass'")
 
     val ctor = kClass.getFirstJavaConstructor()
     val args = getArguments(ctor)

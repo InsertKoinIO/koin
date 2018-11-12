@@ -37,12 +37,14 @@ fun Koin.checkModules() {
     registerDefinitions(allDefinitions)
 
     runDefinitions(allDefinitions)
+
+    close()
 }
 
 fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         val clazz = it.primaryType
-        val scope = if (it.isScoped()) scopeRegistry.createScope(
+        val scope = if (it.isScoped()) scopeRegistry.getOrCreateScope(
             it.getScopeId() ?: error("definition $it should have a scope id")
         ) else null
         get(clazz, it.name, scope) { emptyParametersHolder() }

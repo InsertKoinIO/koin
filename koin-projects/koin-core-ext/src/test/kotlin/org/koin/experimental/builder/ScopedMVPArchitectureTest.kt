@@ -2,7 +2,6 @@ package org.koin.experimental.builder
 
 import org.junit.Assert
 import org.junit.Assert.fail
-import org.junit.Ignore
 import org.junit.Test
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
@@ -44,7 +43,6 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
     }
 
     @Test
-    @Ignore
     fun `should handle scope`() {
         koinApplication {
             useLogger(Level.DEBUG)
