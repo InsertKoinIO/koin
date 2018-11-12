@@ -46,8 +46,8 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
 
     override fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
         try {
-            val parameters = parameters?.let { parameters() } ?: emptyParametersHolder()
-            beanDefinition.definition(parameters)
+            val params = parameters?.let { parameters() } ?: emptyParametersHolder()
+            beanDefinition.definition(params)
         } catch (e: Exception) {
             when (e) {
                 is NoBeanDefFoundException, is InstanceCreationException, is DefinitionOverrideException -> {

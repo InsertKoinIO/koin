@@ -119,16 +119,6 @@ class Koin {
     }
 
     /**
-     * Close all resources from context
-     */
-    fun close() {
-        beanRegistry.close()
-        instanceResolver.close()
-        scopeRegistry.close()
-        propertyRegistry.close()
-    }
-
-    /**
      * Create a Scope
      * @param scopeId
      */
@@ -189,5 +179,15 @@ class Koin {
      */
     fun <T : Any> setProperty(key: String, value: T) {
         propertyRegistry.saveProperty(key, value)
+    }
+
+    /**
+     * Close all resources from context
+     */
+    fun close() {
+        beanRegistry.close()
+        instanceResolver.close()
+        scopeRegistry.close()
+        propertyRegistry.close()
     }
 }

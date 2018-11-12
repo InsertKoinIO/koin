@@ -1,6 +1,6 @@
 // Core
 //include 'koin-core', 'koin-test','koin-core-ext'
-include 'koin-core', 'koin-test'
+include 'koin-core', 'koin-test','koin-core-ext'
 include 'examples:coffee-maker'
 //include 'koin-java'
 

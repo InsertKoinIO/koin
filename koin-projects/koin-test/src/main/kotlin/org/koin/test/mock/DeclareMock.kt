@@ -24,6 +24,7 @@ import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import org.koin.test.KoinTest
 import org.mockito.Mockito.mock
+import kotlin.reflect.KClass
 
 /**
  * Declare & Create a mock in Koin container for given type
@@ -35,16 +36,25 @@ inline fun <reified T : Any> KoinTest.declareMock(
     noinline stubbing: (T.() -> Unit)? = null
 ): T {
     val koin = StandAloneKoinApplication.get().koin
-
     val clazz = T::class
-    logger.info("declare mock for '${clazz.getFullName()}'")
 
-    val foundDefinition: BeanDefinition<T> = koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
-            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
+    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, koin, name)
 
     koin.declareMockedDefinition(foundDefinition)
 
     return koin.applyStub(stubbing)
+}
+
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T : Any> getDefinition(
+    clazz: KClass<T>,
+    koin: Koin,
+    name: String
+): BeanDefinition<T> {
+    logger.info("declare mock for '${clazz.getFullName()}'")
+
+    return koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
+            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
 }
 
 /**
@@ -58,10 +68,7 @@ inline fun <reified T : Any> Koin.declareMock(
 ): T {
 
     val clazz = T::class
-    logger.info("declare mock for '${clazz.getFullName()}'")
-
-    val foundDefinition: BeanDefinition<T> = beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
-            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
+    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, this, name)
 
     declareMockedDefinition(foundDefinition)
 

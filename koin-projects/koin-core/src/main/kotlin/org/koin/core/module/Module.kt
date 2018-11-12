@@ -124,6 +124,18 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
     }
 
     /**
+     * Resolve an instance from Koin
+     * @param name
+     * @param scope
+     * @param parameters
+     */
+    fun getScope(
+        scopeId: String
+    ): Scope {
+        return koin.getOrCreateScope(scopeId)
+    }
+
+    /**
      * Get a property from Koin
      * @param key
      */

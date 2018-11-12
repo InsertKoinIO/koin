@@ -1,7 +1,10 @@
 package org.koin.experimental.builder
 
 import org.junit.Assert
+import org.junit.Assert.fail
+import org.junit.Ignore
 import org.junit.Test
+import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -10,12 +13,12 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check.checkModules
 import org.koin.test.get
 
-class MVPArchitectureTest : AutoCloseKoinTest() {
+class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule = module {
         single<Repository>()
         single<View>()
-        single<Presenter>()
+        scope<Presenter>("session")
     }
 
     val DataSourceModule = module {
@@ -38,6 +41,25 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
         Assert.assertEquals(repository, presenter.repository)
         Assert.assertEquals(repository, view.presenter.repository)
         Assert.assertEquals(datasource, repository.datasource)
+    }
+
+    @Test
+    @Ignore
+    fun `should handle scope`() {
+        koinApplication {
+            useLogger(Level.DEBUG)
+            loadModules(MVPModule, DataSourceModule)
+        }.start()
+
+        val view = get<View>()
+        view.onDestroy()
+
+        try {
+            get<Presenter>()
+            fail("should not get presenter anymore")
+        } catch (e: ScopeNotCreatedException) {
+            e.printStackTrace()
+        }
     }
 
     @Test
