@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel.ext.koin
+package org.koin.android.viewmodel
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
-import org.koin.android.viewmodel.ext.android.ViewModelStoreOwnerDefinition
-import org.koin.android.viewmodel.ext.android.getViewModelByClass
-import org.koin.android.viewmodel.ext.android.viewModelByClass
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.standalone.KoinComponent
+import org.koin.core.parameter.ParametersDefinition
 
 /**
  * ViewModel request options
  */
 data class ViewModelOptions(
-    val key: String? = null,
     val name: String? = null,
     val from: ViewModelStoreOwnerDefinition? = null,
-    val parameters: ParameterDefinition = emptyParameterDefinition()
+    val parameters: ParametersDefinition? = null
 )
 
 /**

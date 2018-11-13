@@ -58,6 +58,21 @@ class BeanRegistry {
         )
     }
 
+    /**
+     * Load definitions from a Module
+     * @param koin instance
+     * @param modules
+     */
+    fun loadModules(koin: Koin, modules: List<Module>) {
+        modules.forEach { module: Module ->
+            saveDefinitions(module)
+            linkContext(module, koin)
+        }
+        logger.info(
+            "registered ${definitions.size} definitions"
+        )
+    }
+
     private fun saveDefinitions(module: Module) {
         module.definitions.forEach { definition ->
             saveDefinition(definition)

@@ -1,8 +1,8 @@
 package org.koin.android.viewmodel.experimental.builder
 
 import android.arch.lifecycle.ViewModel
-import org.koin.dsl.context.ModuleDefinition
-import org.koin.experimental.builder.create
+import org.koin.core.module.Module
+import org.koin.experimental.builder.factory
 
 /**
  * Create a Factory definition for given type T
@@ -10,9 +10,9 @@ import org.koin.experimental.builder.create
  * @param name
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
+inline fun <reified T : ViewModel> Module.viewModel(
     name: String = "",
     override: Boolean = false
 ) {
-    factory(name, override) { create<T>() } bind ViewModel::class
+    factory<T>(name, override)
 }

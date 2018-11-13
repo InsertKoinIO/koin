@@ -6,7 +6,7 @@ import fr.ekito.myweatherapp.data.local.JavaReader
 import fr.ekito.myweatherapp.data.local.JsonReader
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 
 /**
@@ -25,4 +25,4 @@ val testRxModule = module(override = true) {
     single<SchedulerProvider> { TestSchedulerProvider() }
 }
 
-val testWeatherApp = offlineWeatherApp + testRxModule + localJavaDatasourceModule
+val testWeatherApp = offlineWeatherApp + listOf(testRxModule, localJavaDatasourceModule)

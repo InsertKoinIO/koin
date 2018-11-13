@@ -17,7 +17,7 @@ package org.koin.standalone;
 
 import kotlin.Lazy;
 import org.koin.core.parameter.ParametersHolder;
-import org.koin.java.standalone.KoinJavaComponent;
+import org.koin.java.KoinJavaComponent;
 
 /**
  * @author @fredy-mederos

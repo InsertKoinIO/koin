@@ -59,6 +59,18 @@ class KoinApplication private constructor() {
     }
 
     /**
+     * Load definitions from modules
+     * @param modules
+     */
+    fun loadModules(modules: List<Module>): KoinApplication {
+        val duration = measureDurationOnly {
+            koin.beanRegistry.loadModules(koin, modules)
+        }
+        logger.info("modules loaded in $duration ms")
+        return this
+    }
+
+    /**
      * Load properties from Map
      * @param values
      */

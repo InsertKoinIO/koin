@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel.ext.android
+package org.koin.android.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelStoreOwner
@@ -30,7 +30,7 @@ import org.koin.core.parameter.emptyParameterDefinition
 /**
  * Lazy getByClass a viewModel instance shared with Activity
  *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param key - ViewModel Factory VIEW_MODEL_KEY (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
@@ -45,7 +45,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
 /**
  * Get a shared viewModel instance from underlying Activity
  *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
+ * @param key - ViewModel Factory VIEW_MODEL_KEY (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition

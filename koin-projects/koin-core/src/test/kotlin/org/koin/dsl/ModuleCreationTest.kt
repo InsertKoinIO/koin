@@ -2,6 +2,7 @@ package org.koin.dsl
 
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.logger.Level
 import org.koin.test.assertDefinitionsCount
 
 class ModuleCreationTest {
@@ -82,5 +83,52 @@ class ModuleCreationTest {
         }
 
         app.assertDefinitionsCount(2)
+    }
+
+    @Test
+    fun `create modules list`() {
+
+        val app = koinApplication {
+            loadModules(
+                listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    })
+            )
+        }
+
+        app.assertDefinitionsCount(2)
+    }
+
+    @Test
+    fun `create modules list timing`() {
+
+        koinApplication {
+            useLogger(Level.DEBUG)
+            loadModules(
+                module {
+                    single { Simple.ComponentA() }
+                },
+                module {
+                    single { Simple.ComponentB(get()) }
+                })
+
+        }
+
+        koinApplication {
+            useLogger(Level.DEBUG)
+            loadModules(
+                listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    })
+            )
+        }
     }
 }

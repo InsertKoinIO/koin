@@ -9,8 +9,8 @@ import org.koin.test.AutoCloseKoinTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.koin.java.standalone.KoinJavaComponent.get;
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.get;
+import static org.koin.java.KoinJavaComponent.inject;
 import static org.koin.standalone.UnitJavaStuffKt.koinModule;
 
 public class UnitJavaTest extends AutoCloseKoinTest {

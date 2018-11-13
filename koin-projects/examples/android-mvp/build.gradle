@@ -51,7 +51,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
     // Koin
-    implementation project(":koin-android-scope")
+    implementation project(":koin-android")
     testImplementation project(":koin-test")
     androidTestImplementation project(":koin-test")
 
