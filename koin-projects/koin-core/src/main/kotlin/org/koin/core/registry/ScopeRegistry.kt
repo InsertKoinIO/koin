@@ -20,6 +20,7 @@ import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeId
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope Registry
@@ -30,7 +31,7 @@ import org.koin.core.scope.getScopeId
 class ScopeRegistry {
 
     private val allScopes = hashSetOf<Scope>()
-    private val registeredScopes = hashMapOf<String, Scope>()
+    private val registeredScopes: MutableMap<String, Scope> = ConcurrentHashMap()
 
     /**
      * Get or create a scope for given Id

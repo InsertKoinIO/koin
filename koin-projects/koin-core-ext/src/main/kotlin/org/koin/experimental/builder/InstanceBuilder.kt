@@ -4,6 +4,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.module.Module
 import org.koin.core.time.measureDuration
 import java.lang.reflect.Constructor
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
@@ -49,7 +50,7 @@ fun KClass<*>.saveConstructor(): Constructor<*> {
     return ctor
 }
 
-val allConstructors = hashMapOf<KClass<*>, Constructor<*>>()
+val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
 
 /**
  * Resolve a koincomponent from its class

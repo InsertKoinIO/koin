@@ -15,12 +15,14 @@
  */
 package org.koin.core.bean
 
+import java.util.concurrent.ConcurrentHashMap
+
 /**
  * Definitions Attributes
  *
  * @author Arnaud Giuliani
  */
-data class Attributes(private val data: HashMap<String, Any> = hashMapOf()) {
+data class Attributes(private val data: MutableMap<String, Any> = ConcurrentHashMap()) {
 
     operator fun <T> set(key: String, value: T) {
         data[key] = value as Any

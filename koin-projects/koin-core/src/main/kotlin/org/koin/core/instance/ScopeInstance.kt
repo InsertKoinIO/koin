@@ -19,6 +19,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope definition Instance holder
@@ -28,7 +29,7 @@ class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefi
 
     override fun isCreated(scope: Scope?): Boolean = scope?.let { values[scope.internalId] != null } ?: false
 
-    private val values: HashMap<String, T> = hashMapOf()
+    private val values: MutableMap<String, T> = ConcurrentHashMap()
 
     override fun release(scope: Scope?) {
         scope?.let {

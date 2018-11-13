@@ -23,6 +23,7 @@ import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeId
 import org.koin.ext.getFullName
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
@@ -34,8 +35,8 @@ import kotlin.reflect.KClass
 class BeanRegistry {
 
     internal val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
-    private val definitionsNames: HashMap<String, BeanDefinition<*>> = hashMapOf()
-    private val definitionsClass: HashMap<KClass<*>, BeanDefinition<*>> = hashMapOf()
+    private val definitionsNames: MutableMap<String, BeanDefinition<*>> = ConcurrentHashMap()
+    private val definitionsClass: MutableMap<KClass<*>, BeanDefinition<*>> = ConcurrentHashMap()
 
     /**
      * retrieve all definitions
