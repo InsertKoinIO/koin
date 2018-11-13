@@ -12,19 +12,16 @@ import android.view.ViewGroup
 import android.widget.EditText
 import fr.ekito.myweatherapp.R
 import fr.ekito.myweatherapp.domain.entity.DailyForecast
-import fr.ekito.myweatherapp.domain.entity.UserSession
 import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.detail.DetailActivity.Companion.INTENT_WEATHER_ID
 import kotlinx.android.synthetic.main.fragment_result_header.*
-import org.jetbrains.anko.*
-import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.jetbrains.anko.startActivity
+import org.koin.android.viewmodel.ext.sharedViewModel
 
 class WeatherHeaderFragment : Fragment() {
 
     private val viewModel: WeatherViewModel by sharedViewModel()
-    private val userSession : UserSession by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,14 +38,15 @@ class WeatherHeaderFragment : Fragment() {
                 is WeatherViewModel.WeatherListLoaded -> showWeather(state.location, state.first)
             }
         })
-        viewModel.events.observe(this , Observer { event ->
-            when(event){
+        viewModel.events.observe(this, Observer { event ->
+            when (event) {
                 is WeatherViewModel.ProceedLocation -> showLoadingLocation(event.location)
-                is WeatherViewModel.ProceedLocationError -> showLocationSearchFailed(event.location,event.error)
+                is WeatherViewModel.ProceedLocationError -> showLocationSearchFailed(
+                    event.location,
+                    event.error
+                )
             }
         })
-
-        println("Got session : $userSession")
     }
 
     private fun showWeather(location: String, weather: DailyForecast) {

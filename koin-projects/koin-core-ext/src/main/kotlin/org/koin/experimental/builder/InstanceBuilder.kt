@@ -52,13 +52,6 @@ fun KClass<*>.saveConstructor(): Constructor<*> {
 
 val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
 
-/**
- * Resolve a koincomponent from its class
- *
- * @param name
- * @param clazz - java class
- * @param parameters
- */
-fun <T : Any> Module.getWithDefault(
+internal fun <T : Any> Module.getWithDefault(
     clazz: KClass<T>
 ): T = koin.get(clazz, null, null, null)

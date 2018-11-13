@@ -7,17 +7,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import fr.ekito.myweatherapp.R
-import fr.ekito.myweatherapp.domain.entity.UserSession
 import fr.ekito.myweatherapp.view.Failed
 import kotlinx.android.synthetic.main.activity_result.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
-import org.koin.android.ext.android.inject
-import org.koin.android.scope.ext.android.bindScope
-import org.koin.android.scope.ext.android.getOrCreateScope
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.viewmodel.ext.viewModel
 
 /**
  * Weather Result View
@@ -27,8 +23,6 @@ class WeatherActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
 
     private val viewModel: WeatherViewModel by viewModel()
-    private val userSession: UserSession by inject()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +39,6 @@ class WeatherActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.weather_list, resultListFragment)
             .commit()
-
-        bindScope(getOrCreateScope("session"))
-        println("Got session : $userSession")
-
 
         viewModel.states.observe(this, Observer { state ->
             when (state) {

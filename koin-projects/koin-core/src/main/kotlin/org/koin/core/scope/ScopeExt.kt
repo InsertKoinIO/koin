@@ -29,12 +29,12 @@ const val ATTRIBUTE_SCOPE_ID = "scope_id"
  * Set the scopedId of a definition
  */
 fun BeanDefinition<*>.setScopeId(scopeId: String) {
-    attributes.set(ATTRIBUTE_SCOPE_ID, scopeId)
+    attributes[ATTRIBUTE_SCOPE_ID] = scopeId
 }
 
 /**
  * Get a scopeId of a definition
  */
 fun BeanDefinition<*>.getScopeId(): String? {
-    return attributes.get(ATTRIBUTE_SCOPE_ID)
+    return attributes[ATTRIBUTE_SCOPE_ID]
 }

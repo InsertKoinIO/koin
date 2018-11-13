@@ -6,10 +6,10 @@ import junit.framework.Assert
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.inject
+import org.koin.core.standalone.StandAloneKoinApplication
+import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
+import org.koin.test.inject
 
 class WeatherRepositoryTest : KoinTest {
 
@@ -19,12 +19,14 @@ class WeatherRepositoryTest : KoinTest {
 
     @Before
     fun before() {
-        startKoin(testWeatherApp)
+        koinApplication {
+            loadModules(testWeatherApp)
+        }.start()
     }
 
     @After
     fun after() {
-        stopKoin()
+        StandAloneKoinApplication.get().stop()
     }
 
     @Test

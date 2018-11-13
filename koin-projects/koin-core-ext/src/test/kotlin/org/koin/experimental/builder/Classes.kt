@@ -14,7 +14,7 @@ class ComponentD(override val a: ComponentA) : Component
 
 
 class View() : KoinComponent {
-    val session = getKoin().createScope("session")
+    private val session = getKoin().createScope("session")
     val presenter: Presenter by inject()
 
     fun onDestroy() {

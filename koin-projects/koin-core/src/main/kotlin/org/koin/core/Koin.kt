@@ -39,7 +39,7 @@ import kotlin.reflect.KClass
 class Koin {
 
     val beanRegistry = BeanRegistry()
-    val instanceResolver = InstanceResolver()
+    private val instanceResolver = InstanceResolver()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
 
@@ -100,13 +100,13 @@ class Koin {
         parameters: ParametersDefinition?
     ) = instanceResolver.resolveInstance(definition, targetScope, parameters) as T
 
-    fun prepareResolution(
+    private fun prepareResolution(
         name: String?,
         clazz: KClass<*>,
         scope: Scope?
     ): Pair<BeanDefinition<*>, Scope?> {
         val definition = beanRegistry.findDefinition(name, clazz)
-                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         val targetScope = scopeRegistry.prepareScope(definition, scope)
         return Pair(definition, targetScope)
@@ -134,7 +134,8 @@ class Koin {
      * @param scopeId
      */
     fun getScope(scopeId: String): Scope {
-        val scope = scopeRegistry.getScopeById(scopeId) ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created")
+        val scope = scopeRegistry.getScopeById(scopeId)
+            ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created")
         scope.register(this)
         return scope
     }
@@ -170,7 +171,8 @@ class Koin {
     }
 
     internal fun closeScope(internalId: String) {
-        val scope: Scope = scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
+        val scope: Scope =
+            scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
         beanRegistry.releaseInstanceForScope(scope)
         scopeRegistry.deleteScope(scope)
     }

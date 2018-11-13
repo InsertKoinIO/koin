@@ -20,7 +20,6 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
-import org.koin.android.scope.ScopeObserver
 import org.koin.core.scope.Scope
 
 /**
@@ -62,7 +61,7 @@ fun LifecycleOwner.getScope(id: String): Scope {
  * Detach a Scope
  * @param scope Id
  */
-fun LifecycleOwner.detechScope(id: String): Scope {
+fun LifecycleOwner.detachScope(id: String): Scope {
     return getKoin().detachScope(id)
 }
 

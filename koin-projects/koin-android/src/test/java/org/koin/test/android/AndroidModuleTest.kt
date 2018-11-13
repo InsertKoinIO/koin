@@ -19,10 +19,10 @@ import org.mockito.Mockito.mock
 class AndroidModuleTest : KoinTest {
 
     companion object {
-        val URL = "URL"
+        const val URL = "URL"
     }
 
-    val SampleModule = module {
+    private val SampleModule = module {
         single { AndroidComponentA(androidContext()) }
         single { AndroidComponentB(get()) }
         single { AndroidComponentC(androidApplication()) }

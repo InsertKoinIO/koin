@@ -4,7 +4,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 

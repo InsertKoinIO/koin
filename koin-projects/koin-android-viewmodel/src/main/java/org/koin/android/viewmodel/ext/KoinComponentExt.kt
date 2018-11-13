@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package org.koin.android.viewmodel.ext
 
 import android.arch.lifecycle.LifecycleOwner
@@ -25,7 +27,7 @@ import org.koin.core.KoinComponent
  * Lazy getByClass a viewModel instance
  *
  * @param lifecycleOwner
- * @param options
+ * @param parameters
  */
 inline fun <reified T : ViewModel> KoinComponent.viewModel(
     lifecycleOwner: LifecycleOwner,
@@ -36,7 +38,7 @@ inline fun <reified T : ViewModel> KoinComponent.viewModel(
  * Get a viewModel instance
  *
  * @param lifecycleOwner
- * @param options
+ * @param parameters
  */
 inline fun <reified T : ViewModel> KoinComponent.getViewModel(
     lifecycleOwner: LifecycleOwner,

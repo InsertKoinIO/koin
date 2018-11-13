@@ -11,8 +11,8 @@ import org.mockito.Mockito.verify
 
 class CoffeeMakerTest : AutoCloseKoinTest() {
 
-    val coffeeMaker: CoffeeMaker by inject()
-    val heater: Heater by inject()
+    private val coffeeMaker: CoffeeMaker by inject()
+    private val heater: Heater by inject()
 
     @Before
     fun before() {

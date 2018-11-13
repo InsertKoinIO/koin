@@ -2,7 +2,6 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.domain.entity.UserSession
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.mock.MockedData.mockList
 import fr.ekito.myweatherapp.util.MockitoHelper
@@ -44,7 +43,7 @@ class WeatherHeaderViewModelMockTest {
     fun before() {
         MockitoAnnotations.initMocks(this)
 
-        viewModel = WeatherViewModel(repository, TestSchedulerProvider(), UserSession())
+        viewModel = WeatherViewModel(repository, TestSchedulerProvider())
         viewModel.events.observeForever(viewEvents)
         viewModel.states.observeForever(viewStates)
     }

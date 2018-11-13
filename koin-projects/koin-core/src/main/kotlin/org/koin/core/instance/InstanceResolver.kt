@@ -53,7 +53,7 @@ class InstanceResolver {
     /**
      * prepare resolution call stack
      */
-    fun prepareCallStack(definition: BeanDefinition<*>?) {
+    private fun prepareCallStack(definition: BeanDefinition<*>?) {
         callStack.add(definition)
     }
 
@@ -63,7 +63,7 @@ class InstanceResolver {
      * @param scope
      * @param parameters
      */
-    fun <T> getInstance(
+    private fun <T> getInstance(
         definition: BeanDefinition<*>,
         scope: Scope?,
         parameters: ParametersDefinition?
@@ -77,7 +77,7 @@ class InstanceResolver {
      * Clean call stack from definition call
      * @param definition
      */
-    fun cleanCallStack(definition: BeanDefinition<*>?) {
+    private fun cleanCallStack(definition: BeanDefinition<*>?) {
         val pop = lastInStack()
         if (pop != definition) {
             logger.error("call stack is inconsistent: return with $pop & should be $definition")
@@ -89,7 +89,7 @@ class InstanceResolver {
      * Check call stack for any cycle dependency
      * @param definition
      */
-    fun checkForCycle(definition: BeanDefinition<*>?) {
+    private fun checkForCycle(definition: BeanDefinition<*>?) {
         if (callStack.any { it == definition }) {
             val pop = lastInStack()
             logger.error("cycle dependency detected for $definition & $pop")

@@ -31,7 +31,7 @@ import org.koin.core.module.Module
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-    name: String = "",
+    name: String? = null,
     override: Boolean = false,
     noinline definition: Definition<T>
 ) {

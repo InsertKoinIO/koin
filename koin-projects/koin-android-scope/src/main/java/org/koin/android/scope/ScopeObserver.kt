@@ -39,7 +39,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
         if (event == Lifecycle.Event.ON_STOP) {
-            logger.info("$target received ON_STOP")
+            logger.debug("$target received ON_STOP")
             scope.close()
         }
     }
@@ -50,7 +50,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         if (event == Lifecycle.Event.ON_DESTROY) {
-            logger.info("$target received ON_DESTROY")
+            logger.debug("$target received ON_DESTROY")
             scope.close()
         }
     }

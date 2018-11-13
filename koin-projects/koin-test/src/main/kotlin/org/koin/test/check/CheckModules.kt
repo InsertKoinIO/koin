@@ -26,8 +26,6 @@ import org.koin.core.scope.getScopeId
  * Check all definition's dependencies - run all modules in a test sandbox
  * and checkModules if definitions can run
  *
- * @param list of modules
- * @param logger - default is EmptyLogger
  */
 fun KoinApplication.checkModules() = koin.checkModules()
 
