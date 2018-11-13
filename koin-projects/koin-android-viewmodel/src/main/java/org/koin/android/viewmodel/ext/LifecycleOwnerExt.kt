@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel
+package org.koin.android.viewmodel.ext
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
+import org.koin.android.viewmodel.ViewModelParameters
+import org.koin.android.viewmodel.resolveViewModelInstance
 import org.koin.core.parameter.ParametersDefinition
 import kotlin.reflect.KClass
 
@@ -48,7 +50,14 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     name: String? = null,
     noinline parameters: ParametersDefinition? = null
-) = resolveViewModelInstance(ViewModelParameters(T::class, name, null, parameters))
+) = resolveViewModelInstance(
+    ViewModelParameters(
+        T::class,
+        name,
+        null,
+        parameters
+    )
+)
 
 
 /**
@@ -64,5 +73,12 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
     clazz: KClass<T>,
     name: String? = null,
     parameters: ParametersDefinition? = null
-) = resolveViewModelInstance(ViewModelParameters(clazz, name, null, parameters))
+) = resolveViewModelInstance(
+    ViewModelParameters(
+        clazz,
+        name,
+        null,
+        parameters
+    )
+)
 

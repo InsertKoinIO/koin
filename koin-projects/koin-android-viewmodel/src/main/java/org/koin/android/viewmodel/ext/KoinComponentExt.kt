@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel
+package org.koin.android.viewmodel.ext
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
-import org.koin.core.parameter.ParametersDefinition
-
-/**
- * ViewModel request options
- */
-data class ViewModelOptions(
-    val name: String? = null,
-    val from: ViewModelStoreOwnerDefinition? = null,
-    val parameters: ParametersDefinition? = null
-)
+import org.koin.android.viewmodel.ViewModelParameters
+import org.koin.android.viewmodel.resolveViewModelInstance
+import org.koin.core.KoinComponent
 
 /**
  * Lazy getByClass a viewModel instance
@@ -36,14 +29,8 @@ data class ViewModelOptions(
  */
 inline fun <reified T : ViewModel> KoinComponent.viewModel(
     lifecycleOwner: LifecycleOwner,
-    options: ViewModelOptions = ViewModelOptions()
-) = lifecycleOwner.viewModelByClass(
-    T::class,
-    options.key,
-    options.name,
-    options.from,
-    options.parameters
-)
+    parameters: ViewModelParameters<T>
+) = lazy { getViewModel(lifecycleOwner, parameters) }
 
 /**
  * Get a viewModel instance
@@ -53,11 +40,5 @@ inline fun <reified T : ViewModel> KoinComponent.viewModel(
  */
 inline fun <reified T : ViewModel> KoinComponent.getViewModel(
     lifecycleOwner: LifecycleOwner,
-    options: ViewModelOptions = ViewModelOptions()
-) = lifecycleOwner.getViewModelByClass(
-    T::class,
-    options.key,
-    options.name,
-    options.from,
-    options.parameters
-)
+    parameters: ViewModelParameters<T>
+) = lifecycleOwner.resolveViewModelInstance(parameters)

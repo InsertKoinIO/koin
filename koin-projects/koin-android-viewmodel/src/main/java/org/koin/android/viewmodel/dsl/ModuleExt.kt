@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel
+package org.koin.android.viewmodel.dsl
 
 import android.arch.lifecycle.ViewModel
 import org.koin.core.bean.BeanDefinition

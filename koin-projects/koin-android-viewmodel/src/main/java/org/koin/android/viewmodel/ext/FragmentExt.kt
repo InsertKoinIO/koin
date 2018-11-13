@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel
+package org.koin.android.viewmodel.ext
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelStoreOwner
 import android.support.v4.app.Fragment
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.android.viewmodel.ViewModelParameters
+import org.koin.android.viewmodel.ViewModelStoreOwnerDefinition
+import org.koin.android.viewmodel.resolveViewModelInstance
+import org.koin.core.parameter.ParametersDefinition
 
 /**
  * Fragment extensiosn to help for Viewmodel
@@ -36,11 +38,10 @@ import org.koin.core.parameter.emptyParameterDefinition
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-    key: String? = null,
     name: String? = null,
     noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = viewModelByClass(T::class, key, name, from, parameters)
+    noinline parameters: ParametersDefinition? = null
+) = lazy { getSharedViewModel<T>(name, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
@@ -51,8 +52,14 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-    key: String? = null,
     name: String? = null,
     noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = getViewModelByClass(T::class, key, name, from, parameters)
+    noinline parameters: ParametersDefinition? = null
+) = resolveViewModelInstance(
+    ViewModelParameters(
+        T::class,
+        name,
+        from,
+        parameters
+    )
+)

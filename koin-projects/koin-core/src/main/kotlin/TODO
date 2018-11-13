@@ -66,8 +66,8 @@ File header
 -> detached instance Android/Scope/Lifecycle
 -> injection params nullable
 -> add instance in scope
+-> ConcurrentHashMap
 --
-
 
 Projets
 -> Test
