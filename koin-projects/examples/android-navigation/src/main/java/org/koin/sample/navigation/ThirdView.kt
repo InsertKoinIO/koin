@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.view_third.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.viewmodel.ext.viewModel
 
 
 /**
@@ -17,7 +17,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
  */
 class ThirdView : Fragment() {
 
-    val vm : ThirdViewModel by viewModel()
+    val vm: ThirdViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

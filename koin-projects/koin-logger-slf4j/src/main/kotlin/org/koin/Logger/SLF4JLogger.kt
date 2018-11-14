@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.log.Logger
+package org.koin.Logger
 
-import org.koin.log.Logger
+import org.koin.core.logger.KOIN_TAG
+import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
+import org.koin.core.logger.MESSAGE
 import org.slf4j.LoggerFactory
 
 
@@ -24,19 +27,21 @@ import org.slf4j.LoggerFactory
  *
  * @author Arnaud Giuliani
  */
-class SLF4JLogger : Logger {
+class SLF4JLogger(level: Level = Level.INFO) : Logger(level) {
 
-    private val logger: org.slf4j.Logger = LoggerFactory.getLogger("Koin")
+    private val logger: org.slf4j.Logger = LoggerFactory.getLogger(KOIN_TAG)
 
-    override fun info(msg: String) {
-        logger.info(msg)
+    override fun log(level: Level, msg: MESSAGE) {
+        if (this.level <= level) {
+            LogOnLevel(msg)
+        }
     }
 
-    override fun debug(msg: String) {
-        logger.debug(msg)
-    }
-
-    override fun err(msg: String) {
-        logger.error(msg)
+    private fun LogOnLevel(msg: MESSAGE) {
+        when (this.level) {
+            Level.DEBUG -> logger.debug(msg)
+            Level.INFO -> logger.info(msg)
+            Level.ERROR -> logger.error(msg)
+        }
     }
 }

@@ -16,15 +16,11 @@
 package org.koin.ktor.ext
 
 import io.ktor.application.Application
-import org.koin.core.KoinContext
-import org.koin.core.KoinProperties
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.Koin
+import org.koin.core.KoinApplication
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.dsl.module.Module
-import org.koin.log.Logger
-import org.koin.log.PrintLogger
-import org.koin.standalone.StandAloneContext
+import org.koin.core.standalone.StandAloneKoinApplication
 
 
 /**
@@ -41,23 +37,16 @@ import org.koin.standalone.StandAloneContext
  * @param parameters
  */
 fun Application.installKoin(
-    list: List<Module>,
-    properties: KoinProperties = KoinProperties(),
-    logger: Logger = PrintLogger()
+    koinApplication: KoinApplication
 ) {
-    StandAloneContext.stopKoin()
-    StandAloneContext.startKoin(
-        list,
-        properties,
-        logger
-    )
+    koinApplication.start()
 }
 
 
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): KoinContext = StandAloneContext.getKoin().koinContext
+fun Application.getKoin(): Koin = StandAloneKoinApplication.get().koin
 
 /**
  * inject lazily given dependency
@@ -68,7 +57,7 @@ fun Application.getKoin(): KoinContext = StandAloneContext.getKoin().koinContext
 inline fun <reified T : Any> Application.inject(
     name: String = "",
     scope: Scope? = null,
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+    noinline parameters: ParametersDefinition? = null
 ) =
     lazy { get<T>(name, scope, parameters) }
 
@@ -81,28 +70,9 @@ inline fun <reified T : Any> Application.inject(
 inline fun <reified T : Any> Application.get(
     name: String = "",
     scope: Scope? = null,
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+    noinline parameters: ParametersDefinition? = null
 ) =
     getKoin().get<T>(name, scope, parameters)
-
-/**
- * lazy inject given property
- * @param key - key property
- * throw MissingPropertyException if property is not found
- */
-inline fun <reified T> Application.property(key: String) =
-    lazy { getKoin().getProperty<T>(key) }
-
-/**
- * lazy inject  given property
- * give a default value if property is missing
- *
- * @param key - key property
- * @param defaultValue - default value if property is missing
- *
- */
-inline fun <reified T> Application.property(key: String, defaultValue: T) =
-    lazy { getKoin().getProperty(key, defaultValue) }
 
 /**
  * Retrieve given property for KoinComponent
@@ -121,13 +91,4 @@ inline fun <reified T> Application.getProperty(key: String) =
  *
  */
 inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
-    getKoin().getProperty(key, defaultValue)
-
-/**
- * Set property value
- *
- * @param key - key property
- * @param value - property value
- *
- */
-fun Application.setProperty(key: String, value: Any) = getKoin().setProperty(key, value)
+    getKoin().getProperty(key) ?: defaultValue

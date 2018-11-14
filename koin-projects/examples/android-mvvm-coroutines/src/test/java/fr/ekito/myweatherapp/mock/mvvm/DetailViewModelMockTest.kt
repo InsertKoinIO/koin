@@ -2,16 +2,16 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.domain.repository.WeatherRepository
 import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
 import fr.ekito.myweatherapp.util.MockitoHelper.argumentCaptor
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.view.ErrorState
 import fr.ekito.myweatherapp.view.LoadingState
 import fr.ekito.myweatherapp.view.State
 import fr.ekito.myweatherapp.view.detail.DetailViewModel
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule

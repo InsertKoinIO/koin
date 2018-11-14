@@ -2,7 +2,7 @@ package fr.ekito.myweatherapp.data
 
 import fr.ekito.myweatherapp.data.json.Geocode
 import fr.ekito.myweatherapp.data.json.Weather
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query

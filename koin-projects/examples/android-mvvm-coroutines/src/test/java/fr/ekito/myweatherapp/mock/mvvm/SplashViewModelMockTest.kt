@@ -2,8 +2,8 @@ package fr.ekito.myweatherapp.mock.mvvm
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
-import fr.ekito.myweatherapp.domain.repository.WeatherRepository
 import fr.ekito.myweatherapp.domain.entity.DailyForecast
+import fr.ekito.myweatherapp.domain.repository.WeatherRepository
 import fr.ekito.myweatherapp.util.MockitoHelper.argumentCaptor
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.view.Event
@@ -11,7 +11,8 @@ import fr.ekito.myweatherapp.view.FailedEvent
 import fr.ekito.myweatherapp.view.LoadingEvent
 import fr.ekito.myweatherapp.view.SuccessEvent
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -41,7 +42,7 @@ class SplashViewModelMockTest {
     }
 
     @Test
-    fun testGetLastWeather() {
+    fun testGetLastWeather() = runBlocking {
         val list = listOf(mock(DailyForecast::class.java))
 
         given(repository.getWeather()).willReturn(async { list })
@@ -61,7 +62,7 @@ class SplashViewModelMockTest {
     }
 
     @Test
-    fun testGetLasttWeatherFailed() {
+    fun testGetLasttWeatherFailed() = runBlocking {
         val error = Throwable("Got an error")
         given(repository.getWeather()).will { throw error }
 

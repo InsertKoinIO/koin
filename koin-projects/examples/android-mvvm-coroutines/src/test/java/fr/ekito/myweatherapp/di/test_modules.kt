@@ -6,7 +6,7 @@ import fr.ekito.myweatherapp.data.local.JsonReader
 import fr.ekito.myweatherapp.data.local.LocalFileDataSource
 import fr.ekito.myweatherapp.util.TestSchedulerProvider
 import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 import org.koin.experimental.builder.singleBy
 
 

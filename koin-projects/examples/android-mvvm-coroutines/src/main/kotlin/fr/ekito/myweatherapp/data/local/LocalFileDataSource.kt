@@ -3,6 +3,7 @@ package fr.ekito.myweatherapp.data.local
 import fr.ekito.myweatherapp.data.WeatherDatasource
 import fr.ekito.myweatherapp.data.json.Geocode
 import fr.ekito.myweatherapp.data.json.Weather
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay

@@ -13,7 +13,8 @@ import fr.ekito.myweatherapp.view.Event
 import fr.ekito.myweatherapp.view.LoadingState
 import fr.ekito.myweatherapp.view.State
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -48,7 +49,7 @@ class WeatherViewModelMockTest {
     }
 
     @Test
-    fun testDisplayList() {
+    fun testDisplayList() = runBlocking {
         val first = mockList.first()
         given(repository.getWeather()).willReturn(async { mockList })
 
@@ -73,7 +74,7 @@ class WeatherViewModelMockTest {
     }
 
     @Test
-    fun testDisplayListFailed() {
+    fun testDisplayListFailed() = runBlocking {
         val error = Throwable("Got an error")
         given(repository.getWeather(MockitoHelper.any())).will { throw error }
 
@@ -92,7 +93,7 @@ class WeatherViewModelMockTest {
     }
 
     @Test
-    fun testSearchNewLocation() {
+    fun testSearchNewLocation() = runBlocking {
         val location = MockedData.location
         val first = mockList.first()
         given(repository.getWeather(location)).willReturn(async { mockList })
@@ -126,7 +127,7 @@ class WeatherViewModelMockTest {
     }
 
     @Test
-    fun testSearchNewLocationFailed() {
+    fun testSearchNewLocationFailed() = runBlocking {
         val location = "new location"
         val error = Throwable("Got an error")
         given(repository.getWeather(location)).will { throw error }

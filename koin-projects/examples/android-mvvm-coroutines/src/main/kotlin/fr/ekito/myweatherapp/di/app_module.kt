@@ -8,7 +8,7 @@ import fr.ekito.myweatherapp.view.detail.DetailViewModel
 import fr.ekito.myweatherapp.view.splash.SplashViewModel
 import fr.ekito.myweatherapp.view.weather.WeatherViewModel
 import org.koin.android.viewmodel.experimental.builder.viewModel
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 import org.koin.experimental.builder.singleBy
 
 /**

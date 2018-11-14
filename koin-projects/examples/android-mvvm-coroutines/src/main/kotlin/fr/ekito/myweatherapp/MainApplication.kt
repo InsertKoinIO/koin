@@ -5,8 +5,9 @@ import com.joanzapata.iconify.Iconify
 import com.joanzapata.iconify.fonts.WeathericonsModule
 import com.squareup.leakcanary.LeakCanary
 import fr.ekito.myweatherapp.di.offlineWeatherApp
-import org.koin.android.ext.android.startKoin
-import org.koin.android.logger.AndroidLogger
+import org.koin.android.ext.koin.useAndroidContext
+import org.koin.android.ext.koin.useAndroidLogger
+import org.koin.dsl.koinApplication
 
 /**
  * Main Application
@@ -23,7 +24,11 @@ class MainApplication : Application() {
         LeakCanary.install(this)
 
         // start Koin context
-        startKoin(this, offlineWeatherApp, logger = AndroidLogger(showDebug = true))
+        koinApplication {
+            useAndroidLogger()
+            useAndroidContext(this@MainApplication)
+            loadModules(offlineWeatherApp)
+        }.start()
 
         Iconify
             .with(WeathericonsModule())

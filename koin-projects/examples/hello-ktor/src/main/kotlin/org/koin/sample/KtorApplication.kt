@@ -13,30 +13,21 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.koin.dsl.module.module
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import org.koin.experimental.builder.create
 import org.koin.experimental.builder.single
 import org.koin.ktor.ext.inject
 import org.koin.ktor.ext.installKoin
-import org.koin.log.Logger.SLF4JLogger
-
-class HelloRepository {
-    fun getHello(): String = "Ktor & Koin"
-}
-
-interface HelloService {
-    fun sayHello(): String
-}
-
-class HelloServiceImpl(val helloRepository: HelloRepository) : HelloService {
-    override fun sayHello() = "Hello ${helloRepository.getHello()} !"
-}
 
 fun Application.main() {
     // Install Ktor features
     install(DefaultHeaders)
     install(CallLogging)
-    installKoin(listOf(helloAppModule), logger = SLF4JLogger())
+    installKoin(koinApplication {
+        useLogger()
+        loadModules(helloAppModule)
+    })
 
     // Lazy inject HelloService
     val service by inject<HelloService>()
@@ -51,29 +42,7 @@ fun Application.main() {
     }
 }
 
-fun Routing.v1() {
-
-    // Lazy inject HelloService from within a Ktor Routing Node
-    val service by inject<HelloService>()
-
-    get("/v1/hello") {
-        call.respondText("[/v1/hello] " + service.sayHello())
-    }
-
-    bye()
-}
-
-fun Route.bye() {
-
-    // Lazy inject HelloService from within a Ktor Route
-    val service by inject<HelloService>()
-
-    get("/v1/bye") {
-        call.respondText("[/v1/bye] " + service.sayHello())
-    }
-}
-
-val helloAppModule = module(createOnStart = true) {
+val helloAppModule = module(createdAtStart = true) {
     single<HelloService> { create<HelloServiceImpl>() }
     single<HelloRepository>()
 }

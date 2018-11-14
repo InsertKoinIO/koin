@@ -16,11 +16,9 @@
 package org.koin.ktor.ext
 
 import io.ktor.routing.Routing
-import org.koin.core.KoinContext
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.standalone.StandAloneContext
+import org.koin.core.standalone.StandAloneKoinApplication
 
 
 /**
@@ -39,7 +37,7 @@ import org.koin.standalone.StandAloneContext
 inline fun <reified T : Any> Routing.inject(
     name: String = "",
     scope: Scope? = null,
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+    noinline parameters: ParametersDefinition? = null
 ) =
     lazy { get<T>(name, scope, parameters) }
 
@@ -52,28 +50,9 @@ inline fun <reified T : Any> Routing.inject(
 inline fun <reified T : Any> Routing.get(
     name: String = "",
     scope: Scope? = null,
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+    noinline parameters: ParametersDefinition? = null
 ) =
     getKoin().get<T>(name, scope, parameters)
-
-/**
- * lazy inject given property
- * @param key - key property
- * throw MissingPropertyException if property is not found
- */
-inline fun <reified T> Routing.property(key: String) =
-    lazy { getKoin().getProperty<T>(key) }
-
-/**
- * lazy inject  given property
- * give a default value if property is missing
- *
- * @param key - key property
- * @param defaultValue - default value if property is missing
- *
- */
-inline fun <reified T> Routing.property(key: String, defaultValue: T) =
-    lazy { getKoin().getProperty(key, defaultValue) }
 
 /**
  * Retrieve given property for KoinComponent
@@ -92,19 +71,10 @@ inline fun <reified T> Routing.getProperty(key: String) =
  *
  */
 inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
-    getKoin().getProperty(key, defaultValue)
+    getKoin().getProperty(key) ?: defaultValue
 
 
 /**
  * Help work on ModuleDefinition
  */
-fun Routing.getKoin() = StandAloneContext.getKoin().koinContext
-
-/**
- * Set property value
- *
- * @param key - key property
- * @param value - property value
- *
- */
-fun Routing.setProperty(key: String, value: Any) = getKoin().setProperty(key, value)
+fun Routing.getKoin() = StandAloneKoinApplication.get().koin
