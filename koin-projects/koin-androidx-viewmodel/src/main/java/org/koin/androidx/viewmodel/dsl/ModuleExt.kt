@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.ext.koin
+package org.koin.androidx.viewmodel.dsl
 
 import androidx.lifecycle.ViewModel
-import org.koin.dsl.context.ModuleDefinition
-import org.koin.dsl.definition.Definition
+import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.Definition
+import org.koin.core.module.Module
 
 
 /**
@@ -29,10 +30,20 @@ import org.koin.dsl.definition.Definition
  * @param name - definition name
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
-    name: String = "",
+inline fun <reified T : ViewModel> Module.viewModel(
+    name: String? = null,
     override: Boolean = false,
     noinline definition: Definition<T>
 ) {
-    factory(name, override, definition)
+    factory(name, override, definition).setIsViewModel()
+}
+
+const val VIEW_MODEL_KEY = "isViewModel"
+
+fun BeanDefinition<*>.setIsViewModel() {
+    attributes[VIEW_MODEL_KEY] = true
+}
+
+fun BeanDefinition<*>.isViewModel(): Boolean {
+    return attributes[VIEW_MODEL_KEY] ?: false
 }

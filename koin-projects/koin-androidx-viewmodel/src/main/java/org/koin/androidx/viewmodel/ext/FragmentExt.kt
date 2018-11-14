@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.ext.android
+package org.koin.androidx.viewmodel.ext
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
+import androidx.lifecycle.ViewModelStoreOwner
+import org.koin.androidx.viewmodel.ViewModelParameters
+import org.koin.androidx.viewmodel.ViewModelStoreOwnerDefinition
+import org.koin.androidx.viewmodel.resolveViewModelInstance
+import org.koin.core.parameter.ParametersDefinition
 
 /**
  * Fragment extensiosn to help for Viewmodel
@@ -29,29 +32,32 @@ import org.koin.core.parameter.emptyParameterDefinition
 /**
  * Lazy getByClass a viewModel instance shared with Activity
  *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-    key: String? = null,
     name: String? = null,
-    noinline from: ViewModelStoreOwnerDefinition = { activity ?: error("Parent activity should not be null") },
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = viewModelByClass(T::class, key, name, from, parameters)
+    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+    noinline parameters: ParametersDefinition? = null
+) = lazy { getSharedViewModel<T>(name, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
  *
- * @param key - ViewModel Factory key (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-    key: String? = null,
     name: String? = null,
-    noinline from: ViewModelStoreOwnerDefinition = { activity ?: error("Parent activity should not be null") },
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
-) = getViewModelByClass(T::class, key, name, from, parameters)
+    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+    noinline parameters: ParametersDefinition? = null
+) = resolveViewModelInstance(
+    ViewModelParameters(
+        T::class,
+        name,
+        from,
+        parameters
+    )
+)

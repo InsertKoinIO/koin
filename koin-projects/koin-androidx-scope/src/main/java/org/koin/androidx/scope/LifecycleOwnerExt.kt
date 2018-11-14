@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.scope.ext.android
+
+package org.koin.androidx.scope
 
 import android.content.ComponentCallbacks
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.scope.ScopeObserver
-import org.koin.core.KoinContext
 import org.koin.core.scope.Scope
-import org.koin.standalone.StandAloneContext
-
 
 /**
  * LifecycleOwner extensions
@@ -48,7 +45,7 @@ private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
  * Get or create Scope
  * @param scope Id
  */
-fun LifecycleOwner.getOrCreateScope(id : String) : Scope {
+fun LifecycleOwner.getOrCreateScope(id: String): Scope {
     return getKoin().getOrCreateScope(id)
 }
 
@@ -56,15 +53,22 @@ fun LifecycleOwner.getOrCreateScope(id : String) : Scope {
  * Get Scope
  * @param scope Id
  */
-fun LifecycleOwner.getScope(id : String) : Scope {
+fun LifecycleOwner.getScope(id: String): Scope {
     return getKoin().getScope(id)
+}
+
+/**
+ * Detach a Scope
+ * @param scope Id
+ */
+fun LifecycleOwner.detachScope(id: String): Scope {
+    return getKoin().detachScope(id)
 }
 
 /**
  * Create Scope
  * @param scope Id
  */
-fun LifecycleOwner.createScope(id : String) : Scope {
+fun LifecycleOwner.createScope(id: String): Scope {
     return getKoin().createScope(id)
 }
-
