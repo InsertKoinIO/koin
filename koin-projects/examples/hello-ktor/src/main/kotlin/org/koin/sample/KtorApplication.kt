@@ -37,9 +37,13 @@ fun Application.main() {
         get("/hello") {
             call.respondText(service.sayHello())
         }
-
-        v1()
+        declareRoutes()
     }
+}
+
+private fun Routing.declareRoutes() {
+    v1()
+    bye()
 }
 
 val helloAppModule = module(createdAtStart = true) {

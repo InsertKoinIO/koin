@@ -15,8 +15,6 @@ fun Routing.v1() {
     get("/v1/hello") {
         call.respondText("[/v1/hello] " + service.sayHello())
     }
-
-    bye()
 }
 
 fun Route.bye() {
