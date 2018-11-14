@@ -25,5 +25,5 @@ ext {
     asciidoctor_version = "1.5.3"
     asciidoctor_pdf_version = "1.5.0-alpha.15"
 
-    android_maven_publish = "3.4.0"
+    android_maven_publish = "3.6.2"
 }

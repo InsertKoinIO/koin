@@ -33,16 +33,28 @@ inline fun <reified T : Any> Module.create(): T {
     return instance
 }
 
+/**
+ * Make an instance with given arguments
+ */
 inline fun <reified T : Any> Constructor<*>.makeInstance(args: Array<Any>) =
     newInstance(*args) as T
 
+/**
+ * Retrieve arguments for given constructor
+ */
 fun Module.getArguments(ctor: Constructor<*>) =
     ctor.parameterTypes.map { getWithDefault(clazz = it.kotlin) }.toTypedArray()
 
+/**
+ * Get first java constructor
+ */
 fun KClass<*>.getFirstJavaConstructor(): Constructor<*> {
     return allConstructors[this] ?: saveConstructor()
 }
 
+/**
+ * Extract constructor and save it to constructors index
+ */
 fun KClass<*>.saveConstructor(): Constructor<*> {
     val clazz = this.java
     val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
@@ -52,6 +64,9 @@ fun KClass<*>.saveConstructor(): Constructor<*> {
 
 val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
 
+/**
+ * Retrieve linked dependency with defaults params
+ */
 internal fun <T : Any> Module.getWithDefault(
     clazz: KClass<T>
 ): T = koin.get(clazz, null, null, null)

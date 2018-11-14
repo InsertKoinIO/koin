@@ -45,6 +45,9 @@ inline fun <reified T : Any> KoinTest.declareMock(
     return koin.applyStub(stubbing)
 }
 
+/**
+ *
+ */
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> getDefinition(
     clazz: KClass<T>,

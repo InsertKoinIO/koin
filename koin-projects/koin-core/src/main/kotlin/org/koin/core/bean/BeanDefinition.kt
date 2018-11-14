@@ -47,7 +47,7 @@ data class BeanDefinition<T>(
     /**
      * Tells if the definition is this Kind
      */
-    private fun isKind(kind: Kind): Boolean = this.kind == kind
+    fun isKind(kind: Kind): Boolean = this.kind == kind
 
     /**
      * Is a Scope definition

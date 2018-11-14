@@ -25,10 +25,13 @@ import org.koin.core.scope.getScopeId
 /**
  * Check all definition's dependencies - run all modules in a test sandbox
  * and checkModules if definitions can run
- *
  */
 fun KoinApplication.checkModules() = koin.checkModules()
 
+/**
+ * Check all definition's dependencies - run all modules in a test sandbox
+ * and checkModules if definitions can run
+ */
 fun Koin.checkModules() {
     val allDefinitions = getSandboxedDefinitions()
 
@@ -39,6 +42,9 @@ fun Koin.checkModules() {
     close()
 }
 
+/**
+ * Resolve & instance definitions
+ */
 fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         val clazz = it.primaryType
@@ -63,6 +69,9 @@ private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
         }
 }
 
+/**
+ * Clone definition and inject SandBox instance holder
+ */
 fun <T> BeanDefinition<T>.cloneForSandbox(): BeanDefinition<T> {
     val copy = this.copy()
     copy.secondaryTypes = this.secondaryTypes

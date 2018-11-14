@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
  */
 class BeanRegistry {
 
-    internal val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+    private val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
     private val definitionsNames: MutableMap<String, BeanDefinition<*>> = ConcurrentHashMap()
     private val definitionsClass: MutableMap<KClass<*>, BeanDefinition<*>> = ConcurrentHashMap()
 
@@ -157,6 +157,23 @@ class BeanRegistry {
 
     internal fun releaseInstanceForScope(scope: Scope) {
         definitions.filter { it.getScopeId() == scope.id }.forEach { it.instance.release(scope) }
+    }
+
+    /**
+     * Total number of definitions
+     */
+    fun size() = definitions.size
+
+    /**
+     * Retrieve a definition
+     * @param clazz
+     */
+    fun getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
+        return definitions.firstOrNull {
+            it.primaryType == clazz || it.secondaryTypes.contains(
+                clazz
+            )
+        }
     }
 
     fun close() {

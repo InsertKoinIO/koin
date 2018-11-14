@@ -8,14 +8,14 @@ import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
-    assertEquals("definitions count", count, this.koin.beanRegistry.definitions.size)
-}
-
-fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
-    return this.koin.beanRegistry.definitions.firstOrNull { it.primaryType == clazz || it.secondaryTypes.contains(clazz) }
+    assertEquals("definitions count", count, this.koin.beanRegistry.size())
 }
 
 fun KoinApplication.assertScopeHasBeenCreated(scope: Scope) {
     val id = scope.id
     assertTrue("Scope $id should be created", koin.scopeRegistry.getScopeById(id) != null)
+}
+
+internal fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
+    return this.koin.beanRegistry.getDefinition(clazz)
 }
