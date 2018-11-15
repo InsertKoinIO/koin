@@ -39,6 +39,7 @@ import org.koin.core.standalone.StandAloneKoinApplication
 fun Application.installKoin(
     koinApplication: KoinApplication
 ) {
+    StandAloneKoinApplication.getOrNull()?.stop()
     koinApplication.start()
 }
 

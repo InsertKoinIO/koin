@@ -97,12 +97,12 @@ class KoinApplication private constructor() {
     /**
      * Set Koin Logger
      * @param level
-     * @param log - logger
+     * @param logger - logger
      */
     @JvmOverloads
-    fun useLogger(level: Level = Level.INFO, log: Logger = PrintLogger()): KoinApplication {
-        logger = log
-        logger.level = level
+    fun useLogger(level: Level = Level.INFO, logger: Logger = PrintLogger()): KoinApplication {
+        KoinApplication.logger = logger
+        KoinApplication.logger.level = level
         return this
     }
 

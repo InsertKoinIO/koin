@@ -35,7 +35,7 @@ import org.koin.core.standalone.StandAloneKoinApplication
  * @param parameters
  */
 inline fun <reified T : Any> Routing.inject(
-    name: String = "",
+    name: String? = null,
     scope: Scope? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
@@ -48,7 +48,7 @@ inline fun <reified T : Any> Routing.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Routing.get(
-    name: String = "",
+    name: String? = null,
     scope: Scope? = null,
     noinline parameters: ParametersDefinition? = null
 ) =

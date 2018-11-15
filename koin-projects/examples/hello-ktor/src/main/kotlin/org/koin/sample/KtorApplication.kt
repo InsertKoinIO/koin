@@ -6,17 +6,17 @@ import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
 import io.ktor.response.respondText
-import io.ktor.routing.Route
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import org.koin.Logger.SLF4JLogger
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.experimental.builder.create
 import org.koin.experimental.builder.single
+import org.koin.experimental.builder.singleBy
 import org.koin.ktor.ext.inject
 import org.koin.ktor.ext.installKoin
 
@@ -25,17 +25,15 @@ fun Application.main() {
     install(DefaultHeaders)
     install(CallLogging)
     installKoin(koinApplication {
-        useLogger()
+        useLogger(logger = SLF4JLogger())
         loadModules(helloAppModule)
     })
 
-    // Lazy inject HelloService
-    val service by inject<HelloService>()
-
+    val helloService by inject<HelloService>()
     // Routing section
     routing {
         get("/hello") {
-            call.respondText(service.sayHello())
+            call.respondText(helloService.sayHello())
         }
         declareRoutes()
     }
@@ -47,7 +45,7 @@ private fun Routing.declareRoutes() {
 }
 
 val helloAppModule = module(createdAtStart = true) {
-    single<HelloService> { create<HelloServiceImpl>() }
+    singleBy<HelloService, HelloServiceImpl>()
     single<HelloRepository>()
 }
 

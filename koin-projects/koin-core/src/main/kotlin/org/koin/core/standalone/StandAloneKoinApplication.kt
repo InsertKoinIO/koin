@@ -29,4 +29,9 @@ object StandAloneKoinApplication {
      * StandAlone Koin App instance
      */
     fun get(): KoinApplication = app ?: error("KoinApplication has not been started")
+
+    /**
+     * StandAlone Koin App instance
+     */
+    fun getOrNull(): KoinApplication? = app
 }
