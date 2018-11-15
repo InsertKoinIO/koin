@@ -37,6 +37,7 @@ class BeanRegistry {
     private val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
     private val definitionsNames: MutableMap<String, BeanDefinition<*>> = ConcurrentHashMap()
     private val definitionsClass: MutableMap<KClass<*>, BeanDefinition<*>> = ConcurrentHashMap()
+    private val definitionsToCreate: HashSet<BeanDefinition<*>> = hashSetOf()
 
     /**
      * retrieve all definitions
@@ -91,6 +92,13 @@ class BeanRegistry {
         } else {
             saveDefinitionForTypes(definition)
         }
+        if (definition.options.isCreatedAtStart) {
+            saveDefinitionForStart(definition)
+        }
+    }
+
+    private fun saveDefinitionForStart(definition: BeanDefinition<*>) {
+        definitionsToCreate.add(definition)
     }
 
     private fun HashSet<BeanDefinition<*>>.addDefinition(definition: BeanDefinition<*>) {
@@ -150,9 +158,8 @@ class BeanRegistry {
         return definitionsNames[name]
     }
 
-    internal fun findAllCreatedAtStartDefinition(): List<BeanDefinition<*>> {
-        val effectiveInstances = definitionsClass.values + definitionsNames.values
-        return effectiveInstances.distinct().filter { it.options.isCreatedAtStart }
+    internal fun findAllCreatedAtStartDefinition(): Set<BeanDefinition<*>> {
+        return definitionsToCreate
     }
 
     internal fun releaseInstanceForScope(scope: Scope) {
@@ -180,6 +187,7 @@ class BeanRegistry {
         definitions.clear()
         definitionsNames.clear()
         definitionsClass.clear()
+        definitionsToCreate.clear()
     }
 }
 

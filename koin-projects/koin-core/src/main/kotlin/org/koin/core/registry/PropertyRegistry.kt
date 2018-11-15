@@ -39,6 +39,8 @@ class PropertyRegistry {
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
+        logger.debug("load ${properties.size} properties")
+
         values.putAll(properties)
     }
 
@@ -46,6 +48,8 @@ class PropertyRegistry {
      *Save properties values into PropertyRegister
      */
     fun saveProperties(properties: Properties) {
+        logger.debug("load ${properties.size} properties")
+
         val propertiesMapValues = properties.toMap() as Map<String, String>
         propertiesMapValues.forEach { (k: String, v: String) ->
             when {
@@ -76,6 +80,8 @@ class PropertyRegistry {
      * @param fileName
      */
     fun loadPropertiesFromFile(fileName: String) {
+        logger.debug("load properties from $fileName")
+
         val content = Koin::class.java.getResource(fileName)?.readText()
         if (content != null) {
             logger.info("loaded properties from file:'$fileName'")
@@ -96,6 +102,8 @@ class PropertyRegistry {
      * Load properties from environment
      */
     fun loadEnvironmentProperties() {
+        logger.debug("load properties from environment")
+
         val sysProperties = System.getProperties()
         saveProperties(sysProperties)
 

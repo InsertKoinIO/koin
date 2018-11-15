@@ -106,16 +106,18 @@ class Koin {
         scope: Scope?
     ): Pair<BeanDefinition<*>, Scope?> {
         val definition = beanRegistry.findDefinition(name, clazz)
-            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         val targetScope = scopeRegistry.prepareScope(definition, scope)
         return Pair(definition, targetScope)
     }
 
     internal fun createEagerInstances() {
-        val definitions: List<BeanDefinition<*>> = beanRegistry.findAllCreatedAtStartDefinition()
-        definitions.forEach {
-            instanceResolver.resolveInstance(it, null, null)
+        val definitions = beanRegistry.findAllCreatedAtStartDefinition()
+        if (definitions.isNotEmpty()) {
+            definitions.forEach {
+                instanceResolver.resolveInstance(it, null, null)
+            }
         }
     }
 
@@ -135,7 +137,7 @@ class Koin {
      */
     fun getScope(scopeId: String): Scope {
         val scope = scopeRegistry.getScopeById(scopeId)
-            ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created")
+                ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created")
         scope.register(this)
         return scope
     }

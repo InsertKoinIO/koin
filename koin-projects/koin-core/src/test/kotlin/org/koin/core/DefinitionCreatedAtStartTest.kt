@@ -4,6 +4,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -13,6 +14,7 @@ class DefinitionCreatedAtStartTest {
     @Test
     fun `is declared as created at start`() {
         val app = koinApplication {
+            useLogger(Level.DEBUG)
             loadModules(
                 module {
                     single(createdAtStart = true) { Simple.ComponentA() }
@@ -28,6 +30,7 @@ class DefinitionCreatedAtStartTest {
     @Test
     fun `is created at start`() {
         val app = koinApplication {
+            useLogger(Level.DEBUG)
             loadModules(
                 module {
                     single(createdAtStart = true) { Simple.ComponentA() }

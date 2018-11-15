@@ -38,11 +38,9 @@ class KoinApplication private constructor() {
      * Start standalone Koin application
      */
     fun start(): KoinApplication = synchronized(this) {
-        val duration = measureDurationOnly {
-            saveStandAloneAppInstance()
-            createEagerInstances()
-        }
-        logger.info("started in $duration ms")
+        saveStandAloneAppInstance()
+        createEagerInstances()
+        logger.info("started")
         return this
     }
 
@@ -115,7 +113,7 @@ class KoinApplication private constructor() {
         val duration = measureDurationOnly {
             koin.createEagerInstances()
         }
-        logger.debug("created instances in $duration ms")
+        logger.debug("instances started in $duration ms")
         return this
     }
 
