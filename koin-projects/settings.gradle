@@ -16,4 +16,4 @@ include 'koin-ktor'
 include 'examples:hello-ktor'
 
 // Doc
-//include 'koin-book'
+include 'koin-book'
