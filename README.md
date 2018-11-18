@@ -225,7 +225,7 @@ class MyActivity() : AppCompatActivity() {
 Use koin from a simple JUnit class:
 
 ```kotlin
-// Just tag your class with KoinTest to unlick your testing power
+// Just tag your class with KoinTest to unlock your testing power
 class SimpleTest : KoinTest { 
   
   // lazy inject BusinessService into property
