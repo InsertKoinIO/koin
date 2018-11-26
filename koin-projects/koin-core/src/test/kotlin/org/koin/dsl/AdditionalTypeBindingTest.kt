@@ -48,6 +48,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `should not conflict name & default type`() {
         val app = koinApplication {
+            useLogger()
             loadModules(
                 module {
                     single<Simple.ComponentInterface1>("default") { Simple.Component2() }

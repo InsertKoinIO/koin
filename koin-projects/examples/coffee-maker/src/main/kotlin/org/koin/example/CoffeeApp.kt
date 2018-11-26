@@ -17,7 +17,10 @@ val coffeeKoinApp = koinApplication {
 
 fun main(vararg args: String) {
 
-    coffeeKoinApp.start()
+    koinApplication {
+        useLogger()
+        loadModules(coffeeAppModule)
+    }.start()
 
     val coffeeShop = CoffeeApp()
 

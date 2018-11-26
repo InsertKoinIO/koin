@@ -3,8 +3,8 @@ include 'koin-core', 'koin-test', 'koin-core-ext', 'koin-java'
 
 // Android
 include 'koin-android','koin-android-scope','koin-android-viewmodel'
-//include 'koin-androidx-scope','koin-androidx-viewmodel'
+include 'koin-androidx-scope','koin-androidx-viewmodel'
 
 // Web
-//include 'koin-logger-slf4j'
-//include 'koin-ktor'
+include 'koin-logger-slf4j'
+include 'koin-ktor'
