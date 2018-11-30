@@ -13,7 +13,7 @@ class MultipleModuleDeclarationTest {
     fun `run with DI with several modules`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 },
@@ -29,7 +29,7 @@ class MultipleModuleDeclarationTest {
     fun `resolve DI with several modules`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 },

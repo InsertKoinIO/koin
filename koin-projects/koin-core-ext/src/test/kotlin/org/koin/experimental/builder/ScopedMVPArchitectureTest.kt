@@ -5,11 +5,10 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
+import org.koin.core.standalone.startKoin
 import org.koin.dsl.bind
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.check.checkModules
 import org.koin.test.get
 
 class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
@@ -26,10 +25,10 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(MVPModule, DataSourceModule)
-        }.start()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(MVPModule, DataSourceModule)
+        }
 
         val view = get<View>()
         val presenter = get<Presenter>()
@@ -44,10 +43,10 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `should handle scope`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(MVPModule, DataSourceModule)
-        }.start()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(MVPModule, DataSourceModule)
+        }
 
         val view = get<View>()
         view.onDestroy()
@@ -62,9 +61,9 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `check MVP hierarchy`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(MVPModule, DataSourceModule)
-        }.start().checkModules()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(MVPModule, DataSourceModule)
+        }
     }
 }

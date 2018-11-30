@@ -11,7 +11,7 @@ class BeanOptionsTest {
     @Test
     fun `definition created at start`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single(createdAtStart = true) { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
@@ -29,7 +29,7 @@ class BeanOptionsTest {
     @Test
     fun `definition override`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     single(override = true) { Simple.ComponentB(get()) }

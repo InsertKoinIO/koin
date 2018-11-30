@@ -12,11 +12,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.standalone.StandAloneContext.loadKoinModules
-import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.inject
+import org.koin.core.standalone.loadKoinModules
+import org.koin.core.standalone.stopKoin
 import org.koin.test.KoinTest
-import java.util.*
+import org.koin.test.inject
+import java.util.Date
 
 @RunWith(AndroidJUnit4::class)
 class WeatherDAOTest : KoinTest {

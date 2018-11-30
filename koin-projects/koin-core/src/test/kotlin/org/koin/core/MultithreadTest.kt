@@ -16,13 +16,13 @@ class MultithreadTest {
     @Test
     fun `multi thread get`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
                     single { Simple.ComponentC(get()) }
                 })
-        }.start()
+        }
 
         val threads = arrayListOf<Thread>()
         threads.add(Thread(Runnable {
@@ -51,7 +51,7 @@ class MultithreadTest {
         assertTrue(a.hasBeenCreated())
         assertTrue(b.hasBeenCreated())
         assertTrue(c.hasBeenCreated())
-        app.stop()
+        app.close()
     }
 
     private fun randomSleep() {
@@ -59,5 +59,4 @@ class MultithreadTest {
         println("thread sleep  $timer")
         Thread.sleep(timer)
     }
-
 }

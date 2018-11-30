@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
@@ -15,7 +14,7 @@ class ParametersInjectionTest {
     fun `can create a single with parameters`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { (i: Int) -> Simple.MySingle(i) }
                 })
@@ -31,7 +30,7 @@ class ParametersInjectionTest {
     fun `can get a single created with parameters - no need of give it again`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { (i: Int) -> Simple.MySingle(i) }
                 })
@@ -51,7 +50,7 @@ class ParametersInjectionTest {
     fun `can create factories with params`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     factory { (i: Int) -> Simple.MyIntFactory(i) }
                 })
@@ -68,8 +67,8 @@ class ParametersInjectionTest {
     @Test
     fun `chained factory injection`() {
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     factory { (i: Int) -> Simple.MyIntFactory(i) }
                     factory { (s: String) -> Simple.MyStringFactory(s) }

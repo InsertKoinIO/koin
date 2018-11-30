@@ -2,7 +2,7 @@ package org.koin.example
 
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.dsl.koinApplication
+import org.koin.core.standalone.startKoin
 import kotlin.system.measureTimeMillis
 
 class CoffeeApp : KoinComponent {
@@ -10,17 +10,12 @@ class CoffeeApp : KoinComponent {
     val maker: CoffeeMaker by inject()
 }
 
-val coffeeKoinApp = koinApplication {
-    useLogger()
-    loadModules(coffeeAppModule)
-}
-
 fun main(vararg args: String) {
 
-    koinApplication {
-        useLogger()
-        loadModules(coffeeAppModule)
-    }.start()
+    startKoin {
+        logger()
+        modules(coffeeAppModule)
+    }
 
     val coffeeShop = CoffeeApp()
 

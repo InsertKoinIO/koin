@@ -18,7 +18,7 @@ class DeclareMockTests : KoinTest {
     @Test
     fun `create mock of an existing definition`() {
         val koin = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 }
@@ -42,8 +42,8 @@ class DeclareMockTests : KoinTest {
     @Test
     fun `declare a Mock of an existing definition`() {
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 }
@@ -62,8 +62,8 @@ class DeclareMockTests : KoinTest {
     @Test
     fun `declare and mock an existing definition`() {
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.UUIDComponent() }
                 }

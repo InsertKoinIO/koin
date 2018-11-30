@@ -12,13 +12,13 @@ class PerfsTest {
     fun `empty module perfs`() {
         val (app, duration) = measureDuration {
             koinApplication {
-                useLogger()
-            }.start()
+                logger()
+            }
         }
         println("started in $duration ms")
 
         app.assertDefinitionsCount(0)
-        app.stop()
+        app.close()
     }
 
     @SuppressWarnings("unused")
@@ -26,9 +26,9 @@ class PerfsTest {
     fun `perfModule400 module perfs`() {
         val (app, duration) = measureDuration {
             koinApplication {
-                useLogger(Level.DEBUG)
-                loadModules(perfModule400)
-            }.start()
+                logger(Level.DEBUG)
+                modules(perfModule400)
+            }
         }
         println("started in $duration ms")
 
@@ -44,6 +44,6 @@ class PerfsTest {
         }
         println("measured executed in $executionDuration ms")
 
-        app.stop()
+        app.close()
     }
 }

@@ -8,7 +8,7 @@ class ModuleSpecialRulesTest {
     @Test
     fun `generic type declaration`() {
         val koin = koinApplication {
-            loadModules(module {
+            modules(module {
                 single { arrayListOf<String>() }
             })
         }.koin
@@ -19,7 +19,7 @@ class ModuleSpecialRulesTest {
     @Test
     fun `generic types declaration`() {
         val koin = koinApplication {
-            loadModules(module {
+            modules(module {
                 single("strings") { arrayListOf<String>() }
                 single("ints") { arrayListOf<Int>() }
             })

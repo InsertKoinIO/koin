@@ -39,7 +39,7 @@ class BeanDefinitionTest {
     @Test
     fun `definition kind`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     factory { Simple.ComponentB(get()) }
@@ -57,7 +57,7 @@ class BeanDefinitionTest {
     @Test
     fun `definition name`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single("A") { Simple.ComponentA() }
                     factory { Simple.ComponentB(get()) }
@@ -75,7 +75,7 @@ class BeanDefinitionTest {
     @Test
     fun `definition function`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 }

@@ -27,7 +27,7 @@ class ErrorCheckTest {
     @Test
     fun `unknown linked dependency`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 single { Simple.ComponentB(get()) }
             })
         }
@@ -42,7 +42,7 @@ class ErrorCheckTest {
     @Test
     fun `error while creating instance`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 single { Errors.Boom() }
             })
         }
@@ -58,7 +58,7 @@ class ErrorCheckTest {
     @Test
     fun `cycle error`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 single { Errors.CycleA(get()) }
                 single { Errors.CycleB(get()) }
             })

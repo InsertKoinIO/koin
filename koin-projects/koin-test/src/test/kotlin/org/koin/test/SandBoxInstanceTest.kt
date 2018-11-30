@@ -12,8 +12,8 @@ class SandBoxInstanceTest {
     @Test
     fun `Create a sandbox for given definition`() {
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 }

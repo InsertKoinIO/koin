@@ -21,7 +21,8 @@ import org.koin.core.KoinApplication
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 import org.koin.core.standalone.StandAloneKoinApplication
-
+import org.koin.core.standalone.startKoin
+import org.koin.dsl.KoinAppDeclaration
 
 /**
  * Ktor Koin extensions
@@ -32,17 +33,21 @@ import org.koin.core.standalone.StandAloneKoinApplication
 
 /**
  * Help start Koin cntofor Ktor
- * @param name - bean name / optional
- * @param module - module path
- * @param parameters
  */
 fun Application.installKoin(
     koinApplication: KoinApplication
 ) {
-    StandAloneKoinApplication.getOrNull()?.stop()
-    koinApplication.start()
+    startKoin(koinApplication)
 }
 
+/**
+ * Help start Koin cntofor Ktor
+ */
+fun Application.installKoin(
+    koinApplication: KoinAppDeclaration
+) {
+    startKoin(koinApplication)
+}
 
 /**
  * Help work on ModuleDefinition

@@ -4,6 +4,8 @@ import org.junit.Test
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.logger.Level
+import org.koin.core.standalone.StandAloneKoinApplication
+import org.koin.core.standalone.startKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -46,14 +48,14 @@ class TODOAppTest {
 
     @Test
     fun `should create all components`() {
-        val koinApp = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(TodoAppModule, RepositoryModule)
-        }.start()
+        val koinApp = startKoin {
+            logger(Level.DEBUG)
+            modules(TodoAppModule, RepositoryModule)
+        }
         val koin = koinApp.koin
 
         val view = koin.get<TasksView>()
         println("-> ${view.taskPreenter}")
-        koinApp.stop()
+        StandAloneKoinApplication.stop()
     }
 }

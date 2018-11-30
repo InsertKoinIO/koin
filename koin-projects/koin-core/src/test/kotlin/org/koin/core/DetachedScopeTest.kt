@@ -15,7 +15,7 @@ class DetachedScopeTest {
     @Test
     fun `detach a scope - should be different each time`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -29,7 +29,7 @@ class DetachedScopeTest {
     @Test
     fun `can retrieve a detached a scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -44,7 +44,7 @@ class DetachedScopeTest {
     @Test
     fun `can resolve components from a detached a scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -62,7 +62,7 @@ class DetachedScopeTest {
     @Test
     fun `closing scope don't impact other detached scopes`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -83,7 +83,7 @@ class DetachedScopeTest {
     @Test
     fun `can resolve components from a detached and default scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
                 scope(SCOPE_ID) { Simple.ComponentB(get()) }
             })

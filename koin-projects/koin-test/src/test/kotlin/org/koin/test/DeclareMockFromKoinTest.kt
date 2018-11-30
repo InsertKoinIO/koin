@@ -3,7 +3,7 @@ package org.koin.test
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.logger.Level
-import org.koin.dsl.koinApplication
+import org.koin.core.standalone.startKoin
 import org.koin.dsl.module
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito
@@ -14,14 +14,14 @@ class DeclareMockFromKoinTest : KoinTest {
 
     @Test
     fun `declareMock with KoinTest`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+        startKoin {
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.UUIDComponent() }
                 }
             )
-        }.start()
+        }
 
         val uuidValue = "UUID"
         declareMock<Simple.UUIDComponent> {

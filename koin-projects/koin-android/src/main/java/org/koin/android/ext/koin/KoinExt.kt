@@ -37,7 +37,7 @@ import java.util.*
  * @param level
  * @param Logger
  */
-fun KoinApplication.useAndroidLogger(
+fun KoinApplication.androidLogger(
     level: Level = Level.INFO,
     log: Logger = AndroidLogger()
 ): KoinApplication {
@@ -50,7 +50,7 @@ fun KoinApplication.useAndroidLogger(
  * Add Context instance to Koin container
  * @param androidContext - Context
  */
-fun KoinApplication.useAndroidContext(androidContext: Context): KoinApplication {
+fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
     logger.info("[init] declare Android Context")
 
     koin.beanRegistry.saveDefinition(BeanDefinition.createSingle { androidContext })
@@ -66,7 +66,7 @@ fun KoinApplication.useAndroidContext(androidContext: Context): KoinApplication 
  * @param androidContext
  * @param koinPropertyFile
  */
-fun KoinApplication.loadPropertiesFromAsset(
+fun KoinApplication.assetProperties(
     koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
     val koinProperties = Properties()

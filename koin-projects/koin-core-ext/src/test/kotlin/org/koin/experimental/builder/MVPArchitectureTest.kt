@@ -3,8 +3,8 @@ package org.koin.experimental.builder
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.logger.Level
+import org.koin.core.standalone.startKoin
 import org.koin.dsl.bind
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check.checkModules
@@ -24,10 +24,10 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `should create all MVP hierarchy`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(MVPModule, DataSourceModule)
-        }.start()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(MVPModule, DataSourceModule)
+        }
 
         val view = get<View>()
         val presenter = get<Presenter>()
@@ -42,9 +42,9 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `check MVP hierarchy`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(MVPModule, DataSourceModule)
-        }.start().checkModules()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(MVPModule, DataSourceModule)
+        }.checkModules()
     }
 }

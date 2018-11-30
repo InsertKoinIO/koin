@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.koin.core.KoinApplication;
 import org.koin.core.scope.Scope;
+import org.koin.core.standalone.StandAloneKoinApplication;
 import org.koin.test.AutoCloseKoinTest;
 
 import static org.junit.Assert.assertEquals;
@@ -17,10 +18,11 @@ public class UnitJavaTest extends AutoCloseKoinTest {
 
     @Before
     public void before() {
-        KoinApplication.create()
-                .useLogger()
-                .loadModules(koinModule)
-                .start();
+        KoinApplication koinApp = KoinApplication.create()
+                .logger()
+                .modules(koinModule);
+
+        StandAloneKoinApplication.start(koinApp);
     }
 
     @Test

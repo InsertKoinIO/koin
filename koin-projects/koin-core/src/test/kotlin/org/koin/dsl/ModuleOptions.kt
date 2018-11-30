@@ -43,7 +43,7 @@ class ModuleOptions {
         }
 
         val app = koinApplication {
-            loadModules(module)
+            modules(module)
         }
 
 
@@ -64,7 +64,7 @@ class ModuleOptions {
         }
 
         val app = koinApplication {
-            loadModules(module)
+            modules(module)
         }
 
         assertFalse(module.isCreatedAtStart)

@@ -61,7 +61,7 @@ inline fun <reified T : Any> Module.scope(
 }
 
 /**
- * Create a Single definition for given type T to loadModules and cast as R
+ * Create a Single definition for given type T to modules and cast as R
  * @param name
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
@@ -75,7 +75,7 @@ inline fun <reified R : Any, reified T : R> Module.singleBy(
 }
 
 /**
- * Create a Factory definition for given type T to loadModules and cast as R
+ * Create a Factory definition for given type T to modules and cast as R
  *
  * @param name
  * @param override - allow definition override

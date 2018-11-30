@@ -6,6 +6,8 @@ import org.koin.Simple
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.inject
+import org.koin.core.standalone.StandAloneKoinApplication
+import org.koin.core.standalone.startKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -18,13 +20,13 @@ class KoinComponentTest {
 
     @Test
     fun `can lazy inject from KoinComponent`() {
-        val app = koinApplication {
-            useLogger()
-            loadModules(
+        val app = startKoin {
+            logger()
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
-        }.start()
+        }
 
         val koin = app.koin
         val a: Simple.ComponentA = koin.get()
@@ -33,6 +35,6 @@ class KoinComponentTest {
         Assert.assertEquals(component.anInject, a)
         Assert.assertEquals(component.aGet, a)
 
-        app.stop()
+        StandAloneKoinApplication.stop()
     }
 }

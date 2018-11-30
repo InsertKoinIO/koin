@@ -5,6 +5,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.standalone.StandAloneKoinApplication
+import org.koin.core.standalone.startKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -14,14 +15,14 @@ class KoinApplicationIsolationTest {
     @Test
     fun `can isolate several koin apps`() {
         val app1 = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
         }
 
         val app2 = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
@@ -36,7 +37,7 @@ class KoinApplicationIsolationTest {
     @Test
     fun `koin app instance run instance `() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single(createdAtStart = true) { Simple.ComponentA() }
                 })
@@ -49,15 +50,15 @@ class KoinApplicationIsolationTest {
 
     @Test
     fun `can isolate koin apps & standaline`() {
-        koinApplication {
-            loadModules(
+        startKoin {
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
-        }.start()
+        }
 
         val app2 = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
@@ -67,7 +68,7 @@ class KoinApplicationIsolationTest {
         val a2: Simple.ComponentA = app2.koin.get()
 
         assertNotEquals(a1, a2)
-        StandAloneKoinApplication.get().stop()
+        StandAloneKoinApplication.stop()
     }
 
 }

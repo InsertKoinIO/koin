@@ -12,7 +12,7 @@ class InstanceResolutionTest {
     fun `can resolve a single`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
@@ -29,7 +29,7 @@ class InstanceResolutionTest {
     fun `can lazy resolve a single`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
@@ -46,7 +46,7 @@ class InstanceResolutionTest {
     fun `can resolve a singles by name`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     val componentA = Simple.ComponentA()
                     single("A") { componentA }
@@ -65,7 +65,7 @@ class InstanceResolutionTest {
     fun `can resolve a factory by name`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     val componentA = Simple.ComponentA()
                     factory("A") { componentA }
@@ -84,7 +84,7 @@ class InstanceResolutionTest {
     fun `can resolve a factory`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     factory { Simple.ComponentA() }
                 })
@@ -101,7 +101,7 @@ class InstanceResolutionTest {
     fun `should resolve default`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single<Simple.ComponentInterface1>("2") { Simple.Component2() }
                     single<Simple.ComponentInterface1> { Simple.Component1() }

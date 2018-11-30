@@ -7,10 +7,9 @@ import org.junit.Test
 import org.koin.android.scope.ScopeObserver
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
-import org.koin.dsl.koinApplication
+import org.koin.core.standalone.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
-
 
 class AndroidObserverTest : AutoCloseKoinTest() {
 
@@ -18,12 +17,12 @@ class AndroidObserverTest : AutoCloseKoinTest() {
 
     @Test
     fun `should close scoped definition on ON_DESTROY`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(org.koin.dsl.module {
+        startKoin {
+            logger(Level.DEBUG)
+            modules(org.koin.dsl.module {
                 scope("session") { MyService() }
             })
-        }.start()
+        }
 
         val session = getKoin().createScope("session")
         val service = get<MyService>()
@@ -42,12 +41,12 @@ class AndroidObserverTest : AutoCloseKoinTest() {
 
     @Test
     fun `should not close scoped definition`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(org.koin.dsl.module {
+        startKoin {
+            logger(Level.DEBUG)
+            modules(org.koin.dsl.module {
                 scope("session") { MyService() }
             })
-        }.start()
+        }
 
         val session = getKoin().createScope("session")
         val service = get<MyService>()
@@ -61,12 +60,12 @@ class AndroidObserverTest : AutoCloseKoinTest() {
 
     @Test
     fun `should close scoped definition on ON_STOP`() {
-        koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(org.koin.dsl.module {
+        startKoin {
+            logger(Level.DEBUG)
+            modules(org.koin.dsl.module {
                 scope("session") { MyService() }
             })
-        }.start()
+        }
 
         val session = getKoin().createScope("session")
         val service = get<MyService>()

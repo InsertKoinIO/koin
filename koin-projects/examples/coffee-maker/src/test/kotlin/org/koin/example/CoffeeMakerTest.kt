@@ -2,18 +2,14 @@ package org.koin.example
 
 import org.junit.Before
 import org.junit.Test
-import org.koin.dsl.koinApplication
+import org.koin.core.logger.Level
+import org.koin.core.standalone.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.inject
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-
-val coffeeKoinApp = koinApplication {
-    useLogger()
-    loadModules(coffeeAppModule)
-}
 
 class CoffeeMakerTest : AutoCloseKoinTest() {
 
@@ -22,7 +18,10 @@ class CoffeeMakerTest : AutoCloseKoinTest() {
 
     @Before
     fun before() {
-        coffeeKoinApp.start()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(coffeeAppModule)
+        }
 
         declareMock<Heater> {
             given(isHot()).will { true }

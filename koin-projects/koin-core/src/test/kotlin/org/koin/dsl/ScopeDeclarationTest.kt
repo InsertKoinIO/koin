@@ -15,7 +15,7 @@ class ScopeDeclarationTest {
     @Test
     fun `declare scoped definition`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -28,7 +28,7 @@ class ScopeDeclarationTest {
     fun `conflicting scope definition - same type`() {
         try {
             koinApplication {
-                loadModules(module {
+                modules(module {
                     single { Simple.ComponentA() }
                     scope(SCOPE_ID) { Simple.ComponentA() }
                 })
@@ -43,7 +43,7 @@ class ScopeDeclarationTest {
     fun `non conflicting scope definition - different names`() {
         try {
             koinApplication {
-                loadModules(module {
+                modules(module {
                     scope(SCOPE_ID) { Simple.ComponentA() }
                     scope(SCOPE_ID, name = "default") { Simple.ComponentA() }
                 })
@@ -56,7 +56,7 @@ class ScopeDeclarationTest {
     @Test
     fun `declare scope group declaration`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 withScope(SCOPE_ID) {
                     scoped { Simple.ComponentA() }
                     scoped { Simple.ComponentB(get()) }

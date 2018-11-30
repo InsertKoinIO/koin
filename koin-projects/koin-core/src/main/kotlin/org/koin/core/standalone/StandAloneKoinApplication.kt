@@ -16,6 +16,9 @@
 package org.koin.core.standalone
 
 import org.koin.core.KoinApplication
+import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.module.Module
+import org.koin.dsl.KoinAppDeclaration
 
 /**
  * StandAlone Koin Application
@@ -23,15 +26,71 @@ import org.koin.core.KoinApplication
  *
  */
 object StandAloneKoinApplication {
+
     internal var app: KoinApplication? = null
 
     /**
      * StandAlone Koin App instance
      */
+    @JvmStatic
     fun get(): KoinApplication = app ?: error("KoinApplication has not been started")
 
     /**
      * StandAlone Koin App instance
      */
+    @JvmStatic
     fun getOrNull(): KoinApplication? = app
+
+    /**
+     * Start a Koin Application as StandAlone
+     */
+    @JvmStatic
+    fun start(koinApplication: KoinApplication) {
+        if (app != null) {
+            throw KoinAppAlreadyStartedException("A Koin Application has already been started")
+        }
+        app = koinApplication
+        app?.apply {
+            createEagerInstances()
+        }
+    }
+
+    /**
+     * Stop current StandAlone Koin application
+     */
+    @JvmStatic
+    fun stop() {
+        app?.close()
+        app = null
+    }
+}
+
+/**
+ * Start a Koin Application as StandAlone
+ */
+fun startKoin(koinApplication: KoinApplication): KoinApplication {
+    StandAloneKoinApplication.start(koinApplication)
+    return koinApplication
+}
+
+/**
+ * Start a Koin Application as StandAlone
+ */
+fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
+    val koinApplication = KoinApplication.create()
+    koinApplication.apply(appDeclaration)
+    StandAloneKoinApplication.start(koinApplication)
+    return koinApplication
+}
+
+/**
+ * Stop current StandAlone Koin application
+ */
+fun stopKoin() = StandAloneKoinApplication.stop()
+
+/**
+ * load Koin modules into current StandAlone Koin application
+ */
+fun loadKoinModules(vararg modules: Module) {
+    StandAloneKoinApplication.get().modules(*modules)
 }

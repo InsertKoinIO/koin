@@ -1,6 +1,5 @@
 package org.koin.android.viewmodel
 
-import android.arch.lifecycle.ViewModel
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.android.viewmodel.dsl.isViewModel
@@ -18,8 +17,8 @@ class ViewModelDSLTest {
     @Test
     fun `definition should be a viewmodel`() {
         val koinApp = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(module {
+            logger(Level.DEBUG)
+            modules(module {
                 viewModel { MyViewModel() }
             })
         }
@@ -32,8 +31,8 @@ class ViewModelDSLTest {
     @Test
     fun `definition should not be a viewmodel`() {
         val koinApp = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(module {
+            logger(Level.DEBUG)
+            modules(module {
                 single { MyComponent() }
             })
         }

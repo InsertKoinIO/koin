@@ -17,7 +17,7 @@ class ScopeUsagesTest {
     @Test
     fun `create a scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -32,7 +32,7 @@ class ScopeUsagesTest {
     @Test
     fun `can't resolve a component from a non created scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -49,7 +49,7 @@ class ScopeUsagesTest {
     @Test
     fun `can't create an already created scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -66,7 +66,7 @@ class ScopeUsagesTest {
     @Test
     fun `can create & get an already created scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -79,7 +79,7 @@ class ScopeUsagesTest {
     @Test
     fun `can create close recreate a scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -97,7 +97,7 @@ class ScopeUsagesTest {
     @Test
     fun `created scope is associated to Koin instance`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -109,7 +109,7 @@ class ScopeUsagesTest {
     @Test
     fun `resolve a component from a created scope`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -121,7 +121,7 @@ class ScopeUsagesTest {
     @Test
     fun `close a scope with resolved component`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
             })
         }
@@ -138,7 +138,7 @@ class ScopeUsagesTest {
     @Test
     fun `close a scope with resolved component by name`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID, name = "default") { Simple.ComponentA() }
             })
         }
@@ -155,7 +155,7 @@ class ScopeUsagesTest {
     @Test
     fun `close a group scope components`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 withScope(SCOPE_ID) {
                     scoped { Simple.ComponentA() }
                     scoped { Simple.ComponentB(get()) }
@@ -179,7 +179,7 @@ class ScopeUsagesTest {
     fun `close a scope between several`() {
         val otherScope = "SCOPE2"
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 scope(SCOPE_ID) { Simple.ComponentA() }
                 scope(otherScope) { Simple.ComponentB(get()) }
             })

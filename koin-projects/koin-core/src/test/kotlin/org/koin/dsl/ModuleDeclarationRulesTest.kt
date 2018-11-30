@@ -13,7 +13,7 @@ class ModuleDeclarationRulesTest {
     fun `don't allow redeclaration`() {
         try {
             koinApplication {
-                loadModules(module {
+                modules(module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentA() }
                 })
@@ -27,8 +27,8 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `allow redeclaration - different names`() {
         val app = koinApplication {
-            useLogger(Level.INFO)
-            loadModules(module {
+            logger(Level.INFO)
+            modules(module {
                 single("default") { Simple.ComponentA() }
                 single("other") { Simple.ComponentA() }
             })
@@ -40,7 +40,7 @@ class ModuleDeclarationRulesTest {
     fun `reject redeclaration - same names`() {
         try {
             koinApplication {
-                loadModules(module {
+                modules(module {
                     single("default") { Simple.ComponentA() }
                     single("default") { Simple.ComponentB(get()) }
                 })
@@ -54,7 +54,7 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `allow redeclaration - default`() {
         val app = koinApplication {
-            loadModules(module {
+            modules(module {
                 single { Simple.ComponentA() }
                 single("other") { Simple.ComponentA() }
             })
@@ -67,7 +67,7 @@ class ModuleDeclarationRulesTest {
 
         try {
             koinApplication {
-                loadModules(
+                modules(
                     module {
                         single<Simple.ComponentInterface1> { Simple.Component1() }
                         single<Simple.ComponentInterface1> { Simple.Component2() }
