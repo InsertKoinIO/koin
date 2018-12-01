@@ -15,9 +15,9 @@
  */
 package org.koin.core
 
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
 
 /**
  * KoinComponent interface marker to bring Koin extensions features
@@ -29,7 +29,7 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin() = StandAloneKoinApplication.get().koin
+    fun getKoin() = GlobalContext.get().koin
 }
 
 /**

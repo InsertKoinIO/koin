@@ -16,10 +16,9 @@
 package org.koin.ktor.ext
 
 import io.ktor.routing.Route
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
-
 
 /**
  * Ktor Koin extensions for Routing class
@@ -54,7 +53,6 @@ inline fun <reified T : Any> Route.get(
 ) =
     getKoin().get<T>(name, scope, parameters)
 
-
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
@@ -77,4 +75,4 @@ inline fun <reified T> Route.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun Route.getKoin() = StandAloneKoinApplication.get().koin
+fun Route.getKoin() = GlobalContext.get().koin

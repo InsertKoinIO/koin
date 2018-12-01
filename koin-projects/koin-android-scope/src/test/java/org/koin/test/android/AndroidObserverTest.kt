@@ -5,9 +5,9 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.android.scope.ScopeObserver
+import org.koin.core.context.startKoin
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
-import org.koin.core.standalone.startKoin
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 

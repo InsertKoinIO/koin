@@ -6,8 +6,8 @@ import junit.framework.Assert
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.core.standalone.startKoin
-import org.koin.core.standalone.stopKoin
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
 

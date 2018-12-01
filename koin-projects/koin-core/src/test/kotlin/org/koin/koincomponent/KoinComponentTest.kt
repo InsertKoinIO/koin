@@ -4,11 +4,10 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.get
 import org.koin.core.inject
-import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.standalone.startKoin
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class MyComponent : KoinComponent {
@@ -35,6 +34,6 @@ class KoinComponentTest {
         Assert.assertEquals(component.anInject, a)
         Assert.assertEquals(component.aGet, a)
 
-        StandAloneKoinApplication.stop()
+        stopKoin()
     }
 }

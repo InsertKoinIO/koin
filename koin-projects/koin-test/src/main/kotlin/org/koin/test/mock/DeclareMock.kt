@@ -18,8 +18,8 @@ package org.koin.test.mock
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.context.GlobalContext
 import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import org.koin.test.KoinTest
@@ -35,7 +35,7 @@ inline fun <reified T : Any> KoinTest.declareMock(
     name: String = "",
     noinline stubbing: (T.() -> Unit)? = null
 ): T {
-    val koin = StandAloneKoinApplication.get().koin
+    val koin = GlobalContext.get().koin
     val clazz = T::class
 
     val foundDefinition: BeanDefinition<T> = getDefinition(clazz, koin, name)
@@ -57,7 +57,7 @@ inline fun <reified T : Any> getDefinition(
     logger.info("declare mock for '${clazz.getFullName()}'")
 
     return koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
-            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
+        ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
 }
 
 /**

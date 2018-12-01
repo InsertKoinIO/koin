@@ -4,8 +4,9 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.standalone.startKoin
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -64,11 +65,10 @@ class KoinApplicationIsolationTest {
                 })
         }
 
-        val a1: Simple.ComponentA = StandAloneKoinApplication.get().koin.get()
+        val a1: Simple.ComponentA = GlobalContext.get().koin.get()
         val a2: Simple.ComponentA = app2.koin.get()
 
         assertNotEquals(a1, a2)
-        StandAloneKoinApplication.stop()
+        stopKoin()
     }
-
 }

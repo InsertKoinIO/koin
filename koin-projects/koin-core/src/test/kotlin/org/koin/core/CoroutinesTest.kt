@@ -8,8 +8,8 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.standalone.startKoin
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.getDefinition
 import org.koin.test.hasBeenCreated
@@ -52,7 +52,7 @@ class CoroutinesTest {
         Assert.assertTrue(b.hasBeenCreated())
         Assert.assertTrue(c.hasBeenCreated())
 
-        StandAloneKoinApplication.stop()
+        stopKoin()
     }
 
     private suspend fun randomSleep() {

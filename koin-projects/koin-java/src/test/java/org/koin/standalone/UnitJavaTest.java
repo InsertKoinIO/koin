@@ -4,8 +4,8 @@ import kotlin.Lazy;
 import org.junit.Before;
 import org.junit.Test;
 import org.koin.core.KoinApplication;
+import org.koin.core.context.GlobalContext;
 import org.koin.core.scope.Scope;
-import org.koin.core.standalone.StandAloneKoinApplication;
 import org.koin.test.AutoCloseKoinTest;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ public class UnitJavaTest extends AutoCloseKoinTest {
                 .logger()
                 .modules(koinModule);
 
-        StandAloneKoinApplication.start(koinApp);
+        GlobalContext.start(koinApp);
     }
 
     @Test

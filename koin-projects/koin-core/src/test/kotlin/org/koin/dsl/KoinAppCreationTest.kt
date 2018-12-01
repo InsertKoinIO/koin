@@ -5,11 +5,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.KoinApplication
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.logger.Level
-import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.standalone.startKoin
-import org.koin.core.standalone.stopKoin
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
 
@@ -22,7 +22,7 @@ class KoinAppCreationTest {
 
     @Test
     fun `make a Koin application`() {
-        val app = koinApplication {  }
+        val app = koinApplication { }
 
         app.assertDefinitionsCount(0)
 
@@ -33,7 +33,7 @@ class KoinAppCreationTest {
     fun `start a Koin application`() {
         val app = startKoin { }
 
-        assertEquals(StandAloneKoinApplication.get(), app)
+        assertEquals(GlobalContext.get(), app)
 
         stopKoin()
 

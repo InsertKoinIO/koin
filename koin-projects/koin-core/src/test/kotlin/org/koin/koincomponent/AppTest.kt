@@ -3,10 +3,9 @@ package org.koin.koincomponent
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.inject
-import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.standalone.startKoin
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class TasksView
@@ -36,6 +35,6 @@ class AppTest {
         Assert.assertEquals(myApp.presenter.view, myApp.view)
         Assert.assertEquals(myApp.presenter, koin.get<TasksPresenter>())
 
-        StandAloneKoinApplication.stop()
+        stopKoin()
     }
 }

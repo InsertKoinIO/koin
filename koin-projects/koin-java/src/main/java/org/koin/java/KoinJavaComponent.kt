@@ -16,9 +16,9 @@
 package org.koin.java
 
 import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -74,5 +74,5 @@ object KoinJavaComponent {
      * @param key - key property
      */
     @JvmStatic
-    fun getKoin(): Koin = StandAloneKoinApplication.get().koin
+    fun getKoin(): Koin = GlobalContext.get().koin
 }

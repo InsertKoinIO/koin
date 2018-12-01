@@ -2,8 +2,8 @@ package org.koin.test
 
 import org.junit.Assert
 import org.junit.Test
+import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.core.standalone.startKoin
 import org.koin.dsl.module
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito

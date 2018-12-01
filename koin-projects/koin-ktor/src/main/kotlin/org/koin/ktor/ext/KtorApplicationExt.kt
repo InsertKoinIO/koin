@@ -18,10 +18,10 @@ package org.koin.ktor.ext
 import io.ktor.application.Application
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
-import org.koin.core.standalone.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
 /**
@@ -52,7 +52,7 @@ fun Application.installKoin(
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = StandAloneKoinApplication.get().koin
+fun Application.getKoin(): Koin = GlobalContext.get().koin
 
 /**
  * inject lazily given dependency

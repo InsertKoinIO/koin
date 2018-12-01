@@ -15,10 +15,9 @@
  */
 package org.koin.test
 
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
-
 
 /**
  * Koin Test tools
@@ -30,7 +29,7 @@ import org.koin.core.standalone.StandAloneKoinApplication
  * Koin Test Component
  */
 interface KoinTest {
-    fun getKoin() = StandAloneKoinApplication.get().koin
+    fun getKoin() = GlobalContext.get().koin
 }
 
 /**

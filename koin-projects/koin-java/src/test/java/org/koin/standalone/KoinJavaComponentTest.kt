@@ -18,7 +18,7 @@ package org.koin.standalone
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.koin.core.standalone.startKoin
+import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.standalone
+package org.koin.core.context
 
 import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
@@ -21,11 +21,12 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
 /**
- * StandAlone Koin Application
+ * Global context - current Koin Application available globally
+ *
  * Support to help inject automatically instances once KoinApp has been started
  *
  */
-object StandAloneKoinApplication {
+object GlobalContext {
 
     internal var app: KoinApplication? = null
 
@@ -69,7 +70,7 @@ object StandAloneKoinApplication {
  * Start a Koin Application as StandAlone
  */
 fun startKoin(koinApplication: KoinApplication): KoinApplication {
-    StandAloneKoinApplication.start(koinApplication)
+    GlobalContext.start(koinApplication)
     return koinApplication
 }
 
@@ -79,18 +80,18 @@ fun startKoin(koinApplication: KoinApplication): KoinApplication {
 fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.create()
     koinApplication.apply(appDeclaration)
-    StandAloneKoinApplication.start(koinApplication)
+    GlobalContext.start(koinApplication)
     return koinApplication
 }
 
 /**
  * Stop current StandAlone Koin application
  */
-fun stopKoin() = StandAloneKoinApplication.stop()
+fun stopKoin() = GlobalContext.stop()
 
 /**
  * load Koin modules into current StandAlone Koin application
  */
 fun loadKoinModules(vararg modules: Module) {
-    StandAloneKoinApplication.get().modules(*modules)
+    GlobalContext.get().modules(*modules)
 }

@@ -16,7 +16,7 @@
 package org.koin.test
 
 import org.junit.After
-import org.koin.core.standalone.stopKoin
+import org.koin.core.context.stopKoin
 
 /**
  * Extended Koin Test - embed autoclose @after method to close Koin after every test

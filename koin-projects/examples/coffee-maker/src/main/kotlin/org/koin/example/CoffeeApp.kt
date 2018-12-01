@@ -1,8 +1,8 @@
 package org.koin.example
 
 import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
 import org.koin.core.inject
-import org.koin.core.standalone.startKoin
 import kotlin.system.measureTimeMillis
 
 class CoffeeApp : KoinComponent {
