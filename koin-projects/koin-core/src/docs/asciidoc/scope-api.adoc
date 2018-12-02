@@ -76,7 +76,7 @@ Just inject it into constructor, with the right scope:
 ----
 module {
     // Shared user session data
-    scope { UserSession() }
+    scope("session") { UserSession() }
     // Inject UserSession instance from "session" Scope
     factory { Presenter(get())}
 }
