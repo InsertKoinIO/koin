@@ -1,0 +1,62 @@
+== Extending Koin
+
+Koin is an agnostic dependency injection framework, offering a DSL, a lightweight container and a simple API.
+To suit your favorite SDK/runtime technology, just extend it with some Kotlin extensions and bring Koin features.
+
+
+=== Extend the DSL
+
+The DSL is mainly defined in `org.koin.dsl.context.ModuleDefinition` class. Just make a Kotlin extension on type `ModuleDefinition` to make a new keyword.
+
+Below, an example of `viewModel` keyword for `koin-android-viewmodel`.
+
+.viewModel keyword example
+[source,kotlin]
+----
+inline fun <reified T : ViewModel> ModuleDefinition.viewModel(
+    name: String = "",
+    noinline definition: Definition<T>
+) { ... }
+----
+
+=== Bring Koin to your SDK
+
+You can extend your actual Runtime/SDK to add Kotlin extension, to bring `KoinComponent` powers. Check the `org.koin.standalone.KoinComponent.kt` file to see all the existing Koin features available to port.
+
+Below, an example of `by inject()` function ported to Android world (extension on `ComponentCallbacks` to be usable by `Activity`, `Fragment` and `Service`).
+
+.Koin inject function for Android
+[source,kotlin]
+----
+inline fun <reified T> ComponentCallbacks.inject(
+    name: String = "",
+    module: String? = null,
+    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+) = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name, module, parameters) }
+----
+
+=== Need a new startKoin?
+
+If you need to adapt the `startKoin()` function to your SDK, up to you to make a new one and call the original `startKoin` behind it.
+
+Below, the `startKoin()` adapted for Android world (extension on `Application` class).
+
+.startKoin from Android Application class
+[source,kotlin]
+----
+fun Application.startKoin(
+    application: Application,
+    modules: List<Module>,
+    extraProperties: Map<String, Any> = HashMap(),
+    loadProperties: Boolean = true,
+    logger: Logger = AndroidLogger()
+) {
+    Koin.logger = logger
+    val koin = StandAloneContext.startKoin(
+        modules,
+        extraProperties = extraProperties,
+        useKoinPropertiesFile = false
+    ).with(application)
+    if (loadProperties) koin.bindAndroidProperties(application)
+}
+----
