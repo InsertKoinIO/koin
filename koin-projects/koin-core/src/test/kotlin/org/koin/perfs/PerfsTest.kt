@@ -26,7 +26,7 @@ class PerfsTest {
     fun `perfModule400 module perfs`() {
         val (app, duration) = measureDuration {
             koinApplication {
-                logger(Level.DEBUG)
+                logger()
                 modules(perfModule400)
             }
         }

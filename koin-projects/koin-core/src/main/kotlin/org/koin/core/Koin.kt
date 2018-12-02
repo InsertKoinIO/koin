@@ -19,7 +19,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.error.ScopeNotCreatedException
-import org.koin.core.instance.InstanceResolver
+import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
@@ -39,7 +39,6 @@ import kotlin.reflect.KClass
 class Koin {
 
     val beanRegistry = BeanRegistry()
-    private val instanceResolver = InstanceResolver()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
 
@@ -83,22 +82,28 @@ class Koin {
         scope: Scope?,
         parameters: ParametersDefinition?
     ): T = synchronized(this) {
-        logger.debug("+- get '${clazz.getFullName()}'")
-
-        val (instance: T, duration: Double) = measureDuration {
-            val (definition, targetScope) = prepareResolution(name, clazz, scope)
-            resolveInstance<T>(definition, targetScope, parameters)
+        //TODO logger.debug slowing down
+        return if (logger.level == Level.DEBUG) {
+            logger.debug("+- get '${clazz.getFullName()}'")
+            val (instance: T, duration: Double) = measureDuration {
+                resolve<T>(name, clazz, scope, parameters)
+            }
+            logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+            return instance
+        } else {
+            resolve(name, clazz, scope, parameters)
         }
-
-        logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
-        return instance
     }
 
-    private fun <T> resolveInstance(
-        definition: BeanDefinition<*>,
-        targetScope: Scope?,
+    private fun <T> resolve(
+        name: String?,
+        clazz: KClass<*>,
+        scope: Scope?,
         parameters: ParametersDefinition?
-    ) = instanceResolver.resolveInstance(definition, targetScope, parameters) as T
+    ): T {
+        val (definition, targetScope) = prepareResolution(name, clazz, scope)
+        return definition.resolveInstance<T>(targetScope, parameters)
+    }
 
     private fun prepareResolution(
         name: String?,
@@ -116,7 +121,7 @@ class Koin {
         val definitions = beanRegistry.findAllCreatedAtStartDefinition()
         if (definitions.isNotEmpty()) {
             definitions.forEach {
-                instanceResolver.resolveInstance(it, null, null)
+                it.resolveInstance(null, null)
             }
         }
     }
@@ -201,7 +206,6 @@ class Koin {
      */
     fun close() {
         beanRegistry.close()
-        instanceResolver.close()
         scopeRegistry.close()
         propertyRegistry.close()
     }

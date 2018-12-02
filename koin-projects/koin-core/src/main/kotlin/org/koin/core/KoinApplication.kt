@@ -101,7 +101,9 @@ class KoinApplication private constructor() {
         val duration = measureDurationOnly {
             koin.createEagerInstances()
         }
-        logger.debug("instances started in $duration ms")
+        if (logger.level == Level.DEBUG) {
+            logger.debug("instances started in $duration ms")
+        }
         return this
     }
 

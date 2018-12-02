@@ -18,6 +18,7 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.error.NoPropertyFileFoundException
+import org.koin.core.logger.Level
 import org.koin.ext.isFloat
 import org.koin.ext.isInt
 import java.util.*
@@ -39,7 +40,9 @@ class PropertyRegistry {
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        logger.debug("load ${properties.size} properties")
+        if (logger.level == Level.DEBUG) {
+            logger.debug("load ${properties.size} properties")
+        }
 
         values.putAll(properties)
     }
@@ -48,7 +51,9 @@ class PropertyRegistry {
      *Save properties values into PropertyRegister
      */
     fun saveProperties(properties: Properties) {
-        logger.debug("load ${properties.size} properties")
+        if (logger.level == Level.DEBUG) {
+            logger.debug("load ${properties.size} properties")
+        }
 
         val propertiesMapValues = properties.toMap() as Map<String, String>
         propertiesMapValues.forEach { (k: String, v: String) ->
@@ -80,8 +85,9 @@ class PropertyRegistry {
      * @param fileName
      */
     fun loadPropertiesFromFile(fileName: String) {
-        logger.debug("load properties from $fileName")
-
+        if (logger.level == Level.DEBUG) {
+            logger.debug("load properties from $fileName")
+        }
         val content = Koin::class.java.getResource(fileName)?.readText()
         if (content != null) {
             logger.info("loaded properties from file:'$fileName'")
@@ -102,8 +108,9 @@ class PropertyRegistry {
      * Load properties from environment
      */
     fun loadEnvironmentProperties() {
-        logger.debug("load properties from environment")
-
+        if (logger.level == Level.DEBUG) {
+            logger.debug("load properties from environment")
+        }
         val sysProperties = System.getProperties()
         saveProperties(sysProperties)
 

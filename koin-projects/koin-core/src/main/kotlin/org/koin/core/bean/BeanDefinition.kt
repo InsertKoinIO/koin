@@ -19,7 +19,9 @@ import org.koin.core.instance.FactoryInstance
 import org.koin.core.instance.Instance
 import org.koin.core.instance.ScopeInstance
 import org.koin.core.instance.SingleInstance
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
+import org.koin.core.scope.Scope
 import org.koin.core.scope.setScopeId
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -64,6 +66,14 @@ data class BeanDefinition<T>(
             Kind.Factory -> FactoryInstance(this)
         }
     }
+
+    /**
+     * Resolve instance
+     */
+    fun <T> resolveInstance(
+        targetScope: Scope?,
+        parameters: ParametersDefinition?
+    ) = instance.get<T>(targetScope, parameters)
 
     override fun toString(): String {
         val defKind = kind.toString()

@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 import java.util.concurrent.ConcurrentHashMap
@@ -33,7 +34,9 @@ class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefi
 
     override fun release(scope: Scope?) {
         scope?.let {
-            logger.debug("releasing '$scope' ~ $beanDefinition ")
+            if (logger.level == Level.DEBUG) {
+                logger.debug("releasing '$scope' ~ $beanDefinition ")
+            }
             values.remove(scope.internalId)
         }
     }
