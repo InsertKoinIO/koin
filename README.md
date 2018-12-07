@@ -273,6 +273,8 @@ And more: check your configuration with a simple unit test, easily create mocks.
 
 ### Talks & podcasts
 
+* [Simplify your Android development with Koin - Mobilization 2018](https://www.youtube.com/watch?v=KzQbJFVjr9w)
+* [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
 
 ### Koin developers hub
