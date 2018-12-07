@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
@@ -130,5 +131,32 @@ class ModuleCreationTest {
                     })
             )
         }
+    }
+
+    @Test
+    fun `can add modules for list`() {
+        val modA = module {
+            single { Simple.ComponentA() }
+        }
+        val modB = module {
+            single { Simple.ComponentB(get()) }
+        }
+
+        assertEquals(modA + modB, listOf(modA, modB))
+    }
+
+    @Test
+    fun `can add modules to list`() {
+        val modA = module {
+            single { Simple.ComponentA() }
+        }
+        val modB = module {
+            single { Simple.ComponentB(get()) }
+        }
+        val modC = module {
+            single { Simple.ComponentC(get()) }
+        }
+
+        assertEquals(modA + modB + modC, listOf(modA, modB) + modC)
     }
 }

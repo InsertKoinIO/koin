@@ -66,7 +66,6 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         this.options.override = options.override || override
     }
 
-
     /**
      * Declare a group a scoped definition
      * @param scopeId
@@ -143,5 +142,13 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         return koin.getProperty(key) ?: throw MissingPropertyException("Property '$key' is missing")
     }
 
-
+    /**
+     * Help write list of Modules
+     */
+    operator fun plus(module: Module) = listOf(this, module)
 }
+
+/**
+ * Help write list of Modules
+ */
+operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)

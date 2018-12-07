@@ -6,6 +6,7 @@ import org.koin.Errors
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -58,6 +59,7 @@ class ErrorCheckTest {
     @Test
     fun `cycle error`() {
         val app = koinApplication {
+            logger(Level.DEBUG)
             modules(module {
                 single { Errors.CycleA(get()) }
                 single { Errors.CycleB(get()) }
@@ -67,7 +69,7 @@ class ErrorCheckTest {
         try {
             app.koin.get<Errors.CycleA>()
             fail("should break into cycle")
-        } catch (e: Exception) {
+        } catch (e: StackOverflowError) {
             e.printStackTrace()
         }
     }
