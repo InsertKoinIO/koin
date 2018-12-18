@@ -1,22 +1,64 @@
 == Koin DSL
 
-Koin provides a DSL to help your describe your components with definitions and start the Koin container
-with those definitions and to instantiate them when needed.
+Koin provides a DSL to help your describe your app configuration and your components to be used within the Koin container.
 
 === Why a DSL?
 
-Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it or generate code for it. Those annotations need introspection analyze,
-proxying/code generation. Whereas with Kotlin DSL, we can use smart functional API to achieve the same goal: make dependency injection.
+Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to achieve to prepare your dependency injection.
 
 === The Koin DSL
 
-Below are the Koin DSL keywords:
+Koin offers several keywords to let you describe the elements of a Koin Application:
 
-* `module` - create a Koin Module
-* `factory` - provide a factory bean definition
-* `single` - provide a singleton bean definition (also aliased as `bean`)
-* `get` - resolve a component dependency
-* `bind` - add type to bind for given bean definition
+- Application DSL, to describe Koin container configuration
+- Module DSL, to describe the components that have to be injected
+
+=== Application DSL
+
+The `KoinApplication` instance represents your Koin container configuration. You configure it with the dedicated DSL:
+
+* `koinApplication { }` - create a `KoinApplication` instance, root for the Koin container configuration
+* `startKoin { }` - create a `KoinApplication` instance and register it in the `GlobalContext` to allow the use of GlobalContext API
+* `logger( )` - describe what level and Logger implementation to use (by default use the EmptyLogger)
+* `modules( )` - set a list of Koin modules to load in the container
+* `properties()` - load HashMap properties into Koin container
+* `fileProperties( )` - load properties from given file into Koin container
+* `environmentProperties( )` - load properties from OS environment into Koin container
+
+=== KoinApplication instance: Global vs Local
+
+
+
+=== Starting Koin
+
+Starting Koin means to register a `KoinApplication` into the `GlobalContext`.
+
+To start Koin container with modules, we can just use the `startKoin` function like that:
+
+[source,kotlin]
+----
+// start a KoinApplication in Global context
+startKoin {
+    // declare used logger
+    logger()
+    // declare used modules
+    modules(coffeeAppModule)
+}
+----
+
+This way, Koin is started in a `GlobalContext` i.e: usable with `KoinComponent` API
+
+=== Module DSL
+
+Below are the Koin DSL keywords to describe a module:
+
+* `module { }` - create a Koin Module
+* `factory { }` - provide a factory bean definition
+* `single { }` - provide a singleton bean definition (also aliased as `bean`)
+* `get()` - resolve a component dependency
+* `bind()` - add type to bind for given bean definition
+* `binds()` - add types array for given bean definition
+
 
 === Writing a module
 
@@ -48,10 +90,10 @@ val myModule = module {
 
 [IMPORTANT]
 ====
-`single` & `factory` keywords help you declare your components through a lambda expression. this lambda describe
+`single`, `factory` & `scope` keywords help you declare your components through a lambda expression. this lambda describe
 the way that you build your component. Usually we instantiate components via their constructors, but you can also use any expression.
 
-`factory or single { Class constructor / expression }`
+`single { Class constructor / expression }`
 
 The result type of your lambda is the main type of your component
 ====
@@ -75,7 +117,7 @@ val myModule = module {
 
 [NOTE]
 ====
-Koin containter doesn't retain factory instances as it will give a new instance each time the definition is asked.
+Koin container doesn't retain factory instances as it will give a new instance each time the definition is asked.
 ====
 
 === Resolving & injecting dependencies
@@ -85,7 +127,7 @@ function to the requested needed component instance. This `get()` function is us
 
 [IMPORTANT]
 ====
-To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve depdendencies in class constructors. This way, your instance will be created with injected intances from Koin.
+To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve dependencies in class constructors. This way, your instance will be created with injected instances from Koin.
 ====
 
 Let's take an example with several classes:
@@ -98,7 +140,7 @@ class Controller(val view : View)
 
 val myModule = module {
 
-    // declare Service as single intance
+    // declare Service as single instance
     single { Service() }
     // declare Controller as single instance, resolving View instance with get()
     single { Controller(get()) }
@@ -142,7 +184,7 @@ val myModule = module {
 }
 ----
 
-You can also use the inferred type form, to tell the requested type:
+You can also use the inferred type expression:
 
 [source,kotlin]
 ----
@@ -159,7 +201,7 @@ val myModule = module {
 
 [NOTE]
 ====
-This 2nd way of style declaration is prefered and will be used for the rest of the documentation.
+This 2nd way of style declaration is preferred and will be used for the rest of the documentation.
 ====
 
 === Binding additional type
@@ -196,21 +238,7 @@ val myModule = module {
 
 === Naming a definition
 
-By default, Koin will name your definition depending on modules path & class name.
-
-[source,kotlin]
-----
-module {
-    single { ComponentA() }
-    module("A") {
-        single { ComponentB() }
-    }
-}
-----
-
-The name of `ComponentA` definition will be `ComponentA`, and for `ComponentB` you will have `A.ComponentB`.
-
-But you can declare a name to your definition, to help you distinguish two definitions about the same type:
+You can specify a name to your definition, to help you distinguish two definitions about the same type:
 
 Just request your definition with its name:
 
@@ -227,10 +255,27 @@ val service : Service by inject(name = "default")
 `get()` and `by inject()` functions let you specify a definition name if needed.
 
 
+=== Default definition bindings
+
+By default Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
+
+[source,kotlin]
+----
+val myModule = module {
+    single<Service> { ServiceImpl1() }
+    single<Service>("test") { ServiceImpl2() }
+}
+----
+
+Then:
+
+- `val service : Service by inject()` will trigger the `ServiceImpl1` definition
+- `val service : Service by inject(name = "test")` will trigger the `ServiceImpl2` definition
+
 
 === Declaring injection parameters
 
-In any `single` or `factory` definition, you can use injection parameters: parameters that will be injected and used by your definition:
+In any `single`, `factory` or `scope` definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
 [source,kotlin]
 ----
@@ -252,35 +297,6 @@ val presenter : Presenter by inject { parametersOf(view) }
 
 Further reading in the <<injection-parameters.adoc#_injection_parameters,injection parameters section>>.
 
-=== Conflicting definitions
-
-Conflicting definitions occurs when you have:
-
-* several definitions that are matching the same type
-* defined a circular dependency
-
-In the first case, you can name your definition to distinguish them. You can also use modules to alter resolution visibility. In last case, you can also specify a module path when you request a dependency from a KoinComponent.
-
-[source,kotlin]
-----
-val myModule = module("org.sample") {
-
-
-    module("org.demo"){
-        single<Service>{ ServiceImpl() }
-    }
-
-    module("org.sample"){
-        single<Service>{ ServiceImpl() }
-    }
-}
-
-// Request dependency from /org/sample namespace
-val service : Service by inject(module = "org.sample")
-----
-
-For a circular dependency problem, you are in the situation where `A<-B` & `B<-A`. You have to review your relation between A & B, and break the circularity  to resolve your situation.
-
 
 === Definition flags
 
@@ -292,7 +308,7 @@ A definition or a module can be flagged as `createOnStart`, to be created at sta
 or on your definition.
 
 
-.CreateOnStart flag at definition level
+.CreateAtStart flag on a definition
 [source,kotlin]
 ----
 val myModuleA = module {
@@ -303,11 +319,11 @@ val myModuleA = module {
 val myModuleB = module {
 
     // eager creation for this definition
-    single<Service>(createOnStart=true) { TestServiceImp() }
+    single<Service>(createAtStart=true) { TestServiceImp() }
 }
 ----
 
-.CreateOnStart flag at module level
+.CreateAtStart flag on a module
 [source,kotlin]
 ----
 val myModuleA = module {
@@ -315,26 +331,20 @@ val myModuleA = module {
     single<Service> { ServiceImp() }
 }
 
-val myModuleB = module(createOnStart=true) {
+val myModuleB = module(createAtStart=true) {
 
     single<Service>{ TestServiceImp() }
 }
 ----
 
-The `startKoin` function will automatically create definition instances flagged with `createOnStart`.
+The `startKoin` function will automatically create definitions instances flagged with `createAtStart`.
 
 [source,kotlin]
 ----
 // Start Koin modules
-startKoin(listOf(myModuleA,myModuleB))
-----
-
-If you don't want to create instances at start, jus use the `createOnStart` at false from the `startKoin()` function:
-
-[source,kotlin]
-----
-// Start Koin modules
-startKoin(listOf(myModuleA,myModuleB), createOnStart = false)
+startKoin {
+    modules(myModuleA,myModuleB)
+}
 ----
 
 [NOTE]
@@ -360,7 +370,9 @@ val myModuleB = module {
 }
 
 // Will throw an BeanOverrideException
-startKoin(listOf(myModuleA,myModuleB))
+startKoin {
+    modules(myModuleA,myModuleB)
+}
 ----
 
 To allow definition overriding, you have to use the `override` parameter:
@@ -424,63 +436,3 @@ module {
     single(name="Strings") { ArrayList<String>() }
 }
 ----
-
-=== Experimental features
-
-==== Create instances using the create() function
-
-Koin has the `create<T>()` function that allows you to create an instance of type `T` and inject its first constructor.
-Note that if you don"t provide any definition lambda to your single/factory definition, will be able to create it for you:
-
-[source,kotlin]
-----
-single<T>() == single { create<T>() }
-factory<T>() == factory { create<T>() }
-----
-
-When you need to specify the projected type:
-
-[source,kotlin]
-----
-single<T> { R() } == single<T> { create<R>() }
-factory<T>() { R() } == factory<T> { create<R>() }
-----
-
-This help write definition without having to fill manually the constructor with `get()` functions. Compare from the 'manual'
-to the 'automated' created instances.
-
-.definitions without create() function
-[source,kotlin]
-----
-// Presenter <- Service
-class Service()
-class Controller(val view : View)
-
-val myModule = module {
-
-    // declare Service as single intance
-    single { Service() }
-    // declare Controller as single instance, resolving View instance with get()
-    single<Controller> { ControllerImpl(get()) }
-}
-----
-
-.definitions with create() function
-[source,kotlin]
-----
-// Presenter <- Service
-class Service()
-class Controller(val view : View)
-
-val myModule = module {
-
-    // declare Service as single intance
-    single<Service>()
-    // declare Controller as single instance, resolving View instance with get()
-    single<Controller> { create<ControllerImpl>() }
-}
-----
-
-===== Using ProGuard/R8 with create()
-
-When using ProGuard or R8, non-used classes and methods are removed. If you never use the constructor of a class other than with `create()`, ProGuard will remove the constructor because it does not see any usage of it. Fix it by either not using `create()` for such cases, or by adapting your ProGuard rules.

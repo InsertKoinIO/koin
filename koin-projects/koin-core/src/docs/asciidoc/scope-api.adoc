@@ -103,7 +103,7 @@ session.close()
 Beware that you can't inject instances anymore from a closed scope.
 ====
 
-=== Scope closing callback
+=== Scope callback //TODO
 
 It's also possible to listen scope closing. Just use the `registerScopeCallback()` function to register a `ScopeCallback` instance.
 
@@ -117,3 +117,6 @@ registerScopeCallback(object : ScopeCallback{
         }
     })
 ----
+
+=== //TODO Detaching a scope
+
