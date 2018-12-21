@@ -1,7 +1,7 @@
 package org.koin.test
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.scope.Scope
@@ -13,7 +13,11 @@ fun KoinApplication.assertDefinitionsCount(count: Int) {
 
 fun KoinApplication.assertScopeHasBeenCreated(scope: Scope) {
     val id = scope.id
-    assertTrue("Scope $id should be created", koin.scopeRegistry.getScopeById(id) != null)
+    try {
+        koin.scopeRegistry.getScopeById(id)
+    } catch (e: Exception) {
+        fail()
+    }
 }
 
 internal fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {

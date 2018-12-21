@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
-    override fun isCreated(scope: Scope?): Boolean = scope?.let { values[scope.internalId] != null } ?: false
+    override fun isCreated(scope: Scope?): Boolean = scope?.let { values[scope.uuid] != null } ?: false
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
@@ -37,7 +37,7 @@ class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefi
             if (logger.level == Level.DEBUG) {
                 logger.debug("releasing '$scope' ~ $beanDefinition ")
             }
-            values.remove(scope.internalId)
+            values.remove(scope.uuid)
         }
     }
 
@@ -45,7 +45,7 @@ class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefi
     override fun <T> get(scope: Scope?, parameters: ParametersDefinition?): T {
         if (scope == null) error("Scope should not be null for ScopeInstance")
 
-        val internalId = scope.internalId
+        val internalId = scope.uuid
         var current = values[internalId]
         if (current == null) {
             current = create(beanDefinition, parameters)

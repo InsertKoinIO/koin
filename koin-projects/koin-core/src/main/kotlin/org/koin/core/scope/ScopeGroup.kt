@@ -39,7 +39,8 @@ class ScopeGroup(val scopeId: String, val module: Module) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return module.scope(scopeId, name, override, definition)
+        TODO()
+//        return module.scope(scopeId, name, override, definition)
     }
 
 }

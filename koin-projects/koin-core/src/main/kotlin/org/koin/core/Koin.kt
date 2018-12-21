@@ -18,13 +18,13 @@ package org.koin.core
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeUUID
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -82,7 +82,6 @@ class Koin {
         scope: Scope?,
         parameters: ParametersDefinition?
     ): T = synchronized(this) {
-        //TODO logger.debug slowing down
         return if (logger.level == Level.DEBUG) {
             logger.debug("+- get '${clazz.getFullName()}'")
             val (instance: T, duration: Double) = measureDuration {
@@ -102,7 +101,7 @@ class Koin {
         parameters: ParametersDefinition?
     ): T {
         val (definition, targetScope) = prepareResolution(name, clazz, scope)
-        return definition.resolveInstance<T>(targetScope, parameters)
+        return definition.resolveInstance(targetScope, parameters)
     }
 
     private fun prepareResolution(
@@ -111,10 +110,10 @@ class Koin {
         scope: Scope?
     ): Pair<BeanDefinition<*>, Scope?> {
         val definition = beanRegistry.findDefinition(name, clazz)
-                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-        val targetScope = scopeRegistry.prepareScope(definition, scope)
-        return Pair(definition, targetScope)
+//        val targetScope = scopeRegistry.prepareScope(definition, scope)
+        return Pair(definition, scope)
     }
 
     internal fun createEagerInstances() {
@@ -142,46 +141,60 @@ class Koin {
      */
     fun getScope(scopeId: String): Scope {
         val scope = scopeRegistry.getScopeById(scopeId)
-                ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created")
-        scope.register(this)
+        if (!scope.isRegistered()) {
+            error("Scope $scopeId is not registered")
+        }
+//        scope.register(this)
         return scope
     }
 
     /**
      * Create or retrieve a scope
-     * @param scopeId
+     * @param uuid
      */
-    fun getOrCreateScope(scopeId: String): Scope {
-        val scope = scopeRegistry.getOrCreateScope(scopeId)
+    fun getScopeByUUID(uuid: ScopeUUID): Scope {
+        val scope = scopeRegistry.getScopeByUUId(uuid)
         if (!scope.isRegistered()) {
-            scope.register(this)
+            error("Scope $uuid is not registered")
         }
+//        scope.register(this)
         return scope
     }
 
-    /**
-     * Detach a scope
-     * @param scopeId
-     */
-    fun detachScope(scopeId: String): Scope {
-        val createdScope = scopeRegistry.detachScope(scopeId)
-        createdScope.register(this)
-        return createdScope
-    }
+//    /**
+//     * Create or retrieve a scope
+//     * @param scopeId
+//     */
+//    fun getOrCreateScope(scopeId: String): Scope {
+//        val scope = scopeRegistry.getOrCreateScope(scopeId)
+//        if (!scope.isRegistered()) {
+//            scope.register(this)
+//        }
+//        return scope
+//    }
+//
+//    /**
+//     * Detach a scope
+//     * @param scopeId
+//     */
+//    fun detachScope(scopeId: String): Scope {
+//        val createdScope = scopeRegistry.detachScope(scopeId)
+//        createdScope.register(this)
+//        return createdScope
+//    }
+//
+//    /**
+//     * Retrieve detached scope
+//     * @param uuid
+//     */
+//    fun getDetachedScope(uuid: String): Scope? {
+//        return scopeRegistry.getScopeByInternalId(uuid)
+//    }
 
-    /**
-     * Retrieve detached scope
-     * @param internalId
-     */
-    fun getDetachedScope(internalId: String): Scope? {
-        return scopeRegistry.getScopeByInternalId(internalId)
-    }
-
-    internal fun closeScope(internalId: String) {
-        val scope: Scope =
-            scopeRegistry.getScopeByInternalId(internalId) ?: error("Scope not found '$internalId'")
+    internal fun closeScope(internalId: ScopeUUID) {
+        val scope: Scope = scopeRegistry.getScopeByUUId(internalId)
         beanRegistry.releaseInstanceForScope(scope)
-        scopeRegistry.deleteScope(scope)
+        scopeRegistry.deleteScope(internalId)
     }
 
     /**

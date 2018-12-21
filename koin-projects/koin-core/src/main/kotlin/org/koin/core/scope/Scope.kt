@@ -16,7 +16,9 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import java.util.*
+import org.koin.core.error.ClosedScopeException
+import org.koin.core.parameter.ParametersDefinition
+import java.util.UUID
 
 /**
  * Koin Scope
@@ -24,9 +26,13 @@ import java.util.*
  *
  * @author Arnaud Giuliani
  */
-data class Scope internal constructor(val id: String, internal val internalId: String = UUID.randomUUID().toString()) {
+data class Scope internal constructor(
+    val id: String,
+//    val key: String? = null,
+    val uuid: ScopeUUID = UUID.randomUUID().toString()
+) {
 
-    internal var koin: Koin? = null
+    var koin: Koin? = null
 
     /**
      * Is Scope associated to Koin
@@ -37,8 +43,8 @@ data class Scope internal constructor(val id: String, internal val internalId: S
      * Close all instances from this scope
      */
     fun close() {
-        if (koin == null) error("Can't close Scope $id without any Koin instance associated")
-        koin?.closeScope(internalId)
+        koin?.closeScope(uuid)
+        koin = null
     }
 
     /**
@@ -47,4 +53,29 @@ data class Scope internal constructor(val id: String, internal val internalId: S
     fun register(koin: Koin) {
         this.koin = koin
     }
+
+    /**
+     * Lazy inject a Koin instance
+     * @param name
+     * @param parameters
+     */
+    inline fun <reified T> inject(
+        name: String? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): Lazy<T> =
+        lazy { get<T>(name, parameters) }
+
+    /**
+     * Get a Koin instance
+     * @param name
+     * @param parameters
+     */
+    inline fun <reified T> get(
+        name: String? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): T {
+        return koin?.get(T::class, name, this, parameters) ?: throw  ClosedScopeException("Scope $this is closed")
+    }
 }
+
+typealias ScopeUUID = String

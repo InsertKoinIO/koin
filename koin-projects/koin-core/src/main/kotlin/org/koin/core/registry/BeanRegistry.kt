@@ -19,9 +19,9 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.instance.ScopeInstance
 import org.koin.core.module.Module
 import org.koin.core.scope.Scope
-import org.koin.core.scope.getScopeId
 import org.koin.ext.getFullName
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -163,7 +163,7 @@ class BeanRegistry {
     }
 
     internal fun releaseInstanceForScope(scope: Scope) {
-        definitions.filter { it.getScopeId() == scope.id }.forEach { it.instance.release(scope) }
+        definitions.filter { it.instance is ScopeInstance }.forEach { it.instance.release(scope) }
     }
 
     /**

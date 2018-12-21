@@ -22,7 +22,7 @@ import org.koin.core.instance.SingleInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.Scope
-import org.koin.core.scope.setScopeId
+import org.koin.core.scope.setScopeKey
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -96,11 +96,11 @@ data class BeanDefinition<T>(
 
         inline fun <reified T> createScope(
             name: String? = null,
-            scopeId: String,
+            scopeKey: String? = null,
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
             val beanDefinition = createDefinition(name, definition, Kind.Scope)
-            beanDefinition.setScopeId(scopeId)
+            scopeKey?.let { beanDefinition.setScopeKey(scopeKey) }
             beanDefinition.instance = ScopeInstance(beanDefinition)
             return beanDefinition
         }

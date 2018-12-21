@@ -22,8 +22,6 @@ import org.koin.core.bean.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeGroup
-import org.koin.core.scope.ScopeGroupDefinition
 
 /**
  * Koin Module
@@ -66,28 +64,28 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         this.options.override = options.override || override
     }
 
-    /**
-     * Declare a group a scoped definition
-     * @param scopeId
-     */
-    fun withScope(scopeId: String, scopeGroupDefinition: ScopeGroupDefinition) {
-        return ScopeGroup(scopeId, this).let(scopeGroupDefinition)
-    }
+//    /**
+//     * Declare a group a scoped definition
+//     * @param scopeId
+//     */
+//    fun withScope(scopeId: String, scopeGroupDefinition: ScopeGroupDefinition) {
+//        return ScopeGroup(scopeId, this).let(scopeGroupDefinition)
+//    }
 
     /**
      * Declare a Scope definition
-     * @param scopeId
+     * @param scopeKey
      * @param name
      * @param override
      * @param definition - definition function
      */
-    inline fun <reified T> scope(
-        scopeId: String,
+    inline fun <reified T> scoped(
+        scopeKey: String? = null,
         name: String? = null,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition.createScope(name, scopeId, definition)
+        val beanDefinition = BeanDefinition.createScope(name, scopeKey, definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }
@@ -122,17 +120,15 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         return koin.get(name, scope, parameters)
     }
 
-    /**
-     * Resolve an instance from Koin
-     * @param name
-     * @param scope
-     * @param parameters
-     */
-    fun getScope(
-        scopeId: String
-    ): Scope {
-        return koin.getOrCreateScope(scopeId)
-    }
+//    /**
+//     * Resolve an instance from Koin
+//     * @param scopeId
+//     */
+//    fun getScope(
+//        scopeId: String
+//    ): Scope {
+//        return koin.getScope(scopeId)
+//    }
 
     /**
      * Get a property from Koin
