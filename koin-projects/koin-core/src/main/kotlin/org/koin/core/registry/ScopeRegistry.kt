@@ -39,7 +39,8 @@ class ScopeRegistry {
      */
     fun createScopeInstance(id: String, scopeName: String? = null): ScopeInstance {
         val definition: ScopeDefinition? = scopeName?.let {
-            definitions[scopeName] ?: throw NoScopeDefinitionFoundException("No scope found for '$scopeName'")
+            definitions[scopeName]
+                ?: throw NoScopeDefinitionFoundException("No scope definition found for name '$scopeName'")
         }
         val instance = ScopeInstance(id, definition)
         registerScopeInstance(instance)
@@ -54,7 +55,8 @@ class ScopeRegistry {
     }
 
     fun getScopeInstance(id: String): ScopeInstance {
-        return instances[id] ?: throw ScopeNotCreatedException("ScopeInstance with id '$id' not found")
+        return instances[id]
+            ?: throw ScopeNotCreatedException("ScopeInstance with id '$id' not found. Create a scope instance with id '$id'")
     }
 
     fun deleteScopeInstance(id: String) {

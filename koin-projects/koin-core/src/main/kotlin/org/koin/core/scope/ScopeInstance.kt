@@ -29,7 +29,7 @@ data class ScopeInstance(
     /**
      * Is Scope associated to Koin
      */
-    fun isRegistered() = koin != null
+    internal fun isRegistered() = koin != null
 
     /**
      * Close all instances from this scope
@@ -43,7 +43,7 @@ data class ScopeInstance(
     /**
      * Register in Koin instance
      */
-    fun register(koin: Koin) {
+    internal fun register(koin: Koin) {
         this.koin = koin
     }
 

@@ -5,6 +5,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeNotAlreadyExistsException
 import org.koin.dsl.koinApplication
 
@@ -45,6 +46,18 @@ class ScopeCreationTest {
     }
 
     @Test
+    fun `can't create scope instance with unknown scope def`() {
+        val koin = koinApplication { }.koin
+
+        try {
+            koin.createScope("myScope","a_scope")
+            fail()
+        } catch (e: NoScopeDefinitionFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
     fun `can't create a new scope if not closed`() {
         val koin = koinApplication { }.koin
 
@@ -53,6 +66,20 @@ class ScopeCreationTest {
             koin.createScope("myScope1")
             fail()
         } catch (e: ScopeNotAlreadyExistsException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `can't get a closed scope`() {
+        val koin = koinApplication { }.koin
+
+        val scope = koin.createScope("myScope1")
+        scope.close()
+        try {
+            koin.getScope("myScope1")
+            fail()
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

@@ -111,6 +111,7 @@ class Koin {
         val definition = beanRegistry.findDefinition(name, clazz)
             ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
+        //TODO prepare for scope?
 //        val targetScopeInstance = scopeRegistry.prepareScopeInstance(definition, scope)
         return Pair(definition, scope)
     }
@@ -128,8 +129,8 @@ class Koin {
      * Create a ScopeInstance
      * @param scopeId
      */
-    fun createScope(scopeId: String): ScopeInstance {
-        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId)
+    fun createScope(scopeId: String, scopeName: String? = null): ScopeInstance {
+        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
         createdScopeInstance.register(this)
         return createdScopeInstance
     }
