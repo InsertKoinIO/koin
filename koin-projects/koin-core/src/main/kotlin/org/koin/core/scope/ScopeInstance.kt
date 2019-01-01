@@ -34,7 +34,7 @@ data class ScopeInstance(
     /**
      * Close all instances from this scope
      */
-    fun close() {
+    fun close() = synchronized(this) {
         scopeDefinition?.release(this)
         koin?.deleteScope(this.id)
         koin = null

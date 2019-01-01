@@ -21,6 +21,8 @@ import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.scope.ScopeGroup
+import org.koin.core.scope.ScopeGroupDefinition
 import org.koin.core.scope.ScopeInstance
 
 /**
@@ -64,13 +66,13 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
         this.options.override = options.override || override
     }
 
-//    /**
-//     * Declare a group a scoped definition
-//     * @param scopeName
-//     */
-//    fun withScopeInstance(scopeName: String, scopeGroupDefinition: ScopeInstanceGroupDefinition) {
-//        return ScopeInstanceGroup(scopeName, this).let(scopeGroupDefinition)
-//    }
+    /**
+     * Declare a group a scoped definition with a given scope name
+     * @param scopeName
+     */
+    fun scope(scopeName: String, scopeGroupDefinition: ScopeGroupDefinition) {
+        return ScopeGroup(scopeName, this).let(scopeGroupDefinition)
+    }
 
     /**
      * Declare a ScopeInstance definition
