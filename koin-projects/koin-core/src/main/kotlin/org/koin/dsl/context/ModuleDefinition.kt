@@ -31,6 +31,7 @@ import org.koin.dsl.definition.Kind
  *
  * @author - Arnaud GIULIANI
  * @author - Laurent Baresse
+ * @author - Eslam Hussein
  *
  * @param path - module path
  * @param createOnStart - module's definition are created on Koin's start
@@ -182,7 +183,7 @@ class ModuleDefinition(
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        name: String = "",
+        name: String = T::class.simpleName?:"default",
         scopeId: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
