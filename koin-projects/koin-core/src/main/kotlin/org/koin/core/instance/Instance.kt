@@ -24,7 +24,7 @@ import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Koin Instance Holder
@@ -38,7 +38,7 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
      * @param parameters
      * @return T
      */
-    abstract fun <T> get(scope: Scope? = null, parameters: ParametersDefinition?): T
+    abstract fun <T> get(scope: ScopeInstance? = null, parameters: ParametersDefinition?): T
 
     /**
      * Create an instance
@@ -66,12 +66,12 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
     /**
      * Is instance created
      */
-    abstract fun isCreated(scope: Scope? = null): Boolean
+    abstract fun isCreated(scope: ScopeInstance? = null): Boolean
 
     /**
      * Release the held instance (if hold)
      */
-    abstract fun release(scope: Scope? = null)
+    abstract fun release(scope: ScopeInstance? = null)
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"

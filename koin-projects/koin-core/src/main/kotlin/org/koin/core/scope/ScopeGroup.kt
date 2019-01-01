@@ -20,16 +20,16 @@ import org.koin.core.bean.Definition
 import org.koin.core.module.Module
 
 /**
- * Help describe a group of scope definitions in a module
- * @param scopeId
+ * Help describe a group of scoped definitions in a module, as a scope
+ * @param scopeName
  * @param module
  *
  * @author Arnaud Giuliani
  */
-class ScopeGroup(val scopeId: String, val module: Module) {
+class ScopeGroup(val scopeName: String, val module: Module) {
 
     /**
-     * Scope definition with scopeId from ScopeGroup
+     * Scope definition with scopeName from ScopeGroup
      * @param name
      * @param override
      * @param definition
@@ -39,8 +39,7 @@ class ScopeGroup(val scopeId: String, val module: Module) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        TODO()
-//        return module.scope(scopeId, name, override, definition)
+        return module.scoped(scopeName, name, override, definition)
     }
 
 }

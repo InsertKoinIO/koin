@@ -5,7 +5,7 @@
 //import org.junit.Test
 //import org.koin.Simple
 //import org.koin.core.error.DefinitionOverrideException
-//import org.koin.core.scope.getScopeKey
+//import org.koin.core.scope.getScopeName
 //import org.koin.test.getDefinition
 //
 //const val SCOPE_ID = "myScope"
@@ -21,7 +21,7 @@
 //        }
 //
 //        val defA = app.getDefinition(Simple.ComponentA::class)!!
-//        assertEquals(SCOPE_ID, defA.getScopeKey())
+//        assertEquals(SCOPE_ID, defA.getScopeName())
 //    }
 //
 //    @Test
@@ -65,8 +65,8 @@
 //        }
 //
 //        val defA = app.getDefinition(Simple.ComponentA::class)!!
-//        assertEquals(SCOPE_ID, defA.getScopeKey())
+//        assertEquals(SCOPE_ID, defA.getScopeName())
 //        val defB = app.getDefinition(Simple.ComponentB::class)!!
-//        assertEquals(SCOPE_ID, defB.getScopeKey())
+//        assertEquals(SCOPE_ID, defB.getScopeName())
 //    }
 //}

@@ -23,8 +23,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeUUID
+import org.koin.core.scope.ScopeInstance
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -50,7 +49,7 @@ class Koin {
      */
     inline fun <reified T> inject(
         name: String? = null,
-        scope: Scope? = null,
+        scope: ScopeInstance? = null,
         noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
         lazy { get<T>(name, scope, parameters) }
@@ -63,7 +62,7 @@ class Koin {
      */
     inline fun <reified T> get(
         name: String? = null,
-        scope: Scope? = null,
+        scope: ScopeInstance? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, name, scope, parameters)
@@ -79,7 +78,7 @@ class Koin {
     fun <T> get(
         clazz: KClass<*>,
         name: String?,
-        scope: Scope?,
+        scope: ScopeInstance?,
         parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.level == Level.DEBUG) {
@@ -97,22 +96,22 @@ class Koin {
     private fun <T> resolve(
         name: String?,
         clazz: KClass<*>,
-        scope: Scope?,
+        scope: ScopeInstance?,
         parameters: ParametersDefinition?
     ): T {
-        val (definition, targetScope) = prepareResolution(name, clazz, scope)
-        return definition.resolveInstance(targetScope, parameters)
+        val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
+        return definition.resolveInstance(targetScopeInstance, parameters)
     }
 
     private fun prepareResolution(
         name: String?,
         clazz: KClass<*>,
-        scope: Scope?
-    ): Pair<BeanDefinition<*>, Scope?> {
+        scope: ScopeInstance?
+    ): Pair<BeanDefinition<*>, ScopeInstance?> {
         val definition = beanRegistry.findDefinition(name, clazz)
             ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-//        val targetScope = scopeRegistry.prepareScope(definition, scope)
+//        val targetScopeInstance = scopeRegistry.prepareScopeInstance(definition, scope)
         return Pair(definition, scope)
     }
 
@@ -126,75 +125,29 @@ class Koin {
     }
 
     /**
-     * Create a Scope
+     * Create a ScopeInstance
      * @param scopeId
      */
-    fun createScope(scopeId: String): Scope {
-        val createdScope = scopeRegistry.createScope(scopeId)
-        createdScope.register(this)
-        return createdScope
+    fun createScope(scopeId: String): ScopeInstance {
+        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId)
+        createdScopeInstance.register(this)
+        return createdScopeInstance
     }
 
     /**
      * Create or retrieve a scope
      * @param scopeId
      */
-    fun getScope(scopeId: String): Scope {
-        val scope = scopeRegistry.getScopeById(scopeId)
+    fun getScope(scopeId: String): ScopeInstance {
+        val scope = scopeRegistry.getScopeInstance(scopeId)
         if (!scope.isRegistered()) {
-            error("Scope $scopeId is not registered")
+            error("ScopeInstance $scopeId is not registered")
         }
-//        scope.register(this)
         return scope
     }
 
-    /**
-     * Create or retrieve a scope
-     * @param uuid
-     */
-    fun getScopeByUUID(uuid: ScopeUUID): Scope {
-        val scope = scopeRegistry.getScopeByUUId(uuid)
-        if (!scope.isRegistered()) {
-            error("Scope $uuid is not registered")
-        }
-//        scope.register(this)
-        return scope
-    }
-
-//    /**
-//     * Create or retrieve a scope
-//     * @param scopeId
-//     */
-//    fun getOrCreateScope(scopeId: String): Scope {
-//        val scope = scopeRegistry.getOrCreateScope(scopeId)
-//        if (!scope.isRegistered()) {
-//            scope.register(this)
-//        }
-//        return scope
-//    }
-//
-//    /**
-//     * Detach a scope
-//     * @param scopeId
-//     */
-//    fun detachScope(scopeId: String): Scope {
-//        val createdScope = scopeRegistry.detachScope(scopeId)
-//        createdScope.register(this)
-//        return createdScope
-//    }
-//
-//    /**
-//     * Retrieve detached scope
-//     * @param uuid
-//     */
-//    fun getDetachedScope(uuid: String): Scope? {
-//        return scopeRegistry.getScopeByInternalId(uuid)
-//    }
-
-    internal fun closeScope(internalId: ScopeUUID) {
-        val scope: Scope = scopeRegistry.getScopeByUUId(internalId)
-        beanRegistry.releaseInstanceForScope(scope)
-        scopeRegistry.deleteScope(internalId)
+    fun deleteScope(scopeId: String) {
+        scopeRegistry.deleteScopeInstance(scopeId)
     }
 
     /**

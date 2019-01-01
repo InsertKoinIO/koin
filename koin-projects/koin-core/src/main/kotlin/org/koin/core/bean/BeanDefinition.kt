@@ -17,12 +17,12 @@ package org.koin.core.bean
 
 import org.koin.core.instance.FactoryInstance
 import org.koin.core.instance.Instance
-import org.koin.core.instance.ScopeInstance
+import org.koin.core.instance.ScopedInstance
 import org.koin.core.instance.SingleInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
-import org.koin.core.scope.Scope
-import org.koin.core.scope.setScopeKey
+import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.setScopeName
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -62,7 +62,7 @@ data class BeanDefinition<T>(
     fun createInstanceHolder() {
         this.instance = when (kind) {
             Kind.Single -> SingleInstance(this)
-            Kind.Scope -> ScopeInstance(this)
+            Kind.Scope -> ScopedInstance(this)
             Kind.Factory -> FactoryInstance(this)
         }
     }
@@ -71,7 +71,7 @@ data class BeanDefinition<T>(
      * Resolve instance
      */
     fun <T> resolveInstance(
-        targetScope: Scope?,
+        targetScope: ScopeInstance?,
         parameters: ParametersDefinition?
     ) = instance.get<T>(targetScope, parameters)
 
@@ -100,8 +100,8 @@ data class BeanDefinition<T>(
             noinline definition: Definition<T>
         ): BeanDefinition<T> {
             val beanDefinition = createDefinition(name, definition, Kind.Scope)
-            scopeKey?.let { beanDefinition.setScopeKey(scopeKey) }
-            beanDefinition.instance = ScopeInstance(beanDefinition)
+            scopeKey?.let { beanDefinition.setScopeName(scopeKey) }
+            beanDefinition.instance = ScopedInstance(beanDefinition)
             return beanDefinition
         }
 

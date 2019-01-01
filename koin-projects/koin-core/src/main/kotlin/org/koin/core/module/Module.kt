@@ -21,7 +21,7 @@ import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Koin Module
@@ -66,14 +66,14 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
 
 //    /**
 //     * Declare a group a scoped definition
-//     * @param scopeId
+//     * @param scopeName
 //     */
-//    fun withScope(scopeId: String, scopeGroupDefinition: ScopeGroupDefinition) {
-//        return ScopeGroup(scopeId, this).let(scopeGroupDefinition)
+//    fun withScopeInstance(scopeName: String, scopeGroupDefinition: ScopeInstanceGroupDefinition) {
+//        return ScopeInstanceGroup(scopeName, this).let(scopeGroupDefinition)
 //    }
 
     /**
-     * Declare a Scope definition
+     * Declare a ScopeInstance definition
      * @param scopeKey
      * @param name
      * @param override
@@ -114,7 +114,7 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
      */
     inline fun <reified T> get(
         name: String? = null,
-        scope: Scope? = null,
+        scope: ScopeInstance? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(name, scope, parameters)
@@ -122,12 +122,12 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
 
 //    /**
 //     * Resolve an instance from Koin
-//     * @param scopeId
+//     * @param scopeName
 //     */
-//    fun getScope(
-//        scopeId: String
-//    ): Scope {
-//        return koin.getScope(scopeId)
+//    fun getScopeInstance(
+//        scopeName: String
+//    ): ScopeInstance {
+//        return koin.getScopeInstance(scopeName)
 //    }
 
     /**

@@ -2,8 +2,10 @@ package org.koin.core
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.core.error.ScopeNotAlreadyExistsException
 import org.koin.dsl.koinApplication
 
 class ScopeCreationTest {
@@ -33,41 +35,44 @@ class ScopeCreationTest {
     }
 
     @Test
-    fun `create a new scope is different`() {
+    fun `create different scopes`() {
         val koin = koinApplication { }.koin
 
-        val scopeId = "myScope"
-        val scope1 = koin.createScope(scopeId)
-        val scope2 = koin.createScope(scopeId)
+        val scope1 = koin.createScope("myScope1")
+        val scope2 = koin.createScope("myScope2")
 
         assertNotEquals(scope1, scope2)
     }
 
     @Test
-    fun `can't find a scope by id`() {
+    fun `can't create a new scope if not closed`() {
         val koin = koinApplication { }.koin
 
-        val scopeId = "myScope"
-        koin.createScope(scopeId)
-        koin.createScope(scopeId)
-
+        koin.createScope("myScope1")
         try {
-            koin.getScope(scopeId)
+            koin.createScope("myScope1")
             fail()
-        } catch (e: Exception) {
+        } catch (e: ScopeNotAlreadyExistsException) {
             e.printStackTrace()
         }
     }
 
     @Test
-    fun `find a scope by uuid`() {
+    fun `can find a scope by id`() {
+        val koin = koinApplication { }.koin
+
+        val scopeId = "myScope"
+        koin.createScope(scopeId)
+
+        assertNotNull(koin.getScope(scopeId))
+    }
+
+    @Test
+    fun `find a scope by id`() {
         val koin = koinApplication { }.koin
 
         val scopeId = "myScope"
         val scope1 = koin.createScope(scopeId)
-        val scope2 = koin.createScope(scopeId)
-
-        assertEquals(scope1,koin.getScopeByUUID(scope1.uuid))
-        assertEquals(scope2,koin.getScopeByUUID(scope2.uuid))
+        assertEquals(scope1, koin.getScope(scope1.id))
     }
 }

@@ -7,7 +7,7 @@ import org.koin.Simple
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Kind
 import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.getScopeKey
+import org.koin.core.scope.getScopeName
 import org.koin.test.getDefinition
 
 class BeanDefinitionTest {
@@ -25,7 +25,7 @@ class BeanDefinitionTest {
 
         val def1 = BeanDefinition.createScope(scopeKey = scopeID, definition = { Simple.ComponentA() })
 
-        assertEquals(scopeID, def1.getScopeKey())
+        assertEquals(scopeID, def1.getScopeName())
         assertEquals(Kind.Scope, def1.kind)
     }
 

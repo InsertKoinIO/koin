@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.instance
+package org.koin.core.scope
 
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.instance.ScopedInstance
 
-/**
- * Factory Instance Holder
- *
- * @author Arnaud Giuliani
- */
-class FactoryInstance<T>(beanDefinition: BeanDefinition<T>) :
-    Instance<T>(beanDefinition) {
+data class ScopeDefinition(val name: String) {
 
-    override fun release(scope: ScopeInstance?) {}
+    var scopedDefinitions = hashSetOf<BeanDefinition<*>>()
 
-    override fun isCreated(scope: ScopeInstance?): Boolean = false
-
-    override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
-        return create(beanDefinition, parameters)
+    fun release(instance: ScopeInstance) {
+        scopedDefinitions.filter { it is ScopedInstance<*> }.forEach { it.instance.release(instance) }
     }
 }

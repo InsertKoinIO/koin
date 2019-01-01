@@ -5,8 +5,8 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
-import org.koin.core.instance.ScopeInstance
-import org.koin.core.scope.getScopeKey
+import org.koin.core.instance.ScopedInstance
+import org.koin.core.scope.getScopeName
 
 class ScopeDefinitionDeclaration {
 
@@ -20,8 +20,8 @@ class ScopeDefinitionDeclaration {
             )
         }
         val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
-        assertTrue(def!!.instance is ScopeInstance)
-        assertTrue(def.getScopeKey() == null)
+        assertTrue(def!!.instance is ScopedInstance)
+        assertTrue(def.getScopeName() == null)
     }
 
     @Test
@@ -35,8 +35,8 @@ class ScopeDefinitionDeclaration {
             )
         }
         val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
-        assertTrue(def!!.instance is ScopeInstance)
-        assertTrue(def.getScopeKey() == key)
+        assertTrue(def!!.instance is ScopedInstance)
+        assertTrue(def.getScopeName() == key)
     }
 
     @Test

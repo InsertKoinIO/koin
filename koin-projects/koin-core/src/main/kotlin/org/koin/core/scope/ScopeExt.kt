@@ -23,18 +23,18 @@ import org.koin.core.bean.BeanDefinition
  * @author Arnaud Giuliani
  */
 
-const val ATTRIBUTE_SCOPE_ID = "scope_id"
+const val ATTRIBUTE_SCOPE_ID = "scope_name"
 
 /**
- * Set the scopedId of a definition
+ * Set the scope name of a definition
  */
-fun BeanDefinition<*>.setScopeKey(scopeId: String) {
-    attributes[ATTRIBUTE_SCOPE_ID] = scopeId
+fun BeanDefinition<*>.setScopeName(name: String) {
+    attributes[ATTRIBUTE_SCOPE_ID] = name
 }
 
 /**
- * Get a scopeId of a definition
+ * Get a scope name of a definition
  */
-fun BeanDefinition<*>.getScopeKey(): String? {
+fun BeanDefinition<*>.getScopeName(): String? {
     return attributes[ATTRIBUTE_SCOPE_ID]
 }

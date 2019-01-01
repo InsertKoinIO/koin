@@ -19,33 +19,33 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope definition Instance holder
  * @author Arnaud Giuliani
  */
-class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
+class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
-    override fun isCreated(scope: Scope?): Boolean = scope?.let { values[scope.uuid] != null } ?: false
+    override fun isCreated(scope: ScopeInstance?): Boolean = scope?.let { values[scope.id] != null } ?: false
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
-    override fun release(scope: Scope?) {
+    override fun release(scope: ScopeInstance?) {
         scope?.let {
             if (logger.level == Level.DEBUG) {
                 logger.debug("releasing '$scope' ~ $beanDefinition ")
             }
-            values.remove(scope.uuid)
+            values.remove(scope.id)
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> get(scope: Scope?, parameters: ParametersDefinition?): T {
+    override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
         if (scope == null) error("Scope should not be null for ScopeInstance")
 
-        val internalId = scope.uuid
+        val internalId = scope.id
         var current = values[internalId]
         if (current == null) {
             current = create(beanDefinition, parameters)

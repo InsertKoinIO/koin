@@ -18,18 +18,10 @@ package org.koin.core.scope
 import org.koin.core.Koin
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.parameter.ParametersDefinition
-import java.util.UUID
 
-/**
- * Koin Scope
- * Help declare limited timelife instances
- *
- * @author Arnaud Giuliani
- */
-data class Scope internal constructor(
+data class ScopeInstance(
     val id: String,
-//    val key: String? = null,
-    val uuid: ScopeUUID = UUID.randomUUID().toString()
+    val scopeDefinition: ScopeDefinition? = null
 ) {
 
     var koin: Koin? = null
@@ -43,7 +35,8 @@ data class Scope internal constructor(
      * Close all instances from this scope
      */
     fun close() {
-        koin?.closeScope(uuid)
+        scopeDefinition?.release(this)
+        koin?.deleteScope(this.id)
         koin = null
     }
 
@@ -77,5 +70,3 @@ data class Scope internal constructor(
         return koin?.get(T::class, name, this, parameters) ?: throw  ClosedScopeException("Scope $this is closed")
     }
 }
-
-typealias ScopeUUID = String

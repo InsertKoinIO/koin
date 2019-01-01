@@ -17,7 +17,7 @@ package org.koin.core
 
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 
 /**
  * KoinComponent interface marker to bring Koin extensions features
@@ -40,7 +40,7 @@ interface KoinComponent {
  */
 inline fun <reified T> KoinComponent.get(
     name: String? = null,
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ): T =
     getKoin().get(name, scope, parameters)
@@ -53,7 +53,7 @@ inline fun <reified T> KoinComponent.get(
  */
 inline fun <reified T> KoinComponent.inject(
     name: String? = null,
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
     getKoin().inject(name, scope, parameters)

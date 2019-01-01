@@ -36,8 +36,8 @@ class ScopedDefinitionTest {
             )
         }.koin
 
-        val scope1 = koin.createScope("myScope")
-        val scope2 = koin.createScope("myScope")
+        val scope1 = koin.createScope("myScope1")
+        val scope2 = koin.createScope("myScope2")
 
         assertNotEquals(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
     }
