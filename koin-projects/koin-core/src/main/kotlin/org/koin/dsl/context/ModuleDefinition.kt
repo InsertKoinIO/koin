@@ -183,7 +183,7 @@ class ModuleDefinition(
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        name: String = T::class.simpleName?:"default",
+        name: String = T::class.simpleName?:"",
         scopeId: String? = null,
         noinline parameters: ParameterDefinition = emptyParameterDefinition()
     ): T {
