@@ -18,7 +18,6 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.DefinitionFactory
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import org.koin.ext.getFullName
@@ -50,7 +49,7 @@ class BeanRegistry {
             saveDefinitions(module)
         }
         logger.info(
-            "registered ${definitions.size} definitions"
+                "registered ${definitions.size} definitions"
         )
     }
 
@@ -122,7 +121,6 @@ class BeanRegistry {
 
     private fun linkContext(it: Module, koin: Koin) {
         it.koin = koin
-        it.definitionFactory = DefinitionFactory(koin)
     }
 
     /**
@@ -131,10 +129,10 @@ class BeanRegistry {
      * @param clazz
      */
     fun findDefinition(
-        name: String? = null,
-        clazz: KClass<*>
+            name: String? = null,
+            clazz: KClass<*>
     ): BeanDefinition<*>? =
-        name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
+            name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
 
     private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
         return definitionsClass[kClass]
@@ -160,7 +158,7 @@ class BeanRegistry {
     fun getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
         return definitions.firstOrNull {
             it.primaryType == clazz || it.secondaryTypes.contains(
-                clazz
+                    clazz
             )
         }
     }

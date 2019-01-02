@@ -19,7 +19,7 @@ android {
 
 dependencies {
     // Koin
-    api project(":koin-core-ext")
+//    api project(":koin-core-ext")
     api project(":koin-android-scope")
 
     // Test

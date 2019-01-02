@@ -33,11 +33,11 @@ data class ScopeDefinition(val scopeName: String, val module: Module) {
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-        name: String? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            name: String? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = module.definitionFactory.createScope(name, scopeName, definition)
+        val beanDefinition = module.koin.definitionFactory.createScope(name, scopeName, definition)
         module.declareDefinition(beanDefinition, Options(override = override))
         definitions.add(beanDefinition)
         return beanDefinition

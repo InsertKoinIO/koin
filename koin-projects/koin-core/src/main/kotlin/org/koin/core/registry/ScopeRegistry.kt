@@ -78,6 +78,10 @@ class ScopeRegistry {
             ?: throw ScopeNotCreatedException("ScopeInstance with id '$id' not found. Create a scope instance with id '$id'")
     }
 
+    fun getScopeInstanceOrNull(id: String): ScopeInstance? {
+        return instances[id]
+    }
+
     fun deleteScopeInstance(id: String) {
         instances.remove(id)
     }

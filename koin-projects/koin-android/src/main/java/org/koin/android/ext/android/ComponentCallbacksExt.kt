@@ -21,7 +21,7 @@ import android.content.ComponentCallbacks
 import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 
 /**
  * ComponentCallbacks extensions for Android
@@ -41,9 +41,9 @@ fun ComponentCallbacks.getKoin(): Koin = GlobalContext.get().koin
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
-    name: String = "",
-    scope: Scope? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String = "",
+        scope: ScopeInstance? = null,
+        noinline parameters: ParametersDefinition? = null
 ) = lazy { get<T>(name, scope, parameters) }
 
 /**
@@ -53,7 +53,7 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
-    name: String = "",
-    scope: Scope? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String = "",
+        scope: ScopeInstance? = null,
+        noinline parameters: ParametersDefinition? = null
 ): T = getKoin().get(name, scope, parameters)

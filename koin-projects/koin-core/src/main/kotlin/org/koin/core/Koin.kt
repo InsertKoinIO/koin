@@ -17,6 +17,7 @@ package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.DefinitionFactory
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
@@ -41,6 +42,7 @@ class Koin {
     val beanRegistry = BeanRegistry()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
+    val definitionFactory = DefinitionFactory(this)
 
     /**
      * Lazy inject a Koin instance
@@ -49,11 +51,11 @@ class Koin {
      * @param parameters
      */
     inline fun <reified T> inject(
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            scope: ScopeInstance? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-        lazy { get<T>(name, scope, parameters) }
+            lazy { get<T>(name, scope, parameters) }
 
     /**
      * Get a Koin instance
@@ -62,9 +64,9 @@ class Koin {
      * @param parameters
      */
     inline fun <reified T> get(
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            scope: ScopeInstance? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, name, scope, parameters)
     }
@@ -77,10 +79,10 @@ class Koin {
      * @param parameters
      */
     fun <T> get(
-        clazz: KClass<*>,
-        name: String?,
-        scope: ScopeInstance?,
-        parameters: ParametersDefinition?
+            clazz: KClass<*>,
+            name: String?,
+            scope: ScopeInstance?,
+            parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.level == Level.DEBUG) {
             logger.debug("+- get '${clazz.getFullName()}'")
@@ -95,22 +97,22 @@ class Koin {
     }
 
     private fun <T> resolve(
-        name: String?,
-        clazz: KClass<*>,
-        scope: ScopeInstance?,
-        parameters: ParametersDefinition?
+            name: String?,
+            clazz: KClass<*>,
+            scope: ScopeInstance?,
+            parameters: ParametersDefinition?
     ): T {
         val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
         return definition.resolveInstance(targetScopeInstance, parameters)
     }
 
     private fun prepareResolution(
-        name: String?,
-        clazz: KClass<*>,
-        scope: ScopeInstance?
+            name: String?,
+            clazz: KClass<*>,
+            scope: ScopeInstance?
     ): Pair<BeanDefinition<*>, ScopeInstance?> {
         val definition = beanRegistry.findDefinition(name, clazz)
-            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         if (definition.isScoped() && scope != null) {
             checkScopeResolution(definition, scope)
@@ -150,6 +152,16 @@ class Koin {
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
         createdScopeInstance.register(this)
         return createdScopeInstance
+    }
+
+    /**
+     * Get or Create a Scope instance
+     * @param scopeId
+     * @param scopeName
+     */
+    @JvmOverloads
+    fun getOrCreateScope(scopeId: String, scopeName: String? = null): ScopeInstance {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
     }
 
     /**

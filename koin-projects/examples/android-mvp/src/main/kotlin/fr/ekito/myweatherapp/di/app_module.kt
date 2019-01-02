@@ -4,6 +4,7 @@ import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepositoryImpl
 import fr.ekito.myweatherapp.util.coroutines.ApplicationSchedulerProvider
 import fr.ekito.myweatherapp.util.coroutines.SchedulerProvider
+import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.detail.DetailContract
 import fr.ekito.myweatherapp.view.detail.DetailPresenter
 import fr.ekito.myweatherapp.view.splash.SplashContract
@@ -12,6 +13,7 @@ import fr.ekito.myweatherapp.view.weather.WeatherHeaderContract
 import fr.ekito.myweatherapp.view.weather.WeatherHeaderPresenter
 import fr.ekito.myweatherapp.view.weather.WeatherListContract
 import fr.ekito.myweatherapp.view.weather.WeatherListPresenter
+import org.koin.android.scope.scope
 import org.koin.dsl.module
 
 /**
@@ -28,7 +30,9 @@ val weatherAppModule = module {
     factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
 
     // Presenter for Detail View
-    factory<DetailContract.Presenter> { (id: String) -> DetailPresenter(id, get(), get()) }
+    scope<DetailActivity> {
+        scoped<DetailContract.Presenter> { (id: String) -> DetailPresenter(id, get(), get()) }
+    }
 
     // Weather Data Repository
     single<DailyForecastRepository>(createdAtStart = true) { DailyForecastRepositoryImpl(get()) }

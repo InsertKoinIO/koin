@@ -18,12 +18,10 @@ package org.koin.core.module
 import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.bean.Definition
-import org.koin.core.bean.DefinitionFactory
 import org.koin.core.bean.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.ModuleDeclaration
-import org.koin.ext.getFullName
 
 /**
  * Koin Module
@@ -32,14 +30,13 @@ import org.koin.ext.getFullName
  * @author Arnaud Giuliani
  */
 class Module(
-    internal val isCreatedAtStart: Boolean,
-    internal val override: Boolean,
-    internal val moduleDeclaration: ModuleDeclaration
+        internal val isCreatedAtStart: Boolean,
+        internal val override: Boolean,
+        internal val moduleDeclaration: ModuleDeclaration
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
     internal val scopes = arrayListOf<ScopeDefinition>()
     lateinit var koin: Koin
-    lateinit var definitionFactory: DefinitionFactory
 
     /**
      * Declare a definition in current Module
@@ -64,12 +61,12 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-        name: String? = null,
-        createdAtStart: Boolean = false,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            name: String? = null,
+            createdAtStart: Boolean = false,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = definitionFactory.createSingle(name, definition)
+        val beanDefinition = koin.definitionFactory.createSingle(name, definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
         return beanDefinition
     }
@@ -96,11 +93,11 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-        name: String? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            name: String? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = definitionFactory.createScope(name, definition = definition)
+        val beanDefinition = koin.definitionFactory.createScope(name, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }
@@ -112,11 +109,11 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-        name: String? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            name: String? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = definitionFactory.createFactory(name, definition)
+        val beanDefinition = koin.definitionFactory.createFactory(name, definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }

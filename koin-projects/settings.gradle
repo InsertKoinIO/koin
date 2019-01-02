@@ -4,11 +4,11 @@ include 'koin-test', 'koin-core-ext'
 include 'examples:coffee-maker'
 include 'koin-java'
 
-//// Android
-//include 'koin-android', 'koin-android-scope', 'koin-android-viewmodel'
-//include 'examples:android-mvp', 'examples:android-mvvm'
-//include 'koin-androidx-scope', 'koin-androidx-viewmodel'
-//include 'examples:android-navigation'
+// Android
+include 'koin-android', 'koin-android-scope', 'koin-android-viewmodel'
+include 'examples:android-mvp', 'examples:android-mvvm'
+include 'koin-androidx-scope', 'koin-androidx-viewmodel'
+include 'examples:android-navigation'
 
 // Web
 include 'koin-logger-slf4j'
