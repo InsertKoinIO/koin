@@ -18,6 +18,7 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.DefinitionFactory
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import org.koin.ext.getFullName
@@ -44,8 +45,9 @@ class BeanRegistry {
      */
     fun loadModules(koin: Koin, modules: Iterable<Module>) {
         modules.forEach { module: Module ->
-            saveDefinitions(module)
             linkContext(module, koin)
+            module.apply(module.moduleDeclaration)
+            saveDefinitions(module)
         }
         logger.info(
             "registered ${definitions.size} definitions"
@@ -104,16 +106,17 @@ class BeanRegistry {
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
         definition.name?.let {
             if (definitionsNames[it] != null && !definition.options.override) {
-                throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
+                throw DefinitionOverrideException("Already existing definition or try to override an existing one with scopeName '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
-                logger.info("bind name:'${definition.name}' ~ $definition")
+                logger.info("bind scopeName:'${definition.name}' ~ $definition")
             }
         }
     }
 
     private fun linkContext(it: Module, koin: Koin) {
         it.koin = koin
+        it.definitionFactory = DefinitionFactory(koin)
     }
 
     /**

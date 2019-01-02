@@ -5,11 +5,11 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.error.ScopeClosedException
+import org.koin.core.error.ScopeIsClosedException
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-class ScopedDefinitionTest {
+class OpenScopeTest {
 
     @Test
     fun `get scoped definition from a scope`() {
@@ -24,6 +24,40 @@ class ScopedDefinitionTest {
         val scope = koin.createScope("myScope")
 
         assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentA>())
+    }
+
+    @Test
+    fun `get scoped definition from same scope`() {
+        val koin = koinApplication {
+            modules(
+                module {
+                    scoped { Simple.ComponentA() }
+                    scoped { Simple.ComponentB(get()) }
+                }
+            )
+        }.koin
+
+        val scope = koin.createScope("myScope")
+
+        assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+    }
+
+    @Test
+    fun `get scoped definition from outside scope`() {
+        val koin = koinApplication {
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                    scoped { Simple.ComponentB(get()) }
+                }
+            )
+        }.koin
+
+        val scope = koin.createScope("myScope")
+
+        assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
     }
 
     @Test
@@ -59,8 +93,10 @@ class ScopedDefinitionTest {
         try {
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: ScopeClosedException) {
+        } catch (e: ScopeIsClosedException) {
             e.printStackTrace()
         }
     }
+
+
 }

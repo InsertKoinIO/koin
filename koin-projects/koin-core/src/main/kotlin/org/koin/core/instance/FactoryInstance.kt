@@ -15,6 +15,7 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance
@@ -24,14 +25,14 @@ import org.koin.core.scope.ScopeInstance
  *
  * @author Arnaud Giuliani
  */
-class FactoryInstance<T>(beanDefinition: BeanDefinition<T>) :
-    Instance<T>(beanDefinition) {
+class FactoryInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
+    Instance<T>(koin, beanDefinition) {
 
     override fun release(scope: ScopeInstance?) {}
 
     override fun isCreated(scope: ScopeInstance?): Boolean = false
 
     override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
-        return create(beanDefinition, parameters)
+        return create(beanDefinition, scope, parameters)
     }
 }

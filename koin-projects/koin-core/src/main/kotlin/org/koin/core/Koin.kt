@@ -17,6 +17,7 @@ package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
@@ -24,6 +25,7 @@ import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.getScopeName
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -36,10 +38,9 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class Koin {
-
-    val beanRegistry = BeanRegistry()
-    val scopeRegistry = ScopeRegistry()
-    val propertyRegistry = PropertyRegistry()
+    internal val beanRegistry = BeanRegistry()
+    internal val scopeRegistry = ScopeRegistry()
+    internal val propertyRegistry = PropertyRegistry()
 
     /**
      * Lazy inject a Koin instance
@@ -111,9 +112,23 @@ class Koin {
         val definition = beanRegistry.findDefinition(name, clazz)
             ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-        //TODO prepare for scope?
-//        val targetScopeInstance = scopeRegistry.prepareScopeInstance(definition, scope)
+        if (definition.isScoped() && scope != null) {
+            checkScopeResolution(definition, scope)
+        }
+
         return Pair(definition, scope)
+    }
+
+    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: ScopeInstance) {
+        val scopeInstanceName = scope.definition?.scopeName
+        val beanScopeName = definition.getScopeName()
+        if (beanScopeName != scopeInstanceName) {
+            when {
+                scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")
+                beanScopeName == null -> throw BadScopeInstanceException("Can't use definition $definition defined in open scope, with scope instance $scope. Use an open scope instance.")
+                else -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName' with scope instance $scope. Use a scope instance with scope '$beanScopeName'.")
+            }
+        }
     }
 
     internal fun createEagerInstances() {
@@ -126,8 +141,9 @@ class Koin {
     }
 
     /**
-     * Create a ScopeInstance
+     * Create a Scope instance
      * @param scopeId
+     * @param scopeName
      */
     fun createScope(scopeId: String, scopeName: String? = null): ScopeInstance {
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
@@ -136,7 +152,7 @@ class Koin {
     }
 
     /**
-     * Create or retrieve a scope
+     * get a scope instance
      * @param scopeId
      */
     fun getScope(scopeId: String): ScopeInstance {
@@ -147,6 +163,9 @@ class Koin {
         return scope
     }
 
+    /**
+     * Delete a scope instance
+     */
     fun deleteScope(scopeId: String) {
         scopeRegistry.deleteScopeInstance(scopeId)
     }

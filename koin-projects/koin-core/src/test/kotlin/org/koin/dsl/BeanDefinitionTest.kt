@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.DefinitionFactory
 import org.koin.core.bean.Kind
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.getScopeName
@@ -12,10 +12,14 @@ import org.koin.test.getDefinition
 
 class BeanDefinitionTest {
 
+    val koin = koinApplication { }.koin
+    val definitionFactory = DefinitionFactory(koin)
+
     @Test
     fun `equals definitions`() {
-        val def1 = BeanDefinition.createSingle(definition = { Simple.ComponentA() })
-        val def2 = BeanDefinition.createSingle(definition = { Simple.ComponentA() })
+
+        val def1 = definitionFactory.createSingle(definition = { Simple.ComponentA() })
+        val def2 = definitionFactory.createSingle(definition = { Simple.ComponentA() })
         assertEquals(def1, def2)
     }
 
@@ -23,7 +27,7 @@ class BeanDefinitionTest {
     fun `scope definition`() {
         val scopeID = "scope"
 
-        val def1 = BeanDefinition.createScope(scopeKey = scopeID, definition = { Simple.ComponentA() })
+        val def1 = definitionFactory.createScope(scopeName = scopeID, definition = { Simple.ComponentA() })
 
         assertEquals(scopeID, def1.getScopeName())
         assertEquals(Kind.Scope, def1.kind)
@@ -31,8 +35,8 @@ class BeanDefinitionTest {
 
     @Test
     fun `equals definitions - but diff kind`() {
-        val def1 = BeanDefinition.createSingle(definition = { Simple.ComponentA() })
-        val def2 = BeanDefinition.createFactory(definition = { Simple.ComponentA() })
+        val def1 = definitionFactory.createSingle(definition = { Simple.ComponentA() })
+        val def2 = definitionFactory.createFactory(definition = { Simple.ComponentA() })
         assertEquals(def1, def2)
     }
 

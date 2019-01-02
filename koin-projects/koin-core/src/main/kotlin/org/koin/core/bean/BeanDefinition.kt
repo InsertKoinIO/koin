@@ -15,6 +15,7 @@
  */
 package org.koin.core.bean
 
+import org.koin.core.Koin
 import org.koin.core.instance.FactoryInstance
 import org.koin.core.instance.Instance
 import org.koin.core.instance.ScopedInstance
@@ -59,11 +60,11 @@ data class BeanDefinition<T>(
     /**
      * Create the associated Instance Holder
      */
-    fun createInstanceHolder() {
+    fun createInstanceHolder(koin: Koin) {
         this.instance = when (kind) {
-            Kind.Single -> SingleInstance(this)
-            Kind.Scope -> ScopedInstance(this)
-            Kind.Factory -> FactoryInstance(this)
+            Kind.Single -> SingleInstance(koin, this)
+            Kind.Scope -> ScopedInstance(koin, this)
+            Kind.Factory -> FactoryInstance(koin, this)
         }
     }
 
@@ -77,52 +78,13 @@ data class BeanDefinition<T>(
 
     override fun toString(): String {
         val defKind = kind.toString()
-        val defName = name?.let { "name:'$name', " } ?: ""
-        val defType = "type:'${primaryType.getFullName()}'"
+        val defName = name?.let { "scopeName:'$name', " } ?: ""
+        val defType = "class:'${primaryType.getFullName()}'"
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
-            ", types:$typesAsString"
+            ", classes:$typesAsString"
         } else ""
-        return "$defKind[$defName$defType$defOtherTypes]"
-    }
-
-    companion object {
-        inline fun <reified T> createSingle(
-            name: String? = null,
-            noinline definition: Definition<T>
-        ): BeanDefinition<T> {
-            return createDefinition(name, definition)
-        }
-
-        inline fun <reified T> createScope(
-            name: String? = null,
-            scopeKey: String? = null,
-            noinline definition: Definition<T>
-        ): BeanDefinition<T> {
-            val beanDefinition = createDefinition(name, definition, Kind.Scope)
-            scopeKey?.let { beanDefinition.setScopeName(scopeKey) }
-            beanDefinition.instance = ScopedInstance(beanDefinition)
-            return beanDefinition
-        }
-
-        inline fun <reified T> createFactory(
-            name: String? = null,
-            noinline definition: Definition<T>
-        ): BeanDefinition<T> {
-            return createDefinition(name, definition, Kind.Factory)
-        }
-
-        inline fun <reified T> createDefinition(
-            name: String?,
-            noinline definition: Definition<T>,
-            kind: Kind = Kind.Single
-        ): BeanDefinition<T> {
-            val beanDefinition = BeanDefinition<T>(name, T::class)
-            beanDefinition.definition = definition
-            beanDefinition.kind = kind
-            beanDefinition.createInstanceHolder()
-            return beanDefinition
-        }
+        return "[type:$defKind,$defName$defType$defOtherTypes]"
     }
 }
 
@@ -130,4 +92,4 @@ enum class Kind {
     Single, Factory, Scope
 }
 
-typealias Definition<T> = (ParametersHolder) -> T
+typealias Definition<T> = DefinitionContext.(ParametersHolder) -> T

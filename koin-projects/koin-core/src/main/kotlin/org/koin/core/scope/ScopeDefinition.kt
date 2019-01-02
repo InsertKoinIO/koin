@@ -21,7 +21,7 @@ import org.koin.core.bean.Options
 import org.koin.core.instance.ScopedInstance
 import org.koin.core.module.Module
 
-data class ScopeDefinition(val name: String, val module : Module) {
+data class ScopeDefinition(val scopeName: String, val module: Module) {
 
     var definitions = hashSetOf<BeanDefinition<*>>()
 
@@ -37,17 +37,17 @@ data class ScopeDefinition(val name: String, val module : Module) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition.createScope(name, name, definition)
-        declare(beanDefinition, override)
-        return beanDefinition
-    }
-
-    inline fun <reified T> declare(beanDefinition: BeanDefinition<T>, override: Boolean) {
+        val beanDefinition = module.definitionFactory.createScope(name, scopeName, definition)
         module.declareDefinition(beanDefinition, Options(override = override))
         definitions.add(beanDefinition)
+        return beanDefinition
     }
 
     internal fun release(instance: ScopeInstance) {
         definitions.filter { it is ScopedInstance<*> }.forEach { it.instance.release(instance) }
+    }
+
+    override fun toString(): String {
+        return "Scope['$scopeName']"
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.logger.Level
@@ -26,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Scope definition Instance holder
  * @author Arnaud Giuliani
  */
-class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
+class ScopedInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Instance<T>(koin, beanDefinition) {
 
     override fun isCreated(scope: ScopeInstance?): Boolean = scope?.let { values[scope.id] != null } ?: false
 
@@ -48,7 +49,7 @@ class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
         val internalId = scope.id
         var current = values[internalId]
         if (current == null) {
-            current = create(beanDefinition, parameters)
+            current = create(beanDefinition, scope, parameters)
             values[internalId] = current ?: error("Instance creation from $beanDefinition should not be null")
         }
         return current as T

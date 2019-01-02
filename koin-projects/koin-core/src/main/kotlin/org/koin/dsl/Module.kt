@@ -27,5 +27,5 @@ typealias ModuleDeclaration = Module.() -> Unit
  * @author Arnaud Giuliani
  */
 fun module(createdAtStart: Boolean = false, override: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
-    return Module(createdAtStart, override).apply(moduleDeclaration)
+    return Module(createdAtStart, override,moduleDeclaration)
 }

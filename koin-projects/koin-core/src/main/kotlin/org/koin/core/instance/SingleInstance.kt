@@ -15,6 +15,7 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance
@@ -23,7 +24,7 @@ import org.koin.core.scope.ScopeInstance
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
+class SingleInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Instance<T>(koin, beanDefinition) {
 
     override fun isCreated(scope: ScopeInstance?): Boolean = (value != null)
 
@@ -34,7 +35,7 @@ class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
         if (value == null) {
-            value = create(beanDefinition, parameters)
+            value = create(beanDefinition, scope, parameters)
         }
         return value as? T ?: error("Single instance created couldn't return value")
     }

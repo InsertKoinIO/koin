@@ -16,7 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.error.ScopeClosedException
+import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
 
 data class ScopeInstance(
@@ -30,15 +30,6 @@ data class ScopeInstance(
      * Is Scope associated to Koin
      */
     internal fun isRegistered() = koin != null
-
-    /**
-     * Close all instances from this scope
-     */
-    fun close() = synchronized(this) {
-        definition?.release(this)
-        koin?.deleteScope(this.id)
-        koin = null
-    }
 
     /**
      * Register in Koin instance
@@ -67,6 +58,20 @@ data class ScopeInstance(
         name: String? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin?.get(T::class, name, this, parameters) ?: throw  ScopeClosedException("Scope $this is closed")
+        return koin?.get(T::class, name, this, parameters) ?: throw  ScopeIsClosedException("Scope $this is closed")
+    }
+
+    /**
+     * Close all instances from this scope
+     */
+    fun close() = synchronized(this) {
+        definition?.release(this)
+        koin?.deleteScope(this.id)
+        koin = null
+    }
+
+    override fun toString(): String {
+        val scopeDef = definition?.let { ",scope:'${definition.scopeName}'" } ?: ""
+        return "ScopeInstance[id:'$id'$scopeDef]"
     }
 }

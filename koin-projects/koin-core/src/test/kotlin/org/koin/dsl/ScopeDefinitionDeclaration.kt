@@ -25,17 +25,34 @@ class ScopeDefinitionDeclaration {
     }
 
     @Test
-    fun `can declare a scoped definition with scopeKey`() {
+    fun `can declare a scope definition`() {
         val key = "KEY"
         val app = koinApplication {
             modules(
                 module {
-                    scoped(key) { Simple.ComponentA() }
+                    scope(key) {
+                    }
                 }
             )
         }
-        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
-        assertTrue(def!!.instance is ScopedInstance)
+        val def = app.koin.scopeRegistry.getScopeDefinition(key)!!
+        assertTrue(def.scopeName == key)
+    }
+
+    @Test
+    fun `can declare a scoped definition within scope`() {
+        val key = "KEY"
+        val app = koinApplication {
+            modules(
+                module {
+                    scope(key) {
+                        scoped { Simple.ComponentA() }
+                    }
+                }
+            )
+        }
+        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!
+        assertTrue(def.instance is ScopedInstance)
         assertTrue(def.getScopeName() == key)
     }
 
@@ -62,8 +79,10 @@ class ScopeDefinitionDeclaration {
             koinApplication {
                 modules(
                     module {
-                        scoped { Simple.ComponentA() }
-                        scoped("key") { Simple.ComponentA() }
+                        scope("scope_name") {
+                            scoped { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
+                        }
                     }
                 )
             }

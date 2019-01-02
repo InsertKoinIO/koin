@@ -33,6 +33,23 @@ class ScopeRegistry {
     private val definitions = hashMapOf<String, ScopeDefinition>()
     private val instances = hashMapOf<String, ScopeInstance>()
 
+    internal fun loadScopes(modules: Array<out Module>) {
+        modules.forEach {
+            declareScopes(it)
+        }
+    }
+
+    private fun declareScopes(module: Module) {
+        module.scopes.forEach {
+            if (definitions[it.scopeName] != null){
+
+            }
+            definitions[it.scopeName] = it
+        }
+    }
+
+    fun getScopeDefinition(scopeName : String): ScopeDefinition? = definitions[scopeName]
+
     /**
      * Create a scope instance for given scope
      * @param id - scope instance id
@@ -41,7 +58,7 @@ class ScopeRegistry {
     fun createScopeInstance(id: String, scopeName: String? = null): ScopeInstance {
         val definition: ScopeDefinition? = scopeName?.let {
             definitions[scopeName]
-                ?: throw NoScopeDefinitionFoundException("No scope definition found for name '$scopeName'")
+                ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
         }
         val instance = ScopeInstance(id, definition)
         registerScopeInstance(instance)
@@ -67,20 +84,5 @@ class ScopeRegistry {
     fun close() {
         definitions.clear()
         instances.clear()
-    }
-
-    fun loadScopes(modules: Array<out Module>) {
-        modules.forEach {
-            declareScopes(it)
-        }
-    }
-
-    private fun declareScopes(module: Module) {
-        module.scopes.forEach {
-            if (definitions[it.name] != null){
-
-            }
-            definitions[it.name] = it
-        }
     }
 }

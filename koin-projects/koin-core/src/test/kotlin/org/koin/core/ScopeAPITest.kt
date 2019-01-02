@@ -10,7 +10,7 @@ import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-class ScopeCreationTest {
+class ScopeAPITest {
 
     @Test
     fun `create a scope instance`() {

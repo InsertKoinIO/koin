@@ -17,8 +17,12 @@
 
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.DefinitionContext
+import org.koin.core.bean.EmptyContext
+import org.koin.core.bean.ScopedContext
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
@@ -30,7 +34,7 @@ import org.koin.core.scope.ScopeInstance
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
+abstract class Instance<T>(val koin: Koin, val beanDefinition: BeanDefinition<T>) {
 
     /**
      * Retrieve an instance
@@ -46,13 +50,18 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
      * @param parameters
      * @return T
      */
-    open fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
+    open fun <T> create(
+        beanDefinition: BeanDefinition<*>,
+        scope: ScopeInstance? = null,
+        parameters: ParametersDefinition?
+    ): T {
         if (logger.level == Level.DEBUG) {
             logger.debug("| create instance for $beanDefinition")
         }
         try {
             val parametersHolder: ParametersHolder = parameters?.let { parameters() } ?: emptyParametersHolder()
-            val value = beanDefinition.definition(parametersHolder)
+            val context = scope?.getContext() ?: EmptyContext(koin)
+            val value = beanDefinition.definition(context, parametersHolder)
             return value as T
         } catch (e: Exception) {
             val stack =
@@ -76,4 +85,8 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }
+}
+
+private fun ScopeInstance.getContext(): DefinitionContext {
+    return ScopedContext(this.koin ?: error(""), this)
 }
