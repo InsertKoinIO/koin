@@ -16,7 +16,7 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
     val MVPModule = module {
         single<Repository>()
         single<View>()
-        scope<Presenter>("session")
+        factory<Presenter>()
     }
 
     val DataSourceModule = module {
@@ -35,28 +35,10 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
         val repository = get<Repository>()
         val datasource = get<Datasource>()
 
-        Assert.assertEquals(presenter, view.presenter)
+        Assert.assertNotEquals(presenter, view.presenter)
         Assert.assertEquals(repository, presenter.repository)
         Assert.assertEquals(repository, view.presenter.repository)
         Assert.assertEquals(datasource, repository.datasource)
-    }
-
-    @Test
-    fun `should handle scope`() {
-        startKoin {
-            logger(Level.DEBUG)
-            modules(MVPModule, DataSourceModule)
-        }
-
-        val view = get<View>()
-        view.onDestroy()
-
-        try {
-            get<Presenter>()
-            fail("should not get presenter anymore")
-        } catch (e: ScopeNotCreatedException) {
-            e.printStackTrace()
-        }
     }
 
     @Test

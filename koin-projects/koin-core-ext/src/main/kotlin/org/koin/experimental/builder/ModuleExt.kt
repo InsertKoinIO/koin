@@ -45,20 +45,19 @@ inline fun <reified T : Any> Module.factory(
     return factory(name, override) { create<T>() }
 }
 
-/**
- * Create a Scope definition for given type T
- *
- * @param scopeId
- * @param name
- * @param override - allow definition override
- */
-inline fun <reified T : Any> Module.scope(
-    scopeId: String,
-    name: String? = null,
-    override: Boolean = false
-): BeanDefinition<T> {
-    return scope(scopeId, name, override) { create<T>() }
-}
+///**
+// * Create a Scope definition for given type T
+// *
+// * @param scopeId
+// * @param name
+// * @param override - allow definition override
+// */
+//inline fun <reified T : Any> Module.scoped(
+//    name: String? = null,
+//    override: Boolean = false
+//): BeanDefinition<T> {
+//    return scoped(name, override) { create<T>(getCurrentScope()) }
+//}
 
 /**
  * Create a Single definition for given type T to modules and cast as R
@@ -87,17 +86,16 @@ inline fun <reified R : Any, reified T : R> Module.factoryBy(
     return factory(name, override) { create<T>() as R }
 }
 
-/**
- * Create a Scope definition for given type T, applied to R
- *
- * @param scopeId
- * @param name
- * @param override - allow definition override
- */
-inline fun <reified R : Any, reified T : R> Module.scopeBy(
-    scopeId: String,
-    name: String? = null,
-    override: Boolean = false
-): BeanDefinition<R> {
-    return scope(scopeId, name, override) { create<T>() as R }
-}
+///**
+// * Create a Scope definition for given type T, applied to R
+// *
+// * @param scopeId
+// * @param name
+// * @param override - allow definition override
+// */
+//inline fun <reified R : Any, reified T : R> Module.scopedBy(
+//    name: String? = null,
+//    override: Boolean = false
+//): BeanDefinition<R> {
+//    return scoped(name, override) { create<T>(getCurrentScope()) as R }
+//}

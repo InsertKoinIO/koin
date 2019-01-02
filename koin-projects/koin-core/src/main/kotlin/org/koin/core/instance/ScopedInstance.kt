@@ -18,6 +18,7 @@ package org.koin.core.instance
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance
@@ -44,8 +45,7 @@ class ScopedInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Default
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
-        if (scope == null) error("Scope should not be null for ScopeInstance")
-
+        if (scope == null) throw ScopeNotCreatedException("No scope instance when trying to resolve $beanDefinition")
         val internalId = scope.id
         var current = values[internalId]
         if (current == null) {

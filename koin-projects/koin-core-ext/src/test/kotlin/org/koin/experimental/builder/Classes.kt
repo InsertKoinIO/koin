@@ -12,14 +12,8 @@ interface Component {
 
 class ComponentD(override val a: ComponentA) : Component
 
-
-class View() : KoinComponent {
-    private val session = getKoin().createScope("session")
+class View : KoinComponent {
     val presenter: Presenter by inject()
-
-    fun onDestroy() {
-        session.close()
-    }
 }
 
 class Presenter(val repository: Repository)

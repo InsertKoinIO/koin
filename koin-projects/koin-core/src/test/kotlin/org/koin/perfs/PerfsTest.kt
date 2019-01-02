@@ -12,7 +12,6 @@ class PerfsTest {
     fun `empty module perfs`() {
         val (app, duration) = measureDuration {
             koinApplication {
-                logger()
             }
         }
         println("started in $duration ms")
@@ -26,7 +25,6 @@ class PerfsTest {
     fun `perfModule400 module perfs`() {
         val (app, duration) = measureDuration {
             koinApplication {
-                logger()
                 modules(perfModule400)
             }
         }

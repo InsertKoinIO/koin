@@ -21,6 +21,7 @@ import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.module.Module
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeInstance
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope Registry
@@ -30,8 +31,8 @@ import org.koin.core.scope.ScopeInstance
  */
 class ScopeRegistry {
 
-    private val definitions = hashMapOf<String, ScopeDefinition>()
-    private val instances = hashMapOf<String, ScopeInstance>()
+    private val definitions = ConcurrentHashMap<String, ScopeDefinition>()
+    private val instances = ConcurrentHashMap<String, ScopeInstance>()
 
     internal fun loadScopes(modules: Iterable<Module>) {
         modules.forEach {

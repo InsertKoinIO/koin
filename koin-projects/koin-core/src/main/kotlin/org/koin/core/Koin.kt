@@ -145,6 +145,7 @@ class Koin {
      * @param scopeId
      * @param scopeName
      */
+    @JvmOverloads
     fun createScope(scopeId: String, scopeName: String? = null): ScopeInstance {
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
         createdScopeInstance.register(this)
