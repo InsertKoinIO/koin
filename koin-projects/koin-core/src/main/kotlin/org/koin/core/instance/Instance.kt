@@ -86,7 +86,3 @@ abstract class Instance<T>(val koin: Koin, val beanDefinition: BeanDefinition<T>
         const val ERROR_SEPARATOR = "\n\t"
     }
 }
-
-private fun ScopeInstance.getContext(): DefinitionContext {
-    return ScopedContext(this.koin ?: error(""), this)
-}

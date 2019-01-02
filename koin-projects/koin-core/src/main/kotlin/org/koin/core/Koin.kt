@@ -38,9 +38,9 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class Koin {
-    internal val beanRegistry = BeanRegistry()
-    internal val scopeRegistry = ScopeRegistry()
-    internal val propertyRegistry = PropertyRegistry()
+    val beanRegistry = BeanRegistry()
+    val scopeRegistry = ScopeRegistry()
+    val propertyRegistry = PropertyRegistry()
 
     /**
      * Lazy inject a Koin instance

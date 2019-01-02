@@ -18,6 +18,8 @@ package org.koin.core.instance
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
+import org.koin.core.bean.DefinitionContext
+import org.koin.core.bean.ScopedContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance

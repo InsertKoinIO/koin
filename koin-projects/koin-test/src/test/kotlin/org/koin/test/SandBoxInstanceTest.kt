@@ -23,7 +23,7 @@ class SandBoxInstanceTest {
         val def = koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!
         val instance = def.instance.get<Simple.ComponentA>(null, null)
 
-        val sandboxedDef = def.cloneForSandbox()
+        val sandboxedDef = def.cloneForSandbox(koin)
         val mock = sandboxedDef.instance.get<Simple.ComponentA>(null, null)
 
         assertNotEquals(instance, mock)

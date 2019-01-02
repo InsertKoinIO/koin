@@ -89,11 +89,11 @@ inline fun <reified T : Any> Koin.applyStub(
 inline fun <reified T : Any> Koin.declareMockedDefinition(
     foundDefinition: BeanDefinition<T>
 ) {
-    val definition: BeanDefinition<T> = foundDefinition.cloneForMock()
+    val definition: BeanDefinition<T> = foundDefinition.cloneForMock(this)
     beanRegistry.saveDefinition(definition)
 }
 
-inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(): BeanDefinition<T> {
+inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(koin: Koin): BeanDefinition<T> {
     val copy = this.copy()
     copy.secondaryTypes = this.secondaryTypes
     copy.definition = {
@@ -107,6 +107,6 @@ inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(): BeanDefinition<T>
     copy.options = this.options.copy()
     copy.options.override = true
     copy.kind = this.kind
-    copy.createInstanceHolder()
+    copy.createInstanceHolder(koin)
     return copy
 }

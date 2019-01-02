@@ -19,8 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.getScopeId
-
+import org.koin.core.scope.getScopeName
 
 /**
  * Check all definition's dependencies - run all modules in a test sandbox
@@ -48,10 +47,12 @@ fun Koin.checkModules() {
 fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         val clazz = it.primaryType
-        val scope = if (it.isScoped()) scopeRegistry.getOrCreateScope(
-            it.getScopeId() ?: error("definition $it should have a scope id")
+        val scope = if (it.isScoped()) scopeRegistry.createScopeInstance(
+            it.getScopeName() ?: error("definition $it should have a scope id")
         ) else null
-        get(clazz, it.name, scope) { emptyParametersHolder() }
+
+        get<Any>(clazz, it.name, scope) { emptyParametersHolder() }
+        scope?.let { scope.close() }
     }
 }
 
@@ -65,17 +66,17 @@ private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
     return beanRegistry.getAllDefinitions()
         .map {
             KoinApplication.logger.debug("* sandbox for $it")
-            it.cloneForSandbox() as BeanDefinition<*>
+            it.cloneForSandbox(this@getSandboxedDefinitions) as BeanDefinition<*>
         }
 }
 
 /**
  * Clone definition and inject SandBox instance holder
  */
-fun <T> BeanDefinition<T>.cloneForSandbox(): BeanDefinition<T> {
+fun <T> BeanDefinition<T>.cloneForSandbox(koin: Koin): BeanDefinition<T> {
     val copy = this.copy()
     copy.secondaryTypes = this.secondaryTypes
-    copy.instance = SandboxInstance(copy)
+    copy.instance = SandboxInstance(koin, copy)
     copy.definition = definition
     copy.attributes = this.attributes.copy()
     copy.options = this.options.copy()

@@ -17,7 +17,7 @@ package org.koin.test
 
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Koin Test tools
@@ -37,7 +37,7 @@ interface KoinTest {
  */
 inline fun <reified T> KoinTest.get(
     name: String? = null,
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ): T =
     getKoin().get(name, scope, parameters)
@@ -47,6 +47,6 @@ inline fun <reified T> KoinTest.get(
  */
 inline fun <reified T> KoinTest.inject(
     name: String? = null,
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getKoin().get<T>(name, scope, parameters) }

@@ -16,6 +16,8 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.bean.DefinitionContext
+import org.koin.core.bean.ScopedContext
 import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
 
@@ -68,6 +70,10 @@ data class ScopeInstance(
         definition?.release(this)
         koin?.deleteScope(this.id)
         koin = null
+    }
+
+    fun getContext(): DefinitionContext {
+        return ScopedContext(koin ?: error("ScopeInstance $this is not registered"), this)
     }
 
     override fun toString(): String {

@@ -61,6 +61,12 @@ class BeanRegistry {
     }
 
     /**
+     * retrieve all definitions
+     * @return definitions
+     */
+    fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
+
+    /**
      * Save a definition
      * @param definition
      */

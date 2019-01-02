@@ -30,8 +30,7 @@ class DeclareMockTests : KoinTest {
                 null, Simple.ComponentA::class
             ) as BeanDefinition<Simple.ComponentA>
 
-
-        val mockedDefinition = definition.cloneForMock()
+        val mockedDefinition = definition.cloneForMock(koin)
 
         val instance = definition.instance.get<Simple.ComponentA>(parameters = { emptyParametersHolder() })
         val mock = mockedDefinition.instance.get<Simple.ComponentA>(parameters = { emptyParametersHolder() })
