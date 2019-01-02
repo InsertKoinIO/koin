@@ -21,8 +21,7 @@ import org.koin.core.bean.Definition
 import org.koin.core.bean.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeGroup
-import org.koin.core.scope.ScopeGroupDefinition
+import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeInstance
 
 /**
@@ -33,6 +32,7 @@ import org.koin.core.scope.ScopeInstance
  */
 class Module(internal val isCreatedAtStart: Boolean, internal val override: Boolean) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
+    internal val scopes = arrayListOf<ScopeDefinition>()
     lateinit var koin: Koin
 
     /**
@@ -41,6 +41,13 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
     fun <T> declareDefinition(definition: BeanDefinition<T>, options: Options) {
         definition.updateOptions(options)
         definitions.add(definition)
+    }
+
+    /**
+     * Declare a definition in current Module
+     */
+    fun declareScope(scope: ScopeDefinition) {
+        scopes.add(scope)
     }
 
     /**
@@ -70,24 +77,25 @@ class Module(internal val isCreatedAtStart: Boolean, internal val override: Bool
      * Declare a group a scoped definition with a given scope name
      * @param scopeName
      */
-    fun scope(scopeName: String, scopeGroupDefinition: ScopeGroupDefinition) {
-        return ScopeGroup(scopeName, this).let(scopeGroupDefinition)
+    fun scope(scopeName: String, scopeDefinition: ScopeDefinition.() -> Unit) {
+        val scope: ScopeDefinition = ScopeDefinition(scopeName,this).apply(scopeDefinition)
+        declareScope(scope)
     }
 
     /**
      * Declare a ScopeInstance definition
-     * @param scopeKey
+     * @param scopeName
      * @param name
      * @param override
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-        scopeKey: String? = null,
+        scopeName: String? = null,
         name: String? = null,
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition.createScope(name, scopeKey, definition)
+        val beanDefinition = BeanDefinition.createScope(name, scopeName, definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }

@@ -19,9 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
-import org.koin.core.instance.ScopedInstance
 import org.koin.core.module.Module
-import org.koin.core.scope.ScopeInstance
 import org.koin.ext.getFullName
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -40,32 +38,11 @@ class BeanRegistry {
     private val definitionsToCreate: HashSet<BeanDefinition<*>> = hashSetOf()
 
     /**
-     * retrieve all definitions
-     * @return definitions
-     */
-    fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
-
-    /**
      * Load definitions from a Module
      * @param koin instance
      * @param modules
      */
-    fun loadModules(koin: Koin, vararg modules: Module) {
-        modules.forEach { module: Module ->
-            saveDefinitions(module)
-            linkContext(module, koin)
-        }
-        logger.info(
-            "registered ${definitions.size} definitions"
-        )
-    }
-
-    /**
-     * Load definitions from a Module
-     * @param koin instance
-     * @param modules
-     */
-    fun loadModules(koin: Koin, modules: List<Module>) {
+    fun loadModules(koin: Koin, modules: Iterable<Module>) {
         modules.forEach { module: Module ->
             saveDefinitions(module)
             linkContext(module, koin)
@@ -160,10 +137,6 @@ class BeanRegistry {
 
     internal fun findAllCreatedAtStartDefinition(): Set<BeanDefinition<*>> {
         return definitionsToCreate
-    }
-
-    internal fun releaseInstanceForScope(scope: ScopeInstance) {
-        definitions.filter { it.instance is ScopedInstance }.forEach { it.instance.release(scope) }
     }
 
     /**

@@ -5,7 +5,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.error.ClosedScopeException
+import org.koin.core.error.ScopeClosedException
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -59,7 +59,7 @@ class ScopedDefinitionTest {
         try {
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: ClosedScopeException) {
+        } catch (e: ScopeClosedException) {
             e.printStackTrace()
         }
     }

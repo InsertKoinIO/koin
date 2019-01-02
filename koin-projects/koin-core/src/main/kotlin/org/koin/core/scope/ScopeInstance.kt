@@ -16,12 +16,12 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.error.ClosedScopeException
+import org.koin.core.error.ScopeClosedException
 import org.koin.core.parameter.ParametersDefinition
 
 data class ScopeInstance(
     val id: String,
-    val scopeDefinition: ScopeDefinition? = null
+    val definition: ScopeDefinition? = null
 ) {
 
     var koin: Koin? = null
@@ -35,7 +35,7 @@ data class ScopeInstance(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
-        scopeDefinition?.release(this)
+        definition?.release(this)
         koin?.deleteScope(this.id)
         koin = null
     }
@@ -67,6 +67,6 @@ data class ScopeInstance(
         name: String? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin?.get(T::class, name, this, parameters) ?: throw  ClosedScopeException("Scope $this is closed")
+        return koin?.get(T::class, name, this, parameters) ?: throw  ScopeClosedException("Scope $this is closed")
     }
 }

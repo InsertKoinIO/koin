@@ -6,13 +6,14 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.error.NoScopeDefinitionFoundException
-import org.koin.core.error.ScopeNotAlreadyExistsException
+import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 
 class ScopeCreationTest {
 
     @Test
-    fun `create a scope`() {
+    fun `create a scope instance`() {
         val koin = koinApplication { }.koin
 
         val scopeId = "myScope"
@@ -23,7 +24,7 @@ class ScopeCreationTest {
     }
 
     @Test
-    fun `can't find a non registered scope`() {
+    fun `can't find a non created scope instance`() {
         val koin = koinApplication { }.koin
 
         val scopeId = "myScope"
@@ -50,11 +51,25 @@ class ScopeCreationTest {
         val koin = koinApplication { }.koin
 
         try {
-            koin.createScope("myScope","a_scope")
+            koin.createScope("myScope", "a_scope")
             fail()
         } catch (e: NoScopeDefinitionFoundException) {
             e.printStackTrace()
         }
+    }
+
+    @Test
+    fun `create scope instance with scope def`() {
+        val scopeName = "A_SCOPE"
+        val koin = koinApplication {
+            modules(
+                module {
+                    scope(scopeName){ }
+                }
+            )
+        }.koin
+
+        assertNotNull(koin.createScope("myScope", scopeName))
     }
 
     @Test
@@ -65,7 +80,7 @@ class ScopeCreationTest {
         try {
             koin.createScope("myScope1")
             fail()
-        } catch (e: ScopeNotAlreadyExistsException) {
+        } catch (e: ScopeAlreadyCreatedException) {
             e.printStackTrace()
         }
     }
@@ -82,16 +97,6 @@ class ScopeCreationTest {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    @Test
-    fun `can find a scope by id`() {
-        val koin = koinApplication { }.koin
-
-        val scopeId = "myScope"
-        koin.createScope(scopeId)
-
-        assertNotNull(koin.getScope(scopeId))
     }
 
     @Test

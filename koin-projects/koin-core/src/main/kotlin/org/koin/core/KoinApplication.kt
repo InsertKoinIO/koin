@@ -38,7 +38,8 @@ class KoinApplication private constructor() {
      */
     fun modules(vararg modules: Module): KoinApplication {
         val duration = measureDurationOnly {
-            koin.beanRegistry.loadModules(koin, *modules)
+            koin.beanRegistry.loadModules(koin, modules.asIterable())
+            koin.scopeRegistry.loadScopes(modules)
         }
         logger.info("modules loaded in $duration ms")
         return this

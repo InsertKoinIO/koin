@@ -16,8 +16,9 @@
 package org.koin.core.registry
 
 import org.koin.core.error.NoScopeDefinitionFoundException
-import org.koin.core.error.ScopeNotAlreadyExistsException
+import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
+import org.koin.core.module.Module
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeInstance
 
@@ -49,7 +50,7 @@ class ScopeRegistry {
 
     private fun registerScopeInstance(instance: ScopeInstance) {
         if (instances[instance.id] != null) {
-            throw ScopeNotAlreadyExistsException("A scope with id '${instance.id}' already exists. Reuse or close it.")
+            throw ScopeAlreadyCreatedException("A scope with id '${instance.id}' already exists. Reuse or close it.")
         }
         instances[instance.id] = instance
     }
@@ -66,5 +67,20 @@ class ScopeRegistry {
     fun close() {
         definitions.clear()
         instances.clear()
+    }
+
+    fun loadScopes(modules: Array<out Module>) {
+        modules.forEach {
+            declareScopes(it)
+        }
+    }
+
+    private fun declareScopes(module: Module) {
+        module.scopes.forEach {
+            if (definitions[it.name] != null){
+
+            }
+            definitions[it.name] = it
+        }
     }
 }
