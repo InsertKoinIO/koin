@@ -17,13 +17,12 @@ package org.koin.core.bean
 
 import org.koin.core.Koin
 import org.koin.core.instance.FactoryInstance
-import org.koin.core.instance.Instance
+import org.koin.core.instance.DefaultInstance
 import org.koin.core.instance.ScopedInstance
 import org.koin.core.instance.SingleInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.ScopeInstance
-import org.koin.core.scope.setScopeName
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -41,7 +40,7 @@ data class BeanDefinition<T>(
     val primaryType: KClass<*>
 ) {
     var secondaryTypes = arrayListOf<KClass<*>>()
-    lateinit var instance: Instance<T>
+    lateinit var instance: DefaultInstance<T>
     lateinit var definition: Definition<T>
     var options = Options()
     var attributes = Attributes()
@@ -58,7 +57,7 @@ data class BeanDefinition<T>(
     fun isScoped() = isKind(Kind.Scope)
 
     /**
-     * Create the associated Instance Holder
+     * Create the associated DefaultInstance Holder
      */
     fun createInstanceHolder(koin: Koin) {
         this.instance = when (kind) {

@@ -22,7 +22,7 @@
 //import java.util.*
 //
 ///**
-// * Instance Resolve
+// * DefaultInstance Resolve
 // * make instance resolution
 // */
 //class InstanceResolver {

@@ -29,14 +29,18 @@ abstract class DefinitionContext(val koin: Koin) {
      */
     inline fun <reified T> get(
         name: String? = null,
-        scope : ScopeInstance,
+        scope: ScopeInstance,
         noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(name, scope, parameters)
     }
+
+    companion object {
+        lateinit var defaultContext: DefaultContext
+    }
 }
 
-class EmptyContext(koin: Koin) : DefinitionContext(koin) {
+class DefaultContext(koin: Koin) : DefinitionContext(koin) {
     override fun getCurrentScope(): ScopeInstance? = null
 }
 

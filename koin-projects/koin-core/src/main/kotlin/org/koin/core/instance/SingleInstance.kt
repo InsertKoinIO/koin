@@ -24,7 +24,7 @@ import org.koin.core.scope.ScopeInstance
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class SingleInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Instance<T>(koin, beanDefinition) {
+class SingleInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : DefaultInstance<T>(koin, beanDefinition) {
 
     override fun isCreated(scope: ScopeInstance?): Boolean = (value != null)
 

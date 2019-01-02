@@ -33,7 +33,7 @@ class ScopeRegistry {
     private val definitions = hashMapOf<String, ScopeDefinition>()
     private val instances = hashMapOf<String, ScopeInstance>()
 
-    internal fun loadScopes(modules: Array<out Module>) {
+    internal fun loadScopes(modules: Iterable<Module>) {
         modules.forEach {
             declareScopes(it)
         }
@@ -41,14 +41,14 @@ class ScopeRegistry {
 
     private fun declareScopes(module: Module) {
         module.scopes.forEach {
-            if (definitions[it.scopeName] != null){
+            if (definitions[it.scopeName] != null) {
 
             }
             definitions[it.scopeName] = it
         }
     }
 
-    fun getScopeDefinition(scopeName : String): ScopeDefinition? = definitions[scopeName]
+    fun getScopeDefinition(scopeName: String): ScopeDefinition? = definitions[scopeName]
 
     /**
      * Create a scope instance for given scope

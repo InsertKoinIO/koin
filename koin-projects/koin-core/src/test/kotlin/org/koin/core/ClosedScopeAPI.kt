@@ -15,7 +15,7 @@ class ClosedScopeAPI {
     val scopeName = "MY_SCOPE"
 
     @Test
-    fun `get definition from a scope`() {
+    fun `get definition from current scope`() {
         val koin = koinApplication {
             modules(
                 module {

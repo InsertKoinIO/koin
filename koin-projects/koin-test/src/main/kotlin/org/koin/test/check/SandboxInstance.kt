@@ -18,11 +18,11 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.EmptyContext
+import org.koin.core.bean.DefaultContext
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.instance.Instance
+import org.koin.core.instance.DefaultInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.ScopeInstance
@@ -30,12 +30,12 @@ import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito.mock
 
 /**
- * Sandbox Instance Holder - let execute the definition but return a mock of it
+ * Sandbox DefaultInstance Holder - let execute the definition but return a mock of it
  *
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class SandboxInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Instance<T>(koin, beanDefinition) {
+class SandboxInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : DefaultInstance<T>(koin, beanDefinition) {
 
     private var value: T? = null
 
@@ -53,7 +53,7 @@ class SandboxInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Instan
     ): T {
         try {
             val params = parameters?.let { parameters() } ?: emptyParametersHolder()
-            val context = scope?.getContext() ?: EmptyContext(koin)
+            val context = scope?.getContext() ?: DefaultContext(koin)
             beanDefinition.definition(context, params)
         } catch (e: Exception) {
             when (e) {

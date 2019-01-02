@@ -21,12 +21,12 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance
 
 /**
- * Factory Instance Holder
+ * Factory DefaultInstance Holder
  *
  * @author Arnaud Giuliani
  */
 class FactoryInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
-    Instance<T>(koin, beanDefinition) {
+    DefaultInstance<T>(koin, beanDefinition) {
 
     override fun release(scope: ScopeInstance?) {}
 
