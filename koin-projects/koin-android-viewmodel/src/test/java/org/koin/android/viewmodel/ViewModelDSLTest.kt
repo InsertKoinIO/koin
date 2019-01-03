@@ -5,8 +5,8 @@ import org.junit.Test
 import org.koin.android.viewmodel.dsl.isViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.KoinApplication
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.Kind
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module

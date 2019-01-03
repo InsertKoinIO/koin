@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.bean
+package org.koin.core.definition
 
-import org.koin.core.Koin
-import org.koin.core.instance.FactoryInstance
-import org.koin.core.instance.DefaultInstance
-import org.koin.core.instance.ScopedInstance
-import org.koin.core.instance.SingleInstance
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.ParametersHolder
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.instance.*
+import org.koin.core.parameter.DefinitionParameters
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -36,11 +30,11 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 data class BeanDefinition<T>(
-    val name: String? = null,
-    val primaryType: KClass<*>
+        val name: String? = null,
+        val primaryType: KClass<*>
 ) {
     var secondaryTypes = arrayListOf<KClass<*>>()
-    lateinit var instance: DefaultInstance<T>
+    lateinit var instance: Instance<T>
     lateinit var definition: Definition<T>
     var options = Options()
     var attributes = Attributes()
@@ -57,23 +51,20 @@ data class BeanDefinition<T>(
     fun isScoped() = isKind(Kind.Scope)
 
     /**
-     * Create the associated DefaultInstance Holder
+     * Create the associated Instance Holder
      */
-    fun createInstanceHolder(koin: Koin) {
+    fun createInstanceHolder() {
         this.instance = when (kind) {
-            Kind.Single -> SingleInstance(koin, this)
-            Kind.Scope -> ScopedInstance(koin, this)
-            Kind.Factory -> FactoryInstance(koin, this)
+            Kind.Single -> SingleInstance(this)
+            Kind.Scope -> ScopedInstance(this)
+            Kind.Factory -> FactoryInstance(this)
         }
     }
 
     /**
      * Resolve instance
      */
-    fun <T> resolveInstance(
-        targetScope: ScopeInstance?,
-        parameters: ParametersDefinition?
-    ) = instance.get<T>(targetScope, parameters)
+    fun <T> resolveInstance(context: InstanceContext) = instance.get<T>(context)
 
     override fun toString(): String {
         val defKind = kind.toString()
@@ -91,4 +82,4 @@ enum class Kind {
     Single, Factory, Scope
 }
 
-typealias Definition<T> = DefinitionContext.(ParametersHolder) -> T
+typealias Definition<T> = DefinitionContext.(DefinitionParameters) -> T

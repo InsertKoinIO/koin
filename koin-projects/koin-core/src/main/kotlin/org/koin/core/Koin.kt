@@ -16,10 +16,11 @@
 package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.DefinitionFactory
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.DefaultContext
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.registry.BeanRegistry
@@ -42,7 +43,7 @@ class Koin {
     val beanRegistry = BeanRegistry()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
-    val definitionFactory = DefinitionFactory(this)
+    val defaultContext = DefaultContext(this)
 
     /**
      * Lazy inject a Koin instance
@@ -103,7 +104,8 @@ class Koin {
             parameters: ParametersDefinition?
     ): T {
         val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
-        return definition.resolveInstance(targetScopeInstance, parameters)
+        val instanceContext = InstanceContext(this, targetScopeInstance, parameters)
+        return definition.resolveInstance(instanceContext)
     }
 
     private fun prepareResolution(
@@ -137,7 +139,7 @@ class Koin {
         val definitions = beanRegistry.findAllCreatedAtStartDefinition()
         if (definitions.isNotEmpty()) {
             definitions.forEach {
-                it.resolveInstance(null, null)
+                it.resolveInstance(InstanceContext(koin = this))
             }
         }
     }
@@ -204,8 +206,8 @@ class Koin {
      * Close all resources from context
      */
     fun close() {
-        beanRegistry.close()
         scopeRegistry.close()
+        beanRegistry.close()
         propertyRegistry.close()
     }
 }

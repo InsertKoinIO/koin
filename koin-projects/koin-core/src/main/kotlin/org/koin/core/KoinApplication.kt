@@ -15,8 +15,6 @@
  */
 package org.koin.core
 
-import org.koin.core.bean.DefinitionContext
-import org.koin.core.bean.DefaultContext
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
@@ -48,16 +46,11 @@ class KoinApplication private constructor() {
      */
     fun modules(modules: Iterable<Module>): KoinApplication {
         val duration = measureDurationOnly {
-            prepareContext()
-            koin.beanRegistry.loadModules(koin, modules)
+            koin.beanRegistry.loadModules(modules)
             koin.scopeRegistry.loadScopes(modules)
         }
         logger.info("modules loaded in $duration ms")
         return this
-    }
-
-    private fun prepareContext() {
-        DefinitionContext.defaultContext = DefaultContext(koin)
     }
 
     /**

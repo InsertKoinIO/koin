@@ -7,6 +7,7 @@ import org.koin.Simple
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.instance.InstanceContext
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -46,7 +47,7 @@ class KoinApplicationIsolationTest {
         app.createEagerInstances()
 
         val def = app.getDefinition(Simple.ComponentA::class)!!
-        assertTrue(def.instance.isCreated())
+        assertTrue(def.instance.isCreated(InstanceContext()))
     }
 
     @Test

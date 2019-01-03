@@ -2,7 +2,7 @@ package org.koin.test
 
 import org.junit.Assert.assertEquals
 import org.koin.core.KoinApplication
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import kotlin.reflect.KClass
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {

@@ -1,8 +1,8 @@
 package org.koin.experimental.builder
 
 import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.definition.DefinitionContext
 import org.koin.core.module.Module
-import org.koin.core.scope.ScopeInstance
 import org.koin.core.time.measureDuration
 import java.lang.reflect.Constructor
 import java.util.concurrent.ConcurrentHashMap
@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> Module.create(scope: ScopeInstance? = null): T {
+inline fun <reified T : Any> Module.create(context: DefinitionContext): T {
     val kClass = T::class
     val kclassAsString = kClass.toString()
     logger.debug("| autocreate '$kClass'")
@@ -22,7 +22,7 @@ inline fun <reified T : Any> Module.create(scope: ScopeInstance? = null): T {
     logger.debug("| got ctor '$kclassAsString' in '$ctorDuration'")
 
     val (args, argsDuration) = measureDuration {
-        getArguments(ctor, scope)
+        getArguments(ctor, context)
     }
     logger.debug("| got args '$kclassAsString' in '$argsDuration'")
 
@@ -38,13 +38,13 @@ inline fun <reified T : Any> Module.create(scope: ScopeInstance? = null): T {
  * Make an instance with given arguments
  */
 inline fun <reified T : Any> Constructor<*>.makeInstance(args: Array<Any>) =
-    newInstance(*args) as T
+        newInstance(*args) as T
 
 /**
  * Retrieve arguments for given constructor
  */
-fun Module.getArguments(ctor: Constructor<*>, scope: ScopeInstance?) =
-    ctor.parameterTypes.map { getWithDefault(it.kotlin, scope) }.toTypedArray()
+fun getArguments(ctor: Constructor<*>, context: DefinitionContext) =
+        ctor.parameterTypes.map { context.getWithDefault(it.kotlin) }.toTypedArray()
 
 /**
  * Get first java constructor
@@ -68,7 +68,6 @@ val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
 /**
  * Retrieve linked dependency with defaults params
  */
-internal fun <T : Any> Module.getWithDefault(
-    clazz: KClass<T>,
-    scope: ScopeInstance?
-): T = koin.get(clazz, null, scope, null)
+internal fun <T : Any> DefinitionContext.getWithDefault(
+        clazz: KClass<T>
+): T = koin.get(clazz, null, null, null)

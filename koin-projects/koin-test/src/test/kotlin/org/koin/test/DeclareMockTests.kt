@@ -3,7 +3,7 @@ package org.koin.test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.logger.Level
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.dsl.koinApplication

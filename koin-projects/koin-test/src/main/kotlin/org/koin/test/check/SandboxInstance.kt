@@ -15,46 +15,38 @@
  */
 package org.koin.test.check
 
-import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.DefaultContext
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.instance.DefaultInstance
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.instance.Instance
+import org.koin.core.instance.InstanceContext
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito.mock
 
 /**
- * Sandbox DefaultInstance Holder - let execute the definition but return a mock of it
+ * Sandbox Instance Holder - let execute the definition but return a mock of it
  *
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class SandboxInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : DefaultInstance<T>(koin, beanDefinition) {
+class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
     private var value: T? = null
 
-    override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
+    override fun <T> get(context: InstanceContext): T {
         if (value == null) {
-            value = create(beanDefinition, scope, parameters)
+            value = create(context)
         }
         return value as? T ?: error("SandboxInstance should return a value for $beanDefinition")
     }
 
-    override fun <T> create(
-        beanDefinition: BeanDefinition<*>,
-        scope: ScopeInstance?,
-        parameters: ParametersDefinition?
-    ): T {
+    override fun <T> create(context: InstanceContext): T {
         try {
-            val params = parameters?.let { parameters() } ?: emptyParametersHolder()
-            val context = scope?.getContext() ?: DefaultContext(koin)
-            beanDefinition.definition(context, params)
+            val params = context.getParameters()
+            val instanceContext = context.getDefinitionContext()
+            beanDefinition.definition(instanceContext, params)
         } catch (e: Exception) {
             when (e) {
                 is NoBeanDefFoundException, is InstanceCreationException, is DefinitionOverrideException -> {
@@ -67,7 +59,7 @@ class SandboxInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Defaul
         return mock(beanDefinition.primaryType.java) as T
     }
 
-    override fun isCreated(scope: ScopeInstance?): Boolean = (value == null)
+    override fun isCreated(context: InstanceContext): Boolean = (value == null)
 
-    override fun release(scope: ScopeInstance?) {}
+    override fun release(context: InstanceContext) {}
 }

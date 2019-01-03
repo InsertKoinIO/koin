@@ -8,7 +8,7 @@ import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.ScopedInstance
 import org.koin.core.scope.getScopeName
 
-class ScopeDefinitionDeclaration {
+class ScopeDefinitionDeclarationTest {
 
     @Test
     fun `can declare a scoped definition`() {

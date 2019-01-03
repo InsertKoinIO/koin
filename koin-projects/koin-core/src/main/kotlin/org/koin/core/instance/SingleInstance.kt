@@ -15,27 +15,24 @@
  */
 package org.koin.core.instance
 
-import org.koin.core.Koin
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.definition.BeanDefinition
 
 /**
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class SingleInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : DefaultInstance<T>(koin, beanDefinition) {
-
-    override fun isCreated(scope: ScopeInstance?): Boolean = (value != null)
+class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
     private var value: T? = null
 
-    override fun release(scope: ScopeInstance?) {}
+    override fun isCreated(context: InstanceContext): Boolean = (value != null)
+
+    override fun release(context: InstanceContext) {}
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
+    override fun <T> get(context: InstanceContext): T {
         if (value == null) {
-            value = create(beanDefinition, scope, parameters)
+            value = create(context)
         }
         return value as? T ?: error("Single instance created couldn't return value")
     }

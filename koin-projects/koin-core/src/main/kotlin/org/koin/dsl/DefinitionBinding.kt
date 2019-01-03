@@ -15,7 +15,7 @@
  */
 package org.koin.dsl
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import kotlin.reflect.KClass
 
 /**

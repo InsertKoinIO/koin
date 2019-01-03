@@ -17,8 +17,8 @@ package org.koin.test.mock
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
 import org.koin.core.context.GlobalContext
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
@@ -32,8 +32,8 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> KoinTest.declareMock(
-    name: String = "",
-    noinline stubbing: (T.() -> Unit)? = null
+        name: String = "",
+        noinline stubbing: (T.() -> Unit)? = null
 ): T {
     val koin = GlobalContext.get().koin
     val clazz = T::class
@@ -50,14 +50,14 @@ inline fun <reified T : Any> KoinTest.declareMock(
  */
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> getDefinition(
-    clazz: KClass<T>,
-    koin: Koin,
-    name: String
+        clazz: KClass<T>,
+        koin: Koin,
+        name: String
 ): BeanDefinition<T> {
     logger.info("declare mock for '${clazz.getFullName()}'")
 
     return koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
-        ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
+            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
 }
 
 /**
@@ -66,8 +66,8 @@ inline fun <reified T : Any> getDefinition(
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> Koin.declareMock(
-    name: String = "",
-    noinline stubbing: (T.() -> Unit)? = null
+        name: String = "",
+        noinline stubbing: (T.() -> Unit)? = null
 ): T {
 
     val clazz = T::class
@@ -79,7 +79,7 @@ inline fun <reified T : Any> Koin.declareMock(
 }
 
 inline fun <reified T : Any> Koin.applyStub(
-    noinline stubbing: (T.() -> Unit)?
+        noinline stubbing: (T.() -> Unit)?
 ): T {
     val instance: T = get()
     stubbing?.let { instance.apply(stubbing) }
@@ -87,13 +87,13 @@ inline fun <reified T : Any> Koin.applyStub(
 }
 
 inline fun <reified T : Any> Koin.declareMockedDefinition(
-    foundDefinition: BeanDefinition<T>
+        foundDefinition: BeanDefinition<T>
 ) {
-    val definition: BeanDefinition<T> = foundDefinition.cloneForMock(this)
+    val definition: BeanDefinition<T> = foundDefinition.cloneForMock()
     beanRegistry.saveDefinition(definition)
 }
 
-inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(koin: Koin): BeanDefinition<T> {
+inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(): BeanDefinition<T> {
     val copy = this.copy()
     copy.secondaryTypes = this.secondaryTypes
     copy.definition = {
@@ -107,6 +107,6 @@ inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(koin: Koin): BeanDef
     copy.options = this.options.copy()
     copy.options.override = true
     copy.kind = this.kind
-    copy.createInstanceHolder(koin)
+    copy.createInstanceHolder()
     return copy
 }

@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.koin.core.KoinApplication;
+import org.koin.core.context.GlobalContext;
 import org.koin.core.scope.ScopeInstance;
 
 import static org.junit.Assert.assertEquals;
@@ -61,5 +62,6 @@ public class UnitJavaTest {
         assertNotNull(get(ComponentD.class, null, session));
 
         session.close();
+        GlobalContext.stop();
     }
 }

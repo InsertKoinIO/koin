@@ -17,7 +17,7 @@ package org.koin.android.ext.koin
 
 import android.app.Application
 import android.content.Context
-import org.koin.core.bean.DefinitionContext
+import org.koin.core.definition.DefinitionContext
 
 /**
  * DSL extension - Resolve Android Context instance

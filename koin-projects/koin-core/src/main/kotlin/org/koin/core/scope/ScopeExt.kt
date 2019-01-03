@@ -15,7 +15,7 @@
  */
 package org.koin.core.scope
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 
 /**
  * Extensiosn for Beandefintion only for Scope cases

@@ -60,7 +60,7 @@ object GlobalContext {
      * Stop current StandAlone Koin application
      */
     @JvmStatic
-    fun stop() {
+    fun stop() = synchronized(this) {
         app?.close()
         app = null
     }

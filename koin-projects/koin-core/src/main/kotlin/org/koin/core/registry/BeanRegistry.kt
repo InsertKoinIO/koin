@@ -15,9 +15,8 @@
  */
 package org.koin.core.registry
 
-import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import org.koin.ext.getFullName
@@ -42,15 +41,11 @@ class BeanRegistry {
      * @param koin instance
      * @param modules
      */
-    fun loadModules(koin: Koin, modules: Iterable<Module>) {
+    fun loadModules(modules: Iterable<Module>) {
         modules.forEach { module: Module ->
-            linkContext(module, koin)
-            module.apply(module.moduleDeclaration)
             saveDefinitions(module)
         }
-        logger.info(
-                "registered ${definitions.size} definitions"
-        )
+        logger.info("registered ${definitions.size} definitions")
     }
 
     private fun saveDefinitions(module: Module) {
@@ -117,10 +112,6 @@ class BeanRegistry {
                 logger.info("bind scopeName:'${definition.name}' ~ $definition")
             }
         }
-    }
-
-    private fun linkContext(it: Module, koin: Koin) {
-        it.koin = koin
     }
 
     /**

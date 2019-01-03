@@ -1,10 +1,11 @@
-package org.koin.core.bean
+package org.koin.core.definition
 
 import org.koin.core.Koin
+import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance
 
-abstract class DefinitionContext(val koin: Koin) {
+sealed class DefinitionContext(val koin: Koin) {
 
     abstract fun getCurrentScope(): ScopeInstance?
 
@@ -15,8 +16,8 @@ abstract class DefinitionContext(val koin: Koin) {
      * @param parameters
      */
     inline fun <reified T> get(
-        name: String? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(name, getCurrentScope(), parameters)
     }
@@ -28,15 +29,20 @@ abstract class DefinitionContext(val koin: Koin) {
      * @param parameters
      */
     inline fun <reified T> get(
-        name: String? = null,
-        scope: ScopeInstance,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            scope: ScopeInstance,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(name, scope, parameters)
     }
 
-    companion object {
-        lateinit var defaultContext: DefaultContext
+    /**
+     * Get a property from Koin
+     * @param key
+     */
+    fun <T> getProperty(key: String): T {
+        return koin.getProperty(key)
+                ?: throw MissingPropertyException("Property '$key' is missing")
     }
 }
 

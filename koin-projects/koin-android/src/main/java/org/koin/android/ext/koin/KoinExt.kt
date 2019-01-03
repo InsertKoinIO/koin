@@ -21,6 +21,7 @@ import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.definition.DefinitionFactory
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import java.util.*
@@ -52,10 +53,10 @@ fun KoinApplication.androidLogger(
 fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
     logger.info("[init] declare Android Context")
 
-    koin.beanRegistry.saveDefinition(koin.definitionFactory.createSingle { androidContext })
+    koin.beanRegistry.saveDefinition(DefinitionFactory.createSingle { androidContext })
 
     if (androidContext is Application) {
-        koin.beanRegistry.saveDefinition(koin.definitionFactory.createSingle<Application> { androidContext })
+        koin.beanRegistry.saveDefinition(DefinitionFactory.createSingle<Application> { androidContext })
     }
     return this
 }

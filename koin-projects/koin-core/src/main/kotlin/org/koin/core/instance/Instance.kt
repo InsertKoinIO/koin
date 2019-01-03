@@ -19,28 +19,26 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.DefinitionContext
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
+import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.ScopeInstance
 
 /**
- * Koin DefaultInstance Holder
+ * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class DefaultInstance<T>(val koin: Koin, val beanDefinition: BeanDefinition<T>) {
+abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
 
     /**
      * Retrieve an instance
-     * @param scope
-     * @param parameters
+     * @param context
      * @return T
      */
-    abstract fun <T> get(scope: ScopeInstance? = null, parameters: ParametersDefinition?): T
+    abstract fun <T> get(context: InstanceContext): T
 
     /**
      * Create an instance
@@ -48,24 +46,20 @@ abstract class DefaultInstance<T>(val koin: Koin, val beanDefinition: BeanDefini
      * @param parameters
      * @return T
      */
-    open fun <T> create(
-        beanDefinition: BeanDefinition<*>,
-        scope: ScopeInstance? = null,
-        parameters: ParametersDefinition?
-    ): T {
+    open fun <T> create(context: InstanceContext): T {
         if (logger.level == Level.DEBUG) {
             logger.debug("| create instance for $beanDefinition")
         }
         try {
-            val parametersHolder: ParametersHolder = parameters?.let { parameters() } ?: emptyParametersHolder()
-            val context = scope?.getContext() ?: DefinitionContext.defaultContext
-            val value = beanDefinition.definition(context, parametersHolder)
-            return value as T
+            val parameters: DefinitionParameters = context.getParameters()
+            val definitionContext = context.getDefinitionContext()
+            val result = beanDefinition.definition(definitionContext, parameters)
+            return result as T
         } catch (e: Exception) {
             val stack =
-                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                    .joinToString(ERROR_SEPARATOR)
-            logger.error("DefaultInstance creation error : could not create instance for $beanDefinition: $stack")
+                    e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                            .joinToString(ERROR_SEPARATOR)
+            logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }
@@ -73,14 +67,22 @@ abstract class DefaultInstance<T>(val koin: Koin, val beanDefinition: BeanDefini
     /**
      * Is instance created
      */
-    abstract fun isCreated(scope: ScopeInstance? = null): Boolean
+    abstract fun isCreated(context: InstanceContext): Boolean
 
     /**
      * Release the held instance (if hold)
      */
-    abstract fun release(scope: ScopeInstance? = null)
+    abstract fun release(context: InstanceContext)
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }
+}
+
+data class InstanceContext(val koin: Koin? = null, val scope: ScopeInstance? = null, val parameters: ParametersDefinition? = null) {
+
+    fun getDefinitionContext() = scope?.getContext() ?: koin?.defaultContext
+    ?: error("Can't provide any InstanceContext without Koin instance")
+
+    fun getParameters() = parameters?.let { parameters.invoke() } ?: emptyParametersHolder()
 }

@@ -2,8 +2,8 @@ package org.koin.core
 
 import org.junit.Assert.*
 import org.junit.Test
-import org.koin.core.parameter.ParametersHolder
-import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
+import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
 
 class ParametersHolderTest {
@@ -12,7 +12,7 @@ class ParametersHolderTest {
     fun `create a parameters holder`() {
         val myString = "empty"
         val myInt = 42
-        val parameterHolder: ParametersHolder = parametersOf(myString, myInt)
+        val parameterHolder: DefinitionParameters = parametersOf(myString, myInt)
 
         assertEquals(2, parameterHolder.size())
         assertTrue(parameterHolder.isNotEmpty())
@@ -20,7 +20,7 @@ class ParametersHolderTest {
 
     @Test
     fun `create an empty parameters holder`() {
-        val parameterHolder: ParametersHolder = parametersOf()
+        val parameterHolder: DefinitionParameters = parametersOf()
 
         assertEquals(0, parameterHolder.size())
         assertTrue(parameterHolder.isEmpty())
@@ -30,7 +30,7 @@ class ParametersHolderTest {
     fun `get parameters from a parameter holder`() {
         val myString = "empty"
         val myInt = 42
-        val parameterHolder: ParametersHolder = parametersOf(myString, myInt)
+        val parameterHolder: DefinitionParameters = parametersOf(myString, myInt)
 
         val (s: String, i: Int) = parameterHolder
         assertEquals(myString, s)

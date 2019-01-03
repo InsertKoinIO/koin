@@ -15,24 +15,21 @@
  */
 package org.koin.core.instance
 
-import org.koin.core.Koin
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.definition.BeanDefinition
 
 /**
- * Factory DefaultInstance Holder
+ * Factory Instance Holder
  *
  * @author Arnaud Giuliani
  */
-class FactoryInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
-    DefaultInstance<T>(koin, beanDefinition) {
+class FactoryInstance<T>(beanDefinition: BeanDefinition<T>) :
+        Instance<T>(beanDefinition) {
 
-    override fun release(scope: ScopeInstance?) {}
+    override fun release(context: InstanceContext) {}
 
-    override fun isCreated(scope: ScopeInstance?): Boolean = false
+    override fun isCreated(context: InstanceContext): Boolean = false
 
-    override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
-        return create(beanDefinition, scope, parameters)
+    override fun <T> get(context: InstanceContext): T {
+        return create(context)
     }
 }

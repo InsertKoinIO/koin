@@ -15,9 +15,11 @@
  */
 package org.koin.core.scope
 
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.Definition
-import org.koin.core.bean.Options
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Definition
+import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.Options
+import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.ScopedInstance
 import org.koin.core.module.Module
 
@@ -37,14 +39,14 @@ data class ScopeDefinition(val scopeName: String, val module: Module) {
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = module.koin.definitionFactory.createScope(name, scopeName, definition)
+        val beanDefinition = DefinitionFactory.createScope(name, scopeName, definition)
         module.declareDefinition(beanDefinition, Options(override = override))
         definitions.add(beanDefinition)
         return beanDefinition
     }
 
     internal fun release(instance: ScopeInstance) {
-        definitions.filter { it is ScopedInstance<*> }.forEach { it.instance.release(instance) }
+        definitions.filter { it is ScopedInstance<*> }.forEach { it.instance.release(InstanceContext(scope = instance)) }
     }
 
     override fun toString(): String {

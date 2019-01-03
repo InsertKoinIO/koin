@@ -16,7 +16,6 @@
 package org.koin.test
 
 import org.junit.After
-import org.koin.core.context.GlobalContext
 import org.koin.core.context.stopKoin
 
 /**
@@ -28,7 +27,7 @@ abstract class AutoCloseKoinTest : KoinTest {
 
     @After
     fun autoClose() {
-        GlobalContext.stop()
+        stopKoin()
     }
 }
 

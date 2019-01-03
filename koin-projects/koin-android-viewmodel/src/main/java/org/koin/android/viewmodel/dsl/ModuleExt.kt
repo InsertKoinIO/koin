@@ -16,8 +16,8 @@
 package org.koin.android.viewmodel.dsl
 
 import android.arch.lifecycle.ViewModel
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.Definition
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Definition
 import org.koin.core.module.Module
 
 

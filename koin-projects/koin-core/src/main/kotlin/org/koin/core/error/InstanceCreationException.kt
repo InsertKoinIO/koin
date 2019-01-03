@@ -16,7 +16,7 @@
 package org.koin.core.error
 
 /**
- * DefaultInstance creation error
+ * Instance creation error
  *
  * @author Arnaud Giuliani
  */

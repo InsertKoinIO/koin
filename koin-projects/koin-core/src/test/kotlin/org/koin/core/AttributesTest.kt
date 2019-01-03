@@ -3,7 +3,7 @@ package org.koin.core
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.koin.core.bean.Attributes
+import org.koin.core.definition.Attributes
 
 class AttributesTest {
 

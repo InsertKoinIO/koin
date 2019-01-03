@@ -16,16 +16,16 @@
 package org.koin.core.parameter
 
 import org.koin.core.error.NoParameterFoundException
-import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
+import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
 
 /**
- * ParametersHolder - Parameter holder
+ * DefinitionParameters - Parameter holder
  * Usable with exploded declaration
  *
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-class ParametersHolder internal constructor(vararg val values: Any?) {
+class DefinitionParameters internal constructor(vararg val values: Any?) {
 
     private fun <T> elementAt(i: Int): T =
         if (values.size > i) values[i] as T else throw NoParameterFoundException("Can't get parameter value #$i from $this")
@@ -69,20 +69,20 @@ class ParametersHolder internal constructor(vararg val values: Any?) {
 }
 
 /**
- * Build a ParametersHolder
+ * Build a DefinitionParameters
  *
  * @see parameters
  * return ParameterList
  */
 fun parametersOf(vararg parameters: Any?) =
-    if (parameters.size <= MAX_PARAMS) ParametersHolder(*parameters) else error("Can't build ParametersHolder for more than $MAX_PARAMS arguments")
+    if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else error("Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
  *
  */
-fun emptyParametersHolder() = ParametersHolder()
+fun emptyParametersHolder() = DefinitionParameters()
 
 /**
- * Help define a ParametersHolder
+ * Help define a DefinitionParameters
  */
-typealias ParametersDefinition = () -> ParametersHolder
+typealias ParametersDefinition = () -> DefinitionParameters

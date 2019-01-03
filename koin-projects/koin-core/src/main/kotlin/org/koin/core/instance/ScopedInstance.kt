@@ -15,26 +15,26 @@
  */
 package org.koin.core.instance
 
-import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Scope definition DefaultInstance holder
+ * Scope definition Instance holder
  * @author Arnaud Giuliani
  */
-class ScopedInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : DefaultInstance<T>(koin, beanDefinition) {
+class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
-    override fun isCreated(scope: ScopeInstance?): Boolean = scope?.let { values[scope.id] != null } ?: false
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
-    override fun release(scope: ScopeInstance?) {
+    override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
+            ?: false
+
+    override fun release(context: InstanceContext) {
+        val scope = context.scope
         scope?.let {
             if (logger.level == Level.DEBUG) {
                 logger.debug("releasing '$scope' ~ $beanDefinition ")
@@ -44,13 +44,14 @@ class ScopedInstance<T>(koin: Koin, beanDefinition: BeanDefinition<T>) : Default
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> get(scope: ScopeInstance?, parameters: ParametersDefinition?): T {
-        if (scope == null) throw ScopeNotCreatedException("No scope instance when trying to resolve $beanDefinition")
+    override fun <T> get(context: InstanceContext): T {
+        val scope = context.scope
+                ?: throw ScopeNotCreatedException("No scope instance when trying to resolve $beanDefinition")
         val internalId = scope.id
         var current = values[internalId]
         if (current == null) {
-            current = create(beanDefinition, scope, parameters)
-            values[internalId] = current ?: error("DefaultInstance creation from $beanDefinition should not be null")
+            current = create(context)
+            values[internalId] = current ?: error("Instance creation from $beanDefinition should not be null")
         }
         return current as T
     }

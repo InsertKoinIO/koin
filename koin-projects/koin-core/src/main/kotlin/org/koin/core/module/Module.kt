@@ -15,13 +15,11 @@
  */
 package org.koin.core.module
 
-import org.koin.core.Koin
-import org.koin.core.bean.BeanDefinition
-import org.koin.core.bean.Definition
-import org.koin.core.bean.Options
-import org.koin.core.error.MissingPropertyException
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Definition
+import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.Options
 import org.koin.core.scope.ScopeDefinition
-import org.koin.dsl.ModuleDeclaration
 
 /**
  * Koin Module
@@ -31,12 +29,10 @@ import org.koin.dsl.ModuleDeclaration
  */
 class Module(
         internal val isCreatedAtStart: Boolean,
-        internal val override: Boolean,
-        internal val moduleDeclaration: ModuleDeclaration
+        internal val override: Boolean
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
     internal val scopes = arrayListOf<ScopeDefinition>()
-    lateinit var koin: Koin
 
     /**
      * Declare a definition in current Module
@@ -66,7 +62,7 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = koin.definitionFactory.createSingle(name, definition)
+        val beanDefinition = DefinitionFactory.createSingle(name, definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
         return beanDefinition
     }
@@ -97,7 +93,7 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = koin.definitionFactory.createScope(name, definition = definition)
+        val beanDefinition = DefinitionFactory.createScope(name, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }
@@ -113,17 +109,9 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = koin.definitionFactory.createFactory(name, definition)
+        val beanDefinition = DefinitionFactory.createFactory(name, definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
-    }
-
-    /**
-     * Get a property from Koin
-     * @param key
-     */
-    fun <T> getProperty(key: String): T {
-        return koin.getProperty(key) ?: throw MissingPropertyException("Property '$key' is missing")
     }
 
     /**
