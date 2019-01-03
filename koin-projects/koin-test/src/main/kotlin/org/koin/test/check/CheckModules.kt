@@ -48,7 +48,7 @@ fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         val clazz = it.primaryType
         val scope = if (it.isScoped()) scopeRegistry.createScopeInstance(
-                it.getScopeName() ?: error("definition $it should have a scope id")
+                "sandbox_scope", it.getScopeName()
         ) else null
 
         get<Any>(clazz, it.name, scope) { emptyParametersHolder() }

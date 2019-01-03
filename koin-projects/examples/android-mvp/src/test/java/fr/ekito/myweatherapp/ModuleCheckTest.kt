@@ -20,10 +20,6 @@ class ModuleCheckTest : KoinTest {
 
     val mockedApplication = mock(Application::class.java)
 
-    @After
-    fun after() {
-    }
-
     @Test
     fun testRemoteConfiguration() {
         koinApplication {
