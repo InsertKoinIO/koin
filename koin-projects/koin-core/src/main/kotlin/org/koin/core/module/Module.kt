@@ -20,6 +20,7 @@ import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
 import org.koin.core.scope.ScopeDefinition
+import org.koin.ext.getFullName
 
 /**
  * Koin Module
@@ -77,6 +78,15 @@ class Module(
      * @param scopeName
      */
     fun scope(scopeName: String, scopeDefinition: ScopeDefinition.() -> Unit) {
+        val scope: ScopeDefinition = ScopeDefinition(scopeName, this).apply(scopeDefinition)
+        declareScope(scope)
+    }
+
+    /**
+     * Declare a group a scoped definition with a given type name
+     */
+    inline fun <reified T> scope(scopeDefinition: ScopeDefinition.() -> Unit) {
+        val scopeName = T::class.getFullName()
         val scope: ScopeDefinition = ScopeDefinition(scopeName, this).apply(scopeDefinition)
         declareScope(scope)
     }

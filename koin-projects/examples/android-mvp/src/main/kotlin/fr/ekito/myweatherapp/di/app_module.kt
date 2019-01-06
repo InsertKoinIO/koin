@@ -13,7 +13,6 @@ import fr.ekito.myweatherapp.view.weather.WeatherHeaderContract
 import fr.ekito.myweatherapp.view.weather.WeatherHeaderPresenter
 import fr.ekito.myweatherapp.view.weather.WeatherListContract
 import fr.ekito.myweatherapp.view.weather.WeatherListPresenter
-import org.koin.android.scope.scope
 import org.koin.dsl.module
 
 /**

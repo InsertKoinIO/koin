@@ -1,6 +1,5 @@
 package org.koin.sample.navigation
 
-import org.koin.android.scope.scope
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

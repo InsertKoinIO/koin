@@ -1,6 +1,6 @@
 == Introduction
 
-This is the `koin-core` project manual. This project brings the core feature ok Koin, ready to be embedded in any Kotlin Runtime/SDK.
+This is the `koin-core` project manual. This project brings the core feature of Koin.
 
 === What is Koin?
 

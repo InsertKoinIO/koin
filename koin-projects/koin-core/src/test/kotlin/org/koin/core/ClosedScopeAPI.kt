@@ -12,7 +12,26 @@ import org.koin.dsl.module
 
 class ClosedScopeAPI {
 
+    class ScopeType
     val scopeName = "MY_SCOPE"
+
+    @Test
+    fun `get definition from current scope type`() {
+        val koin = koinApplication {
+            modules(
+                module {
+                    scope<ScopeType> {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                }
+            )
+        }.koin
+
+        val scope = koin.createScopeWithType<ScopeType>("myScope")
+        Assert.assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+    }
 
     @Test
     fun `get definition from current scope`() {

@@ -36,7 +36,7 @@ data class ScopeInstance(
     /**
      * Register in Koin instance
      */
-    internal fun register(koin: Koin) {
+    fun register(koin: Koin) {
         this.koin = koin
     }
 
@@ -60,7 +60,8 @@ data class ScopeInstance(
         name: String? = null,
         noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin?.get(T::class, name, this, parameters) ?: throw  ScopeIsClosedException("Scope $this is closed")
+        return koin?.get(T::class, name, this, parameters)
+            ?: throw  ScopeIsClosedException("Scope $this is closed")
     }
 
     /**

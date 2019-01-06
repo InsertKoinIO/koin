@@ -149,8 +149,19 @@ class Koin {
      * @param scopeId
      * @param scopeName
      */
-    @JvmOverloads
     fun createScope(scopeId: String, scopeName: String? = null): ScopeInstance {
+        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
+        createdScopeInstance.register(this)
+        return createdScopeInstance
+    }
+
+    /**
+     * Create a Scope instance
+     * @param scopeId
+     * @param scopeName
+     */
+    inline fun <reified T> createScopeWithType(scopeId: String): ScopeInstance {
+        val scopeName = T::class.getFullName()
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
         createdScopeInstance.register(this)
         return createdScopeInstance
@@ -161,8 +172,16 @@ class Koin {
      * @param scopeId
      * @param scopeName
      */
-    @JvmOverloads
     fun getOrCreateScope(scopeId: String, scopeName: String? = null): ScopeInstance {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
+    }
+
+    /**
+     * Get or Create a Scope instance from type name
+     * @param scopeId
+     */
+    inline fun <reified T> getOrCreateScopeWithType(scopeId: String): ScopeInstance {
+        val scopeName = T::class.getFullName()
         return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
     }
 
