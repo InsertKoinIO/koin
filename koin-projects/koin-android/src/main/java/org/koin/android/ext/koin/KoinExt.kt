@@ -66,7 +66,7 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  * @param androidContext
  * @param koinPropertyFile
  */
-fun KoinApplication.assetProperties(
+fun KoinApplication.androidFileProperties(
         koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
     val koinProperties = Properties()
