@@ -14,9 +14,9 @@ By default in Koin, we have 3 kind of scopes:
 
 - `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
 - `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).
-- `scope` definition, create an object that persistent tied to the associated scope lifetime.
+- `scoped` definition, create an object that persistent tied to the associated scope lifetime.
 
-To declare a scope definition, use the `scope` function with a given scope Id:
+To declare a scoped definition, use the `scope` function with a given scope Id:
 
 [source,kotlin]
 ----

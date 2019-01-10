@@ -25,7 +25,9 @@ we start Koin before using definition.
 ----
 fun main(vararg args : String){
     // Start Koin
-    startKoin(listOf(myModule))
+    startKoin {
+        modules(myModule)
+    }
 
     // Create MyComponent instance and inject from Koin container
     MyComponent()
@@ -79,32 +81,23 @@ val myService : MyService get()
 The lazy inject form is better to define property that need lazy evaluation.
 ====
 
-=== Resolving instance from a name or a module
+=== Resolving instance from its name
 
-If you need to filter about visibility (search a definition by name or module), you can specify the following parameter with `get()` or `by inject()`
+If you need you can specify the following parameter with `get()` or `by inject()`
 
 * `name` - name of the definition (when specified name parameter in your definition)
-* `module` - path of the module
 
-Example of module using classes names as modules:
+Example of module using definitions names:
 
 [source,kotlin]
 ----
 val module = module {
-    module(ComponentB::class.moduleName) {
-        single { ComponentA() }
-        single { ComponentB(get()) }
-    }
-
-    module(ComponentC::class.moduleName) {
-        single { ComponentA() }
-        single { ComponentC(get()) }
-    }
+    single(name="A") { ComponentA() }
+    single(name="B") { ComponentB(get()) }
 }
 
 class ComponentA
 class ComponentB(val componentA: ComponentA)
-class ComponentC(val componentA: ComponentA)
 ----
 
 We can make the following resolutions:
@@ -112,8 +105,7 @@ We can make the following resolutions:
 [source,kotlin]
 ----
 // retrieve from given module
-val a_b = get<ComponentA>(module = ComponentB::class.moduleName)
-val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
+val a = get<ComponentA>(name = "A")
 ----
 
 
@@ -121,24 +113,4 @@ val a_c = get<ComponentA>(module = ComponentC::class.moduleName)
 
 If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
 
-=== Releasing instances
-
-From a `KoinComponent` you can use the `release()` function to drop instances for a given module path:
-
-[source,kotlin]
-----
-val module = module {
-    module("ComponentB") {
-        single { ComponentA() }
-        single { ComponentB(get()) }
-    }
-}
-
-// Will release all instances from /ComponentB
-release("ComponentB")
-----
-
-==== release() vs closeKoin()
-
-The `release()` function release instances for a given module path. The `closeKoin()` function drop every thing in Koin, from definitions to instances.
 

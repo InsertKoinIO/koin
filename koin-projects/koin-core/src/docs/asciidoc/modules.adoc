@@ -13,7 +13,7 @@ val myModule = module {
 }
 ----
 
-=== Linking definitions between modules
+=== Using several modules
 
 Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
 module. Definitions are lazy, and then are resolved only when a a component is requesting it.
@@ -92,17 +92,73 @@ Then we just need to launch Koin with the right combination of modules:
 [source,kotlin]
 ----
 // Load Repository + Local Datasource definitions
-startKoin{
+startKoin {
     modules(repositoryModule,localDatasourceModule)
 }
 
 // Load Repository + Remote Datasource definitions
-startKoin{
+startKoin {
     modules(repositoryModule,remoteDatasourceModule)
 }
 ----
 
-=== Visibility
+=== Overriding a definition or a module
 
-Visibility rule is quite simple: every definition is visible in any module.
+Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an an error if you try this:
+
+.Override not allowed
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single<Service> { ServiceImp() }
+}
+
+val myModuleB = module {
+
+    single<Service> { TestServiceImp() }
+}
+
+// Will throw an BeanOverrideException
+startKoin {
+    modules(myModuleA,myModuleB)
+}
+----
+
+To allow definition overriding, you have to use the `override` parameter:
+
+.Override at definition level
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single<Service> { ServiceImp() }
+}
+
+val myModuleB = module {
+
+    // override for this definition
+    single<Service>(override=true) { TestServiceImp() }
+}
+----
+
+.Override at module level
+[source,kotlin]
+----
+val myModuleA = module {
+
+    single<Service> { ServiceImp() }
+}
+
+// Allow override for all definitions from module
+val myModuleB = module(override=true) {
+
+    single<Service> { TestServiceImp() }
+}
+----
+
+[IMPORTANT]
+====
+Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
+====
 
