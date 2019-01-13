@@ -151,109 +151,6 @@ class MyApplication : Application() {
 * [Write your app with Koin](https://insert-koin.io/docs/2.0/getting-started/introduction/)
 * [Quick References](https://insert-koin.io/docs/2.0/quick-references/dsl/)
 
-## Inject in Android
-
-Easy to inject into your Android classes:
-
-```kotlin
-// Just inject in a simple Activity 
-class MyActivity() : AppCompatActivity() {
-
-    // lazy inject BusinessService into property
-    val service : BusinessService by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        // or directly get any instance
-        val service : BusinessService = get()
-    }
-}
-```
-
-* [Android Quick References](https://insert-koin.io/docs/2.0/quick-references/koin-android/)
-* [Getting started with Android](https://insert-koin.io/docs/2.0/getting-started/android/)
-
-## Inject by constructor
-
-You're now ready! The Koin DSL help you make injection by constructors. Now just use it:
-
-```kotlin
-// Controller & BusinessService are declared in a module
-class Controller(val service : BusinessService){ 
-  
-  fun hello() {
-     // service is ready to use
-     service.sayHello()
-  }
-} 
-```
-
-Koin can be easily embedded with your favorite Java/Kotlin SDK, and already provide some dedicated support module.
-
-* [Explore the documentation](https://insert-koin.io/docs/2.0/documentation/reference/index.html)
-
-## Ready for ViewModel
-
-Want to use Android Architecture ViewModel? No problem, it's already available and easy to use:
-
-```kotlin
-// Injected by constructor
-class MyViewModel(val repo : MyRepository) : ViewModel(){
-}
-```
-
-```kotlin
-// declare ViewModel using the viewModel keyword
-val myModule : Module = module {
-  viewModel { MyViewModel(get()) }
-  single { MyRepository() }
-}
-```
-
-```kotlin
-// Just get it
-class MyActivity() : AppCompatActivity() {
-
-  // lazy inject MyViewModel
-  val vm : MyViewModel by viewModel()
-}
-```
-
-* [Android ViewModel Documentation](https://insert-koin.io/docs/2.0/documentation/reference/index.html#_architecture_components_with_koin_viewmodel)
-* [Getting started with Android ViewModel](https://insert-koin.io/docs/2.0/getting-started/android-viewmodel/)
-
-## Easy testing
-
-Use koin from a simple JUnit class:
-
-```kotlin
-// Just tag your class with KoinTest to unlick your testing power
-class SimpleTest : KoinTest { 
-  
-  // lazy inject BusinessService into property
-  val service : BusinessService by inject()
-
-  @Test
-  fun myTest() {
-      // You can start your Koin configuration
-      startKoin(myModules)
-
-      // or directly get any instance
-      val service : BusinessService = get()
-
-      // Don't forget to close it at the end
-      closeKoin()
-  }
-} 
-```
-
-And more: check your configuration with a simple unit test, easily create mocks...
-
-* [Test with Koin - Documentation](https://insert-koin.io/docs/2.0/documentation/reference/index.html#_testing_with_koin)
-
-
-
 # Articles
 
 ### Articles & resouces about Koin
@@ -294,8 +191,6 @@ And more: check your configuration with a simple unit test, easily create mocks.
 * [Unlock your Android ViewModel power with Koin](https://medium.com/@giuliani.arnaud/unlock-your-android-viewmodel-power-with-koin-23eda8f493be)
 * [koin 0.8.2 Improvements bugfixes and crash fix](https://medium.com/koin-developers/koin-0-8-2-improvements-bugfixes-and-crash-fix-6b6809fc1dd2)
 * [Koin release 0.8.0](https://medium.com/koin-developers/koin-released-in-0-8-0-welcome-to-koin-spark-koin-android-architecture-f6270a7d4808)
-
-
 
 
 ## Contributors
