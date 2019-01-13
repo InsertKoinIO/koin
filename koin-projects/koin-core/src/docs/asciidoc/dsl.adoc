@@ -11,17 +11,22 @@ Koin offers several keywords to let you describe the elements of a Koin Applicat
 
 === Application DSL
 
-This DSL help configure your Koin container:
+A `KoinApplication` instance is a Koin container instance configuration. This will let your configure logging, properties loading and modules.
+
+To build a new `KoinApplication`, use the following functions:
 
 * `koinApplication { }` - create a `KoinApplication` container configuration 
 * `startKoin { }` - create a `KoinApplication` container configuration and register it in the `GlobalContext` to allow the use of GlobalContext API
+
+To configure your `KoinApplication` instance, you can use any of the following functions :
+
 * `logger( )` - describe what level and Logger implementation to use (by default use the EmptyLogger)
-* `modules( )` - set a list of Koin modules to load in the container
+* `modules( )` - set a list of Koin modules to load in the container (list or vararg list)
 * `properties()` - load HashMap properties into Koin container
 * `fileProperties( )` - load properties from given file into Koin container
 * `environmentProperties( )` - load properties from OS environment into Koin container
 
-=== KoinApplication configuration instance: Global vs Local
+=== KoinApplication instance: Global vs Local
 
 As you can see above, we can describe a Koin container configuration in 2 ways: `koinApplication` or `startKoin` function. 
 
@@ -51,16 +56,19 @@ startKoin {
 
 === Module DSL
 
-Below are the Koin DSL keywords to describe a module:
+A Koin module gather definitions that you will inject/combine for your application. To create a new module, just use the foolowing function:
 
-* `module { }` - create a Koin Module
-* `factory { }` - provide a factory bean definition
-* `single { }` - provide a singleton bean definition (also aliased as `bean`)
-* `get()` - resolve a component dependency
+* `module { // module content }` - create a Koin Module
+
+To describe your content in a module, you can use the following functions:
+
+* `factory { //definition }` - provide a factory bean definition
+* `single { //definition  }` - provide a singleton bean definition (also aliased as `bean`)
+* `get()` - resolve a component dependency (also can use name, scope or parameters)
 * `bind()` - add type to bind for given bean definition
 * `binds()` - add types array for given bean definition
-* `scope { }` - define a logical group for `scoped` definition 
-* `scoped { }`- provide a bean definition that will exists only in a scope
+* `scope { // scope group }` - define a logical group for `scoped` definition 
+* `scoped { //definition }`- provide a bean definition that will exists only in a scope
 
 === Writing a module
 

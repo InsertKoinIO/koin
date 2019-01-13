@@ -76,9 +76,19 @@ fun Activity.getActivityScope(): ScopeInstance {
     return (this as LifecycleOwner).getOrCreateAndroidScope()
 }
 
+/**
+ * Scope Name for current LifecycleOwner
+ */
+fun LifecycleOwner.getScopeName() = this::class.getFullName()
+
+/**
+ * Scope Id for current LifecycleOwner
+ */
+fun LifecycleOwner.getScopeId() = this.toString()
+
 private fun LifecycleOwner.getOrCreateAndroidScope(): ScopeInstance {
-    val name = this::class.getFullName()
-    val scopeId = this.toString()
+    val name = getScopeName()
+    val scopeId = getScopeId()
     return getKoin().getOrCreateScope(scopeId, name)
 }
 
