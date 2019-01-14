@@ -25,7 +25,7 @@ module {
 }
 ----
 
-A scope gathers scoped definitions for the same logical unit of time:
+A scope gathers scoped definitions as a logical unit of time:
 
 [source,kotlin]
 ----
@@ -36,7 +36,6 @@ module {
     }
 }
 ----
-
 
 === Working with a scope
 
@@ -49,17 +48,15 @@ To resolve a dependency using the scope we can do it like:
 
 [IMPORTANT]
 ====
-A scope definition can't be resolved if associated scope has not been created. Then `get<Presenter>()` return an error.
+A scope definition can't be resolved if associated scope has not been created. Then `get<Presenter>()` would return an error.
 ====
 
-=== Open/Closed scope
-
-As you may have seen, you can declare with or without a scope group:
+As you may have seen, you can declare scoped definitions with or without a scope:
 
 [source,kotlin]
 ----
 module {
-    // open scope scoped definition
+    // open scoped definition
     scoped { Presenter() }
 }
 
@@ -75,21 +72,21 @@ module {
 }
 ----
 
-In the case where a scoped definition is not tied to a scope, you can resolve from an open scope instance:
+In the case where a scoped definition is not tied to a scope, you can resolve from a simple scope instance:
 
 [source,kotlin]
 ----
-// create an open scope "myScope"
+// create scope "myScope"
 val scope = koin.createScope("myScope")
 // resolve presenter instance
 val presenter = scope.get<Presenter>()
 ----
 
-in the case of scoped definition to a scope, we have to declare a closed scope:
+in the case of scoped definition tied to a scope, we have to declare a the scope instance like follow:
 
 [source,kotlin]
 ----
-// create an closed scope instance "myScope" for scope "A_SCOPE_NAME"
+// create scope instance "myScope" for scope "A_SCOPE_NAME"
 val scope = koin.createScope("myScope","A_SCOPE_NAME")
 // resolve presenter instance
 val presenter = scope.get<Presenter>()
@@ -98,8 +95,8 @@ val presenter = scope.get<Presenter>()
 
 [IMPORTANT]
 ====
-You cannot mix open or closed scoped instances. A closed scope instance is dedicated to resolve scoped dependencies from a defined scope group.
-An open scope is not tied to a scope group, and can allow to resolve any scoped definition out of a scope group. 
+You can mix open or tied to scope scoped definitions instances. A scope instance is dedicated to resolve scoped dependencies from a defined scope group.
+Any open scoped definition can be resolved from any scope.
 ====
 
 === Create & retrieve a scope

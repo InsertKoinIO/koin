@@ -129,8 +129,7 @@ class Koin {
         if (beanScopeName != scopeInstanceName) {
             when {
                 scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")
-                beanScopeName == null -> throw BadScopeInstanceException("Can't use definition $definition defined in open scope, with scope instance $scope. Use an open scope instance.")
-                else -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName' with scope instance $scope. Use a scope instance with scope '$beanScopeName'.")
+                beanScopeName != null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName' with scope instance $scope. Use a scope instance with scope '$beanScopeName'.")
             }
         }
     }
