@@ -4,7 +4,7 @@ The `koin-test` project is dedicated to help you making JUnit test with Koin con
 
 === Gradle setup
 
-Add the `koin-android` dependency to your Gradle project:
+Add the `koin-test` dependency to your Gradle project:
 
 [source,gradle,subs="attributes"]
 ----
