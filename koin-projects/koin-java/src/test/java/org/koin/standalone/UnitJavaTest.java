@@ -1,23 +1,34 @@
 package org.koin.standalone;
 
 import kotlin.Lazy;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.koin.core.scope.Scope;
-import org.koin.test.AutoCloseKoinTest;
+import org.koin.core.KoinApplication;
+import org.koin.core.context.GlobalContext;
+import org.koin.core.scope.ScopeInstance;
 
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.koin.java.standalone.KoinJavaComponent.*;
-import static org.koin.java.standalone.KoinJavaStarter.startKoin;
+import static org.koin.core.context.GlobalContext.start;
+import static org.koin.core.context.GlobalContext.stop;
+import static org.koin.java.KoinJavaComponent.*;
 import static org.koin.standalone.UnitJavaStuffKt.koinModule;
 
-public class UnitJavaTest extends AutoCloseKoinTest {
+public class UnitJavaTest {
 
     @Before
     public void before() {
-        startKoin(singletonList(koinModule));
+        KoinApplication koinApp = KoinApplication.create()
+                .logger()
+                .modules(koinModule);
+
+        start(koinApp);
+    }
+
+    @After
+    public void after() {
+        stop();
     }
 
     @Test
@@ -46,10 +57,11 @@ public class UnitJavaTest extends AutoCloseKoinTest {
         assertEquals(lazy_a.getValue(), lazy_b.getValue().getComponentA());
         assertEquals(lazy_a.getValue(), lazy_c.getValue().getA());
 
-        Scope session = getKoin().createScope("session");
+        ScopeInstance session = getKoin().createScope("mySession", "Session");
 
-        assertNotNull(get(ComponentD.class));
+        assertNotNull(get(ComponentD.class, null, session));
 
         session.close();
+        GlobalContext.stop();
     }
 }

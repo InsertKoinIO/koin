@@ -2,10 +2,8 @@
 
 ## What is KOIN?
 
-[![Kotlin](https://img.shields.io/badge/koin-1.0-orange.svg)]()
-[![Kotlin](https://img.shields.io/badge/kotlin-powered-blue.svg)]()
 [![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
+[![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
  
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
@@ -13,9 +11,9 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
+## Official Website 👉 [https://beta.insert-koin.io](https://beta.insert-koin.io)
 
-Check the [getting started](https://insert-koin.io/docs/1.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
+Check the [getting started](https://insert-koin.io/docs/2.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
 
 ### Contact & Latest News 🌐
 
@@ -30,14 +28,14 @@ Any question about Koin usage?
 
 ### Reporting issues 🛠
 
-Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/Ekito/issues)
+Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
 # Setup
 
 ## Current Version
 
 ```gradle
-koin_version = '1.0.2'
+koin_version = '2.0.0-beta-1'
 ```
 
 ## Gradle 
@@ -118,7 +116,7 @@ val myModule = module {
 } 
 ```
 
-* [Learn Koin DSL in 5 min](https://insert-koin.io/docs/1.0/quick-references/koin-dsl/)
+* [Learn Koin DSL in 5 min](https://insert-koin.io/docs/1.0/quick-references/dsl/)
 
 ## Start Koin
 
@@ -129,7 +127,9 @@ In a Kotlin app:
 ```kotlin
 fun main(vararg args : String) { 
   // start Koin!
-  startKoin(listOf(myModule))
+  startKoin {
+    modules(myModule)
+  }
 } 
 ```
 
@@ -140,120 +140,22 @@ class MyApplication : Application() {
   override fun onCreate(){
     super.onCreate()
     // start Koin!
-    startKoin(this, listOf(myModule))
+    startKoin {
+      androidContext(this@MyApplication)
+      modules(myModule)
+    }
   } 
 } 
 ```
 
-* [Write your app with Koin](https://insert-koin.io/docs/1.0/getting-started/introduction/)
-* [Quick References](https://insert-koin.io/docs/1.0/quick-references/koin-core/)
-
-## Inject in Android
-
-Easy to inject into your Android classes:
-
-```kotlin
-// Just inject in a simple Activity 
-class MyActivity() : AppCompatActivity() {
-
-    // lazy inject BusinessService into property
-    val service : BusinessService by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        // or directly get any instance
-        val service : BusinessService = get()
-    }
-}
-```
-
-* [Android Quick References](https://insert-koin.io/docs/1.0/quick-references/koin-android/)
-* [Getting started with Android](https://insert-koin.io/docs/1.0/getting-started/android/)
-
-## Inject by constructor
-
-You're now ready! The Koin DSL help you make injection by constructors. Now just use it:
-
-```kotlin
-// Controller & BusinessService are declared in a module
-class Controller(val service : BusinessService){ 
-  
-  fun hello() {
-     // service is ready to use
-     service.sayHello()
-  }
-} 
-```
-
-Koin can be easily embedded with your favorite Java/Kotlin SDK, and already provide some dedicated support module.
-
-* [Explore the documentation](https://insert-koin.io/docs/1.0/documentation/reference/index.html)
-
-## Ready for ViewModel
-
-Want to use Android Architecture ViewModel? No problem, it's already available and easy to use:
-
-```kotlin
-// Injected by constructor
-class MyViewModel(val repo : MyRepository) : ViewModel(){
-}
-```
-
-```kotlin
-// declare ViewModel using the viewModel keyword
-val myModule : Module = module {
-  viewModel { MyViewModel(get()) }
-  single { MyRepository() }
-}
-```
-
-```kotlin
-// Just get it
-class MyActivity() : AppCompatActivity() {
-
-  // lazy inject MyViewModel
-  val vm : MyViewModel by viewModel()
-}
-```
-
-* [Android ViewModel Documentation](https://insert-koin.io/docs/1.0/documentation/reference/index.html#_architecture_components_with_koin_viewmodel)
-* [Getting started with Android ViewModel](https://insert-koin.io/docs/1.0/getting-started/android-viewmodel/)
-
-## Easy testing
-
-Use koin from a simple JUnit class:
-
-```kotlin
-// Just tag your class with KoinTest to unlick your testing power
-class SimpleTest : KoinTest { 
-  
-  // lazy inject BusinessService into property
-  val service : BusinessService by inject()
-
-  @Test
-  fun myTest() {
-      // You can start your Koin configuration
-      startKoin(myModules)
-
-      // or directly get any instance
-      val service : BusinessService = get()
-
-      // Don't forget to close it at the end
-      closeKoin()
-  }
-} 
-```
-
-And more: check your configuration with a simple unit test, easily create mocks...
-
-* [Test with Koin - Documentation](https://insert-koin.io/docs/1.0/documentation/reference/index.html#_testing_with_koin)
-
-
+* [Write your app with Koin](https://insert-koin.io/docs/2.0/getting-started/introduction/)
+* [Quick References](https://insert-koin.io/docs/2.0/quick-references/dsl/)
 
 # Articles
 
 ### Articles & resouces about Koin
+
+* [Migration from Dagger2 to Koin](https://proandroiddev.com/migrating-from-dagger2-to-koin-3b2b3f5285e9)
 * [From Dagger to Koin, a step by step migration guide](https://medium.com/@giuliani.arnaud/the-thermosiphon-app-from-dagger-to-koin-step-by-step-a09af7f5b5b1)
 * [Koin in Feature Modules Project](https://proandroiddev.com/koin-in-feature-modules-project-6329f069f943)
 * [A brief look at Koin on Android](https://overflow.buffer.com/2018/09/13/a-brief-look-at-koin-on-android/)
@@ -273,10 +175,13 @@ And more: check your configuration with a simple unit test, easily create mocks.
 
 ### Talks & podcasts
 
+* [Simplify your Android development with Koin](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
+* [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
 
 ### Koin developers hub
 
+* [News from the trenches, What's next for Koin?](https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5)
 * [Koin 1.0.0 Unleashed](https://medium.com/koin-developers/koin-1-0-0-unleashed-dcc15b293a3a)
 * [Opening Koin 1.0.0 Beta](https://medium.com/koin-developers/opening-the-koin-1-0-0-beta-version-99cb8be1c308)
 * [On the road to Koin 1.0](https://medium.com/koin-developers/on-the-road-to-koin-1-0-0-a624af55d07)
@@ -286,8 +191,6 @@ And more: check your configuration with a simple unit test, easily create mocks.
 * [Unlock your Android ViewModel power with Koin](https://medium.com/@giuliani.arnaud/unlock-your-android-viewmodel-power-with-koin-23eda8f493be)
 * [koin 0.8.2 Improvements bugfixes and crash fix](https://medium.com/koin-developers/koin-0-8-2-improvements-bugfixes-and-crash-fix-6b6809fc1dd2)
 * [Koin release 0.8.0](https://medium.com/koin-developers/koin-released-in-0-8-0-welcome-to-koin-spark-koin-android-architecture-f6270a7d4808)
-
-
 
 
 ## Contributors

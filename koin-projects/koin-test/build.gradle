@@ -6,18 +6,8 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Koin
     compile project(":koin-core")
-
     compile "junit:junit:$junit_version"
     compile "org.mockito:mockito-inline:$mockito_version"
-
-    // Coroutines
-    testCompile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"// Coroutines
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }
 
 apply from: '../gradle/publish.gradle'

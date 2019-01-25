@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.koin.androidx.scope
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import org.koin.core.Koin
-import org.koin.core.scope.Scope
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.release
+import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.KoinComponent
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Observe a LifecycleOwner
@@ -30,8 +30,8 @@ import org.koin.standalone.release
  *
  * release module instances from signals : ON_STOP, ON_DESTROY
  */
-class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scope) :
-    LifecycleObserver, KoinComponent {
+class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: ScopeInstance) :
+        LifecycleObserver, KoinComponent {
 
     /**
      * Handle ON_DESTROY to release Koin modules
@@ -39,7 +39,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
         if (event == Lifecycle.Event.ON_STOP) {
-            Koin.logger.info("$target received ON_STOP")
+            logger.debug("$target received ON_STOP")
             scope.close()
         }
     }
@@ -50,7 +50,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         if (event == Lifecycle.Event.ON_DESTROY) {
-            Koin.logger.info("$target received ON_DESTROY")
+            logger.debug("$target received ON_DESTROY")
             scope.close()
         }
     }

@@ -5,7 +5,7 @@ import fr.ekito.myweatherapp.data.local.AndroidJsonReader
 import fr.ekito.myweatherapp.data.local.FileDataSource
 import fr.ekito.myweatherapp.data.local.JsonReader
 import org.koin.android.ext.koin.androidApplication
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 /**
  * Local Json Files Datasource

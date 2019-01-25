@@ -20,13 +20,14 @@ Cover the core project features and core sub projects.
 
 include::what-is-koin.adoc[]
 include::dsl.adoc[]
+include::definitions.adoc[]
 include::modules.adoc[]
-include::scope-api.adoc[]
+include::koin-component.adoc[]
 include::start-koin.adoc[]
+include::injection-parameters.adoc[]
+include::scope-api.adoc[]
 include::logging.adoc[]
 include::properties.adoc[]
-include::koin-component.adoc[]
-include::injection-parameters.adoc[]
 include::extending-koin.adoc[]
 include::examples.adoc[]
 

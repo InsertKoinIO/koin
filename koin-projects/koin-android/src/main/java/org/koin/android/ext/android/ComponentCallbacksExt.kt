@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
-import android.content.Context
-import org.koin.android.ext.koin.loadAndroidProperties
-import org.koin.android.ext.koin.with
-import org.koin.android.logger.AndroidLogger
 import org.koin.core.Koin
-import org.koin.core.KoinContext
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.core.scope.Scope
-import org.koin.dsl.module.Module
-import org.koin.log.Logger
-import org.koin.standalone.StandAloneContext
-import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.core.context.GlobalContext
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.scope.ScopeInstance
 
 /**
  * ComponentCallbacks extensions for Android
@@ -37,109 +30,30 @@ import org.koin.standalone.StandAloneContext.loadKoinModules
  */
 
 /**
- * Create a new Koin ModuleDefinition
- * @param androidContext - Android androidContext
- * @param modules - list of AndroidModule
- * @param extraProperties - extra extraProperties
- * @param loadPropertiesFromFile - laod extraProperties from asset/koin.extraProperties
- * @param logger - default Koin logger
- *
- * will be soon deprecated for starKoin() with <androidContext>
- */
-fun ComponentCallbacks.startKoin(
-    androidContext: Context,
-    modules: List<Module>,
-    extraProperties: Map<String, Any> = HashMap(),
-    loadPropertiesFromFile: Boolean = false,
-    logger: Logger = AndroidLogger()
-) {
-    Koin.logger = logger
-
-    val koin: Koin = loadKoinModules(modules).with(androidContext)
-
-    koin.apply {
-        if (loadPropertiesFromFile) {
-            loadAndroidProperties(androidContext)
-        }
-        if (extraProperties.isNotEmpty()) {
-            loadExtraProperties(extraProperties)
-        }
-        createEagerInstances(emptyParameterDefinition())
-    }
-}
-
-/**
  * Get Koin context
  */
-fun ComponentCallbacks.getKoin(): KoinContext = StandAloneContext.getKoin().koinContext
+fun ComponentCallbacks.getKoin(): Koin = GlobalContext.get().koin
 
 /**
- * inject lazily given dependency for Android component
+ * inject lazily given dependency for Android koincomponent
  * @param name - bean name / optional
  * @param scope
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
-    name: String = "",
-    scope: Scope? = null,
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+        name: String = "",
+        scope: ScopeInstance? = null,
+        noinline parameters: ParametersDefinition? = null
 ) = lazy { get<T>(name, scope, parameters) }
 
 /**
- * get given dependency for Android component
+ * get given dependency for Android koincomponent
  * @param name - bean name
  * @param scope
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
-    name: String = "",
-    scope: Scope? = null,
-    noinline parameters: ParameterDefinition = emptyParameterDefinition()
+        name: String = "",
+        scope: ScopeInstance? = null,
+        noinline parameters: ParametersDefinition? = null
 ): T = getKoin().get(name, scope, parameters)
-
-/**
- * lazy inject given property for Android component
- * @param key - key property
- * throw MissingPropertyException if property is not found
- */
-inline fun <reified T> ComponentCallbacks.property(key: String): Lazy<T> =
-    lazy { getKoin().getProperty<T>(key) }
-
-/**
- * lazy inject  given property for Android component
- * give a default value if property is missing
- *
- * @param key - key property
- * @param defaultValue - default value if property is missing
- *
- */
-inline fun <reified T> ComponentCallbacks.property(key: String, defaultValue: T): Lazy<T> =
-    lazy { getKoin().getProperty(key, defaultValue) }
-
-/**
- * Set a property
- *
- * @param key
- * @param value
- */
-fun ComponentCallbacks.setProperty(key: String, value: Any): Unit =
-    getKoin().setProperty(key, value)
-
-/**
- * Release a Module from given Path
- * @param path
- *
- * Deprecated - use the Scope API instead
- */
-@Deprecated("release() deprecated! Please use Scope API.")
-fun ComponentCallbacks.release(path: String): Unit = getKoin().release(path)
-
-
-/**
- * Release a Module from given Path
- * @param path
- *
- * Deprecated - use the Scope API instead
- */
-@Deprecated("release() deprecated! Please use Scope API.")
-fun ComponentCallbacks.releaseContext(path: String): Unit = release(path)

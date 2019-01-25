@@ -3,15 +3,13 @@ package fr.ekito.myweatherapp.integration
 import fr.ekito.myweatherapp.di.testWeatherApp
 import fr.ekito.myweatherapp.domain.repository.DailyForecastRepository
 import junit.framework.Assert
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.inject
-import org.koin.test.KoinTest
+import org.koin.core.context.startKoin
+import org.koin.test.AutoCloseKoinTest
+import org.koin.test.inject
 
-class WeatherRepositoryTest : KoinTest {
+class WeatherRepositoryTest : AutoCloseKoinTest() {
 
     val repository by inject<DailyForecastRepository>()
 
@@ -19,12 +17,9 @@ class WeatherRepositoryTest : KoinTest {
 
     @Before
     fun before() {
-        startKoin(testWeatherApp)
-    }
-
-    @After
-    fun after() {
-        stopKoin()
+        startKoin {
+            modules(testWeatherApp)
+        }
     }
 
     @Test

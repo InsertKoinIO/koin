@@ -2,7 +2,7 @@ package org.koin.example
 
 class ElectricHeater : Heater {
 
-    var heating: Boolean = false
+    private var heating: Boolean = false
 
     override fun on() {
         println("~ ~ ~ heating ~ ~ ~")

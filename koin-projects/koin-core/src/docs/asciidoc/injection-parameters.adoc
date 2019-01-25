@@ -1,7 +1,7 @@
 
 == Injection parameters
 
-In any `single` or `factory` definition, you can use injection parameters: parameters that will be injected and used by your definition:
+In any definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
 === Defining an injection parameter
 

@@ -5,10 +5,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
-import org.junit.Before
 import org.junit.Test
-import org.koin.log.Logger.SLF4JLogger
-import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.AutoCloseKoinTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

@@ -9,8 +9,7 @@ class JavaReader : BaseReader() {
 
     private fun basePath(): String? {
         val classLoader: ClassLoader = JavaReader::class.java.classLoader
-        val path: String? = classLoader.getResource("json/")?.path
-        return path
+        return classLoader.getResource("json/")?.path
     }
 
     override fun getAllFiles(): List<String> {

@@ -10,7 +10,7 @@ import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.util.android.argument
 import fr.ekito.myweatherapp.view.Failed
 import kotlinx.android.synthetic.main.activity_detail.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.viewmodel.ext.viewModel
 import org.koin.core.parameter.parametersOf
 
 /**

@@ -1,15 +1,16 @@
 package fr.ekito.myweatherapp
 
 import android.app.Application
-import android.content.Context
 import fr.ekito.myweatherapp.di.offlineWeatherApp
 import fr.ekito.myweatherapp.di.onlineWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
 import org.junit.After
 import org.junit.Test
-import org.koin.dsl.module.module
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.logger.Level
+import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
-import org.koin.test.checkModules
+import org.koin.test.check.checkModules
 import org.mockito.Mockito.mock
 
 /**
@@ -17,26 +18,31 @@ import org.mockito.Mockito.mock
  */
 class ModuleCheckTest : KoinTest {
 
-    val mockedAndroidContext = module {
-        single { mock(Application::class.java) }
-    }
-
-    @After
-    fun after() {
-    }
+    val mockedApplication = mock(Application::class.java)
 
     @Test
     fun testRemoteConfiguration() {
-        checkModules(onlineWeatherApp)
+        koinApplication {
+            logger(Level.DEBUG)
+            modules(onlineWeatherApp)
+        }.checkModules()
     }
 
     @Test
     fun testLocalConfiguration() {
-        checkModules(offlineWeatherApp + mockedAndroidContext)
+        koinApplication {
+            logger(Level.DEBUG)
+            androidContext(mockedApplication)
+            modules(offlineWeatherApp)
+        }.checkModules()
     }
 
     @Test
     fun testTestConfiguration() {
-        checkModules(testWeatherApp + mockedAndroidContext)
+        koinApplication {
+            logger(Level.DEBUG)
+            androidContext(mockedApplication)
+            modules(testWeatherApp)
+        }.checkModules()
     }
 }

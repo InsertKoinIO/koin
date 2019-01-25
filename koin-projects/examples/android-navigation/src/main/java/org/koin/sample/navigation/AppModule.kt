@@ -1,12 +1,17 @@
 package org.koin.sample.navigation
 
-import org.koin.android.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 
 // uses experimental experimental builder
 val appModule = module {
+    scope<MainActivity> {
+        scoped { MainData() }
+    }
     viewModel { FirstViewModel() }
     viewModel { SecondViewModel() }
-    viewModel { ThirdViewModel() }
+    scope<ThirdView> {
+        scoped { ThirdViewModel() }
+    }
     viewModel { (sharedValue: String) -> FourFiveSharedViewModel(sharedValue) }
 }

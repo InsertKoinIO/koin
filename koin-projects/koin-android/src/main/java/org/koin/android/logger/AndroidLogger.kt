@@ -16,27 +16,29 @@
 package org.koin.android.logger
 
 import android.util.Log
-import org.koin.log.Logger
+import org.koin.core.logger.KOIN_TAG
+import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
+import org.koin.core.logger.MESSAGE
 
 /**
  * Logger that uses Android Log.i
  *
  * @author - Arnaud GIULIANI
  */
-class AndroidLogger(val showDebug: Boolean = false) : Logger {
-    val TAG = "KOIN"
+class AndroidLogger(level: Level = Level.INFO) : Logger(level) {
 
-    override fun debug(msg: String) {
-        if (showDebug) {
-            Log.d(TAG, msg)
+    override fun log(level: Level, msg: MESSAGE) {
+        if (this.level <= level) {
+            LogOnLevel(msg)
         }
     }
 
-    override fun err(msg: String) {
-        Log.e(TAG, "[ERROR] - $msg")
-    }
-
-    override fun info(msg: String) {
-        Log.i(TAG, msg)
+    private fun LogOnLevel(msg: MESSAGE) {
+        when (this.level) {
+            Level.DEBUG -> Log.d(KOIN_TAG, msg)
+            Level.INFO -> Log.i(KOIN_TAG, msg)
+            Level.ERROR -> Log.e(KOIN_TAG, msg)
+        }
     }
 }

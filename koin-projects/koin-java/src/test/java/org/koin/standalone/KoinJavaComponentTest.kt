@@ -18,9 +18,8 @@ package org.koin.standalone
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.koin.core.KoinProperties
-import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 
 /**
@@ -30,14 +29,14 @@ open class KoinJavaComponentTest : AutoCloseKoinTest() {
 
     @Before
     fun before() {
-        startKoin(
-            listOf(module {
+        startKoin {
+            properties(mapOf("PrefixProp" to "_", "SeparatorProp" to "|"))
+            modules(module {
                 single("db") { LocalDbImplementation() as DataSource }
                 single("api") { RemoteApiImplementation() as DataSource }
                 single { (separator: String) -> DataConverter(separator) }
-            }),
-            properties = KoinProperties(extraProperties = mapOf("PrefixProp" to "_", "SeparatorProp" to "|"))
-        )
+            })
+        }
     }
 
     @Test

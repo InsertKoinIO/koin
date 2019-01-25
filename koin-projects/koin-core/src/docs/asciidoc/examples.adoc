@@ -116,8 +116,9 @@ Just need to start Koin with `coffeeMakerModule` module and run the `CoffeeApp` 
 ----
 fun main(vararg args: String) {
 
-    startKoin(listOf(coffeeMakerModule))
-
+    startKoin {
+        modules(coffeeMakerModule)
+    }
     CoffeeApp().run()
 }
 ----

@@ -17,6 +17,5 @@ This document covers the all koin projects.
 
 include::../../../../koin-core/src/docs/asciidoc/index.adoc[]
 include::../../../../koin-android/src/docs/asciidoc/index.adoc[]
-include::../../../../koin-spark/src/docs/asciidoc/index.adoc[]
 include::../../../../koin-ktor/src/docs/asciidoc/index.adoc[]
 

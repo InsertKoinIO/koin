@@ -2,38 +2,86 @@ package org.koin.test.android
 
 import android.arch.lifecycle.Lifecycle
 import org.junit.Assert
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.android.scope.ScopeObserver
-import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.get
+import org.koin.core.context.startKoin
+import org.koin.core.error.ScopeIsClosedException
+import org.koin.core.error.ScopeNotCreatedException
+import org.koin.core.logger.Level
+import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.ext.junit.assertDefinitions
-import org.koin.test.ext.junit.assertRemainingInstanceHolders
-
 
 class AndroidObserverTest : AutoCloseKoinTest() {
-
-    val module = module("module1") {
-        scope("session") { MyService() }
-    }
 
     class MyService
 
     @Test
-    fun should_create_view_model() {
-        startKoin(listOf(module))
+    fun `should close scoped definition on ON_DESTROY`() {
+        startKoin {
+            logger(Level.DEBUG)
+            modules(
+                    module {
+                        scoped { MyService() }
+                    }
+            )
+        }
 
         val session = getKoin().createScope("session")
-        val service = get<MyService>()
+        val service = session.get<MyService>()
         Assert.assertNotNull(service)
 
         val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", session)
-
-        assertDefinitions(1)
-        assertRemainingInstanceHolders(1)
-
         observer.onDestroy()
-        assertRemainingInstanceHolders(0)
+
+        try {
+            session.get<MyService>()
+            fail("no resolution of closed scope dependency")
+        } catch (e: ScopeIsClosedException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `should not close scoped definition`() {
+        startKoin {
+            logger(Level.DEBUG)
+            modules(org.koin.dsl.module {
+                scoped { MyService() }
+            })
+        }
+
+        val session = getKoin().createScope("session")
+        val service = session.get<MyService>()
+        Assert.assertNotNull(service)
+
+        val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", session)
+        observer.onStop()
+
+        session.get<MyService>()
+    }
+
+    @Test
+    fun `should close scoped definition on ON_STOP`() {
+        startKoin {
+            logger(Level.DEBUG)
+            modules(org.koin.dsl.module {
+                scoped { MyService() }
+            })
+        }
+
+        val session = getKoin().createScope("session")
+        val service = session.get<MyService>()
+        Assert.assertNotNull(service)
+
+        val observer = ScopeObserver(Lifecycle.Event.ON_STOP, "testClass", session)
+        observer.onStop()
+
+        try {
+            session.get<MyService>()
+            fail("no resolution of closed scope dependency")
+        } catch (e: ScopeIsClosedException) {
+            e.printStackTrace()
+        }
     }
 }

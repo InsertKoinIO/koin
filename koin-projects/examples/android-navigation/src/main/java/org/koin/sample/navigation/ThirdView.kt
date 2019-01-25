@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.view_third.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.scope.bindScope
+import org.koin.android.scope.getFragmentScope
 
 
 /**
@@ -17,11 +18,11 @@ import org.koin.android.viewmodel.ext.android.viewModel
  */
 class ThirdView : Fragment() {
 
-    val vm : ThirdViewModel by viewModel()
+    val vm: ThirdViewModel by getFragmentScope().inject()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.view_third, container, false)
@@ -29,12 +30,13 @@ class ThirdView : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindScope(getFragmentScope())
 
         activity?.title = "Third"
 
         text3.setOnClickListener {
             Navigation.findNavController(it)
-                .navigate(R.id.action_thirdView_to_fourFiveView)
+                    .navigate(R.id.action_thirdView_to_fourFiveView)
         }
 
         vm.sayHello()

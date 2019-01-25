@@ -15,225 +15,217 @@
  */
 package org.koin.core
 
-import org.koin.core.instance.ModuleCallBack
-import org.koin.core.parameter.ParameterDefinition
-import org.koin.core.parameter.emptyParameterDefinition
-import org.koin.core.scope.ScopeCallback
+import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.DefaultContext
+import org.koin.core.error.BadScopeInstanceException
+import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.instance.InstanceContext
+import org.koin.core.logger.Level
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.registry.BeanRegistry
+import org.koin.core.registry.PropertyRegistry
+import org.koin.core.registry.ScopeRegistry
+import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.getScopeName
 import org.koin.core.time.measureDuration
-import org.koin.dsl.context.ModuleDefinition
-import org.koin.dsl.definition.BeanDefinition
-import org.koin.dsl.definition.Definition
-import org.koin.dsl.definition.Kind
-import org.koin.dsl.module.Module
-import org.koin.dsl.path.Path
-import org.koin.log.EmptyLogger
-import org.koin.log.Logger
-import java.util.*
+import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
-
 /**
- * Koin Context Builder API
+ * Koin
  *
- * @author - Arnaud GIULIANI
- * @author - Laurent BARESSE
+ * Gather main features to use on Koin context
+ *
+ * @author Arnaud Giuliani
  */
-class Koin private constructor(val koinContext: KoinContext) {
-
-    val propertyResolver = koinContext.propertyResolver
-    val beanRegistry = koinContext.instanceRegistry.beanRegistry
-    val pathRegistry = koinContext.instanceRegistry.pathRegistry
-    val instanceFactory = koinContext.instanceRegistry.instanceFactory
-
-    /**
-     * Load Koin properties - whether Koin is already started or not
-     * Will look at koin.properties file
-     *
-     * @param useEnvironmentProperties - environment properties
-     * @param useKoinPropertiesFile - koin.properties file
-     * @param extraProperties - additional properties
-     */
-    fun loadProperties(koinProps: KoinProperties): Koin = synchronized(this) {
-        if (koinProps.useKoinPropertiesFile) {
-            Koin.logger.info("[properties] load koin.properties")
-            loadKoinProperties()
-        }
-
-        if (koinProps.extraProperties.isNotEmpty()) {
-            Koin.logger.info("[properties] load extras properties : ${koinProps.extraProperties.size}")
-            loadExtraProperties(koinProps.extraProperties)
-        }
-
-        if (koinProps.useEnvironmentProperties) {
-            Koin.logger.info("[properties] load environment properties")
-            loadEnvironmentProperties()
-        }
-        return this
-    }
-
+class Koin {
+    val beanRegistry = BeanRegistry()
+    val scopeRegistry = ScopeRegistry()
+    val propertyRegistry = PropertyRegistry()
+    val defaultContext = DefaultContext(this)
 
     /**
-     * load extra properties
+     * Lazy inject a Koin instance
+     * @param name
+     * @param scope
+     * @param parameters
      */
-    fun loadExtraProperties(props: Map<String, Any>): Koin {
-        if (props.isNotEmpty()) {
-            propertyResolver.addAll(props)
-        }
-        return this
-    }
+    inline fun <reified T> inject(
+            name: String? = null,
+            scope: ScopeInstance? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): Lazy<T> =
+            lazy { get<T>(name, scope, parameters) }
 
-
-    private fun loadKoinProperties(koinFile: String = "/koin.properties"): Koin {
-        val content = Koin::class.java.getResource(koinFile)?.readText()
-        content?.let {
-            val koinProperties = Properties()
-            koinProperties.load(content.byteInputStream())
-            val nb = propertyResolver.import(koinProperties)
-            logger.debug("[properties] loaded $nb properties from '$koinFile' file")
-        }
-        return this
-    }
-
-
-    private fun loadEnvironmentProperties(): Koin {
-        val n1 = propertyResolver.import(System.getProperties())
-        val n2 = propertyResolver.import(System.getenv().toProperties())
-        logger.debug("[properties] loaded $n1 properties from properties")
-        logger.debug("[properties] loaded $n2 properties from env properties")
-        return this
+    /**
+     * Get a Koin instance
+     * @param name
+     * @param scope
+     * @param parameters
+     */
+    inline fun <reified T> get(
+            name: String? = null,
+            scope: ScopeInstance? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): T {
+        return get(T::class, name, scope, parameters)
     }
 
     /**
-     * load given list of module instances into current StandAlone koin context
+     * Get a Koin instance
+     * @param clazz
+     * @param name
+     * @param scope
+     * @param parameters
      */
-    fun loadModules(modules: Collection<Module>): Koin {
-        val duration = measureDuration {
-            modules.forEach { module ->
-                registerDefinitions(module(koinContext))
+    fun <T> get(
+            clazz: KClass<*>,
+            name: String?,
+            scope: ScopeInstance?,
+            parameters: ParametersDefinition?
+    ): T = synchronized(this) {
+        return if (logger.level == Level.DEBUG) {
+            logger.debug("+- get '${clazz.getFullName()}'")
+            val (instance: T, duration: Double) = measureDuration {
+                resolve<T>(name, clazz, scope, parameters)
             }
-            logger.info("[modules] loaded ${beanRegistry.definitions.size} definitions")
-        }
-        logger.info("[modules] loaded in $duration ms")
-        return this
-    }
-
-    /**
-     * Register moduleDefinition definitions & subModules
-     */
-    private fun registerDefinitions(
-        moduleDefinition: ModuleDefinition,
-        parentModuleDefinition: ModuleDefinition? = null,
-        path: Path = Path.root()
-    ) {
-        val modulePath: Path =
-            pathRegistry.makePath(moduleDefinition.path, parentModuleDefinition?.path)
-        val consolidatedPath =
-            if (path != Path.root()) modulePath.copy(parent = path) else modulePath
-
-        pathRegistry.savePath(consolidatedPath)
-
-        // Add definitions & propagate eager/override
-        moduleDefinition.definitions.forEach { definition ->
-            val eager =
-                if (moduleDefinition.createOnStart) moduleDefinition.createOnStart else definition.isEager
-            val override =
-                if (moduleDefinition.override) moduleDefinition.override else definition.allowOverride
-            val name = if (definition.name.isEmpty()) {
-                val pathString =
-                    if (consolidatedPath == Path.Companion.root()) "" else "$consolidatedPath."
-                "$pathString${definition.primaryTypeName}"
-            } else definition.name
-            val def = definition.copy(
-                name = name,
-                isEager = eager,
-                allowOverride = override,
-                path = consolidatedPath
-            )
-            instanceFactory.delete(def)
-            beanRegistry.declare(def)
-        }
-
-        // Check sub contexts
-        moduleDefinition.subModules.forEach { subModule ->
-            registerDefinitions(
-                subModule,
-                moduleDefinition,
-                consolidatedPath
-            )
+            logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+            return instance
+        } else {
+            resolve(name, clazz, scope, parameters)
         }
     }
 
-    /**
-     * Create instances for definitions tagged as `eager`
-     *
-     * @param defaultParameters - default injection parameters
-     */
-    fun createEagerInstances(defaultParameters: ParameterDefinition = emptyParameterDefinition()) {
-        koinContext.instanceRegistry.createEagerInstances(defaultParameters)
+    private fun <T> resolve(
+            name: String?,
+            clazz: KClass<*>,
+            scope: ScopeInstance?,
+            parameters: ParametersDefinition?
+    ): T {
+        val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
+        val instanceContext = InstanceContext(this, targetScopeInstance, parameters)
+        return definition.resolveInstance(instanceContext)
+    }
+
+    private fun prepareResolution(
+            name: String?,
+            clazz: KClass<*>,
+            scope: ScopeInstance?
+    ): Pair<BeanDefinition<*>, ScopeInstance?> {
+        val definition = beanRegistry.findDefinition(name, clazz)
+                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+
+        if (definition.isScoped() && scope != null) {
+            checkScopeResolution(definition, scope)
+        }
+
+        return Pair(definition, scope)
+    }
+
+    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: ScopeInstance) {
+        val scopeInstanceName = scope.definition?.scopeName
+        val beanScopeName = definition.getScopeName()
+        if (beanScopeName != scopeInstanceName) {
+            when {
+                scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")
+                beanScopeName != null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName' with scope instance $scope. Use a scope instance with scope '$beanScopeName'.")
+            }
+        }
+    }
+
+    internal fun createEagerInstances() {
+        val definitions = beanRegistry.findAllCreatedAtStartDefinition()
+        if (definitions.isNotEmpty()) {
+            definitions.forEach {
+                it.resolveInstance(InstanceContext(koin = this))
+            }
+        }
     }
 
     /**
-     * Register ScopeCallback
+     * Create a Scope instance
+     * @param scopeId
+     * @param scopeName
      */
-    fun registerScopeCallback(callback: ScopeCallback) {
-        koinContext.scopeRegistry.register(callback)
+    fun createScope(scopeId: String, scopeName: String? = null): ScopeInstance {
+        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
+        createdScopeInstance.register(this)
+        return createdScopeInstance
     }
 
     /**
-     * Register ModuleCallBack
+     * Create a Scope instance
+     * @param scopeId
+     * @param scopeName
      */
-    fun registerModuleCallBack(callback: ModuleCallBack) {
-        koinContext.instanceRegistry.instanceFactory.register(callback)
+    inline fun <reified T> createScopeWithType(scopeId: String): ScopeInstance {
+        val scopeName = T::class.getFullName()
+        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
+        createdScopeInstance.register(this)
+        return createdScopeInstance
     }
 
     /**
-     * Declare a component on the fly
+     * Get or Create a Scope instance
+     * @param scopeId
+     * @param scopeName
      */
-    fun <T> declare(definition: BeanDefinition<T>) {
-        beanRegistry.declare(definition)
+    fun getOrCreateScope(scopeId: String, scopeName: String? = null): ScopeInstance {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
     }
 
     /**
-     * Declare a component on the fly
+     * Get or Create a Scope instance from type name
+     * @param scopeId
      */
-    inline fun <reified T : Any> declare(
-        noinline instance: Definition<T>,
-        name: String = "",
-        kind: Kind = Kind.Single,
-        overrideExisting: Boolean = false,
-        binds: List<KClass<*>> = emptyList()
-    ) {
-        val definition = BeanDefinition(
-            name = name,
-            kind = kind,
-            allowOverride = overrideExisting,
-            primaryType = T::class,
-            definition = instance
-        )
-        binds.forEach { definition.bind(it) }
-
-        declare(
-            definition
-        )
+    inline fun <reified T> getOrCreateScopeWithType(scopeId: String): ScopeInstance {
+        val scopeName = T::class.getFullName()
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
     }
 
     /**
-     * Close Koin instance
+     * get a scope instance
+     * @param scopeId
+     */
+    fun getScope(scopeId: String): ScopeInstance {
+        val scope = scopeRegistry.getScopeInstance(scopeId)
+        if (!scope.isRegistered()) {
+            error("ScopeInstance $scopeId is not registered")
+        }
+        return scope
+    }
+
+    /**
+     * Delete a scope instance
+     */
+    fun deleteScope(scopeId: String) {
+        scopeRegistry.deleteScopeInstance(scopeId)
+    }
+
+    /**
+     * Retrieve a property
+     * @param key
+     */
+    fun <T> getProperty(key: String): T? {
+        return propertyRegistry.getProperty<T>(key)
+    }
+
+    /**
+     * Save a property
+     * @param key
+     * @param value
+     */
+    fun <T : Any> setProperty(key: String, value: T) {
+        propertyRegistry.saveProperty(key, value)
+    }
+
+    /**
+     * Close all resources from context
      */
     fun close() {
-        logger.info("[Koin] close context")
-        koinContext.close()
-    }
-
-    companion object {
-        /**
-         * Koin Logger
-         */
-        var logger: Logger = EmptyLogger()
-
-        /**
-         * Create Koin instance
-         */
-        fun create(koinContext: KoinContext = KoinContext.create()) = Koin(koinContext)
+        scopeRegistry.close()
+        beanRegistry.close()
+        propertyRegistry.close()
     }
 }

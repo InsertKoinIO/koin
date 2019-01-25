@@ -9,11 +9,12 @@ import java.io.InputStreamReader
  */
 class AndroidJsonReader(val application: Application) : BaseReader() {
 
-    override fun getAllFiles(): List<String> = application.assets.list("json").toList()
+    override fun getAllFiles(): List<String> =
+        application.assets?.list("json")?.toList() ?: emptyList()
 
     override fun readJsonFile(jsonFile: String): String {
         val buf = StringBuilder()
-        val json = application.assets.open("json/" + jsonFile)
+        val json = application.assets.open("json/$jsonFile")
         BufferedReader(InputStreamReader(json, "UTF-8"))
             .use {
                 val list = it.lineSequence().toList()
