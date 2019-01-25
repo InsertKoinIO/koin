@@ -2,6 +2,7 @@ package org.koin.experimental.builder
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.DefinitionContext
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.time.measureDuration
 import java.lang.reflect.Constructor
@@ -14,22 +15,25 @@ import kotlin.reflect.KClass
 inline fun <reified T : Any> Module.create(context: DefinitionContext): T {
     val kClass = T::class
     val kclassAsString = kClass.toString()
-    logger.debug("| autocreate '$kClass'")
 
     val (ctor, ctorDuration) = measureDuration {
         kClass.getFirstJavaConstructor()
     }
-    logger.debug("| got ctor '$kclassAsString' in '$ctorDuration'")
 
     val (args, argsDuration) = measureDuration {
         getArguments(ctor, context)
     }
-    logger.debug("| got args '$kclassAsString' in '$argsDuration'")
 
     val (instance, instanceDuration) = measureDuration {
         ctor.makeInstance<T>(args)
     }
-    logger.debug("| got instance '$kclassAsString' in '$instanceDuration'")
+
+    if (logger.isAt(Level.DEBUG)) {
+        logger.debug("| autocreate '$kClass'")
+        logger.debug("| got ctor '$kclassAsString' in '$ctorDuration'")
+        logger.debug("| got args '$kclassAsString' in '$argsDuration'")
+        logger.debug("| got instance '$kclassAsString' in '$instanceDuration'")
+    }
 
     return instance
 }

@@ -18,6 +18,7 @@ package org.koin.core.registry
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.ext.getFullName
 import java.util.concurrent.ConcurrentHashMap
@@ -99,7 +100,9 @@ class BeanRegistry {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
-            logger.info("bind type:'${type.getFullName()}' ~ $definition")
+            if (logger.isAt(Level.INFO)) {
+                logger.info("bind type:'${type.getFullName()}' ~ $definition")
+            }
         }
     }
 
@@ -109,7 +112,9 @@ class BeanRegistry {
                 throw DefinitionOverrideException("Already existing definition or try to override an existing one with scopeName '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
-                logger.info("bind scopeName:'${definition.name}' ~ $definition")
+                if (logger.isAt(Level.INFO)) {
+                    logger.info("bind scopeName:'${definition.name}' ~ $definition")
+                }
             }
         }
     }

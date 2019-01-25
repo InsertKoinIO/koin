@@ -22,6 +22,7 @@ import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.Instance
 import org.koin.core.instance.InstanceContext
+import org.koin.core.logger.Level
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito.mock
 
@@ -55,7 +56,9 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
                 else -> logger.debug("sandbox resolution continue on caught error: $e")
             }
         }
-        logger.debug("| create sandbox for $beanDefinition")
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("| create sandbox for $beanDefinition")
+        }
         return mock(beanDefinition.primaryType.java) as T
     }
 

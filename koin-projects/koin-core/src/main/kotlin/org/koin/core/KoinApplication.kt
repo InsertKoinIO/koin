@@ -49,7 +49,9 @@ class KoinApplication private constructor() {
             koin.beanRegistry.loadModules(modules)
             koin.scopeRegistry.loadScopes(modules)
         }
-        logger.info("modules loaded in $duration ms")
+        if (logger.isAt(Level.INFO)) {
+            logger.info("modules loaded in $duration ms")
+        }
         return this
     }
 
@@ -109,7 +111,9 @@ class KoinApplication private constructor() {
      */
     fun close() = synchronized(this) {
         koin.close()
-        logger.info("stopped")
+        if (logger.isAt(Level.INFO)) {
+            logger.info("stopped")
+        }
     }
 
     companion object {

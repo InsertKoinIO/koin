@@ -35,7 +35,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 ## Current Version
 
 ```gradle
-koin_version = '2.0.0-alpha-6'
+koin_version = '2.0.0-beta-1'
 ```
 
 ## Gradle 
