@@ -36,7 +36,7 @@ abstract class Logger(var level: Level = Level.INFO) {
         log(Level.ERROR, msg)
     }
 
-    fun isAt(lvl: Level): Boolean = this.level >= lvl
+    fun isAt(lvl: Level): Boolean = this.level <= lvl
 }
 
 const val KOIN_TAG = "[Koin]"
