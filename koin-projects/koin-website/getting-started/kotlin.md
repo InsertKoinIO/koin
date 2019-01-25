@@ -128,7 +128,12 @@ Just start our app from a `main` function:
 {% highlight kotlin %}
 fun main(vararg args: String) {
 
-    startKoin(listOf(helloModule))
+    startKoin {
+        // use Koin logger
+        logger()
+        // declare modules
+        modules(helloModule)
+    }
 
     HelloApplication().sayHello()
 }

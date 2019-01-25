@@ -74,11 +74,13 @@ val appModule = module {
     single<HelloRepository> { HelloRepositoryImpl() }
 
     // Scoped MyScopePresenter instance
-    scope("session") { MyScopePresenter(get())}
+    scope<MyScopeActivity> { 
+        scoped { MyScopePresenter(get()) }
+    }
 }
 {% endhighlight %}
 
-*Note:* we declare our MyScopePresenter class as a `scope` definition. This will allows us to bind a MyScopePresenter with a scope, and drop this instance with the scope closing.
+*Note:* we declare our MyScopePresenter class as a `scoped` definition for `MyScopeActivity`. This will allows us to bind a MyScopePresenter with a scope, and drop this instance with the scope closing.
 
 ## Start Koin
 
@@ -89,7 +91,10 @@ class MyApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         // Start Koin
-        startKoin(this, listOf(appModule))
+        startKoin{
+            logger()
+            modules(appModule)
+        }
     }
 }
 {% endhighlight %}
@@ -101,15 +106,15 @@ The `MyScopePresenter` component will be created with `HelloRepository` instance
 {% highlight kotlin %}
 class MyScopeActivity : AppCompatActivity() {
 
-    // inject MyScopePresenter from "session" scope 
-    val scopePresenter: MyScopePresenter by inject()
+    // inject MyScopePresenter from current scope 
+    val scopePresenter: MyScopePresenter by getActivityScope().inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
         
         // bind "session" scope to component lifecycle
-        bindScope(getOrCreateScope("session"))
+        bindScope(getActivityScope())
 
         //...
     }
@@ -118,7 +123,7 @@ class MyScopeActivity : AppCompatActivity() {
 {% endhighlight %}
 
 <div class="alert alert-primary" role="alert">
-    The <b>getOrCreateScope(...)</b> allows us to create or retrieve scope
+    The <b>getActivityScope()(...)</b> allows us to retrieve/create a Koin scope for given activity
 </div>
 
 <div class="alert alert-info" role="alert">

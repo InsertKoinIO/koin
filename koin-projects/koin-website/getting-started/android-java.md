@@ -99,7 +99,10 @@ class MyApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         // Start Koin
-        startKoin(this, listOf(appModule))
+        startKoin{
+            logger()
+            modules(appModule)
+        }
     }
 }
 {% endhighlight %}

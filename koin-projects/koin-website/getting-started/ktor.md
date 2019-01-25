@@ -128,12 +128,35 @@ val helloAppModule = module {
 
 ## Start and Inject
 
-Finally, let's start Koin and Ktor:
+Finally, let's start Koin from Ktor:
+
+{% highlight kotlin %}
+fun Application.main() {
+    // Install Ktor features
+    install(DefaultHeaders)
+    install(CallLogging)
+    // Declare Koin
+    installKoin {
+        SLF4JLogger()
+        modules(helloAppModule)
+    }
+
+    // Lazy inject HelloService
+    val service: HelloService by inject()
+
+    // Routing section
+    routing {
+        get("/hello") {
+            call.respondText(service.sayHello())
+        }
+    }
+}
+{% endhighlight %}
+
+Let's start Ktor:
 
 {% highlight kotlin %}
 fun main(args: Array<String>) {
-    // Start Koin
-    startKoin(listOf(helloAppModule))
     // Start Ktor
     embeddedServer(Netty, commandLineEnvironment(args)).start()
 }

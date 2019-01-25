@@ -1,12 +1,10 @@
 ---
 layout: docs
 title: Setup Koin
-description: All you need to setup your app with Gradle
+description: Pick your Koin dependency!
 group: setup
 toc: true
 ---
-
-Choose your Koin dependency
 
 ### JCenter Repository
 
@@ -50,14 +48,6 @@ compile "org.koin:koin-androidx-scope:{{ site.current_version }}"
 // Koin AndroidX ViewModel feature
 compile "org.koin:koin-androidx-viewmodel:{{ site.current_version }}"
 {% endhighlight %}
-
-### Koin for SparkJava
-
-{% highlight gradle %}
-// Koin for Spark Kotlin
-compile "org.koin:koin-spark:{{ site.current_version }}"
-{% endhighlight %}
-
 
 ### Koin for Ktor
 

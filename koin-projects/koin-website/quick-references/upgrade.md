@@ -1,140 +1,122 @@
 ---
 layout: docs
-title: Upgrading from Koin 0.9.x
+title: Upgrading to last version
 description: How to upgrade your code from older version
 group: quick-references
 toc: true
 ---
 
-## Changes in DSL
+## From Koin 1.0.x
 
-The following functions & keywords have been renamed:
+### New way to start Koin
 
-* `applicationContext` -> `module` (declaring a module)
-* `context` -> `module` (declaring a submodule)
-* `bean` -> `single` (unique instance definition)
-* `controller` need your class to be tagged as `SparkController`
+Koin 2.0 propose a new way of starting your Koin application. Instead of having multiple `startKoin` function, related to each extended runtime, we now only have one `startKoin` fucntion and several ways to extend it for your platform:
 
-Some core functions that have been renamed:
-- `releaseContext` -> `release`
-- `closeKoin` -> `stopKoin`
+In a classical Kotlin file:
 
-## Explicit overriding
-
-Now you have to specify that a definition or a module will override any existing definition of the same type: [overriding definition or module]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_overriding_a_definition_or_a_module)
+### Starting Koin
 
 {% highlight kotlin %}
-val myModuleA = module {
+fun main(vararg args: String) {
 
-    single { ServiceImp() as Service }
-}
+    startKoin {
+        // enable Printlogger with default Level.INFO
+        // can have Level & implementation
+        // equivalent to logger(Level.INFO, PrintLogger())
+        logger() 
 
-val myModuleB = module {
+        // declare properties from given map
+        properties( /* properties map */)
 
-    // override for this definition
-    single(override=true) { TestServiceImp() as Service }
-}
+        // load properties from koin.properties file or given file name
+        fileProperties()
 
-// Allow override for all definitions from module
-val myModuleB = module(override=true) {
+        // load properties from environment
+        environmentProperties()
 
-    single { TestServiceImp() as Service }
-}
-{% endhighlight %}
-
-## Implicit naming
-
-If you don"t give a name to your definition, Koin will give one, dependeing on class name & path:
-
-{% highlight kotlin %}
-module {
-    module("B") {
-        single { ComponentA() }
-        single { ComponentB(get()) }
-    }
-
-    module("C") {
-        single { ComponentA() }
-        single { ComponentC(get()) }
+        // list all used modules
+        // as list or vararg
+        modules(moduleList) 
     }
 }
 {% endhighlight %}
 
-you can resolve ComponentA with `get(name="B.ComponentA")` or `get(name="C.ComponentA")`.
+### Starting Koin for Android
 
-
-## From module release to Scope APi 
-
-Previous Scopeing API was very confusing. it was mixing namespace modules with scoping capability. In Koin 1.0 we have clearly seperated the 2 aspects: module for namepsace & scope for limited lifetime instances. 
-
-In `0.9.x`, moduels also served as pseudo scope support. 
+In any Android class:
 
 {% highlight kotlin %}
-module {
-    module("B") {
-        single { ComponentA() }
-        single { ComponentB(get()) }
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            // use AndroidLogger as Koin Logger - default Level.INFO
+            androidLogger()
+
+            // use the Android context given there
+            androidContext(this@MainApplication)
+
+            // load properties from assets/koin.properties file
+            androidFileProperties()
+
+            // module list
+            modules(offlineWeatherApp)
+        }
     }
 }
 {% endhighlight %}
 
-Then you could do `release("B")` to release instances from module "B".
+<div class="alert alert-primary" role="alert">
+    if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
+</div>
+
+### Starting Koin for Ktor
+
+Starting Koin from your `Application` extension function:
 
 {% highlight kotlin %}
-val a : ComponentA = get()
-val b : ComponentB = get()
-release("B") // drop A & B instances
-{% endhighlight %}
+fun Application.main() {
+    // Install Ktor features
+    installKoin {
+        // Use SLF4J Koin Logger at Level.INFO
+        slf4jLogger()
 
-In Koin `1.0`, use the `scope` definitions to define components that will be bound to a scope (Others that don"t have to be dropped, can stay with single).
-
-{% highlight kotlin %}
-module {
-    module("B") {
-        scope("session") { ComponentA() }
-        scope("session") { ComponentB(get()) }
+        // declare used modules
+        modules(helloAppModule)
     }
 }
 {% endhighlight %}
 
-Use the Scope APi with a scope to handle your scoped instances:
+### Logging
+
+At start, Koin log what definition is bound by name or type:
+
+```
+[INFO] [Koin] bind type:'org.koin.example.CoffeeMaker' ~ [type:Single,class:'org.koin.example.CoffeeMaker']
+[INFO] [Koin] bind type:'org.koin.example.Pump' ~ [type:Single,class:'org.koin.example.Pump']
+[INFO] [Koin] bind type:'org.koin.example.Heater' ~ [type:Single,class:'org.koin.example.Heater']
+```
+
+### Import naming changes for DSL
+
+Koin Module DSL hasn't change much (appart the Scope API that will need entire rework), most changes can then fixed with imports. Take a note that there is no more inner module or visibility rules for this. Module visibility is simple. Those are just list of definitions, visibile everywhere.
 
 {% highlight kotlin %}
-val session = getKoin().createScope("session")
-val a : ComponentA = get()
-val b : ComponentB = get()
-session.close() // drop A & B instances
+org.koin.android.viewmodel.ext.koin.viewModel -> org.koin.android.viewmodel.dsl.viewModel
+org.koin.dsl.module.module -> org.koin.dsl.module
+org.koin.android.viewmodel.ext.android.viewModel -> org.koin.android.viewmodel.ext.viewModel
+org.koin.android.viewmodel.ext.android.sharedViewModel -> org.koin.android.viewmodel.ext.sharedViewModel
 {% endhighlight %}
 
-## Injection Parameters 
+<div class="alert alert-primary" role="alert">
+   Clean and reimport Koin API should fix most of your problem
+</div>
 
-Injection parameters have been reviewed, check the following documentation: [injection parameters]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_injection_parameters) 
 
-{% highlight kotlin %}
-val myModule = module {
-    single{ view : View -> Presenter(view) }
-}
+### Updated API
 
-class MyComponent : View, KoinComponent {
-
-    // inject this as View value
-    val presenter : Presenter by inject { parametersOf(this) }
-}
-{% endhighlight %}
-
-## Moving from koin-android-architecture & koin-androidx
-
-For a better readability of features projects, we have decided to deprecate `koin-android-architecture` & `koin-androidx` gradle artifacts. In Koin 1.0, you won't find those projects but rather those new ones: `koin-android-viewmodel` & `koin-androidx-viewmodel`.
-
-Gradle projects have been moved like follow:
-- `koin-android-architecture` -> `koin-android-viewmodel`
-- `koin-androidx` -> `koin-androidx-viewmodel`
-
-You have to fix your imports on your source code with new packages:
-
-{% highlight kotlin %}
-// koin-android-viewmodel
-org.koin.android.viewmodel.ext.android.*
-// koin-androidx-viewmodel
-org.koin.androidx.viewmodel.ext.android.*
-{% endhighlight %}
+* Scope API
+* Koin testing with koin-test
+* Scope API for Android

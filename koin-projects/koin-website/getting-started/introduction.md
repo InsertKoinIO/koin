@@ -96,20 +96,6 @@ toc: true
           </div>
     </div>
   </div>
-
-  <div class="col-12 col-md-4 p-4 p-md-5">
-    <div class="card">
-        <a href="{{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/spark/">
-          <img src="{{ site.baseurl }}/assets/images/spark.png" width="156" style="margin:50px 0px">
-          <div class="card-body">
-              <p class="card-text">Spark web application</p>
-          </div>
-        </a>
-        <div class="card-body">
-              <p class="card-text">Pushing your web application to the next level</p>
-          </div>
-    </div>
-  </div>
   <div class="col-12 col-md-4 p-4 p-md-5">
     <div class="card">
         <a href="{{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/ktor/">

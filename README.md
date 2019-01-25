@@ -11,9 +11,9 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## Official Website 👉 [https://beta.insert-koin.io](https://beta.insert-koin.io)
+## Official Website 👉 1.0 [https://insert-koin.io](https://insert-koin.io) - 2.0 [https://beta.insert-koin.io](https://beta.insert-koin.io) - 
 
-Check the [getting started](https://insert-koin.io/docs/2.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
+Check the [getting started](https://beta.insert-koin.io/docs/2.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
 
 ### Contact & Latest News 🌐
 
@@ -116,8 +116,6 @@ val myModule = module {
 } 
 ```
 
-* [Learn Koin DSL in 5 min](https://insert-koin.io/docs/1.0/quick-references/dsl/)
-
 ## Start Koin
 
 Use the startKoin() function to start Koin in your application.
@@ -148,8 +146,8 @@ class MyApplication : Application() {
 } 
 ```
 
-* [Write your app with Koin](https://insert-koin.io/docs/2.0/getting-started/introduction/)
-* [Quick References](https://insert-koin.io/docs/2.0/quick-references/dsl/)
+* [Write your app with Koin](https://beta.insert-koin.io/docs/2.0/getting-started/introduction/)
+* [Quick References](https://beta.insert-koin.io/docs/2.0/quick-references/starting-koin/)
 
 # Articles
 

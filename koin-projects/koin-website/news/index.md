@@ -8,7 +8,8 @@ redirect_from: "/updates/"
 
 ## Last updates
 
-* __[Koin 1.0.0 unleashed](https://medium.com/koin-developers/koin-1-0-0-unleashed-2d9d3ffff1e3)__
+* [News from the trenches, What's next for Koin?](https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5)
+* [Koin 1.0.0 Unleashed](https://medium.com/koin-developers/koin-1-0-0-unleashed-dcc15b293a3a)
 * [Opening Koin 1.0.0 Beta](https://medium.com/koin-developers/opening-the-koin-1-0-0-beta-version-99cb8be1c308)
 * [On the road to Koin 1.0](https://medium.com/koin-developers/on-the-road-to-koin-1-0-0-a624af55d07)
 * [Koin 0.9.2 — Maintenance fixes, new branding, roadmap for 1.0.0 & some other nice announces](https://medium.com/koin-developers/koin-0-9-2-maintenance-fixes-new-branding-roadmap-for-1-0-0-some-other-nice-announces-94f14648e4ad)
@@ -20,10 +21,15 @@ redirect_from: "/updates/"
 
 ## Talks & Podcasts
 
+* [Simplify your Android development with Koin](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
+* [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
 
 ## They talk about Koin
 
+* [Migration from Dagger2 to Koin](https://proandroiddev.com/migrating-from-dagger2-to-koin-3b2b3f5285e9)
+* [From Dagger to Koin, a step by step migration guide](https://medium.com/@giuliani.arnaud/the-thermosiphon-app-from-dagger-to-koin-step-by-step-a09af7f5b5b1)
+* [Koin in Feature Modules Project](https://proandroiddev.com/koin-in-feature-modules-project-6329f069f943)
 * [A brief look at Koin on Android](https://overflow.buffer.com/2018/09/13/a-brief-look-at-koin-on-android/)
 * [Bye bye Dagger](https://medium.com/@charbgr/bye-bye-dagger-1494118dcd41)
 * [Testing with Koin](https://proandroiddev.com/testing-with-koin-ade8a46eb4d)

@@ -62,7 +62,9 @@ class HelloAppTest : KoinTest() {
 
     @Before
     fun before() {
-        startKoin(listOf(helloModule))
+        startKoin {
+            modules(helloModule) 
+        }
     }
 
     @After
@@ -94,7 +96,9 @@ class HelloMockTest : AutoCloseKoinTest() {
 
     @Before
     fun before() {
-        startKoin(listOf())
+        startKoin{
+            modules(helloModule)
+        }
         declareMock<HelloService>()
     }
 
