@@ -35,8 +35,8 @@ import org.koin.ext.getFullName
  * Set a ScopeInstance Observer onto the actual LifecycleOwner koincomponent
  * will close the bound scopes on lifecycle event
  * @see ScopeObserver
- * @param event : lifecycle event - default ON_DESTROY
  * @param scopes
+ * @param event : lifecycle event - default ON_DESTROY
  */
 fun LifecycleOwner.bindScope(
     scope: ScopeInstance,
@@ -73,7 +73,6 @@ fun LifecycleOwner.deleteScope(id: String) {
 
 /**
  * Get or create Scope
- * @param scope Id
  */
 fun AppCompatActivity.getActivityScope(): ScopeInstance {
     return (this as LifecycleOwner).getOrCreateAndroidScope()
@@ -97,7 +96,6 @@ private fun LifecycleOwner.getOrCreateAndroidScope(): ScopeInstance {
 
 /**
  * Get or create Scope
- * @param scope Id
  */
 fun Fragment.getFragmentScope(): ScopeInstance {
     return (this as LifecycleOwner).getOrCreateAndroidScope()
