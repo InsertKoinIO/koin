@@ -1,9 +1,6 @@
 ![logo](./img/banner_2000.png)
 
 ## What is KOIN?
-
-[![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
-[![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
  
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
@@ -200,14 +197,19 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 <a href="graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
 
 
-## Backers
+## OpenCollective
+
+[![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
+[![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
+
+### Backers
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/koin#backer)]
 
 <a href="https://opencollective.com/koin#backers" target="_blank"><img src="https://opencollective.com/koin/backers.svg?width=890"></a>
 
 
-## Sponsors
+### Sponsors
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/koin#sponsor)]
 
