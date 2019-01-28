@@ -39,21 +39,25 @@ fun ComponentCallbacks.getKoin(): Koin = GlobalContext.get().koin
  * @param name - bean name / optional
  * @param scope
  * @param parameters - injection parameters
+ * @param koin - Custom koin for context isolation
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
         name: String = "",
         scope: ScopeInstance? = null,
-        noinline parameters: ParametersDefinition? = null
-) = lazy { get<T>(name, scope, parameters) }
+        noinline parameters: ParametersDefinition? = null,
+        koin:Koin = GlobalContext.get().koin
+) = lazy { get<T>(name, scope, parameters, koin) }
 
 /**
  * get given dependency for Android koincomponent
  * @param name - bean name
  * @param scope
  * @param parameters - injection parameters
+ * @param koin - Custom koin for context isolation
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
         name: String = "",
         scope: ScopeInstance? = null,
-        noinline parameters: ParametersDefinition? = null
-): T = getKoin().get(name, scope, parameters)
+        noinline parameters: ParametersDefinition? = null,
+        koin:Koin = GlobalContext.get().koin
+): T = koin.get(name, scope, parameters)

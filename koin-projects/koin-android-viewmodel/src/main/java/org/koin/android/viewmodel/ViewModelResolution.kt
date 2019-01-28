@@ -3,12 +3,16 @@ package org.koin.android.viewmodel
 import android.arch.lifecycle.*
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import org.koin.core.Koin
 import org.koin.core.KoinComponent
+import org.koin.core.context.GlobalContext
 
-fun <T : ViewModel> LifecycleOwner.resolveViewModelInstance(parameters: ViewModelParameters<T>): T {
+fun <T : ViewModel> LifecycleOwner.resolveViewModelInstance(
+        parameters: ViewModelParameters<T>,
+        koin: Koin = GlobalContext.get().koin): T {
     val vmStore: ViewModelStore = getViewModelStore(parameters)
 
-    val viewModelProvider = makeViewModelProvider(vmStore, parameters)
+    val viewModelProvider = makeViewModelProvider(vmStore, parameters,koin)
 
     return viewModelProvider.getInstance(parameters)
 }
@@ -32,13 +36,14 @@ private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
 
 private fun <T : ViewModel> makeViewModelProvider(
     vmStore: ViewModelStore,
-    parameters: ViewModelParameters<T>
+    parameters: ViewModelParameters<T>,
+    koin: Koin = GlobalContext.get().koin
 ): ViewModelProvider {
     return ViewModelProvider(
         vmStore,
-        object : ViewModelProvider.Factory, KoinComponent {
+        object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return getKoin().get(parameters.clazz, parameters.name, null, parameters.parameters)
+                return koin.get(parameters.clazz, parameters.name, null, parameters.parameters)
             }
         })
 }

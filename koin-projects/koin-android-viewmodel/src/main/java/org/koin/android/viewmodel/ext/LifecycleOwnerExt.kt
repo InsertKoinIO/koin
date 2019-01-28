@@ -19,6 +19,8 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.resolveViewModelInstance
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import kotlin.reflect.KClass
 
@@ -34,10 +36,12 @@ import kotlin.reflect.KClass
  * @param VIEW_MODEL_KEY - ViewModel Factory VIEW_MODEL_KEY (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
+ * @param koin - Custom koin for context isolation
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     name: String? = null,
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
+    koin: Koin = GlobalContext.get().koin
 ) = lazy { getViewModel<T>(name, parameters) }
 
 /**
@@ -46,17 +50,19 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * @param VIEW_MODEL_KEY - ViewModel Factory VIEW_MODEL_KEY (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
+ * @param koin - Custom koin for context isolation
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
     name: String? = null,
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
+    koin: Koin = GlobalContext.get().koin
 ) = resolveViewModelInstance(
     ViewModelParameters(
         T::class,
         name,
         null,
         parameters
-    )
+    ), koin
 )
 
 
@@ -72,13 +78,14 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 fun <T : ViewModel> LifecycleOwner.getViewModel(
     clazz: KClass<T>,
     name: String? = null,
-    parameters: ParametersDefinition? = null
+    parameters: ParametersDefinition? = null,
+    koin: Koin = GlobalContext.get().koin
 ) = resolveViewModelInstance(
     ViewModelParameters(
         clazz,
         name,
         null,
         parameters
-    )
+    ), koin
 )
 

@@ -21,26 +21,32 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.resolveViewModelInstance
+import org.koin.core.Koin
 import org.koin.core.KoinComponent
+import org.koin.core.context.GlobalContext
 
 /**
  * Lazy getByClass a viewModel instance
  *
  * @param lifecycleOwner
  * @param parameters
+ * @param koin - Custom koin for context isolation
  */
 inline fun <reified T : ViewModel> KoinComponent.viewModel(
     lifecycleOwner: LifecycleOwner,
-    parameters: ViewModelParameters<T>
-) = lazy { getViewModel(lifecycleOwner, parameters) }
+    parameters: ViewModelParameters<T>,
+    koin: Koin = GlobalContext.get().koin
+) = lazy { getViewModel(lifecycleOwner, parameters, koin) }
 
 /**
  * Get a viewModel instance
  *
  * @param lifecycleOwner
  * @param parameters
+ * @param koin - Custom koin for context isolation
  */
 inline fun <reified T : ViewModel> KoinComponent.getViewModel(
     lifecycleOwner: LifecycleOwner,
-    parameters: ViewModelParameters<T>
-) = lifecycleOwner.resolveViewModelInstance(parameters)
+    parameters: ViewModelParameters<T>,
+    koin: Koin = GlobalContext.get().koin
+) = lifecycleOwner.resolveViewModelInstance(parameters, koin)
