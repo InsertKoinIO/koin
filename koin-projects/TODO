@@ -1,9 +1,14 @@
-* Klint
+* declareMock - applyStub on definition function not just on last instance
+* KoinTest declare { }
 * Scope API Callback
 * Scope injection params
 * Scope Instance sample / http auth / non auth
-* KoinTest declare { }
 * Fragment Manager -> injection by fragment
+* Making SDK With Koin / Koin instance isolation
+    -> https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5
+    -> good description of isolation
+* New sample app (MVVM Archi / Coroutines)
+* Multi module app example
 * AndroidX sample project
 
 
