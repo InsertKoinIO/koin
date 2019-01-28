@@ -33,7 +33,7 @@ class InstanceBuilderTest {
         println("got ctor in $ctorDuration ms")
 
         val (instance, instanceDuration) = measureDuration {
-            ctor.call(*emptyArray()) as MyComponent
+            ctor.call() as MyComponent
         }
         assertNotNull(instance)
 

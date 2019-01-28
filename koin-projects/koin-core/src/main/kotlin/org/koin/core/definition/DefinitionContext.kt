@@ -12,7 +12,6 @@ sealed class DefinitionContext(val koin: Koin) {
     /**
      * Resolve an instance from Koin
      * @param name
-     * @param scope
      * @param parameters
      */
     inline fun <reified T> get(
@@ -50,6 +49,6 @@ class DefaultContext(koin: Koin) : DefinitionContext(koin) {
     override fun getCurrentScope(): ScopeInstance? = null
 }
 
-class ScopedContext(koin: Koin, val scopeInstance: ScopeInstance) : DefinitionContext(koin) {
+class ScopedContext(koin: Koin, private val scopeInstance: ScopeInstance) : DefinitionContext(koin) {
     override fun getCurrentScope(): ScopeInstance? = scopeInstance
 }

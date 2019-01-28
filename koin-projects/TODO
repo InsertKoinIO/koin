@@ -1,5 +1,10 @@
-Restart problem / Ktor sample tests & Java restart
+* Klint
+* Scope API Callback
+* Scope injection params
+* Scope Instance sample / http auth / non auth
+* KoinTest declare { }
+* Fragment Manager -> injection by fragment
+* AndroidX sample project
 
 
-Fragment Manager -> injection by fragment
 

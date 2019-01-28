@@ -73,11 +73,11 @@ class OpenCloseScopeInstanceTest {
 
     @Test
     fun `can't get definition from wrong scope`() {
-        val scope1_name = "SCOPE_1"
+        val scope1Name = "SCOPE_1"
         val koin = koinApplication {
             modules(
                     module {
-                        scope(scope1_name) {
+                        scope(scope1Name) {
                         }
                         scope("SCOPE_2") {
                             scoped { Simple.ComponentA() }
@@ -86,7 +86,7 @@ class OpenCloseScopeInstanceTest {
             )
         }.koin
 
-        val scope = koin.createScope("myScope", scope1_name)
+        val scope = koin.createScope("myScope", scope1Name)
         try {
             scope.get<Simple.ComponentA>()
             fail()

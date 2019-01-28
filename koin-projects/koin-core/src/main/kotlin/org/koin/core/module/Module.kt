@@ -29,8 +29,8 @@ import org.koin.ext.getFullName
  * @author Arnaud Giuliani
  */
 class Module(
-        internal val isCreatedAtStart: Boolean,
-        internal val override: Boolean
+    internal val isCreatedAtStart: Boolean,
+    internal val override: Boolean
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
     internal val scopes = arrayListOf<ScopeDefinition>()
@@ -58,10 +58,10 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-            name: String? = null,
-            createdAtStart: Boolean = false,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        name: String? = null,
+        createdAtStart: Boolean = false,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createSingle(name, definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
@@ -93,15 +93,14 @@ class Module(
 
     /**
      * Declare a ScopeInstance definition
-     * @param scopeName
      * @param name
      * @param override
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-            name: String? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        name: String? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createScope(name, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))
@@ -115,9 +114,9 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-            name: String? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        name: String? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createFactory(name, definition)
         declareDefinition(beanDefinition, Options(override = override))

@@ -11,12 +11,12 @@ import org.koin.dsl.module
 
 class TODOAppTest {
 
-    val TodoAppModule = module {
+    val todoAppModule = module {
         single { TasksView() } bind TasksContract.View::class
         single { TasksPresenter(get()) as TasksContract.Presenter }
     }
 
-    val RepositoryModule = module {
+    val repositoryModule = module {
         single("remoteDataSource") { FakeTasksRemoteDataSource() as TasksDataSource }
         single("localDataSource") { TasksLocalDataSource() as TasksDataSource }
         single {
@@ -32,14 +32,14 @@ class TODOAppTest {
         interface Presenter
     }
 
-    class TasksView() : KoinComponent, TasksContract.View {
+    class TasksView : KoinComponent, TasksContract.View {
         val taskPreenter by inject<TasksContract.Presenter>()
     }
 
     class TasksPresenter(val tasksRepository: TasksRepository) : TasksContract.Presenter
     interface TasksDataSource
-    class FakeTasksRemoteDataSource() : TasksDataSource
-    class TasksLocalDataSource() : TasksDataSource
+    class FakeTasksRemoteDataSource : TasksDataSource
+    class TasksLocalDataSource : TasksDataSource
     class TasksRepository(
         val remoteDataSource: TasksDataSource,
         val localDatasource: TasksDataSource
@@ -49,7 +49,7 @@ class TODOAppTest {
     fun `should create all components`() {
         val koinApp = startKoin {
             logger(Level.DEBUG)
-            modules(TodoAppModule, RepositoryModule)
+            modules(todoAppModule, repositoryModule)
         }
         val koin = koinApp.koin
 

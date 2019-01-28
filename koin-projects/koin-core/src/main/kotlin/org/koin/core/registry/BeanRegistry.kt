@@ -39,7 +39,6 @@ class BeanRegistry {
 
     /**
      * Load definitions from a Module
-     * @param koin instance
      * @param modules
      */
     fun loadModules(modules: Iterable<Module>) {

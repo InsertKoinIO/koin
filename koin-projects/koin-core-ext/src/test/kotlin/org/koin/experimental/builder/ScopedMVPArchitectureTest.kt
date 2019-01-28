@@ -1,10 +1,8 @@
 package org.koin.experimental.builder
 
 import org.junit.Assert
-import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.context.startKoin
-import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.dsl.module
