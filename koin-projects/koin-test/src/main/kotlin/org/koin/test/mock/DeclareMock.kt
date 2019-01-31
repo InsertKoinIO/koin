@@ -32,32 +32,29 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> KoinTest.declareMock(
-        name: String = "",
-        noinline stubbing: (T.() -> Unit)? = null
+    name: String = "",
+    noinline stubbing: (T.() -> Unit)? = null
 ): T {
     val koin = GlobalContext.get().koin
     val clazz = T::class
 
     val foundDefinition: BeanDefinition<T> = getDefinition(clazz, koin, name)
 
-    koin.declareMockedDefinition(foundDefinition)
+    koin.declareMockedDefinition(foundDefinition, stubbing)
 
-    return koin.applyStub(stubbing)
+    return koin.get()
 }
 
-/**
- *
- */
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> getDefinition(
-        clazz: KClass<T>,
-        koin: Koin,
-        name: String
+    clazz: KClass<T>,
+    koin: Koin,
+    name: String
 ): BeanDefinition<T> {
     logger.info("declare mock for '${clazz.getFullName()}'")
 
     return koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
-            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
+        ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
 }
 
 /**
@@ -66,34 +63,27 @@ inline fun <reified T : Any> getDefinition(
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> Koin.declareMock(
-        name: String = "",
-        noinline stubbing: (T.() -> Unit)? = null
+    name: String = "",
+    noinline stubbing: (T.() -> Unit)? = null
 ): T {
 
     val clazz = T::class
     val foundDefinition: BeanDefinition<T> = getDefinition(clazz, this, name)
 
-    declareMockedDefinition(foundDefinition)
+    declareMockedDefinition(foundDefinition, stubbing)
 
-    return applyStub(stubbing)
-}
-
-inline fun <reified T : Any> Koin.applyStub(
-        noinline stubbing: (T.() -> Unit)?
-): T {
-    val instance: T = get()
-    stubbing?.let { instance.apply(stubbing) }
-    return instance
+    return get()
 }
 
 inline fun <reified T : Any> Koin.declareMockedDefinition(
-        foundDefinition: BeanDefinition<T>
+    foundDefinition: BeanDefinition<T>,
+    noinline stubbing: (T.() -> Unit)?
 ) {
-    val definition: BeanDefinition<T> = foundDefinition.cloneForMock()
+    val definition: BeanDefinition<T> = foundDefinition.cloneForMock(stubbing)
     beanRegistry.saveDefinition(definition)
 }
 
-inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(): BeanDefinition<T> {
+inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(noinline stubbing: (T.() -> Unit)? = null): BeanDefinition<T> {
     val copy = this.copy()
     copy.secondaryTypes = this.secondaryTypes
     copy.definition = {
@@ -101,6 +91,7 @@ inline fun <reified T : Any> BeanDefinition<T>.cloneForMock(): BeanDefinition<T>
             mock(T::class.java)
         }
         logger.debug("| mock created in $time ms")
+        stubbing?.let { instance.apply(stubbing) }
         instance
     }
     copy.attributes = this.attributes.copy()

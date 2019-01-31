@@ -1,5 +1,3 @@
-* declareMock - applyStub on definition function not just on last instance
-* KoinTest declare { }
 * Scope API Callback
 * Scope injection params
 * Scope Instance sample / http auth / non auth

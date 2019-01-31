@@ -38,10 +38,13 @@ class MyTest : KoinTest {
 
     @Test
     fun `should inject my components`() {
-        startKoin(listOf(module {
-            single { ComponentA() }
-            single { ComponentB(get()) }
-        }))
+        startKoin{
+            modules(
+                module {
+                    single { ComponentA() }
+                    single { ComponentB(get()) }
+                })
+        }
 
         // directly request an instance
         val componentA = get<ComponentA>()
@@ -69,10 +72,13 @@ class MyTest : KoinTest {
 
     @Test
     fun `should inject my components`() {
-        startKoin(listOf(module {
-            single { ComponentA() }
-            single { ComponentB(get()) }
-        }))
+        startKoin{
+            modules(
+                module {
+                    single { ComponentA() }
+                    single { ComponentB(get()) }
+                })
+        }
         declareMock<ComponentA>()
 
         // retrieve mock
@@ -96,9 +102,11 @@ When a mock is not enough and don't want to create a module just for this, you c
 ----
     @Test
     fun `successful declare an expression mock`() {
-        startKoin(listOf())
+        startKoin { }
 
-        declare { factory { ComponentA("Test Params") } }
+        declare {
+            factory { ComponentA("Test Params") }
+        }
 
         Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
     }
@@ -110,23 +118,25 @@ Koin offers a way to test if you Koin modules are good: `checkModules` - walk th
 
 [source,kotlin]
 ----
-    val MVPModule = module {
-        single { Repository(get()) }
-
-        module("view") {
-            single { View() }
-            single { Presenter(get()) }
-        }
-    }
-
-    val DataSourceModule = module {
-        single { DebugDatasource() } bind Datasource::class
-    }
-
     @Test
     fun `check MVP hierarchy`() {
-        // Check the Koin modules binding
-        checkModules(listOf(MVPModule, DataSourceModule))
+        startKoin{
+            modules(
+                module {
+                    single { ComponentA() }
+                    single { ComponentB(get()) }
+                })
+        }.checkModules()
+
+        // or
+
+        koinApplication{
+            modules(
+                module {
+                    single { ComponentA() }
+                    single { ComponentB(get()) }
+                })
+        }.checkModules()
     }
 ----
 
