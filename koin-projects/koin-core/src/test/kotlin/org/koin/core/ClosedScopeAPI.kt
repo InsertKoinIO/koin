@@ -13,6 +13,7 @@ import org.koin.dsl.module
 class ClosedScopeAPI {
 
     class ScopeType
+
     val scopeName = "MY_SCOPE"
 
     @Test
@@ -132,5 +133,23 @@ class ClosedScopeAPI {
         val a = scope1.get<Simple.ComponentA>()
 
         Assert.assertEquals(a, b.a)
+    }
+
+    @Test
+    fun `definition params for scoped definitions`() {
+        val koin = koinApplication {
+            modules(
+                module {
+                    scope("SCOPE_1") {
+                        scoped { (i: Int) -> Simple.MySingle(i) }
+                    }
+                }
+            )
+        }.koin
+
+        val scope1 = koin.createScope("myScope1", "SCOPE_1")
+        val parameters = 42
+        val a = scope1.get<Simple.MySingle> { parametersOf(parameters) }
+        Assert.assertEquals(parameters, a.id)
     }
 }

@@ -27,6 +27,7 @@ data class ScopeInstance(
 ) {
 
     var koin: Koin? = null
+    private val callbacks = arrayListOf<ScopeCallback>()
 
     /**
      * Is Scope associated to Koin
@@ -65,12 +66,23 @@ data class ScopeInstance(
     }
 
     /**
+     * Register a callback for this Scope Instance
+     */
+    fun registerCallback(callback: ScopeCallback) {
+        callbacks += callback
+    }
+
+    /**
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
         definition?.release(this)
         koin?.deleteScope(this.id)
         koin = null
+
+        // call on close from callbacks
+        callbacks.forEach { it.onClose() }
+        callbacks.clear()
     }
 
     fun getContext(): DefinitionContext {
