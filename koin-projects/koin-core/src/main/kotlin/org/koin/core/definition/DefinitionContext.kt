@@ -38,10 +38,11 @@ sealed class DefinitionContext(val koin: Koin) {
     /**
      * Get a property from Koin
      * @param key
+     * @param defaultValue
      */
-    fun <T> getProperty(key: String): T {
-        return koin.getProperty(key)
-                ?: throw MissingPropertyException("Property '$key' is missing")
+    fun <T> getProperty(key: String, defaultValue: T? = null): T {
+        return koin.getProperty(key,defaultValue)
+        ?: throw MissingPropertyException("Property '$key' is missing")
     }
 }
 

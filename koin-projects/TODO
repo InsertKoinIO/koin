@@ -1,12 +1,11 @@
 x Scope API Callback
 x Scope injection params
-* getProperty with default value - https://github.com/InsertKoinIO/koin/issues/344
+x getProperty with default value - https://github.com/InsertKoinIO/koin/issues/344
+* strict policy Android
+https://github.com/InsertKoinIO/koin/issues/350
 * shutdown API Hook + Ktor shutdown
 https://github.com/InsertKoinIO/koin/issues/349
 https://github.com/InsertKoinIO/koin/issues/348
-
-* Strict Mode
-https://github.com/InsertKoinIO/koin/issues/350
 
 * Fragment Manager -> injection by fragment
 

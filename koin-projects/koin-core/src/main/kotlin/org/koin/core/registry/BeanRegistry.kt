@@ -108,11 +108,11 @@ class BeanRegistry {
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
         definition.name?.let {
             if (definitionsNames[it] != null && !definition.options.override) {
-                throw DefinitionOverrideException("Already existing definition or try to override an existing one with scopeName '$it' with $definition but has already registered ${definitionsNames[it]}")
+                throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
                 if (logger.isAt(Level.INFO)) {
-                    logger.info("bind scopeName:'${definition.name}' ~ $definition")
+                    logger.info("bind name:'${definition.name}' ~ $definition")
                 }
             }
         }

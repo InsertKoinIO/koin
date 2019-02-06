@@ -21,6 +21,16 @@ class PropertyDefinitionTest {
     }
 
     @Test
+    fun `default value properties`() {
+        val koin = koinApplication {}.koin
+
+        val defaultValue = "defaultValue"
+        val gotValue = koin.getProperty<String>("aKey", defaultValue)
+
+        assertEquals(defaultValue, gotValue)
+    }
+
+    @Test
     fun `set a property`() {
         val key = "KEY"
         val value = "VALUE"

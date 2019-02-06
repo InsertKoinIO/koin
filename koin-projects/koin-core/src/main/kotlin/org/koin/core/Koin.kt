@@ -52,11 +52,11 @@ class Koin {
      * @param parameters
      */
     inline fun <reified T> inject(
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            scope: ScopeInstance? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-        lazy { get<T>(name, scope, parameters) }
+            lazy { get<T>(name, scope, parameters) }
 
     /**
      * Get a Koin instance
@@ -65,9 +65,9 @@ class Koin {
      * @param parameters
      */
     inline fun <reified T> get(
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            scope: ScopeInstance? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, name, scope, parameters)
     }
@@ -80,10 +80,10 @@ class Koin {
      * @param parameters
      */
     fun <T> get(
-        clazz: KClass<*>,
-        name: String?,
-        scope: ScopeInstance?,
-        parameters: ParametersDefinition?
+            clazz: KClass<*>,
+            name: String?,
+            scope: ScopeInstance?,
+            parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.level == Level.DEBUG) {
             logger.debug("+- get '${clazz.getFullName()}'")
@@ -98,10 +98,10 @@ class Koin {
     }
 
     private fun <T> resolve(
-        name: String?,
-        clazz: KClass<*>,
-        scope: ScopeInstance?,
-        parameters: ParametersDefinition?
+            name: String?,
+            clazz: KClass<*>,
+            scope: ScopeInstance?,
+            parameters: ParametersDefinition?
     ): T {
         val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
         val instanceContext = InstanceContext(this, targetScopeInstance, parameters)
@@ -109,12 +109,12 @@ class Koin {
     }
 
     private fun prepareResolution(
-        name: String?,
-        clazz: KClass<*>,
-        scope: ScopeInstance?
+            name: String?,
+            clazz: KClass<*>,
+            scope: ScopeInstance?
     ): Pair<BeanDefinition<*>, ScopeInstance?> {
         val definition = beanRegistry.findDefinition(name, clazz)
-            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         if (definition.isScoped() && scope != null) {
             checkScopeResolution(definition, scope)
@@ -205,9 +205,10 @@ class Koin {
     /**
      * Retrieve a property
      * @param key
+     * @param defaultValue
      */
-    fun <T> getProperty(key: String): T? {
-        return propertyRegistry.getProperty<T>(key)
+    fun <T> getProperty(key: String, defaultValue: T? = null): T? {
+        return propertyRegistry.getProperty<T>(key) ?: defaultValue
     }
 
     /**

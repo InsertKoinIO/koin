@@ -68,7 +68,7 @@ data class BeanDefinition<T>(
 
     override fun toString(): String {
         val defKind = kind.toString()
-        val defName = name?.let { "scopeName:'$name', " } ?: ""
+        val defName = name?.let { "name:'$name', " } ?: ""
         val defType = "class:'${primaryType.getFullName()}'"
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
