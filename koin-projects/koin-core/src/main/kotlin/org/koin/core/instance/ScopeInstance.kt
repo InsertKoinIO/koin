@@ -35,7 +35,7 @@ class ScopeInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefi
         scope?.let {
             logger.debug("releasing '$scope' ~ $beanDefinition ")
             values.remove(scope.internalId)
-        }
+        } ?: values.clear()
     }
 
     @Suppress("UNCHECKED_CAST")

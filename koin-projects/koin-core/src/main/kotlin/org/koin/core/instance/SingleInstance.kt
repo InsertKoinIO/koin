@@ -29,7 +29,9 @@ class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
 
     private var value: T? = null
 
-    override fun release(scope: Scope?) {}
+    override fun release(scope: Scope?) {
+        value = null
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(scope: Scope?, parameters: ParametersDefinition?): T {

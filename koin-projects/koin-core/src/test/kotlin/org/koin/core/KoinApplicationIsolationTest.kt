@@ -70,4 +70,22 @@ class KoinApplicationIsolationTest {
         StandAloneKoinApplication.get().stop()
     }
 
+    @Test
+    fun `stopping koin releases resources`() {
+        val module = module { single { Simple.ComponentA() } }
+        koinApplication {
+            loadModules(module)
+        }.start()
+        val a1: Simple.ComponentA = StandAloneKoinApplication.get().koin.get()
+
+        StandAloneKoinApplication.get().stop()
+
+        koinApplication {
+            loadModules(module)
+        }.start()
+        val a2: Simple.ComponentA = StandAloneKoinApplication.get().koin.get()
+
+        assertNotEquals(a1, a2)
+    }
+
 }

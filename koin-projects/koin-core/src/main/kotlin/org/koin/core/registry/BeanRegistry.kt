@@ -184,6 +184,7 @@ class BeanRegistry {
     }
 
     fun close() {
+        definitions.forEach { it.instance.release() }
         definitions.clear()
         definitionsNames.clear()
         definitionsClass.clear()
