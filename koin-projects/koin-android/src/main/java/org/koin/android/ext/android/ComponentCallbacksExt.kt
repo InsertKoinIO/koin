@@ -41,7 +41,7 @@ import org.koin.standalone.StandAloneContext.loadKoinModules
  * @param androidContext - Android androidContext
  * @param modules - list of AndroidModule
  * @param extraProperties - extra extraProperties
- * @param loadPropertiesFromFile - laod extraProperties from asset/koin.extraProperties
+ * @param loadPropertiesFromFile - laod extraProperties from assets/koin.properties
  * @param logger - default Koin logger
  *
  * will be soon deprecated for starKoin() with <androidContext>
