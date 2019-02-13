@@ -1,9 +1,6 @@
 ![logo](./img/banner_2000.png)
 
 ## What is KOIN?
-
-[![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
-[![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
  
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
@@ -11,9 +8,9 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## Official Website 👉 1.0 [https://insert-koin.io](https://insert-koin.io) - 2.0 [https://beta.insert-koin.io](https://beta.insert-koin.io) - 
+## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-Check the [getting started](https://beta.insert-koin.io/docs/2.0/getting-started/introduction/) section from our website, to discover Koin with the favorite platform.
+## Beta version 👉 [https://beta.insert-koin.io](https://beta.insert-koin.io)
 
 ### Contact & Latest News 🌐
 
@@ -35,6 +32,9 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 ## Current Version
 
 ```gradle
+// latest stable
+koin_version = '1.0.2'
+// current beta
 koin_version = '2.0.0-beta-1'
 ```
 
@@ -116,7 +116,7 @@ val myModule = module {
 } 
 ```
 
-## Start Koin
+## Starting Koin in Koin 2.0 
 
 Use the startKoin() function to start Koin in your application.
 
@@ -197,14 +197,19 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 <a href="graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
 
 
-## Backers
+## OpenCollective
+
+[![Backers on Open Collective](https://opencollective.com/koin/backers/badge.svg)](#backers)
+[![Sponsors on Open Collective](https://opencollective.com/koin/sponsors/badge.svg)](#sponsors) 
+
+### Backers
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/koin#backer)]
 
 <a href="https://opencollective.com/koin#backers" target="_blank"><img src="https://opencollective.com/koin/backers.svg?width=890"></a>
 
 
-## Sponsors
+### Sponsors
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/koin#sponsor)]
 
