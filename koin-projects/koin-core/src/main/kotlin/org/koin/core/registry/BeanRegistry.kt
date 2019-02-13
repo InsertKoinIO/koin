@@ -66,6 +66,7 @@ class BeanRegistry {
      */
     fun saveDefinition(definition: BeanDefinition<*>) {
         definitions.addDefinition(definition)
+        definition.createInstanceHolder()
         if (definition.name != null) {
             saveDefinitionForName(definition)
         } else {
@@ -159,6 +160,7 @@ class BeanRegistry {
     }
 
     fun close() {
+        definitions.forEach { it.clear() }
         definitions.clear()
         definitionsNames.clear()
         definitionsClass.clear()

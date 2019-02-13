@@ -34,9 +34,9 @@ data class ScopeDefinition(val scopeName: String, val module: Module) {
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-        name: String? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            name: String? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createScope(name, scopeName, definition)
         module.declareDefinition(beanDefinition, Options(override = override))
@@ -46,7 +46,7 @@ data class ScopeDefinition(val scopeName: String, val module: Module) {
 
     internal fun release(instance: ScopeInstance) {
         definitions.filter { it is ScopedInstance<*> }
-            .forEach { it.instance.release(InstanceContext(scope = instance)) }
+                .forEach { it.instance?.release(InstanceContext(scope = instance)) }
     }
 
     override fun toString(): String {

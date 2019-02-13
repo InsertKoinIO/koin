@@ -87,7 +87,7 @@ class BeanDefinitionTest {
         }
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
-        val instance = defA.instance.get<Simple.ComponentA>(InstanceContext(koin = app.koin, parameters = { emptyParametersHolder() }))
+        val instance = defA.instance!!.get<Simple.ComponentA>(InstanceContext(koin = app.koin, parameters = { emptyParametersHolder() }))
         assertEquals(instance, app.koin.get<Simple.ComponentA>())
     }
 }

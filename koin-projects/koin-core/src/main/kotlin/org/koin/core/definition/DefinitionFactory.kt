@@ -36,7 +36,6 @@ object DefinitionFactory {
         val beanDefinition = BeanDefinition<T>(name, T::class)
         beanDefinition.definition = definition
         beanDefinition.kind = kind
-        beanDefinition.createInstanceHolder()
         return beanDefinition
     }
 }
