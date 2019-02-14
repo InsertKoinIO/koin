@@ -16,14 +16,13 @@
 package org.koin.test.check
 
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.Instance
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.Scope
+import org.koin.core.instance.InstanceContext
+import org.koin.core.logger.Level
 import org.koin.test.error.BrokenDefinitionException
 import org.mockito.Mockito.mock
 
@@ -37,17 +36,18 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
 
     private var value: T? = null
 
-    override fun <T> get(scope: Scope?, parameters: ParametersDefinition?): T {
+    override fun <T> get(context: InstanceContext): T {
         if (value == null) {
-            value = create(beanDefinition, parameters)
+            value = create(context)
         }
         return value as? T ?: error("SandboxInstance should return a value for $beanDefinition")
     }
 
-    override fun <T> create(beanDefinition: BeanDefinition<*>, parameters: ParametersDefinition?): T {
+    override fun <T> create(context: InstanceContext): T {
         try {
-            val params = parameters?.let { parameters() } ?: emptyParametersHolder()
-            beanDefinition.definition(params)
+            val params = context.getParameters()
+            val instanceContext = context.getDefinitionContext()
+            beanDefinition.definition(instanceContext, params)
         } catch (e: Exception) {
             when (e) {
                 is NoBeanDefFoundException, is InstanceCreationException, is DefinitionOverrideException -> {
@@ -56,11 +56,13 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
                 else -> logger.debug("sandbox resolution continue on caught error: $e")
             }
         }
-        logger.debug("| create sandbox for $beanDefinition")
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("| create sandbox for $beanDefinition")
+        }
         return mock(beanDefinition.primaryType.java) as T
     }
 
-    override fun isCreated(scope: Scope?): Boolean = (value == null)
+    override fun isCreated(context: InstanceContext): Boolean = (value == null)
 
-    override fun release(scope: Scope?) {}
+    override fun release(context: InstanceContext) {}
 }

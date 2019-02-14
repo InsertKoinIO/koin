@@ -13,8 +13,8 @@ class EnvironmentPropertyDefinitionTest {
         val aPropertyValue = sysProperties.getProperty(aPropertyKey)
 
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadEnvironmentProperties()
+            logger(Level.DEBUG)
+            environmentProperties()
         }.koin
 
         val foundValue = koin.getProperty<String>(aPropertyKey)

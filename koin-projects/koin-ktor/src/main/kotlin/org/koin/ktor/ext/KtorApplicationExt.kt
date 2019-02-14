@@ -18,10 +18,11 @@ package org.koin.ktor.ext
 import io.ktor.application.Application
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
-
+import org.koin.core.scope.ScopeInstance
+import org.koin.dsl.KoinAppDeclaration
 
 /**
  * Ktor Koin extensions
@@ -32,22 +33,26 @@ import org.koin.core.standalone.StandAloneKoinApplication
 
 /**
  * Help start Koin cntofor Ktor
- * @param name - bean name / optional
- * @param module - module path
- * @param parameters
  */
 fun Application.installKoin(
     koinApplication: KoinApplication
 ) {
-    StandAloneKoinApplication.getOrNull()?.stop()
-    koinApplication.start()
+    startKoin(koinApplication)
 }
 
+/**
+ * Help start Koin cntofor Ktor
+ */
+fun Application.installKoin(
+    koinApplication: KoinAppDeclaration
+) {
+    startKoin(koinApplication)
+}
 
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = StandAloneKoinApplication.get().koin
+fun Application.getKoin(): Koin = GlobalContext.get().koin
 
 /**
  * inject lazily given dependency
@@ -57,7 +62,7 @@ fun Application.getKoin(): Koin = StandAloneKoinApplication.get().koin
  */
 inline fun <reified T : Any> Application.inject(
     name: String = "",
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
     lazy { get<T>(name, scope, parameters) }
@@ -70,7 +75,7 @@ inline fun <reified T : Any> Application.inject(
  */
 inline fun <reified T : Any> Application.get(
     name: String = "",
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
     getKoin().get<T>(name, scope, parameters)

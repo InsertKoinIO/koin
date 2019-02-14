@@ -3,8 +3,9 @@ package org.koin.koincomponent
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.inject
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class TasksView
@@ -19,14 +20,14 @@ class AppTest {
 
     @Test
     fun `can run KoinComponent app`() {
-        val app = koinApplication {
-            useLogger()
-            loadModules(
+        val app = startKoin {
+            logger()
+            modules(
                 module {
                     single { TasksView() }
                     single { TasksPresenter(get()) }
                 })
-        }.start()
+        }
 
         val koin = app.koin
         val myApp = MyApp()
@@ -34,6 +35,6 @@ class AppTest {
         Assert.assertEquals(myApp.presenter.view, myApp.view)
         Assert.assertEquals(myApp.presenter, koin.get<TasksPresenter>())
 
-        app.stop()
+        stopKoin()
     }
 }

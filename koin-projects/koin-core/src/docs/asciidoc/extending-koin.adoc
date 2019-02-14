@@ -1,0 +1,11 @@
+== Extending Koin
+
+Koin is an agnostic dependency injection framework, offering a DSL, a lightweight container and a simple API.
+To suit your favorite SDK/runtime technology, just extend it with some Kotlin extensions and bring Koin features.
+
+=== Extending Koin container configuration DSL
+
+=== Extending Koin module DSL
+
+=== Bring Koin to your SDK
+

@@ -1,13 +1,8 @@
 package org.koin.test
 
-import org.junit.Assert
-import org.koin.core.standalone.StandAloneKoinApplication
-
+import org.junit.Assert.assertNull
+import org.koin.core.context.GlobalContext
 
 fun assertHasNoStandaloneInstance() {
-    try {
-        StandAloneKoinApplication.get()
-        Assert.fail()
-    } catch (e: Exception) {
-    }
+    assertNull(GlobalContext.getOrNull())
 }

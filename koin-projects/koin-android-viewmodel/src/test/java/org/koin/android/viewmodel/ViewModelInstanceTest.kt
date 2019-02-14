@@ -4,6 +4,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -13,8 +14,8 @@ class ViewModelInstanceTest {
     @Test
     fun `should have a factory instance for ViewModel`() {
         val koinApp = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(module {
+            logger(Level.DEBUG)
+            modules(module {
                 viewModel { MyViewModel() }
             })
         }
@@ -25,6 +26,6 @@ class ViewModelInstanceTest {
         assertNotEquals(instance1, instance2)
 
         val definition = koinApp.getDefinition(MyViewModel::class)!!
-        assertTrue(!definition.instance.isCreated())
+        assertTrue(!definition.instance.isCreated(InstanceContext(koin = koin)))
     }
 }

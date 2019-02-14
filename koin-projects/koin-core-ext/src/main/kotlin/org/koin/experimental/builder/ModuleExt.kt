@@ -15,7 +15,7 @@
  */
 package org.koin.experimental.builder
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.module.Module
 
 /**
@@ -25,11 +25,11 @@ import org.koin.core.module.Module
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.single(
-    name: String? = null,
-    createOnStart: Boolean = false,
-    override: Boolean = false
+        name: String? = null,
+        createOnStart: Boolean = false,
+        override: Boolean = false
 ): BeanDefinition<T> {
-    return single(name, createOnStart, override) { create<T>() }
+    return single(name, createOnStart, override) { create<T>(this) }
 }
 
 /**
@@ -39,65 +39,35 @@ inline fun <reified T : Any> Module.single(
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.factory(
-    name: String? = null,
-    override: Boolean = false
+        name: String? = null,
+        override: Boolean = false
 ): BeanDefinition<T> {
-    return factory(name, override) { create<T>() }
+    return factory(name, override) { create<T>(this) }
 }
 
 /**
- * Create a Scope definition for given type T
- *
- * @param scopeId
- * @param name
- * @param override - allow definition override
- */
-inline fun <reified T : Any> Module.scope(
-    scopeId: String,
-    name: String? = null,
-    override: Boolean = false
-): BeanDefinition<T> {
-    return scope(scopeId, name, override) { create<T>() }
-}
-
-/**
- * Create a Single definition for given type T to loadModules and cast as R
+ * Create a Single definition for given type T to modules and cast as R
  * @param name
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> Module.singleBy(
-    name: String? = null,
-    createOnStart: Boolean = false,
-    override: Boolean = false
+        name: String? = null,
+        createOnStart: Boolean = false,
+        override: Boolean = false
 ): BeanDefinition<R> {
-    return single(name, createOnStart, override) { create<T>() as R }
+    return single(name, createOnStart, override) { create<T>(this) as R }
 }
 
 /**
- * Create a Factory definition for given type T to loadModules and cast as R
+ * Create a Factory definition for given type T to modules and cast as R
  *
  * @param name
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> Module.factoryBy(
-    name: String? = null,
-    override: Boolean = false
+        name: String? = null,
+        override: Boolean = false
 ): BeanDefinition<R> {
-    return factory(name, override) { create<T>() as R }
-}
-
-/**
- * Create a Scope definition for given type T, applied to R
- *
- * @param scopeId
- * @param name
- * @param override - allow definition override
- */
-inline fun <reified R : Any, reified T : R> Module.scopeBy(
-    scopeId: String,
-    name: String? = null,
-    override: Boolean = false
-): BeanDefinition<R> {
-    return scope(scopeId, name, override) { create<T>() as R }
+    return factory(name, override) { create<T>(this) as R }
 }

@@ -6,7 +6,7 @@ import fr.ekito.myweatherapp.di.onlineWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
 import org.junit.After
 import org.junit.Test
-import org.koin.android.ext.koin.useAndroidContext
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
@@ -20,33 +20,29 @@ class ModuleCheckTest : KoinTest {
 
     val mockedApplication = mock(Application::class.java)
 
-    @After
-    fun after() {
-    }
-
     @Test
     fun testRemoteConfiguration() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(onlineWeatherApp)
+            logger(Level.DEBUG)
+            modules(onlineWeatherApp)
         }.checkModules()
     }
 
     @Test
     fun testLocalConfiguration() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            useAndroidContext(mockedApplication)
-            loadModules(offlineWeatherApp)
+            logger(Level.DEBUG)
+            androidContext(mockedApplication)
+            modules(offlineWeatherApp)
         }.checkModules()
     }
 
     @Test
     fun testTestConfiguration() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            useAndroidContext(mockedApplication)
-            loadModules(testWeatherApp)
+            logger(Level.DEBUG)
+            androidContext(mockedApplication)
+            modules(testWeatherApp)
         }.checkModules()
     }
 }

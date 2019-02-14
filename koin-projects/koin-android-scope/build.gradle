@@ -18,14 +18,15 @@ android {
 }
 
 dependencies {
+    implementation "com.android.support:appcompat-v7:$support_lib_version"
+    implementation("android.arch.lifecycle:common:$android_arch_version")
     // Koin
     api project(":koin-android") //"org.koin:koin-android:$koin_version"
+
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
-    // Architecture Lifecycle
-    implementation("android.arch.lifecycle:common:$android_arch_version")
 }
 
 apply from: '../gradle/publish-android.gradle'

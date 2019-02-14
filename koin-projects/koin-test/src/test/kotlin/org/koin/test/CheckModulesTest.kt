@@ -13,8 +13,8 @@ class CheckModulesTest {
     @Test
     fun `check a simple module`() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 }
@@ -25,8 +25,8 @@ class CheckModulesTest {
     @Test
     fun `check a module with link`() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
@@ -39,8 +39,8 @@ class CheckModulesTest {
     fun `check a broken module`() {
         try {
             koinApplication {
-                useLogger(Level.DEBUG)
-                loadModules(
+                logger(Level.DEBUG)
+                modules(
                     module {
                         single { Simple.ComponentB(get()) }
                     }
@@ -55,8 +55,8 @@ class CheckModulesTest {
     @Test
     fun `check a module with params`() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { (s: String) -> Simple.MyString(s) }
                 }
@@ -67,8 +67,8 @@ class CheckModulesTest {
     @Test
     fun `check a module with property`() {
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.MyString(getProperty("aValue")) }
                 }

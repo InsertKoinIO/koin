@@ -15,11 +15,12 @@
  */
 package org.koin.core.registry
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
-import org.koin.core.scope.Scope
-import org.koin.core.scope.getScopeId
+import org.koin.core.module.Module
+import org.koin.core.scope.ScopeDefinition
+import org.koin.core.scope.ScopeInstance
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -30,91 +31,64 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ScopeRegistry {
 
-    private val allScopes = hashSetOf<Scope>()
-    private val registeredScopes: MutableMap<String, Scope> = ConcurrentHashMap()
+    private val definitions = ConcurrentHashMap<String, ScopeDefinition>()
+    private val instances = ConcurrentHashMap<String, ScopeInstance>()
 
-    /**
-     * Get or create a scope for given Id
-     * @param scopeId
-     */
-    fun getOrCreateScope(scopeId: String): Scope {
-        return getScopeById(scopeId) ?: createScope(scopeId)
-    }
-
-    /**
-     * Create a scope or throw ScopeAlreadyCreatedException if created
-     * @param scopeId
-     */
-    fun createScope(scopeId: String): Scope {
-        return if (isNotAlreadyRegistered(scopeId)) {
-            val scope = createNewScope(scopeId)
-            registerScope(scopeId, scope)
-        } else {
-            throw ScopeAlreadyCreatedException("Try to create scope '$scopeId' but is alreadyCreated")
+    internal fun loadScopes(modules: Iterable<Module>) {
+        modules.forEach {
+            declareScopes(it)
         }
     }
 
-    private fun registerScope(scopeId: String, scope: Scope): Scope {
-        registeredScopes[scopeId] = scope
-        return scope
-    }
+    private fun declareScopes(module: Module) {
+        module.scopes.forEach {
+            if (definitions[it.scopeName] != null) {
 
-    /**
-     * Detach a scope, i.e can't be found by getScopeById but by its internal id
-     * @param scopeId
-     */
-    fun detachScope(scopeId: String): Scope {
-        return createNewScope(scopeId)
-    }
-
-    /**
-     * Retrieve a scope by its internal id (for detached scope)
-     * @param internalId
-     */
-    fun getScopeByInternalId(internalId: String): Scope? {
-        return allScopes.firstOrNull { it.internalId == internalId }
-    }
-
-    private fun createNewScope(scopeId: String): Scope {
-        val newScope = Scope(scopeId)
-        allScopes.add(newScope)
-        return newScope
-    }
-
-    private fun isNotAlreadyRegistered(scopeId: String) = registeredScopes[scopeId] == null
-
-    /**
-     * Retrieve a scope by its id (scopeId)
-     * @param scopeId
-     */
-    fun getScopeById(scopeId: String): Scope? {
-        return registeredScopes[scopeId]
-    }
-
-    internal fun deleteScope(scope: Scope) {
-        allScopes.remove(scope)
-        if (registeredScopes[scope.id] == scope) {
-            registeredScopes.remove(scope.id)
+            }
+            definitions[it.scopeName] = it
         }
     }
 
+    fun getScopeDefinition(scopeName: String): ScopeDefinition? = definitions[scopeName]
+
     /**
-     * Prepare scope for given definition
-     * @param definition
-     * @param scope
+     * Create a scope instance for given scope
+     * @param id - scope instance id
+     * @param scopeName - scope name
      */
-    fun prepareScope(definition: BeanDefinition<*>, scope: Scope? = null): Scope? {
-        return if (definition.isScoped()) {
-            if (scope == null) {
-                val scopeId = definition.getScopeId() ?: error("No scope id for $definition")
-                getScopeById(scopeId)
-                        ?: throw ScopeNotCreatedException("Scope '$scopeId' is not created while trying to use scoped definition: $definition")
-            } else scope
-        } else null
+    fun createScopeInstance(id: String, scopeName: String? = null): ScopeInstance {
+        val definition: ScopeDefinition? = scopeName?.let {
+            definitions[scopeName]
+                    ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
+        }
+        val instance = ScopeInstance(id, definition)
+        registerScopeInstance(instance)
+        return instance
+    }
+
+    private fun registerScopeInstance(instance: ScopeInstance) {
+        if (instances[instance.id] != null) {
+            throw ScopeAlreadyCreatedException("A scope with id '${instance.id}' already exists. Reuse or close it.")
+        }
+        instances[instance.id] = instance
+    }
+
+    fun getScopeInstance(id: String): ScopeInstance {
+        return instances[id]
+                ?: throw ScopeNotCreatedException("ScopeInstance with id '$id' not found. Create a scope instance with id '$id'")
+    }
+
+    fun getScopeInstanceOrNull(id: String): ScopeInstance? {
+        return instances[id]
+    }
+
+    fun deleteScopeInstance(id: String) {
+        instances.remove(id)
     }
 
     fun close() {
-        allScopes.clear()
-        registeredScopes.clear()
+        definitions.clear()
+        instances.values.forEach { it.close() }
+        instances.clear()
     }
 }

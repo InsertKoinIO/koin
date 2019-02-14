@@ -1,0 +1,59 @@
+
+== Injection parameters
+
+In any definition, you can use injection parameters: parameters that will be injected and used by your definition:
+
+=== Defining an injection parameter
+
+Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class:
+
+[source,kotlin]
+----
+class Presenter(val view : View)
+
+val myModule = module {
+    single{ (view : View) -> Presenter(view) }
+}
+----
+
+
+=== Injecting with values
+
+In contrary to resolved dependencies (resolved with with `get()`), injection parameters are *parameters passed through the resolution API*.
+This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf()` function:
+
+[source,kotlin]
+----
+class MyComponent : View, KoinComponent {
+
+    // inject this as View value
+    val presenter : Presenter by inject { parametersOf(this) }
+}
+----
+
+=== Multiple parameters
+
+If we want to have multiple parameters in our definition, we can use the *destructured declaration* to list our parameters:
+
+[source,kotlin]
+----
+class Presenter(val view : View, id : String)
+
+val myModule = module {
+    single{ (view : View, id : String) -> Presenter(view,id) }
+}
+----
+
+In a `KoinComponent`, just use the `parametersOf` function with your arguments like below:
+
+[source,kotlin]
+----
+class MyComponent : View, KoinComponent {
+
+    val id : String ...
+
+    // inject with view & id
+    val presenter : Presenter by inject { parametersOf(this,id) }
+}
+----
+

@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
@@ -10,7 +11,7 @@ class ModuleCreationTest {
     @Test
     fun `create an empty module`() {
         val app = koinApplication {
-            loadModules(module {})
+            modules(module {})
         }
 
         app.assertDefinitionsCount(0)
@@ -22,7 +23,7 @@ class ModuleCreationTest {
 
         app.assertDefinitionsCount(0)
 
-        app.loadModules(module {
+        app.modules(module {
             single { Simple.ComponentA() }
         })
         app.assertDefinitionsCount(1)
@@ -31,7 +32,7 @@ class ModuleCreationTest {
     @Test
     fun `create a module with single`() {
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
@@ -44,7 +45,7 @@ class ModuleCreationTest {
     fun `create a complex single DI module`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
@@ -58,7 +59,7 @@ class ModuleCreationTest {
     fun `create a complex factory DI module`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
@@ -73,7 +74,7 @@ class ModuleCreationTest {
     fun `create several modules`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 },
@@ -89,7 +90,7 @@ class ModuleCreationTest {
     fun `create modules list`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 listOf(
                     module {
                         single { Simple.ComponentA() }
@@ -107,8 +108,8 @@ class ModuleCreationTest {
     fun `create modules list timing`() {
 
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 },
@@ -119,8 +120,8 @@ class ModuleCreationTest {
         }
 
         koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
+            logger(Level.DEBUG)
+            modules(
                 listOf(
                     module {
                         single { Simple.ComponentA() }
@@ -130,5 +131,32 @@ class ModuleCreationTest {
                     })
             )
         }
+    }
+
+    @Test
+    fun `can add modules for list`() {
+        val modA = module {
+            single { Simple.ComponentA() }
+        }
+        val modB = module {
+            single { Simple.ComponentB(get()) }
+        }
+
+        assertEquals(modA + modB, listOf(modA, modB))
+    }
+
+    @Test
+    fun `can add modules to list`() {
+        val modA = module {
+            single { Simple.ComponentA() }
+        }
+        val modB = module {
+            single { Simple.ComponentB(get()) }
+        }
+        val modC = module {
+            single { Simple.ComponentC(get()) }
+        }
+
+        assertEquals(modA + modB + modC, listOf(modA, modB) + modC)
     }
 }

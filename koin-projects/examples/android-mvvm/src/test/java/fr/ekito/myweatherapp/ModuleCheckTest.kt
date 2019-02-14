@@ -6,7 +6,7 @@ import fr.ekito.myweatherapp.di.onlineWeatherApp
 import fr.ekito.myweatherapp.di.roomWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
 import org.junit.Test
-import org.koin.android.ext.koin.useAndroidContext
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
 import org.koin.test.check.checkModules
@@ -22,32 +22,32 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testRemoteConfiguration() {
         koinApplication {
-            useAndroidContext(mockedAndroidContext)
-            loadModules(onlineWeatherApp)
+            androidContext(mockedAndroidContext)
+            modules(onlineWeatherApp)
         }.checkModules()
     }
 
     @Test
     fun testLocalConfiguration() {
         koinApplication {
-            useAndroidContext(mockedAndroidContext)
-            loadModules(offlineWeatherApp)
+            androidContext(mockedAndroidContext)
+            modules(offlineWeatherApp)
         }.checkModules()
     }
 
     @Test
     fun testTestConfiguration() {
         koinApplication {
-            useAndroidContext(mockedAndroidContext)
-            loadModules(testWeatherApp)
+            androidContext(mockedAndroidContext)
+            modules(testWeatherApp)
         }.checkModules()
     }
 
     @Test
     fun testRoomConfiguration() {
         koinApplication {
-            useAndroidContext(mockedAndroidContext)
-            loadModules(roomWeatherApp)
+            androidContext(mockedAndroidContext)
+            modules(roomWeatherApp)
         }.checkModules()
     }
 }

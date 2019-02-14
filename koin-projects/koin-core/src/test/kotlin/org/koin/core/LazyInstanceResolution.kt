@@ -11,7 +11,7 @@ class LazyInstanceResolution {
     fun `can lazy resolve a single`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })

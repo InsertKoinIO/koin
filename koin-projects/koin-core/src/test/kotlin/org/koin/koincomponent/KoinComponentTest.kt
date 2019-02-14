@@ -4,9 +4,10 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.get
 import org.koin.core.inject
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class MyComponent : KoinComponent {
@@ -18,13 +19,13 @@ class KoinComponentTest {
 
     @Test
     fun `can lazy inject from KoinComponent`() {
-        val app = koinApplication {
-            useLogger()
-            loadModules(
+        val app = startKoin {
+            logger()
+            modules(
                 module {
                     single { Simple.ComponentA() }
                 })
-        }.start()
+        }
 
         val koin = app.koin
         val a: Simple.ComponentA = koin.get()
@@ -33,6 +34,6 @@ class KoinComponentTest {
         Assert.assertEquals(component.anInject, a)
         Assert.assertEquals(component.aGet, a)
 
-        app.stop()
+        stopKoin()
     }
 }

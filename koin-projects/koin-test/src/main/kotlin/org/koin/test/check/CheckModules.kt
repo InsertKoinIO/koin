@@ -17,10 +17,9 @@ package org.koin.test.check
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.getScopeId
-
+import org.koin.core.scope.getScopeName
 
 /**
  * Check all definition's dependencies - run all modules in a test sandbox
@@ -48,10 +47,12 @@ fun Koin.checkModules() {
 fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
         val clazz = it.primaryType
-        val scope = if (it.isScoped()) scopeRegistry.getOrCreateScope(
-            it.getScopeId() ?: error("definition $it should have a scope id")
+        val scope = if (it.isScoped()) scopeRegistry.createScopeInstance(
+                "sandbox_scope", it.getScopeName()
         ) else null
-        get(clazz, it.name, scope) { emptyParametersHolder() }
+
+        get<Any>(clazz, it.name, scope) { emptyParametersHolder() }
+        scope?.let { scope.close() }
     }
 }
 
@@ -63,10 +64,10 @@ private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<*>>) {
 
 private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
     return beanRegistry.getAllDefinitions()
-        .map {
-            KoinApplication.logger.debug("* sandbox for $it")
-            it.cloneForSandbox() as BeanDefinition<*>
-        }
+            .map {
+                KoinApplication.logger.debug("* sandbox for $it")
+                it.cloneForSandbox() as BeanDefinition<*>
+            }
 }
 
 /**

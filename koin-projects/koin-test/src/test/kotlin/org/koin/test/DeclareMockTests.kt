@@ -3,7 +3,8 @@ package org.koin.test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.dsl.koinApplication
@@ -18,23 +19,22 @@ class DeclareMockTests : KoinTest {
     @Test
     fun `create mock of an existing definition`() {
         val koin = koinApplication {
-            loadModules(
-                module {
-                    single { Simple.ComponentA() }
-                }
+            modules(
+                    module {
+                        single { Simple.ComponentA() }
+                    }
             )
         }.koin
 
         val definition: BeanDefinition<Simple.ComponentA> =
-            koin.beanRegistry.findDefinition(
-                null, Simple.ComponentA::class
-            ) as BeanDefinition<Simple.ComponentA>
-
+                koin.beanRegistry.findDefinition(
+                        null, Simple.ComponentA::class
+                ) as BeanDefinition<Simple.ComponentA>
 
         val mockedDefinition = definition.cloneForMock()
 
-        val instance = definition.instance.get<Simple.ComponentA>(parameters = { emptyParametersHolder() })
-        val mock = mockedDefinition.instance.get<Simple.ComponentA>(parameters = { emptyParametersHolder() })
+        val instance = definition.instance.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
+        val mock = mockedDefinition.instance.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
 
         assertNotEquals(instance, mock)
     }
@@ -42,11 +42,11 @@ class DeclareMockTests : KoinTest {
     @Test
     fun `declare a Mock of an existing definition`() {
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
-                module {
-                    single { Simple.ComponentA() }
-                }
+            logger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.ComponentA() }
+                    }
             )
         }.koin
 
@@ -62,11 +62,11 @@ class DeclareMockTests : KoinTest {
     @Test
     fun `declare and mock an existing definition`() {
         val koin = koinApplication {
-            useLogger(Level.DEBUG)
-            loadModules(
-                module {
-                    single { Simple.UUIDComponent() }
-                }
+            logger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.UUIDComponent() }
+                    }
             )
         }.koin
 

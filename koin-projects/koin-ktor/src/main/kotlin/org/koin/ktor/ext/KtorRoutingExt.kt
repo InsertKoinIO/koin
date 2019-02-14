@@ -16,10 +16,9 @@
 package org.koin.ktor.ext
 
 import io.ktor.routing.Routing
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
-
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Ktor Koin extensions for Routing class
@@ -36,7 +35,7 @@ import org.koin.core.standalone.StandAloneKoinApplication
  */
 inline fun <reified T : Any> Routing.inject(
     name: String? = null,
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
     lazy { get<T>(name, scope, parameters) }
@@ -49,7 +48,7 @@ inline fun <reified T : Any> Routing.inject(
  */
 inline fun <reified T : Any> Routing.get(
     name: String? = null,
-    scope: Scope? = null,
+    scope: ScopeInstance? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
     getKoin().get<T>(name, scope, parameters)
@@ -73,8 +72,7 @@ inline fun <reified T> Routing.getProperty(key: String) =
 inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
     getKoin().getProperty(key) ?: defaultValue
 
-
 /**
  * Help work on ModuleDefinition
  */
-fun Routing.getKoin() = StandAloneKoinApplication.get().koin
+fun Routing.getKoin() = GlobalContext.get().koin

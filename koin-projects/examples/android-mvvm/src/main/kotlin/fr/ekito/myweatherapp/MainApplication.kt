@@ -4,10 +4,10 @@ import android.app.Application
 import com.joanzapata.iconify.Iconify
 import com.joanzapata.iconify.fonts.WeathericonsModule
 import fr.ekito.myweatherapp.di.roomWeatherApp
-import org.koin.android.ext.koin.useAndroidContext
-import org.koin.android.ext.koin.useAndroidLogger
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.dsl.koinApplication
 
 /**
  * Main Application
@@ -18,11 +18,11 @@ class MainApplication : Application() {
         super.onCreate()
 
         // start Koin context
-        koinApplication {
-            useAndroidLogger(Level.DEBUG)
-            useAndroidContext(this@MainApplication)
-            loadModules(roomWeatherApp)
-        }.start()
+        startKoin {
+            androidLogger(Level.DEBUG)
+            androidContext(this@MainApplication)
+            modules(roomWeatherApp)
+        }
 
         Iconify
             .with(WeathericonsModule())

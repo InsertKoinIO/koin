@@ -12,7 +12,7 @@ class PropertyDefinitionTest {
         val value = "VALUE"
         val values = hashMapOf(key to value)
         val koin = koinApplication {
-            loadProperties(values)
+            properties(values)
         }.koin
 
         val gotValue = koin.getProperty<String>(key)
@@ -25,7 +25,7 @@ class PropertyDefinitionTest {
         val key = "KEY"
         val value = "VALUE"
 
-        val koin = koinApplication().koin
+        val koin = koinApplication { }.koin
 
         koin.setProperty(key, value)
         val gotValue = koin.getProperty<String>(key)
@@ -35,7 +35,7 @@ class PropertyDefinitionTest {
     @Test
     fun `missing property`() {
         val key = "KEY"
-        val koin = koinApplication().koin
+        val koin = koinApplication { }.koin
 
         val gotValue = koin.getProperty<String>(key)
         assertNull(gotValue)
@@ -48,7 +48,7 @@ class PropertyDefinitionTest {
         val value2 = "VALUE2"
         val values = hashMapOf(key to value)
         val koin = koinApplication {
-            loadProperties(values)
+            properties(values)
         }.koin
 
         koin.setProperty(key, value2)

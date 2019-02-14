@@ -15,13 +15,11 @@
  */
 package org.koin.core
 
-import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
-import org.koin.core.standalone.StandAloneKoinApplication
 import org.koin.core.time.measureDurationOnly
 
 /**
@@ -35,36 +33,25 @@ class KoinApplication private constructor() {
     val koin = Koin()
 
     /**
-     * Start standalone Koin application
+     * Load definitions from modules
+     * @param modules
      */
-    fun start(): KoinApplication = synchronized(this) {
-        saveStandAloneAppInstance()
-        createEagerInstances()
-        logger.info("started")
-        return this
+    fun modules(vararg modules: Module): KoinApplication {
+        return modules(modules.asIterable())
     }
 
     /**
      * Load definitions from modules
      * @param modules
      */
-    fun loadModules(vararg modules: Module): KoinApplication {
+    fun modules(modules: Iterable<Module>): KoinApplication {
         val duration = measureDurationOnly {
-            koin.beanRegistry.loadModules(koin, *modules)
+            koin.beanRegistry.loadModules(modules)
+            koin.scopeRegistry.loadScopes(modules)
         }
-        logger.info("modules loaded in $duration ms")
-        return this
-    }
-
-    /**
-     * Load definitions from modules
-     * @param modules
-     */
-    fun loadModules(modules: List<Module>): KoinApplication {
-        val duration = measureDurationOnly {
-            koin.beanRegistry.loadModules(koin, modules)
+        if (logger.isAt(Level.INFO)) {
+            logger.info("modules loaded in $duration ms")
         }
-        logger.info("modules loaded in $duration ms")
         return this
     }
 
@@ -72,7 +59,7 @@ class KoinApplication private constructor() {
      * Load properties from Map
      * @param values
      */
-    fun loadProperties(values: Map<String, Any>): KoinApplication {
+    fun properties(values: Map<String, Any>): KoinApplication {
         koin.propertyRegistry.saveProperties(values)
         return this
     }
@@ -81,7 +68,7 @@ class KoinApplication private constructor() {
      * Load properties from file
      * @param fileName
      */
-    fun loadFileProperties(fileName: String = "/koin.properties"): KoinApplication {
+    fun fileProperties(fileName: String = "/koin.properties"): KoinApplication {
         koin.propertyRegistry.loadPropertiesFromFile(fileName)
         return this
     }
@@ -89,7 +76,7 @@ class KoinApplication private constructor() {
     /**
      * Load properties from environment
      */
-    fun loadEnvironmentProperties(): KoinApplication {
+    fun environmentProperties(): KoinApplication {
         koin.propertyRegistry.loadEnvironmentProperties()
         return this
     }
@@ -100,7 +87,7 @@ class KoinApplication private constructor() {
      * @param logger - logger
      */
     @JvmOverloads
-    fun useLogger(level: Level = Level.INFO, logger: Logger = PrintLogger()): KoinApplication {
+    fun logger(level: Level = Level.INFO, logger: Logger = PrintLogger()): KoinApplication {
         KoinApplication.logger = logger
         KoinApplication.logger.level = level
         return this
@@ -113,24 +100,20 @@ class KoinApplication private constructor() {
         val duration = measureDurationOnly {
             koin.createEagerInstances()
         }
-        logger.debug("instances started in $duration ms")
-        return this
-    }
-
-    private fun saveStandAloneAppInstance() {
-        if (StandAloneKoinApplication.app != null) {
-            throw KoinAppAlreadyStartedException("KoinApplication is already started")
+        if (logger.level == Level.DEBUG) {
+            logger.debug("instances started in $duration ms")
         }
-        StandAloneKoinApplication.app = this
+        return this
     }
 
     /**
      * Close all resources from Koin & remove Standalone Koin instance
      */
-    fun stop() = synchronized(this) {
+    fun close() = synchronized(this) {
         koin.close()
-        StandAloneKoinApplication.app = null
-        logger.info("stopped")
+        if (logger.isAt(Level.INFO)) {
+            logger.info("stopped")
+        }
     }
 
     companion object {

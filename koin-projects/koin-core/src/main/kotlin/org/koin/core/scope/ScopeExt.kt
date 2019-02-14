@@ -15,7 +15,7 @@
  */
 package org.koin.core.scope
 
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 
 /**
  * Extensiosn for Beandefintion only for Scope cases
@@ -23,18 +23,18 @@ import org.koin.core.bean.BeanDefinition
  * @author Arnaud Giuliani
  */
 
-const val ATTRIBUTE_SCOPE_ID = "scope_id"
+const val ATTRIBUTE_SCOPE_NAME = "scope_name"
 
 /**
- * Set the scopedId of a definition
+ * Set the scope name of a definition
  */
-fun BeanDefinition<*>.setScopeId(scopeId: String) {
-    attributes[ATTRIBUTE_SCOPE_ID] = scopeId
+fun BeanDefinition<*>.setScopeName(name: String) {
+    attributes[ATTRIBUTE_SCOPE_NAME] = name
 }
 
 /**
- * Get a scopeId of a definition
+ * Get a scope name of a definition
  */
-fun BeanDefinition<*>.getScopeId(): String? {
-    return attributes[ATTRIBUTE_SCOPE_ID]
+fun BeanDefinition<*>.getScopeName(): String? {
+    return attributes[ATTRIBUTE_SCOPE_NAME]
 }

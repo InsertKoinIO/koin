@@ -13,8 +13,8 @@ class FilePropertyDefinitionTest {
         val value = "VALUE"
 
         val koin = koinApplication {
-            useLogger()
-            loadFileProperties("/koin.properties")
+            logger()
+            fileProperties("/koin.properties")
         }.koin
 
         val gotValue = koin.getProperty<String>(key)
@@ -28,8 +28,8 @@ class FilePropertyDefinitionTest {
         val value = "VALUE"
 
         val koin = koinApplication {
-            useLogger()
-            loadFileProperties()
+            logger()
+            fileProperties()
         }.koin
 
         val gotValue = koin.getProperty<String>(key)
@@ -41,7 +41,7 @@ class FilePropertyDefinitionTest {
     fun `load and get properties from bad file`() {
         try {
             koinApplication {
-                loadFileProperties("koin_bad.properties")
+                fileProperties("koin_bad.properties")
             }
             fail("should not find any koin_bad.properties file")
         } catch (e: NoPropertyFileFoundException) {
@@ -52,8 +52,8 @@ class FilePropertyDefinitionTest {
     @Test
     fun `get string value from file`() {
         val koin = koinApplication {
-            useLogger()
-            loadFileProperties()
+            logger()
+            fileProperties()
         }.koin
 
         assertEquals("this is a string", koin.getProperty<String>("string.value"))
@@ -62,8 +62,8 @@ class FilePropertyDefinitionTest {
     @Test
     fun `get int value from file`() {
         val koin = koinApplication {
-            useLogger()
-            loadFileProperties()
+            logger()
+            fileProperties()
         }.koin
 
         assertEquals(42, koin.getProperty<Int>("int.value"))
@@ -72,8 +72,8 @@ class FilePropertyDefinitionTest {
     @Test
     fun `get float value from file`() {
         val koin = koinApplication {
-            useLogger()
-            loadFileProperties()
+            logger()
+            fileProperties()
         }.koin
 
         assertEquals(42.0f, koin.getProperty<Int>("float.value"))

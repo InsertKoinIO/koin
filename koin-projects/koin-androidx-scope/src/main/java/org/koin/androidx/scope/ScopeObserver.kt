@@ -21,7 +21,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.KoinComponent
-import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Observe a LifecycleOwner
@@ -30,8 +30,8 @@ import org.koin.core.scope.Scope
  *
  * release module instances from signals : ON_STOP, ON_DESTROY
  */
-class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scope) :
-    LifecycleObserver, KoinComponent {
+class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: ScopeInstance) :
+        LifecycleObserver, KoinComponent {
 
     /**
      * Handle ON_DESTROY to release Koin modules

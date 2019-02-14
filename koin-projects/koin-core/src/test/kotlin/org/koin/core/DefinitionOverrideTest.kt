@@ -14,7 +14,7 @@ class DefinitionOverrideTest {
     fun `allow overrides by type`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single<Simple.ComponentInterface1> { Simple.Component2() }
                     single<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
@@ -30,7 +30,7 @@ class DefinitionOverrideTest {
     fun `allow overrides by multiple types`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single<Simple.ComponentInterface1> { Simple.Component2() }
                     single(override = true) { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -46,7 +46,7 @@ class DefinitionOverrideTest {
     fun `allow overrides by name`() {
 
         val app = koinApplication {
-            loadModules(
+            modules(
                 module {
                     single<Simple.ComponentInterface1>("DEF") { Simple.Component2() }
                     single<Simple.ComponentInterface1>(name = "DEF", override = true) { Simple.Component1() }

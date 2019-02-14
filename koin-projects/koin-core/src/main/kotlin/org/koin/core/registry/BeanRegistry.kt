@@ -15,13 +15,12 @@
  */
 package org.koin.core.registry
 
-import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.bean.BeanDefinition
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.instance.InstanceContext
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
-import org.koin.core.scope.Scope
-import org.koin.core.scope.getScopeId
 import org.koin.ext.getFullName
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -40,39 +39,15 @@ class BeanRegistry {
     private val definitionsToCreate: HashSet<BeanDefinition<*>> = hashSetOf()
 
     /**
-     * retrieve all definitions
-     * @return definitions
-     */
-    fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
-
-    /**
      * Load definitions from a Module
      * @param koin instance
      * @param modules
      */
-    fun loadModules(koin: Koin, vararg modules: Module) {
+    fun loadModules(modules: Iterable<Module>) {
         modules.forEach { module: Module ->
             saveDefinitions(module)
-            linkContext(module, koin)
         }
-        logger.info(
-            "registered ${definitions.size} definitions"
-        )
-    }
-
-    /**
-     * Load definitions from a Module
-     * @param koin instance
-     * @param modules
-     */
-    fun loadModules(koin: Koin, modules: List<Module>) {
-        modules.forEach { module: Module ->
-            saveDefinitions(module)
-            linkContext(module, koin)
-        }
-        logger.info(
-            "registered ${definitions.size} definitions"
-        )
+        logger.info("registered ${definitions.size} definitions")
     }
 
     private fun saveDefinitions(module: Module) {
@@ -80,6 +55,12 @@ class BeanRegistry {
             saveDefinition(definition)
         }
     }
+
+    /**
+     * retrieve all definitions
+     * @return definitions
+     */
+    fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
 
     /**
      * Save a definition
@@ -120,23 +101,23 @@ class BeanRegistry {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
         } else {
             definitionsClass[type] = definition
-            logger.info("bind type:'${type.getFullName()}' ~ $definition")
+            if (logger.isAt(Level.INFO)) {
+                logger.info("bind type:'${type.getFullName()}' ~ $definition")
+            }
         }
     }
 
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
         definition.name?.let {
             if (definitionsNames[it] != null && !definition.options.override) {
-                throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
+                throw DefinitionOverrideException("Already existing definition or try to override an existing one with scopeName '$it' with $definition but has already registered ${definitionsNames[it]}")
             } else {
                 definitionsNames[it] = definition
-                logger.info("bind name:'${definition.name}' ~ $definition")
+                if (logger.isAt(Level.INFO)) {
+                    logger.info("bind scopeName:'${definition.name}' ~ $definition")
+                }
             }
         }
-    }
-
-    private fun linkContext(it: Module, koin: Koin) {
-        it.koin = koin
     }
 
     /**
@@ -145,10 +126,10 @@ class BeanRegistry {
      * @param clazz
      */
     fun findDefinition(
-        name: String? = null,
-        clazz: KClass<*>
+            name: String? = null,
+            clazz: KClass<*>
     ): BeanDefinition<*>? =
-        name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
+            name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
 
     private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
         return definitionsClass[kClass]
@@ -160,10 +141,6 @@ class BeanRegistry {
 
     internal fun findAllCreatedAtStartDefinition(): Set<BeanDefinition<*>> {
         return definitionsToCreate
-    }
-
-    internal fun releaseInstanceForScope(scope: Scope) {
-        definitions.filter { it.getScopeId() == scope.id }.forEach { it.instance.release(scope) }
     }
 
     /**
@@ -178,13 +155,13 @@ class BeanRegistry {
     fun getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
         return definitions.firstOrNull {
             it.primaryType == clazz || it.secondaryTypes.contains(
-                clazz
+                    clazz
             )
         }
     }
 
     fun close() {
-        definitions.forEach { it.instance.release() }
+        definitions.forEach { it.instance.release(InstanceContext()) }
         definitions.clear()
         definitionsNames.clear()
         definitionsClass.clear()

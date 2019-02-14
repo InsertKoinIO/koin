@@ -2,6 +2,8 @@ package org.koin.example
 
 import org.junit.Before
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.inject
 import org.koin.test.mock.declareMock
@@ -16,7 +18,10 @@ class CoffeeMakerTest : AutoCloseKoinTest() {
 
     @Before
     fun before() {
-        coffeeKoinApp.start()
+        startKoin {
+            logger(Level.DEBUG)
+            modules(coffeeAppModule)
+        }
 
         declareMock<Heater> {
             given(isHot()).will { true }

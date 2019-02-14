@@ -16,9 +16,9 @@
 package org.koin.java
 
 import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.Scope
-import org.koin.core.standalone.StandAloneKoinApplication
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -40,7 +40,7 @@ object KoinJavaComponent {
     fun <T : Any> inject(
         clazz: Class<T>,
         name: String? = null,
-        scope: Scope? = null,
+        scope: ScopeInstance? = null,
         parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy { get(clazz, name, scope, parameters) }
@@ -58,7 +58,7 @@ object KoinJavaComponent {
     fun <T : Any> get(
         clazz: Class<T>,
         name: String? = null,
-        scope: Scope? = null,
+        scope: ScopeInstance? = null,
         parameters: ParametersDefinition? = null
     ): T {
         return getKoin().get(
@@ -74,5 +74,5 @@ object KoinJavaComponent {
      * @param key - key property
      */
     @JvmStatic
-    fun getKoin(): Koin = StandAloneKoinApplication.get().koin
+    fun getKoin(): Koin = GlobalContext.get().koin
 }

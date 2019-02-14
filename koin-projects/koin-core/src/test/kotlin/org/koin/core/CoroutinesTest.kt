@@ -1,10 +1,15 @@
 package org.koin.core
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
-import org.koin.dsl.koinApplication
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.getDefinition
 import org.koin.test.hasBeenCreated
@@ -14,14 +19,14 @@ class CoroutinesTest {
 
     @Test
     fun `KoinApp with coroutines gets`() = runBlocking {
-        val app = koinApplication {
-            loadModules(
+        val app = startKoin {
+            modules(
                 module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
                     single { Simple.ComponentC(get()) }
                 })
-        }.start()
+        }
         val koin = app.koin
 
         val jobs = arrayListOf<Deferred<*>>()
@@ -47,8 +52,7 @@ class CoroutinesTest {
         Assert.assertTrue(b.hasBeenCreated())
         Assert.assertTrue(c.hasBeenCreated())
 
-        app.stop()
-
+        stopKoin()
     }
 
     private suspend fun randomSleep() {
@@ -56,5 +60,4 @@ class CoroutinesTest {
         println("thread sleep  $timer")
         delay(timer)
     }
-
 }

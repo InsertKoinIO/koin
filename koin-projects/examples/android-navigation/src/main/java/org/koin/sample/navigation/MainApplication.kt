@@ -1,19 +1,20 @@
 package org.koin.sample.navigation
 
 import android.app.Application
-import org.koin.android.ext.koin.useAndroidContext
-import org.koin.android.ext.koin.useAndroidLogger
-import org.koin.dsl.koinApplication
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        koinApplication {
-            useAndroidLogger()
-            useAndroidContext(this@MainApplication)
-            loadModules(appModule)
-        }.start()
+        startKoin {
+            androidLogger(Level.DEBUG)
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
     }
 }

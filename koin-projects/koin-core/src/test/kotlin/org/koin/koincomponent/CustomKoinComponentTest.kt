@@ -16,7 +16,7 @@ abstract class CustomKoinComponent : KoinComponent {
 
     companion object {
         val customKoin = koinApplication {
-            loadModules(module {
+            modules(module {
                 single { Simple.ComponentA() }
             })
         }.koin

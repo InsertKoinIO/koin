@@ -15,8 +15,8 @@ class ModuleAndPropertiesTest {
         val values = hashMapOf(key to value)
 
         val koin = koinApplication {
-            loadProperties(values)
-            loadModules(module {
+            properties(values)
+            modules(module {
                 single { Simple.MyStringFactory(getProperty(key)) }
             })
         }.koin
@@ -31,7 +31,7 @@ class ModuleAndPropertiesTest {
             val key = "KEY"
 
             val koin = koinApplication {
-                loadModules(module {
+                modules(module {
                     single { Simple.MyStringFactory(getProperty(key)) }
                 })
             }.koin
