@@ -16,7 +16,9 @@ fun <T : ViewModel> LifecycleOwner.resolveViewModelInstance(parameters: ViewMode
 private fun <T : ViewModel> ViewModelProvider.getInstance(
     parameters: ViewModelParameters<T>
 ): T {
-    return this.get(parameters.clazz.java)
+    return parameters.name?.let{
+        this.get(it, parameters.clazz.java)
+    } ?: this.get(parameters.clazz.java)
 }
 
 private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
