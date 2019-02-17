@@ -22,6 +22,7 @@ https://github.com/InsertKoinIO/koin/issues/349
 https://github.com/InsertKoinIO/koin/issues/348
 
 -- Doc ---
+* Changelog update
 * Scope Instance sample / http auth / non auth
 * Multi module app example
 * Making SDK With Koin / Koin instance isolation
