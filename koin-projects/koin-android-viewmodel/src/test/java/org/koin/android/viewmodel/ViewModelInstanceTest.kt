@@ -26,6 +26,6 @@ class ViewModelInstanceTest {
         assertNotEquals(instance1, instance2)
 
         val definition = koinApp.getDefinition(MyViewModel::class)!!
-        assertTrue(!definition.instance.isCreated(InstanceContext(koin = koin)))
+        assertTrue(!definition.instance!!.isCreated(InstanceContext(koin = koin)))
     }
 }

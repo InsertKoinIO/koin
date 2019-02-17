@@ -10,8 +10,12 @@ https://github.com/InsertKoinIO/koin/issues/349
 -- Bugs --
 
 -- Dev --
+* checkModules - create DefinitionParams
+- https://github.com/InsertKoinIO/koin/issues/304
+
 * Scope Params / properties -> in instance
 -> function context / injection params + scope / scope props
+- https://github.com/InsertKoinIO/koin/issues/231
 
 * Fragment Manager -> injection by fragment
 

@@ -65,4 +65,5 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
     override fun isCreated(context: InstanceContext): Boolean = (value == null)
 
     override fun release(context: InstanceContext) {}
+    override fun close() {}
 }

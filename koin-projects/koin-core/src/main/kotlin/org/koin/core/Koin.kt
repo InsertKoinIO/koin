@@ -51,6 +51,7 @@ class Koin {
      * @param scope
      * @param parameters
      */
+    @JvmOverloads
     inline fun <reified T> inject(
             name: String? = null,
             scope: ScopeInstance? = null,
@@ -64,6 +65,7 @@ class Koin {
      * @param scope
      * @param parameters
      */
+    @JvmOverloads
     inline fun <reified T> get(
             name: String? = null,
             scope: ScopeInstance? = null,
@@ -79,6 +81,7 @@ class Koin {
      * @param scope
      * @param parameters
      */
+    @JvmOverloads
     fun <T> get(
             clazz: KClass<*>,
             name: String?,
@@ -148,6 +151,7 @@ class Koin {
      * @param scopeId
      * @param scopeName
      */
+    @JvmOverloads
     fun createScope(scopeId: String, scopeName: String? = null): ScopeInstance {
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
         createdScopeInstance.register(this)
@@ -170,6 +174,7 @@ class Koin {
      * @param scopeId
      * @param scopeName
      */
+    @JvmOverloads
     fun getOrCreateScope(scopeId: String, scopeName: String? = null): ScopeInstance {
         return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
     }
@@ -207,6 +212,7 @@ class Koin {
      * @param key
      * @param defaultValue
      */
+    @JvmOverloads
     fun <T> getProperty(key: String, defaultValue: T? = null): T? {
         return propertyRegistry.getProperty<T>(key) ?: defaultValue
     }

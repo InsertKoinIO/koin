@@ -33,8 +33,8 @@ class DeclareMockTests : KoinTest {
 
         val mockedDefinition = definition.cloneForMock()
 
-        val instance = definition.instance.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
-        val mock = mockedDefinition.instance.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
+        val instance = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
+        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
 
         assertNotEquals(instance, mock)
     }

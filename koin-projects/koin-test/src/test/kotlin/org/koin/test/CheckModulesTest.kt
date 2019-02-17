@@ -6,7 +6,6 @@ import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
-import org.koin.test.error.BrokenDefinitionException
 
 class CheckModulesTest {
 
@@ -15,9 +14,9 @@ class CheckModulesTest {
         koinApplication {
             logger(Level.DEBUG)
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                }
+                    module {
+                        single { Simple.ComponentA() }
+                    }
             )
         }.checkModules()
     }
@@ -27,10 +26,10 @@ class CheckModulesTest {
         koinApplication {
             logger(Level.DEBUG)
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                    single { Simple.ComponentB(get()) }
-                }
+                    module {
+                        single { Simple.ComponentA() }
+                        single { Simple.ComponentB(get()) }
+                    }
             )
         }.checkModules()
     }
@@ -41,13 +40,13 @@ class CheckModulesTest {
             koinApplication {
                 logger(Level.DEBUG)
                 modules(
-                    module {
-                        single { Simple.ComponentB(get()) }
-                    }
+                        module {
+                            single { Simple.ComponentB(get()) }
+                        }
                 )
             }.checkModules()
             fail("should not pass with borken definitions")
-        } catch (e: BrokenDefinitionException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -57,9 +56,9 @@ class CheckModulesTest {
         koinApplication {
             logger(Level.DEBUG)
             modules(
-                module {
-                    single { (s: String) -> Simple.MyString(s) }
-                }
+                    module {
+                        single { (s: String) -> Simple.MyString(s) }
+                    }
             )
         }.checkModules()
     }
@@ -68,10 +67,11 @@ class CheckModulesTest {
     fun `check a module with property`() {
         koinApplication {
             logger(Level.DEBUG)
+            properties(hashMapOf("aValue" to "value"))
             modules(
-                module {
-                    single { Simple.MyString(getProperty("aValue")) }
-                }
+                    module {
+                        single { Simple.MyString(getProperty("aValue")) }
+                    }
             )
         }.checkModules()
     }
