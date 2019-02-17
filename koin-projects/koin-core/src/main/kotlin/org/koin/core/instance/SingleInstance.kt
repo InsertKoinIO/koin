@@ -29,6 +29,10 @@ class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
 
     override fun release(context: InstanceContext) {}
 
+    override fun close() {
+        value = null
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
         if (value == null) {

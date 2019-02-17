@@ -51,8 +51,13 @@ class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
         var current = values[internalId]
         if (current == null) {
             current = create(context)
-            values[internalId] = current ?: error("Instance creation from $beanDefinition should not be null")
+            values[internalId] = current
+                    ?: error("Instance creation from $beanDefinition should not be null")
         }
         return current as T
+    }
+
+    override fun close() {
+        values.clear()
     }
 }

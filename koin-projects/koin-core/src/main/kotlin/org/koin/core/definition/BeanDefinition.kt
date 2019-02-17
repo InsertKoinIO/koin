@@ -79,6 +79,7 @@ data class BeanDefinition<T>(
     }
 
     fun clear() {
+        instance?.close()
         instance = null
     }
 }

@@ -29,6 +29,8 @@ class FactoryInstance<T>(beanDefinition: BeanDefinition<T>) :
 
     override fun isCreated(context: InstanceContext): Boolean = false
 
+    override fun close() {}
+
     override fun <T> get(context: InstanceContext): T {
         return create(context)
     }

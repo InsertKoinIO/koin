@@ -1,26 +1,27 @@
--- Bugs --
-* strict policy Android
-https://github.com/InsertKoinIO/koin/issues/350
+-- Done --
 x release of singles
--> check PR
-
--- Dev --
 x Scope API Callback
 x Scope injection params
 x getProperty with default value
 https://github.com/InsertKoinIO/koin/issues/344
 
-* shutdown API Hook on single +
+-- Bugs --
+* strict policy Android
+https://github.com/InsertKoinIO/koin/issues/350
+
+-- Dev --
+* shutdown API Hook on single/factory/scoped +
 https://github.com/InsertKoinIO/koin/issues/349
-* Ktor shutdown
-https://github.com/InsertKoinIO/koin/issues/348
 
 * Scope Params / properties -> in instance
 -> function context / injection params + scope / scope props
 
 * Fragment Manager -> injection by fragment
 
--- samples & doc ---
+* Ktor shutdown
+https://github.com/InsertKoinIO/koin/issues/348
+
+-- Doc ---
 * Scope Instance sample / http auth / non auth
 * Multi module app example
 * Making SDK With Koin / Koin instance isolation

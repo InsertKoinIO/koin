@@ -73,6 +73,11 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
      */
     abstract fun release(context: InstanceContext)
 
+    /**
+     * close the instance allocation from registry
+     */
+    abstract fun close()
+
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }
