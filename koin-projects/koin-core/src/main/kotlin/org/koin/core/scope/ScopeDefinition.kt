@@ -46,7 +46,8 @@ data class ScopeDefinition(val scopeName: String, val module: Module) {
     }
 
     internal fun release(instance: ScopeInstance) {
-        definitions.filter { it is ScopedInstance<*> }.forEach { it.instance.release(InstanceContext(scope = instance)) }
+        definitions.mapNotNull { it.instance as? ScopedInstance<*> }
+            .forEach { it.release(InstanceContext(scope = instance)) }
     }
 
     override fun toString(): String {
