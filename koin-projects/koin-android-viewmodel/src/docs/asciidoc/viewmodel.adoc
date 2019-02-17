@@ -63,7 +63,7 @@ To inject a ViewModel in an `Activity`, `Fragment` or `Service` use:
 class DetailActivity : AppCompatActivity() {
 
     // Lazy inject ViewModel
-    val viewModel: DetailViewModel by viewModel()
+    val detailViewModel: DetailViewModel by viewModel()
 }
 ----
 
@@ -98,7 +98,7 @@ class WeatherActivity : AppCompatActivity() {
     /*
      * Declare WeatherViewModel with Koin and allow constructor dependency injection
      */
-    private val viewModel by viewModel<WeatherViewModel>()
+    private val weatherViewModel by viewModel<WeatherViewModel>()
 }
 
 class WeatherHeaderFragment : Fragment() {
@@ -106,7 +106,7 @@ class WeatherHeaderFragment : Fragment() {
     /*
      * Declare shared WeatherViewModel with WeatherActivity
      */
-    private val viewModel by sharedViewModel<WeatherViewModel>()
+    private val weatherViewModel by sharedViewModel<WeatherViewModel>()
 }
 
 class WeatherListFragment : Fragment() {
@@ -114,7 +114,7 @@ class WeatherListFragment : Fragment() {
     /*
      * Declare shared WeatherViewModel with WeatherActivity
      */
-    private val viewModel by sharedViewModel<WeatherViewModel>()
+    private val weatherViewModel by sharedViewModel<WeatherViewModel>()
 }
 ----
 
@@ -148,7 +148,7 @@ class DetailActivity : AppCompatActivity() {
     val id : String // id of the view
 
     // Lazy inject ViewModel with id parameter
-    val viewModel: DetailViewModel by viewModel{ parametersOf(id)}
+    val detailViewModel: DetailViewModel by viewModel{ parametersOf(id)}
 }
 ----
 
