@@ -16,6 +16,8 @@
 package org.koin.dsl
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.OnCloseCallback
+import org.koin.core.definition.OnReleaseCallback
 import kotlin.reflect.KClass
 
 /**
@@ -28,14 +30,32 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>) {
+infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
     this.secondaryTypes.add(clazz)
+    return this
 }
 
 /**
  * Add compatible types to match for definition
  * @param classes
  */
-infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>) {
+infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> {
     this.secondaryTypes.addAll(classes)
+    return this
+}
+
+/**
+ * Callback when releasing instance
+ */
+infix fun <T> BeanDefinition<T>.onRelease(onRelease: OnReleaseCallback<T>): BeanDefinition<T> {
+    this.onRelease = onRelease
+    return this
+}
+
+/**
+ * Callback when closing instance from registry (called just before final close)
+ */
+infix fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>): BeanDefinition<T> {
+    this.onClose = onClose
+    return this
 }

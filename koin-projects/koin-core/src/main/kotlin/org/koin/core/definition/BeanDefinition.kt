@@ -33,12 +33,17 @@ data class BeanDefinition<T>(
         val name: String? = null,
         val primaryType: KClass<*>
 ) {
+    // Main data
     var secondaryTypes = arrayListOf<KClass<*>>()
     var instance: Instance<T>? = null
     lateinit var definition: Definition<T>
     var options = Options()
     var attributes = Attributes()
     lateinit var kind: Kind
+
+    // lifecycle
+    var onRelease: OnReleaseCallback<T>? = null
+    var onClose: OnCloseCallback<T>? = null
 
     /**
      * Tells if the definition is this Kind
@@ -78,7 +83,7 @@ data class BeanDefinition<T>(
         return "[type:$defKind,$defName$defType$defOtherTypes]"
     }
 
-    fun clear() {
+    fun close() {
         instance?.close()
         instance = null
     }
@@ -89,3 +94,5 @@ enum class Kind {
 }
 
 typealias Definition<T> = DefinitionContext.(DefinitionParameters) -> T
+typealias OnReleaseCallback<T> = (T?) -> Unit
+typealias OnCloseCallback<T> = (T?) -> Unit

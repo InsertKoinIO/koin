@@ -39,6 +39,7 @@ class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
             if (logger.level == Level.DEBUG) {
                 logger.debug("releasing '$scope' ~ $beanDefinition ")
             }
+            beanDefinition.onRelease?.invoke(values[scope.id])
             values.remove(scope.id)
         }
     }
@@ -58,6 +59,7 @@ class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
     }
 
     override fun close() {
+        beanDefinition.onClose?.invoke(null)
         values.clear()
     }
 }

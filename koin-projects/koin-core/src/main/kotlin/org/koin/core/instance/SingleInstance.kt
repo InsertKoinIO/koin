@@ -30,6 +30,7 @@ class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
     override fun release(context: InstanceContext) {}
 
     override fun close() {
+        beanDefinition.onClose?.invoke(value)
         value = null
     }
 

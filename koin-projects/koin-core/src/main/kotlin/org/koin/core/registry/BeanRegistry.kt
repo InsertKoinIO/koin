@@ -160,7 +160,7 @@ class BeanRegistry {
     }
 
     fun close() {
-        definitions.forEach { it.clear() }
+        definitions.forEach { it.close() }
         definitions.clear()
         definitionsNames.clear()
         definitionsClass.clear()
