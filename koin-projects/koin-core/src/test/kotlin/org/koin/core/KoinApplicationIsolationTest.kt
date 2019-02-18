@@ -99,6 +99,8 @@ class KoinApplicationIsolationTest {
 
         assertNotEquals(a1, a2)
         assertNotEquals(b1, b2)
+
+        stopKoin()
     }
 
 }
