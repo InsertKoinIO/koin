@@ -20,6 +20,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoParameterFoundException
 import org.koin.core.instance.Instance
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
@@ -44,6 +45,9 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
     }
 
     override fun <T> create(context: InstanceContext): T {
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("! sandbox instance ~ $beanDefinition")
+        }
         try {
             val params = context.getParameters()
             val instanceContext = context.getDefinitionContext()
@@ -53,11 +57,9 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDe
                 is NoBeanDefFoundException, is InstanceCreationException, is DefinitionOverrideException -> {
                     throw BrokenDefinitionException("Definition $beanDefinition is broken due to error : $e")
                 }
+                is NoParameterFoundException -> Unit
                 else -> logger.debug("sandbox resolution continue on caught error: $e")
             }
-        }
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("| create sandbox for $beanDefinition")
         }
         return mock(beanDefinition.primaryType.java) as T
     }

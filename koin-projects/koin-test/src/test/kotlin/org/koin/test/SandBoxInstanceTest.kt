@@ -1,12 +1,14 @@
 package org.koin.test
 
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.check.cloneForSandbox
+import org.koin.test.check.SandboxInstance
+import org.koin.test.check.sandboxed
 
 class SandBoxInstanceTest {
 
@@ -24,8 +26,12 @@ class SandBoxInstanceTest {
         val def = koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!
         val instance = def.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin))
 
-        val sandboxedDef = def.cloneForSandbox()
-        val mock = sandboxedDef.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin))
+        val sandboxedDef = def.sandboxed()
+        sandboxedDef.createInstanceHolder()
+        val sandboxedInstance = sandboxedDef.instance
+        assertTrue(sandboxedInstance is SandboxInstance)
+
+        val mock = sandboxedInstance?.get<Simple.ComponentA>(InstanceContext(koin = koin))
 
         assertNotEquals(instance, mock)
     }

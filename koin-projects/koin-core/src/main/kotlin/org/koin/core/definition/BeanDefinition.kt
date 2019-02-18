@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-data class BeanDefinition<T>(
+open class BeanDefinition<T>(
         val name: String? = null,
         val primaryType: KClass<*>
 ) {
@@ -58,11 +58,12 @@ data class BeanDefinition<T>(
     /**
      * Create the associated Instance Holder
      */
-    fun createInstanceHolder() {
+    open fun createInstanceHolder() {
         this.instance = when (kind) {
             Kind.Single -> SingleInstance(this)
             Kind.Scope -> ScopedInstance(this)
             Kind.Factory -> FactoryInstance(this)
+            else -> error("Unknown definition type: $this")
         }
     }
 
@@ -83,6 +84,24 @@ data class BeanDefinition<T>(
         return "[type:$defKind,$defName$defType$defOtherTypes]"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BeanDefinition<*>
+
+        if (name != other.name) return false
+        if (primaryType != other.primaryType) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + primaryType.hashCode()
+        return result
+    }
+
     fun close() {
         instance?.close()
         instance = null
@@ -90,7 +109,7 @@ data class BeanDefinition<T>(
 }
 
 enum class Kind {
-    Single, Factory, Scope
+    Single, Factory, Scope, Other
 }
 
 typealias Definition<T> = DefinitionContext.(DefinitionParameters) -> T

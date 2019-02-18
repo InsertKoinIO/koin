@@ -7,6 +7,7 @@ import fr.ekito.myweatherapp.di.roomWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
 import org.junit.Test
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
 import org.koin.test.check.checkModules
@@ -38,6 +39,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testTestConfiguration() {
         koinApplication {
+            logger(Level.DEBUG)
             androidContext(mockedAndroidContext)
             modules(testWeatherApp)
         }.checkModules()

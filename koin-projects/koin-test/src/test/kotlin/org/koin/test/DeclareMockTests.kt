@@ -9,7 +9,7 @@ import org.koin.core.logger.Level
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.mock.cloneForMock
+import org.koin.test.mock.createMockedDefinition
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 
@@ -31,7 +31,7 @@ class DeclareMockTests : KoinTest {
                         null, Simple.ComponentA::class
                 ) as BeanDefinition<Simple.ComponentA>
 
-        val mockedDefinition = definition.cloneForMock()
+        val mockedDefinition = definition.createMockedDefinition()
 
         val instance = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))
         val mock = mockedDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin,parameters = { emptyParametersHolder() }))

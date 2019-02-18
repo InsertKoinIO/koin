@@ -34,6 +34,8 @@ fun KoinApplication.checkModules() = koin.checkModules()
 fun Koin.checkModules() {
     val allDefinitions = getSandboxedDefinitions()
 
+    clearExistingDefinitions()
+
     registerDefinitions(allDefinitions)
 
     runDefinitions(allDefinitions)
@@ -62,25 +64,30 @@ private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     }
 }
 
+
+private fun Koin.clearExistingDefinitions() {
+    beanRegistry.close()
+}
+
 private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
     return beanRegistry.getAllDefinitions()
             .map {
-                KoinApplication.logger.debug("* sandbox for $it")
-                it.cloneForSandbox() as BeanDefinition<*>
+                KoinApplication.logger.debug("* create sandbox for: $it")
+                it.sandboxed() as BeanDefinition<*>
             }
 }
 
 /**
  * Clone definition and inject SandBox instance holder
  */
-fun <T> BeanDefinition<T>.cloneForSandbox(): BeanDefinition<T> {
-    val copy = this.copy()
-    copy.secondaryTypes = this.secondaryTypes
-    copy.instance = SandboxInstance(copy)
-    copy.definition = definition
-    copy.attributes = this.attributes.copy()
-    copy.options = this.options.copy()
-    copy.options.override = true
-    copy.kind = this.kind
-    return copy
+fun <T> BeanDefinition<T>.sandboxed(): BeanDefinition<T> {
+    val sandboxDefinition = SandboxDefinition<T>(name, primaryType)
+    sandboxDefinition.secondaryTypes = this.secondaryTypes
+    sandboxDefinition.definition = definition
+    sandboxDefinition.instance = null
+    sandboxDefinition.attributes = this.attributes.copy()
+    sandboxDefinition.options = this.options.copy()
+    sandboxDefinition.options.override = true
+    sandboxDefinition.kind = this.kind
+    return sandboxDefinition
 }
