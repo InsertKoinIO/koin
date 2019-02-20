@@ -17,77 +17,28 @@ package org.koin.test.check
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.scope.getScopeName
+import kotlin.reflect.KClass
 
 /**
- * Check all definition's dependencies - run all modules in a test sandbox
- * and checkModules if definitions can run
+ * Check all definition's dependencies - start all nodules and check ifdefinitions can run
  */
-fun KoinApplication.checkModules() = koin.checkModules()
+fun KoinApplication.checkModules(
+        parameterCreators: Map<KClass<*>, ParametersCreator> = mapOf()) = koin.checkModules(parameterCreators)
 
 /**
- * Check all definition's dependencies - run all modules in a test sandbox
- * and checkModules if definitions can run
+ * Check all definition's dependencies - start all nodules and check if definitions can run
  */
-fun Koin.checkModules() {
-    val allDefinitions = getSandboxedDefinitions()
+fun Koin.checkModules(
+        parameterCreators: Map<KClass<*>, ParametersCreator> = mapOf()) {
 
-    clearExistingDefinitions()
-
-    registerDefinitions(allDefinitions)
-
-    runDefinitions(allDefinitions)
-
+    beanRegistry.getAllDefinitions().forEach {
+        val scope = if (it.isScoped()) createScope(it.getScopeName()!!, it.getScopeName()) else null
+        get<Any>(it.primaryType, it.name, scope, parameterCreators[it.primaryType])
+        scope?.close()
+    }
     close()
 }
 
-/**
- * Resolve & instance definitions
- */
-fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
-    allDefinitions.forEach {
-        val clazz = it.primaryType
-        val scope = if (it.isScoped()) scopeRegistry.createScopeInstance(
-                "sandbox_scope", it.getScopeName()
-        ) else null
-
-        get<Any>(clazz, it.name, scope) { emptyParametersHolder() }
-        scope?.let { scope.close() }
-    }
-}
-
-private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<*>>) {
-    allDefinitions.forEach {
-        beanRegistry.saveDefinition(it)
-    }
-}
-
-
-private fun Koin.clearExistingDefinitions() {
-    beanRegistry.close()
-}
-
-private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
-    return beanRegistry.getAllDefinitions()
-            .map {
-                KoinApplication.logger.debug("* create sandbox for: $it")
-                it.sandboxed() as BeanDefinition<*>
-            }
-}
-
-/**
- * Clone definition and inject SandBox instance holder
- */
-fun <T> BeanDefinition<T>.sandboxed(): BeanDefinition<T> {
-    val sandboxDefinition = SandboxDefinition<T>(name, primaryType)
-    sandboxDefinition.secondaryTypes = this.secondaryTypes
-    sandboxDefinition.definition = definition
-    sandboxDefinition.instance = null
-    sandboxDefinition.attributes = this.attributes.copy()
-    sandboxDefinition.options = this.options.copy()
-    sandboxDefinition.options.override = true
-    sandboxDefinition.kind = this.kind
-    return sandboxDefinition
-}
+typealias ParametersCreator = () -> DefinitionParameters

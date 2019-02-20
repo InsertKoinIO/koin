@@ -3,6 +3,7 @@ package org.koin.test
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.logger.Level
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
@@ -60,7 +61,9 @@ class CheckModulesTest {
                         single { (s: String) -> Simple.MyString(s) }
                     }
             )
-        }.checkModules()
+        }.checkModules(mapOf(
+                Simple.MyString::class to { parametersOf("param") }
+        ))
     }
 
     @Test
