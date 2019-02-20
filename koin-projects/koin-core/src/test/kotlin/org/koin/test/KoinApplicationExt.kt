@@ -3,6 +3,8 @@ package org.koin.test
 import org.junit.Assert.assertEquals
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.logger.Level
+import org.koin.core.logger.PrintLogger
 import kotlin.reflect.KClass
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {

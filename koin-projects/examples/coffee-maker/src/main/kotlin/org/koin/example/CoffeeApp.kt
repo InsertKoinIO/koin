@@ -13,7 +13,7 @@ class CoffeeApp : KoinComponent {
 fun main(vararg args: String) {
 
     startKoin {
-        logger()
+        printLogger()
         modules(coffeeAppModule)
     }
 

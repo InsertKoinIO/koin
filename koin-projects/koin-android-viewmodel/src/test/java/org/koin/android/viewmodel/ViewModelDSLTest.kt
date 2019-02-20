@@ -17,7 +17,7 @@ class ViewModelDSLTest {
     @Test
     fun `definition should be a viewmodel`() {
         val koinApp = koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(module {
                 viewModel { MyViewModel() }
             })
@@ -31,7 +31,7 @@ class ViewModelDSLTest {
     @Test
     fun `definition should not be a viewmodel`() {
         val koinApp = koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(module {
                 single { MyComponent() }
             })

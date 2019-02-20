@@ -39,7 +39,7 @@ class GenericDeclarationTest {
 
     private fun createKoin(): Koin {
         val koin = koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(modules)
         }.koin
         return koin

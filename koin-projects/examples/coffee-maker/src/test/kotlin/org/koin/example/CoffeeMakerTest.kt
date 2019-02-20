@@ -19,7 +19,7 @@ class CoffeeMakerTest : AutoCloseKoinTest() {
     @Before
     fun before() {
         startKoin {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(coffeeAppModule)
         }
 
