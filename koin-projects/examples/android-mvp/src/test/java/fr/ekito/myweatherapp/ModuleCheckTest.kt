@@ -1,48 +1,59 @@
 package fr.ekito.myweatherapp
 
-import android.app.Application
+import fr.ekito.myweatherapp.data.local.JsonReader
+import fr.ekito.myweatherapp.di.Properties
 import fr.ekito.myweatherapp.di.offlineWeatherApp
 import fr.ekito.myweatherapp.di.onlineWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
-import org.junit.After
+import fr.ekito.myweatherapp.view.detail.DetailContract
 import org.junit.Test
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.logger.Level
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import org.koin.test.KoinTest
+import org.koin.test.check.ParametersCreator
 import org.koin.test.check.checkModules
 import org.mockito.Mockito.mock
+import kotlin.reflect.KClass
 
 /**
  * Test Koin modules
  */
 class ModuleCheckTest : KoinTest {
 
-    val mockedApplication = mock(Application::class.java)
+    private val mocks = module(override = true) {
+        single<JsonReader> { mock(JsonReader::class.java) }
+    }
+    private val mockProperties = mapOf(
+            Properties.SERVER_URL to "http://mock/server/url/"
+    )
+    private val parameterCreators = mapOf<KClass<*>, ParametersCreator>(
+            DetailContract.Presenter::class to { parametersOf("id") }
+    )
 
     @Test
     fun testRemoteConfiguration() {
         koinApplication {
             logger(Level.DEBUG)
-            modules(onlineWeatherApp)
-        }.checkModules()
+            modules(onlineWeatherApp + mocks)
+            properties(mockProperties)
+        }.checkModules(parameterCreators)
     }
 
     @Test
     fun testLocalConfiguration() {
         koinApplication {
             logger(Level.DEBUG)
-            androidContext(mockedApplication)
-            modules(offlineWeatherApp)
-        }.checkModules()
+            modules(offlineWeatherApp + mocks)
+        }.checkModules(parameterCreators)
     }
 
     @Test
     fun testTestConfiguration() {
         koinApplication {
             logger(Level.DEBUG)
-            androidContext(mockedApplication)
-            modules(testWeatherApp)
-        }.checkModules()
+            modules(testWeatherApp + mocks)
+        }.checkModules(parameterCreators)
     }
 }
