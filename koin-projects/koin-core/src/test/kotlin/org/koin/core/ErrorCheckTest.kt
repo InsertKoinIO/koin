@@ -59,7 +59,7 @@ class ErrorCheckTest {
     @Test
     fun `cycle error`() {
         val app = koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(module {
                 single { Errors.CycleA(get()) }
                 single { Errors.CycleB(get()) }

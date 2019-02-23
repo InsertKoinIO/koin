@@ -13,7 +13,7 @@ class FilePropertyDefinitionTest {
         val value = "VALUE"
 
         val koin = koinApplication {
-            logger()
+            printLogger()
             fileProperties("/koin.properties")
         }.koin
 
@@ -28,7 +28,7 @@ class FilePropertyDefinitionTest {
         val value = "VALUE"
 
         val koin = koinApplication {
-            logger()
+            printLogger()
             fileProperties()
         }.koin
 
@@ -52,7 +52,7 @@ class FilePropertyDefinitionTest {
     @Test
     fun `get string value from file`() {
         val koin = koinApplication {
-            logger()
+            printLogger()
             fileProperties()
         }.koin
 
@@ -62,7 +62,7 @@ class FilePropertyDefinitionTest {
     @Test
     fun `get int value from file`() {
         val koin = koinApplication {
-            logger()
+            printLogger()
             fileProperties()
         }.koin
 
@@ -72,7 +72,7 @@ class FilePropertyDefinitionTest {
     @Test
     fun `get float value from file`() {
         val koin = koinApplication {
-            logger()
+            printLogger()
             fileProperties()
         }.koin
 

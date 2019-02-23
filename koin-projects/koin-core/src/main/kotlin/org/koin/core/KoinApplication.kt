@@ -83,15 +83,18 @@ class KoinApplication private constructor() {
 
     /**
      * Set Koin Logger
-     * @param level
      * @param logger - logger
      */
-    @JvmOverloads
-    fun logger(level: Level = Level.INFO, logger: Logger = PrintLogger()): KoinApplication {
+    fun logger(logger: Logger): KoinApplication {
         KoinApplication.logger = logger
-        KoinApplication.logger.level = level
         return this
     }
+
+    /**
+     * Set Koin to use [PrintLogger], by default at [Level.INFO]
+     */
+    @JvmOverloads
+    fun printLogger(level: Level = Level.INFO) = this.logger(PrintLogger(level))
 
     /**
      * Create Single instances Definitions marked as createdAtStart

@@ -12,7 +12,7 @@ class DeclareTest : KoinTest {
     @Test
     fun `declare on the fly with KoinTest`() {
         startKoin {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
         }
 
         try {
