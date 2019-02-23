@@ -1,6 +1,6 @@
 [2.1]
 -- Dev --
-* Scope Params / properties -> in instance
+* Scope Params
 -> injection param in Scope
 - https://github.com/InsertKoinIO/koin/issues/231
 
@@ -14,6 +14,9 @@ https://github.com/InsertKoinIO/koin/issues/344
 + shutdown API Hook on single/factory/scoped + onClose onRelease
 https://github.com/InsertKoinIO/koin/issues/349
 + viewmodel / inject from scope
+x fixed VIEWMODEL_KEY conflict
+https://github.com/InsertKoinIO/koin/issues/364
+x better logging
 
 -- Bugs --
 
