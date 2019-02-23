@@ -94,7 +94,7 @@ inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(noinline s
         stubbing?.let { instance.apply(stubbing) }
         instance
     }
-    copy.attributes = this.attributes.copy()
+    copy.properties = this.properties.copy()
     copy.options = this.options.copy()
     copy.options.override = true
     copy.kind = this.kind

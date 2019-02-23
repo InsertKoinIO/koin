@@ -29,12 +29,12 @@ const val ATTRIBUTE_SCOPE_NAME = "scope_name"
  * Set the scope name of a definition
  */
 fun BeanDefinition<*>.setScopeName(name: String) {
-    attributes[ATTRIBUTE_SCOPE_NAME] = name
+    properties[ATTRIBUTE_SCOPE_NAME] = name
 }
 
 /**
  * Get a scope name of a definition
  */
 fun BeanDefinition<*>.getScopeName(): String? {
-    return attributes[ATTRIBUTE_SCOPE_NAME]
+    return properties[ATTRIBUTE_SCOPE_NAME]
 }

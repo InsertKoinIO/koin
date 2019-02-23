@@ -85,7 +85,7 @@ fun <T> BeanDefinition<T>.sandboxed(): BeanDefinition<T> {
     sandboxDefinition.secondaryTypes = this.secondaryTypes
     sandboxDefinition.definition = definition
     sandboxDefinition.instance = null
-    sandboxDefinition.attributes = this.attributes.copy()
+    sandboxDefinition.properties = this.properties.copy()
     sandboxDefinition.options = this.options.copy()
     sandboxDefinition.options.override = true
     sandboxDefinition.kind = this.kind

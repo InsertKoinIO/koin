@@ -41,9 +41,9 @@ inline fun <reified T : ViewModel> Module.viewModel(
 const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
 
 fun BeanDefinition<*>.setIsViewModel() {
-    attributes[ATTRIBUTE_VIEW_MODEL] = true
+    properties[ATTRIBUTE_VIEW_MODEL] = true
 }
 
 fun BeanDefinition<*>.isViewModel(): Boolean {
-    return attributes[ATTRIBUTE_VIEW_MODEL] ?: false
+    return properties[ATTRIBUTE_VIEW_MODEL] ?: false
 }

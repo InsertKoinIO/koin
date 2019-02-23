@@ -38,7 +38,7 @@ open class BeanDefinition<T>(
     var instance: Instance<T>? = null
     lateinit var definition: Definition<T>
     var options = Options()
-    var attributes = Attributes()
+    var properties = Properties()
     lateinit var kind: Kind
 
     // lifecycle

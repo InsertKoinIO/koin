@@ -16,17 +16,18 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.definition.Properties
 import org.koin.core.definition.DefinitionContext
 import org.koin.core.definition.ScopedContext
 import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
 
 data class ScopeInstance(
-    val id: String,
-    val definition: ScopeDefinition? = null
+        val id: String,
+        val definition: ScopeDefinition? = null
 ) {
-
     var koin: Koin? = null
+    val properties = Properties()
     private val callbacks = arrayListOf<ScopeCallback>()
 
     /**
@@ -47,10 +48,10 @@ data class ScopeInstance(
      * @param parameters
      */
     inline fun <reified T> inject(
-        name: String? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-        lazy { get<T>(name, parameters) }
+            lazy { get<T>(name, parameters) }
 
     /**
      * Get a Koin instance
@@ -58,11 +59,11 @@ data class ScopeInstance(
      * @param parameters
      */
     inline fun <reified T> get(
-        name: String? = null,
-        noinline parameters: ParametersDefinition? = null
+            name: String? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return koin?.get(T::class, name, this, parameters)
-            ?: throw  ScopeIsClosedException("Scope $this is closed")
+                ?: throw  ScopeIsClosedException("Scope $this is closed")
     }
 
     /**

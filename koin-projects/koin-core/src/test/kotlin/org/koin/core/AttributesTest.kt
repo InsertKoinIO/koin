@@ -3,13 +3,13 @@ package org.koin.core
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.koin.core.definition.Attributes
+import org.koin.core.definition.Properties
 
 class AttributesTest {
 
     @Test
     fun `can store & get an attribute value`() {
-        val attr = Attributes()
+        val attr = Properties()
 
         attr.set("myKey", "myString")
 
@@ -19,14 +19,14 @@ class AttributesTest {
 
     @Test
     fun `attribute empty - no value`() {
-        val attr = Attributes()
+        val attr = Properties()
 
         assertTrue(attr.get<String>("myKey") == null)
     }
 
     @Test
     fun `attribute value overwrite`() {
-        val attr = Attributes()
+        val attr = Properties()
 
         attr.set("myKey", "myString")
         attr.set("myKey", "myString2")

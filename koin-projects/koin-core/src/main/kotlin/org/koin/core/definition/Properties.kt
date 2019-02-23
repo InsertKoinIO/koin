@@ -15,21 +15,27 @@
  */
 package org.koin.core.definition
 
+import org.koin.core.error.MissingPropertyException
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Definitions Attributes
+ * Definitions Properties
  *
  * @author Arnaud Giuliani
  */
-data class Attributes(private val data: MutableMap<String, Any> = ConcurrentHashMap()) {
+data class Properties(private val data: MutableMap<String, Any> = ConcurrentHashMap()) {
 
     operator fun <T> set(key: String, value: T) {
         data[key] = value as Any
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: String): T? {
+    fun <T> getOrNull(key: String): T? {
         return data[key] as? T
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T> get(key: String): T {
+        return data[key] as? T ?: throw MissingPropertyException("missing property for '$key'")
     }
 }

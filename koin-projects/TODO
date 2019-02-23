@@ -17,21 +17,19 @@ https://github.com/InsertKoinIO/koin/issues/349
 x fixed VIEWMODEL_KEY conflict
 https://github.com/InsertKoinIO/koin/issues/364
 x better logging
+-> PR ok
+x Scope Params / properties
+-> Properties in ScopeInstance
 
 -- Bugs --
 
 -- PR --
+
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
 * JUnit rule ~ AutoCloseKoinTest()
-* better logger function?
-
 
 -- Dev --
-
-
-* Scope Params / properties
--> Properties in ScopeInstance
 
 * Fragment Manager -> injection by fragment
 
