@@ -23,7 +23,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testRemoteConfiguration() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(onlineWeatherApp)
         }.checkModules()
     }
@@ -31,7 +31,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testLocalConfiguration() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             androidContext(mockedApplication)
             modules(offlineWeatherApp)
         }.checkModules()
@@ -40,7 +40,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testTestConfiguration() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             androidContext(mockedApplication)
             modules(testWeatherApp)
         }.checkModules()

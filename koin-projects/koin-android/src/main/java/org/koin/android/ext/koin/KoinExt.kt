@@ -35,14 +35,11 @@ import java.util.*
 /**
  * Setup Android Logger for Koin
  * @param level
- * @param Logger
  */
 fun KoinApplication.androidLogger(
-        level: Level = Level.INFO,
-        log: Logger = AndroidLogger()
+        level: Level = Level.INFO
 ): KoinApplication {
-    logger = log
-    logger.level = level
+    logger = AndroidLogger(level)
     return this
 }
 
