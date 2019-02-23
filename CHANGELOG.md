@@ -2,6 +2,30 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.0.0]()
+
+_Android_
+
+_Android-Scope_
+
+_Android-ViewModel_
+
+_Core_
+
+* `[UPDATED]` - complete internals rewritten
+
+_Core-Ext_
+
+_Test_
+
+
+
+_Ktor_
+
+_Spark_
+
+* `[REMOVED]` project non supported anymore
+
 ## [1.0.2]()
 
 _Android_

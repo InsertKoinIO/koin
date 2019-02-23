@@ -38,12 +38,12 @@ inline fun <reified T : ViewModel> Module.viewModel(
     factory(name, override, definition).setIsViewModel()
 }
 
-const val VIEW_MODEL_KEY = "isViewModel"
+const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
 
 fun BeanDefinition<*>.setIsViewModel() {
-    attributes[VIEW_MODEL_KEY] = true
+    attributes[ATTRIBUTE_VIEW_MODEL] = true
 }
 
 fun BeanDefinition<*>.isViewModel(): Boolean {
-    return attributes[VIEW_MODEL_KEY] ?: false
+    return attributes[ATTRIBUTE_VIEW_MODEL] ?: false
 }

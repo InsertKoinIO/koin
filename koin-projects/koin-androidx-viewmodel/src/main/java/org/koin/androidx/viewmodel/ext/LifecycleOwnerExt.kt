@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.resolveViewModelInstance
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.scope.ScopeInstance
 import kotlin.reflect.KClass
 
 /**
@@ -31,14 +32,15 @@ import kotlin.reflect.KClass
 /**
  * Lazy getByClass a viewModel instance
  *
- * @param VIEW_MODEL_KEY - ViewModel Factory VIEW_MODEL_KEY (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param scope - ScopeInstance
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
-    name: String? = null,
-    noinline parameters: ParametersDefinition? = null
-) = lazy { getViewModel<T>(name, parameters) }
+        name: String? = null,
+        scope: ScopeInstance? = null,
+        noinline parameters: ParametersDefinition? = null
+) = lazy { getViewModel<T>(name, scope, parameters) }
 
 /**
  * Get a viewModel instance
@@ -48,15 +50,16 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
-    name: String? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String? = null,
+        scope: ScopeInstance? = null,
+        noinline parameters: ParametersDefinition? = null
 ) = resolveViewModelInstance(
-    ViewModelParameters(
-        T::class,
-        name,
-        null,
-        parameters
-    )
+        ViewModelParameters(
+                T::class,
+                name,
+                scope = scope,
+                parameters = parameters
+        )
 )
 
 
@@ -64,21 +67,21 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
  * Lazy getByClass a viewModel instance
  *
  * @param clazz - Class of the BeanDefinition to retrieve
- * @param VIEW_MODEL_KEY - ViewModel Factory VIEW_MODEL_KEY (if have several instances from same ViewModel)
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
- * @param from - ViewModelStoreOwner that will store the viewModel instance. null to assume "this" as the ViewModelStoreOwner
+ * @param scope - scope Instance
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModel(
-    clazz: KClass<T>,
-    name: String? = null,
-    parameters: ParametersDefinition? = null
+        clazz: KClass<T>,
+        name: String? = null,
+        scope: ScopeInstance? = null,
+        parameters: ParametersDefinition? = null
 ) = resolveViewModelInstance(
-    ViewModelParameters(
-        clazz,
-        name,
-        null,
-        parameters
-    )
+        ViewModelParameters(
+                clazz,
+                name,
+                scope = scope,
+                parameters = parameters
+        )
 )
 

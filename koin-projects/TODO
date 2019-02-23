@@ -1,35 +1,54 @@
+[2.1]
+-- Dev --
+* Scope Params / properties -> in instance
+-> injection param in Scope
+- https://github.com/InsertKoinIO/koin/issues/231
+
+[2.0]
 -- Done --
 x release of singles
 x Scope API Callback
 x Scope injection params
-x getProperty with default value
++ getProperty with default value
 https://github.com/InsertKoinIO/koin/issues/344
-x shutdown API Hook on single/factory/scoped + onClose onRelease
++ shutdown API Hook on single/factory/scoped + onClose onRelease
 https://github.com/InsertKoinIO/koin/issues/349
-x checkModules - create definition sandbox / fix internals
-- wonr't fix https://github.com/InsertKoinIO/koin/issues/304
++ viewmodel / inject from scope
 
 -- Bugs --
 
+-- PR --
+? checkModules - create definition sandbox / fix internals
+- wont fix https://github.com/InsertKoinIO/koin/issues/304
+* JUnit rule ~ AutoCloseKoinTest()
+* better logger function?
+
+
 -- Dev --
-* Scope Params / properties -> in instance
--> function context / injection params + scope / scope props
-- https://github.com/InsertKoinIO/koin/issues/231
+
+
+* Scope Params / properties
+-> Properties in ScopeInstance
 
 * Fragment Manager -> injection by fragment
 
+* Koin as a Ktor feature
 * Ktor shutdown
 https://github.com/InsertKoinIO/koin/issues/348
-
--- benchmark --
 
 -- Doc ---
 * Changelog update
 * Scope Instance sample / http auth / non auth
-* Multi module app example
+
 * Making SDK With Koin / Koin instance isolation
     -> https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5
     -> good description of isolation
 
+-- Samples --
+* Demo App
+ - feature by feature case
+ - MVP, MVVP
+ - Scopes
+ - Multi module app example
 * AndroidX sample project
 

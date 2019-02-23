@@ -17,13 +17,13 @@ fun <T : ViewModel> LifecycleOwner.resolveViewModelInstance(parameters: ViewMode
 }
 
 private fun <T : ViewModel> ViewModelProvider.getInstance(
-    parameters: ViewModelParameters<T>
+        parameters: ViewModelParameters<T>
 ): T {
     return this.get(parameters.clazz.java)
 }
 
 private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
-    parameters: ViewModelParameters<T>
+        parameters: ViewModelParameters<T>
 ): ViewModelStore {
     return when {
         parameters.from != null -> parameters.from.invoke().viewModelStore
@@ -34,14 +34,14 @@ private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
 }
 
 private fun <T : ViewModel> makeViewModelProvider(
-    vmStore: ViewModelStore,
-    parameters: ViewModelParameters<T>
+        vmStore: ViewModelStore,
+        parameters: ViewModelParameters<T>
 ): ViewModelProvider {
     return ViewModelProvider(
-        vmStore,
-        object : ViewModelProvider.Factory, KoinComponent {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return getKoin().get(parameters.clazz, parameters.name, null, parameters.parameters)
-            }
-        })
+            vmStore,
+            object : ViewModelProvider.Factory, KoinComponent {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return getKoin().get(parameters.clazz, parameters.name, parameters.scope, parameters.parameters)
+                }
+            })
 }

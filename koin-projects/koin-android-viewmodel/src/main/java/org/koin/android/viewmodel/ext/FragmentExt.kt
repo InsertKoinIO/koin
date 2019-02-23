@@ -22,6 +22,7 @@ import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.ViewModelStoreOwnerDefinition
 import org.koin.android.viewmodel.resolveViewModelInstance
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.scope.ScopeInstance
 
 /**
  * Fragment extensiosn to help for Viewmodel
@@ -33,31 +34,36 @@ import org.koin.core.parameter.ParametersDefinition
  * Lazy getByClass a viewModel instance shared with Activity
  *
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param scope - used scope Instance
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-    name: String? = null,
-    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-    noinline parameters: ParametersDefinition? = null
-) = lazy { getSharedViewModel<T>(name, from, parameters) }
+        name: String? = null,
+        scope: ScopeInstance? = null,
+        noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+        noinline parameters: ParametersDefinition? = null
+) = lazy { getSharedViewModel<T>(name, scope, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
  *
  * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param scope - used scope Instance
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-    name: String? = null,
-    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-    noinline parameters: ParametersDefinition? = null
+        name: String? = null,
+        scope: ScopeInstance? = null,
+        noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+        noinline parameters: ParametersDefinition? = null
 ) = resolveViewModelInstance(
-    ViewModelParameters(
-        T::class,
-        name,
-        from,
-        parameters
-    )
+        ViewModelParameters(
+                T::class,
+                name,
+                from,
+                scope,
+                parameters
+        )
 )
