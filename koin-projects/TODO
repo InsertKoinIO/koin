@@ -30,7 +30,6 @@ x Scope Params / properties
 * JUnit rule ~ AutoCloseKoinTest()
 
 -- Dev --
-
 * Fragment Manager -> injection by fragment
 
 * Koin as a Ktor feature

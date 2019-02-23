@@ -21,7 +21,7 @@ class AttributesTest {
     fun `attribute empty - no value`() {
         val attr = Properties()
 
-        assertTrue(attr.get<String>("myKey") == null)
+        assertTrue(attr.getOrNull<String>("myKey") == null)
     }
 
     @Test

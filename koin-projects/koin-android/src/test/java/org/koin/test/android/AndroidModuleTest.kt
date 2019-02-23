@@ -7,11 +7,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.logger.EmptyLogger
-import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
@@ -43,7 +40,6 @@ class AndroidModuleTest : KoinTest {
         val mockedContext = mock(Context::class.java)
 
         val koin = koinApplication {
-            printLogger(Level.DEBUG)
             androidContext(mockedContext)
             modules(SampleModule)
         }.koin
@@ -56,7 +52,6 @@ class AndroidModuleTest : KoinTest {
         val mockedContext = mock(Application::class.java)
 
         val koin = koinApplication {
-            printLogger(Level.DEBUG)
             androidContext(mockedContext)
             modules(SampleModule)
         }.koin
@@ -69,7 +64,6 @@ class AndroidModuleTest : KoinTest {
         val mockedContext = mock(Context::class.java)
 
         val koin = koinApplication {
-            printLogger(Level.DEBUG)
             androidContext(mockedContext)
             modules(SampleModule)
         }.koin
@@ -84,7 +78,6 @@ class AndroidModuleTest : KoinTest {
     fun `should inject property`() {
         val value = "URL"
         val koin = koinApplication {
-            printLogger(Level.DEBUG)
             properties(hashMapOf(URL to value))
             modules(SampleModule)
         }.koin

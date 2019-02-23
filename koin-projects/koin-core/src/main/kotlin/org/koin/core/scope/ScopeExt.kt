@@ -36,5 +36,5 @@ fun BeanDefinition<*>.setScopeName(name: String) {
  * Get a scope name of a definition
  */
 fun BeanDefinition<*>.getScopeName(): String? {
-    return properties[ATTRIBUTE_SCOPE_NAME]
+    return properties.getOrNull(ATTRIBUTE_SCOPE_NAME)
 }

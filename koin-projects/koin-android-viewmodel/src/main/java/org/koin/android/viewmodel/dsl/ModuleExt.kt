@@ -31,9 +31,9 @@ import org.koin.core.module.Module
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-    name: String? = null,
-    override: Boolean = false,
-    noinline definition: Definition<T>
+        name: String? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
 ) {
     factory(name, override, definition).setIsViewModel()
 }
@@ -45,5 +45,5 @@ fun BeanDefinition<*>.setIsViewModel() {
 }
 
 fun BeanDefinition<*>.isViewModel(): Boolean {
-    return properties[ATTRIBUTE_VIEW_MODEL] ?: false
+    return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
 }
