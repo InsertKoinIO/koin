@@ -67,7 +67,7 @@ class ParametersInjectionTest {
     @Test
     fun `chained factory injection`() {
         val koin = koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(
                 module {
                     factory { (i: Int) -> Simple.MyIntFactory(i) }

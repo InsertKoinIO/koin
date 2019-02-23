@@ -10,7 +10,7 @@ class BeanLifecycleTest {
     fun `declare onClose for single`() {
         var result = ""
         val app = koinApplication {
-            printLogger()
+            defaultLogger()
             modules(
                     module {
                         single { Simple.Component1() } onClose { result = "closing" }
@@ -26,7 +26,7 @@ class BeanLifecycleTest {
     fun `declare onClose for factory`() {
         var result = ""
         val app = koinApplication {
-            printLogger()
+            defaultLogger()
             modules(
                     module {
                         factory { Simple.Component1() } onClose { result = "closing" }
@@ -42,7 +42,7 @@ class BeanLifecycleTest {
     fun `declare onClose for scoped`() {
         var result = ""
         val app = koinApplication {
-            printLogger()
+            defaultLogger()
             modules(
                     module {
                         scope("test") {
@@ -60,7 +60,7 @@ class BeanLifecycleTest {
     fun `declare onRelease for single`() {
         var result = ""
         val app = koinApplication {
-            printLogger()
+            defaultLogger()
             modules(
                     module {
                         single { Simple.Component1() } onRelease { result = "release" }
@@ -76,7 +76,7 @@ class BeanLifecycleTest {
     fun `declare onRelease for factory`() {
         var result = ""
         val app = koinApplication {
-            printLogger()
+            defaultLogger()
             modules(
                     module {
                         factory { Simple.Component1() } onRelease { result = "release" }
@@ -92,7 +92,7 @@ class BeanLifecycleTest {
     fun `declare onRelease for scoped`() {
         var result = ""
         val app = koinApplication {
-            printLogger()
+            defaultLogger()
             modules(
                     module {
                         scope("test") {

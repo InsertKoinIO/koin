@@ -25,7 +25,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
     @Test
     fun `should create all MVP hierarchy`() {
         startKoin {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(MVPModule, DataSourceModule)
         }
 
@@ -43,7 +43,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
     @Test
     fun `check MVP hierarchy`() {
         startKoin {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(MVPModule, DataSourceModule)
         }.checkModules()
     }

@@ -20,7 +20,7 @@ public class UnitJavaTest {
     @Before
     public void before() {
         KoinApplication koinApp = KoinApplication.create()
-                .printLogger()
+                .defaultLogger()
                 .modules(koinModule);
 
         start(koinApp);

@@ -67,7 +67,7 @@ class KoinAppCreationTest {
     @Test
     fun `allow declare a print logger level`() {
         startKoin {
-            printLogger(Level.ERROR)
+            defaultLogger(Level.ERROR)
         }
 
         assertEquals(KoinApplication.logger.level, Level.ERROR)

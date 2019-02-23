@@ -18,7 +18,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
     @Test
     fun `should close scoped definition on ON_DESTROY`() {
         startKoin {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(
                 module {
                     scoped { MyService() }
@@ -44,7 +44,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
     @Test
     fun `should not close scoped definition`() {
         startKoin {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(org.koin.dsl.module {
                 scoped { MyService() }
             })
@@ -63,7 +63,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
     @Test
     fun `should close scoped definition on ON_STOP`() {
         startKoin {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(org.koin.dsl.module {
                 scoped { MyService() }
             })

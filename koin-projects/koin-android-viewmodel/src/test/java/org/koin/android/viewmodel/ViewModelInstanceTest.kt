@@ -14,7 +14,7 @@ class ViewModelInstanceTest {
     @Test
     fun `should have a factory instance for ViewModel`() {
         val koinApp = koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(module {
                 viewModel { MyViewModel() }
             })

@@ -4,7 +4,6 @@ import android.app.Application
 import fr.ekito.myweatherapp.di.offlineWeatherApp
 import fr.ekito.myweatherapp.di.onlineWeatherApp
 import fr.ekito.myweatherapp.di.testWeatherApp
-import org.junit.After
 import org.junit.Test
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.logger.Level
@@ -23,7 +22,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testRemoteConfiguration() {
         koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(onlineWeatherApp)
         }.checkModules()
     }
@@ -31,7 +30,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testLocalConfiguration() {
         koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             androidContext(mockedApplication)
             modules(offlineWeatherApp)
         }.checkModules()
@@ -40,7 +39,7 @@ class ModuleCheckTest : KoinTest {
     @Test
     fun testTestConfiguration() {
         koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             androidContext(mockedApplication)
             modules(testWeatherApp)
         }.checkModules()

@@ -20,7 +20,7 @@ class KoinComponentTest {
     @Test
     fun `can lazy inject from KoinComponent`() {
         val app = startKoin {
-            printLogger()
+            defaultLogger()
             modules(
                 module {
                     single { Simple.ComponentA() }

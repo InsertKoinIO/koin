@@ -108,7 +108,7 @@ class ModuleCreationTest {
     fun `create modules list timing`() {
 
         koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(
                 module {
                     single { Simple.ComponentA() }
@@ -120,7 +120,7 @@ class ModuleCreationTest {
         }
 
         koinApplication {
-            printLogger(Level.DEBUG)
+            defaultLogger(Level.DEBUG)
             modules(
                 listOf(
                     module {

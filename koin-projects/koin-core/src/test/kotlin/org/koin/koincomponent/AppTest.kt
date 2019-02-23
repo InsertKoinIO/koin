@@ -21,7 +21,7 @@ class AppTest {
     @Test
     fun `can run KoinComponent app`() {
         val app = startKoin {
-            printLogger()
+            defaultLogger()
             modules(
                 module {
                     single { TasksView() }
