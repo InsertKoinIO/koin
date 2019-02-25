@@ -42,3 +42,12 @@ fun Koin.checkModules(
 }
 
 typealias ParametersCreator = () -> DefinitionParameters
+
+class ParametersBinding {
+    val creators = mutableMapOf<KClass<*>, ParametersCreator>()
+    inline fun <reified T> create(noinline creator: ParametersCreator) = creators.put(T::class, creator)
+}
+
+fun parameterCreatorsOf(f: ParametersBinding.() -> Unit): Map<KClass<*>, ParametersCreator> {
+    return ParametersBinding().apply(f).creators
+}

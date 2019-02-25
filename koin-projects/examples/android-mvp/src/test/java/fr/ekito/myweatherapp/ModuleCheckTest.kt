@@ -12,10 +12,9 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import org.koin.test.check.ParametersCreator
 import org.koin.test.check.checkModules
+import org.koin.test.check.parameterCreatorsOf
 import org.mockito.Mockito.mock
-import kotlin.reflect.KClass
 
 /**
  * Test Koin modules
@@ -28,9 +27,9 @@ class ModuleCheckTest : KoinTest {
     private val mockProperties = mapOf(
             Properties.SERVER_URL to "http://mock/server/url/"
     )
-    private val parameterCreators = mapOf<KClass<*>, ParametersCreator>(
-            DetailContract.Presenter::class to { parametersOf("id") }
-    )
+    private val parameterCreators = parameterCreatorsOf {
+        create<DetailContract.Presenter> { parametersOf("id") }
+    }
 
     @Test
     fun testRemoteConfiguration() {

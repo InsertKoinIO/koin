@@ -7,6 +7,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import org.koin.test.check.parameterCreatorsOf
 
 class CheckModulesTest {
 
@@ -61,9 +62,9 @@ class CheckModulesTest {
                         single { (s: String) -> Simple.MyString(s) }
                     }
             )
-        }.checkModules(mapOf(
-                Simple.MyString::class to { parametersOf("param") }
-        ))
+        }.checkModules(parameterCreatorsOf {
+            create<Simple.MyString> { parametersOf("param") }
+        })
     }
 
     @Test

@@ -29,7 +29,7 @@ val weatherAppModule = module {
     factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
 
     // Presenter for Detail View
-    scope<DetailContract.Presenter> {
+    scope<DetailActivity> {
         scoped<DetailContract.Presenter> { (id: String) -> DetailPresenter(id, get(), get()) }
     }
 
