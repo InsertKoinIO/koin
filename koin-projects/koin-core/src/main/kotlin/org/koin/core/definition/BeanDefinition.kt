@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-open class BeanDefinition<T>(
+class BeanDefinition<T>(
         val name: String? = null,
         val primaryType: KClass<*>
 ) {
