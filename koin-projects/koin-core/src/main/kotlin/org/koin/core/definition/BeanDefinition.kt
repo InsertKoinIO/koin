@@ -58,7 +58,7 @@ class BeanDefinition<T>(
     /**
      * Create the associated Instance Holder
      */
-    open fun createInstanceHolder() {
+    fun createInstanceHolder() {
         this.instance = when (kind) {
             Kind.Single -> SingleInstance(this)
             Kind.Scope -> ScopedInstance(this)
