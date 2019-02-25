@@ -18,6 +18,7 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.getScopeName
 import kotlin.reflect.KClass
 
@@ -25,29 +26,32 @@ import kotlin.reflect.KClass
  * Check all definition's dependencies - start all nodules and check ifdefinitions can run
  */
 fun KoinApplication.checkModules(
-        parameterCreators: Map<KClass<*>, ParametersCreator> = mapOf()) = koin.checkModules(parameterCreators)
+        parameterCreators: Map<NamedKClass, ParametersCreator> = mapOf()) = koin.checkModules(parameterCreators)
 
 /**
  * Check all definition's dependencies - start all nodules and check if definitions can run
  */
 fun Koin.checkModules(
-        parameterCreators: Map<KClass<*>, ParametersCreator> = mapOf()) {
+        parameterCreators: Map<NamedKClass, ParametersCreator> = mapOf()) {
 
     beanRegistry.getAllDefinitions().forEach {
         val scope = if (it.isScoped()) createScope(it.getScopeName()!!, it.getScopeName()) else null
-        get<Any>(it.primaryType, it.name, scope, parameterCreators[it.primaryType])
+        val parameters = parameterCreators[NamedKClass(it.name, it.primaryType)]?.invoke(it.name) ?: parametersOf()
+        get<Any>(it.primaryType, it.name, scope) { parameters }
         scope?.close()
     }
     close()
 }
 
-typealias ParametersCreator = () -> DefinitionParameters
+data class NamedKClass(val name: String? = null, val type: KClass<*>)
+typealias ParametersCreator = (String?) -> DefinitionParameters
 
 class ParametersBinding {
-    val creators = mutableMapOf<KClass<*>, ParametersCreator>()
-    inline fun <reified T> create(noinline creator: ParametersCreator) = creators.put(T::class, creator)
+    val creators = mutableMapOf<NamedKClass, ParametersCreator>()
+    inline fun <reified T> create(named: String? = null, noinline creator: ParametersCreator) =
+            creators.put(NamedKClass(named, T::class), creator)
 }
 
-fun parameterCreatorsOf(f: ParametersBinding.() -> Unit): Map<KClass<*>, ParametersCreator> {
+fun parameterCreatorsOf(f: ParametersBinding.() -> Unit): Map<NamedKClass, ParametersCreator> {
     return ParametersBinding().apply(f).creators
 }

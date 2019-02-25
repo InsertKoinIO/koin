@@ -60,10 +60,12 @@ class CheckModulesTest {
             modules(
                     module {
                         single { (s: String) -> Simple.MyString(s) }
+                        single("upper") { (s: String) -> Simple.MyString(s.toUpperCase()) }
                     }
             )
         }.checkModules(parameterCreatorsOf {
             create<Simple.MyString> { parametersOf("param") }
+            create<Simple.MyString>("upper") { named -> parametersOf(named) }
         })
     }
 
