@@ -47,6 +47,7 @@ class KoinApplication private constructor() {
     fun modules(modules: Iterable<Module>): KoinApplication {
         val duration = measureDurationOnly {
             koin.beanRegistry.loadModules(modules)
+            koin.scopeRegistry.loadDefaultScopes(koin)
             koin.scopeRegistry.loadScopes(modules)
         }
         if (logger.isAt(Level.INFO)) {

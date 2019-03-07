@@ -94,4 +94,8 @@ data class ScopeInstance(
         val scopeDef = definition?.let { ",scope:'${definition.scopeName}'" } ?: ""
         return "ScopeInstance[id:'$id'$scopeDef]"
     }
+
+    companion object {
+        val GLOBAL = ScopeInstance("-GLOBAL-")
+    }
 }

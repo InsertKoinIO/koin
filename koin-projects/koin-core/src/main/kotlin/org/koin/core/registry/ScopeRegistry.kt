@@ -15,6 +15,7 @@
  */
 package org.koin.core.registry
 
+import org.koin.core.Koin
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
@@ -40,12 +41,25 @@ class ScopeRegistry {
         }
     }
 
+    fun loadDefaultScopes(koin: Koin) {
+        ScopeInstance.GLOBAL.register(koin)
+        saveInstance(ScopeInstance.GLOBAL)
+    }
+
     private fun declareScopes(module: Module) {
         module.scopes.forEach {
-            if (definitions[it.scopeName] != null) {
+            saveDefinition(it)
+        }
+    }
 
-            }
-            definitions[it.scopeName] = it
+    private fun saveDefinition(scopeDefinition: ScopeDefinition) {
+        val foundDefinition = definitions[scopeDefinition.scopeName]
+        if (foundDefinition == null) {
+            definitions[scopeDefinition.scopeName] = scopeDefinition
+        } else {
+            val currentDefinitions = foundDefinition.definitions
+            currentDefinitions.addAll(scopeDefinition.definitions)
+            foundDefinition.definitions = currentDefinitions
         }
     }
 
@@ -70,12 +84,16 @@ class ScopeRegistry {
         if (instances[instance.id] != null) {
             throw ScopeAlreadyCreatedException("A scope with id '${instance.id}' already exists. Reuse or close it.")
         }
-        instances[instance.id] = instance
+        saveInstance(instance)
     }
 
     fun getScopeInstance(id: String): ScopeInstance {
         return instances[id]
                 ?: throw ScopeNotCreatedException("ScopeInstance with id '$id' not found. Create a scope instance with id '$id'")
+    }
+
+    private fun saveInstance(instance: ScopeInstance) {
+        instances[instance.id] = instance
     }
 
     fun getScopeInstanceOrNull(id: String): ScopeInstance? {

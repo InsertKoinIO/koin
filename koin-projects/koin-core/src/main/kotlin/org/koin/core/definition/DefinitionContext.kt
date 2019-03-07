@@ -7,7 +7,7 @@ import org.koin.core.scope.ScopeInstance
 
 sealed class DefinitionContext(val koin: Koin) {
 
-    abstract fun getCurrentScope(): ScopeInstance?
+    abstract fun getCurrentScope(): ScopeInstance
 
     /**
      * Resolve an instance from Koin
@@ -41,15 +41,15 @@ sealed class DefinitionContext(val koin: Koin) {
      * @param defaultValue
      */
     fun <T> getProperty(key: String, defaultValue: T? = null): T {
-        return koin.getProperty(key,defaultValue)
-        ?: throw MissingPropertyException("Property '$key' is missing")
+        return koin.getProperty(key, defaultValue)
+                ?: throw MissingPropertyException("Property '$key' is missing")
     }
 }
 
 class DefaultContext(koin: Koin) : DefinitionContext(koin) {
-    override fun getCurrentScope(): ScopeInstance? = null
+    override fun getCurrentScope(): ScopeInstance = ScopeInstance.GLOBAL
 }
 
 class ScopedContext(koin: Koin, private val scopeInstance: ScopeInstance) : DefinitionContext(koin) {
-    override fun getCurrentScope(): ScopeInstance? = scopeInstance
+    override fun getCurrentScope(): ScopeInstance = scopeInstance
 }

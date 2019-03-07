@@ -29,7 +29,12 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin() = GlobalContext.get().koin
+    fun getKoin(): Koin = GlobalContext.get().koin
+
+    /**
+     * THe associated scope
+     */
+    fun currentScope(): ScopeInstance = ScopeInstance.GLOBAL
 }
 
 /**
@@ -39,11 +44,11 @@ interface KoinComponent {
  * @param parameters
  */
 inline fun <reified T> KoinComponent.get(
-    name: String? = null,
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String? = null,
+        scope: ScopeInstance = currentScope(),
+        noinline parameters: ParametersDefinition? = null
 ): T =
-    getKoin().get(name, scope, parameters)
+        getKoin().get(name, scope, parameters)
 
 /**
  * Lazy inject instance from Koin
@@ -52,8 +57,8 @@ inline fun <reified T> KoinComponent.get(
  * @param parameters
  */
 inline fun <reified T> KoinComponent.inject(
-    name: String? = null,
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String? = null,
+        scope: ScopeInstance = currentScope(),
+        noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-    getKoin().inject(name, scope, parameters)
+        getKoin().inject(name, scope, parameters)

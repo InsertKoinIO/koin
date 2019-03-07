@@ -54,7 +54,7 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> inject(
             name: String? = null,
-            scope: ScopeInstance? = null,
+            scope: ScopeInstance = ScopeInstance.GLOBAL,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
             lazy { get<T>(name, scope, parameters) }
@@ -68,7 +68,7 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> get(
             name: String? = null,
-            scope: ScopeInstance? = null,
+            scope: ScopeInstance = ScopeInstance.GLOBAL,
             noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, name, scope, parameters)
@@ -81,11 +81,10 @@ class Koin {
      * @param scope
      * @param parameters
      */
-    @JvmOverloads
     fun <T> get(
             clazz: KClass<*>,
             name: String?,
-            scope: ScopeInstance?,
+            scope: ScopeInstance = ScopeInstance.GLOBAL,
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.level == Level.DEBUG) {
@@ -103,7 +102,7 @@ class Koin {
     private fun <T> resolve(
             name: String?,
             clazz: KClass<*>,
-            scope: ScopeInstance?,
+            scope: ScopeInstance,
             parameters: ParametersDefinition?
     ): T {
         val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
@@ -114,12 +113,12 @@ class Koin {
     private fun prepareResolution(
             name: String?,
             clazz: KClass<*>,
-            scope: ScopeInstance?
+            scope: ScopeInstance
     ): Pair<BeanDefinition<*>, ScopeInstance?> {
         val definition = beanRegistry.findDefinition(name, clazz)
                 ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-        if (definition.isScoped() && scope != null) {
+        if (definition.isScoped() && scope != ScopeInstance.GLOBAL) {
             checkScopeResolution(definition, scope)
         }
 
