@@ -4,6 +4,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.DefinitionContext
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
+import org.koin.core.scope.ScopeInstance
 import org.koin.core.time.measureDuration
 import java.lang.reflect.Constructor
 import java.util.concurrent.ConcurrentHashMap
@@ -74,4 +75,4 @@ val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
  */
 internal fun <T : Any> DefinitionContext.getWithDefault(
         clazz: KClass<T>
-): T = koin.get(clazz, null, null, null)
+): T = koin.get(clazz, null, ScopeInstance.GLOBAL, null)

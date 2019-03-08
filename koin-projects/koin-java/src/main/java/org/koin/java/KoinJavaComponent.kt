@@ -38,10 +38,10 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <T : Any> inject(
-        clazz: Class<T>,
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        parameters: ParametersDefinition? = null
+            clazz: Class<T>,
+            name: String? = null,
+            scope: ScopeInstance = ScopeInstance.GLOBAL,
+            parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy { get(clazz, name, scope, parameters) }
     }
@@ -56,16 +56,16 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <T : Any> get(
-        clazz: Class<T>,
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        parameters: ParametersDefinition? = null
+            clazz: Class<T>,
+            name: String? = null,
+            scope: ScopeInstance = ScopeInstance.GLOBAL,
+            parameters: ParametersDefinition? = null
     ): T {
         return getKoin().get(
-            clazz.kotlin,
-            name,
-            scope,
-            parameters
+                clazz.kotlin,
+                name,
+                scope,
+                parameters
         )
     }
 

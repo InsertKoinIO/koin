@@ -16,8 +16,8 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.definition.Properties
 import org.koin.core.definition.DefinitionContext
+import org.koin.core.definition.Properties
 import org.koin.core.definition.ScopedContext
 import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
@@ -96,6 +96,7 @@ data class ScopeInstance(
     }
 
     companion object {
+        @JvmStatic
         val GLOBAL = ScopeInstance("-GLOBAL-")
     }
 }
