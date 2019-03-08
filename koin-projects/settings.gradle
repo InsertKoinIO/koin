@@ -1,7 +1,7 @@
 // Core
 include 'koin-core'
 include 'koin-test'
-//include 'examples:coffee-maker'
+include 'examples:coffee-maker'
 //include 'koin-java','koin-core-ext'
 //
 //// Android
