@@ -34,11 +34,11 @@ import org.koin.core.scope.ScopeInstance
  * @param parameters
  */
 inline fun <reified T : Any> Route.inject(
-    name: String = "",
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String = "",
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
 ) =
-    lazy { get<T>(name, scope, parameters) }
+        lazy { get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -47,11 +47,11 @@ inline fun <reified T : Any> Route.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Route.get(
-    name: String = "",
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String = "",
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
 ) =
-    getKoin().get<T>(name, scope, parameters)
+        getKoin().get<T>(name, scope, parameters)
 
 /**
  * Retrieve given property for KoinComponent
@@ -59,7 +59,7 @@ inline fun <reified T : Any> Route.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Route.getProperty(key: String) =
-    getKoin().getProperty<T>(key)
+        getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -70,7 +70,7 @@ inline fun <reified T> Route.getProperty(key: String) =
  *
  */
 inline fun <reified T> Route.getProperty(key: String, defaultValue: T) =
-    getKoin().getProperty(key) ?: defaultValue
+        getKoin().getProperty(key) ?: defaultValue
 
 /**
  * Help work on ModuleDefinition

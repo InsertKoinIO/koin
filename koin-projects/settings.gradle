@@ -4,8 +4,9 @@ include 'koin-test'
 include 'examples:coffee-maker'
 include 'koin-java','koin-core-ext'
 
-//// Android
-//include 'koin-android', 'koin-android-scope', 'koin-android-viewmodel'
+// Android
+include 'koin-android' 
+//include 'koin-android-scope', 'koin-android-viewmodel'
 //include 'examples:android-mvp', 'examples:android-mvvm'
 //include 'koin-androidx-scope', 'koin-androidx-viewmodel'
 //include 'examples:android-navigation'

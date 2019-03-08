@@ -35,7 +35,7 @@ import org.koin.dsl.KoinAppDeclaration
  * Help start Koin cntofor Ktor
  */
 fun Application.installKoin(
-    koinApplication: KoinApplication
+        koinApplication: KoinApplication
 ) {
     startKoin(koinApplication)
 }
@@ -44,7 +44,7 @@ fun Application.installKoin(
  * Help start Koin cntofor Ktor
  */
 fun Application.installKoin(
-    koinApplication: KoinAppDeclaration
+        koinApplication: KoinAppDeclaration
 ) {
     startKoin(koinApplication)
 }
@@ -61,11 +61,11 @@ fun Application.getKoin(): Koin = GlobalContext.get().koin
  * @param parameters
  */
 inline fun <reified T : Any> Application.inject(
-    name: String = "",
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String = "",
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
 ) =
-    lazy { get<T>(name, scope, parameters) }
+        lazy { get<T>(name, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -74,11 +74,11 @@ inline fun <reified T : Any> Application.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Application.get(
-    name: String = "",
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        name: String = "",
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
 ) =
-    getKoin().get<T>(name, scope, parameters)
+        getKoin().get<T>(name, scope, parameters)
 
 /**
  * Retrieve given property for KoinComponent
@@ -86,7 +86,7 @@ inline fun <reified T : Any> Application.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Application.getProperty(key: String) =
-    getKoin().getProperty<T>(key)
+        getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -97,4 +97,4 @@ inline fun <reified T> Application.getProperty(key: String) =
  *
  */
 inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
-    getKoin().getProperty(key) ?: defaultValue
+        getKoin().getProperty(key) ?: defaultValue
