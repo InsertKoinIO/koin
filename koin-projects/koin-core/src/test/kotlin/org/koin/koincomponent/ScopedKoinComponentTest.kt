@@ -21,7 +21,7 @@ class ScopedKoinComponentTest {
     }
 
     @Test
-    fun `Scoped component`() {
+    fun `Scoped component - different scopes`() {
         startKoin {
             defaultLogger(Level.DEBUG)
             modules(
@@ -50,6 +50,35 @@ class ScopedKoinComponentTest {
 
         assertEquals(scopedComponent1.currentScope(), scope1)
         assertEquals(scopedComponent2.currentScope(), scope2)
+    }
+
+    @Test
+    fun `Scoped component - same scopes`() {
+        startKoin {
+            defaultLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.ComponentA() }
+
+                        scope(SCOPE_DEF_NAME) {
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }
+
+        val koin = GlobalContext.get().koin
+
+        val scopeId1 = "scope_id_1"
+        val scope1 = koin.createScope(scopeId1, SCOPE_DEF_NAME)
+        val scopedComponent1 = ScopedComponent(scopeId1)
+        val scopedComponent2 = ScopedComponent(scopeId1)
+
+        assertEquals(scopedComponent1.a, scopedComponent2.a)
+        assertEquals(scopedComponent1.b, scopedComponent2.b)
+
+        assertEquals(scopedComponent1.currentScope(), scope1)
+        assertEquals(scopedComponent2.currentScope(), scope1)
     }
 
 }
