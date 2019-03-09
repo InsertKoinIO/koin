@@ -12,7 +12,7 @@ import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
-import org.koin.android.ext.android.inject
+import org.koin.android.scope.inject
 
 /**
  * Search Weather View
@@ -41,7 +41,7 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
 
     override fun showIsLoading() {
         val animation =
-            AnimationUtils.loadAnimation(applicationContext, R.anim.infinite_blinking_animation)
+                AnimationUtils.loadAnimation(applicationContext, R.anim.infinite_blinking_animation)
         splashIcon.startAnimation(animation)
     }
 
@@ -53,9 +53,9 @@ class SplashActivity : AppCompatActivity(), SplashContract.View {
         splashIcon.visibility = View.GONE
         splashIconFail.visibility = View.VISIBLE
         Snackbar.make(splash, "SplashActivity got error : $error", Snackbar.LENGTH_INDEFINITE)
-            .setAction(R.string.retry) {
-                presenter.getLastWeather()
-            }
-            .show()
+                .setAction(R.string.retry) {
+                    presenter.getLastWeather()
+                }
+                .show()
     }
 }

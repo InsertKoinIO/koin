@@ -83,10 +83,9 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
     }
 }
 
-data class InstanceContext(val koin: Koin? = null, val scope: ScopeInstance? = null, val parameters: ParametersDefinition? = null) {
+data class InstanceContext(val koin: Koin? = null, val scope: ScopeInstance = ScopeInstance.GLOBAL, val parameters: ParametersDefinition? = null) {
 
-    fun getDefinitionContext() = scope?.getContext() ?: koin?.defaultContext
-    ?: error("Can't provide any InstanceContext without Koin instance")
+    fun getDefinitionContext() = scope.getContext()
 
     fun getParameters() = parameters?.let { parameters.invoke() } ?: emptyParametersHolder()
 }

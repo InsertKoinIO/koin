@@ -16,16 +16,16 @@ import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.detail.DetailActivity.Companion.INTENT_WEATHER_ID
 import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.*
-import org.koin.android.ext.android.inject
+import org.koin.android.scope.inject
 
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
     override val presenter: WeatherHeaderContract.Presenter by inject()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_result_header, container, false) as ViewGroup
     }
@@ -57,7 +57,7 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
         weatherHeader.setOnClickListener {
             activity?.startActivity<DetailActivity>(
-                INTENT_WEATHER_ID to weather.id
+                    INTENT_WEATHER_ID to weather.id
             )
         }
     }
@@ -75,11 +75,11 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
             val newLocation = editText.text.trim().toString()
             presenter.loadNewLocation(newLocation)
             Snackbar.make(
-                weatherHeader,
-                getString(R.string.loading_location) + " $newLocation ...",
-                Snackbar.LENGTH_LONG
+                    weatherHeader,
+                    getString(R.string.loading_location) + " $newLocation ...",
+                    Snackbar.LENGTH_LONG
             )
-                .show()
+                    .show()
         }
         dialog.setNegativeButton(getString(R.string.cancel)) { dialogInterface, _ ->
             dialogInterface.dismiss()
@@ -90,17 +90,17 @@ class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
     override fun showLocationSearchSucceed(location: String) {
         activity?.apply {
             startActivity(
-                intentFor<WeatherActivity>().clearTop().clearTask().newTask()
+                    intentFor<WeatherActivity>().clearTop().clearTask().newTask()
             )
         }
     }
 
     override fun showLocationSearchFailed(location: String, error: Throwable) {
         Snackbar.make(weatherHeader, getString(R.string.loading_error), Snackbar.LENGTH_LONG)
-            .setAction(R.string.retry) {
-                presenter.loadNewLocation(location)
-            }
-            .show()
+                .setAction(R.string.retry) {
+                    presenter.loadNewLocation(location)
+                }
+                .show()
     }
 
     override fun showError(error: Throwable) {

@@ -114,7 +114,7 @@ class Koin {
             name: String?,
             clazz: KClass<*>,
             scope: ScopeInstance
-    ): Pair<BeanDefinition<*>, ScopeInstance?> {
+    ): Pair<BeanDefinition<*>, ScopeInstance> {
         val definition = beanRegistry.findDefinition(name, clazz)
                 ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
@@ -140,7 +140,7 @@ class Koin {
         val definitions = beanRegistry.findAllCreatedAtStartDefinition()
         if (definitions.isNotEmpty()) {
             definitions.forEach {
-                it.resolveInstance(InstanceContext(koin = this))
+                it.resolveInstance(InstanceContext(koin = this, scope = ScopeInstance.GLOBAL))
             }
         }
     }
@@ -197,6 +197,14 @@ class Koin {
             error("ScopeInstance $scopeId is not registered")
         }
         return scope
+    }
+
+    /**
+     * get a scope instance
+     * @param scopeId
+     */
+    fun getScopeOrNull(scopeId: String): ScopeInstance? {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId)
     }
 
     /**

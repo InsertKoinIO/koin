@@ -19,6 +19,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
+import org.koin.core.scope.ScopeInstance
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -30,24 +31,23 @@ class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
-    override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
-            ?: false
+    override fun isCreated(context: InstanceContext): Boolean = context.scope.let { values[context.scope.id] != null }
 
     override fun release(context: InstanceContext) {
         val scope = context.scope
-        scope?.let {
-            if (logger.level == Level.DEBUG) {
-                logger.debug("releasing '$scope' ~ $beanDefinition ")
-            }
-            beanDefinition.onRelease?.invoke(values[scope.id])
-            values.remove(scope.id)
+        if (logger.level == Level.DEBUG) {
+            logger.debug("releasing '$scope' ~ $beanDefinition ")
         }
+        beanDefinition.onRelease?.invoke(values[scope.id])
+        values.remove(scope.id)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
+        if (context.scope == ScopeInstance.GLOBAL) {
+            throw ScopeNotCreatedException("No scope instance created to resolve $beanDefinition")
+        }
         val scope = context.scope
-                ?: throw ScopeNotCreatedException("No scope instance when trying to resolve $beanDefinition")
         val internalId = scope.id
         var current = values[internalId]
         if (current == null) {
