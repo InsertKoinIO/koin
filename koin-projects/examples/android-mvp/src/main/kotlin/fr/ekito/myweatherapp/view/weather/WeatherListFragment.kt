@@ -12,7 +12,7 @@ import fr.ekito.myweatherapp.view.weather.list.WeatherItem
 import fr.ekito.myweatherapp.view.weather.list.WeatherListAdapter
 import kotlinx.android.synthetic.main.fragment_result_list.*
 import org.jetbrains.anko.startActivity
-import org.koin.android.scope.inject
+import org.koin.android.ext.android.inject
 
 class WeatherListFragment : Fragment(), WeatherListContract.View {
 

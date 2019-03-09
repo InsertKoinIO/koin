@@ -20,53 +20,20 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
-import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.ScopeInstance
 import org.koin.ext.getFullName
 
 
-fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
-
-/**
- * inject lazily given dependency for Android koincomponent
- * @param name - bean name / optional
- * @param scope
- * @param parameters - injection parameters
- */
-inline fun <reified T : Any> LifecycleOwner.inject(
-        name: String = "",
-        scope: ScopeInstance = currentScope(),
-        noinline parameters: ParametersDefinition? = null
-) = lazy { get<T>(name, scope, parameters) }
-
-/**
- * get given dependency for Android koincomponent
- * @param name - bean name
- * @param scope
- * @param parameters - injection parameters
- */
-inline fun <reified T : Any> LifecycleOwner.get(
-        name: String = "",
-        scope: ScopeInstance = currentScope(),
-        noinline parameters: ParametersDefinition? = null
-): T = getKoin().get(name, scope, parameters)
-
-
-fun LifecycleOwner.currentScope(): ScopeInstance = getCurrentScopeOrDefault()
-
-private fun LifecycleOwner.getCurrentScopeOrDefault(): ScopeInstance {
-    val scopeId = getScopeId()
-    return getKoin().getScopeOrNull(scopeId) ?: ScopeInstance.GLOBAL
-}
-
+private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 private fun LifecycleOwner.getScopeName() = this::class.getFullName()
-
 private fun LifecycleOwner.getScopeId() = this.toString()
 
-fun LifecycleOwner.initScope(): ScopeInstance {
-    val name = getScopeName()
+val LifecycleOwner.currentScope: ScopeInstance
+    get() = getOrCreateCurrentScope()
+
+private fun LifecycleOwner.getOrCreateCurrentScope(): ScopeInstance {
     val scopeId = getScopeId()
-    return createAndBindScope(scopeId, name)
+    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
 }
 
 private fun LifecycleOwner.createAndBindScope(scopeId: String, name: String): ScopeInstance {

@@ -12,7 +12,7 @@ import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
-import org.koin.android.scope.inject
+import org.koin.android.ext.android.inject
 
 /**
  * Search Weather View

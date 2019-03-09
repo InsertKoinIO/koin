@@ -6,7 +6,8 @@ include 'koin-java', 'koin-core-ext'
 
 // Android
 include 'koin-android'
-include 'koin-android-scope', 'examples:android-mvp'
+include 'koin-android-scope'
+include 'examples:android-mvp'
 //include 'koin-android-viewmodel', 'examples:android-mvvm'
 //include 'koin-androidx-scope', 'koin-androidx-viewmodel'
 //include 'examples:android-navigation'

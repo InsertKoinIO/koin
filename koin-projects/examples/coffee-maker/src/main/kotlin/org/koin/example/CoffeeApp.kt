@@ -10,7 +10,7 @@ class CoffeeApp : KoinComponent {
     val maker: CoffeeMaker by inject()
 }
 
-fun main(vararg args: String) {
+fun main() {
 
     startKoin {
         defaultLogger()

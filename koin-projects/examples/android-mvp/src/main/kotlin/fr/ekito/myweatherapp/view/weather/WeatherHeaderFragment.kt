@@ -16,7 +16,7 @@ import fr.ekito.myweatherapp.view.detail.DetailActivity
 import fr.ekito.myweatherapp.view.detail.DetailActivity.Companion.INTENT_WEATHER_ID
 import kotlinx.android.synthetic.main.fragment_result_header.*
 import org.jetbrains.anko.*
-import org.koin.android.scope.inject
+import org.koin.android.ext.android.inject
 
 class WeatherHeaderFragment : Fragment(), WeatherHeaderContract.View {
 
