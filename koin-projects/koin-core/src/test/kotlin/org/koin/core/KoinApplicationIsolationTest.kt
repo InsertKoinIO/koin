@@ -8,6 +8,7 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.instance.InstanceContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -18,16 +19,16 @@ class KoinApplicationIsolationTest {
     fun `can isolate several koin apps`() {
         val app1 = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val app2 = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val a1: Simple.ComponentA = app1.koin.get()
@@ -40,9 +41,9 @@ class KoinApplicationIsolationTest {
     fun `koin app instance run instance `() {
         val app = koinApplication {
             modules(
-                module {
-                    single(createdAtStart = true) { Simple.ComponentA() }
-                })
+                    module {
+                        single(createdAtStart = true) { Simple.ComponentA() }
+                    })
         }
         app.createEagerInstances()
 
@@ -54,16 +55,16 @@ class KoinApplicationIsolationTest {
     fun `can isolate koin apps & standaline`() {
         startKoin {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val app2 = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val a1: Simple.ComponentA = GlobalContext.get().koin.get()
@@ -77,7 +78,7 @@ class KoinApplicationIsolationTest {
     fun `stopping koin releases resources`() {
         val module = module {
             single { Simple.ComponentA() }
-            scope<Simple> {
+            scope(named<Simple>()) {
                 scoped { Simple.ComponentB(get()) }
             }
         }
@@ -85,7 +86,7 @@ class KoinApplicationIsolationTest {
             modules(module)
         }
         val a1: Simple.ComponentA = GlobalContext.get().koin.get()
-        val scope1 = GlobalContext.get().koin.createScopeWithType<Simple>("simple")
+        val scope1 = GlobalContext.get().koin.createScope("simple", named<Simple>())
         val b1: Simple.ComponentB = scope1.get()
 
         stopKoin()
@@ -94,7 +95,7 @@ class KoinApplicationIsolationTest {
             modules(module)
         }
         val a2: Simple.ComponentA = GlobalContext.get().koin.get()
-        val scope2 = GlobalContext.get().koin.createScopeWithType<Simple>("simple")
+        val scope2 = GlobalContext.get().koin.createScope("simple", named<Simple>())
         val b2: Simple.ComponentB = scope2.get()
 
         assertNotEquals(a1, a2)

@@ -54,7 +54,7 @@ fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
                 "sandbox_scope", it.getScopeName()
         ) else ScopeInstance.GLOBAL
 
-        get<Any>(clazz, it.name, scope) { emptyParametersHolder() }
+        get<Any>(clazz, it.qualifier, scope) { emptyParametersHolder() }
         scope.let { scope.close() }
     }
 }
@@ -82,7 +82,7 @@ private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
  * Clone definition and inject SandBox instance holder
  */
 fun <T> BeanDefinition<T>.sandboxed(): BeanDefinition<T> {
-    val sandboxDefinition = SandboxDefinition<T>(name, primaryType)
+    val sandboxDefinition = SandboxDefinition<T>(qualifier, primaryType)
     sandboxDefinition.secondaryTypes = this.secondaryTypes
     sandboxDefinition.definition = definition
     sandboxDefinition.instance = null

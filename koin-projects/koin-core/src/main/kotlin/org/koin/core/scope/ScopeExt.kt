@@ -16,6 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.qualifier.Qualifier
 
 /**
  * Extensiosn for Beandefintion only for Scope cases
@@ -26,15 +27,15 @@ import org.koin.core.definition.BeanDefinition
 const val ATTRIBUTE_SCOPE_NAME = "scope_name"
 
 /**
- * Set the scope name of a definition
+ * Set the scope qualifier of a definition
  */
-fun BeanDefinition<*>.setScopeName(name: String) {
-    properties[ATTRIBUTE_SCOPE_NAME] = name
+fun BeanDefinition<*>.setScopeName(qualifier: Qualifier) {
+    properties[ATTRIBUTE_SCOPE_NAME] = qualifier
 }
 
 /**
- * Get a scope name of a definition
+ * Get a scope qualifier of a definition
  */
-fun BeanDefinition<*>.getScopeName(): String? {
+fun BeanDefinition<*>.getScopeName(): Qualifier? {
     return properties.getOrNull(ATTRIBUTE_SCOPE_NAME)
 }

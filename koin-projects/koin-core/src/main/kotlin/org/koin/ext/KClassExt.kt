@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
- * Give full class name
+ * Give full class qualifier
  */
 fun KClass<*>.getFullName(): String {
     return classNames[this] ?: saveFullName()

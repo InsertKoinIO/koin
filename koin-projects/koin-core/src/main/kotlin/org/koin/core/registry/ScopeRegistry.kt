@@ -20,6 +20,7 @@ import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.module.Module
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeInstance
 import java.util.concurrent.ConcurrentHashMap
@@ -53,9 +54,9 @@ class ScopeRegistry {
     }
 
     private fun saveDefinition(scopeDefinition: ScopeDefinition) {
-        val foundDefinition = definitions[scopeDefinition.scopeName]
+        val foundDefinition = definitions[scopeDefinition.scopeName.toString()]
         if (foundDefinition == null) {
-            definitions[scopeDefinition.scopeName] = scopeDefinition
+            definitions[scopeDefinition.scopeName.toString()] = scopeDefinition
         } else {
             val currentDefinitions = foundDefinition.definitions
             currentDefinitions.addAll(scopeDefinition.definitions)
@@ -68,11 +69,11 @@ class ScopeRegistry {
     /**
      * Create a scope instance for given scope
      * @param id - scope instance id
-     * @param scopeName - scope name
+     * @param scopeName - scope qualifier
      */
-    fun createScopeInstance(id: String, scopeName: String? = null): ScopeInstance {
+    fun createScopeInstance(id: String, scopeName: Qualifier? = null): ScopeInstance {
         val definition: ScopeDefinition? = scopeName?.let {
-            definitions[scopeName]
+            definitions[scopeName.toString()]
                     ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
         }
         val instance = ScopeInstance(id, definition)

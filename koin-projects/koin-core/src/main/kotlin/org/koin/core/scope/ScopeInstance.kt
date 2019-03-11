@@ -21,6 +21,7 @@ import org.koin.core.definition.Properties
 import org.koin.core.definition.ScopedContext
 import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 
 data class ScopeInstance(
         val id: String,
@@ -44,25 +45,25 @@ data class ScopeInstance(
 
     /**
      * Lazy inject a Koin instance
-     * @param name
+     * @param qualifier
      * @param parameters
      */
     inline fun <reified T> inject(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(name, parameters) }
+            lazy { get<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
-     * @param name
+     * @param qualifier
      * @param parameters
      */
     inline fun <reified T> get(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin?.get(T::class, name, this, parameters)
+        return koin?.get(T::class, qualifier, this, parameters)
                 ?: throw  ScopeIsClosedException("Scope $this is closed")
     }
 

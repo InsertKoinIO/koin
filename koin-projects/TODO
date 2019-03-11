@@ -16,7 +16,7 @@ x Scope API Callback
 x Scope injection params
 + getProperty with default value
 https://github.com/InsertKoinIO/koin/issues/344
-+ shutdown API Hook on single/factory/scoped + onClose onRelease
++ shutdown API lifecycle Hook on single/factory/scoped + onClose onRelease
 https://github.com/InsertKoinIO/koin/issues/349
 + viewmodel / inject from scope
 x fixed VIEWMODEL_KEY conflict
@@ -41,6 +41,10 @@ x Scope Params / properties
 Qualifiers
 https://github.com/InsertKoinIO/koin/issues/305
 
+Qualifier
+StringQualifier -> name("")
+TypeQualifier -> name<>()
+
 Better SCOPE API - KoinComponent + Scope
 Better Android scope
 
@@ -51,13 +55,20 @@ Scope Params from DSL
 
 * Fragment Manager -> injection by fragment
 
--- Doc ---
-* Changelog update
+-- Demo App --
+
+* Simple demo app / no selection
+- MVP
+
 * Scope Instance sample / http auth / non auth
 
 * Making SDK With Koin / Koin instance isolation
     -> https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5
     -> good description of isolation
+
+-- Doc ---
+
+* Changelog update
 
 -- Samples --
 * Demo App

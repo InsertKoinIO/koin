@@ -4,6 +4,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -15,7 +16,7 @@ class GlobalToScopeTest {
             defaultLogger(Level.DEBUG)
             modules(
                     module {
-                        scope<ClosedScopeAPI.ScopeType> {
+                        scope(named<ClosedScopeAPI.ScopeType>()) {
                             scoped { Simple.ComponentA() }
                         }
                     }
@@ -40,7 +41,7 @@ class GlobalToScopeTest {
             defaultLogger(Level.DEBUG)
             modules(
                     module {
-                        scope<ClosedScopeAPI.ScopeType> {
+                        scope(named<ClosedScopeAPI.ScopeType>()) {
                             scoped { Simple.ComponentA() }
                         }
                     }

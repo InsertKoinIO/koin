@@ -11,6 +11,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.inject
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 class ScopedKoinComponentTest {
@@ -83,7 +84,7 @@ class ScopedKoinComponentTest {
 
 }
 
-const val SCOPE_DEF_NAME = "MY_SCOPE"
+val SCOPE_DEF_NAME = named("MY_SCOPE")
 
 class ScopedComponent(val scopeId: String) : KoinComponent {
     override fun currentScope() = getKoin().getScope(scopeId)

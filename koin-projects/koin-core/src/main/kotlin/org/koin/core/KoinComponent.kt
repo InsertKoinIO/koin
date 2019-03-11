@@ -17,6 +17,7 @@ package org.koin.core
 
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeInstance
 
 /**
@@ -39,26 +40,26 @@ interface KoinComponent {
 
 /**
  * Get instance instance from Koin
- * @param name
+ * @param qualifier
  * @param scope
  * @param parameters
  */
 inline fun <reified T> KoinComponent.get(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = currentScope(),
         noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(name, scope, parameters)
+        getKoin().get(qualifier, scope, parameters)
 
 /**
  * Lazy inject instance from Koin
- * @param name
+ * @param qualifier
  * @param scope
  * @param parameters
  */
 inline fun <reified T> KoinComponent.inject(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = currentScope(),
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-        getKoin().inject(name, scope, parameters)
+        getKoin().inject(qualifier, scope, parameters)

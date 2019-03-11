@@ -5,6 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 
 class AdditionalTypeBindingTest {
@@ -51,12 +52,12 @@ class AdditionalTypeBindingTest {
             defaultLogger()
             modules(
                 module {
-                    single<Simple.ComponentInterface1>("default") { Simple.Component2() }
+                    single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
                     single<Simple.ComponentInterface1> { Simple.Component1() }
                 })
         }
         val koin = app.koin
-        koin.get<Simple.ComponentInterface1>("default")
+        koin.get<Simple.ComponentInterface1>(named("default"))
     }
 
     @Test

@@ -4,12 +4,13 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class ScopeAttributesTest {
 
-    val scopeName = "MY_SCOPE"
+    val scopeName = named("MY_SCOPE")
 
     @Test
     fun `can store & get an attribute value from scope instance`() {

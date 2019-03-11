@@ -3,6 +3,7 @@ package org.koin.dsl
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.qualifier.named
 
 class BeanLifecycleTest {
 
@@ -45,7 +46,7 @@ class BeanLifecycleTest {
             defaultLogger()
             modules(
                     module {
-                        scope("test") {
+                        scope(named("test")) {
                             scoped { Simple.Component1() } onClose { result = "closing" }
                         }
                     })
@@ -95,14 +96,14 @@ class BeanLifecycleTest {
             defaultLogger()
             modules(
                     module {
-                        scope("test") {
+                        scope(named("test")) {
                             scoped { Simple.Component1() } onRelease { result = "release" }
                         }
                     })
         }
 
         val koin = app.koin
-        val scopeInstance = koin.createScope("test","test")
+        val scopeInstance = koin.createScope("test", named("test"))
         scopeInstance.get<Simple.Component1>()
         scopeInstance.close()
         assertEquals("release", result)

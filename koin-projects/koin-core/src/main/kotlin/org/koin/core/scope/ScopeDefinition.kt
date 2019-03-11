@@ -22,8 +22,9 @@ import org.koin.core.definition.Options
 import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.ScopedInstance
 import org.koin.core.module.Module
+import org.koin.core.qualifier.Qualifier
 
-data class ScopeDefinition(val scopeName: String, val module: Module) {
+data class ScopeDefinition(val scopeName: Qualifier, val module: Module) {
 
     var definitions = hashSetOf<BeanDefinition<*>>()
 
@@ -34,11 +35,11 @@ data class ScopeDefinition(val scopeName: String, val module: Module) {
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-            name: String? = null,
+            name: Qualifier? = null,
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createScope(name, scopeName, definition)
+        val beanDefinition = DefinitionFactory.createScoped(name, scopeName, definition)
         module.declareDefinition(beanDefinition, Options(override = override))
         definitions.add(beanDefinition)
         return beanDefinition

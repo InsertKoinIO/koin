@@ -3,6 +3,7 @@ package org.koin.core.definition
 import org.koin.core.Koin
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeInstance
 
 sealed class DefinitionContext(val koin: Koin) {
@@ -11,36 +12,36 @@ sealed class DefinitionContext(val koin: Koin) {
 
     /**
      * Resolve an instance from Koin
-     * @param name
+     * @param qualifier
      * @param parameters
      */
     inline fun <reified T> get(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin.get(name, currentScope(), parameters)
+        return koin.get(qualifier, currentScope(), parameters)
     }
 
     /**
      * Resolve an instance from Koin / extenral scope instance
-     * @param name
+     * @param qualifier
      * @param scope
      * @param parameters
      */
     inline fun <reified T> get(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             scope: ScopeInstance,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin.get(name, scope, parameters)
+        return koin.get(qualifier, scope, parameters)
     }
 
     inline fun <reified T> getFromScope(
             scopeId: String,
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin.get(name, koin.getScope(scopeId), parameters)
+        return koin.get(qualifier, koin.getScope(scopeId), parameters)
     }
 
     /**

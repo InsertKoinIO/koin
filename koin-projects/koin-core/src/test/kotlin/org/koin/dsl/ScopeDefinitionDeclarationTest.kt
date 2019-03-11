@@ -6,17 +6,20 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.ScopedInstance
+import org.koin.core.qualifier.named
 import org.koin.core.scope.getScopeName
 
 class ScopeDefinitionDeclarationTest {
+
+    val key = named("KEY")
 
     @Test
     fun `can declare a scoped definition`() {
         val app = koinApplication {
             modules(
-                module {
-                    scoped { Simple.ComponentA() }
-                }
+                    module {
+                        scoped { Simple.ComponentA() }
+                    }
             )
         }
         val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
@@ -26,29 +29,27 @@ class ScopeDefinitionDeclarationTest {
 
     @Test
     fun `can declare a scope definition`() {
-        val key = "KEY"
         val app = koinApplication {
             modules(
-                module {
-                    scope(key) {
+                    module {
+                        scope(key) {
+                        }
                     }
-                }
             )
         }
-        val def = app.koin.scopeRegistry.getScopeDefinition(key)!!
+        val def = app.koin.scopeRegistry.getScopeDefinition(key.toString())!!
         assertTrue(def.scopeName == key)
     }
 
     @Test
     fun `can declare a scoped definition within scope`() {
-        val key = "KEY"
         val app = koinApplication {
             modules(
-                module {
-                    scope(key) {
-                        scoped { Simple.ComponentA() }
+                    module {
+                        scope(key) {
+                            scoped { Simple.ComponentA() }
+                        }
                     }
-                }
             )
         }
         val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!
@@ -61,10 +62,10 @@ class ScopeDefinitionDeclarationTest {
         try {
             koinApplication {
                 modules(
-                    module {
-                        scoped { Simple.ComponentA() }
-                        scoped { Simple.ComponentA() }
-                    }
+                        module {
+                            scoped { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
+                        }
                 )
             }
             fail()
@@ -78,12 +79,12 @@ class ScopeDefinitionDeclarationTest {
         try {
             koinApplication {
                 modules(
-                    module {
-                        scope("scope_name") {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentA() }
+                        module {
+                            scope(named("scope_name")) {
+                                scoped { Simple.ComponentA() }
+                                scoped { Simple.ComponentA() }
+                            }
                         }
-                    }
                 )
             }
             fail()

@@ -23,6 +23,7 @@ import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
@@ -47,75 +48,75 @@ class Koin {
 
     /**
      * Lazy inject a Koin instance
-     * @param name
+     * @param qualifier
      * @param scope
      * @param parameters
      */
     @JvmOverloads
     inline fun <reified T> inject(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             scope: ScopeInstance = ScopeInstance.GLOBAL,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(name, scope, parameters) }
+            lazy { get<T>(qualifier, scope, parameters) }
 
     /**
      * Get a Koin instance
-     * @param name
+     * @param qualifier
      * @param scope
      * @param parameters
      */
     @JvmOverloads
     inline fun <reified T> get(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             scope: ScopeInstance = ScopeInstance.GLOBAL,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return get(T::class, name, scope, parameters)
+        return get(T::class, qualifier, scope, parameters)
     }
 
     /**
      * Get a Koin instance
      * @param clazz
-     * @param name
+     * @param qualifier
      * @param scope
      * @param parameters
      */
     fun <T> get(
             clazz: KClass<*>,
-            name: String?,
+            qualifier: Qualifier?,
             scope: ScopeInstance = ScopeInstance.GLOBAL,
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.level == Level.DEBUG) {
             logger.debug("+- get '${clazz.getFullName()}'")
             val (instance: T, duration: Double) = measureDuration {
-                resolve<T>(name, clazz, scope, parameters)
+                resolve<T>(qualifier, clazz, scope, parameters)
             }
             logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
-            resolve(name, clazz, scope, parameters)
+            resolve(qualifier, clazz, scope, parameters)
         }
     }
 
     private fun <T> resolve(
-            name: String?,
+            qualifier: Qualifier?,
             clazz: KClass<*>,
             scope: ScopeInstance,
             parameters: ParametersDefinition?
     ): T {
-        val (definition, targetScopeInstance) = prepareResolution(name, clazz, scope)
+        val (definition, targetScopeInstance) = prepareResolution(qualifier, clazz, scope)
         val instanceContext = InstanceContext(this, targetScopeInstance, parameters)
         return definition.resolveInstance(instanceContext)
     }
 
     private fun prepareResolution(
-            name: String?,
+            qualifier: Qualifier?,
             clazz: KClass<*>,
             scope: ScopeInstance
     ): Pair<BeanDefinition<*>, ScopeInstance> {
-        val definition = beanRegistry.findDefinition(name, clazz)
+        val definition = beanRegistry.findDefinition(qualifier, clazz)
                 ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
         if (definition.isScoped() && scope != ScopeInstance.GLOBAL) {
@@ -127,7 +128,7 @@ class Koin {
 
     private fun checkScopeResolution(definition: BeanDefinition<*>, scope: ScopeInstance) {
         val scopeInstanceName = scope.definition?.scopeName
-        val beanScopeName = definition.getScopeName()
+        val beanScopeName: Qualifier? = definition.getScopeName()
         if (beanScopeName != scopeInstanceName) {
             when {
                 scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")
@@ -151,19 +152,8 @@ class Koin {
      * @param scopeDefinitionName
      */
     @JvmOverloads
-    fun createScope(scopeId: String, scopeDefinitionName: String? = null): ScopeInstance {
-        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeDefinitionName)
-        createdScopeInstance.register(this)
-        return createdScopeInstance
-    }
-
-    /**
-     * Create a Scope instance
-     * @param scopeId
-     */
-    inline fun <reified T> createScopeWithType(scopeId: String): ScopeInstance {
-        val scopeName = T::class.getFullName()
-        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, scopeName)
+    fun createScope(scopeId: String, qualifier: Qualifier? = null): ScopeInstance {
+        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, qualifier)
         createdScopeInstance.register(this)
         return createdScopeInstance
     }
@@ -171,20 +161,11 @@ class Koin {
     /**
      * Get or Create a Scope instance
      * @param scopeId
-     * @param scopeName
+     * @param qualifier
      */
     @JvmOverloads
-    fun getOrCreateScope(scopeId: String, scopeName: String? = null): ScopeInstance {
-        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
-    }
-
-    /**
-     * Get or Create a Scope instance from type name
-     * @param scopeId
-     */
-    inline fun <reified T> getOrCreateScopeWithType(scopeId: String): ScopeInstance {
-        val scopeName = T::class.getFullName()
-        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, scopeName)
+    fun getOrCreateScope(scopeId: String, qualifier: Qualifier? = null): ScopeInstance {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }
 
     /**

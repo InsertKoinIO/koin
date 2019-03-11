@@ -6,6 +6,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.inject
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -17,12 +18,12 @@ class TODOAppTest {
     }
 
     val repositoryModule = module {
-        single("remoteDataSource") { FakeTasksRemoteDataSource() as TasksDataSource }
-        single("localDataSource") { TasksLocalDataSource() as TasksDataSource }
+        single(named("remoteDataSource")) { FakeTasksRemoteDataSource() as TasksDataSource }
+        single(named("localDataSource")) { TasksLocalDataSource() as TasksDataSource }
         single {
             TasksRepository(
-                get("remoteDataSource"),
-                get("localDataSource")
+                    get(named("remoteDataSource")),
+                    get(named("localDataSource"))
             )
         } bind TasksDataSource::class
     }
@@ -41,8 +42,8 @@ class TODOAppTest {
     class FakeTasksRemoteDataSource : TasksDataSource
     class TasksLocalDataSource : TasksDataSource
     class TasksRepository(
-        val remoteDataSource: TasksDataSource,
-        val localDatasource: TasksDataSource
+            val remoteDataSource: TasksDataSource,
+            val localDatasource: TasksDataSource
     ) : TasksDataSource
 
     @Test
