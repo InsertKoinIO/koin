@@ -18,6 +18,7 @@ package org.koin.java
 import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeInstance
 
 /**
@@ -31,7 +32,7 @@ object KoinJavaComponent {
     /**
      * Retrieve given dependency lazily
      * @param clazz - dependency class
-     * @param name - bean canonicalName / optional
+     * @param qualifier - bean canonicalName / optional
      * @param scope
      * @param parameters - dependency parameters / optional
      */
@@ -39,17 +40,17 @@ object KoinJavaComponent {
     @JvmStatic
     fun <T : Any> inject(
             clazz: Class<T>,
-            name: String? = null,
+            qualifier: Qualifier? = null,
             scope: ScopeInstance = ScopeInstance.GLOBAL,
             parameters: ParametersDefinition? = null
     ): Lazy<T> {
-        return lazy { get(clazz, name, scope, parameters) }
+        return lazy { get(clazz, qualifier, scope, parameters) }
     }
 
     /**
      * Retrieve given dependency
      * @param clazz - dependency class
-     * @param name - bean canonicalName / optional
+     * @param qualifier - bean canonicalName / optional
      * @param scope - scope
      * @param parameters - dependency parameters / optional
      */
@@ -57,13 +58,13 @@ object KoinJavaComponent {
     @JvmStatic
     fun <T : Any> get(
             clazz: Class<T>,
-            name: String? = null,
+            qualifier: Qualifier? = null,
             scope: ScopeInstance = ScopeInstance.GLOBAL,
             parameters: ParametersDefinition? = null
     ): T {
         return getKoin().get(
                 clazz.kotlin,
-                name,
+                qualifier,
                 scope,
                 parameters
         )
