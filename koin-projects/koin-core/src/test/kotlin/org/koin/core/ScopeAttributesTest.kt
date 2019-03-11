@@ -17,7 +17,7 @@ class ScopeAttributesTest {
             modules(
                     module {
                         scope(scopeName) {
-                            scoped { Simple.MySingle(getCurrentScope().properties["id"]) }
+                            scoped { Simple.MySingle(currentScope().properties["id"]) }
                         }
                     }
             )

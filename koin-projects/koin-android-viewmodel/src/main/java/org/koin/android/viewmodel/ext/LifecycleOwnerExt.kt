@@ -38,7 +38,7 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
         name: String? = null,
-        scope: ScopeInstance? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) = lazy { getViewModel<T>(name, scope, parameters) }
 
@@ -50,7 +50,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
         name: String? = null,
-        scope: ScopeInstance? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) = resolveViewModelInstance(
         ViewModelParameters(
@@ -73,7 +73,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 fun <T : ViewModel> LifecycleOwner.getViewModel(
         clazz: KClass<T>,
         name: String? = null,
-        scope: ScopeInstance? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         parameters: ParametersDefinition? = null
 ) = resolveViewModelInstance(
         ViewModelParameters(

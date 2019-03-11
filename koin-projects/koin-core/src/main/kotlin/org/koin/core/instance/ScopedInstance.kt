@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
 
-
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
     override fun isCreated(context: InstanceContext): Boolean = context.scope.let { values[context.scope.id] != null }

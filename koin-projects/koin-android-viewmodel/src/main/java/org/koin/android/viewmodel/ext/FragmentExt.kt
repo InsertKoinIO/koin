@@ -40,7 +40,7 @@ import org.koin.core.scope.ScopeInstance
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
         name: String? = null,
-        scope: ScopeInstance? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
 ) = lazy { getSharedViewModel<T>(name, scope, from, parameters) }
@@ -55,7 +55,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
         name: String? = null,
-        scope: ScopeInstance? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
 ) = resolveViewModelInstance(

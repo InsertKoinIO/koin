@@ -7,7 +7,7 @@ import org.koin.core.scope.ScopeInstance
 
 sealed class DefinitionContext(val koin: Koin) {
 
-    abstract fun getCurrentScope(): ScopeInstance
+    abstract fun currentScope(): ScopeInstance
 
     /**
      * Resolve an instance from Koin
@@ -18,7 +18,7 @@ sealed class DefinitionContext(val koin: Koin) {
             name: String? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin.get(name, getCurrentScope(), parameters)
+        return koin.get(name, currentScope(), parameters)
     }
 
     /**
@@ -35,6 +35,14 @@ sealed class DefinitionContext(val koin: Koin) {
         return koin.get(name, scope, parameters)
     }
 
+    inline fun <reified T> getFromScope(
+            scopeId: String,
+            name: String? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): T {
+        return koin.get(name, koin.getScope(scopeId), parameters)
+    }
+
     /**
      * Get a property from Koin
      * @param key
@@ -47,9 +55,9 @@ sealed class DefinitionContext(val koin: Koin) {
 }
 
 class DefaultContext(koin: Koin) : DefinitionContext(koin) {
-    override fun getCurrentScope(): ScopeInstance = ScopeInstance.GLOBAL
+    override fun currentScope(): ScopeInstance = ScopeInstance.GLOBAL
 }
 
 class ScopedContext(koin: Koin, private val scopeInstance: ScopeInstance) : DefinitionContext(koin) {
-    override fun getCurrentScope(): ScopeInstance = scopeInstance
+    override fun currentScope(): ScopeInstance = scopeInstance
 }

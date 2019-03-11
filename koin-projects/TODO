@@ -4,6 +4,11 @@
 -> injection param in Scope
 - https://github.com/InsertKoinIO/koin/issues/231
 
+* Koin as a Ktor feature
+* Ktor shutdown
+https://github.com/InsertKoinIO/koin/issues/348
+
+
 [2.0]
 -- Done --
 x release of singles
@@ -32,11 +37,19 @@ x Scope Params / properties
 * JUnit rule ~ AutoCloseKoinTest()
 
 -- Dev --
-* Fragment Manager -> injection by fragment
 
-* Koin as a Ktor feature
-* Ktor shutdown
-https://github.com/InsertKoinIO/koin/issues/348
+Qualifiers
+https://github.com/InsertKoinIO/koin/issues/305
+
+Better SCOPE API - KoinComponent + Scope
+Better Android scope
+
+Scope Params from DSL
+- fromScope("")
+- scope.params[""]
+
+
+* Fragment Manager -> injection by fragment
 
 -- Doc ---
 * Changelog update

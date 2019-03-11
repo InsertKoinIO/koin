@@ -8,6 +8,6 @@ class ViewModelParameters<T : Any>(
         val clazz: KClass<T>,
         val name: String? = null,
         val from: ViewModelStoreOwnerDefinition? = null,
-        val scope: ScopeInstance? = null,
+        val scope: ScopeInstance = ScopeInstance.GLOBAL,
         val parameters: ParametersDefinition? = null
 )
