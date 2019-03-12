@@ -41,16 +41,14 @@ x Scope Params from DSL
 
 -- Bugs --
 
--- PR --
 
+
+-- PR --
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
 * JUnit rule ~ AutoCloseKoinTest()
 
 -- Dev --
-
-
-
 * Fragment Manager -> injection by fragment
 
 
@@ -66,15 +64,9 @@ x Scope Params from DSL
     -> https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5
     -> good description of isolation
 
--- Doc ---
 
+
+-- Doc ---
 * Changelog update
 
--- Samples --
-* Demo App
- - feature by feature case
- - MVP, MVVP
- - Scopes
- - Multi module app example
-* AndroidX sample project
 
