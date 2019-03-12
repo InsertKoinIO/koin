@@ -16,86 +16,42 @@
 
 package org.koin.androidx.scope
 
-import android.app.Activity
 import android.content.ComponentCallbacks
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.ScopeInstance
-import org.koin.ext.getFullName
 
 /**
- * LifecycleOwner extensions
+ * Provide an scope for given LifecycleOwner component
  *
  * @author Arnaud Giuliani
  */
 
-/**
- * Set a ScopeInstance Observer onto the actual LifecycleOwner koincomponent
- * will close the bound scopes on lifecycle event
- * @see ScopeObserver
- * @param event : lifecycle event - default ON_DESTROY
- * @param scopes
- */
-fun LifecycleOwner.bindScope(scope: ScopeInstance, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
-    lifecycle.addObserver(ScopeObserver(event, this, scope))
-}
+private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
-fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
+private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
+private fun LifecycleOwner.getScopeId() = this.toString()
 
-/**
- * Get or create Scope
- * @param scope Id
- */
-fun LifecycleOwner.createScope(id: String, scopeName: String? = null): ScopeInstance {
-    return getKoin().createScope(id, scopeName)
-}
-
-/**
- * Get Scope
- * @param scope Id
- */
-fun LifecycleOwner.getScope(id: String): ScopeInstance {
-    return getKoin().getScope(id)
-}
-
-/**
- * Detach a Scope
- * @param scope Id
- */
-fun LifecycleOwner.deleteScope(id: String) {
-    getKoin().deleteScope(id)
-}
-
-/**
- * Get or create Scope
- * @param scope Id
- */
-fun Activity.getActivityScope(): ScopeInstance {
-    return (this as LifecycleOwner).getOrCreateAndroidScope()
-}
-
-/**
- * Scope Name for current LifecycleOwner
- */
-fun LifecycleOwner.getScopeName() = this::class.getFullName()
-
-/**
- * Scope Id for current LifecycleOwner
- */
-fun LifecycleOwner.getScopeId() = this.toString()
-
-private fun LifecycleOwner.getOrCreateAndroidScope(): ScopeInstance {
-    val name = getScopeName()
+private fun LifecycleOwner.getOrCreateCurrentScope(): ScopeInstance {
     val scopeId = getScopeId()
-    return getKoin().getOrCreateScope(scopeId, name)
+    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
+}
+
+private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): ScopeInstance {
+    val scope = getKoin().createScope(scopeId, qualifier)
+    bindScopeToLifecycle(scope)
+    return scope
+}
+
+private fun LifecycleOwner.bindScopeToLifecycle(scope: ScopeInstance) {
+    lifecycle.addObserver(ScopeObserver(Lifecycle.Event.ON_DESTROY, this, scope))
 }
 
 /**
- * Get or create Scope
- * @param scope Id
+ * Get current Koin scope, bound to current lifecycle
  */
-fun Fragment.getFragmentScope(): ScopeInstance {
-    return (this as LifecycleOwner).getOrCreateAndroidScope()
-}
+val LifecycleOwner.currentScope: ScopeInstance
+    get() = getOrCreateCurrentScope()
