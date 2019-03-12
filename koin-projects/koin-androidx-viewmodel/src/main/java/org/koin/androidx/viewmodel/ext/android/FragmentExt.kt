@@ -61,7 +61,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
         scope: Scope = Scope.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-): T = (this as ComponentCallbacks2).getKoin().getViewModel(
+): T = getKoin().getViewModel(
         ViewModelParameters(
                 T::class,
                 this@getSharedViewModel,

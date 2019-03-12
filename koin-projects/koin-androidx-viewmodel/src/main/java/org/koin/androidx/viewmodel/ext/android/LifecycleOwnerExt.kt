@@ -15,7 +15,7 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.content.ComponentCallbacks2
+import android.content.ComponentCallbacks
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
@@ -41,7 +41,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
 ): Lazy<T> = lazy { getViewModel<T>(qualifier, scope, parameters) }
 
 
-fun LifecycleOwner.getKoin(): Koin = (this as ComponentCallbacks2).getKoin()
+fun LifecycleOwner.getKoin(): Koin = (this as ComponentCallbacks).getKoin()
 
 /**
  * Get a viewModel instance
@@ -77,7 +77,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
         qualifier: Qualifier? = null,
         scope: Scope = Scope.GLOBAL,
         parameters: ParametersDefinition? = null
-): T = (this as ComponentCallbacks2).getKoin().getViewModel(
+): T = getKoin().getViewModel(
         ViewModelParameters(
                 clazz,
                 this@getViewModel,
