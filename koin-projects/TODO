@@ -8,6 +8,7 @@
 * Ktor shutdown
 https://github.com/InsertKoinIO/koin/issues/348
 
+* Fragment Manager -> injection by fragment
 
 [2.0]
 -- Done --
@@ -41,16 +42,12 @@ x Scope Params from DSL
 
 -- Bugs --
 
+-- Dev & PR --
+> Check to remove mockito
 
-
--- PR --
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
 * JUnit rule ~ AutoCloseKoinTest()
-
--- Dev --
-* Fragment Manager -> injection by fragment
-
 
 
 -- Demo App --
@@ -68,5 +65,6 @@ x Scope Params from DSL
 
 -- Doc ---
 * Changelog update
+* Global review
 
 
