@@ -21,6 +21,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeInstance
 import org.koin.dsl.KoinAppDeclaration
 
@@ -56,29 +57,29 @@ fun Application.getKoin(): Koin = GlobalContext.get().koin
 
 /**
  * inject lazily given dependency
- * @param name - bean name / optional
+ * @param qualifier - bean name / optional
  * @param scope
  * @param parameters
  */
 inline fun <reified T : Any> Application.inject(
-        name: String = "",
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) =
-        lazy { get<T>(name, scope, parameters) }
+        lazy { get<T>(qualifier, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
- * @param name - bean name / optional
+ * @param qualifier - bean name / optional
  * @param scope
  * @param parameters
  */
 inline fun <reified T : Any> Application.get(
-        name: String = "",
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) =
-        getKoin().get<T>(name, scope, parameters)
+        getKoin().get<T>(qualifier, scope, parameters)
 
 /**
  * Retrieve given property for KoinComponent
