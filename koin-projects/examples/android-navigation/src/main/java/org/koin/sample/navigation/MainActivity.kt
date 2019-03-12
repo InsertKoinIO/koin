@@ -5,18 +5,16 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavHost
 import androidx.navigation.Navigation
-import org.koin.android.scope.bindScope
-import org.koin.android.scope.getActivityScope
+import org.koin.android.scope.currentScope
 import java.util.*
 
 class MainActivity : AppCompatActivity(), NavHost {
 
-    val mainData by getActivityScope().inject<MainData>()
+    val mainData by currentScope.inject<MainData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        bindScope(getActivityScope())
 //        setupNavigation()
     }
 

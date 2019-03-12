@@ -23,7 +23,7 @@ import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -42,9 +42,9 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
-): Lazy<ViewModel> = lazy { getViewModel<T>(qualifier, scope, parameters) }
+): Lazy<T> = lazy { getViewModel<T>(qualifier, scope, parameters) }
 
 /**
  * Get a viewModel instance
@@ -54,7 +54,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ): T = (this as ComponentCallbacks2).getKoin().getViewModel(
         ViewModelParameters(
@@ -78,7 +78,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 fun <T : ViewModel> LifecycleOwner.getViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         parameters: ParametersDefinition? = null
 ): T = (this as ComponentCallbacks2).getKoin().getViewModel(
         ViewModelParameters(

@@ -115,7 +115,7 @@ class ScopeAPITest {
         val scope1 = koin.createScope(scopeId)
         var closed = false
         scope1.registerCallback(object : ScopeCallback {
-            override fun onClose() {
+            override fun onScopeClose() {
                 closed = true
             }
         })

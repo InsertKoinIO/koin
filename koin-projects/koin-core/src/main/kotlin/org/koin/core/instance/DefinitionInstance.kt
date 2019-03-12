@@ -20,18 +20,19 @@ package org.koin.core.instance
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.DefinitionContext
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 
 /**
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
+abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
 
     /**
      * Retrieve an instance
@@ -83,9 +84,13 @@ abstract class Instance<T>(val beanDefinition: BeanDefinition<T>) {
     }
 }
 
-data class InstanceContext(val koin: Koin? = null, val scope: ScopeInstance = ScopeInstance.GLOBAL, val parameters: ParametersDefinition? = null) {
+/**
+ * Instance resolution Context
+ * Help support DefinitionContext & DefinitionParameters when resolving definition function
+ */
+data class InstanceContext(val koin: Koin? = null, val scope: Scope = Scope.GLOBAL, val parameters: ParametersDefinition? = null) {
 
-    fun getDefinitionContext() = scope.getContext()
+    fun getDefinitionContext(): DefinitionContext = scope.getContext()
 
-    fun getParameters() = parameters?.let { parameters.invoke() } ?: emptyParametersHolder()
+    fun getParameters(): DefinitionParameters = parameters?.let { parameters.invoke() } ?: emptyParametersHolder()
 }

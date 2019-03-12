@@ -20,13 +20,13 @@ import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
 import org.koin.core.instance.InstanceContext
-import org.koin.core.instance.ScopedInstance
+import org.koin.core.instance.ScopeDefinitionInstance
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 
-data class ScopeDefinition(val scopeName: Qualifier, val module: Module) {
+data class ScopeSet(val qualifier: Qualifier, val module: Module) {
 
-    var definitions = hashSetOf<BeanDefinition<*>>()
+    val definitions = hashSetOf<BeanDefinition<*>>()
 
     /**
      * Declare a ScopeInstance definition
@@ -39,19 +39,19 @@ data class ScopeDefinition(val scopeName: Qualifier, val module: Module) {
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createScoped(name, scopeName, definition)
+        val beanDefinition = DefinitionFactory.createScoped(name, qualifier, definition)
         module.declareDefinition(beanDefinition, Options(override = override))
         definitions.add(beanDefinition)
         return beanDefinition
     }
 
-    internal fun release(instance: ScopeInstance) {
+    internal fun release(instance: Scope) {
         definitions
-                .filter { it.instance is ScopedInstance<*> }
+                .filter { it.instance is ScopeDefinitionInstance<*> }
                 .forEach { it.instance?.release(InstanceContext(scope = instance)) }
     }
 
     override fun toString(): String {
-        return "Scope['$scopeName']"
+        return "Scope['$qualifier']"
     }
 }

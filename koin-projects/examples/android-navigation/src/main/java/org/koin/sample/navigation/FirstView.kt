@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.view_first.*
-import org.koin.android.viewmodel.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 /**
@@ -20,8 +20,8 @@ class FirstView : Fragment() {
     val vm: FirstViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.view_first, container, false)
@@ -37,7 +37,7 @@ class FirstView : Fragment() {
 
         text1.setOnClickListener {
             Navigation.findNavController(it)
-                .navigate(R.id.action_firstView_to_secondView)
+                    .navigate(R.id.action_firstView_to_secondView)
         }
 
         vm.sayHello()

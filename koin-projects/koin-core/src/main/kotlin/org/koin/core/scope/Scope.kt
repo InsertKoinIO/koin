@@ -23,9 +23,9 @@ import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-data class ScopeInstance(
-        val id: String,
-        val definition: ScopeDefinition? = null
+data class Scope(
+        val id: ScopeID,
+        val set: ScopeSet? = null
 ) {
     var koin: Koin? = null
     val properties = Properties()
@@ -78,12 +78,12 @@ data class ScopeInstance(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
-        definition?.release(this)
+        set?.release(this)
         koin?.deleteScope(this.id)
         koin = null
 
         // call on close from callbacks
-        callbacks.forEach { it.onClose() }
+        callbacks.forEach { it.onScopeClose() }
         callbacks.clear()
     }
 
@@ -92,12 +92,14 @@ data class ScopeInstance(
     }
 
     override fun toString(): String {
-        val scopeDef = definition?.let { ",scope:'${definition.scopeName}'" } ?: ""
+        val scopeDef = set?.let { ",scope:'${set.qualifier}'" } ?: ""
         return "ScopeInstance[id:'$id'$scopeDef]"
     }
 
     companion object {
         @JvmStatic
-        val GLOBAL = ScopeInstance("-GLOBAL-")
+        val GLOBAL = Scope("-GLOBAL-")
     }
 }
+
+typealias ScopeID = String

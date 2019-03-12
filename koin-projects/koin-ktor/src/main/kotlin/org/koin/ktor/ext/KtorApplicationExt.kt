@@ -22,7 +22,7 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 
 /**
@@ -63,7 +63,7 @@ fun Application.getKoin(): Koin = GlobalContext.get().koin
  */
 inline fun <reified T : Any> Application.inject(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) =
         lazy { get<T>(qualifier, scope, parameters) }
@@ -76,7 +76,7 @@ inline fun <reified T : Any> Application.inject(
  */
 inline fun <reified T : Any> Application.get(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, scope, parameters)

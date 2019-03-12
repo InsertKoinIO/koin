@@ -36,7 +36,7 @@ open class BeanDefinition<T>(
 ) {
     // Main data
     var secondaryTypes = arrayListOf<KClass<*>>()
-    var instance: Instance<T>? = null
+    var instance: DefinitionInstance<T>? = null
     lateinit var definition: Definition<T>
     var options = Options()
     var properties = Properties()
@@ -61,9 +61,9 @@ open class BeanDefinition<T>(
      */
     open fun createInstanceHolder() {
         this.instance = when (kind) {
-            Kind.Single -> SingleInstance(this)
-            Kind.Scope -> ScopedInstance(this)
-            Kind.Factory -> FactoryInstance(this)
+            Kind.Single -> SingleDefinitionInstance(this)
+            Kind.Scope -> ScopeDefinitionInstance(this)
+            Kind.Factory -> FactoryDefinitionInstance(this)
             else -> error("Unknown definition type: $this")
         }
     }

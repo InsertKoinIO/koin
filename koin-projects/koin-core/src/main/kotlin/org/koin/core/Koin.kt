@@ -27,7 +27,8 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 import org.koin.core.scope.getScopeName
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
@@ -44,7 +45,6 @@ class Koin {
     val beanRegistry = BeanRegistry()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
-    val defaultContext = DefaultContext(this)
 
     /**
      * Lazy inject a Koin instance
@@ -55,7 +55,7 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> inject(
             qualifier: Qualifier? = null,
-            scope: ScopeInstance = ScopeInstance.GLOBAL,
+            scope: Scope = Scope.GLOBAL,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
             lazy { get<T>(qualifier, scope, parameters) }
@@ -69,7 +69,7 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
-            scope: ScopeInstance = ScopeInstance.GLOBAL,
+            scope: Scope = Scope.GLOBAL,
             noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, scope, parameters)
@@ -85,7 +85,7 @@ class Koin {
     fun <T> get(
             clazz: KClass<*>,
             qualifier: Qualifier?,
-            scope: ScopeInstance = ScopeInstance.GLOBAL,
+            scope: Scope = Scope.GLOBAL,
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.level == Level.DEBUG) {
@@ -103,7 +103,7 @@ class Koin {
     private fun <T> resolve(
             qualifier: Qualifier?,
             clazz: KClass<*>,
-            scope: ScopeInstance,
+            scope: Scope,
             parameters: ParametersDefinition?
     ): T {
         val (definition, targetScopeInstance) = prepareResolution(qualifier, clazz, scope)
@@ -114,20 +114,20 @@ class Koin {
     private fun prepareResolution(
             qualifier: Qualifier?,
             clazz: KClass<*>,
-            scope: ScopeInstance
-    ): Pair<BeanDefinition<*>, ScopeInstance> {
+            scope: Scope
+    ): Pair<BeanDefinition<*>, Scope> {
         val definition = beanRegistry.findDefinition(qualifier, clazz)
                 ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
 
-        if (definition.isScoped() && scope != ScopeInstance.GLOBAL) {
+        if (definition.isScoped() && scope != Scope.GLOBAL) {
             checkScopeResolution(definition, scope)
         }
 
         return Pair(definition, scope)
     }
 
-    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: ScopeInstance) {
-        val scopeInstanceName = scope.definition?.scopeName
+    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: Scope) {
+        val scopeInstanceName = scope.set?.qualifier
         val beanScopeName: Qualifier? = definition.getScopeName()
         if (beanScopeName != scopeInstanceName) {
             when {
@@ -141,7 +141,7 @@ class Koin {
         val definitions = beanRegistry.findAllCreatedAtStartDefinition()
         if (definitions.isNotEmpty()) {
             definitions.forEach {
-                it.resolveInstance(InstanceContext(koin = this, scope = ScopeInstance.GLOBAL))
+                it.resolveInstance(InstanceContext(koin = this, scope = Scope.GLOBAL))
             }
         }
     }
@@ -152,7 +152,10 @@ class Koin {
      * @param scopeDefinitionName
      */
     @JvmOverloads
-    fun createScope(scopeId: String, qualifier: Qualifier? = null): ScopeInstance {
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
+        if (logger.level == Level.DEBUG) {
+            logger.debug("!- create scope - id:$scopeId q:$qualifier")
+        }
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, qualifier)
         createdScopeInstance.register(this)
         return createdScopeInstance
@@ -164,7 +167,7 @@ class Koin {
      * @param qualifier
      */
     @JvmOverloads
-    fun getOrCreateScope(scopeId: String, qualifier: Qualifier? = null): ScopeInstance {
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
         return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }
 
@@ -172,7 +175,7 @@ class Koin {
      * get a scope instance
      * @param scopeId
      */
-    fun getScope(scopeId: String): ScopeInstance {
+    fun getScope(scopeId: ScopeID): Scope {
         val scope = scopeRegistry.getScopeInstance(scopeId)
         if (!scope.isRegistered()) {
             error("ScopeInstance $scopeId is not registered")
@@ -184,14 +187,14 @@ class Koin {
      * get a scope instance
      * @param scopeId
      */
-    fun getScopeOrNull(scopeId: String): ScopeInstance? {
+    fun getScopeOrNull(scopeId: ScopeID): Scope? {
         return scopeRegistry.getScopeInstanceOrNull(scopeId)
     }
 
     /**
      * Delete a scope instance
      */
-    fun deleteScope(scopeId: String) {
+    fun deleteScope(scopeId: ScopeID) {
         scopeRegistry.deleteScopeInstance(scopeId)
     }
 

@@ -8,8 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.view_third.*
-import org.koin.android.scope.bindScope
-import org.koin.android.scope.getFragmentScope
+import org.koin.android.scope.currentScope
 
 
 /**
@@ -18,7 +17,7 @@ import org.koin.android.scope.getFragmentScope
  */
 class ThirdView : Fragment() {
 
-    val vm: ThirdViewModel by getFragmentScope().inject()
+    val vm: ThirdViewModel by currentScope.inject()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +29,6 @@ class ThirdView : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindScope(getFragmentScope())
 
         activity?.title = "Third"
 

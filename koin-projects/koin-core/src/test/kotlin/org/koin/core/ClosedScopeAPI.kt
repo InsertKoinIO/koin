@@ -7,7 +7,7 @@ import org.koin.Simple
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -122,7 +122,7 @@ class ClosedScopeAPI {
                             scoped { Simple.ComponentA() }
                         }
                         scope(named("SCOPE_2")) {
-                            scoped { (scope: ScopeInstance) -> Simple.ComponentB(get(scope = scope)) }
+                            scoped { (scope: Scope) -> Simple.ComponentB(get(scope = scope)) }
                         }
                     }
             )

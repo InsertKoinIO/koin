@@ -5,7 +5,7 @@ import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 
 
 /**
@@ -21,7 +21,7 @@ fun ComponentCallbacks.getKoin(): Koin = GlobalContext.get().koin
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) = lazy { get<T>(qualifier, scope, parameters) }
 
@@ -33,6 +33,6 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ): T = getKoin().get(qualifier, scope, parameters)

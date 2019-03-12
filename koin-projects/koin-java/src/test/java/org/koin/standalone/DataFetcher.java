@@ -15,11 +15,10 @@
  */
 package org.koin.standalone;
 
-import org.koin.core.parameter.DefinitionParameters;
-import org.koin.core.scope.ScopeInstance;
-import org.koin.java.KoinJavaComponent;
-
 import kotlin.Lazy;
+import org.koin.core.parameter.DefinitionParameters;
+import org.koin.core.scope.Scope;
+import org.koin.java.KoinJavaComponent;
 
 import static org.koin.core.qualifier.QualifierKt.named;
 
@@ -35,7 +34,7 @@ public class DataFetcher {
     //From components
     private Lazy<DataSource> localDb_lazy = KoinJavaComponent.inject(DataSource.class, named("db"));
     private DataSource remoteApi = KoinJavaComponent.get(DataSource.class, named("api"));
-    private DataConverter dataConverter = KoinJavaComponent.get(DataConverter.class, null, ScopeInstance.getGLOBAL(), () -> new DefinitionParameters(SEPARATOR));
+    private DataConverter dataConverter = KoinJavaComponent.get(DataConverter.class, null, Scope.getGLOBAL(), () -> new DefinitionParameters(SEPARATOR));
 
     public DataFetcher() {
         //Use this constructor only for test cases.

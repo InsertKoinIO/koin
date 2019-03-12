@@ -4,11 +4,14 @@ import org.koin.core.Koin
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 
 sealed class DefinitionContext(val koin: Koin) {
 
-    abstract fun currentScope(): ScopeInstance
+    /**
+     * Get the current Scope
+     */
+    abstract fun currentScope(): Scope
 
     /**
      * Resolve an instance from Koin
@@ -30,12 +33,15 @@ sealed class DefinitionContext(val koin: Koin) {
      */
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
-            scope: ScopeInstance,
+            scope: Scope,
             noinline parameters: ParametersDefinition? = null
     ): T {
         return koin.get(qualifier, scope, parameters)
     }
 
+    /**
+     * Retrieve from SCope
+     */
     inline fun <reified T> getFromScope(
             scopeId: String,
             qualifier: Qualifier? = null,
@@ -56,9 +62,9 @@ sealed class DefinitionContext(val koin: Koin) {
 }
 
 class DefaultContext(koin: Koin) : DefinitionContext(koin) {
-    override fun currentScope(): ScopeInstance = ScopeInstance.GLOBAL
+    override fun currentScope(): Scope = Scope.GLOBAL
 }
 
-class ScopedContext(koin: Koin, private val scopeInstance: ScopeInstance) : DefinitionContext(koin) {
-    override fun currentScope(): ScopeInstance = scopeInstance
+class ScopedContext(koin: Koin, private val scope: Scope) : DefinitionContext(koin) {
+    override fun currentScope(): Scope = scope
 }

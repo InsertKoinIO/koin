@@ -25,7 +25,7 @@ import org.koin.android.viewmodel.ViewModelStoreOwnerDefinition
 import org.koin.android.viewmodel.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 
 /**
  * Fragment extensiosn to help for Viewmodel
@@ -43,10 +43,10 @@ import org.koin.core.scope.ScopeInstance
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-) = lazy { getSharedViewModel<T>(qualifier, scope, from, parameters) }
+): Lazy<T> = lazy { getSharedViewModel<T>(qualifier, scope, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
@@ -58,10 +58,10 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-) = (this as ComponentCallbacks2).getKoin().getViewModel(
+): T = (this as ComponentCallbacks2).getKoin().getViewModel(
         ViewModelParameters(
                 T::class,
                 this@getSharedViewModel,

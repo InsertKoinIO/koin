@@ -26,18 +26,6 @@ x better logging
 x Scope Params / properties
 -> Properties in ScopeInstance
 
-
--- Bugs --
-
-
--- PR --
-
-? checkModules - create definition sandbox / fix internals
-- wont fix https://github.com/InsertKoinIO/koin/issues/304
-* JUnit rule ~ AutoCloseKoinTest()
-
--- Dev --
-
 x Qualifiers
 https://github.com/InsertKoinIO/koin/issues/305
 
@@ -47,9 +35,21 @@ x ViewModelResolution -> make it less coupled to Global Koin instance
 x Better Android scope
 x Better SCOPE API - KoinComponent + Scope
 
-Scope Params from DSL
+x Scope Params from DSL
 - fromScope("")
-- scope.params[""]
+- scope.properties[""]
+
+-- Bugs --
+
+-- PR --
+
+? checkModules - create definition sandbox / fix internals
+- wont fix https://github.com/InsertKoinIO/koin/issues/304
+* JUnit rule ~ AutoCloseKoinTest()
+
+-- Dev --
+
+
 
 * Fragment Manager -> injection by fragment
 

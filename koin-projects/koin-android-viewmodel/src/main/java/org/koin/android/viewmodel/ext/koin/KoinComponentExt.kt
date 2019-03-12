@@ -32,7 +32,7 @@ import org.koin.core.KoinComponent
 inline fun <reified T : ViewModel> KoinComponent.viewModel(
         lifecycleOwner: LifecycleOwner,
         parameters: ViewModelParameters<T>
-): Lazy<ViewModel> = lazy { getViewModel(lifecycleOwner, parameters) }
+): Lazy<T> = lazy { getViewModel(lifecycleOwner, parameters) }
 
 /**
  * Get a viewModel instance

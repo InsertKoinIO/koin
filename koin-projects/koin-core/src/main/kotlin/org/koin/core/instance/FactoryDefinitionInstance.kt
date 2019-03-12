@@ -18,27 +18,22 @@ package org.koin.core.instance
 import org.koin.core.definition.BeanDefinition
 
 /**
- * Single instance holder
+ * Factory Instance Holder
+ *
  * @author Arnaud Giuliani
  */
-class SingleInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
-
-    private var value: T? = null
-
-    override fun isCreated(context: InstanceContext): Boolean = (value != null)
+class FactoryDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) :
+        DefinitionInstance<T>(beanDefinition) {
 
     override fun release(context: InstanceContext) {}
 
+    override fun isCreated(context: InstanceContext): Boolean = false
+
     override fun close() {
-        beanDefinition.onClose?.invoke(value)
-        value = null
+        beanDefinition.onClose?.invoke(null)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
-        if (value == null) {
-            value = create(context)
-        }
-        return value as? T ?: error("Single instance created couldn't return value")
+        return create(context)
     }
 }

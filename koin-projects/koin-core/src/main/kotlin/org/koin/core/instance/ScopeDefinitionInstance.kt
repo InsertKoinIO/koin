@@ -19,14 +19,14 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope definition Instance holder
  * @author Arnaud Giuliani
  */
-class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
+class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
@@ -43,7 +43,7 @@ class ScopedInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDef
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
-        if (context.scope == ScopeInstance.GLOBAL) {
+        if (context.scope == Scope.GLOBAL) {
             throw ScopeNotCreatedException("No scope instance created to resolve $beanDefinition")
         }
         val scope = context.scope

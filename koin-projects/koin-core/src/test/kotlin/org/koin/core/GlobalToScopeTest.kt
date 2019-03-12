@@ -1,8 +1,10 @@
 package org.koin.core
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -11,7 +13,7 @@ import org.koin.dsl.module
 class GlobalToScopeTest {
 
     @Test
-    fun `get scoped dependency without scope`() {
+    fun `can't get scoped dependency without scope`() {
         val koin = koinApplication {
             defaultLogger(Level.DEBUG)
             modules(
@@ -26,34 +28,53 @@ class GlobalToScopeTest {
         try {
             koin.get<Simple.ComponentA>()
             fail()
-        } catch (e: Exception) {
+        } catch (e: ScopeNotCreatedException) {
             e.printStackTrace()
         }
-
-//        val scope = koin.createScopeWithType<ClosedScopeAPI.ScopeType>("myScope")
-//        Assert.assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
-//        Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
     }
 
     @Test
-    fun `get scoped dependency without scope from single`() {
+    fun `can't get scoped dependency without scope from single`() {
         val koin = koinApplication {
             defaultLogger(Level.DEBUG)
             modules(
                     module {
+                        single { Simple.ComponentB(get()) }
+
                         scope(named<ClosedScopeAPI.ScopeType>()) {
                             scoped { Simple.ComponentA() }
                         }
                     }
             )
         }.koin
-//        val scope = koin.createScopeWithType<ClosedScopeAPI.ScopeType>("myScope")
-//        Assert.assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
-//        Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+
+        try {
+            koin.get<Simple.ComponentA>()
+            fail()
+        } catch (e: ScopeNotCreatedException) {
+            e.printStackTrace()
+        }
     }
 
     @Test
-    fun `get scoped dependency without scope from koin component`() {
+    fun `get scoped dependency without scope from single`() {
 
+        val scopeId = "MY_SCOPE_ID"
+
+        val koin = koinApplication {
+            defaultLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.ComponentB(getFromScope(scopeId)) }
+
+                        scope(named<ClosedScopeAPI.ScopeType>()) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope(scopeId, named<ClosedScopeAPI.ScopeType>())
+        assertEquals(koin.get<Simple.ComponentB>().a, koin.get<Simple.ComponentA>(scope = scope))
     }
 }

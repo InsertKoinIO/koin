@@ -19,7 +19,7 @@ import io.ktor.routing.Routing
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 
 /**
  * Ktor Koin extensions for Routing class
@@ -35,7 +35,7 @@ import org.koin.core.scope.ScopeInstance
  */
 inline fun <reified T : Any> Routing.inject(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) =
         lazy { get<T>(qualifier, scope, parameters) }
@@ -47,7 +47,7 @@ inline fun <reified T : Any> Routing.inject(
  */
 inline fun <reified T : Any> Routing.get(
         qualifier: Qualifier? = null,
-        scope: ScopeInstance = ScopeInstance.GLOBAL,
+        scope: Scope = Scope.GLOBAL,
         noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, scope, parameters)

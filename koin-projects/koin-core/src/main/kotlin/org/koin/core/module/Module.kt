@@ -20,7 +20,7 @@ import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeDefinition
+import org.koin.core.scope.ScopeSet
 
 /**
  * Koin Module
@@ -33,7 +33,7 @@ class Module(
     internal val override: Boolean
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
-    internal val scopes = arrayListOf<ScopeDefinition>()
+    internal val scopes = arrayListOf<ScopeSet>()
 
     /**
      * Declare a definition in current Module
@@ -46,7 +46,7 @@ class Module(
     /**
      * Declare a definition in current Module
      */
-    fun declareScope(scope: ScopeDefinition) {
+    fun declareScope(scope: ScopeSet) {
         scopes.add(scope)
     }
 
@@ -77,8 +77,8 @@ class Module(
      * Declare a group a scoped definition with a given scope qualifier
      * @param scopeName
      */
-    fun scope(scopeName: Qualifier, scopeDefinition: ScopeDefinition.() -> Unit) {
-        val scope: ScopeDefinition = ScopeDefinition(scopeName, this).apply(scopeDefinition)
+    fun scope(scopeName: Qualifier, scopeSet: ScopeSet.() -> Unit) {
+        val scope: ScopeSet = ScopeSet(scopeName, this).apply(scopeSet)
         declareScope(scope)
     }
 

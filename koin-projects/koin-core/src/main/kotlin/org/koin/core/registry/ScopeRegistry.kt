@@ -21,8 +21,9 @@ import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
+import org.koin.core.scope.ScopeSet
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -33,8 +34,8 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ScopeRegistry {
 
-    private val definitions = ConcurrentHashMap<String, ScopeDefinition>()
-    private val instances = ConcurrentHashMap<String, ScopeInstance>()
+    private val definitions = ConcurrentHashMap<String, ScopeSet>()
+    private val instances = ConcurrentHashMap<String, Scope>()
 
     internal fun loadScopes(modules: Iterable<Module>) {
         modules.forEach {
@@ -43,8 +44,8 @@ class ScopeRegistry {
     }
 
     fun loadDefaultScopes(koin: Koin) {
-        ScopeInstance.GLOBAL.register(koin)
-        saveInstance(ScopeInstance.GLOBAL)
+        Scope.GLOBAL.register(koin)
+        saveInstance(Scope.GLOBAL)
     }
 
     private fun declareScopes(module: Module) {
@@ -53,55 +54,53 @@ class ScopeRegistry {
         }
     }
 
-    private fun saveDefinition(scopeDefinition: ScopeDefinition) {
-        val foundDefinition = definitions[scopeDefinition.scopeName.toString()]
-        if (foundDefinition == null) {
-            definitions[scopeDefinition.scopeName.toString()] = scopeDefinition
+    private fun saveDefinition(scopeSet: ScopeSet) {
+        val foundScopeSet: ScopeSet? = definitions[scopeSet.qualifier.toString()]
+        if (foundScopeSet == null) {
+            definitions[scopeSet.qualifier.toString()] = scopeSet
         } else {
-            val currentDefinitions = foundDefinition.definitions
-            currentDefinitions.addAll(scopeDefinition.definitions)
-            foundDefinition.definitions = currentDefinitions
+            foundScopeSet.definitions.addAll(scopeSet.definitions)
         }
     }
 
-    fun getScopeDefinition(scopeName: String): ScopeDefinition? = definitions[scopeName]
+    fun getScopeDefinition(scopeName: String): ScopeSet? = definitions[scopeName]
 
     /**
      * Create a scope instance for given scope
      * @param id - scope instance id
      * @param scopeName - scope qualifier
      */
-    fun createScopeInstance(id: String, scopeName: Qualifier? = null): ScopeInstance {
-        val definition: ScopeDefinition? = scopeName?.let {
+    fun createScopeInstance(id: ScopeID, scopeName: Qualifier? = null): Scope {
+        val definition: ScopeSet? = scopeName?.let {
             definitions[scopeName.toString()]
                     ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
         }
-        val instance = ScopeInstance(id, definition)
+        val instance = Scope(id, definition)
         registerScopeInstance(instance)
         return instance
     }
 
-    private fun registerScopeInstance(instance: ScopeInstance) {
+    private fun registerScopeInstance(instance: Scope) {
         if (instances[instance.id] != null) {
             throw ScopeAlreadyCreatedException("A scope with id '${instance.id}' already exists. Reuse or close it.")
         }
         saveInstance(instance)
     }
 
-    fun getScopeInstance(id: String): ScopeInstance {
+    fun getScopeInstance(id: ScopeID): Scope {
         return instances[id]
                 ?: throw ScopeNotCreatedException("ScopeInstance with id '$id' not found. Create a scope instance with id '$id'")
     }
 
-    private fun saveInstance(instance: ScopeInstance) {
+    private fun saveInstance(instance: Scope) {
         instances[instance.id] = instance
     }
 
-    fun getScopeInstanceOrNull(id: String): ScopeInstance? {
+    fun getScopeInstanceOrNull(id: ScopeID): Scope? {
         return instances[id]
     }
 
-    fun deleteScopeInstance(id: String) {
+    fun deleteScopeInstance(id: ScopeID) {
         instances.remove(id)
     }
 

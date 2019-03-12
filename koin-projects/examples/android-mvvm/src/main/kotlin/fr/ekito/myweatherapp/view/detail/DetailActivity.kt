@@ -4,13 +4,12 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import fr.ekito.myweatherapp.R
 import fr.ekito.myweatherapp.domain.entity.DailyForecast
 import fr.ekito.myweatherapp.domain.entity.getColorFromCode
 import fr.ekito.myweatherapp.util.android.argument
 import fr.ekito.myweatherapp.view.Failed
 import kotlinx.android.synthetic.main.activity_detail.*
-import org.koin.android.viewmodel.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 /**
@@ -38,9 +37,9 @@ class DetailActivity : AppCompatActivity() {
 
     fun showError(error: Throwable) {
         Snackbar.make(
-            weatherItem,
-            getString(R.string.loading_error) + " - $error",
-            Snackbar.LENGTH_LONG
+                weatherItem,
+                getString(R.string.loading_error) + " - $error",
+                Snackbar.LENGTH_LONG
         ).show()
     }
 

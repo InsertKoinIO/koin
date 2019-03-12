@@ -21,7 +21,7 @@ import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.error.NoParameterFoundException
-import org.koin.core.instance.Instance
+import org.koin.core.instance.DefinitionInstance
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.test.error.BrokenDefinitionException
@@ -33,7 +33,7 @@ import org.mockito.Mockito.mock
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : Instance<T>(beanDefinition) {
+class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
 
     private var value: T? = null
 

@@ -19,7 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeName
 
 /**
@@ -52,7 +52,7 @@ fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
         val clazz = it.primaryType
         val scope = if (it.isScoped()) scopeRegistry.createScopeInstance(
                 "sandbox_scope", it.getScopeName()
-        ) else ScopeInstance.GLOBAL
+        ) else Scope.GLOBAL
 
         get<Any>(clazz, it.qualifier, scope) { emptyParametersHolder() }
         scope.let { scope.close() }

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.view_four.*
-import org.koin.android.viewmodel.ext.sharedViewModel
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 
 /**
@@ -19,8 +19,8 @@ class FourView : Fragment() {
     private val vm: FourFiveSharedViewModel by sharedViewModel(from = { parentFragment!! })
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.view_four, container, false)
