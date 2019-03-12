@@ -38,22 +38,22 @@ x Scope Params / properties
 
 -- Dev --
 
-Qualifiers
+x Qualifiers
 https://github.com/InsertKoinIO/koin/issues/305
 
-Qualifier
-StringQualifier -> name("")
-TypeQualifier -> name<>()
+x ViewModelResolution -> make it less coupled to Global Koin instance
+> To be checked
 
-Better SCOPE API - KoinComponent + Scope
-Better Android scope
+x Better Android scope
+x Better SCOPE API - KoinComponent + Scope
 
 Scope Params from DSL
 - fromScope("")
 - scope.params[""]
 
-
 * Fragment Manager -> injection by fragment
+
+
 
 -- Demo App --
 

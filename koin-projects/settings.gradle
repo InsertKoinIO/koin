@@ -1,21 +1,28 @@
 // Core
 include 'koin-core'
 include 'koin-test'
-include 'examples:coffee-maker'
-include 'koin-java', 'koin-core-ext'
-
-// Android
-include 'koin-android'
-include 'koin-android-scope', 'examples:android-mvp'
-//include 'koin-android-viewmodel', 'examples:android-mvvm'
-include 'koin-androidx-scope'
+//// Core Sample
+//include 'examples:coffee-maker'
+//// Core extended
+//include 'koin-java', 'koin-core-ext'
+//
+//// Android
+//include 'koin-android'
+//include 'koin-android-scope'
+//include 'koin-android-viewmodel'
+//include 'koin-androidx-scope'
 //include 'koin-androidx-viewmodel'
+
+// Android Samples
+//include 'examples:android-mvp"
+//include 'examples:android-mvvm'
 //include 'examples:android-navigation'
-
-// Web
-include 'koin-logger-slf4j'
-include 'koin-ktor'
-include 'examples:hello-ktor'
-
-// Doc
-include 'koin-book'
+//
+//// Ktor
+//include 'koin-logger-slf4j'
+//include 'koin-ktor'
+//// Kto Sample
+//include 'examples:hello-ktor'
+//
+//// Doc
+//include 'koin-book'

@@ -13,50 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel.ext
+package org.koin.androidx.viewmodel.ext.android
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.ViewModel
-import org.koin.android.viewmodel.ViewModelParameters
-import org.koin.android.viewmodel.resolveViewModelInstance
+import android.content.ComponentCallbacks2
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ViewModelParameters
+import org.koin.androidx.viewmodel.getViewModel
+import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeInstance
 import kotlin.reflect.KClass
 
 /**
- * LifecycleOwner extensions to help for ViewModel
- *
- * @author Arnaud Giuliani
- */
-
-/**
  * Lazy getByClass a viewModel instance
  *
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param scope - used scope Instance
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline parameters: ParametersDefinition? = null
-) = lazy { getViewModel<T>(name, scope, parameters) }
+): Lazy<ViewModel> = lazy { getViewModel<T>(qualifier, scope, parameters) }
+
+
+fun LifecycleOwner.getKoin(): Koin = (this as ComponentCallbacks2).getKoin()
 
 /**
  * Get a viewModel instance
  *
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline parameters: ParametersDefinition? = null
-) = resolveViewModelInstance(
+): T = getKoin().getViewModel(
         ViewModelParameters(
                 T::class,
-                name,
-                scope = scope,
+                this@getViewModel,
+                scope,
+                qualifier,
                 parameters = parameters
         )
 )
@@ -66,21 +68,23 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
  * Lazy getByClass a viewModel instance
  *
  * @param clazz - Class of the BeanDefinition to retrieve
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param scope - used scope Instance
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModel(
         clazz: KClass<T>,
-        name: String? = null,
+        qualifier: Qualifier? = null,
         scope: ScopeInstance = ScopeInstance.GLOBAL,
         parameters: ParametersDefinition? = null
-) = resolveViewModelInstance(
+): T = (this as ComponentCallbacks2).getKoin().getViewModel(
         ViewModelParameters(
                 clazz,
-                name,
-                scope = scope,
+                this@getViewModel,
+                scope,
+                qualifier,
                 parameters = parameters
         )
 )
+
 

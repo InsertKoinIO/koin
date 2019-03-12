@@ -15,12 +15,11 @@
  */
 @file:Suppress("unused")
 
-package org.koin.androidx.viewmodel.ext
+package org.koin.androidx.viewmodel.ext.koin
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import org.koin.androidx.viewmodel.ViewModelParameters
-import org.koin.androidx.viewmodel.resolveViewModelInstance
+import org.koin.androidx.viewmodel.getViewModel
 import org.koin.core.KoinComponent
 
 /**
@@ -30,9 +29,8 @@ import org.koin.core.KoinComponent
  * @param parameters
  */
 inline fun <reified T : ViewModel> KoinComponent.viewModel(
-    lifecycleOwner: LifecycleOwner,
-    parameters: ViewModelParameters<T>
-) = lazy { getViewModel(lifecycleOwner, parameters) }
+        parameters: ViewModelParameters<T>
+): Lazy<T> = lazy { getViewModel(parameters) }
 
 /**
  * Get a viewModel instance
@@ -41,6 +39,5 @@ inline fun <reified T : ViewModel> KoinComponent.viewModel(
  * @param parameters
  */
 inline fun <reified T : ViewModel> KoinComponent.getViewModel(
-    lifecycleOwner: LifecycleOwner,
-    parameters: ViewModelParameters<T>
-) = lifecycleOwner.resolveViewModelInstance(parameters)
+        parameters: ViewModelParameters<T>
+): T = getKoin().getViewModel(parameters)

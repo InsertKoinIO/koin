@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.ext
+package org.koin.android.viewmodel.ext.android
 
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelParameters
-import org.koin.androidx.viewmodel.ViewModelStoreOwnerDefinition
-import org.koin.androidx.viewmodel.resolveViewModelInstance
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelStoreOwner
+import android.content.ComponentCallbacks2
+import android.support.v4.app.Fragment
+import org.koin.android.ext.android.getKoin
+import org.koin.android.viewmodel.ViewModelParameters
+import org.koin.android.viewmodel.ViewModelStoreOwnerDefinition
+import org.koin.android.viewmodel.getViewModel
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeInstance
 
 /**
@@ -33,37 +36,38 @@ import org.koin.core.scope.ScopeInstance
 /**
  * Lazy getByClass a viewModel instance shared with Activity
  *
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param scope - used scope Instance
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
- * @param scope
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-        name: String? = null,
-        scope: ScopeInstance? = null,
+        qualifier: Qualifier? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-) = lazy { getSharedViewModel<T>(name, scope, from, parameters) }
+) = lazy { getSharedViewModel<T>(qualifier, scope, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
  *
- * @param name - Koin BeanDefinition name (if have several ViewModel beanDefinition of the same type)
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param scope - used scope Instance
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
- * @param scope
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-        name: String? = null,
-        scope: ScopeInstance? = null,
+        qualifier: Qualifier? = null,
+        scope: ScopeInstance = ScopeInstance.GLOBAL,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-) = resolveViewModelInstance(
+) = (this as ComponentCallbacks2).getKoin().getViewModel(
         ViewModelParameters(
                 T::class,
-                name,
-                from,
+                this@getSharedViewModel,
                 scope,
+                qualifier,
+                from,
                 parameters
         )
 )

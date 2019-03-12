@@ -13,6 +13,7 @@ import fr.ekito.myweatherapp.view.weather.WeatherHeaderContract
 import fr.ekito.myweatherapp.view.weather.WeatherHeaderPresenter
 import fr.ekito.myweatherapp.view.weather.WeatherListContract
 import fr.ekito.myweatherapp.view.weather.WeatherListPresenter
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -29,7 +30,7 @@ val weatherAppModule = module {
     factory<WeatherListContract.Presenter> { WeatherListPresenter(get(), get()) }
 
     // Presenter for Detail View
-    scope<DetailActivity> {
+    scope(named<DetailActivity>()) {
         scoped<DetailContract.Presenter> { (id: String) -> DetailPresenter(id, get(), get()) }
     }
 
