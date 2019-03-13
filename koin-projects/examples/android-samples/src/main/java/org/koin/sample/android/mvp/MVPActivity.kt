@@ -37,7 +37,7 @@ class MVPActivity : AppCompatActivity() {
         title = "Android MVP"
 
         mvp_button.setOnClickListener {
-            navigateTo<MVVMActivity>()
+            navigateTo<MVVMActivity>(isRoot = true)
         }
     }
 }

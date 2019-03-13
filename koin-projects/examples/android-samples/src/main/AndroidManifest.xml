@@ -22,6 +22,8 @@
 
         <activity android:name=".mvp.MVPActivity" />
         <activity android:name=".mvvm.MVVMActivity" />
+        <activity android:name=".scope.ScopedActivityA" />
+        <activity android:name=".scope.ScopedActivityB" />
     </application>
 
 </manifest>

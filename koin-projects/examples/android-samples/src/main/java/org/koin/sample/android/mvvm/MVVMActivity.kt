@@ -2,6 +2,7 @@ package org.koin.sample.android.mvvm
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.assertEquals
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -9,6 +10,8 @@ import org.koin.core.parameter.parametersOf
 import org.koin.sample.android.R
 import org.koin.sample.android.components.ID
 import org.koin.sample.android.components.mvvm.SimpleViewModel
+import org.koin.sample.android.scope.ScopedActivityA
+import org.koin.sample.android.utils.navigateTo
 
 class MVVMActivity : AppCompatActivity() {
 
@@ -25,5 +28,9 @@ class MVVMActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mvvm_frame, MVVMFragment())
                 .commit()
+
+        mvvm_button.setOnClickListener {
+            navigateTo<ScopedActivityA>(isRoot = true)
+        }
     }
 }

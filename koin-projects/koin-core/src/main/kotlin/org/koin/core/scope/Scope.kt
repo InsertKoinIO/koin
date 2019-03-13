@@ -92,8 +92,8 @@ data class Scope(
     }
 
     override fun toString(): String {
-        val scopeDef = set?.let { ",scope:'${set.qualifier}'" } ?: ""
-        return "ScopeInstance[id:'$id'$scopeDef]"
+        val scopeDef = set?.let { ",set:'${set.qualifier}'" } ?: ""
+        return "Scope[id:'$id'$scopeDef]"
     }
 
     companion object {

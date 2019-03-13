@@ -21,7 +21,8 @@ import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.getViewModel
-import org.koin.core.Koin
+import org.koin.core.KoinComponent
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -67,7 +68,11 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
         )
 )
 
-fun LifecycleOwner.getKoin(): Koin = (this as ComponentCallbacks).getKoin()
+fun LifecycleOwner.getKoin() = when (this) {
+    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
+    is KoinComponent -> this.getKoin()
+    else -> GlobalContext.get().koin
+}
 
 /**
  * Lazy getByClass a viewModel instance

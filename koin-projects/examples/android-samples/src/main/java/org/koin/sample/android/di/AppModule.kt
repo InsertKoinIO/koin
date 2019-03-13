@@ -3,6 +3,10 @@ package org.koin.sample.android.di
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.koin.dsl.onRelease
+import org.koin.sample.android.components.Counter
+import org.koin.sample.android.components.SCOPE_ID
+import org.koin.sample.android.components.SCOPE_SESSION
 import org.koin.sample.android.components.main.DumbServiceImpl
 import org.koin.sample.android.components.main.RandomId
 import org.koin.sample.android.components.main.Service
@@ -10,7 +14,9 @@ import org.koin.sample.android.components.main.ServiceImpl
 import org.koin.sample.android.components.mvp.FactoryPresenter
 import org.koin.sample.android.components.mvp.ScopedPresenter
 import org.koin.sample.android.components.mvvm.SimpleViewModel
+import org.koin.sample.android.components.scope.Session
 import org.koin.sample.android.mvp.MVPActivity
+import org.koin.sample.android.scope.ScopedActivityA
 
 val appModule = module {
 
@@ -30,4 +36,17 @@ val mvpModule = module {
 
 val mvvmModule = module {
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
+}
+
+val scopeModule = module {
+    scope(named(SCOPE_ID)) {
+        scoped(named(SCOPE_SESSION)) { Session() } onRelease {
+            // onRelease, count it
+            Counter.released++
+            println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
+        }
+    }
+    scope(named<ScopedActivityA>()) {
+        scoped { Session() }
+    }
 }
