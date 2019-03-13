@@ -24,6 +24,10 @@
         <activity android:name=".mvvm.MVVMActivity" />
         <activity android:name=".scope.ScopedActivityA" />
         <activity android:name=".scope.ScopedActivityB" />
+        <activity android:name=".sdk.HostActivity" />
+
+        <activity android:name=".components.sdk.SDKActivity" />
+
     </application>
 
 </manifest>

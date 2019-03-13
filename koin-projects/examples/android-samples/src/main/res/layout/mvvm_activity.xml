@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_margin="16dp"
-        android:text="Everything completed!" />
+        android:text="MVVM completed!" />
 
     <FrameLayout
         android:id="@+id/mvvm_frame"

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:text="Everything completed!" />
+        android:text="Scoped A completed!" />
 
     <Button
         android:id="@+id/scoped_a_button"

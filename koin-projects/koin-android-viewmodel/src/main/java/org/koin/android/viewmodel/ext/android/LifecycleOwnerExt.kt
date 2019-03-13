@@ -69,8 +69,8 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 )
 
 fun LifecycleOwner.getKoin() = when (this) {
-    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
     is KoinComponent -> this.getKoin()
+    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
     else -> GlobalContext.get().koin
 }
 
