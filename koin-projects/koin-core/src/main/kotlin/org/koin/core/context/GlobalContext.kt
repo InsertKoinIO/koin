@@ -71,7 +71,6 @@ object GlobalContext {
  */
 fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.create()
-    koinApplication.loadDefaults()
     koinApplication.apply(appDeclaration)
     GlobalContext.start(koinApplication)
     return koinApplication

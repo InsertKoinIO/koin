@@ -26,24 +26,21 @@ x better logging
 -> PR ok
 x Scope Params / properties
 -> Properties in ScopeInstance
-
 x Qualifiers
 https://github.com/InsertKoinIO/koin/issues/305
-
-x ViewModelResolution -> make it less coupled to Global Koin instance
-> To be checked
-
 x Better Android scope
 x Better SCOPE API - KoinComponent + Scope
-
 x Scope Params from DSL
 - fromScope("")
 - scope.properties[""]
 
+x ViewModelResolution -> make it less coupled to Global Koin instance
+> To be checked
+
 -- Bugs --
 
 -- Dev & PR --
-> Check to remove mockito
+> Check to remove mockito?
 
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
@@ -51,13 +48,10 @@ x Scope Params from DSL
 
 
 -- Demo App --
-
-* Simple demo app / no selection
-- MVP, MVVM
-* Scope Instance sample / http auth / non auth
+* Current Scope / Bind Scope
 * SDK Module
 
-* Perfs App Android
+* Scope - http auth / non auth
 
 -- Doc ---
 * Changelog update

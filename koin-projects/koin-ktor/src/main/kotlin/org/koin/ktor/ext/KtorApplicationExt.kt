@@ -36,15 +36,6 @@ import org.koin.dsl.KoinAppDeclaration
  * Help start Koin cntofor Ktor
  */
 fun Application.installKoin(
-        koinApplication: KoinApplication
-) {
-    startKoin(koinApplication)
-}
-
-/**
- * Help start Koin cntofor Ktor
- */
-fun Application.installKoin(
         koinApplication: KoinAppDeclaration
 ) {
     startKoin(koinApplication)

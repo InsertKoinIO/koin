@@ -6,6 +6,7 @@ import org.junit.Assert.assertEquals
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.koin.sample.android.R
 import org.koin.sample.android.components.ID
 import org.koin.sample.android.components.mvvm.SimpleViewModel
 
@@ -19,5 +20,10 @@ class MVVMActivity : AppCompatActivity() {
         assertEquals(getViewModel<SimpleViewModel> { parametersOf(ID) }, simpleViewModel)
 
         title = "Android MVVM"
+        setContentView(R.layout.mvvm_activity)
+
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.mvvm_frame, MVVMFragment())
+                .commit()
     }
 }

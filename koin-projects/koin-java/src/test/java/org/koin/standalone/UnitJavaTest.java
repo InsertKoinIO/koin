@@ -1,6 +1,5 @@
 package org.koin.standalone;
 
-import kotlin.Lazy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,12 +7,16 @@ import org.koin.core.KoinApplication;
 import org.koin.core.context.GlobalContext;
 import org.koin.core.scope.Scope;
 
+import kotlin.Lazy;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.koin.core.context.GlobalContext.start;
 import static org.koin.core.context.GlobalContext.stop;
 import static org.koin.core.qualifier.QualifierKt.named;
-import static org.koin.java.KoinJavaComponent.*;
+import static org.koin.java.KoinJavaComponent.get;
+import static org.koin.java.KoinJavaComponent.getKoin;
+import static org.koin.java.KoinJavaComponent.inject;
 import static org.koin.standalone.UnitJavaStuffKt.koinModule;
 
 public class UnitJavaTest {

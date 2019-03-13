@@ -20,6 +20,8 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
+import org.koin.core.KoinComponent
+import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
@@ -30,7 +32,11 @@ import org.koin.core.scope.Scope
  * @author Arnaud Giuliani
  */
 
-private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
+private fun LifecycleOwner.getKoin() = when (this) {
+    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
+    is KoinComponent -> this.getKoin()
+    else -> GlobalContext.get().koin
+}
 
 private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
 private fun LifecycleOwner.getScopeId() = this.toString()
@@ -42,12 +48,17 @@ private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
 
 private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): Scope {
     val scope = getKoin().createScope(scopeId, qualifier)
-    bindScopeToLifecycle(scope)
+    bindScope(scope)
     return scope
 }
 
-private fun LifecycleOwner.bindScopeToLifecycle(scope: Scope) {
-    lifecycle.addObserver(ScopeObserver(Lifecycle.Event.ON_DESTROY, this, scope))
+/**
+ * Bind given scope to current LifecycleOwner
+ * @param scope
+ * @param event
+ */
+fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
+    lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
 
 /**
