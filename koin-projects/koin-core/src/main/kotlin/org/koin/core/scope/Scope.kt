@@ -88,7 +88,7 @@ data class Scope(
     }
 
     fun getContext(): DefinitionContext {
-        return ScopedContext(koin ?: error("ScopeInstance $this is not registered"), this)
+        return ScopedContext(koin ?: error("Scope '$this' is not registered"), this)
     }
 
     override fun toString(): String {

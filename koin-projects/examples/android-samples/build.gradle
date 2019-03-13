@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+apply from: '../../gradle/versions-examples.gradle'
+
+android {
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion android_target_version
+        applicationId "org.koin.sample.android"
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+
+    // Koin
+    implementation project(":koin-android-viewmodel")
+    implementation 'junit:junit:4.12'
+
+    implementation "com.android.support:appcompat-v7:$support_lib_version"
+    implementation "android.arch.lifecycle:extensions:$android_arch_version"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+
+}

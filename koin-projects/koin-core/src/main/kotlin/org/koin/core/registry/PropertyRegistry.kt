@@ -21,6 +21,7 @@ import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
 import org.koin.ext.isFloat
 import org.koin.ext.isInt
+import org.koin.ext.quoted
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -60,7 +61,7 @@ class PropertyRegistry {
             when {
                 v.isInt() -> saveProperty(k, v.toInt())
                 v.isFloat() -> saveProperty(k, v.toFloat())
-                else -> saveProperty(k, v)
+                else -> saveProperty(k, v.quoted())
             }
         }
     }

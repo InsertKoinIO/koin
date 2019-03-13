@@ -17,7 +17,6 @@
 
 package org.koin.android.viewmodel.ext.koin
 
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.getViewModel
@@ -30,9 +29,8 @@ import org.koin.core.KoinComponent
  * @param parameters
  */
 inline fun <reified T : ViewModel> KoinComponent.viewModel(
-        lifecycleOwner: LifecycleOwner,
         parameters: ViewModelParameters<T>
-): Lazy<T> = lazy { getViewModel(lifecycleOwner, parameters) }
+): Lazy<T> = lazy { getViewModel(parameters) }
 
 /**
  * Get a viewModel instance
@@ -41,6 +39,5 @@ inline fun <reified T : ViewModel> KoinComponent.viewModel(
  * @param parameters
  */
 inline fun <reified T : ViewModel> KoinComponent.getViewModel(
-        lifecycleOwner: LifecycleOwner,
         parameters: ViewModelParameters<T>
 ): T = getKoin().getViewModel(parameters)

@@ -17,7 +17,6 @@ package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.DefaultContext
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
@@ -203,9 +202,16 @@ class Koin {
      * @param key
      * @param defaultValue
      */
-    @JvmOverloads
-    fun <T> getProperty(key: String, defaultValue: T? = null): T? {
+    fun <T> getProperty(key: String, defaultValue: T): T {
         return propertyRegistry.getProperty<T>(key) ?: defaultValue
+    }
+
+    /**
+     * Retrieve a property
+     * @param key
+     */
+    fun <T> getProperty(key: String): T? {
+        return propertyRegistry.getProperty(key)
     }
 
     /**

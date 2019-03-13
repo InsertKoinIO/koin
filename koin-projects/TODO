@@ -53,15 +53,11 @@ x Scope Params from DSL
 -- Demo App --
 
 * Simple demo app / no selection
-- MVP
-
+- MVP, MVVM
 * Scope Instance sample / http auth / non auth
+* SDK Module
 
-* Making SDK With Koin / Koin instance isolation
-    -> https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5
-    -> good description of isolation
-
-
+* Perfs App Android
 
 -- Doc ---
 * Changelog update
