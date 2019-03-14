@@ -15,6 +15,7 @@ dependencies {
 
     // Ktor
     compile "io.ktor:ktor-server-core:$ktor_version"
+    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
 }
 
 apply from: '../gradle/publish.gradle'
