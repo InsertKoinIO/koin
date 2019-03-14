@@ -8,10 +8,7 @@ import org.koin.sample.android.R
 
 class SDKActivity : AppCompatActivity(), CustomKoinComponent {
 
-    // Overload to use SDK Koin instance
-    // could also overload directly
-//    override fun getKoin() = CustomSDK.koinApp.koin
-
+    // Here we use Koin instance from CustomKoinComponent
     val sdkViewModel: SDKVIewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
