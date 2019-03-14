@@ -1,17 +1,12 @@
-[2.1]
--- Dev --
-* Scope Params
--> injection param in Scope
-- https://github.com/InsertKoinIO/koin/issues/231
-
+-- [2.1] --
 * Koin as a Ktor feature
 * Ktor shutdown
 https://github.com/InsertKoinIO/koin/issues/348
 
 * Fragment Manager -> injection by fragment
 
-[2.0]
--- Done --
+
+-- [2.0] - Done --
 x release of singles
 x Scope API Callback
 x Scope injection params
@@ -37,18 +32,13 @@ x Better SCOPE API - KoinComponent + Scope
 x ViewModelResolution -> make it less coupled to Global Koin instance
 > To be checked
 
--- Bugs --
-
--- Dev & PR --
-
-* perfs check / logger
+-- Dev --
 
 > Check to remove mockito?
 
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
 * JUnit rule ~ AutoCloseKoinTest()
-
 
 
 -- Doc ---
