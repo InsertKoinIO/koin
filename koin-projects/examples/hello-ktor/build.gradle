@@ -15,7 +15,7 @@ dependencies {
     testCompile "io.ktor:ktor-server-test-host:$ktor_version"
 
     // Logging
-    compile "ch.qos.logback:logback-classic:1.2.1"
+    compile "ch.qos.logback:logback-classic:1.2.3"
 }
 
 repositories {
