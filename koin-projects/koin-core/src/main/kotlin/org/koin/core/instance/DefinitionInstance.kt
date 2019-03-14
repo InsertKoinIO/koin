@@ -47,7 +47,7 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
      * @return T
      */
     open fun <T> create(context: InstanceContext): T {
-        if (logger.level == Level.DEBUG) {
+        if (logger.isAt(Level.DEBUG)) {
             logger.debug("| create instance for $beanDefinition")
         }
         try {
@@ -92,5 +92,6 @@ data class InstanceContext(val koin: Koin? = null, val scope: Scope = Scope.GLOB
 
     fun getDefinitionContext(): DefinitionContext = scope.getContext()
 
-    fun getParameters(): DefinitionParameters = parameters?.let { parameters.invoke() } ?: emptyParametersHolder()
+    fun getParameters(): DefinitionParameters = parameters?.let { parameters.invoke() }
+            ?: emptyParametersHolder()
 }

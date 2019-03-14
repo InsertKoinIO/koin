@@ -46,7 +46,9 @@ class BeanRegistry {
         modules.forEach { module: Module ->
             saveDefinitions(module)
         }
-        logger.info("registered ${definitions.size} definitions")
+        if (logger.isAt(Level.INFO)) {
+            logger.info("registered ${definitions.size} definitions")
+        }
     }
 
     private fun saveDefinitions(module: Module) {
@@ -129,7 +131,8 @@ class BeanRegistry {
             qualifier: Qualifier? = null,
             clazz: KClass<*>
     ): BeanDefinition<*>? =
-            qualifier?.let { findDefinitionByName(qualifier.toString()) } ?: findDefinitionByClass(clazz)
+            qualifier?.let { findDefinitionByName(qualifier.toString()) }
+                    ?: findDefinitionByClass(clazz)
 
     private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
         return definitionsClass[kClass]

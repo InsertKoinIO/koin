@@ -34,7 +34,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     override fun release(context: InstanceContext) {
         val scope = context.scope
-        if (logger.level == Level.DEBUG) {
+        if (logger.isAt(Level.DEBUG)) {
             logger.debug("releasing '$scope' ~ $beanDefinition ")
         }
         beanDefinition.onRelease?.invoke(values[scope.id])

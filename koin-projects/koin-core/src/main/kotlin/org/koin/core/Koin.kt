@@ -87,7 +87,7 @@ class Koin {
             scope: Scope = Scope.GLOBAL,
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
-        return if (logger.level == Level.DEBUG) {
+        return if (logger.isAt(Level.DEBUG)) {
             logger.debug("+- get '${clazz.getFullName()}'")
             val (instance: T, duration: Double) = measureDuration {
                 resolve<T>(qualifier, clazz, scope, parameters)
@@ -152,7 +152,7 @@ class Koin {
      */
     @JvmOverloads
     fun createScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
-        if (logger.level == Level.DEBUG) {
+        if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$qualifier")
         }
         val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, qualifier)
