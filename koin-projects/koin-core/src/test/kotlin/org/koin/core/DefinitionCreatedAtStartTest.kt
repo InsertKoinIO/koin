@@ -17,11 +17,11 @@ class DefinitionCreatedAtStartTest {
     @Test
     fun `is declared as created at start`() {
         val app = koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
-                module {
-                    single(createdAtStart = true) { Simple.ComponentA() }
-                }
+                    module {
+                        single(createdAtStart = true) { Simple.ComponentA() }
+                    }
             )
         }
 
@@ -33,11 +33,11 @@ class DefinitionCreatedAtStartTest {
     @Test
     fun `is created at start`() {
         val app = startKoin {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
-                module {
-                    single(createdAtStart = true) { Simple.ComponentA() }
-                }
+                    module {
+                        single(createdAtStart = true) { Simple.ComponentA() }
+                    }
             )
         }
 
@@ -51,9 +51,9 @@ class DefinitionCreatedAtStartTest {
     fun `factory is not created at start`() {
         val app = koinApplication {
             modules(
-                module {
-                    factory { Simple.ComponentA() }
-                }
+                    module {
+                        factory { Simple.ComponentA() }
+                    }
             )
         }
 

@@ -98,7 +98,7 @@ class KoinApplication private constructor() {
      * Set Koin to use [PrintLogger], by default at [Level.INFO]
      */
     @JvmOverloads
-    fun defaultLogger(level: Level = Level.INFO) = this.logger(PrintLogger(level))
+    fun printLogger(level: Level = Level.INFO) = this.logger(PrintLogger(level))
 
     /**
      * Create Single instances Definitions marked as createdAtStart

@@ -24,7 +24,7 @@ class ScopedKoinComponentTest {
     @Test
     fun `Scoped component - different scopes`() {
         startKoin {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentA() }
@@ -56,7 +56,7 @@ class ScopedKoinComponentTest {
     @Test
     fun `Scoped component - same scopes`() {
         startKoin {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentA() }

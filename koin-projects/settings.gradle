@@ -15,6 +15,7 @@ include 'koin-androidx-viewmodel'
 
 // Android Samples
 include 'examples:android-samples'
+include 'examples:androidx-samples'
 include 'examples:android-perfs'
 // Ktor
 include 'koin-logger-slf4j'

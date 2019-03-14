@@ -13,7 +13,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `can resolve an additional type`() {
         val app = koinApplication {
-            defaultLogger()
+            printLogger()
             modules(
                 module {
                     single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -33,7 +33,7 @@ class AdditionalTypeBindingTest {
     fun `additional type conflict`() {
         try {
             koinApplication {
-                defaultLogger()
+                printLogger()
                 modules(
                     module {
                         single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -49,7 +49,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `should not conflict name & default type`() {
         val app = koinApplication {
-            defaultLogger()
+            printLogger()
             modules(
                 module {
                     single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }

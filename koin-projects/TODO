@@ -30,9 +30,9 @@ x Qualifiers
 https://github.com/InsertKoinIO/koin/issues/305
 x Better Android scope
 x Better SCOPE API - KoinComponent + Scope
-x Scope Params from DSL
-- fromScope("")
-- scope.properties[""]
++ Scope Params from DSL
+-> fromScope("")
+-> scope.properties[""]
 
 x ViewModelResolution -> make it less coupled to Global Koin instance
 > To be checked
@@ -40,6 +40,9 @@ x ViewModelResolution -> make it less coupled to Global Koin instance
 -- Bugs --
 
 -- Dev & PR --
+
+* perfs check / logger
+
 > Check to remove mockito?
 
 ? checkModules - create definition sandbox / fix internals
@@ -47,11 +50,6 @@ x ViewModelResolution -> make it less coupled to Global Koin instance
 * JUnit rule ~ AutoCloseKoinTest()
 
 
--- Demo App --
-* Current Scope / Bind Scope
-* SDK Module
-
-* Scope - http auth / non auth
 
 -- Doc ---
 * Changelog update

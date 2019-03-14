@@ -18,18 +18,15 @@ android {
 }
 
 dependencies {
-    // Koin
-    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation("androidx.lifecycle:lifecycle-common:$androidx_arch_version")
     api project(":koin-android") //"org.koin:koin-android:$koin_version"
-    // Test
+    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
+    implementation("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
+        exclude group: "core-runtime"
+    }
+
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
-    // Architecture ViewModel
-    implementation("androidx.lifecycle:lifecycle-common:$androidx_arch_version"){
-        exclude group: "core-runtime"
-    }
 }
 
 apply from: '../gradle/publish-android.gradle'

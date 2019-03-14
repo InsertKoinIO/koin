@@ -28,7 +28,7 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `allow redeclaration - different names`() {
         val app = koinApplication {
-            defaultLogger(Level.INFO)
+            printLogger(Level.INFO)
             modules(module {
                 single(named("default")) { Simple.ComponentA() }
                 single(named("other")) { Simple.ComponentA() }

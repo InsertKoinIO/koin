@@ -49,7 +49,7 @@ class TODOAppTest {
     @Test
     fun `should create all components`() {
         val koinApp = startKoin {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(todoAppModule, repositoryModule)
         }
         val koin = koinApp.koin

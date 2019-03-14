@@ -13,7 +13,7 @@ import org.koin.sample.android.components.main.ServiceImpl
 // Custom Koin instance Holder
 object CustomSDK {
     val koinApp = koinApplication {
-        defaultLogger(Level.DEBUG)
+        printLogger(Level.DEBUG)
         modules(sdkModule)
     }
 }

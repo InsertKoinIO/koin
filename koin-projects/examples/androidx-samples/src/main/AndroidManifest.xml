@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.koin.sample.android">
+
+    <application
+        android:name="org.koin.sample.androidx.MainApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity android:name="org.koin.sample.androidx.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="org.koin.sample.androidx.mvp.MVPActivity" />
+        <activity android:name="org.koin.sample.androidx.mvvm.MVVMActivity" />
+        <activity android:name="org.koin.sample.androidx.scope.ScopedActivityA" />
+        <activity android:name="org.koin.sample.androidx.scope.ScopedActivityB" />
+        <activity android:name="org.koin.sample.androidx.sdk.HostActivity" />
+
+        <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
+
+    </application>
+
+</manifest>

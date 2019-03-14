@@ -12,7 +12,7 @@ class CheckModulesTest {
     @Test
     fun `check a simple module`() {
         koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentA() }
@@ -24,7 +24,7 @@ class CheckModulesTest {
     @Test
     fun `check a module with link`() {
         koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentA() }
@@ -38,7 +38,7 @@ class CheckModulesTest {
     fun `check a broken module`() {
         try {
             koinApplication {
-                defaultLogger(Level.DEBUG)
+                printLogger(Level.DEBUG)
                 modules(
                         module {
                             single { Simple.ComponentB(get()) }
@@ -54,7 +54,7 @@ class CheckModulesTest {
     @Test
     fun `check a module with params`() {
         koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { (s: String) -> Simple.MyString(s) }
@@ -66,7 +66,7 @@ class CheckModulesTest {
     @Test
     fun `check a module with property`() {
         koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             properties(hashMapOf("aValue" to "value"))
             modules(
                     module {

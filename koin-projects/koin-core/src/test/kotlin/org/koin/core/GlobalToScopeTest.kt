@@ -15,7 +15,7 @@ class GlobalToScopeTest {
     @Test
     fun `can't get scoped dependency without scope`() {
         val koin = koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         scope(named<ClosedScopeAPI.ScopeType>()) {
@@ -36,7 +36,7 @@ class GlobalToScopeTest {
     @Test
     fun `can't get scoped dependency without scope from single`() {
         val koin = koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentB(get()) }
@@ -62,7 +62,7 @@ class GlobalToScopeTest {
         val scopeId = "MY_SCOPE_ID"
 
         val koin = koinApplication {
-            defaultLogger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentB(getFromScope(scopeId)) }
