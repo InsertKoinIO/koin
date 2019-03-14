@@ -3,36 +3,51 @@ package org.koin.core.definition
 import org.koin.core.Koin
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 sealed class DefinitionContext(val koin: Koin) {
 
-    abstract fun getCurrentScope(): ScopeInstance?
+    /**
+     * Get the current Scope
+     */
+    abstract fun currentScope(): Scope
 
     /**
      * Resolve an instance from Koin
-     * @param name
+     * @param qualifier
      * @param parameters
      */
     inline fun <reified T> get(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin.get(name, getCurrentScope(), parameters)
+        return koin.get(qualifier, currentScope(), parameters)
     }
 
     /**
      * Resolve an instance from Koin / extenral scope instance
-     * @param name
+     * @param qualifier
      * @param scope
      * @param parameters
      */
     inline fun <reified T> get(
-            name: String? = null,
-            scope: ScopeInstance,
+            qualifier: Qualifier? = null,
+            scope: Scope,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin.get(name, scope, parameters)
+        return koin.get(qualifier, scope, parameters)
+    }
+
+    /**
+     * Retrieve from SCope
+     */
+    inline fun <reified T> getFromScope(
+            scopeId: String,
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): T {
+        return koin.get(qualifier, koin.getScope(scopeId), parameters)
     }
 
     /**
@@ -41,15 +56,15 @@ sealed class DefinitionContext(val koin: Koin) {
      * @param defaultValue
      */
     fun <T> getProperty(key: String, defaultValue: T? = null): T {
-        return koin.getProperty(key,defaultValue)
-        ?: throw MissingPropertyException("Property '$key' is missing")
+        return koin.getProperty(key, defaultValue)
+                ?: throw MissingPropertyException("Property '$key' is missing")
     }
 }
 
 class DefaultContext(koin: Koin) : DefinitionContext(koin) {
-    override fun getCurrentScope(): ScopeInstance? = null
+    override fun currentScope(): Scope = Scope.GLOBAL
 }
 
-class ScopedContext(koin: Koin, private val scopeInstance: ScopeInstance) : DefinitionContext(koin) {
-    override fun getCurrentScope(): ScopeInstance? = scopeInstance
+class ScopedContext(koin: Koin, private val scope: Scope) : DefinitionContext(koin) {
+    override fun currentScope(): Scope = scope
 }

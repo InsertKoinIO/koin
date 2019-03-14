@@ -10,6 +10,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.logger.Level
+import org.koin.core.logger.PrintLogger
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
 
@@ -53,8 +54,23 @@ class KoinAppCreationTest {
     @Test
     fun `allow declare a logger`() {
         startKoin {
-            logger(Level.DEBUG)
+            logger(PrintLogger(Level.ERROR))
         }
+
+        assertEquals(KoinApplication.logger.level, Level.ERROR)
+        
+        KoinApplication.logger.debug("debug")
+        KoinApplication.logger.info("info")
+        KoinApplication.logger.error("error")
+    }
+
+    @Test
+    fun `allow declare a print logger level`() {
+        startKoin {
+            printLogger(Level.ERROR)
+        }
+
+        assertEquals(KoinApplication.logger.level, Level.ERROR)
 
         KoinApplication.logger.debug("debug")
         KoinApplication.logger.info("info")

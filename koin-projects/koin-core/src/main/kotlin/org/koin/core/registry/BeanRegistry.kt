@@ -20,6 +20,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
+import org.koin.core.qualifier.Qualifier
 import org.koin.ext.getFullName
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -45,7 +46,9 @@ class BeanRegistry {
         modules.forEach { module: Module ->
             saveDefinitions(module)
         }
-        logger.info("registered ${definitions.size} definitions")
+        if (logger.isAt(Level.INFO)) {
+            logger.info("registered ${definitions.size} definitions")
+        }
     }
 
     private fun saveDefinitions(module: Module) {
@@ -67,7 +70,7 @@ class BeanRegistry {
     fun saveDefinition(definition: BeanDefinition<*>) {
         definitions.addDefinition(definition)
         definition.createInstanceHolder()
-        if (definition.name != null) {
+        if (definition.qualifier != null) {
             saveDefinitionForName(definition)
         } else {
             saveDefinitionForTypes(definition)
@@ -107,13 +110,13 @@ class BeanRegistry {
     }
 
     private fun saveDefinitionForName(definition: BeanDefinition<*>) {
-        definition.name?.let {
-            if (definitionsNames[it] != null && !definition.options.override) {
-                throw DefinitionOverrideException("Already existing definition or try to override an existing one with name '$it' with $definition but has already registered ${definitionsNames[it]}")
+        definition.qualifier?.let {
+            if (definitionsNames[it.toString()] != null && !definition.options.override) {
+                throw DefinitionOverrideException("Already existing definition or try to override an existing one with qualifier '$it' with $definition but has already registered ${definitionsNames[it.toString()]}")
             } else {
-                definitionsNames[it] = definition
+                definitionsNames[it.toString()] = definition
                 if (logger.isAt(Level.INFO)) {
-                    logger.info("bind name:'${definition.name}' ~ $definition")
+                    logger.info("bind qualifier:'${definition.qualifier}' ~ $definition")
                 }
             }
         }
@@ -121,14 +124,15 @@ class BeanRegistry {
 
     /**
      * Find a definition
-     * @param name
+     * @param qualifier
      * @param clazz
      */
     fun findDefinition(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             clazz: KClass<*>
     ): BeanDefinition<*>? =
-            name?.let { findDefinitionByName(name) } ?: findDefinitionByClass(clazz)
+            qualifier?.let { findDefinitionByName(qualifier.toString()) }
+                    ?: findDefinitionByClass(clazz)
 
     private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {
         return definitionsClass[kClass]

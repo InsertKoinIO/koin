@@ -6,14 +6,16 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.BadScopeInstanceException
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class OpenCloseScopeInstanceTest {
 
+    val scopeName = named("MY_SCOPE")
+
     @Test
     fun `get definition from a scope`() {
-        val scopeName = "MY_SCOPE"
         val koin = koinApplication {
             modules(
                     module {
@@ -30,7 +32,6 @@ class OpenCloseScopeInstanceTest {
 
     @Test
     fun `can't get definition from a opened scope`() {
-        val scopeName = "MY_SCOPE"
         val koin = koinApplication {
             modules(
                     module {
@@ -52,7 +53,6 @@ class OpenCloseScopeInstanceTest {
 
     @Test
     fun `get definition from scope and out of scope`() {
-        val scopeName = "MY_SCOPE"
         val koin = koinApplication {
             modules(
                     module {
@@ -73,13 +73,13 @@ class OpenCloseScopeInstanceTest {
 
     @Test
     fun `can't get definition from wrong scope`() {
-        val scope1Name = "SCOPE_1"
+        val scope1Name = named("SCOPE_1")
         val koin = koinApplication {
             modules(
                     module {
                         scope(scope1Name) {
                         }
-                        scope("SCOPE_2") {
+                        scope(named("SCOPE_2")) {
                             scoped { Simple.ComponentA() }
                         }
                     }

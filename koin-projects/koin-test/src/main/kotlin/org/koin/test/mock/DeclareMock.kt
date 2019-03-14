@@ -20,6 +20,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.context.GlobalContext
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import org.koin.test.KoinTest
@@ -32,13 +33,13 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> KoinTest.declareMock(
-        name: String = "",
+        qualifier: Qualifier? = null,
         noinline stubbing: (T.() -> Unit)? = null
 ): T {
     val koin = GlobalContext.get().koin
     val clazz = T::class
 
-    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, koin, name)
+    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, koin, qualifier)
 
     koin.declareMockedDefinition(foundDefinition, stubbing)
 
@@ -49,12 +50,12 @@ inline fun <reified T : Any> KoinTest.declareMock(
 inline fun <reified T : Any> getDefinition(
         clazz: KClass<T>,
         koin: Koin,
-        name: String
+        qualifier: Qualifier?
 ): BeanDefinition<T> {
     logger.info("declare mock for '${clazz.getFullName()}'")
 
-    return koin.beanRegistry.findDefinition(name, clazz) as BeanDefinition<T>?
-            ?: throw NoBeanDefFoundException("No definition found for name='$name' & class='$clazz'")
+    return koin.beanRegistry.findDefinition(qualifier, clazz) as BeanDefinition<T>?
+            ?: throw NoBeanDefFoundException("No definition found for qualifier='$qualifier' & class='$clazz'")
 }
 
 /**
@@ -63,12 +64,12 @@ inline fun <reified T : Any> getDefinition(
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> Koin.declareMock(
-        name: String = "",
+        qualifier: Qualifier? = null,
         noinline stubbing: (T.() -> Unit)? = null
 ): T {
 
     val clazz = T::class
-    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, this, name)
+    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, this, qualifier)
 
     declareMockedDefinition(foundDefinition, stubbing)
 
@@ -84,7 +85,7 @@ inline fun <reified T : Any> Koin.declareMockedDefinition(
 }
 
 inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(noinline stubbing: (T.() -> Unit)? = null): BeanDefinition<T> {
-    val copy = BeanDefinition<T>(name, primaryType)
+    val copy = BeanDefinition<T>(qualifier, primaryType)
     copy.secondaryTypes = this.secondaryTypes
     copy.definition = {
         val (instance: T, time: Double) = measureDuration {
@@ -94,7 +95,7 @@ inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(noinline s
         stubbing?.let { instance.apply(stubbing) }
         instance
     }
-    copy.attributes = this.attributes.copy()
+    copy.properties = this.properties.copy()
     copy.options = this.options.copy()
     copy.options.override = true
     copy.kind = this.kind

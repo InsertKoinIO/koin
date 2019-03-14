@@ -1,5 +1,6 @@
 package org.koin.standalone
 
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @JvmField
@@ -7,7 +8,7 @@ val koinModule = module {
     single { ComponentA() }
     single { ComponentB(get()) }
     single { ComponentC(get(), get()) }
-    scope("Session") {
+    scope(named("Session")) {
         scoped { ComponentD(get()) }
     }
 }

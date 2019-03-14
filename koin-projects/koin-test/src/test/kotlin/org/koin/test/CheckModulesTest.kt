@@ -14,7 +14,7 @@ class CheckModulesTest {
     @Test
     fun `check a simple module`() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentA() }
@@ -26,7 +26,7 @@ class CheckModulesTest {
     @Test
     fun `check a module with link`() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { Simple.ComponentA() }
@@ -40,7 +40,7 @@ class CheckModulesTest {
     fun `check a broken module`() {
         try {
             koinApplication {
-                logger(Level.DEBUG)
+                printLogger(Level.DEBUG)
                 modules(
                         module {
                             single { Simple.ComponentB(get()) }
@@ -56,23 +56,23 @@ class CheckModulesTest {
     @Test
     fun `check a module with params`() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
                     module {
                         single { (s: String) -> Simple.MyString(s) }
-                        single("upper") { (s: String) -> Simple.MyString(s.toUpperCase()) }
+                        single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
                     }
             )
         }.checkModules(parameterCreatorsOf {
             create<Simple.MyString> { parametersOf("param") }
-            create<Simple.MyString>("upper") { named -> parametersOf(named) }
+            create<Simple.MyString>(UpperCase) { qualifier -> parametersOf(qualifier.toString()) }
         })
     }
 
     @Test
     fun `check a module with property`() {
         koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             properties(hashMapOf("aValue" to "value"))
             modules(
                     module {

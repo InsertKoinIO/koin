@@ -19,8 +19,8 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
-import org.koin.core.scope.ScopeDefinition
-import org.koin.ext.getFullName
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.ScopeSet
 
 /**
  * Koin Module
@@ -33,7 +33,7 @@ class Module(
     internal val override: Boolean
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
-    internal val scopes = arrayListOf<ScopeDefinition>()
+    internal val scopes = arrayListOf<ScopeSet>()
 
     /**
      * Declare a definition in current Module
@@ -46,24 +46,24 @@ class Module(
     /**
      * Declare a definition in current Module
      */
-    fun declareScope(scope: ScopeDefinition) {
+    fun declareScope(scope: ScopeSet) {
         scopes.add(scope)
     }
 
     /**
      * Declare a Single definition
-     * @param name
+     * @param qualifier
      * @param createdAtStart
      * @param override
      * @param definition - definition function
      */
     inline fun <reified T> single(
-        name: String? = null,
-        createdAtStart: Boolean = false,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            qualifier: Qualifier? = null,
+            createdAtStart: Boolean = false,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createSingle(name, definition)
+        val beanDefinition = DefinitionFactory.createSingle(qualifier, definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
         return beanDefinition
     }
@@ -74,51 +74,42 @@ class Module(
     }
 
     /**
-     * Declare a group a scoped definition with a given scope name
+     * Declare a group a scoped definition with a given scope qualifier
      * @param scopeName
      */
-    fun scope(scopeName: String, scopeDefinition: ScopeDefinition.() -> Unit) {
-        val scope: ScopeDefinition = ScopeDefinition(scopeName, this).apply(scopeDefinition)
-        declareScope(scope)
-    }
-
-    /**
-     * Declare a group a scoped definition with a given type name
-     */
-    inline fun <reified T> scope(scopeDefinition: ScopeDefinition.() -> Unit) {
-        val scopeName = T::class.getFullName()
-        val scope: ScopeDefinition = ScopeDefinition(scopeName, this).apply(scopeDefinition)
+    fun scope(scopeName: Qualifier, scopeSet: ScopeSet.() -> Unit) {
+        val scope: ScopeSet = ScopeSet(scopeName, this).apply(scopeSet)
         declareScope(scope)
     }
 
     /**
      * Declare a ScopeInstance definition
-     * @param name
+     * @param qualifier
      * @param override
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-        name: String? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createScope(name, definition = definition)
+        val beanDefinition = DefinitionFactory.createScoped(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }
 
     /**
      * Declare a Factory definition
-     * @param name
+     * @param qualifier
      * @param override
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-        name: String? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createFactory(name, definition)
+        val beanDefinition = DefinitionFactory.createFactory(qualifier, definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }

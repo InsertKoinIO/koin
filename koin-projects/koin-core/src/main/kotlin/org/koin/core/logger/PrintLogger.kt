@@ -29,3 +29,4 @@ class PrintLogger(level: Level = Level.INFO) : Logger(level) {
         }
     }
 }
+

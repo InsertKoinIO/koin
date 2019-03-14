@@ -4,24 +4,25 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class GenericDeclarationTest {
 
     val modules = module {
-        single("strings") { listOf("a string") }
-        single("ints") { listOf(42) }
+        single(named("strings")) { listOf("a string") }
+        single(named("ints")) { listOf(42) }
     }
 
     @Test
     fun `declare and retrieve generic definitions`() {
         val koin = createKoin()
 
-        val aString = koin.get<List<String>>("strings")
+        val aString = koin.get<List<String>>(named("strings"))
         assertEquals("a string", aString[0])
 
-        val anInt = koin.get<List<Int>>("ints")
+        val anInt = koin.get<List<Int>>(named("ints"))
         assertEquals(42, anInt[0])
     }
 
@@ -39,7 +40,7 @@ class GenericDeclarationTest {
 
     private fun createKoin(): Koin {
         val koin = koinApplication {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(modules)
         }.koin
         return koin

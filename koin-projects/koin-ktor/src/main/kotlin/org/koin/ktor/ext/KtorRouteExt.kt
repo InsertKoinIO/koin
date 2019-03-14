@@ -18,7 +18,8 @@ package org.koin.ktor.ext
 import io.ktor.routing.Route
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
  * Ktor Koin extensions for Routing class
@@ -29,29 +30,27 @@ import org.koin.core.scope.ScopeInstance
 
 /**
  * inject lazily given dependency
- * @param name - bean name / optional
- * @param module - module path
+ * @param qualifier - bean name / optional
  * @param parameters
  */
 inline fun <reified T : Any> Route.inject(
-    name: String = "",
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = Scope.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
 ) =
-    lazy { get<T>(name, scope, parameters) }
+        lazy { get<T>(qualifier, scope, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
- * @param name - bean name / optional
- * @param module - module path
+ * @param qualifier - bean name / optional
  * @param parameters
  */
 inline fun <reified T : Any> Route.get(
-    name: String = "",
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = Scope.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
 ) =
-    getKoin().get<T>(name, scope, parameters)
+        getKoin().get<T>(qualifier, scope, parameters)
 
 /**
  * Retrieve given property for KoinComponent
@@ -59,7 +58,7 @@ inline fun <reified T : Any> Route.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Route.getProperty(key: String) =
-    getKoin().getProperty<T>(key)
+        getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -70,7 +69,7 @@ inline fun <reified T> Route.getProperty(key: String) =
  *
  */
 inline fun <reified T> Route.getProperty(key: String, defaultValue: T) =
-    getKoin().getProperty(key) ?: defaultValue
+        getKoin().getProperty(key) ?: defaultValue
 
 /**
  * Help work on ModuleDefinition

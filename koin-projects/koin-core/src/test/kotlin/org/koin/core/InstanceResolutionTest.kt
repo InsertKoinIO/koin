@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -13,9 +14,9 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val koin = app.koin
@@ -30,9 +31,9 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val koin = app.koin
@@ -47,16 +48,16 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    val componentA = Simple.ComponentA()
-                    single("A") { componentA }
-                    single("B") { componentA }
-                })
+                    module {
+                        val componentA = Simple.ComponentA()
+                        single(named("A")) { componentA }
+                        single(named("B")) { componentA }
+                    })
         }
 
         val koin = app.koin
-        val a: Simple.ComponentA = koin.get(name = "A")
-        val b: Simple.ComponentA = koin.get(name = "B")
+        val a: Simple.ComponentA = koin.get(qualifier = named("A"))
+        val b: Simple.ComponentA = koin.get(qualifier = named("B"))
 
         assertEquals(a, b)
     }
@@ -66,16 +67,16 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    val componentA = Simple.ComponentA()
-                    factory("A") { componentA }
-                    factory("B") { componentA }
-                })
+                    module {
+                        val componentA = Simple.ComponentA()
+                        factory(named("A")) { componentA }
+                        factory(named("B")) { componentA }
+                    })
         }
 
         val koin = app.koin
-        val a: Simple.ComponentA = koin.get(name = "A")
-        val b: Simple.ComponentA = koin.get(name = "B")
+        val a: Simple.ComponentA = koin.get(qualifier = named("A"))
+        val b: Simple.ComponentA = koin.get(qualifier = named("B"))
 
         assertEquals(a, b)
     }
@@ -85,9 +86,9 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    factory { Simple.ComponentA() }
-                })
+                    module {
+                        factory { Simple.ComponentA() }
+                    })
         }
 
         val koin = app.koin
@@ -102,16 +103,16 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single<Simple.ComponentInterface1>("2") { Simple.Component2() }
-                    single<Simple.ComponentInterface1> { Simple.Component1() }
-                })
+                    module {
+                        single<Simple.ComponentInterface1>(named("2")) { Simple.Component2() }
+                        single<Simple.ComponentInterface1> { Simple.Component1() }
+                    })
         }
 
         val koin = app.koin
         val component: Simple.ComponentInterface1 = koin.get()
 
         assertTrue(component is Simple.Component1)
-        assertTrue(koin.get<Simple.ComponentInterface1>("2") is Simple.Component2)
+        assertTrue(koin.get<Simple.ComponentInterface1>(named("2")) is Simple.Component2)
     }
 }

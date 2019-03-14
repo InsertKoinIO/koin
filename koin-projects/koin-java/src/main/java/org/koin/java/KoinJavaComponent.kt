@@ -18,7 +18,8 @@ package org.koin.java
 import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -31,41 +32,41 @@ object KoinJavaComponent {
     /**
      * Retrieve given dependency lazily
      * @param clazz - dependency class
-     * @param name - bean canonicalName / optional
+     * @param qualifier - bean canonicalName / optional
      * @param scope
      * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
     @JvmStatic
     fun <T : Any> inject(
-        clazz: Class<T>,
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        parameters: ParametersDefinition? = null
+            clazz: Class<T>,
+            qualifier: Qualifier? = null,
+            scope: Scope = Scope.GLOBAL,
+            parameters: ParametersDefinition? = null
     ): Lazy<T> {
-        return lazy { get(clazz, name, scope, parameters) }
+        return lazy { get(clazz, qualifier, scope, parameters) }
     }
 
     /**
      * Retrieve given dependency
      * @param clazz - dependency class
-     * @param name - bean canonicalName / optional
+     * @param qualifier - bean canonicalName / optional
      * @param scope - scope
      * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
     @JvmStatic
     fun <T : Any> get(
-        clazz: Class<T>,
-        name: String? = null,
-        scope: ScopeInstance? = null,
-        parameters: ParametersDefinition? = null
+            clazz: Class<T>,
+            qualifier: Qualifier? = null,
+            scope: Scope = Scope.GLOBAL,
+            parameters: ParametersDefinition? = null
     ): T {
         return getKoin().get(
-            clazz.kotlin,
-            name,
-            scope,
-            parameters
+                clazz.kotlin,
+                qualifier,
+                scope,
+                parameters
         )
     }
 

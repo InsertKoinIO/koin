@@ -1,39 +1,40 @@
 package org.koin.core.definition
 
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.setScopeName
 
 object DefinitionFactory {
 
     inline fun <reified T> createSingle(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return createDefinition(name, definition)
+        return createDefinition(qualifier, definition)
     }
 
-    inline fun <reified T> createScope(
-            name: String? = null,
-            scopeName: String? = null,
+    inline fun <reified T> createScoped(
+            qualifier: Qualifier? = null,
+            scopeName: Qualifier? = null,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = createDefinition(name, definition, Kind.Scope)
+        val beanDefinition = createDefinition(qualifier, definition, Kind.Scope)
         scopeName?.let { beanDefinition.setScopeName(scopeName) }
         return beanDefinition
     }
 
     inline fun <reified T> createFactory(
-            name: String? = null,
+            qualifier: Qualifier? = null,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return createDefinition(name, definition, Kind.Factory)
+        return createDefinition(qualifier, definition, Kind.Factory)
     }
 
     inline fun <reified T> createDefinition(
-            name: String?,
+            qualifier: Qualifier?,
             noinline definition: Definition<T>,
             kind: Kind = Kind.Single
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition<T>(name, T::class)
+        val beanDefinition = BeanDefinition<T>(qualifier, T::class)
         beanDefinition.definition = definition
         beanDefinition.kind = kind
         return beanDefinition

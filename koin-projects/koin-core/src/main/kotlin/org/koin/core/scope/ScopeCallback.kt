@@ -1,5 +1,12 @@
 package org.koin.core.scope
 
+/**
+ * Scope Callback
+ */
 interface ScopeCallback {
-    fun onClose()
+
+    /**
+     * Called when scope is closing
+     */
+    fun onScopeClose()
 }

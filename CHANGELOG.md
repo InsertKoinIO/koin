@@ -2,6 +2,44 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.0.0]()
+
+_Android_
+* `[UPDATED]` - rework startking DSL to add extension in startKoin
+
+_Android-Scope_
+* `[UPDATED]` - rework according to new Scope API (manage compelte Scope Lifecycle)
+* `[ADDED]` - scope tied to current Activity or Fragment (getActivityScope, getFagmentScope)
+
+
+_Android-ViewModel_
+* `[ADDED]` - support for scopes
+* `[REMOVED]` koin-ext builder
+
+_Core_
+
+* `[UPDATED]` - startKoin replaced with startKoin DSL and koin in global context
+* `[UPDATED]` - complete internals rewritten for performances optimisation
+* `[ADDED]` - koinApplication function to help declare an instance  for a local context, in ordoer to help isolated Koin instances
+* `[UPDATED]` - rework Scope API (DSL, multiple instances definitions, properties, release, callback ...)
+* `[ADDED]` - onClose, onRelease DSL on single/factory/scoped to execute code when releasing instance or stopping container 
+* `[ADDED]` - getProperty with default value
+* `[UPDATED]` - Kotlin 1.3.21
+
+_Core-Ext_
+
+_Test_
+* `[UPDATED]` - rework testing API, codebase detached from internal core tests
+
+
+_Ktor_
+* `[UPDATED]` - rework startking DSL to add extension in startKoin
+
+_Spark_
+
+* `[REMOVED]` project non supported anymore
+
+
 ## [1.0.2]()
 
 _Android_

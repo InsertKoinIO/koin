@@ -40,6 +40,10 @@ class KoinApplication private constructor() {
         return modules(modules.asIterable())
     }
 
+    internal fun loadDefaults() {
+        koin.scopeRegistry.loadDefaultScopes(koin)
+    }
+
     /**
      * Load definitions from modules
      * @param modules
@@ -83,15 +87,18 @@ class KoinApplication private constructor() {
 
     /**
      * Set Koin Logger
-     * @param level
      * @param logger - logger
      */
-    @JvmOverloads
-    fun logger(level: Level = Level.INFO, logger: Logger = PrintLogger()): KoinApplication {
+    fun logger(logger: Logger): KoinApplication {
         KoinApplication.logger = logger
-        KoinApplication.logger.level = level
         return this
     }
+
+    /**
+     * Set Koin to use [PrintLogger], by default at [Level.INFO]
+     */
+    @JvmOverloads
+    fun printLogger(level: Level = Level.INFO) = this.logger(PrintLogger(level))
 
     /**
      * Create Single instances Definitions marked as createdAtStart
@@ -100,7 +107,7 @@ class KoinApplication private constructor() {
         val duration = measureDurationOnly {
             koin.createEagerInstances()
         }
-        if (logger.level == Level.DEBUG) {
+        if (logger.isAt(Level.DEBUG)) {
             logger.debug("instances started in $duration ms")
         }
         return this
@@ -124,6 +131,8 @@ class KoinApplication private constructor() {
          * Create a new instance of KoinApplication
          */
         @JvmStatic
-        fun create() = KoinApplication()
+        fun create() = KoinApplication().apply {
+            loadDefaults()
+        }
     }
 }

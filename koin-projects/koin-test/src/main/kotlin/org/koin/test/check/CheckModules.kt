@@ -19,6 +19,8 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeName
 import kotlin.reflect.KClass
 
@@ -35,21 +37,21 @@ fun Koin.checkModules(
         parameterCreators: Map<NamedKClass, ParametersCreator> = mapOf()) {
 
     beanRegistry.getAllDefinitions().forEach {
-        val scope = if (it.isScoped()) createScope(it.getScopeName()!!, it.getScopeName()) else null
-        val parameters = parameterCreators[NamedKClass(it.name, it.primaryType)]?.invoke(it.name) ?: parametersOf()
-        get<Any>(it.primaryType, it.name, scope) { parameters }
+        val scope = if (it.isScoped()) createScope(it.getScopeName().toString(), it.getScopeName()) else null
+        val parameters = parameterCreators[NamedKClass(it.qualifier, it.primaryType)]?.invoke(it.qualifier) ?: parametersOf()
+        get<Any>(it.primaryType, it.qualifier, scope ?: Scope.GLOBAL) { parameters }
         scope?.close()
     }
     close()
 }
 
-data class NamedKClass(val name: String? = null, val type: KClass<*>)
-typealias ParametersCreator = (String?) -> DefinitionParameters
+data class NamedKClass(val qualifier: Qualifier? = null, val type: KClass<*>)
+typealias ParametersCreator = (Qualifier?) -> DefinitionParameters
 
 class ParametersBinding {
     val creators = mutableMapOf<NamedKClass, ParametersCreator>()
-    inline fun <reified T> create(named: String? = null, noinline creator: ParametersCreator) =
-            creators.put(NamedKClass(named, T::class), creator)
+    inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
+            creators.put(NamedKClass(qualifier, T::class), creator)
 }
 
 fun parameterCreatorsOf(f: ParametersBinding.() -> Unit): Map<NamedKClass, ParametersCreator> {

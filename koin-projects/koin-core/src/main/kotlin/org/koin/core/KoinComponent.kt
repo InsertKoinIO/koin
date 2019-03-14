@@ -17,7 +17,8 @@ package org.koin.core
 
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.scope.ScopeInstance
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
  * KoinComponent interface marker to bring Koin extensions features
@@ -29,31 +30,36 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin() = GlobalContext.get().koin
+    fun getKoin(): Koin = GlobalContext.get().koin
+
+    /**
+     * THe associated scope
+     */
+    fun currentScope(): Scope = Scope.GLOBAL
 }
 
 /**
  * Get instance instance from Koin
- * @param name
+ * @param qualifier
  * @param scope
  * @param parameters
  */
 inline fun <reified T> KoinComponent.get(
-    name: String? = null,
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = currentScope(),
+        noinline parameters: ParametersDefinition? = null
 ): T =
-    getKoin().get(name, scope, parameters)
+        getKoin().get(qualifier, scope, parameters)
 
 /**
  * Lazy inject instance from Koin
- * @param name
+ * @param qualifier
  * @param scope
  * @param parameters
  */
 inline fun <reified T> KoinComponent.inject(
-    name: String? = null,
-    scope: ScopeInstance? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = currentScope(),
+        noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-    getKoin().inject(name, scope, parameters)
+        getKoin().inject(qualifier, scope, parameters)

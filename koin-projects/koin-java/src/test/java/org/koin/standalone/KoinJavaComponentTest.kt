@@ -19,6 +19,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 
@@ -32,8 +33,8 @@ open class KoinJavaComponentTest : AutoCloseKoinTest() {
         startKoin {
             properties(mapOf("PrefixProp" to "_", "SeparatorProp" to "|"))
             modules(module {
-                single("db") { LocalDbImplementation() as DataSource }
-                single("api") { RemoteApiImplementation() as DataSource }
+                single(named("db")) { LocalDbImplementation() as DataSource }
+                single(named("api")) { RemoteApiImplementation() as DataSource }
                 single { (separator: String) -> DataConverter(separator) }
             })
         }

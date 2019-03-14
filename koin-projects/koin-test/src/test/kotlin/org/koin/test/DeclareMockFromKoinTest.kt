@@ -8,7 +8,7 @@ import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito
-import java.util.UUID
+import java.util.*
 
 class DeclareMockFromKoinTest : AutoCloseKoinTest() {
 
@@ -17,11 +17,11 @@ class DeclareMockFromKoinTest : AutoCloseKoinTest() {
     @Test
     fun `declareMock with KoinTest`() {
         startKoin {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
-                module {
-                    single { Simple.UUIDComponent() }
-                }
+                    module {
+                        single { Simple.UUIDComponent() }
+                    }
             )
         }
 
@@ -36,11 +36,11 @@ class DeclareMockFromKoinTest : AutoCloseKoinTest() {
     @Test
     fun `declareMock factory with KoinTest`() {
         startKoin {
-            logger(Level.DEBUG)
+            printLogger(Level.DEBUG)
             modules(
-                module {
-                    factory { Simple.UUIDComponent() }
-                }
+                    module {
+                        factory { Simple.UUIDComponent() }
+                    }
             )
         }
 

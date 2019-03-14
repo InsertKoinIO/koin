@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -15,10 +16,10 @@ class DefinitionOverrideTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single<Simple.ComponentInterface1> { Simple.Component2() }
-                    single<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
-                }
+                    module {
+                        single<Simple.ComponentInterface1> { Simple.Component2() }
+                        single<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
+                    }
             )
         }
 
@@ -31,10 +32,10 @@ class DefinitionOverrideTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single<Simple.ComponentInterface1> { Simple.Component2() }
-                    single(override = true) { Simple.Component1() } bind Simple.ComponentInterface1::class
-                }
+                    module {
+                        single<Simple.ComponentInterface1> { Simple.Component2() }
+                        single(override = true) { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    }
             )
         }
 
@@ -47,15 +48,15 @@ class DefinitionOverrideTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single<Simple.ComponentInterface1>("DEF") { Simple.Component2() }
-                    single<Simple.ComponentInterface1>(name = "DEF", override = true) { Simple.Component1() }
-                }
+                    module {
+                        single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
+                        single<Simple.ComponentInterface1>(named("DEF"), override = true) { Simple.Component1() }
+                    }
             )
         }
 
         app.assertDefinitionsCount(1)
-        assertTrue(app.koin.get<Simple.ComponentInterface1>("DEF") is Simple.Component1)
+        assertTrue(app.koin.get<Simple.ComponentInterface1>(named("DEF")) is Simple.Component1)
     }
 
 }

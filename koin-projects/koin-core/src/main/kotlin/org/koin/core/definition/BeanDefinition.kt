@@ -17,6 +17,7 @@ package org.koin.core.definition
 
 import org.koin.core.instance.*
 import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.qualifier.Qualifier
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -24,21 +25,21 @@ import kotlin.reflect.KClass
  * Koin bean definition
  * main structure to make definition in Koin
  *
- * @param name
+ * @param qualifier
  * @param primaryType
  *
  * @author Arnaud Giuliani
  */
 class BeanDefinition<T>(
-        val name: String? = null,
+        val qualifier: Qualifier? = null,
         val primaryType: KClass<*>
 ) {
     // Main data
     var secondaryTypes = arrayListOf<KClass<*>>()
-    var instance: Instance<T>? = null
+    var instance: DefinitionInstance<T>? = null
     lateinit var definition: Definition<T>
     var options = Options()
-    var attributes = Attributes()
+    var properties = Properties()
     lateinit var kind: Kind
 
     // lifecycle
@@ -60,9 +61,9 @@ class BeanDefinition<T>(
      */
     fun createInstanceHolder() {
         this.instance = when (kind) {
-            Kind.Single -> SingleInstance(this)
-            Kind.Scope -> ScopedInstance(this)
-            Kind.Factory -> FactoryInstance(this)
+            Kind.Single -> SingleDefinitionInstance(this)
+            Kind.Scope -> ScopeDefinitionInstance(this)
+            Kind.Factory -> FactoryDefinitionInstance(this)
             else -> error("Unknown definition type: $this")
         }
     }
@@ -75,7 +76,7 @@ class BeanDefinition<T>(
 
     override fun toString(): String {
         val defKind = kind.toString()
-        val defName = name?.let { "name:'$name', " } ?: ""
+        val defName = qualifier?.let { "name:'$qualifier', " } ?: ""
         val defType = "class:'${primaryType.getFullName()}'"
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
@@ -90,14 +91,14 @@ class BeanDefinition<T>(
 
         other as BeanDefinition<*>
 
-        if (name != other.name) return false
+        if (qualifier != other.qualifier) return false
         if (primaryType != other.primaryType) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = name?.hashCode() ?: 0
+        var result = qualifier?.hashCode() ?: 0
         result = 31 * result + primaryType.hashCode()
         return result
     }

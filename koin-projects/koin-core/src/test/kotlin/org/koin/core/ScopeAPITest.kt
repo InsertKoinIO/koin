@@ -1,13 +1,10 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.qualifier.named
 import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -53,7 +50,7 @@ class ScopeAPITest {
         val koin = koinApplication { }.koin
 
         try {
-            koin.createScope("myScope", "a_scope")
+            koin.createScope("myScope", named("a_scope"))
             fail()
         } catch (e: NoScopeDefinitionFoundException) {
             e.printStackTrace()
@@ -62,12 +59,12 @@ class ScopeAPITest {
 
     @Test
     fun `create scope instance with scope def`() {
-        val scopeName = "A_SCOPE"
+        val scopeName = named("A_SCOPE")
         val koin = koinApplication {
             modules(
-                module {
-                    scope(scopeName){ }
-                }
+                    module {
+                        scope(scopeName) { }
+                    }
             )
         }.koin
 
@@ -117,8 +114,8 @@ class ScopeAPITest {
         val scopeId = "myScope"
         val scope1 = koin.createScope(scopeId)
         var closed = false
-        scope1.registerCallback(object :ScopeCallback{
-            override fun onClose() {
+        scope1.registerCallback(object : ScopeCallback {
+            override fun onScopeClose() {
                 closed = true
             }
         })

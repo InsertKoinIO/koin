@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
+import org.koin.core.qualifier.Qualifier
 
 
 /**
@@ -27,23 +28,23 @@ import org.koin.core.module.Module
  *
  * @author Arnaud Giuliani
  *
- * @param name - definition name
+ * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-    name: String? = null,
-    override: Boolean = false,
-    noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
 ) {
-    factory(name, override, definition).setIsViewModel()
+    factory(qualifier, override, definition).setIsViewModel()
 }
 
-const val VIEW_MODEL_KEY = "isViewModel"
+const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
 
 fun BeanDefinition<*>.setIsViewModel() {
-    attributes[VIEW_MODEL_KEY] = true
+    properties[ATTRIBUTE_VIEW_MODEL] = true
 }
 
 fun BeanDefinition<*>.isViewModel(): Boolean {
-    return attributes[VIEW_MODEL_KEY] ?: false
+    return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
 }

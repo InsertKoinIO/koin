@@ -17,57 +17,58 @@ package org.koin.experimental.builder
 
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.module.Module
+import org.koin.core.qualifier.Qualifier
 
 /**
  * Create a Single definition for given type T
- * @param name
+ * @param qualifier
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.single(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         createOnStart: Boolean = false,
         override: Boolean = false
 ): BeanDefinition<T> {
-    return single(name, createOnStart, override) { create<T>(this) }
+    return single(qualifier, createOnStart, override) { create<T>(this) }
 }
 
 /**
  * Create a Factory definition for given type T
  *
- * @param name
+ * @param qualifier
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.factory(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    return factory(name, override) { create<T>(this) }
+    return factory(qualifier, override) { create<T>(this) }
 }
 
 /**
  * Create a Single definition for given type T to modules and cast as R
- * @param name
+ * @param qualifier
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> Module.singleBy(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         createOnStart: Boolean = false,
         override: Boolean = false
 ): BeanDefinition<R> {
-    return single(name, createOnStart, override) { create<T>(this) as R }
+    return single(qualifier, createOnStart, override) { create<T>(this) as R }
 }
 
 /**
  * Create a Factory definition for given type T to modules and cast as R
  *
- * @param name
+ * @param qualifier
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> Module.factoryBy(
-        name: String? = null,
+        qualifier: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<R> {
-    return factory(name, override) { create<T>(this) as R }
+    return factory(qualifier, override) { create<T>(this) as R }
 }

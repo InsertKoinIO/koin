@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 
 class ModuleDeclarationRulesTest {
@@ -27,10 +28,10 @@ class ModuleDeclarationRulesTest {
     @Test
     fun `allow redeclaration - different names`() {
         val app = koinApplication {
-            logger(Level.INFO)
+            printLogger(Level.INFO)
             modules(module {
-                single("default") { Simple.ComponentA() }
-                single("other") { Simple.ComponentA() }
+                single(named("default")) { Simple.ComponentA() }
+                single(named("other")) { Simple.ComponentA() }
             })
         }
         app.assertDefinitionsCount(2)
@@ -41,11 +42,11 @@ class ModuleDeclarationRulesTest {
         try {
             koinApplication {
                 modules(module {
-                    single("default") { Simple.ComponentA() }
-                    single("default") { Simple.ComponentB(get()) }
+                    single(named("default")) { Simple.ComponentA() }
+                    single(named("default")) { Simple.ComponentB(get()) }
                 })
             }
-            fail("Should not allow redeclaration for same name")
+            fail("Should not allow redeclaration for same qualifier")
         } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
         }
@@ -56,7 +57,7 @@ class ModuleDeclarationRulesTest {
         val app = koinApplication {
             modules(module {
                 single { Simple.ComponentA() }
-                single("other") { Simple.ComponentA() }
+                single(named("other")) { Simple.ComponentA() }
             })
         }
         app.assertDefinitionsCount(2)

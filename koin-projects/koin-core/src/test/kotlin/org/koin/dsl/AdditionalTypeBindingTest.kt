@@ -5,6 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 
 class AdditionalTypeBindingTest {
@@ -12,7 +13,7 @@ class AdditionalTypeBindingTest {
     @Test
     fun `can resolve an additional type`() {
         val app = koinApplication {
-            logger()
+            printLogger()
             modules(
                 module {
                     single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -32,7 +33,7 @@ class AdditionalTypeBindingTest {
     fun `additional type conflict`() {
         try {
             koinApplication {
-                logger()
+                printLogger()
                 modules(
                     module {
                         single { Simple.Component1() } bind Simple.ComponentInterface1::class
@@ -48,15 +49,15 @@ class AdditionalTypeBindingTest {
     @Test
     fun `should not conflict name & default type`() {
         val app = koinApplication {
-            logger()
+            printLogger()
             modules(
                 module {
-                    single<Simple.ComponentInterface1>("default") { Simple.Component2() }
+                    single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
                     single<Simple.ComponentInterface1> { Simple.Component1() }
                 })
         }
         val koin = app.koin
-        koin.get<Simple.ComponentInterface1>("default")
+        koin.get<Simple.ComponentInterface1>(named("default"))
     }
 
     @Test
