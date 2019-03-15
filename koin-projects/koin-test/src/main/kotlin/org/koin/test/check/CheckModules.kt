@@ -38,7 +38,8 @@ fun Koin.checkModules(
 
     beanRegistry.getAllDefinitions().forEach {
         val scope = if (it.isScoped()) createScope(it.getScopeName().toString(), it.getScopeName()) else null
-        val parameters = parameterCreators[NamedKClass(it.qualifier, it.primaryType)]?.invoke(it.qualifier) ?: parametersOf()
+        val parameters = parameterCreators[NamedKClass(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
+                ?: parametersOf()
         get<Any>(it.primaryType, it.qualifier, scope ?: Scope.GLOBAL) { parameters }
         scope?.close()
     }

@@ -16,18 +16,17 @@ import org.koin.Logger.slf4jLogger
 import org.koin.dsl.module
 import org.koin.experimental.builder.single
 import org.koin.experimental.builder.singleBy
+import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
-import org.koin.ktor.ext.installKoin
 
 fun Application.main() {
     // Install Ktor features
     install(DefaultHeaders)
     install(CallLogging)
-    installKoin {
+    install(Koin) {
         slf4jLogger()
         modules(helloAppModule)
     }
-
     val helloService by inject<HelloService>()
     // Routing section
     routing {

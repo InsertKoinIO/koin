@@ -17,13 +17,10 @@ package org.koin.ktor.ext
 
 import io.ktor.application.Application
 import org.koin.core.Koin
-import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
-import org.koin.core.context.startKoin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import org.koin.dsl.KoinAppDeclaration
 
 /**
  * Ktor Koin extensions
@@ -31,15 +28,6 @@ import org.koin.dsl.KoinAppDeclaration
  * @author Arnaud Giuliani
  * @author Laurent Baresse
  */
-
-/**
- * Help start Koin cntofor Ktor
- */
-fun Application.installKoin(
-        koinApplication: KoinAppDeclaration
-) {
-    startKoin(koinApplication)
-}
 
 /**
  * Help work on ModuleDefinition

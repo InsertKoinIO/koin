@@ -194,7 +194,7 @@ class MyApplication : Application() {
 ## Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.adoc)].
-<a href="graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/InsertKoinIO/koin/graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
 
 
 ## OpenCollective

@@ -4,12 +4,61 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
 import org.koin.test.check.parameterCreatorsOf
 
 class CheckModulesTest {
+
+    @Test
+    fun `check a scoped module`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        scope(named("scope")) {
+                            scoped { Simple.ComponentA() }
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a scoped module and ext deps`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.ComponentB(get()) }
+                        scope(named("scope")) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a scoped module and ext scope`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        scope(named("scope2")) {
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                        scope(named("scope1")) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.checkModules()
+    }
+
 
     @Test
     fun `check a simple module`() {
