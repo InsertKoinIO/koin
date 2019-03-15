@@ -44,17 +44,29 @@ fun Koin.checkModules() {
     close()
 }
 
+const val SANDBOX_SCOPE_ID = "_sandbox_scope"
+
 /**
  * Resolve & instance definitions
  */
 fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
     allDefinitions.forEach {
-        val clazz = it.primaryType
-        val scope = if (it.isScoped()) scopeRegistry.createScopeInstance(
-                "sandbox_scope", it.getScopeName()
-        ) else Scope.GLOBAL
+        checkDefinition(it)
+    }
+}
 
-        get<Any>(clazz, it.qualifier, scope) { emptyParametersHolder() }
+private fun Koin.checkDefinition(it: BeanDefinition<*>) {
+    val clazz = it.primaryType
+    val scope = if (it.isScoped()) {
+
+        val scopeIdPerScope = it.getScopeName().toString() + SANDBOX_SCOPE_ID
+
+        scopeRegistry.getScopeInstanceOrNull(scopeIdPerScope)
+                ?: scopeRegistry.createScopeInstance(scopeIdPerScope, it.getScopeName())
+    } else Scope.GLOBAL
+
+    get<Any>(clazz, it.qualifier, scope) { emptyParametersHolder() }
+    if (scope != Scope.GLOBAL) {
         scope.let { scope.close() }
     }
 }

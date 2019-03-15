@@ -10,6 +10,6 @@ import org.koin.test.KoinTest
  * @param moduleDeclaration lambda
  */
 fun KoinTest.declare(moduleDeclaration: ModuleDeclaration) {
-    val module = module(moduleDeclaration = moduleDeclaration)
+    val module = module(override = true, moduleDeclaration = moduleDeclaration)
     GlobalContext.get().modules(module)
 }
