@@ -49,12 +49,15 @@ class KoinApplication private constructor() {
      * @param modules
      */
     fun modules(modules: Iterable<Module>): KoinApplication {
-        val duration = measureDurationOnly {
+        if (logger.isAt(Level.INFO)) {
+            val duration = measureDurationOnly {
+                koin.beanRegistry.loadModules(modules)
+                koin.scopeRegistry.loadScopes(modules)
+            }
+            logger.info("modules loaded in $duration ms")
+        } else {
             koin.beanRegistry.loadModules(modules)
             koin.scopeRegistry.loadScopes(modules)
-        }
-        if (logger.isAt(Level.INFO)) {
-            logger.info("modules loaded in $duration ms")
         }
         return this
     }
@@ -104,11 +107,13 @@ class KoinApplication private constructor() {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(): KoinApplication {
-        val duration = measureDurationOnly {
-            koin.createEagerInstances()
-        }
         if (logger.isAt(Level.DEBUG)) {
+            val duration = measureDurationOnly {
+                koin.createEagerInstances()
+            }
             logger.debug("instances started in $duration ms")
+        } else {
+            koin.createEagerInstances()
         }
         return this
     }
