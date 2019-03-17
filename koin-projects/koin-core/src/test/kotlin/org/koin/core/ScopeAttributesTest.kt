@@ -16,11 +16,11 @@ class ScopeAttributesTest {
     fun `can store & get an attribute value from scope instance`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeName) {
-                            scoped { Simple.MySingle(currentScope().properties["id"]) }
-                        }
+                module {
+                    scope(scopeName) {
+                        scoped { Simple.MySingle(properties["id"]) }
                     }
+                }
             )
         }.koin
 
@@ -34,9 +34,9 @@ class ScopeAttributesTest {
     fun `attribute value overwrite`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeName) {}
-                    }
+                module {
+                    scope(scopeName) {}
+                }
             )
         }.koin
 

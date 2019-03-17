@@ -49,8 +49,8 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance
             logger.debug("! sandbox instance ~ $beanDefinition")
         }
         try {
-            val params = context.getParameters()
-            val instanceContext = context.getDefinitionContext()
+            val params = context.parameters
+            val instanceContext = context.scope.getContext()
             beanDefinition.definition(instanceContext, params)
         } catch (e: Exception) {
             when (e) {

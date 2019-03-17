@@ -17,9 +17,12 @@ package org.koin.core.instance
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.getScopeName
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -47,6 +50,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
             throw ScopeNotCreatedException("No scope instance created to resolve $beanDefinition")
         }
         val scope = context.scope
+        checkScopeResolution(beanDefinition, scope)
         val internalId = scope.id
         var current = values[internalId]
         if (current == null) {
@@ -60,5 +64,16 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
     override fun close() {
         beanDefinition.onClose?.invoke(null)
         values.clear()
+    }
+
+    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: Scope) {
+        val scopeInstanceName = scope.set?.qualifier
+        val beanScopeName: Qualifier? = definition.getScopeName()
+        if (beanScopeName != scopeInstanceName) {
+            when {
+                scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")
+                beanScopeName != null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName' with scope instance $scope. Use a scope instance with scope '$beanScopeName'.")
+            }
+        }
     }
 }
