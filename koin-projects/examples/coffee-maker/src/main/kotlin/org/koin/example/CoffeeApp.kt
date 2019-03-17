@@ -11,7 +11,6 @@ class CoffeeApp : KoinComponent {
 }
 
 fun main() {
-
     startKoin {
         printLogger()
         modules(listOf(coffeeAppModule))
