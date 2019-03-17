@@ -136,8 +136,10 @@ class KoinApplication private constructor() {
          * Create a new instance of KoinApplication
          */
         @JvmStatic
-        fun create() = KoinApplication().apply {
-            loadDefaults()
+        fun create(): KoinApplication {
+            val app = KoinApplication()
+            app.loadDefaults()
+            return app
         }
     }
 }

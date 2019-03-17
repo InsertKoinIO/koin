@@ -51,9 +51,7 @@ object GlobalContext {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }
         app = koinApplication
-        app?.apply {
-            createEagerInstances()
-        }
+        app?.createEagerInstances()
     }
 
     /**
@@ -71,7 +69,7 @@ object GlobalContext {
  */
 fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.create()
-    koinApplication.apply(appDeclaration)
+    appDeclaration(koinApplication)
     GlobalContext.start(koinApplication)
     return koinApplication
 }
