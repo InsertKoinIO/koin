@@ -33,7 +33,8 @@ import org.mockito.Mockito.mock
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
+class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) :
+    DefinitionInstance<T>(beanDefinition) {
 
     private var value: T? = null
 
@@ -50,7 +51,7 @@ class SandboxInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance
         }
         try {
             val params = context.parameters
-            val instanceContext = context.scope.getContext()
+            val instanceContext = context.scope
             beanDefinition.definition(instanceContext, params)
         } catch (e: Exception) {
             when (e) {

@@ -1,7 +1,6 @@
 package org.koin.experimental.builder
 
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.definition.DefinitionContext
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.scope.Scope
@@ -13,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> Module.create(context: DefinitionContext): T {
+inline fun <reified T : Any> Module.create(context: Scope): T {
     val kClass = T::class
     val kclassAsString = kClass.toString()
 
@@ -43,13 +42,13 @@ inline fun <reified T : Any> Module.create(context: DefinitionContext): T {
  * Make an instance with given arguments
  */
 inline fun <reified T : Any> Constructor<*>.makeInstance(args: Array<Any>) =
-        newInstance(*args) as T
+    newInstance(*args) as T
 
 /**
  * Retrieve arguments for given constructor
  */
-fun getArguments(ctor: Constructor<*>, context: DefinitionContext) =
-        ctor.parameterTypes.map { context.getWithDefault(it.kotlin) }.toTypedArray()
+fun getArguments(ctor: Constructor<*>, context: Scope) =
+    ctor.parameterTypes.map { context.getWithDefault(it.kotlin) }.toTypedArray()
 
 /**
  * Get first java constructor
@@ -73,6 +72,6 @@ val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
 /**
  * Retrieve linked dependency with defaults params
  */
-internal fun <T : Any> DefinitionContext.getWithDefault(
-        clazz: KClass<T>
-): T = koin.get(clazz, null, Scope.GLOBAL, null)
+internal fun <T : Any> Scope.getWithDefault(
+    clazz: KClass<T>
+): T = koin?.get(clazz, null, Scope.GLOBAL, null) ?: error("Koin can't be null in scope context")

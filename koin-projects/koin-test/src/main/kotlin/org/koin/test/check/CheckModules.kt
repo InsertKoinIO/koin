@@ -58,17 +58,13 @@ fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
 private fun Koin.checkDefinition(it: BeanDefinition<*>) {
     val clazz = it.primaryType
     val scope = if (it.isScoped()) {
-
-        val scopeIdPerScope = it.getScopeName().toString() + SANDBOX_SCOPE_ID
-
-        scopeRegistry.getScopeInstanceOrNull(scopeIdPerScope)
-                ?: scopeRegistry.createScopeInstance(scopeIdPerScope, it.getScopeName())
+        val qualifier = it.getScopeName()
+        val scopeId = qualifier.toString() + SANDBOX_SCOPE_ID
+        scopeRegistry.getScopeInstanceOrNull(scopeId)
+            ?: scopeRegistry.createScopeInstance(scopeId, qualifier)
     } else Scope.GLOBAL
 
     get<Any>(clazz, it.qualifier, scope) { emptyParametersHolder() }
-    if (scope != Scope.GLOBAL) {
-        scope.let { scope.close() }
-    }
 }
 
 private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<*>>) {
@@ -84,10 +80,10 @@ private fun Koin.clearExistingDefinitions() {
 
 private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
     return beanRegistry.getAllDefinitions()
-            .map {
-                KoinApplication.logger.debug("* create sandbox for: $it")
-                it.sandboxed() as BeanDefinition<*>
-            }
+        .map {
+            KoinApplication.logger.debug("* create sandbox for: $it")
+            it.sandboxed() as BeanDefinition<*>
+        }
 }
 
 /**

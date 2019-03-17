@@ -1,11 +1,8 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.error.ScopeIsClosedException
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -93,7 +90,7 @@ class OpenScopeTest {
         try {
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: ScopeIsClosedException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

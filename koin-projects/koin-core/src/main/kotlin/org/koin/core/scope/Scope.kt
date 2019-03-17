@@ -17,7 +17,6 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.definition.Properties
-import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -64,7 +63,7 @@ data class Scope(
         noinline parameters: ParametersDefinition? = null
     ): T {
         return koin?.get(T::class, qualifier, scope, parameters)
-                ?: throw  ScopeIsClosedException("Scope $this is closed")
+            ?: error("$this is not registered - Koin is null")
     }
 
     /**
