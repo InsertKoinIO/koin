@@ -17,7 +17,6 @@ package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
@@ -28,7 +27,6 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.scope.getScopeName
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -115,13 +113,7 @@ class Koin {
         scope: Scope
     ): Pair<BeanDefinition<*>, Scope> {
         val definition = beanRegistry.findDefinition(qualifier, clazz)
-                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
-
-        //TODO Check in ScopedInstance?
-//        if (scope != Scope.GLOBAL) {
-//            checkScopeResolution(definition, scope)
-//        }
-
+            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
         return Pair(definition, scope)
     }
 
