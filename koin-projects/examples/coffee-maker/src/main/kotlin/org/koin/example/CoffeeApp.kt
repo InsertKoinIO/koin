@@ -11,14 +11,11 @@ class CoffeeApp : KoinComponent {
 }
 
 fun main() {
-
     startKoin {
         printLogger()
-        modules(coffeeAppModule)
+        modules(listOf(coffeeAppModule))
     }
-
     val coffeeShop = CoffeeApp()
-
     val appDuration = measureTimeMillis {
         coffeeShop.maker.brew()
     }

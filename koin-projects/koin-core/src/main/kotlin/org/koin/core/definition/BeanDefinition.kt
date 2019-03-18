@@ -18,6 +18,7 @@ package org.koin.core.definition
 import org.koin.core.instance.*
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -113,6 +114,6 @@ enum class Kind {
     Single, Factory, Scope, Other
 }
 
-typealias Definition<T> = DefinitionContext.(DefinitionParameters) -> T
+typealias Definition<T> = Scope.(DefinitionParameters) -> T
 typealias OnReleaseCallback<T> = (T?) -> Unit
 typealias OnCloseCallback<T> = (T?) -> Unit

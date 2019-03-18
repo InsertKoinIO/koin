@@ -20,7 +20,6 @@ package org.koin.core.instance
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.DefinitionContext
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
@@ -51,14 +50,13 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
             logger.debug("| create instance for $beanDefinition")
         }
         try {
-            val parameters: DefinitionParameters = context.getParameters()
-            val definitionContext = context.getDefinitionContext()
-            val result = beanDefinition.definition(definitionContext, parameters)
+            val parameters: DefinitionParameters = context.parameters
+            val result = beanDefinition.definition(context.scope, parameters)
             return result as T
         } catch (e: Exception) {
             val stack =
-                    e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                            .joinToString(ERROR_SEPARATOR)
+                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                    .joinToString(ERROR_SEPARATOR)
             logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
@@ -88,10 +86,10 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
  * Instance resolution Context
  * Help support DefinitionContext & DefinitionParameters when resolving definition function
  */
-data class InstanceContext(val koin: Koin? = null, val scope: Scope = Scope.GLOBAL, val parameters: ParametersDefinition? = null) {
-
-    fun getDefinitionContext(): DefinitionContext = scope.getContext()
-
-    fun getParameters(): DefinitionParameters = parameters?.let { parameters.invoke() }
-            ?: emptyParametersHolder()
+class InstanceContext(
+    val koin: Koin? = null,
+    val scope: Scope = Scope.GLOBAL,
+    private val _parameters: ParametersDefinition? = null
+) {
+    val parameters: DefinitionParameters = _parameters?.invoke() ?: emptyParametersHolder()
 }

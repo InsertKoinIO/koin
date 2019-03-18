@@ -16,17 +16,14 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.definition.DefinitionContext
 import org.koin.core.definition.Properties
-import org.koin.core.definition.ScopedContext
-import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
 data class Scope(
-        val id: ScopeID,
-        val set: ScopeSet? = null
+    val id: ScopeID
 ) {
+    var set: ScopeSet? = null
     var koin: Koin? = null
     val properties = Properties()
     private val callbacks = arrayListOf<ScopeCallback>()
@@ -49,10 +46,11 @@ data class Scope(
      * @param parameters
      */
     inline fun <reified T> inject(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = this,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, parameters) }
+        lazy { get<T>(qualifier, scope, parameters) }
 
     /**
      * Get a Koin instance
@@ -60,11 +58,20 @@ data class Scope(
      * @param parameters
      */
     inline fun <reified T> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = this,
+        noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin?.get(T::class, qualifier, this, parameters)
-                ?: throw  ScopeIsClosedException("Scope $this is closed")
+        return koin?.get(T::class, qualifier, scope, parameters)
+            ?: error("$this is not registered - Koin is null")
+    }
+
+    /**
+     * Retrieve a property
+     * @param key
+     */
+    fun <T> getProperty(key: String): T {
+        return koin?.getProperty(key) ?: error("No property '$key' found")
     }
 
     /**
@@ -87,12 +94,8 @@ data class Scope(
         callbacks.clear()
     }
 
-    fun getContext(): DefinitionContext {
-        return ScopedContext(koin ?: error("Scope '$this' is not registered"), this)
-    }
-
     override fun toString(): String {
-        val scopeDef = set?.let { ",set:'${set.qualifier}'" } ?: ""
+        val scopeDef = set?.let { ",set:'${it.qualifier}'" } ?: ""
         return "Scope[id:'$id'$scopeDef]"
     }
 

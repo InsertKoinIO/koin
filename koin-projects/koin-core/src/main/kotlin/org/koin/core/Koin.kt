@@ -17,7 +17,6 @@ package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
@@ -28,7 +27,6 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.scope.getScopeName
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -53,11 +51,11 @@ class Koin {
      */
     @JvmOverloads
     inline fun <reified T> inject(
-            qualifier: Qualifier? = null,
-            scope: Scope = Scope.GLOBAL,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = Scope.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, scope, parameters) }
+        lazy { get<T>(qualifier, scope, parameters) }
 
     /**
      * Get a Koin instance
@@ -67,9 +65,9 @@ class Koin {
      */
     @JvmOverloads
     inline fun <reified T> get(
-            qualifier: Qualifier? = null,
-            scope: Scope = Scope.GLOBAL,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        scope: Scope = Scope.GLOBAL,
+        noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, scope, parameters)
     }
@@ -82,10 +80,10 @@ class Koin {
      * @param parameters
      */
     fun <T> get(
-            clazz: KClass<*>,
-            qualifier: Qualifier?,
-            scope: Scope = Scope.GLOBAL,
-            parameters: ParametersDefinition?
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        scope: Scope = Scope.GLOBAL,
+        parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.isAt(Level.DEBUG)) {
             logger.debug("+- get '${clazz.getFullName()}'")
@@ -100,40 +98,23 @@ class Koin {
     }
 
     private fun <T> resolve(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            scope: Scope,
-            parameters: ParametersDefinition?
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        scope: Scope,
+        parameters: ParametersDefinition?
     ): T {
-        val (definition, targetScopeInstance) = prepareResolution(qualifier, clazz, scope)
-        val instanceContext = InstanceContext(this, targetScopeInstance, parameters)
-        return definition.resolveInstance(instanceContext)
+        val (definition, foundScope) = prepareResolution(qualifier, clazz, scope)
+        return definition.resolveInstance(InstanceContext(this, foundScope, parameters))
     }
 
     private fun prepareResolution(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            scope: Scope
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        scope: Scope
     ): Pair<BeanDefinition<*>, Scope> {
         val definition = beanRegistry.findDefinition(qualifier, clazz)
-                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
-
-        if (definition.isScoped() && scope != Scope.GLOBAL) {
-            checkScopeResolution(definition, scope)
-        }
-
+            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
         return Pair(definition, scope)
-    }
-
-    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: Scope) {
-        val scopeInstanceName = scope.set?.qualifier
-        val beanScopeName: Qualifier? = definition.getScopeName()
-        if (beanScopeName != scopeInstanceName) {
-            when {
-                scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")
-                beanScopeName != null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName' with scope instance $scope. Use a scope instance with scope '$beanScopeName'.")
-            }
-        }
     }
 
     internal fun createEagerInstances() {

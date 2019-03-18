@@ -6,7 +6,6 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.android.scope.ScopeObserver
 import org.koin.core.context.startKoin
-import org.koin.core.error.ScopeIsClosedException
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
@@ -20,9 +19,9 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         startKoin {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        scoped { MyService() }
-                    }
+                module {
+                    scoped { MyService() }
+                }
             )
         }
 
@@ -36,7 +35,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         try {
             session.get<MyService>()
             fail("no resolution of closed scope dependency")
-        } catch (e: ScopeIsClosedException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -79,7 +78,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         try {
             session.get<MyService>()
             fail("no resolution of closed scope dependency")
-        } catch (e: ScopeIsClosedException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

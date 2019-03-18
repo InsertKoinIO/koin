@@ -75,7 +75,8 @@ class ScopeRegistry {
             definitions[scopeName.toString()]
                     ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
         }
-        val instance = Scope(id, definition)
+        val instance = Scope(id)
+        definition?.let { instance.set = it }
         registerScopeInstance(instance)
         return instance
     }
