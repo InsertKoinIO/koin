@@ -5,10 +5,10 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
-import org.koin.test.check.parameterCreatorsOf
 
 class CheckModulesTest {
 
@@ -28,35 +28,83 @@ class CheckModulesTest {
     }
 
     @Test
-    fun `check a scoped module and ext deps`() {
-        koinApplication {
-            printLogger(Level.DEBUG)
-            modules(
-                    module {
-                        single { Simple.ComponentB(get()) }
-                        scope(named("scope")) {
-                            scoped { Simple.ComponentA() }
+    fun `check a scoped module and ext deps - failed `() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                        module {
+                            single { Simple.ComponentB(get()) }
+                            scope(named("scope")) {
+                                scoped { Simple.ComponentA() }
+                            }
                         }
-                    }
-            )
-        }.checkModules()
+                )
+            }.checkModules()
+            fail()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
     @Test
-    fun `check a scoped module and ext scope`() {
+    fun `check a scoped module and ext scope - failed`() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                        module {
+                            scope(named("scope2")) {
+                                scoped { Simple.ComponentB(get()) }
+                            }
+                            scope(named("scope1")) {
+                                scoped { Simple.ComponentA() }
+                            }
+                        }
+                )
+            }.checkModules()
+            fail()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `check a scoped module and ext scope - create scope`() {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
                     module {
                         scope(named("scope2")) {
-                            scoped { Simple.ComponentB(get()) }
+                            scoped { Simple.ComponentB(get(scope = getScope("scopei1"))) }
                         }
                         scope(named("scope1")) {
                             scoped { Simple.ComponentA() }
                         }
                     }
             )
-        }.checkModules()
+        }.checkModules {
+            koin.createScope("scopei1", named("scope1"))
+        }
+    }
+
+    @Test
+    fun `check a scoped module and ext scope - inject scope`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        scope(named("scope2")) {
+                            scoped { (scope1: Scope) -> Simple.ComponentB(get(scope = scope1)) }
+                        }
+                        scope(named("scope1")) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.checkModules {
+            create<Simple.ComponentB> { parametersOf(koin.createScope("scopei1", named("scope1"))) }
+        }
     }
 
 
@@ -112,10 +160,10 @@ class CheckModulesTest {
                         single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
                     }
             )
-        }.checkModules(parameterCreatorsOf {
+        }.checkModules {
             create<Simple.MyString> { parametersOf("param") }
             create<Simple.MyString>(UpperCase) { qualifier -> parametersOf(qualifier.toString()) }
-        })
+        }
     }
 
     @Test

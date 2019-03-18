@@ -1,6 +1,6 @@
 -- [2.1] --
 * Fragment Manager -> injection by fragment
-
+* JUnit rule ~ AutoCloseKoinTest()
 
 -- [2.0] - Done --
 x release of singles
@@ -32,20 +32,16 @@ x ViewModelResolution -> make it less coupled to Global Koin instance
 https://github.com/InsertKoinIO/koin/issues/348
 (PR)
 
--- Dev --
-
 > Check to remove mockito?
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
-* JUnit rule ~ AutoCloseKoinTest()
-
 
 -- Doc --
 
 * Changelog update
+* Getting started
+* Koin samples
 * Website
 * Global review
-
--- GS --
 
 

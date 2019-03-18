@@ -21,23 +21,23 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
 data class Scope(
-    val id: ScopeID
+        val id: ScopeID
 ) {
-    var set: ScopeSet? = null
-    var koin: Koin? = null
+    internal var set: ScopeSet? = null
+    private var _koin: Koin? = null
     val properties = Properties()
     private val callbacks = arrayListOf<ScopeCallback>()
 
     /**
      * Is Scope associated to Koin
      */
-    internal fun isRegistered() = koin != null
+    internal fun isRegistered() = _koin != null
 
     /**
      * Register in Koin instance
      */
     fun register(koin: Koin) {
-        this.koin = koin
+        this._koin = koin
     }
 
     /**
@@ -46,11 +46,29 @@ data class Scope(
      * @param parameters
      */
     inline fun <reified T> inject(
-        qualifier: Qualifier? = null,
-        scope: Scope = this,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            scope: Scope = this,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-        lazy { get<T>(qualifier, scope, parameters) }
+            lazy { get<T>(qualifier, scope, parameters) }
+
+    /**
+     * Get current Koin instance
+     */
+    fun getKoin() = _koin ?: error("Scope is closed or not yet registered with any Koin context")
+
+    /**
+     * Get Scope
+     * @param scopeID
+     */
+    fun getScope(scopeID: ScopeID) = getKoin().getScope(scopeID)
+
+    /**
+     * Get or Create scope
+     * @param scopeID
+     * @param qualifier
+     */
+    fun getOrCreateScope(scopeID: ScopeID, qualifier: Qualifier) = getKoin().getOrCreateScope(scopeID, qualifier)
 
     /**
      * Get a Koin instance
@@ -58,12 +76,12 @@ data class Scope(
      * @param parameters
      */
     inline fun <reified T> get(
-        qualifier: Qualifier? = null,
-        scope: Scope = this,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            scope: Scope = this,
+            noinline parameters: ParametersDefinition? = null
     ): T {
-        return koin?.get(T::class, qualifier, scope, parameters)
-            ?: error("$this is not registered - Koin is null")
+        return getKoin().get(T::class, qualifier, scope, parameters)
+                ?: error("$this is not registered - Koin is null")
     }
 
     /**
@@ -71,7 +89,7 @@ data class Scope(
      * @param key
      */
     fun <T> getProperty(key: String): T {
-        return koin?.getProperty(key) ?: error("No property '$key' found")
+        return getKoin().getProperty(key) ?: error("No property '$key' found")
     }
 
     /**
@@ -86,8 +104,8 @@ data class Scope(
      */
     fun close() = synchronized(this) {
         set?.release(this)
-        koin?.deleteScope(this.id)
-        koin = null
+        _koin?.deleteScope(this.id)
+        _koin = null
 
         // call on close from callbacks
         callbacks.forEach { it.onScopeClose() }

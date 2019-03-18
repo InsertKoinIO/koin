@@ -42,13 +42,13 @@ inline fun <reified T : Any> Module.create(context: Scope): T {
  * Make an instance with given arguments
  */
 inline fun <reified T : Any> Constructor<*>.makeInstance(args: Array<Any>) =
-    newInstance(*args) as T
+        newInstance(*args) as T
 
 /**
  * Retrieve arguments for given constructor
  */
 fun getArguments(ctor: Constructor<*>, context: Scope) =
-    ctor.parameterTypes.map { context.getWithDefault(it.kotlin) }.toTypedArray()
+        ctor.parameterTypes.map { context.getWithDefault(it.kotlin) }.toTypedArray()
 
 /**
  * Get first java constructor
@@ -73,5 +73,6 @@ val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
  * Retrieve linked dependency with defaults params
  */
 internal fun <T : Any> Scope.getWithDefault(
-    clazz: KClass<T>
-): T = koin?.get(clazz, null, Scope.GLOBAL, null) ?: error("Koin can't be null in scope context")
+        clazz: KClass<T>
+): T = getKoin().get(clazz, null, Scope.GLOBAL, null)
+        ?: error("Koin can't be null in scope context")
