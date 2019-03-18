@@ -3,10 +3,12 @@ package org.koin.test
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.logger.Level
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import org.koin.test.check.parameterCreatorsOf
 
 class CheckModulesTest {
 
@@ -107,9 +109,13 @@ class CheckModulesTest {
             modules(
                     module {
                         single { (s: String) -> Simple.MyString(s) }
+                        single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
                     }
             )
-        }.checkModules()
+        }.checkModules(parameterCreatorsOf {
+            create<Simple.MyString> { parametersOf("param") }
+            create<Simple.MyString>(UpperCase) { qualifier -> parametersOf(qualifier.toString()) }
+        })
     }
 
     @Test

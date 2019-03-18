@@ -1,5 +1,6 @@
 package org.koin.test
 
+import org.koin.core.qualifier.Qualifier
 import java.util.*
 
 @Suppress("unused")
@@ -12,3 +13,5 @@ class Simple {
         fun getUUID() = UUID.randomUUID().toString()
     }
 }
+
+object UpperCase: Qualifier

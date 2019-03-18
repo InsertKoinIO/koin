@@ -17,86 +17,44 @@ package org.koin.test.check
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeName
+import kotlin.reflect.KClass
 
 /**
- * Check all definition's dependencies - run all modules in a test sandbox
- * and checkModules if definitions can run
+ * Check all definition's dependencies - start all nodules and check ifdefinitions can run
  */
-fun KoinApplication.checkModules() = koin.checkModules()
+fun KoinApplication.checkModules(
+        parameterCreators: Map<NamedKClass, ParametersCreator> = mapOf()) = koin.checkModules(parameterCreators)
 
 /**
- * Check all definition's dependencies - run all modules in a test sandbox
- * and checkModules if definitions can run
+ * Check all definition's dependencies - start all nodules and check if definitions can run
  */
-fun Koin.checkModules() {
-    val allDefinitions = getSandboxedDefinitions()
+fun Koin.checkModules(
+        parameterCreators: Map<NamedKClass, ParametersCreator> = mapOf()) {
 
-    clearExistingDefinitions()
-
-    registerDefinitions(allDefinitions)
-
-    runDefinitions(allDefinitions)
-
+    beanRegistry.getAllDefinitions().forEach {
+        val scope = if (it.isScoped()) createScope(it.getScopeName().toString(), it.getScopeName()) else null
+        val parameters = parameterCreators[NamedKClass(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
+                ?: parametersOf()
+        get<Any>(it.primaryType, it.qualifier, scope ?: Scope.GLOBAL) { parameters }
+        scope?.close()
+    }
     close()
 }
 
-const val SANDBOX_SCOPE_ID = "_sandbox_scope"
+data class NamedKClass(val qualifier: Qualifier? = null, val type: KClass<*>)
+typealias ParametersCreator = (Qualifier?) -> DefinitionParameters
 
-/**
- * Resolve & instance definitions
- */
-fun Koin.runDefinitions(allDefinitions: List<BeanDefinition<*>>) {
-    allDefinitions.forEach {
-        checkDefinition(it)
-    }
+class ParametersBinding {
+    val creators = mutableMapOf<NamedKClass, ParametersCreator>()
+    inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
+            creators.put(NamedKClass(qualifier, T::class), creator)
 }
 
-private fun Koin.checkDefinition(it: BeanDefinition<*>) {
-    val clazz = it.primaryType
-    val scope = if (it.isScoped()) {
-        val qualifier = it.getScopeName()
-        val scopeId = qualifier.toString() + SANDBOX_SCOPE_ID
-        scopeRegistry.getScopeInstanceOrNull(scopeId)
-            ?: scopeRegistry.createScopeInstance(scopeId, qualifier)
-    } else Scope.GLOBAL
-
-    get<Any>(clazz, it.qualifier, scope) { emptyParametersHolder() }
-}
-
-private fun Koin.registerDefinitions(allDefinitions: List<BeanDefinition<*>>) {
-    allDefinitions.forEach {
-        beanRegistry.saveDefinition(it)
-    }
-}
-
-
-private fun Koin.clearExistingDefinitions() {
-    beanRegistry.close()
-}
-
-private fun Koin.getSandboxedDefinitions(): List<BeanDefinition<*>> {
-    return beanRegistry.getAllDefinitions()
-        .map {
-            KoinApplication.logger.debug("* create sandbox for: $it")
-            it.sandboxed() as BeanDefinition<*>
-        }
-}
-
-/**
- * Clone definition and inject SandBox instance holder
- */
-fun <T> BeanDefinition<T>.sandboxed(): BeanDefinition<T> {
-    val sandboxDefinition = SandboxDefinition<T>(qualifier, primaryType)
-    sandboxDefinition.secondaryTypes = this.secondaryTypes
-    sandboxDefinition.definition = definition
-    sandboxDefinition.instance = null
-    sandboxDefinition.properties = this.properties.copy()
-    sandboxDefinition.options = this.options.copy()
-    sandboxDefinition.options.override = true
-    sandboxDefinition.kind = this.kind
-    return sandboxDefinition
+fun parameterCreatorsOf(f: ParametersBinding.() -> Unit): Map<NamedKClass, ParametersCreator> {
+    return ParametersBinding().apply(f).creators
 }

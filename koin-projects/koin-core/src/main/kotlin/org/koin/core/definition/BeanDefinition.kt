@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-open class BeanDefinition<T>(
+class BeanDefinition<T>(
         val qualifier: Qualifier? = null,
         val primaryType: KClass<*>
 ) {
@@ -60,7 +60,7 @@ open class BeanDefinition<T>(
     /**
      * Create the associated Instance Holder
      */
-    open fun createInstanceHolder() {
+    fun createInstanceHolder() {
         this.instance = when (kind) {
             Kind.Single -> SingleDefinitionInstance(this)
             Kind.Scope -> ScopeDefinitionInstance(this)
