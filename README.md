@@ -10,8 +10,6 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-## Beta version 👉 [https://beta.insert-koin.io](https://beta.insert-koin.io)
-
 ### Contact & Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
@@ -27,14 +25,14 @@ Any question about Koin usage?
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
+### Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
+
 # Setup
 
 ## Current Version
 
 ```gradle
 // latest stable
-koin_version = '1.0.2'
-// current beta
 koin_version = '2.0.0-rc-1'
 ```
 
@@ -116,7 +114,7 @@ val myModule = module {
 } 
 ```
 
-## Starting Koin in Koin 2.0 
+## Starting Koin
 
 Use the startKoin() function to start Koin in your application.
 
@@ -140,9 +138,9 @@ class MyApplication : Application() {
     super.onCreate()
     // start Koin!
     startKoin {
-      // your Android context
+      // Android context
       androidContext(this@MyApplication)
-      // your modules
+      // modules
       modules(myModule)
     }
   } 
