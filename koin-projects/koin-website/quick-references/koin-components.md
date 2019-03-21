@@ -56,6 +56,31 @@ fun main(vararg args: String) {
 
 `KoinComponent` interface is also used to help you boostrap an application from outside of Koin. Also, you can bring `KoinComponent` feature by extension functions directly on some tagret classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
 
+
+## Bridge with Koin instance & current Scope
+
+The `KoinComponent` interface brings the following:
+
+{% highlight kotlin %}
+interface KoinComponent {
+
+    /**
+     * Get the associated Koin instance
+     */
+    fun getKoin(): Koin = GlobalContext.get().koin
+
+    /**
+     * THe associated scope
+     */
+    fun currentScope(): Scope = Scope.GLOBAL
+}
+{% endhighlight %}
+
+It opens the following possibilties:
+
+* You can then redefine then `getKoin()` function to redirect to a local custom Koin instance.
+* You can redefine `currentScope` to give a dedicated Scope instance and avoid to pass it manually in argument in you components.
+
 ## More about core Koin Components
 
 Below are some further readings:

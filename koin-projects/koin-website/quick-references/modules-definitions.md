@@ -42,7 +42,22 @@ val myModule = module {
 }
 {% endhighlight %}
 
-### Combining several modules
+## Qualifiers
+
+You can give a qualifier to a component. This qualifier can be a string or a type, and is setup with the `named()` function:
+
+{% highlight kotlin %}
+val myModule = module {
+
+    // Define a singleton for type  DataRepository
+    single { DataRepository() }
+
+    // Mock
+    single(named("mock")) { MockDataRepository() }
+}
+{% endhighlight %}
+
+## Combining several modules
 
 There is no concept of import in Koin. Just combine several complementary modules definitions. 
 
@@ -81,6 +96,7 @@ A quick recap of the Koin DSL keywords:
 * `factory { }` - provide a *factory* bean definition
 * `single { }` - provide a bean definition
 * `get()` - resolve a component dependency
+* `named()` - define a qualifier with type or string
 * `bind` - additional Kotlin type binding for given bean definition
 * `binds` - list of additional Kotlin types binding for given bean definition
 * `getProperty()` - resolve a Koin property

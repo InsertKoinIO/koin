@@ -75,39 +75,38 @@ If you need to inject dependencies from another class and can't declare it in a 
 
 ### Extended Scope API for Android (koin-android-scope or koin-androidx-scope projects)
 
-Scope API is more close to the Android platform. Both `Activity` & `Fragment` have extensions for Scope API: `getActivityScope()` & `getFragmentScope()` get the current associated Koin scope.
+Scope API is more close to the Android platform. Both `Activity` & `Fragment` have extensions for Scope API: `currentScope` get the current associated Koin scope. This scope is created & bound to the component's lifecycle.
 
-You can use directly the associated Koin scope to retrieve components. Bind the Koin scope to the current lifecycle with `bindScope()` function:
+You can use directly the associated Koin scope to retrieve components:
 
 {% highlight kotlin %}
 class DetailActivity : AppCompatActivity(), DetailContract.View {
 
     // inject from current activity scope instance
-    override val presenter: DetailContract.Presenter by getActivityScope().inject()
+    override val presenter: DetailContract.Presenter by currentScope.inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         //...
-
-        // Bind current activity scope instance to lifecycle
-        // allow to close it on ON_DESTROY event
-        bindScope(getActivityScope())
     }
 }
 {% endhighlight %}
 
-Easy to declare your scope with Koin:
+Easy to declare your Android component's scope:
 
 {% highlight kotlin %}
 module {
     // declare a scope for DetailActivity
-    scope<DetailActivity> {
+    scope(named<DetailActivity>)> {
         scoped<DetailContract.Presenter> { DetailPresenter(get(), get()) }
     }
 }
 {% endhighlight %}
 
 Any Activity or Fragment can use directly the scope API: `createScope()`, `getScope()` and `deleteScope()`.
+
+You can also bind any Koin scope to the current lifecycle with `bindScope()` function.
 
 ### Android Architecture ViewModel (koin-android-viewmodel or koin-androidx-viewmodel projects)
 

@@ -74,7 +74,7 @@ val appModule = module {
     single<HelloRepository> { HelloRepositoryImpl() }
 
     // Scoped MyScopePresenter instance
-    scope<MyScopeActivity> { 
+    scope(named<MyScopeActivity>()) {
         scoped { MyScopePresenter(get()) }
     }
 }
@@ -92,7 +92,8 @@ class MyApplication : Application(){
         super.onCreate()
         // Start Koin
         startKoin{
-            logger()
+            androidLogger()
+            androidContext(this@MyApplication)
             modules(appModule)
         }
     }
@@ -107,37 +108,26 @@ The `MyScopePresenter` component will be created with `HelloRepository` instance
 class MyScopeActivity : AppCompatActivity() {
 
     // inject MyScopePresenter from current scope 
-    val scopePresenter: MyScopePresenter by getActivityScope().inject()
+    val scopePresenter: MyScopePresenter by currentScope.inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
-        
-        // bind "session" scope to component lifecycle
-        bindScope(getActivityScope())
 
-        //...
     }
 }
 
 {% endhighlight %}
 
 <div class="alert alert-primary" role="alert">
-    The <b>getActivityScope()(...)</b> allows us to retrieve/create a Koin scope for given activity
-</div>
-
-<div class="alert alert-info" role="alert">
-    The <b>bindScope(...)</b> bind given scope to current lifecycle. When MyScopeActivity's lifecycle ends, it will close the associated scope and then drop injected isntance
+    The <b>currentScope</b> allows us to retrieve/create a Koin scope for given activity
 </div>
 
 ## What's Next?
 
 You have finished this starting tutorial. Below are some topics for further reading:
 
-* [Android Quick References]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-android/)
-* [Koin for Android developer documentation]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_koin_for_android_developers)
-* [Scope features for Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_scope_features_for_android)
-* [Using Android ViewModel]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_architecture_components_with_koin_viewmodel)
+* [Android Quick References]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
 
 Also other Android getting started project:
 

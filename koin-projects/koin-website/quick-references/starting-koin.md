@@ -27,7 +27,7 @@ fun main(vararg args: String) {
         // enable Printlogger with default Level.INFO
         // can have Level & implementation
         // equivalent to logger(Level.INFO, PrintLogger())
-        logger() 
+        printlogger() 
 
         // declare properties from given map
         properties( /* properties map */)
@@ -83,7 +83,7 @@ Starting Koin from your `Application` extension function:
 {% highlight kotlin %}
 fun Application.main() {
     // Install Ktor features
-    installKoin {
+    install(Koin) {
         // Use SLF4J Koin Logger at Level.INFO
         slf4jLogger()
 

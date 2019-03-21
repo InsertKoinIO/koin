@@ -13,7 +13,7 @@ Start Koin from your `Application` with the Ktor extension below:
 {% highlight kotlin %}
 fun Application.main() {
     // Install Ktor features
-    installKoin {
+    install(Koin) {
         // Use SLF4J Koin Logger at Level.INFO
         slf4jLogger()
 

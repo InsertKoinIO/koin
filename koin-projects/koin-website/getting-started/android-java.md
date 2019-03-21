@@ -100,7 +100,8 @@ class MyApplication : Application(){
         super.onCreate()
         // Start Koin
         startKoin{
-            logger()
+            androidLogger()
+            androidContext(this@MyApplication)
             modules(appModule)
         }
     }
@@ -143,10 +144,7 @@ public class JavaActivity extends AppCompatActivity {
 
 You have finished this starting tutorial. Below are some topics for further reading:
 
-* [Android Quick References]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-android/)
-* [Koin for Android developer documentation]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_koin_for_android_developers)
-* [Scope features for Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_scope_features_for_android)
-* [Using Android ViewModel]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html#_architecture_components_with_koin_viewmodel)
+* [Android Quick References]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
 
 Also other Android getting started project:
 

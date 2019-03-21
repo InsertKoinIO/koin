@@ -18,7 +18,7 @@ import static org.koin.core.context.GlobalContext.start;
 // Build KoinApplication instance
 // Builder API style
 KoinApplication koinApp = KoinApplication.create()
-                .logger()
+                .printLogger()
                 .modules(koinModule);
 
 // Statr KoinApplication instance

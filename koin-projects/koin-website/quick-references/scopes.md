@@ -21,7 +21,7 @@ To declare a scope definition, use the `scoped` function:
 
 {% highlight kotlin %}
 module {
-    scope { Presenter() }
+    scoped { Presenter() }
 }
 {% endhighlight %}
 
@@ -34,23 +34,17 @@ For the given classes:
 {% highlight kotlin %}
 class ComponentA
 class ComponentB(val a : class ComponentA)
-class ComponentC
 {% endhighlight %}
 
 We can write the following scope:
 
 {% highlight kotlin %}
 module {
-    
-    // define the scope "MY_SCOPE"
-    scope("MY_SCOPE") {
+    // define the scope with its qualifier "MY_SCOPE"
+    scope(named("MY_SCOPE") {
         scoped { ComponentA() }
         scoped { ComponentB(get()) }
     }
-
-    // scoped definition not tied to any scope
-    // can be injected in any scope instance
-    scoped { ComponentC() }
 }
 {% endhighlight %}
 
@@ -59,25 +53,20 @@ module {
 From any `Koin` instance or also available from your `KoinComponent` with `getKoin()`, the following functions allows to handle scope instances:
 
 {% highlight kotlin %}
-// create scope instance "myScope" for scope "MY_SCOPE"
-// you can create several scope isntances of the same scope definition
-val myScope : ScopeInstance = koin.createScope("myScope", "MY_SCOPE")
+// create scope instance with ScopeID "myScope" for scope naled "MY_SCOPE"
+val myScope : Scope = koin.createScope("myScope", named("MY_SCOPE")
 
 // get instance ComponentA from scope
 val a = myScope.get<ComponentA>()
 // get instance ComponentB from scope and retrieve instance ComponentA from same scope
 val b = myScope.get<ComponentB>()
 
-// can also get instance from a scoped component definition not tied to a scope definition
-val c = myScope.get<ComponentC>()
-
 // if you need, you can retrieve your scope instance by its id
-val myScope : ScopeInstance = koin.getScope("myScope")
+val myScope : Scope = koin.getScope("myScope")
 
 // close the scope when needed
 myScope.close()
 {% endhighlight %}
-
 
 ## More about
 

@@ -136,7 +136,7 @@ fun Application.main() {
     install(DefaultHeaders)
     install(CallLogging)
     // Declare Koin
-    installKoin {
+    install(Koin) {
         SLF4JLogger()
         modules(helloAppModule)
     }
@@ -168,12 +168,10 @@ That's it! You're ready to go. Chech the `http://localhost:8080/hello` url!
 
 You have finished this starting tutorial. Below are some topics for further reading:
 
-* Check the [DSL quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-dsl/)
-* Check the [Core features quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-core/)
+* Check the [DSL quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
 * Read the [full documentation]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html)
 
 Also other getting started project:
 
 * [Getting started Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android/)
 * [Getting started Core]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/kotlin/)
-* [Getting started Spark]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/spark/)

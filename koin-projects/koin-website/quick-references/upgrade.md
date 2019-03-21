@@ -23,7 +23,7 @@ fun main(vararg args: String) {
         // enable Printlogger with default Level.INFO
         // can have Level & implementation
         // equivalent to logger(Level.INFO, PrintLogger())
-        logger() 
+        printLogger() 
 
         // declare properties from given map
         properties( /* properties map */)
@@ -79,7 +79,7 @@ Starting Koin from your `Application` extension function:
 {% highlight kotlin %}
 fun Application.main() {
     // Install Ktor features
-    installKoin {
+    install(Koin) {
         // Use SLF4J Koin Logger at Level.INFO
         slf4jLogger()
 
@@ -106,17 +106,9 @@ Koin Module DSL hasn't change much (appart the Scope API that will need entire r
 {% highlight kotlin %}
 org.koin.android.viewmodel.ext.koin.viewModel -> org.koin.android.viewmodel.dsl.viewModel
 org.koin.dsl.module.module -> org.koin.dsl.module
-org.koin.android.viewmodel.ext.android.viewModel -> org.koin.android.viewmodel.ext.viewModel
-org.koin.android.viewmodel.ext.android.sharedViewModel -> org.koin.android.viewmodel.ext.sharedViewModel
 {% endhighlight %}
 
 <div class="alert alert-primary" role="alert">
-   Clean and reimport Koin API should fix most of your problem
+   If any problem, clean and reimport Koin API should fix most of your problem 👍
 </div>
 
-
-### Updated API
-
-* Scope API
-* Koin testing with koin-test
-* Scope API for Android
