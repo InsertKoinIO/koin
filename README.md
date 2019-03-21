@@ -35,7 +35,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 // latest stable
 koin_version = '1.0.2'
 // current beta
-koin_version = '2.0.0-beta-3'
+koin_version = '2.0.0-rc-1'
 ```
 
 ## Gradle 
@@ -53,7 +53,7 @@ repositories {
 
 ### Dependencies
 
-Choose your Koin dependency:
+Pick one of your Koin dependency:
 
 #### Core features
 
@@ -126,6 +126,7 @@ In a Kotlin app:
 fun main(vararg args : String) { 
   // start Koin!
   startKoin {
+    // your modules
     modules(myModule)
   }
 } 
@@ -139,7 +140,9 @@ class MyApplication : Application() {
     super.onCreate()
     // start Koin!
     startKoin {
+      // your Android context
       androidContext(this@MyApplication)
+      // your modules
       modules(myModule)
     }
   } 
