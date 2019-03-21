@@ -5,39 +5,48 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 ## [2.0.0]()
 
 _Android_
-* `[UPDATED]` - rework startking DSL to add extension in startKoin
+* `[UPDATED]` - rework startking DSL to add extension in startKoin (`androidContext`, `androidLogger`)
 
 _Android-Scope_
 * `[UPDATED]` - rework according to new Scope API (manage compelte Scope Lifecycle)
-* `[ADDED]` - scope tied to current Activity or Fragment (getActivityScope, getFagmentScope)
-
+* `[ADDED]` - `currentScope` property scope tied to current Activity or Fragment
+* `[ADDED]` - `currentScope` is aware of any `KoinComponent` & currentScope override
 
 _Android-ViewModel_
-* `[ADDED]` - support for scopes
-* `[REMOVED]` koin-ext builder
+* `[ADDED]` - support for new Scope API
+* `[REMOVED]` - removed koin-ext builder API
+* `[UPDATED]` - make the API open to Koin instance isolation
+
+_AndroidX-Scope_
+* `[UPDATED]` - update API regarding the changes in `koin-android-scope`
+
+_AndroidX-ViewModel_
+* `[UPDATED]` - update API regarding the changes in `koin-android-viewmodel`
 
 _Core_
 
 * `[UPDATED]` - startKoin replaced with startKoin DSL and koin in global context
-* `[UPDATED]` - complete internals rewritten for performances optimisation
+* `[UPDATED]` - complete internals rewritten for performances optimisation (startup & injection)
+* `[UPDATED]` - `KoinComponent` now can override `getKoin()` to target a custom Koin instance & `currentScope()` to target a Scope that is used for all injections
 * `[ADDED]` - koinApplication function to help declare an instance  for a local context, in ordoer to help isolated Koin instances
 * `[UPDATED]` - rework Scope API (DSL, multiple instances definitions, properties, release, callback ...)
 * `[ADDED]` - onClose, onRelease DSL on single/factory/scoped to execute code when releasing instance or stopping container 
 * `[ADDED]` - getProperty with default value
 * `[UPDATED]` - Kotlin 1.3.21
-
-_Core-Ext_
+* `[ADDED]` - Qualifiers with `named()` function to replace old string names. Allow to use Types
 
 _Test_
 * `[UPDATED]` - rework testing API, codebase detached from internal core tests
+* `[UPDATED]` - checkModules now rely on pure Kotlin & with `create` parameters DSL
 
 
 _Ktor_
 * `[UPDATED]` - rework startking DSL to add extension in startKoin
+* `[ADDED]` - Koin as a Ktor feature
 
 _Spark_
 
-* `[REMOVED]` project non supported anymore
+* `[REMOVED]` project non ported to Koin 2.0
 
 
 ## [1.0.2]()
