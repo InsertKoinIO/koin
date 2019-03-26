@@ -131,7 +131,7 @@ class BeanRegistry {
             qualifier: Qualifier? = null,
             clazz: KClass<*>
     ): BeanDefinition<*>? =
-            qualifier?.let { findDefinitionByName(qualifier.toString()) }
+            qualifier?.let { findDefinitionByName(it.toString()) }
                     ?: findDefinitionByClass(clazz)
 
     private fun findDefinitionByClass(kClass: KClass<*>): BeanDefinition<*>? {

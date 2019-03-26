@@ -167,6 +167,16 @@ class CheckModulesTest {
     }
 
     @Test
+    fun `check with qualifier`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(module {
+                single(named("test")) { Simple.ComponentA() }
+            })
+        }.checkModules()
+    }
+
+    @Test
     fun `check a module with property`() {
         koinApplication {
             printLogger(Level.DEBUG)

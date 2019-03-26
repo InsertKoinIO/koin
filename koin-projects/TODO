@@ -36,12 +36,25 @@ https://github.com/InsertKoinIO/koin/issues/348
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
 
+-- TODO --
+
+DeclareMock
+https://github.com/InsertKoinIO/koin/issues/405
+
+Clear board
+https://github.com/InsertKoinIO/koin/milestone/13
+
+
+
 -- Doc --
 
 x Getting started
 x Website
 x Koin samples
-* Changelog update
+x Changelog update
+* Ref documentation
+* new web logo
+* blog post on medium
 * Global review
 
 
