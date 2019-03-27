@@ -1,7 +1,6 @@
 package org.koin.core
 
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.GlobalContext
@@ -104,4 +103,36 @@ class KoinApplicationIsolationTest {
         stopKoin()
     }
 
+    @Test
+    fun `create multiple context without named qualifier`() {
+        // TODO Handle Scope.GLOBAL per Koin instance
+        val koinA = koinApplication {
+            modules(module {
+                single { ModelA() }
+            }, module {
+                single { ModelB(get()) }
+            })
+        }
+
+        val koinB = koinApplication {
+            modules(module {
+                single { ModelC() }
+            })
+        }
+
+
+        koinA.koin.get<ModelA>().let {
+            assertNotNull(it)
+        }
+
+        koinA.koin.get<ModelB>().let {
+            assertNotNull(it)
+        }
+    }
+
+    class ModelA
+
+    class ModelB(a: ModelA)
+
+    class ModelC
 }
