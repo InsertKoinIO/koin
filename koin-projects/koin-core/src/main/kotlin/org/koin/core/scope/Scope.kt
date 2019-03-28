@@ -104,7 +104,7 @@ data class Scope(
      */
     fun close() = synchronized(this) {
         // call on close from callbacks
-        callbacks.forEach { it.onScopeClose() }
+        callbacks.forEach { it.onScopeClose(this) }
         callbacks.clear()
 
         set?.release(this)
