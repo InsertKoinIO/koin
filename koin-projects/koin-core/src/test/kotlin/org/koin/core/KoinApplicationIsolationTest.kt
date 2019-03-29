@@ -105,7 +105,6 @@ class KoinApplicationIsolationTest {
 
     @Test
     fun `create multiple context without named qualifier`() {
-        // TODO Handle Scope.GLOBAL per Koin instance
         val koinA = koinApplication {
             modules(module {
                 single { ModelA() }
@@ -124,6 +123,22 @@ class KoinApplicationIsolationTest {
         koinA.koin.get<ModelA>()
         koinA.koin.get<ModelB>()
         koinB.koin.get<ModelC>()
+
+        try {
+            koinB.koin.get<ModelA>()
+            fail()
+        } catch (e: Exception) {
+        }
+        try {
+            koinB.koin.get<ModelB>()
+            fail()
+        } catch (e: Exception) {
+        }
+        try {
+            koinA.koin.get<ModelC>()
+            fail()
+        } catch (e: Exception) {
+        }
     }
 
     class ModelA
