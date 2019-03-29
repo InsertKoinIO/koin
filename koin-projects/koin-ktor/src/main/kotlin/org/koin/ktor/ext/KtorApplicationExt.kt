@@ -42,7 +42,7 @@ fun Application.getKoin(): Koin = GlobalContext.get().koin
  */
 inline fun <reified T : Any> Application.inject(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ) =
         lazy { get<T>(qualifier, scope, parameters) }
@@ -55,7 +55,7 @@ inline fun <reified T : Any> Application.inject(
  */
 inline fun <reified T : Any> Application.get(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, scope, parameters)

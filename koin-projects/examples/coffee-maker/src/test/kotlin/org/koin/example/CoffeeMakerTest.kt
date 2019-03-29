@@ -3,9 +3,9 @@ package org.koin.example
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.context.startKoin
-import org.koin.core.inject
 import org.koin.core.logger.Level
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.inject
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.times

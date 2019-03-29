@@ -35,7 +35,7 @@ import org.koin.core.scope.Scope
  */
 inline fun <reified T : Any> Routing.inject(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ) =
         lazy { get<T>(qualifier, scope, parameters) }
@@ -47,7 +47,7 @@ inline fun <reified T : Any> Routing.inject(
  */
 inline fun <reified T : Any> Routing.get(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, scope, parameters)

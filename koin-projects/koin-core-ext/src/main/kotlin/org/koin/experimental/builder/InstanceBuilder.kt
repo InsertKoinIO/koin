@@ -74,5 +74,8 @@ val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
  */
 internal fun <T : Any> Scope.getWithDefault(
         clazz: KClass<T>
-): T = getKoin().get(clazz, null, Scope.GLOBAL, null)
-        ?: error("Koin can't be null in scope context")
+): T {
+    val koin = getKoin()
+    return koin.get(clazz, null, koin.defaultScope, null)
+            ?: error("Koin can't be null in scope context")
+}

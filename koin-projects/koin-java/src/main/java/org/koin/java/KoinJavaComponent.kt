@@ -41,7 +41,7 @@ object KoinJavaComponent {
     fun <T : Any> inject(
             clazz: Class<T>,
             qualifier: Qualifier? = null,
-            scope: Scope = Scope.GLOBAL,
+            scope: Scope? = null,
             parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy { get(clazz, qualifier, scope, parameters) }
@@ -59,13 +59,14 @@ object KoinJavaComponent {
     fun <T : Any> get(
             clazz: Class<T>,
             qualifier: Qualifier? = null,
-            scope: Scope = Scope.GLOBAL,
+            scope: Scope? = null,
             parameters: ParametersDefinition? = null
     ): T {
-        return getKoin().get(
+        val koin = getKoin()
+        return koin.get(
                 clazz.kotlin,
                 qualifier,
-                scope,
+                scope ?: koin.defaultScope,
                 parameters
         )
     }

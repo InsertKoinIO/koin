@@ -48,4 +48,4 @@ inline fun <reified T> KoinTest.inject(
         qualifier: Qualifier? = null,
         scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getKoin().get<T>(qualifier, scope ?: getKoin().defaultScope, parameters) }
+): Lazy<T> = lazy { get<T>(qualifier, scope ?: getKoin().defaultScope, parameters) }
