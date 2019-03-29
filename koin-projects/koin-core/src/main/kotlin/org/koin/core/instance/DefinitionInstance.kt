@@ -51,12 +51,12 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
         }
         try {
             val parameters: DefinitionParameters = context.parameters
-            val result = beanDefinition.definition(context.scope, parameters)
+            val result = beanDefinition.definition(context.scope ?: error("Can't execute definition instance while this context is not registered against any Koin instance"), parameters)
             return result as T
         } catch (e: Exception) {
             val stack =
-                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                    .joinToString(ERROR_SEPARATOR)
+                    e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                            .joinToString(ERROR_SEPARATOR)
             logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
@@ -87,9 +87,9 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
  * Help support DefinitionContext & DefinitionParameters when resolving definition function
  */
 class InstanceContext(
-    val koin: Koin? = null,
-    val scope: Scope = Scope.GLOBAL,
-    private val _parameters: ParametersDefinition? = null
+        val koin: Koin? = null,
+        val scope: Scope? = koin?.defaultScope,
+        private val _parameters: ParametersDefinition? = null
 ) {
     val parameters: DefinitionParameters = _parameters?.invoke() ?: emptyParametersHolder()
 }

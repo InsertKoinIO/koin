@@ -44,8 +44,8 @@ class ScopeRegistry {
     }
 
     fun loadDefaultScopes(koin: Koin) {
-        Scope.GLOBAL.register(koin)
-        saveInstance(Scope.GLOBAL)
+        koin.defaultScope.register(koin)
+        saveInstance(koin.defaultScope)
     }
 
     private fun declareScopes(module: Module) {

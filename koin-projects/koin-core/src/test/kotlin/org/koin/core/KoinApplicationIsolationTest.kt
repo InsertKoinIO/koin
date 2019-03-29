@@ -121,18 +121,12 @@ class KoinApplicationIsolationTest {
         }
 
 
-        koinA.koin.get<ModelA>().let {
-            assertNotNull(it)
-        }
-
-        koinA.koin.get<ModelB>().let {
-            assertNotNull(it)
-        }
+        koinA.koin.get<ModelA>()
+        koinA.koin.get<ModelB>()
+        koinB.koin.get<ModelC>()
     }
 
     class ModelA
-
-    class ModelB(a: ModelA)
-
+    class ModelB(val a: ModelA)
     class ModelC
 }

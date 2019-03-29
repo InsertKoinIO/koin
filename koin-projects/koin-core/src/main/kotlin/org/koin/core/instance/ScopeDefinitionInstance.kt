@@ -33,10 +33,10 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
-    override fun isCreated(context: InstanceContext): Boolean = context.scope.let { values[context.scope.id] != null }
+    override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null } ?: false
 
     override fun release(context: InstanceContext) {
-        val scope = context.scope
+        val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("releasing '$scope' ~ $beanDefinition ")
         }
@@ -46,10 +46,14 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
-        if (context.scope == Scope.GLOBAL) {
+        if (context.koin == null){
+            error("ScopeDefinitionInstance has no registered Koin instance")
+        }
+
+        if (context.scope == context.koin.defaultScope) {
             throw ScopeNotCreatedException("No scope instance created to resolve $beanDefinition")
         }
-        val scope = context.scope
+        val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
         checkScopeResolution(beanDefinition, scope)
         val internalId = scope.id
         var current = values[internalId]

@@ -42,6 +42,7 @@ class Koin {
     val beanRegistry = BeanRegistry()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
+    val defaultScope = Scope("-DefaultScope-")
 
     /**
      * Lazy inject a Koin instance
@@ -52,10 +53,10 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> inject(
             qualifier: Qualifier? = null,
-            scope: Scope = Scope.GLOBAL,
+            scope: Scope? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, scope, parameters) }
+            lazy { get<T>(qualifier, scope ?: defaultScope, parameters) }
 
     /**
      * Get a Koin instance
@@ -66,10 +67,10 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
-            scope: Scope = Scope.GLOBAL,
+            scope: Scope? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
-        return get(T::class, qualifier, scope, parameters)
+        return get(T::class, qualifier, scope ?: defaultScope, parameters)
     }
 
     /**
@@ -82,7 +83,7 @@ class Koin {
     fun <T> get(
             clazz: KClass<*>,
             qualifier: Qualifier?,
-            scope: Scope = Scope.GLOBAL,
+            scope: Scope = defaultScope,
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (logger.isAt(Level.DEBUG)) {
@@ -121,7 +122,7 @@ class Koin {
         val definitions = beanRegistry.findAllCreatedAtStartDefinition()
         if (definitions.isNotEmpty()) {
             definitions.forEach {
-                it.resolveInstance(InstanceContext(koin = this, scope = Scope.GLOBAL))
+                it.resolveInstance(InstanceContext(koin = this, scope = defaultScope))
             }
         }
     }

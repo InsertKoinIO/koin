@@ -35,7 +35,7 @@ interface KoinComponent {
     /**
      * THe associated scope
      */
-    fun currentScope(): Scope = Scope.GLOBAL
+    fun currentScope(): Scope = getKoin().defaultScope
 }
 
 /**
@@ -46,7 +46,7 @@ interface KoinComponent {
  */
 inline fun <reified T> KoinComponent.get(
         qualifier: Qualifier? = null,
-        scope: Scope = currentScope(),
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): T =
         getKoin().get(qualifier, scope, parameters)
@@ -59,7 +59,7 @@ inline fun <reified T> KoinComponent.get(
  */
 inline fun <reified T> KoinComponent.inject(
         qualifier: Qualifier? = null,
-        scope: Scope = currentScope(),
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
         getKoin().inject(qualifier, scope, parameters)

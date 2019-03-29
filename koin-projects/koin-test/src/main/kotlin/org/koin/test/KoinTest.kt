@@ -15,7 +15,7 @@
  */
 package org.koin.test
 
-import org.koin.core.context.GlobalContext
+import org.koin.core.KoinComponent
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -29,25 +29,23 @@ import org.koin.core.scope.Scope
 /**
  * Koin Test Component
  */
-interface KoinTest {
-    fun getKoin() = GlobalContext.get().koin
-}
+interface KoinTest : KoinComponent
 
 /**
  * Get an instance from Koin
  */
 inline fun <reified T> KoinTest.get(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, scope, parameters)
+        getKoin().get(qualifier, scope ?: getKoin().defaultScope, parameters)
 
 /**
  * Lazy inject an instance from Koin
  */
 inline fun <reified T> KoinTest.inject(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getKoin().get<T>(qualifier, scope, parameters) }
+): Lazy<T> = lazy { getKoin().get<T>(qualifier, scope ?: getKoin().defaultScope, parameters) }

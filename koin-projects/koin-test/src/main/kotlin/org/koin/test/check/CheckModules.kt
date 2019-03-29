@@ -18,7 +18,6 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.parameter.parametersOf
-import org.koin.core.scope.Scope
 import org.koin.core.scope.getScopeName
 
 /**
@@ -40,7 +39,7 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
         val scope = if (it.isScoped()) createScope(it.getScopeName().toString(), it.getScopeName()) else null
         val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
                 ?: parametersOf()
-        get<Any>(it.primaryType, it.qualifier, scope ?: Scope.GLOBAL) { parameters }
+        get<Any>(it.primaryType, it.qualifier, scope ?: defaultScope) { parameters }
         scope?.close()
     }
     close()

@@ -116,11 +116,6 @@ data class Scope(
         val scopeDef = set?.let { ",set:'${it.qualifier}'" } ?: ""
         return "Scope[id:'$id'$scopeDef]"
     }
-
-    companion object {
-        @JvmStatic
-        val GLOBAL = Scope("-GLOBAL-")
-    }
 }
 
 typealias ScopeID = String
