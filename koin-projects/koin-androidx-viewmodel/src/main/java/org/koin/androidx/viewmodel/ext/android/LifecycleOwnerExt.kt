@@ -37,7 +37,7 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel<T>(qualifier, scope, parameters) }
 
@@ -56,17 +56,20 @@ fun LifecycleOwner.getKoin() = when (this) {
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-): T = getKoin().getViewModel(
-        ViewModelParameters(
-                T::class,
-                this@getViewModel,
-                scope,
-                qualifier,
-                parameters = parameters
-        )
-)
+): T {
+    val koin = getKoin()
+    return koin.getViewModel(
+            ViewModelParameters(
+                    T::class,
+                    this@getViewModel,
+                    scope ?: koin.defaultScope,
+                    qualifier,
+                    parameters = parameters
+            )
+    )
+}
 
 
 /**
@@ -80,16 +83,19 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 fun <T : ViewModel> LifecycleOwner.getViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         parameters: ParametersDefinition? = null
-): T = getKoin().getViewModel(
-        ViewModelParameters(
-                clazz,
-                this@getViewModel,
-                scope,
-                qualifier,
-                parameters = parameters
-        )
-)
+): T {
+    val koin = getKoin()
+    return koin.getViewModel(
+            ViewModelParameters(
+                    clazz,
+                    this@getViewModel,
+                    scope ?: koin.defaultScope,
+                    qualifier,
+                    parameters = parameters
+            )
+    )
+}
 
 

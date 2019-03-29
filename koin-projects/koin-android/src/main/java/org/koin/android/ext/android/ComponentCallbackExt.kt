@@ -2,6 +2,7 @@ package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
 import org.koin.core.KoinComponent
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -12,7 +13,7 @@ import org.koin.core.scope.Scope
  */
 fun ComponentCallbacks.getKoin() = when (this) {
     is KoinComponent -> this.getKoin()
-    else -> org.koin.core.context.GlobalContext.get().koin
+    else -> GlobalContext.get().koin
 }
 
 /**
@@ -23,7 +24,7 @@ fun ComponentCallbacks.getKoin() = when (this) {
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ) = lazy { get<T>(qualifier, scope, parameters) }
 
@@ -35,6 +36,6 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
         qualifier: Qualifier? = null,
-        scope: Scope = Scope.GLOBAL,
+        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): T = getKoin().get(qualifier, scope, parameters)
