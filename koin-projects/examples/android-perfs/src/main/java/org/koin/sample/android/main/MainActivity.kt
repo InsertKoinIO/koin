@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.koin.androidLogger
 import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        runBlocking(Dispatchers.IO) {
+        runBlocking(Dispatchers.Default) {
 
             val launchs = (1..10).map { i ->
                 GlobalScope.async {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     fun runPerf(count: Int): Pair<Double, Double> {
         val (app, duration) = measureDuration {
             koinApplication {
-                modules(perfModule400)
+                modules(perfModule400())
             }
         }
         println("[$count] started in $duration ms")
