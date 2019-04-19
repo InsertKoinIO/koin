@@ -56,7 +56,7 @@ startKoin {
 
 === Module DSL
 
-A Koin module gather definitions that you will inject/combine for your application. To create a new module, just use the foolowing function:
+A Koin module gather definitions that you will inject/combine for your application. To create a new module, just use the following function:
 
 * `module { // module content }` - create a Koin Module
 
