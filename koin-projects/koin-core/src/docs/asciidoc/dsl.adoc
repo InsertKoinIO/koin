@@ -33,7 +33,7 @@ As you can see above, we can describe a Koin container configuration in 2 ways: 
 - `koinApplication` describe a Koin container instance
 - `startKoin` describe a Koin container instance and register it in Koin `GlobalContext`
 
-By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default we use the one from `GlovalContext`.
+By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default we use the one from `GlobalContext`.
 
 Check chapters about Custom Koin instance for more information.
 
