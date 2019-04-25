@@ -19,9 +19,13 @@ class PerfsTest {
         app.close()
     }
 
-    @SuppressWarnings("unused")
     @Test
     fun `perfModule400 module perfs`() {
+        runPerfs()
+        runPerfs()
+    }
+
+    private fun runPerfs() {
         val (app, duration) = measureDuration {
             koinApplication {
                 printLogger()
