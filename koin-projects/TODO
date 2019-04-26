@@ -36,17 +36,17 @@ https://github.com/InsertKoinIO/koin/issues/348
 ? checkModules - create definition sandbox / fix internals
 - wont fix https://github.com/InsertKoinIO/koin/issues/304
 
--- TODO --
-
 get/inject or null
 
-Lock Scope DSL
+-- TODO --
+
+Lock Scope DSL -> no scoped outside scope
 https://github.com/InsertKoinIO/koin/issues/414
 
 Scope Id - Android
 https://github.com/InsertKoinIO/koin/issues/423
 
-Website - Doc migration -> Scope
+Website - Doc migration -> Scope / inner Module
 
 Clear board
 https://github.com/InsertKoinIO/koin/milestone/13
