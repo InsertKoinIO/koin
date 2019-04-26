@@ -45,7 +45,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
         scope: Scope? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getSharedViewModel<T>(qualifier, scope, from, parameters) }
+): Lazy<T> = lifecycleAwareLazy(this) { getSharedViewModel<T>(qualifier, scope, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity

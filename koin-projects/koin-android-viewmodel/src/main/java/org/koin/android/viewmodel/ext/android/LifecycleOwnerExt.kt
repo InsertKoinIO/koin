@@ -46,7 +46,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
         qualifier: Qualifier? = null,
         scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getViewModel<T>(qualifier, scope, parameters) }
+): Lazy<T> = lifecycleAwareLazy(this) { getViewModel<T>(qualifier, scope, parameters) }
 
 /**
  * Get a viewModel instance
