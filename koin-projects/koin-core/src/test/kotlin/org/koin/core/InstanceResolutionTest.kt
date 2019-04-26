@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -24,6 +25,38 @@ class InstanceResolutionTest {
         val a2: Simple.ComponentA = koin.get()
 
         assertEquals(a, a2)
+    }
+
+    @Test
+    fun `cannot resolve a single`() {
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                    })
+        }
+
+        val koin = app.koin
+        val a: Simple.ComponentA? = koin.getOrNull()
+
+        assert(a == null)
+    }
+
+    @Test
+    fun `cannot inject a single`() {
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                    })
+        }
+
+        val koin = app.koin
+        val a: Lazy<Simple.ComponentA?> = koin.injectOrNull()
+
+        assert(a.value == null)
     }
 
     @Test

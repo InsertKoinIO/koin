@@ -34,6 +34,7 @@ _Core_
 * `[ADDED]` - getProperty with default value
 * `[UPDATED]` - Kotlin 1.3.21
 * `[ADDED]` - Qualifiers with `named()` function to replace old string names. Allow to use Types
+* `[ADDED]` - `getOrNull()` and `injectOrNull()` to safely resolve potential components and get null of not present
 
 _Test_
 * `[UPDATED]` - rework testing API, codebase detached from internal core tests

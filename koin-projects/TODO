@@ -38,20 +38,18 @@ https://github.com/InsertKoinIO/koin/issues/348
 
 -- TODO --
 
+get/inject or null
+
 Lock Scope DSL
 https://github.com/InsertKoinIO/koin/issues/414
 
 Scope Id - Android
 https://github.com/InsertKoinIO/koin/issues/423
 
-CheckModules / add back sandbox method
-
 Website - Doc migration -> Scope
 
 Clear board
 https://github.com/InsertKoinIO/koin/milestone/13
-
-
 
 -- Doc --
 

@@ -59,6 +59,20 @@ class Koin {
             lazy { get<T>(qualifier, scope ?: defaultScope, parameters) }
 
     /**
+     * Lazy inject a Koin instance if available
+     * @param qualifier
+     * @param scope
+     * @param parameters
+     */
+    @JvmOverloads
+    inline fun <reified T> injectOrNull(
+            qualifier: Qualifier? = null,
+            scope: Scope? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): Lazy<T?> =
+            lazy { getOrNull<T>(qualifier, scope ?: defaultScope, parameters) }
+
+    /**
      * Get a Koin instance
      * @param qualifier
      * @param scope
@@ -71,6 +85,26 @@ class Koin {
             noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, scope ?: defaultScope, parameters)
+    }
+
+    /**
+     * Get a Koin instance if available
+     * @param qualifier
+     * @param scope
+     * @param parameters
+     */
+    @JvmOverloads
+    inline fun <reified T> getOrNull(
+            qualifier: Qualifier? = null,
+            scope: Scope? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): T? {
+        return try {
+            get(T::class, qualifier, scope ?: defaultScope, parameters)
+        } catch (e: Exception) {
+            logger.error("Can't get instance for ${T::class.getFullName()}")
+            null
+        }
     }
 
     /**
