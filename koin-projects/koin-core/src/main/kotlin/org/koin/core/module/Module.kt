@@ -83,18 +83,21 @@ class Module(
     }
 
     /**
-     * Declare a ScopeInstance definition
+     * Declare a scoped definition with a given scope name
+     * @param scopeName
      * @param qualifier
      * @param override
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
+            scopeName: Qualifier,
             qualifier: Qualifier? = null,
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createScoped(qualifier, definition = definition)
-        declareDefinition(beanDefinition, Options(override = override))
+        val scope = ScopeSet(scopeName, this)
+        val beanDefinition = scope.scoped(qualifier, override, definition)
+        declareScope(scope)
         return beanDefinition
     }
 
