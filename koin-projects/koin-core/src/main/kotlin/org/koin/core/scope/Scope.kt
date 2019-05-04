@@ -103,13 +103,13 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
+        // call on close from callbacks
+        callbacks.forEach { it.onScopeClose(this) }
+        callbacks.clear()
+
         set?.release(this)
         _koin?.deleteScope(this.id)
         _koin = null
-
-        // call on close from callbacks
-        callbacks.forEach { it.onScopeClose() }
-        callbacks.clear()
     }
 
     override fun toString(): String {
