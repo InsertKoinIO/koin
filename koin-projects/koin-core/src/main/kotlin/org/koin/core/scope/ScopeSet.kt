@@ -45,6 +45,25 @@ data class ScopeSet(val qualifier: Qualifier, val module: Module) {
         return beanDefinition
     }
 
+    @Deprecated("Single definition can't be used in a scope", level = DeprecationLevel.ERROR)
+    inline fun <reified T> single(
+            qualifier: Qualifier? = null,
+            createdAtStart: Boolean = false,
+            override: Boolean = false,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        error("Single definition can't be used in a scope")
+    }
+
+    @Deprecated("Factory definition can't be used in a scope", level = DeprecationLevel.ERROR)
+    inline fun <reified T> factory(
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        error("Factory definition can't be used in a scope")
+    }
+
     internal fun release(instance: Scope) {
         definitions
                 .filter { it.instance is ScopeDefinitionInstance<*> }

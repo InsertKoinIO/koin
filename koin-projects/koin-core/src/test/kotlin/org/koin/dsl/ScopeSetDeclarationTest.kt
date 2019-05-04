@@ -29,6 +29,23 @@ class ScopeSetDeclarationTest {
         assertTrue(def.getScopeName() == scopeKey)
     }
 
+//    @Test
+//    fun `can't declare other than scoped in scope`() {
+//        val app = koinApplication {
+//            modules(
+//                    module {
+//                        scope(named("")) {
+//                            single { }
+//                            factory { }
+//                        }
+//                    }
+//            )
+//        }
+//        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+//        assertTrue(def!!.instance is ScopeDefinitionInstance)
+//        assertTrue(def.getScopeName() == scopeKey)
+//    }
+
     @Test
     fun `can declare a scope definition`() {
         val app = koinApplication {
