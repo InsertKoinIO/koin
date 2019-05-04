@@ -2,6 +2,7 @@ package org.koin.dsl
 
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
@@ -19,6 +20,27 @@ class ScopeSetDeclarationTest {
             modules(
                     module {
                         scope(scopeKey) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }
+        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+        assertTrue(def!!.instance is ScopeDefinitionInstance)
+        assertTrue(def.getScopeName() == scopeKey)
+    }
+
+
+    @Test
+    @Ignore
+    fun `can declare 2 scoped definitions from same type without naming`() {
+        val app = koinApplication {
+            modules(
+                    module {
+                        scope(named("B")) {
+                            scoped { Simple.ComponentA() }
+                        }
+                        scope(named("A")) {
                             scoped { Simple.ComponentA() }
                         }
                     }

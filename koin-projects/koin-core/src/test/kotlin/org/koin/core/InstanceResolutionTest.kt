@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -25,6 +26,25 @@ class InstanceResolutionTest {
         val a2: Simple.ComponentA = koin.get()
 
         assertEquals(a, a2)
+    }
+
+    @Test
+    fun `can resolve all ComponentInterface1`() {
+
+        val koin = koinApplication {
+            modules(
+                    module {
+                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                    })
+        }.koin
+
+        val a1: Simple.Component1 = koin.get()
+        val a2: Simple.Component2 = koin.get()
+
+        val instances = koin.getAll<Simple.ComponentInterface1>()
+
+        assertTrue(instances.size == 2 && instances.contains(a1) && instances.contains(a2))
     }
 
     @Test

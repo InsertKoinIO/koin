@@ -17,6 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
@@ -93,9 +94,6 @@ class BeanRegistry {
 
     private fun saveDefinitionForTypes(definition: BeanDefinition<*>) {
         saveDefinitionForType(definition.primaryType, definition)
-        definition.secondaryTypes.forEach {
-            saveDefinitionForType(it, definition)
-        }
     }
 
     private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
@@ -170,5 +168,20 @@ class BeanRegistry {
         definitionsClass.clear()
         definitionsToCreate.clear()
     }
+
+    /**
+     * Find all definition compatible with given type
+     */
+    fun getDefinitionsForClass(clazz: KClass<*>) = getAllDefinitions()
+            .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.isKind(Kind.Scope) }
+
+
+    /**
+     * Find first definition with primary/secondary types
+     */
+    fun getBoundDefinition(primaryType: KClass<*>, secondaryType: KClass<*>): BeanDefinition<*> =
+            getAllDefinitions().first { it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType) && !it.isKind(Kind.Scope)}
+
+
 }
 

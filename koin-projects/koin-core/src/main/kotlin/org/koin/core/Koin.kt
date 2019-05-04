@@ -49,6 +49,8 @@ class Koin {
      * @param qualifier
      * @param scope
      * @param parameters
+     *
+     * @return Lazy instance of type T
      */
     @JvmOverloads
     inline fun <reified T> inject(
@@ -63,6 +65,8 @@ class Koin {
      * @param qualifier
      * @param scope
      * @param parameters
+     *
+     * @return Lazy instance of type T or null
      */
     @JvmOverloads
     inline fun <reified T> injectOrNull(
@@ -92,6 +96,8 @@ class Koin {
      * @param qualifier
      * @param scope
      * @param parameters
+     *
+     * @return instance of type T or null
      */
     @JvmOverloads
     inline fun <reified T> getOrNull(
@@ -113,6 +119,8 @@ class Koin {
      * @param qualifier
      * @param scope
      * @param parameters
+     *
+     * @return instance of type T
      */
     fun <T> get(
             clazz: KClass<*>,
@@ -160,6 +168,31 @@ class Koin {
             }
         }
     }
+
+    /**
+     * Get a all instance for given inferred class
+     *
+     * @return list of instances of type T
+     */
+    inline fun <reified T> getAll(): List<T> = getAll(T::class)
+
+    /**
+     * Get a all instance for given class
+     * @param clazz T
+     *
+     * @return list of instances of type T
+     */
+    fun <T> getAll(clazz: KClass<*>): List<T> = beanRegistry.getDefinitionsForClass(clazz)
+            .map { it.instance!!.get<T>((InstanceContext(this, defaultScope))) }
+
+    /**
+     * Get instance of primary type P and secondary type S
+     * (not for scoped instances)
+     *
+     * @return instance of type S
+     */
+    inline fun <reified P, reified S> bind(): S = beanRegistry.getBoundDefinition(P::class, S::class)
+            .instance!!.get((InstanceContext(this, defaultScope)))
 
     /**
      * Create a Scope instance

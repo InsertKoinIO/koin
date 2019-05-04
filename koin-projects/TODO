@@ -44,6 +44,9 @@ https://github.com/InsertKoinIO/koin/issues/414
 Scope Id - Android
 https://github.com/InsertKoinIO/koin/issues/423
 
+Additional type binding
+- bind/binds operator -> koin.bind<P,S> / koin.getAll<S>()
+
 -- TODO --
 
 Allow 2 Scope Def same type?
