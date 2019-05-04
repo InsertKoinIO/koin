@@ -166,8 +166,7 @@ class Koin {
      * @param scopeId
      * @param scopeDefinitionName
      */
-    @JvmOverloads
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$qualifier")
         }
@@ -181,8 +180,7 @@ class Koin {
      * @param scopeId
      * @param qualifier
      */
-    @JvmOverloads
-    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
         return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }
 

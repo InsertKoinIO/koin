@@ -10,6 +10,7 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import java.lang.Exception
 
 class ClosedScopeAPI {
 
@@ -108,7 +109,7 @@ class ClosedScopeAPI {
         try {
             scope2.get<Simple.ComponentB>()
             fail()
-        } catch (e: BadScopeInstanceException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

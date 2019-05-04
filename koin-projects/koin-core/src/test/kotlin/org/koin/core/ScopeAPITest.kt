@@ -12,12 +12,21 @@ import org.koin.dsl.module
 
 class ScopeAPITest {
 
+    val scopeKey = named("KEY")
+    val koin = koinApplication {
+        modules(
+                module {
+                    scope(scopeKey) {
+
+                    }
+                }
+        )
+    }.koin
+
     @Test
     fun `create a scope instance`() {
-        val koin = koinApplication { }.koin
-
         val scopeId = "myScope"
-        val scope1 = koin.createScope(scopeId)
+        val scope1 = koin.createScope(scopeId, scopeKey)
         val scope2 = koin.getScope(scopeId)
 
         assertEquals(scope1, scope2)
@@ -25,8 +34,6 @@ class ScopeAPITest {
 
     @Test
     fun `can't find a non created scope instance`() {
-        val koin = koinApplication { }.koin
-
         val scopeId = "myScope"
         try {
             koin.getScope(scopeId)
@@ -38,17 +45,14 @@ class ScopeAPITest {
 
     @Test
     fun `create different scopes`() {
-        val koin = koinApplication { }.koin
-
-        val scope1 = koin.createScope("myScope1")
-        val scope2 = koin.createScope("myScope2")
+        val scope1 = koin.createScope("myScope1", scopeKey)
+        val scope2 = koin.createScope("myScope2", scopeKey)
 
         assertNotEquals(scope1, scope2)
     }
 
     @Test
     fun `can't create scope instance with unknown scope def`() {
-        val koin = koinApplication { }.koin
 
         try {
             koin.createScope("myScope", named("a_scope"))
@@ -60,25 +64,15 @@ class ScopeAPITest {
 
     @Test
     fun `create scope instance with scope def`() {
-        val scopeName = named("A_SCOPE")
-        val koin = koinApplication {
-            modules(
-                    module {
-                        scope(scopeName) { }
-                    }
-            )
-        }.koin
 
-        assertNotNull(koin.createScope("myScope", scopeName))
+        assertNotNull(koin.createScope("myScope", scopeKey))
     }
 
     @Test
     fun `can't create a new scope if not closed`() {
-        val koin = koinApplication { }.koin
-
-        koin.createScope("myScope1")
+        koin.createScope("myScope1", scopeKey)
         try {
-            koin.createScope("myScope1")
+            koin.createScope("myScope1", scopeKey)
             fail()
         } catch (e: ScopeAlreadyCreatedException) {
             e.printStackTrace()
@@ -87,9 +81,8 @@ class ScopeAPITest {
 
     @Test
     fun `can't get a closed scope`() {
-        val koin = koinApplication { }.koin
 
-        val scope = koin.createScope("myScope1")
+        val scope = koin.createScope("myScope1", scopeKey)
         scope.close()
         try {
             koin.getScope("myScope1")
@@ -101,19 +94,15 @@ class ScopeAPITest {
 
     @Test
     fun `find a scope by id`() {
-        val koin = koinApplication { }.koin
-
         val scopeId = "myScope"
-        val scope1 = koin.createScope(scopeId)
+        val scope1 = koin.createScope(scopeId, scopeKey)
         assertEquals(scope1, koin.getScope(scope1.id))
     }
 
     @Test
     fun `scope callback`() {
-        val koin = koinApplication { }.koin
-
         val scopeId = "myScope"
-        val scope1 = koin.createScope(scopeId)
+        val scope1 = koin.createScope(scopeId, scopeKey)
         var closed = false
         scope1.registerCallback(object : ScopeCallback {
             override fun onScopeClose(scope: Scope) {

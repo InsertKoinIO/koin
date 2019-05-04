@@ -11,20 +11,22 @@ import org.koin.core.scope.getScopeName
 
 class ScopeSetDeclarationTest {
 
-    val key = named("KEY")
+    val scopeKey = named("KEY")
 
     @Test
     fun `can declare a scoped definition`() {
         val app = koinApplication {
             modules(
                     module {
-                        scoped { Simple.ComponentA() }
+                        scope(scopeKey) {
+                            scoped { Simple.ComponentA() }
+                        }
                     }
             )
         }
         val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
         assertTrue(def!!.instance is ScopeDefinitionInstance)
-        assertTrue(def.getScopeName() == null)
+        assertTrue(def.getScopeName() == scopeKey)
     }
 
     @Test
@@ -32,13 +34,13 @@ class ScopeSetDeclarationTest {
         val app = koinApplication {
             modules(
                     module {
-                        scope(key) {
+                        scope(scopeKey) {
                         }
                     }
             )
         }
-        val def = app.koin.scopeRegistry.getScopeDefinition(key.toString())!!
-        assertTrue(def.qualifier == key)
+        val def = app.koin.scopeRegistry.getScopeDefinition(scopeKey.toString())!!
+        assertTrue(def.qualifier == scopeKey)
     }
 
     @Test
@@ -46,7 +48,7 @@ class ScopeSetDeclarationTest {
         val app = koinApplication {
             modules(
                     module {
-                        scope(key) {
+                        scope(scopeKey) {
                             scoped { Simple.ComponentA() }
                         }
                     }
@@ -54,7 +56,7 @@ class ScopeSetDeclarationTest {
         }
         val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!
         assertTrue(def.instance is ScopeDefinitionInstance)
-        assertTrue(def.getScopeName() == key)
+        assertTrue(def.getScopeName() == scopeKey)
     }
 
     @Test
@@ -63,8 +65,10 @@ class ScopeSetDeclarationTest {
             koinApplication {
                 modules(
                         module {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentA() }
+                            scope(scopeKey) {
+                                scoped { Simple.ComponentA() }
+                                scoped { Simple.ComponentA() }
+                            }
                         }
                 )
             }
