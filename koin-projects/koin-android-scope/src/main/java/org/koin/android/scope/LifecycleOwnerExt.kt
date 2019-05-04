@@ -25,6 +25,8 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
+import org.koin.ext.getFullName
+import java.lang.System.identityHashCode
 
 /**
  * Provide an scope for given LifecycleOwner component
@@ -39,7 +41,8 @@ private fun LifecycleOwner.getKoin() = when (this) {
 }
 
 private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
-private fun LifecycleOwner.getScopeId() = this.toString()
+
+private fun LifecycleOwner.getScopeId() = this::class.getFullName() + "@" + identityHashCode(this)
 
 private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
     val scopeId = getScopeId()

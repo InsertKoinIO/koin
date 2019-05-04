@@ -41,13 +41,12 @@ Get/inject or null
 Lock Scope DSL -> no scoped outside scope
 https://github.com/InsertKoinIO/koin/issues/414
 
--- TODO --
-
 Scope Id - Android
 https://github.com/InsertKoinIO/koin/issues/423
 
-Allow 2 Scope Def same type?
+-- TODO --
 
+Allow 2 Scope Def same type?
 
 Website - Doc migration -> Scope / inner Module
 
@@ -61,8 +60,8 @@ x Koin samples
 x Changelog update
 * Website
  -> Test links front page & all
-* Ref documentation
 * new web logo
+* Ref documentation
 * blog post on medium
 
 
