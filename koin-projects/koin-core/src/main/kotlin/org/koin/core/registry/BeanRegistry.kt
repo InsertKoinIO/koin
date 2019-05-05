@@ -47,9 +47,6 @@ class BeanRegistry {
         modules.forEach { module: Module ->
             saveDefinitions(module)
         }
-        if (logger.isAt(Level.INFO)) {
-            logger.info("registered ${definitions.size} definitions")
-        }
     }
 
     private fun saveDefinitions(module: Module) {
