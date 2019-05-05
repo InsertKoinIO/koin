@@ -1,7 +1,6 @@
 package org.koin.dsl
 
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
@@ -52,6 +51,10 @@ class ScopeSetDeclarationTest {
 
         val defB = koin.scopeRegistry.getScopeDefinition("B")?.definitions?.first { it.primaryType == Simple.ComponentA::class }
         assertTrue(defB!!.scopeName == StringQualifier("B"))
+
+        val scopeA = koin.createScope("A", named("A")).get<Simple.ComponentA>()
+        val scopeB = koin.createScope("B", named("B")).get<Simple.ComponentA>()
+        assertNotEquals(scopeA, scopeB)
     }
 
 //    @Test
