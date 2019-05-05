@@ -18,7 +18,7 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
     }
 
     val DataSourceModule = module {
-        single<DebugDatasource>() bind Datasource::class
+        singleBy<Datasource, DebugDatasource>()
     }
 
     @Test

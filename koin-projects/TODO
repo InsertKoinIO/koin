@@ -50,6 +50,8 @@ Additional type binding
 -- TODO --
 
 Allow 2 Scope Def same type?
+Scope API -> scoped defs only in Scope Definition
+-> check to add bind operator to bind<P,S>
 
 Website - Doc migration -> Scope / inner Module
 
