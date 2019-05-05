@@ -63,7 +63,7 @@ public class UnitJavaTest {
 
         Scope session = getKoin().createScope("mySession", named("Session"));
 
-        assertNotNull(get(ComponentD.class, null, session));
+//        assertNotNull(session.get(ComponentD.class, null));
 
         session.close();
         GlobalContext.stop();

@@ -41,7 +41,7 @@ private fun <T : ViewModel> Koin.createViewModelProvider(
             vmStore,
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return get(parameters.clazz, parameters.qualifier, parameters.scope, parameters.parameters)
+                    return get(parameters.clazz, parameters.qualifier, parameters.parameters)
                 }
             })
 }

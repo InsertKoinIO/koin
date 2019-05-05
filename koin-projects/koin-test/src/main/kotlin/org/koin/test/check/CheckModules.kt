@@ -18,7 +18,6 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.parameter.parametersOf
-import org.koin.core.scope.getScopeName
 
 /**
  * Check all definition's dependencies - start all nodules and check ifdefinitions can run
@@ -37,13 +36,15 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     val allParameters = bindings.creators
     rootScope.beanRegistry.getAllDefinitions().forEach {
         val scope = if (it.isScoped()) {
-            val scopeName = it.getScopeName() ?: error("Can't get scope for '$it'")
+            val scopeName = it.scopeName ?: error("Can't get scope for '$it'")
             createScope(scopeName.toString(), scopeName)
         } else null
         val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
                 ?: parametersOf()
-        get<Any>(it.primaryType, it.qualifier, scope ?: rootScope) { parameters }
+        get<Any>(it.primaryType, it.qualifier) { parameters }
         scope?.close()
     }
     close()
 }
+
+//TODO Check ScopeSet Defs

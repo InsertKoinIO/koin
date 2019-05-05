@@ -28,7 +28,7 @@ class DeclareMockTests : KoinTest {
         }.koin
 
         val definition: BeanDefinition<Simple.ComponentA> =
-                koin.beanRegistry.findDefinition(
+                koin.rootScope.beanRegistry.findDefinition(
                         null, Simple.ComponentA::class
                 ) as BeanDefinition<Simple.ComponentA>
 

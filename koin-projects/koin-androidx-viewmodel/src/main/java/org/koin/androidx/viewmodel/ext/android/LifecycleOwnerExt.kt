@@ -25,7 +25,6 @@ import org.koin.core.KoinComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -37,9 +36,8 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getViewModel<T>(qualifier, scope, parameters) }
+): Lazy<T> = lazy { getViewModel<T>(qualifier, parameters) }
 
 
 fun LifecycleOwner.getKoin() = when (this) {
@@ -56,7 +54,6 @@ fun LifecycleOwner.getKoin() = when (this) {
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): T {
     val koin = getKoin()
@@ -64,7 +61,6 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
             ViewModelParameters(
                     T::class,
                     this@getViewModel,
-                    scope ?: koin.rootScope,
                     qualifier,
                     parameters = parameters
             )
@@ -83,7 +79,6 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
 fun <T : ViewModel> LifecycleOwner.getViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         parameters: ParametersDefinition? = null
 ): T {
     val koin = getKoin()
@@ -91,7 +86,6 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
             ViewModelParameters(
                     clazz,
                     this@getViewModel,
-                    scope ?: koin.rootScope,
                     qualifier,
                     parameters = parameters
             )
