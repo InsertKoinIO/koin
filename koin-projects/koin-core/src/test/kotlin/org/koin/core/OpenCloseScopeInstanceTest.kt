@@ -6,6 +6,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.BadScopeInstanceException
+import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -90,7 +91,7 @@ class OpenCloseScopeInstanceTest {
         try {
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: BadScopeInstanceException) {
+        } catch (e: NoBeanDefFoundException) {
             e.printStackTrace()
         }
     }

@@ -1,7 +1,6 @@
 package org.koin.core.definition
 
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.setScopeName
 
 object DefinitionFactory {
 
@@ -18,7 +17,7 @@ object DefinitionFactory {
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = createDefinition(qualifier, definition, Kind.Scope)
-        scopeName?.let { beanDefinition.setScopeName(scopeName) }
+        beanDefinition.scopeName = scopeName
         return beanDefinition
     }
 

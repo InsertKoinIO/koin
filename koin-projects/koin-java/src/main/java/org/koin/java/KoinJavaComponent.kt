@@ -66,7 +66,7 @@ object KoinJavaComponent {
         return koin.get(
                 clazz.kotlin,
                 qualifier,
-                scope ?: koin.defaultScope,
+                scope ?: koin.rootScope,
                 parameters
         )
     }

@@ -76,6 +76,6 @@ internal fun <T : Any> Scope.getWithDefault(
         clazz: KClass<T>
 ): T {
     val koin = getKoin()
-    return koin.get(clazz, null, koin.defaultScope, null)
+    return koin.get(clazz, null, koin.rootScope, null)
             ?: error("Koin can't be null in scope context")
 }

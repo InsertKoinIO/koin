@@ -2,13 +2,13 @@ package org.koin.dsl
 
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
-import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.ScopeDefinitionInstance
+import org.koin.core.logger.Level
+import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
-import org.koin.core.scope.getScopeName
 
 class ScopeSetDeclarationTest {
 
@@ -16,7 +16,7 @@ class ScopeSetDeclarationTest {
 
     @Test
     fun `can declare a scoped definition`() {
-        val app = koinApplication {
+        val koin = koinApplication {
             modules(
                     module {
                         scope(scopeKey) {
@@ -24,17 +24,18 @@ class ScopeSetDeclarationTest {
                         }
                     }
             )
-        }
-        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
-        assertTrue(def!!.instance is ScopeDefinitionInstance)
-        assertTrue(def.getScopeName() == scopeKey)
+        }.koin
+        val def = koin.scopeRegistry.getScopeDefinition(scopeKey.toString())?.definitions?.first { it.primaryType == Simple.ComponentA::class }
+        assertTrue(def!!.scopeName == scopeKey)
+
+        val scope = koin.createScope("id", scopeKey)
+        assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
     }
 
 
     @Test
-    @Ignore
     fun `can declare 2 scoped definitions from same type without naming`() {
-        val app = koinApplication {
+        val koin = koinApplication {
             modules(
                     module {
                         scope(named("B")) {
@@ -45,10 +46,12 @@ class ScopeSetDeclarationTest {
                         }
                     }
             )
-        }
-        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
-        assertTrue(def!!.instance is ScopeDefinitionInstance)
-        assertTrue(def.getScopeName() == scopeKey)
+        }.koin
+        val defA = koin.scopeRegistry.getScopeDefinition("A")?.definitions?.first { it.primaryType == Simple.ComponentA::class }
+        assertTrue(defA!!.scopeName == StringQualifier("A"))
+
+        val defB = koin.scopeRegistry.getScopeDefinition("B")?.definitions?.first { it.primaryType == Simple.ComponentA::class }
+        assertTrue(defB!!.scopeName == StringQualifier("B"))
     }
 
 //    @Test
@@ -83,47 +86,13 @@ class ScopeSetDeclarationTest {
     }
 
     @Test
-    fun `can declare a scoped definition within scope`() {
-        val app = koinApplication {
-            modules(
-                    module {
-                        scope(scopeKey) {
-                            scoped { Simple.ComponentA() }
-                        }
-                    }
-            )
-        }
-        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!
-        assertTrue(def.instance is ScopeDefinitionInstance)
-        assertTrue(def.getScopeName() == scopeKey)
-    }
-
-    @Test
     fun `can't declare 2 scoped same definitions`() {
         try {
             koinApplication {
+                printLogger(Level.DEBUG)
                 modules(
                         module {
                             scope(scopeKey) {
-                                scoped { Simple.ComponentA() }
-                                scoped { Simple.ComponentA() }
-                            }
-                        }
-                )
-            }
-            fail()
-        } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
-        }
-    }
-
-    @Test
-    fun `can't declare 2 scoped same definitions with key`() {
-        try {
-            koinApplication {
-                modules(
-                        module {
-                            scope(named("scope_name")) {
                                 scoped { Simple.ComponentA() }
                                 scoped { Simple.ComponentA() }
                             }

@@ -44,8 +44,7 @@ class ScopeRegistry {
     }
 
     fun loadDefaultScopes(koin: Koin) {
-        koin.defaultScope.register(koin)
-        saveInstance(koin.defaultScope)
+        saveInstance(koin.rootScope)
     }
 
     private fun declareScopes(module: Module) {
@@ -70,13 +69,12 @@ class ScopeRegistry {
      * @param id - scope instance id
      * @param scopeName - scope qualifier
      */
-    fun createScopeInstance(id: ScopeID, scopeName: Qualifier? = null): Scope {
-        val definition: ScopeSet? = scopeName?.let {
-            definitions[scopeName.toString()]
-                    ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
-        }
-        val instance = Scope(id)
-        definition?.let { instance.set = it }
+    fun createScopeInstance(koin: Koin, id: ScopeID, scopeName: Qualifier): Scope {
+        val definition: ScopeSet = definitions[scopeName.toString()]
+                ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
+        val instance = Scope(id, _koin = koin)
+        instance.set = definition
+        instance.declareDefinitionsFromScopeSet()
         registerScopeInstance(instance)
         return instance
     }
@@ -106,8 +104,8 @@ class ScopeRegistry {
     }
 
     fun close() {
-        definitions.clear()
         instances.values.forEach { it.close() }
+        definitions.clear()
         instances.clear()
     }
 }

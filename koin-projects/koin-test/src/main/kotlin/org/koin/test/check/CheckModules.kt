@@ -35,14 +35,14 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
         bindings.parametersDefinition()
     }
     val allParameters = bindings.creators
-    beanRegistry.getAllDefinitions().forEach {
+    rootScope.beanRegistry.getAllDefinitions().forEach {
         val scope = if (it.isScoped()) {
             val scopeName = it.getScopeName() ?: error("Can't get scope for '$it'")
             createScope(scopeName.toString(), scopeName)
         } else null
         val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
                 ?: parametersOf()
-        get<Any>(it.primaryType, it.qualifier, scope ?: defaultScope) { parameters }
+        get<Any>(it.primaryType, it.qualifier, scope ?: rootScope) { parameters }
         scope?.close()
     }
     close()

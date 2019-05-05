@@ -176,12 +176,5 @@ class BeanRegistry {
             .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.isKind(Kind.Scope) }
 
 
-    /**
-     * Find first definition with primary/secondary types
-     */
-    fun getBoundDefinition(primaryType: KClass<*>, secondaryType: KClass<*>): BeanDefinition<*> =
-            getAllDefinitions().first { it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType) && !it.isKind(Kind.Scope)}
-
-
 }
 

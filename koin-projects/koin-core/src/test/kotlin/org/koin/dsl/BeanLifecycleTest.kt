@@ -53,6 +53,7 @@ class BeanLifecycleTest {
         }
 
         val koin = app.koin
+        koin.createScope("id", named("test"))
         koin.close()
         assertEquals("closing", result)
     }

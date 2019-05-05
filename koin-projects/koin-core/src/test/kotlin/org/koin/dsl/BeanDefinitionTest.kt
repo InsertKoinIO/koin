@@ -9,7 +9,6 @@ import org.koin.core.definition.Kind
 import org.koin.core.instance.InstanceContext
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.named
-import org.koin.core.scope.getScopeName
 import org.koin.test.getDefinition
 
 class BeanDefinitionTest {
@@ -30,7 +29,7 @@ class BeanDefinitionTest {
 
         val def1 = DefinitionFactory.createScoped(scopeName = scopeID, definition = { Simple.ComponentA() })
 
-        assertEquals(scopeID, def1.getScopeName())
+        assertEquals(scopeID, def1.scopeName)
         assertEquals(Kind.Scope, def1.kind)
     }
 
@@ -45,10 +44,10 @@ class BeanDefinitionTest {
     fun `definition kind`() {
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                    factory { Simple.ComponentB(get()) }
-                }
+                    module {
+                        single { Simple.ComponentA() }
+                        factory { Simple.ComponentB(get()) }
+                    }
             )
         }
 
@@ -64,10 +63,10 @@ class BeanDefinitionTest {
         val name = named("A")
         val app = koinApplication {
             modules(
-                module {
-                    single(name) { Simple.ComponentA() }
-                    factory { Simple.ComponentB(get()) }
-                }
+                    module {
+                        single(name) { Simple.ComponentA() }
+                        factory { Simple.ComponentB(get()) }
+                    }
             )
         }
 
@@ -82,17 +81,17 @@ class BeanDefinitionTest {
     fun `definition function`() {
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                }
+                    module {
+                        single { Simple.ComponentA() }
+                    }
             )
         }
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         val instance = defA.instance!!.get<Simple.ComponentA>(
-            InstanceContext(
-                koin = app.koin,
-                _parameters = { emptyParametersHolder() })
+                InstanceContext(
+                        koin = app.koin,
+                        _parameters = { emptyParametersHolder() })
         )
         assertEquals(instance, app.koin.get<Simple.ComponentA>())
     }

@@ -88,7 +88,7 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
  */
 class InstanceContext(
         val koin: Koin? = null,
-        val scope: Scope? = koin?.defaultScope,
+        val scope: Scope? = koin?.rootScope,
         private val _parameters: ParametersDefinition? = null
 ) {
     val parameters: DefinitionParameters = _parameters?.invoke() ?: emptyParametersHolder()

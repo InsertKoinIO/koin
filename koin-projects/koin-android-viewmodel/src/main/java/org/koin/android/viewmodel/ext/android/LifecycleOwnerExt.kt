@@ -64,7 +64,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
             ViewModelParameters(
                     T::class,
                     this@getViewModel,
-                    scope ?: koin.defaultScope,
+                    scope ?: koin.rootScope,
                     qualifier,
                     parameters = parameters
             )
@@ -96,7 +96,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
             ViewModelParameters(
                     clazz,
                     this@getViewModel,
-                    scope ?: koin.defaultScope,
+                    scope ?: koin.rootScope,
                     qualifier,
                     parameters = parameters
             )

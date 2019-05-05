@@ -66,7 +66,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
             ViewModelParameters(
                     T::class,
                     this@getSharedViewModel,
-                    scope ?: koin.defaultScope,
+                    scope ?: koin.rootScope,
                     qualifier,
                     from,
                     parameters

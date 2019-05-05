@@ -18,7 +18,6 @@ package org.koin.core
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 
 /**
  * KoinComponent interface marker to bring Koin extensions features
@@ -32,34 +31,26 @@ interface KoinComponent {
      */
     fun getKoin(): Koin = GlobalContext.get().koin
 
-    /**
-     * THe associated scope
-     */
-    fun currentScope(): Scope? = null
 }
 
 /**
  * Get instance instance from Koin
  * @param qualifier
- * @param scope
  * @param parameters
  */
 inline fun <reified T> KoinComponent.get(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, scope ?: currentScope(), parameters)
+        getKoin().get(qualifier, parameters)
 
 /**
  * Lazy inject instance from Koin
  * @param qualifier
- * @param scope
  * @param parameters
  */
 inline fun <reified T> KoinComponent.inject(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-        getKoin().inject(qualifier, scope ?: currentScope(), parameters)
+        getKoin().inject(qualifier, parameters)
