@@ -47,11 +47,11 @@ https://github.com/InsertKoinIO/koin/issues/423
 Additional type binding
 - bind/binds operator -> koin.bind<P,S> / koin.getAll<S>()
 
--- TODO --
-
 Allow 2 Scope Def same type?
 Scope API -> scoped defs only in Scope Definition
 -> check to add bind operator to bind<P,S>
+
+-- TODO --
 
 Website - Doc migration -> Scope / inner Module
 

@@ -32,7 +32,8 @@ _Core_
 * `[UPDATED]` - `KoinComponent` now can override `getKoin()` to target a custom Koin instance & `currentScope()` to target a Scope that is used for all injections
 * `[ADDED]` - koinApplication function to help declare an instance  for a local context, in ordoer to help isolated Koin instances
 * `[UPDATED]` - rework Scope API (multiple instances definitions, properties, release, callback ...)
-* `[UPDATED]` - rework Scope DSL (scope/scoped)
+* `[UPDATED]` - rework Scope DSL (scope/scoped) & lock single/factory
+* `[UPDATED]` - rework internals to use root Scope & separate Scope instances, with different bean registry
 * `[ADDED]` - onClose, onRelease DSL on single/factory/scoped to execute code when releasing instance or stopping container 
 * `[ADDED]` - getProperty with default value
 * `[UPDATED]` - Kotlin 1.3.21
