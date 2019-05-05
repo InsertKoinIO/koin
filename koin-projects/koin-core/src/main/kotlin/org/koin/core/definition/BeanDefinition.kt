@@ -36,7 +36,7 @@ class BeanDefinition<T>(
         val primaryType: KClass<*>
 ) {
     // Main data
-    var scopeName : Qualifier? = null
+    var scopeName: Qualifier? = null
     var secondaryTypes = arrayListOf<KClass<*>>()
     var instance: DefinitionInstance<T>? = null
     lateinit var definition: Definition<T>
@@ -52,11 +52,6 @@ class BeanDefinition<T>(
      * Tells if the definition is this Kind
      */
     fun isKind(kind: Kind): Boolean = this.kind == kind
-
-    /**
-     * Is a Scope definition
-     */
-    fun isScoped() = isKind(Kind.Scope)
 
     /**
      * Create the associated Instance Holder

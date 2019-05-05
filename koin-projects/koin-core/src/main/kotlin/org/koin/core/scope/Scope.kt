@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
 data class Scope(
         val id: ScopeID,
         val isRoot: Boolean = false,
-        val _koin: Koin
+        internal val _koin: Koin
 ) {
     val beanRegistry = BeanRegistry()
     internal var set: ScopeSet? = null
@@ -163,7 +163,7 @@ data class Scope(
     /**
      * Get current Koin instance
      */
-    fun getKoin() = _koin ?: error("Scope is closed or not yet registered to a Koin context")
+    fun getKoin() = _koin
 
     /**
      * Get Scope
@@ -205,7 +205,7 @@ data class Scope(
         val primaryType = P::class
         val secondaryType = S::class
         return beanRegistry.getAllDefinitions().first { it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType) && !it.isKind(Kind.Scope) }
-                .instance!!.get((InstanceContext(this._koin, this))) as S
+                .instance!!.get((InstanceContext(getKoin(), this))) as S
     }
 
     /**

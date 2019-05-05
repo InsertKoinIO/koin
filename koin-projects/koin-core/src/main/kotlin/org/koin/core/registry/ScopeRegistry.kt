@@ -37,7 +37,10 @@ class ScopeRegistry {
     internal val definitions = ConcurrentHashMap<String, ScopeSet>()
     private val instances = ConcurrentHashMap<String, Scope>()
 
-    internal fun getScopeSets() = definitions.values
+    /**
+     * return all ScopeSet
+     */
+    fun getScopeSets() = definitions.values
 
     internal fun loadScopes(modules: Iterable<Module>) {
         modules.forEach {

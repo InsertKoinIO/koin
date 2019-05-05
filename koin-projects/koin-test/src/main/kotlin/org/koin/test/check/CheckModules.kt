@@ -34,17 +34,29 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
         bindings.parametersDefinition()
     }
     val allParameters = bindings.creators
-    rootScope.beanRegistry.getAllDefinitions().forEach {
-        val scope = if (it.isScoped()) {
-            val scopeName = it.scopeName ?: error("Can't get scope for '$it'")
-            createScope(scopeName.toString(), scopeName)
-        } else null
-        val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
-                ?: parametersOf()
-        get<Any>(it.primaryType, it.qualifier) { parameters }
-        scope?.close()
-    }
+
+    checkMainDefinitions(allParameters)
+
+    checkScopedDefinitions(allParameters)
+
     close()
 }
 
-//TODO Check ScopeSet Defs
+private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+    scopeRegistry.getScopeSets().forEach { set ->
+        val scope = createScope(set.qualifier.toString(), set.qualifier)
+        set.definitions.forEach {
+            val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
+                    ?: parametersOf()
+            scope.get<Any>(it.primaryType, it.qualifier) { parameters }
+        }
+    }
+}
+
+private fun Koin.checkMainDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+    rootScope.beanRegistry.getAllDefinitions().forEach {
+        val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
+                ?: parametersOf()
+        get<Any>(it.primaryType, it.qualifier) { parameters }
+    }
+}

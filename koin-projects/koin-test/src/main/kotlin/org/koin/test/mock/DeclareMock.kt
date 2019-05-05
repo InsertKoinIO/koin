@@ -46,6 +46,8 @@ inline fun <reified T : Any> KoinTest.declareMock(
     return koin.get()
 }
 
+//TODO declaremock on Scopes
+
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> getDefinition(
         clazz: KClass<T>,
