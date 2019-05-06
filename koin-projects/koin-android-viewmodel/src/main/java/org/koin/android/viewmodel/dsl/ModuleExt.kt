@@ -20,6 +20,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.ScopeSet
 
 
 /**
@@ -37,6 +38,15 @@ inline fun <reified T : ViewModel> Module.viewModel(
         noinline definition: Definition<T>
 ) {
     factory(qualifier, override, definition).setIsViewModel()
+}
+
+@Deprecated("ViewModel definition can't be used in a scope", level = DeprecationLevel.ERROR)
+inline fun <reified T : ViewModel> ScopeSet.viewModel(
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
+) {
+    error("A ViewModel can't be decalred in a scope")
 }
 
 const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
