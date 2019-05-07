@@ -16,19 +16,13 @@
 package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.registry.BeanRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.time.measureDuration
-import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 /**
@@ -39,24 +33,37 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class Koin {
-    val beanRegistry = BeanRegistry()
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
-    val defaultScope = Scope("-DefaultScope-")
+    val rootScope = Scope("-Root-", isRoot = true, _koin = this)
 
     /**
      * Lazy inject a Koin instance
      * @param qualifier
      * @param scope
      * @param parameters
+     *
+     * @return Lazy instance of type T
      */
     @JvmOverloads
     inline fun <reified T> inject(
             qualifier: Qualifier? = null,
-            scope: Scope? = null,
             noinline parameters: ParametersDefinition? = null
-    ): Lazy<T> =
-            lazy { get<T>(qualifier, scope ?: defaultScope, parameters) }
+    ): Lazy<T> = rootScope.inject(qualifier, parameters)
+
+    /**
+     * Lazy inject a Koin instance if available
+     * @param qualifier
+     * @param scope
+     * @param parameters
+     *
+     * @return Lazy instance of type T or null
+     */
+    @JvmOverloads
+    inline fun <reified T> injectOrNull(
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): Lazy<T?> = rootScope.injectOrNull(qualifier, parameters)
 
     /**
      * Get a Koin instance
@@ -67,11 +74,22 @@ class Koin {
     @JvmOverloads
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
-            scope: Scope? = null,
             noinline parameters: ParametersDefinition? = null
-    ): T {
-        return get(T::class, qualifier, scope ?: defaultScope, parameters)
-    }
+    ): T = rootScope.get(qualifier, parameters)
+
+    /**
+     * Get a Koin instance if available
+     * @param qualifier
+     * @param scope
+     * @param parameters
+     *
+     * @return instance of type T or null
+     */
+    @JvmOverloads
+    inline fun <reified T> getOrNull(
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
+    ): T? = rootScope.getOrNull(qualifier, parameters)
 
     /**
      * Get a Koin instance
@@ -79,67 +97,44 @@ class Koin {
      * @param qualifier
      * @param scope
      * @param parameters
+     *
+     * @return instance of type T
      */
     fun <T> get(
             clazz: KClass<*>,
             qualifier: Qualifier?,
-            scope: Scope = defaultScope,
             parameters: ParametersDefinition?
-    ): T = synchronized(this) {
-        return if (logger.isAt(Level.DEBUG)) {
-            logger.debug("+- get '${clazz.getFullName()}'")
-            val (instance: T, duration: Double) = measureDuration {
-                resolve<T>(qualifier, clazz, scope, parameters)
-            }
-            logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
-            return instance
-        } else {
-            resolve(qualifier, clazz, scope, parameters)
-        }
-    }
+    ): T = rootScope.get(clazz, qualifier, parameters)
 
-    private fun <T> resolve(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            scope: Scope,
-            parameters: ParametersDefinition?
-    ): T {
-        val (definition, foundScope) = prepareResolution(qualifier, clazz, scope)
-        return definition.resolveInstance(InstanceContext(this, foundScope, parameters))
-    }
 
-    private fun prepareResolution(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            scope: Scope
-    ): Pair<BeanDefinition<*>, Scope> {
-        val definition = beanRegistry.findDefinition(qualifier, clazz)
-                ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
-        return Pair(definition, scope)
-    }
+    /**
+     * Get a all instance for given inferred class (in primary or secondary type)
+     *
+     * @return list of instances of type T
+     */
+    inline fun <reified T> getAll(): List<T> = rootScope.getAll()
 
-    internal fun createEagerInstances() {
-        val definitions = beanRegistry.findAllCreatedAtStartDefinition()
-        if (definitions.isNotEmpty()) {
-            definitions.forEach {
-                it.resolveInstance(InstanceContext(koin = this, scope = defaultScope))
-            }
-        }
-    }
+    /**
+     * Get instance of primary type P and secondary type S
+     * (not for scoped instances)
+     *
+     * @return instance of type S
+     */
+    inline fun <reified P, reified S> bind(): S = rootScope.bind<P, S>()
+
+
+    internal fun createEagerInstances() = rootScope.createEagerInstances()
 
     /**
      * Create a Scope instance
      * @param scopeId
      * @param scopeDefinitionName
      */
-    @JvmOverloads
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$qualifier")
         }
-        val createdScopeInstance = scopeRegistry.createScopeInstance(scopeId, qualifier)
-        createdScopeInstance.register(this)
-        return createdScopeInstance
+        return scopeRegistry.createScopeInstance(this, scopeId, qualifier)
     }
 
     /**
@@ -147,8 +142,7 @@ class Koin {
      * @param scopeId
      * @param qualifier
      */
-    @JvmOverloads
-    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier? = null): Scope {
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
         return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }
 
@@ -206,7 +200,7 @@ class Koin {
      */
     fun close() {
         scopeRegistry.close()
-        beanRegistry.close()
+        rootScope.close()
         propertyRegistry.close()
     }
 }

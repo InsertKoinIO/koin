@@ -10,7 +10,6 @@ import kotlin.reflect.KClass
 class ViewModelParameters<T : Any>(
         val clazz: KClass<T>,
         val owner: LifecycleOwner,
-        val scope: Scope,
         val qualifier: Qualifier? = null,
         val from: ViewModelStoreOwnerDefinition? = null,
         val parameters: ParametersDefinition? = null

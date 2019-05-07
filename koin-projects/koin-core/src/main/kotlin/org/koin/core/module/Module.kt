@@ -83,22 +83,6 @@ class Module(
     }
 
     /**
-     * Declare a ScopeInstance definition
-     * @param qualifier
-     * @param override
-     * @param definition - definition function
-     */
-    inline fun <reified T> scoped(
-            qualifier: Qualifier? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createScoped(qualifier, definition = definition)
-        declareDefinition(beanDefinition, Options(override = override))
-        return beanDefinition
-    }
-
-    /**
      * Declare a Factory definition
      * @param qualifier
      * @param override

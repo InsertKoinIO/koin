@@ -162,7 +162,7 @@ fun main(args: Array<String>) {
 }
 {% endhighlight %}
 
-That's it! You're ready to go. Chech the `http://localhost:8080/hello` url!
+That's it! You're ready to go. Check the `http://localhost:8080/hello` url!
 
 ## What's Next?
 

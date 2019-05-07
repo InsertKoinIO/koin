@@ -18,7 +18,7 @@ package org.koin.core.scope
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
-import org.koin.core.definition.Options
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.ScopeDefinitionInstance
 import org.koin.core.module.Module
@@ -36,13 +36,33 @@ data class ScopeSet(val qualifier: Qualifier, val module: Module) {
      */
     inline fun <reified T> scoped(
             name: Qualifier? = null,
-            override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createScoped(name, qualifier, definition)
-        module.declareDefinition(beanDefinition, Options(override = override))
-        definitions.add(beanDefinition)
+        val added = definitions.add(beanDefinition)
+        if (!added){
+            throw DefinitionOverrideException("Can't add definition $beanDefinition as it already exists")
+        }
         return beanDefinition
+    }
+
+    @Deprecated("Single definition can't be used in a scope", level = DeprecationLevel.ERROR)
+    inline fun <reified T> single(
+            qualifier: Qualifier? = null,
+            createdAtStart: Boolean = false,
+            override: Boolean = false,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        error("Single definition can't be used in a scope")
+    }
+
+    @Deprecated("Factory definition can't be used in a scope", level = DeprecationLevel.ERROR)
+    inline fun <reified T> factory(
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        error("Factory definition can't be used in a scope")
     }
 
     internal fun release(instance: Scope) {

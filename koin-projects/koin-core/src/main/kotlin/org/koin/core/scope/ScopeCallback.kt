@@ -7,6 +7,7 @@ interface ScopeCallback {
 
     /**
      * Called when scope is closing
+     * @param scope
      */
-    fun onScopeClose()
+    fun onScopeClose(scope: Scope)
 }

@@ -18,7 +18,6 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.parameter.parametersOf
-import org.koin.core.scope.getScopeName
 
 /**
  * Check all definition's dependencies - start all nodules and check ifdefinitions can run
@@ -35,12 +34,29 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
         bindings.parametersDefinition()
     }
     val allParameters = bindings.creators
-    beanRegistry.getAllDefinitions().forEach {
-        val scope = if (it.isScoped()) createScope(it.getScopeName().toString(), it.getScopeName()) else null
+
+    checkMainDefinitions(allParameters)
+
+    checkScopedDefinitions(allParameters)
+
+    close()
+}
+
+private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+    scopeRegistry.getScopeSets().forEach { set ->
+        val scope = createScope(set.qualifier.toString(), set.qualifier)
+        set.definitions.forEach {
+            val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
+                    ?: parametersOf()
+            scope.get<Any>(it.primaryType, it.qualifier) { parameters }
+        }
+    }
+}
+
+private fun Koin.checkMainDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+    rootScope.beanRegistry.getAllDefinitions().forEach {
         val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
                 ?: parametersOf()
-        get<Any>(it.primaryType, it.qualifier, scope ?: defaultScope) { parameters }
-        scope?.close()
+        get<Any>(it.primaryType, it.qualifier) { parameters }
     }
-    close()
 }

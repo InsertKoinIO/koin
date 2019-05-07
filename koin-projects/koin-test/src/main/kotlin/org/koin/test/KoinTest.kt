@@ -36,16 +36,14 @@ interface KoinTest : KoinComponent
  */
 inline fun <reified T> KoinTest.get(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, scope ?: getKoin().defaultScope, parameters)
+        getKoin().get(qualifier, parameters)
 
 /**
  * Lazy inject an instance from Koin
  */
 inline fun <reified T> KoinTest.inject(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { get<T>(qualifier, scope ?: getKoin().defaultScope, parameters) }
+): Lazy<T> = lazy { get<T>(qualifier,  parameters) }

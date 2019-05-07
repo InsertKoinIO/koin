@@ -1,10 +1,8 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 
@@ -15,35 +13,32 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                module {
-                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                })
+                    module {
+                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    })
         }
 
         app.assertDefinitionsCount(1)
 
         val koin = app.koin
         val c1 = koin.get<Simple.Component1>()
-        val c = koin.get<Simple.ComponentInterface1>()
+        val c = koin.bind<Simple.Component1, Simple.ComponentInterface1>()
 
         assertEquals(c1, c)
     }
 
     @Test
     fun `additional type conflict`() {
-        try {
-            koinApplication {
-                printLogger()
-                modules(
+        val koin = koinApplication {
+            printLogger()
+            modules(
                     module {
                         single { Simple.Component1() } bind Simple.ComponentInterface1::class
                         single<Simple.ComponentInterface1> { Simple.Component1() }
                     })
-            }
-            fail("should not allow conflicting type definitions")
-        } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
-        }
+        }.koin
+
+        assert(koin.getAll<Simple.ComponentInterface1>().size == 2)
     }
 
     @Test
@@ -51,10 +46,10 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                module {
-                    single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
-                    single<Simple.ComponentInterface1> { Simple.Component1() }
-                })
+                    module {
+                        single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
+                        single<Simple.ComponentInterface1> { Simple.Component1() }
+                    })
         }
         val koin = app.koin
         koin.get<Simple.ComponentInterface1>(named("default"))
@@ -64,20 +59,20 @@ class AdditionalTypeBindingTest {
     fun `can resolve an additional types`() {
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.Component1() } binds arrayOf(
-                        Simple.ComponentInterface1::class,
-                        Simple.ComponentInterface2::class
-                    )
-                })
+                    module {
+                        single { Simple.Component1() } binds arrayOf(
+                                Simple.ComponentInterface1::class,
+                                Simple.ComponentInterface2::class
+                        )
+                    })
         }
 
         app.assertDefinitionsCount(1)
 
         val koin = app.koin
         val c1 = koin.get<Simple.Component1>()
-        val ci1 = koin.get<Simple.ComponentInterface1>()
-        val ci2 = koin.get<Simple.ComponentInterface2>()
+        val ci1 = koin.bind<Simple.Component1, Simple.ComponentInterface1>()
+        val ci2 = koin.bind<Simple.Component1, Simple.ComponentInterface2>()
 
         assertEquals(c1, ci1)
         assertEquals(c1, ci2)
@@ -85,21 +80,18 @@ class AdditionalTypeBindingTest {
 
     @Test
     fun `conflicting with additional types`() {
-        try {
-            koinApplication {
-                modules(
+        val koin = koinApplication {
+            modules(
                     module {
                         single<Simple.ComponentInterface1> { Simple.Component2() }
                         single { Simple.Component1() } binds arrayOf(
-                            Simple.ComponentInterface1::class,
-                            Simple.ComponentInterface2::class
+                                Simple.ComponentInterface1::class,
+                                Simple.ComponentInterface2::class
                         )
                     })
-            }
-            fail("should not allow conflicting definitions")
-        } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
-        }
+        }.koin
+
+        assert(koin.getAll<Simple.ComponentInterface1>().size == 2)
     }
 
 }

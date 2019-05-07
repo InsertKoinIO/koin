@@ -42,10 +42,9 @@ import org.koin.core.scope.Scope
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lifecycleAwareLazy(this) { getSharedViewModel<T>(qualifier, scope, from, parameters) }
+): Lazy<T> = lifecycleAwareLazy(this) { getSharedViewModel<T>(qualifier, from, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
@@ -57,7 +56,6 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
         qualifier: Qualifier? = null,
-        scope: Scope? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
         noinline parameters: ParametersDefinition? = null
 ): T {
@@ -66,7 +64,6 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
             ViewModelParameters(
                     T::class,
                     this@getSharedViewModel,
-                    scope ?: koin.defaultScope,
                     qualifier,
                     from,
                     parameters

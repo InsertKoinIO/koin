@@ -11,6 +11,7 @@ _Android-Scope_
 * `[UPDATED]` - rework according to new Scope API (manage compelte Scope Lifecycle)
 * `[ADDED]` - `currentScope` property scope tied to current Activity or Fragment
 * `[ADDED]` - `currentScope` is aware of any `KoinComponent` & currentScope override
+* `[UPDATED]` - ScopeID generation
 
 _Android-ViewModel_
 * `[ADDED]` - support for new Scope API
@@ -19,6 +20,7 @@ _Android-ViewModel_
 
 _AndroidX-Scope_
 * `[UPDATED]` - update API regarding the changes in `koin-android-scope`
+* `[UPDATED]` - ScopeID generation
 
 _AndroidX-ViewModel_
 * `[UPDATED]` - update API regarding the changes in `koin-android-viewmodel`
@@ -29,11 +31,15 @@ _Core_
 * `[UPDATED]` - complete internals rewritten for performances optimisation (startup & injection)
 * `[UPDATED]` - `KoinComponent` now can override `getKoin()` to target a custom Koin instance & `currentScope()` to target a Scope that is used for all injections
 * `[ADDED]` - koinApplication function to help declare an instance  for a local context, in ordoer to help isolated Koin instances
-* `[UPDATED]` - rework Scope API (DSL, multiple instances definitions, properties, release, callback ...)
+* `[UPDATED]` - rework Scope API (multiple instances definitions, properties, release, callback ...)
+* `[UPDATED]` - rework Scope DSL (scope/scoped) & lock single/factory
+* `[UPDATED]` - rework internals to use root Scope & separate Scope instances, with different bean registry
 * `[ADDED]` - onClose, onRelease DSL on single/factory/scoped to execute code when releasing instance or stopping container 
 * `[ADDED]` - getProperty with default value
 * `[UPDATED]` - Kotlin 1.3.21
 * `[ADDED]` - Qualifiers with `named()` function to replace old string names. Allow to use Types
+* `[ADDED]` - `getOrNull()` and `injectOrNull()` to safely resolve potential components and get null of not present
+* `[UPDATED]` - additional binding API, with getAll<S>() & bind<P,S>() operator to look for instances regarding secondary type definition
 
 _Test_
 * `[UPDATED]` - rework testing API, codebase detached from internal core tests

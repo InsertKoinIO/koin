@@ -4,7 +4,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check.checkModules
@@ -19,7 +18,7 @@ class MVPArchitectureTest : AutoCloseKoinTest() {
     }
 
     val DataSourceModule = module {
-        single<DebugDatasource>() bind Datasource::class
+        singleBy<Datasource, DebugDatasource>()
     }
 
     @Test

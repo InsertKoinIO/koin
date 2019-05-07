@@ -7,6 +7,7 @@ import org.junit.Test
 import org.koin.android.scope.ScopeObserver
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 
@@ -14,18 +15,22 @@ class AndroidObserverTest : AutoCloseKoinTest() {
 
     class MyService
 
+    val scopeKey = named("SCOPE_KEY")
+
+    val module = module {
+        scope(scopeKey) {
+            scoped { MyService() }
+        }
+    }
+
     @Test
     fun `should close scoped definition on ON_DESTROY`() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(
-                module {
-                    scoped { MyService() }
-                }
-            )
+            modules(module)
         }
 
-        val session = getKoin().createScope("session")
+        val session = getKoin().createScope("session", scopeKey)
         val service = session.get<MyService>()
         Assert.assertNotNull(service)
 
@@ -44,12 +49,10 @@ class AndroidObserverTest : AutoCloseKoinTest() {
     fun `should not close scoped definition`() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(org.koin.dsl.module {
-                scoped { MyService() }
-            })
+            modules(module)
         }
 
-        val session = getKoin().createScope("session")
+        val session = getKoin().createScope("session", scopeKey)
         val service = session.get<MyService>()
         Assert.assertNotNull(service)
 
@@ -63,12 +66,10 @@ class AndroidObserverTest : AutoCloseKoinTest() {
     fun `should close scoped definition on ON_STOP`() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(org.koin.dsl.module {
-                scoped { MyService() }
-            })
+            modules(module)
         }
 
-        val session = getKoin().createScope("session")
+        val session = getKoin().createScope("session", scopeKey)
         val service = session.get<MyService>()
         Assert.assertNotNull(service)
 

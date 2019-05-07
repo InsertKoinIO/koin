@@ -6,6 +6,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.BadScopeInstanceException
+import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -31,7 +32,7 @@ class OpenCloseScopeInstanceTest {
     }
 
     @Test
-    fun `can't get definition from a opened scope`() {
+    fun `can't get definition from another scope`() {
         val koin = koinApplication {
             modules(
                     module {
@@ -42,11 +43,11 @@ class OpenCloseScopeInstanceTest {
             )
         }.koin
 
-        val scope = koin.createScope("myScope")
         try {
+            val scope = koin.createScope("myScope", named("otherName"))
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: BadScopeInstanceException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -56,8 +57,8 @@ class OpenCloseScopeInstanceTest {
         val koin = koinApplication {
             modules(
                     module {
-                        scoped { Simple.ComponentA() }
                         scope(scopeName) {
+                            scoped { Simple.ComponentA() }
                             scoped { Simple.ComponentB(get()) }
                         }
                     }
@@ -90,7 +91,7 @@ class OpenCloseScopeInstanceTest {
         try {
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: BadScopeInstanceException) {
+        } catch (e: NoBeanDefFoundException) {
             e.printStackTrace()
         }
     }

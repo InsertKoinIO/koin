@@ -51,15 +51,20 @@ class KoinApplication private constructor() {
     fun modules(modules: Iterable<Module>): KoinApplication {
         if (logger.isAt(Level.INFO)) {
             val duration = measureDurationOnly {
-                koin.beanRegistry.loadModules(modules)
-                koin.scopeRegistry.loadScopes(modules)
+                loadModulesAndScopes(modules)
             }
+            val count = koin.rootScope.beanRegistry.getAllDefinitions().size + koin.scopeRegistry.getScopeSets().map { it.definitions.size }.sum()
+            logger.info("registered $count definitions")
             logger.info("modules loaded in $duration ms")
         } else {
-            koin.beanRegistry.loadModules(modules)
-            koin.scopeRegistry.loadScopes(modules)
+            loadModulesAndScopes(modules)
         }
         return this
+    }
+
+    private fun loadModulesAndScopes(modules: Iterable<Module>) {
+        koin.rootScope.beanRegistry.loadModules(modules)
+        koin.scopeRegistry.loadScopes(modules)
     }
 
     /**

@@ -28,22 +28,6 @@ class DefinitionOverrideTest {
     }
 
     @Test
-    fun `allow overrides by multiple types`() {
-
-        val app = koinApplication {
-            modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component2() }
-                        single(override = true) { Simple.Component1() } bind Simple.ComponentInterface1::class
-                    }
-            )
-        }
-
-        app.assertDefinitionsCount(2) // not a definition override but a type
-        assertTrue(app.koin.get<Simple.ComponentInterface1>() is Simple.Component1)
-    }
-
-    @Test
     fun `allow overrides by name`() {
 
         val app = koinApplication {

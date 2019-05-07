@@ -22,7 +22,6 @@ import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import org.koin.core.scope.getScopeName
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -33,7 +32,8 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
-    override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null } ?: false
+    override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
+            ?: false
 
     override fun release(context: InstanceContext) {
         val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
@@ -46,11 +46,11 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
-        if (context.koin == null){
+        if (context.koin == null) {
             error("ScopeDefinitionInstance has no registered Koin instance")
         }
 
-        if (context.scope == context.koin.defaultScope) {
+        if (context.scope == context.koin.rootScope) {
             throw ScopeNotCreatedException("No scope instance created to resolve $beanDefinition")
         }
         val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
@@ -72,7 +72,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     private fun checkScopeResolution(definition: BeanDefinition<*>, scope: Scope) {
         val scopeInstanceName = scope.set?.qualifier
-        val beanScopeName: Qualifier? = definition.getScopeName()
+        val beanScopeName: Qualifier? = definition.scopeName
         if (beanScopeName != scopeInstanceName) {
             when {
                 scopeInstanceName == null -> throw BadScopeInstanceException("Can't use definition $definition defined for scope '$beanScopeName', with an open scope instance $scope. Use a scope instance with scope '$beanScopeName'")

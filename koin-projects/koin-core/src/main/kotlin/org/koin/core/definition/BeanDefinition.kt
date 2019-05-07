@@ -36,6 +36,7 @@ class BeanDefinition<T>(
         val primaryType: KClass<*>
 ) {
     // Main data
+    var scopeName: Qualifier? = null
     var secondaryTypes = arrayListOf<KClass<*>>()
     var instance: DefinitionInstance<T>? = null
     lateinit var definition: Definition<T>
@@ -51,11 +52,6 @@ class BeanDefinition<T>(
      * Tells if the definition is this Kind
      */
     fun isKind(kind: Kind): Boolean = this.kind == kind
-
-    /**
-     * Is a Scope definition
-     */
-    fun isScoped() = isKind(Kind.Scope)
 
     /**
      * Create the associated Instance Holder
@@ -78,12 +74,13 @@ class BeanDefinition<T>(
     override fun toString(): String {
         val defKind = kind.toString()
         val defName = qualifier?.let { "name:'$qualifier', " } ?: ""
+        val defScope = scopeName?.let { "scope:'$scopeName', " } ?: ""
         val defType = "class:'${primaryType.getFullName()}'"
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
             ", classes:$typesAsString"
         } else ""
-        return "[type:$defKind,$defName$defType$defOtherTypes]"
+        return "[type:$defKind,$defScope$defName$defType$defOtherTypes]"
     }
 
     override fun equals(other: Any?): Boolean {
