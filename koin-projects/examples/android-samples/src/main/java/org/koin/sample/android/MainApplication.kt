@@ -6,10 +6,7 @@ import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.sample.android.di.appModule
-import org.koin.sample.android.di.mvpModule
-import org.koin.sample.android.di.mvvmModule
-import org.koin.sample.android.di.scopeModule
+import org.koin.sample.android.di.*
 
 class MainApplication : Application() {
 
@@ -20,7 +17,7 @@ class MainApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             androidFileProperties()
-            modules(appModule, mvpModule, mvvmModule, scopeModule)
+            modules(appModule, mvpModule, mvvmModule, scopeModule, dynamicModule)
         }
     }
 }

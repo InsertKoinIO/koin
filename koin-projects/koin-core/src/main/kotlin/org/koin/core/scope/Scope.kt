@@ -242,7 +242,7 @@ data class Scope(
      */
     fun close() = synchronized(this) {
         if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.info("closing scope:'$id' ~ ${set?.qualifier}")
+            KoinApplication.logger.info("closing scope:'$id'")
         }
         // call on close from callbacks
         callbacks.forEach { it.onScopeClose(this) }

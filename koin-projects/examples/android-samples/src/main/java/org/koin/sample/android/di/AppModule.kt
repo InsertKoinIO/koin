@@ -7,6 +7,8 @@ import org.koin.dsl.onRelease
 import org.koin.sample.android.components.Counter
 import org.koin.sample.android.components.SCOPE_ID
 import org.koin.sample.android.components.SCOPE_SESSION
+import org.koin.sample.android.components.dynamic.DynScoped
+import org.koin.sample.android.components.dynamic.DynSingle
 import org.koin.sample.android.components.main.DumbServiceImpl
 import org.koin.sample.android.components.main.RandomId
 import org.koin.sample.android.components.main.Service
@@ -38,7 +40,7 @@ val mvpModule = module {
 val mvvmModule = module {
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
 
-    scope(named<MVVMActivity>()){
+    scope(named<MVVMActivity>()) {
         scoped { Session() }
     }
 }
@@ -53,5 +55,12 @@ val scopeModule = module {
     }
     scope(named<ScopedActivityA>()) {
         scoped { Session() }
+    }
+}
+
+val dynamicModule = module {
+    single { DynSingle() }
+    scope(named("dynamic_scope")) {
+        scoped { DynScoped() }
     }
 }

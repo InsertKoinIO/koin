@@ -27,6 +27,7 @@
         <activity android:name=".sdk.HostActivity" />
 
         <activity android:name=".components.sdk.SDKActivity" />
+        <activity android:name=".dynamic.DynamicActivity" />
 
     </application>
 

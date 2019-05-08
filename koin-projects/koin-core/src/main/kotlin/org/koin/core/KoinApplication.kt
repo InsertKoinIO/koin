@@ -54,8 +54,8 @@ class KoinApplication private constructor() {
                 loadModulesAndScopes(modules)
             }
             val count = koin.rootScope.beanRegistry.getAllDefinitions().size + koin.scopeRegistry.getScopeSets().map { it.definitions.size }.sum()
-            logger.info("registered $count definitions")
-            logger.info("modules loaded in $duration ms")
+            logger.info("total $count registered definitions")
+            logger.info("load modules in $duration ms")
         } else {
             loadModulesAndScopes(modules)
         }

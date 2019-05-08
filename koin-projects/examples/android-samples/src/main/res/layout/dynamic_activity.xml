@@ -10,12 +10,20 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:text="SDK Activity completed!" />
+        android:text="Reload module!" />
+
+    <TextView
+        android:id="@+id/dyn_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="" />
 
     <Button
-        android:id="@+id/sdk_activity_button"
+        android:id="@+id/dyn_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next" />
+        android:text="Reload" />
 
 </LinearLayout>
