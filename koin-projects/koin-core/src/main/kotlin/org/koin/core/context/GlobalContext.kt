@@ -80,8 +80,15 @@ fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
 fun stopKoin() = GlobalContext.stop()
 
 /**
- * load Koin modules into current StandAlone Koin application
+ * load Koin modules in global Koin context
  */
 fun loadKoinModules(vararg modules: Module) {
     GlobalContext.get().modules(*modules)
+}
+
+/**
+ * unload Koin modules from global Koin context
+ */
+fun unloadKoinModules(vararg modules: Module) {
+    GlobalContext.get().unloadModules(*modules)
 }

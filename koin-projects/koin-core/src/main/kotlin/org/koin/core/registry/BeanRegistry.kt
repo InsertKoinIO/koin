@@ -49,6 +49,22 @@ class BeanRegistry {
         }
     }
 
+    /**
+     * unload definitions from a Module
+     * @param modules
+     */
+    fun unloadModules(modules: Iterable<Module>) {
+        modules.forEach { module: Module ->
+            removeDefinitions(module)
+        }
+    }
+
+    private fun removeDefinitions(module: Module) {
+        module.definitions.forEach { definition ->
+            removeDefinition(definition)
+        }
+    }
+
     private fun saveDefinitions(module: Module) {
         module.definitions.forEach { definition ->
             saveDefinition(definition)
@@ -60,6 +76,21 @@ class BeanRegistry {
      * @return definitions
      */
     fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
+
+
+    /**
+     * Save a definition
+     * @param definition
+     */
+    fun removeDefinition(definition: BeanDefinition<*>) {
+        definition.instance?.close()
+        definitions.remove(definition)
+        if (definition.qualifier != null) {
+            removeDefinitionForName(definition)
+        } else {
+            removeDefinitionForTypes(definition)
+        }
+    }
 
     /**
      * Save a definition
@@ -93,6 +124,16 @@ class BeanRegistry {
         saveDefinitionForType(definition.primaryType, definition)
     }
 
+    private fun removeDefinitionForTypes(definition: BeanDefinition<*>) {
+        val key = definition.primaryType
+        if (definitionsClass[key] == definition) {
+            definitionsClass.remove(key)
+            if (logger.isAt(Level.DEBUG)) {
+                logger.info("unbind type:'${key.getFullName()}' ~ $definition")
+            }
+        }
+    }
+
     private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
         if (definitionsClass[type] != null && !definition.options.override) {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsClass[type]}")
@@ -100,6 +141,18 @@ class BeanRegistry {
             definitionsClass[type] = definition
             if (logger.isAt(Level.INFO)) {
                 logger.info("bind type:'${type.getFullName()}' ~ $definition")
+            }
+        }
+    }
+
+    private fun removeDefinitionForName(definition: BeanDefinition<*>) {
+        definition.qualifier?.let {
+            val key = it.toString()
+            if (definitionsNames[key] == definition) {
+                definitionsNames.remove(key)
+                if (logger.isAt(Level.DEBUG)) {
+                    logger.info("unbind qualifier:'$key' ~ $definition")
+                }
             }
         }
     }

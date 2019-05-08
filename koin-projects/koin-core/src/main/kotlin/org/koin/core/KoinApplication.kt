@@ -32,16 +32,16 @@ class KoinApplication private constructor() {
 
     val koin = Koin()
 
+    internal fun loadDefaults() {
+        koin.scopeRegistry.loadDefaultScopes(koin)
+    }
+
     /**
      * Load definitions from modules
      * @param modules
      */
     fun modules(vararg modules: Module): KoinApplication {
         return modules(modules.asIterable())
-    }
-
-    internal fun loadDefaults() {
-        koin.scopeRegistry.loadDefaultScopes(koin)
     }
 
     /**
@@ -131,6 +131,16 @@ class KoinApplication private constructor() {
         if (logger.isAt(Level.INFO)) {
             logger.info("stopped")
         }
+    }
+
+    fun unloadModules(vararg modules: Module): KoinApplication {
+        return unloadModules(modules.asIterable())
+    }
+
+    fun unloadModules(modules: Iterable<Module>): KoinApplication {
+        koin.rootScope.beanRegistry.unloadModules(modules)
+//        koin.scopeRegistry.unloadScopedDefinitions(modules)
+        return this
     }
 
     companion object {
