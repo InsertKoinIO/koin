@@ -51,6 +51,8 @@ Allow 2 Scope Def same type?
 Scope API -> scoped defs only in Scope Definition
 -> check to add bind operator to bind<P,S>
 
+UnloadKoinModules
+
 -- TODO --
 
 Website - Doc migration -> Scope / inner Module

@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.scope
+package org.koin.dsl
 
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
 import org.koin.core.error.DefinitionOverrideException
-import org.koin.core.instance.InstanceContext
-import org.koin.core.instance.ScopeDefinitionInstance
-import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 
-data class ScopeSet(val qualifier: Qualifier, val module: Module) {
-
-    val definitions = hashSetOf<BeanDefinition<*>>()
+/**
+ * DSL Scope Definition
+ */
+data class ScopeSet(val qualifier: Qualifier, val definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
 
     /**
      * Declare a ScopeInstance definition
@@ -40,7 +38,7 @@ data class ScopeSet(val qualifier: Qualifier, val module: Module) {
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createScoped(name, qualifier, definition)
         val added = definitions.add(beanDefinition)
-        if (!added){
+        if (!added) {
             throw DefinitionOverrideException("Can't add definition $beanDefinition as it already exists")
         }
         return beanDefinition
@@ -63,12 +61,6 @@ data class ScopeSet(val qualifier: Qualifier, val module: Module) {
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
         error("Factory definition can't be used in a scope")
-    }
-
-    internal fun release(instance: Scope) {
-        definitions
-                .filter { it.instance is ScopeDefinitionInstance<*> }
-                .forEach { it.instance?.release(InstanceContext(scope = instance)) }
     }
 
     override fun toString(): String {

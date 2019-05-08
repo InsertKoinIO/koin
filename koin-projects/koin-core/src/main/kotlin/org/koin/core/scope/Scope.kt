@@ -37,7 +37,7 @@ data class Scope(
         internal val _koin: Koin
 ) {
     val beanRegistry = BeanRegistry()
-    internal var set: ScopeSet? = null
+    internal var set: ScopeDefinition? = null
     val properties = Properties()
     private val callbacks = arrayListOf<ScopeCallback>()
 
@@ -241,6 +241,9 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
+        if (KoinApplication.logger.isAt(Level.DEBUG)) {
+            KoinApplication.logger.info("closing scope:'$id' ~ ${set?.qualifier}")
+        }
         // call on close from callbacks
         callbacks.forEach { it.onScopeClose(this) }
         callbacks.clear()

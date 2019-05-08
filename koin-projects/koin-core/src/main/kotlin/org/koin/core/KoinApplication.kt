@@ -139,7 +139,7 @@ class KoinApplication private constructor() {
 
     fun unloadModules(modules: Iterable<Module>): KoinApplication {
         koin.rootScope.beanRegistry.unloadModules(modules)
-//        koin.scopeRegistry.unloadScopedDefinitions(modules)
+        koin.scopeRegistry.unloadScopedDefinitions(modules)
         return this
     }
 

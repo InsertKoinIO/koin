@@ -9,6 +9,7 @@ import org.koin.core.definition.Kind
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -49,6 +50,37 @@ class DynamicModulesTest {
         }
         val module2 = module {
             single { Simple.ComponentB(get()) }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(module1, module2)
+        }
+
+        app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
+
+        Assert.assertNotNull(app.koin.get<Simple.ComponentA>())
+        Assert.assertNotNull(app.koin.get<Simple.ComponentB>())
+
+        app.unloadModules(module2)
+
+        Assert.assertNull(app.getDefinition(Simple.ComponentB::class))
+
+        try {
+            app.koin.get<Simple.ComponentB>()
+            fail()
+        } catch (e: NoBeanDefFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `should unload one module definition - factory`() {
+        val module1 = module {
+            single { Simple.ComponentA() }
+        }
+        val module2 = module {
+            factory { Simple.ComponentB(get()) }
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
@@ -137,6 +169,90 @@ class DynamicModulesTest {
         loadKoinModules(module)
 
         Assert.assertEquals(24, GlobalContext.get().koin.get<Simple.MySingle> { parametersOf(24) }.id)
+
+        stopKoin()
+    }
+
+    @Test
+    fun `should unload scoped definition`() {
+        val scopeKey = named("-SCOPE-")
+        val module = module {
+            scope(scopeKey) {
+                scoped { Simple.ComponentA() }
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(module)
+        }
+
+
+        val scope = app.koin.createScope("id", scopeKey)
+        val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+                ?: error("no definition found")
+        Assert.assertEquals(Kind.Scope, defA.kind)
+        Assert.assertNotNull(scope.get<Simple.ComponentA>())
+
+        app.unloadModules(module)
+
+        Assert.assertNull(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class))
+
+        try {
+            scope.get<Simple.ComponentA>()
+            fail()
+        } catch (e: NoBeanDefFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `should reload scoped definition`() {
+        val scopeKey = named("-SCOPE-")
+        val module = module {
+            scope(scopeKey) {
+                scoped { Simple.ComponentA() }
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(module)
+        }
+
+        var scope = app.koin.createScope("id", scopeKey)
+        val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+                ?: error("no definition found")
+        Assert.assertEquals(Kind.Scope, defA.kind)
+        Assert.assertNotNull(scope.get<Simple.ComponentA>())
+
+        app.unloadModules(module)
+        app.modules(module)
+
+        scope = app.koin.createScope("id", scopeKey)
+        scope.get<Simple.ComponentA>()
+        Assert.assertNotNull(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class))
+    }
+
+    @Test
+    fun `should reload scoped definition - global`() {
+        val scopeKey = named("-SCOPE-")
+        val module = module {
+            scope(scopeKey) {
+                scoped { Simple.ComponentA() }
+            }
+        }
+        startKoin {
+            printLogger(Level.DEBUG)
+            modules(module)
+        }
+
+        var scope = GlobalContext.get().koin.createScope("id", scopeKey)
+        Assert.assertNotNull(scope.get<Simple.ComponentA>())
+
+        unloadKoinModules(module)
+        loadKoinModules(module)
+
+        scope = GlobalContext.get().koin.createScope("id", scopeKey)
+        scope.get<Simple.ComponentA>()
 
         stopKoin()
     }

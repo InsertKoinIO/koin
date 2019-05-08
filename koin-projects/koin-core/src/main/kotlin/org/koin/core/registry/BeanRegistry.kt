@@ -53,7 +53,7 @@ class BeanRegistry {
      * unload definitions from a Module
      * @param modules
      */
-    fun unloadModules(modules: Iterable<Module>) {
+    internal fun unloadModules(modules: Iterable<Module>) {
         modules.forEach { module: Module ->
             removeDefinitions(module)
         }
@@ -82,7 +82,7 @@ class BeanRegistry {
      * Save a definition
      * @param definition
      */
-    fun removeDefinition(definition: BeanDefinition<*>) {
+    private fun removeDefinition(definition: BeanDefinition<*>) {
         definition.instance?.close()
         definitions.remove(definition)
         if (definition.qualifier != null) {
