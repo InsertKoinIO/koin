@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
+import org.koin.sample.androidx.components.scope.Session
 
 class MVVMFragment : Fragment() {
 
@@ -28,5 +31,7 @@ class MVVMFragment : Fragment() {
 
         assertNotEquals(shared, simpleViewModel)
         assertEquals((activity as MVVMActivity).simpleViewModel, shared)
+
+        assertEquals(activity!!.currentScope.get<Session>(), getKoin().getProperty("session"))
     }
 }

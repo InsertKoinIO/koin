@@ -16,6 +16,7 @@ import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
+import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.scope.ScopedActivityA
 
 val appModule = module {
@@ -36,6 +37,10 @@ val mvpModule = module {
 
 val mvvmModule = module {
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
+
+    scope(named<MVVMActivity>()){
+        scoped { Session() }
+    }
 }
 
 val scopeModule = module {
