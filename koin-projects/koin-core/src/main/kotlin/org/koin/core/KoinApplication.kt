@@ -134,10 +134,10 @@ class KoinApplication private constructor() {
     }
 
     fun unloadModules(vararg modules: Module): KoinApplication {
-        return unloadModules(modules.asIterable())
+        return unloadModules(modules.toList())
     }
 
-    fun unloadModules(modules: Iterable<Module>): KoinApplication {
+    fun unloadModules(modules: List<Module>): KoinApplication {
         koin.rootScope.beanRegistry.unloadModules(modules)
         koin.scopeRegistry.unloadScopedDefinitions(modules)
         return this
