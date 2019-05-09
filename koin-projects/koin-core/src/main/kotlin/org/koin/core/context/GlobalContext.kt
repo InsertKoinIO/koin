@@ -92,3 +92,10 @@ fun loadKoinModules(vararg modules: Module) {
 fun unloadKoinModules(vararg modules: Module) {
     GlobalContext.get().unloadModules(*modules)
 }
+
+/**
+ * unload Koin modules from global Koin context
+ */
+fun unloadKoinModules(modules: List<Module>) {
+    GlobalContext.get().unloadModules(modules)
+}
