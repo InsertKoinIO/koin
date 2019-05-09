@@ -10,6 +10,7 @@ import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
@@ -37,6 +38,41 @@ class DynamicModulesTest {
 
         try {
             app.koin.get<Simple.ComponentA>()
+            fail()
+        } catch (e: NoBeanDefFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `should unload additional bound definition`() {
+        val module = module {
+            single { Simple.Component1() } bind Simple.ComponentInterface1::class
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(module)
+        }
+
+        val defA = app.getDefinition(Simple.Component1::class) ?: error("no definition found")
+        Assert.assertEquals(Kind.Single, defA.kind)
+
+        Assert.assertNotNull(app.koin.get<Simple.Component1>())
+        Assert.assertNotNull(app.koin.get<Simple.ComponentInterface1>())
+
+        app.unloadModules(module)
+
+        Assert.assertNull(app.getDefinition(Simple.ComponentA::class))
+
+        try {
+            app.koin.get<Simple.Component1>()
+            fail()
+        } catch (e: NoBeanDefFoundException) {
+            e.printStackTrace()
+        }
+
+        try {
+            app.koin.get<Simple.ComponentInterface1>()
             fail()
         } catch (e: NoBeanDefFoundException) {
             e.printStackTrace()

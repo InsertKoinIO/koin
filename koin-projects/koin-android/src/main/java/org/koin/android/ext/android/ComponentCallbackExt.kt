@@ -6,6 +6,7 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
+
 /**
  * Get Koin context
  */
@@ -21,8 +22,8 @@ fun ComponentCallbacks.getKoin() = when (this) {
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ) = lazy { get<T>(qualifier, parameters) }
 
 /**
@@ -32,6 +33,16 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ): T = getKoin().get(qualifier, parameters)
+
+/**
+ * get given dependency for Android koincomponent, from primary and secondary types
+ * @param name - bean name
+ * @param scope
+ * @param parameters - injection parameters
+ */
+inline fun <reified P, reified S> ComponentCallbacks.bind(
+        noinline parameters: ParametersDefinition? = null
+): S = getKoin().bind<P, S>(parameters)

@@ -11,6 +11,7 @@ class Simple {
     interface ComponentInterface2
     class Component1 : ComponentInterface1, ComponentInterface2
     class Component2 : ComponentInterface1
+    class UserComponent(val c1 : ComponentInterface1)
 
     class MySingle(val id: Int)
     class MyIntFactory(val id: Int)

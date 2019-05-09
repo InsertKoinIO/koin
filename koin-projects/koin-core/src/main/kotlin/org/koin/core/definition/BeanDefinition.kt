@@ -75,10 +75,10 @@ class BeanDefinition<T>(
         val defKind = kind.toString()
         val defName = qualifier?.let { "name:'$qualifier', " } ?: ""
         val defScope = scopeName?.let { "scope:'$scopeName', " } ?: ""
-        val defType = "class:'${primaryType.getFullName()}'"
+        val defType = "primary_type:'${primaryType.getFullName()}'"
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
-            ", classes:$typesAsString"
+            ", secondary_type:$typesAsString"
         } else ""
         return "[type:$defKind,$defScope$defName$defType$defOtherTypes]"
     }

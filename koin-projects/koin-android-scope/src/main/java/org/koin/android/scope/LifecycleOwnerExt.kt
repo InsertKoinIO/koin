@@ -34,11 +34,7 @@ import java.lang.System.identityHashCode
  * @author Arnaud Giuliani
  */
 
-private fun LifecycleOwner.getKoin() = when (this) {
-    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
-    is KoinComponent -> this.getKoin()
-    else -> GlobalContext.get().koin
-}
+private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
 private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
 
