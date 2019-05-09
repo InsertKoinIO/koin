@@ -11,22 +11,21 @@ import org.koin.dsl.module
  * @author vinicius
  *
  */
-class Foo(val name : String)
+class Foo(val name: String)
 
 class KoinFeatureTest {
 
     @Test
-    fun `can install feature`(){
+    fun `can install feature`() {
         val module = module {
             single { Foo("bar") }
         }
         withApplication {
-            application.install(Koin){
+            application.install(Koin) {
                 modules(module)
             }
             val bean = GlobalContext.get().koin.get<Foo>()
             Assert.assertNotNull(bean)
         }
-
     }
 }

@@ -20,4 +20,4 @@ package org.koin.core.error
  *
  * @author Arnaud Giuliani
  */
-class InstanceCreationException(msg: String, parent: Exception) : Exception(msg,parent)
+class InstanceCreationException(msg: String, parent: Exception) : Exception(msg, parent)

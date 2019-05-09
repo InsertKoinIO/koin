@@ -36,7 +36,7 @@ import java.util.*
  * @param level
  */
 fun KoinApplication.androidLogger(
-        level: Level = Level.INFO
+    level: Level = Level.INFO
 ): KoinApplication {
     logger = AndroidLogger(level)
     return this
@@ -65,7 +65,7 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  * @param koinPropertyFile
  */
 fun KoinApplication.androidFileProperties(
-        koinPropertyFile: String = "koin.properties"
+    koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
     val koinProperties = Properties()
     val androidContext = koin.get<Context>()

@@ -119,7 +119,6 @@ class KoinApplicationIsolationTest {
             })
         }
 
-
         koinA.koin.get<ModelA>()
         koinA.koin.get<ModelB>()
         koinB.koin.get<ModelC>()

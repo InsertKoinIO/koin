@@ -22,7 +22,6 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeSet
 
-
 /**
  * ViewModel DSL Extension
  * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
@@ -33,22 +32,21 @@ import org.koin.dsl.ScopeSet
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-        qualifier: Qualifier? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+    qualifier: Qualifier? = null,
+    override: Boolean = false,
+    noinline definition: Definition<T>
 ) {
     factory(qualifier, override, definition).setIsViewModel()
 }
 
 @Deprecated("ViewModel definition can't be used in a scope", level = DeprecationLevel.ERROR)
 inline fun <reified T : ViewModel> ScopeSet.viewModel(
-        qualifier: Qualifier? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+    qualifier: Qualifier? = null,
+    override: Boolean = false,
+    noinline definition: Definition<T>
 ) {
     error("A ViewModel can't be decalred in a scope")
 }
-
 
 const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
 

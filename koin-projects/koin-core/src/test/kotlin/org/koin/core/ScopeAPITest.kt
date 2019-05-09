@@ -17,7 +17,6 @@ class ScopeAPITest {
         modules(
                 module {
                     scope(scopeKey) {
-
                     }
                 }
         )

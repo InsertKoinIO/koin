@@ -87,9 +87,9 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
  * Help support DefinitionContext & DefinitionParameters when resolving definition function
  */
 class InstanceContext(
-        val koin: Koin? = null,
-        val scope: Scope? = koin?.rootScope,
-        private val _parameters: ParametersDefinition? = null
+    val koin: Koin? = null,
+    val scope: Scope? = koin?.rootScope,
+    private val _parameters: ParametersDefinition? = null
 ) {
     val parameters: DefinitionParameters = _parameters?.invoke() ?: emptyParametersHolder()
 }

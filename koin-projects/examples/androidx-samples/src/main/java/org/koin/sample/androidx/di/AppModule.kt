@@ -38,7 +38,7 @@ val mvpModule = module {
 val mvvmModule = module {
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
 
-    scope(named<MVVMActivity>()){
+    scope(named<MVVMActivity>()) {
         scoped { Session() }
     }
 }

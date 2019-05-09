@@ -40,9 +40,9 @@ import org.koin.core.qualifier.Qualifier
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
-        qualifier: Qualifier? = null,
-        noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getSharedViewModel<T>(qualifier, from, parameters) }
 
 /**
@@ -54,9 +54,9 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-        qualifier: Qualifier? = null,
-        noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+    noinline parameters: ParametersDefinition? = null
 ): T {
     val koin = getKoin()
     return koin.getViewModel(

@@ -33,8 +33,8 @@ import org.koin.core.qualifier.Qualifier
  * @param parameters
  */
 inline fun <reified T : Any> Routing.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
         lazy { get<T>(qualifier, parameters) }
 
@@ -44,8 +44,8 @@ inline fun <reified T : Any> Routing.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Routing.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, parameters)
 

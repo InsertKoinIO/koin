@@ -15,10 +15,9 @@
  */
 package org.koin.test.error
 
-
 /**
  * Definition is Broken (dependencies can't be reached)
  *
  * @author Arnaud Giuliani
  */
-class BrokenDefinitionException(msg : String) : Exception(msg)
+class BrokenDefinitionException(msg: String) : Exception(msg)

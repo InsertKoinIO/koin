@@ -42,8 +42,8 @@ class TODOAppTest {
     class FakeTasksRemoteDataSource : TasksDataSource
     class TasksLocalDataSource : TasksDataSource
     class TasksRepository(
-            val remoteDataSource: TasksDataSource,
-            val localDatasource: TasksDataSource
+        val remoteDataSource: TasksDataSource,
+        val localDatasource: TasksDataSource
     ) : TasksDataSource
 
     @Test

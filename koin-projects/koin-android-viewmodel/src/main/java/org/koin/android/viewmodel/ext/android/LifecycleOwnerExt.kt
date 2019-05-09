@@ -33,7 +33,6 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
-
 /**
  * Lazy getByClass a viewModel instance
  *
@@ -42,8 +41,8 @@ import kotlin.reflect.KClass
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel<T>(qualifier, parameters) }
 
 /**
@@ -53,8 +52,8 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T {
     val koin = getKoin()
     return koin.getViewModel(
@@ -82,9 +81,9 @@ fun LifecycleOwner.getKoin() = when (this) {
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     val koin = getKoin()
     return koin.getViewModel(
@@ -96,4 +95,3 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
             )
     )
 }
-

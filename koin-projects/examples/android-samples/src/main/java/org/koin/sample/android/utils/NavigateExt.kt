@@ -46,4 +46,3 @@ fun Intent.applyExtras(extras: Map<String, Any>) {
 inline fun <reified T : AppCompatActivity> Fragment.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
     activity?.navigateTo<T>(isRoot, extras) ?: error("parent activity is null")
 }
-

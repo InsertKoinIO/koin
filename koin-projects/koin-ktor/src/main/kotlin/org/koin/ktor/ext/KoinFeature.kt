@@ -38,12 +38,10 @@ class Koin {
             val application = KoinApplication.create()
             application.apply(configure)
             GlobalContext.start(application)
-            pipeline.environment.monitor.subscribe(ApplicationStopping){
+            pipeline.environment.monitor.subscribe(ApplicationStopping) {
                 GlobalContext.stop()
             }
             return Koin()
         }
-
     }
-
 }

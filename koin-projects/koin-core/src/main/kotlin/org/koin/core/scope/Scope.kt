@@ -32,9 +32,9 @@ import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 data class Scope(
-        val id: ScopeID,
-        val isRoot: Boolean = false,
-        internal val _koin: Koin
+    val id: ScopeID,
+    val isRoot: Boolean = false,
+    internal val _koin: Koin
 ) {
     val beanRegistry = BeanRegistry()
     internal var set: ScopeDefinition? = null
@@ -51,8 +51,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> inject(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
             lazy { get<T>(qualifier, parameters) }
 
@@ -66,8 +66,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> injectOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
             lazy { getOrNull<T>(qualifier, parameters) }
 
@@ -79,8 +79,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -95,8 +95,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> getOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(T::class, qualifier, parameters)
@@ -116,9 +116,9 @@ data class Scope(
      * @return instance of type T
      */
     fun <T> get(
-            clazz: KClass<*>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.debug("+- get '${clazz.getFullName()}'")
@@ -133,9 +133,9 @@ data class Scope(
     }
 
     private fun <T> resolveInstance(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            parameters: ParametersDefinition?
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        parameters: ParametersDefinition?
     ): T {
         val definition = findDefinition(qualifier, clazz)
         return definition.resolveInstance(InstanceContext(this._koin, this, parameters))
@@ -170,7 +170,6 @@ data class Scope(
      * @param scopeID
      */
     fun getScope(scopeID: ScopeID) = getKoin().getScope(scopeID)
-
 
     /**
      * Register a callback for this Scope Instance

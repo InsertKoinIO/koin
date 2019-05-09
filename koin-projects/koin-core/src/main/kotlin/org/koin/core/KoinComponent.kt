@@ -30,7 +30,6 @@ interface KoinComponent {
      * Get the associated Koin instance
      */
     fun getKoin(): Koin = GlobalContext.get().koin
-
 }
 
 /**
@@ -39,8 +38,8 @@ interface KoinComponent {
  * @param parameters
  */
 inline fun <reified T> KoinComponent.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T =
         getKoin().get(qualifier, parameters)
 
@@ -50,7 +49,7 @@ inline fun <reified T> KoinComponent.get(
  * @param parameters
  */
 inline fun <reified T> KoinComponent.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
         getKoin().inject(qualifier, parameters)

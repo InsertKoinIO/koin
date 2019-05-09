@@ -33,8 +33,8 @@ data class ScopeSet(val qualifier: Qualifier, val definitions: HashSet<BeanDefin
      * @param definition - definition function
      */
     inline fun <reified T> scoped(
-            name: Qualifier? = null,
-            noinline definition: Definition<T>
+        name: Qualifier? = null,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createScoped(name, qualifier, definition)
         val added = definitions.add(beanDefinition)
@@ -46,19 +46,19 @@ data class ScopeSet(val qualifier: Qualifier, val definitions: HashSet<BeanDefin
 
     @Deprecated("Single definition can't be used in a scope", level = DeprecationLevel.ERROR)
     inline fun <reified T> single(
-            qualifier: Qualifier? = null,
-            createdAtStart: Boolean = false,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        createdAtStart: Boolean = false,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         error("Single definition can't be used in a scope")
     }
 
     @Deprecated("Factory definition can't be used in a scope", level = DeprecationLevel.ERROR)
     inline fun <reified T> factory(
-            qualifier: Qualifier? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         error("Factory definition can't be used in a scope")
     }

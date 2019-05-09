@@ -31,7 +31,6 @@ class ScopeSetDeclarationTest {
         assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
     }
 
-
     @Test
     fun `can declare 2 scoped definitions from same type without naming`() {
         val koin = koinApplication {

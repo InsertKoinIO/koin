@@ -32,8 +32,8 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class BeanDefinition<T>(
-        val qualifier: Qualifier? = null,
-        val primaryType: KClass<*>
+    val qualifier: Qualifier? = null,
+    val primaryType: KClass<*>
 ) {
     // Main data
     var scopeName: Qualifier? = null

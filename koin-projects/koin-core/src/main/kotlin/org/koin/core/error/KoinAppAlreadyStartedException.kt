@@ -18,4 +18,4 @@ package org.koin.core.error
 /**
  * Koin standalone app is already started error
  */
-class KoinAppAlreadyStartedException(msg : String) : Exception(msg)
+class KoinAppAlreadyStartedException(msg: String) : Exception(msg)

@@ -73,7 +73,7 @@ val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
  * Retrieve linked dependency with defaults params
  */
 internal fun <T : Any> Scope.getWithDefault(
-        clazz: KClass<T>
+    clazz: KClass<T>
 ): T {
     val koin = getKoin()
     return koin.get(clazz, null, null)

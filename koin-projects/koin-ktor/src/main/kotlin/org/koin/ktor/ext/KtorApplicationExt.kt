@@ -20,7 +20,6 @@ import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 
 /**
  * Ktor Koin extensions
@@ -41,8 +40,8 @@ fun Application.getKoin(): Koin = GlobalContext.get().koin
  * @param parameters
  */
 inline fun <reified T : Any> Application.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
         lazy { get<T>(qualifier, parameters) }
 
@@ -53,8 +52,8 @@ inline fun <reified T : Any> Application.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Application.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, parameters)
 

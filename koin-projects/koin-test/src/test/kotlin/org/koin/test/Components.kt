@@ -14,4 +14,4 @@ class Simple {
     }
 }
 
-object UpperCase: Qualifier
+object UpperCase : Qualifier

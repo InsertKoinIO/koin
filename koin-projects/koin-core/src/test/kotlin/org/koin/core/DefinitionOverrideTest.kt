@@ -4,7 +4,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.qualifier.named
-import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertDefinitionsCount
@@ -42,5 +41,4 @@ class DefinitionOverrideTest {
         app.assertDefinitionsCount(1)
         assertTrue(app.koin.get<Simple.ComponentInterface1>(named("DEF")) is Simple.Component1)
     }
-
 }

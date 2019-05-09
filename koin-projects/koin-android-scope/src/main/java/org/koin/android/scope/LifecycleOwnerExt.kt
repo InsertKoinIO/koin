@@ -70,5 +70,3 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateCurrentScope()
 
-
-

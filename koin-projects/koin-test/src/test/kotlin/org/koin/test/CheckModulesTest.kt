@@ -110,7 +110,6 @@ class CheckModulesTest {
         }
     }
 
-
     @Test
     fun `check a simple module`() {
         koinApplication {

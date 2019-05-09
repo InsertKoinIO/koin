@@ -58,7 +58,7 @@ class KoinAppCreationTest {
         }
 
         assertEquals(KoinApplication.logger.level, Level.ERROR)
-        
+
         KoinApplication.logger.debug("debug")
         KoinApplication.logger.info("info")
         KoinApplication.logger.error("error")

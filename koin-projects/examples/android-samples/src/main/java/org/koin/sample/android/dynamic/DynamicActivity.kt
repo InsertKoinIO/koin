@@ -38,5 +38,4 @@ class DynamicActivity : AppCompatActivity() {
             dyn_label.text = "reload ok!"
         }
     }
-
 }

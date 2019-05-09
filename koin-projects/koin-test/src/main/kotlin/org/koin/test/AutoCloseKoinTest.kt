@@ -30,4 +30,3 @@ abstract class AutoCloseKoinTest : KoinTest {
         stopKoin()
     }
 }
-

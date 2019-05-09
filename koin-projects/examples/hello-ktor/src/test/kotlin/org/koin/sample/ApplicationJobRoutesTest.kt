@@ -36,7 +36,6 @@ class ApplicationJobRoutesTest : AutoCloseKoinTest() {
         }
     }
 
-
     @Test
     fun testV1ByeRequest() = withTestApplication(Application::main) {
         with(handleRequest(HttpMethod.Get, "/v1/bye")) {

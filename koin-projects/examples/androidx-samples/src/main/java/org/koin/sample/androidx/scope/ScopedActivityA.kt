@@ -46,5 +46,4 @@ class ScopedActivityA : AppCompatActivity() {
             navigateTo<ScopedActivityB>(isRoot = true)
         }
     }
-
 }

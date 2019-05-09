@@ -77,7 +77,6 @@ class BeanRegistry {
      */
     fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
 
-
     /**
      * Save a definition
      * @param definition
@@ -176,8 +175,8 @@ class BeanRegistry {
      * @param clazz
      */
     fun findDefinition(
-            qualifier: Qualifier? = null,
-            clazz: KClass<*>
+        qualifier: Qualifier? = null,
+        clazz: KClass<*>
     ): BeanDefinition<*>? =
             qualifier?.let { findDefinitionByName(it.toString()) }
                     ?: findDefinitionByClass(clazz)
@@ -224,7 +223,4 @@ class BeanRegistry {
      */
     fun getDefinitionsForClass(clazz: KClass<*>) = getAllDefinitions()
             .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.isKind(Kind.Scope) }
-
-
 }
-

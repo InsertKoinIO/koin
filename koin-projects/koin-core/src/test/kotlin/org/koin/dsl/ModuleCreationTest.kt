@@ -116,7 +116,6 @@ class ModuleCreationTest {
                 module {
                     single { Simple.ComponentB(get()) }
                 })
-
         }
 
         koinApplication {

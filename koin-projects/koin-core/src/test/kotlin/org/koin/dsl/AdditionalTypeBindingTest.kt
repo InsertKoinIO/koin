@@ -93,5 +93,4 @@ class AdditionalTypeBindingTest {
 
         assert(koin.getAll<Simple.ComponentInterface1>().size == 2)
     }
-
 }

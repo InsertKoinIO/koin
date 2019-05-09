@@ -24,7 +24,7 @@ fun <T : ViewModel> Koin.injectViewModel(parameters: ViewModelParameters<T>): La
 private fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T = this.get(parameters.clazz.java)
 
 private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
-        parameters: ViewModelParameters<T>
+    parameters: ViewModelParameters<T>
 ): ViewModelStore =
         when {
             parameters.from != null -> parameters.from.invoke().viewModelStore
@@ -34,8 +34,8 @@ private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
         }
 
 private fun <T : ViewModel> Koin.createViewModelProvider(
-        vmStore: ViewModelStore,
-        parameters: ViewModelParameters<T>
+    vmStore: ViewModelStore,
+    parameters: ViewModelParameters<T>
 ): ViewModelProvider {
     return ViewModelProvider(
             vmStore,

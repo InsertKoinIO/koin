@@ -186,7 +186,6 @@ class DynamicModulesTest {
             modules(module)
         }
 
-
         val scope = app.koin.createScope("id", scopeKey)
         val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
@@ -256,5 +255,4 @@ class DynamicModulesTest {
 
         stopKoin()
     }
-
 }

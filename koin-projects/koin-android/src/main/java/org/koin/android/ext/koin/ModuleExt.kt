@@ -20,7 +20,6 @@ import android.content.Context
 import org.koin.android.error.MissingAndroidContextException
 import org.koin.core.scope.Scope
 
-
 const val ERROR_MSG = "Please use androidContext() function in your KoinApplication configuration."
 
 /**

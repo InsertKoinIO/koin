@@ -21,7 +21,6 @@ import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
 import org.slf4j.LoggerFactory
 
-
 /**
  * SLF4J Koin Logger
  *

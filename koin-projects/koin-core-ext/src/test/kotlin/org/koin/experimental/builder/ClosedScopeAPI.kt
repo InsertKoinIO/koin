@@ -1,11 +1,11 @@
-//package org.koin.experimental.builder
+// package org.koin.experimental.builder
 //
-//import org.junit.Assert
-//import org.junit.Test
-//import org.koin.dsl.koinApplication
-//import org.koin.dsl.module
+// import org.junit.Assert
+// import org.junit.Test
+// import org.koin.dsl.koinApplication
+// import org.koin.dsl.module
 //
-//class ClosedScopeAPI {
+// class ClosedScopeAPI {
 //
 //    val scopeName = "MY_SCOPE"
 //
@@ -42,4 +42,4 @@
 //        Assert.assertEquals(scope.get<ComponentB>(), scope.get<ComponentB>())
 //        Assert.assertEquals(scope.get<ComponentA>(), scope.get<ComponentB>().a)
 //    }
-//}
+// }

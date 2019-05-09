@@ -51,7 +51,6 @@ class ScopeRegistry {
         }
     }
 
-
     internal fun unloadScopedDefinitions(modules: Iterable<Module>) {
         modules.forEach {
             unloadScopes(it)

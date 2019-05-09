@@ -38,9 +38,9 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <T : Any> inject(
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy { get(clazz, qualifier, parameters) }
     }
@@ -55,9 +55,9 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <T : Any> get(
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         val koin = getKoin()
         return koin.get(

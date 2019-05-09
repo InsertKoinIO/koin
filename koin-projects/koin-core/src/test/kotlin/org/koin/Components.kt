@@ -12,19 +12,19 @@ class Simple {
     class Component1 : ComponentInterface1, ComponentInterface2
     class Component2 : ComponentInterface1
 
-    class MySingle(val id : Int)
-    class MyIntFactory(val id : Int)
-    class MyStringFactory(val s : String)
-    class AllFactory(val ints : MyIntFactory, val strings : MyStringFactory)
+    class MySingle(val id: Int)
+    class MyIntFactory(val id: Int)
+    class MyStringFactory(val s: String)
+    class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)
 }
 
 @Suppress("unused")
 class Errors {
-    class Boom{
+    class Boom {
         init {
             error("Got error while init :(")
         }
     }
-    class CycleA(val b : CycleB)
-    class CycleB(val a : CycleA)
+    class CycleA(val b: CycleB)
+    class CycleB(val a: CycleA)
 }

@@ -44,5 +44,4 @@ class MultipleModuleDeclarationTest {
 
         assertEquals(a, b.a)
     }
-
 }

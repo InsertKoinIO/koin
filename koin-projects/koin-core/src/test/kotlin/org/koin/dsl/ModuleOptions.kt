@@ -46,7 +46,6 @@ class ModuleOptions {
             modules(module)
         }
 
-
         assertTrue(module.isCreatedAtStart)
         assertTrue(module.override)
 

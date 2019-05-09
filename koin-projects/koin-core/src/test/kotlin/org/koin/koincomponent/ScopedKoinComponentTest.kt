@@ -1,20 +1,20 @@
-//package org.koin.koincomponent
+// package org.koin.koincomponent
 //
-//import org.junit.After
-//import org.junit.Assert.assertEquals
-//import org.junit.Assert.assertNotEquals
-//import org.junit.Test
-//import org.koin.Simple
-//import org.koin.core.KoinComponent
-//import org.koin.core.context.GlobalContext
-//import org.koin.core.context.startKoin
-//import org.koin.core.context.stopKoin
-//import org.koin.core.inject
-//import org.koin.core.logger.Level
-//import org.koin.core.qualifier.named
-//import org.koin.dsl.module
+// import org.junit.After
+// import org.junit.Assert.assertEquals
+// import org.junit.Assert.assertNotEquals
+// import org.junit.Test
+// import org.koin.Simple
+// import org.koin.core.KoinComponent
+// import org.koin.core.context.GlobalContext
+// import org.koin.core.context.startKoin
+// import org.koin.core.context.stopKoin
+// import org.koin.core.inject
+// import org.koin.core.logger.Level
+// import org.koin.core.qualifier.named
+// import org.koin.dsl.module
 //
-//class ScopedKoinComponentTest {
+// class ScopedKoinComponentTest {
 //
 //    @After
 //    fun after() {
@@ -82,13 +82,13 @@
 //        assertEquals(scopedComponent2.currentScope(), scope1)
 //    }
 //
-//}
+// }
 //
-//val SCOPE_DEF_NAME = named("MY_SCOPE")
+// val SCOPE_DEF_NAME = named("MY_SCOPE")
 //
-//class ScopedComponent(val scopeId: String) : KoinComponent {
+// class ScopedComponent(val scopeId: String) : KoinComponent {
 //    override fun currentScope() = getKoin().getScope(scopeId)
 //
 //    val a: Simple.ComponentA by inject()
 //    val b: Simple.ComponentB by inject()
-//}
+// }

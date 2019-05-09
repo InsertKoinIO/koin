@@ -53,14 +53,14 @@ interface DataSource {
 
 class LocalDbImplementation : DataSource {
     override fun getData(): String {
-        //Obtaining data from db...
+        // Obtaining data from db...
         return "data from db"
     }
 }
 
 class RemoteApiImplementation : DataSource {
     override fun getData(): String {
-        //Obtaining data from api...
+        // Obtaining data from api...
         return "data from api"
     }
 }

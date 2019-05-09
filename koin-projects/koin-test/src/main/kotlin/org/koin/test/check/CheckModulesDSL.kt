@@ -20,7 +20,6 @@ import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
-
 data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*>)
 
 class ParametersBinding {
