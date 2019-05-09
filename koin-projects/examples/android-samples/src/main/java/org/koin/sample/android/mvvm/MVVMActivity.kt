@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.assertEquals
+import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.getKoin
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

@@ -1,0 +1,73 @@
+- Execution of android-perfs app -
+
+- Nokia 7p (Android 9)
+--
+I/System.out: [1] started in 235.78224 ms
+I/System.out: [1] measured executed in 4.493958 ms
+I/System.out: [2] started in 32.687657 ms
+I/System.out: [2] measured executed in 0.794479 ms
+I/System.out: [3] started in 40.710365 ms
+I/System.out: [3] measured executed in 0.594219 ms
+I/System.out: [4] started in 20.295 ms
+I/System.out: [4] measured executed in 0.710053 ms
+I/System.out: [5] started in 15.513802 ms
+I/System.out: [5] measured executed in 0.658489 ms
+I/System.out: [6] started in 12.255312 ms
+I/System.out: [6] measured executed in 0.499167 ms
+I/System.out: [7] started in 9.824219 ms
+I/System.out: [7] measured executed in 0.531198 ms
+I/System.out: [8] started in 5.807448 ms
+I/System.out: [8] measured executed in 0.609011 ms
+I/System.out: [9] started in 4.909271 ms
+I/System.out: [9] measured executed in 0.550208 ms
+I/System.out: [10] started in 3.615312 ms
+I/System.out: [10] measured executed in 0.520886 ms
+I/System.out: Avg execution time: 0.9961667999999999
+
+- Honor 5x (Android 6)
+--
+I/System.out: [1] started in 711.858073 ms
+I/System.out: [1] measured executed in 6.909687 ms
+I/System.out: [2] started in 35.749323 ms
+    [2] measured executed in 1.044167 ms
+I/System.out: [3] started in 52.390156 ms
+    [3] measured executed in 1.252968 ms
+I/System.out: [4] started in 43.744479 ms
+    [4] measured executed in 1.26625 ms
+I/System.out: [5] started in 60.126615 ms
+    [5] measured executed in 1.272553 ms
+I/System.out: [6] started in 42.442969 ms
+I/System.out: [6] measured executed in 0.991146 ms
+I/System.out: [7] started in 76.236615 ms
+    [7] measured executed in 1.027916 ms
+I/System.out: [8] started in 38.131927 ms
+I/System.out: [8] measured executed in 0.969063 ms
+I/System.out: [9] started in 61.818854 ms
+    [9] measured executed in 1.064844 ms
+I/System.out: [10] started in 82.762292 ms
+    [10] measured executed in 0.951563 ms
+I/System.out: Avg execution time: 1.6750156999999999
+
+- LG G4 (Android 6)
+--
+I/System.out: [1] started in 579.978125 ms
+I/System.out: [1] measured executed in 6.601094 ms
+I/System.out: [2] started in 26.109844 ms
+I/System.out: [2] measured executed in 0.777239 ms
+I/System.out: [3] started in 27.442656 ms
+I/System.out: [3] measured executed in 1.001614 ms
+I/System.out: [4] started in 36.140261 ms
+I/System.out: [4] measured executed in 0.769844 ms
+I/System.out: [5] started in 32.504531 ms
+I/System.out: [5] measured executed in 1.260886 ms
+I/System.out: [6] started in 32.844479 ms
+I/System.out: [6] measured executed in 0.758854 ms
+I/System.out: [7] started in 33.487344 ms
+    [7] measured executed in 0.788386 ms
+I/System.out: [8] started in 29.661771 ms
+I/System.out: [8] measured executed in 0.944583 ms
+I/System.out: [9] started in 36.87599 ms
+    [9] measured executed in 0.84 ms
+I/System.out: [10] started in 31.146667 ms
+I/System.out: [10] measured executed in 0.9625 ms
+I/System.out: Avg execution time: 1.4705

@@ -59,12 +59,28 @@ object KoinJavaComponent {
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T {
-        val koin = getKoin()
-        return koin.get(
+        return getKoin().get(
                 clazz.kotlin,
                 qualifier,
                 parameters
         )
+    }
+
+    /**
+     * Retrieve given dependency
+     * @param clazz - dependency class
+     * @param qualifier - bean canonicalName / optional
+     * @param scope - scope
+     * @param parameters - dependency parameters / optional
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun <P : Any, S : Any> bind(
+            primary: Class<P>,
+            secondary: Class<S>,
+            parameters: ParametersDefinition? = null
+    ): S {
+        return getKoin().bind(primary.kotlin, secondary.kotlin, parameters)
     }
 
     /**

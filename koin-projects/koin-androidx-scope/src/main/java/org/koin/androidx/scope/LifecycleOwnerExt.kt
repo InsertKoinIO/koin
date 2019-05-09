@@ -20,8 +20,6 @@ import android.content.ComponentCallbacks
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
-import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
@@ -33,11 +31,7 @@ import org.koin.ext.getFullName
  * @author Arnaud Giuliani
  */
 
-private fun LifecycleOwner.getKoin() = when (this) {
-    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
-    is KoinComponent -> this.getKoin()
-    else -> GlobalContext.get().koin
-}
+private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
 private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
 

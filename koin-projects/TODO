@@ -53,9 +53,9 @@ Scope API -> scoped defs only in Scope Definition
 
 UnloadKoinModules
 
--- TODO --
-
 Secondary types - tree in Bean Registry
+
+-- TODO --
 
 Website - Doc migration -> Scope / inner Module
 
@@ -68,6 +68,9 @@ x Getting started
 x Koin samples
 x Changelog update
 * Website
+    - additional typing
+    - load/unload - dynmaic modules
+    - parent activity/fragment scope - currentScope
  -> Test links front page & all
 * new web logo
 * Ref documentation

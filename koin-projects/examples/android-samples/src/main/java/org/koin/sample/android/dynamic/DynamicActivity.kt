@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.dynamic_activity.*
 import org.koin.android.ext.android.get
-import org.koin.android.viewmodel.ext.android.getKoin
+import org.koin.android.ext.android.getKoin
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.qualifier.named
