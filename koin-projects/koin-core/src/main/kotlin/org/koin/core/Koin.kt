@@ -120,7 +120,7 @@ class Koin {
      *
      * @return instance of type S
      */
-    inline fun <reified P, reified S> bind(): S = rootScope.bind<P, S>()
+    inline fun <reified P, reified S> bind(noinline parameters: ParametersDefinition?): S = rootScope.bind<P, S>(parameters)
 
 
     internal fun createEagerInstances() = rootScope.createEagerInstances()

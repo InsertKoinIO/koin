@@ -54,3 +54,12 @@ inline fun <reified T> KoinComponent.inject(
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
         getKoin().inject(qualifier, parameters)
+
+/**
+ * Get instance instance from Koin by Primary Type P, as secondary type S
+ * @param parameters
+ */
+inline fun <reified P, reified S> KoinComponent.bind(
+        noinline parameters: ParametersDefinition? = null
+): S =
+        getKoin().bind<P, S>(parameters)

@@ -201,11 +201,11 @@ data class Scope(
      *
      * @return instance of type S
      */
-    inline fun <reified P, reified S> bind(): S {
+    inline fun <reified P, reified S> bind(noinline parameters: ParametersDefinition? = null): S {
         val primaryType = P::class
         val secondaryType = S::class
         return beanRegistry.getAllDefinitions().first { it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType) && !it.isKind(Kind.Scope) }
-                .instance!!.get((InstanceContext(getKoin(), this))) as S
+                .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
     }
 
     /**
