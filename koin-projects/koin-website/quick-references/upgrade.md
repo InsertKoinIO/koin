@@ -10,7 +10,7 @@ toc: true
 
 ### New way to start Koin
 
-Koin 2.0 propose a new way of starting your Koin application. Instead of having multiple `startKoin` function, related to each extended runtime, we now only have one `startKoin` fucntion and several ways to extend it for your platform:
+Koin 2.0 propose a new way of starting your Koin application. Instead of having multiple `startKoin` functions, related to each extended runtime, we now only have one `startKoin` function and several ways to extend it for your platform:
 
 In a classical Kotlin file:
 
@@ -101,7 +101,7 @@ At start, Koin log what definition is bound by name or type:
 
 ### Import naming changes for DSL
 
-Koin Module DSL hasn't change much (appart the Scope API that will need entire rework), most changes can then fixed with imports. Take a note that there is no more inner module or visibility rules for this. Module visibility is simple. Those are just list of definitions, visibile everywhere.
+Koin Module DSL hasn't changed much (appart the Scope API that will need entire rework), most changes can then be fixed with imports. Take a note that there is no more inner module or visibility rules for this. Module visibility is simple. Those are just list of definitions, visibile everywhere.
 
 {% highlight kotlin %}
 org.koin.android.viewmodel.ext.koin.viewModel -> org.koin.android.viewmodel.dsl.viewModel
