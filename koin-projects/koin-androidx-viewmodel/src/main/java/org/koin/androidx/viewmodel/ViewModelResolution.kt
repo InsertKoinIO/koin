@@ -24,7 +24,13 @@ fun <T : ViewModel> Koin.getViewModel(parameters: ViewModelParameters<T>): T {
  */
 fun <T : ViewModel> Koin.injectViewModel(parameters: ViewModelParameters<T>): Lazy<T> = lazy { getViewModel(parameters) }
 
-private fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T = this.get(parameters.clazz.java)
+private fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T {
+    return if (parameters.qualifier != null) {
+        this.get(parameters.qualifier.toString(), parameters.clazz.java)
+    } else {
+        this.get(parameters.clazz.java)
+    }
+}
 
 private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
     parameters: ViewModelParameters<T>
