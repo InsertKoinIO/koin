@@ -46,7 +46,7 @@ _Core_
 * `[UPDATED]` - Kotlin 1.3.21
 * `[ADDED]` - Qualifiers with `named()` function to replace old string names. Allow to use Types
 * `[ADDED]` - `getOrNull()` and `injectOrNull()` to safely resolve potential components and get null of not present
-* `[UPDATED]` - additional binding API, with getAll<S>() & bind<P,S>() operator to look for instances regarding secondary type definition
+* `[UPDATED]` - additional binding API, with `getAll<S>()` & `bind<P,S>()` operator to look for instances regarding secondary type definition
 * `[ADDED]` - `declare()` on Koin & Scope, to help declare an instance on the fly
 
 _Test_
