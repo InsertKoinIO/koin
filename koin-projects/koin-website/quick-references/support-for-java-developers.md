@@ -58,6 +58,3 @@ import static org.koin.java.standalone.KoinJavaComponent.*;
 ComponentA a = get(ComponentA.class);
 Lazy<ComponentA> lazy_a = inject(ComponentA.class);
 {% endhighlight %}
-
-## More about Java features
-

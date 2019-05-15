@@ -80,5 +80,7 @@ class MyTest : KoinTest {
 }
 {% endhighlight %}
 
-## More about testing with Koin
+### Starting & stopping your Koin instance
+
+Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
 

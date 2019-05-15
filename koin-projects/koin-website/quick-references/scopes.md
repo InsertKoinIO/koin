@@ -17,14 +17,6 @@ By default in Koin, we have 3 kind of scopes:
 - `factory` definition, create a new object each time. No persistence in the container (can't be shared).
 - `scoped` definition, create an object that persistent tied to the associated scope lifetime.
 
-To declare a scope definition, use the `scoped` function:
-
-{% highlight kotlin %}
-module {
-    scoped { Presenter() }
-}
-{% endhighlight %}
-
 ### Declare and use a scope
 
 A scope is a logical unit of scoped definitions.
@@ -53,8 +45,8 @@ module {
 From any `Koin` instance or also available from your `KoinComponent` with `getKoin()`, the following functions allows to handle scope instances:
 
 {% highlight kotlin %}
-// create scope instance with ScopeID "myScope" for scope naled "MY_SCOPE"
-val myScope : Scope = koin.createScope("myScope", named("MY_SCOPE")
+// create scope instance with ScopeID "myScopeId" for scope naled "MY_SCOPE"
+val myScope : Scope = koin.createScope("myScopeId", named("MY_SCOPE")
 
 // get instance ComponentA from scope
 val a = myScope.get<ComponentA>()
@@ -62,14 +54,17 @@ val a = myScope.get<ComponentA>()
 val b = myScope.get<ComponentB>()
 
 // if you need, you can retrieve your scope instance by its id
-val myScope : Scope = koin.getScope("myScope")
+val myScope : Scope = koin.getScope("myScopeId")
 
 // close the scope when needed
 myScope.close()
 {% endhighlight %}
 
-## More about
+## Scope vs Module unloading
 
-Below are some further readings:
+Koin gives 2 possibilties to handle definitions & instances for a limited lifetime: Scope API & modules unload. What is the difference and when to use them?
 
+- `unloadKoinModules()` allows to drop modules definitions (and instances). it's very usefull for dymaic module architecture approach, or when we need to load/unload/reload definitions. 
+- Scope API is dedicated to limited lifetime definitions, creating bunch of definitions for a given lifetime/purpose
 
+Using modules unload is more simpler that wiring scopes, but you have to unload/reload modules definitions each time you need. Also one difference, definitions are no longer reachables. Scope API is more dedcaited to fine grained lifetime limited instances, or multiple instance of the same scopes (sessions...).

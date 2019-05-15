@@ -31,10 +31,6 @@ val myModule = module {
     // Define a factory (create a new instance each time) for type Presenter (infered parameter in <>) 
     // Resolve constructor dependency with get()
     factory<Presenter> { MyPresenter(get()) }
-
-    // Define a factory (create a new instance each time) for type MyPresenter and Presenter 
-    // Resolve constructor dependency with get()
-    factory { MyPresenter(get()) } bind Presenter::class
     
     // Define a singleton of type HttpClient
     // inject property "server_url" from Koin properties
@@ -65,17 +61,9 @@ Let's dispatch definitions in 2 modules:
 
 {% highlight kotlin %}
 val module1 = module {
-
-    // Define a singleton for type  DataRepository
     single { DataRepository() }
 }
-{% endhighlight %}
-
-{% highlight kotlin %}
 val module2 = module {
-
-    // Define a factory for type Presenter (create a new instance each time)
-    // Resolve constructor dependency with get()
     factory<Presenter> { MyPresenter(get()) }
 }
 {% endhighlight %}
@@ -87,6 +75,61 @@ startKoin {
     modules(module1,module2)
 }
 {% endhighlight %}
+
+## Loading modules after start
+
+After Koin has been started with `startKoin { }` function, it is possible to load extra definitions modules with the following function: `loadKoinModules(modules...)`
+
+## Dropping definitions & modules - definitions unload 
+
+Once a modules has been loaded into Koin, we can unload it and then drop definitions and instances, related to those definitions. for this we use the `unloadKoinModules(modules...)` 
+
+{% highlight kotlin %}
+val module = module {
+    single { (id: Int) -> Simple.MySingle(id) }
+}
+startKoin {
+    printLogger(Level.DEBUG)
+    modules(module)
+}
+
+get<Simple.MySingle> { parametersOf(42) } -> id is 42
+
+// unload definitions for given module
+unloadKoinModules(module)
+// load definitions for given module
+loadKoinModules(module)
+
+get<Simple.MySingle> { parametersOf(24) } -> id is 24
+{% endhighlight %}
+
+## Declare instance on the fly
+
+One of the last backport feature from Koin 1.0 is the ability to declare an instance on the fly. This is now available on Koin.declare() or Scope.declare()
+
+{% highlight kotlin %}
+val koin = koinApplication {
+    // no def
+    modules()
+}.koin
+
+// Create an instance
+val a = Simple.ComponentA()
+
+// declare it
+koin.declare(a)
+
+// retrieve it
+assertEquals(a, koin.get<Simple.ComponentA>())
+{% endhighlight %}
+
+
+You can also use a qualifier or secondary types to help create your definition:
+
+- `koin.declare(myInstance, named("qualifier"))`
+- `koin.declare(myInstance, secondaryTypes = listOf())`
+
+<br/>
 
 ### Module Keywords recap
 
@@ -100,8 +143,4 @@ A quick recap of the Koin DSL keywords:
 * `bind` - additional Kotlin type binding for given bean definition
 * `binds` - list of additional Kotlin types binding for given bean definition
 * `getProperty()` - resolve a Koin property
-
-## Beyond Koin DSL
-
-Below are some further readings:
 

@@ -40,7 +40,7 @@ fun main(vararg args: String) {
 
         // list all used modules
         // as list or vararg
-        modules(moduleList) 
+        modules(myModules) 
     }
 }
 {% endhighlight %}
@@ -66,7 +66,7 @@ class MainApplication : Application() {
             androidFileProperties()
 
             // module list
-            modules(offlineWeatherApp)
+            modules(myModules)
         }
     }
 }
@@ -88,7 +88,7 @@ fun Application.main() {
         slf4jLogger()
 
         // declare used modules
-        modules(helloAppModule)
+        modules(myModules)
     }
 }
 {% endhighlight %}
