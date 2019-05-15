@@ -18,8 +18,8 @@ package org.koin.core.scope
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Kind
-import org.koin.core.definition.Properties
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
@@ -37,8 +37,7 @@ data class Scope(
     internal val _koin: Koin
 ) {
     val beanRegistry = BeanRegistry()
-    internal var set: ScopeDefinition? = null
-    val properties = Properties()
+    var set: ScopeDefinition? = null
     private val callbacks = arrayListOf<ScopeCallback>()
 
     /**
@@ -54,7 +53,7 @@ data class Scope(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, parameters) }
+        lazy { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -69,7 +68,7 @@ data class Scope(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy { getOrNull<T>(qualifier, parameters) }
+        lazy { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -161,6 +160,29 @@ data class Scope(
     }
 
     /**
+     * Declare a component definition from the given instance
+     * This result of declaring a scoped/single definition of type T, returning the given instance
+     * (single definition of th current scope is root)
+     *
+     * @param instance
+     * @param qualifier
+     * @param secondaryTypes - list of secondary bound types
+     */
+    inline fun <reified T> declare(
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null
+    ) {
+        val definition = if (isRoot) {
+            DefinitionFactory.createSingle(qualifier) { instance }
+        } else {
+            DefinitionFactory.createScoped(qualifier, set?.qualifier) { instance }
+        }
+        secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
+        beanRegistry.saveDefinition(definition)
+    }
+
+    /**
      * Get current Koin instance
      */
     fun getKoin() = _koin
@@ -192,7 +214,7 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> = beanRegistry.getDefinitionsForClass(clazz)
-            .map { it.instance!!.get<T>((InstanceContext(this._koin, this))) }
+        .map { it.instance!!.get<T>((InstanceContext(this._koin, this))) }
 
     /**
      * Get instance of primary type P and secondary type S
@@ -212,9 +234,17 @@ data class Scope(
      *
      * @return instance of type S
      */
-    fun <S> bind(primaryType: KClass<*>, secondaryType: KClass<*>, parameters: ParametersDefinition?): S {
-        return beanRegistry.getAllDefinitions().first { it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType) && !it.isKind(Kind.Scope) }
-                .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
+    fun <S> bind(
+        primaryType: KClass<*>,
+        secondaryType: KClass<*>,
+        parameters: ParametersDefinition?
+    ): S {
+        return beanRegistry.getAllDefinitions().first {
+            it.primaryType == primaryType && it.secondaryTypes.contains(
+                secondaryType
+            ) && !it.isKind(Kind.Scope)
+        }
+            .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
     }
 
 
@@ -236,7 +266,7 @@ data class Scope(
      * @param key
      */
     fun <T> getProperty(key: String): T = _koin.getProperty(key)
-            ?: throw MissingPropertyException("Property '$key' not found")
+        ?: throw MissingPropertyException("Property '$key' not found")
 
     internal fun declareDefinitionsFromScopeSet() {
         set?.let {
