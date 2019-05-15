@@ -33,7 +33,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 
 ```gradle
 // latest stable
-koin_version = '2.0.0-GA2'
+koin_version = '2.0.0-GA3'
 ```
 
 ## Gradle 
