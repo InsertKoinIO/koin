@@ -17,6 +17,7 @@ _Android-ViewModel_
 * `[ADDED]` - support for new Scope API
 * `[REMOVED]` - removed koin-ext builder API
 * `[UPDATED]` - make the API open to Koin instance isolation
+* `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
 
 _AndroidX-Scope_
 * `[UPDATED]` - update API regarding the changes in `koin-android-scope`
@@ -24,6 +25,7 @@ _AndroidX-Scope_
 
 _AndroidX-ViewModel_
 * `[UPDATED]` - update API regarding the changes in `koin-android-viewmodel`
+* `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
 
 _Core_
 
@@ -45,6 +47,9 @@ _Test_
 * `[UPDATED]` - rework testing API, codebase detached from internal core tests
 * `[UPDATED]` - checkModules now rely on pure Kotlin & with `create` parameters DSL
 
+_Java_
+* `[UPDATED]` - updated `KoinJavaComponent` for the new API
+* `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/451 - No longer possible to get objects from a scope in Java code - `scope` parameter to allow resolve a dependency from this scope instance
 
 _Ktor_
 * `[UPDATED]` - rework startking DSL to add extension in startKoin

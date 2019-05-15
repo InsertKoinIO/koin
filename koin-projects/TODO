@@ -55,6 +55,10 @@ UnloadKoinModules
 
 Secondary types - tree in Bean Registry
 
+fixes:
+- https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models
+- https://github.com/InsertKoinIO/koin/issues/451 - No longer possible to get objects from a scope in Java code
+
 -- TODO --
 
 Website - Doc migration -> Scope / inner Module
