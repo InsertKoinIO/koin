@@ -46,7 +46,7 @@ class MyComponent : KoinComponent {
 
     // or
     // eager inject Koin instance
-    val myService : MyService get()
+    val myService : MyService = get()
 }
 ----
 
@@ -56,7 +56,6 @@ Once you have tagged your class as `KoinComponent`, you gain access to:
 
 * `by inject()` - lazy evaluated instance from Koin container
 * `get()` - eager fetch instance from Koin container
-* `release()` - release module's instances from its path
 * `getProperty()`/`setProperty()` - get/set property
 
 
@@ -85,15 +84,15 @@ The lazy inject form is better to define property that need lazy evaluation.
 
 If you need you can specify the following parameter with `get()` or `by inject()`
 
-* `name` - name of the definition (when specified name parameter in your definition)
+* `qualifier` - name of the definition (when specified name parameter in your definition)
 
 Example of module using definitions names:
 
 [source,kotlin]
 ----
 val module = module {
-    single(name="A") { ComponentA() }
-    single(name="B") { ComponentB(get()) }
+    single(named("A")) { ComponentA() }
+    single(named("B")) { ComponentB(get()) }
 }
 
 class ComponentA
@@ -105,7 +104,7 @@ We can make the following resolutions:
 [source,kotlin]
 ----
 // retrieve from given module
-val a = get<ComponentA>(name = "A")
+val a = get<ComponentA>(named("A"))
 ----
 
 

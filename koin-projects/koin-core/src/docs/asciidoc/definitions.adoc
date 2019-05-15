@@ -143,7 +143,7 @@ val myModule = module {
 This 2nd way of style declaration is preferred and will be used for the rest of the documentation.
 ====
 
-=== Definition: binding an additional type
+=== Definition: Additional type binding (aka secondary types)
 
 In some cases, we want to match several types from just one definition.
 
@@ -175,6 +175,8 @@ val myModule = module {
 }
 ----
 
+Note here, that we would resolve the `Service` type directly with `get()`. But if we have multiple definitions binding `Service`, we have to use the `bind<>()` function.
+
 === Definition: naming & default bindings
 
 You can specify a name to your definition, to help you distinguish two definitions about the same type:
@@ -184,14 +186,14 @@ Just request your definition with its name:
 [source,kotlin]
 ----
 val myModule = module {
-    single<Service>("default") { ServiceImpl() }
-    single<Service>("test") { ServiceImpl() }
+    single<Service>(named("default")) { ServiceImpl() }
+    single<Service>(named("test")) { ServiceImpl() }
 }
 
-val service : Service by inject(name = "default")
+val service : Service by inject(name = named("default"))
 ----
 
-`get()` and `by inject()` functions let you specify a definition name if needed.
+`get()` and `by inject()` functions let you specify a definition name if needed. This name is a `qualifier` produced by the `named()` function.
 
 By default Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
 
@@ -199,19 +201,19 @@ By default Koin will bind a definition by its type or by its name, if the type i
 ----
 val myModule = module {
     single<Service> { ServiceImpl1() }
-    single<Service>("test") { ServiceImpl2() }
+    single<Service>(named("test")) { ServiceImpl2() }
 }
 ----
 
 Then:
 
 - `val service : Service by inject()` will trigger the `ServiceImpl1` definition
-- `val service : Service by inject(name = "test")` will trigger the `ServiceImpl2` definition
+- `val service : Service by inject(named("test"))` will trigger the `ServiceImpl2` definition
 
 
 === Declaring injection parameters
 
-In any `single`, `factory` or `scope` definition, you can use injection parameters: parameters that will be injected and used by your definition:
+In any `single`, `factory` or `scoped` definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
 [source,kotlin]
 ----
@@ -308,8 +310,8 @@ To allow you, use the 2 definitions you will have to differentiate them via thei
 [source,kotlin]
 ----
 module {
-    single(name="Ints") { ArrayList<Int>() }
-    single(name="Strings") { ArrayList<String>() }
+    single(named("Ints")) { ArrayList<Int>() }
+    single(named("Strings")) { ArrayList<String>() }
 }
 ----
 

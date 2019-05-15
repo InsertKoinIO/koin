@@ -31,8 +31,6 @@ val appModule = module {
 
     // ViewModel for Detail View
     viewModel { DetailViewModel(get(), get()) }
-    // or
-    viewModel<DetailViewModel>()
 
 }
 ----
@@ -84,10 +82,10 @@ val weatherAppModule = module {
 
     // WeatherViewModel declaration for Weather View components
     viewModel { WeatherViewModel(get(), get()) }
-    // or
-    viewModel<WeatherViewModel>()
 }
 ----
+
+Note: a qualifier for a ViewModel will be handled as a ViewModel's Tag
 
 And reuse it in Activity and Fragments:
 

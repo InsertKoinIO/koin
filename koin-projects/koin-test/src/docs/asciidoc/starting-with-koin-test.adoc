@@ -140,10 +140,8 @@ Koin offers a way to test if you Koin modules are good: `checkModules` - walk th
     }
 ----
 
+== Starting & stopping Koin for your tests
 
-
-
-
-
+Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
 
 

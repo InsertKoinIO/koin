@@ -10,7 +10,7 @@
 
 = Koin core: DSL, Container & API
 
-Arnaud Giuliani <arnaud.g@insert-koin.io> - and on twitter: @arnogiu
+Arnaud Giuliani <arnaud@insert-koin.io> - and on twitter: @arnogiu
 :revnumber: {project-version}
 
 ifndef::imagesdir[:imagesdir: images]

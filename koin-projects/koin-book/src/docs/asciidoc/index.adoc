@@ -9,7 +9,7 @@
 :linkcss:
 
 = Koin Reference Documentation
-Arnaud Giuliani <arnaud.g@insert-koin.io>
+Arnaud Giuliani <arnaud@insert-koin.io>
 :revnumber: {project-version}
 :example-caption!:
 

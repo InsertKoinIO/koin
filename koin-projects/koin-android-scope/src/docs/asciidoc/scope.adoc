@@ -68,7 +68,9 @@ val androidModule = module {
 ----
 val androidModule = module {
 
-    scope("scope_id") { Presenter() }
+    scope(named("scope_id")) {
+        scoped { Presenter() }
+    }
 }
 ----
 
@@ -78,24 +80,29 @@ Most of Android memory leaks comes from referencing a UI/Android component from 
 on it and can't totally drop it via garbage collection.
 ====
 
-=== Binding scope to lifecycle
+=== CurrentScope - a scope tied to your lifecycle
 
-Koin gives the `bindScope` function to bind the actual Android component lifecycle, to a given scope. On lifecycle's end, this will close the bound scope.
+Koin gives the `currentScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
 
+To benefit from the `currentScope`, you have to declare a scope for your activity (see how we use the `named()` qualifier with our Activity type):
+
+[source,kotlin]
+----
+val androidModule = module {
+
+    scope(named<MyActivity>()) {
+        scoped { Presenter() }
+    }
+}
+----
 
 [source,kotlin]
 ----
 class MyActivity : AppCompatActivity() {
 
-    // inject Presenter instance, tied to current "scope_id" scope
-    val presenter : Presenter by inject()
+    // inject Presenter instance from current scope
+    val presenter : Presenter by currentScope.inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // bind current lifecycle to Activity's scope
-        bindScope(getScope("scope_id"))
-    }
 ----
 
 
@@ -109,7 +116,9 @@ First declare a scope definition:
 ----
 module {
     // Shared user session data
-    scope("session") { UserSession() }
+    scope(named("session")) {
+        scoped { UserSession() }
+    }
 }
 ----
 
@@ -117,7 +126,7 @@ When needed to begin use a `UserSession` instance, create a scope for it:
 
 [source,kotlin]
 ----
-getKoin().createScope("session")
+val ourSession = getKoin().createScope("ourSession",named("session"))
 ----
 
 Then use it anywhere you need it:
@@ -126,13 +135,11 @@ Then use it anywhere you need it:
 ----
 class MyActivity1 : AppCompatActivity() {
 
-    // inject Presenter instance, tied to current MyActivity's scope
-    val userSession : UserSession by inject()
+    val userSession : UserSession by ourSession.inject()
 }
 class MyActivity2 : AppCompatActivity() {
 
-    // inject Presenter instance, tied to current MyActivity's scope
-    val userSession : UserSession by inject()
+    val userSession : UserSession by ourSession.inject()
 }
 ----
 
@@ -143,15 +150,18 @@ or you can also inject it with Koin DSL. If a presenter need it:
 class Presenter(val userSession : UserSession)
 ----
 
-Just inject it into constructor, with the right scope:
+Just inject it into constructor, with the right scope id:
 
 [source,kotlin]
 ----
 module {
     // Shared user session data
-    scope("session") { UserSession() }
+    scope(named("session")) {
+        scoped { UserSession() }
+    }
+
     // Inject UserSession instance from "session" Scope
-    factory { Presenter(get())}
+    factory { (scopeId : ScopeID) -> Presenter(getScope(scopeId).get())}
 }
 ----
 
@@ -159,7 +169,7 @@ When you have to finish with your scope, just close it:
 
 [source,kotlin]
 ----
-val session = getKoin().getScope("session")
-session.close()
+val ourSession = getKoin().getScope("ourSession")
+ourSession.close()
 ----
 
