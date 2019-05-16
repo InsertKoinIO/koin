@@ -71,3 +71,82 @@ I/System.out: [9] started in 36.87599 ms
 I/System.out: [10] started in 31.146667 ms
 I/System.out: [10] measured executed in 0.9625 ms
 I/System.out: Avg execution time: 1.4705
+
+
+-- Ext/Reflect --
+
+- Nokia 7p
+--
+I/System.out: [1] started in 212.046406 ms
+I/System.out: [1] measured executed in 6.609427 ms
+I/System.out: [2] started in 29.930886 ms
+I/System.out: [2] measured executed in 1.34224 ms
+I/.sample.androi: Method exceeds compiler instruction limit: 20430 in void org.koin.perfs.Module_400_extKt$perfModule400Ext$1.invoke(org.koin.core.module.Module)
+I/System.out: [3] started in 23.694792 ms
+I/System.out: [3] measured executed in 0.879739 ms
+I/System.out: [4] started in 18.394166 ms
+I/System.out: [4] measured executed in 0.890833 ms
+I/System.out: [5] started in 16.645938 ms
+I/System.out: [5] measured executed in 1.434844 ms
+I/System.out: [6] started in 11.441406 ms
+I/System.out: [6] measured executed in 0.952188 ms
+I/System.out: [7] started in 8.898333 ms
+I/System.out: [7] measured executed in 1.081198 ms
+I/System.out: [8] started in 5.451094 ms
+I/System.out: [8] measured executed in 0.932812 ms
+I/System.out: [9] started in 4.869583 ms
+I/System.out: [9] measured executed in 0.957292 ms
+I/System.out: [10] started in 4.002553 ms
+I/System.out: [10] measured executed in 0.807292 ms
+I/System.out: Avg execution time: 1.5887865000000003
+
+<1ms <~> 2ms
+
+
+- Honor 5x (Android 6)
+--
+I/System.out: [1] started in 746.350676 ms
+I/System.out: [1] measured executed in 44.877969 ms
+I/System.out: [2] started in 47.053281 ms
+I/System.out: [2] measured executed in 2.840365 ms
+I/System.out: [3] started in 51.381093 ms
+    [3] measured executed in 2.12625 ms
+I/System.out: [4] started in 71.861927 ms
+    [4] measured executed in 1.634479 ms
+I/System.out: [5] started in 54.738281 ms
+    [5] measured executed in 1.878282 ms
+I/System.out: [6] started in 80.724062 ms
+I/System.out: [6] measured executed in 1.598854 ms
+I/System.out: [7] started in 35.60948 ms
+    [7] measured executed in 1.519323 ms
+I/System.out: [8] started in 46.547292 ms
+I/System.out: [8] measured executed in 2.735781 ms
+I/System.out: [9] started in 84.926458 ms
+    [9] measured executed in 1.619635 ms
+I/System.out: [10] started in 90.972813 ms
+I/System.out: [10] measured executed in 1.619583 ms
+I/System.out: Avg execution time: 6.2450521000000006
+
+- LG G4 (Android 6)
+--
+I/System.out: [1] started in 838.156927 ms
+I/System.out: [1] measured executed in 39.071458 ms
+I/System.out: [2] started in 34.945885 ms
+I/System.out: [2] measured executed in 1.682708 ms
+I/System.out: [3] started in 33.807865 ms
+I/System.out: [3] measured executed in 1.679739 ms
+I/System.out: [4] started in 42.285938 ms
+I/System.out: [4] measured executed in 1.73552 ms
+I/System.out: [5] started in 38.180052 ms
+I/System.out: [5] measured executed in 2.070729 ms
+I/System.out: [6] started in 37.984219 ms
+I/System.out: [6] measured executed in 1.630938 ms
+I/System.out: [7] started in 41.32552 ms
+I/System.out: [7] measured executed in 1.756094 ms
+I/System.out: [8] started in 38.748438 ms
+I/System.out: [8] measured executed in 1.631875 ms
+I/System.out: [9] started in 36.330209 ms
+I/System.out: [9] measured executed in 1.51026 ms
+I/System.out: [10] started in 38.597552 ms
+I/System.out: [10] measured executed in 1.974271 ms
+I/System.out: Avg execution time: 5.4743592
