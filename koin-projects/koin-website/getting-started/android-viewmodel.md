@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Getting started with Android Architetcure & ViewModel
+title: Getting started with Android Architecture & ViewModel
 description: Let's start with Koin on a Android app with ViewModel feature
 group: getting-started
 toc: true

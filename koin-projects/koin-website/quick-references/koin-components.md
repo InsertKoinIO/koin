@@ -68,18 +68,12 @@ interface KoinComponent {
      * Get the associated Koin instance
      */
     fun getKoin(): Koin = GlobalContext.get().koin
-
-    /**
-     * THe associated scope
-     */
-    fun currentScope(): Scope = Scope.GLOBAL
 }
 {% endhighlight %}
 
 It opens the following possibilties:
 
-* You can then redefine then `getKoin()` function to redirect to a local custom Koin instance.
-* You can redefine `currentScope` to give a dedicated Scope instance and avoid to pass it manually in argument in you components.
+* You can then redefine then `getKoin()` function to redirect to a local custom Koin instance
 
 ## More about core Koin Components
 

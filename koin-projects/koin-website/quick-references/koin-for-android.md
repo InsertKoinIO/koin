@@ -43,7 +43,7 @@ In your definition, you can inject `Context` or `Application` instance with `and
 
 {% highlight kotlin %}
 module {
-    single<JsonReader> { AndroidJsonReader(androidApplication()) }
+    single { MyAndroidComponent(androidContext()) }
 }
 {% endhighlight %}
 
@@ -106,8 +106,6 @@ module {
 
 Any Activity or Fragment can use directly the scope API: `createScope()`, `getScope()` and `deleteScope()`.
 
-You can also bind any Koin scope to the current lifecycle with `bindScope()` function.
-
 ### Android Architecture ViewModel (koin-android-viewmodel or koin-androidx-viewmodel projects)
 
 Koin brings special features to manage ViewModel:
@@ -146,6 +144,4 @@ class MyActivity : AppCompatActivity(){
     }
 }
 {% endhighlight %}
-
-## More about Koin Android Features
 
