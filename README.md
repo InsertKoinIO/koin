@@ -1,4 +1,4 @@
-![logo](./img/banner_2000.png)
+![logo](./img/koin_2.0.jpg)
 
 ## What is KOIN?
  
@@ -33,7 +33,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 
 ```gradle
 // latest stable
-koin_version = '2.0.0-GA3'
+koin_version = '2.0.0-GA4'
 ```
 
 ## Gradle 

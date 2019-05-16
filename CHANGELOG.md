@@ -5,25 +5,30 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 ## [2.0.0]()
 
 _Android_
+
 * `[UPDATED]` - rework startking DSL to add extension in startKoin (`androidContext`, `androidLogger`)
 
 _Android-Scope_
+
 * `[UPDATED]` - rework according to new Scope API (manage compelte Scope Lifecycle)
 * `[ADDED]` - `currentScope` property scope tied to current Activity or Fragment
 * `[ADDED]` - `currentScope` is aware of any `KoinComponent` & currentScope override
 * `[UPDATED]` - ScopeID generation
 
 _Android-ViewModel_
+
 * `[ADDED]` - support for new Scope API
 * `[REMOVED]` - removed koin-ext builder API
 * `[UPDATED]` - make the API open to Koin instance isolation
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
 
 _AndroidX-Scope_
+
 * `[UPDATED]` - update API regarding the changes in `koin-android-scope`
 * `[UPDATED]` - ScopeID generation
 
 _AndroidX-ViewModel_
+
 * `[UPDATED]` - update API regarding the changes in `koin-android-viewmodel`
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
 
@@ -41,17 +46,21 @@ _Core_
 * `[UPDATED]` - Kotlin 1.3.21
 * `[ADDED]` - Qualifiers with `named()` function to replace old string names. Allow to use Types
 * `[ADDED]` - `getOrNull()` and `injectOrNull()` to safely resolve potential components and get null of not present
-* `[UPDATED]` - additional binding API, with getAll<S>() & bind<P,S>() operator to look for instances regarding secondary type definition
+* `[UPDATED]` - additional binding API, with `getAll<S>()` & `bind<P,S>()` operator to look for instances regarding secondary type definition
+* `[ADDED]` - `declare()` on Koin & Scope, to help declare an instance on the fly
 
 _Test_
+
 * `[UPDATED]` - rework testing API, codebase detached from internal core tests
 * `[UPDATED]` - checkModules now rely on pure Kotlin & with `create` parameters DSL
 
 _Java_
+
 * `[UPDATED]` - updated `KoinJavaComponent` for the new API
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/451 - No longer possible to get objects from a scope in Java code - `scope` parameter to allow resolve a dependency from this scope instance
 
 _Ktor_
+
 * `[UPDATED]` - rework startking DSL to add extension in startKoin
 * `[ADDED]` - Koin as a Ktor feature
 
