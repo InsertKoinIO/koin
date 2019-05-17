@@ -43,6 +43,6 @@ inline fun <reified T : Any> ComponentCallbacks.get(
  * @param scope
  * @param parameters - injection parameters
  */
-inline fun <reified P, reified S> ComponentCallbacks.bind(
+inline fun <reified S, reified P> ComponentCallbacks.bind(
         noinline parameters: ParametersDefinition? = null
-): S = getKoin().bind<P, S>(parameters)
+): S = getKoin().bind<S, P>(parameters)

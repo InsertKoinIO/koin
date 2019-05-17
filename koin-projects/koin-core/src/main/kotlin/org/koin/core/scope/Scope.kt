@@ -32,9 +32,9 @@ import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 data class Scope(
-    val id: ScopeID,
-    val isRoot: Boolean = false,
-    internal val _koin: Koin
+        val id: ScopeID,
+        val isRoot: Boolean = false,
+        internal val _koin: Koin
 ) {
     val beanRegistry = BeanRegistry()
     var set: ScopeDefinition? = null
@@ -50,10 +50,10 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-        lazy { get<T>(qualifier, parameters) }
+            lazy { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -65,10 +65,10 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> injectOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-        lazy { getOrNull<T>(qualifier, parameters) }
+            lazy { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -78,8 +78,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -94,8 +94,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> getOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(T::class, qualifier, parameters)
@@ -115,9 +115,9 @@ data class Scope(
      * @return instance of type T
      */
     fun <T> get(
-        clazz: KClass<*>,
-        qualifier: Qualifier?,
-        parameters: ParametersDefinition?
+            clazz: KClass<*>,
+            qualifier: Qualifier?,
+            parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.debug("+- get '${clazz.getFullName()}'")
@@ -132,9 +132,9 @@ data class Scope(
     }
 
     private fun <T> resolveInstance(
-        qualifier: Qualifier?,
-        clazz: KClass<*>,
-        parameters: ParametersDefinition?
+            qualifier: Qualifier?,
+            clazz: KClass<*>,
+            parameters: ParametersDefinition?
     ): T {
         val definition = findDefinition(qualifier, clazz)
         return definition.resolveInstance(InstanceContext(this._koin, this, parameters))
@@ -169,9 +169,9 @@ data class Scope(
      * @param secondaryTypes - list of secondary bound types
      */
     inline fun <reified T> declare(
-        instance: T,
-        qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null
+            instance: T,
+            qualifier: Qualifier? = null,
+            secondaryTypes: List<KClass<*>>? = null
     ) {
         val definition = if (isRoot) {
             DefinitionFactory.createSingle(qualifier) { instance }
@@ -214,7 +214,7 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> = beanRegistry.getDefinitionsForClass(clazz)
-        .map { it.instance!!.get<T>((InstanceContext(this._koin, this))) }
+            .map { it.instance!!.get<T>((InstanceContext(this._koin, this))) }
 
     /**
      * Get instance of primary type P and secondary type S
@@ -222,9 +222,9 @@ data class Scope(
      *
      * @return instance of type S
      */
-    inline fun <reified P, reified S> bind(noinline parameters: ParametersDefinition? = null): S {
-        val primaryType = P::class
+    inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S {
         val secondaryType = S::class
+        val primaryType = P::class
         return bind(primaryType, secondaryType, parameters)
     }
 
@@ -235,16 +235,16 @@ data class Scope(
      * @return instance of type S
      */
     fun <S> bind(
-        primaryType: KClass<*>,
-        secondaryType: KClass<*>,
-        parameters: ParametersDefinition?
+            primaryType: KClass<*>,
+            secondaryType: KClass<*>,
+            parameters: ParametersDefinition?
     ): S {
         return beanRegistry.getAllDefinitions().first {
             it.primaryType == primaryType && it.secondaryTypes.contains(
-                secondaryType
+                    secondaryType
             ) && !it.isKind(Kind.Scope)
         }
-            .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
+                .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
     }
 
 
@@ -266,7 +266,7 @@ data class Scope(
      * @param key
      */
     fun <T> getProperty(key: String): T = _koin.getProperty(key)
-        ?: throw MissingPropertyException("Property '$key' not found")
+            ?: throw MissingPropertyException("Property '$key' not found")
 
     internal fun declareDefinitionsFromScopeSet() {
         set?.let {
