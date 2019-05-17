@@ -217,10 +217,13 @@ class BeanRegistry {
     fun findDefinition(
         qualifier: Qualifier? = null,
         clazz: KClass<*>
-    ): BeanDefinition<*>? =
-            qualifier?.let { findDefinitionByName(it.toString()) }
-                    ?: findDefinitionByType(clazz)
-                    ?: findDefinitionBySecondaryType(clazz)
+    ): BeanDefinition<*>?{
+        return if (qualifier != null){
+            findDefinitionByName(qualifier.toString())
+        } else {
+            findDefinitionByType(clazz) ?: findDefinitionBySecondaryType(clazz)
+        }
+    }
 
     //TODO Find with secondary type
 
