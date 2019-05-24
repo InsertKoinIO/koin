@@ -84,7 +84,7 @@ class HelloAppTest : KoinTest() {
 {% endhighlight %}
 
 <div class="alert alert-warning" role="alert">
-  For each test, we start <b>startKoin()</b> and close Koin context <b>stopKoin()</b>.
+  For each test, we start <b>startKoin()</b> and stop Koin context <b>stopKoin()</b>.
 </div>
 
 You can even make Mocks directly into MyPresenter, or test MyRepository. Those components doesn't have any link with Koin API.
