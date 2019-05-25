@@ -3,7 +3,6 @@ package org.koin.sample.android.mvvm
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
-import org.junit.Assert
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.currentScope
@@ -21,12 +20,12 @@ import org.koin.sample.android.utils.navigateTo
 
 class MVVMActivity : AppCompatActivity() {
 
-    val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
+    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val extViewModel : ExtSimpleViewModel by viewModel()
+    val extViewModel: ExtSimpleViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -20,7 +20,7 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVVMActivity : AppCompatActivity() {
 
-    val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
+    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }

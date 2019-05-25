@@ -21,6 +21,7 @@ _Android-ViewModel_
 * `[REMOVED]` - removed koin-ext builder API
 * `[UPDATED]` - make the API open to Koin instance isolation
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
+* `[FIXED]` - by viewModel & getViewModel with clazz version
 
 _AndroidX-Scope_
 
@@ -31,6 +32,8 @@ _AndroidX-ViewModel_
 
 * `[UPDATED]` - update API regarding the changes in `koin-android-viewmodel`
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
+* `[FIXED]` - by viewModel & getViewModel with clazz version
+
 
 _Core_
 
