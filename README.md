@@ -71,21 +71,24 @@ implementation "org.koin:koin-java:$koin_version"
 ```gradle
 // Koin for Android
 implementation "org.koin:koin-android:$koin_version"
-// Koin Android Scope feature
+// Koin Android Scope features
 implementation "org.koin:koin-android-scope:$koin_version"
-// Koin Android ViewModel feature
+// Koin Android ViewModel features
 implementation "org.koin:koin-android-viewmodel:$koin_version"
+// Koin Android Experimental features
+implementation "org.koin:koin-android-ext:$koin_version"
 ```
 
 #### AndroidX
 
 ```gradle
 
-// AndroidX (based on koin-android)
-// Koin AndroidX Scope feature
-implementation "org.koin:koin-androidx-scope:$koin_version"
-// Koin AndroidX ViewModel feature
-implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+// Koin AndroidX Scope features
+implementation "org.koin:koin-android-scope:$koin_version"
+// Koin AndroidX ViewModel features
+implementation "org.koin:koin-android-viewmodel:$koin_version"
+// Koin AndroidX Experimental features
+implementation "org.koin:koin-android-ext:$koin_version"
 ```
 
 #### Ktor
