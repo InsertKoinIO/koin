@@ -25,7 +25,8 @@ class MVVMActivity : AppCompatActivity() {
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val extViewModel: ExtSimpleViewModel by viewModel()
+    val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
+    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,9 @@ class MVVMActivity : AppCompatActivity() {
         title = "Android MVVM"
         setContentView(R.layout.mvvm_activity)
 
-        assertNotNull(extViewModel)
+        assertNotNull(scopeVm)
+        assertNotNull(extScopeVm)
+        assertEquals(scopeVm.session.id, extScopeVm.session.id)
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.mvvm_frame, MVVMFragment())

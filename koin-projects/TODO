@@ -61,9 +61,9 @@ fixes:
 
 viewModel clazz access
 
-Scope API -> Single/Factory
-
+Scope API -> Scoped/Factory
 Scope APi for Java
+ViewModel in Scope
 
 -- TODO --
 
