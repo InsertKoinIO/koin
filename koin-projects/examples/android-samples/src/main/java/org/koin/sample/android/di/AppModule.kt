@@ -49,7 +49,7 @@ val mvvmModule = module {
     scope(named<MVVMActivity>()) {
         scoped { Session() }
         viewModel { ExtSimpleViewModel(get()) }
-//        viewModel<ExtSimpleViewModel>(named("ext"))
+        viewModel<ExtSimpleViewModel>(named("ext"))
     }
 }
 

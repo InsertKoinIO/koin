@@ -26,7 +26,7 @@ class MVVMActivity : AppCompatActivity() {
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
     val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
-//    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
+    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +37,8 @@ class MVVMActivity : AppCompatActivity() {
         assertNotEquals(vm1, vm2)
 
         assertNotNull(scopeVm)
-//        assertNotNull(extScopeVm)
-//        assertEquals(scopeVm.session.id, extScopeVm.session.id)
+        assertNotNull(extScopeVm)
+        assertEquals(scopeVm.session.id, extScopeVm.session.id)
 
         title = "Android MVVM"
         setContentView(R.layout.mvvm_activity)

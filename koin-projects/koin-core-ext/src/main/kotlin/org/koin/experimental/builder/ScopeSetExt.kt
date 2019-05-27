@@ -17,7 +17,7 @@ inline fun <reified T : Any> ScopeSet.scoped(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>(name,this) }
+    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>(this) }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -36,7 +36,7 @@ inline fun <reified T : Any> ScopeSet.factory(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(name,this) }
+    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(this) }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -55,7 +55,7 @@ inline fun <reified R : Any, reified T : R> ScopeSet.scopedBy(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<R> {
-    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>(name,this) as R }
+    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>(this) as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -74,7 +74,7 @@ inline fun <reified R : Any, reified T : R> ScopeSet.factoryBy(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<R> {
-    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(name,this) as R }
+    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(this) as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {

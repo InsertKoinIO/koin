@@ -19,5 +19,5 @@ inline fun <reified T : ViewModel> Module.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false
 ) {
-    factory(qualifier, override) { create<T>(qualifier,this) }.setIsViewModel()
+    factory(qualifier, override) { create<T>(this) }.setIsViewModel()
 }

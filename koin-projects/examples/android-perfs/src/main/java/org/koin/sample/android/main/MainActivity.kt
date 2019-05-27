@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     fun runPerf(count: Int): Pair<Double, Double> {
         val (app, duration) = measureDuration {
             koinApplication {
-                modules(perfModule400Ext())
+                modules(perfModule400())
             }
         }
         println("[$count] started in $duration ms")

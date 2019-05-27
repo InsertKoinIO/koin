@@ -1,6 +1,5 @@
 package org.koin.experimental.builder
 
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
@@ -10,7 +9,7 @@ import kotlin.reflect.KClass
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> create(qualifier: Qualifier?, context: Scope): T {
+inline fun <reified T : Any> create(context: Scope): T {
 
     val kClass = T::class
     lateinit var instance: T
