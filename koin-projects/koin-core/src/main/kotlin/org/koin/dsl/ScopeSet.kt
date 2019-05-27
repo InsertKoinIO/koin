@@ -18,49 +18,69 @@ package org.koin.dsl
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.ScopeDefinition
 
 /**
  * DSL Scope Definition
  */
-data class ScopeSet(val qualifier: Qualifier, val definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
+data class ScopeSet(val qualifier: Qualifier) {
 
-    /**
-     * Declare a ScopeInstance definition
-     * @param name
-     * @param override
-     * @param definition - definition function
-     */
+    val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+
+    @Deprecated("Scoped is deprecated. Use single instead", level = DeprecationLevel.ERROR)
     inline fun <reified T> scoped(
-        name: Qualifier? = null,
-        noinline definition: Definition<T>
+            name: Qualifier? = null,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createScoped(name, qualifier, definition)
-        val added = definitions.add(beanDefinition)
-        if (!added) {
-            throw DefinitionOverrideException("Can't add definition $beanDefinition as it already exists")
+        error("Scoped definition is deprecated and has been replaced with Single scope definitions")
+    }
+
+    inline fun <reified T> single(
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        val beanDefinition = DefinitionFactory.createSingle(qualifier, this.qualifier, definition)
+        declareDefinition(beanDefinition, Options(false, override))
+        if (!definitions.contains(beanDefinition)) {
+            definitions.add(beanDefinition)
+        } else {
+            throw DefinitionOverrideException("Can't add definition $beanDefinition for scope ${this.qualifier} as it already exists")
         }
         return beanDefinition
     }
 
-    @Deprecated("Single definition can't be used in a scope", level = DeprecationLevel.ERROR)
-    inline fun <reified T> single(
-        qualifier: Qualifier? = null,
-        createdAtStart: Boolean = false,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+    inline fun <reified T> factory(
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        error("Single definition can't be used in a scope")
+        val beanDefinition = DefinitionFactory.createFactory(qualifier, this.qualifier, definition)
+        declareDefinition(beanDefinition, Options(false, override))
+        if (!definitions.contains(beanDefinition)) {
+            definitions.add(beanDefinition)
+        } else {
+            throw DefinitionOverrideException("Can't add definition $beanDefinition for scope ${this.qualifier} as it already exists")
+        }
+        return beanDefinition
     }
 
-    @Deprecated("Factory definition can't be used in a scope", level = DeprecationLevel.ERROR)
-    inline fun <reified T> factory(
-        qualifier: Qualifier? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        error("Factory definition can't be used in a scope")
+    fun createDefinition(): ScopeDefinition {
+        val scopeDefinition = ScopeDefinition(qualifier)
+        scopeDefinition.definitions.addAll(definitions)
+        return scopeDefinition
+    }
+
+    fun <T> declareDefinition(definition: BeanDefinition<T>, options: Options) {
+        definition.updateOptions(options)
+    }
+
+    private fun BeanDefinition<*>.updateOptions(options: Options) {
+        this.options.isCreatedAtStart = options.isCreatedAtStart
+        this.options.override = options.override
     }
 
     override fun toString(): String {

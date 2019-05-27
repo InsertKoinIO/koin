@@ -19,7 +19,6 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.DefinitionFactory
-import org.koin.core.definition.Kind
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
@@ -37,7 +36,7 @@ data class Scope(
         internal val _koin: Koin
 ) {
     val beanRegistry = BeanRegistry()
-    var set: ScopeDefinition? = null
+    var scopeDefinition: ScopeDefinition? = null
     private val callbacks = arrayListOf<ScopeCallback>()
 
     /**
@@ -176,7 +175,7 @@ data class Scope(
         val definition = if (isRoot) {
             DefinitionFactory.createSingle(qualifier) { instance }
         } else {
-            DefinitionFactory.createScoped(qualifier, set?.qualifier) { instance }
+            DefinitionFactory.createSingle(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
         }
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
         beanRegistry.saveDefinition(definition)
@@ -240,9 +239,7 @@ data class Scope(
             parameters: ParametersDefinition?
     ): S {
         return beanRegistry.getAllDefinitions().first {
-            it.primaryType == primaryType && it.secondaryTypes.contains(
-                    secondaryType
-            ) && !it.isKind(Kind.Scope)
+            it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType)
         }
                 .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
     }
@@ -269,8 +266,8 @@ data class Scope(
             ?: throw MissingPropertyException("Property '$key' not found")
 
     internal fun declareDefinitionsFromScopeSet() {
-        set?.let {
-            it.definitions.forEach { definition ->
+        scopeDefinition.let {
+            it?.definitions?.forEach { definition ->
                 beanRegistry.saveDefinition(definition)
                 definition.createInstanceHolder()
             }
@@ -288,13 +285,13 @@ data class Scope(
         callbacks.forEach { it.onScopeClose(this) }
         callbacks.clear()
 
-        set?.release(this)
+        scopeDefinition?.release(this)
         beanRegistry.close()
         _koin.deleteScope(this.id)
     }
 
     override fun toString(): String {
-        val scopeDef = set?.let { ",set:'${it.qualifier}'" } ?: ""
+        val scopeDef = scopeDefinition.let { ",set:'${it?.qualifier}'" }
         return "Scope[id:'$id'$scopeDef]"
     }
 }

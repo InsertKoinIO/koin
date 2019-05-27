@@ -17,7 +17,6 @@ package org.koin.core.registry
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.Kind
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
@@ -215,10 +214,10 @@ class BeanRegistry {
      * @param clazz
      */
     fun findDefinition(
-        qualifier: Qualifier? = null,
-        clazz: KClass<*>
-    ): BeanDefinition<*>?{
-        return if (qualifier != null){
+            qualifier: Qualifier? = null,
+            clazz: KClass<*>
+    ): BeanDefinition<*>? {
+        return if (qualifier != null) {
             findDefinitionByName(qualifier.toString())
         } else {
             findDefinitionByType(clazz) ?: findDefinitionBySecondaryType(clazz)
@@ -277,5 +276,5 @@ class BeanRegistry {
      * Find all definition compatible with given type
      */
     fun getDefinitionsForClass(clazz: KClass<*>) = getAllDefinitions()
-            .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.isKind(Kind.Scope) }
+            .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.hasScopeSet() }
 }

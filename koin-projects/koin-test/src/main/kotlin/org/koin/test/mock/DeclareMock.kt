@@ -33,8 +33,8 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> KoinTest.declareMock(
-    qualifier: Qualifier? = null,
-    noinline stubbing: (T.() -> Unit)? = null
+        qualifier: Qualifier? = null,
+        noinline stubbing: (T.() -> Unit)? = null
 ): T {
     val koin = GlobalContext.get().koin
     val clazz = T::class
@@ -50,9 +50,9 @@ inline fun <reified T : Any> KoinTest.declareMock(
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Any> getDefinition(
-    clazz: KClass<T>,
-    koin: Koin,
-    qualifier: Qualifier?
+        clazz: KClass<T>,
+        koin: Koin,
+        qualifier: Qualifier?
 ): BeanDefinition<T> {
     logger.info("declare mock for '${clazz.getFullName()}'")
 
@@ -66,8 +66,8 @@ inline fun <reified T : Any> getDefinition(
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> Koin.declareMock(
-    qualifier: Qualifier? = null,
-    noinline stubbing: (T.() -> Unit)? = null
+        qualifier: Qualifier? = null,
+        noinline stubbing: (T.() -> Unit)? = null
 ): T {
 
     val clazz = T::class
@@ -79,15 +79,15 @@ inline fun <reified T : Any> Koin.declareMock(
 }
 
 inline fun <reified T : Any> Koin.declareMockedDefinition(
-    foundDefinition: BeanDefinition<T>,
-    noinline stubbing: (T.() -> Unit)?
+        foundDefinition: BeanDefinition<T>,
+        noinline stubbing: (T.() -> Unit)?
 ) {
     val definition: BeanDefinition<T> = foundDefinition.createMockedDefinition(stubbing)
     rootScope.beanRegistry.saveDefinition(definition)
 }
 
 inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(noinline stubbing: (T.() -> Unit)? = null): BeanDefinition<T> {
-    val copy = BeanDefinition<T>(qualifier, primaryType)
+    val copy = BeanDefinition<T>(qualifier, scopeName, primaryType)
     copy.secondaryTypes = this.secondaryTypes
     copy.definition = {
         val (instance: T, time: Double) = measureDuration {

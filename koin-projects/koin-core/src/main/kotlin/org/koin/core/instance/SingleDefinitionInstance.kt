@@ -27,7 +27,10 @@ class SingleDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definitio
 
     override fun isCreated(context: InstanceContext): Boolean = (value != null)
 
-    override fun release(context: InstanceContext) {}
+    override fun release(context: InstanceContext) {
+        beanDefinition.onRelease?.invoke(value)
+        value = null
+    }
 
     override fun close() {
         beanDefinition.onClose?.invoke(value)

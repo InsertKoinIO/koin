@@ -47,7 +47,7 @@ class BeanLifecycleTest {
             modules(
                     module {
                         scope(named("test")) {
-                            scoped { Simple.Component1() } onClose { result = "closing" }
+                            single { Simple.Component1() } onClose { result = "closing" }
                         }
                     })
         }
@@ -98,7 +98,7 @@ class BeanLifecycleTest {
             modules(
                     module {
                         scope(named("test")) {
-                            scoped { Simple.Component1() } onRelease { result = "release" }
+                            single { Simple.Component1() } onRelease { result = "release" }
                         }
                     })
         }

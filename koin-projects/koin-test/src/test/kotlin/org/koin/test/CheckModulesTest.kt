@@ -19,8 +19,8 @@ class CheckModulesTest {
             modules(
                     module {
                         scope(named("scope")) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentA() }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -36,7 +36,7 @@ class CheckModulesTest {
                         module {
                             single { Simple.ComponentB(get()) }
                             scope(named("scope")) {
-                                scoped { Simple.ComponentA() }
+                                single { Simple.ComponentA() }
                             }
                         }
                 )
@@ -55,10 +55,10 @@ class CheckModulesTest {
                 modules(
                         module {
                             scope(named("scope2")) {
-                                scoped { Simple.ComponentB(get()) }
+                                single { Simple.ComponentB(get()) }
                             }
                             scope(named("scope1")) {
-                                scoped { Simple.ComponentA() }
+                                single { Simple.ComponentA() }
                             }
                         }
                 )
@@ -76,13 +76,13 @@ class CheckModulesTest {
             modules(
                     module {
                         scope(named("scope2")) {
-                            scoped {
+                            single {
                                 val a = getScope("scopei1").get<Simple.ComponentA>()
                                 Simple.ComponentB(a)
                             }
                         }
                         scope(named("scope1")) {
-                            scoped { Simple.ComponentA() }
+                            single { Simple.ComponentA() }
                         }
                     }
             )
@@ -98,10 +98,10 @@ class CheckModulesTest {
             modules(
                     module {
                         scope(named("scope2")) {
-                            scoped { (scope1: Scope) -> Simple.ComponentB(scope1.get()) }
+                            single { (scope1: Scope) -> Simple.ComponentB(scope1.get()) }
                         }
                         scope(named("scope1")) {
-                            scoped { Simple.ComponentA() }
+                            single { Simple.ComponentA() }
                         }
                     }
             )

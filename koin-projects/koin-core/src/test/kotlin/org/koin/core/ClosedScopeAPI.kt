@@ -22,8 +22,8 @@ class ClosedScopeAPI {
             modules(
                     module {
                         scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentA() }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -31,6 +31,24 @@ class ClosedScopeAPI {
 
         val scope = koin.createScope("myScope", named<ScopeType>())
         Assert.assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+    }
+
+    @Test
+    fun `get definition from current factory scope type`() {
+        val koin = koinApplication {
+            modules(
+                    module {
+                        scope(named<ScopeType>()) {
+                            single { Simple.ComponentA() }
+                            factory { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope("myScope", named<ScopeType>())
+        Assert.assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
         Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
     }
 
@@ -44,12 +62,12 @@ class ClosedScopeAPI {
                     },
                     module {
                         scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentA() }
+                            single { Simple.ComponentA() }
                         }
                     },
                     module {
                         scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -66,8 +84,8 @@ class ClosedScopeAPI {
             modules(
                     module {
                         scope(named(scopeName)) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentA() }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -85,7 +103,7 @@ class ClosedScopeAPI {
                     module {
                         single { Simple.ComponentA() }
                         scope(named(scopeName)) {
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -103,7 +121,7 @@ class ClosedScopeAPI {
                     module {
                         factory { Simple.ComponentA() }
                         scope(named(scopeName)) {
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -120,10 +138,10 @@ class ClosedScopeAPI {
             modules(
                     module {
                         scope(named("SCOPE_1")) {
-                            scoped { Simple.ComponentA() }
+                            single { Simple.ComponentA() }
                         }
                         scope(named("SCOPE_2")) {
-                            scoped { Simple.ComponentB(get()) }
+                            single { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -144,10 +162,10 @@ class ClosedScopeAPI {
             modules(
                     module {
                         scope(named("SCOPE_1")) {
-                            scoped { Simple.ComponentA() }
+                            single { Simple.ComponentA() }
                         }
                         scope(named("SCOPE_2")) {
-                            scoped { (scope: Scope) -> Simple.ComponentB(scope.get()) }
+                            single { (scope: Scope) -> Simple.ComponentB(scope.get()) }
                         }
                     }
             )
@@ -167,7 +185,7 @@ class ClosedScopeAPI {
             modules(
                     module {
                         scope(named("SCOPE_1")) {
-                            scoped { (i: Int) -> Simple.MySingle(i) }
+                            single { (i: Int) -> Simple.MySingle(i) }
                         }
                     }
             )

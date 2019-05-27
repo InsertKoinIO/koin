@@ -86,7 +86,7 @@ class ScopeRegistry {
 
     private fun closeRelatedScopes(originalSet: ScopeDefinition) {
         instances.values.forEach { scope ->
-            if (scope.set == originalSet) {
+            if (scope.scopeDefinition == originalSet) {
                 scope.close()
             }
         }
@@ -95,7 +95,7 @@ class ScopeRegistry {
     private fun saveDefinition(scopeSet: ScopeSet) {
         val foundScopeSet: ScopeDefinition? = definitions[scopeSet.qualifier.toString()]
         if (foundScopeSet == null) {
-            definitions[scopeSet.qualifier.toString()] = ScopeDefinition.from(scopeSet)
+            definitions[scopeSet.qualifier.toString()] = scopeSet.createDefinition()
         } else {
             foundScopeSet.definitions.addAll(scopeSet.definitions)
         }
@@ -112,7 +112,7 @@ class ScopeRegistry {
         val definition: ScopeDefinition = definitions[scopeName.toString()]
                 ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
         val instance = Scope(id, _koin = koin)
-        instance.set = definition
+        instance.scopeDefinition = definition
         instance.declareDefinitionsFromScopeSet()
         registerScopeInstance(instance)
         return instance
