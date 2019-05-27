@@ -19,7 +19,6 @@ import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -41,10 +40,9 @@ object KoinJavaComponent {
     fun <T : Any> inject(
             clazz: Class<T>,
             qualifier: Qualifier? = null,
-            scope: Scope? = null,
             parameters: ParametersDefinition? = null
     ): Lazy<T> {
-        return lazy { get(clazz, qualifier, scope, parameters) }
+        return lazy { get(clazz, qualifier, parameters) }
     }
 
     /**
@@ -59,11 +57,10 @@ object KoinJavaComponent {
     fun <T : Any> get(
             clazz: Class<T>,
             qualifier: Qualifier? = null,
-            scope: Scope? = null,
             parameters: ParametersDefinition? = null
     ): T {
         val kClass = clazz.kotlin
-        return scope?.get(kClass,
+        return getKoin().get(kClass,
                 qualifier,
                 parameters) ?: getKoin().get(
                 kClass,
