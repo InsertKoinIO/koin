@@ -21,14 +21,10 @@ class PerfsTest {
 
     /*
     Perfs on MBP 2018
-        1st run -
-            [INFO] [Koin] load modules in 19.351227 ms
-            started in 178.637936 ms
-            measured executed in 1.02544 ms
-        2nd run -
-            [INFO] [Koin] load modules in 4.122111 ms
-            started in 4.175906 ms
-            measured executed in 0.042183 ms
+        started in 181.546201 ms
+        measured executed in 2.698019 ms
+        started in 1.119983 ms
+        measured executed in 0.043825 ms
      */
     @Test
     fun `perfModule400 module perfs`() {
@@ -39,7 +35,6 @@ class PerfsTest {
     private fun runPerfs() {
         val (app, duration) = measureDuration {
             koinApplication {
-                printLogger()
                 modules(perfModule400)
             }
         }
