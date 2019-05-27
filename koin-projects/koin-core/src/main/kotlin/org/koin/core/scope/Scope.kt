@@ -108,7 +108,6 @@ data class Scope(
      * Get a Koin instance
      * @param clazz
      * @param qualifier
-     * @param scope
      * @param parameters
      *
      * @return instance of type T
@@ -127,6 +126,33 @@ data class Scope(
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
+        }
+    }
+
+    /**
+     * Get a Koin instance
+     * @param java class
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type T
+     */
+    @JvmOverloads
+    fun <T> get(
+            clazz: Class<*>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
+    ): T = synchronized(this) {
+        val kClass = clazz.kotlin
+        return if (KoinApplication.logger.isAt(Level.DEBUG)) {
+            KoinApplication.logger.debug("+- get '${kClass.getFullName()}'")
+            val (instance: T, duration: Double) = measureDuration {
+                resolveInstance<T>(qualifier, kClass, parameters)
+            }
+            KoinApplication.logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
+            return instance
+        } else {
+            resolveInstance(qualifier, kClass, parameters)
         }
     }
 

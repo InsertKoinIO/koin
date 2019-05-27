@@ -3,9 +3,9 @@ include 'koin-core'
 include 'koin-test'
 // Core Sample
 include 'examples:coffee-maker'
-//// Core extended
-//include 'koin-java', 'koin-core-ext'
-//
+// Core extended
+include 'koin-java', 'koin-core-ext'
+
 //// Android
 //include 'koin-android', 'koin-android-scope' ,'koin-android-viewmodel'
 //include 'koin-androidx-scope', 'koin-androidx-viewmodel'
