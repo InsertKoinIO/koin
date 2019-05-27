@@ -22,6 +22,7 @@ _Android-ViewModel_
 * `[UPDATED]` - make the API open to Koin instance isolation
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
 * `[FIXED]` - by viewModel & getViewModel with clazz version
+* `[FIXED]` - ViewModel definition in scope
 
 _AndroidX-Scope_
 
@@ -33,7 +34,7 @@ _AndroidX-ViewModel_
 * `[UPDATED]` - update API regarding the changes in `koin-android-viewmodel`
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/452 - Named qualifier does not work with view models - Now take qualifier as ViewModel's Tag
 * `[FIXED]` - by viewModel & getViewModel with clazz version
-
+* `[FIXED]` - ViewModel definition in scope
 
 _Core_
 
@@ -51,6 +52,7 @@ _Core_
 * `[ADDED]` - `getOrNull()` and `injectOrNull()` to safely resolve potential components and get null of not present
 * `[UPDATED]` - additional binding API, with `getAll<S>()` & `bind<P,S>()` operator to look for instances regarding secondary type definition
 * `[ADDED]` - `declare()` on Koin & Scope, to help declare an instance on the fly
+* `[FIXED]` - Factory declaration in scope
 
 _Test_
 
@@ -61,6 +63,7 @@ _Java_
 
 * `[UPDATED]` - updated `KoinJavaComponent` for the new API
 * `[FIXED]` - https://github.com/InsertKoinIO/koin/issues/451 - No longer possible to get objects from a scope in Java code - `scope` parameter to allow resolve a dependency from this scope instance
+* `[FIXED]` - Get access to scope instance
 
 _Ktor_
 
