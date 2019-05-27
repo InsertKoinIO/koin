@@ -10,7 +10,7 @@ val koinModule = module {
     single { ComponentC(get(), get()) }
 
     scope(named("Session")) {
-        single { ComponentD(get()) }
+        scoped { ComponentD(get()) }
     }
 }
 

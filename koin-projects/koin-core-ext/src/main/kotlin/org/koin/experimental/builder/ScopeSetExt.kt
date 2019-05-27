@@ -13,11 +13,11 @@ import org.koin.dsl.ScopeSet
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
-inline fun <reified T : Any> ScopeSet.single(
+inline fun <reified T : Any> ScopeSet.scoped(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createSingle(name, qualifier) { create<T>(this) }
+    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>(name,this) }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -36,7 +36,7 @@ inline fun <reified T : Any> ScopeSet.factory(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(this) }
+    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(name,this) }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -51,11 +51,11 @@ inline fun <reified T : Any> ScopeSet.factory(
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
-inline fun <reified R : Any, reified T : R> ScopeSet.singleBy(
+inline fun <reified R : Any, reified T : R> ScopeSet.scopedBy(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<R> {
-    val beanDefinition = DefinitionFactory.createSingle(name, qualifier) { create<T>(this) as R }
+    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>(name,this) as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -74,7 +74,7 @@ inline fun <reified R : Any, reified T : R> ScopeSet.factoryBy(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<R> {
-    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(this) as R }
+    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>(name,this) as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {

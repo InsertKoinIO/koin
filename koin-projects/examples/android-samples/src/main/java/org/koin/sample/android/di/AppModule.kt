@@ -45,10 +45,11 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-    viewModel<ExtSimpleViewModel>()
 
     scope(named<MVVMActivity>()) {
         scoped { Session() }
+        viewModel { ExtSimpleViewModel(get()) }
+//        viewModel<ExtSimpleViewModel>(named("ext"))
     }
 }
 

@@ -19,7 +19,7 @@ class GlobalToScopeTest {
             modules(
                     module {
                         scope(named<ClosedScopeAPI.ScopeType>()) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -42,7 +42,7 @@ class GlobalToScopeTest {
                         single { Simple.ComponentB(get()) }
 
                         scope(named<ClosedScopeAPI.ScopeType>()) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -68,7 +68,7 @@ class GlobalToScopeTest {
                         single { Simple.ComponentB(getScope(scopeId).get()) }
 
                         scope(named<ClosedScopeAPI.ScopeType>()) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )

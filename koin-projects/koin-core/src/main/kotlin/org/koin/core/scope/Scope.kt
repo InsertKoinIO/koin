@@ -201,7 +201,7 @@ data class Scope(
         val definition = if (isRoot) {
             DefinitionFactory.createSingle(qualifier) { instance }
         } else {
-            DefinitionFactory.createSingle(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
+            DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
         }
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
         beanRegistry.saveDefinition(definition)

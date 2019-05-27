@@ -4,6 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.instance.ScopeDefinitionInstance
 import org.koin.core.instance.SingleDefinitionInstance
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.StringQualifier
@@ -19,7 +20,7 @@ class ScopeSetDeclarationTest {
             modules(
                     module {
                         scope(scopeKey) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -28,7 +29,7 @@ class ScopeSetDeclarationTest {
         assertTrue(def!!.scopeName == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
-        assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is SingleDefinitionInstance<*>)
+        assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
     }
 
     @Test
@@ -37,10 +38,10 @@ class ScopeSetDeclarationTest {
             modules(
                     module {
                         scope(named("B")) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                         scope(named("A")) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -62,7 +63,7 @@ class ScopeSetDeclarationTest {
 //            modules(
 //                    module {
 //                        scope(named("")) {
-//                            single { }
+//                            scoped { }
 //                            factory { }
 //                        }
 //                    }
@@ -95,8 +96,8 @@ class ScopeSetDeclarationTest {
                 modules(
                         module {
                             scope(scopeKey) {
-                                single { Simple.ComponentA() }
-                                single { Simple.ComponentA() }
+                                scoped { Simple.ComponentA() }
+                                scoped { Simple.ComponentA() }
                             }
                         }
                 )

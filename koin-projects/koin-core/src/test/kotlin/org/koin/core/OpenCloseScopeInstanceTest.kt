@@ -20,7 +20,7 @@ class OpenCloseScopeInstanceTest {
             modules(
                     module {
                         scope(scopeName) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -36,7 +36,7 @@ class OpenCloseScopeInstanceTest {
             modules(
                     module {
                         scope(scopeName) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -57,8 +57,8 @@ class OpenCloseScopeInstanceTest {
             modules(
                     module {
                         scope(scopeName) {
-                            single { Simple.ComponentA() }
-                            single { Simple.ComponentB(get()) }
+                            scoped { Simple.ComponentA() }
+                            scoped { Simple.ComponentB(get()) }
                         }
                     }
             )
@@ -80,7 +80,7 @@ class OpenCloseScopeInstanceTest {
                         scope(scope1Name) {
                         }
                         scope(named("SCOPE_2")) {
-                            single { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )

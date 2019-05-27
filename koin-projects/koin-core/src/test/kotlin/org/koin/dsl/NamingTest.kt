@@ -16,7 +16,7 @@ class NamingTest {
                 single(named("24")) { Simple.MySingle(24) }
 
                 scope(scopeName) {
-                    single { Simple.MySingle(42) }
+                    scoped { Simple.MySingle(42) }
                 }
             })
         }.koin

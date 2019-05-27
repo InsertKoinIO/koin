@@ -9,7 +9,15 @@ object DefinitionFactory {
             scopeName: Qualifier? = null,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return createDefinition(qualifier, definition, scopeName = scopeName)
+        return createDefinition(qualifier, definition, Kind.Single, scopeName)
+    }
+
+    inline fun <reified T> createScoped(
+            qualifier: Qualifier? = null,
+            scopeName: Qualifier? = null,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        return createDefinition(qualifier, definition, Kind.Scoped, scopeName)
     }
 
     inline fun <reified T> createFactory(
@@ -23,8 +31,8 @@ object DefinitionFactory {
     inline fun <reified T> createDefinition(
             qualifier: Qualifier?,
             noinline definition: Definition<T>,
-            kind: Kind = Kind.Single,
-            scopeName: Qualifier? = null
+            kind: Kind,
+            scopeName: Qualifier?
     ): BeanDefinition<T> {
         val beanDefinition = BeanDefinition<T>(qualifier, scopeName, T::class)
         beanDefinition.definition = definition

@@ -214,7 +214,7 @@ class DynamicModulesTest {
         val scopeKey = named("-SCOPE-")
         val module = module {
             scope(scopeKey) {
-                single { Simple.ComponentA() }
+                scoped { Simple.ComponentA() }
             }
         }
         val app = koinApplication {
@@ -225,7 +225,7 @@ class DynamicModulesTest {
         val scope = app.koin.createScope("id", scopeKey)
         val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
-        Assert.assertEquals(Kind.Single, defA.kind)
+        Assert.assertEquals(Kind.Scoped, defA.kind)
         Assert.assertEquals(scopeKey, defA.scopeName)
         Assert.assertNotNull(scope.get<Simple.ComponentA>())
 
@@ -246,7 +246,7 @@ class DynamicModulesTest {
         val scopeKey = named("-SCOPE-")
         val module = module {
             scope(scopeKey) {
-                single { Simple.ComponentA() }
+                scoped { Simple.ComponentA() }
             }
         }
         val app = koinApplication {
@@ -257,7 +257,7 @@ class DynamicModulesTest {
         var scope = app.koin.createScope("id", scopeKey)
         val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
-        Assert.assertEquals(Kind.Single, defA.kind)
+        Assert.assertEquals(Kind.Scoped, defA.kind)
         Assert.assertEquals(scopeKey, defA.scopeName)
         Assert.assertNotNull(scope.get<Simple.ComponentA>())
 
@@ -274,7 +274,7 @@ class DynamicModulesTest {
         val scopeKey = named("-SCOPE-")
         val module = module {
             scope(scopeKey) {
-                single { Simple.ComponentA() }
+                scoped { Simple.ComponentA() }
             }
         }
         startKoin {

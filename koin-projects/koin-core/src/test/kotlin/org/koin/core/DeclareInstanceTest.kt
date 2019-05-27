@@ -88,7 +88,7 @@ class DeclareInstanceTest {
             printLogger()
             modules(module {
                 scope(named("Session")) {
-                    single { Simple.ComponentB(get()) }
+                    scoped { Simple.ComponentB(get()) }
                 }
             })
         }.koin

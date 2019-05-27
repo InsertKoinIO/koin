@@ -15,10 +15,7 @@
  */
 package org.koin.core.definition
 
-import org.koin.core.instance.DefinitionInstance
-import org.koin.core.instance.FactoryDefinitionInstance
-import org.koin.core.instance.InstanceContext
-import org.koin.core.instance.SingleDefinitionInstance
+import org.koin.core.instance.*
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -63,6 +60,7 @@ class BeanDefinition<T>(
         this.instance = when (kind) {
             Kind.Single -> SingleDefinitionInstance(this)
             Kind.Factory -> FactoryDefinitionInstance(this)
+            Kind.Scoped -> ScopeDefinitionInstance(this)
         }
     }
 
@@ -109,7 +107,7 @@ class BeanDefinition<T>(
 }
 
 enum class Kind {
-    Single, Factory
+    Single, Factory, Scoped
 }
 
 typealias Definition<T> = Scope.(DefinitionParameters) -> T

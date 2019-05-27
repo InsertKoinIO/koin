@@ -14,7 +14,7 @@ class MainApplication : Application() {
         super.onCreate()
 
         startKoin {
-            androidLogger(Level.DEBUG)
+            androidLogger(Level.INFO)
             androidContext(this@MainApplication)
             androidFileProperties()
             modules(appModule, mvpModule, mvvmModule, scopeModule, dynamicModule)

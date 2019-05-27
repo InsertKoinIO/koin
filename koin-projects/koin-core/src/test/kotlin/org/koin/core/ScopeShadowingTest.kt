@@ -19,7 +19,7 @@ class ScopeShadowingTest {
                         single { Simple.MySingle(24) }
 
                         scope(named<ClosedScopeAPI.ScopeType>()) {
-                            single { Simple.MySingle(42) }
+                            scoped { Simple.MySingle(42) }
                         }
                     }
             )

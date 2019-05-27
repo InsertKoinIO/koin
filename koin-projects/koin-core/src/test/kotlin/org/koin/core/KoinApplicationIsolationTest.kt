@@ -78,7 +78,7 @@ class KoinApplicationIsolationTest {
         val module = module {
             single { Simple.ComponentA() }
             scope(named<Simple>()) {
-                single { Simple.ComponentB(get()) }
+                scoped { Simple.ComponentB(get()) }
             }
         }
         startKoin {

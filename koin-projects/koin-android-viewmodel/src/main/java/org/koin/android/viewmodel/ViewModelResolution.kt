@@ -4,6 +4,7 @@ import android.arch.lifecycle.*
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.core.Koin
+import org.koin.core.scope.Scope
 
 /**
  * resolve instance
@@ -11,25 +12,20 @@ import org.koin.core.Koin
  */
 fun <T : ViewModel> Koin.getViewModel(parameters: ViewModelParameters<T>): T {
     val vmStore: ViewModelStore = parameters.owner.getViewModelStore(parameters)
-    val viewModelProvider = createViewModelProvider(vmStore, parameters)
+    val viewModelProvider = rootScope.createViewModelProvider(vmStore, parameters)
     return viewModelProvider.getInstance(parameters)
 }
 
-/**
- * resolve instance
- * @param parameters
- */
-fun <T : ViewModel> Koin.injectViewModel(parameters: ViewModelParameters<T>): Lazy<T> = lazy { getViewModel(parameters) }
-
-private fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T {
+fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T {
+    val javaClass = parameters.clazz.java
     return if (parameters.qualifier != null) {
-        this.get(parameters.qualifier.toString(), parameters.clazz.java)
+        this.get(parameters.qualifier.toString(), javaClass)
     } else {
-        this.get(parameters.clazz.java)
+        this.get(javaClass)
     }
 }
 
-private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
+fun <T : ViewModel> LifecycleOwner.getViewModelStore(
         parameters: ViewModelParameters<T>
 ): ViewModelStore =
         when {
@@ -39,7 +35,7 @@ private fun <T : ViewModel> LifecycleOwner.getViewModelStore(
             else -> error("Can't getByClass ViewModel '${parameters.clazz}' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
         }
 
-private fun <T : ViewModel> Koin.createViewModelProvider(
+fun <T : ViewModel> Scope.createViewModelProvider(
         vmStore: ViewModelStore,
         parameters: ViewModelParameters<T>
 ): ViewModelProvider {

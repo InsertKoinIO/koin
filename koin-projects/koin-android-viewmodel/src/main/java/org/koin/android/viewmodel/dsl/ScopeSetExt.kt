@@ -34,22 +34,18 @@ import org.koin.dsl.ScopeSet
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> Module.viewModel(
+inline fun <reified T : ViewModel> ScopeSet.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false,
         noinline definition: Definition<T>
 ): BeanDefinition<T> {
-    val beanDefinition = factory(qualifier, override, definition)
+    val beanDefinition = DefinitionFactory.createFactory(qualifier, this.qualifier, definition)
+    declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
+    if (!definitions.contains(beanDefinition)) {
+        definitions.add(beanDefinition)
+    } else {
+        throw DefinitionOverrideException("Can't add definition $beanDefinition for scope ${this.qualifier} as it already exists")
+    }
     return beanDefinition
-}
-
-const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
-
-fun BeanDefinition<*>.setIsViewModel() {
-    properties[ATTRIBUTE_VIEW_MODEL] = true
-}
-
-fun BeanDefinition<*>.isViewModel(): Boolean {
-    return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
 }
