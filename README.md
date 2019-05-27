@@ -10,6 +10,8 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
+### Koin 2.0 is out: https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3
+
 ### Contact & Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
