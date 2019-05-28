@@ -91,7 +91,7 @@ class ClosedScopeAPI {
     @Test
     fun `get definition from current scope type - dispatched modules`() {
         val koin = koinApplication {
-            modules(
+            modules(listOf(
                     module {
                         scope(named<ScopeType>()) {
                         }
@@ -105,7 +105,7 @@ class ClosedScopeAPI {
                         scope(named<ScopeType>()) {
                             scoped { Simple.ComponentB(get()) }
                         }
-                    }
+                    })
             )
         }.koin
 

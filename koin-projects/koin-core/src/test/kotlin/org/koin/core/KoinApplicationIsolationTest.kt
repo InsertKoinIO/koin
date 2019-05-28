@@ -106,11 +106,11 @@ class KoinApplicationIsolationTest {
     @Test
     fun `create multiple context without named qualifier`() {
         val koinA = koinApplication {
-            modules(module {
+            modules(listOf(module {
                 single { ModelA() }
             }, module {
                 single { ModelB(get()) }
-            })
+            }))
         }
 
         val koinB = koinApplication {

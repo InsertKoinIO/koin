@@ -1,6 +1,7 @@
 package org.koin.perfs
 
 import org.junit.Test
+import org.koin.core.logger.Level
 import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.test.assertDefinitionsCount
@@ -21,10 +22,10 @@ class PerfsTest {
 
     /*
     Perfs on MBP 2018
-        started in 181.546201 ms
-        measured executed in 2.698019 ms
-        started in 1.119983 ms
-        measured executed in 0.043825 ms
+        started in 142.092449 ms
+        measured executed in 1.060778 ms
+        started in 0.942634 ms
+        measured executed in 0.033835 ms
      */
     @Test
     fun `perfModule400 module perfs`() {

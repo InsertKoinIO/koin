@@ -4,7 +4,11 @@ import android.arch.lifecycle.*
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.core.Koin
+import org.koin.core.KoinApplication
+import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
+import org.koin.core.time.measureDuration
 
 /**
  * resolve instance
@@ -18,10 +22,23 @@ fun <T : ViewModel> Koin.getViewModel(parameters: ViewModelParameters<T>): T {
 
 fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T {
     val javaClass = parameters.clazz.java
-    return if (parameters.qualifier != null) {
-        this.get(parameters.qualifier.toString(), javaClass)
+    return if (KoinApplication.logger.isAt(Level.DEBUG)) {
+        logger.debug("!- ViewModelProvider getting instance")
+        val (instance: T, duration: Double) = measureDuration {
+            if (parameters.qualifier != null) {
+                this.get(parameters.qualifier.toString(), javaClass)
+            } else {
+                this.get(javaClass)
+            }
+        }
+        logger.debug("!- ViewModelProvider got instance in $duration")
+        return instance
     } else {
-        this.get(javaClass)
+        if (parameters.qualifier != null) {
+            this.get(parameters.qualifier.toString(), javaClass)
+        } else {
+            this.get(javaClass)
+        }
     }
 }
 

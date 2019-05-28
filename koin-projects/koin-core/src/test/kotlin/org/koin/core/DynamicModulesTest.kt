@@ -89,7 +89,7 @@ class DynamicModulesTest {
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module1, module2)
+            modules(listOf(module1, module2))
         }
 
         app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
@@ -120,7 +120,7 @@ class DynamicModulesTest {
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module1, module2)
+            modules(listOf(module1, module2))
         }
 
         app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
@@ -151,7 +151,7 @@ class DynamicModulesTest {
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module1, module2)
+            modules(listOf(module1, module2))
         }
 
         app.getDefinition(Simple.MySingle::class) ?: error("no definition found")

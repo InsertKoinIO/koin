@@ -40,15 +40,15 @@ class KoinApplication private constructor() {
      * Load definitions from modules
      * @param modules
      */
-    fun modules(vararg modules: Module): KoinApplication {
-        return modules(modules.asIterable())
+    fun modules(modules: Module): KoinApplication {
+        return modules(listOf(modules))
     }
 
     /**
      * Load definitions from modules
      * @param modules
      */
-    fun modules(modules: Iterable<Module>): KoinApplication {
+    fun modules(modules: List<Module>): KoinApplication {
         if (logger.isAt(Level.INFO)) {
             val duration = measureDurationOnly {
                 loadModulesAndScopes(modules)

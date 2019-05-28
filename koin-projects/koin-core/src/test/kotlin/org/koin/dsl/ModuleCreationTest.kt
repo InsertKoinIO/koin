@@ -33,9 +33,9 @@ class ModuleCreationTest {
     fun `create a module with single`() {
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         app.assertDefinitionsCount(1)
@@ -46,10 +46,10 @@ class ModuleCreationTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                    single { Simple.ComponentB(get()) }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                        single { Simple.ComponentB(get()) }
+                    })
         }
 
         app.assertDefinitionsCount(2)
@@ -60,11 +60,11 @@ class ModuleCreationTest {
 
         val app = koinApplication {
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                    single { Simple.ComponentB(get()) }
-                    factory { Simple.ComponentC(get()) }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                        single { Simple.ComponentB(get()) }
+                        factory { Simple.ComponentC(get()) }
+                    })
         }
 
         app.assertDefinitionsCount(3)
@@ -74,13 +74,13 @@ class ModuleCreationTest {
     fun `create several modules`() {
 
         val app = koinApplication {
-            modules(
-                module {
-                    single { Simple.ComponentA() }
-                },
-                module {
-                    single { Simple.ComponentB(get()) }
-                })
+            modules(listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    }))
         }
 
         app.assertDefinitionsCount(2)
@@ -91,13 +91,13 @@ class ModuleCreationTest {
 
         val app = koinApplication {
             modules(
-                listOf(
-                    module {
-                        single { Simple.ComponentA() }
-                    },
-                    module {
-                        single { Simple.ComponentB(get()) }
-                    })
+                    listOf(
+                            module {
+                                single { Simple.ComponentA() }
+                            },
+                            module {
+                                single { Simple.ComponentB(get()) }
+                            })
             )
         }
 
@@ -109,25 +109,25 @@ class ModuleCreationTest {
 
         koinApplication {
             printLogger(Level.DEBUG)
-            modules(
-                module {
-                    single { Simple.ComponentA() }
-                },
-                module {
-                    single { Simple.ComponentB(get()) }
-                })
-        }
-
-        koinApplication {
-            printLogger(Level.DEBUG)
-            modules(
-                listOf(
+            modules(listOf(
                     module {
                         single { Simple.ComponentA() }
                     },
                     module {
                         single { Simple.ComponentB(get()) }
-                    })
+                    }))
+        }
+
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    listOf(
+                            module {
+                                single { Simple.ComponentA() }
+                            },
+                            module {
+                                single { Simple.ComponentB(get()) }
+                            })
             )
         }
     }

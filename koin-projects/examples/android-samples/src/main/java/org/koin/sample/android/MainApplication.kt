@@ -14,10 +14,10 @@ class MainApplication : Application() {
         super.onCreate()
 
         startKoin {
-            androidLogger(Level.INFO)
+            androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             androidFileProperties()
-            modules(appModule, mvpModule, mvvmModule, scopeModule, dynamicModule)
+            modules(listOf(appModule, mvpModule, mvvmModule, scopeModule, dynamicModule))
         }
     }
 }

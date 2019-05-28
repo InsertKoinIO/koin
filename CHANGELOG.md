@@ -2,6 +2,21 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+
+## [2.0.1]()
+
+_Android-ViewModel_
+
+* `[ADDED]` - debug logging for VM provider
+
+_AndroidX-ViewModel_
+
+* `[ADDED]` - debug logging for VM provider
+
+_Core_
+
+* `[FIXED]` - performances update - modules list loading & class naming
+
 ## [2.0.0]()
 
 _Android_

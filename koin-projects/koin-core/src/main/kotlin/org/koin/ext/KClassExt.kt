@@ -15,20 +15,9 @@
  */
 package org.koin.ext
 
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
  * Give full class qualifier
  */
-fun KClass<*>.getFullName(): String {
-    return classNames[this] ?: saveFullName()
-}
-
-private fun KClass<*>.saveFullName(): String {
-    val name = this.java.canonicalName
-    classNames[this] = name
-    return name
-}
-
-private val classNames: MutableMap<KClass<*>, String> = ConcurrentHashMap()
+fun KClass<*>.getFullName(): String = java.name
