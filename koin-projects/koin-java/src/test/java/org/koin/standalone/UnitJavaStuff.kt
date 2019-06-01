@@ -8,6 +8,7 @@ val koinModule = module {
     single { ComponentA() }
     single { ComponentB(get()) }
     single { ComponentC(get(), get()) }
+
     scope(named("Session")) {
         scoped { ComponentD(get()) }
     }

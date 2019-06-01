@@ -7,11 +7,13 @@ include 'examples:coffee-maker'
 include 'koin-java', 'koin-core-ext'
 
 // Android
-include 'koin-android'
-include 'koin-android-scope'
-include 'koin-android-viewmodel'
-include 'koin-androidx-scope'
-include 'koin-androidx-viewmodel'
+include 'koin-android', 'koin-android-scope' ,'koin-android-viewmodel'
+include 'koin-androidx-scope', 'koin-androidx-viewmodel'
+
+// Android Ext
+include 'koin-android-ext'
+include 'koin-androidx-ext'
+
 
 // Android Samples
 include 'examples:android-samples'

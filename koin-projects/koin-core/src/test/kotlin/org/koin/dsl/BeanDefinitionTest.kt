@@ -27,10 +27,11 @@ class BeanDefinitionTest {
     fun `scope definition`() {
         val scopeID = named("scope")
 
-        val def1 = DefinitionFactory.createScoped(scopeName = scopeID, definition = { Simple.ComponentA() })
+        val def1 = DefinitionFactory.createSingle(scopeName = scopeID, definition = { Simple.ComponentA() })
 
         assertEquals(scopeID, def1.scopeName)
-        assertEquals(Kind.Scope, def1.kind)
+        assertEquals(Kind.Single, def1.kind)
+        assertEquals(scopeID, def1.scopeName)
     }
 
     @Test

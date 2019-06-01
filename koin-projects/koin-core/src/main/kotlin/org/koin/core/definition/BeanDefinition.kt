@@ -32,11 +32,11 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class BeanDefinition<T>(
-    val qualifier: Qualifier? = null,
-    val primaryType: KClass<*>
+        val qualifier: Qualifier? = null,
+        val scopeName: Qualifier? = null,
+        val primaryType: KClass<*>
 ) {
     // Main data
-    var scopeName: Qualifier? = null
     var secondaryTypes = arrayListOf<KClass<*>>()
     var instance: DefinitionInstance<T>? = null
     lateinit var definition: Definition<T>
@@ -49,9 +49,9 @@ class BeanDefinition<T>(
     var onClose: OnCloseCallback<T>? = null
 
     /**
-     * Tells if the definition is this Kind
+     *
      */
-    fun isKind(kind: Kind): Boolean = this.kind == kind
+    fun hasScopeSet() = scopeName != null
 
     /**
      * Create the associated Instance Holder
@@ -59,9 +59,8 @@ class BeanDefinition<T>(
     fun createInstanceHolder() {
         this.instance = when (kind) {
             Kind.Single -> SingleDefinitionInstance(this)
-            Kind.Scope -> ScopeDefinitionInstance(this)
             Kind.Factory -> FactoryDefinitionInstance(this)
-            else -> error("Unknown definition type: $this")
+            Kind.Scoped -> ScopeDefinitionInstance(this)
         }
     }
 
@@ -108,7 +107,7 @@ class BeanDefinition<T>(
 }
 
 enum class Kind {
-    Single, Factory, Scope, Other
+    Single, Factory, Scoped
 }
 
 typealias Definition<T> = Scope.(DefinitionParameters) -> T

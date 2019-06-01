@@ -16,7 +16,7 @@ class DeclareInstanceTest {
 
         val koin = koinApplication {
             printLogger()
-            modules()
+            modules(emptyList())
         }.koin
 
         val a = Simple.ComponentA()
@@ -70,7 +70,7 @@ class DeclareInstanceTest {
 
         val koin = koinApplication {
             printLogger()
-            modules()
+            modules(emptyList())
         }.koin
 
         val a = Simple.Component1()

@@ -10,6 +10,8 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
+### Koin 2.0 is out: https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3
+
 ### Contact & Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
@@ -33,7 +35,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 
 ```gradle
 // latest stable
-koin_version = '2.0.0-GA4'
+koin_version = '2.0.1'
 ```
 
 ## Gradle 
@@ -71,21 +73,24 @@ implementation "org.koin:koin-java:$koin_version"
 ```gradle
 // Koin for Android
 implementation "org.koin:koin-android:$koin_version"
-// Koin Android Scope feature
+// Koin Android Scope features
 implementation "org.koin:koin-android-scope:$koin_version"
-// Koin Android ViewModel feature
+// Koin Android ViewModel features
 implementation "org.koin:koin-android-viewmodel:$koin_version"
+// Koin Android Experimental features
+implementation "org.koin:koin-android-ext:$koin_version"
 ```
 
 #### AndroidX
 
 ```gradle
 
-// AndroidX (based on koin-android)
-// Koin AndroidX Scope feature
-implementation "org.koin:koin-androidx-scope:$koin_version"
-// Koin AndroidX ViewModel feature
-implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+// Koin AndroidX Scope features
+implementation "org.koin:koin-android-scope:$koin_version"
+// Koin AndroidX ViewModel features
+implementation "org.koin:koin-android-viewmodel:$koin_version"
+// Koin AndroidX Experimental features
+implementation "org.koin:koin-android-ext:$koin_version"
 ```
 
 #### Ktor
@@ -154,6 +159,7 @@ class MyApplication : Application() {
 
 ### Articles & resouces about Koin
 
+* [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
 * [Migration from Dagger2 to Koin](https://proandroiddev.com/migrating-from-dagger2-to-koin-3b2b3f5285e9)
 * [From Dagger to Koin, a step by step migration guide](https://medium.com/@giuliani.arnaud/the-thermosiphon-app-from-dagger-to-koin-step-by-step-a09af7f5b5b1)
 * [Koin in Feature Modules Project](https://proandroiddev.com/koin-in-feature-modules-project-6329f069f943)

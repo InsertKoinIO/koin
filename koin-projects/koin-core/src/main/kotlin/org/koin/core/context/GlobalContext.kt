@@ -82,15 +82,20 @@ fun stopKoin() = GlobalContext.stop()
 /**
  * load Koin modules in global Koin context
  */
-fun loadKoinModules(vararg modules: Module) {
-    GlobalContext.get().modules(*modules)
+fun loadKoinModules(module: Module) {
+    GlobalContext.get().modules(listOf(module))
+}
+
+
+fun loadKoinModules(modules: List<Module>) {
+    GlobalContext.get().modules(modules)
 }
 
 /**
  * unload Koin modules from global Koin context
  */
-fun unloadKoinModules(vararg modules: Module) {
-    GlobalContext.get().unloadModules(*modules)
+fun unloadKoinModules(module: Module) {
+    GlobalContext.get().unloadModules(listOf(module))
 }
 
 /**

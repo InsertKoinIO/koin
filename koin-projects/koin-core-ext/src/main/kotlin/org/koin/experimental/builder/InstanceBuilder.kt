@@ -1,10 +1,7 @@
 package org.koin.experimental.builder
 
-import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.logger.Level
-import org.koin.core.module.Module
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDuration
+import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -12,28 +9,14 @@ import kotlin.reflect.KClass
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> Module.create(context: Scope): T {
+inline fun <reified T : Any> create(context: Scope): T {
+
     val kClass = T::class
-    val kclassAsString = kClass.toString()
+    lateinit var instance: T
 
-    val (ctor, ctorDuration) = measureDuration {
-        kClass.getFirstJavaConstructor()
-    }
-
-    val (args, argsDuration) = measureDuration {
-        getArguments(ctor, context)
-    }
-
-    val (instance, instanceDuration) = measureDuration {
-        ctor.makeInstance<T>(args)
-    }
-
-    if (logger.isAt(Level.DEBUG)) {
-        logger.debug("| autocreate '$kClass'")
-        logger.debug("| got ctor '$kclassAsString' in '$ctorDuration'")
-        logger.debug("| got args '$kclassAsString' in '$argsDuration'")
-        logger.debug("| got instance '$kclassAsString' in '$instanceDuration'")
-    }
+    val ctor = kClass.getFirstJavaConstructor()
+    val args = getArguments(ctor, context)
+    instance = ctor.makeInstance(args)
 
     return instance
 }
@@ -54,7 +37,7 @@ fun getArguments(ctor: Constructor<*>, context: Scope) =
  * Get first java constructor
  */
 fun KClass<*>.getFirstJavaConstructor(): Constructor<*> {
-    return allConstructors[this] ?: saveConstructor()
+    return allConstructors[this.getFullName()] ?: saveConstructor()
 }
 
 /**
@@ -63,19 +46,18 @@ fun KClass<*>.getFirstJavaConstructor(): Constructor<*> {
 fun KClass<*>.saveConstructor(): Constructor<*> {
     val clazz = this.java
     val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
-    allConstructors[this] = ctor
+    allConstructors[this.getFullName()] = ctor
     return ctor
 }
 
-val allConstructors = ConcurrentHashMap<KClass<*>, Constructor<*>>()
+val allConstructors = ConcurrentHashMap<String, Constructor<*>>()
 
 /**
  * Retrieve linked dependency with defaults params
  */
 internal fun <T : Any> Scope.getWithDefault(
-    clazz: KClass<T>
+        clazz: KClass<T>
 ): T {
-    val koin = getKoin()
-    return koin.get(clazz, null, null)
+    return get(clazz, null, null)
             ?: error("Koin can't be null in scope context")
 }

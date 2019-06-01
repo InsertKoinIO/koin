@@ -26,7 +26,7 @@ fun KClass<*>.getFullName(): String {
 }
 
 private fun KClass<*>.saveFullName(): String {
-    val name = this.java.canonicalName
+    val name = this.java.name
     classNames[this] = name
     return name
 }

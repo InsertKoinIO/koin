@@ -24,7 +24,7 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
     fun `should create all MVP hierarchy`() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(MVPModule, DataSourceModule)
+            modules(MVPModule+ DataSourceModule)
         }
 
         val view = get<View>()
@@ -42,7 +42,7 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
     fun `check MVP hierarchy`() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(MVPModule, DataSourceModule)
+            modules(MVPModule+ DataSourceModule)
         }
     }
 }

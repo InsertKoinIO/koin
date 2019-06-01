@@ -34,7 +34,7 @@ public class DataFetcher {
     //From components
     private Lazy<DataSource> localDb_lazy = KoinJavaComponent.inject(DataSource.class, named("db"));
     private DataSource remoteApi = KoinJavaComponent.get(DataSource.class, named("api"));
-    private DataConverter dataConverter = KoinJavaComponent.get(DataConverter.class, null, null,() -> new DefinitionParameters(SEPARATOR));
+    private DataConverter dataConverter = KoinJavaComponent.get(DataConverter.class, null,() -> new DefinitionParameters(SEPARATOR));
 
     public DataFetcher() {
         //Use this constructor only for test cases.

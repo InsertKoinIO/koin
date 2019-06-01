@@ -89,7 +89,7 @@ class DynamicModulesTest {
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module1, module2)
+            modules(listOf(module1, module2))
         }
 
         app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
@@ -120,7 +120,7 @@ class DynamicModulesTest {
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module1, module2)
+            modules(listOf(module1, module2))
         }
 
         app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
@@ -151,7 +151,7 @@ class DynamicModulesTest {
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module1, module2)
+            modules(listOf(module1, module2))
         }
 
         app.getDefinition(Simple.MySingle::class) ?: error("no definition found")
@@ -225,7 +225,8 @@ class DynamicModulesTest {
         val scope = app.koin.createScope("id", scopeKey)
         val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
-        Assert.assertEquals(Kind.Scope, defA.kind)
+        Assert.assertEquals(Kind.Scoped, defA.kind)
+        Assert.assertEquals(scopeKey, defA.scopeName)
         Assert.assertNotNull(scope.get<Simple.ComponentA>())
 
         app.unloadModules(module)
@@ -256,7 +257,8 @@ class DynamicModulesTest {
         var scope = app.koin.createScope("id", scopeKey)
         val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
-        Assert.assertEquals(Kind.Scope, defA.kind)
+        Assert.assertEquals(Kind.Scoped, defA.kind)
+        Assert.assertEquals(scopeKey, defA.scopeName)
         Assert.assertNotNull(scope.get<Simple.ComponentA>())
 
         app.unloadModules(module)

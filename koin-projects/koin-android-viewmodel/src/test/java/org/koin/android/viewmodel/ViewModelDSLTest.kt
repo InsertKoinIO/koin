@@ -25,7 +25,7 @@ class ViewModelDSLTest {
 
         val viemodelDefinition = koinApp.getDefinition(MyViewModel::class)!!
         assertTrue(viemodelDefinition.isViewModel())
-        assertTrue(viemodelDefinition.isKind(Kind.Factory))
+        assertTrue(viemodelDefinition.kind == Kind.Factory)
     }
 
     @Test

@@ -71,7 +71,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
     }
 
     private fun checkScopeResolution(definition: BeanDefinition<*>, scope: Scope) {
-        val scopeInstanceName = scope.set?.qualifier
+        val scopeInstanceName = scope.scopeDefinition?.qualifier
         val beanScopeName: Qualifier? = definition.scopeName
         if (beanScopeName != scopeInstanceName) {
             when {

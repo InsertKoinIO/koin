@@ -17,6 +17,24 @@ class ClosedScopeAPI {
     val scopeName = "MY_SCOPE"
 
     @Test
+    fun `get definition from current scopes type`() {
+        val koin = koinApplication {
+            printLogger()
+            modules(
+                    module {
+                        scope(named<ScopeType>()) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope1 = koin.createScope("scope1", named<ScopeType>())
+        val scope2 = koin.createScope("scope2", named<ScopeType>())
+        Assert.assertNotEquals(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
+    }
+
+    @Test
     fun `get definition from current scope type`() {
         val koin = koinApplication {
             modules(
@@ -35,9 +53,45 @@ class ClosedScopeAPI {
     }
 
     @Test
-    fun `get definition from current scope type - dispatched modules`() {
+    fun `get definition from current factory scope type`() {
         val koin = koinApplication {
             modules(
+                    module {
+                        scope(named<ScopeType>()) {
+                            scoped { Simple.ComponentA() }
+                            factory { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope("myScope", named<ScopeType>())
+        Assert.assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+    }
+
+    @Test
+    fun `get definition from factory scope type`() {
+        val koin = koinApplication {
+            modules(
+                    module {
+                        single { Simple.ComponentA() }
+                        scope(named<ScopeType>()) {
+                            factory { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope("myScope", named<ScopeType>())
+        Assert.assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        Assert.assertEquals(koin.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+    }
+
+    @Test
+    fun `get definition from current scope type - dispatched modules`() {
+        val koin = koinApplication {
+            modules(listOf(
                     module {
                         scope(named<ScopeType>()) {
                         }
@@ -51,7 +105,7 @@ class ClosedScopeAPI {
                         scope(named<ScopeType>()) {
                             scoped { Simple.ComponentB(get()) }
                         }
-                    }
+                    })
             )
         }.koin
 

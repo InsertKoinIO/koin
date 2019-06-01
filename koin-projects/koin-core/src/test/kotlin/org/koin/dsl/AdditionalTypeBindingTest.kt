@@ -24,7 +24,7 @@ class AdditionalTypeBindingTest {
 
         val koin = app.koin
         val c1 = koin.get<Simple.Component1>()
-        val c = koin.bind<Simple.Component1, Simple.ComponentInterface1>()
+        val c = koin.bind<Simple.ComponentInterface1, Simple.Component1>()
 
         assertEquals(c1, c)
     }
@@ -69,7 +69,7 @@ class AdditionalTypeBindingTest {
             e.printStackTrace()
         }
 
-        assertNotEquals(koin.bind<Simple.Component1, Simple.ComponentInterface1>(), koin.bind<Simple.Component2, Simple.ComponentInterface1>())
+        assertNotEquals(koin.bind<Simple.ComponentInterface1, Simple.Component1>(), koin.bind<Simple.ComponentInterface1, Simple.Component2>())
     }
 
     @Test
@@ -80,7 +80,7 @@ class AdditionalTypeBindingTest {
                     module {
                         single { Simple.Component1() } bind Simple.ComponentInterface1::class
                         single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                        single { Simple.UserComponent(bind<Simple.Component1, Simple.ComponentInterface1>()) }
+                        single { Simple.UserComponent(bind<Simple.ComponentInterface1, Simple.Component1>()) }
                     })
         }
 
@@ -136,8 +136,8 @@ class AdditionalTypeBindingTest {
 
         val koin = app.koin
         val c1 = koin.get<Simple.Component1>()
-        val ci1 = koin.bind<Simple.Component1, Simple.ComponentInterface1>()
-        val ci2 = koin.bind<Simple.Component1, Simple.ComponentInterface2>()
+        val ci1 = koin.bind<Simple.ComponentInterface1, Simple.Component1>()
+        val ci2 = koin.bind<Simple.ComponentInterface2, Simple.Component1>()
 
         assertEquals(c1, ci1)
         assertEquals(c1, ci2)

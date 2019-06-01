@@ -26,7 +26,7 @@ android {
 dependencies {
 
     // Koin
-    implementation project(":koin-androidx-viewmodel")
+    implementation project(":koin-androidx-ext")
     implementation 'junit:junit:4.12'
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"

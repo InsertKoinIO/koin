@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.di
 
+import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -13,6 +14,7 @@ import org.koin.sample.androidx.components.main.Service
 import org.koin.sample.androidx.components.main.ServiceImpl
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
+import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
@@ -41,8 +43,11 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
+
     scope(named<MVVMActivity>()) {
         scoped { Session() }
+        viewModel { ExtSimpleViewModel(get()) }
+        viewModel<ExtSimpleViewModel>(named("ext"))
     }
 }
 

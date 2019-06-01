@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+ext {
+    android_sourceSet = true
+    pom_name = "koin-androidx-ext"
+    pom_description = "Koin project - koin-androidx-ext"
+}
+
+android {
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
+
+    defaultConfig {
+        minSdkVersion android_min_version
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+}
+
+dependencies {
+    // Koin
+    api project(":koin-core-ext")
+    api project(":koin-androidx-viewmodel")
+
+    // Test
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+
+    // Architecture ViewModel
+    implementation("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
+        exclude module: "lifecycle-livedata"
+        exclude module: "lifecycle-service"
+        exclude module: "lifecycle-process"
+        exclude module: "runtime"
+        exclude group: "androidx.legacy"
+    }
+}
+
+apply from: '../gradle/publish-android.gradle'
