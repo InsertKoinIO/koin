@@ -46,7 +46,7 @@ From any `Koin` instance or also available from your `KoinComponent` with `getKo
 
 {% highlight kotlin %}
 // create scope instance with ScopeID "myScopeId" for scope naled "MY_SCOPE"
-val myScope : Scope = koin.createScope("myScopeId", named("MY_SCOPE")
+val myScope : Scope = koin.createScope("myScopeId", named("MY_SCOPE"))
 
 // get instance ComponentA from scope
 val a = myScope.get<ComponentA>()
@@ -62,9 +62,9 @@ myScope.close()
 
 ## Scope vs Module unloading
 
-Koin gives 2 possibilties to handle definitions & instances for a limited lifetime: Scope API & modules unload. What is the difference and when to use them?
+Koin gives 2 possibilities to handle definitions & instances for a limited lifetime: Scope API & modules unload. What is the difference and when to use them?
 
-- `unloadKoinModules()` allows to drop modules definitions (and instances). it's very usefull for dymaic module architecture approach, or when we need to load/unload/reload definitions. 
+- `unloadKoinModules()` allows to drop modules definitions (and instances). it's very useful for dynamic module architecture approach, or when we need to load/unload/reload definitions.
 - Scope API is dedicated to limited lifetime definitions, creating bunch of definitions for a given lifetime/purpose
 
-Using modules unload is more simpler that wiring scopes, but you have to unload/reload modules definitions each time you need. Also one difference, definitions are no longer reachables. Scope API is more dedcaited to fine grained lifetime limited instances, or multiple instance of the same scopes (sessions...).
+Using modules unload is more simpler that wiring scopes, but you have to unload/reload modules definitions each time you need. Also one difference, definitions are no longer reachable. Scope API is more dedicated to fine grained lifetime limited instances, or multiple instance of the same scopes (sessions...).
