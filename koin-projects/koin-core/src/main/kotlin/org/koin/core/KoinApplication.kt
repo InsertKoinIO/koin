@@ -41,7 +41,6 @@ class KoinApplication private constructor() {
      * @param modules
      */
     fun modules(vararg modules: Module): KoinApplication {
-        if (modules.isEmpty()) throw NoParameterFoundException("No modules were found. Koin requires at least a one module to initialize properly.")
         return modules(modules.toList())
     }
 
