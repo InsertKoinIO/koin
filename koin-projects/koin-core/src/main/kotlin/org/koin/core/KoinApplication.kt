@@ -40,8 +40,8 @@ class KoinApplication private constructor() {
      * Load definitions from modules
      * @param modules
      */
-    fun modules(modules: Module): KoinApplication {
-        return modules(listOf(modules))
+    fun modules(vararg modules: Module): KoinApplication {
+        return modules(modules.toList())
     }
 
     /**
