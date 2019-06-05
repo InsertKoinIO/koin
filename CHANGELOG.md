@@ -16,6 +16,10 @@ _AndroidX-ViewModel_
 _Core_
 
 * `[FIXED]` - performances update - modules list loading & class naming
+* `[BREAKING]` - `modules(vararg modules: Module)` in `KoinApplication` has been removed for performance reasons. Please use `modules(modules: List<Module>)`
+* `[BREAKING]` - `modules(modules: Iterable<Module>)` in `KoinApplication` has been removed for performance reasons. Please use `modules(modules: List<Module>)`
+* `[BREAKING]` - `loadKoinModules(vararg modules: Module)` in `GlobalContext` has been removed for performance reasons. Please use `loadKoinModules(module: Module)` or `loadKoinModules(modules: List<Module>)`
+* `[BREAKING]` - `unloadKoinModules(vararg modules: Module)` in `GlobalContext` has been removed for performance reasons. Please use `unloadKoinModules(module: Module)`
 
 ## [2.0.0]()
 
