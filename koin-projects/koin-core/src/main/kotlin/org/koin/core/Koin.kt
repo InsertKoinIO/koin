@@ -16,6 +16,7 @@
 package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.definition.Options
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -111,15 +112,19 @@ class Koin {
      * Declare a component definition from the given instance
      * This result of declaring a single definition of type T, returning the given instance
      *
-     * @param instance
-     * @param qualifier
+     * @param instance The instance you're declaring.
+     * @param qualifier Qualifier for this declaration
+     * @param secondaryTypes List of secondary bound types
+     * @param options Allows to set [Options] for the [BeanDefinition] that will be created, e.g. you can use it to
+     * override a previous declaration of the same type.
      */
     inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null
+            secondaryTypes: List<KClass<*>>? = null,
+            options: Options? = null
     ) {
-        rootScope.declare(instance, qualifier, secondaryTypes)
+        rootScope.declare(instance, qualifier, secondaryTypes, options)
     }
 
     /**

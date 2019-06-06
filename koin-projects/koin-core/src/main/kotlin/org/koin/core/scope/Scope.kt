@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
@@ -189,14 +190,17 @@ data class Scope(
      * This result of declaring a scoped/single definition of type T, returning the given instance
      * (single definition of th current scope is root)
      *
-     * @param instance
-     * @param qualifier
-     * @param secondaryTypes - list of secondary bound types
+     * @param instance The instance you're declaring.
+     * @param qualifier Qualifier for this declaration
+     * @param secondaryTypes List of secondary bound types
+     * @param options Allows to set [Options] for the [BeanDefinition] that will be created, e.g. you can use it to
+     * override a previous declaration of the same type.
      */
     inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null
+            secondaryTypes: List<KClass<*>>? = null,
+            options: Options? = null
     ) {
         val definition = if (isRoot) {
             DefinitionFactory.createSingle(qualifier) { instance }
@@ -204,6 +208,7 @@ data class Scope(
             DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
         }
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
+        options?.let { definition.options = it }
         beanRegistry.saveDefinition(definition)
     }
 

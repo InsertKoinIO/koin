@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named
@@ -46,6 +47,41 @@ class DeclareInstanceTest {
         }
     }
 
+    @Test
+    fun `can declare and override a single on the fly`() {
+
+        val koin = koinApplication {
+            printLogger()
+            modules(module {
+                single { Simple.MySingle(1) }
+            })
+        }.koin
+
+        val a = Simple.MySingle(2)
+
+        koin.declare(a, options = Options(override = true))
+        assertEquals(2, koin.get<Simple.MySingle>().id)
+    }
+
+    @Test
+    fun `can declare and override a single on the fly when override is set to false`() {
+
+        val koin = koinApplication {
+            printLogger()
+            modules(module {
+                single { Simple.MySingle(1) }
+            })
+        }.koin
+
+        val a = Simple.MySingle(2)
+
+        try {
+            koin.declare(a, options = Options(override = false))
+            fail()
+        } catch (e: DefinitionOverrideException) {
+            e.printStackTrace()
+        }
+    }
 
     @Test
     fun `can declare a single with qualifier on the fly`() {
@@ -66,6 +102,25 @@ class DeclareInstanceTest {
     }
 
     @Test
+    fun `can declare and override a single with qualifier on the fly`() {
+
+        val koin = koinApplication {
+            printLogger()
+            modules(module {
+                single { Simple.ComponentA() }
+                single(named("another_a")) { Simple.ComponentA() }
+            })
+        }.koin
+
+        val a = Simple.ComponentA()
+
+        koin.declare(a, named("another_a"), options = Options(override = true))
+
+        assertEquals(a, koin.get<Simple.ComponentA>(named("another_a")))
+        assertNotEquals(a, koin.get<Simple.ComponentA>())
+    }
+
+    @Test
     fun `can declare a single with secondary type on the fly`() {
 
         val koin = koinApplication {
@@ -79,6 +134,24 @@ class DeclareInstanceTest {
 
         assertEquals(a, koin.get<Simple.Component1>())
         assertEquals(a, koin.get<Simple.ComponentInterface1>())
+    }
+
+    @Test
+    fun `can declare and override a single with secondary type on the fly`() {
+
+        val koin = koinApplication {
+            printLogger()
+            modules(emptyList())
+        }.koin
+
+        val a = Simple.Component1()
+        val b = Simple.Component1()
+
+        koin.declare(a, secondaryTypes = listOf(Simple.ComponentInterface1::class))
+        koin.declare(b, secondaryTypes = listOf(Simple.ComponentInterface1::class), options = Options(override = true))
+
+        assertEquals(b, koin.get<Simple.Component1>())
+        assertEquals(b, koin.get<Simple.ComponentInterface1>())
     }
 
     @Test
