@@ -115,16 +115,15 @@ class Koin {
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
-     * @param options Allows to set [Options] for the [BeanDefinition] that will be created, e.g. you can use it to
-     * override a previous declaration of the same type.
+     * @param override Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
-            options: Options? = null
+            override: Boolean = false
     ) {
-        rootScope.declare(instance, qualifier, secondaryTypes, options)
+        rootScope.declare(instance, qualifier, secondaryTypes, override)
     }
 
     /**

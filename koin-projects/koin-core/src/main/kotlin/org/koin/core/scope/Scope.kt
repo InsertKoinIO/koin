@@ -193,14 +193,13 @@ data class Scope(
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
-     * @param options Allows to set [Options] for the [BeanDefinition] that will be created, e.g. you can use it to
-     * override a previous declaration of the same type.
+     * @param override Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
-            options: Options? = null
+            override: Boolean = false
     ) {
         val definition = if (isRoot) {
             DefinitionFactory.createSingle(qualifier) { instance }
@@ -208,7 +207,7 @@ data class Scope(
             DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
         }
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
-        options?.let { definition.options = it }
+        definition.options.override = override
         beanRegistry.saveDefinition(definition)
     }
 

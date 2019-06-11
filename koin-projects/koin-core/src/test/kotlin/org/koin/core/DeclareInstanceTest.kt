@@ -59,7 +59,7 @@ class DeclareInstanceTest {
 
         val a = Simple.MySingle(2)
 
-        koin.declare(a, options = Options(override = true))
+        koin.declare(a, override = true)
         assertEquals(2, koin.get<Simple.MySingle>().id)
     }
 
@@ -76,7 +76,7 @@ class DeclareInstanceTest {
         val a = Simple.MySingle(2)
 
         try {
-            koin.declare(a, options = Options(override = false))
+            koin.declare(a, override = false)
             fail()
         } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
@@ -114,7 +114,7 @@ class DeclareInstanceTest {
 
         val a = Simple.ComponentA()
 
-        koin.declare(a, named("another_a"), options = Options(override = true))
+        koin.declare(a, named("another_a"), override = true)
 
         assertEquals(a, koin.get<Simple.ComponentA>(named("another_a")))
         assertNotEquals(a, koin.get<Simple.ComponentA>())
@@ -148,7 +148,7 @@ class DeclareInstanceTest {
         val b = Simple.Component1()
 
         koin.declare(a, secondaryTypes = listOf(Simple.ComponentInterface1::class))
-        koin.declare(b, secondaryTypes = listOf(Simple.ComponentInterface1::class), options = Options(override = true))
+        koin.declare(b, secondaryTypes = listOf(Simple.ComponentInterface1::class), override = true)
 
         assertEquals(b, koin.get<Simple.Component1>())
         assertEquals(b, koin.get<Simple.ComponentInterface1>())
