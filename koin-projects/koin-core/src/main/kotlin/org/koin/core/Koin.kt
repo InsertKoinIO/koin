@@ -16,7 +16,6 @@
 package org.koin.core
 
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.definition.Options
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier

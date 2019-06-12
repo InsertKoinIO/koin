@@ -19,7 +19,6 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.DefinitionFactory
-import org.koin.core.definition.Options
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
