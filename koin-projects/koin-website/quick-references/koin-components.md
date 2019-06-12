@@ -25,7 +25,7 @@ class HelloApp : KoinComponent {
 
     // lazy inject dependency
     val helloService: HelloServiceImpl by inject()
-
+    
     fun sayHello(){
         helloService.sayHello()
     }
@@ -46,7 +46,7 @@ fun main(vararg args: String) {
     startKoin {
         modules(helloModule)
     }
-
+    
     // Run our Koin component
     HelloApp().sayHello()
 }
@@ -54,7 +54,7 @@ fun main(vararg args: String) {
 
 ## Bootstrap and runtime extensions
 
-`KoinComponent` interface is also used to help you boostrap an application from outside of Koin. Also, you can bring `KoinComponent` feature by extension functions directly on some tagret classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
+`KoinComponent` interface is also used to help you boostrap an application from outside of Koin. Also, you can bring `KoinComponent` feature by extension functions directly on some target classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
 
 
 ## Bridge with Koin instance & current Scope
