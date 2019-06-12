@@ -36,7 +36,7 @@ instance with just like:
 ----
 startKoin {
     //inject Android context
-    androidContext(/* your androic context */)
+    androidContext(/* your android context */)
     // use modules
     modules(myAppModules)
 }
