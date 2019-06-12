@@ -20,7 +20,7 @@ jobs:
         
       # run tests!
       - run: 
-          command: ./koin-projects/gradlew -p ./koin-projects clean test -Dorg.gradle.parallel=false
+          command: ./koin-projects/gradlew -p ./koin-projects clean test
 
 workflows:
   version: 2
