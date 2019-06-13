@@ -111,15 +111,18 @@ class Koin {
      * Declare a component definition from the given instance
      * This result of declaring a single definition of type T, returning the given instance
      *
-     * @param instance
-     * @param qualifier
+     * @param instance The instance you're declaring.
+     * @param qualifier Qualifier for this declaration
+     * @param secondaryTypes List of secondary bound types
+     * @param override Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null
+            secondaryTypes: List<KClass<*>>? = null,
+            override: Boolean = false
     ) {
-        rootScope.declare(instance, qualifier, secondaryTypes)
+        rootScope.declare(instance, qualifier, secondaryTypes, override)
     }
 
     /**
