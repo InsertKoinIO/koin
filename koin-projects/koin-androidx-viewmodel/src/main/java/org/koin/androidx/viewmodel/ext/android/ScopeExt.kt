@@ -15,10 +15,12 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.getViewModel
+import org.koin.androidx.viewmodel.getViewModelWithState
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -86,6 +88,76 @@ fun <T : ViewModel> Scope.getViewModel(
     return getViewModel(
             ViewModelParameters(
                     clazz,
+                    null,
+                    owner,
+                    qualifier,
+                    parameters = parameters
+            )
+    )
+}
+
+//saved state
+/**
+ * Lazy get a viewModel instance
+ *
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ * @param clazz
+ */
+fun <T : ViewModel> Scope.viewModelWithState(
+        owner: LifecycleOwner,
+        clazz: KClass<T>,
+        qualifier: Qualifier? = null,
+        defaultArguments: Bundle?,
+        parameters: ParametersDefinition? = null
+): Lazy<T> = lazy { getViewModelWithState(owner, clazz, qualifier, defaultArguments, parameters) }
+
+/**
+ * Lazy getByClass a viewModel instance
+ *
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> Scope.viewModelWithState(
+        owner: LifecycleOwner,
+        qualifier: Qualifier? = null,
+        defaultArguments: Bundle?,
+        noinline parameters: ParametersDefinition? = null
+): Lazy<T> = lazy { getViewModelWithState<T>(owner, qualifier, defaultArguments, parameters) }
+
+/**
+ * Get a viewModel instance
+ *
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> Scope.getViewModelWithState(
+        owner: LifecycleOwner,
+        qualifier: Qualifier? = null,
+        defaultArguments: Bundle?,
+        noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModelWithState(owner, T::class, qualifier, defaultArguments, parameters)
+}
+
+/**
+ * Lazy getByClass a viewModel instance
+ *
+ * @param clazz - Class of the BeanDefinition to retrieve
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+fun <T : ViewModel> Scope.getViewModelWithState(
+        owner: LifecycleOwner,
+        clazz: KClass<T>,
+        qualifier: Qualifier? = null,
+        defaultArguments: Bundle?,
+        parameters: ParametersDefinition? = null
+): T {
+    return getViewModelWithState(
+            ViewModelParameters(
+                    clazz,
+                    defaultArguments,
                     owner,
                     qualifier,
                     parameters = parameters

@@ -6,10 +6,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.AbstractSavedStateVMFactory
+import androidx.lifecycle.SavedStateHandle
+import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
+import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDuration
 
@@ -64,6 +69,29 @@ fun <T : ViewModel> Scope.createViewModelProvider(
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return get(parameters.clazz, parameters.qualifier, parameters.parameters)
+                }
+            })
+}
+
+//saved state
+
+fun <T : ViewModel> Koin.getViewModelWithState(parameters: ViewModelParameters<T>): T {
+    val vmStore: ViewModelStore = parameters.owner.getViewModelStore(parameters)
+    val viewModelProvider = rootScope.createSavedStateViewModelProvider(vmStore, parameters)
+    return viewModelProvider.getInstance(parameters)
+}
+
+fun <T : ViewModel> Scope.createSavedStateViewModelProvider(
+        vmStore: ViewModelStore,
+        parameters: ViewModelParameters<T>
+): ViewModelProvider {
+    return ViewModelProvider(
+            vmStore,
+            object : AbstractSavedStateVMFactory(vmStore as SavedStateRegistryOwner, parameters.defaultArguments) {
+                override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                    return get(parameters.clazz, parameters.qualifier) {
+                        parametersOf(handle, *(parameters.parameters?.invoke() ?: emptyParametersHolder()).values)
+                    }
                 }
             })
 }

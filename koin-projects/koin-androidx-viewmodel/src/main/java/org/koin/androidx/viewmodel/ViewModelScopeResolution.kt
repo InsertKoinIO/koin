@@ -13,3 +13,13 @@ fun <T : ViewModel> Scope.getViewModel(parameters: ViewModelParameters<T>): T {
     val viewModelProvider = createViewModelProvider(vmStore, parameters)
     return viewModelProvider.getInstance(parameters)
 }
+
+/**
+ * resolve instance with state
+ * @param parameters
+ */
+fun <T : ViewModel> Scope.getViewModelWithState(parameters: ViewModelParameters<T>): T {
+    val vmStore: ViewModelStore = parameters.owner.getViewModelStore(parameters)
+    val viewModelProvider = createSavedStateViewModelProvider(vmStore, parameters)
+    return viewModelProvider.getInstance(parameters)
+}

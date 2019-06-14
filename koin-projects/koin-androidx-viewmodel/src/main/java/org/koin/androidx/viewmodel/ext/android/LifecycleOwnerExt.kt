@@ -16,11 +16,13 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import android.content.ComponentCallbacks
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.getViewModel
+import org.koin.androidx.viewmodel.getViewModelWithState
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -85,9 +87,51 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
     return getKoin().getViewModel(
             ViewModelParameters(
                     clazz,
+                    null,
                     this@getViewModel,
                     qualifier,
                     parameters = parameters
             )
     )
 }
+
+
+//saved state
+
+fun <T : ViewModel> LifecycleOwner.getViewModelWithState(
+        clazz: KClass<T>,
+        defaultArguments: Bundle?,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
+): T {
+    return getKoin().getViewModelWithState(
+            ViewModelParameters(
+                    clazz,
+                    defaultArguments,
+                    this@getViewModelWithState,
+                    qualifier,
+                    parameters = parameters
+            )
+    )
+}
+
+inline fun <reified T : ViewModel> LifecycleOwner.getViewModelWithState(
+        defaultArguments: Bundle?,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModelWithState(T::class, defaultArguments, qualifier, parameters)
+}
+
+fun <T : ViewModel> LifecycleOwner.viewModelWithState(
+        clazz: KClass<T>,
+        qualifier: Qualifier? = null,
+        defaultArguments: Bundle? = null,
+        parameters: ParametersDefinition? = null
+): Lazy<T> = lazy { getViewModelWithState(clazz, defaultArguments, qualifier, parameters) }
+
+inline fun <reified T : ViewModel> LifecycleOwner.viewModelWithState(
+        qualifier: Qualifier? = null,
+        defaultArguments: Bundle? = null,
+        noinline parameters: ParametersDefinition? = null
+): Lazy<T> = lazy { getViewModelWithState<T>(defaultArguments, qualifier, parameters) }
