@@ -35,7 +35,15 @@ class KoinApplication private constructor() {
     internal fun loadDefaults() {
         koin.scopeRegistry.loadDefaultScopes(koin)
     }
-
+    
+    /**
+     * Load definitions from a single module
+     * @param modules
+     */
+    fun modules(modules: Module): KoinApplication {
+        return listOf(module)
+    }
+    
     /**
      * Load definitions from modules
      * @param modules
@@ -45,7 +53,7 @@ class KoinApplication private constructor() {
     }
 
     /**
-     * Load definitions from modules
+     * Load definitions from a list of modules
      * @param modules
      */
     fun modules(modules: List<Module>): KoinApplication {
