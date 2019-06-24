@@ -41,7 +41,7 @@ class KoinApplication private constructor() {
      * @param modules
      */
     fun modules(modules: Module): KoinApplication {
-        return listOf(modules)
+        return modules(listOf(modules))
     }
     
     /**
