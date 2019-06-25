@@ -86,11 +86,11 @@ implementation "org.koin:koin-android-ext:$koin_version"
 ```gradle
 
 // Koin AndroidX Scope features
-implementation "org.koin:koin-android-scope:$koin_version"
+implementation "org.koin:koin-androidx-scope:$koin_version"
 // Koin AndroidX ViewModel features
-implementation "org.koin:koin-android-viewmodel:$koin_version"
+implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 // Koin AndroidX Experimental features
-implementation "org.koin:koin-android-ext:$koin_version"
+implementation "org.koin:koin-androidx-ext:$koin_version"
 ```
 
 #### Ktor

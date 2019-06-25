@@ -20,12 +20,12 @@ import org.koin.core.KoinApplication
 import org.koin.core.parameter.parametersOf
 
 /**
- * Check all definition's dependencies - start all nodules and check ifdefinitions can run
+ * Check all definition's dependencies - start all modules and check if definitions can run
  */
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
 /**
- * Check all definition's dependencies - start all nodules and check if definitions can run
+ * Check all definition's dependencies - start all modules and check if definitions can run
  */
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     val bindings = ParametersBinding()

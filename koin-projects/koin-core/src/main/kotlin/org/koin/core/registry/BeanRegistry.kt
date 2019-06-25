@@ -124,7 +124,11 @@ class BeanRegistry {
         val secondaryTypeDefinitions: ArrayList<BeanDefinition<*>> = definitionsSecondaryTypes[type]
                 ?: createSecondaryType(type)
 
-        secondaryTypeDefinitions.add(definition)
+        if (definition in secondaryTypeDefinitions){
+            secondaryTypeDefinitions[secondaryTypeDefinitions.indexOf(definition)] = definition
+        } else {
+            secondaryTypeDefinitions.add(definition)
+        }
         if (logger.isAt(Level.INFO)) {
             logger.info("bind secondary type:'${type.getFullName()}' ~ $definition")
         }

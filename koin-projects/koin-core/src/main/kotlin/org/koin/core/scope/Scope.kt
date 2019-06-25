@@ -167,7 +167,7 @@ data class Scope(
 
     private fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*> {
         return beanRegistry.findDefinition(qualifier, clazz) ?: if (isRoot) {
-            throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' has been found. Check your module definitions.")
+            throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' has been found. Check your module definitions.")
         } else {
             _koin.rootScope.findDefinition(qualifier, clazz)
         }
@@ -189,14 +189,16 @@ data class Scope(
      * This result of declaring a scoped/single definition of type T, returning the given instance
      * (single definition of th current scope is root)
      *
-     * @param instance
-     * @param qualifier
-     * @param secondaryTypes - list of secondary bound types
+     * @param instance The instance you're declaring.
+     * @param qualifier Qualifier for this declaration
+     * @param secondaryTypes List of secondary bound types
+     * @param override Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null
+            secondaryTypes: List<KClass<*>>? = null,
+            override: Boolean = false
     ) {
         val definition = if (isRoot) {
             DefinitionFactory.createSingle(qualifier) { instance }
@@ -204,6 +206,7 @@ data class Scope(
             DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
         }
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
+        definition.options.override = override
         beanRegistry.saveDefinition(definition)
     }
 
