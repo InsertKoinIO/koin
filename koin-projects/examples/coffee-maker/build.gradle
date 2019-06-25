@@ -3,6 +3,6 @@ apply plugin: 'kotlin'
 archivesBaseName = 'example-coffee-maker'
 
 dependencies {
-    compile project(":koin-core")
+    compile project(":koin-core-ext")
     testImplementation project(":koin-test")
 }

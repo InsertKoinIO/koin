@@ -16,7 +16,7 @@ jobs:
       TERM: dumb
     
     steps:
-      - checkout
+      - test
         
       # run tests!
       - run: 

@@ -4,6 +4,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class ComponentA
+class ComponentA2
 class ComponentB(val a: ComponentA)
 
 interface Component {

@@ -178,7 +178,7 @@ data class Scope(
             val definitions = beanRegistry.findAllCreatedAtStartDefinition()
             if (definitions.isNotEmpty()) {
                 definitions.forEach {
-                    it.resolveInstance(InstanceContext(koin = this._koin, scope = this))
+                    it.resolveInstance<Any>(InstanceContext(koin = this._koin, scope = this))
                 }
             }
         }

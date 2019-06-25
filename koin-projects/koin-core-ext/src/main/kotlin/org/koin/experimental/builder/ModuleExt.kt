@@ -30,7 +30,7 @@ inline fun <reified T : Any> Module.single(
         createOnStart: Boolean = false,
         override: Boolean = false
 ): BeanDefinition<T> {
-    return single(qualifier, createOnStart, override) { create<T>(this) }
+    return single(qualifier, createOnStart, override) { create<T>() }
 }
 
 /**
@@ -43,7 +43,7 @@ inline fun <reified T : Any> Module.factory(
         qualifier: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    return factory(qualifier, override) { create<T>(this) }
+    return factory(qualifier, override) { create<T>() }
 }
 
 /**
@@ -57,7 +57,7 @@ inline fun <reified R : Any, reified T : R> Module.singleBy(
         createOnStart: Boolean = false,
         override: Boolean = false
 ): BeanDefinition<R> {
-    return single(qualifier, createOnStart, override) { create<T>(this) as R }
+    return single(qualifier, createOnStart, override) { create<T>() }
 }
 
 /**
@@ -70,5 +70,5 @@ inline fun <reified R : Any, reified T : R> Module.factoryBy(
         qualifier: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<R> {
-    return factory(qualifier, override) { create<T>(this) as R }
+    return factory(qualifier, override) { create<T>() }
 }

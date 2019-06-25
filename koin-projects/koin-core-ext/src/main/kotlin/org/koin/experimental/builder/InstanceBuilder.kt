@@ -1,63 +1,68 @@
 package org.koin.experimental.builder
 
+import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
+import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
 
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> create(context: Scope): T {
-
+inline fun <reified T : Any> Scope.create(): T {
     val kClass = T::class
-    lateinit var instance: T
+    val instance: Any
 
-    val ctor = kClass.getFirstJavaConstructor()
-    val args = getArguments(ctor, context)
-    instance = ctor.makeInstance(args)
+    if (logger.level == Level.DEBUG) {
+        logger.debug("!- creating class:${kClass.getFullName()}")
+    }
 
-    return instance
+    val constructor = kClass.java.constructors.firstOrNull()
+            ?: error("No constructor found for class '${kClass.getFullName()}'")
+
+    val args = if (logger.level == Level.DEBUG) {
+        val (_args, duration) = measureDuration {
+            getArguments(constructor, this)
+        }
+        logger.debug("!- got arguments in $duration ms")
+        _args
+    } else {
+        getArguments(constructor, this)
+    }
+
+    instance = if (logger.level == Level.DEBUG) {
+        val (_instance, duration) = measureDuration {
+            createInstance(args, constructor)
+        }
+        logger.debug("!- created instance in $duration ms")
+        _instance
+    } else {
+        createInstance(args, constructor)
+    }
+    return instance as T
 }
 
-/**
- * Make an instance with given arguments
- */
-inline fun <reified T : Any> Constructor<*>.makeInstance(args: Array<Any>) =
-        newInstance(*args) as T
+fun createInstance(args: Array<Any>, constructor: Constructor<out Any>): Any {
+    return if (args.isEmpty()) {
+        constructor.newInstance()
+    } else {
+        constructor.newInstance(*args)
+    }
+}
 
 /**
  * Retrieve arguments for given constructor
  */
-fun getArguments(ctor: Constructor<*>, context: Scope) =
-        ctor.parameterTypes.map { context.getWithDefault(it.kotlin) }.toTypedArray()
-
-/**
- * Get first java constructor
- */
-fun KClass<*>.getFirstJavaConstructor(): Constructor<*> {
-    return allConstructors[this.getFullName()] ?: saveConstructor()
-}
-
-/**
- * Extract constructor and save it to constructors index
- */
-fun KClass<*>.saveConstructor(): Constructor<*> {
-    val clazz = this.java
-    val ctor = clazz.constructors.firstOrNull() ?: error("No constructor found for class '$clazz'")
-    allConstructors[this.getFullName()] = ctor
-    return ctor
-}
-
-val allConstructors = ConcurrentHashMap<String, Constructor<*>>()
-
-/**
- * Retrieve linked dependency with defaults params
- */
-internal fun <T : Any> Scope.getWithDefault(
-        clazz: KClass<T>
-): T {
-    return get(clazz, null, null)
-            ?: error("Koin can't be null in scope context")
+fun getArguments(constructor: Constructor<*>, context: Scope): Array<Any> {
+    val length = constructor.parameterTypes.size
+    return if (length == 0) emptyArray()
+    else {
+        val result = Array<Any>(length) { Unit }
+        for (i in 0 until length) {
+            val p = constructor.parameterTypes[i]
+            result[i] = context.get<Any>(p.kotlin, null, null)
+        }
+        result
+    }
 }
