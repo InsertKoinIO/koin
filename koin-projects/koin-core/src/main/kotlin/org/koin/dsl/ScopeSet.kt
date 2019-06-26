@@ -31,6 +31,7 @@ data class ScopeSet(val qualifier: Qualifier) {
     val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
 
     @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)
+    @Suppress("UNUSED_PARAMETER")
     inline fun <reified T> single(
             qualifier: Qualifier? = null,
             override: Boolean = false,
