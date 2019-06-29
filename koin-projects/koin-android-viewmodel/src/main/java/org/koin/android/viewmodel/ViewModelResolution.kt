@@ -43,24 +43,24 @@ fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameter
 }
 
 fun <T : ViewModel> LifecycleOwner.getViewModelStore(
-        parameters: ViewModelParameters<T>
+    parameters: ViewModelParameters<T>
 ): ViewModelStore =
-        when {
-            parameters.from != null -> parameters.from.invoke().viewModelStore
-            this is FragmentActivity -> ViewModelStores.of(this)
-            this is Fragment -> ViewModelStores.of(this)
-            else -> error("Can't getByClass ViewModel '${parameters.clazz}' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
-        }
+    when {
+        parameters.from != null -> parameters.from.invoke().viewModelStore
+        this is FragmentActivity -> ViewModelStores.of(this)
+        this is Fragment -> ViewModelStores.of(this)
+        else -> error("Can't getByClass ViewModel '${parameters.clazz}' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
+    }
 
 fun <T : ViewModel> Scope.createViewModelProvider(
-        vmStore: ViewModelStore,
-        parameters: ViewModelParameters<T>
+    vmStore: ViewModelStore,
+    parameters: ViewModelParameters<T>
 ): ViewModelProvider {
     return ViewModelProvider(
-            vmStore,
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return get(parameters.clazz, parameters.qualifier, parameters.parameters)
-                }
-            })
+        vmStore,
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return get(parameters.clazz, parameters.qualifier, parameters.parameters)
+            }
+        })
 }

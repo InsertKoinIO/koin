@@ -38,10 +38,10 @@ interface KoinComponent {
  * @param parameters
  */
 inline fun <reified T> KoinComponent.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, parameters)
+    getKoin().get(qualifier, parameters)
 
 /**
  * Lazy inject instance from Koin
@@ -49,16 +49,16 @@ inline fun <reified T> KoinComponent.get(
  * @param parameters
  */
 inline fun <reified T> KoinComponent.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-        getKoin().inject(qualifier, parameters)
+    getKoin().inject(qualifier, parameters)
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S
  * @param parameters
  */
 inline fun <reified S, reified P> KoinComponent.bind(
-        noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null
 ): S =
-        getKoin().bind<S, P>(parameters)
+    getKoin().bind<S, P>(parameters)

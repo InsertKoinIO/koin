@@ -16,13 +16,13 @@ class ScopeDelcarationTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single<ComponentA>()
+                module {
+                    single<ComponentA>()
 
-                        scope(scopeName) {
-                            single<ComponentB>()
-                        }
+                    scope(scopeName) {
+                        single<ComponentB>()
                     }
+                }
             )
         }.koin
 

@@ -16,8 +16,8 @@ import org.koin.experimental.builder.create
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-        qualifier: Qualifier? = null,
-        override: Boolean = false
+    qualifier: Qualifier? = null,
+    override: Boolean = false
 ) {
     factory(qualifier, override) { create<T>() }.setIsViewModel()
 }

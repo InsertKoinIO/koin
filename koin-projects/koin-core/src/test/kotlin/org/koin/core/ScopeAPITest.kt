@@ -15,10 +15,10 @@ class ScopeAPITest {
     val scopeKey = named("KEY")
     val koin = koinApplication {
         modules(
-                module {
-                    scope(scopeKey) {
-                    }
+            module {
+                scope(scopeKey) {
                 }
+            }
         )
     }.koin
 

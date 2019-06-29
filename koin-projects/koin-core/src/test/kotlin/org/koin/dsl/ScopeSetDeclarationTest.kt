@@ -18,14 +18,15 @@ class ScopeSetDeclarationTest {
     fun `can declare a scoped definition`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeKey) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(scopeKey) {
+                        scoped { Simple.ComponentA() }
                     }
+                }
             )
         }.koin
-        val def = koin.scopeRegistry.getScopeDefinition(scopeKey.toString())?.definitions?.first { it.primaryType == Simple.ComponentA::class }
+        val def = koin.scopeRegistry.getScopeDefinition(scopeKey.toString())
+            ?.definitions?.first { it.primaryType == Simple.ComponentA::class }
         assertTrue(def!!.scopeName == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
@@ -36,20 +37,22 @@ class ScopeSetDeclarationTest {
     fun `can declare 2 scoped definitions from same type without naming`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named("B")) {
-                            scoped { Simple.ComponentA() }
-                        }
-                        scope(named("A")) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named("B")) {
+                        scoped { Simple.ComponentA() }
                     }
+                    scope(named("A")) {
+                        scoped { Simple.ComponentA() }
+                    }
+                }
             )
         }.koin
-        val defA = koin.scopeRegistry.getScopeDefinition("A")?.definitions?.first { it.primaryType == Simple.ComponentA::class && it.scopeName == named("A")}
+        val defA = koin.scopeRegistry.getScopeDefinition("A")
+            ?.definitions?.first { it.primaryType == Simple.ComponentA::class && it.scopeName == named("A") }
         assertTrue(defA!!.scopeName == StringQualifier("A"))
 
-        val defB = koin.scopeRegistry.getScopeDefinition("B")?.definitions?.first { it.primaryType == Simple.ComponentA::class && it.scopeName == named("B") }
+        val defB = koin.scopeRegistry.getScopeDefinition("B")
+            ?.definitions?.first { it.primaryType == Simple.ComponentA::class && it.scopeName == named("B") }
         assertTrue(defB!!.scopeName == StringQualifier("B"))
 
         val scopeA = koin.createScope("A", named("A")).get<Simple.ComponentA>()
@@ -78,10 +81,10 @@ class ScopeSetDeclarationTest {
     fun `can declare a scope definition`() {
         val app = koinApplication {
             modules(
-                    module {
-                        scope(scopeKey) {
-                        }
+                module {
+                    scope(scopeKey) {
                     }
+                }
             )
         }
         val def = app.koin.scopeRegistry.getScopeDefinition(scopeKey.toString())!!
@@ -94,12 +97,12 @@ class ScopeSetDeclarationTest {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
-                        module {
-                            scope(scopeKey) {
-                                scoped { Simple.ComponentA() }
-                                scoped { Simple.ComponentA() }
-                            }
+                    module {
+                        scope(scopeKey) {
+                            scoped { Simple.ComponentA() }
+                            scoped { Simple.ComponentA() }
                         }
+                    }
                 )
             }
             fail()

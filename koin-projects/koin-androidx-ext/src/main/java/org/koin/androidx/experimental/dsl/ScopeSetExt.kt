@@ -20,8 +20,8 @@ import org.koin.experimental.builder.create
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> ScopeSet.viewModel(
-        name: Qualifier? = null,
-        override: Boolean = false
+    name: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<T> {
     val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))

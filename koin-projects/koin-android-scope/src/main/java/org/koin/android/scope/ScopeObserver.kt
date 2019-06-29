@@ -31,7 +31,7 @@ import org.koin.core.scope.Scope
  * release module instances from signals : ON_STOP, ON_DESTROY
  */
 class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scope) :
-        LifecycleObserver, KoinComponent {
+    LifecycleObserver, KoinComponent {
 
     /**
      * Handle ON_STOP to release Koin modules

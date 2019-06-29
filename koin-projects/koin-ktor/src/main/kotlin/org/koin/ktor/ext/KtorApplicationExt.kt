@@ -43,7 +43,7 @@ inline fun <reified T : Any> Application.inject(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
-        lazy { get<T>(qualifier, parameters) }
+    lazy { get<T>(qualifier, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -55,7 +55,7 @@ inline fun <reified T : Any> Application.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
-        getKoin().get<T>(qualifier, parameters)
+    getKoin().get<T>(qualifier, parameters)
 
 /**
  * Retrieve given property for KoinComponent
@@ -63,7 +63,7 @@ inline fun <reified T : Any> Application.get(
  * throw MissingPropertyException if property is not found
  */
 inline fun <reified T> Application.getProperty(key: String) =
-        getKoin().getProperty<T>(key)
+    getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -74,4 +74,4 @@ inline fun <reified T> Application.getProperty(key: String) =
  *
  */
 inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
-        getKoin().getProperty(key) ?: defaultValue
+    getKoin().getProperty(key) ?: defaultValue

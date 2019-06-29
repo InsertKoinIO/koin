@@ -122,9 +122,9 @@ class BeanRegistry {
 
     private fun saveDefinitionForSecondaryType(definition: BeanDefinition<*>, type: KClass<*>) {
         val secondaryTypeDefinitions: ArrayList<BeanDefinition<*>> = definitionsSecondaryTypes[type]
-                ?: createSecondaryType(type)
+            ?: createSecondaryType(type)
 
-        if (definition in secondaryTypeDefinitions){
+        if (definition in secondaryTypeDefinitions) {
             secondaryTypeDefinitions[secondaryTypeDefinitions.indexOf(definition)] = definition
         } else {
             secondaryTypeDefinitions.add(definition)
@@ -221,8 +221,8 @@ class BeanRegistry {
      * @param clazz
      */
     fun findDefinition(
-            qualifier: Qualifier? = null,
-            clazz: KClass<*>
+        qualifier: Qualifier? = null,
+        clazz: KClass<*>
     ): BeanDefinition<*>? {
         return if (qualifier != null) {
             findDefinitionByName(qualifier.toString())
@@ -266,7 +266,7 @@ class BeanRegistry {
     fun getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
         return definitions.firstOrNull {
             it.primaryType == clazz || it.secondaryTypes.contains(
-                    clazz
+                clazz
             )
         }
     }
@@ -283,5 +283,5 @@ class BeanRegistry {
      * Find all definition compatible with given type
      */
     fun getDefinitionsForClass(clazz: KClass<*>) = getAllDefinitions()
-            .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.hasScopeSet() }
+        .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.hasScopeSet() }
 }

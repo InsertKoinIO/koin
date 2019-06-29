@@ -14,6 +14,6 @@ data class ScopeDefinition(val qualifier: Qualifier) {
 
     internal fun release(instance: Scope) {
         definitions
-                .forEach { it.instance?.release(InstanceContext(scope = instance)) }
+            .forEach { it.instance?.release(InstanceContext(scope = instance)) }
     }
 }

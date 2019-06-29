@@ -15,10 +15,10 @@ class DefinitionOverrideTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component2() }
-                        single<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
-                    }
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component2() }
+                    single<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
+                }
             )
         }
 
@@ -31,10 +31,10 @@ class DefinitionOverrideTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
-                        single<Simple.ComponentInterface1>(named("DEF"), override = true) { Simple.Component1() }
-                    }
+                module {
+                    single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
+                    single<Simple.ComponentInterface1>(named("DEF"), override = true) { Simple.Component1() }
+                }
             )
         }
 

@@ -75,7 +75,7 @@ fun KoinApplication.androidFileProperties(
             try {
                 androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }
                 val nb =
-                        koin.propertyRegistry.saveProperties(koinProperties)
+                    koin.propertyRegistry.saveProperties(koinProperties)
                 if (logger.isAt(Level.INFO)) {
                     logger.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
                 }

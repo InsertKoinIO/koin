@@ -13,9 +13,9 @@ class BeanLifecycleTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single { Simple.Component1() } onClose { result = "closing" }
-                    })
+                module {
+                    single { Simple.Component1() } onClose { result = "closing" }
+                })
         }
 
         val koin = app.koin
@@ -29,9 +29,9 @@ class BeanLifecycleTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        factory { Simple.Component1() } onClose { result = "closing" }
-                    })
+                module {
+                    factory { Simple.Component1() } onClose { result = "closing" }
+                })
         }
 
         val koin = app.koin
@@ -45,11 +45,11 @@ class BeanLifecycleTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        scope(named("test")) {
-                            scoped { Simple.Component1() } onClose { result = "closing" }
-                        }
-                    })
+                module {
+                    scope(named("test")) {
+                        scoped { Simple.Component1() } onClose { result = "closing" }
+                    }
+                })
         }
 
         val koin = app.koin
@@ -64,9 +64,9 @@ class BeanLifecycleTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single { Simple.Component1() } onRelease { result = "release" }
-                    })
+                module {
+                    single { Simple.Component1() } onRelease { result = "release" }
+                })
         }
 
         val koin = app.koin
@@ -80,9 +80,9 @@ class BeanLifecycleTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        factory { Simple.Component1() } onRelease { result = "release" }
-                    })
+                module {
+                    factory { Simple.Component1() } onRelease { result = "release" }
+                })
         }
 
         val koin = app.koin
@@ -96,11 +96,11 @@ class BeanLifecycleTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        scope(named("test")) {
-                            scoped { Simple.Component1() } onRelease { result = "release" }
-                        }
-                    })
+                module {
+                    scope(named("test")) {
+                        scoped { Simple.Component1() } onRelease { result = "release" }
+                    }
+                })
         }
 
         val koin = app.koin

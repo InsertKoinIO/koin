@@ -16,9 +16,9 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    })
+                module {
+                    single { Simple.ComponentA() }
+                })
         }
 
         val koin = app.koin
@@ -33,10 +33,10 @@ class InstanceResolutionTest {
 
         val koin = koinApplication {
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                })
         }.koin
 
         val a1: Simple.Component1 = koin.get()
@@ -53,8 +53,8 @@ class InstanceResolutionTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                    })
+                module {
+                })
         }
 
         val koin = app.koin
@@ -69,8 +69,8 @@ class InstanceResolutionTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                    })
+                module {
+                })
         }
 
         val koin = app.koin
@@ -84,9 +84,9 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    })
+                module {
+                    single { Simple.ComponentA() }
+                })
         }
 
         val koin = app.koin
@@ -101,11 +101,11 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        val componentA = Simple.ComponentA()
-                        single(named("A")) { componentA }
-                        single(named("B")) { componentA }
-                    })
+                module {
+                    val componentA = Simple.ComponentA()
+                    single(named("A")) { componentA }
+                    single(named("B")) { componentA }
+                })
         }
 
         val koin = app.koin
@@ -120,11 +120,11 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        val componentA = Simple.ComponentA()
-                        factory(named("A")) { componentA }
-                        factory(named("B")) { componentA }
-                    })
+                module {
+                    val componentA = Simple.ComponentA()
+                    factory(named("A")) { componentA }
+                    factory(named("B")) { componentA }
+                })
         }
 
         val koin = app.koin
@@ -139,9 +139,9 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        factory { Simple.ComponentA() }
-                    })
+                module {
+                    factory { Simple.ComponentA() }
+                })
         }
 
         val koin = app.koin
@@ -156,10 +156,10 @@ class InstanceResolutionTest {
 
         val app = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1>(named("2")) { Simple.Component2() }
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                    })
+                module {
+                    single<Simple.ComponentInterface1>(named("2")) { Simple.Component2() }
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                })
         }
 
         val koin = app.koin

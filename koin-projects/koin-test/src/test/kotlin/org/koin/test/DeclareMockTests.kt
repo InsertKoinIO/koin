@@ -21,21 +21,29 @@ class DeclareMockTests : KoinTest {
     fun `create mock of an existing definition`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    }
+                module {
+                    single { Simple.ComponentA() }
+                }
             )
         }.koin
 
         val definition: BeanDefinition<Simple.ComponentA> =
-                koin.rootScope.beanRegistry.findDefinition(
-                        null, Simple.ComponentA::class
-                ) as BeanDefinition<Simple.ComponentA>
+            koin.rootScope.beanRegistry.findDefinition(
+                null, Simple.ComponentA::class
+            ) as BeanDefinition<Simple.ComponentA>
 
         val mockedDefinition = definition.createMockedDefinition()
 
-        val instance = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin, _parameters = { emptyParametersHolder() }))
-        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin, _parameters = { emptyParametersHolder() }))
+        val instance = definition.instance?.get<Simple.ComponentA>(
+            InstanceContext(
+                koin = koin,
+                _parameters = { emptyParametersHolder() })
+        )
+        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(
+            InstanceContext(
+                koin = koin,
+                _parameters = { emptyParametersHolder() })
+        )
 
         assertNotEquals(instance, mock)
     }
@@ -45,9 +53,9 @@ class DeclareMockTests : KoinTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    }
+                module {
+                    single { Simple.ComponentA() }
+                }
             )
         }.koin
 
@@ -65,9 +73,9 @@ class DeclareMockTests : KoinTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.UUIDComponent() }
-                    }
+                module {
+                    single { Simple.UUIDComponent() }
+                }
             )
         }.koin
 

@@ -39,9 +39,9 @@ import kotlin.reflect.KClass
  * @param clazz
  */
 fun <T : ViewModel> LifecycleOwner.viewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel(clazz, qualifier, parameters) }
 
 /**
@@ -51,8 +51,8 @@ fun <T : ViewModel> LifecycleOwner.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel<T>(qualifier, parameters) }
 
 /**
@@ -62,8 +62,8 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(T::class, qualifier, parameters)
 }
@@ -78,16 +78,16 @@ private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(
-            ViewModelParameters(
-                    clazz,
-                    this@getViewModel,
-                    qualifier,
-                    parameters = parameters
-            )
+        ViewModelParameters(
+            clazz,
+            this@getViewModel,
+            qualifier,
+            parameters = parameters
+        )
     )
 }

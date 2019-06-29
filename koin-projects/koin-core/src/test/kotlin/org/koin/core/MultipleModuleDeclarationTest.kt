@@ -13,13 +13,15 @@ class MultipleModuleDeclarationTest {
     fun `run with DI with several modules`() {
 
         val app = koinApplication {
-            modules(listOf(
-                module {
-                    single { Simple.ComponentA() }
-                },
-                module {
-                    single { Simple.ComponentB(get()) }
-                }))
+            modules(
+                listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    })
+            )
         }
 
         app.assertDefinitionsCount(2)
@@ -29,13 +31,15 @@ class MultipleModuleDeclarationTest {
     fun `resolve DI with several modules`() {
 
         val app = koinApplication {
-            modules(listOf(
-                module {
-                    single { Simple.ComponentA() }
-                },
-                module {
-                    single { Simple.ComponentB(get()) }
-                }))
+            modules(
+                listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    })
+            )
         }
 
         val koin = app.koin

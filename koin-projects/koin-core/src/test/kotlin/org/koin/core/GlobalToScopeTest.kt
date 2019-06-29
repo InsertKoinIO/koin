@@ -17,11 +17,11 @@ class GlobalToScopeTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                }
             )
         }.koin
 
@@ -38,13 +38,13 @@ class GlobalToScopeTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentB(get()) }
+                module {
+                    single { Simple.ComponentB(get()) }
 
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                }
             )
         }.koin
 
@@ -64,13 +64,13 @@ class GlobalToScopeTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentB(getScope(scopeId).get()) }
+                module {
+                    single { Simple.ComponentB(getScope(scopeId).get()) }
 
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                }
             )
         }.koin
 

@@ -33,7 +33,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
     override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
-            ?: false
+        ?: false
 
     override fun release(context: InstanceContext) {
         val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
@@ -60,7 +60,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
         if (current == null) {
             current = create(context)
             values[internalId] = current
-                    ?: error("Instance creation from $beanDefinition should not be null")
+                ?: error("Instance creation from $beanDefinition should not be null")
         }
         return current as T
     }

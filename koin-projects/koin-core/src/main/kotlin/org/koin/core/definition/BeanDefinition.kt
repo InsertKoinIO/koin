@@ -32,9 +32,9 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class BeanDefinition<T>(
-        val qualifier: Qualifier? = null,
-        val scopeName: Qualifier? = null,
-        val primaryType: KClass<*>
+    val qualifier: Qualifier? = null,
+    val scopeName: Qualifier? = null,
+    val primaryType: KClass<*>
 ) {
     // Main data
     var secondaryTypes = arrayListOf<KClass<*>>()
@@ -68,7 +68,7 @@ class BeanDefinition<T>(
      * Resolve instance
      */
     fun <T> resolveInstance(context: InstanceContext) = instance?.get<T>(context)
-            ?: error("Definition without any InstanceContext - $this")
+        ?: error("Definition without any InstanceContext - $this")
 
     override fun toString(): String {
         val defKind = kind.toString()

@@ -11,7 +11,10 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import java.io.Serializable
 
-inline fun <reified T : AppCompatActivity> Context.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
+inline fun <reified T : AppCompatActivity> Context.navigateTo(
+    isRoot: Boolean = false,
+    extras: Map<String, Any> = emptyMap()
+) {
     val intent = intentFor<T>()
     intent.apply {
         applyExtras(extras)
@@ -20,7 +23,10 @@ inline fun <reified T : AppCompatActivity> Context.navigateTo(isRoot: Boolean = 
     startActivity(callWithFlag)
 }
 
-inline fun <reified T : AppCompatActivity> AppCompatActivity.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
+inline fun <reified T : AppCompatActivity> AppCompatActivity.navigateTo(
+    isRoot: Boolean = false,
+    extras: Map<String, Any> = emptyMap()
+) {
     val intent = intentFor<T>()
     intent.apply {
         applyExtras(extras)
@@ -43,6 +49,9 @@ fun Intent.applyExtras(extras: Map<String, Any>) {
     }
 }
 
-inline fun <reified T : AppCompatActivity> Fragment.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
+inline fun <reified T : AppCompatActivity> Fragment.navigateTo(
+    isRoot: Boolean = false,
+    extras: Map<String, Any> = emptyMap()
+) {
     activity?.navigateTo<T>(isRoot, extras) ?: error("parent activity is null")
 }

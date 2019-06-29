@@ -29,7 +29,10 @@ class ScopedActivityA : AppCompatActivity() {
         val scopeSession1 = getKoin().createScope(SESSION_1, named(SCOPE_ID))
         val scopeSession2 = getKoin().createScope(SESSION_2, named(SCOPE_ID))
         assertNotEquals(scopeSession1.get<Session>(named(SCOPE_SESSION)), currentSession)
-        assertNotEquals(scopeSession1.get<Session>(named(SCOPE_SESSION)), scopeSession2.get<Session>(named(SCOPE_SESSION)))
+        assertNotEquals(
+            scopeSession1.get<Session>(named(SCOPE_SESSION)),
+            scopeSession2.get<Session>(named(SCOPE_SESSION))
+        )
 
         // close scopes on lifecycle
         bindScope(scopeSession1)

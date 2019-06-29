@@ -29,8 +29,8 @@ import org.koin.dsl.ScopeSet
  * @author Arnaud Giuliani
  */
 class Module(
-        internal val isCreatedAtStart: Boolean,
-        internal val override: Boolean
+    internal val isCreatedAtStart: Boolean,
+    internal val override: Boolean
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
     internal val scopes = arrayListOf<ScopeSet>()
@@ -58,10 +58,10 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-            qualifier: Qualifier? = null,
-            createdAtStart: Boolean = false,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        createdAtStart: Boolean = false,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createSingle(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
@@ -89,9 +89,9 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-            qualifier: Qualifier? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createFactory(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))

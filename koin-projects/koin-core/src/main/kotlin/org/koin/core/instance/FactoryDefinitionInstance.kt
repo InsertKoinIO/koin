@@ -23,7 +23,7 @@ import org.koin.core.definition.BeanDefinition
  * @author Arnaud Giuliani
  */
 class FactoryDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) :
-        DefinitionInstance<T>(beanDefinition) {
+    DefinitionInstance<T>(beanDefinition) {
 
     override fun release(context: InstanceContext) {}
 

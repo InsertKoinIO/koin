@@ -43,8 +43,8 @@ class MVVMActivity : AppCompatActivity() {
         assertEquals(scopeVm.session.id, extScopeVm.session.id)
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mvvm_frame, MVVMFragment())
-                .commit()
+            .replace(R.id.mvvm_frame, MVVMFragment())
+            .commit()
 
         getKoin().setProperty("session", currentScope.get<Session>())
 

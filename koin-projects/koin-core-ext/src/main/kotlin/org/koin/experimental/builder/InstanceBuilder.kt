@@ -19,7 +19,7 @@ inline fun <reified T : Any> Scope.create(): T {
     }
 
     val constructor = kClass.java.constructors.firstOrNull()
-            ?: error("No constructor found for class '${kClass.getFullName()}'")
+        ?: error("No constructor found for class '${kClass.getFullName()}'")
 
     val args = if (logger.level == Level.DEBUG) {
         val (_args, duration) = measureDuration {

@@ -14,8 +14,8 @@ import org.koin.dsl.ScopeSet
  * @param override - allow definition override
  */
 inline fun <reified T : Any> ScopeSet.scoped(
-        name: Qualifier? = null,
-        override: Boolean = false
+    name: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<T> {
     val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
@@ -33,8 +33,8 @@ inline fun <reified T : Any> ScopeSet.scoped(
  * @param override - allow definition override
  */
 inline fun <reified T : Any> ScopeSet.factory(
-        name: Qualifier? = null,
-        override: Boolean = false
+    name: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<T> {
     val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
@@ -52,8 +52,8 @@ inline fun <reified T : Any> ScopeSet.factory(
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> ScopeSet.scopedBy(
-        name: Qualifier? = null,
-        override: Boolean = false
+    name: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<R> {
     val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>() as R }
     declareDefinition(beanDefinition, Options(false, override))
@@ -71,8 +71,8 @@ inline fun <reified R : Any, reified T : R> ScopeSet.scopedBy(
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> ScopeSet.factoryBy(
-        name: Qualifier? = null,
-        override: Boolean = false
+    name: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<R> {
     val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>() as R }
     declareDefinition(beanDefinition, Options(false, override))

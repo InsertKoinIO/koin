@@ -26,9 +26,9 @@ import org.koin.core.qualifier.Qualifier
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.single(
-        qualifier: Qualifier? = null,
-        createOnStart: Boolean = false,
-        override: Boolean = false
+    qualifier: Qualifier? = null,
+    createOnStart: Boolean = false,
+    override: Boolean = false
 ): BeanDefinition<T> {
     return single(qualifier, createOnStart, override) { create<T>() }
 }
@@ -40,8 +40,8 @@ inline fun <reified T : Any> Module.single(
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.factory(
-        qualifier: Qualifier? = null,
-        override: Boolean = false
+    qualifier: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<T> {
     return factory(qualifier, override) { create<T>() }
 }
@@ -53,9 +53,9 @@ inline fun <reified T : Any> Module.factory(
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> Module.singleBy(
-        qualifier: Qualifier? = null,
-        createOnStart: Boolean = false,
-        override: Boolean = false
+    qualifier: Qualifier? = null,
+    createOnStart: Boolean = false,
+    override: Boolean = false
 ): BeanDefinition<R> {
     return single(qualifier, createOnStart, override) { create<T>() }
 }
@@ -67,8 +67,8 @@ inline fun <reified R : Any, reified T : R> Module.singleBy(
  * @param override - allow definition override
  */
 inline fun <reified R : Any, reified T : R> Module.factoryBy(
-        qualifier: Qualifier? = null,
-        override: Boolean = false
+    qualifier: Qualifier? = null,
+    override: Boolean = false
 ): BeanDefinition<R> {
     return factory(qualifier, override) { create<T>() }
 }

@@ -37,7 +37,7 @@ inline fun <reified T> KoinTest.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, parameters)
+    getKoin().get(qualifier, parameters)
 
 /**
  * Lazy inject an instance from Koin

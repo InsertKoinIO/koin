@@ -15,9 +15,9 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                })
         }
 
         app.assertDefinitionsCount(1)
@@ -34,9 +34,9 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                })
         }
 
         app.assertDefinitionsCount(1)
@@ -53,10 +53,10 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                })
         }
 
         app.assertDefinitionsCount(2)
@@ -69,7 +69,10 @@ class AdditionalTypeBindingTest {
             e.printStackTrace()
         }
 
-        assertNotEquals(koin.bind<Simple.ComponentInterface1, Simple.Component1>(), koin.bind<Simple.ComponentInterface1, Simple.Component2>())
+        assertNotEquals(
+            koin.bind<Simple.ComponentInterface1, Simple.Component1>(),
+            koin.bind<Simple.ComponentInterface1, Simple.Component2>()
+        )
     }
 
     @Test
@@ -77,11 +80,11 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                        single { Simple.UserComponent(bind<Simple.ComponentInterface1, Simple.Component1>()) }
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                    single { Simple.UserComponent(bind<Simple.ComponentInterface1, Simple.Component1>()) }
+                })
         }
 
         app.assertDefinitionsCount(3)
@@ -95,10 +98,10 @@ class AdditionalTypeBindingTest {
         val koin = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                    })
+                module {
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                })
         }.koin
 
         assert(koin.getAll<Simple.ComponentInterface1>().size == 2)
@@ -111,10 +114,10 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                    })
+                module {
+                    single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                })
         }
         val koin = app.koin
         koin.get<Simple.ComponentInterface1>(named("default"))
@@ -124,12 +127,12 @@ class AdditionalTypeBindingTest {
     fun `can resolve an additional types`() {
         val app = koinApplication {
             modules(
-                    module {
-                        single { Simple.Component1() } binds arrayOf(
-                                Simple.ComponentInterface1::class,
-                                Simple.ComponentInterface2::class
-                        )
-                    })
+                module {
+                    single { Simple.Component1() } binds arrayOf(
+                        Simple.ComponentInterface1::class,
+                        Simple.ComponentInterface2::class
+                    )
+                })
         }
 
         app.assertDefinitionsCount(1)
@@ -147,13 +150,13 @@ class AdditionalTypeBindingTest {
     fun `conflicting with additional types`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component2() }
-                        single { Simple.Component1() } binds arrayOf(
-                                Simple.ComponentInterface1::class,
-                                Simple.ComponentInterface2::class
-                        )
-                    })
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component2() }
+                    single { Simple.Component1() } binds arrayOf(
+                        Simple.ComponentInterface1::class,
+                        Simple.ComponentInterface2::class
+                    )
+                })
         }.koin
 
         assert(koin.getAll<Simple.ComponentInterface1>().size == 2)

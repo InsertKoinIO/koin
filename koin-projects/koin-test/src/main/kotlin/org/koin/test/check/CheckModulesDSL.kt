@@ -26,7 +26,7 @@ class ParametersBinding {
     val creators = mutableMapOf<CheckedComponent, ParametersCreator>()
     lateinit var koin: Koin
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
-            creators.put(CheckedComponent(qualifier, T::class), creator)
+        creators.put(CheckedComponent(qualifier, T::class), creator)
 }
 
 typealias ParametersCreator = (Qualifier?) -> DefinitionParameters

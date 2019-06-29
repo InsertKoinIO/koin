@@ -22,8 +22,8 @@ class TODOAppTest {
         single(named("localDataSource")) { TasksLocalDataSource() as TasksDataSource }
         single {
             TasksRepository(
-                    get(named("remoteDataSource")),
-                    get(named("localDataSource"))
+                get(named("remoteDataSource")),
+                get(named("localDataSource"))
             )
         } bind TasksDataSource::class
     }
@@ -42,8 +42,8 @@ class TODOAppTest {
     class FakeTasksRemoteDataSource : TasksDataSource
     class TasksLocalDataSource : TasksDataSource
     class TasksRepository(
-            val remoteDataSource: TasksDataSource,
-            val localDatasource: TasksDataSource
+        val remoteDataSource: TasksDataSource,
+        val localDatasource: TasksDataSource
     ) : TasksDataSource
 
     @Test

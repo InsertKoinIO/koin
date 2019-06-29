@@ -44,8 +44,8 @@ class MVVMActivity : AppCompatActivity() {
         setContentView(R.layout.mvvm_activity)
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mvvm_frame, MVVMFragment())
-                .commit()
+            .replace(R.id.mvvm_frame, MVVMFragment())
+            .commit()
 
         getKoin().setProperty("session", currentScope.get<Session>())
 

@@ -38,10 +38,10 @@ import kotlin.reflect.KClass
  * @param clazz
  */
 fun <T : ViewModel> Scope.viewModel(
-        owner: LifecycleOwner,
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    owner: LifecycleOwner,
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, parameters) }
 
 /**
@@ -51,9 +51,9 @@ fun <T : ViewModel> Scope.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Scope.viewModel(
-        owner: LifecycleOwner,
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    owner: LifecycleOwner,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel<T>(owner, qualifier, parameters) }
 
 /**
@@ -63,9 +63,9 @@ inline fun <reified T : ViewModel> Scope.viewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Scope.getViewModel(
-        owner: LifecycleOwner,
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    owner: LifecycleOwner,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(owner, T::class, qualifier, parameters)
 }
@@ -78,17 +78,17 @@ inline fun <reified T : ViewModel> Scope.getViewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> Scope.getViewModel(
-        owner: LifecycleOwner,
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    owner: LifecycleOwner,
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(
-            ViewModelParameters(
-                    clazz,
-                    owner,
-                    qualifier,
-                    parameters = parameters
-            )
+        ViewModelParameters(
+            clazz,
+            owner,
+            qualifier,
+            parameters = parameters
+        )
     )
 }
