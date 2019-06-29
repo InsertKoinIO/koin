@@ -1,0 +1,2 @@
+[*.kt]
+insert_final_newline = true
