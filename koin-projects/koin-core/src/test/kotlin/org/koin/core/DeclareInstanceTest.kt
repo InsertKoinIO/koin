@@ -3,7 +3,6 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named
