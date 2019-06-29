@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.AbstractSavedStateVMFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.androidx.viewmodel.dsl.isStateViewModel
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
@@ -66,32 +67,18 @@ fun <T : ViewModel> Scope.createViewModelProvider(
 ): ViewModelProvider {
     return ViewModelProvider(
             vmStore,
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return get(parameters.clazz, parameters.qualifier, parameters.parameters)
-                }
-            })
-}
-
-//saved state
-
-fun <T : ViewModel> Koin.getViewModelWithState(parameters: ViewModelParameters<T>): T {
-    val vmStore: ViewModelStore = parameters.owner.getViewModelStore(parameters)
-    val viewModelProvider = rootScope.createSavedStateViewModelProvider(vmStore, parameters)
-    return viewModelProvider.getInstance(parameters)
-}
-
-fun <T : ViewModel> Scope.createSavedStateViewModelProvider(
-        vmStore: ViewModelStore,
-        parameters: ViewModelParameters<T>
-): ViewModelProvider {
-    return ViewModelProvider(
-            vmStore,
-            object : AbstractSavedStateVMFactory(vmStore as SavedStateRegistryOwner, parameters.defaultArguments) {
-                override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                    return get(parameters.clazz, parameters.qualifier) {
-                        parametersOf(handle, *(parameters.parameters?.invoke() ?: emptyParametersHolder()).values)
+            if(beanRegistry.findDefinition(parameters.qualifier, parameters.clazz)!!.isStateViewModel()) {
+                object : AbstractSavedStateVMFactory(vmStore as SavedStateRegistryOwner, parameters.defaultArguments) {
+                    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                        return get(parameters.clazz, parameters.qualifier) {
+                            parametersOf(handle, *(parameters.parameters?.invoke() ?: emptyParametersHolder()).values)
+                        }
                     }
                 }
-            })
+            } else {
+                object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return get(parameters.clazz, parameters.qualifier, parameters.parameters)
+                    }
+                }})
 }

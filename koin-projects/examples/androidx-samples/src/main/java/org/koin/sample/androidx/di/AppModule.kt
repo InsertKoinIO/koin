@@ -2,6 +2,7 @@ package org.koin.sample.androidx.di
 
 import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.stateViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -45,13 +46,13 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-    viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+    stateViewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
 
     scope(named<MVVMActivity>()) {
         scoped { Session() }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+        stateViewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
     }
 }
 

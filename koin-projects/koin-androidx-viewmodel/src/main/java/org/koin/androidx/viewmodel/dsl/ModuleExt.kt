@@ -49,3 +49,35 @@ fun BeanDefinition<*>.setIsViewModel() {
 fun BeanDefinition<*>.isViewModel(): Boolean {
     return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
 }
+
+
+
+/**
+ * StateViewModel DSL Extension
+ * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
+ *
+ * @author Marek Kedzierski
+ *
+ * @param qualifier - definition qualifier
+ * @param override - allow definition override
+ */
+inline fun <reified T : ViewModel> Module.stateViewModel(
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
+): BeanDefinition<T> {
+    val beanDefinition = factory(qualifier, override, definition)
+    beanDefinition.setIsViewModel()
+    beanDefinition.setIsStateViewModel()
+    return beanDefinition
+}
+
+const val ATTRIBUTE_VIEW_MODEL_SAVED_STATE = "isSavedStateViewModel"
+
+fun BeanDefinition<*>.setIsStateViewModel() {
+    properties[ATTRIBUTE_VIEW_MODEL_SAVED_STATE] = true
+}
+
+fun BeanDefinition<*>.isStateViewModel(): Boolean {
+    return properties.getOrNull(ATTRIBUTE_VIEW_MODEL_SAVED_STATE) ?: false
+}

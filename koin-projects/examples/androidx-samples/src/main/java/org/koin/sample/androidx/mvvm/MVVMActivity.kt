@@ -8,7 +8,6 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.androidx.viewmodel.ext.android.viewModelWithState
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
@@ -30,8 +29,8 @@ class MVVMActivity : AppCompatActivity() {
     val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
     val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
-    val savedVm: SavedStateViewModel by viewModelWithState(defaultArguments = Bundle()) { parametersOf("vm1") }
-    val scopedSavedVm: SavedStateViewModel by currentScope.viewModelWithState(this, defaultArguments = Bundle()) { parametersOf("vm2") }
+    val savedVm: SavedStateViewModel by viewModel(defaultArguments = Bundle()) { parametersOf("vm1") }
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this, defaultArguments = Bundle()) { parametersOf("vm2") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
