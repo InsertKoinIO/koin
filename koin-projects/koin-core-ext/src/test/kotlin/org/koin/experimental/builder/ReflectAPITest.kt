@@ -45,8 +45,6 @@ class ReflectAPITest {
             }
         }
     }
-
-
 }
 
 fun <T : Any> measure(message: String, code: () -> T): T {

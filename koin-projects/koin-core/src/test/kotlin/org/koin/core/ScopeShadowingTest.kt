@@ -29,7 +29,5 @@ class ScopeShadowingTest {
         assertEquals(42, scope.get<Simple.MySingle>().id)
 
         assertEquals(24, koin.get<Simple.MySingle>().id)
-
     }
-
 }

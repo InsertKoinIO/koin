@@ -8,8 +8,10 @@ val coffeeAppModule = module {
     single<Heater> { ElectricHeater() }
 }
 
-//val coffeeAppModuleExt = module {
-//    single<CoffeeMaker>()
-//    singleBy<Pump, Thermosiphon>()
-//    singleBy<Heater, ElectricHeater>()
-//}
+/*
+val coffeeAppModuleExt = module {
+    single<CoffeeMaker>()
+    singleBy<Pump, Thermosiphon>()
+    singleBy<Heater, ElectricHeater>()
+}
+*/

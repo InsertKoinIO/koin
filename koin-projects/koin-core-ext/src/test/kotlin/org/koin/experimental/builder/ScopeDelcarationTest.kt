@@ -29,5 +29,4 @@ class ScopeDelcarationTest {
         val scope = koin.createScope("scope", scopeName)
         Assert.assertEquals(koin.get<ComponentA>(), scope.get<ComponentB>().a)
     }
-
 }

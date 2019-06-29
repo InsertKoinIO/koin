@@ -273,7 +273,6 @@ data class Scope(
             .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
     }
 
-
     /**
      * Retrieve a property
      * @param key

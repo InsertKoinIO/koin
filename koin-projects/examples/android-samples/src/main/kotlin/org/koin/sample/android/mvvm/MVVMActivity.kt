@@ -28,7 +28,6 @@ class MVVMActivity : AppCompatActivity() {
     val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
     val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

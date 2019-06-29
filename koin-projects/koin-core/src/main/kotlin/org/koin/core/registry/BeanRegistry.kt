@@ -231,7 +231,7 @@ class BeanRegistry {
         }
     }
 
-    //TODO Find with secondary type
+    // TODO Find with secondary type
 
     private fun findDefinitionByType(kClass: KClass<*>): BeanDefinition<*>? {
         return definitionsPrimaryTypes[kClass]

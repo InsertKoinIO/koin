@@ -86,7 +86,6 @@ fun loadKoinModules(module: Module) {
     GlobalContext.get().modules(listOf(module))
 }
 
-
 fun loadKoinModules(modules: List<Module>) {
     GlobalContext.get().modules(modules)
 }

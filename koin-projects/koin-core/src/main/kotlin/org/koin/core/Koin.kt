@@ -106,7 +106,6 @@ class Koin {
         parameters: ParametersDefinition?
     ): T = rootScope.get(clazz, qualifier, parameters)
 
-
     /**
      * Declare a component definition from the given instance
      * This result of declaring a single definition of type T, returning the given instance

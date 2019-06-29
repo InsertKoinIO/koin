@@ -10,7 +10,6 @@ import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs
 import org.koin.perfs.perfModule400
-import org.koin.perfs.perfModule400Ext
 import org.koin.sample.android.R
 
 class MainActivity : AppCompatActivity() {
