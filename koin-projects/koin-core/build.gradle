@@ -1,16 +1,27 @@
-apply plugin: 'kotlin'
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+}
 
 archivesBaseName = 'koin-core'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
-dependencies {
-    // Kt
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+kotlin {
+    jvm()
 
-    testCompile "junit:junit:$junit_version"
-    testCompile "org.mockito:mockito-inline:$mockito_version"
-
-    testCompile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"// Coroutines
+    sourceSets {
+        jvmMain {
+            dependencies {
+                api kotlin("stdlib-jdk8")
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation "junit:junit:$junit_version"
+                implementation "org.mockito:mockito-inline:$mockito_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+            }
+        }
+    }
 }
 
 apply from: '../gradle/publish.gradle'

@@ -3,13 +3,28 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 // custom tasks for creating source/javadoc jars
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
 
-artifacts {
-    archives sourcesJar, dokkaJar
+if (project.tasks.findByPath("classes") == null) {
+    // kotlin mpp
+    task sourcesJar(type: Jar, dependsOn: jvmMainClasses) {
+        classifier = 'sources'
+        from kotlin.sourceSets.jvmMain.kotlin
+    }
+
+    // TODO: dokka multi platform support
+    artifacts {
+        archives sourcesJar//, dokkaJar
+    }
+} else {
+    // standard kotlin jvm-only project
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives sourcesJar, dokkaJar
+    }
 }
 
 if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {

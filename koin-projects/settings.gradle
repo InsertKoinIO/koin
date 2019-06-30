@@ -1,3 +1,5 @@
+enableFeaturePreview("GRADLE_METADATA")
+
 // Core
 include 'koin-core'
 include 'koin-test'
