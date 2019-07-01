@@ -1,6 +1,5 @@
 package org.koin.koincomponent
 
-import org.junit.Assert.assertEquals
 import org.koin.Simple
 import org.koin.core.Koin
 import org.koin.core.KoinComponent
@@ -9,6 +8,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertHasNoStandaloneInstance
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 abstract class CustomKoinComponent : KoinComponent {
 

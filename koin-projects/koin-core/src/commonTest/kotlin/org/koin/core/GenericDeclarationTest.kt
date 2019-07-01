@@ -7,6 +7,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class GenericDeclarationTest {
 

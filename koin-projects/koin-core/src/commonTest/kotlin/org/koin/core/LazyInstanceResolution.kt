@@ -5,6 +5,7 @@ import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class LazyInstanceResolution {
     @Test
@@ -21,6 +22,6 @@ class LazyInstanceResolution {
         val a: Simple.ComponentA = koin.get()
         val a2: Simple.ComponentA = koin.get()
 
-        Assert.assertEquals(a, a2)
+        assertEquals(a, a2)
     }
 }

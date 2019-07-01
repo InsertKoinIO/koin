@@ -1,9 +1,9 @@
 package org.koin.test
 
-import org.junit.Assert.assertEquals
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import kotlin.reflect.KClass
+import kotlin.test.assertEquals
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
     assertEquals("definitions count", count, this.koin.rootScope.beanRegistry.size())

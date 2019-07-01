@@ -1,11 +1,11 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertDefinitionsCount
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class MultipleModuleDeclarationTest {
 

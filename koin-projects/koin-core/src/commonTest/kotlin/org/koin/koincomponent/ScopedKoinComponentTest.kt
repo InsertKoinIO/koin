@@ -1,7 +1,7 @@
 // package org.koin.koincomponent
 //
 // import org.junit.After
-// import org.junit.Assert.assertEquals
+// import kotlin.test.assertEquals
 // import org.junit.Assert.assertNotEquals
 // import kotlin.test.Test
 // import org.koin.Simple

@@ -1,7 +1,6 @@
 package org.koin.dsl
 
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
@@ -13,6 +12,7 @@ import org.koin.core.logger.PrintLogger
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class KoinAppCreationTest {
 

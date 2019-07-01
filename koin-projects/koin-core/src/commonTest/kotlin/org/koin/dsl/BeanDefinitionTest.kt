@@ -1,6 +1,5 @@
 package org.koin.dsl
 
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.koin.Simple
 import org.koin.core.definition.DefinitionFactory
@@ -10,6 +9,7 @@ import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.named
 import org.koin.test.getDefinition
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class BeanDefinitionTest {
 

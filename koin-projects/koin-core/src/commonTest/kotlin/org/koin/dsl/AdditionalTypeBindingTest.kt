@@ -8,6 +8,7 @@ import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class AdditionalTypeBindingTest {
 
