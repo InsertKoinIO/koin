@@ -10,4 +10,8 @@ actual object KoinMultiPlatform {
             .map { it.toString() }
             .takeWhile { !it.contains("sun.reflect") }
     }
+
+    actual fun nanoTime(): Long {
+        return System.nanoTime()
+    }
 }

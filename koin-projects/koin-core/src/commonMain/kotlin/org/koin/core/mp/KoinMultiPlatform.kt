@@ -4,4 +4,6 @@ expect object KoinMultiPlatform {
     fun <K, V> emptyMutableMap(): MutableMap<K, V>
 
     fun stackTrace(throwable: Throwable): List<String>
+
+    fun nanoTime(): Long
 }

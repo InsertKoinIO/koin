@@ -14,6 +14,8 @@
  * limitations under the License.
  */package org.koin.core.time
 
+import org.koin.core.mp.KoinMultiPlatform
+
 /**
  * Measure functions
  *
@@ -24,17 +26,17 @@
  * Measure code execution
  */
 fun measureDurationOnly(code: () -> Unit): Double {
-    val start = System.nanoTime()
+    val start = KoinMultiPlatform.nanoTime()
     code()
-    return (System.nanoTime() - start) / 1000000.0
+    return (KoinMultiPlatform.nanoTime() - start) / 1000000.0
 }
 
 /**
  * Measure code execution and get result
  */
 fun <T> measureDuration(code: () -> T): Pair<T, Double> {
-    val start = System.nanoTime()
+    val start = KoinMultiPlatform.nanoTime()
     val result = code()
-    val duration = (System.nanoTime() - start) / 1000000.0
+    val duration = (KoinMultiPlatform.nanoTime() - start) / 1000000.0
     return Pair(result, duration)
 }
