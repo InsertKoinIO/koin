@@ -1,8 +1,8 @@
 package org.koin.dsl
 
-import org.junit.Assert.assertNull
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class PropertyDefinitionTest {
 

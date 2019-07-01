@@ -15,6 +15,7 @@ import org.koin.dsl.module
 import org.koin.test.getDefinition
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.fail
 
 class DynamicModulesTest {
@@ -36,7 +37,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module)
 
-        Assert.assertNull(app.getDefinition(Simple.ComponentA::class))
+        assertNull(app.getDefinition(Simple.ComponentA::class))
 
         try {
             app.koin.get<Simple.ComponentA>()
@@ -64,7 +65,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module)
 
-        Assert.assertNull(app.getDefinition(Simple.ComponentA::class))
+        assertNull(app.getDefinition(Simple.ComponentA::class))
 
         try {
             app.koin.get<Simple.Component1>()
@@ -102,7 +103,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module2)
 
-        Assert.assertNull(app.getDefinition(Simple.ComponentB::class))
+        assertNull(app.getDefinition(Simple.ComponentB::class))
 
         try {
             app.koin.get<Simple.ComponentB>()
@@ -133,7 +134,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module2)
 
-        Assert.assertNull(app.getDefinition(Simple.ComponentB::class))
+        assertNull(app.getDefinition(Simple.ComponentB::class))
 
         try {
             app.koin.get<Simple.ComponentB>()
@@ -161,7 +162,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module2)
 
-        Assert.assertNull(app.getDefinition(Simple.MySingle::class))
+        assertNull(app.getDefinition(Simple.MySingle::class))
 
         try {
             app.koin.get<Simple.MySingle>()
@@ -233,7 +234,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module)
 
-        Assert.assertNull(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class))
+        assertNull(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class))
 
         try {
             scope.get<Simple.ComponentA>()
