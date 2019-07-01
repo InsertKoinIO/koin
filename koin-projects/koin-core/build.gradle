@@ -15,6 +15,12 @@ kotlin {
                 api kotlin("stdlib-common")
             }
         }
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+            }
+        }
         jvmMain {
             dependencies {
                 api kotlin("stdlib-jdk8")
@@ -22,7 +28,7 @@ kotlin {
         }
         jvmTest {
             dependencies {
-                implementation "junit:junit:$junit_version"
+                implementation kotlin("test-junit5")
                 implementation "org.mockito:mockito-inline:$mockito_version"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
             }
