@@ -23,6 +23,8 @@ import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMPClass
+import org.koin.core.mp.kotlin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.BeanRegistry
@@ -140,7 +142,7 @@ data class Scope(
      */
     @JvmOverloads
     fun <T> get(
-        clazz: Class<*>,
+        clazz: KoinMPClass<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): T = synchronized(this) {
