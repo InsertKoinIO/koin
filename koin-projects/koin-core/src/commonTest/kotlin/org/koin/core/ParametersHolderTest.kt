@@ -8,6 +8,7 @@ import org.koin.core.parameter.parametersOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class ParametersHolderTest {
 

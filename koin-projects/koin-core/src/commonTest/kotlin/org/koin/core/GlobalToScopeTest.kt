@@ -1,6 +1,5 @@
 package org.koin.core
 
-import org.junit.Assert.fail
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
@@ -10,6 +9,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class GlobalToScopeTest {
 

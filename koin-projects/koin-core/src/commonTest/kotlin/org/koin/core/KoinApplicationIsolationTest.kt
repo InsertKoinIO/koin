@@ -13,6 +13,7 @@ import org.koin.test.getDefinition
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class KoinApplicationIsolationTest {
 

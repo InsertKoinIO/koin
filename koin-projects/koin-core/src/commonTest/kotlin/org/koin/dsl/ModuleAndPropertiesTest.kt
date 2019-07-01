@@ -1,11 +1,11 @@
 package org.koin.dsl
 
-import org.junit.Assert.fail
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.mp.KoinMultiPlatform
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class ModuleAndPropertiesTest {
 

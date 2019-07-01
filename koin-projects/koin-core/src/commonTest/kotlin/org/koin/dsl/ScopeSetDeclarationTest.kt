@@ -11,6 +11,7 @@ import org.koin.core.qualifier.named
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class ScopeSetDeclarationTest {
 
