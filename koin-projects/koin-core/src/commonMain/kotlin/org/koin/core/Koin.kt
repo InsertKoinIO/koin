@@ -23,6 +23,7 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
 /**

@@ -28,6 +28,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
+import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
 data class Scope(
