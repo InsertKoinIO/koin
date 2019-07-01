@@ -1,6 +1,5 @@
 package org.koin.core
 
-import org.junit.Assert.*
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.mp.KoinMultiPlatform

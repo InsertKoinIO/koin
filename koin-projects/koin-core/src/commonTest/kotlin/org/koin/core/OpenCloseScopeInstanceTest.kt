@@ -1,6 +1,5 @@
 package org.koin.core
 
-import org.junit.Assert
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.mp.KoinMultiPlatform

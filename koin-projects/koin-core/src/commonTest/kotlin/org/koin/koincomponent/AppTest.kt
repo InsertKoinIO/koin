@@ -1,6 +1,5 @@
 package org.koin.koincomponent
 
-import org.junit.Assert
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin

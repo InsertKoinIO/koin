@@ -1,7 +1,6 @@
 package org.koin.core
 
 import kotlinx.coroutines.*
-import org.junit.Assert
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
