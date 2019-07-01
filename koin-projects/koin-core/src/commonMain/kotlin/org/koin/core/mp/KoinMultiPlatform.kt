@@ -1,5 +1,7 @@
 package org.koin.core.mp
 
+import kotlin.reflect.KClass
+
 expect object KoinMultiPlatform {
     fun <K, V> emptyMutableMap(): MutableMap<K, V>
 
@@ -14,4 +16,6 @@ expect object KoinMultiPlatform {
     fun loadResourceString(fileName: String): String?
 
     fun parseProperties(content: String): KoinMPProperties
+
+    fun className(kClass: KClass<*>): String
 }

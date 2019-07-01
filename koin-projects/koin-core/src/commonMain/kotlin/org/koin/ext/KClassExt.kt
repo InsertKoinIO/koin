@@ -26,7 +26,7 @@ fun KClass<*>.getFullName(): String {
 }
 
 fun KClass<*>.saveCache(): String {
-    val name = this.java.name
+    val name = KoinMultiPlatform.className(this)
     classNames[this] = name
     return name
 }

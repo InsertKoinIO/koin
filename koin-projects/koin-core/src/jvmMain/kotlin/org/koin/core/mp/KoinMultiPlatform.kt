@@ -1,6 +1,7 @@
 package org.koin.core.mp
 
 import org.koin.core.Koin
+import kotlin.reflect.KClass
 
 actual object KoinMultiPlatform {
     actual fun <K, V> emptyMutableMap(): MutableMap<K, V> {
@@ -35,5 +36,9 @@ actual object KoinMultiPlatform {
         val properties = KoinMPProperties()
         properties.load(content.byteInputStream())
         return properties
+    }
+
+    actual fun className(kClass: KClass<*>): String {
+        return kClass.java.name
     }
 }

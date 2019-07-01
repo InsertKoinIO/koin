@@ -3,6 +3,7 @@ package org.koin.core.mp
 import kotlinx.cinterop.get
 import kotlinx.cinterop.toKString
 import platform.posix.__environ
+import kotlin.reflect.KClass
 import kotlin.system.getTimeNanos
 
 actual object KoinMultiPlatform {
@@ -46,5 +47,9 @@ actual object KoinMultiPlatform {
         // TODO
         println("TODO: KoinMultiPlatform.parseProperties is not yet implemented")
         return KoinMPProperties(emptyMap())
+    }
+
+    actual fun className(kClass: KClass<*>): String {
+        return kClass.qualifiedName ?: "KClass@${hashCode()}"
     }
 }
