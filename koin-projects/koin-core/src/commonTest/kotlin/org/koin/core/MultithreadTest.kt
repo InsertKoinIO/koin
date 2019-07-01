@@ -1,13 +1,13 @@
 package org.koin.core
 
 import org.junit.Assert.assertTrue
-import org.junit.Test
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
 import org.koin.test.hasBeenCreated
 import kotlin.random.Random
+import kotlin.test.Test
 
 const val MAX_TIME = 1000L
 

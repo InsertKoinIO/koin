@@ -1,9 +1,9 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.qualifier.named
+import kotlin.test.Test
 
 class NamingTest {
 

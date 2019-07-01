@@ -5,6 +5,7 @@ import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
+import kotlin.test.Test
 
 class ParametersHolderTest {
 

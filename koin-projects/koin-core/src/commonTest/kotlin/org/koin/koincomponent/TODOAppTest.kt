@@ -1,6 +1,5 @@
 package org.koin.koincomponent
 
-import org.junit.Test
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -9,6 +8,7 @@ import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class TODOAppTest {
 

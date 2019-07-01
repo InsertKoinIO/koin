@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.junit.Assert.*
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
@@ -11,6 +10,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
+import kotlin.test.Test
 
 class KoinApplicationIsolationTest {
 

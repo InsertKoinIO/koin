@@ -1,12 +1,12 @@
 package org.koin.koincomponent
 
 import org.junit.Assert
-import org.junit.Test
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.inject
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class TasksView
 class TasksPresenter(val view: TasksView)

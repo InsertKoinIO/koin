@@ -2,9 +2,9 @@ package org.koin.dsl
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Test
 import org.koin.Simple
 import org.koin.test.getDefinition
+import kotlin.test.Test
 
 class BeanOptionsTest {
 

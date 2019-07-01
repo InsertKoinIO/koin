@@ -1,10 +1,10 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.Test
 
 class ModuleCreationTest {
 

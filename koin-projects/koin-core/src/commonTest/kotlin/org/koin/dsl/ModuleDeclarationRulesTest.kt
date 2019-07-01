@@ -1,13 +1,13 @@
 package org.koin.dsl
 
 import org.junit.Assert.fail
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
 import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.Test
 
 class ModuleDeclarationRulesTest {
 

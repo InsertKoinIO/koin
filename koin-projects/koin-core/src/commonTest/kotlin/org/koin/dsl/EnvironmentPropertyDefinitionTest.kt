@@ -1,8 +1,8 @@
 package org.koin.dsl
 
 import org.junit.Assert.assertEquals
-import org.junit.Test
 import org.koin.core.logger.Level
+import kotlin.test.Test
 
 class EnvironmentPropertyDefinitionTest {
 

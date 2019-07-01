@@ -1,9 +1,9 @@
 package org.koin.perfs
 
-import org.junit.Test
 import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.Test
 
 class PerfsTest {
 

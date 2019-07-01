@@ -1,13 +1,13 @@
 package org.koin.core
 
 import org.junit.Assert.assertEquals
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class InstanceReleaseTest {
 

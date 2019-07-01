@@ -2,9 +2,9 @@ package org.koin.dsl
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
-import org.junit.Test
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.mp.KoinMultiPlatform
+import kotlin.test.Test
 
 class FilePropertyDefinitionTest {
 

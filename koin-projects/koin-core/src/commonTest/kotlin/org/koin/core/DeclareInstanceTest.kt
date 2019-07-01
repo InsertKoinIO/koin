@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.junit.Assert.*
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
@@ -9,6 +8,7 @@ import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class DeclareInstanceTest {
 

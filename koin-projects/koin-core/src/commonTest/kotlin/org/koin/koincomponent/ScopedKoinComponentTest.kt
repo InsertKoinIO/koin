@@ -3,7 +3,7 @@
 // import org.junit.After
 // import org.junit.Assert.assertEquals
 // import org.junit.Assert.assertNotEquals
-// import org.junit.Test
+// import kotlin.test.Test
 // import org.koin.Simple
 // import org.koin.core.KoinComponent
 // import org.koin.core.context.GlobalContext

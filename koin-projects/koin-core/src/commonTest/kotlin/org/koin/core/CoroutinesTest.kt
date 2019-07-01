@@ -2,7 +2,6 @@ package org.koin.core
 
 import kotlinx.coroutines.*
 import org.junit.Assert
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -10,6 +9,7 @@ import org.koin.dsl.module
 import org.koin.test.getDefinition
 import org.koin.test.hasBeenCreated
 import kotlin.random.Random
+import kotlin.test.Test
 
 class CoroutinesTest {
 

@@ -2,7 +2,6 @@ package org.koin.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.parameter.parametersOf
@@ -10,6 +9,7 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class ClosedScopeAPI {
 

@@ -2,7 +2,6 @@ package org.koin.core
 
 import org.junit.Assert
 import org.junit.Assert.fail
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.*
 import org.koin.core.definition.Kind
@@ -15,6 +14,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
+import kotlin.test.Test
 
 class DynamicModulesTest {
 

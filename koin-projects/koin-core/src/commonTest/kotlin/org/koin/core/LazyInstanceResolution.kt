@@ -1,10 +1,10 @@
 package org.koin.core
 
 import org.junit.Assert
-import org.junit.Test
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class LazyInstanceResolution {
     @Test

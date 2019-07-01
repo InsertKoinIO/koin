@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.junit.Assert.*
-import org.junit.Test
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.mp.KoinMultiPlatform
@@ -10,6 +9,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class ScopeAPITest {
 
