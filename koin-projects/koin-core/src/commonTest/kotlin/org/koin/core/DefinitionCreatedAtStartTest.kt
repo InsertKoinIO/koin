@@ -1,6 +1,5 @@
 package org.koin.core
 
-import org.junit.Assert.assertFalse
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -10,6 +9,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
 import kotlin.test.Test
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class DefinitionCreatedAtStartTest {
