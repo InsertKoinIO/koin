@@ -41,4 +41,8 @@ actual object KoinMultiPlatform {
     actual fun className(kClass: KClass<*>): String {
         return kClass.java.name
     }
+
+    actual fun printStackTrace(throwable: Throwable) {
+        throwable.printStackTrace()
+    }
 }

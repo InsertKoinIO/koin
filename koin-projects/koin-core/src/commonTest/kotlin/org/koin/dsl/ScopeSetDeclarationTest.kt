@@ -6,6 +6,7 @@ import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.ScopeDefinitionInstance
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 
@@ -106,7 +107,7 @@ class ScopeSetDeclarationTest {
             }
             fail()
         } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }

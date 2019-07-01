@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.error.NoPropertyFileFoundException
+import org.koin.core.mp.KoinMultiPlatform
 
 class FilePropertyDefinitionTest {
 
@@ -45,7 +46,7 @@ class FilePropertyDefinitionTest {
             }
             fail("should not find any koin_bad.properties file")
         } catch (e: NoPropertyFileFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 

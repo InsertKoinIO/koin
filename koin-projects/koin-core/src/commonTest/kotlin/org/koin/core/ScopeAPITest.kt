@@ -4,6 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
@@ -38,7 +39,7 @@ class ScopeAPITest {
             koin.getScope(scopeId)
             fail()
         } catch (e: Exception) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -57,7 +58,7 @@ class ScopeAPITest {
             koin.createScope("myScope", named("a_scope"))
             fail()
         } catch (e: NoScopeDefinitionFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -74,7 +75,7 @@ class ScopeAPITest {
             koin.createScope("myScope1", scopeKey)
             fail()
         } catch (e: ScopeAlreadyCreatedException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -87,7 +88,7 @@ class ScopeAPITest {
             koin.getScope("myScope1")
             fail()
         } catch (e: Exception) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 

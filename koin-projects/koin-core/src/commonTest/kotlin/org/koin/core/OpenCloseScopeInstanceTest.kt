@@ -6,6 +6,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -47,7 +48,7 @@ class OpenCloseScopeInstanceTest {
             scope.get<Simple.ComponentA>()
             fail()
         } catch (e: Exception) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -91,7 +92,7 @@ class OpenCloseScopeInstanceTest {
             scope.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }

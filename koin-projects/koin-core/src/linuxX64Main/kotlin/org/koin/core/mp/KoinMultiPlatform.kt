@@ -52,4 +52,8 @@ actual object KoinMultiPlatform {
     actual fun className(kClass: KClass<*>): String {
         return kClass.qualifiedName ?: "KClass@${hashCode()}"
     }
+
+    actual fun printStackTrace(throwable: Throwable) {
+        stackTrace(throwable).forEach(::println)
+    }
 }

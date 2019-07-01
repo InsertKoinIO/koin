@@ -4,6 +4,7 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -189,7 +190,7 @@ class ClosedScopeAPI {
             scope2.get<Simple.ComponentB>()
             fail()
         } catch (e: Exception) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 

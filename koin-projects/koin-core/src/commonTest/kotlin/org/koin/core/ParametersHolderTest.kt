@@ -1,7 +1,7 @@
 package org.koin.core
 
 import org.junit.Assert.*
-import org.junit.Test
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
@@ -43,7 +43,7 @@ class ParametersHolderTest {
             parametersOf(1, 2, 3, 4, 5, 6)
             fail("Can't build more than $MAX_PARAMS")
         } catch (e: Exception) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }

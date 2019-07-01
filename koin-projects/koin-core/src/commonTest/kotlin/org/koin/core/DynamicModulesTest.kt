@@ -8,6 +8,7 @@ import org.koin.core.context.*
 import org.koin.core.definition.Kind
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -40,7 +41,7 @@ class DynamicModulesTest {
             app.koin.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -68,14 +69,14 @@ class DynamicModulesTest {
             app.koin.get<Simple.Component1>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
 
         try {
             app.koin.get<Simple.ComponentInterface1>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -106,7 +107,7 @@ class DynamicModulesTest {
             app.koin.get<Simple.ComponentB>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -137,7 +138,7 @@ class DynamicModulesTest {
             app.koin.get<Simple.ComponentB>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -165,7 +166,7 @@ class DynamicModulesTest {
             app.koin.get<Simple.MySingle>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -237,7 +238,7 @@ class DynamicModulesTest {
             scope.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 

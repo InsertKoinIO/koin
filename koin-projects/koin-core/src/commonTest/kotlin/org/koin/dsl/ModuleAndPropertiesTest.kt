@@ -5,6 +5,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
+import org.koin.core.mp.KoinMultiPlatform
 
 class ModuleAndPropertiesTest {
 
@@ -39,7 +40,7 @@ class ModuleAndPropertiesTest {
             koin.get<Simple.MyStringFactory>()
             fail()
         } catch (e: InstanceCreationException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }

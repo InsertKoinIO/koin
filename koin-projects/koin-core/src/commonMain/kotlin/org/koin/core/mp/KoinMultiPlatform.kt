@@ -18,4 +18,6 @@ expect object KoinMultiPlatform {
     fun parseProperties(content: String): KoinMPProperties
 
     fun className(kClass: KClass<*>): String
+
+    fun printStackTrace(throwable: Throwable)
 }

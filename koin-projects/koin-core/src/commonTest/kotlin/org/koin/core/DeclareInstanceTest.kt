@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -42,7 +43,7 @@ class DeclareInstanceTest {
             koin.declare(a)
             fail()
         } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -78,7 +79,7 @@ class DeclareInstanceTest {
             koin.declare(a, override = false)
             fail()
         } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -194,7 +195,7 @@ class DeclareInstanceTest {
             koin.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -219,7 +220,7 @@ class DeclareInstanceTest {
             session2.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }

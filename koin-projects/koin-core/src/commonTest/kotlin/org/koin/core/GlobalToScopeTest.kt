@@ -6,6 +6,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -29,7 +30,7 @@ class GlobalToScopeTest {
             koin.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -52,7 +53,7 @@ class GlobalToScopeTest {
             koin.get<Simple.ComponentA>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 

@@ -7,6 +7,7 @@ import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -21,7 +22,7 @@ class ErrorCheckTest {
             app.koin.get<Simple.ComponentA>()
             fail("should not get instance")
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -36,7 +37,7 @@ class ErrorCheckTest {
             app.koin.get<Simple.ComponentB>()
             fail("should not get instance")
         } catch (e: InstanceCreationException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -52,7 +53,7 @@ class ErrorCheckTest {
             app.koin.get<Errors.Boom>()
             fail("should got InstanceCreationException")
         } catch (e: InstanceCreationException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -70,7 +71,7 @@ class ErrorCheckTest {
             app.koin.get<Errors.CycleA>()
             fail("should break into cycle")
         } catch (e: StackOverflowError) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }

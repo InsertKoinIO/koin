@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 
@@ -66,7 +67,7 @@ class AdditionalTypeBindingTest {
             koin.get<Simple.ComponentInterface1>()
             fail()
         } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
 
         assertNotEquals(

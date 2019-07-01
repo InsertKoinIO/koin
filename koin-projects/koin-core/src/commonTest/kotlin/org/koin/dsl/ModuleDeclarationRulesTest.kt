@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 
@@ -21,7 +22,7 @@ class ModuleDeclarationRulesTest {
             }
             fail("should not redeclare")
         } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -48,7 +49,7 @@ class ModuleDeclarationRulesTest {
             }
             fail("Should not allow redeclaration for same qualifier")
         } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 
@@ -75,7 +76,7 @@ class ModuleDeclarationRulesTest {
                     })
             }
         } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+            KoinMultiPlatform.printStackTrace(e)
         }
     }
 }
