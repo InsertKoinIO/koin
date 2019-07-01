@@ -114,11 +114,8 @@ class PropertyRegistry {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("load properties from environment")
         }
-        val sysProperties = System.getProperties()
-        saveProperties(sysProperties)
-
-        val sysEnvProperties = System.getenv().toProperties()
-        saveProperties(sysEnvProperties)
+        saveProperties(KoinMultiPlatform.getSystemProperties())
+        saveProperties(KoinMultiPlatform.getSystemEnvironmentProperties())
     }
 
     fun close() {

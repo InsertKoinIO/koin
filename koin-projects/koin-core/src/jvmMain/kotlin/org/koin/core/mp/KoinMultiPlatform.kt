@@ -14,4 +14,14 @@ actual object KoinMultiPlatform {
     actual fun nanoTime(): Long {
         return System.nanoTime()
     }
+
+    actual fun getSystemProperties(): Map<String, String> {
+        @Suppress("UNCHECKED_CAST")
+        return System.getProperties().toMap()
+    }
+
+    actual fun getSystemEnvironmentProperties(): Map<String, String> {
+        @Suppress("UNCHECKED_CAST")
+        return System.getenv().toProperties().toMap()
+    }
 }
