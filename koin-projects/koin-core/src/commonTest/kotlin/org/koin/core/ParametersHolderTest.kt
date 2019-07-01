@@ -7,6 +7,7 @@ import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ParametersHolderTest {
 

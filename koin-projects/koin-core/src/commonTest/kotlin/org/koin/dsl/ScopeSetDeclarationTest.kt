@@ -10,6 +10,7 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class ScopeSetDeclarationTest {
 

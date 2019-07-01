@@ -12,6 +12,7 @@ import org.koin.dsl.module
 import org.koin.test.getDefinition
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class KoinApplicationIsolationTest {
 
