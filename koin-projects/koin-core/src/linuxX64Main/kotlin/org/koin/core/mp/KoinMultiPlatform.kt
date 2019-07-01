@@ -35,4 +35,16 @@ actual object KoinMultiPlatform {
         }
         return target
     }
+
+    actual fun loadResourceString(fileName: String): String? {
+        // TODO
+        println("TODO: KoinMultiPlatform.loadResourceString is not yet implemented")
+        return null
+    }
+
+    actual fun parseProperties(content: String): KoinMPProperties {
+        // TODO
+        println("TODO: KoinMultiPlatform.parseProperties is not yet implemented")
+        return KoinMPProperties(emptyMap())
+    }
 }

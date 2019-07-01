@@ -10,4 +10,8 @@ expect object KoinMultiPlatform {
     fun getSystemProperties(): Map<String, String>
 
     fun getSystemEnvironmentProperties(): Map<String, String>
+
+    fun loadResourceString(fileName: String): String?
+
+    fun parseProperties(content: String): KoinMPProperties
 }

@@ -15,15 +15,15 @@
  */
 package org.koin.core.registry
 
-import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMPProperties
 import org.koin.core.mp.KoinMultiPlatform
+import org.koin.core.mp.toMap
 import org.koin.ext.isFloat
 import org.koin.ext.isInt
 import org.koin.ext.quoted
-import java.util.*
 
 /**
  * Property Registry
@@ -51,12 +51,12 @@ class PropertyRegistry {
     /**
      *Save properties values into PropertyRegister
      */
-    fun saveProperties(properties: Properties) {
+    fun saveProperties(properties: KoinMPProperties) {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("load ${properties.size} properties")
         }
 
-        val propertiesMapValues = properties.toMap() as Map<String, String>
+        val propertiesMapValues = properties.toMap()
         propertiesMapValues.forEach { (k: String, v: String) ->
             when {
                 v.isInt() -> saveProperty(k, v.toInt())
@@ -89,22 +89,16 @@ class PropertyRegistry {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("load properties from $fileName")
         }
-        val content = Koin::class.java.getResource(fileName)?.readText()
+        val content = KoinMultiPlatform.loadResourceString(fileName)
         if (content != null) {
             if (logger.isAt(Level.INFO)) {
                 logger.info("loaded properties from file:'$fileName'")
             }
-            val properties = readDataFromFile(content)
+            val properties = KoinMultiPlatform.parseProperties(content)
             saveProperties(properties)
         } else {
             throw NoPropertyFileFoundException("No properties found for file '$fileName'")
         }
-    }
-
-    private fun readDataFromFile(content: String): Properties {
-        val properties = Properties()
-        properties.load(content.byteInputStream())
-        return properties
     }
 
     /**

@@ -1,5 +1,7 @@
 package org.koin.core.mp
 
+import org.koin.core.Koin
+
 actual object KoinMultiPlatform {
     actual fun <K, V> emptyMutableMap(): MutableMap<K, V> {
         return java.util.concurrent.ConcurrentHashMap()
@@ -23,5 +25,15 @@ actual object KoinMultiPlatform {
     actual fun getSystemEnvironmentProperties(): Map<String, String> {
         @Suppress("UNCHECKED_CAST")
         return System.getenv().toProperties().toMap()
+    }
+
+    actual fun loadResourceString(fileName: String): String? {
+        return Koin::class.java.getResource(fileName)?.readText()
+    }
+
+    actual fun parseProperties(content: String): KoinMPProperties {
+        val properties = KoinMPProperties()
+        properties.load(content.byteInputStream())
+        return properties
     }
 }
