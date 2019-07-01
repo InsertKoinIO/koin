@@ -84,10 +84,7 @@ class BeanDefinition<T>(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as BeanDefinition<*>
-
+        if (other !is BeanDefinition<*>) return false
         if (qualifier != other.qualifier) return false
         if (primaryType != other.primaryType) return false
 
