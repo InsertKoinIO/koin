@@ -20,6 +20,7 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
+import org.koin.core.mp.KoinMPLock
 import org.koin.core.time.measureDurationOnly
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -31,6 +32,8 @@ import kotlin.jvm.JvmStatic
  * @author Arnaud Giuliani
  */
 class KoinApplication private constructor() {
+
+    private val synchronized = KoinMPLock(this)
 
     val koin = Koin()
 
@@ -129,7 +132,7 @@ class KoinApplication private constructor() {
     /**
      * Close all resources from Koin & remove Standalone Koin instance
      */
-    fun close() = synchronized(this) {
+    fun close() = synchronized {
         koin.close()
         if (logger.isAt(Level.INFO)) {
             logger.info("stopped")

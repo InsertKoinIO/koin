@@ -18,6 +18,7 @@ package org.koin.core.context
 import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
+import org.koin.core.mp.KoinMPLock
 import org.koin.dsl.KoinAppDeclaration
 import kotlin.jvm.JvmStatic
 
@@ -28,6 +29,8 @@ import kotlin.jvm.JvmStatic
  *
  */
 object GlobalContext {
+
+    private val synchronized = KoinMPLock(this)
 
     internal var app: KoinApplication? = null
 
@@ -58,7 +61,7 @@ object GlobalContext {
      * Stop current StandAlone Koin application
      */
     @JvmStatic
-    fun stop() = synchronized(this) {
+    fun stop() = synchronized {
         app?.close()
         app = null
     }

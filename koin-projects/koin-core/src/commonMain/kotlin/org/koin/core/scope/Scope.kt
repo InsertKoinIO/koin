@@ -24,6 +24,7 @@ import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.mp.KoinMPClass
+import org.koin.core.mp.KoinMPLock
 import org.koin.core.mp.kotlin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -41,6 +42,7 @@ data class Scope(
     val beanRegistry = BeanRegistry()
     var scopeDefinition: ScopeDefinition? = null
     private val callbacks = arrayListOf<ScopeCallback>()
+    private val synchronized = KoinMPLock(this)
 
     /**
      * Lazy inject a Koin instance
@@ -119,14 +121,14 @@ data class Scope(
         clazz: KClass<*>,
         qualifier: Qualifier?,
         parameters: ParametersDefinition?
-    ): T = synchronized(this) {
-        return if (KoinApplication.logger.isAt(Level.DEBUG)) {
+    ): T = synchronized {
+        if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.debug("+- get '${clazz.getFullName()}'")
             val (instance: T, duration: Double) = measureDuration {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
             KoinApplication.logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
-            return instance
+            instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
         }
@@ -145,15 +147,15 @@ data class Scope(
         clazz: KoinMPClass<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T = synchronized(this) {
+    ): T = synchronized {
         val kClass = clazz.kotlin
-        return if (KoinApplication.logger.isAt(Level.DEBUG)) {
+        if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.debug("+- get '${kClass.getFullName()}'")
             val (instance: T, duration: Double) = measureDuration {
                 resolveInstance<T>(qualifier, kClass, parameters)
             }
             KoinApplication.logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
-            return instance
+            instance
         } else {
             resolveInstance(qualifier, kClass, parameters)
         }
@@ -308,7 +310,7 @@ data class Scope(
     /**
      * Close all instances from this scope
      */
-    fun close() = synchronized(this) {
+    fun close() = synchronized {
         if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.info("closing scope:'$id'")
         }
