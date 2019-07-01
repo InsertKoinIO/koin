@@ -11,6 +11,11 @@ if (project.tasks.findByPath("classes") == null) {
         from kotlin.sourceSets.jvmMain.kotlin
     }
 
+    // workaround for https://youtrack.jetbrains.com/issue/KT-27170
+    configurations {
+        compileClasspath
+    }
+
     // TODO: dokka multi platform support
     artifacts {
         archives sourcesJar//, dokkaJar
