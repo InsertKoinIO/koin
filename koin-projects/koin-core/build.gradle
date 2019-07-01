@@ -7,8 +7,14 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 
 kotlin {
     jvm()
+    linuxX64()
 
     sourceSets {
+        commonMain {
+            dependencies {
+                api kotlin("stdlib-common")
+            }
+        }
         jvmMain {
             dependencies {
                 api kotlin("stdlib-jdk8")
