@@ -19,6 +19,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
+import kotlin.jvm.JvmStatic
 
 /**
  * Global context - current Koin Application available globally
