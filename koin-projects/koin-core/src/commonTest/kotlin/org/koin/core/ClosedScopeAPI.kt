@@ -11,6 +11,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class ClosedScopeAPI {
 
@@ -33,7 +34,7 @@ class ClosedScopeAPI {
 
         val scope1 = koin.createScope("scope1", named<ScopeType>())
         val scope2 = koin.createScope("scope2", named<ScopeType>())
-        Assert.assertNotEquals(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
+        assertNotEquals(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
     }
 
     @Test
@@ -68,7 +69,7 @@ class ClosedScopeAPI {
         }.koin
 
         val scope = koin.createScope("myScope", named<ScopeType>())
-        Assert.assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
         assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
     }
 
@@ -86,7 +87,7 @@ class ClosedScopeAPI {
         }.koin
 
         val scope = koin.createScope("myScope", named<ScopeType>())
-        Assert.assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
+        assertNotEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
         assertEquals(koin.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
     }
 
@@ -168,7 +169,7 @@ class ClosedScopeAPI {
 
         val scope = koin.createScope("myScope", named(scopeName))
         assertEquals(scope.get<Simple.ComponentB>(), scope.get<Simple.ComponentB>())
-        Assert.assertNotEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
+        assertNotEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentB>().a)
     }
 
     @Test

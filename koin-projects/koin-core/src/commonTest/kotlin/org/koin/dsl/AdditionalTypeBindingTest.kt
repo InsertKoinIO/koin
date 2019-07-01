@@ -9,6 +9,7 @@ import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class AdditionalTypeBindingTest {
 
