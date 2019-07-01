@@ -15,7 +15,7 @@
  */
 package org.koin.ext
 
-import java.util.concurrent.ConcurrentHashMap
+import org.koin.core.mp.KoinMultiPlatform
 import kotlin.reflect.KClass
 
 /**
@@ -31,4 +31,4 @@ fun KClass<*>.saveCache(): String {
     return name
 }
 
-private val classNames: MutableMap<KClass<*>, String> = ConcurrentHashMap()
+private val classNames: MutableMap<KClass<*>, String> = KoinMultiPlatform.emptyMutableMap()

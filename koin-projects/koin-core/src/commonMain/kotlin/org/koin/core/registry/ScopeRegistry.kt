@@ -22,12 +22,12 @@ import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeID
 import org.koin.dsl.ScopeSet
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope Registry
@@ -37,8 +37,8 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ScopeRegistry {
 
-    internal val definitions = ConcurrentHashMap<String, ScopeDefinition>()
-    private val instances = ConcurrentHashMap<String, Scope>()
+    internal val definitions: MutableMap<String, ScopeDefinition> = KoinMultiPlatform.emptyMutableMap()
+    private val instances: MutableMap<String, Scope> = KoinMultiPlatform.emptyMutableMap()
 
     /**
      * return all ScopeSet

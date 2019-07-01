@@ -20,9 +20,9 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope definition Instance holder
@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
 
-    private val values: MutableMap<String, T> = ConcurrentHashMap()
+    private val values: MutableMap<String, T> = KoinMultiPlatform.emptyMutableMap()
 
     override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
         ?: false

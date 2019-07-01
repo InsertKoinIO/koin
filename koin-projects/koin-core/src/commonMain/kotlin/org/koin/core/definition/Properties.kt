@@ -16,14 +16,14 @@
 package org.koin.core.definition
 
 import org.koin.core.error.MissingPropertyException
-import java.util.concurrent.ConcurrentHashMap
+import org.koin.core.mp.KoinMultiPlatform
 
 /**
  * Definitions Properties
  *
  * @author Arnaud Giuliani
  */
-data class Properties(private val data: MutableMap<String, Any> = ConcurrentHashMap()) {
+data class Properties(private val data: MutableMap<String, Any> = KoinMultiPlatform.emptyMutableMap()) {
 
     operator fun <T> set(key: String, value: T) {
         data[key] = value as Any

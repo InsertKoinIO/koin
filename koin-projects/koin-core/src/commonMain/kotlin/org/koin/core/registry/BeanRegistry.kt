@@ -21,10 +21,10 @@ import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
+import org.koin.core.mp.KoinMultiPlatform
 import org.koin.core.qualifier.Qualifier
 import org.koin.ext.getFullName
 import org.koin.ext.saveCache
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
@@ -36,9 +36,9 @@ import kotlin.reflect.KClass
 class BeanRegistry {
 
     private val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
-    private val definitionsNames: MutableMap<String, BeanDefinition<*>> = ConcurrentHashMap()
-    private val definitionsPrimaryTypes: MutableMap<KClass<*>, BeanDefinition<*>> = ConcurrentHashMap()
-    private val definitionsSecondaryTypes: MutableMap<KClass<*>, ArrayList<BeanDefinition<*>>> = ConcurrentHashMap()
+    private val definitionsNames: MutableMap<String, BeanDefinition<*>> = KoinMultiPlatform.emptyMutableMap()
+    private val definitionsPrimaryTypes: MutableMap<KClass<*>, BeanDefinition<*>> = KoinMultiPlatform.emptyMutableMap()
+    private val definitionsSecondaryTypes: MutableMap<KClass<*>, ArrayList<BeanDefinition<*>>> = KoinMultiPlatform.emptyMutableMap()
     private val definitionsToCreate: HashSet<BeanDefinition<*>> = hashSetOf()
 
     /**
