@@ -155,6 +155,17 @@ class MyApplication : Application() {
 * [Write your app with Koin](https://beta.insert-koin.io/docs/2.0/getting-started/introduction/)
 * [Quick References](https://beta.insert-koin.io/docs/2.0/quick-references/starting-koin/)
 
+# Upgrading from from Koin 2.x
+
+Generally, Koin 3.0 is a drop-in-replacement for Koin 2.x, expect this changes:
+* `org.koin.core.logger.PrintLogger`
+If you are using Koins `PrintLogger`, you should know, that the 2.x implementation
+was using `System.err` for Error Messages and `System.out` for all other Log-Levels.
+Because `System.err` and `System.out` is only available on the JVM, the new `PrintLogger`
+will always use kotlin's `println`-Function for all Logging-Messages.
+If you prefer to keep the old behaviour, just use `org.koin.core.logger.JvmPrintLogger`
+instead of `org.koin.core.logger.PrintLogger`.
+
 # Articles
 
 ### Articles & resouces about Koin

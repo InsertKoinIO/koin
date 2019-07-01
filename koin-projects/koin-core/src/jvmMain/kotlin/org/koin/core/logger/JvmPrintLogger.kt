@@ -16,14 +16,15 @@
 package org.koin.core.logger
 
 /**
- * Logger that uses kotlin println
+ * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger(level: Level = Level.INFO) : Logger(level) {
+class JvmPrintLogger(level: Level = Level.INFO) : Logger(level) {
 
     override fun log(level: Level, msg: MESSAGE) {
         if (this.level <= level) {
-            println("[$level] $KOIN_TAG $msg")
+            val printer = if (level >= Level.ERROR) System.err else System.out
+            printer.println("[$level] $KOIN_TAG $msg")
         }
     }
 }
