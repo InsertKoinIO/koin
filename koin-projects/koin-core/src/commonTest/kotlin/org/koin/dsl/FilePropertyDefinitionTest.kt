@@ -77,6 +77,6 @@ class FilePropertyDefinitionTest {
             fileProperties()
         }.koin
 
-        assertEquals(42.0f, koin.getProperty<Int>("float.value"))
+        assertEquals(42.0f, koin.getProperty<Float>("float.value"))
     }
 }

@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
-    assertEquals("definitions count", count, this.koin.rootScope.beanRegistry.size())
+    assertEquals(count, this.koin.rootScope.beanRegistry.size(), "definitions count")
 }
 
 internal fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
