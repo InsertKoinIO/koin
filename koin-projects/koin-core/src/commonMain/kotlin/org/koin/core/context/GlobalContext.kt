@@ -38,19 +38,23 @@ object GlobalContext {
      * StandAlone Koin App instance
      */
     @JvmStatic
-    fun get(): KoinApplication = app ?: error("KoinApplication has not been started")
+    fun get(): KoinApplication = synchronized {
+        app ?: error("KoinApplication has not been started")
+    }
 
     /**
      * StandAlone Koin App instance
      */
     @JvmStatic
-    fun getOrNull(): KoinApplication? = app
+    fun getOrNull(): KoinApplication? = synchronized {
+        app
+    }
 
     /**
      * Start a Koin Application as StandAlone
      */
     @JvmStatic
-    fun start(koinApplication: KoinApplication) {
+    fun start(koinApplication: KoinApplication) = synchronized {
         if (app != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }
