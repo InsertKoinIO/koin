@@ -9,7 +9,7 @@ class EnvironmentPropertyDefinitionTest {
 
     @Test
     fun `load and get properties from environment`() {
-        val sysProperties = KoinMultiPlatform.getSystemProperties()
+        val sysProperties = KoinMultiPlatform.getSystemEnvironmentProperties()
         val aPropertyKey: String = sysProperties.keys.first()
         val aPropertyValue = sysProperties[aPropertyKey]
 
