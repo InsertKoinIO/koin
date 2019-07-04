@@ -24,6 +24,7 @@ import org.koin.core.mp.KoinMPLock
 import org.koin.core.time.measureDurationOnly
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import kotlin.native.concurrent.SharedImmutable
 
 /**
  * Koin Application
@@ -151,7 +152,11 @@ class KoinApplication private constructor() {
 
     companion object {
 
-        var logger: Logger = EmptyLogger()
+        var logger: Logger
+            get() = globalLogger
+            set(newLogger) {
+                globalLogger = newLogger
+            }
 
         /**
          * Create a new instance of KoinApplication
@@ -164,3 +169,6 @@ class KoinApplication private constructor() {
         }
     }
 }
+
+@SharedImmutable
+private var globalLogger: Logger = EmptyLogger()

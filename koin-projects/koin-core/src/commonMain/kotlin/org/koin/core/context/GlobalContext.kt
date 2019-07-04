@@ -21,6 +21,10 @@ import org.koin.core.module.Module
 import org.koin.core.mp.KoinMPLock
 import org.koin.dsl.KoinAppDeclaration
 import kotlin.jvm.JvmStatic
+import kotlin.native.concurrent.SharedImmutable
+
+@SharedImmutable
+private var app: KoinApplication? = null
 
 /**
  * Global context - current Koin Application available globally
@@ -31,8 +35,6 @@ import kotlin.jvm.JvmStatic
 object GlobalContext {
 
     private val synchronized = KoinMPLock(this)
-
-    internal var app: KoinApplication? = null
 
     /**
      * StandAlone Koin App instance
