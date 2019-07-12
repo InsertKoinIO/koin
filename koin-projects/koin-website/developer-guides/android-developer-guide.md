@@ -47,7 +47,7 @@ class DetailPresenter(
 
     var view : DetailContract.View?
     
-    fun subscribe(v: DetailContract.Presenter) {
+    fun subscribe(v: DetailContract.View) {
         view = v
     }
 
