@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Scope API
-description: declare scoped instances in Koin
+description: Declare scoped instances in Koin
 group: quick-references
 toc: true
 ---
@@ -11,11 +11,11 @@ A scope is a fixed duration of time in which an object exists. When the scope co
 
 ### Declare a scoped definition
 
-By default in Koin, we have 3 kind of scopes:
+By default in Koin, we have 3 kinds of scopes:
 
-- `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
+- `single` definition, create an object that persists with the entire container lifetime (can't be dropped).
 - `factory` definition, create a new object each time. No persistence in the container (can't be shared).
-- `scoped` definition, create an object that persistent tied to the associated scope lifetime.
+- `scoped` definition, create an object whose persistence is tied to its associated scope lifetime.
 
 ### Declare and use a scope
 
@@ -42,10 +42,10 @@ module {
 
 ### Create and use a scope instance
 
-From any `Koin` instance or also available from your `KoinComponent` with `getKoin()`, the following functions allows to handle scope instances:
+From any `Koin` instance (also available from your `KoinComponent` with `getKoin()`) the following functions are available for handling scope instances:
 
 {% highlight kotlin %}
-// create scope instance with ScopeID "myScopeId" for scope naled "MY_SCOPE"
+// create scope instance with ScopeID "myScopeId" for scope named "MY_SCOPE"
 val myScope : Scope = koin.createScope("myScopeId", named("MY_SCOPE"))
 
 // get instance ComponentA from scope
@@ -60,11 +60,11 @@ val myScope : Scope = koin.getScope("myScopeId")
 myScope.close()
 {% endhighlight %}
 
-## Scope vs Module unloading
+## Scope vs. Module unloading
 
-Koin gives 2 possibilities to handle definitions & instances for a limited lifetime: Scope API & modules unload. What is the difference and when to use them?
+Koin offers 2 possibilities for handling definitions & instances for a limited lifetime: Scope API & modules unload. What is the difference and when would you use them?
 
-- `unloadKoinModules()` allows to drop modules definitions (and instances). it's very useful for dynamic module architecture approach, or when we need to load/unload/reload definitions.
-- Scope API is dedicated to limited lifetime definitions, creating bunch of definitions for a given lifetime/purpose
+- `unloadKoinModules()` allows you to drop modules definitions (and instances). It's very useful for a dynamic module architecture approach, or when we need to load/unload/reload definitions.
+- Scope API is dedicated to limited-lifetime definitions, creating a bunch of definitions for a given lifetime/purpose.
 
-Using modules unload is more simpler that wiring scopes, but you have to unload/reload modules definitions each time you need. Also one difference, definitions are no longer reachable. Scope API is more dedicated to fine grained lifetime limited instances, or multiple instance of the same scopes (sessions...).
+Using modules unload is simpler than wiring scopes, but you have to remember to unload/reload modules definitions each time you need. Also one difference, definitions are no longer reachable. Scope API is more dedicated to fine-grained lifetime limited instances, or multiple instance of the same scopes (sessions...).
