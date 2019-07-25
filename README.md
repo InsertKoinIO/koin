@@ -159,6 +159,7 @@ class MyApplication : Application() {
 
 ### Articles & resouces about Koin
 
+* [Testing a Koin application with KotlinTest](https://dev.to/kerooker/testing-koin-applications-with-kotlintest-1iip)
 * [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
 * [Migration from Dagger2 to Koin](https://proandroiddev.com/migrating-from-dagger2-to-koin-3b2b3f5285e9)
 * [From Dagger to Koin, a step by step migration guide](https://medium.com/@giuliani.arnaud/the-thermosiphon-app-from-dagger-to-koin-step-by-step-a09af7f5b5b1)
@@ -177,7 +178,6 @@ class MyApplication : Application() {
 * [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
-* [Testing a Koin application with KotlinTest](https://dev.to/kerooker/testing-koin-applications-with-kotlintest-1iip)
 
 ### Talks & podcasts
 
