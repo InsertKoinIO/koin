@@ -68,7 +68,7 @@ fun <T : ViewModel> Scope.createViewModelProvider(
     return ViewModelProvider(
             vmStore,
             if(beanRegistry.findDefinition(parameters.qualifier, parameters.clazz)!!.isStateViewModel()) {
-                object : AbstractSavedStateVMFactory(vmStore as SavedStateRegistryOwner, parameters.defaultArguments) {
+                object : AbstractSavedStateVMFactory(vmStore as SavedStateRegistryOwner, parameters.defaultArguments()) {
                     override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                         return get(parameters.clazz, parameters.qualifier) {
                             parametersOf(handle, *(parameters.parameters?.invoke() ?: emptyParametersHolder()).values)

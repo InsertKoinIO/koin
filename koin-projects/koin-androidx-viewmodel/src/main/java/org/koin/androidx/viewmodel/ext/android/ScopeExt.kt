@@ -43,7 +43,7 @@ fun <T : ViewModel> Scope.viewModel(
         owner: LifecycleOwner,
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
-        defaultArguments: Bundle? = null,
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, defaultArguments, parameters) }
 
@@ -57,7 +57,7 @@ fun <T : ViewModel> Scope.viewModel(
 inline fun <reified T : ViewModel> Scope.viewModel(
         owner: LifecycleOwner,
         qualifier: Qualifier? = null,
-        defaultArguments: Bundle? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel<T>(owner, qualifier, defaultArguments, parameters) }
 
@@ -71,7 +71,7 @@ inline fun <reified T : ViewModel> Scope.viewModel(
 inline fun <reified T : ViewModel> Scope.getViewModel(
         owner: LifecycleOwner,
         qualifier: Qualifier? = null,
-        defaultArguments: Bundle? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(owner, T::class, qualifier, defaultArguments, parameters)
@@ -89,7 +89,7 @@ fun <T : ViewModel> Scope.getViewModel(
         owner: LifecycleOwner,
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
-        defaultArguments: Bundle? = null,
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(

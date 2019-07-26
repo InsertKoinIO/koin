@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 class ViewModelParameters<T : Any>(
     val clazz: KClass<T>,
-    val defaultArguments: Bundle?,
+    val defaultArguments: () -> Bundle? = { null },
     val owner: LifecycleOwner,
     val qualifier: Qualifier? = null,
     val from: ViewModelStoreOwnerDefinition? = null,

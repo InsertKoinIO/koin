@@ -44,7 +44,7 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
         qualifier: Qualifier? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-        defaultArguments: Bundle? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = kotlin.lazy { getSharedViewModel<T>(qualifier, from, defaultArguments, parameters) }
 
@@ -61,7 +61,7 @@ fun <T : ViewModel> Fragment.sharedViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
         from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-        defaultArguments: Bundle? = null,
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
 ): Lazy<T> = kotlin.lazy { getSharedViewModel(clazz, qualifier, from, defaultArguments, parameters) }
 
@@ -76,7 +76,7 @@ fun <T : ViewModel> Fragment.sharedViewModel(
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
         qualifier: Qualifier? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-        defaultArguments: Bundle? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
 ): T {
     return getSharedViewModel(T::class, qualifier, from, defaultArguments, parameters)
@@ -96,7 +96,7 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
         from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
-        defaultArguments: Bundle? = null,
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(

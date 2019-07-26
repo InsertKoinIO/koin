@@ -29,8 +29,8 @@ class MVVMActivity : AppCompatActivity() {
     val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
     val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
-    val savedVm: SavedStateViewModel by viewModel(defaultArguments = Bundle()) { parametersOf("vm1") }
-    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this, defaultArguments = Bundle()) { parametersOf("vm2") }
+    val savedVm: SavedStateViewModel by viewModel(defaultArguments = { Bundle() }) { parametersOf("vm1") }
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this, defaultArguments = { Bundle()} ) { parametersOf("vm2") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
