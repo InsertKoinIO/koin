@@ -18,6 +18,7 @@ package org.koin.ktor.ext
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopping
+import io.ktor.util.AttributeKey
 import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
