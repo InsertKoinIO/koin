@@ -48,12 +48,21 @@ class KoinApplication private constructor() {
      * Load definitions from modules
      * @param modules
      */
+    fun modules(vararg modules: Module): KoinApplication {
+        return modules(modules.toList())
+    }
+
+    /**
+     * Load definitions from modules
+     * @param modules
+     */
     fun modules(modules: List<Module>): KoinApplication {
         if (logger.isAt(Level.INFO)) {
             val duration = measureDurationOnly {
                 loadModulesAndScopes(modules)
             }
-            val count = koin.rootScope.beanRegistry.getAllDefinitions().size + koin.scopeRegistry.getScopeSets().map { it.definitions.size }.sum()
+            val count =
+                koin.rootScope.beanRegistry.getAllDefinitions().size + koin.scopeRegistry.getScopeSets().map { it.definitions.size }.sum()
             logger.info("total $count registered definitions")
             logger.info("load modules in $duration ms")
         } else {
