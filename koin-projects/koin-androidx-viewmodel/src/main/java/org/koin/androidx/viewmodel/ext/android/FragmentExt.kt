@@ -38,7 +38,7 @@ import kotlin.reflect.KClass
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
@@ -53,7 +53,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  * @param clazz
  */
@@ -70,7 +70,7 @@ fun <T : ViewModel> Fragment.sharedViewModel(
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
@@ -87,7 +87,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * defaultArguments: Bundle? = null,
  * @param parameters - parameters to pass to the BeanDefinition
  * @param clazz

@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
  * Lazy get a viewModel instance
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  * @param clazz
  */
@@ -51,7 +51,7 @@ fun <T : ViewModel> LifecycleOwner.viewModel(
  * Lazy getByClass a viewModel instance
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
@@ -64,7 +64,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
  * Get a viewModel instance
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
@@ -82,7 +82,7 @@ private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
  *
  * @param clazz - Class of the BeanDefinition to retrieve
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
- * @param defaultArguments - Default arguments for SavedStateHandle if this is a stateViewModel
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModel(
