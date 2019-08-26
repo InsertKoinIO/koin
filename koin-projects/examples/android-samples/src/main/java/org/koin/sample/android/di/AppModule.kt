@@ -5,9 +5,11 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.dsl.onRelease
+import org.koin.sample.android.compat.JavaActivity
 import org.koin.sample.android.components.Counter
 import org.koin.sample.android.components.SCOPE_ID
 import org.koin.sample.android.components.SCOPE_SESSION
+import org.koin.sample.android.components.compat.CompatSimpleViewModel
 import org.koin.sample.android.components.dynamic.DynScoped
 import org.koin.sample.android.components.dynamic.DynSingle
 import org.koin.sample.android.components.main.DumbServiceImpl
@@ -70,5 +72,12 @@ val dynamicModule = module {
     single { DynSingle() }
     scope(named("dynamic_scope")) {
         scoped { DynScoped() }
+    }
+}
+
+val javaModule = module {
+    scope(named<JavaActivity>()) {
+        scoped { Session() }
+        viewModel { CompatSimpleViewModel(get()) }
     }
 }
