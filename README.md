@@ -10,8 +10,6 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-### Koin 2.0 is out: https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3
-
 ### Contact & Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
@@ -155,9 +153,10 @@ class MyApplication : Application() {
 * [Write your app with Koin](https://beta.insert-koin.io/docs/2.0/getting-started/introduction/)
 * [Quick References](https://beta.insert-koin.io/docs/2.0/quick-references/starting-koin/)
 
-# Articles
 
-### Articles & resouces about Koin
+# Talking about Koin
+
+### Articles
 
 * [Testing a Koin application with KotlinTest](https://dev.to/kerooker/testing-koin-applications-with-kotlintest-1iip)
 * [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
@@ -179,14 +178,17 @@ class MyApplication : Application() {
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
 
-### Talks & podcasts
+### Videos & Podcasts
 
-* [Simplify your Android development with Koin](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
+* [Dependency Injection from zero to hero with Koin, Kotliners 2019 & Budapest, Hungary](https://www.youtube.com/watch?v=mt9yoWScgb8&list=PLnYRVL0Cw1FSUJ-WdhV2Ija9kA9q0qP3e&index=6)
+* [Dependency Injection from zero to hero with Koin, AndroidMakers 2019 & Paris, France](https://www.youtube.com/watch?v=chCsNkjotfc)
+* [Simplify your Android development with Koin - Mobilization @ Lodz, Poland](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
 * [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
 
-### Koin developers hub
+### Koin Developers Hub
 
+* [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
 * [News from the trenches, What's next for Koin?](https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5)
 * [Koin 1.0.0 Unleashed](https://medium.com/koin-developers/koin-1-0-0-unleashed-dcc15b293a3a)
 * [Opening Koin 1.0.0 Beta](https://medium.com/koin-developers/opening-the-koin-1-0-0-beta-version-99cb8be1c308)
