@@ -27,7 +27,7 @@ Found a bug or a problem on a specific feature? Open an issue on [Github issues]
 
 Old Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
 
-### Articles,Videos & other resources 🎉- 
+### Articles, Videos & other resources 🎉
 
 All online resources about Koin 👉 [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
 
