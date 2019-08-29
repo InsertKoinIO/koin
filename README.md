@@ -189,6 +189,7 @@ class MyApplication : Application() {
 * [Simplify your Android development with Koin - Mobilization @ Lodz, Poland](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
 * [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
+* [Insert Koin. Mobile Fest 2018, Kiev, Urkaine (Russian)](https://youtu.be/HrTz5jToQkk)
 
 ### Koin Developers Hub
 
