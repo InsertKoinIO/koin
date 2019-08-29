@@ -25,7 +25,9 @@ Any question about Koin usage?
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
-### Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
+Old Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
+
+### Articles,Videos & other resources - [Talking about Koin 🎉](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
 
 # Setup
 
