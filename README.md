@@ -10,7 +10,7 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-### Contact & Latest News 🌐
+### Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
@@ -21,15 +21,15 @@ Any question about Koin usage?
 - Come talk on slack [#koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
 - Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
+### Articles, Videos & other resources 🎉
+
+All online resources about Koin 👉 [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
+
 ### Reporting issues 🛠
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
 Old Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
-
-### Articles, Videos & other resources 🎉
-
-All online resources about Koin 👉 [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
 
 # Setup
 
