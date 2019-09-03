@@ -181,6 +181,7 @@ class MyApplication : Application() {
 * [Kotlin Weekly #64](http://mailchi.mp/kotlinweekly/kotlin-weekly-64?e=e8a57c719f)
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
+* [Dagger is dead. Long live Koin](https://www.linkedin.com/pulse/dagger-dead-long-live-koin-yordan-olave-cordero)
 
 ### Videos & Podcasts
 
