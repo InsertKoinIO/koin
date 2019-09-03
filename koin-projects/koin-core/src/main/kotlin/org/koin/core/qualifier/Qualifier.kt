@@ -14,3 +14,8 @@ fun named(name: String) = StringQualifier(name)
  * Give a Type based qualifier
  */
 inline fun <reified T> named() = TypeQualifier(T::class)
+
+/**
+ * Give a enum based qualifier
+ */
+fun <E : Enum<E>> named(qual: E) = EnumQualifier(qual)
