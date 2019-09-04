@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
 class EnumQualifierTest {
@@ -38,13 +39,17 @@ class EnumQualifierTest {
 
     @Test
     fun `string and enum qualifiers can both be defined`() {
-        startKoin {
-            modules(
-                module {
-                    single(named("RIGHT")) { "A" }
-                    single(qualified(Turn.RIGHT)) { "B" }
-                }
-            )
+        try {
+            startKoin {
+                modules(
+                    module {
+                        single(named("RIGHT")) { "A" }
+                        single(qualified(Turn.RIGHT)) { "B" }
+                    }
+                )
+            }
+        } finally {
+            stopKoin()
         }
     }
 
