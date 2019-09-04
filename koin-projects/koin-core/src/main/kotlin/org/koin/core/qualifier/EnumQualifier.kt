@@ -9,6 +9,6 @@ package org.koin.core.qualifier
  */
 data class EnumQualifier<E : Enum<E>>(val value: E) : Qualifier {
     override fun toString(): String {
-        return value.toString()
+        return "${value.javaClass.name}.$value"
     }
 }
