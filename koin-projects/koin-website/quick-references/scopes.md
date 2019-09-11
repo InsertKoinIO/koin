@@ -45,7 +45,7 @@ module {
 From any `Koin` instance or also available from your `KoinComponent` with `getKoin()`, the following functions allows to handle scope instances:
 
 {% highlight kotlin %}
-// create scope instance with ScopeID "myScopeId" for scope naled "MY_SCOPE"
+// create scope instance with ScopeID "myScopeId" for scope named "MY_SCOPE"
 val myScope : Scope = koin.createScope("myScopeId", named("MY_SCOPE"))
 
 // get instance ComponentA from scope
