@@ -15,6 +15,7 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
@@ -37,19 +38,22 @@ import kotlin.reflect.KClass
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
         qualifier: Qualifier? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = kotlin.lazy { getSharedViewModel<T>(qualifier, from, parameters) }
+): Lazy<T> = kotlin.lazy { getSharedViewModel<T>(qualifier, from, defaultArguments, parameters) }
 
 /**
  * Lazy getByClass a viewModel instance shared with Activity
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  * @param clazz
  */
@@ -57,22 +61,25 @@ fun <T : ViewModel> Fragment.sharedViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
         from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
-): Lazy<T> = kotlin.lazy { getSharedViewModel(clazz, qualifier, from, parameters) }
+): Lazy<T> = kotlin.lazy { getSharedViewModel(clazz, qualifier, from, defaultArguments, parameters) }
 
 /**
  * Get a shared viewModel instance from underlying Activity
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
         qualifier: Qualifier? = null,
         noinline from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
 ): T {
-    return getSharedViewModel(T::class, qualifier, from, parameters)
+    return getSharedViewModel(T::class, qualifier, from, defaultArguments, parameters)
 }
 
 /**
@@ -80,6 +87,8 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
  * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
+ * defaultArguments: Bundle? = null,
  * @param parameters - parameters to pass to the BeanDefinition
  * @param clazz
  */
@@ -87,11 +96,13 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
         from: ViewModelStoreOwnerDefinition = { activity as ViewModelStoreOwner },
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(
             ViewModelParameters(
                     clazz,
+                    defaultArguments,
                     this@getSharedViewModel,
                     qualifier,
                     from,
