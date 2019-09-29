@@ -18,14 +18,9 @@ package org.koin.android.viewmodel.dsl
 import android.arch.lifecycle.ViewModel
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
-import org.koin.core.definition.DefinitionFactory
-import org.koin.core.definition.Options
-import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.RootScope
-import org.koin.core.scope.Scope
-import org.koin.dsl.ScopeSet
 
 /**
  * ViewModel DSL Extension

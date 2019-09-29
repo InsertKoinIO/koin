@@ -6,7 +6,6 @@ import android.arch.lifecycle.LifecycleRegistry
 import android.content.ComponentCallbacks
 import android.content.res.Configuration
 import org.koin.android.scope.HasParentScope
-import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 
 class AParent: LifecycleOwner, ComponentCallbacks {

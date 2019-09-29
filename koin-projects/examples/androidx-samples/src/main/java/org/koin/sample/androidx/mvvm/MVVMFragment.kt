@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.getKoin

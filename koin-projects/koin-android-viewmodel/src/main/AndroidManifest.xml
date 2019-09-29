@@ -1,4 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.koin.android.viewmodel">
+<manifest package="org.koin.android.viewmodel">
     <application/>
 </manifest>

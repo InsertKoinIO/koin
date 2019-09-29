@@ -3,7 +3,6 @@ package org.koin.experimental.builder
 import org.junit.Test
 import org.koin.core.time.measureDuration
 import kotlin.reflect.KClass
-import kotlin.reflect.typeOf
 
 class ReflectAPITest {
 

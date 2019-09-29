@@ -1,6 +1,5 @@
 package org.koin.sample.androidx.di
 
-import androidx.fragment.app.FragmentActivity
 import org.koin.androidx.experimental.dsl.autoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named

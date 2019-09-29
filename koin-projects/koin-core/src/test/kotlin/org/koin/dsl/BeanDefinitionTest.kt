@@ -4,7 +4,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.definition.*
+import org.koin.core.definition.Kind
+import org.koin.core.definition.createFactory
+import org.koin.core.definition.createScoped
+import org.koin.core.definition.definitionFactory
 import org.koin.core.instance.InstanceContext
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.named

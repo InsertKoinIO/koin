@@ -17,9 +17,7 @@
 
 package org.koin.core.instance
 
-import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.context.GlobalContext
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level

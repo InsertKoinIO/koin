@@ -1,6 +1,6 @@
 package org.koin.test.android
 
-import org.junit.Assert.*
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.error.ParentScopeMismatchException

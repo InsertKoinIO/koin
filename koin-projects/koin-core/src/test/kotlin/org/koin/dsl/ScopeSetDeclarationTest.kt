@@ -5,7 +5,6 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.ScopeDefinitionInstance
-import org.koin.core.instance.SingleDefinitionInstance
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named

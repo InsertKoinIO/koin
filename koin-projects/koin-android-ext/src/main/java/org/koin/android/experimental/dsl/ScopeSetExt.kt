@@ -3,7 +3,6 @@ package org.koin.android.experimental.dsl
 import android.arch.lifecycle.ViewModel
 import org.koin.android.viewmodel.dsl.setIsViewModel
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
 import org.koin.core.definition.createFactory
 import org.koin.core.error.DefinitionOverrideException

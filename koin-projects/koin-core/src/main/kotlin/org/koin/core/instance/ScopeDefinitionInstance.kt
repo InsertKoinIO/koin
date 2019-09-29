@@ -18,7 +18,6 @@ package org.koin.core.instance
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.BadScopeInstanceException
-import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope

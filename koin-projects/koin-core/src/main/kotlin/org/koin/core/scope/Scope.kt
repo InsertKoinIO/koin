@@ -17,7 +17,8 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.definition.*
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.definitionFactory
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext

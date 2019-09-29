@@ -21,12 +21,10 @@ import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.createScoped
 import org.koin.core.definition.definitionFactory
 import org.koin.core.logger.Level
 import org.koin.core.scope.RootScope
-import org.koin.core.scope.Scope
 import java.util.*
 
 /**

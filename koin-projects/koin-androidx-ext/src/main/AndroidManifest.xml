@@ -1,4 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.koin.androidx.ext">
+<manifest package="org.koin.androidx.ext">
     <application/>
 </manifest>

@@ -16,7 +16,10 @@
 package org.koin.androidx.viewmodel.dsl
 
 import androidx.lifecycle.ViewModel
-import org.koin.core.definition.*
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Definition
+import org.koin.core.definition.Options
+import org.koin.core.definition.createFactory
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope

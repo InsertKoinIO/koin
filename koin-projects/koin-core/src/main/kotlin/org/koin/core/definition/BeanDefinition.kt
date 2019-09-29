@@ -15,7 +15,10 @@
  */
 package org.koin.core.definition
 
-import org.koin.core.instance.*
+import org.koin.core.instance.DefinitionInstance
+import org.koin.core.instance.FactoryDefinitionInstance
+import org.koin.core.instance.InstanceContext
+import org.koin.core.instance.ScopeDefinitionInstance
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
