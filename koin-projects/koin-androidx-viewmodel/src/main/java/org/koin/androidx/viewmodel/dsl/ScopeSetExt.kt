@@ -32,16 +32,21 @@ import org.koin.dsl.ScopeSet
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier
+ * @param useState - whether this view model wants a SavedStateHandle definition parameter
  * @param override - allow definition override
  */
-inline fun <S: Scope, reified T : ViewModel> ScopeSet<S>.viewModel(
+inline fun <S : Scope, reified T : ViewModel> ScopeSet<S>.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false,
+        useState: Boolean = false,
         noinline definition: Definition<S, T>
 ): BeanDefinition<S, T> {
     val beanDefinition = this.factory.createFactory(qualifier, this.qualifier, definition)
     declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
+    if (useState) {
+        beanDefinition.setIsStateViewModel()
+    }
     if (!definitions.contains(beanDefinition)) {
         definitions.add(beanDefinition)
     } else {

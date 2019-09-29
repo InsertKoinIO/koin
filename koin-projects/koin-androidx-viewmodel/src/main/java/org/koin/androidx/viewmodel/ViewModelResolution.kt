@@ -6,10 +6,16 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.AbstractSavedStateVMFactory
+import androidx.lifecycle.SavedStateHandle
+import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.androidx.viewmodel.dsl.isStateViewModel
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
+import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDuration
 
@@ -61,9 +67,18 @@ fun <T : ViewModel> Scope.createViewModelProvider(
 ): ViewModelProvider {
     return ViewModelProvider(
             vmStore,
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return get(parameters.clazz, parameters.qualifier, parameters.parameters)
+            if(beanRegistry.findDefinition(parameters.qualifier, parameters.clazz)?.isStateViewModel() == true) {
+                object : AbstractSavedStateVMFactory(parameters.owner as SavedStateRegistryOwner, parameters.defaultArguments()) {
+                    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                        return get(parameters.clazz, parameters.qualifier) {
+                            parametersOf(handle, *(parameters.parameters?.invoke() ?: emptyParametersHolder()).values)
+                        }
+                    }
                 }
-            })
+            } else {
+                object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return get(parameters.clazz, parameters.qualifier, parameters.parameters)
+                    }
+                }})
 }

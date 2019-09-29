@@ -30,19 +30,25 @@ import org.koin.core.scope.Scope
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier
+ * @param useState - whether this view model wants a SavedStateHandle definition parameter
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false,
+        useState: Boolean = false,
         noinline definition: Definition<RootScope, T>
 ): BeanDefinition<RootScope, T> {
     val beanDefinition = factory(qualifier, override, definition)
     beanDefinition.setIsViewModel()
+    if(useState) {
+        beanDefinition.setIsStateViewModel()
+    }
     return beanDefinition
 }
 
 const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
+const val ATTRIBUTE_VIEW_MODEL_SAVED_STATE = "isSavedStateViewModel"
 
 fun <S: Scope> BeanDefinition<S, *>.setIsViewModel() {
     properties[ATTRIBUTE_VIEW_MODEL] = true
@@ -50,4 +56,18 @@ fun <S: Scope> BeanDefinition<S, *>.setIsViewModel() {
 
 fun <S: Scope> BeanDefinition<S, *>.isViewModel(): Boolean {
     return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
+}
+
+/**
+ * StateViewModel DSL Extension
+ * Allow to declare a stateful ViewModel - will have a SavedStateHandle passed in constructor
+ *
+ * @author Marek Kedzierski
+ */
+fun BeanDefinition<*, *>.setIsStateViewModel() {
+    properties[ATTRIBUTE_VIEW_MODEL_SAVED_STATE] = true
+}
+
+fun BeanDefinition<*, *>.isStateViewModel(): Boolean {
+    return properties.getOrNull(ATTRIBUTE_VIEW_MODEL_SAVED_STATE) ?: false
 }

@@ -1,6 +1,7 @@
 package org.koin.sample.androidx.di
 
 import org.koin.androidx.experimental.dsl.autoViewModel
+import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -15,6 +16,7 @@ import org.koin.sample.androidx.components.main.ServiceImpl
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
+import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Controller
 import org.koin.sample.androidx.components.scope.Session
@@ -47,11 +49,20 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
+    viewModel(useState = true) { (handle: SavedStateHandle, id: String) ->
+        SavedStateViewModel(handle, id, get())
+    }
+
     objectScope<MVVMActivity>() {
+
         scoped { Session() }
         scoped { Controller(get<MVVMActivity>()) }
         viewModel { ExtSimpleViewModel(get()) }
+
         autoViewModel<ExtSimpleViewModel>(named("ext"))
+        viewModel(useState = true) { (handle: SavedStateHandle, id: String) ->
+            SavedStateViewModel(handle, id, get())
+        }
 
         childObjectScope<MVVMFragment>()
     }
