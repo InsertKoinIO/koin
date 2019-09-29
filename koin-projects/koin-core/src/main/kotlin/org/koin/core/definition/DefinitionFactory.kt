@@ -7,6 +7,15 @@ import org.koin.core.scope.RootScope
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
+/**
+ * Contains the definition of factory objects which correspond to
+ * the appropriate scope type. Also contains the resolution functions based on
+ * the scope type.
+ *
+ * @author Arnaud Giuliani
+ * @author Andreas Schattney
+ */
+
 interface DefinitionFactory<S: Scope> {
 
     val singleScopeKind: Kind
@@ -70,7 +79,6 @@ inline fun <S: Scope, reified T> DefinitionFactory<S>.createFactory(
 ): BeanDefinition<S, T> {
     return this.createFactoryWithType(qualifier, scopeName, T::class, definition)
 }
-
 
 private fun <S: Scope, T> createDefinition(
         qualifier: Qualifier?,

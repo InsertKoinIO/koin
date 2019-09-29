@@ -1,8 +1,9 @@
 package org.koin.sample.android.di
 
-import org.koin.android.experimental.dsl.autoViewModel
+import org.koin.android.experimental.dsl.viewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
+import org.koin.core.scope.ObjectScope
 import org.koin.dsl.module
 import org.koin.dsl.onRelease
 import org.koin.sample.android.compat.JavaActivity
@@ -53,7 +54,7 @@ val mvvmModule = module {
         scoped { Session() }
         scoped { Controller(instance) }
         viewModel { ExtSimpleViewModel(get()) }
-        autoViewModel<ExtSimpleViewModel>(named("ext"))
+        viewModel<ExtSimpleViewModel>(named("ext"))
 
         childObjectScope<MVVMFragment>()
     }

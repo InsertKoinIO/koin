@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> Scope.create(): T {
+inline fun <reified T> Scope.create(): T {
     val kClass = T::class
     val instance: Any
 

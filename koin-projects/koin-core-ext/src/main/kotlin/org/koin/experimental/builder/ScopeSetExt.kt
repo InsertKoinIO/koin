@@ -19,7 +19,7 @@ inline fun <S: Scope, reified T : Any> ScopeSet<S>.scoped(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<S, T> {
-    val beanDefinition = this.factory.createScoped(name, qualifier) { create<T>() }
+    val beanDefinition = this.definitionFactory.createScoped(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -34,11 +34,11 @@ inline fun <S: Scope, reified T : Any> ScopeSet<S>.scoped(
  * @param qualifier
  * @param override - allow definition override
  */
-inline fun <S: Scope, reified T : Any> ScopeSet<S>.factory(
+inline fun <S: Scope, reified T> ScopeSet<S>.factory(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<S, T> {
-    val beanDefinition = this.factory.createFactory(name, qualifier) { create<T>() }
+    val beanDefinition = this.definitionFactory.createFactory(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -57,7 +57,7 @@ inline fun <S: Scope, reified R : Any, reified T : R> ScopeSet<S>.scopedBy(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<S, R> {
-    val beanDefinition = this.factory.createScoped(name, qualifier) { create<T>() as R }
+    val beanDefinition = this.definitionFactory.createScoped(name, qualifier) { create<T>() as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -76,7 +76,7 @@ inline fun <S: Scope, reified R : Any, reified T : R> ScopeSet<S>.factoryBy(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<S, R> {
-    val beanDefinition = this.factory.createFactory(name, qualifier) { create<T>() as R }
+    val beanDefinition = this.definitionFactory.createFactory(name, qualifier) { create<T>() as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {

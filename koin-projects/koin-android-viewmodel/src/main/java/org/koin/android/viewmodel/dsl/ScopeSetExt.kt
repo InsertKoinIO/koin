@@ -27,10 +27,13 @@ import org.koin.dsl.ScopeSet
 
 /**
  * ViewModel DSL Extension
- * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
  *
  * @author Arnaud Giuliani
- *
+ * @author Andreas Schattney
+**/
+
+/**
+ * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
@@ -39,7 +42,7 @@ inline fun <reified S: Scope, reified T : ViewModel> ScopeSet<S>.viewModel(
         override: Boolean = false,
         noinline definition: Definition<S, T>
 ): BeanDefinition<S, T> {
-    val beanDefinition = this.factory.createFactory(qualifier, this.qualifier, definition)
+    val beanDefinition = this.definitionFactory.createFactory(qualifier, this.qualifier, definition)
     declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
     if (!definitions.contains(beanDefinition)) {

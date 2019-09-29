@@ -31,11 +31,10 @@ class ScopeDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>)
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
-    override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
-            ?: false
+    override fun isCreated(context: InstanceContext): Boolean = values[context.scope.id] != null
 
     override fun release(context: InstanceContext) {
-        val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
+        val scope = context.scope
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("releasing '$scope' ~ $beanDefinition ")
         }
@@ -45,7 +44,7 @@ class ScopeDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>)
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
-        val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
+        val scope = context.scope
         checkScopeResolution(beanDefinition, scope)
         val internalId = scope.id
         var current = values[internalId]
@@ -62,7 +61,7 @@ class ScopeDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>)
         values.clear()
     }
 
-    private fun checkScopeResolution(definition: BeanDefinition<*, *>, scope: Scope) {
+    private fun checkScopeResolution(definition: BeanDefinition<S, T>, scope: Scope) {
         val scopeInstanceName = scope.scopeDefinition?.qualifier
         val beanScopeName: Qualifier? = definition.scopeName
         if (beanScopeName != scopeInstanceName) {

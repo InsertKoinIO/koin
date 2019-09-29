@@ -28,7 +28,7 @@ import org.koin.core.scope.ScopeDefinition
 /**
  * DSL Scope Definition
  */
-data class ScopeSet<S: Scope>(val factory: DefinitionFactory<S>, val qualifier: Qualifier, val validateParentScope: Boolean) {
+data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val qualifier: Qualifier, val validateParentScope: Boolean) {
 
     val childScopes = mutableListOf<ScopeSet<*>>()
     val definitions: HashSet<BeanDefinition<S, *>> = hashSetOf()
@@ -47,7 +47,7 @@ data class ScopeSet<S: Scope>(val factory: DefinitionFactory<S>, val qualifier: 
             override: Boolean = false,
             noinline definition: Definition<S, T>
     ): BeanDefinition<S, T> {
-        val beanDefinition = factory.createScoped(qualifier, this.qualifier, definition)
+        val beanDefinition = definitionFactory.createScoped(qualifier, this.qualifier, definition)
         declareDefinition(beanDefinition, Options(false, override))
         if (!definitions.contains(beanDefinition)) {
             definitions.add(beanDefinition)
@@ -62,7 +62,7 @@ data class ScopeSet<S: Scope>(val factory: DefinitionFactory<S>, val qualifier: 
             override: Boolean = false,
             noinline definition: Definition<S, T>
     ): BeanDefinition<S, T> {
-        val beanDefinition = factory.createFactory(qualifier, this.qualifier, definition)
+        val beanDefinition = definitionFactory.createFactory(qualifier, this.qualifier, definition)
         declareDefinition(beanDefinition, Options(false, override))
         if (!definitions.contains(beanDefinition)) {
             definitions.add(beanDefinition)

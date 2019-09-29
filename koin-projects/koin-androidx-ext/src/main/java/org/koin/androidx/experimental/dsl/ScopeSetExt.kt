@@ -10,12 +10,13 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeSet
 import org.koin.experimental.builder.create
+import kotlin.reflect.KClass
 
 /**
  * ViewModel DSL Extension
  *
  * @author Arnaud Giuliani
- *
+ * @author Andreas Schattney
  */
 
 /**
@@ -23,18 +24,23 @@ import org.koin.experimental.builder.create
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> ScopeSet<out Scope>.autoViewModel(
+inline fun <reified T : ViewModel> ScopeSet<*>.viewModel(
         name: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<out Scope, T> {
-    return genericAutoViewModel(name, override)
+): BeanDefinition<*, T> {
+    return createViewModelDefinition(name, override)
 }
 
-inline fun <S: Scope, reified T : ViewModel> ScopeSet<S>.genericAutoViewModel(
+/**
+ * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
+ * @param qualifier - definition qualifier
+ * @param override - allow definition override
+ */
+inline fun <S: Scope, reified T : ViewModel> ScopeSet<S>.createViewModelDefinition(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<S, T> {
-    val beanDefinition = this.factory.createFactory<S, T>(name, qualifier) { create() }
+    val beanDefinition = this.definitionFactory.createFactory<S, T>(name, qualifier) { create() }
     declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
     if (!definitions.contains(beanDefinition)) {
