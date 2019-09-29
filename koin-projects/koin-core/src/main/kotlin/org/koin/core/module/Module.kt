@@ -17,6 +17,7 @@ package org.koin.core.module
 
 import org.koin.core.definition.*
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
 import org.koin.core.scope.DefaultScope
 import org.koin.core.scope.ObjectScope
@@ -76,17 +77,24 @@ class Module(
     }
 
     /**
+     * Declare a group a scoped definition. The qualifier is determined by the associated type.
+     * @param scopeName
+     */
+    inline fun <reified T> typedScope(scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
+        return scope(TypeQualifier(T::class), scopeSet)
+    }
+
+    /**
      * Declare a group a scoped definition with a given scope qualifier
      * @param scopeName
      */
-    fun scope(
+    inline fun scope(
             scopeName: Qualifier,
-            parentScopeValidation: Boolean = false,
             scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
         val scope = ScopeSet<DefaultScope>(
                 definitionFactory(),
                 scopeName,
-                parentScopeValidation
+                validateParentScope = false
         ).apply(scopeSet)
         declareScope(scope)
     }
@@ -97,12 +105,11 @@ class Module(
      */
     inline fun <reified T> objectScope(
             scopeName: Qualifier = named<T>(),
-            parentScopeValidation: Boolean = false,
             noinline scopeSet: ScopeSet<ObjectScope<T>>.() -> Unit) {
         val scope = ScopeSet<ObjectScope<T>>(
                 definitionFactory(),
                 scopeName,
-                parentScopeValidation
+                validateParentScope = false
         ).apply(scopeSet)
         scope.declareScopedInstanceIfPossible()
         declareScope(scope)

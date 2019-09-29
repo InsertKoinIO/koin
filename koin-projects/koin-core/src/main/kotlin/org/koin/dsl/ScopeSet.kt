@@ -18,6 +18,7 @@ package org.koin.dsl
 import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
 import org.koin.core.scope.DefaultScope
 import org.koin.core.scope.ObjectScope
@@ -95,6 +96,18 @@ data class ScopeSet<S: Scope>(val factory: DefinitionFactory<S>, val qualifier: 
         if (!this.definitions.any { it.primaryType == T::class }) {
             this.declareDefinition( scoped { instance }, Options())
         }
+    }
+
+    /**
+     * Declare a child scope definition inside a ScopeSet.
+     * @param scopeName
+     * @param validateParentScope Validate the parent scope at scope instance creation
+     */
+    @JvmOverloads
+    inline fun <reified T> typedChildScope(
+            validateParentScope: Boolean = false,
+            noinline scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
+        return childScope(TypeQualifier(T::class), validateParentScope, scopeSet)
     }
 
     /**
