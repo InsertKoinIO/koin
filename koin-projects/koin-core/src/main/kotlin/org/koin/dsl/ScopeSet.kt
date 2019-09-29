@@ -93,7 +93,12 @@ data class ScopeSet<S: Scope>(val factory: DefinitionFactory<S>, val qualifier: 
     }
 
     inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
-        if (!this.definitions.any { it.primaryType == T::class }) {
+        val alreadyContainsDefinition = this.definitions.any {
+            val alreadyDefined = it.primaryType == T::class && it.qualifier == null
+            val alreadyBound = it.secondaryTypes.contains(T::class)
+            alreadyDefined || alreadyBound
+        }
+        if (!alreadyContainsDefinition) {
             this.declareDefinition( scoped { instance }, Options())
         }
     }

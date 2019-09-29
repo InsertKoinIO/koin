@@ -19,6 +19,7 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.*
@@ -172,7 +173,7 @@ class Koin {
      * Create a Scope which has an associated instance
      */
     @JvmOverloads
-    fun <T: Any> createObjectScoped(instance: T, scopeId: ScopeID = instance.getScopeId(), scopeName: Qualifier = instance.getScopeName(), parentScopeId: ScopeID? = null): ObjectScope<T> {
+    inline fun <reified T: Any> createObjectScoped(instance: T, scopeId: ScopeID = instance.getScopeId(), scopeName: Qualifier = TypeQualifier(T::class), parentScopeId: ScopeID? = null): ObjectScope<T> {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$scopeName")
         }

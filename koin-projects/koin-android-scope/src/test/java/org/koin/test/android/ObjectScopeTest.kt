@@ -7,6 +7,7 @@ import org.koin.android.scope.currentScope
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.core.scope.getScopeId
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.android.util.AChild
@@ -88,5 +89,50 @@ class ObjectScopeTest: AutoCloseKoinTest() {
 
         val instance = childScope.get<AParent>()
         assertEquals(parentScope.instance, instance)
+    }
+
+    open class Abstraction
+    class Implementation: Abstraction()
+
+    @Test
+    fun `does create default instance`() {
+        val koin = startKoin {
+            modules(module {
+                objectScope<Implementation>()
+            })
+        }.koin
+
+        val scope = koin.createObjectScoped(Implementation())
+
+        assertEquals(1, scope.scopeDefinition?.definitions?.size)
+    }
+
+    @Test
+    fun `does not create default instance provision declaration when primary type already present in definitions`() {
+        val koin = startKoin {
+            modules(module {
+                objectScope<Implementation> {
+                    scoped { instance }
+                }
+            })
+        }.koin
+
+        val scope = koin.createObjectScoped(Implementation())
+
+        assertEquals(1, scope.scopeDefinition?.definitions?.size)
+    }
+
+    @Test
+    fun `scope qualifier is based on the generic type instead of implementation type at scope creation`() {
+        val koin = startKoin {
+            modules(module {
+                objectScope<Abstraction>()
+            })
+        }.koin
+
+        val instance = Implementation()
+        val scope = koin.createObjectScoped<Abstraction>(instance)
+        assertEquals(1, scope.scopeDefinition?.definitions?.size)
+        assertEquals(instance, scope.get<Abstraction>())
     }
 }

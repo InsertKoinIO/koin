@@ -105,18 +105,24 @@ class Module(
      */
     inline fun <reified T> objectScope(
             scopeName: Qualifier = named<T>(),
-            noinline scopeSet: ScopeSet<ObjectScope<T>>.() -> Unit) {
+            noinline scopeSet: (ScopeSet<ObjectScope<T>>.() -> Unit)? = null) {
         val scope = ScopeSet<ObjectScope<T>>(
                 definitionFactory(),
                 scopeName,
                 validateParentScope = false
-        ).apply(scopeSet)
+        )
+        scopeSet?.apply { scope.apply(scopeSet) }
         scope.declareScopedInstanceIfPossible()
         declareScope(scope)
     }
 
     inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
-        if (!definitions.any { it.primaryType == T::class }) {
+        val alreadyContainsDefinition = this.definitions.any {
+            val alreadyDefined = it.primaryType == T::class && it.qualifier == null
+            val alreadyBound = it.secondaryTypes.contains(T::class)
+            alreadyDefined || alreadyBound
+        }
+        if (!alreadyContainsDefinition) {
             this.declareDefinition( scoped { instance }, Options())
         }
     }
