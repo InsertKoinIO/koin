@@ -27,15 +27,20 @@ class DeclareMockTests : KoinTest {
             )
         }.koin
 
-        val definition: BeanDefinition<Simple.ComponentA> =
+        val definition: BeanDefinition<*, Simple.ComponentA> =
                 koin.rootScope.beanRegistry.findDefinition(
                         null, Simple.ComponentA::class
-                ) as BeanDefinition<Simple.ComponentA>
+                ) as BeanDefinition<*, Simple.ComponentA>
 
-        val mockedDefinition = definition.createMockedDefinition()
+        val mockedDefinition: BeanDefinition<*, Simple.ComponentA> = definition.createMockedDefinition()
 
-        val instance = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin, _parameters = { emptyParametersHolder() }))
-        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin, _parameters = { emptyParametersHolder() }))
+        val rootScope = koin.rootScope
+        val instance: Simple.ComponentA? = definition.instance?.get(
+                InstanceContext(scope = rootScope, _parameters = { emptyParametersHolder() })
+        )
+        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(
+                InstanceContext(scope = rootScope, _parameters = { emptyParametersHolder() })
+        )
 
         assertNotEquals(instance, mock)
     }

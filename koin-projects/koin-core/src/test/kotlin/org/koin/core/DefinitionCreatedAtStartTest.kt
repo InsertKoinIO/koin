@@ -25,9 +25,11 @@ class DefinitionCreatedAtStartTest {
             )
         }
 
+        val koin = app.koin
+
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
-        assertFalse(defA.instance!!.isCreated(InstanceContext()))
+        assertFalse(defA.instance!!.isCreated(InstanceContext(scope = koin.rootScope)))
     }
 
     @Test
@@ -41,9 +43,11 @@ class DefinitionCreatedAtStartTest {
             )
         }
 
+        val koin = app.koin
+
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
-        assertTrue(defA.instance!!.isCreated(InstanceContext()))
+        assertTrue(defA.instance!!.isCreated(InstanceContext(scope = koin.rootScope)))
         stopKoin()
     }
 
@@ -57,9 +61,11 @@ class DefinitionCreatedAtStartTest {
             )
         }
 
+        val koin = app.koin
+
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertFalse(defA.options.isCreatedAtStart)
-        assertFalse(defA.instance!!.isCreated(InstanceContext()))
+        assertFalse(defA.instance!!.isCreated(InstanceContext(scope = koin.rootScope)))
         app.close()
     }
 }

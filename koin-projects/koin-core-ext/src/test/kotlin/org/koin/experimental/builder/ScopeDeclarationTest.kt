@@ -7,7 +7,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-class ScopeDelcarationTest {
+class ScopeDeclarationTest {
 
     @Test
     fun `can't get scoped dependency without scope from single`() {

@@ -22,7 +22,11 @@ import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.createScoped
+import org.koin.core.definition.definitionFactory
 import org.koin.core.logger.Level
+import org.koin.core.scope.RootScope
+import org.koin.core.scope.Scope
 import java.util.*
 
 /**
@@ -51,10 +55,12 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
         logger.info("[init] declare Android Context")
     }
 
-    koin.rootScope.beanRegistry.saveDefinition(DefinitionFactory.createSingle { androidContext })
+    val definitionFactory = definitionFactory<RootScope>()
+    koin.rootScope.beanRegistry.saveDefinition(definitionFactory.createScoped { androidContext })
 
     if (androidContext is Application) {
-        koin.rootScope.beanRegistry.saveDefinition(DefinitionFactory.createSingle<Application> { androidContext })
+        val appDefinition = definitionFactory.createScoped<RootScope, Application> { androidContext }
+        koin.rootScope.beanRegistry.saveDefinition(appDefinition)
     }
     return this
 }
@@ -65,10 +71,10 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  * @param koinPropertyFile
  */
 fun KoinApplication.androidFileProperties(
+    androidContext: Context,
     koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
     val koinProperties = Properties()
-    val androidContext = koin.get<Context>()
     try {
         val hasFile = androidContext.assets?.list("")?.contains(koinPropertyFile) ?: false
         if (hasFile) {

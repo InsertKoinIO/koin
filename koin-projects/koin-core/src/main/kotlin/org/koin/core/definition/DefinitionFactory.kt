@@ -1,42 +1,83 @@
 package org.koin.core.definition
 
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.DefaultScope
+import org.koin.core.scope.ObjectScope
+import org.koin.core.scope.RootScope
+import org.koin.core.scope.Scope
+import kotlin.reflect.KClass
 
-object DefinitionFactory {
+interface DefinitionFactory<S: Scope> {
 
-    inline fun <reified T> createSingle(
+    val singleScopeKind: Kind
+
+    fun <T> createScopedWithType(
             qualifier: Qualifier? = null,
             scopeName: Qualifier? = null,
-            noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        return createDefinition(qualifier, definition, Kind.Single, scopeName)
-    }
+            clazz: KClass<*>,
+            definition: Definition<S, T>
+    ) = createDefinition(qualifier, definition, singleScopeKind, scopeName, clazz)
 
-    inline fun <reified T> createScoped(
+    fun <T> createFactoryWithType(
             qualifier: Qualifier? = null,
             scopeName: Qualifier? = null,
-            noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        return createDefinition(qualifier, definition, Kind.Scoped, scopeName)
+            clazz: KClass<*>,
+            definition: Definition<S, T>
+    ): BeanDefinition<S, T> {
+        return createDefinition(qualifier, definition, Kind.Factory, scopeName, clazz)
     }
+}
 
-    inline fun <reified T> createFactory(
-            qualifier: Qualifier? = null,
-            scopeName: Qualifier? = null,
-            noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        return createDefinition(qualifier, definition, Kind.Factory, scopeName)
-    }
+object RootScopeDefinitionFactory: DefinitionFactory<RootScope> {
+    override val singleScopeKind: Kind
+        get() = Kind.Single
+}
 
-    inline fun <reified T> createDefinition(
-            qualifier: Qualifier?,
-            noinline definition: Definition<T>,
-            kind: Kind,
-            scopeName: Qualifier?
-    ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition<T>(qualifier, scopeName, T::class)
-        beanDefinition.definition = definition
-        beanDefinition.kind = kind
-        return beanDefinition
+object ObjectScopeDefinitionFactory: DefinitionFactory<ObjectScope<*>> {
+    override val singleScopeKind: Kind
+        get() = Kind.Scoped
+}
+
+object DefaultScopeDefinitionFactory: DefinitionFactory<DefaultScope> {
+    override val singleScopeKind: Kind
+        get() = Kind.Scoped
+}
+
+inline fun <reified S: Scope> definitionFactory(): DefinitionFactory<S> {
+    return definitionFactory(S::class)
+}
+
+fun <S: Scope> definitionFactory(clazz: KClass<S>): DefinitionFactory<S> {
+    return when(clazz) {
+        DefaultScope::class -> DefaultScopeDefinitionFactory as DefinitionFactory<S>
+        ObjectScope::class -> ObjectScopeDefinitionFactory as DefinitionFactory<S>
+        else -> RootScopeDefinitionFactory as DefinitionFactory<S>
     }
+}
+
+inline fun <S: Scope, reified T> DefinitionFactory<S>.createScoped(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        noinline definition: Definition<S, T>
+): BeanDefinition<S, T> {
+    return this.createScopedWithType(qualifier, scopeName, T::class, definition)
+}
+
+inline fun <S: Scope, reified T> DefinitionFactory<S>.createFactory(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        noinline definition: Definition<S, T>
+): BeanDefinition<S, T> {
+    return this.createFactoryWithType(qualifier, scopeName, T::class, definition)
+}
+
+
+private fun <S: Scope, T> createDefinition(
+        qualifier: Qualifier?,
+        definition: Definition<S, T>,
+        kind: Kind,
+        scopeName: Qualifier?,
+        clazz: KClass<*>
+): BeanDefinition<S, T> {
+    return BeanDefinition(qualifier, scopeName, clazz, kind, definition)
 }

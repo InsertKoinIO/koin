@@ -46,6 +46,6 @@ class ViewModelDSLTest {
  * Find definition
  * @param clazz
  */
-fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
+fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*, *>? {
     return this.koin.rootScope.beanRegistry.getDefinition(clazz)
 }

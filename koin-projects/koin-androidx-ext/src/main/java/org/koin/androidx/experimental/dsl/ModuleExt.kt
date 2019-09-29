@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import org.koin.androidx.viewmodel.dsl.setIsViewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.RootScope
+import org.koin.core.scope.Scope
 import org.koin.experimental.builder.create
 
 /**

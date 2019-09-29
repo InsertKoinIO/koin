@@ -17,33 +17,28 @@
 package org.koin.androidx.scope
 
 import android.content.ComponentCallbacks
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.TypeQualifier
-import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
+import org.koin.core.scope.*
 
 /**
- * Provide an scope for given LifecycleOwner component
+ * Provide a scope for given LifecycleOwner component
  *
  * @author Arnaud Giuliani
  */
 
 private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
-private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
-
-private fun LifecycleOwner.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-
 private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
     val scopeId = getScopeId()
-    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
+    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName(), parentScopeId)
 }
 
-private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier)
+private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier, parentId: ScopeID?): ObjectScope<LifecycleOwner> {
+    val scope = getKoin().createObjectScoped(this, scopeId, qualifier, parentId)
     bindScope(scope)
     return scope
 }
@@ -62,3 +57,14 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
  */
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateCurrentScope()
+
+private val LifecycleOwner.parentScopeId: ScopeID?
+    get() = when (this) {
+        is Fragment -> parentFragment?.currentScope?.id ?: activity?.currentScope?.id
+        is HasParentScope -> parentScopeId
+        else -> null
+    }
+
+interface HasParentScope {
+    val parentScopeId: ScopeID
+}

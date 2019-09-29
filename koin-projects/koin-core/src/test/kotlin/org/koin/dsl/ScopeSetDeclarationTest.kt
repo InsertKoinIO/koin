@@ -29,7 +29,7 @@ class ScopeSetDeclarationTest {
         assertTrue(def!!.scopeName == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
-        assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
+        assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*, *>)
     }
 
     @Test

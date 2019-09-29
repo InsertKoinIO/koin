@@ -19,7 +19,7 @@ class MainApplication : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
-            androidFileProperties()
+            androidFileProperties(this@MainApplication)
             modules(listOf(appModule, mvpModule, mvvmModule, scopeModule))
         }
     }

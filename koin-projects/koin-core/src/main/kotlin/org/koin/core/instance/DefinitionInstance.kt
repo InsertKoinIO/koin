@@ -19,6 +19,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.context.GlobalContext
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
@@ -31,7 +32,7 @@ import org.koin.core.scope.Scope
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
+abstract class DefinitionInstance<S: Scope, T>(val beanDefinition: BeanDefinition<S, T>) {
 
     /**
      * Retrieve an instance
@@ -51,7 +52,11 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
         }
         try {
             val parameters: DefinitionParameters = context.parameters
-            val result = beanDefinition.definition(context.scope ?: error("Can't execute definition instance while this context is not registered against any Koin instance"), parameters)
+            if (!matchesTargetScopeType<S>(context.scope)) {
+                error("BeanDefinition doesn't match scope type: ${context.scope.javaClass.name}")
+            }
+
+            val result = beanDefinition.definition(context.scope as? S ?: error("Can't execute definition instance while this context is not registered against any Koin instance"), parameters)
             return result as T
         } catch (e: Exception) {
             val stack =
@@ -59,6 +64,17 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
                             .joinToString(ERROR_SEPARATOR)
             logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
+        }
+    }
+
+    private fun <S: Scope> matchesTargetScopeType(scope: Scope?): Boolean {
+        return try {
+            (scope as? S) != null
+        } catch (e: Exception) {
+            if (e !is ClassCastException) {
+                throw RuntimeException(e)
+            }
+            return false
         }
     }
 
@@ -87,9 +103,8 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
  * Help support DefinitionContext & DefinitionParameters when resolving definition function
  */
 class InstanceContext(
-    val koin: Koin? = null,
-    val scope: Scope? = koin?.rootScope,
-    private val _parameters: ParametersDefinition? = null
+        val scope: Scope,
+        private val _parameters: ParametersDefinition? = null
 ) {
     val parameters: DefinitionParameters = _parameters?.invoke() ?: emptyParametersHolder()
 }

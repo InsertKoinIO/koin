@@ -44,10 +44,12 @@ class KoinApplicationIsolationTest {
                         single(createdAtStart = true) { Simple.ComponentA() }
                     })
         }
+
+        val koin = app.koin
         app.createEagerInstances()
 
         val def = app.getDefinition(Simple.ComponentA::class)!!
-        assertTrue(def.instance!!.isCreated(InstanceContext()))
+        assertTrue(def.instance!!.isCreated(InstanceContext(scope = koin.rootScope)))
     }
 
     @Test

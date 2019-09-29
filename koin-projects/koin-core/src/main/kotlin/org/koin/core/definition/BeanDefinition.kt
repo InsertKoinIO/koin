@@ -31,18 +31,18 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-class BeanDefinition<T>(
+class BeanDefinition<S: Scope, T>(
         val qualifier: Qualifier? = null,
         val scopeName: Qualifier? = null,
-        val primaryType: KClass<*>
+        val primaryType: KClass<*>,
+        val kind: Kind,
+        val definition: Definition<S, T>
 ) {
     // Main data
     var secondaryTypes = arrayListOf<KClass<*>>()
-    var instance: DefinitionInstance<T>? = null
-    lateinit var definition: Definition<T>
+    var instance: DefinitionInstance<S, T>? = null
     var options = Options()
     var properties = Properties()
-    lateinit var kind: Kind
 
     // lifecycle
     var onRelease: OnReleaseCallback<T>? = null
@@ -58,9 +58,9 @@ class BeanDefinition<T>(
      */
     fun createInstanceHolder() {
         this.instance = when (kind) {
-            Kind.Single -> SingleDefinitionInstance(this)
             Kind.Factory -> FactoryDefinitionInstance(this)
             Kind.Scoped -> ScopeDefinitionInstance(this)
+            Kind.Single -> ScopeDefinitionInstance(this)
         }
     }
 
@@ -86,7 +86,7 @@ class BeanDefinition<T>(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as BeanDefinition<*>
+        other as BeanDefinition<*, *>
 
         if (qualifier != other.qualifier) return false
         if (primaryType != other.primaryType) return false
@@ -110,6 +110,6 @@ enum class Kind {
     Single, Factory, Scoped
 }
 
-typealias Definition<T> = Scope.(DefinitionParameters) -> T
+typealias Definition<S, T> = S.(DefinitionParameters) -> T
 typealias OnReleaseCallback<T> = (T?) -> Unit
 typealias OnCloseCallback<T> = (T?) -> Unit

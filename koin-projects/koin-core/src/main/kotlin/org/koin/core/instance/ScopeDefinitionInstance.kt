@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Scope definition Instance holder
  * @author Arnaud Giuliani
  */
-class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
+class ScopeDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>) : DefinitionInstance<S, T>(beanDefinition) {
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 
@@ -46,13 +46,6 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(context: InstanceContext): T {
-        if (context.koin == null) {
-            error("ScopeDefinitionInstance has no registered Koin instance")
-        }
-
-        if (context.scope == context.koin.rootScope) {
-            throw ScopeNotCreatedException("No scope instance created to resolve $beanDefinition")
-        }
         val scope = context.scope ?: error("ScopeDefinitionInstance has no scope in context")
         checkScopeResolution(beanDefinition, scope)
         val internalId = scope.id
@@ -70,7 +63,7 @@ class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : Definition
         values.clear()
     }
 
-    private fun checkScopeResolution(definition: BeanDefinition<*>, scope: Scope) {
+    private fun checkScopeResolution(definition: BeanDefinition<*, *>, scope: Scope) {
         val scopeInstanceName = scope.scopeDefinition?.qualifier
         val beanScopeName: Qualifier? = definition.scopeName
         if (beanScopeName != scopeInstanceName) {

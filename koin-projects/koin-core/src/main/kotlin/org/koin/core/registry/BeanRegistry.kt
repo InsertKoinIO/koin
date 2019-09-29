@@ -35,11 +35,11 @@ import kotlin.reflect.KClass
  */
 class BeanRegistry {
 
-    private val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
-    private val definitionsNames: MutableMap<String, BeanDefinition<*>> = ConcurrentHashMap()
-    private val definitionsPrimaryTypes: MutableMap<KClass<*>, BeanDefinition<*>> = ConcurrentHashMap()
-    private val definitionsSecondaryTypes: MutableMap<KClass<*>, ArrayList<BeanDefinition<*>>> = ConcurrentHashMap()
-    private val definitionsToCreate: HashSet<BeanDefinition<*>> = hashSetOf()
+    private val definitions: HashSet<BeanDefinition<*, *>> = hashSetOf()
+    private val definitionsNames: MutableMap<String, BeanDefinition<*, *>> = ConcurrentHashMap()
+    private val definitionsPrimaryTypes: MutableMap<KClass<*>, BeanDefinition<*, *>> = ConcurrentHashMap()
+    private val definitionsSecondaryTypes: MutableMap<KClass<*>, ArrayList<BeanDefinition<*, *>>> = ConcurrentHashMap()
+    private val definitionsToCreate: HashSet<BeanDefinition<*, *>> = hashSetOf()
 
     /**
      * Load definitions from a Module
@@ -77,13 +77,13 @@ class BeanRegistry {
      * retrieve all definitions
      * @return definitions
      */
-    fun getAllDefinitions(): Set<BeanDefinition<*>> = definitions
+    fun getAllDefinitions(): Set<BeanDefinition<*, *>> = definitions
 
     /**
      * Save a definition
      * @param definition
      */
-    private fun removeDefinition(definition: BeanDefinition<*>) {
+    private fun removeDefinition(definition: BeanDefinition<*, *>) {
         definition.instance?.close()
         definitions.remove(definition)
         if (definition.qualifier != null) {
@@ -98,7 +98,7 @@ class BeanRegistry {
      * Save a definition
      * @param definition
      */
-    fun saveDefinition(definition: BeanDefinition<*>) {
+    fun saveDefinition(definition: BeanDefinition<*, *>) {
         definitions.addDefinition(definition)
         definition.createInstanceHolder()
         if (definition.qualifier != null) {
@@ -114,17 +114,17 @@ class BeanRegistry {
         }
     }
 
-    private fun saveDefinitionForSecondaryTypes(definition: BeanDefinition<*>) {
+    private fun saveDefinitionForSecondaryTypes(definition: BeanDefinition<*, *>) {
         definition.secondaryTypes.forEach {
             saveDefinitionForSecondaryType(definition, it)
         }
     }
 
-    private fun saveDefinitionForSecondaryType(definition: BeanDefinition<*>, type: KClass<*>) {
-        val secondaryTypeDefinitions: ArrayList<BeanDefinition<*>> = definitionsSecondaryTypes[type]
+    private fun saveDefinitionForSecondaryType(definition: BeanDefinition<*, *>, type: KClass<*>) {
+        val secondaryTypeDefinitions: ArrayList<BeanDefinition<*, *>> = definitionsSecondaryTypes[type]
                 ?: createSecondaryType(type)
 
-        if (definition in secondaryTypeDefinitions){
+        if (definition in secondaryTypeDefinitions) {
             secondaryTypeDefinitions[secondaryTypeDefinitions.indexOf(definition)] = definition
         } else {
             secondaryTypeDefinitions.add(definition)
@@ -134,17 +134,17 @@ class BeanRegistry {
         }
     }
 
-    private fun createSecondaryType(type: KClass<*>): ArrayList<BeanDefinition<*>> {
+    private fun createSecondaryType(type: KClass<*>): ArrayList<BeanDefinition<*, *>> {
         definitionsSecondaryTypes[type] = arrayListOf()
         type.saveCache()
         return definitionsSecondaryTypes[type]!!
     }
 
-    private fun saveDefinitionForStart(definition: BeanDefinition<*>) {
+    private fun saveDefinitionForStart(definition: BeanDefinition<*, *>) {
         definitionsToCreate.add(definition)
     }
 
-    private fun HashSet<BeanDefinition<*>>.addDefinition(definition: BeanDefinition<*>) {
+    private fun HashSet<BeanDefinition<*, *>>.addDefinition(definition: BeanDefinition<*, *>) {
         val added = add(definition)
         if (!added && !definition.options.override) {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one: $definition")
@@ -152,24 +152,24 @@ class BeanRegistry {
         definition.primaryType.saveCache()
     }
 
-    private fun saveDefinitionForTypes(definition: BeanDefinition<*>) {
+    private fun saveDefinitionForTypes(definition: BeanDefinition<*, *>) {
         saveDefinitionForType(definition.primaryType, definition)
     }
 
-    private fun removeDefinitionForSecondaryTypes(definition: BeanDefinition<*>) {
+    private fun removeDefinitionForSecondaryTypes(definition: BeanDefinition<*, *>) {
         definition.secondaryTypes.forEach {
             removeDefinitionForSecondaryType(definition, it)
         }
     }
 
-    private fun removeDefinitionForSecondaryType(definition: BeanDefinition<*>, type: KClass<*>) {
+    private fun removeDefinitionForSecondaryType(definition: BeanDefinition<*, *>, type: KClass<*>) {
         val removed = definitionsSecondaryTypes[type]?.remove(definition) ?: false
         if (logger.isAt(Level.DEBUG) && removed) {
             logger.info("unbind secondary type:'${type.getFullName()}' ~ $definition")
         }
     }
 
-    private fun removeDefinitionForTypes(definition: BeanDefinition<*>) {
+    private fun removeDefinitionForTypes(definition: BeanDefinition<*, *>) {
         val key = definition.primaryType
         if (definitionsPrimaryTypes[key] == definition) {
             definitionsPrimaryTypes.remove(key)
@@ -179,7 +179,7 @@ class BeanRegistry {
         }
     }
 
-    private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*>) {
+    private fun saveDefinitionForType(type: KClass<*>, definition: BeanDefinition<*, *>) {
         if (definitionsPrimaryTypes[type] != null && !definition.options.override) {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one with type '$type' and $definition but has already registered ${definitionsPrimaryTypes[type]}")
         } else {
@@ -190,7 +190,7 @@ class BeanRegistry {
         }
     }
 
-    private fun removeDefinitionForName(definition: BeanDefinition<*>) {
+    private fun removeDefinitionForName(definition: BeanDefinition<*, *>) {
         definition.qualifier?.let {
             val key = it.toString()
             if (definitionsNames[key] == definition) {
@@ -202,7 +202,7 @@ class BeanRegistry {
         }
     }
 
-    private fun saveDefinitionForName(definition: BeanDefinition<*>) {
+    private fun saveDefinitionForName(definition: BeanDefinition<*, *>) {
         definition.qualifier?.let {
             if (definitionsNames[it.toString()] != null && !definition.options.override) {
                 throw DefinitionOverrideException("Already existing definition or try to override an existing one with qualifier '$it' with $definition but has already registered ${definitionsNames[it.toString()]}")
@@ -223,21 +223,19 @@ class BeanRegistry {
     fun findDefinition(
             qualifier: Qualifier? = null,
             clazz: KClass<*>
-    ): BeanDefinition<*>? {
+    ): BeanDefinition<*, *>? {
         return if (qualifier != null) {
             findDefinitionByName(qualifier.toString())
         } else {
-            findDefinitionByType(clazz) ?: findDefinitionBySecondaryType(clazz)
+            findDefinitionByPrimaryType(clazz) ?: findDefinitionBySecondaryType(clazz)
         }
     }
 
-    //TODO Find with secondary type
-
-    private fun findDefinitionByType(kClass: KClass<*>): BeanDefinition<*>? {
+    private fun findDefinitionByPrimaryType(kClass: KClass<*>): BeanDefinition<*, *>? {
         return definitionsPrimaryTypes[kClass]
     }
 
-    private fun findDefinitionBySecondaryType(kClass: KClass<*>): BeanDefinition<*>? {
+    private fun findDefinitionBySecondaryType(kClass: KClass<*>): BeanDefinition<*, *>? {
         val foundTypes = definitionsSecondaryTypes[kClass]
         return when {
             foundTypes != null && foundTypes.size == 1 -> foundTypes[0]
@@ -246,11 +244,11 @@ class BeanRegistry {
         }
     }
 
-    private fun findDefinitionByName(name: String): BeanDefinition<*>? {
+    private fun findDefinitionByName(name: String): BeanDefinition<*, *>? {
         return definitionsNames[name]
     }
 
-    internal fun findAllCreatedAtStartDefinition(): Set<BeanDefinition<*>> {
+    internal fun findAllCreatedAtStartDefinition(): Set<BeanDefinition<*, *>> {
         return definitionsToCreate
     }
 
@@ -263,7 +261,7 @@ class BeanRegistry {
      * Retrieve a definition
      * @param clazz
      */
-    fun getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
+    fun getDefinition(clazz: KClass<*>): BeanDefinition<*, *>? {
         return definitions.firstOrNull {
             it.primaryType == clazz || it.secondaryTypes.contains(
                     clazz

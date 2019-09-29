@@ -15,11 +15,13 @@
  */
 package org.koin.core.module
 
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.Definition
-import org.koin.core.definition.DefinitionFactory
-import org.koin.core.definition.Options
+import org.koin.core.definition.*
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.named
+import org.koin.core.scope.DefaultScope
+import org.koin.core.scope.ObjectScope
+import org.koin.core.scope.RootScope
+import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeSet
 
 /**
@@ -32,13 +34,13 @@ class Module(
         internal val isCreatedAtStart: Boolean,
         internal val override: Boolean
 ) {
-    internal val definitions = arrayListOf<BeanDefinition<*>>()
-    internal val scopes = arrayListOf<ScopeSet>()
+    internal val definitions = arrayListOf<BeanDefinition<*, *>>()
+    internal val scopes = arrayListOf<ScopeSet<*>>()
 
     /**
      * Declare a definition in current Module
      */
-    fun <T> declareDefinition(definition: BeanDefinition<T>, options: Options) {
+    fun <S: Scope, T> declareDefinition(definition: BeanDefinition<S, T>, options: Options) {
         definition.updateOptions(options)
         definitions.add(definition)
     }
@@ -46,7 +48,7 @@ class Module(
     /**
      * Declare a definition in current Module
      */
-    fun declareScope(scope: ScopeSet) {
+    fun declareScope(scope: ScopeSet<*>) {
         scopes.add(scope)
     }
 
@@ -61,14 +63,14 @@ class Module(
             qualifier: Qualifier? = null,
             createdAtStart: Boolean = false,
             override: Boolean = false,
-            noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createSingle(qualifier, definition = definition)
+            noinline definition: Definition<RootScope, T>
+    ): BeanDefinition<RootScope, T> {
+        val beanDefinition = definitionFactory<RootScope>().createScoped(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
         return beanDefinition
     }
 
-    private fun BeanDefinition<*>.updateOptions(options: Options) {
+    private fun BeanDefinition<*, *>.updateOptions(options: Options) {
         this.options.isCreatedAtStart = options.isCreatedAtStart || isCreatedAtStart
         this.options.override = options.override || override
     }
@@ -77,9 +79,39 @@ class Module(
      * Declare a group a scoped definition with a given scope qualifier
      * @param scopeName
      */
-    fun scope(scopeName: Qualifier, scopeSet: ScopeSet.() -> Unit) {
-        val scope: ScopeSet = ScopeSet(scopeName).apply(scopeSet)
+    fun scope(
+            scopeName: Qualifier,
+            parentScopeValidation: Boolean = false,
+            scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
+        val scope = ScopeSet<DefaultScope>(
+                definitionFactory(),
+                scopeName,
+                parentScopeValidation
+        ).apply(scopeSet)
         declareScope(scope)
+    }
+
+    /**
+     * Declare a group a scoped definition with a given scope qualifier
+     * @param scopeName
+     */
+    inline fun <reified T> objectScope(
+            scopeName: Qualifier = named<T>(),
+            parentScopeValidation: Boolean = false,
+            noinline scopeSet: ScopeSet<ObjectScope<T>>.() -> Unit) {
+        val scope = ScopeSet<ObjectScope<T>>(
+                definitionFactory(),
+                scopeName,
+                parentScopeValidation
+        ).apply(scopeSet)
+        scope.declareScopedInstanceIfPossible()
+        declareScope(scope)
+    }
+
+    inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
+        if (!definitions.any { it.primaryType == T::class }) {
+            this.declareDefinition( scoped { instance }, Options())
+        }
     }
 
     /**
@@ -91,9 +123,10 @@ class Module(
     inline fun <reified T> factory(
             qualifier: Qualifier? = null,
             override: Boolean = false,
-            noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createFactory(qualifier, definition = definition)
+            noinline definition: Definition<RootScope, T>
+    ): BeanDefinition<RootScope, T> {
+        val beanDefinition = definitionFactory<RootScope>()
+                .createFactory(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }

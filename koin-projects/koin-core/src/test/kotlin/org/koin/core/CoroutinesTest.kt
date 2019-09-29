@@ -12,7 +12,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.getDefinition
-import org.koin.test.hasBeenCreated
+import org.koin.test.hasBeenCreatedIn
 import kotlin.random.Random
 
 class CoroutinesTest {
@@ -48,9 +48,9 @@ class CoroutinesTest {
         val b = app.getDefinition(Simple.ComponentA::class)!!
         val c = app.getDefinition(Simple.ComponentA::class)!!
 
-        Assert.assertTrue(a.hasBeenCreated())
-        Assert.assertTrue(b.hasBeenCreated())
-        Assert.assertTrue(c.hasBeenCreated())
+        Assert.assertTrue(a.hasBeenCreatedIn(koin.rootScope))
+        Assert.assertTrue(b.hasBeenCreatedIn(koin.rootScope))
+        Assert.assertTrue(c.hasBeenCreatedIn(koin.rootScope))
 
         stopKoin()
     }

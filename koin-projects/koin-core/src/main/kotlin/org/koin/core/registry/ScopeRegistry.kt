@@ -18,14 +18,13 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.NoScopeDefinitionFoundException
+import org.koin.core.error.ParentScopeMismatchException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
-import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeDefinition
-import org.koin.core.scope.ScopeID
+import org.koin.core.scope.*
+import org.koin.core.scope.RootScope.Companion.RootScopeId
 import org.koin.dsl.ScopeSet
 import java.util.concurrent.ConcurrentHashMap
 
@@ -35,7 +34,10 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @author Arnaud Giuliani
  */
-class ScopeRegistry {
+class ScopeRegistry(private val koin: Koin) {
+
+    private val rootScope: RootScope
+        get() = koin.rootScope
 
     internal val definitions = ConcurrentHashMap<String, ScopeDefinition>()
     private val instances = ConcurrentHashMap<String, Scope>()
@@ -63,17 +65,21 @@ class ScopeRegistry {
         }
     }
 
-    fun loadDefaultScopes(koin: Koin) {
-        saveInstance(koin.rootScope)
-    }
-
     private fun declareScopes(module: Module) {
         module.scopes.forEach {
-            saveDefinition(it)
+            val definition = saveDefinition(it, rootScope.scopeDefinition)
+            declareScopes(it.childScopes, definition)
         }
     }
 
-    private fun unloadDefinition(scopeSet: ScopeSet) {
+    private fun declareScopes(childScopes: List<ScopeSet<*>>, parentDefinition: ScopeDefinition) {
+        childScopes.forEach {
+            val definition = saveDefinition(it, parentDefinition)
+            declareScopes(it.childScopes, definition)
+        }
+    }
+
+    private fun unloadDefinition(scopeSet: ScopeSet<*>) {
         val key = scopeSet.qualifier.toString()
         definitions[key]?.let { scopeDefinition ->
             if (KoinApplication.logger.isAt(Level.DEBUG)) {
@@ -92,12 +98,15 @@ class ScopeRegistry {
         }
     }
 
-    private fun saveDefinition(scopeSet: ScopeSet) {
+    private fun saveDefinition(scopeSet: ScopeSet<*>, parentDefinition: ScopeDefinition?): ScopeDefinition {
         val foundScopeSet: ScopeDefinition? = definitions[scopeSet.qualifier.toString()]
-        if (foundScopeSet == null) {
-            definitions[scopeSet.qualifier.toString()] = scopeSet.createDefinition()
+        return if (foundScopeSet == null) {
+            val definition = scopeSet.createDefinition(parentDefinition)
+            definitions[scopeSet.qualifier.toString()] = definition
+            definition
         } else {
             foundScopeSet.definitions.addAll(scopeSet.definitions)
+            foundScopeSet
         }
     }
 
@@ -108,14 +117,59 @@ class ScopeRegistry {
      * @param id - scope instance id
      * @param scopeName - scope qualifier
      */
-    fun createScopeInstance(koin: Koin, id: ScopeID, scopeName: Qualifier): Scope {
-        val definition: ScopeDefinition = definitions[scopeName.toString()]
-                ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
-        val instance = Scope(id, _koin = koin)
-        instance.scopeDefinition = definition
+    fun createScopeInstance(descriptor: ScopeDescriptor): DefaultScope {
+        val (definition: ScopeDefinition, parentScope) = descriptor.validate()
+        val instance = DefaultScope(descriptor.scopeId, koin, definition, parentScope)
         instance.declareDefinitionsFromScopeSet()
         registerScopeInstance(instance)
         return instance
+    }
+
+    /**
+     * Create a scope instance for given scope
+     * @param id - scope instance id
+     * @param scopeName - scope qualifier
+     */
+    fun <T> createScopeInstance(descriptor: ScopeDescriptor, scopedInstance: T): ObjectScope<T> {
+        val (definition: ScopeDefinition, parentScope) = descriptor.validate()
+        val instance = ObjectScope(descriptor.scopeId, koin, parentScope, definition, scopedInstance)
+        instance.declareDefinitionsFromScopeSet()
+        registerScopeInstance(instance)
+        return instance
+    }
+
+    private fun ScopeDescriptor.validate(): Pair<ScopeDefinition, Scope> {
+        val definition: ScopeDefinition = definitions[scopeName.toString()]
+                ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
+
+        if (definition.validateParentScope) {
+            validateParentScope(definition, parentId)
+        }
+
+        val parentScope = if (parentId != koin.rootScope.id)
+            getScopeInstance(parentId)
+        else
+            koin.rootScope
+        return Pair(definition, parentScope)
+    }
+
+    private fun validateParentScope(definition: ScopeDefinition?, parentId: ScopeID) {
+        if (parentId == RootScopeId) {
+            return
+        }
+        if (definition == null) {
+            return
+        }
+        val parentScope = getScopeInstance(parentId)
+        val parentDefinition = definition.parent
+        if (parentScope.scopeDefinition == parentDefinition) {
+            return
+        }
+        val definedQualifierForParentDefinition = parentScope.scopeDefinition?.qualifier?.toString()
+        val qualifier = parentDefinition?.qualifier?.toString()
+
+        val msg = "Actual qualifier of parent scope (id: $parentId) is '$definedQualifierForParentDefinition', but '$qualifier' was expected."
+        throw ParentScopeMismatchException(String.format(msg, parentId))
     }
 
     private fun registerScopeInstance(instance: Scope) {

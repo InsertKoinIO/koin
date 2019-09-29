@@ -19,14 +19,10 @@ package org.koin.android.scope
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
+import android.support.v4.app.Fragment
 import org.koin.android.ext.android.getKoin
-import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.TypeQualifier
-import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
-import java.lang.System.identityHashCode
+import org.koin.core.scope.*
 
 /**
  * Provide an scope for given LifecycleOwner component
@@ -36,17 +32,14 @@ import java.lang.System.identityHashCode
 
 private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
-private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
-
-private fun LifecycleOwner.getScopeId() = this::class.getFullName() + "@" + identityHashCode(this)
-
-private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
+fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
     val scopeId = getScopeId()
-    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
+    return getKoin().getScopeOrNull(scopeId)
+            ?: createAndBindScope(scopeId, getScopeName(), parentScopeId)
 }
 
-private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier)
+private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier, parentId: ScopeID?): ObjectScope<LifecycleOwner> {
+    val scope = getKoin().createObjectScoped(this, scopeId, qualifier, parentId)
     bindScope(scope)
     return scope
 }
@@ -66,3 +59,13 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateCurrentScope()
 
+interface HasParentScope {
+    val parentScopeId: ScopeID
+}
+
+private val LifecycleOwner.parentScopeId: ScopeID?
+    get() = when (this) {
+        is HasParentScope -> parentScopeId
+        is Fragment -> parentFragment?.currentScope?.id ?: activity?.currentScope?.id
+        else -> null
+    }

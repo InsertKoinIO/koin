@@ -13,28 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.instance
-
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.scope.Scope
+package org.koin.core.error
 
 /**
- * Factory Instance Holder
+ * Parent Scope mismatch error
  *
- * @author Arnaud Giuliani
+ * @author Andreas Schattney
  */
-class FactoryDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>) :
-        DefinitionInstance<S, T>(beanDefinition) {
-
-    override fun release(context: InstanceContext) {}
-
-    override fun isCreated(context: InstanceContext): Boolean = false
-
-    override fun close() {
-        beanDefinition.onClose?.invoke(null)
-    }
-
-    override fun <T> get(context: InstanceContext): T {
-        return create(context)
-    }
-}
+class ParentScopeMismatchException(msg: String) : Exception(msg)

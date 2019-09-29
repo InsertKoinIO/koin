@@ -18,6 +18,7 @@ package org.koin.experimental.builder
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.RootScope
 
 /**
  * Create a Single definition for given type T
@@ -29,7 +30,7 @@ inline fun <reified T : Any> Module.single(
         qualifier: Qualifier? = null,
         createOnStart: Boolean = false,
         override: Boolean = false
-): BeanDefinition<T> {
+): BeanDefinition<RootScope, T> {
     return single(qualifier, createOnStart, override) { create<T>() }
 }
 
@@ -42,7 +43,7 @@ inline fun <reified T : Any> Module.single(
 inline fun <reified T : Any> Module.factory(
         qualifier: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<T> {
+): BeanDefinition<RootScope, T> {
     return factory(qualifier, override) { create<T>() }
 }
 
@@ -56,7 +57,7 @@ inline fun <reified R : Any, reified T : R> Module.singleBy(
         qualifier: Qualifier? = null,
         createOnStart: Boolean = false,
         override: Boolean = false
-): BeanDefinition<R> {
+): BeanDefinition<RootScope, R> {
     return single(qualifier, createOnStart, override) { create<T>() }
 }
 
@@ -69,6 +70,6 @@ inline fun <reified R : Any, reified T : R> Module.singleBy(
 inline fun <reified R : Any, reified T : R> Module.factoryBy(
         qualifier: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<R> {
+): BeanDefinition<RootScope, R> {
     return factory(qualifier, override) { create<T>() }
 }

@@ -28,21 +28,13 @@ import org.koin.core.time.measureDurationOnly
  *
  * @author Arnaud Giuliani
  */
-class KoinApplication private constructor() {
-
-    val koin = Koin()
-
-    internal fun loadDefaults() {
-        koin.scopeRegistry.loadDefaultScopes(koin)
-    }
+class KoinApplication private constructor(val koin: Koin) {
 
     /**
      * Load definitions from modules
      * @param modules
      */
-    fun modules(modules: Module): KoinApplication {
-        return modules(listOf(modules))
-    }
+    fun modules(modules: Module): KoinApplication = modules(listOf(modules))
 
     /**
      * Load definitions from modules
@@ -151,10 +143,6 @@ class KoinApplication private constructor() {
          * Create a new instance of KoinApplication
          */
         @JvmStatic
-        fun create(): KoinApplication {
-            val app = KoinApplication()
-            app.loadDefaults()
-            return app
-        }
+        fun create(): KoinApplication = KoinApplication(Koin())
     }
 }

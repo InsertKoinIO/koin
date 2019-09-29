@@ -3,14 +3,13 @@ package org.koin.core.scope
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceContext
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.ScopeSet
 
 /**
- * Imternal Scope Definition
+ * Internal Scope Definition
  */
-data class ScopeDefinition(val qualifier: Qualifier) {
+data class ScopeDefinition(val qualifier: Qualifier, val validateParentScope: Boolean, val parent: ScopeDefinition?) {
 
-    val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+    val definitions: HashSet<BeanDefinition<*, *>> = hashSetOf()
 
     internal fun release(instance: Scope) {
         definitions

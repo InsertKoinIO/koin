@@ -3,7 +3,7 @@ package org.koin.perfs
 import org.koin.dsl.module
 import org.koin.experimental.builder.single
 
-fun perfModule400Ext() = module {
+val perfModule400Ext_1 = module {
     single<Perfs.A1>()
     single<Perfs.B1>()
     single<Perfs.C1>()
@@ -200,6 +200,9 @@ fun perfModule400Ext() = module {
     single<Perfs.B49>()
     single<Perfs.C49>()
     single<Perfs.D49>()
+}
+
+val perfModule400Ext_2 = module {
     single<Perfs.A50>()
     single<Perfs.B50>()
     single<Perfs.C50>()

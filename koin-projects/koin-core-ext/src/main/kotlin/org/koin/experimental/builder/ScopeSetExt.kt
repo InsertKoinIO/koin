@@ -1,10 +1,9 @@
 package org.koin.experimental.builder
 
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.DefinitionFactory
-import org.koin.core.definition.Options
+import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeSet
 
 /**
@@ -13,11 +12,11 @@ import org.koin.dsl.ScopeSet
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
-inline fun <reified T : Any> ScopeSet.scoped(
+inline fun <S: Scope, reified T : Any> ScopeSet<S>.scoped(
         name: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>() }
+): BeanDefinition<S, T> {
+    val beanDefinition = this.factory.createScoped(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -32,11 +31,11 @@ inline fun <reified T : Any> ScopeSet.scoped(
  * @param qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : Any> ScopeSet.factory(
+inline fun <S: Scope, reified T : Any> ScopeSet<S>.factory(
         name: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>() }
+): BeanDefinition<S, T> {
+    val beanDefinition = this.factory.createFactory(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -51,11 +50,11 @@ inline fun <reified T : Any> ScopeSet.factory(
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
-inline fun <reified R : Any, reified T : R> ScopeSet.scopedBy(
+inline fun <S: Scope, reified R : Any, reified T : R> ScopeSet<S>.scopedBy(
         name: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<R> {
-    val beanDefinition = DefinitionFactory.createScoped(name, qualifier) { create<T>() as R }
+): BeanDefinition<S, R> {
+    val beanDefinition = this.factory.createScoped(name, qualifier) { create<T>() as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {
@@ -70,11 +69,11 @@ inline fun <reified R : Any, reified T : R> ScopeSet.scopedBy(
  * @param qualifier
  * @param override - allow definition override
  */
-inline fun <reified R : Any, reified T : R> ScopeSet.factoryBy(
+inline fun <S: Scope, reified R : Any, reified T : R> ScopeSet<S>.factoryBy(
         name: Qualifier? = null,
         override: Boolean = false
-): BeanDefinition<R> {
-    val beanDefinition = DefinitionFactory.createFactory(name, qualifier) { create<T>() as R }
+): BeanDefinition<S, R> {
+    val beanDefinition = this.factory.createFactory(name, qualifier) { create<T>() as R }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)
     if (!added) {

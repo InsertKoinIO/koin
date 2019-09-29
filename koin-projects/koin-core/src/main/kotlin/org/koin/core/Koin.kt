@@ -21,8 +21,8 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
+import org.koin.core.scope.*
+import org.koin.core.scope.RootScope.Companion.RootScopeId
 import kotlin.reflect.KClass
 
 /**
@@ -33,9 +33,9 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class Koin {
-    val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
-    val rootScope = Scope("-Root-", isRoot = true, _koin = this)
+    val rootScope: RootScope = RootScope(this)
+    val scopeRegistry = ScopeRegistry(this)
 
     /**
      * Lazy inject a Koin instance
@@ -158,13 +158,27 @@ class Koin {
     /**
      * Create a Scope instance
      * @param scopeId
-     * @param scopeDefinitionName
      */
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
+    @JvmOverloads
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier, parentId: ScopeID? = null): DefaultScope {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$qualifier")
         }
-        return scopeRegistry.createScopeInstance(this, scopeId, qualifier)
+        val descriptor = ScopeDescriptor(scopeId, qualifier, parentId ?: RootScopeId)
+        return scopeRegistry.createScopeInstance(descriptor)
+    }
+
+    /**
+     * Create a Scope which has an associated instance
+     */
+    @JvmOverloads
+    fun <T: Any> createObjectScoped(instance: T, scopeId: ScopeID = instance.getScopeId(), scopeName: Qualifier = instance.getScopeName(), parentScopeId: ScopeID? = null): ObjectScope<T> {
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("!- create scope - id:$scopeId q:$scopeName")
+        }
+        val parentId = parentScopeId ?: rootScope.id
+        val descriptor = ScopeDescriptor(scopeId, scopeName, parentId)
+        return scopeRegistry.createScopeInstance(descriptor, instance)
     }
 
     /**
@@ -172,8 +186,8 @@ class Koin {
      * @param scopeId
      * @param qualifier
      */
-    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier, parentId: ScopeID = rootScope.id): Scope {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier, parentId)
     }
 
     /**

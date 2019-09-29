@@ -16,12 +16,13 @@
 package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.scope.Scope
 
 /**
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class SingleDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
+class SingleDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>) : DefinitionInstance<S, T>(beanDefinition) {
 
     private var value: T? = null
 

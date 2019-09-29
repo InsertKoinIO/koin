@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
+infix fun <T> BeanDefinition<*, T>.bind(clazz: KClass<*>): BeanDefinition<*, T> {
     this.secondaryTypes.add(clazz)
     return this
 }
@@ -39,7 +39,7 @@ infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
  * Add compatible types to match for definition
  * @param classes
  */
-infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> {
+infix fun BeanDefinition<*, *>.binds(classes: Array<KClass<*>>): BeanDefinition<*, *> {
     this.secondaryTypes.addAll(classes)
     return this
 }
@@ -47,7 +47,7 @@ infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> 
 /**
  * Callback when releasing instance
  */
-infix fun <T> BeanDefinition<T>.onRelease(onRelease: OnReleaseCallback<T>): BeanDefinition<T> {
+infix fun <T> BeanDefinition<*, T>.onRelease(onRelease: OnReleaseCallback<T>): BeanDefinition<*, T> {
     this.onRelease = onRelease
     return this
 }
@@ -55,7 +55,7 @@ infix fun <T> BeanDefinition<T>.onRelease(onRelease: OnReleaseCallback<T>): Bean
 /**
  * Callback when closing instance from registry (called just before final close)
  */
-infix fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>): BeanDefinition<T> {
+infix fun <T> BeanDefinition<*, T>.onClose(onClose: OnCloseCallback<T>): BeanDefinition<*, T> {
     this.onClose = onClose
     return this
 }

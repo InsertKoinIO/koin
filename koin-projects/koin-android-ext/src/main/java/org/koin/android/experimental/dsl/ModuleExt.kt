@@ -2,8 +2,9 @@ package org.koin.android.experimental.dsl
 
 import android.arch.lifecycle.ViewModel
 import org.koin.android.viewmodel.dsl.setIsViewModel
-import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
+import org.koin.dsl.ScopeSet
 import org.koin.experimental.builder.create
 
 /**
@@ -15,7 +16,7 @@ import org.koin.experimental.builder.create
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> Module.viewModel(
+inline fun <reified T : ViewModel> ScopeSet<out Scope>.autoViewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false
 ) {

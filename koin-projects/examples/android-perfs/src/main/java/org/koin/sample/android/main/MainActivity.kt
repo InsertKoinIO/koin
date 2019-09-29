@@ -3,14 +3,13 @@ package org.koin.sample.android.main
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs
-import org.koin.perfs.perfModule400
-import org.koin.perfs.perfModule400Ext
+import org.koin.perfs.perfModule400_1
+import org.koin.perfs.perfModule400_2
 import org.koin.sample.android.R
 
 class MainActivity : AppCompatActivity() {
@@ -21,9 +20,9 @@ class MainActivity : AppCompatActivity() {
         runBlocking(Dispatchers.Default) {
 
             val launchs = (1..10).map { i ->
-                GlobalScope.async {
+                withContext(Dispatchers.Default) {
                     runPerf(i)
-                }.await()
+                }
             }
             val avg = launchs.map { it.second }.sum() / launchs.size
             println("Avg execution time: $avg")
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     fun runPerf(count: Int): Pair<Double, Double> {
         val (app, duration) = measureDuration {
             koinApplication {
-                modules(perfModule400())
+                modules(listOf(perfModule400_1, perfModule400_2))
             }
         }
         println("[$count] started in $duration ms")

@@ -1,6 +1,7 @@
 package org.koin.sample.androidx.di
 
-import org.koin.androidx.experimental.dsl.viewModel
+import androidx.fragment.app.FragmentActivity
+import org.koin.androidx.experimental.dsl.autoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -16,9 +17,11 @@ import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
+import org.koin.sample.androidx.components.scope.Controller
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
+import org.koin.sample.androidx.mvvm.MVVMFragment
 import org.koin.sample.androidx.scope.ScopedActivityA
 
 val appModule = module {
@@ -32,8 +35,10 @@ val appModule = module {
 val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
-    scope(named<MVPActivity>()) {
-        scoped { (id: String) -> ScopedPresenter(id, get()) }
+    objectScope<MVPActivity> {
+        scoped { (id: String) ->
+            ScopedPresenter(id, get())
+        }
     }
 }
 
@@ -43,11 +48,13 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-
-    scope(named<MVVMActivity>()) {
+    objectScope<MVVMActivity>() {
         scoped { Session() }
+        scoped { Controller(get<MVVMActivity>()) }
         viewModel { ExtSimpleViewModel(get()) }
-        viewModel<ExtSimpleViewModel>(named("ext"))
+        autoViewModel<ExtSimpleViewModel>(named("ext"))
+
+        childObjectScope<MVVMFragment>()
     }
 }
 
@@ -59,7 +66,7 @@ val scopeModule = module {
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
-    scope(named<ScopedActivityA>()) {
+    objectScope<ScopedActivityA> {
         scoped { Session() }
     }
 }

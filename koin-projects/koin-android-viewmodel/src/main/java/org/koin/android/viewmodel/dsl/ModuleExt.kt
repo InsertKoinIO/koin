@@ -23,6 +23,8 @@ import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.RootScope
+import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeSet
 
 /**
@@ -37,8 +39,8 @@ import org.koin.dsl.ScopeSet
 inline fun <reified T : ViewModel> Module.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false,
-        noinline definition: Definition<T>
-): BeanDefinition<T> {
+        noinline definition: Definition<RootScope, T>
+): BeanDefinition<RootScope, T> {
     val beanDefinition = factory(qualifier, override, definition)
     beanDefinition.setIsViewModel()
     return beanDefinition
@@ -46,10 +48,10 @@ inline fun <reified T : ViewModel> Module.viewModel(
 
 const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
 
-fun BeanDefinition<*>.setIsViewModel() {
+fun BeanDefinition<*, *>.setIsViewModel() {
     properties[ATTRIBUTE_VIEW_MODEL] = true
 }
 
-fun BeanDefinition<*>.isViewModel(): Boolean {
+fun BeanDefinition<*, *>.isViewModel(): Boolean {
     return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
 }
