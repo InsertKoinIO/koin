@@ -14,6 +14,9 @@
  * limitations under the License.
  */package org.koin.core.time
 
+import kotlin.time.ExperimentalTime
+import kotlin.time.MonoClock
+
 /**
  * Measure functions
  *
@@ -23,18 +26,21 @@
 /**
  * Measure code execution
  */
+@UseExperimental(ExperimentalTime::class)
 fun measureDurationOnly(code: () -> Unit): Double {
-    val start = System.nanoTime()
+    val clock = MonoClock
+    val mark = clock.markNow()
     code()
-    return (System.nanoTime() - start) / 1000000.0
+    return mark.elapsedNow().inMilliseconds
 }
 
 /**
  * Measure code execution and get result
  */
+@UseExperimental(ExperimentalTime::class)
 fun <T> measureDuration(code: () -> T): Pair<T, Double> {
-    val start = System.nanoTime()
+    val clock = MonoClock
+    val mark = clock.markNow()
     val result = code()
-    val duration = (System.nanoTime() - start) / 1000000.0
-    return Pair(result, duration)
+    return Pair(result, mark.elapsedNow().inMilliseconds)
 }
