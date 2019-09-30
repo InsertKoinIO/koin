@@ -37,4 +37,6 @@ workflows:
   all_flavours:
     jobs:
       - test_build:
-
+          filters:
+            tags:
+              only: /.*/
