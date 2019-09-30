@@ -1,11 +1,18 @@
 package org.koin.dsl
 
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.core.context.stopKoin
 import org.koin.core.error.NoPropertyFileFoundException
 
 class FilePropertyDefinitionTest {
+
+    @After
+    fun after() {
+        stopKoin()
+    }
 
     @Test
     fun `load and get properties from file`() {

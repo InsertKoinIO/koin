@@ -245,7 +245,7 @@ class Koin {
      */
     fun close() {
         scopeRegistry.close()
-        rootScope.close()
+        rootScope.tearDown()
         propertyRegistry.close()
     }
 }

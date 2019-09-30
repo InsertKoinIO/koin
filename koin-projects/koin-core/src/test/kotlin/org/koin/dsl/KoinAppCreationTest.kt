@@ -43,6 +43,7 @@ class KoinAppCreationTest {
 
     @Test
     fun `can't restart a Koin application`() {
+        assertHasNoStandaloneInstance()
         startKoin { }
         try {
             startKoin { }

@@ -19,9 +19,11 @@ import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 import org.koin.ext.saveCache
 import java.util.concurrent.ConcurrentHashMap
@@ -84,7 +86,7 @@ class BeanRegistry {
      * @param definition
      */
     private fun removeDefinition(definition: BeanDefinition<*, *>) {
-        definition.instance?.close()
+        definition.close()
         definitions.remove(definition)
         if (definition.qualifier != null) {
             removeDefinitionForName(definition)
@@ -270,11 +272,17 @@ class BeanRegistry {
     }
 
     fun close() {
-        definitions.forEach { it.close() }
         definitions.clear()
         definitionsNames.clear()
         definitionsPrimaryTypes.clear()
         definitionsToCreate.clear()
+    }
+
+    fun tearDown() {
+        definitions.forEach {
+            it.close()
+        }
+        close()
     }
 
     /**

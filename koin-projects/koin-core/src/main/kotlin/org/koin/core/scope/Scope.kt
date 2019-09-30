@@ -276,7 +276,6 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
         scopeDefinition.let {
             it?.definitions?.forEach { definition ->
                 beanRegistry.saveDefinition(definition)
-                definition.createInstanceHolder()
             }
         }
     }
@@ -285,6 +284,16 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
      * Close all instances from this scope
      */
     open fun close() = synchronized(this) {
+        release()
+        beanRegistry.close()
+    }
+
+    open fun tearDown() = synchronized(this) {
+        release()
+        beanRegistry.tearDown()
+    }
+
+    private fun release() {
         if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.info("closing scope:'$id'")
         }
@@ -293,7 +302,6 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
         callbacks.clear()
 
         scopeDefinition?.release(this)
-        beanRegistry.close()
         _koin.deleteScope(this.id)
     }
 
@@ -348,12 +356,23 @@ class ObjectScope<T>(id: ScopeID, _koin: Koin, parentScope: Scope, scopeDefiniti
 
     override fun close() {
         super.close()
+        notifyScopeClosed()
+    }
+
+    override fun tearDown() {
+        super.tearDown()
+        notifyScopeClosed()
+    }
+
+    private fun notifyScopeClosed() {
         synchronized(this) {
             if (instance is ScopeCallback) {
                 instance.onScopeClose(this)
             }
         }
     }
+
+
 }
 
 typealias ScopeID = String
