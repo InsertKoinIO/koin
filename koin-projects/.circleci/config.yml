@@ -1,4 +1,4 @@
-ersion: 2
+version: 2
 
 references:
 
@@ -11,7 +11,7 @@ references:
       - image: circleci/android:api-28-alpha
     environment:
       JVM_OPTS: -Xmx3028M
-      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy=“in-process” -Dkotlin.daemon.jvm.options=-Xmx2g'
+      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy=“in-process” -Dkotlin.daemon.jvm.options=-Xmx2g'
 
   # Workspace
   workspace: &workspace
