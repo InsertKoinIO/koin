@@ -30,7 +30,7 @@ jobs:
             command: ./gradlew androidDependencies
         - run:
             name: Run Tests
-            command: ./gradlew test
+            command: ./koin-projects/gradlew -c ./koin-projects/settings.gradle test
 
 workflows:
   version: 2
