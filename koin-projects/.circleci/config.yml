@@ -1,0 +1,60 @@
+ersion: 2
+
+references:
+
+# ----------------------------
+# Docker Configuration
+# ----------------------------
+  android_config: &android_config
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28-alpha
+    environment:
+      JVM_OPTS: -Xmx3028M
+      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy=“in-process” -Dkotlin.daemon.jvm.options=-Xmx2g'
+
+  # Workspace
+  workspace: &workspace
+    ~/code
+
+
+jobs:
+
+  ## Test and build debug apk
+  test_build:
+      <<: *android_config
+      steps:
+        - checkout
+        - run:
+            name: Download dependencies
+            command: ./gradlew androidDependencies
+        - run:
+            name: Run Tests
+            command: ./test.sh
+
+
+  publish:
+    <<: *android_config
+    steps:
+      - checkout
+      - run:
+          name: Gradle build (debug)
+          command: ./release.sh
+
+workflows:
+  version: 2
+  all_flavours:
+    jobs:
+      - test_build:
+          filters:
+            tags:
+              only: /.*/
+
+      - publish:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+          requires:
+          - test_build
