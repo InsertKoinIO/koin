@@ -11,7 +11,7 @@ references:
       - image: circleci/android:api-28-alpha
     environment:
       JVM_OPTS: -Xmx3028M
-      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy=“in-process” -Dkotlin.daemon.jvm.options=-Xmx2g'
+      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy=“in-process” -Dkotlin.daemon.jvm.options=-Xmx2g'
 
   # Workspace
   workspace: &workspace
@@ -30,16 +30,7 @@ jobs:
             command: ./gradlew androidDependencies
         - run:
             name: Run Tests
-            command: ./test.sh
-
-
-  publish:
-    <<: *android_config
-    steps:
-      - checkout
-      - run:
-          name: Gradle build (debug)
-          command: ./release.sh
+            command: ./gradlew test
 
 workflows:
   version: 2
@@ -50,11 +41,3 @@ workflows:
             tags:
               only: /.*/
 
-      - publish:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
-          requires:
-          - test_build
