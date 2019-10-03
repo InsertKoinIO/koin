@@ -22,6 +22,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.RootScope
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
@@ -41,9 +42,9 @@ inline fun <reified T : Any> KoinTest.declareMock(
     val koin = GlobalContext.get().koin
     val clazz = T::class
 
-    val foundDefinition: BeanDefinition<out Scope, T> = getDefinition(clazz, koin, qualifier)
+    val foundDefinition: BeanDefinition<RootScope, T> = getDefinition(clazz, koin, qualifier)
 
-    koin.declareMockedDefinition<T>(foundDefinition, stubbing)
+    koin.declareMockedDefinition(foundDefinition, stubbing)
 
     return koin.get()
 }
@@ -59,18 +60,18 @@ inline fun <reified T: Any> Scope.declareMock(
 ): T {
     val clazz = T::class
 
-    val foundDefinition: BeanDefinition<T> = getDefinition(clazz, this, qualifier)
+    val foundDefinition: BeanDefinition<Scope, T> = getDefinition(clazz, this, qualifier)
 
     declareMockDefinition(foundDefinition, stubbing)
 
     return get(qualifier)
 }
 
-inline fun <reified T: Any> Scope.declareMockDefinition(
-        foundDefinition: BeanDefinition<T>,
+inline fun <S: Scope, reified T: Any> S.declareMockDefinition(
+        foundDefinition: BeanDefinition<S, T>,
         noinline stubbing: (T.() -> Unit)?
 ) {
-    val definition: BeanDefinition<T> = foundDefinition.createMockedDefinition(stubbing)
+    val definition: BeanDefinition<S, T> = foundDefinition.createMockedDefinition(stubbing)
     beanRegistry.saveDefinition(definition)
 }
 
@@ -89,13 +90,13 @@ inline fun <S: Scope, reified T : Any> getDefinition(
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T: Any> getDefinition(
+inline fun <S: Scope, reified T: Any> getDefinition(
         clazz: KClass<T>,
         scope: Scope,
         qualifier: Qualifier?
-): BeanDefinition<T> {
+): BeanDefinition<S, T> {
     logger.info("declare scoped mock for '${clazz.getFullName()}'")
-    return scope.beanRegistry.findDefinition(qualifier, clazz) as BeanDefinition<T>?
+    return scope.beanRegistry.findDefinition(qualifier, clazz) as BeanDefinition<S, T>?
             ?: throw NoBeanDefFoundException("No definition found for qualifier='$qualifier' & class='$clazz'")
 }
 
@@ -110,23 +111,23 @@ inline fun <reified T : Any> Koin.declareMock(
 ): T {
 
     val clazz = T::class
-    val foundDefinition: BeanDefinition<out Scope, T> = getDefinition(clazz, this, qualifier)
+    val foundDefinition: BeanDefinition<RootScope, T> = getDefinition(clazz, this, qualifier)
 
-    declareMockedDefinition<T>(foundDefinition, stubbing)
+    declareMockedDefinition(foundDefinition, stubbing)
 
     return get(qualifier)
 }
 
-inline fun <reified T : Any> Koin.declareMockedDefinition(
-        foundDefinition: BeanDefinition<*, T>,
+inline fun <S: Scope, reified T : Any> Koin.declareMockedDefinition(
+        foundDefinition: BeanDefinition<S, T>,
         noinline stubbing: (T.() -> Unit)?
 ) {
-    val definition: BeanDefinition<*, T> = foundDefinition.createMockedDefinition<T>(stubbing)
+    val definition: BeanDefinition<S, T> = foundDefinition.createMockedDefinition(stubbing)
     rootScope.beanRegistry.saveDefinition(definition)
 }
 
-inline fun <reified T : Any> BeanDefinition<*, T>.createMockedDefinition(noinline stubbing: (T.() -> Unit)? = null): BeanDefinition<*, T> {
-    val definition: Definition<Scope, T> = {
+inline fun <S: Scope, reified T> BeanDefinition<S, T>.createMockedDefinition(noinline stubbing: (T.() -> Unit)? = null): BeanDefinition<S, T> {
+    val definition: Definition<S, T> = {
         val (instance: T, time: Double) = measureDuration {
             mock(T::class.java)
         }

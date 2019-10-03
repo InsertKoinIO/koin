@@ -7,7 +7,10 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
+import org.koin.core.registry.BeanRegistry
+import org.koin.core.scope.RootScope
 import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -15,6 +18,7 @@ import org.koin.test.mock.createMockedDefinition
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
+import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
 class DeclareMockTests : KoinTest {
@@ -34,17 +38,15 @@ class DeclareMockTests : KoinTest {
 
         val scope: Scope = koin.getOrCreateScope("scope_id", named<Simple>())
 
-        val definition: BeanDefinition<Simple.ComponentA> =
-                scope.beanRegistry.findDefinition(null, Simple.ComponentA::class)
-        as BeanDefinition<Simple.ComponentA>
-
+        val registry = scope.beanRegistry
+        val definition = registry.findDefinitionTyped<RootScope, Simple.ComponentA>(null)
         val instance = scope.get<Simple.ComponentA>()
 
-        val instanceFound = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin, scope) {emptyParametersHolder()})
+        val instanceFound = definition.instance?.get<Simple.ComponentA>(InstanceContext(scope) {emptyParametersHolder()})
 
         val mockDefinition = definition.createMockedDefinition()
 
-        val mock = mockDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin, scope) { emptyParametersHolder()})
+        val mock = mockDefinition.instance?.get<Simple.ComponentA>(InstanceContext(scope) { emptyParametersHolder()})
 
         assertEquals(instance, instanceFound)
         assertNotEquals(instance, mock)
@@ -114,10 +116,8 @@ class DeclareMockTests : KoinTest {
             )
         }.koin
 
-        val definition: BeanDefinition<*, Simple.ComponentA> =
-                koin.rootScope.beanRegistry.findDefinition(
-                        null, Simple.ComponentA::class
-                ) as BeanDefinition<*, Simple.ComponentA>
+        val registry = koin.rootScope.beanRegistry
+        val definition = registry.findDefinitionTyped<RootScope, Simple.ComponentA>(null)
 
         val mockedDefinition: BeanDefinition<*, Simple.ComponentA> = definition.createMockedDefinition()
 
@@ -186,4 +186,10 @@ class DeclareMockTests : KoinTest {
         }.koin
         koin.declareMock<Simple.ComponentA>(named("test"))
     }
+}
+
+inline fun <S: Scope, reified T> BeanRegistry.findDefinitionTyped(
+        qualifier: Qualifier? = null
+): BeanDefinition<S, T> {
+    return findDefinition(qualifier, T::class) as BeanDefinition<S, T>
 }
