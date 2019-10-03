@@ -37,11 +37,6 @@ interface DefinitionFactory<S: Scope> {
     }
 }
 
-object RootScopeDefinitionFactory: DefinitionFactory<RootScope> {
-    override val singleScopeKind: Kind
-        get() = Kind.Single
-}
-
 object ObjectScopeDefinitionFactory: DefinitionFactory<ObjectScope<*>> {
     override val singleScopeKind: Kind
         get() = Kind.Scoped
@@ -58,9 +53,8 @@ inline fun <reified S: Scope> definitionFactory(): DefinitionFactory<S> {
 
 fun <S: Scope> definitionFactory(clazz: KClass<S>): DefinitionFactory<S> {
     return when(clazz) {
-        DefaultScope::class -> DefaultScopeDefinitionFactory as DefinitionFactory<S>
         ObjectScope::class -> ObjectScopeDefinitionFactory as DefinitionFactory<S>
-        else -> RootScopeDefinitionFactory as DefinitionFactory<S>
+        else -> DefaultScopeDefinitionFactory as DefinitionFactory<S>
     }
 }
 

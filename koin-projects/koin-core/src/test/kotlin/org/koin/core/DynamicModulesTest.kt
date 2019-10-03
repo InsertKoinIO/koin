@@ -28,7 +28,7 @@ class DynamicModulesTest {
         }
 
         val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
-        Assert.assertEquals(Kind.Single, defA.kind)
+        Assert.assertEquals(Kind.Scoped, defA.kind)
 
         Assert.assertNotNull(app.koin.get<Simple.ComponentA>())
 
@@ -55,7 +55,7 @@ class DynamicModulesTest {
         }
 
         val defA = app.getDefinition(Simple.Component1::class) ?: error("no definition found")
-        Assert.assertEquals(Kind.Single, defA.kind)
+        Assert.assertEquals(Kind.Scoped, defA.kind)
 
         Assert.assertNotNull(app.koin.get<Simple.Component1>())
         Assert.assertNotNull(app.koin.get<Simple.ComponentInterface1>())

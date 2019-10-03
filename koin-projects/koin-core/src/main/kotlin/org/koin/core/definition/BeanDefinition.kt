@@ -69,7 +69,6 @@ class BeanDefinition<S: Scope, T>(
         instance = when (kind) {
             Kind.Factory -> FactoryDefinitionInstance(this)
             Kind.Scoped -> ScopeDefinitionInstance(this)
-            Kind.Single -> ScopeDefinitionInstance(this)
         }
     }
 
@@ -125,7 +124,7 @@ class BeanDefinition<S: Scope, T>(
 }
 
 enum class Kind {
-    Single, Factory, Scoped
+    Factory, Scoped
 }
 
 typealias Definition<S, T> = S.(DefinitionParameters) -> T
