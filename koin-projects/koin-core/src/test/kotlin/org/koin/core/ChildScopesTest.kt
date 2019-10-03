@@ -162,4 +162,31 @@ class ChildScopesTest {
         assertTrue(child == directInstance)
     }
 
+    @Test
+    fun `removes definitions of child scopes when module is unloaded`() {
+        val module = module {
+            objectScope<Parent> {
+                childObjectScope<Child>()
+            }
+        }
+        val app = startKoin {
+            modules(module)
+        }
+
+        val koin = app.koin
+        val definitionsBeforeUnload = koin.scopeRegistry.definitions
+        assertEquals(2, definitionsBeforeUnload.size)
+        definitionsBeforeUnload.values.forEach {
+            assertEquals(1, it.definitions.size)
+        }
+
+        app.unloadModules(module)
+
+        val definitionsAfterUnload = koin.scopeRegistry.definitions
+        assertEquals(2, definitionsAfterUnload.size)
+        definitionsAfterUnload.values.forEach {
+            assertEquals(0, it.definitions.size)
+        }
+    }
+
 }

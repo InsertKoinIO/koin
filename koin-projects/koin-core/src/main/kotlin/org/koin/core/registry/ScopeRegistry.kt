@@ -61,21 +61,25 @@ class ScopeRegistry(private val koin: Koin) {
 
     private fun unloadScopes(module: Module) {
         module.scopes.forEach {
-            unloadDefinition(it)
+            unloadScope(it)
         }
+    }
+
+    private fun unloadScope(scopeSet: ScopeSet<*>) {
+        scopeSet.childScopes.forEach { childScope -> unloadScope(childScope) }
+        unloadDefinition(scopeSet)
     }
 
     private fun declareScopes(module: Module) {
         module.scopes.forEach {
-            val definition = saveDefinition(it, rootScope.scopeDefinition)
-            declareScopes(it.childScopes, definition)
+            declareScope(it, rootScope.scopeDefinition)
         }
     }
 
-    private fun declareScopes(childScopes: List<ScopeSet<*>>, parentDefinition: ScopeDefinition) {
-        childScopes.forEach {
-            val definition = saveDefinition(it, parentDefinition)
-            declareScopes(it.childScopes, definition)
+    private fun declareScope(scopeSet: ScopeSet<*>, parentDefinition: ScopeDefinition?) {
+        val definition = saveDefinition(scopeSet, parentDefinition)
+        scopeSet.childScopes.forEach {
+            declareScope(it, definition)
         }
     }
 
@@ -91,9 +95,12 @@ class ScopeRegistry(private val koin: Koin) {
     }
 
     private fun closeRelatedScopes(originalSet: ScopeDefinition) {
-        instances.values.forEach { scope ->
+        val it = instances.iterator()
+        while(it.hasNext()) {
+            val (_, scope) = it.next()
             if (scope.scopeDefinition == originalSet) {
                 scope.close()
+                it.remove()
             }
         }
     }
