@@ -69,10 +69,10 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  * @param koinPropertyFile
  */
 fun KoinApplication.androidFileProperties(
-    androidContext: Context,
     koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
     val koinProperties = Properties()
+    val androidContext = koin.get<Context>()
     try {
         val hasFile = androidContext.assets?.list("")?.contains(koinPropertyFile) ?: false
         if (hasFile) {
