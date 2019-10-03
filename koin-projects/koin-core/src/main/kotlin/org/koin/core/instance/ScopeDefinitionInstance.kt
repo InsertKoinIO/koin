@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.Qualifier
@@ -28,6 +29,9 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Arnaud Giuliani
  */
 class ScopeDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>) : DefinitionInstance<S, T>(beanDefinition) {
+
+    override val kind: Kind
+        get() = Kind.Scoped
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
 

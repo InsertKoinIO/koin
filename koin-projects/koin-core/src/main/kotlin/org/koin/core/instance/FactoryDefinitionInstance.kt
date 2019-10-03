@@ -16,6 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 import org.koin.core.scope.Scope
 
 /**
@@ -25,6 +26,9 @@ import org.koin.core.scope.Scope
  */
 class FactoryDefinitionInstance<S: Scope, T>(beanDefinition: BeanDefinition<S, T>) :
         DefinitionInstance<S, T>(beanDefinition) {
+
+    override val kind: Kind
+        get() = Kind.Factory
 
     override fun release(context: InstanceContext) {}
 

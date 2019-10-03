@@ -74,9 +74,7 @@ class BeanDefinition<S: Scope, T>(
 
     private fun checkInstanceCreationRequest(currentInstance: DefinitionInstance<S, T>) {
         val message = "Instance holder is ${currentInstance::class} but creation requested with kind: ${kind.name}"
-        if (currentInstance is FactoryDefinitionInstance && kind != Kind.Factory) {
-            throw InstanceHolderKindMismatchException(message)
-        } else if (currentInstance is ScopeDefinitionInstance && kind == Kind.Factory) {
+        if (currentInstance.kind != kind) {
             throw InstanceHolderKindMismatchException(message)
         }
     }
