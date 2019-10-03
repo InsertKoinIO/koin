@@ -21,6 +21,7 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         scope(scopeKey) {
             scoped { MyService() }
         }
+        objectScope<MyService>()
     }
 
     @Test
@@ -53,13 +54,21 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         }
 
         val session = getKoin().createScope("session", scopeKey)
-        val service = session.get<MyService>()
-        Assert.assertNotNull(service)
+        val instance = MyService()
+        val serviceSession = getKoin().createObjectScoped(instance)
 
-        val observer = ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", session)
-        observer.onStop()
+        val service = session.get<MyService>()
+        val serviceInstance = serviceSession.get<MyService>()
+
+        Assert.assertNotNull(service)
+        Assert.assertEquals(instance, serviceInstance)
+
+        arrayOf(serviceSession, session).forEach {
+            ScopeObserver(Lifecycle.Event.ON_DESTROY, "testClass", it).onStop()
+        }
 
         session.get<MyService>()
+        serviceSession.get<MyService>()
     }
 
     @Test
@@ -70,14 +79,26 @@ class AndroidObserverTest : AutoCloseKoinTest() {
         }
 
         val session = getKoin().createScope("session", scopeKey)
+        val instance = MyService()
+        val serviceSession = getKoin().createObjectScoped(instance)
         val service = session.get<MyService>()
-        Assert.assertNotNull(service)
+        val serviceInstance = serviceSession.get<MyService>()
 
-        val observer = ScopeObserver(Lifecycle.Event.ON_STOP, "testClass", session)
-        observer.onStop()
+        Assert.assertNotNull(service)
+        Assert.assertEquals(instance, serviceInstance)
+
+        arrayOf(serviceSession, session).forEach {
+            ScopeObserver(Lifecycle.Event.ON_STOP, "testClass", it).onStop()
+        }
 
         try {
             session.get<MyService>()
+            fail("no resolution of closed scope dependency")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            serviceSession.get<MyService>()
             fail("no resolution of closed scope dependency")
         } catch (e: Exception) {
             e.printStackTrace()

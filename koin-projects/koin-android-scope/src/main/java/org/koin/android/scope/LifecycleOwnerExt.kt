@@ -34,7 +34,7 @@ import org.koin.core.scope.*
 private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
 fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
-    val scopeId = getScopeId()
+    val scopeId = createScopeId()
     return getKoin().getScopeOrNull(scopeId)
             ?: createAndBindScope(scopeId, getScopeName(), parentScopeId)
 }
@@ -59,10 +59,6 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
  */
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateCurrentScope()
-
-interface HasParentScope {
-    val parentScopeId: ScopeID
-}
 
 private val LifecycleOwner.parentScopeId: ScopeID?
     get() = when (this) {

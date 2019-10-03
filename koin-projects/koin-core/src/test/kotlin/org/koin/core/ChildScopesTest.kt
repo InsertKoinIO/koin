@@ -1,17 +1,30 @@
-package org.koin.test.android
+package org.koin.core
 
-import android.arch.lifecycle.LifecycleOwner
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
-import org.koin.android.scope.currentScope
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
+import org.koin.core.scope.HasParentScope
+import org.koin.core.scope.ScopeID
 import org.koin.dsl.module
-import org.koin.test.AutoCloseKoinTest
-import org.koin.test.android.util.Child
-import org.koin.test.android.util.Parent
 
-class ChildScopesTest: AutoCloseKoinTest() {
+class ChildScopesTest {
+
+    class Parent(val koin: Koin, scopeName: Qualifier = TypeQualifier(Parent::class)) {
+        val currentScope = koin.createObjectScoped(this, scopeName = scopeName)
+    }
+    class Child(val koin: Koin, override val parentScopeId: ScopeID): HasParentScope {
+        val currentScope = koin.createObjectScoped(this, parentScopeId = parentScopeId)
+    }
+
+    @After
+    fun after() {
+        stopKoin()
+    }
 
     val module = module {
 
@@ -35,12 +48,12 @@ class ChildScopesTest: AutoCloseKoinTest() {
 
     @Test
     fun `can resolve bean definitions from same scope`() {
-        startKoin {
+        val koin = startKoin {
             modules(module)
         }.koin
 
-        val parent = Parent()
-        val child = Child(parent.currentScope.id)
+        val parentScope = Parent(koin).currentScope
+        val child = Child(koin, parentScope.id)
 
         val directResolution = child.currentScope.get<String>()
         assertEquals("Root Parent Child" , directResolution)
@@ -48,12 +61,12 @@ class ChildScopesTest: AutoCloseKoinTest() {
 
     @Test
     fun `can resolve bean definitions from parent scope`() {
-        startKoin {
+        val koin = startKoin {
             modules(module)
         }.koin
 
-        val parent = Parent()
-        val child = Child(parent.currentScope.id)
+        val parentScope = Parent(koin).currentScope
+        val child = Child(koin, parentScope.id)
 
         val directResolution = child.currentScope.get<String>(named("A"))
         assertEquals("Root Parent" , directResolution)
@@ -61,12 +74,12 @@ class ChildScopesTest: AutoCloseKoinTest() {
 
     @Test
     fun `can resolve bean definitions from root scope`() {
-        startKoin {
+        val koin = startKoin {
             modules(module)
         }.koin
 
-        val parent = Parent()
-        val child = Child(parent.currentScope.id)
+        val parentScope = Parent(koin).currentScope
+        val child = Child(koin, parentScope.id)
 
         val directResolution = child.currentScope.get<String>(named("B"))
         assertEquals("Root" , directResolution)
@@ -74,13 +87,13 @@ class ChildScopesTest: AutoCloseKoinTest() {
 
     @Test
     fun `direct resolution not possible when parent scope already closed`() {
-        startKoin {
+        val koin = startKoin {
             modules(module)
         }.koin
 
-        val parent = Parent()
-        val child = Child(parent.currentScope.id)
-        parent.currentScope.close()
+        val parentScope = Parent(koin).currentScope
+        val child = Child(koin, parentScope.id)
+        parentScope.close()
 
         try {
             child.currentScope.get<String>()
@@ -109,12 +122,12 @@ class ChildScopesTest: AutoCloseKoinTest() {
                 }
             }
         }
-        startKoin {
+        val koin = startKoin {
             modules(listOf(parentModule, childModule))
-        }
+        }.koin
 
-        val parent = Parent()
-        val child = Child(parent.currentScope.id)
+        val parentScope = Parent(koin).currentScope
+        val child = Child(koin, parentScope.id)
 
         val directResolution = child.currentScope.get<String>()
         assertEquals("Root Parent Child" , directResolution)
@@ -127,12 +140,12 @@ class ChildScopesTest: AutoCloseKoinTest() {
         val koin = startKoin {
             modules(listOf(module {
 
-                objectScope<LifecycleOwner>(parentQualifier) {
+                objectScope<Parent>(parentQualifier) {
 
                     scoped(named("TEST")) { instance }
 
                     childObjectScope<Child> {
-                        scoped<Pair<LifecycleOwner, LifecycleOwner>> {
+                        scoped<Pair<Child, Parent>> {
                             instance to get(named("TEST"))
                         }
                     }
@@ -140,11 +153,10 @@ class ChildScopesTest: AutoCloseKoinTest() {
             }))
         }.koin
 
-        val parent = Parent()
-        val parentScope = koin.createObjectScoped(parent, scopeName = parentQualifier)
-        val child = Child(parentScope.id)
+        val parent = Parent(koin, parentQualifier)
+        val child = Child(koin, parent.currentScope.id)
 
-        val (directInstance, parentInstance) = child.currentScope.get<Pair<LifecycleOwner, LifecycleOwner>>()
+        val (directInstance, parentInstance) = child.currentScope.get<Pair<Child, Parent>>()
 
         assertTrue(parent == parentInstance)
         assertTrue(child == directInstance)

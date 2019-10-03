@@ -173,7 +173,12 @@ class Koin {
      * Create a Scope which has an associated instance
      */
     @JvmOverloads
-    inline fun <reified T: Any> createObjectScoped(instance: T, scopeId: ScopeID = instance.getScopeId(), scopeName: Qualifier = TypeQualifier(T::class), parentScopeId: ScopeID? = null): ObjectScope<T> {
+    inline fun <reified T: Any> createObjectScoped(
+            instance: T,
+            scopeId: ScopeID = instance.createScopeId(),
+            scopeName: Qualifier = TypeQualifier(T::class),
+            parentScopeId: ScopeID? = null
+    ): ObjectScope<T> {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$scopeName")
         }

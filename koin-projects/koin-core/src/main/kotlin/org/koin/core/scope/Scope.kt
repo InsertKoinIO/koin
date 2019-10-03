@@ -378,4 +378,4 @@ class ObjectScope<T>(id: ScopeID, _koin: Koin, parentScope: Scope, scopeDefiniti
 typealias ScopeID = String
 data class ScopeDescriptor(val scopeId: ScopeID, val scopeName: Qualifier, val parentId: ScopeID = RootScopeId)
 fun Any.getScopeName() = TypeQualifier(this::class)
-fun Any.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
+fun Any.createScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)

@@ -1,40 +1,48 @@
-package org.koin.test.android
+package org.koin.core
 
-import android.arch.lifecycle.Lifecycle
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
-import org.koin.android.scope.currentScope
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
-import org.koin.core.scope.getScopeId
+import org.koin.core.scope.ScopeID
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.AutoCloseKoinTest
-import org.koin.test.android.util.Child
-import org.koin.test.android.util.Parent
 
-class ObjectScopeTest: AutoCloseKoinTest() {
+class ObjectScopeTest {
+
+    @After
+    fun after() {
+        stopKoin()
+    }
 
     class SomeServiceProvider
     class SomeScopedService(val obj: SomeServiceProvider)
-
-    class Child
+    class Parent(val koin: Koin) {
+        val currentScope = koin.createObjectScoped(this)
+    }
+    class Child(val koin: Koin, parentScopeId: ScopeID? = null) {
+        val currentScope = koin.createObjectScoped(this, parentScopeId = parentScopeId)
+    }
+    class Service
 
     val module = module {
         objectScope<SomeServiceProvider> {
             scoped { SomeScopedService(instance) }
         }
         objectScope<Parent> {
-            scoped { Child(instance.currentScope.id) }
+            scoped { Service() }
             childScope(named<Child>())
         }
-        scope(named<org.koin.test.android.util.Child>()) {
+        scope(named<Child>()) {
             factory { "ABC" }
         }
     }
 
     @Test
     fun `bean definition can access instance from scope`() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(module)
         }.koin
 
@@ -46,17 +54,18 @@ class ObjectScopeTest: AutoCloseKoinTest() {
     }
 
     @Test
-    fun `objects not resolvable after state marked as destroyed`() {
-        startKoin {
+    fun `objects not resolvable after scope is closed`() {
+        val koin = startKoin {
             modules(module)
         }.koin
 
-        val owner = Parent()
+        val owner = Parent(koin)
         val scope = owner.currentScope
-        owner.markState(Lifecycle.State.DESTROYED)
+        scope.get<Service>()
+        scope.close()
 
         try {
-            scope.get<org.koin.test.android.util.Child>()
+            scope.get<Service>()
             fail("no resolution of closed scope dependency")
         } catch (e: Throwable) {
             assertEquals(0, scope.beanRegistry.size())
@@ -69,7 +78,8 @@ class ObjectScopeTest: AutoCloseKoinTest() {
             modules(module)
         }.koin
 
-        val owner = Child(koin.rootScope.id)
+        val parentScopeId = Parent(koin).currentScope.id
+        val owner = Child(koin, parentScopeId)
         val scope = owner.currentScope
         assertEquals("ABC", scope.get<String>())
     }
@@ -81,13 +91,11 @@ class ObjectScopeTest: AutoCloseKoinTest() {
             modules(module)
         }.koin
 
-        val parent = Parent()
-        val child = Child()
-        val parentScope = koin.createObjectScoped(parent)
-        val childScope = koin.createScope(child.getScopeId(), named<Child>(), parentId = parentScope.id)
+        val parent = Parent(koin)
+        val child = Child(koin, parentScopeId = parent.currentScope.id)
+        val childScope = child.currentScope
 
-        val instance = childScope.get<Parent>()
-        assertEquals(parentScope.instance, instance)
+        assertEquals(parent, childScope.get<Parent>())
     }
 
     open class Abstraction
