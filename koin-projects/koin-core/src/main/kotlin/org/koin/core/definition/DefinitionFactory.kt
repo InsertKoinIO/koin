@@ -18,14 +18,12 @@ import kotlin.reflect.KClass
 
 interface DefinitionFactory<S: Scope> {
 
-    val singleScopeKind: Kind
-
     fun <T> createScopedWithType(
             qualifier: Qualifier? = null,
             scopeName: Qualifier? = null,
             clazz: KClass<*>,
             definition: Definition<S, T>
-    ) = createDefinition(qualifier, definition, singleScopeKind, scopeName, clazz)
+    ) = createDefinition(qualifier, definition, Kind.Scoped, scopeName, clazz)
 
     fun <T> createFactoryWithType(
             qualifier: Qualifier? = null,
@@ -37,15 +35,9 @@ interface DefinitionFactory<S: Scope> {
     }
 }
 
-object ObjectScopeDefinitionFactory: DefinitionFactory<ObjectScope<*>> {
-    override val singleScopeKind: Kind
-        get() = Kind.Scoped
-}
-
-object DefaultScopeDefinitionFactory: DefinitionFactory<DefaultScope> {
-    override val singleScopeKind: Kind
-        get() = Kind.Scoped
-}
+object RootScopeDefinitionFactory: DefinitionFactory<RootScope>
+object DefaultScopeDefinitionFactory: DefinitionFactory<DefaultScope>
+object ObjectScopeDefinitionFactory: DefinitionFactory<ObjectScope<*>>
 
 inline fun <reified S: Scope> definitionFactory(): DefinitionFactory<S> {
     return definitionFactory(S::class)
@@ -53,8 +45,9 @@ inline fun <reified S: Scope> definitionFactory(): DefinitionFactory<S> {
 
 fun <S: Scope> definitionFactory(clazz: KClass<S>): DefinitionFactory<S> {
     return when(clazz) {
+        DefaultScope::class -> DefaultScopeDefinitionFactory as DefinitionFactory<S>
         ObjectScope::class -> ObjectScopeDefinitionFactory as DefinitionFactory<S>
-        else -> DefaultScopeDefinitionFactory as DefinitionFactory<S>
+        else -> RootScopeDefinitionFactory as DefinitionFactory<S>
     }
 }
 
