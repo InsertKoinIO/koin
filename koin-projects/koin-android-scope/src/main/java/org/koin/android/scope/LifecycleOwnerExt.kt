@@ -21,6 +21,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
 import android.support.v4.app.Fragment
 import org.koin.android.ext.android.getKoin
+import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.*
 
@@ -66,6 +67,13 @@ interface HasParentScope {
 private val LifecycleOwner.parentScopeId: ScopeID?
     get() = when (this) {
         is HasParentScope -> parentScopeId
-        is Fragment -> parentFragment?.currentScope?.id ?: activity?.currentScope?.id
+        is Fragment -> parentFragment?.resolveScopeId() ?: activity?.resolveScopeId()
         else -> null
     }
+
+private fun LifecycleOwner.resolveScopeId(): ScopeID? =
+        try {
+            this.currentScope.id
+        } catch (e: NoScopeDefinitionFoundException) {
+            null
+        }

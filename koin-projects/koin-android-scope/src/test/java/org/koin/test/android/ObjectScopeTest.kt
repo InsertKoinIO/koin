@@ -7,11 +7,10 @@ import org.koin.android.scope.currentScope
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.core.scope.getScopeId
-import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.android.util.AChild
-import org.koin.test.android.util.AParent
+import org.koin.test.android.util.Child
+import org.koin.test.android.util.Parent
 
 class ObjectScopeTest: AutoCloseKoinTest() {
 
@@ -24,11 +23,11 @@ class ObjectScopeTest: AutoCloseKoinTest() {
         objectScope<SomeServiceProvider> {
             scoped { SomeScopedService(instance) }
         }
-        objectScope<AParent> {
-            scoped { AChild(instance.currentScope.id) }
+        objectScope<Parent> {
+            scoped { Child(instance.currentScope.id) }
             childScope(named<Child>())
         }
-        scope(named<AChild>()) {
+        scope(named<org.koin.test.android.util.Child>()) {
             factory { "ABC" }
         }
     }
@@ -52,12 +51,12 @@ class ObjectScopeTest: AutoCloseKoinTest() {
             modules(module)
         }.koin
 
-        val owner = AParent()
+        val owner = Parent()
         val scope = owner.currentScope
         owner.markState(Lifecycle.State.DESTROYED)
 
         try {
-            scope.get<AChild>()
+            scope.get<org.koin.test.android.util.Child>()
             fail("no resolution of closed scope dependency")
         } catch (e: Throwable) {
             assertEquals(0, scope.beanRegistry.size())
@@ -70,7 +69,7 @@ class ObjectScopeTest: AutoCloseKoinTest() {
             modules(module)
         }.koin
 
-        val owner = AChild(koin.rootScope.id)
+        val owner = Child(koin.rootScope.id)
         val scope = owner.currentScope
         assertEquals("ABC", scope.get<String>())
     }
@@ -82,12 +81,12 @@ class ObjectScopeTest: AutoCloseKoinTest() {
             modules(module)
         }.koin
 
-        val parent = AParent()
+        val parent = Parent()
         val child = Child()
         val parentScope = koin.createObjectScoped(parent)
         val childScope = koin.createScope(child.getScopeId(), named<Child>(), parentId = parentScope.id)
 
-        val instance = childScope.get<AParent>()
+        val instance = childScope.get<Parent>()
         assertEquals(parentScope.instance, instance)
     }
 

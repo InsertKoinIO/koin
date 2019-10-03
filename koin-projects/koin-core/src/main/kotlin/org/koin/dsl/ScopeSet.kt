@@ -80,12 +80,11 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
     @JvmOverloads
     inline fun <reified T> childObjectScope(
             scopeName: Qualifier = named<T>(),
-            validateParentScope: Boolean = false,
             noinline scopeSet: (ScopeSet<ObjectScope<T>>.() -> Unit)? = null) {
         val scope = ScopeSet<ObjectScope<T>>(
                 definitionFactory(),
                 scopeName,
-                validateParentScope
+                validateParentScope = true
         )
         scopeSet?.let { scope.apply(it) }
         scope.declareScopedInstanceIfPossible()
@@ -108,11 +107,9 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
      * @param scopeName
      * @param validateParentScope Validate the parent scope at scope instance creation
      */
-    @JvmOverloads
     inline fun <reified T> typedChildScope(
-            validateParentScope: Boolean = false,
             noinline scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
-        return childScope(TypeQualifier(T::class), validateParentScope, scopeSet)
+        return childScope(TypeQualifier(T::class), scopeSet)
     }
 
     /**
@@ -123,12 +120,11 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
     @JvmOverloads
     fun childScope(
             scopeName: Qualifier,
-            validateParentScope: Boolean = false,
             scopeSet: (ScopeSet<DefaultScope>.() -> Unit)? = null) {
         val scope = ScopeSet<DefaultScope>(
                 definitionFactory(),
                 scopeName,
-                validateParentScope
+                validateParentScope = true
         )
         scopeSet?.let { scope.apply(it) }
         childScopes.add(scope)
