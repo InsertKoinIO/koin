@@ -16,6 +16,7 @@ import org.koin.sample.androidx.components.main.RandomId
 import org.koin.sample.androidx.components.main.SERVICE_IMPL
 import org.koin.sample.androidx.components.main.Service
 import org.koin.sample.androidx.mvp.MVPActivity
+import org.koin.sample.androidx.scope.ObjectScopeActivity
 import org.koin.sample.androidx.utils.navigateTo
 
 class MainActivity : AppCompatActivity() {
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         title = "Android First Samples"
 
         main_button.setOnClickListener {
-            navigateTo<MVPActivity>()
+            navigateTo<ObjectScopeActivity>()
         }
     }
 }
