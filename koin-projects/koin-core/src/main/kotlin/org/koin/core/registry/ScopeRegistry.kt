@@ -96,7 +96,7 @@ class ScopeRegistry(private val koin: Koin) {
 
     private fun closeRelatedScopes(originalSet: ScopeDefinition) {
         val it = instances.iterator()
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             val (_, scope) = it.next()
             if (scope.scopeDefinition == originalSet) {
                 scope.close()
@@ -200,7 +200,11 @@ class ScopeRegistry(private val koin: Koin) {
     }
 
     fun deleteScopeInstance(id: ScopeID) {
+        val scope = getScopeInstanceOrNull(id)
         instances.remove(id)
+        val scopes = instances.values.toList()
+        scopes.filter { it.parentScope == scope }
+                .forEach { it.close() }
     }
 
     fun close() {

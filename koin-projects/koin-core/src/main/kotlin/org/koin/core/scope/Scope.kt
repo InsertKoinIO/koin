@@ -21,6 +21,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.definitionFactory
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.ParentScopeMismatchException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
@@ -32,9 +33,11 @@ import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
-abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinition: ScopeDefinition? = null) {
+abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinition: ScopeDefinition? = null, val parentScope: Scope?) {
     val beanRegistry = BeanRegistry()
-    private val callbacks = arrayListOf<ScopeCallback>()
+    protected val callbacks = arrayListOf<ScopeCallback>()
+
+    private var isClosed: Boolean = false
 
     /**
      * Lazy inject a Koin instance
@@ -201,9 +204,14 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
 
     /**
      * Register a callback for this Scope Instance
+     * @return false, when the scope is already closed. Callback is not registered in this case.
      */
-    fun registerCallback(callback: ScopeCallback) {
+    fun registerCallback(callback: ScopeCallback): Boolean {
+        if (isClosed) {
+            return false
+        }
         callbacks += callback
+        return true
     }
 
     /**
@@ -294,6 +302,9 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
     }
 
     private fun release() {
+        if (isClosed) {
+            return
+        }
         if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.info("closing scope:'$id'")
         }
@@ -303,6 +314,7 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
 
         scopeDefinition?.release(this)
         _koin.deleteScope(this.id)
+        isClosed = true
     }
 
     override fun toString(): String {
@@ -311,7 +323,7 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
     }
 }
 
-class RootScope(_koin: Koin) : Scope(RootScopeId, _koin) {
+class RootScope(_koin: Koin) : Scope(RootScopeId, _koin, parentScope = null) {
 
     companion object {
         internal const val RootScopeId: ScopeID = "-Root-"
@@ -321,7 +333,7 @@ class RootScope(_koin: Koin) : Scope(RootScopeId, _koin) {
         val definitions = beanRegistry.findAllCreatedAtStartDefinition()
         if (definitions.isNotEmpty()) {
             definitions.forEach {
-                it.resolveInstance<Any>(InstanceContext(scope = this))
+                it.resolveInstance(InstanceContext(scope = this))
             }
         }
     }
@@ -337,7 +349,7 @@ class RootScope(_koin: Koin) : Scope(RootScopeId, _koin) {
     }
 }
 
-open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefinition, protected val parentScope: Scope) : Scope(id, _koin, scopeDefinition) {
+open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefinition, parentScope: Scope) : Scope(id, _koin, scopeDefinition, parentScope) {
 
     override fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*, *>? {
         return beanRegistry.findDefinition(qualifier, clazz)
@@ -347,7 +359,8 @@ open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefiniti
 
     override fun <T> resolveInstance(qualifier: Qualifier?, clazz: KClass<*>, parameters: ParametersDefinition?): T {
         val definition = findDefinition(qualifier, clazz)
-                ?: return parentScope.resolveInstance(qualifier, clazz, parameters)
+                ?: return parentScope?.resolveInstance(qualifier, clazz, parameters)
+                ?: throw ParentScopeMismatchException("parent scope not set for non root scope")
         return definition.resolveInstance(InstanceContext(this, parameters))
     }
 }
@@ -355,20 +368,19 @@ open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefiniti
 class ObjectScope<T>(id: ScopeID, _koin: Koin, parentScope: Scope, scopeDefinition: ScopeDefinition, val instance: T) : DefaultScope(id, _koin, scopeDefinition, parentScope) {
 
     override fun close() {
-        super.close()
-        notifyScopeClosed()
+        performClose { super.close() }
     }
 
     override fun tearDown() {
-        super.tearDown()
-        notifyScopeClosed()
+        performClose { super.tearDown() }
     }
 
-    private fun notifyScopeClosed() {
-        synchronized(this) {
-            if (instance is ScopeCallback) {
-                instance.onScopeClose(this)
-            }
+    private fun performClose(block: () -> Unit) {
+        val callback = this.instance as? ScopeCallback
+        val shouldCallback = callback != null && !callbacks.contains(callback)
+        block()
+        if (shouldCallback) {
+            callback?.onScopeClose(this)
         }
     }
 

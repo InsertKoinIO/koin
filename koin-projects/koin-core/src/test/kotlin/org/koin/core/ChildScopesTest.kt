@@ -9,6 +9,8 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
 import org.koin.core.scope.HasParentScope
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeCallback
 import org.koin.core.scope.ScopeID
 import org.koin.dsl.module
 
@@ -17,8 +19,8 @@ class ChildScopesTest {
     class Parent(val koin: Koin, scopeName: Qualifier = TypeQualifier(Parent::class)) {
         val currentScope = koin.createObjectScoped(this, scopeName = scopeName)
     }
-    class Child(val koin: Koin, override val parentScopeId: ScopeID): HasParentScope {
-        val currentScope = koin.createObjectScoped(this, parentScopeId = parentScopeId)
+    class Child(val koin: Koin, override val parentScopeId: ScopeID, val qualifier: Qualifier = TypeQualifier(Child::class)): HasParentScope {
+        val currentScope = koin.createObjectScoped(this, scopeName = qualifier, parentScopeId = parentScopeId)
     }
 
     @After
@@ -187,6 +189,43 @@ class ChildScopesTest {
         definitionsAfterUnload.values.forEach {
             assertEquals(0, it.definitions.size)
         }
+    }
+
+    @Test
+    fun `closes child scopes when parent scope is closed`() {
+        val module = module {
+            objectScope<Parent> {
+                childObjectScope<Child> {
+                    childObjectScope<Child>(named("A"))
+                }
+            }
+        }
+        val app = startKoin {
+            modules(module)
+        }
+
+        val koin = app.koin
+        val parent = Parent(koin).currentScope
+        val child = Child(koin, parent.id).currentScope
+        val childA = Child(koin, child.id, named("A")).currentScope
+
+        var calls = 0
+        val scopes = listOf<Scope>(parent, child, childA)
+        (scopes + koin.rootScope).forEach {
+            it.registerCallback(object: ScopeCallback {
+                override fun onScopeClose(scope: Scope) {
+                    calls++
+                }
+            })
+        }
+
+        parent.close()
+
+        assertEquals(scopes.size, calls)
+        scopes.forEach { scope ->
+            assertNull(koin.scopeRegistry.getScopeInstanceOrNull(scope.id))
+        }
+
     }
 
 }
