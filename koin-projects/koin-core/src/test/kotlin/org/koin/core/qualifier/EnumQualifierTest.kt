@@ -19,22 +19,22 @@ class EnumQualifierTest {
 
     @Test
     fun `qualified enums work correctly and are distinct`() {
-        assertNotEquals(qualified(Indicate.LEFT), qualified(Indicate.RIGHT))
+        assertNotEquals(qualifier(Indicate.LEFT), qualifier(Indicate.RIGHT))
     }
 
     @Test
     fun `qualified enum not equal to string qualifier`() {
-        assertNotEquals(qualified(Indicate.LEFT).toString(), named("LEFT").toString())
+        assertNotEquals(qualifier(Indicate.LEFT).toString(), named("LEFT").toString())
     }
 
     @Test
     fun `qualified enum uses fully qualified name`() {
-        assertEquals(qualified(Indicate.LEFT).toString(), Indicate::class.java.name + ".LEFT")
+        assertEquals(qualifier(Indicate.LEFT).toString(), Indicate::class.java.name + ".LEFT")
     }
 
     @Test
     fun `different qualified enums with same name don't match`() {
-        assertNotEquals(qualified(Indicate.LEFT).toString(), qualified(Turn.LEFT))
+        assertNotEquals(qualifier(Indicate.LEFT).toString(), qualifier(Turn.LEFT))
     }
 
     @Test
@@ -44,7 +44,7 @@ class EnumQualifierTest {
                 modules(
                     module {
                         single(named("RIGHT")) { "A" }
-                        single(qualified(Turn.RIGHT)) { "B" }
+                        single(qualifier(Turn.RIGHT)) { "B" }
                     }
                 )
             }

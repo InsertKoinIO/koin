@@ -18,4 +18,4 @@ inline fun <reified T> named() = TypeQualifier(T::class)
 /**
  * Give a enum based qualifier
  */
-fun <E : Enum<E>> qualified(qual: E) = EnumQualifier(qual)
+fun <E : Enum<E>> qualifier(qual: E) = EnumQualifier(qual)
