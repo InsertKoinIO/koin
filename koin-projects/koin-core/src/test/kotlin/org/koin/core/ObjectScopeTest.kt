@@ -115,21 +115,6 @@ class ObjectScopeTest {
     }
 
     @Test
-    fun `does not create default instance provision declaration when primary type already present in definitions`() {
-        val koin = startKoin {
-            modules(module {
-                objectScope<Implementation> {
-                    scoped { instance }
-                }
-            })
-        }.koin
-
-        val scope = koin.createObjectScoped(Implementation())
-
-        assertEquals(1, scope.scopeDefinition?.definitions?.size)
-    }
-
-    @Test
     fun `scope qualifier is based on the generic type instead of implementation type at scope creation`() {
         val koin = startKoin {
             modules(module {
