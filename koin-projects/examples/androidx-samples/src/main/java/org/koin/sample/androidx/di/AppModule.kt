@@ -99,13 +99,13 @@ class Consumer(val interceptors: List<Interceptor>, val someService: SomeService
  */
 val objectScopeModule = module {
     objectScope<ObjectScopeActivity> {
-        scoped<FragmentActivity> { instance }
-        scoped { SomeService(instance) }
-        scoped { OtherService(instance) }
+        scoped<FragmentActivity> { get<ObjectScopeActivity>() }
+        scoped { SomeService(get()) }
+        scoped { OtherService(get()) }
 
         childObjectScope<ObjectScopeFragment> {
             scoped { InterceptorA(get()) }
-            scoped { InterceptorB(instance) }
+            scoped { InterceptorB(get<ObjectScopeFragment>()) }
             scoped { InterceptorC(get()) }
             scoped {
                 val interceptors = listOf(

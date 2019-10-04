@@ -116,15 +116,9 @@ class Module(
         declareScope(scope)
     }
 
-    inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
-        val alreadyContainsDefinition = this.definitions.any {
-            val alreadyDefined = it.primaryType == T::class && it.qualifier == null
-            val alreadyBound = it.secondaryTypes.contains(T::class)
-            alreadyDefined || alreadyBound
-        }
-        if (!alreadyContainsDefinition) {
-            this.declareDefinition( scoped { instance }, Options())
-        }
+    @PublishedApi
+    internal inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
+        this.declareDefinition( scoped { instance }, Options())
     }
 
     /**

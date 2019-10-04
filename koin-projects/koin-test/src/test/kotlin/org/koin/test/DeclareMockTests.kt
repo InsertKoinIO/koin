@@ -186,6 +186,29 @@ class DeclareMockTests : KoinTest {
         }.koin
         koin.declareMock<Simple.ComponentA>(named("test"))
     }
+
+    @Test
+    fun `can mock instance provided by object scope`() {
+        val koin = koinApplication {
+            modules(module {
+                objectScope<Simple.UUIDComponent>()
+            })
+        }.koin
+
+        val uuidValue = "UUID"
+        val instance = Simple.UUIDComponent()
+        val scope = koin.createObjectScoped(instance)
+        assertEquals(instance, scope.get<Simple.UUIDComponent>())
+        assertNotEquals(uuidValue, instance.getUUID())
+
+        scope.declareMock<Simple.UUIDComponent> {
+            given(getUUID()).will { uuidValue }
+        }
+
+        val mock = scope.get<Simple.UUIDComponent>()
+        assertNotEquals(instance, mock)
+        assertEquals(uuidValue, mock.getUUID())
+    }
 }
 
 inline fun <S: Scope, reified T> BeanRegistry.findDefinitionTyped(

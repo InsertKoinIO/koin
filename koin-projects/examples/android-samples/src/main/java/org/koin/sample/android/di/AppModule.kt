@@ -52,7 +52,7 @@ val mvvmModule = module {
 
     objectScope<MVVMActivity>() {
         scoped { Session() }
-        scoped { Controller(instance) }
+        scoped { Controller(get<MVVMActivity>()) }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
 
@@ -70,7 +70,7 @@ val scopeModule = module {
     }
     objectScope<ScopedActivityA>() {
         scoped { Session() }
-        scoped { Controller(instance) }
+        scoped { Controller(get<ScopedActivityA>()) }
     }
 }
 

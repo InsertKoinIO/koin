@@ -29,7 +29,7 @@ class ObjectScopeTest {
 
     val module = module {
         objectScope<SomeServiceProvider> {
-            scoped { SomeScopedService(instance) }
+            scoped { SomeScopedService(get()) }
         }
         objectScope<Parent> {
             scoped { Service() }

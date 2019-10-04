@@ -365,7 +365,13 @@ open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefiniti
     }
 }
 
-class ObjectScope<T>(id: ScopeID, _koin: Koin, parentScope: Scope, scopeDefinition: ScopeDefinition, val instance: T) : DefaultScope(id, _koin, scopeDefinition, parentScope) {
+class ObjectScope<T>(
+        id: ScopeID,
+        _koin: Koin,
+        parentScope: Scope,
+        scopeDefinition: ScopeDefinition,
+        @PublishedApi internal val instance: T
+) : DefaultScope(id, _koin, scopeDefinition, parentScope) {
 
     override fun close() {
         performClose { super.close() }

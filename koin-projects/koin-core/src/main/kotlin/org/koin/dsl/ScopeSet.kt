@@ -24,6 +24,7 @@ import org.koin.core.scope.DefaultScope
 import org.koin.core.scope.ObjectScope
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
+import kotlin.reflect.KClass
 
 /**
  * DSL Scope Definition
@@ -91,25 +92,9 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
         childScopes.add(scope)
     }
 
-    inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
-        val alreadyContainsDefinition = this.definitions.any {
-            val alreadyDefined = it.primaryType == T::class && it.qualifier == null
-            val alreadyBound = it.secondaryTypes.contains(T::class)
-            alreadyDefined || alreadyBound
-        }
-        if (!alreadyContainsDefinition) {
-            this.declareDefinition( scoped { instance }, Options())
-        }
-    }
-
-    /**
-     * Declare a child scope definition inside a ScopeSet.
-     * @param scopeName
-     * @param validateParentScope Validate the parent scope at scope instance creation
-     */
-    inline fun <reified T> typedChildScope(
-            noinline scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
-        return childScope(TypeQualifier(T::class), scopeSet)
+    @PublishedApi
+    internal inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
+        this.declareDefinition( scoped { instance }, Options())
     }
 
     /**
