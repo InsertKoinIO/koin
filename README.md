@@ -33,11 +33,16 @@ Old Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
 
 # Setup
 
-## Current Version
+## Current Stable Version
 
 ```gradle
-// latest stable
 koin_version = '2.0.1'
+```
+
+## Current Unstable Version
+
+```gradle
+koin_version = '2.1.0-alpha-1'
 ```
 
 ## Gradle 
@@ -162,6 +167,7 @@ class MyApplication : Application() {
 
 ### Articles
 
+* [Dagger is dead. Long live Koin](https://www.linkedin.com/pulse/dagger-dead-long-live-koin-yordan-olave-cordero)
 * [Testing a Koin application with KotlinTest](https://dev.to/kerooker/testing-koin-applications-with-kotlintest-1iip)
 * [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
 * [Migration from Dagger2 to Koin](https://proandroiddev.com/migrating-from-dagger2-to-koin-3b2b3f5285e9)

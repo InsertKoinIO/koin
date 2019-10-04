@@ -16,7 +16,6 @@ class CoffeeApp : KoinComponent {
 
 fun main() {
     run()
-    run()
 }
 
 private fun run() {
