@@ -228,4 +228,19 @@ class ChildScopesTest {
 
     }
 
+    @Test
+    fun `root scope is assigned as parent scope when no scope id is defined for parent`() {
+        val module = module {
+            objectScope<Parent>()
+        }
+        val app = startKoin {
+            modules(module)
+        }
+
+        val koin = app.koin
+        val scope = Parent(koin).currentScope
+
+        assertTrue(koin.rootScope === scope.parentScope)
+    }
+
 }

@@ -203,8 +203,9 @@ class ScopeRegistry(private val koin: Koin) {
         val scope = getScopeInstanceOrNull(id)
         instances.remove(id)
         val scopes = instances.values.toList()
-        scopes.filter { it.parentScope === scope }
-                .forEach { it.close() }
+        scopes.mapNotNull { it as? DefaultScope }
+              .filter { it.parentScope === scope }
+              .forEach { it.close() }
     }
 
     fun close() {

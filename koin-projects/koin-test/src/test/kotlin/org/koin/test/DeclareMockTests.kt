@@ -17,6 +17,7 @@ import org.koin.dsl.module
 import org.koin.test.mock.createMockedDefinition
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.willReturn
 import org.mockito.Mockito
 import kotlin.reflect.KClass
 
@@ -208,6 +209,21 @@ class DeclareMockTests : KoinTest {
         val mock = scope.get<Simple.UUIDComponent>()
         assertNotEquals(instance, mock)
         assertEquals(uuidValue, mock.getUUID())
+    }
+
+    @Test
+    fun `can mock bean definition with qualifier`() {
+        val koin = koinApplication {
+            modules(module {
+                single(named("A")) { Simple.UUIDComponent() }
+            })
+        }.koin
+
+        koin.declareMock<Simple.UUIDComponent>(named("A")) {
+            given(getUUID()).willReturn("UUID")
+        }
+
+        assertEquals("UUID", koin.get<Simple.UUIDComponent>(named("A")).getUUID())
     }
 }
 

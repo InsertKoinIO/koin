@@ -33,7 +33,7 @@ import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
-abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinition: ScopeDefinition? = null, val parentScope: Scope?) {
+abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinition: ScopeDefinition? = null) {
     val beanRegistry = BeanRegistry()
     protected val callbacks = arrayListOf<ScopeCallback>()
 
@@ -323,7 +323,7 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
     }
 }
 
-class RootScope(_koin: Koin) : Scope(RootScopeId, _koin, parentScope = null) {
+class RootScope(_koin: Koin) : Scope(RootScopeId, _koin) {
 
     companion object {
         internal const val RootScopeId: ScopeID = "-Root-"
@@ -349,7 +349,7 @@ class RootScope(_koin: Koin) : Scope(RootScopeId, _koin, parentScope = null) {
     }
 }
 
-open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefinition, parentScope: Scope) : Scope(id, _koin, scopeDefinition, parentScope) {
+open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefinition, val parentScope: Scope) : Scope(id, _koin, scopeDefinition) {
 
     override fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*, *>? {
         return beanRegistry.findDefinition(qualifier, clazz)
@@ -359,7 +359,7 @@ open class DefaultScope(id: ScopeID, _koin: Koin, scopeDefinition: ScopeDefiniti
 
     override fun <T> resolveInstance(qualifier: Qualifier?, clazz: KClass<*>, parameters: ParametersDefinition?): T {
         val definition = findDefinition(qualifier, clazz)
-                ?: return parentScope?.resolveInstance(qualifier, clazz, parameters)
+                ?: return parentScope.resolveInstance(qualifier, clazz, parameters)
                 ?: throw ParentScopeMismatchException("parent scope not set for non root scope")
         return definition.resolveInstance(InstanceContext(this, parameters))
     }
