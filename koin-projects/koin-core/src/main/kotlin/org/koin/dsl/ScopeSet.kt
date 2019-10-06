@@ -75,7 +75,6 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
     /**
      * Provides the ability to declare a child scope definition inside a ScopeSet.
      * @param scopeName
-     * @param validateParentScope
      */
     @JvmOverloads
     inline fun <reified T> childObjectScope(
@@ -101,7 +100,6 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
     /**
      * Declare a child scope definition inside a ScopeSet.
      * @param scopeName
-     * @param validateParentScope Validate the parent scope at scope instance creation
      */
     @JvmOverloads
     fun childScope(

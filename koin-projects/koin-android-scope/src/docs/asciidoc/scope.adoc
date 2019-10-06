@@ -46,6 +46,7 @@ class DetailActivity : AppCompatActivity() {
 
     // injected Presenter
     override val presenter : Presenter by inject()
+}
 ----
 
 We can describe it in a module:
@@ -102,7 +103,7 @@ class MyActivity : AppCompatActivity() {
 
     // inject Presenter instance from current scope
     val presenter : Presenter by currentScope.inject()
-
+}
 ----
 
 
@@ -173,3 +174,69 @@ val ourSession = getKoin().getScope("ourSession")
 ourSession.close()
 ----
 
+=== Using object scopes
+
+[source,kotlin]
+----
+class KeyboardService(inputMethodManager: InputMethodManager, windowToken: () -> IBinder?)
+interface MainView
+class MainPresenter(view: MainView, keyboardService: KeyboardService)
+
+class MainActivity : AppCompatActivity(), MainView {
+
+    // lazy injected Presenter from current scope
+    override val presenter : MainPresenter by currentScopeInject()
+}
+
+interface DetailView
+class DetailPresenter(view: DetailView, keyboardService: KeyboardService)
+
+class DetailFragment: Fragment(), DetailView {
+
+    // lazy injected Presenter from current scope
+    override val presenter : DetailPresenter by currentScopeInject()
+}
+----
+
+[source,kotlin]
+----
+val androidModule = module {
+    objectScope<MainActivity> {
+        scoped<MainView> { get<MainActivity>() }
+        scoped<KeyboardService> {
+            val activity = get<MainActivity>()
+            val inputService = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            KeyboardService(inputService) { activity.currentFocus?.windowToken }
+        }
+        scoped { MainPresenter(get(), get()) }
+
+        childObjectScope<DetailFragment> {
+            scoped<DetailView> { get<DetailFragment>() }
+            scoped { DetailPresenter(get(), get()) }
+        }
+    }
+}
+----
+
+=== Sharing definitions across multiple scopes
+
+[source,kotlin]
+----
+class ActivityScopedService(activity: AppCompatActivity)
+
+inline fun <reified T: AppCompatActivity> ScopeSet<ObjectScope<T>>.activityScopedService() {
+    scoped {
+        ActivityScopedService(get<T>())
+    }
+}
+
+val androidModule = module {
+    objectScope<ActivityA>() {
+        activityScopedService()
+    }
+
+    objectScope<ActivityB>() {
+        activityScopedService()
+    }
+}
+----

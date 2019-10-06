@@ -2,15 +2,45 @@
 
 Koin brings a simple API to let you define instances that are tied to a limit lifetime.
 
-=== What is a scope?
+=== What is a Scope in general?
 
 Scope is a fixed duration of time or method calls in which an object exists.
 Another way to look at this is to think of scope as the amount of time an object’s state persists.
 When the scope context ends, any objects bound under that scope cannot be injected again (they are dropped from the container).
 
+The Scope API mainly consists of three constructs:
+
+- `Scope Set`
+- `Scope Instance`
+- `Scope Definition`
+
+=== What is a ScopeSet?
+
+A `Scope set` is a container for declaring the properties of a scope along with its definitions.
+You can think of a `ScopeSet` as a blueprint for `Scope Instance`s.
+[source,kotlin]
+----
+module {
+    scope(named("A Scope Name")){
+        // definitions
+    }
+}
+----
+
+=== What is a Scope Instance?
+A Scope instance is a specific instance of a specified ScopeSet.
+
+[source,kotlin]
+----
+val scope1 = koin.createScope("scopeId1","A Scope Name")
+val scope2 = koin.createScope("scopeId2","A Scope Name")
+----
+
+Each `Scope instance` has a unique id assigned. This id has to be unique across the whole `KoinApplication` instance.
+
 === Scope definition
 
-By default in Koin, we have 3 kind of scopes:
+By default in Koin, we have 3 kind of definitions:
 
 - `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
 - `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).
@@ -125,6 +155,93 @@ session.close()
 Beware that you can't inject instances anymore from a closed scope.
 ====
 
+=== Object Scopes
+
+An `object scope` is a special type of scope
+which references the actual instance demanding the scope. A user session for example might consist of the actual user, lifetime of the session and several other functionality.
+Now several components might depend on the user session. By using an `object scope`, the user session is known to koin during resolution.
+
+[source,kotlin]
+----
+interface UserSession
+class AuthenticatedUserSession: UserSession()
+class AnonymousUserSession: UserSession()
+// from a KoinComponent
+module {
+    objectScope<UserSession> {
+        scoped { UserSpecificService(get<UserSession>())}
+    }
+}
+val scopeAuthenticated = koin.createObjectScoped(authenticatedSession)
+val scopeAnonymous = koin.createObjectScoped(anonymousSession)
+----
+
+=== Scope Hierarchies
+
+During scope instance creation, the id of the parent scope can be provided.
+When no id for the parent scope is specified, the root scope will be assigned as the parent scope.
+
+[source,kotlin]
+----
+module {
+    scope(named("Scope A")) {
+        scoped { PresenterA() }
+    }
+    scope(named("Scope B")) {
+        // Either resolve explicitly from parent
+        scoped { PresenterB( parentScope.get<PresenterA>()) }
+        // Or resolving from current scope
+        scoped { PresenterB( get<PresenterA>()) }
+    }
+}
+
+val scopeA = koin.createScope("id1", "Scope A")
+val scopeB = koin.createScope("id2", "Scope B", parentId = "id1")
+----
+
+[IMPORTANT]
+====
+Beware that the resolution of `PresenterA` in this example will fail, when the parentId for `Scope B` is not provided.
+====
+
+=== Parent Scope Validation
+To ensure that the correct parent scope is provided to a child scope, we can use the DSL for child scopes inside a ScopeSet:
+
+[source,kotlin]
+----
+module {
+    scope(named("Scope A1")) {
+        scoped { PresenterA() }
+        childScope(named("Scope B")) {
+            scoped { PresenterB( get<PresenterA>()) }
+        }
+    }
+    scope(named("Scope A2")) { }
+}
+----
+
+Passing Example
+[source, kotlin]
+Creation of `scopeB` will succeed because the parent scope is the expected "Scope A1".
+----
+val scopeA1 = koin.createScope("id1", "Scope A1")
+// This will succeed because the parent scope is the expected "Scope A1"
+val scopeB = koin.createScope("id2", "Scope B", parentId = "id1")
+----
+
+Failing Example
+
+Creation of `scopeB` will fail because the parent scope is not the expected "Scope A1", but "Scope A2".
+
+[source, kotlin]
+----
+val scopeA2 = koin.createScope("id1", "Scope A2")
+val scopeB = koin.createScope("id2", "Scope B", parentId = "id1")
+----
+
+[IMPORTANT]
+====
+Beware that this validation doesn't work for ScopeSets across modules.
+====
+
 === Scope callback -- TODO
-
-
