@@ -43,7 +43,7 @@ class AndroidScopeHierarchyTest: AutoCloseKoinTest() {
         val koin = startKoin {
             modules(module {
                 single { "A" }
-                typedScope<String> {
+                scope(named<String>()) {
                     scoped { "B" }
                     childObjectScope<TestFragment>()
                 }

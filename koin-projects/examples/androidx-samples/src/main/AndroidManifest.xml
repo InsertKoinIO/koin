@@ -27,6 +27,7 @@
         <activity android:name="org.koin.sample.androidx.scope.ObjectScopeActivity"/>
         <activity android:name="org.koin.sample.androidx.scope.PassingScopeActivity" />
         <activity android:name="org.koin.sample.androidx.sdk.HostActivity" />
+
         <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
 
     </application>
