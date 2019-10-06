@@ -18,13 +18,12 @@ package org.koin.dsl
 import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
+import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.DefaultScope
 import org.koin.core.scope.ObjectScope
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
-import kotlin.reflect.KClass
 
 /**
  * DSL Scope Definition
@@ -94,7 +93,9 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
 
     @PublishedApi
     internal inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
-        this.declareDefinition( scoped { instance }, Options())
+        val definition = scoped { instance }
+        definition.isSynthetic = true
+        this.declareDefinition(definition, Options())
     }
 
     /**

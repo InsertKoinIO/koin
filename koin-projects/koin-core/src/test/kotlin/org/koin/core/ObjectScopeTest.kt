@@ -102,7 +102,7 @@ class ObjectScopeTest {
     class Implementation: Abstraction()
 
     @Test
-    fun `does create default instance`() {
+    fun `does create bean definition for instance`() {
         val koin = startKoin {
             modules(module {
                 objectScope<Implementation>()
@@ -112,6 +112,7 @@ class ObjectScopeTest {
         val scope = koin.createObjectScoped(Implementation())
 
         assertEquals(1, scope.scopeDefinition?.definitions?.size)
+        assertTrue(scope.scopeDefinition?.definitions?.first()?.isSynthetic == true)
     }
 
     @Test

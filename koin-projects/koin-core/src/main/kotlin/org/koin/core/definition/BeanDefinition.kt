@@ -53,6 +53,11 @@ class BeanDefinition<S: Scope, T>(
     var onClose: OnCloseCallback<T>? = null
 
     /**
+     * Describes if this definition is automatically declared without explicit declaration
+     */
+    var isSynthetic = false
+
+    /**
      *
      */
     fun hasScopeSet() = scopeName != null

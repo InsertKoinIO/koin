@@ -21,6 +21,7 @@ import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ParentScopeMismatchException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.scope.*
@@ -112,9 +113,22 @@ class ScopeRegistry(private val koin: Koin) {
             definitions[scopeSet.qualifier.toString()] = definition
             definition
         } else {
-            foundScopeSet.definitions.addAll(scopeSet.definitions)
-            foundScopeSet
+            foundScopeSet.addDefinitionsFrom(scopeSet)
         }
+    }
+
+    private fun ScopeDefinition.addDefinitionsFrom(scopeSet: ScopeSet<*>): ScopeDefinition {
+        scopeSet.definitions.forEach { beanDefinition ->
+            if (definitions.add(beanDefinition) || beanDefinition.isSynthetic) {
+                return@forEach
+            }
+            if (!beanDefinition.options.override) {
+                throw DefinitionOverrideException("Can't add definition $beanDefinition as it already exists")
+            }
+            definitions.remove(beanDefinition)
+            definitions.add(beanDefinition)
+        }
+        return this
     }
 
     fun getScopeDefinition(scopeName: String): ScopeDefinition? = definitions[scopeName]

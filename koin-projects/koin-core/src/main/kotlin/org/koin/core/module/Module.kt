@@ -118,7 +118,9 @@ class Module(
 
     @PublishedApi
     internal inline fun <reified T> ScopeSet<ObjectScope<T>>.declareScopedInstanceIfPossible() {
-        this.declareDefinition( scoped { instance }, Options())
+        val definition = scoped { instance }
+        definition.isSynthetic = true
+        this.declareDefinition(definition, Options())
     }
 
     /**
