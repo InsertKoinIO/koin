@@ -5,66 +5,79 @@ import org.koin.core.scope.DefaultScope
 import org.koin.core.scope.ObjectScope
 import org.koin.core.scope.RootScope
 import org.koin.core.scope.Scope
+import org.koin.dsl.ScopeSet
 import kotlin.reflect.KClass
 
 /**
- * Contains the definition of factory objects which correspond to
- * the appropriate scope type. Also contains the resolution functions based on
- * the scope type.
+ * Contains extension functions for ScopeSet and Scope for creating BeanDefinitions of kind
+ * factory and scoped.
  *
  * @author Arnaud Giuliani
  * @author Andreas Schattney
  */
 
-interface DefinitionFactory<S: Scope> {
-
-    fun <T> createScopedWithType(
-            qualifier: Qualifier? = null,
-            scopeName: Qualifier? = null,
-            clazz: KClass<*>,
-            definition: Definition<S, T>
-    ) = createDefinition(qualifier, definition, Kind.Scoped, scopeName, clazz)
-
-    fun <T> createFactoryWithType(
-            qualifier: Qualifier? = null,
-            scopeName: Qualifier? = null,
-            clazz: KClass<*>,
-            definition: Definition<S, T>
-    ): BeanDefinition<S, T> {
-        return createDefinition(qualifier, definition, Kind.Factory, scopeName, clazz)
-    }
-}
-
-object RootScopeDefinitionFactory: DefinitionFactory<RootScope>
-object DefaultScopeDefinitionFactory: DefinitionFactory<DefaultScope>
-object ObjectScopeDefinitionFactory: DefinitionFactory<ObjectScope<*>>
-
-inline fun <reified S: Scope> definitionFactory(): DefinitionFactory<S> {
-    return definitionFactory(S::class)
-}
-
-fun <S: Scope> definitionFactory(clazz: KClass<S>): DefinitionFactory<S> {
-    return when(clazz) {
-        DefaultScope::class -> DefaultScopeDefinitionFactory as DefinitionFactory<S>
-        ObjectScope::class -> ObjectScopeDefinitionFactory as DefinitionFactory<S>
-        else -> RootScopeDefinitionFactory as DefinitionFactory<S>
-    }
-}
-
-inline fun <S: Scope, reified T> DefinitionFactory<S>.createScoped(
+inline fun <S: Scope, reified T> ScopeSet<S>.createScoped(
         qualifier: Qualifier? = null,
         scopeName: Qualifier? = null,
         noinline definition: Definition<S, T>
 ): BeanDefinition<S, T> {
-    return this.createScopedWithType(qualifier, scopeName, T::class, definition)
+    return createScopedWithType(qualifier, scopeName, T::class, definition)
 }
 
-inline fun <S: Scope, reified T> DefinitionFactory<S>.createFactory(
+inline fun <S: Scope, reified T> ScopeSet<S>.createFactory(
         qualifier: Qualifier? = null,
         scopeName: Qualifier? = null,
         noinline definition: Definition<S, T>
 ): BeanDefinition<S, T> {
-    return this.createFactoryWithType(qualifier, scopeName, T::class, definition)
+    return createFactoryWithType(qualifier, scopeName, T::class, definition)
+}
+
+inline fun <reified T> createScoped(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        noinline definition: Definition<RootScope, T>
+): BeanDefinition<RootScope, T> {
+    return createScopedWithType(qualifier, scopeName, T::class, definition)
+}
+
+inline fun <reified T> createFactory(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        noinline definition: Definition<RootScope, T>
+): BeanDefinition<RootScope, T> {
+    return createFactoryWithType(qualifier, scopeName, T::class, definition)
+}
+
+inline fun <S: Scope, reified T> S.createScoped(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        noinline definition: Definition<S, T>
+): BeanDefinition<S, T> {
+    return createScopedWithType(qualifier, scopeName, T::class, definition)
+}
+
+inline fun <S: Scope, reified T> S.createFactory(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        noinline definition: Definition<S, T>
+): BeanDefinition<S, T> {
+    return createFactoryWithType(qualifier, scopeName, T::class, definition)
+}
+
+fun <S: Scope, T> createScopedWithType(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        clazz: KClass<*>,
+        definition: Definition<S, T>
+) = createDefinition(qualifier, definition, Kind.Scoped, scopeName, clazz)
+
+fun <S: Scope, T> createFactoryWithType(
+        qualifier: Qualifier? = null,
+        scopeName: Qualifier? = null,
+        clazz: KClass<*>,
+        definition: Definition<S, T>
+): BeanDefinition<S, T> {
+    return createDefinition(qualifier, definition, Kind.Factory, scopeName, clazz)
 }
 
 private fun <S: Scope, T> createDefinition(

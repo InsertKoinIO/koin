@@ -15,15 +15,13 @@ import org.koin.core.parameter.parametersOf
 import org.koin.sample.android.R
 import org.koin.sample.android.components.ID
 import org.koin.sample.android.components.mvvm.SimpleViewModel
-import org.koin.sample.android.components.scope.Controller
 import org.koin.sample.android.components.scope.Session
 
 class MVVMFragment : Fragment() {
 
     val sharedViewModel: SimpleViewModel by sharedViewModel { parametersOf(ID) }
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
-    val session: Session? by lazy { currentScope.get<Session>() }
-    val controller: Controller? by lazy { currentScope.get<Controller>() }
+    val session: Session? by lazy { activity?.currentScope?.get<Session>() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.mvvm_fragment, container, false)
@@ -34,8 +32,7 @@ class MVVMFragment : Fragment() {
 
         assertNotEquals(sharedViewModel, simpleViewModel)
         assertEquals((activity as MVVMActivity).simpleViewModel, sharedViewModel)
-        assertEquals(activity, controller?.activity)
-        assertEquals(activity, currentScope.get<MVVMActivity>())
+
         assertEquals(session, getKoin().getProperty("session"))
     }
 }

@@ -70,9 +70,9 @@ internal inline fun <S: Scope, reified R : Any, reified T : R> ScopeSet<S>.inter
         kind: Kind
 ): BeanDefinition<S, R> {
     val beanDefinition = if (kind == Kind.Scoped) {
-        this.definitionFactory.createScoped(name, qualifier) { create<T>() as R }
+        this.createScoped(name, qualifier) { create<T>() as R }
     } else {
-        this.definitionFactory.createFactory(name, qualifier) { create<T>() as R }
+        this.createFactory(name, qualifier) { create<T>() as R }
     }
     declareDefinition(beanDefinition, Options(false, override))
     val added = definitions.add(beanDefinition)

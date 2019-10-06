@@ -1,7 +1,6 @@
 package org.koin.test
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceContext
@@ -40,7 +39,7 @@ class DeclareMockTests : KoinTest {
         val scope: Scope = koin.getOrCreateScope("scope_id", named<Simple>())
 
         val registry = scope.beanRegistry
-        val definition = registry.findDefinitionTyped<RootScope, Simple.ComponentA>(null)
+        val definition = registry.findDefinitionTyped<RootScope, Simple.ComponentA>()
         val instance = scope.get<Simple.ComponentA>()
 
         val instanceFound = definition.instance?.get<Simple.ComponentA>(InstanceContext(scope) {emptyParametersHolder()})
@@ -118,7 +117,7 @@ class DeclareMockTests : KoinTest {
         }.koin
 
         val registry = koin.rootScope.beanRegistry
-        val definition = registry.findDefinitionTyped<RootScope, Simple.ComponentA>(null)
+        val definition = registry.findDefinitionTyped<RootScope, Simple.ComponentA>()
 
         val mockedDefinition: BeanDefinition<*, Simple.ComponentA> = definition.createMockedDefinition()
 
@@ -126,10 +125,12 @@ class DeclareMockTests : KoinTest {
         val instance: Simple.ComponentA? = definition.instance?.get(
                 InstanceContext(scope = rootScope, _parameters = { emptyParametersHolder() })
         )
-        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(
+        val mock: Simple.ComponentA? = mockedDefinition.instance?.get(
                 InstanceContext(scope = rootScope, _parameters = { emptyParametersHolder() })
         )
 
+        assertNotNull(instance)
+        assertNotNull(mock)
         assertNotEquals(instance, mock)
     }
 

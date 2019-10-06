@@ -21,10 +21,7 @@ import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.definition.createScoped
-import org.koin.core.definition.definitionFactory
 import org.koin.core.logger.Level
-import org.koin.core.scope.RootScope
 import java.util.*
 
 /**
@@ -53,12 +50,10 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
         logger.info("[init] declare Android Context")
     }
 
-    val definitionFactory = definitionFactory<RootScope>()
-    koin.rootScope.beanRegistry.saveDefinition(definitionFactory.createScoped { androidContext })
+    koin.rootScope.saveScopedDefinition(definition = { androidContext })
 
     if (androidContext is Application) {
-        val appDefinition = definitionFactory.createScoped<RootScope, Application> { androidContext }
-        koin.rootScope.beanRegistry.saveDefinition(appDefinition)
+        koin.rootScope.saveScopedDefinition<Application>(definition = { androidContext })
     }
     return this
 }

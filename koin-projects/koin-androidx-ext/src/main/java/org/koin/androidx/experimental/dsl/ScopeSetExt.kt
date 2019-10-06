@@ -40,7 +40,7 @@ inline fun <S: Scope, reified T : ViewModel> ScopeSet<S>.createViewModelDefiniti
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<S, T> {
-    val beanDefinition = this.definitionFactory.createFactory<S, T>(name, qualifier) { create() }
+    val beanDefinition = this.createFactory<S, T>(name, qualifier) { create() }
     declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
     if (!definitions.contains(beanDefinition)) {

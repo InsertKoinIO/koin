@@ -28,7 +28,7 @@ import org.koin.core.scope.ScopeDefinition
 /**
  * DSL Scope Definition
  */
-data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val qualifier: Qualifier, val validateParentScope: Boolean) {
+data class ScopeSet<S: Scope>(val qualifier: Qualifier, val validateParentScope: Boolean) {
 
     val childScopes = mutableListOf<ScopeSet<*>>()
     val definitions: HashSet<BeanDefinition<S, *>> = hashSetOf()
@@ -47,7 +47,7 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
             override: Boolean = false,
             noinline definition: Definition<S, T>
     ): BeanDefinition<S, T> {
-        val beanDefinition = definitionFactory.createScoped(qualifier, this.qualifier, definition)
+        val beanDefinition = this.createScoped(qualifier, this.qualifier, definition)
         declareDefinition(beanDefinition, Options(false, override))
         if (!definitions.contains(beanDefinition)) {
             definitions.add(beanDefinition)
@@ -62,7 +62,7 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
             override: Boolean = false,
             noinline definition: Definition<S, T>
     ): BeanDefinition<S, T> {
-        val beanDefinition = definitionFactory.createFactory(qualifier, this.qualifier, definition)
+        val beanDefinition = this.createFactory(qualifier, this.qualifier, definition)
         declareDefinition(beanDefinition, Options(false, override))
         if (!definitions.contains(beanDefinition)) {
             definitions.add(beanDefinition)
@@ -80,11 +80,7 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
     inline fun <reified T> childObjectScope(
             scopeName: Qualifier = named<T>(),
             noinline scopeSet: (ScopeSet<ObjectScope<T>>.() -> Unit)? = null) {
-        val scope = ScopeSet<ObjectScope<T>>(
-                definitionFactory(),
-                scopeName,
-                validateParentScope = true
-        )
+        val scope = ScopeSet<ObjectScope<T>>(scopeName, validateParentScope = true)
         scopeSet?.let { scope.apply(it) }
         scope.declareScopedInstanceIfPossible()
         childScopes.add(scope)
@@ -105,11 +101,7 @@ data class ScopeSet<S: Scope>(val definitionFactory: DefinitionFactory<S>, val q
     fun childScope(
             scopeName: Qualifier,
             scopeSet: (ScopeSet<DefaultScope>.() -> Unit)? = null) {
-        val scope = ScopeSet<DefaultScope>(
-                definitionFactory(),
-                scopeName,
-                validateParentScope = true
-        )
+        val scope = ScopeSet<DefaultScope>(scopeName, validateParentScope = true)
         scopeSet?.let { scope.apply(it) }
         childScopes.add(scope)
     }

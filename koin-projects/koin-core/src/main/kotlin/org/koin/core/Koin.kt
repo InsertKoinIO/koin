@@ -22,8 +22,14 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.*
+import org.koin.core.scope.createScopeId
+import org.koin.core.scope.DefaultScope
+import org.koin.core.scope.ObjectScope
+import org.koin.core.scope.RootScope
 import org.koin.core.scope.RootScope.Companion.RootScopeId
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
+import org.koin.core.scope.ScopeDescriptor
 import kotlin.reflect.KClass
 
 /**
@@ -159,6 +165,7 @@ class Koin {
     /**
      * Create a Scope instance
      * @param scopeId
+     * @param scopeDefinitionName
      */
     @JvmOverloads
     fun createScope(scopeId: ScopeID, qualifier: Qualifier, parentId: ScopeID? = null): DefaultScope {

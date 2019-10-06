@@ -16,14 +16,12 @@ import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
 import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
-import org.koin.sample.androidx.components.scope.Controller
 import org.koin.sample.androidx.components.scope.Session
 
 class MVVMFragment : Fragment() {
 
     val shared: SimpleViewModel by sharedViewModel { parametersOf(ID) }
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
-    val controller: Controller? by lazy { currentScope.get<Controller>() }
 
     val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
 
@@ -36,12 +34,9 @@ class MVVMFragment : Fragment() {
 
         assertNotEquals(shared, simpleViewModel)
         assertEquals((activity as MVVMActivity).simpleViewModel, shared)
+
         assertEquals((activity as MVVMActivity).savedVm, sharedSaved)
 
-        assertEquals(activity, controller?.owner)
-        assertEquals(activity, currentScope.get<MVVMActivity>())
-        assertEquals(controller?.owner, currentScope.get<MVVMActivity>())
-
-        assertEquals(currentScope.get<Session>(), getKoin().getProperty("session"))
+        assertEquals(activity!!.currentScope.get<Session>(), getKoin().getProperty("session"))
     }
 }

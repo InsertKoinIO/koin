@@ -15,7 +15,6 @@ import org.koin.experimental.builder.create
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-
 inline fun <reified T : ViewModel> Module.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false

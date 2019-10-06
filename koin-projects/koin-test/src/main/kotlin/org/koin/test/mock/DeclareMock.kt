@@ -93,7 +93,7 @@ inline fun <S: Scope, reified T> BeanDefinition<S, T>.createMockedDefinition(noi
         stubbing?.let { instance.apply(stubbing) }
         instance
     }
-    val copy = BeanDefinition(qualifier, scopeName, primaryType, this.kind, definition)
+    val copy = BeanDefinition(qualifier, scopeName, primaryType, kind, definition)
     copy.secondaryTypes = this.secondaryTypes
     copy.properties = this.properties.copy()
     copy.options = this.options.copy()

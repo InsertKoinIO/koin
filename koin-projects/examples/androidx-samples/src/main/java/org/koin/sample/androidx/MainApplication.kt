@@ -6,7 +6,12 @@ import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.sample.androidx.di.*
+import org.koin.sample.androidx.di.appModule
+import org.koin.sample.androidx.di.mvpModule
+import org.koin.sample.androidx.di.mvvmModule
+import org.koin.sample.androidx.di.scopeModule
+import org.koin.sample.androidx.di.passingScopeModule
+import org.koin.sample.androidx.di.objectScopeModule
 
 class MainApplication : Application() {
 

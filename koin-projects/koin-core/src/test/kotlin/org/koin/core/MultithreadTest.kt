@@ -6,7 +6,7 @@ import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.getDefinition
-import org.koin.test.hasBeenCreatedIn
+import org.koin.test.hasBeenCreated
 import kotlin.random.Random
 
 const val MAX_TIME = 1000L
@@ -46,13 +46,13 @@ class MultithreadTest {
         val b = app.getDefinition(Simple.ComponentA::class)!!
         val c = app.getDefinition(Simple.ComponentA::class)!!
 
-        while (!a.hasBeenCreatedIn(rootScope) && !b.hasBeenCreatedIn(rootScope) && !c.hasBeenCreatedIn(rootScope)) {
+        while (!a.hasBeenCreated(rootScope) && !b.hasBeenCreated(rootScope) && !c.hasBeenCreated(rootScope)) {
             Thread.sleep(100L)
         }
 
-        assertTrue(a.hasBeenCreatedIn(rootScope))
-        assertTrue(b.hasBeenCreatedIn(rootScope))
-        assertTrue(c.hasBeenCreatedIn(rootScope))
+        assertTrue(a.hasBeenCreated(rootScope))
+        assertTrue(b.hasBeenCreated(rootScope))
+        assertTrue(c.hasBeenCreated(rootScope))
         app.close()
     }
 

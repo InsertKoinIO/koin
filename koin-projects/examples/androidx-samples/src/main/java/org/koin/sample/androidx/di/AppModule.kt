@@ -1,9 +1,9 @@
 package org.koin.sample.androidx.di
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.koin.androidx.experimental.dsl.viewModel
-import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -27,7 +27,6 @@ import org.koin.sample.androidx.components.objectscope.Consumer
 import org.koin.sample.androidx.components.objectscope.InterceptorA
 import org.koin.sample.androidx.components.objectscope.InterceptorB
 import org.koin.sample.androidx.components.objectscope.InterceptorC
-import org.koin.sample.androidx.components.scope.Controller
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
@@ -49,10 +48,8 @@ val appModule = module {
 val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
-    objectScope<MVPActivity> {
-        scoped { (id: String) ->
-            ScopedPresenter(id, get())
-        }
+    scope(named<MVPActivity>()) {
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
 
@@ -62,22 +59,15 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-    viewModel(useState = true) { (handle: SavedStateHandle, id: String) ->
-        SavedStateViewModel(handle, id, get())
-    }
+    viewModel(useState = true) { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
 
-    objectScope<MVVMActivity>() {
+    scope(named<MVVMActivity>()) {
 
         scoped { Session() }
-        scoped { Controller(get<MVVMActivity>()) }
         viewModel { ExtSimpleViewModel(get()) }
 
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel(useState = true) { (handle: SavedStateHandle, id: String) ->
-            SavedStateViewModel(handle, id, get())
-        }
-
-        childObjectScope<MVVMFragment>()
+        viewModel(useState = true) { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
     }
 }
 
@@ -89,7 +79,7 @@ val scopeModule = module {
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
-    objectScope<ScopedActivityA> {
+    scope(named<ScopedActivityA>()) {
         scoped { Session() }
     }
 }

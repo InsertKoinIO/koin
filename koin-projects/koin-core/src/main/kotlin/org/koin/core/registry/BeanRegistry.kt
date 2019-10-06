@@ -126,7 +126,7 @@ class BeanRegistry {
         val secondaryTypeDefinitions: ArrayList<BeanDefinition<*, *>> = definitionsSecondaryTypes[type]
                 ?: createSecondaryType(type)
 
-        if (definition in secondaryTypeDefinitions) {
+        if (definition in secondaryTypeDefinitions){
             secondaryTypeDefinitions[secondaryTypeDefinitions.indexOf(definition)] = definition
         } else {
             secondaryTypeDefinitions.add(definition)
@@ -279,9 +279,7 @@ class BeanRegistry {
     }
 
     fun tearDown() {
-        definitions.forEach {
-            it.close()
-        }
+        definitions.forEach { it.close() }
         close()
     }
 

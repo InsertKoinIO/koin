@@ -66,7 +66,7 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<RootScope, T>
     ): BeanDefinition<RootScope, T> {
-        val beanDefinition = definitionFactory<RootScope>().createScoped(qualifier, definition = definition)
+        val beanDefinition = createScoped(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
         return beanDefinition
     }
@@ -77,25 +77,13 @@ class Module(
     }
 
     /**
-     * Declare a group a scoped definition. The qualifier is determined by the associated type.
-     * @param scopeName
-     */
-    inline fun <reified T> typedScope(scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
-        return scope(TypeQualifier(T::class), scopeSet)
-    }
-
-    /**
      * Declare a group a scoped definition with a given scope qualifier
      * @param scopeName
      */
-    inline fun scope(
+    fun scope(
             scopeName: Qualifier,
             scopeSet: ScopeSet<DefaultScope>.() -> Unit) {
-        val scope = ScopeSet<DefaultScope>(
-                definitionFactory(),
-                scopeName,
-                validateParentScope = false
-        ).apply(scopeSet)
+        val scope = ScopeSet<DefaultScope>(scopeName, validateParentScope = false).apply(scopeSet)
         declareScope(scope)
     }
 
@@ -106,11 +94,7 @@ class Module(
     inline fun <reified T> objectScope(
             scopeName: Qualifier = named<T>(),
             noinline scopeSet: (ScopeSet<ObjectScope<T>>.() -> Unit)? = null) {
-        val scope = ScopeSet<ObjectScope<T>>(
-                definitionFactory(),
-                scopeName,
-                validateParentScope = false
-        )
+        val scope = ScopeSet<ObjectScope<T>>(scopeName, validateParentScope = false)
         scopeSet?.apply { scope.apply(scopeSet) }
         scope.declareScopedInstanceIfPossible()
         declareScope(scope)
@@ -134,8 +118,7 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<RootScope, T>
     ): BeanDefinition<RootScope, T> {
-        val beanDefinition = definitionFactory<RootScope>()
-                .createFactory(qualifier, definition = definition)
+        val beanDefinition = createFactory(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))
         return beanDefinition
     }

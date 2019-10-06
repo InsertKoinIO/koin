@@ -17,8 +17,7 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.definitionFactory
+import org.koin.core.definition.*
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.error.ParentScopeMismatchException
@@ -181,14 +180,10 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
     ) {
-        val definition = definitionFactory(this::class).createScopedWithType(
-                qualifier,
-                scopeDefinition?.qualifier,
-                T::class
-        ) { instance }
-        secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
-        definition.options.override = override
-        beanRegistry.saveDefinition(definition)
+        saveScopedDefinition(qualifier, scopeDefinition?.qualifier, { instance }) {
+            secondaryTypes?.let { this.secondaryTypes.addAll(it) }
+            this.options.override = override
+        }
     }
 
     /**
@@ -321,9 +316,21 @@ abstract class Scope(val id: ScopeID, internal val _koin: Koin, val scopeDefinit
         val scopeDef = scopeDefinition.let { ",set:'${it?.qualifier}'" }
         return "Scope[id:'$id'$scopeDef]"
     }
+
+    inline fun <reified T> saveScopedDefinition(qualifier: Qualifier? = null, scopeName: Qualifier? = null, noinline definition: Definition<Scope, T>, noinline block: (BeanDefinition<Scope, T>.() -> Unit)? = null) {
+        val beanDefinition = this.createScoped(qualifier, scopeName, definition)
+        block?.let { block(beanDefinition) }
+        this.beanRegistry.saveDefinition(beanDefinition)
+    }
+
+    inline fun <reified T> saveFactoryDefinition(qualifier: Qualifier? = null, scopeName: Qualifier? = null, noinline definition: Definition<Scope, T>, noinline block: (BeanDefinition<Scope, T>.() -> Unit)? = null) {
+        val beanDefinition = this.createFactory(qualifier, scopeName, definition)
+        block?.let { block(beanDefinition) }
+        this.beanRegistry.saveDefinition(beanDefinition)
+    }
 }
 
-class RootScope(_koin: Koin) : Scope(RootScopeId, _koin) {
+class RootScope internal constructor(_koin: Koin) : Scope(RootScopeId, _koin) {
 
     companion object {
         internal const val RootScopeId: ScopeID = "-Root-"

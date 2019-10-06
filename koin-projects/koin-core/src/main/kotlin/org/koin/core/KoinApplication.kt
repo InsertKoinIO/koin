@@ -34,7 +34,9 @@ class KoinApplication private constructor(val koin: Koin) {
      * Load definitions from modules
      * @param modules
      */
-    fun modules(modules: Module): KoinApplication = modules(listOf(modules))
+    fun modules(modules: Module): KoinApplication {
+        return modules(listOf(modules))
+    }
 
     /**
      * Load definitions from modules
@@ -152,6 +154,8 @@ class KoinApplication private constructor(val koin: Koin) {
          * Create a new instance of KoinApplication
          */
         @JvmStatic
-        fun create(): KoinApplication = KoinApplication(Koin())
+        fun create(): KoinApplication {
+            return KoinApplication(Koin())
+        }
     }
 }

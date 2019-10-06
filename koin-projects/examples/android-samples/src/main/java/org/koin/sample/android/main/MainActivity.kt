@@ -10,7 +10,7 @@ import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
-import org.koin.sample.android.components.APP_TITLE
+import org.koin.sample.android.components.*
 import org.koin.sample.android.components.main.DUMB_SERVICE
 import org.koin.sample.android.components.main.RandomId
 import org.koin.sample.android.components.main.SERVICE_IMPL
