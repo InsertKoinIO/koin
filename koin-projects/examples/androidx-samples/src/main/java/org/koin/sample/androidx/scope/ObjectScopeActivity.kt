@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.objectscope_activity.*
 import org.koin.androidx.scope.currentScope
+import org.koin.androidx.scope.currentScopeInject
 import org.koin.core.bind
 import org.koin.core.context.loadKoinModules
 import org.koin.core.parameter.parametersOf
@@ -17,15 +18,17 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class ObjectScopeActivity: AppCompatActivity() {
 
-    val someService: SomeService by lazy { currentScope.get<SomeService>()}
-    val otherService: OtherService by lazy { currentScope.get<OtherService>() }
+    val someService: SomeService by currentScopeInject()
+    val otherService: OtherService by currentScopeInject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.objectscope_frame, ObjectScopeFragment())
-                .commit()
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.objectscope_frame, ObjectScopeFragment())
+                    .commit()
+        }
 
         setContentView(R.layout.objectscope_activity)
 

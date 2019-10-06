@@ -22,6 +22,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
 import org.koin.core.error.NoScopeDefinitionFoundException
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.*
 
@@ -52,6 +53,17 @@ private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualif
 fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
     lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
+
+inline fun <reified T : Any> LifecycleOwner.scopeInject(
+        crossinline scopeProvider: () -> Scope,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+) = lazy { scopeProvider().get<T>(qualifier, parameters) }
+
+inline fun <reified T : Any> LifecycleOwner.currentScopeInject(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+) = scopeInject<T>({ currentScope }, qualifier, parameters)
 
 /**
  * Get current Koin scope, bound to current lifecycle

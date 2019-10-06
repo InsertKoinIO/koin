@@ -22,6 +22,7 @@ import android.content.ComponentCallbacks
 import android.support.v4.app.Fragment
 import org.koin.android.ext.android.getKoin
 import org.koin.core.error.NoScopeDefinitionFoundException
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.*
 
@@ -59,6 +60,17 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
  */
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateCurrentScope()
+
+inline fun <reified T : Any> LifecycleOwner.scopeInject(
+        crossinline scopeProvider: () -> Scope,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+) = lazy { scopeProvider().get<T>(qualifier, parameters) }
+
+inline fun <reified T : Any> LifecycleOwner.currentScopeInject(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+) = scopeInject<T>({ currentScope }, qualifier, parameters)
 
 private val LifecycleOwner.parentScopeId: ScopeID?
     get() = when (this) {
