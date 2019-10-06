@@ -12,7 +12,12 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.HasParentScope
 import org.koin.core.scope.ScopeID
 import org.koin.sample.android.R
-import org.koin.sample.androidx.di.*
+import org.koin.sample.androidx.components.objectscope.Consumer
+import org.koin.sample.androidx.components.objectscope.InterceptorA
+import org.koin.sample.androidx.components.objectscope.InterceptorB
+import org.koin.sample.androidx.components.objectscope.InterceptorC
+import org.koin.sample.androidx.components.objectscope.SomeService
+import org.koin.sample.androidx.components.objectscope.OtherService
 
 class PassingScopeFragment: Fragment(), HasParentScope {
     /**

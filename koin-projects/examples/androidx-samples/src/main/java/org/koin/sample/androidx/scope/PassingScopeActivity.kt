@@ -2,18 +2,13 @@ package org.koin.sample.androidx.scope
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.scope_activity.*
 import org.koin.androidx.scope.currentScope
-import org.koin.core.context.loadKoinModules
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
 import org.koin.sample.android.R
-import org.koin.sample.androidx.di.OtherService
-import org.koin.sample.androidx.di.SomeService
-import org.koin.sample.androidx.mvp.MVPActivity
+import org.koin.sample.androidx.components.objectscope.OtherService
+import org.koin.sample.androidx.components.objectscope.SomeService
+import org.koin.sample.androidx.sdk.HostActivity
 import org.koin.sample.androidx.utils.navigateTo
 
 class PassingScopeActivity: AppCompatActivity() {
@@ -34,6 +29,6 @@ class PassingScopeActivity: AppCompatActivity() {
 
         setContentView(R.layout.scope_activity)
 
-        scope_button.setOnClickListener { navigateTo<FailingScopeActivity>() }
+        scope_button.setOnClickListener { navigateTo<HostActivity>() }
     }
 }

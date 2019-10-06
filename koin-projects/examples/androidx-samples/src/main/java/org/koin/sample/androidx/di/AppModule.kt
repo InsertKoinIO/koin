@@ -21,12 +21,22 @@ import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
+import org.koin.sample.androidx.components.objectscope.SomeService
+import org.koin.sample.androidx.components.objectscope.OtherService
+import org.koin.sample.androidx.components.objectscope.Consumer
+import org.koin.sample.androidx.components.objectscope.InterceptorA
+import org.koin.sample.androidx.components.objectscope.InterceptorB
+import org.koin.sample.androidx.components.objectscope.InterceptorC
 import org.koin.sample.androidx.components.scope.Controller
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.mvvm.MVVMFragment
-import org.koin.sample.androidx.scope.*
+import org.koin.sample.androidx.scope.ObjectScopeActivity
+import org.koin.sample.androidx.scope.ObjectScopeFragment
+import org.koin.sample.androidx.scope.PassingScopeActivity
+import org.koin.sample.androidx.scope.PassingScopeFragment
+import org.koin.sample.androidx.scope.ScopedActivityA
 
 val appModule = module {
 
@@ -84,16 +94,6 @@ val scopeModule = module {
     }
 }
 
-class SomeService(val activity: FragmentActivity)
-class OtherService(val fragment: FragmentActivity)
-
-abstract class Interceptor
-class InterceptorA(val activity: FragmentActivity): Interceptor()
-class InterceptorB(val fragment: Fragment): Interceptor()
-class InterceptorC(val otherService: OtherService): Interceptor()
-
-class Consumer(val interceptors: List<Interceptor>, val someService: SomeService)
-
 /**
  * All dependencies are known here, no need for parameters
  */
@@ -114,41 +114,6 @@ val objectScopeModule = module {
                         get<InterceptorC>()
                 )
                 Consumer(interceptors, get())
-            }
-        }
-    }
-}
-
-/**
- * This fails because the fragment scope doesn't know about its parent scope.
- * So it can't resolve instances of SomeService or OtherService from its own scope.
- * See 'passingScopeModule' for a workaround.
- *
- * Overall these definitions here are not easy to read and to follow/verify.
- */
-val failingScopeModule = module {
-    scope(named<FailingScopeActivity>()) {
-
-        scoped { (activity: FragmentActivity) -> SomeService(activity) }
-        scoped { (activity: FragmentActivity) -> OtherService(activity) }
-
-        scope(named<FailingScopeFragment>()) {
-            scoped { (activity: FragmentActivity) -> InterceptorA(activity) }
-            scoped { (fragment: Fragment) -> InterceptorB(fragment) }
-            scoped { (activity: FragmentActivity) ->
-                val otherService = get<OtherService>(parameters = { parametersOf(activity) })
-                InterceptorC(otherService)
-            }
-            scoped { (activity: FragmentActivity) -> SomeService(activity) }
-            scoped { (fragment: FailingScopeFragment) ->
-                val parametersActivity = { parametersOf(fragment.activity!!) }
-                val parametersFragment = { parametersOf(fragment) }
-                val interceptors = listOf(
-                        get<InterceptorA>(parameters = parametersActivity),
-                        get<InterceptorB>(parameters = parametersFragment),
-                        get<InterceptorC>(parameters = parametersActivity)
-                )
-                Consumer(interceptors, get(parameters = parametersActivity))
             }
         }
     }

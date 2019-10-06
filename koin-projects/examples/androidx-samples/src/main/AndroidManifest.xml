@@ -29,7 +29,6 @@
 
         <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
         <activity android:name="org.koin.sample.androidx.scope.PassingScopeActivity" />
-        <activity android:name="org.koin.sample.androidx.scope.FailingScopeActivity" />
 
     </application>
 

@@ -22,7 +22,6 @@ class MainApplication : Application() {
                     mvpModule,
                     mvvmModule,
                     scopeModule,
-                    failingScopeModule,
                     passingScopeModule,
                     objectScopeModule
             ))

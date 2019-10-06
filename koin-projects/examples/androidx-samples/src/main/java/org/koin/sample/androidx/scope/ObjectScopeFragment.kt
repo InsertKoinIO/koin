@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.koin.androidx.scope.currentScope
 import org.koin.androidx.scope.currentScopeInject
 import org.koin.sample.android.R
-import org.koin.sample.androidx.di.*
+import org.koin.sample.androidx.components.objectscope.Consumer
+import org.koin.sample.androidx.components.objectscope.Interceptor
+import org.koin.sample.androidx.components.objectscope.InterceptorA
+import org.koin.sample.androidx.components.objectscope.InterceptorB
+import org.koin.sample.androidx.components.objectscope.InterceptorC
 
 class ObjectScopeFragment: Fragment() {
 

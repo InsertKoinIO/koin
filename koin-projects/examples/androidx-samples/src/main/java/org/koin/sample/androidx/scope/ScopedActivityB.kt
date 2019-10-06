@@ -37,7 +37,7 @@ class ScopedActivityB : AppCompatActivity() {
         setContentView(R.layout.scoped_activity_b)
 
         scoped_b_button.setOnClickListener {
-            navigateTo<HostActivity>()
+            navigateTo<ObjectScopeActivity>()
         }
     }
 }

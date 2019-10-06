@@ -2,18 +2,11 @@ package org.koin.sample.androidx.scope
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.objectscope_activity.*
-import org.koin.androidx.scope.currentScope
 import org.koin.androidx.scope.currentScopeInject
-import org.koin.core.bind
-import org.koin.core.context.loadKoinModules
-import org.koin.core.parameter.parametersOf
-import org.koin.dsl.module
 import org.koin.sample.android.R
-import org.koin.sample.androidx.di.OtherService
-import org.koin.sample.androidx.di.SomeService
+import org.koin.sample.androidx.components.objectscope.OtherService
+import org.koin.sample.androidx.components.objectscope.SomeService
 import org.koin.sample.androidx.utils.navigateTo
 
 class ObjectScopeActivity: AppCompatActivity() {
