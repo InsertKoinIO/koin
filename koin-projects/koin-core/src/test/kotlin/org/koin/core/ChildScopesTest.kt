@@ -345,4 +345,44 @@ class ChildScopesTest {
         val scope = Parent(koin).currentScope
         assertEquals("C", scope.get<String>())
     }
+
+    @Test
+    fun `can resolve dependencies from parent scope of same type and without qualifier`() {
+        abstract class Service {
+            abstract val value: String
+        }
+        class Base: Service() {
+            override val value: String = "Base"
+        }
+        class ServiceA(parent: Service): Service() {
+            override val value: String = "${parent.value} A"
+        }
+        class ServiceB(parent: Service): Service() {
+            override val value: String = "${parent.value} B"
+        }
+        val module = module {
+            scope(named("A")) {
+                scoped<Service> { Base() }
+            }
+            scope(named("B")) {
+                scoped<Service> { ServiceA(parentScope.get()) }
+            }
+            scope(named("C")) {
+                scoped<Service> { ServiceB(parentScope.get()) }
+            }
+        }
+        val app = startKoin {
+            modules(module)
+        }
+        val koin = app.koin
+
+        val scopeA = koin.createScope("id1", named("A"))
+        val scopeB = koin.createScope("id2", named("B"), "id1")
+        val scopeC = koin.createScope("id3", named("C"), "id2")
+
+        val service = scopeC.get<Service>()
+        assertEquals("Base A B", service.value)
+        assertEquals("Base A", scopeB.get<Service>().value)
+        assertEquals("Base", scopeA.get<Service>().value)
+    }
 }

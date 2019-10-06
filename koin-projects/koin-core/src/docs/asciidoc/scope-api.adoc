@@ -195,8 +195,8 @@ module {
     }
 }
 
-val scopeA = koin.createScope("id1", "Scope A")
-val scopeB = koin.createScope("id2", "Scope B", parentId = "id1")
+val scopeA = koin.createScope("id1", named("Scope A"))
+val scopeB = koin.createScope("id2", named("Scope B"), parentId = "id1")
 ----
 
 [IMPORTANT]
@@ -235,13 +235,58 @@ Creation of `scopeB` will fail because the parent scope is not the expected "Sco
 
 [source, kotlin]
 ----
-val scopeA2 = koin.createScope("id1", "Scope A2")
-val scopeB = koin.createScope("id2", "Scope B", parentId = "id1")
+val scopeA2 = koin.createScope("id1", named("Scope A2"))
+val scopeB = koin.createScope("id2", named("Scope B"), parentId = "id1")
 ----
 
 [IMPORTANT]
 ====
 Beware that this validation doesn't work for ScopeSets across modules.
 ====
+
+=== Explicit resolution of dependencies from parent scope
+
+[source, kotlin]
+----
+interface Service {
+    val value: String
+}
+class Base: Service {
+    override val value = "Base"
+}
+class ServiceA(parent: Service): Service {
+    override val value = "{parent.value} A"
+}
+class ServiceB(parent: Service): Service {
+    override val value = "{parent.value} B"
+}
+----
+
+[source, kotlin]
+----
+module {
+    scope(named("A")) {
+        scoped<Service> { Base() }
+    }
+    scope(named("B")) {
+        // parentScope is accessible inside definition
+        scoped<Service> { ServiceA(parentScope.get()) }
+    }
+    scope(named("C")) {
+        scoped<Service> { ServiceB(parentScope.get()) }
+    }
+}
+----
+
+[source, kotlin]
+----
+val scopeA = koin.createScope("id1", named("A"))
+val scopeB = koin.createScope("id2", named("B"), parentId = "id1")
+val scopeC = koin.createScope("id3", named("C"), parentId = "id2")
+
+// Base A B
+println(scopeC.get<Service>())
+----
+
 
 === Scope callback -- TODO
