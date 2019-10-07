@@ -92,6 +92,13 @@ fun loadKoinModules(modules: List<Module>) {
 }
 
 /**
+ * load Koin modules in global Koin context
+ */
+fun loadKoinModules(vararg modules: Module) {
+    loadKoinModules(modules.toList())
+}
+
+/**
  * unload Koin modules from global Koin context
  */
 fun unloadKoinModules(module: Module) {
@@ -103,4 +110,11 @@ fun unloadKoinModules(module: Module) {
  */
 fun unloadKoinModules(modules: List<Module>) {
     GlobalContext.get().unloadModules(modules)
+}
+
+/**
+ * unload Koin modules from global Koin context
+ */
+fun unloadKoinModules(vararg modules: Module) {
+    unloadKoinModules(modules.toList())
 }
