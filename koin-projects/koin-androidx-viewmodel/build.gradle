@@ -34,7 +34,7 @@ dependencies {
         exclude group: "androidx.legacy"
     }
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha01") {
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"
