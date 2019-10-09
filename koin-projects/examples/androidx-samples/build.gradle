@@ -31,6 +31,7 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha01"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
 }

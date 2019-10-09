@@ -29,6 +29,8 @@
         <activity android:name=".components.sdk.SDKActivity" />
         <activity android:name=".dynamic.DynamicActivity" />
 
+        <activity android:name=".compat.JavaActivity" />
+
     </application>
 
 </manifest>

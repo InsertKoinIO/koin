@@ -36,7 +36,8 @@ Old Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
 ## Current Stable Version
 
 ```gradle
-koin_version = '2.0.1'
+// latest stable
+koin_version = '2.1.0-alpha-1'
 ```
 
 ## Current Unstable Version

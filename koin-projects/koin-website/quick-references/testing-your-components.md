@@ -44,7 +44,7 @@ class MyTest : KoinTest {
 
 ### Mocking on the fly
 
-Once you have tagged your class with `KoinTest` interface, you can use the `declareMock` fucntion to declare mocks & behavior on the fly:
+Once you have tagged your class with `KoinTest` interface, you can use the `declareMock` function to declare mocks & behavior on the fly:
 
 {% highlight kotlin %}
 class MyTest : KoinTest {

@@ -80,15 +80,24 @@ fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
 fun stopKoin() = GlobalContext.stop()
 
 /**
- * load Koin modules in global Koin context
+ * load Koin module in global Koin context
  */
 fun loadKoinModules(module: Module) {
     GlobalContext.get().modules(listOf(module))
 }
 
-
+/**
+ * load Koin modules in global Koin context
+ */
 fun loadKoinModules(modules: List<Module>) {
     GlobalContext.get().modules(modules)
+}
+
+/**
+ * load Koin modules in global Koin context
+ */
+fun loadKoinModules(vararg modules: Module) {
+    GlobalContext.get().modules(modules.toList())
 }
 
 /**
@@ -96,6 +105,13 @@ fun loadKoinModules(modules: List<Module>) {
  */
 fun unloadKoinModules(module: Module) {
     GlobalContext.get().unloadModules(listOf(module))
+}
+
+/**
+ * unload Koin modules from global Koin context
+ */
+fun unloadKoinModules(vararg modules: Module) {
+    GlobalContext.get().unloadModules(modules.toList())
 }
 
 /**
