@@ -65,6 +65,35 @@ class DetailActivity : AppCompatActivity() {
 }
 ----
 
+
+In a similar way, in Java you can inject the ViewModel instance, but using `viewModel()` or `getViewModel` static functions from `ViewModelCompat`:
+
+[source,java]
+----
+// import viewModel
+import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
+
+// import getViewModel
+import static org.koin.android.viewmodel.compat.ViewModelCompat.getViewModel;
+
+public class JavaActivity extends AppCompatActivity {
+
+    // lazy ViewModel
+    private Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
+
+    // directly get the ViewModel instance
+    private DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_simple);
+
+        //...
+    }
+}
+----
+
 === Shared ViewModel
 
 One ViewModel instance can be shared between Fragments and their host Activity.
@@ -120,6 +149,26 @@ class WeatherListFragment : Fragment() {
 ====
 The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
 ====
+
+
+For your Java Fragment, must be used `sharedViewModel` or `getSharedViewModel` from `SharedViewModelCompat`.
+
+[source,java]
+----
+// import sharedViewModel static function
+import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
+
+public class JavaFragment extends Fragment {
+
+    private Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //...
+    }
+}
+----
 
 
 === ViewModel and injection parameters

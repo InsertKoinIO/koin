@@ -27,7 +27,7 @@ import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * Fragment extensiosn to help for Viewmodel
+ * Fragment extension to help for Viewmodel
  *
  * @author Arnaud Giuliani
  */

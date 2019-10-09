@@ -16,6 +16,7 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import android.content.ComponentCallbacks
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
@@ -35,37 +36,43 @@ import kotlin.reflect.KClass
  * Lazy get a viewModel instance
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  * @param clazz
  */
 fun <T : ViewModel> LifecycleOwner.viewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getViewModel(clazz, qualifier, parameters) }
+): Lazy<T> = lazy { getViewModel(clazz, qualifier, defaultArguments, parameters) }
 
 /**
  * Lazy getByClass a viewModel instance
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
         qualifier: Qualifier? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { getViewModel<T>(qualifier, parameters) }
+): Lazy<T> = lazy { getViewModel<T>(qualifier, defaultArguments, parameters) }
 
 /**
  * Get a viewModel instance
  *
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
         qualifier: Qualifier? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
         noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(T::class, qualifier, parameters)
+    return getViewModel(T::class, qualifier, defaultArguments, parameters)
 }
 
 private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
@@ -75,16 +82,19 @@ private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
  *
  * @param clazz - Class of the BeanDefinition to retrieve
  * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> LifecycleOwner.getViewModel(
         clazz: KClass<T>,
         qualifier: Qualifier? = null,
+        defaultArguments: () -> Bundle? = { null },
         parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(
             ViewModelParameters(
                     clazz,
+                    defaultArguments,
                     this@getViewModel,
                     qualifier,
                     parameters = parameters

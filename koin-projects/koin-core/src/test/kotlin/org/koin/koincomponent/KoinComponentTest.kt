@@ -15,6 +15,10 @@ class MyComponent : KoinComponent {
     val aGet: Simple.ComponentA = get()
 }
 
+class MyLazyComponent : KoinComponent {
+    val anInject: Simple.ComponentA by inject()
+}
+
 class KoinComponentTest {
 
     @Test
@@ -33,6 +37,32 @@ class KoinComponentTest {
 
         Assert.assertEquals(component.anInject, a)
         Assert.assertEquals(component.aGet, a)
+
+        stopKoin()
+    }
+
+    @Test
+    fun `can lazy inject before starting Koin`() {
+        var caughtException: Exception? = null
+        var component: MyLazyComponent? = null
+        try {
+            component = MyLazyComponent()
+        } catch (e: Exception) {
+            caughtException = e
+        }
+        Assert.assertNull(caughtException)
+
+        val app = startKoin {
+            printLogger()
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.ComponentA = koin.get()
+        Assert.assertEquals(component?.anInject, a)
 
         stopKoin()
     }
