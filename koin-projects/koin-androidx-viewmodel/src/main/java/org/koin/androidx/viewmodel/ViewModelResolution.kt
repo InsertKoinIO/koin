@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.AbstractSavedStateVMFactory
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.androidx.viewmodel.dsl.isStateViewModel
@@ -68,7 +68,7 @@ fun <T : ViewModel> Scope.createViewModelProvider(
     return ViewModelProvider(
             vmStore,
             if(beanRegistry.findDefinition(parameters.qualifier, parameters.clazz)?.isStateViewModel() == true) {
-                object : AbstractSavedStateVMFactory(parameters.owner as SavedStateRegistryOwner, parameters.defaultArguments()) {
+                object : AbstractSavedStateViewModelFactory(parameters.owner as SavedStateRegistryOwner, parameters.defaultArguments()) {
                     override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                         return get(parameters.clazz, parameters.qualifier) {
                             parametersOf(handle, *(parameters.parameters?.invoke() ?: emptyParametersHolder()).values)
