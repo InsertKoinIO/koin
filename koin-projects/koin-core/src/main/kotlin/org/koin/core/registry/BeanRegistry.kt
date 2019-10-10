@@ -84,7 +84,7 @@ class BeanRegistry {
      * @param definition
      */
     private fun removeDefinition(definition: BeanDefinition<*>) {
-        definition.instance?.close()
+        definition.close()
         definitions.remove(definition)
         if (definition.qualifier != null) {
             removeDefinitionForName(definition)
@@ -272,11 +272,15 @@ class BeanRegistry {
     }
 
     fun close() {
-        definitions.forEach { it.close() }
         definitions.clear()
         definitionsNames.clear()
         definitionsPrimaryTypes.clear()
         definitionsToCreate.clear()
+    }
+
+    fun tearDown() {
+        definitions.forEach { it.close() }
+        close()
     }
 
     /**

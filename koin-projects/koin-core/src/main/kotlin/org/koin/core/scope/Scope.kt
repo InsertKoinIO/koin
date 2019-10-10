@@ -39,6 +39,9 @@ data class Scope(
     var scopeDefinition: ScopeDefinition? = null
     private val callbacks = arrayListOf<ScopeCallback>()
 
+
+    private var isClosed: Boolean = false
+
     /**
      * Lazy inject a Koin instance
      * @param qualifier
@@ -298,15 +301,31 @@ data class Scope(
         scopeDefinition.let {
             it?.definitions?.forEach { definition ->
                 beanRegistry.saveDefinition(definition)
-                definition.createInstanceHolder()
             }
         }
     }
 
     /**
-     * Close all instances from this scope
+     * Close all instances of this scope without closing definitions since there might be other
+     * scopes instance with the same scope name.
      */
     fun close() = synchronized(this) {
+        release()
+        beanRegistry.close()
+    }
+
+    /**
+     * Close all instances of this scope including closing all related definitions
+     */
+    fun tearDown() = synchronized(this) {
+        release()
+        beanRegistry.tearDown()
+    }
+
+    private fun release() {
+        if (isClosed) {
+            return
+        }
         if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.info("closing scope:'$id'")
         }
@@ -315,8 +334,8 @@ data class Scope(
         callbacks.clear()
 
         scopeDefinition?.release(this)
-        beanRegistry.close()
         _koin.deleteScope(this.id)
+        isClosed = true
     }
 
     override fun toString(): String {

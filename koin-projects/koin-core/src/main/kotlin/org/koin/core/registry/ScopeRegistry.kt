@@ -143,7 +143,7 @@ class ScopeRegistry {
     }
 
     fun close() {
-        instances.values.forEach { it.close() }
+        instances.values.forEach { it.tearDown() }
         definitions.clear()
         instances.clear()
     }
