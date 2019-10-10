@@ -27,6 +27,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.BeanRegistry
 import org.koin.core.time.measureDuration
+import org.koin.dsl.ScopeSet
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -299,6 +300,16 @@ data class Scope(
             it?.definitions?.forEach { definition ->
                 beanRegistry.saveDefinition(definition)
                 definition.createInstanceHolder()
+            }
+        }
+    }
+
+    internal fun updateBeanRegistry() {
+        scopeDefinition?.let { scopeDefinition ->
+            scopeDefinition.definitions.forEach {
+                if (beanRegistry.findDefinition(it.qualifier, it.primaryType) == null) {
+                    beanRegistry.saveDefinition(it)
+                }
             }
         }
     }

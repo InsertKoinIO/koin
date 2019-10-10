@@ -221,4 +221,24 @@ class ScopeAPITest {
         val scope = koin.createScope("123", named("A"))
         assertEquals("C", scope.get<String>())
     }
+
+    @Test
+    fun `already open scopes are considered when loading scope definitions via modules on the fly`() {
+        val module = module {
+            scope(named("A")) {
+                scoped { "A" }
+            }
+        }
+        val koin = startKoin { modules(module) }.koin
+        val scope = koin.createScope("123", named("A"))
+
+        loadKoinModules(module {
+            scope(named("A")) {
+                scoped(named("B")) { "B" }
+            }
+        })
+
+        assertEquals("A", scope.get<String>())
+        assertEquals("B", scope.get<String>(named("B")))
+    }
 }

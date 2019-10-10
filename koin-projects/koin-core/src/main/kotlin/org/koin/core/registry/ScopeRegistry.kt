@@ -99,6 +99,15 @@ class ScopeRegistry {
             definitions[scopeSet.qualifier.toString()] = scopeSet.createDefinition()
         } else {
             foundScopeSet.addDefinitionsFrom(scopeSet)
+            allScopes(scopeSet.qualifier).forEach {
+                it.updateBeanRegistry()
+            }
+        }
+    }
+
+    private fun allScopes(qualifier: Qualifier?): List<Scope> {
+        return instances.values.filter {
+            it.scopeDefinition?.qualifier == qualifier
         }
     }
 
