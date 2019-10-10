@@ -16,6 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 
 /**
  * Factory Instance Holder
@@ -24,6 +25,8 @@ import org.koin.core.definition.BeanDefinition
  */
 class FactoryDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) :
         DefinitionInstance<T>(beanDefinition) {
+
+    override val kind: Kind = Kind.Factory
 
     override fun release(context: InstanceContext) {}
 

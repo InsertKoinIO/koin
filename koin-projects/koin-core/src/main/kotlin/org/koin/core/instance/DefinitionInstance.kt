@@ -20,6 +20,7 @@ package org.koin.core.instance
 import org.koin.core.Koin
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
@@ -32,6 +33,8 @@ import org.koin.core.scope.Scope
  * create/get/release an instance of given definition
  */
 abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
+
+    abstract val kind: Kind
 
     /**
      * Retrieve an instance

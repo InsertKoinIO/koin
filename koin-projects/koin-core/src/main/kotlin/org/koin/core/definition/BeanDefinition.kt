@@ -15,6 +15,7 @@
  */
 package org.koin.core.definition
 
+import org.koin.core.error.InstanceHolderKindMismatchException
 import org.koin.core.instance.*
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
@@ -57,11 +58,23 @@ class BeanDefinition<T>(
      * Create the associated Instance Holder
      */
     fun createInstanceHolder() {
+        if (!sameKind()) {
+            val message = "Instance holder is ${this::class} but creation requested with kind: ${kind.name}"
+            throw InstanceHolderKindMismatchException(message)
+        }
+        if (this.instance != null) {
+            return
+        }
         this.instance = when (kind) {
             Kind.Single -> SingleDefinitionInstance(this)
             Kind.Factory -> FactoryDefinitionInstance(this)
             Kind.Scoped -> ScopeDefinitionInstance(this)
         }
+    }
+
+    private fun sameKind(): Boolean {
+        val currentInstance = instance ?: return true
+        return currentInstance.kind == kind
     }
 
     /**

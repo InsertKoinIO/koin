@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 import org.koin.core.error.BadScopeInstanceException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
@@ -31,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap
 class ScopeDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
 
     private val values: MutableMap<String, T> = ConcurrentHashMap()
+
+    override val kind: Kind = Kind.Scoped
 
     override fun isCreated(context: InstanceContext): Boolean = context.scope?.let { values[context.scope.id] != null }
             ?: false

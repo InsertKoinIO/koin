@@ -16,6 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.definition.Kind
 
 /**
  * Single instance holder
@@ -24,6 +25,8 @@ import org.koin.core.definition.BeanDefinition
 class SingleDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
 
     private var value: T? = null
+
+    override val kind: Kind = Kind.Single
 
     override fun isCreated(context: InstanceContext): Boolean = (value != null)
 
