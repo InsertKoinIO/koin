@@ -17,6 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.error.ScopeNotCreatedException
@@ -97,7 +98,20 @@ class ScopeRegistry {
         if (foundScopeSet == null) {
             definitions[scopeSet.qualifier.toString()] = scopeSet.createDefinition()
         } else {
-            foundScopeSet.definitions.addAll(scopeSet.definitions)
+            foundScopeSet.addDefinitionsFrom(scopeSet)
+        }
+    }
+
+    private fun ScopeDefinition.addDefinitionsFrom(scopeSet: ScopeSet) {
+        scopeSet.definitions.forEach { beanDefinition ->
+            if (definitions.add(beanDefinition)) {
+                return@forEach
+            }
+            if (!beanDefinition.options.override) {
+                throw DefinitionOverrideException("Can't add definition $beanDefinition as it already exists")
+            }
+            definitions.remove(beanDefinition)
+            definitions.add(beanDefinition)
         }
     }
 

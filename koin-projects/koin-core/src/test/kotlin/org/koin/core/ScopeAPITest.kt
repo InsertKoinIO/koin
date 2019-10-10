@@ -1,7 +1,12 @@
 package org.koin.core
 
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.qualifier.named
@@ -11,6 +16,11 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class ScopeAPITest {
+
+    @After
+    fun after() {
+        stopKoin()
+    }
 
     val scopeKey = named("KEY")
     val koin = koinApplication {
@@ -110,5 +120,105 @@ class ScopeAPITest {
         })
         scope1.close()
         assertTrue(closed)
+    }
+
+    @Test
+    fun `can override beandefinition in RootScope by loading a module`() {
+        val module = module {
+            single { "A" }
+        }
+        val app = startKoin {
+            modules(module)
+        }
+
+        val koin = app.koin
+        loadKoinModules(module {
+            single(override = true) { "B" }
+        })
+
+        assertEquals("B", koin.get<String>())
+    }
+
+    @Test
+    fun `detects duplicate bean definitions in identical ScopeSets across modules`() {
+        val moduleA = module {
+            scope(named("A")) {
+                scoped { "A" }
+            }
+        }
+        val moduleB = module {
+            scope(named("A")) {
+                scoped { "A" }
+            }
+        }
+        try {
+            startKoin {
+                modules(listOf(moduleA, moduleB))
+            }
+            fail("Should have thrown ${DefinitionOverrideException::class.java.simpleName}")
+        } catch (e: DefinitionOverrideException) {
+
+        }
+
+        koinApplication {
+            modules(listOf(moduleA))
+        }
+
+        try {
+            loadKoinModules(moduleB)
+            fail("Should have thrown ${DefinitionOverrideException::class.java.simpleName}")
+        } catch (e: DefinitionOverrideException) {
+
+        }
+
+    }
+
+    @Test
+    fun `can override bean definition in ScopeSet by loading a module`() {
+        val module = module {
+            scope(named("A")) {
+                scoped { "A" }
+            }
+        }
+        val app = startKoin {
+            modules(module)
+        }
+
+        val koin = app.koin
+        loadKoinModules(module {
+            scope(named("A")) {
+                scoped(override = true) {"B"}
+            }
+        })
+
+        val scope = koin.createScope("123", named("A"))
+        assertEquals("B", scope.get<String>())
+    }
+
+    @Test
+    fun `can override bean definition in ScopeSet more than once`() {
+        val module = module {
+            scope(named("A")) {
+                scoped { "A" }
+            }
+        }
+        val app = startKoin {
+            modules(module)
+        }
+
+        val koin = app.koin
+        loadKoinModules(module {
+            scope(named("A")) {
+                scoped(override = true) {"B"}
+            }
+        })
+        loadKoinModules(module {
+            scope(named("A")) {
+                scoped(override = true) {"C"}
+            }
+        })
+
+        val scope = koin.createScope("123", named("A"))
+        assertEquals("C", scope.get<String>())
     }
 }
