@@ -6,6 +6,7 @@ import org.koin.Simple
 import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.instance.InstanceContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -221,6 +222,31 @@ class DeclareInstanceTest {
             fail()
         } catch (e: NoBeanDefFoundException) {
             e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `on the fly declarations are released when the scope closes`(){
+
+        val koin = koinApplication {
+            printLogger()
+            modules(module {
+                scope(named("Session")) {
+                }
+            })
+        }.koin
+
+        val session1 = koin.createScope("session1", named("Session"))
+        session1.declare("A")
+        assertEquals("A", session1.get<String>())
+
+        val allDefinitions = session1.beanRegistry.getAllDefinitions().toList()
+        allDefinitions.forEach {
+            assertNotNull(it.instance)
+        }
+        session1.close()
+        allDefinitions.forEach {
+            assertNull(it.instance)
         }
     }
 }

@@ -208,6 +208,7 @@ data class Scope(
         } else {
             DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
         }
+        definition.onTheFly = true
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
         definition.options.override = override
         beanRegistry.saveDefinition(definition)

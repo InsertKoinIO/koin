@@ -48,6 +48,9 @@ class BeanDefinition<T>(
     var onRelease: OnReleaseCallback<T>? = null
     var onClose: OnCloseCallback<T>? = null
 
+    // declared by user after scope creation
+    var onTheFly: Boolean = false
+
     /**
      *
      */
