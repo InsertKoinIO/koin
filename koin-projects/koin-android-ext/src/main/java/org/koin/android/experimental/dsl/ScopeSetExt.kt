@@ -20,11 +20,11 @@ import org.koin.experimental.builder.create
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-inline fun <S: Scope, reified T : ViewModel> ScopeSet<S>.viewModel(
+inline fun <reified T : ViewModel> ScopeSet<out Scope>.viewModel(
         name: Qualifier? = null,
         override: Boolean = false
 ): BeanDefinition<T> {
-    val beanDefinition = DefinitionFactory.createFactory<S, T>(name, qualifier) { create<T>() }
+    val beanDefinition = DefinitionFactory.createFactory<Scope, T>(name, qualifier) { create<T>() }
     declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
     if (!definitions.contains(beanDefinition)) {
