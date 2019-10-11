@@ -39,7 +39,7 @@ class BeanDefinition<T>(
     // Main data
     var secondaryTypes = arrayListOf<KClass<*>>()
     var instance: DefinitionInstance<T>? = null
-    lateinit var definition: Definition<T>
+    lateinit var definition: Definition<Scope, T>
     var options = Options()
     var properties = Properties()
     lateinit var kind: Kind
@@ -110,6 +110,6 @@ enum class Kind {
     Single, Factory, Scoped
 }
 
-typealias Definition<T> = Scope.(DefinitionParameters) -> T
+typealias Definition<S, T> = S.(DefinitionParameters) -> T
 typealias OnReleaseCallback<T> = (T?) -> Unit
 typealias OnCloseCallback<T> = (T?) -> Unit

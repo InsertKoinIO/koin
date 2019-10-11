@@ -20,6 +20,8 @@ import org.koin.core.definition.Definition
 import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.NestedScope
+import org.koin.core.scope.RootScope
 import org.koin.dsl.ScopeSet
 
 /**
@@ -33,7 +35,7 @@ class Module(
         internal val override: Boolean
 ) {
     internal val definitions = arrayListOf<BeanDefinition<*>>()
-    internal val scopes = arrayListOf<ScopeSet>()
+    internal val scopes = arrayListOf<ScopeSet<*>>()
 
     /**
      * Declare a definition in current Module
@@ -46,7 +48,7 @@ class Module(
     /**
      * Declare a definition in current Module
      */
-    fun declareScope(scope: ScopeSet) {
+    fun declareScope(scope: ScopeSet<*>) {
         scopes.add(scope)
     }
 
@@ -61,7 +63,7 @@ class Module(
             qualifier: Qualifier? = null,
             createdAtStart: Boolean = false,
             override: Boolean = false,
-            noinline definition: Definition<T>
+            noinline definition: Definition<RootScope, T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createSingle(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(createdAtStart, override))
@@ -77,8 +79,8 @@ class Module(
      * Declare a group a scoped definition with a given scope qualifier
      * @param scopeName
      */
-    fun scope(scopeName: Qualifier, scopeSet: ScopeSet.() -> Unit) {
-        val scope: ScopeSet = ScopeSet(scopeName).apply(scopeSet)
+    fun scope(scopeName: Qualifier, scopeSet: ScopeSet<NestedScope>.() -> Unit) {
+        val scope: ScopeSet<NestedScope> = ScopeSet<NestedScope>(scopeName).apply(scopeSet)
         declareScope(scope)
     }
 
@@ -91,7 +93,7 @@ class Module(
     inline fun <reified T> factory(
             qualifier: Qualifier? = null,
             override: Boolean = false,
-            noinline definition: Definition<T>
+            noinline definition: Definition<RootScope, T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createFactory(qualifier, definition = definition)
         declareDefinition(beanDefinition, Options(override = override))

@@ -8,7 +8,7 @@ import org.koin.dsl.ScopeSet
 /**
  * Imternal Scope Definition
  */
-data class ScopeDefinition(val qualifier: Qualifier) {
+data class ScopeDefinition(val qualifier: Qualifier, val parent: ScopeDefinition?) {
 
     val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
 

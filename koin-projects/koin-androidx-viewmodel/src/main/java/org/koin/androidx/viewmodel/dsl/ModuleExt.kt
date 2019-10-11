@@ -20,6 +20,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.RootScope
 
 /**
  * ViewModel DSL Extension
@@ -35,7 +36,7 @@ inline fun <reified T : ViewModel> Module.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false,
         useState: Boolean = false,
-        noinline definition: Definition<T>
+        noinline definition: Definition<RootScope, T>
 ): BeanDefinition<T> {
     val beanDefinition = factory(qualifier, override, definition)
     beanDefinition.setIsViewModel()

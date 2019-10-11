@@ -23,6 +23,7 @@ import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.NestedScope
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeID
@@ -59,7 +60,19 @@ class ScopeRegistry {
 
     private fun unloadScopes(module: Module) {
         module.scopes.forEach {
-            unloadDefinition(it)
+            unloadScope(it)
+        }
+    }
+
+    private fun unloadScope(scopeSet: ScopeSet<*>) {
+        scopeSet.nestedScopes.forEach { scope -> unloadScope(scope) }
+        unloadDefinition(scopeSet)
+    }
+
+    private fun declareScope(scopeSet: ScopeSet<*>, parentDefinition: ScopeDefinition?) {
+        val definition = saveDefinition(scopeSet, parentDefinition)
+        scopeSet.nestedScopes.forEach {
+            declareScope(it, definition)
         }
     }
 
@@ -68,12 +81,13 @@ class ScopeRegistry {
     }
 
     private fun declareScopes(module: Module) {
+        val rootScope = getScopeInstance("-Root-")
         module.scopes.forEach {
-            saveDefinition(it)
+            declareScope(it, rootScope.scopeDefinition)
         }
     }
 
-    private fun unloadDefinition(scopeSet: ScopeSet) {
+    private fun unloadDefinition(scopeSet: ScopeSet<*>) {
         val key = scopeSet.qualifier.toString()
         definitions[key]?.let { scopeDefinition ->
             if (KoinApplication.logger.isAt(Level.DEBUG)) {
@@ -85,19 +99,25 @@ class ScopeRegistry {
     }
 
     private fun closeRelatedScopes(originalSet: ScopeDefinition) {
-        instances.values.forEach { scope ->
+        val it = instances.iterator()
+        while (it.hasNext()) {
+            val (_, scope) = it.next()
             if (scope.scopeDefinition == originalSet) {
                 scope.close()
+                it.remove()
             }
         }
     }
 
-    private fun saveDefinition(scopeSet: ScopeSet) {
+    private fun saveDefinition(scopeSet: ScopeSet<*>, parentDefinition: ScopeDefinition?): ScopeDefinition {
         val foundScopeSet: ScopeDefinition? = definitions[scopeSet.qualifier.toString()]
-        if (foundScopeSet == null) {
-            definitions[scopeSet.qualifier.toString()] = scopeSet.createDefinition()
+        return if (foundScopeSet == null) {
+            val definition = scopeSet.createDefinition(parentDefinition)
+            definitions[scopeSet.qualifier.toString()] = definition
+            definition
         } else {
             foundScopeSet.definitions.addAll(scopeSet.definitions)
+            foundScopeSet
         }
     }
 
@@ -108,10 +128,12 @@ class ScopeRegistry {
      * @param id - scope instance id
      * @param scopeName - scope qualifier
      */
-    fun createScopeInstance(koin: Koin, id: ScopeID, scopeName: Qualifier): Scope {
+    fun createScopeInstance(koin: Koin, id: ScopeID, scopeName: Qualifier, parentScopeID: ScopeID): NestedScope {
         val definition: ScopeDefinition = definitions[scopeName.toString()]
                 ?: throw NoScopeDefinitionFoundException("No scope definition found for scopeName '$scopeName'")
-        val instance = Scope(id, _koin = koin)
+        val parentScope = getScopeInstanceOrNull(parentScopeID)
+                ?: throw ScopeNotCreatedException("Couldn't retrieve parent scope with id: $parentScopeID for scope with id: $id and qualifier: $scopeName")
+        val instance = NestedScope(id, _koin = koin, parentScope = parentScope)
         instance.scopeDefinition = definition
         instance.declareDefinitionsFromScopeSet()
         registerScopeInstance(instance)
@@ -139,7 +161,12 @@ class ScopeRegistry {
     }
 
     fun deleteScopeInstance(id: ScopeID) {
+        val scope = getScopeInstanceOrNull(id)
         instances.remove(id)
+        val scopes = instances.values.toList()
+        scopes.mapNotNull { it as? NestedScope }
+                .filter { it.parentScope === scope }
+                .forEach { it.close() }
     }
 
     fun close() {

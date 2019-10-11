@@ -21,6 +21,8 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
+import org.koin.core.scope.NestedScope
+import org.koin.core.scope.RootScope
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import kotlin.reflect.KClass
@@ -35,7 +37,7 @@ import kotlin.reflect.KClass
 class Koin {
     val scopeRegistry = ScopeRegistry()
     val propertyRegistry = PropertyRegistry()
-    val rootScope = Scope("-Root-", isRoot = true, _koin = this)
+    val rootScope = RootScope(_koin = this)
 
     /**
      * Lazy inject a Koin instance
@@ -116,7 +118,7 @@ class Koin {
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    inline fun <reified T> declare(
+    inline fun <reified T: Any> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
@@ -156,15 +158,18 @@ class Koin {
     internal fun createEagerInstances() = rootScope.createEagerInstances()
 
     /**
-     * Create a Scope instance
-     * @param scopeId
-     * @param scopeDefinitionName
+     * Create a Scope instance. When no parent scope is supplied, the root scope will be attached
+     * to the created scope as its parent.
+     * @param qualifier name of the scope
+     * @param parentScopeID id of the parent scope
      */
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
+    @JvmOverloads
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier, parentScopeID: ScopeID? = null): NestedScope {
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:$scopeId q:$qualifier")
         }
-        return scopeRegistry.createScopeInstance(this, scopeId, qualifier)
+        val id = parentScopeID ?: rootScope.id
+        return scopeRegistry.createScopeInstance(this, scopeId, qualifier, id)
     }
 
     /**
@@ -172,8 +177,9 @@ class Koin {
      * @param scopeId
      * @param qualifier
      */
-    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): NestedScope {
+        return scopeRegistry.getScopeInstanceOrNull(scopeId) as? NestedScope
+                ?: createScope(scopeId, qualifier)
     }
 
     /**

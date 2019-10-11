@@ -9,6 +9,7 @@ import org.koin.core.definition.Kind
 import org.koin.core.instance.InstanceContext
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.named
+import org.koin.core.scope.RootScope
 import org.koin.test.getDefinition
 
 class BeanDefinitionTest {
@@ -37,7 +38,7 @@ class BeanDefinitionTest {
     @Test
     fun `equals definitions - but diff kind`() {
         val def1 = DefinitionFactory.createSingle(definition = { Simple.ComponentA() })
-        val def2 = DefinitionFactory.createFactory(definition = { Simple.ComponentA() })
+        val def2 = DefinitionFactory.createFactory<RootScope, Simple.ComponentA>(definition = { Simple.ComponentA() })
         assertEquals(def1, def2)
     }
 

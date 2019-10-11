@@ -18,9 +18,7 @@ package org.koin.core.scope
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.DefinitionFactory
 import org.koin.core.error.MissingPropertyException
-import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
@@ -30,11 +28,7 @@ import org.koin.core.time.measureDuration
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
-data class Scope(
-        val id: ScopeID,
-        val isRoot: Boolean = false,
-        internal val _koin: Koin
-) {
+abstract class Scope(val id: ScopeID, protected val _koin: Koin) {
     val beanRegistry = BeanRegistry()
     var scopeDefinition: ScopeDefinition? = null
     private val callbacks = arrayListOf<ScopeCallback>()
@@ -156,33 +150,18 @@ data class Scope(
         }
     }
 
-    private fun <T> resolveInstance(
+    internal abstract fun <T> resolveInstance(
             qualifier: Qualifier?,
             clazz: KClass<*>,
             parameters: ParametersDefinition?
-    ): T {
-        val definition = findDefinition(qualifier, clazz)
-        return definition.resolveInstance(InstanceContext(this._koin, this, parameters))
+    ): T
+
+    internal open fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*>? {
+        return beanRegistry.findDefinition(qualifier, clazz)
     }
 
-    private fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*> {
-        return beanRegistry.findDefinition(qualifier, clazz) ?: if (isRoot) {
-            throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' has been found. Check your module definitions.")
-        } else {
-            _koin.rootScope.findDefinition(qualifier, clazz)
-        }
-    }
-
-    internal fun createEagerInstances() {
-        if (isRoot) {
-            val definitions = beanRegistry.findAllCreatedAtStartDefinition()
-            if (definitions.isNotEmpty()) {
-                definitions.forEach {
-                    it.resolveInstance<Any>(InstanceContext(koin = this._koin, scope = this))
-                }
-            }
-        }
-    }
+    internal open fun createEagerInstances() { }
+    abstract fun <T: Any> createScopedDefinition(qualifier: Qualifier?, instance: T, clazz: KClass<T>): BeanDefinition<T>
 
     /**
      * Declare a component definition from the given instance
@@ -194,17 +173,13 @@ data class Scope(
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    inline fun <reified T> declare(
+    inline fun <reified T: Any> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
     ) {
-        val definition = if (isRoot) {
-            DefinitionFactory.createSingle(qualifier) { instance }
-        } else {
-            DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
-        }
+        val definition = createScopedDefinition(qualifier, instance, T::class)
         secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
         definition.options.override = override
         beanRegistry.saveDefinition(definition)
@@ -242,7 +217,7 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> = beanRegistry.getDefinitionsForClass(clazz)
-            .map { it.instance!!.get<T>((InstanceContext(this._koin, this))) }
+            .map { it.instance!!.get<T>((InstanceContext(_koin, this))) }
 
     /**
      * Get instance of primary type P and secondary type S
@@ -270,7 +245,7 @@ data class Scope(
         return beanRegistry.getAllDefinitions().first {
             it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType)
         }
-                .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
+                .instance!!.get((InstanceContext(_koin, this, parameters))) as S
     }
 
 

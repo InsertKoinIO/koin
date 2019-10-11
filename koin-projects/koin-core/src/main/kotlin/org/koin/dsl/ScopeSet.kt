@@ -21,20 +21,48 @@ import org.koin.core.definition.DefinitionFactory
 import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.named
+import org.koin.core.scope.NestedScope
+import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 
 /**
  * DSL Scope Definition
  */
-data class ScopeSet(val qualifier: Qualifier) {
+data class ScopeSet<S: Scope>(val qualifier: Qualifier) {
 
     val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+    val nestedScopes = mutableListOf<ScopeSet<NestedScope>>()
+
+    /**
+     * Provides the ability to declare a child scope definition inside a ScopeSet.
+     * The scopeName is determined by specifying the generic type supplied to this function.
+     * @param scopeName
+     */
+    @JvmOverloads
+    inline fun <reified T> nestedScope(
+            noinline scopeSet: (ScopeSet<NestedScope>.() -> Unit)? = null) {
+        return nestedScope(named<T>(), scopeSet)
+    }
+
+    /**
+     * Provides the ability to declare a child scope definition inside a ScopeSet.
+     * @param scopeName
+     */
+    @JvmOverloads
+    fun nestedScope(
+            scopeName: Qualifier,
+            scopeSet: (ScopeSet<NestedScope>.() -> Unit)? = null) {
+        val scope = ScopeSet<NestedScope>(scopeName)
+        scopeSet?.let { scope.apply(it) }
+        nestedScopes.add(scope)
+    }
 
     @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)
     inline fun <reified T> single(
             qualifier: Qualifier? = null,
             override: Boolean = false,
-            noinline definition: Definition<T>
+            noinline definition: Definition<NestedScope, T>
     ): BeanDefinition<T> {
         error("Scoped definition is deprecated and has been replaced with Single scope definitions")
     }
@@ -42,7 +70,7 @@ data class ScopeSet(val qualifier: Qualifier) {
     inline fun <reified T> scoped(
             qualifier: Qualifier? = null,
             override: Boolean = false,
-            noinline definition: Definition<T>
+            noinline definition: Definition<S, T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createScoped(qualifier, this.qualifier, definition)
         declareDefinition(beanDefinition, Options(false, override))
@@ -57,7 +85,7 @@ data class ScopeSet(val qualifier: Qualifier) {
     inline fun <reified T> factory(
             qualifier: Qualifier? = null,
             override: Boolean = false,
-            noinline definition: Definition<T>
+            noinline definition: Definition<S, T>
     ): BeanDefinition<T> {
         val beanDefinition = DefinitionFactory.createFactory(qualifier, this.qualifier, definition)
         declareDefinition(beanDefinition, Options(false, override))
@@ -69,8 +97,8 @@ data class ScopeSet(val qualifier: Qualifier) {
         return beanDefinition
     }
 
-    fun createDefinition(): ScopeDefinition {
-        val scopeDefinition = ScopeDefinition(qualifier)
+    fun createDefinition(parentDefinition: ScopeDefinition?): ScopeDefinition {
+        val scopeDefinition = ScopeDefinition(qualifier, parentDefinition)
         scopeDefinition.definitions.addAll(definitions)
         return scopeDefinition
     }
