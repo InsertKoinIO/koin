@@ -39,11 +39,11 @@ class RootScope(_koin: Koin): Scope(ScopeId, _koin) {
     }
 
     override fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*>? {
-        return super.findDefinition(qualifier, clazz) ?: throw noBeanDefinition(clazz)
+        return super.findDefinition(qualifier, clazz) ?: throw noBeanDefinition(qualifier, clazz)
     }
 
-    private fun noBeanDefinition(clazz: KClass<*>): Throwable =
-        NoBeanDefFoundException("No definition for '${clazz.getFullName()}' has been found. Check your module definitions.")
+    private fun noBeanDefinition(qualifier: Qualifier?, clazz: KClass<*>): Throwable =
+            throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' with qualifier '$qualifier' has been found. Check your module definitions.")
 
     override fun <T: Any> createScopedDefinition(
             qualifier: Qualifier?,
@@ -62,7 +62,8 @@ class RootScope(_koin: Koin): Scope(ScopeId, _koin) {
             qualifier: Qualifier?,
             clazz: KClass<*>,
             parameters: ParametersDefinition?): T {
-        val definition = findDefinition(qualifier, clazz) ?: throw noBeanDefinition(clazz)
+        val definition = findDefinition(qualifier, clazz)
+                ?: throw noBeanDefinition(qualifier, clazz)
         return definition.resolveInstance(InstanceContext(_koin, this, parameters))
     }
 
