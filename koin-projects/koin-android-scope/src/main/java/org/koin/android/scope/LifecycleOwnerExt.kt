@@ -19,12 +19,14 @@ package org.koin.android.scope
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
+import android.support.v4.app.Fragment
 import org.koin.android.ext.android.getKoin
-import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
+import org.koin.core.error.NoScopeDefinitionFoundException
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 import org.koin.ext.getFullName
 import java.lang.System.identityHashCode
 
@@ -46,7 +48,7 @@ private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
 }
 
 private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier)
+    val scope = getKoin().createScope(scopeId, qualifier, parentScopeId)
     bindScope(scope)
     return scope
 }
@@ -60,9 +62,33 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
     lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
 
+inline fun <reified T : Any> LifecycleOwner.scopeInject(
+        crossinline scopeProvider: () -> Scope,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+) = lazy { scopeProvider().get<T>(qualifier, parameters) }
+
+inline fun <reified T : Any> LifecycleOwner.currentScopeInject(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+) = scopeInject<T>({ currentScope }, qualifier, parameters)
+
 /**
  * Get current Koin scope, bound to current lifecycle
  */
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateCurrentScope()
 
+private val LifecycleOwner.parentScopeId: ScopeID?
+    get() = when (this) {
+        is HasParentScope -> parentScopeId
+        is Fragment -> parentFragment?.resolveScopeId() ?: activity?.resolveScopeId()
+        else -> null
+    }
+
+private fun LifecycleOwner.resolveScopeId(): ScopeID? =
+        try {
+            this.currentScope.id
+        } catch (e: NoScopeDefinitionFoundException) {
+            null
+        }
