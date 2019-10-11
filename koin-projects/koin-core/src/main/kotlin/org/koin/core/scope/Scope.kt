@@ -112,7 +112,7 @@ abstract class Scope(val id: ScopeID, protected val _koin: Koin) {
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.debug("+- get '${clazz.getFullName()}'")
+            KoinApplication.logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDuration {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
@@ -139,7 +139,7 @@ abstract class Scope(val id: ScopeID, protected val _koin: Koin) {
     ): T = synchronized(this) {
         val kClass = clazz.kotlin
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.debug("+- get '${kClass.getFullName()}'")
+            KoinApplication.logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDuration {
                 resolveInstance<T>(qualifier, kClass, parameters)
             }
