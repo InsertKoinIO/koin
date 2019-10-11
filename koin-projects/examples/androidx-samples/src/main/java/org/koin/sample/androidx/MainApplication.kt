@@ -10,6 +10,7 @@ import org.koin.sample.androidx.di.appModule
 import org.koin.sample.androidx.di.mvpModule
 import org.koin.sample.androidx.di.mvvmModule
 import org.koin.sample.androidx.di.scopeModule
+import org.koin.sample.androidx.di.nestedScopeModule
 
 class MainApplication : Application() {
 
@@ -20,7 +21,7 @@ class MainApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             androidFileProperties()
-            modules(listOf(appModule, mvpModule, mvvmModule, scopeModule))
+            modules(listOf(appModule, mvpModule, mvvmModule, scopeModule, nestedScopeModule))
         }
     }
 }

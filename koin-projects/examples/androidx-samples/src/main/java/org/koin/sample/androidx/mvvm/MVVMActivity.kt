@@ -16,6 +16,7 @@ import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
+import org.koin.sample.androidx.scope.NestedScopeActivity
 import org.koin.sample.androidx.scope.ScopedActivityA
 import org.koin.sample.androidx.utils.navigateTo
 
@@ -53,7 +54,7 @@ class MVVMActivity : AppCompatActivity() {
         getKoin().setProperty("session", currentScope.get<Session>())
 
         mvvm_button.setOnClickListener {
-            navigateTo<ScopedActivityA>(isRoot = true)
+            navigateTo<NestedScopeActivity>()
         }
     }
 }

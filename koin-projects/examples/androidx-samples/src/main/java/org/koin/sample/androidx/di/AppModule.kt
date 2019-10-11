@@ -1,8 +1,13 @@
 package org.koin.sample.androidx.di
 
+import android.webkit.WebChromeClient
+import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.dsl.onRelease
@@ -18,10 +23,10 @@ import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
-import org.koin.sample.androidx.components.scope.Session
+import org.koin.sample.androidx.components.scope.*
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
-import org.koin.sample.androidx.scope.ScopedActivityA
+import org.koin.sample.androidx.scope.*
 
 val appModule = module {
 
@@ -65,5 +70,34 @@ val scopeModule = module {
     }
     scope(named<ScopedActivityA>()) {
         scoped { Session() }
+    }
+}
+
+val nestedScopeModule = module {
+
+    scope(named<NestedScopeActivity>()) {
+        factory { get<NestedScopeActivity>() as AppCompatActivity }
+        viewModel { ActivityViewModel() }
+        scoped  {
+            val owner = get<AppCompatActivity>()
+            val viewModel = getViewModel<ActivityViewModel>(owner = owner)
+            ActivityInterceptor(viewModel)
+        }
+
+        nestedScope<NestedScopeFragment>() {
+            factory<Fragment> { get<NestedScopeFragment>() }
+            viewModel { FragmentViewModel() }
+            factory<WebViewClient> {
+                val owner = get<Fragment>()
+                val viewModel = getViewModel<FragmentViewModel>(owner = owner)
+                val interceptors = listOf(get<ActivityInterceptor>())
+                NestedScopeWebViewClient(viewModel, interceptors)
+            }
+            factory<WebChromeClient> {
+                val owner = get<Fragment>()
+                val viewModel = getViewModel<FragmentViewModel>(owner = owner)
+                NestedScopeChromeClient(viewModel)
+            }
+        }
     }
 }

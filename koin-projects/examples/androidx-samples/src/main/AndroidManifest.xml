@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.koin.sample.android">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name="org.koin.sample.androidx.MainApplication"
         android:allowBackup="true"
@@ -27,6 +29,7 @@
         <activity android:name="org.koin.sample.androidx.sdk.HostActivity" />
 
         <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
+        <activity android:name="org.koin.sample.androidx.scope.NestedScopeActivity" />
 
     </application>
 
