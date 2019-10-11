@@ -13,7 +13,11 @@ android {
 
     defaultConfig {
         minSdkVersion android_min_version
-//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 }
 
@@ -21,6 +25,10 @@ dependencies {
     // Koin
     api project(":koin-core")
     testImplementation project(":koin-test")
+    androidTestImplementation (project(":koin-test")) { exclude group: 'org.mockito' }
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'org.mockito:mockito-android:3.1.0'
 }
 
 apply from: '../gradle/publish-android.gradle'
