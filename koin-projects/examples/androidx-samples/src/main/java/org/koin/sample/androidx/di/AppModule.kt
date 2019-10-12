@@ -79,8 +79,7 @@ val nestedScopeModule = module {
         factory { get<NestedScopeActivity>() as AppCompatActivity }
         viewModel { ActivityViewModel() }
         scoped  {
-            val owner = get<AppCompatActivity>()
-            val viewModel = getViewModel<ActivityViewModel>(owner = owner)
+            val viewModel = getViewModel<AppCompatActivity, ActivityViewModel>()
             ActivityInterceptor(viewModel)
         }
 
@@ -88,14 +87,12 @@ val nestedScopeModule = module {
             factory<Fragment> { get<NestedScopeFragment>() }
             viewModel { FragmentViewModel() }
             factory<WebViewClient> {
-                val owner = get<Fragment>()
-                val viewModel = getViewModel<FragmentViewModel>(owner = owner)
+                val viewModel = getViewModel<Fragment, FragmentViewModel>()
                 val interceptors = listOf(get<ActivityInterceptor>())
                 NestedScopeWebViewClient(viewModel, interceptors)
             }
             factory<WebChromeClient> {
-                val owner = get<Fragment>()
-                val viewModel = getViewModel<FragmentViewModel>(owner = owner)
+                val viewModel = getViewModel<Fragment, FragmentViewModel>()
                 NestedScopeChromeClient(viewModel)
             }
         }
