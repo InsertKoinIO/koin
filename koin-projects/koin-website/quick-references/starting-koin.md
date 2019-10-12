@@ -13,7 +13,7 @@ Koin is a DSL, a container & a pragamtic API to leverage your dependencies. The 
 
 ## How to start Koin?
 
-Starting Koin consists in using the `startKoin` fuction as below:
+Starting Koin consists in using the `startKoin` function as below:
 
 ### Starting Koin
 

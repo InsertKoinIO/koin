@@ -34,7 +34,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
         LifecycleObserver, KoinComponent {
 
     /**
-     * Handle ON_DESTROY to release Koin modules
+     * Handle ON_STOP to release Koin modules
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {

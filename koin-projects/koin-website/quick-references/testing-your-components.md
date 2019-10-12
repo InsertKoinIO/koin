@@ -6,7 +6,7 @@ group: quick-references
 toc: true
 ---
 
-The `koin-test` project brings you small but powerfull tools to test your Koin application.
+The `koin-test` project brings you small but powerful tools to test your Koin application.
 
 ### Getting your components in test
 
