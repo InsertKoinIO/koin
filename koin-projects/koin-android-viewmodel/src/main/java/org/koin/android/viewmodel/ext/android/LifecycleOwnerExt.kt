@@ -19,10 +19,12 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
+import org.koin.android.scope.currentScope
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -30,6 +32,35 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+
+/**
+ * Lazy get a viewModel using lazy evaluated scope
+ *
+ * @param scopeProvider scope instance wrapped in a function for resolving the provided lazily
+ * @param owner - specify the viewmodel store owner
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> LifecycleOwner.scopeViewModel(
+        crossinline scopeProvider: () -> Scope,
+        owner: LifecycleOwner = this,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+): Lazy<T> = lazy { scopeProvider().getViewModel<T>(owner, T::class, qualifier, parameters) }
+
+/**
+ * Lazy get a viewModel using the current scope instance
+ *
+ * @param owner - specify the viewmodel store owner
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> LifecycleOwner.currentScopeViewModel(
+        owner: LifecycleOwner = this,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+): Lazy<T> = scopeViewModel({ currentScope }, owner, qualifier, parameters)
+
 
 /**
  * Lazy get a viewModel instance

@@ -20,10 +20,12 @@ import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -31,6 +33,38 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+
+/**
+ * Lazy get a viewModel using lazy evaluated scope
+ *
+ * @param scopeProvider scope instance wrapped in a function for resolving the provided lazily
+ * @param owner - specify the viewmodel store owner
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> LifecycleOwner.scopeViewModel(
+        crossinline scopeProvider: () -> Scope,
+        owner: LifecycleOwner = this,
+        qualifier: Qualifier? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
+        noinline parameters: ParametersDefinition? = null
+): Lazy<T> = lazy { scopeProvider().getViewModel<T>(owner, qualifier, defaultArguments, parameters) }
+
+/**
+ * Lazy get a viewModel using the current scope instance
+ *
+ * @param owner - specify the viewmodel store owner
+ * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
+ * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
+ * @param parameters - parameters to pass to the BeanDefinition
+ */
+inline fun <reified T : ViewModel> LifecycleOwner.currentScopeViewModel(
+        owner: LifecycleOwner = this,
+        qualifier: Qualifier? = null,
+        noinline defaultArguments: () -> Bundle? = { null },
+        noinline parameters: ParametersDefinition? = null
+): Lazy<T> = scopeViewModel({ currentScope }, owner, qualifier, defaultArguments, parameters)
 
 /**
  * Lazy get a viewModel instance

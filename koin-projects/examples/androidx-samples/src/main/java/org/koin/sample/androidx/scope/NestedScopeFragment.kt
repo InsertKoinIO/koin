@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.nestedscope_fragment.*
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.scope.currentScopeInject
+import org.koin.androidx.viewmodel.ext.android.currentScopeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.scope.FragmentViewModel
@@ -21,9 +22,7 @@ class NestedScopeFragment: Fragment() {
     private val webClient: WebViewClient by currentScopeInject()
     private val chromeClient: WebChromeClient by currentScopeInject()
 
-    private val viewModel: FragmentViewModel by lazy {
-        currentScope.viewModel<FragmentViewModel>(owner = this).value
-    }
+    private val viewModel: FragmentViewModel by currentScopeViewModel()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
