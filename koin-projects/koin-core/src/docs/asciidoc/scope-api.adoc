@@ -2,15 +2,45 @@
 
 Koin brings a simple API to let you define instances that are tied to a limit lifetime.
 
-=== What is a scope?
+=== What is a scope in general?
 
 Scope is a fixed duration of time or method calls in which an object exists.
 Another way to look at this is to think of scope as the amount of time an object’s state persists.
 When the scope context ends, any objects bound under that scope cannot be injected again (they are dropped from the container).
 
+The Scope API mainly consists of three constructs:
+
+- `Scope Set`
+- `Scope Instance`
+- `Scope Definition`
+
+=== What is a ScopeSet?
+
+A `Scope Set` is a container for declaring the properties of a scope along with its definitions.
+You can think of a `Scope Set` as a blueprint for actual `Scope Instance`s.
+[source,kotlin]
+----
+module {
+    scope(named("A Scope Name")){
+        // definitions
+    }
+}
+----
+
+=== What is a Scope Instance?
+A Scope instance is a specific instance of a specified ScopeSet.
+
+[source,kotlin]
+----
+val scope1 = koin.createScope("scopeId1","A Scope Name")
+val scope2 = koin.createScope("scopeId2","A Scope Name")
+----
+
+Each `Scope instance` has a unique id assigned. This id has to be unique across the whole `KoinApplication` instance.
+
 === Scope definition
 
-By default in Koin, we have 3 kind of scopes:
+By default in Koin, we have 3 kind of definitions:
 
 - `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
 - `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).
@@ -124,6 +154,125 @@ session.close()
 ====
 Beware that you can't inject instances anymore from a closed scope.
 ====
+
+=== Provide dependencies on the fly
+
+A component might have a limited lifetime, but another component might be in charge of its
+instantiation where the instantiation process is not dispatched by yourself.
+In this case, you can make the corresponding object available in the dependency by declaring
+the dependency after the scope instance has been created.
+
+[source,kotlin]
+----
+interface UserSession
+class AuthenticatedUserSession: UserSession()
+class AnonymousUserSession: UserSession()
+
+module {
+    scope(named("User Session")) {
+        // UserSession can be resolved after `declare`
+        // has been called on the scope instance
+        scoped { UserSpecificService(get<UserSession>())}
+    }
+}
+
+val scopeAuthenticated = koin.createScope(named("User Session"))
+scopeAuthenticated.declare<UserSession>(authenticatedSession)
+val scopeAnonymous = koin.createScope(named("User Session"))
+scopeAnonymous.declare<UserSession>(anonymousSession)
+----
+
+=== Scope Hierarchies
+
+During scope instance creation, the id of the parent scope can be provided.
+When no id for the parent scope is specified, the root scope will be assigned as the parent scope.
+
+[source,kotlin]
+----
+module {
+    scope(named("Scope A")) {
+        scoped { PresenterA() }
+    }
+    scope(named("Scope B")) {
+        // Resolve based on current scope which will automatically
+        // use the parent scope when no applicable definition has been found
+        // in current scope
+        scoped { PresenterB( get<PresenterA>()) }
+    }
+}
+
+val scopeA = koin.createScope("id1", named("Scope A"))
+val scopeB = koin.createScope("id2", named("Scope B"), parentId = "id1")
+----
+
+It's also possible to declare `Scope B` inside the definition of `Scope A`.
+The following example provides the same result as the previous example, but its more clear
+to the reader that `Scope B` is intended to exist as a child scope of `Scope A`.
+
+[source,kotlin]
+----
+module {
+    scope(named("Scope A")) {
+        scoped { PresenterA() }
+        // declaration of Scope B inside of Scope A
+        nestedScope(named("Scope B")) {
+            scoped { PresenterB( get<PresenterA>()) }
+        }
+    }
+}
+val scopeA = koin.createScope("id1", named("Scope A"))
+val scopeB = koin.createScope("id2", named("Scope B"), parentId = "id1")
+----
+
+[IMPORTANT]
+====
+Beware that the resolution of `PresenterA` will fail in both examples, if the parentId for `Scope B` is not provided.
+====
+
+=== Explicit resolution of dependencies from parent scope
+
+[source, kotlin]
+----
+interface Service {
+    val value: String
+}
+class Base: Service {
+    override val value = "Base"
+}
+class ServiceA(parent: Service): Service {
+    override val value = "{parent.value} A"
+}
+class ServiceB(parent: Service): Service {
+    override val value = "{parent.value} B"
+}
+----
+
+[source, kotlin]
+----
+module {
+    scope(named("A")) {
+        scoped<Service> { Base() }
+
+        nestedScope(named("B")) {
+            // parentScope is accessible inside definition
+            scoped<Service> { ServiceA(parentScope.get()) }
+
+            nestedScope(named("C")) {
+                scoped<Service> { ServiceB(parentScope.get()) }
+            }
+        }
+    }
+}
+----
+
+[source, kotlin]
+----
+val scopeA = koin.createScope("id1", named("A"))
+val scopeB = koin.createScope("id2", named("B"), parentId = "id1")
+val scopeC = koin.createScope("id3", named("C"), parentId = "id2")
+// Base A B
+println(scopeC.get<Service>().value)
+----
 
 === Scope callback -- TODO
 
