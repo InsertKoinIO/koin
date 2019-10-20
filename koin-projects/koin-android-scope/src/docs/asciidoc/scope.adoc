@@ -46,6 +46,7 @@ class DetailActivity : AppCompatActivity() {
 
     // injected Presenter
     override val presenter : Presenter by inject()
+}
 ----
 
 We can describe it in a module:
@@ -102,7 +103,7 @@ class MyActivity : AppCompatActivity() {
 
     // inject Presenter instance from current scope
     val presenter : Presenter by currentScope.inject()
-
+}
 ----
 
 
@@ -173,3 +174,105 @@ val ourSession = getKoin().getScope("ourSession")
 ourSession.close()
 ----
 
+=== Make Android components available in scope
+
+[source,kotlin]
+----
+class KeyboardService(inputMethodManager: InputMethodManager, windowToken: () -> IBinder?)
+
+interface MainView
+class MainPresenter(view: MainView, keyboardService: KeyboardService)
+
+class MainActivity : AppCompatActivity(), MainView {
+    // lazy injected Presenter from current scope
+    override val presenter : MainPresenter by currentScopeInject()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        currentScope.declare(this)
+        super.onCreate(savedInstanceState)
+    }
+}
+
+interface DetailView
+class DetailPresenter(view: DetailView, keyboardService: KeyboardService)
+
+class DetailFragment: Fragment(), DetailView {
+    // lazy injected Presenter from current scope
+    override val presenter : DetailPresenter by currentScopeInject()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        currentScope.declare(this)
+    }
+}
+----
+
+[source,kotlin]
+----
+val androidModule = module {
+    scope(named<MainActivity>()) {
+        scoped<KeyboardService> {
+            val activity = get<MainActivity>()
+            val inputService = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            KeyboardService(inputService) { activity.currentFocus?.windowToken }
+        }
+        scoped { MainPresenter(get<MainActivity>(), get<KeyboardService>()) }
+
+        nestedScope(named<DetailFragment>()) {
+            scoped { DetailPresenter(get<DetailFragment>(), get<KeyboardService>()) }
+        }
+    }
+}
+----
+
+=== Sharing definitions across multiple scopes
+
+Assuming with have two different activities:
+
+[source,kotlin]
+----
+class ActivityA: AppCompatActivity() {
+
+    private val service: ActivityScopedService by currentScopeInject()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        currentScope.declare(this)
+        super.onCreate(savedInstanceState)
+    }
+}
+
+class ActivityB: AppCompatActivity() {
+    // same as Activity A
+}
+----
+
+To avoid repeating the same definition twice, you can extract the definition into an extension function
+for the `Scope Set` api. Future changes to the definition might be limited to a single location with this approach.
+
+[source,kotlin]
+----
+class ActivityScopedService(activity: AppCompatActivity)
+
+inline fun <reified T: AppCompatActivity> ScopeSet<NestedScope>.bindAppCompatActivity() {
+    factory<AppCompatActivity> { get<T>() }
+}
+
+inline fun ScopeSet<NestedScope>.activityScopedService() {
+    scoped {
+        ActivityScopedService(get<AppCompatActivity>())
+    }
+}
+
+val androidModule = module {
+    scope(named<ActivityA>()) {
+        // Tell koin to use ActivityA when resolving AppCompatActivity
+        bindAppCompatActivity<ActivityA>()
+        activityScopedService()
+    }
+    scope(named<ActivityB>()) {
+        // Tell koin to use ActivityB when resolving AppCompatActivity
+        bindAppCompatActivity<ActivityB>()
+        activityScopedService()
+    }
+}
+----
