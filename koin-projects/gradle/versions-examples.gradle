@@ -6,8 +6,8 @@ ext {
 
     leak_canary_version = "1.6.1"
 
-    anko_version='0.10.4'
-    okhttp_version = '3.8.1'
-    retrofit_version = '2.2.0'
-    rxjava_version = '2.1.7'
+    anko_version='0.10.8'
+    okhttp_version = '4.2.1'
+    retrofit_version = '2.6.2'
+    rxjava_version = '2.2.13'
 }
