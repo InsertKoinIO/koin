@@ -15,9 +15,9 @@
  */
 package org.koin.android.viewmodel.ext.android
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelStoreOwner
-import android.support.v4.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
 import org.koin.android.viewmodel.ViewModelParameters
 import org.koin.android.viewmodel.ViewModelStoreOwnerDefinition

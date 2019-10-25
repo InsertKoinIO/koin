@@ -1,7 +1,7 @@
 package org.koin.android.viewmodel
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass

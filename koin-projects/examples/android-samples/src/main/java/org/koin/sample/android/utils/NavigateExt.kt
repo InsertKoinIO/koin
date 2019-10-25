@@ -3,8 +3,8 @@ package org.koin.sample.android.utils
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor

@@ -15,8 +15,8 @@
  */
 package org.koin.android.viewmodel.ext.android
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
 import org.koin.android.viewmodel.ViewModelParameters

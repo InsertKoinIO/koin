@@ -1,7 +1,7 @@
 package org.koin.sample.android.mvvm
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin

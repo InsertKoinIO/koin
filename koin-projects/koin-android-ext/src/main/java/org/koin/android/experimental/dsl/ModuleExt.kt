@@ -1,6 +1,6 @@
 package org.koin.android.experimental.dsl
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import org.koin.android.viewmodel.dsl.setIsViewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier

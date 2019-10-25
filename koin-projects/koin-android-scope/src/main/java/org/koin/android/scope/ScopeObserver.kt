@@ -16,9 +16,9 @@
 
 package org.koin.android.scope
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.KoinComponent
 import org.koin.core.scope.Scope

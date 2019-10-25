@@ -26,7 +26,7 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
     // Architecture ViewModel
-    implementation("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
+    implementation("androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_version") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"

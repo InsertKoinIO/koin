@@ -1,7 +1,7 @@
 package org.koin.sample.android.dynamic
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.dynamic_activity.*
 import org.koin.android.ext.android.get

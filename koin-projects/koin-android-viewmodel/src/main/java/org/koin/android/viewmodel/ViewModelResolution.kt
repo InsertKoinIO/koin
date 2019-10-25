@@ -1,8 +1,8 @@
 package org.koin.android.viewmodel
 
-import android.arch.lifecycle.*
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import androidx.lifecycle.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger

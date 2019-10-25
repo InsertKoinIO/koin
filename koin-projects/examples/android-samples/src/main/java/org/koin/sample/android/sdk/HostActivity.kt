@@ -1,7 +1,7 @@
 package org.koin.sample.android.sdk
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.host_activity.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals

@@ -1,6 +1,6 @@
 package org.koin.test.android
 
-import android.arch.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle
 import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test

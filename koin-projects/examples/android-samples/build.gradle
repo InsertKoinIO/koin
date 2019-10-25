@@ -29,8 +29,8 @@ dependencies {
     implementation project(":koin-android-ext")
     implementation 'junit:junit:4.12'
 
-    implementation "com.android.support:appcompat-v7:$support_lib_version"
-    implementation "android.arch.lifecycle:extensions:$android_arch_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
 }

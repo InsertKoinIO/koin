@@ -8,7 +8,7 @@ references:
   android_config: &android_config
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-29
     environment:
       JVM_OPTS: -Xmx3028M
       GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy=“in-process” -Dkotlin.daemon.jvm.options=-Xmx2g'

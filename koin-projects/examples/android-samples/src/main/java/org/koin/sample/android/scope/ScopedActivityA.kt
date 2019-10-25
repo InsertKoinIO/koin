@@ -1,8 +1,8 @@
 package org.koin.sample.android.scope
 
-import android.arch.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.scoped_activity_a.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals

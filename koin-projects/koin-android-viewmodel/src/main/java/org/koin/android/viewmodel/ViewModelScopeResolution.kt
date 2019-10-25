@@ -1,7 +1,7 @@
 package org.koin.android.viewmodel
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 import org.koin.core.scope.Scope
 
 /**

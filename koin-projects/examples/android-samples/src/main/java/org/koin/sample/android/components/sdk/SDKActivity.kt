@@ -1,7 +1,7 @@
 package org.koin.sample.android.components.sdk
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.sdk_activity.*
 import org.junit.Assert.assertNotNull
 import org.koin.android.viewmodel.ext.android.viewModel
