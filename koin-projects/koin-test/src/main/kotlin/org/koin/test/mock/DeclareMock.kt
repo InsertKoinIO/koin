@@ -44,7 +44,7 @@ inline fun <reified T : Any> KoinTest.declareMock(
 
     koin.declareMockedDefinition(foundDefinition, stubbing)
 
-    return koin.get()
+    return koin.get(qualifier)
 }
 
 /**
