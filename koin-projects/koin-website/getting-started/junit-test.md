@@ -73,7 +73,7 @@ class HelloAppTest : KoinTest() {
     }
 
     @Test
-    fun tesKoinComponents() {
+    fun testKoinComponents() {
         val helloApp = HelloApplication()
         helloApp.sayHello()
 
