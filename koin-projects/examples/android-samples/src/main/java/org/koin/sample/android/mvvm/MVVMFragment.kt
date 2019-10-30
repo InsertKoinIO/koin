@@ -23,7 +23,11 @@ class MVVMFragment : Fragment() {
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
     val session: Session? by lazy { activity?.currentScope?.get<Session>() }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.mvvm_fragment, container, false)
     }
 
@@ -34,5 +38,8 @@ class MVVMFragment : Fragment() {
         assertEquals((activity as MVVMActivity).simpleViewModel, sharedViewModel)
 
         assertEquals(session, getKoin().getProperty("session"))
+
+        assertNotEquals(simpleViewModel, (activity as MVVMActivity).simpleViewModel)
+        assertEquals(sharedViewModel, (activity as MVVMActivity).simpleViewModel)
     }
 }
