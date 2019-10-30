@@ -118,7 +118,7 @@ data class Scope(
             parameters: ParametersDefinition?
     ): T = synchronized(this) {
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.debug("+- get '${clazz.getFullName()}'")
+            KoinApplication.logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDuration {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
@@ -145,7 +145,7 @@ data class Scope(
     ): T = synchronized(this) {
         val kClass = clazz.kotlin
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.debug("+- get '${kClass.getFullName()}'")
+            KoinApplication.logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDuration {
                 resolveInstance<T>(qualifier, kClass, parameters)
             }
@@ -167,7 +167,7 @@ data class Scope(
 
     private fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*> {
         return beanRegistry.findDefinition(qualifier, clazz) ?: if (isRoot) {
-            throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' has been found. Check your module definitions.")
+            throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' with qualifier '$qualifier' has been found. Check your module definitions.")
         } else {
             _koin.rootScope.findDefinition(qualifier, clazz)
         }

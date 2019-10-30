@@ -10,9 +10,7 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-### Koin 2.0 is out: https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3
-
-### Contact & Latest News 🌐
+### Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
@@ -23,18 +21,28 @@ Any question about Koin usage?
 - Come talk on slack [#koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
 - Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
+### Articles, Videos & other resources 🎉
+
+All online resources about Koin 👉 [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
+
 ### Reporting issues 🛠
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
-### Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
+Old Koin 1.0 docs - [https://old.insert-koin.io](https://old.insert-koin.io)
 
 # Setup
 
-## Current Version
+## Current Stable Version
 
 ```gradle
 // latest stable
+koin_version = '2.0.1'
+```
+
+## Current Unstable Version
+
+```gradle
 koin_version = '2.1.0-alpha-1'
 ```
 
@@ -155,10 +163,12 @@ class MyApplication : Application() {
 * [Write your app with Koin](https://beta.insert-koin.io/docs/2.0/getting-started/introduction/)
 * [Quick References](https://beta.insert-koin.io/docs/2.0/quick-references/starting-koin/)
 
-# Articles
 
-### Articles & resouces about Koin
+# Talking about Koin
 
+### Articles
+
+* [Dagger is dead. Long live Koin](https://www.linkedin.com/pulse/dagger-dead-long-live-koin-yordan-olave-cordero)
 * [Testing a Koin application with KotlinTest](https://dev.to/kerooker/testing-koin-applications-with-kotlintest-1iip)
 * [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
 * [Migration from Dagger2 to Koin](https://proandroiddev.com/migrating-from-dagger2-to-koin-3b2b3f5285e9)
@@ -179,14 +189,18 @@ class MyApplication : Application() {
 * [Insert Koin for dependency injection](https://www.ekito.fr/people/insert-koin-for-dependency-injection/)
 * [Better dependency injection for Android](https://proandroiddev.com/better-dependency-injection-for-android-567b93353ad)
 
-### Talks & podcasts
+### Videos & Podcasts
 
-* [Simplify your Android development with Koin](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
+* [Dependency Injection from zero to hero with Koin, Kotliners 2019 & Budapest, Hungary](https://www.youtube.com/watch?v=mt9yoWScgb8&list=PLnYRVL0Cw1FSUJ-WdhV2Ija9kA9q0qP3e&index=6)
+* [Dependency Injection from zero to hero with Koin, AndroidMakers 2019 & Paris, France](https://www.youtube.com/watch?v=chCsNkjotfc)
+* [Simplify your Android development with Koin - Mobilization @ Lodz, Poland](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
 * [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
+* [Insert Koin. Mobile Fest 2018, Kiev, Urkaine (Russian)](https://youtu.be/HrTz5jToQkk)
 
-### Koin developers hub
+### Koin Developers Hub
 
+* [Ready for Koin 2.0](https://medium.com/koin-developers/ready-for-koin-2-0-2722ab59cac3)
 * [News from the trenches, What's next for Koin?](https://medium.com/koin-developers/news-from-the-trenches-whats-next-for-koin-994791d572d5)
 * [Koin 1.0.0 Unleashed](https://medium.com/koin-developers/koin-1-0-0-unleashed-dcc15b293a3a)
 * [Opening Koin 1.0.0 Beta](https://medium.com/koin-developers/opening-the-koin-1-0-0-beta-version-99cb8be1c308)
