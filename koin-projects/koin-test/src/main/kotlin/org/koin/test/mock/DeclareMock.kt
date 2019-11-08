@@ -22,7 +22,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDuration
+import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import org.koin.test.KoinTest
 import org.mockito.Mockito.mock
@@ -128,7 +128,7 @@ inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(noinline s
     val copy = BeanDefinition<T>(qualifier, scopeName, primaryType)
     copy.secondaryTypes = this.secondaryTypes
     copy.definition = {
-        val (instance: T, time: Double) = measureDuration {
+        val (instance: T, time: Double) = measureDurationForResult {
             mock(T::class.java)
         }
         logger.debug("| mock created in $time ms")

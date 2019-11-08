@@ -3,7 +3,7 @@ package org.koin.experimental.builder
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDuration
+import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 
@@ -22,7 +22,7 @@ inline fun <reified T : Any> Scope.create(): T {
             ?: error("No constructor found for class '${kClass.getFullName()}'")
 
     val args = if (logger.level == Level.DEBUG) {
-        val (_args, duration) = measureDuration {
+        val (_args, duration) = measureDurationForResult {
             getArguments(constructor, this)
         }
         logger.debug("!- got arguments in $duration ms")
@@ -32,7 +32,7 @@ inline fun <reified T : Any> Scope.create(): T {
     }
 
     instance = if (logger.level == Level.DEBUG) {
-        val (_instance, duration) = measureDuration {
+        val (_instance, duration) = measureDurationForResult {
             createInstance(args, constructor)
         }
         logger.debug("!- created instance in $duration ms")

@@ -1,8 +1,7 @@
 package org.koin.perfs
 
 import org.junit.Test
-import org.koin.core.logger.Level
-import org.koin.core.time.measureDuration
+import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.test.assertDefinitionsCount
 
@@ -10,7 +9,7 @@ class PerfsTest {
 
     @Test
     fun `empty module perfs`() {
-        val (app, duration) = measureDuration {
+        val (app, duration) = measureDurationForResult {
             koinApplication {
             }
         }
@@ -34,7 +33,7 @@ class PerfsTest {
     }
 
     private fun runPerfs() {
-        val (app, duration) = measureDuration {
+        val (app, duration) = measureDurationForResult {
             koinApplication {
                 modules(perfModule400)
             }
@@ -45,7 +44,7 @@ class PerfsTest {
 
         val koin = app.koin
 
-        val (_, executionDuration) = measureDuration {
+        val (_, executionDuration) = measureDurationForResult {
             koin.get<Perfs.A27>()
             koin.get<Perfs.B31>()
             koin.get<Perfs.C12>()

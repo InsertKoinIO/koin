@@ -5,9 +5,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.inject
 import org.koin.core.logger.Level
-import org.koin.core.time.measureDurationOnly
-import kotlin.system.measureNanoTime
-import kotlin.system.measureTimeMillis
+import org.koin.core.time.measureDuration
 
 class CoffeeApp : KoinComponent {
 
@@ -15,19 +13,13 @@ class CoffeeApp : KoinComponent {
 }
 
 fun main() {
-    run()
-}
-
-private fun run() {
     startKoin {
-        printLogger(Level.DEBUG)
+        printLogger()
         modules(listOf(coffeeAppModule))
     }
     val coffeeShop = CoffeeApp()
-    val appDuration = measureDurationOnly {
+    measureDuration("Made coffee") {
         coffeeShop.maker.brew()
     }
-
-    println("executed in $appDuration ms")
     stopKoin()
 }

@@ -8,7 +8,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDuration
+import org.koin.core.time.measureDurationForResult
 
 /**
  * resolve instance
@@ -24,7 +24,7 @@ fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameter
     val javaClass = parameters.clazz.java
     return if (KoinApplication.logger.isAt(Level.DEBUG)) {
         logger.debug("!- ViewModelProvider getting instance")
-        val (instance: T, duration: Double) = measureDuration {
+        val (instance: T, duration: Double) = measureDurationForResult {
             if (parameters.qualifier != null) {
                 this.get(parameters.qualifier.toString(), javaClass)
             } else {

@@ -27,20 +27,33 @@ import kotlin.time.MonoClock
  * Measure code execution
  */
 @UseExperimental(ExperimentalTime::class)
-fun measureDurationOnly(code: () -> Unit): Double {
+fun measureDuration(code: () -> Unit): Double {
     val clock = MonoClock
     val mark = clock.markNow()
     code()
     return mark.elapsedNow().inMilliseconds
 }
 
+@UseExperimental(ExperimentalTime::class)
+fun measureDuration(message: String, code: () -> Unit) {
+    val time = measureDuration(code)
+    println("$message - $time ms")
+}
+
 /**
  * Measure code execution and get result
  */
 @UseExperimental(ExperimentalTime::class)
-fun <T> measureDuration(code: () -> T): Pair<T, Double> {
+fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
     val clock = MonoClock
     val mark = clock.markNow()
     val result = code()
     return Pair(result, mark.elapsedNow().inMilliseconds)
+}
+
+@UseExperimental(ExperimentalTime::class)
+fun <T> measureDurationForResult(message: String, code: () -> T): T {
+    val (result, time) = measureDurationForResult(code)
+    println("$message - $time ms")
+    return result
 }

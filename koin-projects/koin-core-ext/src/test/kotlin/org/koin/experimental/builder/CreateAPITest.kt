@@ -4,7 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
-import org.koin.core.time.measureDurationOnly
+import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
@@ -21,7 +21,7 @@ class CreateAPITest : KoinTest {
             })
         }.koin
 
-        val duration = measureDurationOnly {
+        val duration = measureDuration {
             koin.get<ComponentB>()
         }
         println("create api in $duration ms")
@@ -34,7 +34,7 @@ class CreateAPITest : KoinTest {
             })
         }.koin
 
-        val createDuration = measureDurationOnly {
+        val createDuration = measureDuration {
             createKoin.get<ComponentB>()
         }
         println("create api in $createDuration ms")

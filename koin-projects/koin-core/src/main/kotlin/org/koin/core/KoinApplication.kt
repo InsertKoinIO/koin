@@ -20,7 +20,7 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
-import org.koin.core.time.measureDurationOnly
+import org.koin.core.time.measureDuration
 
 /**
  * Koin Application
@@ -58,7 +58,7 @@ class KoinApplication private constructor() {
      */
     fun modules(modules: List<Module>): KoinApplication {
         if (logger.isAt(Level.INFO)) {
-            val duration = measureDurationOnly {
+            val duration = measureDuration {
                 loadModulesAndScopes(modules)
             }
             val count =
@@ -122,7 +122,7 @@ class KoinApplication private constructor() {
      */
     fun createEagerInstances(): KoinApplication {
         if (logger.isAt(Level.DEBUG)) {
-            val duration = measureDurationOnly {
+            val duration = measureDuration {
                 koin.createEagerInstances()
             }
             logger.debug("instances started in $duration ms")

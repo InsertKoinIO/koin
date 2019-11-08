@@ -17,7 +17,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 
 @Suppress("UNCHECKED_CAST")
-class DeclareMockTests : KoinTest {
+class DeclareMockTests : AutoCloseKoinTest() {
 
     @Test
     fun `create mock of an existing definition for given scope`() {

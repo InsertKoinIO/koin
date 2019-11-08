@@ -6,16 +6,18 @@ import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-class KoinTestTest : KoinTest {
 
-    val myString42: Simple.MyString by inject(named("42"))
+class KoinQualifierTest : AutoCloseKoinTest() {
+
+    val qualifier = named("42")
+    val myString42: Simple.MyString by inject(qualifier)
 
     @Test
     fun `use qualifier`() {
         startKoin {
             modules(
                 module {
-                    single(named("42")) { Simple.MyString("42") }
+                    single(qualifier) { Simple.MyString("42") }
                 }
             )
         }

@@ -2,7 +2,7 @@ package org.koin.experimental.builder
 
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import org.koin.core.time.measureDuration
+import org.koin.core.time.measureDurationForResult
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
@@ -12,12 +12,12 @@ class InstanceBuilderTest {
 
 //    @Test
 //    fun `should create an instance for class`() {
-//        val (ctor, ctorDuration) = measureDuration {
+//        val (ctor, ctorDuration) = measureDurationForResult {
 //            MyComponent::class.getFirstJavaConstructor()
 //        }
 //        println("got ctor in $ctorDuration ms")
 //
-//        val (instance, instanceDuration) = measureDuration {
+//        val (instance, instanceDuration) = measureDurationForResult {
 //            ctor.makeInstance<MyComponent>(emptyArray())
 //        }
 //        assertNotNull(instance)
@@ -27,12 +27,12 @@ class InstanceBuilderTest {
 
     @Test
     fun `should create an instance for kclass`() {
-        val (ctor, ctorDuration) = measureDuration {
+        val (ctor, ctorDuration) = measureDurationForResult {
             MyComponent::class.getFirstConstructor()
         }
         println("got ctor in $ctorDuration ms")
 
-        val (instance, instanceDuration) = measureDuration {
+        val (instance, instanceDuration) = measureDurationForResult {
             ctor.call() as MyComponent
         }
         assertNotNull(instance)

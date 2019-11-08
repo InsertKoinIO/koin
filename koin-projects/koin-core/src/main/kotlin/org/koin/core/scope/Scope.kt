@@ -26,7 +26,7 @@ import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.BeanRegistry
-import org.koin.core.time.measureDuration
+import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -119,7 +119,7 @@ data class Scope(
     ): T = synchronized(this) {
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
-            val (instance: T, duration: Double) = measureDuration {
+            val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
             KoinApplication.logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
@@ -146,7 +146,7 @@ data class Scope(
         val kClass = clazz.kotlin
         return if (KoinApplication.logger.isAt(Level.DEBUG)) {
             KoinApplication.logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
-            val (instance: T, duration: Double) = measureDuration {
+            val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, kClass, parameters)
             }
             KoinApplication.logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
