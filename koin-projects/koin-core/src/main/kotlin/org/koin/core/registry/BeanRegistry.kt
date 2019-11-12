@@ -37,8 +37,10 @@ class BeanRegistry {
 
     private val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
     private val definitionsNames: MutableMap<String, BeanDefinition<*>> = ConcurrentHashMap()
-    private val definitionsPrimaryTypes: MutableMap<KClass<*>, BeanDefinition<*>> = ConcurrentHashMap()
-    private val definitionsSecondaryTypes: MutableMap<KClass<*>, ArrayList<BeanDefinition<*>>> = ConcurrentHashMap()
+    private val definitionsPrimaryTypes: MutableMap<KClass<*>, BeanDefinition<*>> =
+        ConcurrentHashMap()
+    private val definitionsSecondaryTypes: MutableMap<KClass<*>, ArrayList<BeanDefinition<*>>> =
+        ConcurrentHashMap()
     private val definitionsToCreate: HashSet<BeanDefinition<*>> = hashSetOf()
 
     /**
@@ -122,9 +124,9 @@ class BeanRegistry {
 
     private fun saveDefinitionForSecondaryType(definition: BeanDefinition<*>, type: KClass<*>) {
         val secondaryTypeDefinitions: ArrayList<BeanDefinition<*>> = definitionsSecondaryTypes[type]
-                ?: createSecondaryType(type)
+            ?: createSecondaryType(type)
 
-        if (definition in secondaryTypeDefinitions){
+        if (definition in secondaryTypeDefinitions) {
             secondaryTypeDefinitions[secondaryTypeDefinitions.indexOf(definition)] = definition
         } else {
             secondaryTypeDefinitions.add(definition)
@@ -220,15 +222,28 @@ class BeanRegistry {
      * @param qualifier
      * @param clazz
      */
-    fun findDefinition(
-            qualifier: Qualifier? = null,
-            clazz: KClass<*>
+    fun findDefinitionOrNull(
+        qualifier: Qualifier? = null,
+        clazz: KClass<*>
     ): BeanDefinition<*>? {
         return if (qualifier != null) {
             findDefinitionByName(qualifier.toString())
         } else {
             findDefinitionByType(clazz) ?: findDefinitionBySecondaryType(clazz)
         }
+    }
+
+    /**
+     * Find a definition
+     * @param qualifier
+     * @param clazz
+     */
+    fun findDefinition(
+        qualifier: Qualifier? = null,
+        clazz: KClass<*>
+    ): BeanDefinition<*> {
+        return findDefinitionOrNull(qualifier, clazz)
+            ?: throw NoBeanDefFoundException("No definition found for '${clazz.getFullName()}' - qualifier:'$qualifier'")
     }
 
     //TODO Find with secondary type
@@ -266,7 +281,7 @@ class BeanRegistry {
     fun getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
         return definitions.firstOrNull {
             it.primaryType == clazz || it.secondaryTypes.contains(
-                    clazz
+                clazz
             )
         }
     }
@@ -283,5 +298,5 @@ class BeanRegistry {
      * Find all definition compatible with given type
      */
     fun getDefinitionsForClass(clazz: KClass<*>) = getAllDefinitions()
-            .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.hasScopeSet() }
+        .filter { it.primaryType == clazz || it.secondaryTypes.contains(clazz) && !it.hasScopeSet() }
 }

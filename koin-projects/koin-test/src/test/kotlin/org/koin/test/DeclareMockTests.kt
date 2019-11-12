@@ -35,7 +35,7 @@ class DeclareMockTests : AutoCloseKoinTest() {
         val scope: Scope = koin.getOrCreateScope("scope_id", named<Simple>())
 
         val definition: BeanDefinition<Simple.ComponentA> =
-                scope.beanRegistry.findDefinition(null, Simple.ComponentA::class)
+                scope.beanRegistry.findDefinitionOrNull(null, Simple.ComponentA::class)
         as BeanDefinition<Simple.ComponentA>
 
         val instance = scope.get<Simple.ComponentA>()
@@ -115,7 +115,7 @@ class DeclareMockTests : AutoCloseKoinTest() {
         }.koin
 
         val definition: BeanDefinition<Simple.ComponentA> =
-                koin.rootScope.beanRegistry.findDefinition(
+                koin.rootScope.beanRegistry.findDefinitionOrNull(
                         null, Simple.ComponentA::class
                 ) as BeanDefinition<Simple.ComponentA>
 

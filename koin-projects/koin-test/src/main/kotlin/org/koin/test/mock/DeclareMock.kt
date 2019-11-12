@@ -83,7 +83,7 @@ inline fun <reified T : Any> getDefinition(
 ): BeanDefinition<T> {
     logger.info("declare mock for '${clazz.getFullName()}'")
 
-    return koin.rootScope.beanRegistry.findDefinition(qualifier, clazz) as BeanDefinition<T>?
+    return koin.rootScope.beanRegistry.findDefinitionOrNull(qualifier, clazz) as BeanDefinition<T>?
             ?: throw NoBeanDefFoundException("No definition found for qualifier='$qualifier' & class='$clazz'")
 }
 
@@ -94,7 +94,7 @@ inline fun <reified T: Any> getDefinition(
         qualifier: Qualifier?
 ): BeanDefinition<T> {
     logger.info("declare scoped mock for '${clazz.getFullName()}'")
-    return scope.beanRegistry.findDefinition(qualifier, clazz) as BeanDefinition<T>?
+    return scope.beanRegistry.findDefinitionOrNull(qualifier, clazz) as BeanDefinition<T>?
             ?: throw NoBeanDefFoundException("No definition found for qualifier='$qualifier' & class='$clazz'")
 }
 

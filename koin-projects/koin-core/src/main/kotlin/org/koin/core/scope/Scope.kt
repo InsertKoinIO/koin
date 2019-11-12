@@ -166,7 +166,7 @@ data class Scope(
     }
 
     private fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*> {
-        return beanRegistry.findDefinition(qualifier, clazz) ?: if (isRoot) {
+        return beanRegistry.findDefinitionOrNull(qualifier, clazz) ?: if (isRoot) {
             throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' with qualifier '$qualifier' has been found. Check your module definitions.")
         } else {
             _koin.rootScope.findDefinition(qualifier, clazz)

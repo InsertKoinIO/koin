@@ -5,7 +5,6 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.ScopeDefinitionInstance
-import org.koin.core.instance.SingleDefinitionInstance
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -29,7 +28,7 @@ class ScopeSetDeclarationTest {
         assertTrue(def!!.scopeName == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
-        assertTrue(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
+        assertTrue(scope.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
     }
 
     @Test
@@ -69,7 +68,7 @@ class ScopeSetDeclarationTest {
 //                    }
 //            )
 //        }
-//        val def = app.koin.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+//        val def = app.koin.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class)
 //        assertTrue(def!!.instance is ScopeDefinitionInstance)
 //        assertTrue(def.getScopeName() == scopeKey)
 //    }

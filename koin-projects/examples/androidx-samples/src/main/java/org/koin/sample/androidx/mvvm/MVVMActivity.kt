@@ -8,6 +8,7 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
@@ -21,16 +22,25 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVVMActivity : AppCompatActivity() {
 
-    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
+    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) {
+        parametersOf(
+            ID
+        )
+    }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
-    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
+    val scopeVm: ExtSimpleViewModel by currentScope.viewModel({ this.viewModelStore })
+    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(
+        { this.viewModelStore },
+        named("ext")
+    )
 
     val savedVm: SavedStateViewModel by viewModel(defaultArguments = { Bundle() }) { parametersOf("vm1") }
-    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this, defaultArguments = { Bundle()} ) { parametersOf("vm2") }
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(
+        { this.viewModelStore },
+        defaultArguments = { Bundle() }) { parametersOf("vm2") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +57,8 @@ class MVVMActivity : AppCompatActivity() {
         assertEquals(scopeVm.session.id, extScopeVm.session.id)
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mvvm_frame, MVVMFragment())
-                .commit()
+            .replace(R.id.mvvm_frame, MVVMFragment())
+            .commit()
 
         getKoin().setProperty("session", currentScope.get<Session>())
 

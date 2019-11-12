@@ -223,7 +223,7 @@ class DynamicModulesTest {
         }
 
         val scope = app.koin.createScope("id", scopeKey)
-        val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+        val defA = scope.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
         Assert.assertEquals(Kind.Scoped, defA.kind)
         Assert.assertEquals(scopeKey, defA.scopeName)
@@ -231,7 +231,7 @@ class DynamicModulesTest {
 
         app.unloadModules(module)
 
-        Assert.assertNull(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class))
+        Assert.assertNull(scope.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class))
 
         try {
             scope.get<Simple.ComponentA>()
@@ -255,7 +255,7 @@ class DynamicModulesTest {
         }
 
         var scope = app.koin.createScope("id", scopeKey)
-        val defA = scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class)
+        val defA = scope.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class)
                 ?: error("no definition found")
         Assert.assertEquals(Kind.Scoped, defA.kind)
         Assert.assertEquals(scopeKey, defA.scopeName)
@@ -266,7 +266,7 @@ class DynamicModulesTest {
 
         scope = app.koin.createScope("id", scopeKey)
         scope.get<Simple.ComponentA>()
-        Assert.assertNotNull(scope.beanRegistry.findDefinition(clazz = Simple.ComponentA::class))
+        Assert.assertNotNull(scope.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class))
     }
 
     @Test
