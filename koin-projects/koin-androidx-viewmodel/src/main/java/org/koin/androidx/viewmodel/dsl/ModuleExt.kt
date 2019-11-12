@@ -32,21 +32,16 @@ import org.koin.core.qualifier.Qualifier
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-        qualifier: Qualifier? = null,
-        override: Boolean = false,
-        useState: Boolean = false,
-        noinline definition: Definition<T>
+    qualifier: Qualifier? = null,
+    override: Boolean = false,
+    noinline definition: Definition<T>
 ): BeanDefinition<T> {
     val beanDefinition = factory(qualifier, override, definition)
     beanDefinition.setIsViewModel()
-    if(useState) {
-        beanDefinition.setIsStateViewModel()
-    }
     return beanDefinition
 }
 
 const val ATTRIBUTE_VIEW_MODEL = "isViewModel"
-const val ATTRIBUTE_VIEW_MODEL_SAVED_STATE = "isSavedStateViewModel"
 
 fun BeanDefinition<*>.setIsViewModel() {
     properties[ATTRIBUTE_VIEW_MODEL] = true
@@ -54,18 +49,4 @@ fun BeanDefinition<*>.setIsViewModel() {
 
 fun BeanDefinition<*>.isViewModel(): Boolean {
     return properties.getOrNull(ATTRIBUTE_VIEW_MODEL) ?: false
-}
-
-/**
- * StateViewModel DSL Extension
- * Allow to declare a stateful ViewModel - will have a SavedStateHandle passed in constructor
- *
- * @author Marek Kedzierski
- */
-fun BeanDefinition<*>.setIsStateViewModel() {
-    properties[ATTRIBUTE_VIEW_MODEL_SAVED_STATE] = true
-}
-
-fun BeanDefinition<*>.isStateViewModel(): Boolean {
-    return properties.getOrNull(ATTRIBUTE_VIEW_MODEL_SAVED_STATE) ?: false
 }

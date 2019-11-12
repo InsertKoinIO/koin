@@ -1,5 +1,6 @@
 package org.koin.androidx.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -13,12 +14,11 @@ import org.koin.core.scope.Scope
  * Create Bundle/State ViewModel Factory
  */
 fun <T : ViewModel> Scope.stateViewModelFactory(
-    viewModelParameters: ViewModelParameters<T>,
-    defaultArguments: ViewModelState
+    viewModelParameters: ViewModelParameter<T>
 ): AbstractSavedStateViewModelFactory {
     return object : AbstractSavedStateViewModelFactory(
-        viewModelParameters.store as SavedStateRegistryOwner,
-        defaultArguments.invoke()
+        viewModelParameters.owner as? SavedStateRegistryOwner ?: error("Owner '${viewModelParameters.owner}' is not SavedStateRegistryOwner"),
+        viewModelParameters.state?.invoke() ?: Bundle()
     ) {
         override fun <T : ViewModel?> create(
             key: String,
@@ -38,7 +38,7 @@ fun <T : ViewModel> Scope.stateViewModelFactory(
 /**
  * Create Default ViewModel Factory
  */
-fun <T : ViewModel> Scope.defaultViewModelFactory(parameters: ViewModelParameters<T>): ViewModelProvider.Factory {
+fun <T : ViewModel> Scope.defaultViewModelFactory(parameters: ViewModelParameter<T>): ViewModelProvider.Factory {
     return object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return get(parameters.clazz, parameters.qualifier, parameters.parameters)

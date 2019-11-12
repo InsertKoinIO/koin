@@ -37,15 +37,11 @@ import org.koin.dsl.ScopeSet
 inline fun <reified T : ViewModel> ScopeSet.viewModel(
         qualifier: Qualifier? = null,
         override: Boolean = false,
-        useState: Boolean = false,
         noinline definition: Definition<T>
 ): BeanDefinition<T> {
     val beanDefinition = DefinitionFactory.createFactory(qualifier, this.qualifier, definition)
     declareDefinition(beanDefinition, Options(false, override))
     beanDefinition.setIsViewModel()
-    if(useState) {
-        beanDefinition.setIsStateViewModel()
-    }
     if (!definitions.contains(beanDefinition)) {
         definitions.add(beanDefinition)
     } else {

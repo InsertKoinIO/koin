@@ -2,8 +2,7 @@ package org.koin.androidx.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
-import org.koin.androidx.viewmodel.dsl.isStateViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModelStore
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.Qualifier
@@ -14,7 +13,7 @@ import org.koin.core.time.measureDurationForResult
  * Resolve ViewModel instance
  * @param viewModelParameters
  */
-fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewModelParameters<T>): T {
+fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewModelParameter<T>): T {
     val javaClass = viewModelParameters.clazz.java
     return if (logger.isAt(Level.DEBUG)) {
         logger.debug("!- ViewModelProvider getting instance")
@@ -32,14 +31,14 @@ fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewM
  * Retrieve ViewModel from Android factory
  */
 fun <T : ViewModel> ViewModelProvider.get(
-    viewModelParameters: ViewModelParameters<T>,
+    viewModelParameters: ViewModelParameter<T>,
     qualifier: Qualifier?,
     javaClass: Class<T>
 ): T {
     return if (viewModelParameters.qualifier != null) {
-        this.get(qualifier.toString(), javaClass)
+        get(qualifier.toString(), javaClass)
     } else {
-        this.get(javaClass)
+        get(javaClass)
     }
 }
 
@@ -49,14 +48,12 @@ fun <T : ViewModel> ViewModelProvider.get(
  * @param viewModelParameters
  */
 fun <T : ViewModel> Scope.createViewModelProvider(
-    viewModelStore: ViewModelStore,
-    viewModelParameters: ViewModelParameters<T>
+    viewModelParameters: ViewModelParameter<T>
 ): ViewModelProvider {
-    val findDefinition = beanRegistry.findDefinition(viewModelParameters.qualifier, viewModelParameters.clazz)
     return ViewModelProvider(
-        viewModelStore,
-        if (findDefinition.isStateViewModel() && viewModelParameters.defaultArguments != null) {
-            stateViewModelFactory(viewModelParameters, viewModelParameters.defaultArguments)
+        viewModelParameters.owner.getViewModelStore(),
+        if (viewModelParameters.state != null) {
+            stateViewModelFactory(viewModelParameters)
         } else {
             defaultViewModelFactory(viewModelParameters)
         }

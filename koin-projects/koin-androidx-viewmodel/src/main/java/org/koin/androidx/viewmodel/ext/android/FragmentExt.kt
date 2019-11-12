@@ -17,7 +17,7 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.koin.androidx.viewmodel.ViewModelState
+import org.koin.androidx.viewmodel.ViewModelStateDefinition
 import org.koin.androidx.viewmodel.ViewModelStoreDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -40,7 +40,7 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     qualifier: Qualifier? = null,
     noinline storeDefinition: ViewModelStoreDefinition = { requireActivity().viewModelStore },
-    noinline defaultArguments: ViewModelState? = null,
+    noinline defaultArguments: ViewModelStateDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
     lazy { getSharedViewModel<T>(qualifier, storeDefinition, defaultArguments, parameters) }
@@ -58,7 +58,7 @@ fun <T : ViewModel> Fragment.sharedViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     storeDefinition: ViewModelStoreDefinition = { requireActivity().viewModelStore },
-    defaultArguments: ViewModelState? = null,
+    defaultArguments: ViewModelStateDefinition? = null,
     parameters: ParametersDefinition? = null
 ): Lazy<T> =
     lazy { getSharedViewModel(clazz, qualifier, storeDefinition, defaultArguments, parameters) }
@@ -74,7 +74,7 @@ fun <T : ViewModel> Fragment.sharedViewModel(
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
     noinline storeDefinition: ViewModelStoreDefinition = { requireActivity().viewModelStore },
-    noinline defaultArguments: ViewModelState? = null,
+    noinline defaultArguments: ViewModelStateDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
     return getSharedViewModel(T::class, qualifier, storeDefinition, defaultArguments, parameters)
@@ -94,7 +94,7 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     storeDefinition: ViewModelStoreDefinition = { requireActivity().viewModelStore },
-    defaultArguments: ViewModelState? = null,
+    defaultArguments: ViewModelStateDefinition? = null,
     parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(

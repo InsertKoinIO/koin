@@ -22,25 +22,16 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVVMActivity : AppCompatActivity() {
 
-    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) {
-        parametersOf(
-            ID
-        )
-    }
+    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by currentScope.viewModel({ this.viewModelStore })
-    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(
-        { this.viewModelStore },
-        named("ext")
-    )
+    val scopeVm: ExtSimpleViewModel by currentScope.viewModel(this)
+    val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
     val savedVm: SavedStateViewModel by viewModel(defaultArguments = { Bundle() }) { parametersOf("vm1") }
-    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(
-        { this.viewModelStore },
-        defaultArguments = { Bundle() }) { parametersOf("vm2") }
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this, defaultArguments = { Bundle()} ) { parametersOf("vm2") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +48,15 @@ class MVVMActivity : AppCompatActivity() {
         assertEquals(scopeVm.session.id, extScopeVm.session.id)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mvvm_frame, MVVMFragment())
-            .commit()
+                .replace(R.id.mvvm_frame, MVVMFragment())
+                .commit()
 
         getKoin().setProperty("session", currentScope.get<Session>())
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)
         }
+
+        assertNotNull(scopedSavedVm)
     }
 }

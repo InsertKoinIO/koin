@@ -15,8 +15,8 @@
  */
 package org.koin.androidx.viewmodel.scope
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStore
 import org.koin.androidx.viewmodel.*
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -42,39 +42,33 @@ fun <T : ViewModel> Scope.viewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null,
-    defaultArguments: ViewModelState? = null
+    defaultArguments: ViewModelStateDefinition? = null
 ): Lazy<T> = lazy { getViewModel(storeOwner, clazz, qualifier, defaultArguments, parameters) }
 
-/**
- * Lazy getByClass a viewModel instance
- *
- * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
- * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
- * @param parameters - parameters to pass to the BeanDefinition
- */
 inline fun <reified T : ViewModel> Scope.viewModel(
     noinline storeOwner: ViewModelStoreDefinition,
     qualifier: Qualifier? = null,
-    noinline defaultArguments: ViewModelState? = null,
+    noinline defaultArguments: ViewModelStateDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = lazy { getViewModel<T>(storeOwner, qualifier, defaultArguments, parameters) }
 
-/**
- * Lazy getByClass a viewModel instance
- *
- * @param clazz - Class of the BeanDefinition to retrieve
- * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
- * @param defaultArguments - Default arguments for SavedStateHandle if useState = true
- * @param parameters - parameters to pass to the BeanDefinition
- */
+inline fun <reified T : ViewModel> Scope.viewModel(
+    owner: LifecycleOwner,
+    qualifier: Qualifier? = null,
+    noinline defaultArguments: ViewModelStateDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): Lazy<T> =
+    lazy { getViewModel<T>(owner, qualifier, defaultArguments, parameters) }
+
+
 inline fun <reified T : ViewModel> Scope.getViewModel(
     storeOwner: ViewModelStoreDefinition,
     qualifier: Qualifier? = null,
-    noinline defaultArguments: ViewModelState? = null,
+    noinline defaultArguments: ViewModelStateDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(
-        ViewModelParameters(
+        ViewModelParameter(
             T::class,
             storeOwner(),
             qualifier,
@@ -83,6 +77,24 @@ inline fun <reified T : ViewModel> Scope.getViewModel(
         )
     )
 }
+
+inline fun <reified T : ViewModel> Scope.getViewModel(
+    owner: LifecycleOwner,
+    qualifier: Qualifier? = null,
+    noinline defaultArguments: ViewModelStateDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModel(
+        ViewModelParameter(
+            T::class,
+            qualifier,
+            parameters,
+            owner,
+            defaultArguments
+        )
+    )
+}
+
 
 /**
  * Lazy getByClass a viewModel instance
@@ -93,18 +105,18 @@ inline fun <reified T : ViewModel> Scope.getViewModel(
  * @param parameters - parameters to pass to the BeanDefinition
  */
 fun <T : ViewModel> Scope.getViewModel(
-    storeOwner: ViewModelStoreDefinition,
+    owner: ViewModelOwnerDefinition,
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
-    defaultArguments: ViewModelState? = null,
+    defaultArguments: ViewModelStateDefinition? = null,
     parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(
-        ViewModelParameters(
+        ViewModelParameter(
             clazz,
-            storeOwner(),
             qualifier,
             parameters,
+            owner(),
             defaultArguments
         )
     )
@@ -114,8 +126,7 @@ fun <T : ViewModel> Scope.getViewModel(
  * resolve instance
  * @param viewModelParameters
  */
-fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameters<T>): T {
-    val vmStore: ViewModelStore = viewModelParameters.store
-    val viewModelProvider = createViewModelProvider(vmStore, viewModelParameters)
+fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
+    val viewModelProvider = createViewModelProvider(viewModelParameters)
     return viewModelProvider.resolveInstance(viewModelParameters)
 }
