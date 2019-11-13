@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
+import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
@@ -33,7 +34,7 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
-fun <T : ViewModel> LifecycleOwner.viewModel(
+fun <T : ViewModel> SavedStateRegistryOwner.viewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
@@ -41,21 +42,21 @@ fun <T : ViewModel> LifecycleOwner.viewModel(
     return lazy { getViewModel(clazz, qualifier, parameters) }
 }
 
-inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
+inline fun <reified T : ViewModel> SavedStateRegistryOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy { getViewModel(T::class, qualifier, parameters) }
 }
 
-inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
+inline fun <reified T : ViewModel> SavedStateRegistryOwner.getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(T::class, qualifier, parameters)
 }
 
-fun <T : ViewModel> LifecycleOwner.getViewModel(
+fun <T : ViewModel> SavedStateRegistryOwner.getViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
@@ -63,7 +64,7 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
     return getKoin().getViewModel(this, clazz, qualifier, parameters)
 }
 
-fun LifecycleOwner.getViewModelStore(): ViewModelStore {
+fun SavedStateRegistryOwner.getViewModelStore(): ViewModelStore {
     return when (this) {
         is FragmentActivity -> this.viewModelStore
         is Fragment -> this.viewModelStore
