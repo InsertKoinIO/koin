@@ -16,9 +16,7 @@
 package org.koin.android.viewmodel.compat
 
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelStoreOwner
 import android.support.v4.app.Fragment
-import org.koin.android.viewmodel.ViewModelStoreOwnerDefinition
 import org.koin.android.viewmodel.ext.android.getSharedViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.ParametersDefinition
@@ -43,12 +41,11 @@ object SharedViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> sharedViewModel(
-            fragment: Fragment,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            from: ViewModelStoreOwnerDefinition = { fragment.activity as ViewModelStoreOwner },
-            parameters: ParametersDefinition? = null
-    ): Lazy<T> = fragment.sharedViewModel(clazz.kotlin, qualifier, from, parameters)
+        fragment: Fragment,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
+    ): Lazy<T> = fragment.sharedViewModel(clazz.kotlin, qualifier, parameters)
 
     /**
      * Get a shared viewModel instance from underlying Activity
@@ -62,12 +59,11 @@ object SharedViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getSharedViewModel(
-            fragment: Fragment,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            from: ViewModelStoreOwnerDefinition = { fragment.activity as ViewModelStoreOwner },
-            parameters: ParametersDefinition? = null
+        fragment: Fragment,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
-        return fragment.getSharedViewModel(clazz.kotlin, qualifier, from, parameters)
+        return fragment.getSharedViewModel(clazz.kotlin, qualifier, parameters)
     }
 }

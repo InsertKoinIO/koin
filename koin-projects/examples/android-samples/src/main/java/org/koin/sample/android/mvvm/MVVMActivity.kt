@@ -8,6 +8,7 @@ import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.currentScope
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.viewmodel.scope.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
@@ -44,8 +45,8 @@ class MVVMActivity : AppCompatActivity() {
         setContentView(R.layout.mvvm_activity)
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mvvm_frame, MVVMFragment())
-                .commit()
+            .replace(R.id.mvvm_frame, MVVMFragment())
+            .commit()
 
         getKoin().setProperty("session", currentScope.get<Session>())
 

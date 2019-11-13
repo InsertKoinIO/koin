@@ -1,66 +1,56 @@
 package org.koin.android.viewmodel
 
 import android.arch.lifecycle.*
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDurationForResult
 
-/**
- * resolve instance
- * @param parameters
- */
-fun <T : ViewModel> Koin.getViewModel(parameters: ViewModelParameters<T>): T {
-    val vmStore: ViewModelStore = parameters.owner.getViewModelStore(parameters)
-    val viewModelProvider = rootScope.createViewModelProvider(vmStore, parameters)
-    return viewModelProvider.getInstance(parameters)
-}
-
-fun <T : ViewModel> ViewModelProvider.getInstance(parameters: ViewModelParameters<T>): T {
-    val javaClass = parameters.clazz.java
-    return if (KoinApplication.logger.isAt(Level.DEBUG)) {
+internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewModelParameter<T>): T {
+    val javaClass = viewModelParameters.clazz.java
+    return if (logger.isAt(Level.DEBUG)) {
         logger.debug("!- ViewModelProvider getting instance")
         val (instance: T, duration: Double) = measureDurationForResult {
-            if (parameters.qualifier != null) {
-                this.get(parameters.qualifier.toString(), javaClass)
-            } else {
-                this.get(javaClass)
-            }
+            get(viewModelParameters, viewModelParameters.qualifier, javaClass)
         }
         logger.debug("!- ViewModelProvider got instance in $duration")
         return instance
     } else {
-        if (parameters.qualifier != null) {
-            this.get(parameters.qualifier.toString(), javaClass)
-        } else {
-            this.get(javaClass)
-        }
+        get(viewModelParameters, viewModelParameters.qualifier, javaClass)
     }
 }
 
-fun <T : ViewModel> LifecycleOwner.getViewModelStore(
-        parameters: ViewModelParameters<T>
-): ViewModelStore =
-        when {
-            parameters.from != null -> parameters.from.invoke().viewModelStore
-            this is FragmentActivity -> ViewModelStores.of(this)
-            this is Fragment -> ViewModelStores.of(this)
-            else -> error("Can't getByClass ViewModel '${parameters.clazz}' on $this - Is not a FragmentActivity nor a Fragment neither a valid ViewModelStoreOwner")
-        }
+internal fun <T : ViewModel> ViewModelProvider.get(
+    viewModelParameters: ViewModelParameter<T>,
+    qualifier: Qualifier?,
+    javaClass: Class<T>
+): T {
+    return if (viewModelParameters.qualifier != null) {
+        get(qualifier.toString(), javaClass)
+    } else {
+        get(javaClass)
+    }
+}
 
-fun <T : ViewModel> Scope.createViewModelProvider(
-        vmStore: ViewModelStore,
-        parameters: ViewModelParameters<T>
+internal fun <T : ViewModel> Scope.createViewModelProvider(
+    viewModelParameters: ViewModelParameter<T>
 ): ViewModelProvider {
     return ViewModelProvider(
-            vmStore,
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return get(parameters.clazz, parameters.qualifier, parameters.parameters)
-                }
-            })
+        viewModelParameters.viewModelStore,
+        defaultViewModelFactory(viewModelParameters)
+    )
+}
+
+class StateBundle(val defaultState: Bundle, val index: Int, val currentValues: Array<out Any?>)
+
+private fun <T : ViewModel> getStateBundle(viewModelParameters: ViewModelParameter<T>): StateBundle? {
+    val params = viewModelParameters.parameters?.invoke()
+    val bundle = params?.values?.firstOrNull { it is Bundle } as? Bundle
+    return bundle?.let { StateBundle(bundle, params.values.indexOf(bundle), params.values) }
 }

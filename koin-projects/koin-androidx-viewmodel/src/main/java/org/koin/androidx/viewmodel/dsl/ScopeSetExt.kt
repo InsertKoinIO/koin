@@ -31,7 +31,6 @@ import org.koin.dsl.ScopeSet
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier
- * @param useState - whether this view model wants a SavedStateHandle definition parameter
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> ScopeSet.viewModel(
