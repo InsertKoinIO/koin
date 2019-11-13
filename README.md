@@ -43,7 +43,7 @@ koin_version = '2.0.1'
 ## Current Unstable Version
 
 ```gradle
-koin_version = '2.1.0-alpha-1'
+koin_version = '2.1.0-alpha-2'
 ```
 
 ## Gradle 
