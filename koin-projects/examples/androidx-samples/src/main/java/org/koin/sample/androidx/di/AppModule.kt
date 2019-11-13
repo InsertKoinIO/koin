@@ -51,7 +51,7 @@ val mvvmModule = module {
         scoped { Session() }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+        viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
     }
 }
 

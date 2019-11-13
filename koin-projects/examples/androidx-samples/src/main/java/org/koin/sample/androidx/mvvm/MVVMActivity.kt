@@ -35,7 +35,7 @@ class MVVMActivity : AppCompatActivity() {
     val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
     val savedVm: SavedStateViewModel by viewModel { parametersOf(Bundle(), "vm1") }
-    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this) {
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this,named("vm2")) {
         parametersOf(
             Bundle(),
             "vm2"
