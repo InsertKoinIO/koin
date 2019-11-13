@@ -23,7 +23,7 @@ internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParamete
     }
 }
 
-internal  fun <T : ViewModel> ViewModelProvider.get(
+internal fun <T : ViewModel> ViewModelProvider.get(
     viewModelParameters: ViewModelParameter<T>,
     qualifier: Qualifier?,
     javaClass: Class<T>
@@ -35,22 +35,25 @@ internal  fun <T : ViewModel> ViewModelProvider.get(
     }
 }
 
-internal  fun <T : ViewModel> Scope.createViewModelProvider(
+internal fun <T : ViewModel> Scope.createViewModelProvider(
     viewModelParameters: ViewModelParameter<T>
 ): ViewModelProvider {
-    val stateBundle: Bundle? = getStateBundle(viewModelParameters)
+    val stateBundle: StateBundle? = getStateBundle(viewModelParameters)
 
     return ViewModelProvider(
         viewModelParameters.viewModelStore,
         if (stateBundle != null) {
-            stateViewModelFactory(viewModelParameters,stateBundle)
+            stateViewModelFactory(viewModelParameters, stateBundle)
         } else {
             defaultViewModelFactory(viewModelParameters)
         }
     )
 }
 
-private fun <T : ViewModel> getStateBundle(viewModelParameters: ViewModelParameter<T>): Bundle? {
+class StateBundle(val defaultState: Bundle, val index: Int, val currentValues: Array<out Any?>)
+
+private fun <T : ViewModel> getStateBundle(viewModelParameters: ViewModelParameter<T>): StateBundle? {
     val params = viewModelParameters.parameters?.invoke()
-    return params?.values?.firstOrNull { it is Bundle } as? Bundle
+    val bundle = params?.values?.firstOrNull { it is Bundle } as? Bundle
+    return bundle?.let { StateBundle(bundle, params.values.indexOf(bundle), params.values) }
 }

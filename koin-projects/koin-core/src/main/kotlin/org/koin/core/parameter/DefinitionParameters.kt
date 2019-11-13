@@ -42,6 +42,10 @@ class DefinitionParameters internal constructor(vararg val values: Any?) {
      */
     operator fun <T> get(i: Int) = values[i] as T
 
+    fun <T> set(i: Int,t : T) {
+        values.toMutableList()[i] = t
+    }
+
     /**
      * Number of contained elements
      */

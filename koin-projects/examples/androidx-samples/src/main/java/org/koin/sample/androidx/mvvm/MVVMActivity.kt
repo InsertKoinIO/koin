@@ -35,12 +35,12 @@ class MVVMActivity : AppCompatActivity() {
     val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
     val savedVm: SavedStateViewModel by viewModel { parametersOf(Bundle(), "vm1") }
-//    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this) {
-//        parametersOf(
-//            Bundle(),
-//            "vm2"
-//        )
-//    }
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this) {
+        parametersOf(
+            Bundle(),
+            "vm2"
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +57,8 @@ class MVVMActivity : AppCompatActivity() {
         assertEquals(scopeVm.session.id, extScopeVm.session.id)
 
         assertNotNull(savedVm)
-//        assertNotNull(scopedSavedVm)
-//        assertNotEquals(savedVm, scopedSavedVm)
+        assertNotNull(scopedSavedVm)
+        assertNotEquals(savedVm.id, scopedSavedVm.id)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.mvvm_frame, MVVMFragment())
