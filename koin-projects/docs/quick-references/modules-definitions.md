@@ -12,16 +12,16 @@ Writing definitions in Koin is done via Kotlin functions, that describe ishow is
 
 Given some classes that we need to inject:
 
-{% highlight kotlin %}
+```kotlin
 class DataRepository()
 interface Presenter
 class MyPresenter(val repository : Repository) : Presenter
 class HttpClient(val url : String)
-{% endhighlight %}
+```
 
 Here how we could define some components:
 
-{% highlight kotlin %}
+```kotlin
 // declare a module
 val myModule = module {
 
@@ -36,13 +36,13 @@ val myModule = module {
     // inject property "server_url" from Koin properties
     single { HttpClient(getProperty("server_url")) }
 }
-{% endhighlight %}
+```
 
 ## Qualifiers
 
 You can give a qualifier to a component. This qualifier can be a string or a type, and is setup with the `named()` function:
 
-{% highlight kotlin %}
+```kotlin
 val myModule = module {
 
     // Define a singleton for type  DataRepository
@@ -51,28 +51,28 @@ val myModule = module {
     // Mock
     single(named("mock")) { MockDataRepository() }
 }
-{% endhighlight %}
+```
 
 ## Additional types (binding secondary types)
 
 In the module DSL, for a definition, you can give some extra type to bind, with the `bind` operator (`binds` for list of KClass):
 
-{% highlight kotlin %}
+```kotlin
 module {
     single { Component1() } bind ComponentInterface1::class
 }
-{% endhighlight %}
+```
 
 Then you can request your instance with `get<Component1>()` or `get<ComponentInterface1>()`.
 
 You can bind multiple definitions with the same type:
 
-{% highlight kotlin %}
+```kotlin
 module {
     single { Component1() } bind ComponentInterface1::class
     single { Component2() } bind ComponentInterface1::class
 }
-{% endhighlight %}
+```
 
 But here you won't be able to request an instance with `get<Simple.ComponentInterface1>()`. You will have to use `koin.bind<Component1,ComponentInterface1>()` to retrieve an instance of `ComponentInterface1`, with the `Component1` implementation.
 
@@ -85,22 +85,22 @@ There is no concept of import in Koin. Just combine several complementary module
 
 Let's dispatch definitions in 2 modules:
 
-{% highlight kotlin %}
+```kotlin
 val module1 = module {
     single { DataRepository() }
 }
 val module2 = module {
     factory<Presenter> { MyPresenter(get()) }
 }
-{% endhighlight %}
+```
 
 We just need to list them for Koin:
 
-{% highlight kotlin %}
+```kotlin
 startKoin {
     modules(module1,module2)
 }
-{% endhighlight %}
+```
 
 ## Loading modules after start
 
@@ -110,7 +110,7 @@ After Koin has been started with `startKoin { }` function, it is possible to loa
 
 Once a modules has been loaded into Koin, we can unload it and then drop definitions and instances, related to those definitions. for this we use the `unloadKoinModules(modules...)` 
 
-{% highlight kotlin %}
+```kotlin
 val module = module {
     single { (id: Int) -> Simple.MySingle(id) }
 }
@@ -127,13 +127,13 @@ unloadKoinModules(module)
 loadKoinModules(module)
 
 get<Simple.MySingle> { parametersOf(24) } -> id is 24
-{% endhighlight %}
+```
 
 ## Declare instance on the fly
 
 One of the last backport feature from Koin 1.0 is the ability to declare an instance on the fly. This is now available on Koin.declare() or Scope.declare()
 
-{% highlight kotlin %}
+```kotlin
 val koin = koinApplication {
     // no def
     modules()
@@ -147,7 +147,7 @@ koin.declare(a)
 
 // retrieve it
 assertEquals(a, koin.get<Simple.ComponentA>())
-{% endhighlight %}
+```
 
 
 You can also use a qualifier or secondary types to help create your definition:

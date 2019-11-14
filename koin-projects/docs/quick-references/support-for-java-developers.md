@@ -12,7 +12,7 @@ Below is a short description of `koin-java` features. This project is a small su
 
 Just use the `startKoin()` static function (with the static import to reduce the syntax):
 
-{% highlight java %}
+```java
 import static org.koin.core.context.GlobalContext.start;
 
 // Build KoinApplication instance
@@ -23,7 +23,7 @@ KoinApplication koinApp = KoinApplication.create()
 
 // Statr KoinApplication instance
 start(koinApp);
-{% endhighlight %}
+```
 
 You have access to the [same options]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-core/#start-koin) than the Kotlin `startKoin()`.
 
@@ -31,7 +31,7 @@ You have access to the [same options]({{ site.baseurl }}/docs/{{ site.docs_versi
 
 You need to tag your module variable with `@JvmField` to make it readable from Java world:
 
-{% highlight kotlin %}
+```kotlin
 @JvmField
 val koinModule = module {
     single { ComponentA() }
@@ -42,7 +42,7 @@ val koinModule = module {
         single { ComponentD(get()) }
     }
 }
-{% endhighlight %}
+```
 
 ### Inject with static helpers
 
@@ -52,9 +52,9 @@ The `KoinJavaComponent` class is a static helper that brings Koin powers to Java
 * `get()` - retrieve instance
 * `getKoin()` - get Koin context
 
-{% highlight java %}
+```java
 import static org.koin.java.standalone.KoinJavaComponent.*;
 
 ComponentA a = get(ComponentA.class);
 Lazy<ComponentA> lazy_a = inject(ComponentA.class);
-{% endhighlight %}
+```

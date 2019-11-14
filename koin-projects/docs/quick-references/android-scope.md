@@ -28,7 +28,7 @@ This tutorial lets you write an Android/Kotlin application and use Koin inject a
 
 Add the Koin Android dependency like below:
 
-{% highlight gradle %}
+```groovy
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()    
@@ -36,15 +36,15 @@ repositories {
 dependencies {
     // Koin for Android - Scope feature
     // include koin-android
-    compile 'org.koin:koin-android-scope:{{ site.current_version }}'
+    compile 'org.koin:koin-android-scope:$koin_version'
 }
-{% endhighlight %}
+```
 
 ## Our components
 
 Let's create a HelloRepository to provide some data:
 
-{% highlight kotlin %}
+```kotlin
 interface HelloRepository {
     fun giveHello(): String
 }
@@ -52,22 +52,22 @@ interface HelloRepository {
 class HelloRepositoryImpl() : HelloRepository {
     override fun giveHello() = "Hello Koin"
 }
-{% endhighlight %}
+```
 
 Let's create a presenter class, for consuming this data:
 
-{% highlight kotlin %}
+```kotlin
 class MyScopePresenter(val repo: HelloRepository) {
 
     fun sayHello() = "${repo.giveHello()} from $this"
 }
-{% endhighlight %}
+```
 
 ## Writing the Koin module
 
 Use the `module` function to declare a module. Let's declare our first component:
 
-{% highlight kotlin %}
+```kotlin
 val appModule = module {
 
     // single instance of HelloRepository
@@ -78,7 +78,7 @@ val appModule = module {
         scoped { MyScopePresenter(get()) }
     }
 }
-{% endhighlight %}
+```
 
 *Note:* we declare our MyScopePresenter class as a `scoped` definition for `MyScopeActivity`. This will allows us to bind a MyScopePresenter with a scope, and drop this instance with the scope closing.
 
@@ -86,7 +86,7 @@ val appModule = module {
 
 Now that we have a module, let's start it with Koin. Open your application class, or make one (don't forget to declare it in your manifest.xml). Just call the `startKoin()` function:
 
-{% highlight kotlin %}
+```kotlin
 class MyApplication : Application(){
     override fun onCreate() {
         super.onCreate()
@@ -98,13 +98,13 @@ class MyApplication : Application(){
         }
     }
 }
-{% endhighlight %}
+```
 
 ## Injecting dependencies
 
 The `MyScopePresenter` component will be created with `HelloRepository` instance. To get it into our Activity, let's inject it with the `by inject()` delegate injector: 
 
-{% highlight kotlin %}
+```kotlin
 class MyScopeActivity : AppCompatActivity() {
 
     // inject MyScopePresenter from current scope 
@@ -117,7 +117,7 @@ class MyScopeActivity : AppCompatActivity() {
     }
 }
 
-{% endhighlight %}
+```
 
 <div class="alert alert-primary" role="alert">
     The <b>currentScope</b> allows us to retrieve/create a Koin scope for given activity

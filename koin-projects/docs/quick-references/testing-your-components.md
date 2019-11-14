@@ -17,16 +17,16 @@ Just tag your test class with `KoinTest`, and you will be able to unlock `KoinCo
 
 Given the definitions below:
 
-{% highlight kotlin %}
+```kotlin
 val appModule = module {
     single { ComponentA() }
     //...
 }
-{% endhighlight %}
+```
 
 We can write the test below:
 
-{% highlight kotlin %}
+```kotlin
 class MyTest : KoinTest {
 
     // Lazy inject property
@@ -40,13 +40,13 @@ class MyTest : KoinTest {
         // use componentA here!
     }
 }
-{% endhighlight %}
+```
 
 ### Mocking on the fly
 
 Once you have tagged your class with `KoinTest` interface, you can use the `declareMock` function to declare mocks & behavior on the fly:
 
-{% highlight kotlin %}
+```kotlin
 class MyTest : KoinTest {
 
     val componentA : ComponentA by inject()
@@ -61,13 +61,13 @@ class MyTest : KoinTest {
         }
     }
 }
-{% endhighlight %}
+```
 
 ### Checking your modules
 
 You can check if your modules are good (all definitions are bounded) with the `checkModules` function on your `KoinApplication` instance:
 
-{% highlight kotlin %}
+```kotlin
 class MyTest : KoinTest {
     
     val componentA : ComponentA by inject()
@@ -78,7 +78,7 @@ class MyTest : KoinTest {
         koinApplication { modules(appModule) }.checkModules()
     }
 }
-{% endhighlight %}
+```
 
 ### Starting & stopping your Koin instance
 

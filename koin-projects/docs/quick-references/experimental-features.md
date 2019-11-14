@@ -20,41 +20,41 @@ The first introduced function is the `create()` function.
 
 Instead of declaring a definition with instantiating its constructor and retrieving instances with get()
 
-{% highlight kotlin %}
+```kotlin
 module {
     single { ComponentA(get() ...) }
 }
-{% endhighlight %}
+```
 
 You can use instead, the `create()` function to build an instance from its primary constructor, and fill the needed dependencies.
 
-{% highlight kotlin %}
+```kotlin
 module {
     single { create<ComponentA>() }
 }
-{% endhighlight %}
+```
 
 ### Simplified definitions
 
 You can also use the more "compact" notation that will use the `create()` function. Just use the single function without any expression:
 
-{% highlight kotlin %}
+```kotlin
 import org.koin.experimental.builder.*
 
 module {
     single<ComponentA>()
 }
-{% endhighlight %}
+```
 
 If you have an implementation type and want to resolve with a target type, you can use the following `single` function:
 
-{% highlight kotlin %}
+```kotlin
 import org.koin.experimental.builder.extended.*
 
 module {
     singleBy<Interface,Implementation>()
 }
-{% endhighlight %}
+```
 
 Also works for factory & scope definition!
 

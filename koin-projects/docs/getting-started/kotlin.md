@@ -1,14 +1,7 @@
----
-layout: docs
-title: Getting started with Kotlin & Koin
-description: Let's start with a standalone Kotlin app
-group: getting-started
-toc: true
----
 
-## About
+# Getting Started with JUnit Tests {docsify-ignore-all}
 
-This tutorial lets you write a Kotlin application and use Koin inject and retrieve your components.
+> This tutorial lets you write a Kotlin application and use Koin inject and retrieve your components.
 
 ## Get the code
 
@@ -28,18 +21,18 @@ This tutorial lets you write a Kotlin application and use Koin inject and retrie
 
 First, check that the `koin-core` dependency is added like below:
 
-{% highlight gradle %}
+```groovy
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()    
 }
 dependencies {
     // Koin for Kotlin apps
-    compile 'org.koin:koin-core:{{ site.current_version }}'
+    compile 'org.koin:koin-core:$koin_version'
     // Testing
-    testCompile 'org.koin:koin-test:{{ site.current_version }}'
+    testCompile 'org.koin:koin-test:$koin_version'
 }
-{% endhighlight %}
+```
 
 ## The application
 
@@ -53,18 +46,18 @@ In our small app we need to have 2 components:
 
 Let's create a `HelloMessageData` data class to hold our data:
 
-{% highlight kotlin %}
+```kotlin
 /**
  * A class to hold our message data
  */
 data class HelloMessageData(val message : String = "Hello Koin!")
-{% endhighlight %}
+```
 
 ### Service
 
 Let's create a service to display our data from `HelloMessageData`. Let's write `HelloServiceImpl` class and its interface `HelloService`:
 
-{% highlight kotlin %}
+```kotlin
 /**
  * Hello Service - interface
  */
@@ -81,14 +74,14 @@ class HelloServiceImpl(private val helloMessageData: HelloMessageData) : HelloSe
 
     override fun hello() = "Hey, ${helloMessageData.message}"
 }
-{% endhighlight %}
+```
 
 
 ## The application class
 
 To run our `HelloService` component, we need to create a runtime component. Let's write a `HelloApplication` class and tag it with `KoinComponent` interface. This will later allows us to use the `by inject()` functions to retrieve our component:
 
-{% highlight kotlin %}
+```kotlin
 /**
  * HelloApplication - Application Class
  * use HelloService
@@ -101,20 +94,20 @@ class HelloApplication : KoinComponent {
     // display our data
     fun sayHello() = println(helloService.hello())
 }
-{% endhighlight %}
+```
 
 ## Declaring dependencies
 
 Now, let's assemble `HelloMessageData` with `HelloService`, with a Koin module:
 
-{% highlight kotlin %}
+```kotlin
 val helloModule = module {
 
     single { HelloMessageData() }
 
     single { HelloServiceImpl(get()) as HelloService }
 }
-{% endhighlight %}
+```
 
 We declare each component as `single`, as singleton instances.
 
@@ -125,7 +118,7 @@ We declare each component as `single`, as singleton instances.
 
 Just start our app from a `main` function:
 
-{% highlight kotlin %}
+```kotlin
 fun main(vararg args: String) {
 
     startKoin {
@@ -138,7 +131,7 @@ fun main(vararg args: String) {
     HelloApplication().sayHello()
 }
 
-{% endhighlight %}
+```
 
 ## What's next?
 

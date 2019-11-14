@@ -19,7 +19,7 @@ Tag your class with the `KoinComponent` interface to unlock Koin injection featu
 
 We can inject the module above into class properties:
 
-{% highlight kotlin %}
+```kotlin
 // Tag class with KoinComponent
 class HelloApp : KoinComponent {
 
@@ -30,11 +30,11 @@ class HelloApp : KoinComponent {
         helloService.sayHello()
     }
 }
-{% endhighlight %}
+```
 
 And we just need to start Koin and run our class:
 
-{% highlight kotlin %}
+```kotlin
 // a module with our declared Koin dependencies 
 val helloModule = module {
     single { HelloServiceImpl() }
@@ -50,7 +50,7 @@ fun main(vararg args: String) {
     // Run our Koin component
     HelloApp().sayHello()
 }
-{% endhighlight %}
+```
 
 ## Bootstrap and runtime extensions
 
@@ -61,7 +61,7 @@ fun main(vararg args: String) {
 
 The `KoinComponent` interface brings the following:
 
-{% highlight kotlin %}
+```kotlin
 interface KoinComponent {
 
     /**
@@ -69,7 +69,7 @@ interface KoinComponent {
      */
     fun getKoin(): Koin = GlobalContext.get().koin
 }
-{% endhighlight %}
+```
 
 It opens the following possibilties:
 

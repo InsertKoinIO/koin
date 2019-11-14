@@ -1,20 +1,13 @@
----
-layout: docs
-title: Getting started with Ktor
-description: Let's start with a Ktor web application & Koin
-group: getting-started
-toc: true
----
 
-## About
+# Getting Started with JUnit Tests {docsify-ignore-all}
 
-Ktor is a framework for building asynchronous servers and clients in connected systems using the powerful Kotlin programming language. We will use Ktor here, to build a simple web application.
+> Ktor is a framework for building asynchronous servers and clients in connected systems using the powerful Kotlin programming language. We will use Ktor here, to build a simple web application.
 
 Let's go with the following components to chain : a Controller, a Service and a Repository.
 
-{% highlight kotlin %}
+```kotlin
 Ktor Controller (http) -> Service (business) -> Repository (data)
-{% endhighlight %}
+```
 
 - a Ktor Controller (routing function) to handle http route and return result from the service
 - a Service to *handle business* and take data from repository
@@ -42,22 +35,22 @@ Let's go 🚀
 
 First, add the Koin dependency like below:
 
-{% highlight kotlin %}
+```kotlin
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()    
 }
 dependencies {
     // Koin for Kotlin apps
-    compile 'org.koin:koin-ktor:{{ site.current_version }}'
+    compile 'org.koin:koin-ktor:$koin_version'
 }
-{% endhighlight %}
+```
 
 ## Service & Repository
 
 Let's write our Service, a component that will ask Repository for data:
 
-{% highlight kotlin %}
+```kotlin
 interface HelloService {
     fun sayHello(): String
 }
@@ -65,21 +58,21 @@ interface HelloService {
 class HelloServiceImpl(val helloRepository: HelloRepository) : HelloService {
     override fun sayHello() = "Hello ${helloRepository.getHello()} !"
 }
-{% endhighlight %}
+```
 
 and our Repository, which provide data:
 
-{% highlight kotlin %}
+```kotlin
 class HelloRepository {
     override fun getHello(): String = "Ktor & Koin"
 }
-{% endhighlight %}
+```
 
 ## HTTP Controller
 
 Finally, we need an HTTP Controller to create the HTTP Route. In Ktor is will be expressed through an Ktor extension function:
 
-{% highlight kotlin %}
+```kotlin
 fun Application.main() {
     // Install Ktor features
     install(DefaultHeaders)
@@ -95,11 +88,11 @@ fun Application.main() {
         }
     }
 }
-{% endhighlight %}
+```
 
 Check that your `application.conf` is configured like below, to help start the `Application.main` function:
 
-{% highlight kotlin %}
+```kotlin
 ktor {
     deployment {
         port = 8080
@@ -113,24 +106,24 @@ ktor {
         modules = [ org.koin.sample.HelloApplicationKt.main ]
     }
 }
-{% endhighlight %}
+```
 
 ## Declare your dependencies
 
 Let's assemble our components with a Koin module:
 
-{% highlight kotlin %}
+```kotlin
 val helloAppModule = module {
     single<HelloService> { HelloServiceImpl(get()) } // get() Will resolve HelloRepository
     single { HelloRepository() }
 }
-{% endhighlight %}
+```
 
 ## Start and Inject
 
 Finally, let's start Koin from Ktor:
 
-{% highlight kotlin %}
+```kotlin
 fun Application.main() {
     // Install Ktor features
     install(DefaultHeaders)
@@ -151,16 +144,16 @@ fun Application.main() {
         }
     }
 }
-{% endhighlight %}
+```
 
 Let's start Ktor:
 
-{% highlight kotlin %}
+```kotlin
 fun main(args: Array<String>) {
     // Start Ktor
     embeddedServer(Netty, commandLineEnvironment(args)).start()
 }
-{% endhighlight %}
+```
 
 That's it! You're ready to go. Chech the `http://localhost:8080/hello` url!
 

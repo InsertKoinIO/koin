@@ -16,7 +16,7 @@ In a classical Kotlin file:
 
 ### Starting Koin
 
-{% highlight kotlin %}
+```kotlin
 fun main(vararg args: String) {
 
     startKoin {
@@ -39,13 +39,13 @@ fun main(vararg args: String) {
         modules(moduleList) 
     }
 }
-{% endhighlight %}
+```
 
 ### Starting Koin for Android
 
 In any Android class:
 
-{% highlight kotlin %}
+```kotlin
 class MainApplication : Application() {
 
     override fun onCreate() {
@@ -66,7 +66,7 @@ class MainApplication : Application() {
         }
     }
 }
-{% endhighlight %}
+```
 
 <div class="alert alert-primary" role="alert">
     if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
@@ -76,7 +76,7 @@ class MainApplication : Application() {
 
 Starting Koin from your `Application` extension function:
 
-{% highlight kotlin %}
+```kotlin
 fun Application.main() {
     // Install Ktor features
     install(Koin) {
@@ -87,7 +87,7 @@ fun Application.main() {
         modules(helloAppModule)
     }
 }
-{% endhighlight %}
+```
 
 ### Logging
 
@@ -103,10 +103,10 @@ At start, Koin log what definition is bound by name or type:
 
 Koin Module DSL hasn't changed much (appart the Scope API that will need entire rework), most changes can then be fixed with imports. Take a note that there is no more inner module or visibility rules for this. Module visibility is simple. Those are just list of definitions, visibile everywhere.
 
-{% highlight kotlin %}
+```kotlin
 org.koin.android.viewmodel.ext.koin.viewModel -> org.koin.android.viewmodel.dsl.viewModel
 org.koin.dsl.module.module -> org.koin.dsl.module
-{% endhighlight %}
+```
 
 <div class="alert alert-primary" role="alert">
    If any problem, clean and reimport Koin API should fix most of your problem 👍

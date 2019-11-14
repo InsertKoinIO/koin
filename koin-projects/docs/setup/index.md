@@ -1,57 +1,72 @@
----
-layout: docs
-title: Setup Koin
-description: Pick your Koin dependency!
-group: setup
-toc: true
----
+# Setup Koin for your project {docsify-ignore-all}
 
-### JCenter Repository
+## Current Version
 
-{% highlight gradle %}
+```groovy
+// Current stable version
+koin_version= "2.0.1"
+
+// Latest unstable version
+koin_version= "2.1.0-alpha-2"
+```
+
+## Gradle dependencies
+
+
+
+?> Koin packages are published on JCenter
+
+```groovy
 // Add Jcenter to your repositories if needed
 repositories {
-	jcenter()    
+    jcenter()
 }
-{% endhighlight %}
+```
 
-### Koin Core Features
+<!-- tabs:start -->
 
-{% highlight gradle %}
+#### **Kotlin**
+
+```groovy
 // Koin for Kotlin
-compile "org.koin:koin-core:{{ site.current_version }}"
+compile "org.koin:koin-core:$koin_version"
+
 // Koin Extended & experimental features
-compile "org.koin:koin-core-ext:{{ site.current_version }}"
-// Koin for Java developers
-compile "org.koin:koin-java:{{ site.current_version }}"
+compile "org.koin:koin-core-ext:$koin_version"
+
 // Koin for Unit tests
-testCompile "org.koin:koin-test:{{ site.current_version }}"
-{% endhighlight %}
+testCompile "org.koin:koin-test:$koin_version"
+```
 
-### Koin for Android
+#### **Android**
 
-{% highlight gradle %}
+```groovy
 // Koin for Android
-compile "org.koin:koin-android:{{ site.current_version }}"
+compile "org.koin:koin-android:$koin_version"
+
 // Koin Android Scope feature
-compile "org.koin:koin-android-scope:{{ site.current_version }}"
+compile "org.koin:koin-android-scope:$koin_version"
+
 // Koin Android ViewModel feature
-compile "org.koin:koin-android-viewmodel:{{ site.current_version }}"
-{% endhighlight %}
+compile "org.koin:koin-android-viewmodel:$koin_version"
+```
 
-### Koin for AndroidX
+#### **AndroidX**
 
-{% highlight gradle %}
+```groovy
 // AndroidX (based on koin-android)
 // Koin AndroidX Scope feature
-compile "org.koin:koin-androidx-scope:{{ site.current_version }}"
+compile "org.koin:koin-androidx-scope:$koin_version"
+
 // Koin AndroidX ViewModel feature
-compile "org.koin:koin-androidx-viewmodel:{{ site.current_version }}"
-{% endhighlight %}
+compile "org.koin:koin-androidx-viewmodel:$koin_version"
+```
 
-### Koin for Ktor
+#### **Ktor**
 
-{% highlight gradle %}
+```groovy
 // Koin for Ktor Kotlin
-compile "org.koin:koin-ktor:{{ site.current_version }}"
-{% endhighlight %}
+compile "org.koin:koin-ktor:$koin_version"
+```
+
+<!-- tabs:end -->

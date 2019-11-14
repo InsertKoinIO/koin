@@ -21,7 +21,7 @@ Model-View-Presenter](https://medium.com/upday-devs/android-architecture-pattern
 
 In MVP, we begin by the contract: a View to show the detail, a presenter to get the detail.
 
-{% highlight kotlin %}
+```kotlin
 interface DetailContract {
     interface View {
         fun showDetail(weather: DailyForecastModel)
@@ -32,7 +32,7 @@ interface DetailContract {
         fun getDetail()
     }
 }
-{% endhighlight %}
+```
 
 #### The Presenter
 
@@ -40,7 +40,7 @@ Let's write a Presenter, a component dedicated to present the weather data. we n
 
 The presenter will be attached to a view and detached from this view at the end of the process. That's why we have `subscribe` and `unsubscribe` functions. The `getDetail` function get the data, and ask the View to display either result or error.
 
-{% highlight kotlin %}
+```kotlin
 class DetailPresenter(
     private val weatherRepository: WeatherRepository
 ) : DetailContract.Presenter {
@@ -70,7 +70,7 @@ class DetailPresenter(
         }
     }
 }
-{% endhighlight %}
+```
 
 #### The View
 
@@ -78,7 +78,7 @@ Let's use the Presenter in our View. We just need to inject our Presenter with `
 
 Then we have to subscribe to our Presenter, and ask it the weather to show: `presenter.getDetail(detailId)`. 
 
-{% highlight kotlin %}
+```kotlin
 class DetailActivity : AppCompatActivity(), DetailContract.View {
 
     // The id of the weather to display, passed by intent argument
@@ -114,14 +114,14 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
         // show the detail ...
     }
 }
-{% endhighlight %}
+```
 
 #### Writing it with Koin
 
 To bind a Presenter for our Activity (or a Fragment), we just need to declare our Presenter as a `factory`.  A factory is a definition for short live component. It's perfect to match
 the Activty/Fragment case, and recreate a Presenter each time teh view is created.
 
-{% highlight kotlin %}
+```kotlin
 val weatherAppModule = module {
     // Presenter for Detail View
     // inject WeatherRepository by constructor
@@ -130,7 +130,7 @@ val weatherAppModule = module {
     // Weather Data Repository
     single<WeatherRepository>(createOnStart = true) { WeatherRepositoryImpl()) }
 }
-{% endhighlight %}
+```
 
 #### More complete MVP app
 
@@ -153,7 +153,7 @@ Note here that we expose ViewModel `states`, to publish new data.
 
 The ViewModel will be handle by Android lifecycle. The `getDetail` function get the data, and push `DetailViewModel` states update.
 
-{% highlight kotlin %}
+```kotlin
 class DetailViewModel(
     val weatherRepository: WeatherRepository
 ) : RxViewModel() {
@@ -177,7 +177,7 @@ class DetailViewModel(
 
     data class WeatherDetailState(val weather: DailyForecastModel) : ViewModelState()
 }
-{% endhighlight %}
+```
 
 #### The View
 
@@ -185,7 +185,7 @@ Let's use the ViewModel in our View. We just need to inject it  with `val viewMo
 
 Then we have to listen to our ViewModel (`viewModel.states.observe`), and ask it the weather to show: `viewModel.getDetail(detailId)`. 
 
-{% highlight kotlin %}
+```kotlin
 class DetailActivity : AppCompatActivity(), DetailContract.View {
 
     // The id of the weather to display, passed by intent argument
@@ -211,13 +211,13 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
         viewModel.getDetail(detailId)
     }
 }
-{% endhighlight %}
+```
 
 #### Writing it with Koin
 
 To bind a ViewModel to the Activity (or a Fragment), we just need to declare our ViewModel with `viewModel` keyword.  
 
-{% highlight kotlin %}
+```kotlin
 val weatherAppModule = module {
     // DetailViewModel
     // inject by constructor
@@ -226,7 +226,7 @@ val weatherAppModule = module {
     // Weather Data Repository
     single<WeatherRepository>(createOnStart = true) { WeatherRepositoryImpl()) }
 }
-{% endhighlight %}
+```
 
 #### More complete MVVM app
 

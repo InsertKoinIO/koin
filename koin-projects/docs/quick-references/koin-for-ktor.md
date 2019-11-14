@@ -10,7 +10,7 @@ toc: true
 
 Start Koin from your `Application` with the Ktor extension below:
 
-{% highlight kotlin %}
+```kotlin
 fun Application.main() {
     // Install Ktor features
     install(Koin) {
@@ -21,13 +21,13 @@ fun Application.main() {
         modules(helloAppModule)
     }
 }
-{% endhighlight %}
+```
 
 ## Application, Route and Routing are KoinComponents
 
 Easily access `KoinComponent` features from `Application`, `Route` and `Routing` Ktor classes:
 
-{% highlight kotlin %}
+```kotlin
 fun Routing.v1() {
 
     // Lazy inject HelloService from within a Ktor Routing Node
@@ -37,24 +37,24 @@ fun Routing.v1() {
         call.respondText("[/v1/hello] " + service.sayHello())
     }
 }
-{% endhighlight %}
+```
 
 ## Declare components without function (Experimental feature)
 
 Easily declare your components without any description function:
 
-{% highlight kotlin %}
+```kotlin
 module(createdAtStart = true) {
     singleBy<HelloService, HelloServiceImpl>()
     single<HelloRepository>()
 }
-{% endhighlight %}
+```
 
 instead of 
 
-{% highlight kotlin %}
+```kotlin
 module(createdAtStart = true) {
     singleBy<HelloService> { HelloServiceImpl(get()) }
     single { HelloRepository() } 
 }
-{% endhighlight %}
+```

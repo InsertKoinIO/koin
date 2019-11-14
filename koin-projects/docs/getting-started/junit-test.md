@@ -1,14 +1,7 @@
----
-layout: docs
-title: Getting started with JUnit Tests
-description: Let's test our Koin injected application
-group: getting-started
-toc: true
----
 
-## About
+# Getting Started with JUnit Tests {docsify-ignore-all}
 
-This tutorial lets you test a Kotlin application and use Koin inject and retrieve your components.
+> This tutorial lets you test a Kotlin application and use Koin inject and retrieve your components.
 
 ## Get the code
 
@@ -28,33 +21,33 @@ This tutorial lets you test a Kotlin application and use Koin inject and retriev
 
 First, add the Koin dependency like below:
 
-{% highlight gradle %}
+```groovy
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()
 }
 dependencies {
     // Koin testing tools
-    testcompile 'org.koin:koin-test:{{ site.current_version }}'
+    testcompile 'org.koin:koin-test:$koin_version'
 }
-{% endhighlight %}
+```
 
 ## Declared dependencies
 
 We reuse the `koin-core` getting-started project, to use the koin module:
 
-{% highlight kotlin %}
+```kotlin
 val helloModule = module {
     single { HelloMessageData() }
     single { HelloServiceImpl(get()) as HelloService }
 }
-{% endhighlight %}
+```
 
 ## Writing our first Test
 
 To make our first test, let's write a simple Junit test file and extend it with `KoinTest`. We will be able then, to use `by inject()` operators.
 
-{% highlight kotlin %}
+```kotlin
 class HelloAppTest : KoinTest() {
 
     val model by inject<HelloMessageData>()
@@ -81,7 +74,7 @@ class HelloAppTest : KoinTest() {
         assertEquals("Hey, ${model.message}", service.hello())
     }
 }
-{% endhighlight %}
+```
 
 <div class="alert alert-warning" role="alert">
   For each test, we start <b>startKoin()</b> and stop Koin context <b>stopKoin()</b>.
@@ -89,7 +82,7 @@ class HelloAppTest : KoinTest() {
 
 You can even make Mocks directly into MyPresenter, or test MyRepository. Those components doesn't have any link with Koin API.
 
-{% highlight kotlin %}
+```kotlin
 class HelloMockTest : AutoCloseKoinTest() {
 
     val service: HelloService by inject()
@@ -109,7 +102,7 @@ class HelloMockTest : AutoCloseKoinTest() {
         Mockito.verify(service).hello()
     }
 }
-{% endhighlight %}
+```
 
 
 ## What's next?

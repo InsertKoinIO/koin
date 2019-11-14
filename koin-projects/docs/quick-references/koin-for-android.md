@@ -10,7 +10,7 @@ toc: true
 
 In any Android class:
 
-{% highlight kotlin %}
+```kotlin
 class MainApplication : Application() {
 
     override fun onCreate() {
@@ -31,7 +31,7 @@ class MainApplication : Application() {
         }
     }
 }
-{% endhighlight %}
+```
 
 <div class="alert alert-primary" role="alert">
     if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
@@ -41,17 +41,17 @@ class MainApplication : Application() {
 
 In your definition, you can inject `Context` or `Application` instance with `androidContext()` and `androidApplication()` functions:
 
-{% highlight kotlin %}
+```kotlin
 module {
     single { MyAndroidComponent(androidContext()) }
 }
-{% endhighlight %}
+```
 
 ### Android Components are KoinComponents
 
 `Activity`, `Fragment` & `Service` are extendend by Koin to be considered as `KoinComponents` out of the box:
 
-{% highlight kotlin %}
+```kotlin
 class MyActivity : AppCompatActivity(){
 
     // Inject MyPresenter
@@ -64,7 +64,7 @@ class MyActivity : AppCompatActivity(){
         val presenter : MyPresenter = get()
     }
 }
-{% endhighlight %}
+```
 
 Those classes can then use:
 
@@ -79,7 +79,7 @@ Scope API is more close to the Android platform. Both `Activity` & `Fragment` ha
 
 You can use directly the associated Koin scope to retrieve components:
 
-{% highlight kotlin %}
+```kotlin
 class DetailActivity : AppCompatActivity(), DetailContract.View {
 
     // inject from current activity scope instance
@@ -91,18 +91,18 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
         //...
     }
 }
-{% endhighlight %}
+```
 
 Easy to declare your Android component's scope:
 
-{% highlight kotlin %}
+```kotlin
 module {
     // declare a scope for DetailActivity
     scope(named<DetailActivity>)> {
         scoped<DetailContract.Presenter> { DetailPresenter(get(), get()) }
     }
 }
-{% endhighlight %}
+```
 
 Any Activity or Fragment can use directly the scope API: `createScope()`, `getScope()` and `deleteScope()`.
 
@@ -116,7 +116,7 @@ Koin brings special features to manage ViewModel:
 
 Let's declare a ViewModel in a module:
 
-{% highlight kotlin %}
+```kotlin
 val myModule : Module = applicationContext {
     
     // ViewModel instance of MyViewModel
@@ -126,11 +126,11 @@ val myModule : Module = applicationContext {
     // Single instance of Repository
     single<Repository> { MyRepository() }
 }
-{% endhighlight %}
+```
 
 Inject it in an Activity:
 
-{% highlight kotlin %}
+```kotlin
 class MyActivity : AppCompatActivity(){
 
     // Lazy inject MyViewModel
@@ -143,5 +143,5 @@ class MyActivity : AppCompatActivity(){
         val model : MyViewModel = getViewModel()
     }
 }
-{% endhighlight %}
+```
 
