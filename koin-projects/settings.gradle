@@ -4,7 +4,7 @@ include 'koin-test'
 // Core Sample
 include 'examples:coffee-maker'
 // Core extended
-include 'koin-java', 'koin-core-ext'
+include 'koin-core-ext'
 
 // Android
 include 'koin-android', 'koin-android-scope' ,'koin-android-viewmodel'
@@ -25,6 +25,3 @@ include 'koin-logger-slf4j'
 include 'koin-ktor'
 // Kto Sample
 include 'examples:hello-ktor'
-
-// Doc
-include 'koin-book'
