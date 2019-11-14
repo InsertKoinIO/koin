@@ -9,8 +9,20 @@ interface Qualifier
  * Give a String qualifier
  */
 fun named(name: String) = StringQualifier(name)
+fun qualifier(name: String) = StringQualifier(name)
+fun _n(name: String) = StringQualifier(name)
 
 /**
  * Give a Type based qualifier
  */
 inline fun <reified T> named() = TypeQualifier(T::class)
+
+/**
+ * Give a Type based qualifier
+ */
+inline fun <reified T> qualifier() = TypeQualifier(T::class)
+
+/**
+ * Give a Type based qualifier
+ */
+inline fun <reified T> _n() = TypeQualifier(T::class)

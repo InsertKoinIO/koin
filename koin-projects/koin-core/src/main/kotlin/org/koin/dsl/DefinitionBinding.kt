@@ -36,6 +36,14 @@ infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
 }
 
 /**
+ * Add a compatible type to match for definition
+ */
+inline fun <reified T> BeanDefinition<*>.bind(): BeanDefinition<*> {
+    this.secondaryTypes.add(T::class)
+    return this
+}
+
+/**
  * Add compatible types to match for definition
  * @param classes
  */

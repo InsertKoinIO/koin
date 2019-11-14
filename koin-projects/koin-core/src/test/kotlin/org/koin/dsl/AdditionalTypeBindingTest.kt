@@ -30,6 +30,25 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
+    fun `can resolve an additional type - bind()`() {
+        val app = koinApplication {
+            printLogger()
+            modules(
+                module {
+                    single { Simple.Component1() }.bind<Simple.ComponentInterface1>()
+                })
+        }
+
+        app.assertDefinitionsCount(1)
+
+        val koin = app.koin
+        val c1 = koin.get<Simple.Component1>()
+        val c = koin.bind<Simple.ComponentInterface1, Simple.Component1>()
+
+        assertEquals(c1, c)
+    }
+
+    @Test
     fun `can resolve an additional type`() {
         val app = koinApplication {
             printLogger()
