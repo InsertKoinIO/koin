@@ -1,8 +1,7 @@
-# Modules & Definitions
 
 Writing definitions in Koin is done via Kotlin functions, that describe ishow is built your instance. Once you have configured your Koin application, let's write some modules and definitions.
 
-## Writing module & definitions
+## Module & definitions
 
 Given some classes that we need to inject:
 
@@ -47,7 +46,7 @@ val myModule = module {
 }
 ```
 
-## Additional types (binding secondary types)
+## Additional types
 
 In the module DSL, for a definition, you can give some extra type to bind, with the `bind` operator (`binds` for list of KClass):
 
@@ -96,11 +95,11 @@ startKoin {
 }
 ```
 
-## Loading modules after start
+## Loading after start
 
 After Koin has been started with `startKoin { }` function, it is possible to load extra definitions modules with the following function: `loadKoinModules(modules...)`
 
-## Dropping definitions & modules - definitions unload 
+## Dropping definitions 
 
 Once a modules has been loaded into Koin, we can unload it and then drop definitions and instances, related to those definitions. for this we use the `unloadKoinModules(modules...)` 
 
@@ -123,7 +122,7 @@ loadKoinModules(module)
 get<Simple.MySingle> { parametersOf(24) } -> id is 24
 ```
 
-## Declare instance on the fly
+## Declare on the fly
 
 One of the last backport feature from Koin 1.0 is the ability to declare an instance on the fly. This is now available on Koin.declare() or Scope.declare()
 
@@ -151,7 +150,7 @@ You can also use a qualifier or secondary types to help create your definition:
 
 <br/>
 
-## Module Keywords recap
+## DSL Recap
 
 A quick recap of the Koin DSL keywords:
 

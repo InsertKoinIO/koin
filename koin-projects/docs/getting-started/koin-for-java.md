@@ -1,14 +1,7 @@
----
-layout: docs
-title: Support for Java developers
-description: Koin features for Java developers
-group: quick-references
-toc: true
----
 
 Below is a short description of `koin-java` features. This project is a small subset of static utils to help java developers.
 
-### Start Koin
+## Start Koin
 
 Just use the `startKoin()` static function (with the static import to reduce the syntax):
 
@@ -27,7 +20,7 @@ start(koinApp);
 
 You have access to the [same options]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-core/#start-koin) than the Kotlin `startKoin()`.
 
-### Declare a Java friendly module in Kotlin
+## Java friendly module in Kotlin
 
 You need to tag your module variable with `@JvmField` to make it readable from Java world:
 
@@ -44,7 +37,7 @@ val koinModule = module {
 }
 ```
 
-### Inject with static helpers
+## Inject with static functions
 
 The `KoinJavaComponent` class is a static helper that brings Koin powers to Java:
 

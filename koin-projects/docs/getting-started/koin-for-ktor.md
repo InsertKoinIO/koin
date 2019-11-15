@@ -1,12 +1,5 @@
----
-layout: docs
-title: Koin for Ktor
-description: Koin features for Ktor framework
-group: quick-references
-toc: true
----
 
-### Starting Koin with Ktor
+## Starting Koin with Ktor
 
 Start Koin from your `Application` with the Ktor extension below:
 

@@ -1,14 +1,8 @@
----
-layout: docs
-title: Testing your components with Koin
-description: 
-group: quick-references
-toc: true
----
+
 
 The `koin-test` project brings you small but powerfull tools to test your Koin application.
 
-### Getting your components in test
+## Getting your components
 
 Just tag your test class with `KoinTest`, and you will be able to unlock `KoinComponent` & testing features:
 
@@ -42,7 +36,24 @@ class MyTest : KoinTest {
 }
 ```
 
-### Mocking on the fly
+## Checking your modules
+
+You can check if your modules are good (all definitions are bounded) with the `checkModules` function on your `KoinApplication` instance:
+
+```kotlin
+class MyTest : KoinTest {
+    
+    val componentA : ComponentA by inject()
+
+    @Test
+    fun `checking modules`() {
+        // use koinApplication instead of startKoin, to avoid having to close Koin after each test
+        koinApplication { modules(appModule) }.checkModules()
+    }
+}
+```
+
+## Mocking on the fly
 
 Once you have tagged your class with `KoinTest` interface, you can use the `declareMock` function to declare mocks & behavior on the fly:
 
@@ -63,24 +74,7 @@ class MyTest : KoinTest {
 }
 ```
 
-### Checking your modules
-
-You can check if your modules are good (all definitions are bounded) with the `checkModules` function on your `KoinApplication` instance:
-
-```kotlin
-class MyTest : KoinTest {
-    
-    val componentA : ComponentA by inject()
-
-    @Test
-    fun `checking modules`() {
-        // use koinApplication instead of startKoin, to avoid having to close Koin after each test
-        koinApplication { modules(appModule) }.checkModules()
-    }
-}
-```
-
-### Starting & stopping your Koin instance
+## Starting & stopping for tests
 
 Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
 

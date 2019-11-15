@@ -1,12 +1,6 @@
----
-layout: docs
-title: Koin for Android
-description: Koin features to help Android development 
-group: quick-references
-toc: true
----
 
-### Starting Koin for Android
+
+## Starting Koin for Android
 
 In any Android class:
 
@@ -37,7 +31,7 @@ class MainApplication : Application() {
     if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
 </div>
 
-### Use the Android context in your module
+## Use the Android context
 
 In your definition, you can inject `Context` or `Application` instance with `androidContext()` and `androidApplication()` functions:
 
@@ -47,7 +41,7 @@ module {
 }
 ```
 
-### Android Components are KoinComponents
+## Android Components as KoinComponents
 
 `Activity`, `Fragment` & `Service` are extendend by Koin to be considered as `KoinComponents` out of the box:
 
@@ -73,7 +67,9 @@ Those classes can then use:
 
 If you need to inject dependencies from another class and can't declare it in a module, you can still tag it with `KoinComponent` interface.
 
-### Extended Scope API for Android (koin-android-scope or koin-androidx-scope projects)
+## Extended Scope API 
+
+> for Android (koin-android-scope or koin-androidx-scope projects)
 
 Scope API is more close to the Android platform. Both `Activity` & `Fragment` have extensions for Scope API: `currentScope` get the current associated Koin scope. This scope is created & bound to the component's lifecycle.
 
@@ -106,7 +102,9 @@ module {
 
 Any Activity or Fragment can use directly the scope API: `createScope()`, `getScope()` and `deleteScope()`.
 
-### Android Architecture ViewModel (koin-android-viewmodel or koin-androidx-viewmodel projects)
+## Android ViewModel
+
+> (koin-android-viewmodel or koin-androidx-viewmodel projects)
 
 Koin brings special features to manage ViewModel:
 

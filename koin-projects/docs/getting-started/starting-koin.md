@@ -6,11 +6,9 @@ The Koin DSL consists in:
 * KoinApplication DSL: describe how to configure your Koin application
 * Module DSL: describe your definitions
 
-# How to start Koin?
-
 Starting Koin consists in using the `startKoin` fuction as below:
 
-## StartKoin function & DSL
+## StartKoin
 
 In a classical Kotlin file:
 
@@ -88,7 +86,9 @@ fun Application.main() {
 }
 ```
 
-## Custom Koin instance - KoinApplication builders
+## Custom Koin instance 
+
+Here below are the KoinApplication builders:
 
 * `startKoin { }` - Create and register following KoinApplication instance
 * `koinApplication { }` - create KoinApplication instance
@@ -117,7 +117,7 @@ At start, Koin log what definition is bound by name or type (if log is activated
 [INFO] [Koin] bind type:'org.koin.example.Heater' ~ [type:Single,class:'org.koin.example.Heater']
 ```
 
-## KoinApplication DSL recap
+## DSL
 
 A quick recap of the Koin DSL keywords:
 

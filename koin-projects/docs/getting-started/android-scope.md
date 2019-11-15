@@ -122,15 +122,3 @@ class MyScopeActivity : AppCompatActivity() {
 <div class="alert alert-primary" role="alert">
     The <b>currentScope</b> allows us to retrieve/create a Koin scope for given activity
 </div>
-
-## What's Next?
-
-You have finished this starting tutorial. Below are some topics for further reading:
-
-* [Android Quick References]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
-
-Also other Android getting started project:
-
-* [Getting started Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android/)
-* [Getting started Android & ViewModel feature]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android-viewmodel/)
-

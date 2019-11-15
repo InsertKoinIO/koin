@@ -20,7 +20,7 @@ repositories {
 }
 dependencies {
     // Koin for Android
-    compile 'org.koin:koin-android:<script>$koin_version</script>
+    compile 'org.koin:koin-android:$koin_version
 }
 ```
 

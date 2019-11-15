@@ -1,9 +1,8 @@
-# Koin Components
 
 Sometimes you can't declare only components via Koin. Dependening on your runtime technology, you can need to retrieve instances from Koin in a class
 that is not created with Koin (i.e: Android)
 
-## Using the KoinComponent interface
+## The KoinComponent interface
 
 Tag your class with the `KoinComponent` interface to unlock Koin injection features:
 
@@ -46,12 +45,12 @@ fun main(vararg args: String) {
 }
 ```
 
-## Bootstrap and runtime extensions
+#### Bootstraping
 
-`KoinComponent` interface is also used to help you boostrap an application from outside of Koin. Also, you can bring `KoinComponent` feature by extension functions directly on some target classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
+> `KoinComponent` interface is also used to help you boostrap an application from outside of Koin. Also, you can bring  `KoinComponent` feature by extension functions directly on some target classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
 
 
-## Bridge with Koin instance & current Scope
+## Bridge with Koin instance
 
 The `KoinComponent` interface brings the following:
 
@@ -67,10 +66,7 @@ interface KoinComponent {
 
 It opens the following possibilties:
 
-* You can then redefine then `getKoin()` function to redirect to a local custom Koin instance
+> You can then redefine then `getKoin()` function to redirect to a local custom Koin instance
 
-## More about core Koin Components
-
-Below are some further readings:
 
 
