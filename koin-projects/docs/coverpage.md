@@ -9,5 +9,5 @@
 - Legacy browser support (IE10+)
 
 [Setup](setup/index)
-[Get Started](getting-started/android)
-[GitHub](https://github.com/InsertKoinIO/koin)
+[Quick Start](quickstart/android)
+[Documentation](getting-started/starting-koin)

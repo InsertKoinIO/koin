@@ -63,7 +63,7 @@ val appModule = module {
 }
 ```
 
-*Note:* we declare our MyViewModel class as a `viewModel` in a `module`. Koin will give a `MyViewModel` to the lifecycle ViewModelFactory and help bind it to the current component.
+?> we declare our MyViewModel class as a `viewModel` in a `module`. Koin will give a `MyViewModel` to the lifecycle ViewModelFactory and help bind it to the current component.
 
 ## Start Koin
 
@@ -102,22 +102,6 @@ class MyViewModelActivity : AppCompatActivity() {
 }
 ```
 
-<div class="alert alert-primary" role="alert">
-    The <b>by viewModel()</b> function allows us to retrieve a ViewModel instance from Koin, linked to the Android ViewModelFactory.
-</div>
+?>The `by viewModel()` function allows us to retrieve a ViewModel instance from Koin, linked to the Android ViewModelFactory.
 
-<div class="alert alert-secondary" role="alert">
-    The <b>getViewModel()</b> function is here to retrieve directly an instance (non lazy)
-</div>
-
-
-## What's Next?
-
-You have finished this starting tutorial. Below are some topics for further reading:
-
-* [Android Quick References]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
-
-Also other Android getting started project:
-
-* [Getting started Android & Scope feature]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android-scope/)
-* [Getting started Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android/)
+?> The `getViewModel()` function is here to retrieve directly an instance (non lazy)

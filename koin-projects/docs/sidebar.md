@@ -1,10 +1,11 @@
+- [Intro](introduction)
 - [Setup](setup/index)
-- [Upgrade](setup/upgrade)
-- **Quick Start**
+- [Upgrade from 1.0.x](setup/upgrade)
+- **Koin in 5 minutes**
+- [Kotlin](quickstart/kotlin)
 - [Android](quickstart/android)
 - [Android Java](quickstart/android-java)
 - [Android ViewModel](quickstart/android-viewmodel)
-- [Kotlin](quickstart/kotlin)
 - [JUnit](quickstart/junit-test)
 - [Ktor](quickstart/ktor)
 - **Getting Started**
@@ -16,7 +17,7 @@
 - [Koin for Java](getting-started/koin-for-java)
 - [Koin for Android](getting-started/koin-for-android)
 - [Koin for Ktor](getting-started/koin-for-ktor)
-- **Reference**
+- **Documentation Reference**
 - **Experimental**
 - **Support & Resources**
 - [Changelog](changelog)

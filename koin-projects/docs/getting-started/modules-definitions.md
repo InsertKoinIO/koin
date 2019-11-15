@@ -1,10 +1,4 @@
----
-layout: docs
-title: Modules & definitions
-description: How to write your definitions and modules in Koin
-group: quick-references
-toc: true
----
+# Modules & Definitions
 
 Writing definitions in Koin is done via Kotlin functions, that describe ishow is built your instance. Once you have configured your Koin application, let's write some modules and definitions.
 
@@ -157,7 +151,7 @@ You can also use a qualifier or secondary types to help create your definition:
 
 <br/>
 
-### Module Keywords recap
+## Module Keywords recap
 
 A quick recap of the Koin DSL keywords:
 

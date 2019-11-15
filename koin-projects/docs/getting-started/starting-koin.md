@@ -1,5 +1,7 @@
 
-> Koin is a DSL, a container & a pragamtic API to leverage your dependencies. The Koin DSL consists in:
+> Koin is a DSL, a container & a pragamtic API to leverage your dependencies. 
+
+The Koin DSL consists in:
 
 * KoinApplication DSL: describe how to configure your Koin application
 * Module DSL: describe your definitions
@@ -8,7 +10,7 @@
 
 Starting Koin consists in using the `startKoin` fuction as below:
 
-## StartKoin DSL
+## StartKoin function & DSL
 
 In a classical Kotlin file:
 
@@ -38,7 +40,7 @@ fun main(vararg args: String) {
 }
 ```
 
-## Starting Koin for Android
+## Starting for Android
 
 In any Android class:
 
@@ -69,7 +71,7 @@ class MainApplication : Application() {
     if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
 </div>
 
-## Starting Koin for Ktor
+## Starting for Ktor
 
 Starting Koin from your `Application` extension function:
 
@@ -86,7 +88,7 @@ fun Application.main() {
 }
 ```
 
-## KoinApplication builders
+## Custom Koin instance - KoinApplication builders
 
 * `startKoin { }` - Create and register following KoinApplication instance
 * `koinApplication { }` - create KoinApplication instance

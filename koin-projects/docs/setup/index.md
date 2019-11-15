@@ -1,6 +1,8 @@
 # Setup Koin for your project {docsify-ignore-all}
 
-## Current Version
+### Current Version
+
+Here are the current versions of Koin:
 
 ```groovy
 // Current stable version
@@ -10,9 +12,9 @@ koin_version= "2.0.1"
 koin_version= "2.1.0-alpha-2"
 ```
 
-## Gradle dependencies
+### Gradle dependencies
 
-
+Add the following Gradle dependencies to add Koin to your project:
 
 ?> Koin packages are published on JCenter
 

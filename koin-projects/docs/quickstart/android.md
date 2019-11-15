@@ -62,7 +62,7 @@ val appModule = module {
 }
 ```
 
-*Note:* we declare our MySimplePresenter class as `factory` to have a create a new instance each time our Activity will need one.
+?> we declare our MySimplePresenter class as `factory` to have a create a new instance each time our Activity will need one.
 
 ## Start Koin
 

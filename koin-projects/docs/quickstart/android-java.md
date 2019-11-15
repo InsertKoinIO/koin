@@ -73,7 +73,7 @@ val appModule = module {
 }
 ```
 
-*Note:* we declare our MySimplePresenter class as `factory` to have a create a new instance each time our Activity will need one.
+?> we declare our MySimplePresenter class as `factory` to have a create a new instance each time our Activity will need one.
 
 ## Start Koin
 
@@ -116,10 +116,6 @@ public class JavaActivity extends AppCompatActivity {
 }
 ```
 
-<div class="alert alert-primary" role="alert">
-    The <b>inject()</b> function allows us to retrieve a lazy Koin instances, in Android components runtime (Activity, fragment, Service...)
-</div>
+?> The `inject()` function allows us to retrieve a lazy Koin instances, in Android components runtime (Activity, fragment, Service...)
 
-<div class="alert alert-secondary" role="alert">
-    The <b>get()</b> function is here to retrieve directly an instance (non lazy)
-</div>
+?> The `get()`function is here to retrieve directly an instance (non lazy)

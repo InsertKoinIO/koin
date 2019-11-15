@@ -132,14 +132,3 @@ fun main(vararg args: String) {
 }
 
 ```
-
-## What's next?
-
-* Check the [Koin quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
-* Read the [full documentation]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html)
-
-Also other getting started project:
-
-* [Getting started Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android/)
-* [Getting started Ktor]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/ktor/)
-* [Getting started Spark]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/spark/)

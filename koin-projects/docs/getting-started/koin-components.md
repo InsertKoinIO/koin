@@ -1,10 +1,4 @@
----
-layout: docs
-title: Koin Components
-description: declare, start & inject
-group: quick-references
-toc: true
----
+# Koin Components
 
 Sometimes you can't declare only components via Koin. Dependening on your runtime technology, you can need to retrieve instances from Koin in a class
 that is not created with Koin (i.e: Android)
