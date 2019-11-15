@@ -1,14 +1,23 @@
 - [Setup](setup/index)
+- [Upgrade](setup/upgrade)
 - **Quick Start**
-- [Android](getting-started/android)
-- [Android Java](getting-started/android-java)
-- [Android ViewModel](getting-started/android-viewmodel)
-- [Kotlin](getting-started/kotlin)
-- [JUnit](getting-started/junit-test)
-- [Ktor](getting-started/ktor)
+- [Android](quickstart/android)
+- [Android Java](quickstart/android-java)
+- [Android ViewModel](quickstart/android-viewmodel)
+- [Kotlin](quickstart/kotlin)
+- [JUnit](quickstart/junit-test)
+- [Ktor](quickstart/ktor)
 - **Getting Started**
-- [Starting Koin](quick-references/starting-koin)
+- [Starting Koin](getting-started/starting-koin)
+- [Modules & Definitions](getting-started/modules-definitions)
+- [Koin Components](getting-started/koin-components)
+- [Scopes](getting-started/scopes)
+- [Testing](getting-started/testing)
+- [Koin for Java](getting-started/koin-for-java)
+- [Koin for Android](getting-started/koin-for-android)
+- [Koin for Ktor](getting-started/koin-for-ktor)
 - **Reference**
+- **Experimental**
 - **Support & Resources**
 - [Changelog](changelog)
 - **Links**

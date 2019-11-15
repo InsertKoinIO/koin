@@ -1,10 +1,4 @@
----
-layout: docs
-title: Upgrading to last version
-description: How to upgrade your code from older version
-group: quick-references
-toc: true
----
+# Upgrading from Koin 1.0.x {docsify-ignore-all}
 
 ## From Koin 1.0.x
 
