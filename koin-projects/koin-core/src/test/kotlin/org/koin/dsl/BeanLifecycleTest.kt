@@ -1,6 +1,10 @@
 package org.koin.dsl
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.definition.BeanDefinition
