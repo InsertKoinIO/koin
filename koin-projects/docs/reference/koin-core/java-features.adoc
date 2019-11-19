@@ -1,13 +1,13 @@
-== About koin-java
+## About koin-java
 
 The `koin-java` project is dedicated to bring enhancement features to help java developers.
 
-=== Gradle setup
+### Gradle setup
 
 Add the `koin-java` dependency to your Gradle project:
 
-[source,gradle,subs="attributes"]
-----
+[source,gradle,subs#"attributes"]
+```
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()
@@ -16,31 +16,31 @@ dependencies {
     // Koin Java features
     implementation 'org.koin:koin-java:{revnumber}'
 }
-----
+```
 
-== Starting a Koin module from Java
+## Starting a Koin module from Java
 
 A Koin module still must be written in Kotlin, using the `@JvmField` to make it Java friendly:
 
-[source,kotlin]
-----
+```kotlin
+```
 @JvmField
 val koinModule = module {
 
     single { ComponentA() }
 }
-----
+```
 
 Now just call the `KoinJavaStarter.startKoin` function from a Java class to start your module:
 
 [source,java]
-----
+```
 KoinJavaStarter.startKoin(singletonList(koinModule));
-----
+```
 
 
 
-== Injecting into a Java class
+## Injecting into a Java class
 
 The `koin-java` project provides a static Java helper: `KoinJavaComponent`. This will help you make:
 
@@ -48,21 +48,21 @@ The `koin-java` project provides a static Java helper: `KoinJavaComponent`. This
 * direct instance injection with `get(Class)`
 
 [source,java]
-----
+```
 ComponentA a = get(ComponentA.class);
-----
+```
 
 * lazy instance injection with `inject(Class)`
 
 [source,java]
-----
+```
 Lazy<ComponentA> lazy_a = inject(ComponentA.class);
-----
+```
 
 [NOTE]
-====
+####
 Make sure to have the static import of class `KoinJavaComponent` to have a short syntax.
-====
+####
 
 
 

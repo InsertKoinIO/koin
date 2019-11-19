@@ -1,28 +1,27 @@
-== Koin Components
+## Koin Components
 
 Koin is a DSL to help describe your modules & definitions, a container to make definition resolution. What we need now is
 an API to retrieve our instances outside of the container. That's the goal of Koin components.
 
-=== Create a Koin Component
+## Create a Koin Component
 
 To give a class the capacity to use Koin features, we need to *tag it* with `KoinComponent` interface. Let's take an example.
 
-.A module to define MyService instance
-[source,kotlin]
-----
+A module to define MyService instance
+```kotlin
 class MyService
 
 val myModule = module {
     // Define a singleton for MyService
     single { MyService() }
 }
-----
+```
 
 we start Koin before using definition.
 
-.Start Koin with myModule
-[source,kotlin]
-----
+Start Koin with myModule
+
+```kotlin
 fun main(vararg args : String){
     // Start Koin
     startKoin {
@@ -32,13 +31,13 @@ fun main(vararg args : String){
     // Create MyComponent instance and inject from Koin container
     MyComponent()
 }
-----
+```
 
 Here is how we can write our `MyComponent` to retrieve instances from Koin container.
 
-.Use get() & by inject() to inject MyService instance
-[source,kotlin]
-----
+Use get() & by inject() to inject MyService instance
+
+```kotlin
 class MyComponent : KoinComponent {
 
     // lazy inject Koin instance
@@ -48,9 +47,9 @@ class MyComponent : KoinComponent {
     // eager inject Koin instance
     val myService : MyService = get()
 }
-----
+```
 
-=== Unlock the Koin API with KoinComponents
+## Unlock the Koin API with KoinComponents
 
 Once you have tagged your class as `KoinComponent`, you gain access to:
 
@@ -59,28 +58,24 @@ Once you have tagged your class as `KoinComponent`, you gain access to:
 * `getProperty()`/`setProperty()` - get/set property
 
 
-=== Retrieving definitions with get & inject
+## Retrieving definitions with get & inject
 
 Koin offers two ways of retrieving instances from the Koin container:
 
 * `val t : T by inject()` - lazy evaluated delegated instance
 * `val t : T = get()` - eager access for instance
 
-[source,kotlin]
-----
+```kotlin
 // is lazy evaluated
 val myService : MyService by inject()
 
 // retrieve directly the instance
 val myService : MyService get()
-----
+```
 
-[NOTE]
-====
-The lazy inject form is better to define property that need lazy evaluation.
-====
+?> The lazy inject form is better to define property that need lazy evaluation.
 
-=== Resolving instance from its name
+## Resolving instance from its name
 
 If you need you can specify the following parameter with `get()` or `by inject()`
 
@@ -88,8 +83,7 @@ If you need you can specify the following parameter with `get()` or `by inject()
 
 Example of module using definitions names:
 
-[source,kotlin]
-----
+```kotlin
 val module = module {
     single(named("A")) { ComponentA() }
     single(named("B")) { ComponentB(get()) }
@@ -97,18 +91,17 @@ val module = module {
 
 class ComponentA
 class ComponentB(val componentA: ComponentA)
-----
+```
 
 We can make the following resolutions:
 
-[source,kotlin]
-----
+```kotlin
 // retrieve from given module
 val a = get<ComponentA>(named("A"))
-----
+```
 
 
-=== No inject() or get() in your API?
+## No inject() or get() in your API?
 
 If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
 

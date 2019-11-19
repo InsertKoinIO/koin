@@ -1,13 +1,13 @@
-== About koin-test
+## About koin-test
 
 The `koin-test` project is dedicated to help you making JUnit test with Koin container and API.
 
-=== Gradle setup
+### Gradle setup
 
 Add the `koin-test` dependency to your Gradle project:
 
-[source,gradle,subs="attributes"]
-----
+[source,gradle,subs#"attributes"]
+```
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()
@@ -16,9 +16,9 @@ dependencies {
     // Testing with Koin
     testCompile 'org.koin:koin-test:{revnumber}'
 }
-----
+```
 
-== Making your test a KoinComponent with KoinTest
+## Making your test a KoinComponent with KoinTest
 
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
@@ -26,8 +26,8 @@ By tagging your class `KoinTest`, your class become a `KoinComponent` and bring 
 * `check` & `dryRun` - help you check your configuration
 * `declareMock` & `declare` - to declare a mock or a new definition in the current context
 
-[source,kotlin]
-----
+```kotlin
+```
 class ComponentA
 class ComponentB(val a: ComponentA)
 
@@ -52,19 +52,19 @@ class MyTest : KoinTest {
         assertNotNull(a)
         assertEquals(componentA, componentB.a)
     }
-----
+```
 
 [NOTE]
-====
+####
 Don't hesitate to overload Koin modules configuration to help you partly build your app.
-====
+####
 
-== Mocking out of the box
+## Mocking out of the box
 
 Instead of making a new module each time you need a mock, you can declare a mock on the fly with `declareMock`:
 
-[source,kotlin]
-----
+```kotlin
+```
 class MyTest : KoinTest {
 
     class ComponentA
@@ -87,19 +87,19 @@ class MyTest : KoinTest {
         // is built with mocked ComponentA
         assertNotNull(get<ComponentB>())
     }
-----
+```
 
 [NOTE]
-====
+####
 declareMock can specify if you want a single or factory, and if you wan to have it in a module path.
-====
+####
 
-== Declaring a component on the fly
+## Declaring a component on the fly
 
 When a mock is not enough and don't want to create a module just for this, you can use `declare`:
 
-[source,kotlin]
-----
+```kotlin
+```
     @Test
     fun `successful declare an expression mock`() {
         startKoin { }
@@ -110,14 +110,14 @@ When a mock is not enough and don't want to create a module just for this, you c
 
         Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
     }
-----
+```
 
-== Checking your Koin configuration
+## Checking your Koin configuration
 
 Koin offers a way to test if you Koin modules are good: `checkModules` - walk through your definition tree and check if each definition is bound
 
-[source,kotlin]
-----
+```kotlin
+```
     @Test
     fun `check MVP hierarchy`() {
         startKoin{
@@ -138,9 +138,9 @@ Koin offers a way to test if you Koin modules are good: `checkModules` - walk th
                 })
         }.checkModules()
     }
-----
+```
 
-== Starting & stopping Koin for your tests
+## Starting & stopping Koin for your tests
 
 Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
 

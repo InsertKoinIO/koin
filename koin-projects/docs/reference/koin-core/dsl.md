@@ -1,15 +1,14 @@
-== Koin DSL
 
 Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to achieve to prepare your dependency injection.
 
-=== Application & Module DSL
+## Application & Module DSL
 
 Koin offers several keywords to let you describe the elements of a Koin Application:
 
 - Application DSL, to describe the Koin container configuration
 - Module DSL, to describe the components that have to be injected
 
-=== Application DSL
+## Application DSL
 
 A `KoinApplication` instance is a Koin container instance configuration. This will let your configure logging, properties loading and modules.
 
@@ -26,7 +25,7 @@ To configure your `KoinApplication` instance, you can use any of the following f
 * `fileProperties( )` - load properties from given file into Koin container
 * `environmentProperties( )` - load properties from OS environment into Koin container
 
-=== KoinApplication instance: Global vs Local
+## KoinApplication instance: Global vs Local
 
 As you can see above, we can describe a Koin container configuration in 2 ways: `koinApplication` or `startKoin` function. 
 
@@ -37,14 +36,13 @@ By registering your container configuration into the `GlobalContext`, the global
 
 Check chapters about Custom Koin instance for more information.
 
-=== Starting Koin
+## Starting Koin
 
 Starting Koin means run a `KoinApplication` instance into the `GlobalContext`.
 
 To start Koin container with modules, we can just use the `startKoin` function like that:
 
-[source,kotlin]
-----
+```kotlin
 // start a KoinApplication in Global context
 startKoin {
     // declare used logger
@@ -52,9 +50,9 @@ startKoin {
     // declare used modules
     modules(coffeeAppModule)
 }
-----
+```
 
-=== Module DSL
+## Module DSL
 
 A Koin module gather definitions that you will inject/combine for your application. To create a new module, just use the following function:
 
@@ -72,16 +70,15 @@ To describe your content in a module, you can use the following functions:
 
 Note: the `named()` function allow you to give a qualifier either by a string or a type. It is used to name your definitions.
 
-=== Writing a module
+### Writing a module
 
 A Koin module is the *space to declare all your components*. Use the `module` function to declare a Koin module:
 
-[source,kotlin]
-----
+```kotlin
 val myModule = module {
    // your dependencies here
 }
-----
+```
 
 In this module, you can declare components as decribed below.
 

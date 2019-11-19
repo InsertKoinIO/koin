@@ -18,6 +18,15 @@
 - [Koin for Android](getting-started/koin-for-android)
 - [Koin for Ktor](getting-started/koin-for-ktor)
 - **Documentation Reference**
+- [Koin DSL](reference/koin-core/dsl)
+- [Definitions](reference/koin-core/definitions)
+- [Modules](reference/koin-core/modules)
+- [Start Koin](reference/koin-core/start-koin)
+- [Koin Component](reference/koin-core/koin-component)
+- [Injecting Parameters](reference/koin-core/injection-parameters)
+- [Scopes](reference/koin-core/scopes)
+- [Properties](reference/koin-core/properties)
+- [Logging](reference/koin-core/logging)
 - **Experimental**
 - **Support & Resources**
 - [Changelog](_changelog)

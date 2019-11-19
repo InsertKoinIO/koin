@@ -8,7 +8,7 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin for Android developers
+# Koin for Android developers
 
 Arnaud Giuliani <arnaud@insert-koin.io> - and on twitter: @arnogiu
 :revnumber: {project-version}

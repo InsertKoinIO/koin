@@ -1,19 +1,19 @@
-== Examples
+## Examples
 
 Here are some koin-core example projects.
 
-=== The Coffee Maker
+### The Coffee Maker
 
 You can find the project in 'examples/coffee-maker' folder.
 
-==== The App Components
+#### The App Components
 
 The coffee-maker is a pure Kotlin app for demoing dependency injection with Koin. This app is composed of:
 
 * `CoffeeApp` - retrieve and run the `CoffeeMaker` class
 
-[source,kotlin]
-----
+```kotlin
+```
 class CoffeeApp : KoinComponent, Runnable {
 
     val coffeeMaker: CoffeeMaker by inject()
@@ -22,12 +22,12 @@ class CoffeeApp : KoinComponent, Runnable {
         coffeeMaker.brew()
     }
 }
-----
+```
 
 * `CoffeeMaker` - is composed of a `Pump` and a lazy injected `Heater`. Make the bre processing.
 
-[source,kotlin]
-----
+```kotlin
+```
 class CoffeeMaker(val pump: Pump, val lazyHeater: Lazy<Heater>) {
 
     // Don't want to create a possibly costly heater until we need it.
@@ -40,12 +40,12 @@ class CoffeeMaker(val pump: Pump, val lazyHeater: Lazy<Heater>) {
         heater.off()
     }
 }
-----
+```
 
 * `ElectricHeater` - is a implementation of `Heater`
 
-[source,kotlin]
-----
+```kotlin
+```
 interface Heater {
     fun on()
     fun off()
@@ -67,12 +67,12 @@ class ElectricHeater : Heater {
 
     override fun isHot(): Boolean = heating
 }
-----
+```
 
 * `Thermosiphon` - is a implementation of Pump using a `Heater`
 
-[source,kotlin]
-----
+```kotlin
+```
 interface Pump {
     fun pump()
 }
@@ -80,13 +80,13 @@ interface Pump {
 class Thermosiphon(val heater: Heater) : Pump{
     override fun pump() {
         if (heater.isHot()){
-            println("=> => pumping => =>")
+            println("#> #> pumping #> #>")
         }
     }
 }
-----
+```
 
-==== Assembling and running with Koin
+#### Assembling and running with Koin
 
 We need to declare and assemble components:
 
@@ -97,14 +97,14 @@ We need to declare and assemble components:
 
 Here is how we assemble it with Koin:
 
-[source,kotlin]
-----
+```kotlin
+```
 val coffeeMakerModule = module {
     single { CoffeeMaker(get(), lazy { get<Heater>() }) }
     single<Pump> { Thermosiphon(get()) }
     single<Heater> { ElectricHeater() }
 }
-----
+```
 
 `CoffeeMaker` is a `KoinComponent` to lazy inject `Heater`.
 
@@ -112,8 +112,8 @@ val coffeeMakerModule = module {
 
 Just need to start Koin with `coffeeMakerModule` module and run the `CoffeeApp` class.
 
-[source,kotlin]
-----
+```kotlin
+```
 fun main(vararg args: String) {
 
     startKoin {
@@ -121,4 +121,4 @@ fun main(vararg args: String) {
     }
     CoffeeApp().run()
 }
-----
+```

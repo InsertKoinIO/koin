@@ -1,9 +1,9 @@
-== Retrieve your components from Koin
+## Retrieve your components from Koin
 
 Once you have declared some modules and you have started Koin, how can you retrieve your instances in your
 Android Activity Fragments or Services?
 
-=== Activity, Fragment & Service as KoinComponents
+### Activity, Fragment & Service as KoinComponents
 
 Activity, Fragment & Service are extended with the KoinComponents extension. You gain access to:
 
@@ -14,19 +14,19 @@ Activity, Fragment & Service are extended with the KoinComponents extension. You
 
 For a module that declares a 'presenter' component:
 
-[source,kotlin]
-----
+```kotlin
+```
 val androidModule = module {
     // a factory of Presenter
     factory { Presenter() }
 }
-----
+```
 
 We can declare a property as lazy injected:
 
 .Lazy inject a property
-[source,kotlin]
-----
+```kotlin
+```
 class DetailActivity : AppCompatActivity() {
 
     // Lazy injected Presenter instance
@@ -36,13 +36,13 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // ...
     }
-----
+```
 
 Or we can just directly get an instance:
 
 .Get directly an instance
-[source,kotlin]
-----
+```kotlin
+```
 class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,9 +51,9 @@ class DetailActivity : AppCompatActivity() {
         // Retrieve a Presenter instance
         val presenter : Presenter = get()
     }
-----
+```
 
-=== Need inject() and get() anywhere else?
+### Need inject() and get() anywhere else?
 
 If you need to `inject()` or `get()` an instance from another class, just tag it with `KoinComponent` interface.
 

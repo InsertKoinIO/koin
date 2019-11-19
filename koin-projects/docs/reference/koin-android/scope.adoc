@@ -1,13 +1,13 @@
-== Scope features for Android
+## Scope features for Android
 
 The `koin-android-scope` project is dedicated to bring Android scope features to the existing Scope API.
 
-=== Gradle setup
+### Gradle setup
 
 Choose the `koin-android-scope` dependency to add to your Gradle project (android or androix version):
 
-[source,gradle,subs="attributes"]
-----
+[source,gradle,subs#"attributes"]
+```
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()
@@ -18,9 +18,9 @@ dependencies {
     // or Scope for AndroidX
     implementation 'org.koin:koin-androidx-scope:{revnumber}'
 }
-----
+```
 
-=== Taming the Android lifecycle
+### Taming the Android lifecycle
 
 Android components are mainly managed by their lifecycle: we can't directly instantiate an Activity nor a Fragment. The system
 make all creation and management for us, and make callbacks on methods: onCreate, onStart...
@@ -40,99 +40,99 @@ In the case of MVP architecture style, the `Presenter` is a short live component
 and dropped once the screen is gone.
 
 .A new Presenter is created each time
-[source,kotlin]
-----
+```kotlin
+```
 class DetailActivity : AppCompatActivity() {
 
     // injected Presenter
     override val presenter : Presenter by inject()
-----
+```
 
 We can describe it in a module:
 
 
 * as `factory` - to produce a new instance each time the `by inject()` or `get()` is called
 
-[source,kotlin]
-----
+```kotlin
+```
 val androidModule = module {
 
     // Factory instance of Presenter
     factory { Presenter() }
 }
-----
+```
 
 * as `scope` - to produce an instance tied to a scope
 
-[source,kotlin]
-----
+```kotlin
+```
 val androidModule = module {
 
     scope(named("scope_id")) {
         scoped { Presenter() }
     }
 }
-----
+```
 
 [IMPORTANT]
-====
+####
 Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
-====
+####
 
-=== CurrentScope - a scope tied to your lifecycle
+### CurrentScope - a scope tied to your lifecycle
 
 Koin gives the `currentScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
 
 To benefit from the `currentScope`, you have to declare a scope for your activity (see how we use the `named()` qualifier with our Activity type):
 
-[source,kotlin]
-----
+```kotlin
+```
 val androidModule = module {
 
     scope(named<MyActivity>()) {
         scoped { Presenter() }
     }
 }
-----
+```
 
-[source,kotlin]
-----
+```kotlin
+```
 class MyActivity : AppCompatActivity() {
 
     // inject Presenter instance from current scope
     val presenter : Presenter by currentScope.inject()
 
-----
+```
 
 
-=== Sharing instances between components with scopes
+### Sharing instances between components with scopes
 
 In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
 
 First declare a scope definition:
 
-[source,kotlin]
-----
+```kotlin
+```
 module {
     // Shared user session data
     scope(named("session")) {
         scoped { UserSession() }
     }
 }
-----
+```
 
 When needed to begin use a `UserSession` instance, create a scope for it:
 
-[source,kotlin]
-----
+```kotlin
+```
 val ourSession = getKoin().createScope("ourSession",named("session"))
-----
+```
 
 Then use it anywhere you need it:
 
-[source,kotlin]
-----
+```kotlin
+```
 class MyActivity1 : AppCompatActivity() {
 
     val userSession : UserSession by ourSession.inject()
@@ -141,19 +141,19 @@ class MyActivity2 : AppCompatActivity() {
 
     val userSession : UserSession by ourSession.inject()
 }
-----
+```
 
 or you can also inject it with Koin DSL. If a presenter need it:
 
-[source,kotlin]
-----
+```kotlin
+```
 class Presenter(val userSession : UserSession)
-----
+```
 
 Just inject it into constructor, with the right scope id:
 
-[source,kotlin]
-----
+```kotlin
+```
 module {
     // Shared user session data
     scope(named("session")) {
@@ -163,13 +163,13 @@ module {
     // Inject UserSession instance from "session" Scope
     factory { (scopeId : ScopeID) -> Presenter(getScope(scopeId).get())}
 }
-----
+```
 
 When you have to finish with your scope, just close it:
 
-[source,kotlin]
-----
+```kotlin
+```
 val ourSession = getKoin().getScope("ourSession")
 ourSession.close()
-----
+```
 

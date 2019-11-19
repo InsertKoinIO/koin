@@ -1,8 +1,7 @@
-== Properties
 
 Koin can handle properties from environment or external property file, to help you inject values into your definitions.
 
-=== Loading properties at start
+## Loading properties at start
 
 You can load several type of properties at start:
 
@@ -10,25 +9,23 @@ You can load several type of properties at start:
 * koin.properties file - load properties from `/src/main/resources/koin.properties` file
 * "extra" start properties - map of values passed at `startKoin` function
 
-=== Read property from a module
+## Read property from a module
 
 In a Koin module, you can get a property by its key:
 
-.in /src/main/resoucres/koin.properties file
-[source,java]
-----
+in /src/main/resoucres/koin.properties file
+```java
 // Key - value
 server_url=http://service_url
-----
+```
 
 Just load it with `getProperty` function:
 
-[source,kotlin]
-----
+```kotlin
 val myModule = module {
 
     // use the "server_url" key to retrieve its value
     single { MyService(getProperty("server_url")) }
 }
-----
+```
 

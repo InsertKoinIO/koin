@@ -8,7 +8,7 @@
 :stylesdir: styles/
 :linkcss:
 
-= Koin core: DSL, Container & API
+# Koin core: DSL, Container & API
 
 Arnaud Giuliani <arnaud@insert-koin.io> - and on twitter: @arnogiu
 :revnumber: {project-version}

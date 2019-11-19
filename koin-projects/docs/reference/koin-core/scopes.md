@@ -1,14 +1,13 @@
-== Using Scopes
 
 Koin brings a simple API to let you define instances that are tied to a limit lifetime.
 
-=== What is a scope?
+## What is a scope?
 
 Scope is a fixed duration of time or method calls in which an object exists.
 Another way to look at this is to think of scope as the amount of time an object’s state persists.
 When the scope context ends, any objects bound under that scope cannot be injected again (they are dropped from the container).
 
-=== Scope definition
+## Scope definition
 
 By default in Koin, we have 3 kind of scopes:
 
@@ -18,19 +17,18 @@ By default in Koin, we have 3 kind of scopes:
 
 To declare a scoped definition, use the `scoped` function like follow. A scope gathers scoped definitions as a logical unit of time:
 
-[source,kotlin]
-----
+```kotlin
 module {
     scope(named("A Scope Name")){
         scoped { Presenter() }
         // ...
     }
 }
-----
+```
 
-=== Working with a scope
+## Working with a scope
 
-A scope instance can be created with as follow: `val scope = koin.createScope("myScope")`. The "myScope" string here, is the id of your scope instance. 
+A scope instance can be created with as follow: `val scope = koin.createScope("myScope")`. The "myScope" string here, is the id of your scope instance.
 
 To resolve a dependency using the scope we can do it like:
 
@@ -38,15 +36,14 @@ To resolve a dependency using the scope we can do it like:
 
 We have to declare a the scope instance like follow:
 
-[source,kotlin]
-----
+```kotlin
 // create scope instance "myScope" (the scope Id) for scope "A_SCOPE_NAME" (the qualifier)
 val scope = koin.createScope("myScope","A_SCOPE_NAME")
 // resolve presenter instance
 val presenter = scope.get<Presenter>()
-----
+```
 
-=== Create & retrieve a scope
+## Create & retrieve a scope
 
 From a `KoinComponent` class or where you can access your Koin instance:
 
@@ -54,30 +51,25 @@ From a `KoinComponent` class or where you can access your Koin instance:
 - `getScope(id : ScopeID)` - retrieve a previously created scope with given id
 - `getOrCreateScope(id : ScopeID, scopeName : Qualifier)` - create or retrieve if already created, the closed scope instance with given id and scopeName
 
-[IMPORTANT]
-====
-Make the difference between a scope instance id, which is the id to find your scope over all your scopes, and the scope name, which is the reference to the tied scope group name.
-====
+!> Make the difference between a scope instance id, which is the id to find your scope over all your scopes, and the scope name, which is the reference to the tied scope group name.
 
-=== Creating scope instances
+## Creating scope instances
 
 Using the id, it's then possible to have several instances of the same scope:
 
-[source,kotlin]
-----
+```kotlin
 // create an closed scope instance "myScope1" for scope "A_SCOPE_NAME"
 val myScope1 = koin.createScope("myScope1",named("A_SCOPE_NAME"))
 // create an closed scope instance "myScope2" for scope "A_SCOPE_NAME"
 val myScope2 = koin.createScope("myScope2",named("A_SCOPE_NAME"))
-----
+```
 
 
-=== Resolving dependencies within a scope
+## Resolving dependencies within a scope
 
 The interest of a scope is to define a common logical unit of time for scoped definitions. It's allow also to resolve definitions from within the given scope
 
-[source,kotlin]
-----
+```kotlin
 // given the classes
 class ComponentA
 class ComponentB(val a : ComponentA)
@@ -91,26 +83,24 @@ module {
         scoped { ComponentB(get()) }
     }
 }
-----
+```
 
 The dependency resolution is then straight forward:
 
-[source,kotlin]
-----
+```kotlin
 // create an closed scope instance "myScope1" for scope "A_SCOPE_NAME"
 val myScope1 = koin.createScope("myScope1",named("A_SCOPE_NAME"))
 
 // from the same scope
 val componentA = myScope1.get<ComponentA>()
 val componentB = myScope1.get<ComponentB>()
-----
+```
 
-=== Closing a scope
+## Closing a scope
 
 Once your scope instance is finished, just closed it with the `close()` function:
 
-[source,kotlin]
-----
+```kotlin
 // from a KoinComponent
 val session = getKoin().createScope("session")
 
@@ -118,13 +108,10 @@ val session = getKoin().createScope("session")
 
 // close it
 session.close()
-----
+```
 
-[IMPORTANT]
-====
-Beware that you can't inject instances anymore from a closed scope.
-====
+!> Beware that you can't inject instances anymore from a closed scope.
 
-=== Scope callback -- TODO
+## Scope callback -- TODO
 
 
