@@ -21,6 +21,6 @@
 - [Changelog](_changelog)
 - **Links**
 - [WebSite](https://insert-koin.io/)
-- [Reference Documentation](https://docs.insert-koin.io/)
+- [Reference Documentation](https://doc.insert-koin.io/)
 - [![Github](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github](https://github.com/InsertKoinIO/koin)
 - [![Twitter](https://icongram.jgog.in/simple/twitter.svg?colored&size=16)@insertkoin_io](http://twitter.com/insertkoin_io)
