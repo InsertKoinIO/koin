@@ -1,22 +1,3 @@
-## About koin-test
-
-The `koin-test` project is dedicated to help you making JUnit test with Koin container and API.
-
-### Gradle setup
-
-Add the `koin-test` dependency to your Gradle project:
-
-[source,gradle,subs#"attributes"]
-```
-// Add Jcenter to your repositories if needed
-repositories {
-    jcenter()
-}
-dependencies {
-    // Testing with Koin
-    testCompile 'org.koin:koin-test:{revnumber}'
-}
-```
 
 ## Making your test a KoinComponent with KoinTest
 
@@ -27,7 +8,6 @@ By tagging your class `KoinTest`, your class become a `KoinComponent` and bring 
 * `declareMock` & `declare` - to declare a mock or a new definition in the current context
 
 ```kotlin
-```
 class ComponentA
 class ComponentB(val a: ComponentA)
 
@@ -54,17 +34,13 @@ class MyTest : KoinTest {
     }
 ```
 
-[NOTE]
-####
-Don't hesitate to overload Koin modules configuration to help you partly build your app.
-####
+?> Don't hesitate to overload Koin modules configuration to help you partly build your app.
 
 ## Mocking out of the box
 
 Instead of making a new module each time you need a mock, you can declare a mock on the fly with `declareMock`:
 
 ```kotlin
-```
 class MyTest : KoinTest {
 
     class ComponentA
@@ -89,17 +65,13 @@ class MyTest : KoinTest {
     }
 ```
 
-[NOTE]
-####
-declareMock can specify if you want a single or factory, and if you wan to have it in a module path.
-####
+?> declareMock can specify if you want a single or factory, and if you wan to have it in a module path.
 
 ## Declaring a component on the fly
 
 When a mock is not enough and don't want to create a module just for this, you can use `declare`:
 
 ```kotlin
-```
     @Test
     fun `successful declare an expression mock`() {
         startKoin { }
@@ -117,7 +89,6 @@ When a mock is not enough and don't want to create a module just for this, you c
 Koin offers a way to test if you Koin modules are good: `checkModules` - walk through your definition tree and check if each definition is bound
 
 ```kotlin
-```
     @Test
     fun `check MVP hierarchy`() {
         startKoin{

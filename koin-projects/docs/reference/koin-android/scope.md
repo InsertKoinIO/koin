@@ -1,26 +1,8 @@
-## Scope features for Android
 
 The `koin-android-scope` project is dedicated to bring Android scope features to the existing Scope API.
 
-### Gradle setup
 
-Choose the `koin-android-scope` dependency to add to your Gradle project (android or androix version):
-
-[source,gradle,subs#"attributes"]
-```
-// Add Jcenter to your repositories if needed
-repositories {
-    jcenter()
-}
-dependencies {
-    // Scope for Android
-    implementation 'org.koin:koin-android-scope:{revnumber}'
-    // or Scope for AndroidX
-    implementation 'org.koin:koin-androidx-scope:{revnumber}'
-}
-```
-
-### Taming the Android lifecycle
+## Taming the Android lifecycle
 
 Android components are mainly managed by their lifecycle: we can't directly instantiate an Activity nor a Fragment. The system
 make all creation and management for us, and make callbacks on methods: onCreate, onStart...
@@ -39,9 +21,9 @@ Long live components can be easily described as `single` definitions. For medium
 In the case of MVP architecture style, the `Presenter` is a short live component to help/support the UI. The presenter must be created each time the screen is showing,
 and dropped once the screen is gone.
 
-.A new Presenter is created each time
+A new Presenter is created each time
+
 ```kotlin
-```
 class DetailActivity : AppCompatActivity() {
 
     // injected Presenter
@@ -54,7 +36,6 @@ We can describe it in a module:
 * as `factory` - to produce a new instance each time the `by inject()` or `get()` is called
 
 ```kotlin
-```
 val androidModule = module {
 
     // Factory instance of Presenter
@@ -65,7 +46,6 @@ val androidModule = module {
 * as `scope` - to produce an instance tied to a scope
 
 ```kotlin
-```
 val androidModule = module {
 
     scope(named("scope_id")) {
@@ -74,20 +54,16 @@ val androidModule = module {
 }
 ```
 
-[IMPORTANT]
-####
-Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
+!> Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
-####
 
-### CurrentScope - a scope tied to your lifecycle
+## CurrentScope - a scope tied to your lifecycle
 
 Koin gives the `currentScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
 
 To benefit from the `currentScope`, you have to declare a scope for your activity (see how we use the `named()` qualifier with our Activity type):
 
 ```kotlin
-```
 val androidModule = module {
 
     scope(named<MyActivity>()) {
@@ -97,7 +73,6 @@ val androidModule = module {
 ```
 
 ```kotlin
-```
 class MyActivity : AppCompatActivity() {
 
     // inject Presenter instance from current scope
@@ -106,14 +81,13 @@ class MyActivity : AppCompatActivity() {
 ```
 
 
-### Sharing instances between components with scopes
+## Sharing instances between components with scopes
 
 In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
 
 First declare a scope definition:
 
 ```kotlin
-```
 module {
     // Shared user session data
     scope(named("session")) {
@@ -125,14 +99,12 @@ module {
 When needed to begin use a `UserSession` instance, create a scope for it:
 
 ```kotlin
-```
 val ourSession = getKoin().createScope("ourSession",named("session"))
 ```
 
 Then use it anywhere you need it:
 
 ```kotlin
-```
 class MyActivity1 : AppCompatActivity() {
 
     val userSession : UserSession by ourSession.inject()
@@ -146,14 +118,12 @@ class MyActivity2 : AppCompatActivity() {
 or you can also inject it with Koin DSL. If a presenter need it:
 
 ```kotlin
-```
 class Presenter(val userSession : UserSession)
 ```
 
 Just inject it into constructor, with the right scope id:
 
 ```kotlin
-```
 module {
     // Shared user session data
     scope(named("session")) {
@@ -168,7 +138,6 @@ module {
 When you have to finish with your scope, just close it:
 
 ```kotlin
-```
 val ourSession = getKoin().getScope("ourSession")
 ourSession.close()
 ```

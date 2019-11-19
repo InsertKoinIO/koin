@@ -1,32 +1,12 @@
-## Architecture Components with Koin: ViewModel
 
 The `koin-android-viewmodel` project is dedicated to bring Android Architecture ViewModel features.
 
-### Gradle setup
-
-Choose the `koin-android-viewmodel` dependency to add to your Gradle project (android or androix version):
-
-[source,gradle,subs#"attributes"]
-```
-// Add Jcenter to your repositories if needed
-repositories {
-    jcenter()
-}
-dependencies {
-    // ViewModel for Android
-    implementation 'org.koin:koin-android-viewmodel:{revnumber}'
-    // or ViewModel for AndroidX
-    implementation 'org.koin:koin-androidx-viewmodel:{revnumber}'
-}
-```
-
-### ViewModel DSL
+## ViewModel DSL
 
 The `koin-android-viewmodel` introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel
 component and bind it to an Android Component lifecycle.
 
 ```kotlin
-```
 val appModule = module {
 
     // ViewModel for Detail View
@@ -38,18 +18,11 @@ val appModule = module {
 Your declared component must at least extends the `android.arch.lifecycle.ViewModel` class. You can specify how you inject the *constructor* of the class
 and use the `get()` function to inject dependencies.
 
-[NOTE]
-####
-The `viewModel` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance
-if needed.
-####
+?> The `viewModel` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
 
-[NOTE]
-####
-The `viewModel` keyword can also let you use the injection parameters.
-####
+?> The `viewModel` keyword can also let you use the injection parameters.
 
-### Injecting your ViewModel
+## Injecting your ViewModel
 
 To inject a ViewModel in an `Activity`, `Fragment` or `Service` use:
 
@@ -57,7 +30,6 @@ To inject a ViewModel in an `Activity`, `Fragment` or `Service` use:
 * `getViewModel()` - directly get the ViewModel instance
 
 ```kotlin
-```
 class DetailActivity : AppCompatActivity() {
 
     // Lazy inject ViewModel
@@ -68,8 +40,7 @@ class DetailActivity : AppCompatActivity() {
 
 In a similar way, in Java you can inject the ViewModel instance, but using `viewModel()` or `getViewModel` static functions from `ViewModelCompat`:
 
-[source,java]
-```
+```java
 // import viewModel
 import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
 
@@ -94,7 +65,7 @@ public class JavaActivity extends AppCompatActivity {
 }
 ```
 
-### Shared ViewModel
+## Shared ViewModel
 
 One ViewModel instance can be shared between Fragments and their host Activity.
 
@@ -106,7 +77,6 @@ To inject a *shared* ViewModel in a `Fragment` use:
 Just declare the ViewModel only once:
 
 ```kotlin
-```
 val weatherAppModule = module {
 
     // WeatherViewModel declaration for Weather View components
@@ -119,7 +89,6 @@ Note: a qualifier for a ViewModel will be handled as a ViewModel's Tag
 And reuse it in Activity and Fragments:
 
 ```kotlin
-```
 class WeatherActivity : AppCompatActivity() {
 
     /*
@@ -145,16 +114,11 @@ class WeatherListFragment : Fragment() {
 }
 ```
 
-[NOTE]
-####
-The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
-####
-
+?> The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
 
 For your Java Fragment, must be used `sharedViewModel` or `getSharedViewModel` from `SharedViewModelCompat`.
 
-[source,java]
-```
+```java
 // import sharedViewModel static function
 import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
 
@@ -178,7 +142,6 @@ the `viewModel` keyword and injection API is compatible with injection parameter
 In the module:
 
 ```kotlin
-```
 val appModule = module {
 
     // ViewModel for Detail View with id as parameter injection
@@ -189,7 +152,6 @@ val appModule = module {
 From the injection call site:
 
 ```kotlin
-```
 class DetailActivity : AppCompatActivity() {
 
     val id : String // id of the view

@@ -1,48 +1,29 @@
-## About koin-ktor
 
 The `koin-ktor` project is dedicated to bring dependency injection for Ktor.
 
-### Gradle setup
-
-Add the `koin-android` dependency to your Gradle project:
-
-[source,gradle,subs#"attributes"]
-```
-// Add Jcenter to your repositories if needed
-repositories {
-    jcenter()
-}
-dependencies {
-    // Reflection features for Koin
-    compile 'org.koin:koin-ktor:{revnumber}'
-}
-```
-
-### Install Koin & inject
+## Install Koin & inject
 
 To start Koin container, use the `installKoin()` starter function:
 
 ```kotlin
-```
 fun Application.main() {
     // Install Ktor features
     install(DefaultHeaders)
     install(CallLogging)
-    installKoin(listOf(helloAppModule), logger = SLF4JLogger())
+    install(Koin) {
+        slf4jLogger()
+        modules(helloAppModule)
+    }
 
     //...
 }
 ```
 
-[NOTE]
-####
-You can also start it from outside of Ktor, but you won't be compatible with `autoreload` feature.
-####
+?> You can also start it from outside of Ktor, but you won't be compatible with `autoreload` feature.
 
 KoinComponent powers are available from `Application` class:
 
 ```kotlin
-```
 fun Application.main() {
     //...
 
@@ -61,7 +42,6 @@ fun Application.main() {
 From `Routing` class:
 
 ```kotlin
-```
 fun Application.main() {
     //...
 
@@ -90,7 +70,6 @@ fun Routing.v1() {
 From `Route` class:
 
 ```kotlin
-```
 fun Application.main() {
     //...
 

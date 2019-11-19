@@ -8,12 +8,21 @@
 - [Koin Component](koin-core/koin-component)
 - [Injecting Parameters](koin-core/injection-parameters)
 - [Scopes](koin-core/scopes)
-- [Properties](koin-core/properties)
+- [Using Java](koin-core/java)
 - [Logging](koin-core/logging)
+- [Properties](koin-core/properties)
 - **Koin Test**
+- [JUnit & Mocks](koin-test/testing)
 - **Koin Android**
+- [Start on Android](koin-android/start)
+- [Android DSL](koin-android/dsl)
+- [Retrieve Instances](koin-android/get-instances)
+- [Koin Scope](koin-android/scope)
+- [ViewModel](koin-android/viewmodel)
 - **Koin Ktor**
-- **Experimental**
+- [Injecting with Ktor](koin-ktor/ktor)
 - **Links**
+- [WebSite](https://insert-koin.io/)
+- [Getting Started Documentation](https://start.insert-koin.io/)
 - [![Github](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github](https://github.com/InsertKoinIO/koin)
 - [![Twitter](https://icongram.jgog.in/simple/twitter.svg?colored&size=16)@insertkoin_io](http://twitter.com/insertkoin_io)
