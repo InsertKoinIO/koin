@@ -12,7 +12,6 @@
 - [Starting Koin](getting-started/starting-koin)
 - [Modules & Definitions](getting-started/modules-definitions)
 - [Koin Components](getting-started/koin-components)
-- [Scopes](getting-started/scopes)
 - [Testing](getting-started/testing)
 - [Koin for Java](getting-started/koin-for-java)
 - [Koin for Android](getting-started/koin-for-android)

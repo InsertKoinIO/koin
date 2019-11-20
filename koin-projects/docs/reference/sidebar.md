@@ -19,6 +19,7 @@
 - [Retrieve Instances](koin-android/get-instances)
 - [Koin Scope](koin-android/scope)
 - [ViewModel](koin-android/viewmodel)
+- [Frament Factory](koin-android/fragment-factory)
 - **Koin Ktor**
 - [Injecting with Ktor](koin-ktor/ktor)
 - **Links**

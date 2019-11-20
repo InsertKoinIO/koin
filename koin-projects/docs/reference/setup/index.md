@@ -9,7 +9,7 @@ Here are the current versions of Koin:
 koin_version= "2.0.1"
 
 // Latest unstable version
-koin_version= "2.1.0-alpha-2"
+koin_version= "2.1.0-alpha-3"
 ```
 
 ### Gradle dependencies
@@ -62,6 +62,10 @@ compile "org.koin:koin-androidx-scope:$koin_version"
 
 // Koin AndroidX ViewModel feature
 compile "org.koin:koin-androidx-viewmodel:$koin_version"
+
+
+// Koin AndroidX Fragment Factory (unstable version)
+compile "org.koin:koin-androidx-fragment:$koin_version"
 ```
 
 #### **Ktor**
