@@ -21,9 +21,9 @@ import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.KoinApplication.Companion.logger
-import org.koin.core.definition.DefinitionFactory
 import org.koin.core.logger.Level
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * Koin extensions for Android
@@ -51,11 +51,11 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
         logger.info("[init] declare Android Context")
     }
 
-    koin.rootScope.beanRegistry.saveDefinition(DefinitionFactory.createSingle { androidContext })
+    val addTypes = if (androidContext is Application) {
+        listOf(Application::class)
+    } else emptyList<KClass<*>>()
 
-    if (androidContext is Application) {
-        koin.rootScope.beanRegistry.saveDefinition(DefinitionFactory.createSingle<Application> { androidContext })
-    }
+    koin.declare(androidContext, secondaryTypes = addTypes)
     return this
 }
 
@@ -75,7 +75,7 @@ fun KoinApplication.androidFileProperties(
             try {
                 androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }
                 val nb =
-                        koin.propertyRegistry.saveProperties(koinProperties)
+                    koin.propertyRegistry.saveProperties(koinProperties)
                 if (logger.isAt(Level.INFO)) {
                     logger.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
                 }

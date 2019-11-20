@@ -14,17 +14,17 @@ import org.koin.sample.androidx.components.APP_TITLE
 import org.koin.sample.androidx.components.main.DUMB_SERVICE
 import org.koin.sample.androidx.components.main.RandomId
 import org.koin.sample.androidx.components.main.SERVICE_IMPL
-import org.koin.sample.androidx.components.main.Service
+import org.koin.sample.androidx.components.main.SimpleService
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.utils.navigateTo
 
 class MainActivity : AppCompatActivity() {
 
     // Inject by Interface - default definition
-    val service: Service by inject()
+    val service: SimpleService by inject()
 
     // Inject by Interface - qualified definition with a String name
-    val dumbService: Service by inject(named("dumb"))
+    val dumbService: SimpleService by inject(named("dumb"))
 
     // Inject factory
     val randomId: RandomId by inject()

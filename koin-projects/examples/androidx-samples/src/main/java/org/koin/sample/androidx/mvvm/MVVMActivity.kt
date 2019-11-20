@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,7 +36,7 @@ class MVVMActivity : AppCompatActivity() {
     val extScopeVm: ExtSimpleViewModel by currentScope.viewModel(this, named("ext"))
 
     val savedVm: SavedStateViewModel by viewModel { parametersOf(Bundle(), "vm1") }
-    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this,named("vm2")) {
+    val scopedSavedVm: SavedStateViewModel by currentScope.viewModel(this, named("vm2")) {
         parametersOf(
             Bundle(),
             "vm2"
@@ -43,6 +44,10 @@ class MVVMActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // if not in scope
+        //setupKoinFragmentFactory()
+        setupKoinFragmentFactory(currentScope)
+
         super.onCreate(savedInstanceState)
 
         assertEquals(getViewModel<SimpleViewModel> { parametersOf(ID) }, simpleViewModel)
@@ -61,7 +66,7 @@ class MVVMActivity : AppCompatActivity() {
         assertNotEquals(savedVm.id, scopedSavedVm.id)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mvvm_frame, MVVMFragment())
+            .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
             .commit()
 
         getKoin().setProperty("session", currentScope.get<Session>())

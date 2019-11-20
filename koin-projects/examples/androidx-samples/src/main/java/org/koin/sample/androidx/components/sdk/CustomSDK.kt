@@ -7,8 +7,8 @@ import org.koin.core.inject
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.sample.androidx.components.main.Service
-import org.koin.sample.androidx.components.main.ServiceImpl
+import org.koin.sample.androidx.components.main.SimpleService
+import org.koin.sample.androidx.components.main.SimpleServiceImpl
 
 // Custom Koin instance Holder
 object CustomSDK {
@@ -19,7 +19,7 @@ object CustomSDK {
 }
 
 val sdkModule = module {
-    single<Service> { ServiceImpl() }
+    single<SimpleService> { SimpleServiceImpl() }
     single { SDKService() }
     viewModel { SDKVIewModel(get()) }
 }
@@ -30,5 +30,5 @@ interface CustomKoinComponent : KoinComponent {
 }
 
 class CustomService : CustomKoinComponent {
-    val service: Service by inject()
+    val service: SimpleService by inject()
 }

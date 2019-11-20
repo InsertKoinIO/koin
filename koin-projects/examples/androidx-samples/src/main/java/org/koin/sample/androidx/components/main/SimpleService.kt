@@ -1,6 +1,6 @@
 package org.koin.sample.androidx.components.main
 
-interface Service {
+interface SimpleService {
 
     val id: String
 }

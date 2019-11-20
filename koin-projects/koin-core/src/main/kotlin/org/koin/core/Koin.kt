@@ -102,8 +102,8 @@ class Koin {
      */
     fun <T> get(
             clazz: KClass<*>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T = rootScope.get(clazz, qualifier, parameters)
 
 

@@ -11,8 +11,8 @@ import org.koin.sample.androidx.components.SCOPE_ID
 import org.koin.sample.androidx.components.SCOPE_SESSION
 import org.koin.sample.androidx.components.main.DumbServiceImpl
 import org.koin.sample.androidx.components.main.RandomId
-import org.koin.sample.androidx.components.main.Service
-import org.koin.sample.androidx.components.main.ServiceImpl
+import org.koin.sample.androidx.components.main.SimpleService
+import org.koin.sample.androidx.components.main.SimpleServiceImpl
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
@@ -21,12 +21,13 @@ import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
+import org.koin.sample.androidx.mvvm.MVVMFragment
 import org.koin.sample.androidx.scope.ScopedActivityA
 
 val appModule = module {
 
-    single<Service> { ServiceImpl() }
-    single<Service>(named("dumb")) { DumbServiceImpl() }
+    single<SimpleService> { SimpleServiceImpl() }
+    single<SimpleService>(named("dumb")) { DumbServiceImpl() }
 
     factory { RandomId() }
 }
@@ -40,6 +41,7 @@ val mvpModule = module {
 }
 
 val mvvmModule = module {
+
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
 
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
@@ -49,9 +51,16 @@ val mvvmModule = module {
 
     scope(named<MVVMActivity>()) {
         scoped { Session() }
+        scoped { MVVMFragment(get()) }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+        viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) ->
+            SavedStateViewModel(
+                handle,
+                id,
+                get()
+            )
+        }
     }
 }
 
