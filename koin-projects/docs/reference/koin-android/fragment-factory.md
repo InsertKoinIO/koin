@@ -1,56 +1,102 @@
 
-Once you have declared some modules and you have started Koin, how can you retrieve your instances in your
-Android Activity Fragments or Services?
+Since AndroidX has released `androidx.fragment` packages family t o extend features around Android `Fragment`
 
-## Activity, Fragment & Service as KoinComponents
+https://developer.android.com/jetpack/androidx/releases/fragment
 
-Activity, Fragment & Service are extended with the KoinComponents extension. You gain access to:
+## Fragment Factory
 
-* `by inject()` - lazy evaluated instance from Koin container
-* `get()` - eager fetch instance from Koin container
-* `release()` - release module's instances from its path
-* `getProperty()`/`setProperty()` - get/set property
+Since `1.2.0-*` version, has been introduce the `FragmentFactory`, a class dedicated to create instance of `Fragment` class:
 
-For a module that declares a 'presenter' component:
+https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentFactory
+
+Koin can bring a `KoinFragmentFactory` to help you inject your `Fragment` instances directly.
+
+## Setup Fragment Factory
+
+At start, in your KoinApplication declaration, use the `fragmentFactory()` keyword to setup a default `KoinFragmentFactory` instance:
 
 ```kotlin
-val androidModule = module {
-    // a factory of Presenter
-    factory { Presenter() }
+ startKoin {
+    androidLogger(Level.DEBUG)
+    androidContext(this@MainApplication)
+    androidFileProperties()
+    // setup a KoinFragmentFactory instance
+    fragmentFactory()
+
+    modules(...)
 }
 ```
 
-We can declare a property as lazy injected:
+## Declare & Inject your Fragment
 
-.Lazy inject a property
+To declare a `Fragment` instance, just declare it as a `factory` in your Koin module and use *constructor injection*.
+
+Given a `Fragment` class:
+
 ```kotlin
-class DetailActivity : AppCompatActivity() {
+class MyFragment(val myService: MyService) : Fragment(){
 
-    // Lazy injected Presenter instance
-    override val presenter : Presenter by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // ...
-    }
+}
 ```
 
-Or we can just directly get an instance:
-
-.Get directly an instance
 ```kotlin
-class DetailActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // Retrieve a Presenter instance
-        val presenter : Presenter = get()
-    }
+val appModule = module {
+    single { MyService() }
+    factory { MyFragment(get()) }
+}
 ```
 
-### Need inject() and get() anywhere else?
+## Get your Fragment
 
-If you need to `inject()` or `get()` an instance from another class, just tag it with `KoinComponent` interface.
+From your host `Activity` class, setup your fragment factory with `setupKoinFragmentFactory()`:
 
+```kotlin
+class MyActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // Koin Fragment Factory
+        setupKoinFragmentFactory()
+
+        super.onCreate(savedInstanceState)
+        //...
+    }
+}
+```
+
+And retrieve your `Fragment` with your `supportFragmentManager`:
+
+```kotlin
+supportFragmentManager.beginTransaction()
+            .replace(R.id.mvvm_frame, MyFragment::class.java, null, null)
+            .commit()
+```
+
+
+## Fragment Factory & Koin Scopes
+
+If you want to use the Koin Activity`s Scope, you have to declare your fragment inside your scope as a `scoped` definition:
+
+```kotlin
+val appModule = module {
+    scope<MyActivity> {
+        scoped { MyFragment(get()) }
+    }
+}
+```
+
+and setup your Koin Fragment Factory with your scope: `setupKoinFragmentFactory(currentScope)`
+
+```kotlin
+class MyActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // Koin Fragment Factory
+        setupKoinFragmentFactory(currentScope)
+
+        super.onCreate(savedInstanceState)
+        //...
+    }
+}
+```
 
