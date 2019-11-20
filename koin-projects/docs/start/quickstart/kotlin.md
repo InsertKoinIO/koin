@@ -1,5 +1,5 @@
 
-# Getting Started with JUnit Tests {docsify-ignore-all}
+# Getting Started with Kotlin app {docsify-ignore-all}
 
 > This tutorial lets you write a Kotlin application and use Koin inject and retrieve your components.
 
