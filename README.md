@@ -97,6 +97,8 @@ implementation "org.koin:koin-android-ext:$koin_version"
 implementation "org.koin:koin-androidx-scope:$koin_version"
 // Koin AndroidX ViewModel features
 implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+// Koin AndroidX Fragment features
+implementation "org.koin:koin-androidx-fragment:$koin_version"
 // Koin AndroidX Experimental features
 implementation "org.koin:koin-androidx-ext:$koin_version"
 ```
