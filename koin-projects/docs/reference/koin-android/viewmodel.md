@@ -135,7 +135,7 @@ public class JavaFragment extends Fragment {
 ```
 
 
-### ViewModel and injection parameters
+## ViewModel and injection parameters
 
 the `viewModel` keyword and injection API is compatible with injection parameters.
 
@@ -160,6 +160,31 @@ class DetailActivity : AppCompatActivity() {
     val detailViewModel: DetailViewModel by viewModel{ parametersOf(id)}
 }
 ```
+
+## ViewModel and State Bundle
+
+in `koin-androidx-viewmodel:2.1.0-alpha-3` we reviewed a cleaner way to deal with state bundle for your `ViewModel`.
+
+Just pass a `Bundle` object as init state for your `ViewModel` as injection param:
+
+Add a new property typed `SavedStateHandle` in your constructor:
+
+```kotlin
+class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
+```
+
+In Koin module, use parameter injection:
+
+```kotlin
+viewModel { (handle: SavedStateHandle) -> MyStateVM(handle, get()) }
+```
+
+In Your Activity/Fragment, pass the default state as parameter:
+
+```kotlin
+val myStateVM: MyStateVM by viewModel { parametersOf(Bundle(), "vm1") }
+```
+
 
 
 
