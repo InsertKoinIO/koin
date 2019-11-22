@@ -56,13 +56,11 @@ compile "org.koin:koin-android-viewmodel:$koin_version"
 #### **AndroidX**
 
 ```groovy
-// AndroidX (based on koin-android)
 // Koin AndroidX Scope feature
 compile "org.koin:koin-androidx-scope:$koin_version"
 
 // Koin AndroidX ViewModel feature
 compile "org.koin:koin-androidx-viewmodel:$koin_version"
-
 
 // Koin AndroidX Fragment Factory (unstable version)
 compile "org.koin:koin-androidx-fragment:$koin_version"
