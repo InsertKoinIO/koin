@@ -74,6 +74,10 @@ inline fun <reified T : Any> Scope.declareMock(
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("Direct usage of Mockito which will be removed with next release", ReplaceWith(
+        "this.declareMock(mock(T::class.java), qualifier, stubbing = stubbing)",
+        "org.mockito.Mockito.mock"
+))
 inline fun <reified T : Any> KoinTest.declareMock(
         qualifier: Qualifier? = null,
         noinline stubbing: StubFunction<T>? = null
@@ -87,6 +91,10 @@ inline fun <reified T : Any> KoinTest.declareMock(
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("Direct usage of Mockito which will be removed with next release", ReplaceWith(
+        "this.declareMock(mock(T::class.java), qualifier, stubbing = stubbing)",
+        "org.mockito.Mockito.mock"
+))
 inline fun <reified T : Any> Koin.declareMock(
         qualifier: Qualifier? = null,
         noinline stubbing: StubFunction<T>? = null
@@ -99,6 +107,10 @@ inline fun <reified T : Any> Koin.declareMock(
  *
  * @author Pedro Moura
  */
+@Deprecated("Direct usage of Mockito which will be removed with next release", ReplaceWith(
+        "this.declareMock(mock(T::class.java), qualifier, stubbing = stubbing)",
+        "org.mockito.Mockito.mock"
+))
 inline fun <reified T : Any> Scope.declareMock(
         qualifier: Qualifier? = null,
         noinline stubbing: StubFunction<T>? = null
@@ -109,6 +121,7 @@ inline fun <reified T : Any> Scope.declareMock(
     return get(qualifier)
 }
 
+@Deprecated("Usage of internal DeclareMock inline API")
 inline fun <reified T : Any> Scope.declareMockDefinition(
         foundDefinition: BeanDefinition<T>,
         noinline stubbing: StubFunction<T>?
@@ -119,6 +132,7 @@ inline fun <reified T : Any> Scope.declareMockDefinition(
 }
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated("Usage of internal DeclareMock inline API")
 inline fun <reified T : Any> Scope.getDefinition(
         clazz: KClass<T>,
         qualifier: Qualifier?
@@ -128,6 +142,7 @@ inline fun <reified T : Any> Scope.getDefinition(
             ?: throw NoBeanDefFoundException("No definition found for qualifier='$qualifier' & class='$clazz'")
 }
 
+@Deprecated("Usage of internal DeclareMock inline API")
 inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(koin: Koin, noinline stubbing: (StubFunction<T>)?): BeanDefinition<T> {
     val copy = copy(definition = {
         if (koin._logger.isAt(Level.DEBUG)) {
@@ -143,6 +158,7 @@ inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(koin: Koin
     return copy
 }
 
+@Deprecated("Usage of internal DeclareMock inline API")
 inline fun <reified T> BeanDefinition<T>.createMock(noinline stubbing: (StubFunction<T>)? = null): T {
     val mock = MockProvider.makeMock<T>()
     stubbing?.invoke(mock)
