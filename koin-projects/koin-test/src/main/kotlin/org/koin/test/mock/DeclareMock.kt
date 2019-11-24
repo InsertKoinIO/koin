@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,55 @@ import org.koin.test.KoinTest
 import kotlin.reflect.KClass
 
 /**
+ * Declare & Stub a mock in Koin container for given type
+ *
+ * @author Christian Schmitz
+ */
+inline fun <reified T : Any> KoinTest.declareMock(
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        stubbing: StubFunction<T> = {}
+): T {
+    return getKoin().declareMock(qualifier, secondaryTypes, stubbing)
+}
+
+/**
+ * Declare & Stub a mock in Koin container for given type
+ *
+ * @author Christian Schmitz
+ */
+inline fun <reified T : Any> Koin.declareMock(
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        stubbing: StubFunction<T> = {}
+): T {
+    return _scopeRegistry.rootScope.declareMock(qualifier, secondaryTypes, stubbing)
+}
+
+/**
+ * Declare & Stub a mock in Koin container for given type and scope
+ *
+ * @author Christian Schmitz
+ */
+inline fun <reified T : Any> Scope.declareMock(
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        stubbing: StubFunction<T> = {}
+): T {
+    val mock = MockProvider.makeMock<T>()
+    declare(mock, qualifier, secondaryTypes, true)
+    mock.apply(stubbing)
+    return mock
+}
+
+/**
  * Declare & Create a mock in Koin container for given type
  *
  * @author Arnaud Giuliani
  */
 inline fun <reified T : Any> KoinTest.declareMock(
         qualifier: Qualifier? = null,
-        noinline stubbing: (StubFunction<T>)? = null
+        noinline stubbing: StubFunction<T>? = null
 ): T {
     val koin = GlobalContext.get()
     return koin.declareMock(qualifier, stubbing)
@@ -47,7 +89,7 @@ inline fun <reified T : Any> KoinTest.declareMock(
  */
 inline fun <reified T : Any> Koin.declareMock(
         qualifier: Qualifier? = null,
-        noinline stubbing: (StubFunction<T>)? = null
+        noinline stubbing: StubFunction<T>? = null
 ): T {
     return _scopeRegistry.rootScope.declareMock(qualifier, stubbing)
 }
@@ -59,7 +101,7 @@ inline fun <reified T : Any> Koin.declareMock(
  */
 inline fun <reified T : Any> Scope.declareMock(
         qualifier: Qualifier? = null,
-        noinline stubbing: (T.() -> Unit)? = null
+        noinline stubbing: StubFunction<T>? = null
 ): T {
     val clazz = T::class
     val foundDefinition: BeanDefinition<T> = getDefinition(clazz, qualifier)
@@ -69,7 +111,7 @@ inline fun <reified T : Any> Scope.declareMock(
 
 inline fun <reified T : Any> Scope.declareMockDefinition(
         foundDefinition: BeanDefinition<T>,
-        noinline stubbing: (T.() -> Unit)?
+        noinline stubbing: StubFunction<T>?
 ) {
     val definition: BeanDefinition<T> = foundDefinition.createMockedDefinition(_koin, stubbing)
     _scopeDefinition.save(definition, forceOverride = true)
@@ -103,10 +145,8 @@ inline fun <reified T : Any> BeanDefinition<T>.createMockedDefinition(koin: Koin
 
 inline fun <reified T> BeanDefinition<T>.createMock(noinline stubbing: (StubFunction<T>)? = null): T {
     val mock = MockProvider.makeMock<T>()
-    return stubbing?.run {
-        stubbing(mock)
-        mock
-    } ?: mock
+    stubbing?.invoke(mock)
+    return mock
 }
 
 typealias StubFunction<T> = T.() -> Unit
