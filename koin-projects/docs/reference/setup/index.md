@@ -9,7 +9,7 @@ Here are the current versions of Koin:
 koin_version= "2.0.1"
 
 // Latest unstable version
-koin_version= "2.1.0-alpha-3"
+koin_version= "2.1.0-alpha-4"
 ```
 
 ### Gradle dependencies
