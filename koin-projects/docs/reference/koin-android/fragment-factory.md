@@ -29,7 +29,7 @@ At start, in your KoinApplication declaration, use the `fragmentFactory()` keywo
 
 ## Declare & Inject your Fragment
 
-To declare a `Fragment` instance, just declare it as a `factory` in your Koin module and use *constructor injection*.
+To declare a `Fragment` instance, just declare it as a `fragment` in your Koin module and use *constructor injection*.
 
 Given a `Fragment` class:
 
@@ -43,7 +43,7 @@ class MyFragment(val myService: MyService) : Fragment(){
 ```kotlin
 val appModule = module {
     single { MyService() }
-    factory { MyFragment(get()) }
+    fragment { MyFragment(get()) }
 }
 ```
 
