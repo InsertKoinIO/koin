@@ -2,6 +2,7 @@ package org.koin.sample.androidx.di
 
 import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -51,7 +52,7 @@ val mvvmModule = module {
 
     scope(named<MVVMActivity>()) {
         scoped { Session() }
-        scoped { MVVMFragment(get()) }
+        fragment { MVVMFragment(get()) }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
         viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) ->
