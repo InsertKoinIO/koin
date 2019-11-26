@@ -15,10 +15,12 @@
  */
 package org.koin.core.definition
 
-import org.koin.core.instance.*
+import org.koin.core.Koin
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeDefinition
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -31,49 +33,23 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-class BeanDefinition<T>(
-        val qualifier: Qualifier? = null,
-        val scopeName: Qualifier? = null,
-        val primaryType: KClass<*>
+data class BeanDefinition<T>(
+    val scopeDefinition: ScopeDefinition,
+    val primaryType: KClass<*>,
+    val qualifier: Qualifier? = null,
+    val instanceFactory: InstanceFactoryBuilder,
+    val definition: Definition<T>,
+    val kind: Kind,
+    val secondaryTypes: List<KClass<*>> = listOf(),
+    val options: Options = Options(),
+    val properties: Properties = Properties(),
+    val callbacks: Callbacks<T> = Callbacks()
 ) {
-    // Main data
-    var secondaryTypes = arrayListOf<KClass<*>>()
-    var instance: DefinitionInstance<T>? = null
-    lateinit var definition: Definition<T>
-    var options = Options()
-    var properties = Properties()
-    lateinit var kind: Kind
-
-    // lifecycle
-    var onRelease: OnReleaseCallback<T>? = null
-    var onClose: OnCloseCallback<T>? = null
-
-    /**
-     *
-     */
-    fun hasScopeSet() = scopeName != null
-
-    /**
-     * Create the associated Instance Holder
-     */
-    fun createInstanceHolder() {
-        this.instance = when (kind) {
-            Kind.Single -> SingleDefinitionInstance(this)
-            Kind.Factory -> FactoryDefinitionInstance(this)
-            Kind.Scoped -> ScopeDefinitionInstance(this)
-        }
-    }
-
-    /**
-     * Resolve instance
-     */
-    fun <T> resolveInstance(context: InstanceContext) = instance?.get<T>(context)
-            ?: error("Definition without any InstanceContext - $this")
 
     override fun toString(): String {
         val defKind = kind.toString()
         val defName = qualifier?.let { "name:'$qualifier', " } ?: ""
-        val defScope = scopeName?.let { "scope:'$scopeName', " } ?: ""
+        val defScope = scopeDefinition.let { "scope:'${scopeDefinition.qualifier}', " }
         val defType = "primary_type:'${primaryType.getFullName()}'"
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
@@ -89,26 +65,38 @@ class BeanDefinition<T>(
 
         if (primaryType != other.primaryType) return false
         if (qualifier != other.qualifier) return false
+        if (scopeDefinition != other.scopeDefinition) return false
 
         return true
     }
 
+    fun canBind(primary: KClass<*>, secondary: KClass<*>): Boolean {
+        return primaryType == primary && secondaryTypes.contains(secondary)
+    }
+
+    val primaryKey: IndexKey by lazy { indexKey(primaryType, qualifier) }
+
+    val secondaryKeys: List<IndexKey> by lazy { secondaryTypes.map { indexKey(it, qualifier) } }
+
     override fun hashCode(): Int {
         var result = qualifier?.hashCode() ?: 0
         result = 31 * result + primaryType.hashCode()
+        result = 31 * result + scopeDefinition.hashCode()
         return result
     }
 
-    fun close() {
-        instance?.close()
-        instance = null
-    }
+}
+
+fun indexKey(clazz: KClass<*>, qualifier: Qualifier?): String {
+    return if (qualifier?.value != null) {
+        "${clazz.getFullName()}::${qualifier.value}"
+    } else clazz.getFullName()
 }
 
 enum class Kind {
-    Single, Factory, Scoped
+    Single, Factory
 }
 
+typealias IndexKey = String
 typealias Definition<T> = Scope.(DefinitionParameters) -> T
-typealias OnReleaseCallback<T> = (T?) -> Unit
-typealias OnCloseCallback<T> = (T?) -> Unit
+typealias InstanceFactoryBuilder = (Koin, BeanDefinition<*>) -> InstanceFactory<*>

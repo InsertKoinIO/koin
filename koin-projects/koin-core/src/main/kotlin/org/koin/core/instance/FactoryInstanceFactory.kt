@@ -15,6 +15,7 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 
 /**
@@ -22,18 +23,16 @@ import org.koin.core.definition.BeanDefinition
  *
  * @author Arnaud Giuliani
  */
-class FactoryDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) :
-        DefinitionInstance<T>(beanDefinition) {
-
-    override fun release(context: InstanceContext) {}
+class FactoryInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
+    InstanceFactory<T>(koin, beanDefinition) {
 
     override fun isCreated(context: InstanceContext): Boolean = false
 
-    override fun close() {
-        beanDefinition.onClose?.invoke(null)
+    override fun drop() {
+        beanDefinition.callbacks.onClose?.invoke(null)
     }
 
-    override fun <T> get(context: InstanceContext): T {
+    override fun get(context: InstanceContext): T {
         return create(context)
     }
 }

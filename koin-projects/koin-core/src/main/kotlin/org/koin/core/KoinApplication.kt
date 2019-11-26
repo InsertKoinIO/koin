@@ -15,7 +15,6 @@
  */
 package org.koin.core
 
-import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
@@ -32,8 +31,14 @@ class KoinApplication private constructor() {
 
     val koin = Koin()
 
-    internal fun loadDefaults() {
-        koin.scopeRegistry.loadDefaultScopes(koin)
+    internal fun create() {
+        koin.logger.debug("create ...")
+        koin.scopeRegistry.createRootScopeDefinition()
+    }
+
+    internal fun postCreate() {
+        koin.logger.debug("post create ...")
+        koin.scopeRegistry.createRootScope()
     }
 
     /**
@@ -57,23 +62,20 @@ class KoinApplication private constructor() {
      * @param modules
      */
     fun modules(modules: List<Module>): KoinApplication {
-        if (logger.isAt(Level.INFO)) {
+        if (koin.logger.isAt(Level.INFO)) {
             val duration = measureDuration {
-                loadModulesAndScopes(modules)
+                loadModules(modules)
             }
-            val count =
-                koin.rootScope.beanRegistry.getAllDefinitions().size + koin.scopeRegistry.getScopeSets().map { it.definitions.size }.sum()
-            logger.info("total $count registered definitions")
-            logger.info("load modules in $duration ms")
+            val count = koin.scopeRegistry.size()
+            koin.logger.info("load $count definitions in $duration ms")
         } else {
-            loadModulesAndScopes(modules)
+            loadModules(modules)
         }
         return this
     }
 
-    private fun loadModulesAndScopes(modules: Iterable<Module>) {
-        koin.rootScope.beanRegistry.loadModules(modules)
-        koin.scopeRegistry.loadScopes(modules)
+    private fun loadModules(modules: Iterable<Module>) {
+        koin.scopeRegistry.loadModules(modules)
     }
 
     /**
@@ -107,7 +109,7 @@ class KoinApplication private constructor() {
      * @param logger - logger
      */
     fun logger(logger: Logger): KoinApplication {
-        KoinApplication.logger = logger
+        koin.logger = logger
         return this
     }
 
@@ -115,46 +117,24 @@ class KoinApplication private constructor() {
      * Set Koin to use [PrintLogger], by default at [Level.INFO]
      */
     @JvmOverloads
-    fun printLogger(level: Level = Level.INFO) = this.logger(PrintLogger(level))
+    fun printLogger(level: Level = Level.INFO) = logger(PrintLogger(level))
 
     /**
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(): KoinApplication {
-        if (logger.isAt(Level.DEBUG)) {
+        if (koin.logger.isAt(Level.DEBUG)) {
             val duration = measureDuration {
                 koin.createEagerInstances()
             }
-            logger.debug("instances started in $duration ms")
+            koin.logger.debug("instances started in $duration ms")
         } else {
             koin.createEagerInstances()
         }
         return this
     }
 
-    /**
-     * Close all resources from Koin & remove Standalone Koin instance
-     */
-    fun close() = synchronized(this) {
-        koin.close()
-        if (logger.isAt(Level.INFO)) {
-            logger.info("stopped")
-        }
-    }
-
-    fun unloadModules(vararg modules: Module): KoinApplication {
-        return unloadModules(modules.toList())
-    }
-
-    fun unloadModules(modules: List<Module>): KoinApplication {
-        koin.rootScope.beanRegistry.unloadModules(modules)
-        koin.scopeRegistry.unloadScopedDefinitions(modules)
-        return this
-    }
-
     companion object {
-
-        var logger: Logger = EmptyLogger()
 
         /**
          * Create a new instance of KoinApplication
@@ -162,7 +142,7 @@ class KoinApplication private constructor() {
         @JvmStatic
         fun create(): KoinApplication {
             val app = KoinApplication()
-            app.loadDefaults()
+            app.create()
             return app
         }
     }

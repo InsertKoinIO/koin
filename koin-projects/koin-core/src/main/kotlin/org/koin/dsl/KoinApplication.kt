@@ -26,5 +26,6 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
 fun koinApplication(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.create()
     appDeclaration(koinApplication)
+    koinApplication.postCreate()
     return koinApplication
 }

@@ -2,7 +2,7 @@ package org.koin.core
 
 import org.junit.Assert.*
 import org.junit.Test
-import org.koin.core.error.NoScopeDefinitionFoundException
+import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -56,7 +56,7 @@ class ScopeAPITest {
         try {
             koin.createScope("myScope", named("a_scope"))
             fail()
-        } catch (e: NoScopeDefinitionFoundException) {
+        } catch (e: NoScopeDefFoundException) {
             e.printStackTrace()
         }
     }

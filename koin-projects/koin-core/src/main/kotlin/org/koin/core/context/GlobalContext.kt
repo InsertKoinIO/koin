@@ -15,9 +15,9 @@
  */
 package org.koin.core.context
 
+import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
-import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
 /**
@@ -28,38 +28,40 @@ import org.koin.dsl.KoinAppDeclaration
  */
 object GlobalContext {
 
-    internal var app: KoinApplication? = null
+    internal var koin: Koin? = null
 
     /**
      * StandAlone Koin App instance
      */
     @JvmStatic
-    fun get(): KoinApplication = app ?: error("KoinApplication has not been started")
+    fun get() = koin ?: error("KoinApplication has not been started")
 
     /**
      * StandAlone Koin App instance
      */
     @JvmStatic
-    fun getOrNull(): KoinApplication? = app
+    fun getOrNull() = koin
 
     /**
      * Start a Koin Application as StandAlone
      */
     @JvmStatic
-    fun start(koinApplication: KoinApplication) {
-        if (app != null) {
+    //TODO Lock
+    fun start(koinApplication: KoinApplication) = synchronized(this) {
+        if (koin != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }
-        app = koinApplication
+        koin = koinApplication.koin
     }
 
     /**
      * Stop current StandAlone Koin application
      */
     @JvmStatic
+    //TODO Lock
     fun stop() = synchronized(this) {
-        app?.close()
-        app = null
+        koin?.close()
+        koin = null
     }
 }
 
@@ -70,6 +72,7 @@ fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.create()
     GlobalContext.start(koinApplication)
     appDeclaration(koinApplication)
+    koinApplication.postCreate()
     koinApplication.createEagerInstances()
     return koinApplication
 }
@@ -79,44 +82,44 @@ fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
  */
 fun stopKoin() = GlobalContext.stop()
 
-/**
- * load Koin module in global Koin context
- */
-fun loadKoinModules(module: Module) {
-    GlobalContext.get().modules(listOf(module))
-}
-
-/**
- * load Koin modules in global Koin context
- */
-fun loadKoinModules(modules: List<Module>) {
-    GlobalContext.get().modules(modules)
-}
-
-/**
- * load Koin modules in global Koin context
- */
-fun loadKoinModules(vararg modules: Module) {
-    GlobalContext.get().modules(modules.toList())
-}
-
-/**
- * unload Koin modules from global Koin context
- */
-fun unloadKoinModules(module: Module) {
-    GlobalContext.get().unloadModules(listOf(module))
-}
-
-/**
- * unload Koin modules from global Koin context
- */
-fun unloadKoinModules(vararg modules: Module) {
-    GlobalContext.get().unloadModules(modules.toList())
-}
-
-/**
- * unload Koin modules from global Koin context
- */
-fun unloadKoinModules(modules: List<Module>) {
-    GlobalContext.get().unloadModules(modules)
-}
+///**
+// * load Koin module in global Koin context
+// */
+//fun loadKoinModules(module: Module) {
+//    GlobalContext.get().modules(listOf(module))
+//}
+//
+///**
+// * load Koin modules in global Koin context
+// */
+//fun loadKoinModules(modules: List<Module>) {
+//    GlobalContext.get().modules(modules)
+//}
+//
+///**
+// * load Koin modules in global Koin context
+// */
+//fun loadKoinModules(vararg modules: Module) {
+//    GlobalContext.get().modules(modules.toList())
+//}
+//
+///**
+// * unload Koin modules from global Koin context
+// */
+//fun unloadKoinModules(module: Module) {
+//    GlobalContext.get().unloadModules(listOf(module))
+//}
+//
+///**
+// * unload Koin modules from global Koin context
+// */
+//fun unloadKoinModules(vararg modules: Module) {
+//    GlobalContext.get().unloadModules(modules.toList())
+//}
+//
+///**
+// * unload Koin modules from global Koin context
+// */
+//fun unloadKoinModules(modules: List<Module>) {
+//    GlobalContext.get().unloadModules(modules)
+//}

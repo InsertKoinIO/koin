@@ -15,30 +15,39 @@
  */
 package org.koin.core.instance
 
+import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 
 /**
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class SingleDefinitionInstance<T>(beanDefinition: BeanDefinition<T>) : DefinitionInstance<T>(beanDefinition) {
+class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
+    InstanceFactory<T>(koin, beanDefinition) {
 
     private var value: T? = null
 
     override fun isCreated(context: InstanceContext): Boolean = (value != null)
 
-    override fun release(context: InstanceContext) {}
-
-    override fun close() {
-        beanDefinition.onClose?.invoke(value)
+    override fun drop() {
+        beanDefinition.callbacks.onClose?.invoke(value)
         value = null
     }
 
+    override fun create(context: InstanceContext): T {
+        //TODO Instance Creation Lock
+        return synchronized(this) {
+            if (value == null) {
+                super.create(context)
+            } else value ?: error("Single instance created couldn't return value")
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
-    override fun <T> get(context: InstanceContext): T {
+    override fun get(context: InstanceContext): T {
         if (value == null) {
             value = create(context)
         }
-        return value as? T ?: error("Single instance created couldn't return value")
+        return value ?: error("Single instance created couldn't return value")
     }
 }

@@ -18,46 +18,44 @@
 package org.koin.core.instance
 
 import org.koin.core.Koin
-import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.emptyParametersHolder
-import org.koin.core.scope.Scope
 
 /**
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
+abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: BeanDefinition<T>) {
 
     /**
      * Retrieve an instance
      * @param context
      * @return T
      */
-    abstract fun <T> get(context: InstanceContext): T
+    abstract fun get(context: InstanceContext): T
 
     /**
      * Create an instance
      * @param context
      * @return T
      */
-    open fun <T> create(context: InstanceContext): T {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("| create instance for $beanDefinition")
+    open fun create(context: InstanceContext): T {
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("| create instance for $beanDefinition")
         }
         try {
             val parameters: DefinitionParameters = context.parameters
-            val result = beanDefinition.definition(context.scope ?: error("Can't execute definition instance while this context is not registered against any Koin instance"), parameters)
-            return result as T
+            return beanDefinition.definition.invoke(
+                context.scope,
+                parameters
+            )
         } catch (e: Exception) {
             val stack =
-                    e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                            .joinToString(ERROR_SEPARATOR)
-            logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
+                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                    .joinToString(ERROR_SEPARATOR)
+            _koin.logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }
@@ -68,28 +66,11 @@ abstract class DefinitionInstance<T>(val beanDefinition: BeanDefinition<T>) {
     abstract fun isCreated(context: InstanceContext): Boolean
 
     /**
-     * Release the held instance (if hold)
+     * Drop the instance
      */
-    abstract fun release(context: InstanceContext)
-
-    /**
-     * close the instance allocation from registry
-     */
-    abstract fun close()
+    abstract fun drop()
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }
-}
-
-/**
- * Instance resolution Context
- * Help support DefinitionContext & DefinitionParameters when resolving definition function
- */
-class InstanceContext(
-    val koin: Koin? = null,
-    val scope: Scope? = koin?.rootScope,
-    private val _parameters: ParametersDefinition? = null
-) {
-    val parameters: DefinitionParameters = _parameters?.invoke() ?: emptyParametersHolder()
 }

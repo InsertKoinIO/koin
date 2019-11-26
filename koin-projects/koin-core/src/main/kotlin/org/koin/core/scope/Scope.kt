@@ -16,28 +16,29 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.KoinApplication
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.indexKey
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.registry.BeanRegistry
+import org.koin.core.registry.InstanceRegistry
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 data class Scope(
-        val id: ScopeID,
-        val isRoot: Boolean = false,
-        internal val _koin: Koin
+    val id: ScopeID,
+    val scopeDefinition: ScopeDefinition,
+    val _koin: Koin
 ) {
-    val beanRegistry = BeanRegistry()
-    var scopeDefinition: ScopeDefinition? = null
+    //    internal val beanRegistry = BeanRegistry()
+    private val instanceRegistry = InstanceRegistry(_koin, this)
     private val callbacks = arrayListOf<ScopeCallback>()
+
+    internal fun create() {
+        instanceRegistry.create(scopeDefinition.definitions)
+    }
 
     /**
      * Lazy inject a Koin instance
@@ -49,10 +50,10 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> inject(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, parameters) }
+        lazy { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -64,10 +65,10 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> injectOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy { getOrNull<T>(qualifier, parameters) }
+        lazy { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -77,8 +78,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -93,13 +94,13 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> getOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(T::class, qualifier, parameters)
         } catch (e: Exception) {
-            KoinApplication.logger.error("Can't get instance for ${T::class.getFullName()}")
+            _koin.logger.error("Can't get instance for ${T::class.getFullName()}")
             null
         }
     }
@@ -113,16 +114,16 @@ data class Scope(
      * @return instance of type T
      */
     fun <T> get(
-            clazz: KClass<*>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?
     ): T = synchronized(this) {
-        return if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
+        return if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
-            KoinApplication.logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+            _koin.logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
@@ -139,17 +140,17 @@ data class Scope(
      */
     @JvmOverloads
     fun <T> get(
-            clazz: Class<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: Class<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T = synchronized(this) {
         val kClass = clazz.kotlin
-        return if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
+        return if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, kClass, parameters)
             }
-            KoinApplication.logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
+            _koin.logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, kClass, parameters)
@@ -157,30 +158,18 @@ data class Scope(
     }
 
     private fun <T> resolveInstance(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            parameters: ParametersDefinition?
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        parameters: ParametersDefinition?
     ): T {
-        val definition = findDefinition(qualifier, clazz)
-        return definition.resolveInstance(InstanceContext(this._koin, this, parameters))
-    }
-
-    private fun findDefinition(qualifier: Qualifier?, clazz: KClass<*>): BeanDefinition<*> {
-        return beanRegistry.findDefinitionOrNull(qualifier, clazz) ?: if (isRoot) {
-            throw NoBeanDefFoundException("No definition for '${clazz.getFullName()}' with qualifier '$qualifier' has been found. Check your module definitions.")
-        } else {
-            _koin.rootScope.findDefinition(qualifier, clazz)
-        }
+        //TODO Resolve in Root or link
+        return instanceRegistry.resolveInstance(indexKey(clazz, qualifier), parameters)
+            ?: throw NoBeanDefFoundException("No definition found for class:'$clazz' & qualifier:'$qualifier'. Check your definitions!")
     }
 
     internal fun createEagerInstances() {
-        if (isRoot) {
-            val definitions = beanRegistry.findAllCreatedAtStartDefinition()
-            if (definitions.isNotEmpty()) {
-                definitions.forEach {
-                    it.resolveInstance<Any>(InstanceContext(koin = this._koin, scope = this))
-                }
-            }
+        if (scopeDefinition.isRoot) {
+            instanceRegistry.createEagerInstances()
         }
     }
 
@@ -195,19 +184,13 @@ data class Scope(
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T> declare(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ) {
-        val definition = if (isRoot) {
-            DefinitionFactory.createSingle(qualifier) { instance }
-        } else {
-            DefinitionFactory.createScoped(qualifier, scopeName = scopeDefinition?.qualifier) { instance }
-        }
-        secondaryTypes?.let { definition.secondaryTypes.addAll(it) }
-        definition.options.override = override
-        beanRegistry.saveDefinition(definition)
+        //TODO Lock
+        TODO("declare a definition on fly")
     }
 
     /**
@@ -233,7 +216,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    inline fun <reified T> getAll(): List<T> = getAll(T::class)
+    inline fun <reified T : Any> getAll(): List<T> = getAll(T::class)
 
     /**
      * Get a all instance for given class (in primary or secondary type)
@@ -241,8 +224,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T> getAll(clazz: KClass<*>): List<T> = beanRegistry.getDefinitionsForClass(clazz)
-            .map { it.instance!!.get<T>((InstanceContext(this._koin, this))) }
+    fun <T : Any> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -263,16 +245,13 @@ data class Scope(
      * @return instance of type S
      */
     fun <S> bind(
-            primaryType: KClass<*>,
-            secondaryType: KClass<*>,
-            parameters: ParametersDefinition?
+        primaryType: KClass<*>,
+        secondaryType: KClass<*>,
+        parameters: ParametersDefinition?
     ): S {
-        return beanRegistry.getAllDefinitions().first {
-            it.primaryType == primaryType && it.secondaryTypes.contains(secondaryType)
-        }
-                .instance!!.get((InstanceContext(getKoin(), this, parameters))) as S
+        return instanceRegistry.bind(primaryType, secondaryType, parameters)
+            ?: throw NoBeanDefFoundException("No definition found to bind class:'$primaryType' & secondary type:'$secondaryType'. Check your definitions!")
     }
-
 
     /**
      * Retrieve a property
@@ -292,35 +271,24 @@ data class Scope(
      * @param key
      */
     fun <T> getProperty(key: String): T = _koin.getProperty(key)
-            ?: throw MissingPropertyException("Property '$key' not found")
-
-    internal fun declareDefinitionsFromScopeSet() {
-        scopeDefinition.let {
-            it?.definitions?.forEach { definition ->
-                beanRegistry.saveDefinition(definition)
-                definition.createInstanceHolder()
-            }
-        }
-    }
+        ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
-        if (KoinApplication.logger.isAt(Level.DEBUG)) {
-            KoinApplication.logger.info("closing scope:'$id'")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.info("closing scope:'$id'")
         }
         // call on close from callbacks
         callbacks.forEach { it.onScopeClose(this) }
         callbacks.clear()
 
-        scopeDefinition?.release(this)
-        beanRegistry.close()
-        _koin.deleteScope(this.id)
+        instanceRegistry.close()
     }
 
     override fun toString(): String {
-        val scopeDef = scopeDefinition.let { ",set:'${it?.qualifier}'" }
+        val scopeDef = scopeDefinition.let { ",set:'${it.qualifier}'" }
         return "Scope[id:'$id'$scopeDef]"
     }
 }
