@@ -16,7 +16,6 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
-import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
 import org.koin.ext.isFloat
@@ -32,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class PropertyRegistry {
+class PropertyRegistry(val _koin: Koin) {
 
     private val values: MutableMap<String, Any> = ConcurrentHashMap()
 
@@ -41,8 +40,8 @@ class PropertyRegistry {
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("load ${properties.size} properties")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load ${properties.size} properties")
         }
 
         values.putAll(properties)
@@ -52,8 +51,8 @@ class PropertyRegistry {
      *Save properties values into PropertyRegister
      */
     fun saveProperties(properties: Properties) {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("load ${properties.size} properties")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load ${properties.size} properties")
         }
 
         val propertiesMapValues = properties.toMap() as Map<String, String>
@@ -86,13 +85,13 @@ class PropertyRegistry {
      * @param fileName
      */
     fun loadPropertiesFromFile(fileName: String) {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("load properties from $fileName")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load properties from $fileName")
         }
         val content = Koin::class.java.getResource(fileName)?.readText()
         if (content != null) {
-            if (logger.isAt(Level.INFO)) {
-                logger.info("loaded properties from file:'$fileName'")
+            if (_koin.logger.isAt(Level.INFO)) {
+                _koin.logger.info("loaded properties from file:'$fileName'")
             }
             val properties = readDataFromFile(content)
             saveProperties(properties)
@@ -111,8 +110,8 @@ class PropertyRegistry {
      * Load properties from environment
      */
     fun loadEnvironmentProperties() {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("load properties from environment")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load properties from environment")
         }
         val sysProperties = System.getProperties()
         saveProperties(sysProperties)

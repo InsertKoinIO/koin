@@ -15,6 +15,7 @@
  */
 package org.koin.dsl
 
+import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Kind
@@ -47,7 +48,7 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
             scopeDefinition,
             T::class,
             qualifier,
-            { beanDef: BeanDefinition<T> -> SingleInstanceFactory(beanDef) },
+            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
             definition,
             Kind.Single,
             options = Options(false, override)
@@ -65,7 +66,7 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
             scopeDefinition,
             T::class,
             qualifier,
-            { beanDef: BeanDefinition<T> -> FactoryInstanceFactory(beanDef) },
+            { koin: Koin, beanDef: BeanDefinition<*> -> FactoryInstanceFactory(koin, beanDef) },
             definition,
             Kind.Factory,
             options = Options(false, override)

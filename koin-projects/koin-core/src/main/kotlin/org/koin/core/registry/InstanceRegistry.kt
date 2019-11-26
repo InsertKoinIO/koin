@@ -42,6 +42,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     internal fun <T> resolveInstance(indexKey: IndexKey, parameters: ParametersDefinition?): T? {
         return _instances[indexKey]?.get(defaultInstanceContext(parameters)) as? T
     }

@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
  */
 class Koin {
     val scopeRegistry = ScopeRegistry(this)
-    val propertyRegistry = PropertyRegistry()
+    val propertyRegistry = PropertyRegistry(this)
     var logger: Logger = EmptyLogger()
 
     /**
@@ -132,7 +132,7 @@ class Koin {
      *
      * @return list of instances of type T
      */
-    inline fun <reified T> getAll(): List<T> = scopeRegistry.rootScope.getAll()
+    inline fun <reified T : Any> getAll(): List<T> = scopeRegistry.rootScope.getAll()
 
     /**
      * Get instance of primary type P and secondary type S
