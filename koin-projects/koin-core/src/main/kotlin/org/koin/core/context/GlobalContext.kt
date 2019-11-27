@@ -69,10 +69,10 @@ object GlobalContext {
  * Start a Koin Application as StandAlone
  */
 fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
-    val koinApplication = KoinApplication.create()
+    val koinApplication = KoinApplication.init()
     GlobalContext.start(koinApplication)
     appDeclaration(koinApplication)
-    koinApplication.postCreate()
+    koinApplication.create()
     koinApplication.createEagerInstances()
     return koinApplication
 }

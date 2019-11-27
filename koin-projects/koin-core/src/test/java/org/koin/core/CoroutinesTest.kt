@@ -1,18 +1,13 @@
 package org.koin.core
 
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
-import org.koin.test.getDefinition
-import org.koin.test.hasBeenCreated
+import org.koin.test.getInstanceFactory
 import kotlin.random.Random
 
 class CoroutinesTest {
@@ -44,13 +39,13 @@ class CoroutinesTest {
         })
         jobs.awaitAll()
 
-        val a = app.getDefinition(Simple.ComponentA::class)!!
-        val b = app.getDefinition(Simple.ComponentA::class)!!
-        val c = app.getDefinition(Simple.ComponentA::class)!!
+        val a = app.getInstanceFactory(Simple.ComponentA::class)!!
+        val b = app.getInstanceFactory(Simple.ComponentA::class)!!
+        val c = app.getInstanceFactory(Simple.ComponentA::class)!!
 
-        Assert.assertTrue(a.hasBeenCreated())
-        Assert.assertTrue(b.hasBeenCreated())
-        Assert.assertTrue(c.hasBeenCreated())
+        Assert.assertTrue(a.isCreated())
+        Assert.assertTrue(b.isCreated())
+        Assert.assertTrue(c.isCreated())
 
         stopKoin()
     }

@@ -31,7 +31,10 @@ import kotlin.reflect.KClass
  * @param clazz
  */
 infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
-    return copy(secondaryTypes = secondaryTypes + clazz)
+    val copy = copy(secondaryTypes = secondaryTypes + clazz)
+    scopeDefinition.remove(this)
+    scopeDefinition.save(copy)
+    return copy
 }
 
 /**
@@ -46,12 +49,18 @@ inline fun <reified T> BeanDefinition<*>.bind(): BeanDefinition<*> {
  * @param classes
  */
 infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> {
-    return copy(secondaryTypes = secondaryTypes + classes)
+    val copy = copy(secondaryTypes = secondaryTypes + classes)
+    scopeDefinition.remove(this)
+    scopeDefinition.save(copy)
+    return copy
 }
 
 /**
  * Callback when closing instance
  */
 infix fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>): BeanDefinition<T> {
-    return copy(callbacks = Callbacks(onClose))
+    val copy = copy(callbacks = Callbacks(onClose))
+    scopeDefinition.remove(this)
+    scopeDefinition.save(copy)
+    return copy
 }

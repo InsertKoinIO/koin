@@ -2,6 +2,7 @@ package org.koin.core
 
 import org.junit.Assert.*
 import org.junit.Test
+import org.koin.Simple
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.qualifier.named
@@ -15,10 +16,10 @@ class ScopeAPITest {
     val scopeKey = named("KEY")
     val koin = koinApplication {
         modules(
-                module {
-                    scope(scopeKey) {
-                    }
+            module {
+                scope(scopeKey) {
                 }
+            }
         )
     }.koin
 
@@ -85,6 +86,19 @@ class ScopeAPITest {
         scope.close()
         try {
             koin.getScope("myScope1")
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `reuse a closed scope`() {
+
+        val scope = koin.createScope("myScope1", scopeKey)
+        scope.close()
+        try {
+            scope.get<Simple.ComponentA>()
             fail()
         } catch (e: Exception) {
             e.printStackTrace()

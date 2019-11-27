@@ -15,13 +15,10 @@
  */
 package org.koin.core.module
 
-import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
-import org.koin.core.definition.Kind
+import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
-import org.koin.core.instance.FactoryInstanceFactory
-import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.ScopeDSL
@@ -33,7 +30,7 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  */
 class Module(
-    val createdAtStart: Boolean,
+    val createAtStart: Boolean,
     val override: Boolean
 ) {
     val rootScope: ScopeDefinition = ScopeDefinition.rootDefinition()
@@ -64,21 +61,16 @@ class Module(
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(
-            rootScope,
-            T::class,
+        return Definitions.saveSingle(
             qualifier,
-            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
             definition,
-            Kind.Single,
-            options = makeOptions(createdAtStart, override)
+            rootScope,
+            makeOptions(override, createdAtStart)
         )
-        rootScope.save(beanDefinition)
-        return beanDefinition
     }
 
     fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
-        Options(this.createdAtStart || createdAtStart, this.override || override)
+        Options(this.createAtStart || createdAtStart, this.override || override)
 
     /**
      * Declare a Factory definition
@@ -91,17 +83,7 @@ class Module(
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(
-            rootScope,
-            T::class,
-            qualifier,
-            { koin: Koin, beanDef: BeanDefinition<*> -> FactoryInstanceFactory(koin, beanDef) },
-            definition,
-            Kind.Factory,
-            options = makeOptions(override)
-        )
-        rootScope.save(beanDefinition)
-        return beanDefinition
+        return Definitions.saveFactory(qualifier, definition, rootScope, makeOptions(override))
     }
 
     /**

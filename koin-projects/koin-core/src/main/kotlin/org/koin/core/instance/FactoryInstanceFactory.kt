@@ -26,7 +26,7 @@ import org.koin.core.definition.BeanDefinition
 class FactoryInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
     InstanceFactory<T>(koin, beanDefinition) {
 
-    override fun isCreated(context: InstanceContext): Boolean = false
+    override fun isCreated(): Boolean = false
 
     override fun drop() {
         beanDefinition.callbacks.onClose?.invoke(null)

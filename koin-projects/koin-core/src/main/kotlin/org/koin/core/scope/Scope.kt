@@ -17,6 +17,7 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.definition.indexKey
+import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
@@ -29,15 +30,17 @@ import kotlin.reflect.KClass
 
 data class Scope(
     val id: ScopeID,
-    val scopeDefinition: ScopeDefinition,
+    val _scopeDefinition: ScopeDefinition,
     val _koin: Koin
 ) {
-    //    internal val beanRegistry = BeanRegistry()
-    private val instanceRegistry = InstanceRegistry(_koin, this)
-    private val callbacks = arrayListOf<ScopeCallback>()
+    var _linkedScope: List<Scope> = emptyList()
+    val _instanceRegistry = InstanceRegistry(_koin, this)
+    internal val _callbacks = arrayListOf<ScopeCallback>()
+    var closed: Boolean = false
 
-    internal fun create() {
-        instanceRegistry.create(scopeDefinition.definitions)
+    internal fun create(rootScope: Scope? = null) {
+        _instanceRegistry.create(_scopeDefinition.definitions)
+        rootScope?.let { _linkedScope = listOf(it) }
     }
 
     /**
@@ -97,10 +100,27 @@ data class Scope(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
     ): T? {
+        return getOrNull(T::class, qualifier, parameters)
+    }
+
+    /**
+     * Get a Koin instance if available
+     * @param qualifier
+     * @param scope
+     * @param parameters
+     *
+     * @return instance of type T or null
+     */
+    @JvmOverloads
+    fun <T> getOrNull(
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
+    ): T? {
         return try {
-            get(T::class, qualifier, parameters)
+            get(clazz, qualifier, parameters)
         } catch (e: Exception) {
-            _koin.logger.error("Can't get instance for ${T::class.getFullName()}")
+            _koin._logger.error("Can't get instance for ${clazz.getFullName()}")
             null
         }
     }
@@ -118,12 +138,12 @@ data class Scope(
         qualifier: Qualifier?,
         parameters: ParametersDefinition?
     ): T = synchronized(this) {
-        return if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
+        return if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
-            _koin.logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+            _koin._logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
@@ -145,12 +165,12 @@ data class Scope(
         parameters: ParametersDefinition? = null
     ): T = synchronized(this) {
         val kClass = clazz.kotlin
-        return if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
+        return if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, kClass, parameters)
             }
-            _koin.logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
+            _koin._logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, kClass, parameters)
@@ -162,14 +182,45 @@ data class Scope(
         clazz: KClass<*>,
         parameters: ParametersDefinition?
     ): T {
+        if (closed) {
+            throw ClosedScopeException("Scope '$id' is closed")
+        }
         //TODO Resolve in Root or link
-        return instanceRegistry.resolveInstance(indexKey(clazz, qualifier), parameters)
-            ?: throw NoBeanDefFoundException("No definition found for class:'$clazz' & qualifier:'$qualifier'. Check your definitions!")
+        val indexKey = indexKey(clazz, qualifier)
+        return _instanceRegistry.resolveInstance(indexKey, parameters)
+            ?: findInOtherScope<T>(clazz, qualifier, parameters)
+            ?: throwDefinitionNotFound(qualifier, clazz)
+    }
+
+    private fun <T> findInOtherScope(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?
+    ): T? {
+        return _linkedScope.firstOrNull { scope ->
+            scope.getOrNull<T>(
+                clazz,
+                qualifier,
+                parameters
+            ) != null
+        }?.get(
+            clazz,
+            qualifier,
+            parameters
+        )
+    }
+
+    private fun throwDefinitionNotFound(
+        qualifier: Qualifier?,
+        clazz: KClass<*>
+    ): Nothing {
+        val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
+        throw NoBeanDefFoundException("No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
     }
 
     internal fun createEagerInstances() {
-        if (scopeDefinition.isRoot) {
-            instanceRegistry.createEagerInstances()
+        if (_scopeDefinition.isRoot) {
+            _instanceRegistry.createEagerInstances()
         }
     }
 
@@ -188,9 +239,9 @@ data class Scope(
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,
         override: Boolean = false
-    ) {
-        //TODO Lock
-        TODO("declare a definition on fly")
+    ) = synchronized(this) {
+        val definition = _scopeDefinition.declare(instance, qualifier, secondaryTypes, override)
+        _instanceRegistry.saveDefinition(definition, override = true)
     }
 
     /**
@@ -208,7 +259,7 @@ data class Scope(
      * Register a callback for this Scope Instance
      */
     fun registerCallback(callback: ScopeCallback) {
-        callbacks += callback
+        _callbacks += callback
     }
 
     /**
@@ -224,7 +275,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T : Any> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
+    fun <T : Any> getAll(clazz: KClass<*>): List<T> = _instanceRegistry.getAll(clazz)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -249,8 +300,8 @@ data class Scope(
         secondaryType: KClass<*>,
         parameters: ParametersDefinition?
     ): S {
-        return instanceRegistry.bind(primaryType, secondaryType, parameters)
-            ?: throw NoBeanDefFoundException("No definition found to bind class:'$primaryType' & secondary type:'$secondaryType'. Check your definitions!")
+        return _instanceRegistry.bind(primaryType, secondaryType, parameters)
+            ?: throw NoBeanDefFoundException("No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
     }
 
     /**
@@ -277,18 +328,20 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.info("closing scope:'$id'")
+        closed = true
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.info("closing scope:'$id'")
         }
         // call on close from callbacks
-        callbacks.forEach { it.onScopeClose(this) }
-        callbacks.clear()
+        _callbacks.forEach { it.onScopeClose(this) }
+        _callbacks.clear()
 
-        instanceRegistry.close()
+        _instanceRegistry.close()
+        _koin._scopeRegistry.deleteScope(this)
     }
 
     override fun toString(): String {
-        val scopeDef = scopeDefinition.let { ",set:'${it.qualifier}'" }
+        val scopeDef = _scopeDefinition.let { ",set:'${it.qualifier}'" }
         return "Scope[id:'$id'$scopeDef]"
     }
 }

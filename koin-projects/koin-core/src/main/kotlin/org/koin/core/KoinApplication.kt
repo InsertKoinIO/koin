@@ -31,14 +31,15 @@ class KoinApplication private constructor() {
 
     val koin = Koin()
 
-    internal fun create() {
-        koin.logger.debug("create ...")
-        koin.scopeRegistry.createRootScopeDefinition()
+    internal fun init() {
+        koin._logger.debug("create ...")
+        koin._scopeRegistry.createRootScopeDefinition()
     }
 
-    internal fun postCreate() {
-        koin.logger.debug("post create ...")
-        koin.scopeRegistry.createRootScope()
+    fun create(): KoinApplication {
+        koin._logger.debug("post create ...")
+        koin._scopeRegistry.createRootScope()
+        return this
     }
 
     /**
@@ -62,12 +63,12 @@ class KoinApplication private constructor() {
      * @param modules
      */
     fun modules(modules: List<Module>): KoinApplication {
-        if (koin.logger.isAt(Level.INFO)) {
+        if (koin._logger.isAt(Level.INFO)) {
             val duration = measureDuration {
                 loadModules(modules)
             }
-            val count = koin.scopeRegistry.size()
-            koin.logger.info("load $count definitions in $duration ms")
+            val count = koin._scopeRegistry.size()
+            koin._logger.info("load $count definitions in $duration ms")
         } else {
             loadModules(modules)
         }
@@ -75,7 +76,7 @@ class KoinApplication private constructor() {
     }
 
     private fun loadModules(modules: Iterable<Module>) {
-        koin.scopeRegistry.loadModules(modules)
+        koin._scopeRegistry.loadModules(modules)
     }
 
     /**
@@ -83,7 +84,7 @@ class KoinApplication private constructor() {
      * @param values
      */
     fun properties(values: Map<String, Any>): KoinApplication {
-        koin.propertyRegistry.saveProperties(values)
+        koin._propertyRegistry.saveProperties(values)
         return this
     }
 
@@ -92,7 +93,7 @@ class KoinApplication private constructor() {
      * @param fileName
      */
     fun fileProperties(fileName: String = "/koin.properties"): KoinApplication {
-        koin.propertyRegistry.loadPropertiesFromFile(fileName)
+        koin._propertyRegistry.loadPropertiesFromFile(fileName)
         return this
     }
 
@@ -100,7 +101,7 @@ class KoinApplication private constructor() {
      * Load properties from environment
      */
     fun environmentProperties(): KoinApplication {
-        koin.propertyRegistry.loadEnvironmentProperties()
+        koin._propertyRegistry.loadEnvironmentProperties()
         return this
     }
 
@@ -109,7 +110,7 @@ class KoinApplication private constructor() {
      * @param logger - logger
      */
     fun logger(logger: Logger): KoinApplication {
-        koin.logger = logger
+        koin._logger = logger
         return this
     }
 
@@ -123,15 +124,19 @@ class KoinApplication private constructor() {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(): KoinApplication {
-        if (koin.logger.isAt(Level.DEBUG)) {
+        if (koin._logger.isAt(Level.DEBUG)) {
             val duration = measureDuration {
                 koin.createEagerInstances()
             }
-            koin.logger.debug("instances started in $duration ms")
+            koin._logger.debug("instances started in $duration ms")
         } else {
             koin.createEagerInstances()
         }
         return this
+    }
+
+    fun close() {
+        koin.close()
     }
 
     companion object {
@@ -140,9 +145,9 @@ class KoinApplication private constructor() {
          * Create a new instance of KoinApplication
          */
         @JvmStatic
-        fun create(): KoinApplication {
+        fun init(): KoinApplication {
             val app = KoinApplication()
-            app.create()
+            app.init()
             return app
         }
     }

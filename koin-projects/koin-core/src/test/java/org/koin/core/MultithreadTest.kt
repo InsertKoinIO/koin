@@ -5,8 +5,7 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.getDefinition
-import org.koin.test.hasBeenCreated
+import org.koin.test.getInstanceFactory
 import kotlin.random.Random
 
 const val MAX_TIME = 1000L
@@ -40,17 +39,17 @@ class MultithreadTest {
 
         threads.forEach { it.start() }
 
-        val a = app.getDefinition(Simple.ComponentA::class)!!
-        val b = app.getDefinition(Simple.ComponentA::class)!!
-        val c = app.getDefinition(Simple.ComponentA::class)!!
+        val a = app.getInstanceFactory(Simple.ComponentA::class)!!
+        val b = app.getInstanceFactory(Simple.ComponentA::class)!!
+        val c = app.getInstanceFactory(Simple.ComponentA::class)!!
 
-        while (!a.hasBeenCreated() && !b.hasBeenCreated() && !c.hasBeenCreated()) {
+        while (!a.isCreated() && !b.isCreated() && !c.isCreated()) {
             Thread.sleep(100L)
         }
 
-        assertTrue(a.hasBeenCreated())
-        assertTrue(b.hasBeenCreated())
-        assertTrue(c.hasBeenCreated())
+        assertTrue(a.isCreated())
+        assertTrue(b.isCreated())
+        assertTrue(c.isCreated())
         app.close()
     }
 

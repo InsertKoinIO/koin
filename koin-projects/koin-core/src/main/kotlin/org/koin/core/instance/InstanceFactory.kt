@@ -42,8 +42,8 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
      * @return T
      */
     open fun create(context: InstanceContext): T {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("| create instance for $beanDefinition")
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("| create instance for $beanDefinition")
         }
         try {
             val parameters: DefinitionParameters = context.parameters
@@ -55,7 +55,7 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
             val stack =
                 e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
                     .joinToString(ERROR_SEPARATOR)
-            _koin.logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
+            _koin._logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }
@@ -63,7 +63,7 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
     /**
      * Is instance created
      */
-    abstract fun isCreated(context: InstanceContext): Boolean
+    abstract fun isCreated(): Boolean
 
     /**
      * Drop the instance

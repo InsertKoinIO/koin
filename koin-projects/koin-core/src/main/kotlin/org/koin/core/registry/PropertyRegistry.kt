@@ -33,26 +33,26 @@ import java.util.concurrent.ConcurrentHashMap
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(val _koin: Koin) {
 
-    private val values: MutableMap<String, Any> = ConcurrentHashMap()
+    private val _values: MutableMap<String, Any> = ConcurrentHashMap()
 
     /**
      * saveProperty all properties to registry
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("load ${properties.size} properties")
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("load ${properties.size} properties")
         }
 
-        values.putAll(properties)
+        _values.putAll(properties)
     }
 
     /**
      *Save properties values into PropertyRegister
      */
     fun saveProperties(properties: Properties) {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("load ${properties.size} properties")
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("load ${properties.size} properties")
         }
 
         val propertiesMapValues = properties.toMap() as Map<String, String>
@@ -69,7 +69,7 @@ class PropertyRegistry(val _koin: Koin) {
      * save a property (key,value)
      */
     internal fun <T : Any> saveProperty(key: String, value: T) {
-        values[key] = value
+        _values[key] = value
     }
 
     /**
@@ -77,7 +77,7 @@ class PropertyRegistry(val _koin: Koin) {
      * @param key
      */
     fun <T> getProperty(key: String): T? {
-        return values[key] as? T?
+        return _values[key] as? T?
     }
 
     /**
@@ -85,13 +85,13 @@ class PropertyRegistry(val _koin: Koin) {
      * @param fileName
      */
     fun loadPropertiesFromFile(fileName: String) {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("load properties from $fileName")
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("load properties from $fileName")
         }
         val content = Koin::class.java.getResource(fileName)?.readText()
         if (content != null) {
-            if (_koin.logger.isAt(Level.INFO)) {
-                _koin.logger.info("loaded properties from file:'$fileName'")
+            if (_koin._logger.isAt(Level.INFO)) {
+                _koin._logger.info("loaded properties from file:'$fileName'")
             }
             val properties = readDataFromFile(content)
             saveProperties(properties)
@@ -110,8 +110,8 @@ class PropertyRegistry(val _koin: Koin) {
      * Load properties from environment
      */
     fun loadEnvironmentProperties() {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("load properties from environment")
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("load properties from environment")
         }
         val sysProperties = System.getProperties()
         saveProperties(sysProperties)
@@ -121,6 +121,6 @@ class PropertyRegistry(val _koin: Koin) {
     }
 
     fun close() {
-        values.clear()
+        _values.clear()
     }
 }

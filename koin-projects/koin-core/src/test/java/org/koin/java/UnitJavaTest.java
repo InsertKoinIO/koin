@@ -12,7 +12,6 @@ import kotlin.Lazy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.koin.core.context.GlobalContext.start;
-import static org.koin.core.context.GlobalContext.stop;
 import static org.koin.core.context.GlobalContextKt.stopKoin;
 import static org.koin.core.qualifier.QualifierKt.named;
 import static org.koin.java.KoinJavaComponent.get;
@@ -24,9 +23,11 @@ public class UnitJavaTest {
 
     @Before
     public void before() {
-        KoinApplication koinApp = KoinApplication.create()
+        KoinApplication koinApp = KoinApplication
+                .init()
                 .printLogger()
-                .modules(koinModule);
+                .modules(koinModule)
+                .create();
 
         start(koinApp);
     }

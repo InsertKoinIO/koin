@@ -34,18 +34,20 @@ import org.koin.core.scope.ScopeID
 class ScopeRegistry(private val _koin: Koin) {
 
     //TODO Lock - ConcurrentHashMap
-    private val _definitions = HashMap<QualifierValue, ScopeDefinition>()
-    val definitions: Map<QualifierValue, ScopeDefinition>
-        get() = _definitions
+    private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()
+    val scopeDefinitions: Map<QualifierValue, ScopeDefinition>
+        get() = _scopeDefinitions
 
-    private val _instances = HashMap<ScopeID, Scope>()
-    val instances: Map<ScopeID, Scope>
-        get() = _instances
+    private val _scopes = HashMap<ScopeID, Scope>()
+    val scopes: Map<ScopeID, Scope>
+        get() = _scopes
 
-    lateinit var rootScopeDefinition: ScopeDefinition
-    lateinit var rootScope: Scope
+    var _rootScopeDefinition: ScopeDefinition? = null
+    var _rootScope: Scope? = null
+    val rootScope: Scope
+        get() = _rootScope ?: error("No root scoped initialized")
 
-    fun size() = definitions.values.map { it.size() }.sum()
+    fun size() = scopeDefinitions.values.map { it.size() }.sum()
 
     internal fun loadModules(modules: Iterable<Module>) {
         modules.forEach { module ->
@@ -55,7 +57,8 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun loadModule(module: Module) {
-        declareDefinitions(module.otherScopes + module.rootScope)
+        declareDefinitions(module.rootScope)
+        declareDefinitions(module.otherScopes)
     }
 
     private fun declareDefinitions(list: List<ScopeDefinition>) {
@@ -65,42 +68,46 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun declareDefinitions(definition: ScopeDefinition) {
-        if (definitions.contains(definition.qualifier.value)) {
-            //Merge
-            val existing = definitions[definition.qualifier.value]
-                ?: error("Scope definition '$definition' not found in $_definitions")
-            definition.definitions.forEach {
-                existing.save(it)
-            }
+        if (scopeDefinitions.contains(definition.qualifier.value)) {
+            mergeDefinitions(definition)
         } else {
-            _definitions[definition.qualifier.value] = definition
+            _scopeDefinitions[definition.qualifier.value] = definition
+        }
+    }
+
+    private fun mergeDefinitions(definition: ScopeDefinition) {
+        val existing = scopeDefinitions[definition.qualifier.value]
+            ?: error("Scope definition '$definition' not found in $_scopeDefinitions")
+        definition.definitions.forEach {
+            existing.save(it)
         }
     }
 
     internal fun createRootScopeDefinition() {
         val scopeDefinition = ScopeDefinition.rootDefinition()
-        _definitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
+        _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
             scopeDefinition
-        rootScopeDefinition = scopeDefinition
+        _rootScopeDefinition = scopeDefinition
     }
 
     internal fun createRootScope() {
-        rootScope = createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+        _rootScope =
+            createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
     }
 
     fun getScopeOrNull(scopeId: ScopeID): Scope? {
-        return instances[scopeId]
+        return scopes[scopeId]
     }
 
     fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        if (instances.contains(scopeId)) {
+        if (scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
 
-        val scopeDefinition = definitions[qualifier.value]
+        val scopeDefinition = scopeDefinitions[qualifier.value]
         return if (scopeDefinition != null) {
             val createScope: Scope = createScope(scopeId, scopeDefinition)
-            _instances[scopeId] = createScope
+            _scopes[scopeId] = createScope
             createScope
         } else {
             throw NoScopeDefFoundException("No Scope Definition found for qualifer '${qualifier.value}'")
@@ -109,20 +116,25 @@ class ScopeRegistry(private val _koin: Koin) {
 
     private fun createScope(scopeId: ScopeID, scopeDefinition: ScopeDefinition): Scope {
         val scope = Scope(scopeId, scopeDefinition, _koin)
-        scope.create()
+        scope.create(_rootScope)
         return scope
     }
 
     //TODO Lock
     fun deleteScope(scopeId: ScopeID) {
-        getScopeOrNull(scopeId)?.close()
-        _instances.remove(scopeId)
+        _scopes.remove(scopeId)
+    }
+
+    fun deleteScope(scope: Scope) {
+        _scopes.remove(scope.id)
     }
 
     internal fun close() {
-        _instances.values.forEach { it.close() }
-        _instances.clear()
-        _definitions.clear()
+        _scopes.values.forEach { it.close() }
+        _scopes.clear()
+        _scopeDefinitions.clear()
+        _rootScope?.close()
+        _rootScope = null
     }
 
 

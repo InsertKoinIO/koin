@@ -27,7 +27,7 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
 
     private var value: T? = null
 
-    override fun isCreated(context: InstanceContext): Boolean = (value != null)
+    override fun isCreated(): Boolean = (value != null)
 
     override fun drop() {
         beanDefinition.callbacks.onClose?.invoke(value)
@@ -45,7 +45,7 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
 
     @Suppress("UNCHECKED_CAST")
     override fun get(context: InstanceContext): T {
-        if (value == null) {
+        if (!isCreated()) {
             value = create(context)
         }
         return value ?: error("Single instance created couldn't return value")

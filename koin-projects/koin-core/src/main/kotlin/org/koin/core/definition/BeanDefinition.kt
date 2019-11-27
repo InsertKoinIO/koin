@@ -48,14 +48,15 @@ data class BeanDefinition<T>(
 
     override fun toString(): String {
         val defKind = kind.toString()
-        val defName = qualifier?.let { "name:'$qualifier', " } ?: ""
-        val defScope = scopeDefinition.let { "scope:'${scopeDefinition.qualifier}', " }
-        val defType = "primary_type:'${primaryType.getFullName()}'"
+        val defType = "'${primaryType.getFullName()}'"
+        val defName = qualifier?.let { ",qualifier:$qualifier" } ?: ""
+        val defScope =
+            scopeDefinition.let { if (it.isRoot) "" else ",scope:${scopeDefinition.qualifier}" }
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
-            ", secondary_type:$typesAsString"
+            ",binds:$typesAsString"
         } else ""
-        return "[type:$defKind,$defScope$defName$defType$defOtherTypes]"
+        return "[$defKind:$defType$defName$defScope$defOtherTypes]"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -70,13 +71,20 @@ data class BeanDefinition<T>(
         return true
     }
 
+    fun hasType(clazz: KClass<*>): Boolean {
+        return primaryType == clazz || secondaryTypes.contains(clazz)
+    }
+
+    fun `is`(clazz: KClass<*>, qualifier: Qualifier?, scopeDefinition: ScopeDefinition): Boolean {
+        return hasType(clazz) && this.qualifier == qualifier && this.scopeDefinition == scopeDefinition
+    }
+
     fun canBind(primary: KClass<*>, secondary: KClass<*>): Boolean {
         return primaryType == primary && secondaryTypes.contains(secondary)
     }
 
-    val primaryKey: IndexKey by lazy { indexKey(primaryType, qualifier) }
-
-    val secondaryKeys: List<IndexKey> by lazy { secondaryTypes.map { indexKey(it, qualifier) } }
+    val primaryKey: IndexKey = indexKey(primaryType, qualifier)
+    val secondaryKeys: List<IndexKey> = secondaryTypes.map { "$primaryKey::${it.getFullName()}" }
 
     override fun hashCode(): Int {
         var result = qualifier?.hashCode() ?: 0

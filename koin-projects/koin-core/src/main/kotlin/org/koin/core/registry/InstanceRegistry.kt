@@ -8,7 +8,6 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
@@ -20,22 +19,29 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     internal fun create(definitions: Set<BeanDefinition<*>>) {
         definitions.forEach { definition ->
+            saveDefinition(definition, override = false)
+        }
+    }
+
+    fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
+        val instanceFactory = definition.instanceFactory.invoke(_koin, definition)
+        saveInstance(
+            definition.primaryKey,
+            instanceFactory,
+            override
+        )
+        definition.secondaryKeys.forEach { secKey ->
             saveInstance(
-                definition.primaryKey,
-                definition.instanceFactory.invoke(_koin, definition)
+                secKey,
+                instanceFactory,
+                override
             )
-            definition.secondaryKeys.forEach { secKey ->
-                saveInstance(
-                    secKey,
-                    definition.instanceFactory.invoke(_koin, definition)
-                )
-            }
         }
     }
 
     //TODO Lock - ConcurrentHashMap
-    private fun saveInstance(key: IndexKey, factory: InstanceFactory<*>) {
-        if (_instances.contains(key)) {
+    private fun saveInstance(key: IndexKey, factory: InstanceFactory<*>, override: Boolean) {
+        if (_instances.contains(key) && !override) {
             error("InstanceRegistry already contains index '$key'")
         } else {
             _instances[key] = factory
@@ -56,22 +62,22 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     fun createEagerInstances() {
-        instances.values.filterIsInstance<SingleInstanceFactory<*>>().forEach { instance ->
-            instance.get(
-                InstanceContext(_koin, _scope)
-            )
-        }
+        instances.values.filterIsInstance<SingleInstanceFactory<*>>()
+            .filter { instance -> instance.beanDefinition.options.isCreatedAtStart }
+            .forEach { instance ->
+                instance.get(
+                    InstanceContext(_koin, _scope)
+                )
+            }
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getAll(clazz: KClass<*>): List<T> {
-        val potentialKeys = instances.keys.filter { it.contains(clazz.getFullName()) }
-        return potentialKeys.mapNotNull { key: String ->
-            instances[key]?.get(
-                defaultInstanceContext(
-                    null
-                )
-            ) as? T
+        val instances = instances.values.toSet()
+        val potentialKeys: List<InstanceFactory<*>> =
+            instances.filter { instance -> instance.beanDefinition.hasType(clazz) }
+        return potentialKeys.mapNotNull {
+            it.get(defaultInstanceContext(null)) as? T
         }
     }
 
@@ -87,4 +93,5 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
             )
         }?.get(defaultInstanceContext(parameters)) as? S
     }
+
 }
