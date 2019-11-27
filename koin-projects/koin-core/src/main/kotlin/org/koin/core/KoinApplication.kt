@@ -36,10 +36,14 @@ class KoinApplication private constructor() {
     }
 
     fun create(): KoinApplication {
-        if (koin._logger.isAt(Level.DEBUG)) {
-            koin._logger.debug("create root context")
+        if (koin._logger.isAt(Level.INFO)) {
+            val duration = measureDuration {
+                koin._scopeRegistry.createRootScope()
+            }
+            koin._logger.info("context created in $duration ms")
+        } else {
+            koin._scopeRegistry.createRootScope()
         }
-        koin._scopeRegistry.createRootScope()
         return this
     }
 

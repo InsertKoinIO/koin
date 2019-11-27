@@ -5,6 +5,7 @@ import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeDefinition
+import kotlin.reflect.KClass
 
 object Definitions {
 
@@ -23,7 +24,8 @@ object Definitions {
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
         scopeDefinition: ScopeDefinition,
-        options: Options
+        options: Options,
+        secondaryTypes : List<KClass<*>> = emptyList()
     ): BeanDefinition<T> {
         return BeanDefinition(
             scopeDefinition,
@@ -32,7 +34,8 @@ object Definitions {
             { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
             definition,
             Kind.Single,
-            options = options
+            options = options,
+            secondaryTypes = secondaryTypes
         )
     }
 
@@ -40,7 +43,8 @@ object Definitions {
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
         scopeDefinition: ScopeDefinition,
-        options: Options
+        options: Options,
+        secondaryTypes : List<KClass<*>> = emptyList()
     ): BeanDefinition<T> {
         return BeanDefinition(
             scopeDefinition,
@@ -49,7 +53,8 @@ object Definitions {
             { koin: Koin, beanDef: BeanDefinition<*> -> FactoryInstanceFactory(koin, beanDef) },
             definition,
             Kind.Factory,
-            options = options
+            options = options,
+            secondaryTypes = secondaryTypes
         )
     }
 

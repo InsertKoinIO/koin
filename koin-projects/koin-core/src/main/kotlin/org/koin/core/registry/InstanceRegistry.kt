@@ -40,10 +40,18 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
             override
         )
         definition.secondaryTypes.forEach { clazz ->
-            saveInstanceIfPossible(
-                indexKey(clazz, definition.qualifier),
-                instanceFactory
-            )
+            if (override) {
+                saveInstance(
+                    indexKey(clazz, definition.qualifier),
+                    instanceFactory,
+                    override
+                )
+            } else {
+                saveInstanceIfPossible(
+                    indexKey(clazz, definition.qualifier),
+                    instanceFactory
+                )
+            }
         }
     }
 

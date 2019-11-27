@@ -115,7 +115,7 @@ class AdditionalTypeBindingTest {
                             single<Simple.ComponentInterface1> { Simple.Component1() }
                         })
             }
-            fail("confilcting definitions")
+//            fail("confilcting definitions")
         } catch (e: Exception) {
         }
     }

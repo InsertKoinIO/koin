@@ -4,24 +4,22 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
-import org.koin.core.logger.Level
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
-import org.koin.dsl.binds
 import kotlin.reflect.KClass
 
 /**
  * Imternal Scope Definition
  */
-data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
+class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
 
     private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()
     val definitions: Set<BeanDefinition<*>>
         get() = _definitions
 
-    fun save(beanDefinition: BeanDefinition<*>) {
+    fun save(beanDefinition: BeanDefinition<*>, forceOverride: Boolean = false) {
         if (definitions.contains(beanDefinition)) {
-            if (beanDefinition.options.override) {
+            if (beanDefinition.options.override || forceOverride) {
                 _definitions.remove(beanDefinition)
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
@@ -37,7 +35,7 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
 
     internal fun size() = definitions.size
 
-    inline fun <reified T> declare(
+    inline fun <reified T> saveNewDefinition(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,
@@ -57,14 +55,11 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
             qualifier,
             { instance },
             this,
-            Options(isCreatedAtStart = false, override = override)
+            Options(isCreatedAtStart = false, override = override),
+            secondaryTypes ?: emptyList()
         )
-        val finalDefinition =
-            secondaryTypes?.let { beanDefinition.binds(it.toTypedArray()) } ?: beanDefinition
-        save(
-            finalDefinition
-        )
-        return finalDefinition
+        save(beanDefinition, override)
+        return beanDefinition
     }
 
     companion object {

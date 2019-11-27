@@ -240,7 +240,7 @@ data class Scope(
         secondaryTypes: List<KClass<*>>? = null,
         override: Boolean = false
     ) = synchronized(this) {
-        val definition = _scopeDefinition.declare(instance, qualifier, secondaryTypes, override)
+        val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
         _instanceRegistry.saveDefinition(definition, override = true)
     }
 
