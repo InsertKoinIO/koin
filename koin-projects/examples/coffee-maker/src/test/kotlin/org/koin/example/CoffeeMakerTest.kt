@@ -6,8 +6,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.inject
-import org.koin.test.mock.declareMock
-import org.mockito.BDDMockito.given
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 
@@ -23,9 +21,9 @@ class CoffeeMakerTest : AutoCloseKoinTest() {
             modules(coffeeAppModule)
         }
 
-        declareMock<Heater> {
-            given(isHot()).will { true }
-        }
+//        declareMock<Heater> {
+//            given(isHot()).will { true }
+//        }
     }
 
     @Test

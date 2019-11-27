@@ -1,8 +1,8 @@
 // Core
 include 'koin-core'
-//include 'koin-test'
-//// Core Sample
-//include 'examples:coffee-maker'
+include 'koin-test'
+// Core Sample
+include 'examples:coffee-maker'
 //// Core extended
 //include 'koin-core-ext'
 //

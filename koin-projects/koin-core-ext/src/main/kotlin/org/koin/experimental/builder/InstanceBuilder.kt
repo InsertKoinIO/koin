@@ -1,6 +1,5 @@
 package org.koin.experimental.builder
 
-import org.koin.core.KoinApplication.Companion.logger
 import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDurationForResult
@@ -14,28 +13,28 @@ inline fun <reified T : Any> Scope.create(): T {
     val kClass = T::class
     val instance: Any
 
-    if (logger.level == Level.DEBUG) {
-        logger.debug("!- creating class:${kClass.getFullName()}")
+    if (_koin._logger.level == Level.DEBUG) {
+        _koin._logger.debug("!- creating class:${kClass.getFullName()}")
     }
 
     val constructor = kClass.java.constructors.firstOrNull()
-            ?: error("No constructor found for class '${kClass.getFullName()}'")
+        ?: error("No constructor found for class '${kClass.getFullName()}'")
 
-    val args = if (logger.level == Level.DEBUG) {
+    val args = if (_koin._logger.level == Level.DEBUG) {
         val (_args, duration) = measureDurationForResult {
             getArguments(constructor, this)
         }
-        logger.debug("!- got arguments in $duration ms")
+        _koin._logger.debug("!- got arguments in $duration ms")
         _args
     } else {
         getArguments(constructor, this)
     }
 
-    instance = if (logger.level == Level.DEBUG) {
+    instance = if (_koin._logger.level == Level.DEBUG) {
         val (_instance, duration) = measureDurationForResult {
             createInstance(args, constructor)
         }
-        logger.debug("!- created instance in $duration ms")
+        _koin._logger.debug("!- created instance in $duration ms")
         _instance
     } else {
         createInstance(args, constructor)
