@@ -3,6 +3,7 @@ include 'koin-core'
 include 'koin-test'
 // Core Sample
 include 'examples:coffee-maker'
+include 'examples:android-perfs'
 //// Core extended
 //include 'koin-core-ext'
 //
@@ -18,7 +19,6 @@ include 'examples:coffee-maker'
 //// Android Samples
 //include 'examples:android-samples'
 //include 'examples:androidx-samples'
-//include 'examples:android-perfs'
 //
 //// Ktor
 //include 'koin-logger-slf4j'
