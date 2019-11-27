@@ -61,7 +61,7 @@ class KoinApplication private constructor() {
                 loadModules(modules)
             }
             val count = koin._scopeRegistry.size()
-            koin._logger.info("load $count definitions in $duration ms")
+            koin._logger.info("loaded $count definitions - $duration ms")
         } else {
             loadModules(modules)
         }
@@ -69,7 +69,7 @@ class KoinApplication private constructor() {
             val duration = measureDuration {
                 koin._scopeRegistry.createRootScope()
             }
-            koin._logger.info("context created in $duration ms")
+            koin._logger.info("create context - $duration ms")
         } else {
             koin._scopeRegistry.createRootScope()
         }
