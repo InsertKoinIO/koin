@@ -130,7 +130,6 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     internal fun close() {
-        _scopes.values.forEach { it.close() }
         _scopes.clear()
         _scopeDefinitions.clear()
         _rootScope?.close()

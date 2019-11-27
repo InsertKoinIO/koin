@@ -59,7 +59,7 @@ object GlobalContext {
      */
     @JvmStatic
     //TODO Lock
-    fun stop() = synchronized(this) {
+    fun stop() {
         koin?.close()
         koin = null
     }
