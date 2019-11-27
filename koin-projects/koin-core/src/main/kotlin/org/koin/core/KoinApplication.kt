@@ -35,18 +35,6 @@ class KoinApplication private constructor() {
         koin._scopeRegistry.createRootScopeDefinition()
     }
 
-    fun create(): KoinApplication {
-        if (koin._logger.isAt(Level.INFO)) {
-            val duration = measureDuration {
-                koin._scopeRegistry.createRootScope()
-            }
-            koin._logger.info("context created in $duration ms")
-        } else {
-            koin._scopeRegistry.createRootScope()
-        }
-        return this
-    }
-
     /**
      * Load definitions from modules
      * @param modules
@@ -76,6 +64,14 @@ class KoinApplication private constructor() {
             koin._logger.info("load $count definitions in $duration ms")
         } else {
             loadModules(modules)
+        }
+        if (koin._logger.isAt(Level.INFO)) {
+            val duration = measureDuration {
+                koin._scopeRegistry.createRootScope()
+            }
+            koin._logger.info("context created in $duration ms")
+        } else {
+            koin._scopeRegistry.createRootScope()
         }
         return this
     }

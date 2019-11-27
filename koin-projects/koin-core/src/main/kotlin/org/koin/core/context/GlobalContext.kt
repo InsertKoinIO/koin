@@ -72,7 +72,6 @@ fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.init()
     GlobalContext.start(koinApplication)
     appDeclaration(koinApplication)
-    koinApplication.create()
     koinApplication.createEagerInstances()
     return koinApplication
 }

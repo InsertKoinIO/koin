@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     fun runPerf(count: Int): Pair<Double, Double> {
         val (app, duration) = measureDurationForResult {
             koinApplication {
-                printLogger()
                 modules(perfModule400())
             }
         }

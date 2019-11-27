@@ -26,8 +26,7 @@ public class UnitJavaTest {
         KoinApplication koinApp = KoinApplication
                 .init()
                 .printLogger()
-                .modules(koinModule)
-                .create();
+                .modules(koinModule);
 
         start(koinApp);
     }
