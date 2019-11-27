@@ -341,8 +341,7 @@ data class Scope(
     }
 
     override fun toString(): String {
-        val scopeDef = _scopeDefinition.let { ",set:'${it.qualifier}'" }
-        return "Scope[id:'$id'$scopeDef]"
+        return "['$id']"
     }
 }
 

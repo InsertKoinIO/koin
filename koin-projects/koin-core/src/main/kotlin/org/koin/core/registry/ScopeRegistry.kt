@@ -18,6 +18,7 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue

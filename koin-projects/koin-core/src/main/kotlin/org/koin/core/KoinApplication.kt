@@ -32,15 +32,12 @@ class KoinApplication private constructor() {
     val koin = Koin()
 
     internal fun init() {
-        if (koin._logger.isAt(Level.DEBUG)) {
-            koin._logger.debug("init")
-        }
         koin._scopeRegistry.createRootScopeDefinition()
     }
 
     fun create(): KoinApplication {
         if (koin._logger.isAt(Level.DEBUG)) {
-            koin._logger.debug("create")
+            koin._logger.debug("create root context")
         }
         koin._scopeRegistry.createRootScope()
         return this

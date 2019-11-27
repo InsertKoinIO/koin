@@ -83,9 +83,6 @@ data class BeanDefinition<T>(
         return primaryType == primary && secondaryTypes.contains(secondary)
     }
 
-    val primaryKey: IndexKey = indexKey(primaryType, qualifier)
-    val secondaryKeys: List<IndexKey> = secondaryTypes.map { "$primaryKey::${it.getFullName()}" }
-
     override fun hashCode(): Int {
         var result = qualifier?.hashCode() ?: 0
         result = 31 * result + primaryType.hashCode()

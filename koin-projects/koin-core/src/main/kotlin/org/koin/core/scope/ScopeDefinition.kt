@@ -4,6 +4,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.logger.Level
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
 import org.koin.dsl.binds
