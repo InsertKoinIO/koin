@@ -36,7 +36,6 @@ class PerfsTest {
     private fun runPerfs() {
         val (app, duration) = measureDurationForResult {
             koinApplication {
-                printLogger()
                 modules(perfModule400)
             }
         }

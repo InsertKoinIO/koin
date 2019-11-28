@@ -15,8 +15,6 @@
  */
 package org.koin.core.definition
 
-import org.koin.core.Koin
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -37,7 +35,6 @@ data class BeanDefinition<T>(
     val scopeDefinition: ScopeDefinition,
     val primaryType: KClass<*>,
     val qualifier: Qualifier? = null,
-    val instanceFactory: InstanceFactoryBuilder,
     val definition: Definition<T>,
     val kind: Kind,
     val secondaryTypes: List<KClass<*>> = listOf(),
@@ -104,4 +101,3 @@ enum class Kind {
 
 typealias IndexKey = String
 typealias Definition<T> = Scope.(DefinitionParameters) -> T
-typealias InstanceFactoryBuilder = (Koin, BeanDefinition<*>) -> InstanceFactory<*>

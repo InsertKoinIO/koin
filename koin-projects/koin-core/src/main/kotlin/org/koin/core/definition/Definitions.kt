@@ -1,8 +1,5 @@
 package org.koin.core.definition
 
-import org.koin.core.Koin
-import org.koin.core.instance.FactoryInstanceFactory
-import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.ScopeDefinition
 import kotlin.reflect.KClass
@@ -15,7 +12,7 @@ object Definitions {
         scopeDefinition: ScopeDefinition,
         options: Options
     ): BeanDefinition<T> {
-        val beanDefinition = createSingle(qualifier,definition,scopeDefinition,options)
+        val beanDefinition = createSingle(qualifier, definition, scopeDefinition, options)
         scopeDefinition.save(beanDefinition)
         return beanDefinition
     }
@@ -25,13 +22,13 @@ object Definitions {
         noinline definition: Definition<T>,
         scopeDefinition: ScopeDefinition,
         options: Options,
-        secondaryTypes : List<KClass<*>> = emptyList()
+        secondaryTypes: List<KClass<*>> = emptyList()
     ): BeanDefinition<T> {
         return BeanDefinition(
             scopeDefinition,
             T::class,
             qualifier,
-            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
+//            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
             definition,
             Kind.Single,
             options = options,
@@ -40,18 +37,17 @@ object Definitions {
     }
 
     internal fun createSingle(
-        clazz : KClass<*>,
+        clazz: KClass<*>,
         qualifier: Qualifier? = null,
         definition: Definition<*>,
         scopeDefinition: ScopeDefinition,
         options: Options,
-        secondaryTypes : List<KClass<*>> = emptyList()
+        secondaryTypes: List<KClass<*>> = emptyList()
     ): BeanDefinition<*> {
         return BeanDefinition(
             scopeDefinition,
             clazz,
             qualifier,
-            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
             definition,
             Kind.Single,
             options = options,
@@ -64,13 +60,12 @@ object Definitions {
         noinline definition: Definition<T>,
         scopeDefinition: ScopeDefinition,
         options: Options,
-        secondaryTypes : List<KClass<*>> = emptyList()
+        secondaryTypes: List<KClass<*>> = emptyList()
     ): BeanDefinition<T> {
         return BeanDefinition(
             scopeDefinition,
             T::class,
             qualifier,
-            { koin: Koin, beanDef: BeanDefinition<*> -> FactoryInstanceFactory(koin, beanDef) },
             definition,
             Kind.Factory,
             options = options,
@@ -84,7 +79,7 @@ object Definitions {
         scopeDefinition: ScopeDefinition,
         options: Options
     ): BeanDefinition<T> {
-        val beanDefinition = createFactory(qualifier,definition,scopeDefinition,options)
+        val beanDefinition = createFactory(qualifier, definition, scopeDefinition, options)
         scopeDefinition.save(beanDefinition)
         return beanDefinition
     }

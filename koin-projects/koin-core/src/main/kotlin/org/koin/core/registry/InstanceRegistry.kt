@@ -3,7 +3,9 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
+import org.koin.core.definition.Kind
 import org.koin.core.definition.indexKey
+import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
@@ -33,7 +35,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
-        val instanceFactory = definition.instanceFactory.invoke(_koin, definition)
+        val instanceFactory = createInstanceFactory(_koin, definition)
         saveInstance(
             indexKey(definition.primaryType, definition.qualifier),
             instanceFactory,
@@ -52,6 +54,16 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
                     instanceFactory
                 )
             }
+        }
+    }
+
+    private fun createInstanceFactory(
+        _koin: Koin,
+        definition: BeanDefinition<*>
+    ): InstanceFactory<*> {
+        return when (definition.kind) {
+            Kind.Single -> SingleInstanceFactory(_koin, definition)
+            Kind.Factory -> FactoryInstanceFactory(_koin, definition)
         }
     }
 
