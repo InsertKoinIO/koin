@@ -234,7 +234,7 @@ data class Scope(
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    inline fun <reified T> declare(
+    fun <T: Any> declare(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,

@@ -39,6 +39,26 @@ object Definitions {
         )
     }
 
+    internal fun createSingle(
+        clazz : KClass<*>,
+        qualifier: Qualifier? = null,
+        definition: Definition<*>,
+        scopeDefinition: ScopeDefinition,
+        options: Options,
+        secondaryTypes : List<KClass<*>> = emptyList()
+    ): BeanDefinition<*> {
+        return BeanDefinition(
+            scopeDefinition,
+            clazz,
+            qualifier,
+            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
+            definition,
+            Kind.Single,
+            options = options,
+            secondaryTypes = secondaryTypes
+        )
+    }
+
     inline fun <reified T> createFactory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,

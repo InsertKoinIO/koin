@@ -29,19 +29,19 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
         _definitions.add(beanDefinition)
     }
 
-    fun remove(beanDefinition: BeanDefinition<*>){
+    fun remove(beanDefinition: BeanDefinition<*>) {
         _definitions.remove(beanDefinition)
     }
 
     internal fun size() = definitions.size
 
-    inline fun <reified T> saveNewDefinition(
+    fun <T : Any> saveNewDefinition(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,
         override: Boolean = false
     ): BeanDefinition<out Any?> {
-        val clazz = T::class
+        val clazz = instance::class
         val found: BeanDefinition<*>? =
             definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {
@@ -52,6 +52,7 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
             }
         }
         val beanDefinition = Definitions.createSingle(
+            clazz,
             qualifier,
             { instance },
             this,
@@ -61,6 +62,25 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
         save(beanDefinition, override)
         return beanDefinition
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ScopeDefinition
+
+        if (qualifier != other.qualifier) return false
+        if (isRoot != other.isRoot) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = qualifier.hashCode()
+        result = 31 * result + isRoot.hashCode()
+        return result
+    }
+
 
     companion object {
         const val ROOT_SCOPE_ID = "-Root-"

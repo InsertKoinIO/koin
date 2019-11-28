@@ -32,7 +32,7 @@ class DeclareInstanceTest {
     fun `can't declare a single on the fly`() {
 
         val koin = koinApplication {
-            printLogger()
+            printLogger(Level.DEBUG)
             modules(module {
                 single { Simple.ComponentA() }
             })

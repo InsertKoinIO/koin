@@ -18,7 +18,6 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
-import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
@@ -92,8 +91,10 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     internal fun createRootScope() {
-        _rootScope =
-            createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+        if (_rootScope == null) {
+            _rootScope =
+                createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+        }
     }
 
     fun getScopeOrNull(scopeId: ScopeID): Scope? {
