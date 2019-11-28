@@ -108,9 +108,9 @@ class ScopeRegistry(private val _koin: Koin) {
 
         val scopeDefinition = scopeDefinitions[qualifier.value]
         return if (scopeDefinition != null) {
-            val createScope: Scope = createScope(scopeId, scopeDefinition)
-            _scopes[scopeId] = createScope
-            createScope
+            val createdScope: Scope = createScope(scopeId, scopeDefinition)
+            _scopes[scopeId] = createdScope
+            createdScope
         } else {
             throw NoScopeDefFoundException("No Scope Definition found for qualifer '${qualifier.value}'")
         }
