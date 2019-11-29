@@ -140,6 +140,15 @@ class KoinApplication private constructor() {
         koin.close()
     }
 
+    fun unloadModules(module: Module) {
+        koin._scopeRegistry.unloadModules(module)
+    }
+
+    fun unloadModules(modules: List<Module>) {
+        koin._scopeRegistry.unloadModules(modules)
+    }
+
+
     companion object {
 
         /**

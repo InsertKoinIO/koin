@@ -127,4 +127,9 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }?.get(defaultInstanceContext(parameters)) as? S
     }
 
+    fun dropDefinition(definition: BeanDefinition<*>) {
+        val ids = _instances.filter { it.value.beanDefinition == definition }.map { it.key }
+        ids.forEach { _instances.remove(it) }
+    }
+
 }

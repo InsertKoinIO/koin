@@ -343,6 +343,12 @@ data class Scope(
     override fun toString(): String {
         return "['$id']"
     }
+
+    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
+        scopeDefinition.definitions.forEach {
+            _instanceRegistry.dropDefinition(it)
+        }
+    }
 }
 
 typealias ScopeID = String

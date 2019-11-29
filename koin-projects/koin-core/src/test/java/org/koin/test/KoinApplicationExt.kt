@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
@@ -14,6 +15,14 @@ internal fun KoinApplication.getBeanDefinition(clazz: KClass<*>): BeanDefinition
     return this.koin._scopeRegistry.rootScope._scopeDefinition.definitions.firstOrNull { it.primaryType == clazz }
 }
 
+internal fun Scope.getBeanDefinition(clazz: KClass<*>): BeanDefinition<*>? {
+    return _scopeDefinition.definitions.firstOrNull { it.primaryType == clazz }
+}
+
 internal fun KoinApplication.getInstanceFactory(clazz: KClass<*>): InstanceFactory<*>? {
     return this.koin._scopeRegistry.rootScope._instanceRegistry.instances.values.firstOrNull { it.beanDefinition.primaryType == clazz }
+}
+
+internal fun Scope.getInstanceFactory(clazz: KClass<*>): InstanceFactory<*>? {
+    return _instanceRegistry.instances.values.firstOrNull { it.beanDefinition.primaryType == clazz }
 }

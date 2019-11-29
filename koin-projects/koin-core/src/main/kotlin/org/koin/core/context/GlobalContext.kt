@@ -18,6 +18,7 @@ package org.koin.core.context
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
 /**
@@ -81,44 +82,30 @@ fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
  */
 fun stopKoin() = GlobalContext.stop()
 
-///**
-// * load Koin module in global Koin context
-// */
-//fun loadKoinModules(module: Module) {
-//    GlobalContext.get().modules(listOf(module))
-//}
-//
-///**
-// * load Koin modules in global Koin context
-// */
-//fun loadKoinModules(modules: List<Module>) {
-//    GlobalContext.get().modules(modules)
-//}
-//
-///**
-// * load Koin modules in global Koin context
-// */
-//fun loadKoinModules(vararg modules: Module) {
-//    GlobalContext.get().modules(modules.toList())
-//}
-//
-///**
-// * unload Koin modules from global Koin context
-// */
-//fun unloadKoinModules(module: Module) {
-//    GlobalContext.get().unloadModules(listOf(module))
-//}
-//
-///**
-// * unload Koin modules from global Koin context
-// */
-//fun unloadKoinModules(vararg modules: Module) {
-//    GlobalContext.get().unloadModules(modules.toList())
-//}
-//
-///**
-// * unload Koin modules from global Koin context
-// */
-//fun unloadKoinModules(modules: List<Module>) {
-//    GlobalContext.get().unloadModules(modules)
-//}
+/**
+ * load Koin module in global Koin context
+ */
+fun loadKoinModules(module: Module) {
+    GlobalContext.get()._scopeRegistry.loadModules(listOf(module))
+}
+
+/**
+ * load Koin modules in global Koin context
+ */
+fun loadKoinModules(modules: List<Module>) {
+    GlobalContext.get()._scopeRegistry.loadModules(modules)
+}
+
+/**
+ * unload Koin modules from global Koin context
+ */
+fun unloadKoinModules(module: Module) {
+    GlobalContext.get()._scopeRegistry.unloadModules(listOf(module))
+}
+
+/**
+ * unload Koin modules from global Koin context
+ */
+fun unloadKoinModules(modules: List<Module>) {
+    GlobalContext.get()._scopeRegistry.unloadModules(modules)
+}

@@ -81,6 +81,12 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
         return result
     }
 
+    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
+        scopeDefinition.definitions.forEach {
+            _definitions.remove(it)
+        }
+    }
+
 
     companion object {
         const val ROOT_SCOPE_ID = "-Root-"
