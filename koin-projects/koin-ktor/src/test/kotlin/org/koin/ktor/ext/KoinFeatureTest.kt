@@ -1,6 +1,5 @@
 package org.koin.ktor.ext
 
-import io.ktor.application.Application
 import io.ktor.application.featureOrNull
 import io.ktor.application.install
 import io.ktor.server.testing.withApplication
@@ -10,14 +9,6 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
-fun Application.main(){
-    install(Koin){
-        println("1")
-    }
-    featureOrNull(Koin)?.let{
-        println("2")
-    }
-}
 /**
  * @author vinicius
  * @author Victor Alenkov
