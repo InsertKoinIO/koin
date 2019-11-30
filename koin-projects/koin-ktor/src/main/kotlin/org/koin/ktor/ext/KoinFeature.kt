@@ -27,6 +27,7 @@ import org.koin.ktor.ext.Koin
 
 /**
  * @author Vinicius Carvalho
+ * @author Victor Alenkov
  *
  * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
  *
@@ -34,8 +35,7 @@ import org.koin.ktor.ext.Koin
 class Koin {
 
     companion object Feature : ApplicationFeature<Application, KoinApplication, Koin> {
-        override val key: AttributeKey<Koin>
-            get() = AttributeKey("Koin")
+        override val key = AttributeKey<Koin>("Koin")
 
         override fun install(pipeline: Application, appDeclaration: KoinAppDeclaration): Koin {
             startKoin(appDeclaration)
