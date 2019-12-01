@@ -62,4 +62,39 @@ class KoinFeatureTest {
             Assert.assertNotNull(koin.getOrNull<Foo>())
         }
     }
+
+    @Test
+    fun `Using the koin extension`() {
+        withApplication {
+            Assert.assertNull(GlobalContext.getOrNull()?.koin)
+            Assert.assertNull(application.featureOrNull(Koin))
+
+            application.koin {
+                modules(module {
+                    single { Foo("bar") }
+                })
+            }
+            Assert.assertNotNull(GlobalContext.get().koin.getOrNull<Foo>())
+        }
+    }
+
+    @Test
+    fun `Using the koin extension (with pre-installation of the module)`() {
+        withApplication {
+            Assert.assertNull(GlobalContext.getOrNull()?.koin)
+            Assert.assertNull(application.featureOrNull(Koin))
+
+            application.install(Koin)
+            Assert.assertNotNull(GlobalContext.getOrNull()?.koin)
+            Assert.assertNotNull(application.featureOrNull(Koin))
+            Assert.assertNull(GlobalContext.get().koin.getOrNull<Foo>())
+
+            application.koin {
+                loadKoinModules(module {
+                    single { Foo("bar") }
+                })
+            }
+            Assert.assertNotNull(GlobalContext.get().koin.getOrNull<Foo>())
+        }
+    }
 }

@@ -15,15 +15,13 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationFeature
-import io.ktor.application.ApplicationStopping
+import io.ktor.application.*
 import io.ktor.util.AttributeKey
+import io.ktor.util.pipeline.ContextDsl
 import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.ktor.ext.Koin
 
 /**
  * @author Vinicius Carvalho
@@ -37,12 +35,24 @@ class Koin {
     companion object Feature : ApplicationFeature<Application, KoinApplication, Koin> {
         override val key = AttributeKey<Koin>("Koin")
 
-        override fun install(pipeline: Application, appDeclaration: KoinAppDeclaration): Koin {
-            startKoin(appDeclaration)
+        override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
+            startKoin(configure)
             pipeline.environment.monitor.subscribe(ApplicationStopping) {
                 GlobalContext.stop()
             }
             return Koin()
         }
     }
+}
+
+/**
+ * @author Victor Alenkov
+ *
+ * Gets or installs a [Koin] feature for the this [Application] and runs a [configuration] script on it
+ */
+@ContextDsl
+fun Application.koin(configuration: KoinApplication.() -> Unit): Koin = featureOrNull(Koin)?.also {
+    GlobalContext.get().apply(configuration)
+} ?: run {
+    install(Koin, configuration)
 }
