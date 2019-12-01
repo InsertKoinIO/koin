@@ -53,6 +53,7 @@ class Koin {
 @ContextDsl
 fun Application.koin(configuration: KoinApplication.() -> Unit): Koin = featureOrNull(Koin)?.also {
     GlobalContext.get().apply(configuration)
+    GlobalContext.get().createEagerInstances()
 } ?: run {
     install(Koin, configuration)
 }
