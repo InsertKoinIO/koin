@@ -17,12 +17,24 @@ package org.koin.test.check
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.parameter.parametersOf
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeDefinition
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.koinApplication
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
+
+/**
+ *
+ */
+fun checkModules(parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
+    koinApplication(appDeclaration).checkModules(parameters)
+}
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
@@ -35,28 +47,26 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     }
     val allParameters = bindings.creators
 
-    checkMainDefinitions(allParameters)
-
     checkScopedDefinitions(allParameters)
 
     close()
 }
 
 private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
-//    scopeRegistry.getScopeSets().forEach { set ->
-//        val scope = createScope(set.qualifier.toString(), set.qualifier)
-//        set.definitions.forEach {
-//            val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
-//                    ?: parametersOf()
-//            scope.get<Any>(it.primaryType, it.qualifier) { parameters }
-//        }
-//    }
+    _scopeRegistry.scopeDefinitions.values.forEach { scopeDefinition ->
+        runScope(scopeDefinition, allParameters)
+    }
 }
 
-private fun Koin.checkMainDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
-//    rootScope.beanRegistry.getAllDefinitions().forEach {
-//        val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
-//                ?: parametersOf()
-//        get<Any>(it.primaryType, it.qualifier) { parameters }
-//    }
+private fun Koin.runScope(scopeDefinition: ScopeDefinition, allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+    val scope = getOrCreateScope(scopeDefinition.qualifier.value, scopeDefinition.qualifier)
+    scope._scopeDefinition.definitions.forEach {
+        runDefinition(allParameters, it, scope)
+    }
+}
+
+private fun runDefinition(allParameters: MutableMap<CheckedComponent, ParametersCreator>, it: BeanDefinition<*>, scope: Scope) {
+    val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
+            ?: parametersOf()
+    scope.get<Any>(it.primaryType, it.qualifier) { parameters }
 }

@@ -34,32 +34,32 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }
     }
 
-    internal fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
+    fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
         val instanceFactory = createInstanceFactory(_koin, definition)
         saveInstance(
-            indexKey(definition.primaryType, definition.qualifier),
-            instanceFactory,
-            override
+                indexKey(definition.primaryType, definition.qualifier),
+                instanceFactory,
+                override
         )
         definition.secondaryTypes.forEach { clazz ->
             if (override) {
                 saveInstance(
-                    indexKey(clazz, definition.qualifier),
-                    instanceFactory,
-                    override
+                        indexKey(clazz, definition.qualifier),
+                        instanceFactory,
+                        override
                 )
             } else {
                 saveInstanceIfPossible(
-                    indexKey(clazz, definition.qualifier),
-                    instanceFactory
+                        indexKey(clazz, definition.qualifier),
+                        instanceFactory
                 )
             }
         }
     }
 
     private fun createInstanceFactory(
-        _koin: Koin,
-        definition: BeanDefinition<*>
+            _koin: Koin,
+            definition: BeanDefinition<*>
     ): InstanceFactory<*> {
         return when (definition.kind) {
             Kind.Single -> SingleInstanceFactory(_koin, definition)
@@ -87,7 +87,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     private fun defaultInstanceContext(parameters: ParametersDefinition?) =
-        InstanceContext(_koin, _scope, parameters)
+            InstanceContext(_koin, _scope, parameters)
 
     internal fun close() {
         _instances.values.forEach { it.drop() }
@@ -96,33 +96,33 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     internal fun createEagerInstances() {
         instances.values.filterIsInstance<SingleInstanceFactory<*>>()
-            .filter { instance -> instance.beanDefinition.options.isCreatedAtStart }
-            .forEach { instance ->
-                instance.get(
-                    InstanceContext(_koin, _scope)
-                )
-            }
+                .filter { instance -> instance.beanDefinition.options.isCreatedAtStart }
+                .forEach { instance ->
+                    instance.get(
+                            InstanceContext(_koin, _scope)
+                    )
+                }
     }
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T : Any> getAll(clazz: KClass<*>): List<T> {
         val instances = instances.values.toSet()
         val potentialKeys: List<InstanceFactory<*>> =
-            instances.filter { instance -> instance.beanDefinition.hasType(clazz) }
+                instances.filter { instance -> instance.beanDefinition.hasType(clazz) }
         return potentialKeys.mapNotNull {
             it.get(defaultInstanceContext(null)) as? T
         }
     }
 
     internal fun <S> bind(
-        primaryType: KClass<*>,
-        secondaryType: KClass<*>,
-        parameters: ParametersDefinition?
+            primaryType: KClass<*>,
+            secondaryType: KClass<*>,
+            parameters: ParametersDefinition?
     ): S? {
         return instances.values.firstOrNull { instance ->
             instance.beanDefinition.canBind(
-                primaryType,
-                secondaryType
+                    primaryType,
+                    secondaryType
             )
         }?.get(defaultInstanceContext(parameters)) as? S
     }
@@ -133,7 +133,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     internal fun createDefinition(definition: BeanDefinition<*>) {
-        saveDefinition(definition,false)
+        saveDefinition(definition, false)
     }
 
 }

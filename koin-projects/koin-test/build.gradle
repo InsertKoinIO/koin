@@ -7,7 +7,7 @@ dependencies {
     // Koin
     compile project(":koin-core")
     compile "junit:junit:$junit_version"
-    compile "org.mockito:mockito-inline:$mockito_version"
+    testCompile "org.mockito:mockito-inline:$mockito_version"
 }
 
 apply from: '../gradle/publish.gradle'
