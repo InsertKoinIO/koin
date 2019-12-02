@@ -3,6 +3,7 @@ package org.koin.java;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.koin.KoinCoreTest;
 import org.koin.core.KoinApplication;
 import org.koin.core.context.GlobalContext;
 import org.koin.core.scope.Scope;
@@ -19,7 +20,7 @@ import static org.koin.java.KoinJavaComponent.getKoin;
 import static org.koin.java.KoinJavaComponent.inject;
 import static org.koin.java.UnitJavaStuffKt.koinModule;
 
-public class UnitJavaTest {
+public class UnitJavaTest extends KoinCoreTest {
 
     @Before
     public void before() {
@@ -29,11 +30,6 @@ public class UnitJavaTest {
                 .modules(koinModule);
 
         start(koinApp);
-    }
-
-    @After
-    public void after() {
-        stopKoin();
     }
 
     @Test

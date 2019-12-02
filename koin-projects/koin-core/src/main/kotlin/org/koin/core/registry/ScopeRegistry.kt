@@ -51,21 +51,29 @@ class ScopeRegistry(private val _koin: Koin) {
 
     internal fun loadModules(modules: Iterable<Module>) {
         modules.forEach { module ->
-            loadModule(module)
-            module.isLoaded = true
+            if (!module.isLoaded) {
+                loadModule(module)
+                module.isLoaded = true
+            } else {
+                _koin._logger.error("module '$module' already loaded!")
+            }
         }
     }
 
     private fun loadModule(module: Module) {
-        declareDefinitions(module.rootScope)
-        declareDefinitions(module.otherScopes)
+        declareScope(module.rootScope)
+        declareScopes(module.otherScopes)
     }
 
-    private fun declareDefinitions(list: List<ScopeDefinition>) {
+    private fun declareScopes(list: List<ScopeDefinition>) {
         list.forEach { scopeDefinition ->
-            declareDefinitions(scopeDefinition)
-            declareInstances(scopeDefinition)
+            declareScope(scopeDefinition)
         }
+    }
+
+    private fun declareScope(scopeDefinition: ScopeDefinition) {
+        declareDefinitions(scopeDefinition)
+        declareInstances(scopeDefinition)
     }
 
     private fun declareInstances(scopeDefinition: ScopeDefinition) {
@@ -76,7 +84,7 @@ class ScopeRegistry(private val _koin: Koin) {
         if (scopeDefinitions.contains(definition.qualifier.value)) {
             mergeDefinitions(definition)
         } else {
-            _scopeDefinitions[definition.qualifier.value] = definition
+            _scopeDefinitions[definition.qualifier.value] = definition.copy()
         }
     }
 
@@ -158,8 +166,8 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
-        _scopeDefinitions.values.firstOrNull { it == scopeDefinition }?.unloadDefinitions(scopeDefinition)
         unloadInstances(scopeDefinition)
+        _scopeDefinitions.values.firstOrNull { it == scopeDefinition }?.unloadDefinitions(scopeDefinition)
     }
 
     private fun unloadInstances(scopeDefinition: ScopeDefinition) {

@@ -39,6 +39,7 @@ class Koin {
     val _scopeRegistry = ScopeRegistry(this)
     val _propertyRegistry = PropertyRegistry(this)
     var _logger: Logger = EmptyLogger()
+    val _modules = hashSetOf<Module>()
 
     /**
      * Lazy inject a Koin instance
@@ -174,7 +175,7 @@ class Koin {
      */
     fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
         if (_logger.isAt(Level.DEBUG)) {
-            _logger.debug("!- create scope - id:$scopeId q:$qualifier")
+            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
         return _scopeRegistry.createScope(scopeId, qualifier)
     }
@@ -242,17 +243,21 @@ class Koin {
      * Close all resources from context
      */
     fun close() = synchronized(this) {
+        _modules.forEach { it.isLoaded = false }
+        _modules.clear()
         _scopeRegistry.close()
         _propertyRegistry.close()
     }
 
     internal fun loadModules(modules: List<Module>) {
+        _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
     }
 
 
     internal fun unloadModules(modules: List<Module>) {
         _scopeRegistry.unloadModules(modules)
+        _modules.removeAll(modules)
     }
 
     internal fun createRootScope() {

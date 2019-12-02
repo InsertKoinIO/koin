@@ -11,9 +11,8 @@ import kotlin.reflect.KClass
 /**
  * Imternal Scope Definition
  */
-class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
+class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
 
-    private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()
     val definitions: Set<BeanDefinition<*>>
         get() = _definitions
 
@@ -36,14 +35,14 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
     internal fun size() = definitions.size
 
     fun <T : Any> saveNewDefinition(
-        instance: T,
-        qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
-        override: Boolean = false
+            instance: T,
+            qualifier: Qualifier? = null,
+            secondaryTypes: List<KClass<*>>? = null,
+            override: Boolean = false
     ): BeanDefinition<out Any?> {
         val clazz = instance::class
         val found: BeanDefinition<*>? =
-            definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
+                definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {
             if (override) {
                 remove(found)
@@ -52,15 +51,21 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
             }
         }
         val beanDefinition = Definitions.createSingle(
-            clazz,
-            qualifier,
-            { instance },
-            this,
-            Options(isCreatedAtStart = false, override = override),
-            secondaryTypes ?: emptyList()
+                clazz,
+                qualifier,
+                { instance },
+                this,
+                Options(isCreatedAtStart = false, override = override),
+                secondaryTypes ?: emptyList()
         )
         save(beanDefinition, override)
         return beanDefinition
+    }
+
+    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
+        scopeDefinition.definitions.forEach {
+            _definitions.remove(it)
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -81,12 +86,11 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
         return result
     }
 
-    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _definitions.remove(it)
-        }
+    fun copy(): ScopeDefinition {
+        val copy = ScopeDefinition(qualifier, isRoot, HashSet())
+        copy._definitions.addAll(definitions)
+        return copy
     }
-
 
     companion object {
         const val ROOT_SCOPE_ID = "-Root-"
