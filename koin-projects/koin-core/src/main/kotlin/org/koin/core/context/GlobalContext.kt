@@ -47,7 +47,6 @@ object GlobalContext {
      * Start a Koin Application as StandAlone
      */
     @JvmStatic
-    //TODO Lock
     fun start(koinApplication: KoinApplication) = synchronized(this) {
         if (koin != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
@@ -59,7 +58,6 @@ object GlobalContext {
      * Stop current StandAlone Koin application
      */
     @JvmStatic
-    //TODO Lock
     fun stop() {
         koin?.close()
         koin = null
@@ -86,26 +84,26 @@ fun stopKoin() = GlobalContext.stop()
  * load Koin module in global Koin context
  */
 fun loadKoinModules(module: Module) {
-    GlobalContext.get()._scopeRegistry.loadModules(listOf(module))
+    GlobalContext.get().loadModules(listOf(module))
 }
 
 /**
  * load Koin modules in global Koin context
  */
 fun loadKoinModules(modules: List<Module>) {
-    GlobalContext.get()._scopeRegistry.loadModules(modules)
+    GlobalContext.get().loadModules(modules)
 }
 
 /**
  * unload Koin modules from global Koin context
  */
 fun unloadKoinModules(module: Module) {
-    GlobalContext.get()._scopeRegistry.unloadModules(listOf(module))
+    GlobalContext.get().unloadModules(listOf(module))
 }
 
 /**
  * unload Koin modules from global Koin context
  */
 fun unloadKoinModules(modules: List<Module>) {
-    GlobalContext.get()._scopeRegistry.unloadModules(modules)
+    GlobalContext.get().unloadModules(modules)
 }

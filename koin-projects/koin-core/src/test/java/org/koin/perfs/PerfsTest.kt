@@ -22,10 +22,10 @@ class PerfsTest {
 
     /*
     Perfs on MBP 2018
-        started in 200.63174 ms
-        measured executed in 0.921245 ms
-        started in 0.708077 ms
-        measured executed in 0.030374 ms
+        started in 208.248431 ms
+        measured executed in 0.948148 ms
+        started in 0.463431 ms
+        measured executed in 0.036331 ms
      */
     @Test
     fun `perfModule400 module perfs`() {

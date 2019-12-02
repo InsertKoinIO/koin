@@ -67,17 +67,17 @@ class KoinApplication private constructor() {
         }
         if (koin._logger.isAt(Level.INFO)) {
             val duration = measureDuration {
-                koin._scopeRegistry.createRootScope()
+                koin.createRootScope()
             }
             koin._logger.info("create context - $duration ms")
         } else {
-            koin._scopeRegistry.createRootScope()
+            koin.createRootScope()
         }
         return this
     }
 
-    private fun loadModules(modules: Iterable<Module>) {
-        koin._scopeRegistry.loadModules(modules)
+    private fun loadModules(modules: List<Module>) {
+        koin.loadModules(modules)
     }
 
     /**

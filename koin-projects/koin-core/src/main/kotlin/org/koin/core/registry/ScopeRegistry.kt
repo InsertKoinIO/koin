@@ -64,7 +64,12 @@ class ScopeRegistry(private val _koin: Koin) {
     private fun declareDefinitions(list: List<ScopeDefinition>) {
         list.forEach { scopeDefinition ->
             declareDefinitions(scopeDefinition)
+            declareInstances(scopeDefinition)
         }
+    }
+
+    private fun declareInstances(scopeDefinition: ScopeDefinition) {
+        _scopes.values.filter { it._scopeDefinition == scopeDefinition }.forEach { it.loadDefinitions(scopeDefinition) }
     }
 
     private fun declareDefinitions(definition: ScopeDefinition) {
@@ -77,7 +82,7 @@ class ScopeRegistry(private val _koin: Koin) {
 
     private fun mergeDefinitions(definition: ScopeDefinition) {
         val existing = scopeDefinitions[definition.qualifier.value]
-            ?: error("Scope definition '$definition' not found in $_scopeDefinitions")
+                ?: error("Scope definition '$definition' not found in $_scopeDefinitions")
         definition.definitions.forEach {
             existing.save(it)
         }
@@ -86,14 +91,14 @@ class ScopeRegistry(private val _koin: Koin) {
     internal fun createRootScopeDefinition() {
         val scopeDefinition = ScopeDefinition.rootDefinition()
         _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
-            scopeDefinition
+                scopeDefinition
         _rootScopeDefinition = scopeDefinition
     }
 
     internal fun createRootScope() {
         if (_rootScope == null) {
             _rootScope =
-                createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+                    createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
         }
     }
 
@@ -138,7 +143,7 @@ class ScopeRegistry(private val _koin: Koin) {
         _rootScope = null
     }
 
-    fun unloadModules(modules: List<Module>) {
+    fun unloadModules(modules: Iterable<Module>) {
         modules.forEach {
             unloadModules(it)
         }
@@ -149,10 +154,15 @@ class ScopeRegistry(private val _koin: Koin) {
         scopeDefinitions.forEach {
             unloadDefinitions(it)
         }
+        module.isLoaded = false
     }
 
     private fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
         _scopeDefinitions.values.firstOrNull { it == scopeDefinition }?.unloadDefinitions(scopeDefinition)
+        unloadInstances(scopeDefinition)
+    }
+
+    private fun unloadInstances(scopeDefinition: ScopeDefinition) {
         _scopes.values.filter { it._scopeDefinition == scopeDefinition }.forEach { it.unloadDefinitions(scopeDefinition) }
     }
 }

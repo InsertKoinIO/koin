@@ -18,7 +18,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     //TODO Lock - ConcurrentHashMap
     private val _instances = HashMap<IndexKey, InstanceFactory<*>>()
-    val instances: Map<IndexKey, InstanceFactory<*>>
+    internal val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
     internal fun create(definitions: Set<BeanDefinition<*>>) {
@@ -34,7 +34,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }
     }
 
-    fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
+    internal fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
         val instanceFactory = createInstanceFactory(_koin, definition)
         saveInstance(
             indexKey(definition.primaryType, definition.qualifier),
@@ -94,7 +94,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         _instances.clear()
     }
 
-    fun createEagerInstances() {
+    internal fun createEagerInstances() {
         instances.values.filterIsInstance<SingleInstanceFactory<*>>()
             .filter { instance -> instance.beanDefinition.options.isCreatedAtStart }
             .forEach { instance ->
@@ -105,7 +105,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getAll(clazz: KClass<*>): List<T> {
+    internal fun <T : Any> getAll(clazz: KClass<*>): List<T> {
         val instances = instances.values.toSet()
         val potentialKeys: List<InstanceFactory<*>> =
             instances.filter { instance -> instance.beanDefinition.hasType(clazz) }
@@ -114,7 +114,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }
     }
 
-    fun <S> bind(
+    internal fun <S> bind(
         primaryType: KClass<*>,
         secondaryType: KClass<*>,
         parameters: ParametersDefinition?
@@ -127,9 +127,13 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }?.get(defaultInstanceContext(parameters)) as? S
     }
 
-    fun dropDefinition(definition: BeanDefinition<*>) {
+    internal fun dropDefinition(definition: BeanDefinition<*>) {
         val ids = _instances.filter { it.value.beanDefinition == definition }.map { it.key }
         ids.forEach { _instances.remove(it) }
+    }
+
+    internal fun createDefinition(definition: BeanDefinition<*>) {
+        saveDefinition(definition,false)
     }
 
 }
