@@ -2,7 +2,6 @@ package org.koin.test
 
 import org.junit.Assert
 import org.junit.Assert.assertNotEquals
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.core.context.startKoin
