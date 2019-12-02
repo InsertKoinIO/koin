@@ -35,7 +35,6 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
     }
 
     override fun create(context: InstanceContext): T {
-        //TODO Instance Creation Lock
         return synchronized(this) {
             if (value == null) {
                 super.create(context)
