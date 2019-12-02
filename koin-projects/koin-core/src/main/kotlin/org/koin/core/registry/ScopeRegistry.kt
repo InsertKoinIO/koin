@@ -171,6 +171,6 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun unloadInstances(scopeDefinition: ScopeDefinition) {
-        _scopes.values.filter { it._scopeDefinition == scopeDefinition }.forEach { it.unloadDefinitions(scopeDefinition) }
+        _scopes.values.filter { it._scopeDefinition == scopeDefinition }.forEach { it.dropInstances(scopeDefinition) }
     }
 }

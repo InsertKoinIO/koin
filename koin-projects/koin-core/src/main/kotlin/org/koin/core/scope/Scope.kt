@@ -344,7 +344,7 @@ data class Scope(
         return "['$id']"
     }
 
-    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
+    fun dropInstances(scopeDefinition: ScopeDefinition) {
         scopeDefinition.definitions.forEach {
             _instanceRegistry.dropDefinition(it)
         }

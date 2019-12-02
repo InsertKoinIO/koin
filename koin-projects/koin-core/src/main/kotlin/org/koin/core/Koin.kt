@@ -249,13 +249,13 @@ class Koin {
         _propertyRegistry.close()
     }
 
-    internal fun loadModules(modules: List<Module>) {
+    fun loadModules(modules: List<Module>) = synchronized(this){
         _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
     }
 
 
-    internal fun unloadModules(modules: List<Module>) {
+    fun unloadModules(modules: List<Module>) = synchronized(this){
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
     }
