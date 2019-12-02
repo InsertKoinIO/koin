@@ -40,16 +40,23 @@ fun checkModules(parameters: CheckParameters? = null, appDeclaration: KoinAppDec
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
+    _logger.info("[Check] checking current modules ...")
+
+    val allParameters = makeParameters(parametersDefinition)
+
+    checkScopedDefinitions(allParameters)
+
+    close()
+}
+
+private fun Koin.makeParameters(parametersDefinition: CheckParameters?): MutableMap<CheckedComponent, ParametersCreator> {
     val bindings = ParametersBinding()
     bindings.koin = this
     parametersDefinition?.let {
         bindings.parametersDefinition()
     }
     val allParameters = bindings.creators
-
-    checkScopedDefinitions(allParameters)
-
-    close()
+    return allParameters
 }
 
 private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {

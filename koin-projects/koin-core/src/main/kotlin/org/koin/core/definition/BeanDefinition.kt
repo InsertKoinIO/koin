@@ -32,15 +32,15 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 data class BeanDefinition<T>(
-    val scopeDefinition: ScopeDefinition,
-    val primaryType: KClass<*>,
-    val qualifier: Qualifier? = null,
-    val definition: Definition<T>,
-    val kind: Kind,
-    val secondaryTypes: List<KClass<*>> = listOf(),
-    val options: Options = Options(),
-    val properties: Properties = Properties(),
-    val callbacks: Callbacks<T> = Callbacks()
+        val scopeDefinition: ScopeDefinition,
+        val primaryType: KClass<*>,
+        val qualifier: Qualifier? = null,
+        val definition: Definition<T>,
+        val kind: Kind,
+        val secondaryTypes: List<KClass<*>> = listOf(),
+        val options: Options = Options(),
+        val properties: Properties = Properties(),
+        val callbacks: Callbacks<T> = Callbacks()
 ) {
 
     override fun toString(): String {
@@ -48,7 +48,7 @@ data class BeanDefinition<T>(
         val defType = "'${primaryType.getFullName()}'"
         val defName = qualifier?.let { ",qualifier:$qualifier" } ?: ""
         val defScope =
-            scopeDefinition.let { if (it.isRoot) "" else ",scope:${scopeDefinition.qualifier}" }
+                scopeDefinition.let { if (it.isRoot) "" else ",scope:${scopeDefinition.qualifier}" }
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
             ",binds:$typesAsString"

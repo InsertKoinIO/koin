@@ -28,7 +28,6 @@ object Definitions {
             scopeDefinition,
             T::class,
             qualifier,
-//            { koin: Koin, beanDef: BeanDefinition<*> -> SingleInstanceFactory(koin, beanDef) },
             definition,
             Kind.Single,
             options = options,
