@@ -7,7 +7,7 @@ include 'examples:android-perfs'
 // Core extended
 include 'koin-core-ext'
 
-//// Android
+// Android
 //include 'koin-android'
 //include 'koin-android-scope' ,'koin-android-viewmodel'
 //include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'

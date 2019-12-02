@@ -3,11 +3,12 @@ package org.koin.test
 import org.junit.Assert
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
-import org.koin.test.mock.MockProvider
+import org.koin.test.mock.MockProviderRule
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito
 import org.mockito.Mockito
@@ -15,18 +16,12 @@ import java.util.*
 
 class DeclareMockFromKoinTest : AutoCloseKoinTest() {
 
-    init {
-        MockProvider.register { clazz ->
-            Mockito.mock(clazz.java)
-        }
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
     }
 
     val mock: Simple.UUIDComponent by inject()
-
-    @Before
-    fun before() {
-
-    }
 
     @Test
     fun `declareMock with KoinTest`() {

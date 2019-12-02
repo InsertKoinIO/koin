@@ -1,6 +1,7 @@
 // Core
 include 'koin-core'
-//include 'koin-test', 'koin-core-ext', 'koin-java'
+include 'koin-test', 'koin-core-ext'
+
 //// Android
 //include 'koin-android','koin-android-scope','koin-android-viewmodel'
 //include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'

@@ -2,12 +2,13 @@ package org.koin.test
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Rule
 import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.mock.MockProvider
+import org.koin.test.mock.MockProviderRule
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
@@ -15,10 +16,9 @@ import org.mockito.Mockito
 @Suppress("UNCHECKED_CAST")
 class DeclareMockTests : AutoCloseKoinTest() {
 
-    init {
-        MockProvider.register { clazz ->
-            Mockito.mock(clazz.java)
-        }
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
     }
 
     @Test
