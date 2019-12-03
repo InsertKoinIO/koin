@@ -18,7 +18,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     //TODO Lock - ConcurrentHashMap
     private val _instances = HashMap<IndexKey, InstanceFactory<*>>()
-    internal val instances: Map<IndexKey, InstanceFactory<*>>
+    val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
     internal fun create(definitions: Set<BeanDefinition<*>>) {
