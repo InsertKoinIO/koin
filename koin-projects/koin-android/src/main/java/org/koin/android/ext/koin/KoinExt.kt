@@ -70,6 +70,7 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
 fun KoinApplication.androidFileProperties(
         koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
+    koin.createRootScope()
     val koinProperties = Properties()
     val androidContext = koin.get<Context>()
     try {

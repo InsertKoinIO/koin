@@ -260,7 +260,7 @@ class Koin {
         _modules.removeAll(modules)
     }
 
-    internal fun createRootScope() {
+    fun createRootScope() {
         _scopeRegistry.createRootScope()
     }
 }
