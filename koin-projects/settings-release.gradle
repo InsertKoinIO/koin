@@ -7,13 +7,12 @@ include 'koin-core-ext'
 // Android
 include 'koin-android'
 include 'koin-android-scope' ,'koin-android-viewmodel'
-//include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
-//
-//// Android Ext
-//include 'koin-android-ext'
-//include 'koin-androidx-ext'
-//
-//
-//// Ktor
-//include 'koin-logger-slf4j'
-//include 'koin-ktor'
+include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
+
+// Android Ext
+include 'koin-android-ext'
+include 'koin-androidx-ext'
+
+// Ktor
+include 'koin-logger-slf4j'
+include 'koin-ktor'

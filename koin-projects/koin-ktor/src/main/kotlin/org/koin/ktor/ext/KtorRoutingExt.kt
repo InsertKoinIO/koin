@@ -71,4 +71,4 @@ inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun Routing.getKoin() = GlobalContext.get().koin
+fun Routing.getKoin() = GlobalContext.get()
