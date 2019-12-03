@@ -21,7 +21,7 @@ class InstanceReleaseTest {
             modules(module)
         }
 
-        val koin = GlobalContext.get().koin
+        val koin = GlobalContext.get()
         val a1 = koin.get<Simple.MySingle> { parametersOf(42) }
         assertEquals(42, a1.id)
         stopKoin()
@@ -30,7 +30,7 @@ class InstanceReleaseTest {
             modules(module)
         }
 
-        val a3 = GlobalContext.get().koin.get<Simple.MySingle> { parametersOf(24) }
+        val a3 = GlobalContext.get().get<Simple.MySingle> { parametersOf(24) }
 
         assertEquals(24, a3.id)
 

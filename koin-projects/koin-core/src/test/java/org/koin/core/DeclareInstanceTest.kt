@@ -1,11 +1,12 @@
 package org.koin.core
 
 import org.junit.Assert.*
+import org.junit.Ignore
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -31,7 +32,7 @@ class DeclareInstanceTest {
     fun `can't declare a single on the fly`() {
 
         val koin = koinApplication {
-            printLogger()
+            printLogger(Level.DEBUG)
             modules(module {
                 single { Simple.ComponentA() }
             })
@@ -137,10 +138,26 @@ class DeclareInstanceTest {
     }
 
     @Test
-    fun `can declare and override a single with secondary type on the fly`() {
+    fun `can override a single on the fly`() {
 
         val koin = koinApplication {
-            printLogger()
+            printLogger(Level.DEBUG)
+            modules(emptyList())
+        }.koin
+
+        val a = Simple.Component1()
+        val b = Simple.Component1()
+
+        koin.declare(a)
+        koin.declare(b, override = true)
+
+        assertEquals(b, koin.get<Simple.Component1>())
+    }
+
+    @Test
+    fun `can declare and override a single with secondary type on the fly`() {
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
             modules(emptyList())
         }.koin
 
@@ -151,6 +168,7 @@ class DeclareInstanceTest {
         koin.declare(b, secondaryTypes = listOf(Simple.ComponentInterface1::class), override = true)
 
         assertEquals(b, koin.get<Simple.Component1>())
+        assertEquals(koin.get<Simple.Component1>(), koin.get<Simple.Component1>())
         assertEquals(b, koin.get<Simple.ComponentInterface1>())
     }
 

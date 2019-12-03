@@ -47,5 +47,6 @@ class ViewModelDSLTest {
  * @param clazz
  */
 fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
-    return this.koin.rootScope.beanRegistry.getDefinition(clazz)
+    val scopeDefinition = this.koin._scopeRegistry._rootScopeDefinition
+    return scopeDefinition!!.definitions.firstOrNull { it.`is`(clazz, null, scopeDefinition) }
 }

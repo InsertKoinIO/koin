@@ -4,7 +4,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
-import org.koin.test.getDefinition
+import org.koin.test.getBeanDefinition
 
 class ModuleOptions {
 
@@ -13,7 +13,7 @@ class ModuleOptions {
         val module = module {
         }
 
-        assertFalse(module.isCreatedAtStart)
+        assertFalse(module.createAtStart)
         assertFalse(module.override)
     }
 
@@ -22,7 +22,7 @@ class ModuleOptions {
         val module = module(override = true) {
         }
 
-        assertFalse(module.isCreatedAtStart)
+        assertFalse(module.createAtStart)
         assertTrue(module.override)
     }
 
@@ -31,7 +31,7 @@ class ModuleOptions {
         val module = module(createdAtStart = true) {
         }
 
-        assertTrue(module.isCreatedAtStart)
+        assertTrue(module.createAtStart)
         assertFalse(module.override)
     }
 
@@ -46,10 +46,10 @@ class ModuleOptions {
             modules(module)
         }
 
-        assertTrue(module.isCreatedAtStart)
+        assertTrue(module.createAtStart)
         assertTrue(module.override)
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
         assertTrue(defA.options.override)
     }
@@ -66,14 +66,14 @@ class ModuleOptions {
             modules(module)
         }
 
-        assertFalse(module.isCreatedAtStart)
+        assertFalse(module.createAtStart)
         assertFalse(module.override)
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
         assertFalse(defA.options.override)
 
-        val defB = app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
+        val defB = app.getBeanDefinition(Simple.ComponentB::class) ?: error("no definition found")
         assertFalse(defB.options.isCreatedAtStart)
         assertTrue(defB.options.override)
     }

@@ -29,7 +29,7 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin(): Koin = GlobalContext.get().koin
+    fun getKoin(): Koin = GlobalContext.get()
 }
 
 /**

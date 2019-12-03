@@ -3,6 +3,7 @@ package org.koin.java;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.koin.KoinCoreTest;
 import org.koin.core.KoinApplication;
 import org.koin.core.context.GlobalContext;
 import org.koin.core.scope.Scope;
@@ -12,7 +13,6 @@ import kotlin.Lazy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.koin.core.context.GlobalContext.start;
-import static org.koin.core.context.GlobalContext.stop;
 import static org.koin.core.context.GlobalContextKt.stopKoin;
 import static org.koin.core.qualifier.QualifierKt.named;
 import static org.koin.java.KoinJavaComponent.get;
@@ -20,20 +20,16 @@ import static org.koin.java.KoinJavaComponent.getKoin;
 import static org.koin.java.KoinJavaComponent.inject;
 import static org.koin.java.UnitJavaStuffKt.koinModule;
 
-public class UnitJavaTest {
+public class UnitJavaTest extends KoinCoreTest {
 
     @Before
     public void before() {
-        KoinApplication koinApp = KoinApplication.create()
+        KoinApplication koinApp = KoinApplication
+                .init()
                 .printLogger()
                 .modules(koinModule);
 
         start(koinApp);
-    }
-
-    @After
-    public void after() {
-        stopKoin();
     }
 
     @Test

@@ -4,7 +4,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.Simple
-import org.koin.test.getDefinition
+import org.koin.test.getBeanDefinition
 
 class BeanOptionsTest {
 
@@ -19,10 +19,10 @@ class BeanOptionsTest {
             )
         }
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
 
-        val defB = app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
+        val defB = app.getBeanDefinition(Simple.ComponentB::class) ?: error("no definition found")
         assertFalse(defB.options.isCreatedAtStart)
     }
 
@@ -37,10 +37,10 @@ class BeanOptionsTest {
             )
         }
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertFalse(defA.options.override)
 
-        val defB = app.getDefinition(Simple.ComponentB::class) ?: error("no definition found")
+        val defB = app.getBeanDefinition(Simple.ComponentB::class) ?: error("no definition found")
         assertTrue(defB.options.override)
     }
 }

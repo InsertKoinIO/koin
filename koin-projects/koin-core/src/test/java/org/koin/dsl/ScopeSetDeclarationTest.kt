@@ -4,10 +4,11 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
-import org.koin.core.instance.ScopeDefinitionInstance
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.StringQualifier
+import org.koin.core.qualifier._q
 import org.koin.core.qualifier.named
+import org.koin.core.scope.ScopeDefinition
 
 class ScopeSetDeclarationTest {
 
@@ -24,11 +25,12 @@ class ScopeSetDeclarationTest {
                     }
             )
         }.koin
-        val def = koin.scopeRegistry.getScopeDefinition(scopeKey.toString())?.definitions?.first { it.primaryType == Simple.ComponentA::class }
-        assertTrue(def!!.scopeName == scopeKey)
+
+        val def: ScopeDefinition = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
+        assertTrue(def.qualifier == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
-        assertTrue(scope.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class)!!.instance is ScopeDefinitionInstance<*>)
+        assertTrue(scope._scopeDefinition == def)
     }
 
     @Test
@@ -45,45 +47,28 @@ class ScopeSetDeclarationTest {
                     }
             )
         }.koin
-        val defA = koin.scopeRegistry.getScopeDefinition("A")?.definitions?.first { it.primaryType == Simple.ComponentA::class && it.scopeName == named("A")}
-        assertTrue(defA!!.scopeName == StringQualifier("A"))
+        val defA = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("A") }
+        assertTrue(defA.qualifier == StringQualifier("A"))
 
-        val defB = koin.scopeRegistry.getScopeDefinition("B")?.definitions?.first { it.primaryType == Simple.ComponentA::class && it.scopeName == named("B") }
-        assertTrue(defB!!.scopeName == StringQualifier("B"))
+        val defB = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("B") }
+        assertTrue(defB.qualifier == StringQualifier("B"))
 
         val scopeA = koin.createScope("A", named("A")).get<Simple.ComponentA>()
         val scopeB = koin.createScope("B", named("B")).get<Simple.ComponentA>()
         assertNotEquals(scopeA, scopeB)
     }
 
-//    @Test
-//    fun `can't declare other than scoped in scope`() {
-//        val app = koinApplication {
-//            modules(
-//                    module {
-//                        scope(named("")) {
-//                            scoped { }
-//                            factory { }
-//                        }
-//                    }
-//            )
-//        }
-//        val def = app.koin.beanRegistry.findDefinitionOrNull(clazz = Simple.ComponentA::class)
-//        assertTrue(def!!.instance is ScopeDefinitionInstance)
-//        assertTrue(def.getScopeName() == scopeKey)
-//    }
-
     @Test
     fun `can declare a scope definition`() {
-        val app = koinApplication {
+        val koin = koinApplication {
             modules(
                     module {
                         scope(scopeKey) {
                         }
                     }
             )
-        }
-        val def = app.koin.scopeRegistry.getScopeDefinition(scopeKey.toString())!!
+        }.koin
+        val def = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
         assertTrue(def.qualifier == scopeKey)
     }
 

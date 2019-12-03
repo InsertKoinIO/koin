@@ -28,11 +28,11 @@ class NamingTest {
 
     @Test
     fun `can resolve naming with q`() {
-        val scopeName = _n("MY_SCOPE")
+        val scopeName = _q("MY_SCOPE")
         val koin = koinApplication {
             modules(module {
 
-                single(_n("24")) { Simple.MySingle(24) }
+                single(_q("24")) { Simple.MySingle(24) }
 
                 scope(scopeName) {
                     scoped { Simple.MySingle(42) }

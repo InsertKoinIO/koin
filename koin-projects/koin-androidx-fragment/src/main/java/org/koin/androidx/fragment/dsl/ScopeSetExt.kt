@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.ScopeSet
+import org.koin.dsl.ScopeDSL
 
 /**
  * ViewModel DSL Extension
@@ -30,8 +30,8 @@ import org.koin.dsl.ScopeSet
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : Fragment> ScopeSet.viewModel(
-    qualifier: Qualifier? = null,
-    override: Boolean = false,
-    noinline definition: Definition<T>
+inline fun <reified T : Fragment> ScopeDSL.viewModel(
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
 ): BeanDefinition<T> = factory(qualifier, override, definition)

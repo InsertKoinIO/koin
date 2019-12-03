@@ -6,6 +6,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.check.checkModules
 import org.koin.test.get
 
 class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
@@ -24,7 +25,7 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
     fun `should create all MVP hierarchy`() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(MVPModule+ DataSourceModule)
+            modules(MVPModule + DataSourceModule)
         }
 
         val view = get<View>()
@@ -40,9 +41,9 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
 
     @Test
     fun `check MVP hierarchy`() {
-        startKoin {
+        checkModules {
             printLogger(Level.DEBUG)
-            modules(MVPModule+ DataSourceModule)
+            modules(MVPModule + DataSourceModule)
         }
     }
 }

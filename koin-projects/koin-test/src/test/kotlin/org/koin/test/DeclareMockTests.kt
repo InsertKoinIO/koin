@@ -2,16 +2,13 @@ package org.koin.test
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Rule
 import org.junit.Test
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
-import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.mock.createMockedDefinition
+import org.koin.test.mock.MockProviderRule
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
@@ -19,36 +16,9 @@ import org.mockito.Mockito
 @Suppress("UNCHECKED_CAST")
 class DeclareMockTests : AutoCloseKoinTest() {
 
-    @Test
-    fun `create mock of an existing definition for given scope`() {
-
-        val koin = koinApplication {
-            modules(
-                    module {
-                        scope(named<Simple>()) {
-                            scoped { Simple.ComponentA() }
-                        }
-                    }
-            )
-        }.koin
-
-        val scope: Scope = koin.getOrCreateScope("scope_id", named<Simple>())
-
-        val definition: BeanDefinition<Simple.ComponentA> =
-                scope.beanRegistry.findDefinitionOrNull(null, Simple.ComponentA::class)
-        as BeanDefinition<Simple.ComponentA>
-
-        val instance = scope.get<Simple.ComponentA>()
-
-        val instanceFound = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin, scope) {emptyParametersHolder()})
-
-        val mockDefinition = definition.createMockedDefinition()
-
-        val mock = mockDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin, scope) { emptyParametersHolder()})
-
-        assertEquals(instance, instanceFound)
-        assertNotEquals(instance, mock)
-
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
     }
 
     @Test
@@ -102,29 +72,6 @@ class DeclareMockTests : AutoCloseKoinTest() {
         assertNotEquals(instance, mock)
         assertEquals(uuidValue, mock.getUUID())
 
-    }
-
-    @Test
-    fun `create mock of an existing definition`() {
-        val koin = koinApplication {
-            modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    }
-            )
-        }.koin
-
-        val definition: BeanDefinition<Simple.ComponentA> =
-                koin.rootScope.beanRegistry.findDefinitionOrNull(
-                        null, Simple.ComponentA::class
-                ) as BeanDefinition<Simple.ComponentA>
-
-        val mockedDefinition = definition.createMockedDefinition()
-
-        val instance = definition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin, _parameters = { emptyParametersHolder() }))
-        val mock = mockedDefinition.instance?.get<Simple.ComponentA>(InstanceContext(koin = koin, _parameters = { emptyParametersHolder() }))
-
-        assertNotEquals(instance, mock)
     }
 
     @Test
