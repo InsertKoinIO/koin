@@ -7,7 +7,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.currentScope
-import org.koin.core.error.NoScopeDefinitionFoundException
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
@@ -26,7 +25,8 @@ class ScopedActivityB : AppCompatActivity() {
             // No scoped Session definition in current scope
             currentScope.get<Session>()
             fail()
-        } catch (e: NoScopeDefinitionFoundException) {
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         // Check data from ScopedActivityA

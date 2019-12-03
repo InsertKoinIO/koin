@@ -5,7 +5,7 @@ import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.dsl.onRelease
+import org.koin.dsl.onClose
 import org.koin.sample.androidx.components.Counter
 import org.koin.sample.androidx.components.SCOPE_ID
 import org.koin.sample.androidx.components.SCOPE_SESSION
@@ -56,9 +56,9 @@ val mvvmModule = module {
         viewModel<ExtSimpleViewModel>(named("ext"))
         viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) ->
             SavedStateViewModel(
-                handle,
-                id,
-                get()
+                    handle,
+                    id,
+                    get()
             )
         }
     }
@@ -66,7 +66,7 @@ val mvvmModule = module {
 
 val scopeModule = module {
     scope(named(SCOPE_ID)) {
-        scoped(named(SCOPE_SESSION)) { Session() } onRelease {
+        scoped(named(SCOPE_SESSION)) { Session() } onClose {
             // onRelease, count it
             Counter.released++
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
