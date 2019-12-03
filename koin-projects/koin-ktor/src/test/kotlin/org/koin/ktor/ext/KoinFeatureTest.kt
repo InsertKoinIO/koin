@@ -24,7 +24,7 @@ class KoinFeatureTest {
             application.install(Koin) {
                 modules(module)
             }
-            val bean = GlobalContext.get().koin.get<Foo>()
+            val bean = GlobalContext.get().get<Foo>()
             Assert.assertNotNull(bean)
         }
     }
