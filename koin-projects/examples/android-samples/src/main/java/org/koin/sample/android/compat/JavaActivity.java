@@ -1,6 +1,5 @@
 package org.koin.sample.android.compat;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;

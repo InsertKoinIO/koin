@@ -15,8 +15,11 @@
  */
 package org.koin.core
 
-import org.koin.core.KoinApplication.Companion.logger
+import org.koin.core.error.ScopeNotCreatedException
+import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
+import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.PropertyRegistry
@@ -33,9 +36,10 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class Koin {
-    val scopeRegistry = ScopeRegistry()
-    val propertyRegistry = PropertyRegistry()
-    val rootScope = Scope("-Root-", isRoot = true, _koin = this)
+    val _scopeRegistry = ScopeRegistry(this)
+    val _propertyRegistry = PropertyRegistry(this)
+    var _logger: Logger = EmptyLogger()
+    val _modules = hashSetOf<Module>()
 
     /**
      * Lazy inject a Koin instance
@@ -49,7 +53,7 @@ class Koin {
     inline fun <reified T> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
-    ): Lazy<T> = rootScope.inject(qualifier, parameters)
+    ): Lazy<T> = _scopeRegistry.rootScope.inject(qualifier, parameters)
 
     /**
      * Lazy inject a Koin instance if available
@@ -63,7 +67,7 @@ class Koin {
     inline fun <reified T> injectOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
-    ): Lazy<T?> = rootScope.injectOrNull(qualifier, parameters)
+    ): Lazy<T?> = _scopeRegistry.rootScope.injectOrNull(qualifier, parameters)
 
     /**
      * Get a Koin instance
@@ -75,7 +79,7 @@ class Koin {
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
-    ): T = rootScope.get(qualifier, parameters)
+    ): T = _scopeRegistry.rootScope.get(qualifier, parameters)
 
     /**
      * Get a Koin instance if available
@@ -89,7 +93,7 @@ class Koin {
     inline fun <reified T> getOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
-    ): T? = rootScope.getOrNull(qualifier, parameters)
+    ): T? = _scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
     /**
      * Get a Koin instance
@@ -104,7 +108,7 @@ class Koin {
             clazz: KClass<*>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
-    ): T = rootScope.get(clazz, qualifier, parameters)
+    ): T = _scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
 
     /**
@@ -116,13 +120,13 @@ class Koin {
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    inline fun <reified T> declare(
+    fun <T : Any> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
     ) {
-        rootScope.declare(instance, qualifier, secondaryTypes, override)
+        _scopeRegistry.rootScope.declare(instance, qualifier, secondaryTypes, override)
     }
 
     /**
@@ -130,7 +134,7 @@ class Koin {
      *
      * @return list of instances of type T
      */
-    inline fun <reified T> getAll(): List<T> = rootScope.getAll()
+    inline fun <reified T : Any> getAll(): List<T> = _scopeRegistry.rootScope.getAll()
 
     /**
      * Get instance of primary type P and secondary type S
@@ -139,7 +143,7 @@ class Koin {
      * @return instance of type S
      */
     inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S =
-            rootScope.bind<S, P>(parameters)
+            _scopeRegistry.rootScope.bind<S, P>(parameters)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -151,9 +155,18 @@ class Koin {
             primaryType: KClass<*>,
             secondaryType: KClass<*>,
             parameters: ParametersDefinition? = null
-    ): S = rootScope.bind(primaryType, secondaryType, parameters)
+    ): S = _scopeRegistry.rootScope.bind(primaryType, secondaryType, parameters)
 
-    internal fun createEagerInstances() = rootScope.createEagerInstances()
+    internal fun createEagerInstances() {
+        createContextIfNeeded()
+        _scopeRegistry.rootScope.createEagerInstances()
+    }
+
+    internal fun createContextIfNeeded() {
+        if (_scopeRegistry._rootScope == null) {
+            _scopeRegistry.createRootScope()
+        }
+    }
 
     /**
      * Create a Scope instance
@@ -161,10 +174,10 @@ class Koin {
      * @param scopeDefinitionName
      */
     fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("!- create scope - id:$scopeId q:$qualifier")
+        if (_logger.isAt(Level.DEBUG)) {
+            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
-        return scopeRegistry.createScopeInstance(this, scopeId, qualifier)
+        return _scopeRegistry.createScope(scopeId, qualifier)
     }
 
     /**
@@ -173,7 +186,7 @@ class Koin {
      * @param qualifier
      */
     fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        return scopeRegistry.getScopeInstanceOrNull(scopeId) ?: createScope(scopeId, qualifier)
+        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }
 
     /**
@@ -181,7 +194,8 @@ class Koin {
      * @param scopeId
      */
     fun getScope(scopeId: ScopeID): Scope {
-        return scopeRegistry.getScopeInstance(scopeId)
+        return _scopeRegistry.getScopeOrNull(scopeId)
+                ?: throw ScopeNotCreatedException("No scope found for id '$scopeId'")
     }
 
     /**
@@ -189,14 +203,14 @@ class Koin {
      * @param scopeId
      */
     fun getScopeOrNull(scopeId: ScopeID): Scope? {
-        return scopeRegistry.getScopeInstanceOrNull(scopeId)
+        return _scopeRegistry.getScopeOrNull(scopeId)
     }
 
     /**
      * Delete a scope instance
      */
     fun deleteScope(scopeId: ScopeID) {
-        scopeRegistry.deleteScopeInstance(scopeId)
+        _scopeRegistry.deleteScope(scopeId)
     }
 
     /**
@@ -205,7 +219,7 @@ class Koin {
      * @param defaultValue
      */
     fun <T> getProperty(key: String, defaultValue: T): T {
-        return propertyRegistry.getProperty<T>(key) ?: defaultValue
+        return _propertyRegistry.getProperty<T>(key) ?: defaultValue
     }
 
     /**
@@ -213,7 +227,7 @@ class Koin {
      * @param key
      */
     fun <T> getProperty(key: String): T? {
-        return propertyRegistry.getProperty(key)
+        return _propertyRegistry.getProperty(key)
     }
 
     /**
@@ -222,15 +236,31 @@ class Koin {
      * @param value
      */
     fun <T : Any> setProperty(key: String, value: T) {
-        propertyRegistry.saveProperty(key, value)
+        _propertyRegistry.saveProperty(key, value)
     }
 
     /**
      * Close all resources from context
      */
-    fun close() {
-        scopeRegistry.close()
-        rootScope.close()
-        propertyRegistry.close()
+    fun close() = synchronized(this) {
+        _modules.forEach { it.isLoaded = false }
+        _modules.clear()
+        _scopeRegistry.close()
+        _propertyRegistry.close()
+    }
+
+    fun loadModules(modules: List<Module>) = synchronized(this){
+        _modules.addAll(modules)
+        _scopeRegistry.loadModules(modules)
+    }
+
+
+    fun unloadModules(modules: List<Module>) = synchronized(this){
+        _scopeRegistry.unloadModules(modules)
+        _modules.removeAll(modules)
+    }
+
+    fun createRootScope() {
+        _scopeRegistry.createRootScope()
     }
 }

@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
@@ -38,18 +39,16 @@ class ModuleDeclarationRulesTest {
     }
 
     @Test
-    fun `reject redeclaration - same names`() {
-        try {
-            koinApplication {
-                modules(module {
-                    single(named("default")) { Simple.ComponentA() }
-                    single(named("default")) { Simple.ComponentB(get()) }
-                })
-            }
-            fail("Should not allow redeclaration for same qualifier")
-        } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
-        }
+    fun `allow qualifier redeclaration - same names`() {
+        val koin = koinApplication {
+            modules(module {
+                single(named("default")) { Simple.ComponentA() }
+                single(named("default")) { Simple.ComponentB(get(named("default"))) }
+            })
+        }.koin
+        val a = koin.get<Simple.ComponentA>(named("default"))
+        val b = koin.get<Simple.ComponentB>(named("default"))
+        assertEquals(a, b.a)
     }
 
     @Test

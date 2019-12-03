@@ -4,7 +4,7 @@ import org.koin.android.experimental.dsl.viewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.dsl.onRelease
+import org.koin.dsl.onClose
 import org.koin.sample.android.compat.JavaActivity
 import org.koin.sample.android.components.Counter
 import org.koin.sample.android.components.SCOPE_ID
@@ -57,7 +57,7 @@ val mvvmModule = module {
 
 val scopeModule = module {
     scope(named(SCOPE_ID)) {
-        scoped(named(SCOPE_SESSION)) { Session() } onRelease {
+        scoped(named(SCOPE_SESSION)) { Session() } onClose {
             // onRelease, count it
             Counter.released++
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")

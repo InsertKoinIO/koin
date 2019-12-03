@@ -32,7 +32,7 @@ class DynamicActivity : AppCompatActivity() {
             dyn_button.visibility = View.GONE
 
             assert(single != get<DynSingle>())
-            val scope1 = getKoin().createScope("id", named("dynamic_scope"))
+            val scope1 = getKoin().getOrCreateScope("id", named("dynamic_scope"))
             assert(scope != scope1.get<DynScoped>())
 
             dyn_label.text = "reload ok!"

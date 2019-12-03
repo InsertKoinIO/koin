@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.Logger
+package org.koin.logger
 
 import org.koin.core.logger.KOIN_TAG
 import org.koin.core.logger.Level

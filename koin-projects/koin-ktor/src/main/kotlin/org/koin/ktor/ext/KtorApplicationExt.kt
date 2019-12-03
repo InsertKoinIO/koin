@@ -31,7 +31,7 @@ import org.koin.core.qualifier.Qualifier
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = GlobalContext.get().koin
+fun Application.getKoin(): Koin = GlobalContext.get()
 
 /**
  * inject lazily given dependency

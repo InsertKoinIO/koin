@@ -6,11 +6,11 @@ import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.getDefinition
+import org.koin.test.getBeanDefinition
+import org.koin.test.getInstanceFactory
 
 class DefinitionCreatedAtStartTest {
 
@@ -19,15 +19,16 @@ class DefinitionCreatedAtStartTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single(createdAtStart = true) { Simple.ComponentA() }
-                    }
+                module {
+                    single(createdAtStart = true) { Simple.ComponentA() }
+                }
             )
         }
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
-        assertFalse(defA.instance!!.isCreated(InstanceContext()))
+        val instanceFactory = app.getInstanceFactory(Simple.ComponentA::class)!!
+        assertFalse(instanceFactory.isCreated())
     }
 
     @Test
@@ -35,15 +36,15 @@ class DefinitionCreatedAtStartTest {
         val app = startKoin {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single(createdAtStart = true) { Simple.ComponentA() }
-                    }
+                module {
+                    single(createdAtStart = true) { Simple.ComponentA() }
+                }
             )
         }
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertTrue(defA.options.isCreatedAtStart)
-        assertTrue(defA.instance!!.isCreated(InstanceContext()))
+        assertTrue(app.getInstanceFactory(Simple.ComponentA::class)!!.isCreated())
         stopKoin()
     }
 
@@ -51,15 +52,15 @@ class DefinitionCreatedAtStartTest {
     fun `factory is not created at start`() {
         val app = koinApplication {
             modules(
-                    module {
-                        factory { Simple.ComponentA() }
-                    }
+                module {
+                    factory { Simple.ComponentA() }
+                }
             )
         }
 
-        val defA = app.getDefinition(Simple.ComponentA::class) ?: error("no definition found")
+        val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
         assertFalse(defA.options.isCreatedAtStart)
-        assertFalse(defA.instance!!.isCreated(InstanceContext()))
+        assertFalse(app.getInstanceFactory(Simple.ComponentA::class)!!.isCreated())
         app.close()
     }
 }
