@@ -47,6 +47,8 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     checkScopedDefinitions(allParameters)
 
     close()
+
+    _logger.info("[Check] modules checked")
 }
 
 private fun Koin.makeParameters(parametersDefinition: CheckParameters?): MutableMap<CheckedComponent, ParametersCreator> {

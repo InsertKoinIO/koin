@@ -35,18 +35,19 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     fun saveDefinition(definition: BeanDefinition<*>, override: Boolean) {
+        val defOverride = definition.options.override || override
         val instanceFactory = createInstanceFactory(_koin, definition)
         saveInstance(
                 indexKey(definition.primaryType, definition.qualifier),
                 instanceFactory,
-                override
+                defOverride
         )
         definition.secondaryTypes.forEach { clazz ->
-            if (override) {
+            if (defOverride) {
                 saveInstance(
                         indexKey(clazz, definition.qualifier),
                         instanceFactory,
-                        override
+                        defOverride
                 )
             } else {
                 saveInstanceIfPossible(
