@@ -63,7 +63,7 @@ class MainApplication : Application() {
 ```
 
 <div class="alert alert-primary" role="alert">
-    if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
+    if you can't inject android context or application, be sure to use androidContext() function in your Koin application declaration.
 </div>
 
 ### Starting Koin for Ktor
