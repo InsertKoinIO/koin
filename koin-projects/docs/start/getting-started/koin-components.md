@@ -1,6 +1,5 @@
 
-Sometimes you can't declare only components via Koin. Dependening on your runtime technology, you can need to retrieve instances from Koin in a class
-that is not created with Koin (i.e: Android)
+Sometimes you can't declare only components via Koin. Dependening on your runtime technology, you might need to retrieve instances from Koin in a class that was not created with Koin (e.g. Android)
 
 ## The KoinComponent interface
 
@@ -45,9 +44,9 @@ fun main(vararg args: String) {
 }
 ```
 
-#### Bootstraping
+#### Bootstrapping
 
-> `KoinComponent` interface is also used to help you boostrap an application from outside of Koin. Also, you can bring  `KoinComponent` feature by extension functions directly on some target classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
+> `KoinComponent` interface is also used to help you bootstrap an application from outside of Koin. Also, you can bring  `KoinComponent` feature by extension functions directly on some target classes (i.e: Activity, Fragment have KoinComponent feature in Android). 
 
 
 ## Bridge with Koin instance
