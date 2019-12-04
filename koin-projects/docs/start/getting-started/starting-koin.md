@@ -76,7 +76,7 @@ Starting Koin from your `Application` extension function:
 ```kotlin
 fun Application.main() {
     // Install Ktor features
-    koin {
+    install(Koin) {
         // Use SLF4J Koin Logger at Level.INFO
         slf4jLogger()
 

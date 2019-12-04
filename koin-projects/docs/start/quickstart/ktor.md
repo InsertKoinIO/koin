@@ -129,7 +129,7 @@ fun Application.main() {
     install(DefaultHeaders)
     install(CallLogging)
     // Declare Koin
-    koin {
+    install(Koin) {
         SLF4JLogger()
         modules(helloAppModule)
     }
