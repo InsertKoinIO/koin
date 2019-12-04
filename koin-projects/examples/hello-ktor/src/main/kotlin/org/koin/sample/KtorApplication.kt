@@ -22,7 +22,8 @@ fun Application.main() {
     // Install Ktor features
     install(DefaultHeaders)
     install(CallLogging)
-    koin {
+    // Koin section
+    install(Koin) {
         slf4jLogger()
         modules(helloAppModule)
     }
