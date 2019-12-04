@@ -108,7 +108,7 @@ org.koin.dsl.module.module -> org.koin.dsl.module
 
 ### API Breakings
 
-For teh following API/features, you will have to rewrite your content:
+For the following API/features, you will have to rewrite your content:
 
 - Scope API - now use the new Scope API to declare `scoped` definitions
 - Inner modules - Inner modules are no longer supported 
