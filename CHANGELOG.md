@@ -25,7 +25,7 @@ _Core_
 * `[UPDATED]` - Reworked all resolution engine to use immutable BeanDefinition & base the resolution on `Scope` & `ScopeDefinition`
 * `[UPDATED]` - Locking Strategy to avoid usage of ConcurrentHashMap
 * `[UPDATED]` - Replace BeanRegistry with InstanceRegistry & ScopeRegistry
-* `[UPDATED]` - added status to 
+* `[UPDATED]` - added `closed` status to Scope
 * `[FIXED]` - Fixed bugs related to closed scopes
 * `[FIXED]` - Can now allow to resolve different types with same Qualifer
 * `[ADDED]` - Module `loaded` property in order to allow later "reloading"
