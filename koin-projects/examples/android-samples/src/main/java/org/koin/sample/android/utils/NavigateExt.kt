@@ -31,8 +31,7 @@ inline fun <reified T : AppCompatActivity> AppCompatActivity.navigateTo(isRoot: 
 
 fun Intent.applyExtras(extras: Map<String, Any>) {
     extras.keys.forEach { key ->
-        val value: Any? = extras[key]
-        when (value) {
+        when (val value = extras[key]) {
             is Int -> putExtra(key, value)
             is Long -> putExtra(key, value)
             is String -> putExtra(key, value)
