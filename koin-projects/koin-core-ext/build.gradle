@@ -6,7 +6,6 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Koin
     compile project(":koin-core")
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     testCompile project(":koin-test")
 }
