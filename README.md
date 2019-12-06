@@ -19,7 +19,7 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 Any question about Koin usage? 
 - Come talk on slack [#koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
-- Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
+- Post your question on [StackOverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
 ### Articles, Videos & other resources 🎉
 

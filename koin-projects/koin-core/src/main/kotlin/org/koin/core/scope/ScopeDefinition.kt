@@ -6,7 +6,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeSet
 
 /**
- * Imternal Scope Definition
+ * Internal Scope Definition
  */
 data class ScopeDefinition(val qualifier: Qualifier) {
 
