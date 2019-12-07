@@ -25,7 +25,7 @@ class ScopedActivityA : AppCompatActivity() {
 
         assertEquals(currentSession.value, currentScope.get<Session>())
 
-        // Conpare different scope instances
+        // Compare different scope instances
         val scopeSession1 = getKoin().createScope(SESSION_1, named(SCOPE_ID))
         val scopeSession2 = getKoin().createScope(SESSION_2, named(SCOPE_ID))
         assertNotEquals(scopeSession1.get<Session>(named(SCOPE_SESSION)), currentSession)

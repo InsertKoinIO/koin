@@ -63,7 +63,7 @@ class MainApplication : Application() {
 ```
 
 <div class="alert alert-primary" role="alert">
-    if you can't inject android context or appliation, be sure to use androidContext() function in your Koin application declaration.
+    if you can't inject android context or application, be sure to use androidContext() function in your Koin application declaration.
 </div>
 
 ### Starting Koin for Ktor
@@ -108,7 +108,7 @@ org.koin.dsl.module.module -> org.koin.dsl.module
 
 ### API Breakings
 
-For teh following API/features, you will have to rewrite your content:
+For the following API/features, you will have to rewrite your content:
 
 - Scope API - now use the new Scope API to declare `scoped` definitions
 - Inner modules - Inner modules are no longer supported 

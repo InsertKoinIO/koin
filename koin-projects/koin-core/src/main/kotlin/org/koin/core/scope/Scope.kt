@@ -35,8 +35,10 @@ data class Scope(
 ) {
     var _linkedScope: List<Scope> = emptyList()
     val _instanceRegistry = InstanceRegistry(_koin, this)
-    internal val _callbacks = arrayListOf<ScopeCallback>()
-    var closed: Boolean = false
+    private val _callbacks = arrayListOf<ScopeCallback>()
+    private var _closed: Boolean = false
+    val closed: Boolean
+        get() = _closed
 
     internal fun create(rootScope: Scope? = null) {
         _instanceRegistry.create(_scopeDefinition.definitions)
@@ -182,7 +184,7 @@ data class Scope(
             clazz: KClass<*>,
             parameters: ParametersDefinition?
     ): T {
-        if (closed) {
+        if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
         //TODO Resolve in Root or link
@@ -328,7 +330,7 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
-        closed = true
+        _closed = true
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.info("closing scope:'$id'")
         }

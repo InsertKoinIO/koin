@@ -3,6 +3,51 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [2.1.0]()
+
+
+### [alpha-7]()
+
+_Android-ViewModel_
+
+* `[UPDATED]` - updated `ViewModelParameter` API around to help integrate it more easily with 3rd party access
+
+_AndroidX-ViewModel_
+
+* `[UPDATED]` - updated `ViewModelParameter` API around to help integrate it more easily with 3rd party access
+
+_AndroidX-Factory_
+
+* `[ADDED]` - `KoinFragmentFactory` API to setup `Fragment` injection
+
+_Core_
+
+* `[UPDATED]` - Reworked all resolution engine to use immutable BeanDefinition & base the resolution on `Scope` & `ScopeDefinition`
+* `[UPDATED]` - Locking Strategy to avoid usage of ConcurrentHashMap
+* `[UPDATED]` - Replace BeanRegistry with InstanceRegistry & ScopeRegistry
+* `[UPDATED]` - added `closed` status to Scope
+* `[FIXED]` - Fixed bugs related to closed scopes
+* `[FIXED]` - Can now allow to resolve different types with same Qualifer
+* `[ADDED]` - Module `loaded` property in order to allow later "reloading"
+* `[ADDED]` - Java helpers are now part of the `koin-core` project
+* `[ADDED]` - bind<T>() oeprator on a definition, that use reified Type
+* `[ADDED]` - _q()_ operator to declare a String or a Type 
+
+_Java_
+
+* `[REMOVED]` - project is now part of `koin-core`
+
+_Test_
+
+* `[UPDATED]` - Check modules with `checkModules { }` that open an KoinApplication declaration
+* `[ADDED]` - `MockProviderRule` & `MockProvider` to manually provide mocking capacity, absed of the desired mocing framework
+* `[REMOVED]` - Link to `Mockito` library
+
+_Documentation_
+
+* `[UPDATED]` - New documentation system based on docisfy, to help deploy easily markdown doc. Documentation is now in `/docs` folder
+
+
 ## [2.0.1]()
 
 _Android-ViewModel_
