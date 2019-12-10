@@ -22,16 +22,28 @@ Documentation:
 * [Documentation References](https://doc.insert-koin.io/)
 
 Any question about Koin usage? 
-- Come talk on slack [#koin channel](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin)
+- Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
 - Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
 ### Articles, Videos & other resources 🎉
 
 Online resources about Koin - [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
 
-### Reporting issues 🛠
+### Reporting issues 🚑
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
+
+
+### Contributing 🛠
+
+Want to help or share a proposal about Koin? problem on a specific feature? 
+
+- Open an issue to explain the issue you want to solve [Open an issue](https://github.com/InsertKoinIO/koin/issues)
+- Come talk on slack [#koin-dev](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin-dev) channel
+- After discussion to validate your ideas, you can open a PR or even a draft PR if the contribution is a big one [Current PRs](https://github.com/InsertKoinIO/koin/pulls)
+
+Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob/master/CONTRIBUTING.adoc
+
 
 # Setup
 
