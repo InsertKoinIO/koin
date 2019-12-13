@@ -6,8 +6,7 @@
 
 Checkout the project directly on Github or download the zip file
 
-[Github](https://github.com/InsertKoinIO/getting-started-koin-android)
-[Download Zip](https://github.com/InsertKoinIO/getting-started-koin-android/archive/master.zip)
+> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-android) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-android/archive/master.zip)
 
 ## Gradle Setup
 
