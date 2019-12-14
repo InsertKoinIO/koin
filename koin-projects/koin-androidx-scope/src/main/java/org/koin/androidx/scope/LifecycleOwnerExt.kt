@@ -37,7 +37,7 @@ private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
 
 private fun LifecycleOwner.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
 
-private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
+private fun LifecycleOwner.getOrCreateScope(): Scope {
     val scopeId = getScopeId()
     return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
 }
@@ -61,4 +61,4 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
  * Get current Koin scope, bound to current lifecycle
  */
 val LifecycleOwner.currentScope: Scope
-    get() = getOrCreateCurrentScope()
+    get() = getOrCreateScope()

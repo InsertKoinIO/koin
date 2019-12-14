@@ -30,13 +30,13 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  */
 class Module(
-    val createAtStart: Boolean,
-    val override: Boolean
+        val createAtStart: Boolean,
+        val override: Boolean
 ) {
     val rootScope: ScopeDefinition = ScopeDefinition.rootDefinition()
     var isLoaded: Boolean = false
         internal set
-    internal val otherScopes = arrayListOf<ScopeDefinition>()
+    val otherScopes = arrayListOf<ScopeDefinition>()
 
     /**
      * Declare a group a scoped definition with a given scope qualifier
@@ -56,21 +56,21 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-        qualifier: Qualifier? = null,
-        createdAtStart: Boolean = false,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            qualifier: Qualifier? = null,
+            createdAtStart: Boolean = false,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
         return Definitions.saveSingle(
-            qualifier,
-            definition,
-            rootScope,
-            makeOptions(override, createdAtStart)
+                qualifier,
+                definition,
+                rootScope,
+                makeOptions(override, createdAtStart)
         )
     }
 
     fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
-        Options(this.createAtStart || createdAtStart, this.override || override)
+            Options(this.createAtStart || createdAtStart, this.override || override)
 
     /**
      * Declare a Factory definition
@@ -79,9 +79,9 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-        qualifier: Qualifier? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
+            qualifier: Qualifier? = null,
+            override: Boolean = false,
+            noinline definition: Definition<T>
     ): BeanDefinition<T> {
         return Definitions.saveFactory(qualifier, definition, rootScope, makeOptions(override))
     }
