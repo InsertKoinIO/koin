@@ -58,3 +58,29 @@ module(createdAtStart = true) {
     single { HelloRepository() } 
 }
 {% endhighlight %}
+
+## Use Koin events
+
+see [hello-ktor](../../../examples/hello-ktor) example
+
+{% highlight kotlin %}
+fun Application.main() {
+    // ...
+
+    // Install Ktor features
+    environment.monitor.subscribe(KoinApplicationStarted) {
+        log.info("Koin started.")
+    }
+    install(Koin) {
+        // ...
+    }
+    environment.monitor.subscribe(KoinApplicationStopPreparing) {
+        log.info("Koin stopping...")
+    }
+    environment.monitor.subscribe(KoinApplicationStopped) {
+        log.info("Koin stopped.")
+    }
+
+    //...
+}
+{% endhighlight %}

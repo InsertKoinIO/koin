@@ -3,6 +3,7 @@ package org.koin.sample
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.application.log
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
 import io.ktor.response.respondText
@@ -16,17 +17,28 @@ import org.koin.Logger.slf4jLogger
 import org.koin.dsl.module
 import org.koin.experimental.builder.single
 import org.koin.experimental.builder.singleBy
-import org.koin.ktor.ext.Koin
-import org.koin.ktor.ext.inject
+import org.koin.ktor.ext.*
 
 fun Application.main() {
-    // Install Ktor features
     install(DefaultHeaders)
     install(CallLogging)
+
+    // Install Ktor features
+    environment.monitor.subscribe(KoinApplicationStarted) {
+        log.info("Koin started.")
+    }
     install(Koin) {
         slf4jLogger()
         modules(helloAppModule)
     }
+    environment.monitor.subscribe(KoinApplicationStopPreparing) {
+        log.info("Koin stopping...")
+    }
+    environment.monitor.subscribe(KoinApplicationStopped) {
+        log.info("Koin stopped.")
+    }
+
+    //
     val helloService by inject<HelloService>()
     // Routing section
     routing {

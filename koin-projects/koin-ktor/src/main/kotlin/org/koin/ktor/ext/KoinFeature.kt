@@ -20,10 +20,9 @@ import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopping
 import io.ktor.util.AttributeKey
 import org.koin.core.KoinApplication
-import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.ktor.ext.Koin
 
 /**
  * @author Vinicius Carvalho
@@ -38,10 +37,17 @@ class Koin {
             get() = AttributeKey("Koin")
 
         override fun install(pipeline: Application, appDeclaration: KoinAppDeclaration): Koin {
-            startKoin(appDeclaration)
-            pipeline.environment.monitor.subscribe(ApplicationStopping) {
-                GlobalContext.stop()
+            val monitor = pipeline.environment.monitor
+
+            val koinApplication = startKoin(appDeclaration)
+            monitor.raise(KoinApplicationStarted, koinApplication)
+
+            monitor.subscribe(ApplicationStopping) {
+                monitor.raise(KoinApplicationStopPreparing, koinApplication)
+                stopKoin()
+                monitor.raise(KoinApplicationStopped, koinApplication)
             }
+
             return Koin()
         }
     }
