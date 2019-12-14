@@ -19,17 +19,9 @@ Let's go 🚀
 
 ## Get the code
 
-<div class="container">
-  <div class="row">
-    <div class="col-8">
-      Checkout the project directly on Github or download the zip file
-    </div>
-    <div class="col">
-      <a href="https://github.com/InsertKoinIO/getting-started-koin-ktor" class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3">Go to Github</a>
-      <a href="https://github.com/InsertKoinIO/getting-started-koin-ktor/archive/master.zip" class="btn btn-outline-info mb-3 mb-md-0 mr-md-3">Download Zip</a>
-    </div>
-  </div>
-</div>
+> Checkout the project directly on Github or download the zip file <br>
+> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-ktor) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-ktor/archive/master.zip)
+
 
 ## Gradle Setup
 
