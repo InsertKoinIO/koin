@@ -42,7 +42,7 @@ object KoinJavaComponent {
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): Lazy<T> {
-        return lazy { get(clazz, qualifier, parameters) }
+        return lazy(LazyThreadSafetyMode.NONE) { get(clazz, qualifier, parameters) }
     }
 
     /**

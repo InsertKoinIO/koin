@@ -15,7 +15,7 @@ inline fun <reified T : ViewModel> Koin.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { _scopeRegistry.rootScope.getViewModel<T>(owner, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { _scopeRegistry.rootScope.getViewModel<T>(owner, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.viewModel(
@@ -23,7 +23,7 @@ inline fun <reified T : ViewModel> Koin.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { _scopeRegistry.rootScope.getViewModel<T>(owner, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { _scopeRegistry.rootScope.getViewModel<T>(owner, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.getViewModel(

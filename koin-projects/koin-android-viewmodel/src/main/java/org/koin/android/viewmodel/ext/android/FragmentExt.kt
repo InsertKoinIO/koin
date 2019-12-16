@@ -31,14 +31,14 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-    lazy { getSharedViewModel<T>(qualifier, parameters) }
+    lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel<T>(qualifier, parameters) }
 
 fun <T : ViewModel> Fragment.sharedViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): Lazy<T> =
-    lazy { getSharedViewModel(clazz, qualifier, parameters) }
+    lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(clazz, qualifier, parameters) }
 
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,

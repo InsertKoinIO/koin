@@ -38,14 +38,14 @@ fun <T : ViewModel> LifecycleOwner.viewModel(
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(clazz, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(T::class, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(T::class, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(

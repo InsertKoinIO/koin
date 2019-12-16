@@ -58,7 +58,7 @@ data class Scope(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, parameters) }
+            lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -73,7 +73,7 @@ data class Scope(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy { getOrNull<T>(qualifier, parameters) }
+            lazy(LazyThreadSafetyMode.NONE) { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
