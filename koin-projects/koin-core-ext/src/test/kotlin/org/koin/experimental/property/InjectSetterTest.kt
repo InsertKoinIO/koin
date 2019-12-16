@@ -3,6 +3,7 @@ package org.koin.experimental.property
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
 class B
@@ -30,6 +31,8 @@ class PlayTest {
 
         assertEquals(koin.get<B>(),a.b)
         assertEquals(koin.get<C>(),a.c)
+
+        stopKoin()
     }
 
 }

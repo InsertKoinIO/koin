@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ext.closeScope
 import org.koin.ext.getOrCreateScope
@@ -42,6 +43,8 @@ class ObjectScopeTest {
         val b2 = scopeForA2.getOrNull<B>()
         assertNotNull(b2)
         assertNotEquals(b1, b2)
+
+        stopKoin()
     }
 
 }
