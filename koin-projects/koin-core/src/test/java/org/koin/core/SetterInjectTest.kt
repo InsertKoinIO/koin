@@ -1,12 +1,10 @@
 package org.koin.core
 
 import org.junit.Test
-import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
-import org.koin.core.scope.Scope
 import org.koin.core.time.measureDuration
 import org.koin.dsl.module
-import kotlin.reflect.KMutableProperty0
+import org.koin.ext.inject
 
 class B
 class C
@@ -51,19 +49,4 @@ class PlayTest {
             a::c.inject()
         }
     }
-
 }
-
-inline fun <reified T> KMutableProperty0<T>.inject() {
-    set(GlobalContext.get().get())
-}
-
-//TODO real interest here?
-inline fun <reified T> KMutableProperty0<T>.inject(koin: Koin) {
-    set(koin.get())
-}
-inline fun <reified T> KMutableProperty0<T>.inject(scope: Scope) {
-    set(scope.get())
-}
-
-//TODO InjectAll - Reflection

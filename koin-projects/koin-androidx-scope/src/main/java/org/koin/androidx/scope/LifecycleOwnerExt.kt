@@ -21,9 +21,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
+import org.koin.ext.getScopeId
+import org.koin.ext.getScopeName
 
 /**
  * Provide an scope for given LifecycleOwner component
@@ -33,16 +33,12 @@ import org.koin.ext.getFullName
 
 private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
 
-private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
-
-private fun LifecycleOwner.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-
-private fun LifecycleOwner.getOrCreateScope(): Scope {
+private fun LifecycleOwner.getOrCreateAndroidScope(): Scope {
     val scopeId = getScopeId()
-    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
+    return getKoin().getScopeOrNull(scopeId) ?: createAndBindAndroidScope(scopeId, getScopeName())
 }
 
-private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): Scope {
+private fun LifecycleOwner.createAndBindAndroidScope(scopeId: String, qualifier: Qualifier): Scope {
     val scope = getKoin().createScope(scopeId, qualifier)
     bindScope(scope)
     return scope
@@ -61,4 +57,4 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
  * Get current Koin scope, bound to current lifecycle
  */
 val LifecycleOwner.currentScope: Scope
-    get() = getOrCreateScope()
+    get() = getOrCreateAndroidScope()

@@ -1,62 +1,16 @@
-package org.koin.core
+package org.koin.ext
 
-import org.junit.Assert.*
-import org.junit.Test
+import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
-import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.ScopeDSL
-import org.koin.dsl.module
-import org.koin.ext.getFullName
-import org.koin.java.KoinJavaComponent.getKoin
-
-class PlayScopeTest {
-
-    @Test
-    fun `play with scope`() {
-        val koin = startKoin {
-            modules(module {
-                single { A() }
-                scope<A> {
-                    scoped { B() }
-                    scoped { C() }
-                }
-            })
-        }.koin
-
-        val a = koin.get<A>()
-        val b1 = koin.getOrNull<B>()
-        assertNull(b1)
-        assertNull(koin.getOrNull<C>())
-
-        val scopeForA = a.getOrCreateScope()
-
-        assertNotNull(scopeForA.get<B>())
-        assertNotNull(scopeForA.get<C>())
-
-        a.closeScope()
-
-        assertNull(scopeForA.getOrNull<B>())
-        assertNull(scopeForA.getOrNull<C>())
-
-        val scopeForA2 = a.getOrCreateScope()
-
-        val b2 = scopeForA2.getOrNull<B>()
-        assertNotNull(b2)
-        assertNotEquals(b1, b2)
-    }
-
-}
-
-
-//TODO Check for String naming?
+import org.koin.java.KoinJavaComponent
 
 //TODO Check Enum Class / Name -> Qualifier
-
 //TODO Refactor Android Scope - change getOrCreateLifecycleScope
 
 inline fun <reified T> Module.scope(scopeSet: ScopeDSL.() -> Unit) {
@@ -66,14 +20,20 @@ inline fun <reified T> Module.scope(scopeSet: ScopeDSL.() -> Unit) {
 }
 
 fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
-
 fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-
-// TODO Decline API - get, Create, getOrNull
 
 fun <T : Any> T.getOrCreateScope(): Scope {
     val scopeId = getScopeId()
     return GlobalContext.get().getScopeOrNull(scopeId) ?: createScope(scopeId, getScopeName())
+}
+
+fun <T : Any> T.getScopeOrNull(): Scope? {
+    return GlobalContext.get().getScopeOrNull(getScopeId())
+}
+
+fun <T : Any> T.createScope(): Scope {
+    val scopeId = getScopeId()
+    return createScope(scopeId, getScopeName())
 }
 
 fun <T : Any> T.getOrCreateScope(koin: Koin): Scope {
@@ -81,8 +41,18 @@ fun <T : Any> T.getOrCreateScope(koin: Koin): Scope {
     return koin.getScopeOrNull(scopeId) ?: createScope(scopeId, getScopeName())
 }
 
+fun <T : Any> T.getScopeOrNull(koin: Koin): Scope? {
+    val scopeId = getScopeId()
+    return koin.getScopeOrNull(scopeId)
+}
+
+fun <T : Any> T.createScope(koin: Koin): Scope {
+    val scopeId = getScopeId()
+    return koin.createScope(scopeId, getScopeName())
+}
+
 private fun <T : Any> T.createScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier)
+    val scope = KoinJavaComponent.getKoin().createScope(scopeId, qualifier)
     return scope
 }
 

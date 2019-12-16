@@ -137,8 +137,8 @@ data class Scope(
      */
     fun <T> get(
             clazz: KClass<*>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T {
         return if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
