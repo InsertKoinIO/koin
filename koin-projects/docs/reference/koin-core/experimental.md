@@ -1,6 +1,8 @@
 
 The `koin-core-ext` brings extensions & experimental features to Koin.
 
+!> Those features are experimental
+
 ## Better definition declaration (Experimental)
 
 Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters

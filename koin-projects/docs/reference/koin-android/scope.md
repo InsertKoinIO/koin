@@ -81,6 +81,9 @@ class MyActivity : AppCompatActivity() {
 ```
 
 
+!> Be careful to not use `scope` but `lifecycleScope`. This is a scope tied to the Android lifecycle. Else your scoped instances won't follow your lifecycle.
+
+
 ## Sharing instances between components with scopes
 
 In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.

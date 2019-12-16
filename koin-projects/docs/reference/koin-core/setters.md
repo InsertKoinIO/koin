@@ -1,6 +1,7 @@
 
 Instead of using `by inject()` lazy delegate expression to retrieve desired dependency, you can inject the property directly
 
+!> This feature is experimental
 
 ## Injecting a property
 
