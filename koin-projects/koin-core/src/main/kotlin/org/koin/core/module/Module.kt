@@ -20,6 +20,7 @@ import org.koin.core.definition.Definition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.ScopeDSL
 
@@ -44,6 +45,15 @@ class Module(
      */
     fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
         val scopeDefinition = ScopeDefinition(qualifier)
+        ScopeDSL(scopeDefinition).apply(scopeSet)
+        otherScopes.add(scopeDefinition)
+    }
+
+    /**
+     * Class Typed Scope
+     */
+    inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
+        val scopeDefinition = ScopeDefinition(TypeQualifier(T::class))
         ScopeDSL(scopeDefinition).apply(scopeSet)
         otherScopes.add(scopeDefinition)
     }

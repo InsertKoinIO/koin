@@ -1,26 +1,21 @@
-## Extensions & Experimental features
 
 The `koin-core-ext` brings extensions & experimental features to Koin.
 
-### Better definition declaration (Experimental)
+## Better definition declaration (Experimental)
 
 Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters
 or special scope Id), we can go with more compact writing style thanks to API below.
 
-[IMPORTANT]
-####
-Using reflection is not costless. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on
+?> Using reflection is not costless. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on
 performances constraints platform (Android for example)
-####
 
-### Build any instance with create()
+## Building any instance with create()
 
 The first introduced function is the `create()` function.
 
 Instead of declaring a definition with instantiating its constructor and retrieving instances with get()
 
 ```kotlin
-```
 module {
     single { ComponentA(get() ...) }
 }
@@ -29,18 +24,16 @@ module {
 You can use instead, the `create()` function to build an instance from its primary constructor, and fill the needed dependencies.
 
 ```kotlin
-```
 module {
     single { create<ComponentA>() }
 }
 ```
 
-### Even more simple definitions
+## Simpler DSL for definitions
 
 You can also use the more "compact" notation that will use the `create()` function. Just use the single function without any expression:
 
 ```kotlin
-```
 module {
     single<ComponentA>()
 }
@@ -49,18 +42,11 @@ module {
 If you have an implementation type and want to resolve with a target type, you can use the following `singleBy` function:
 
 ```kotlin
-```
 module {
     singleBy<Target,Implementation>()
 }
 ```
 
-[NOTE]
-####
-Works for single, factory & scope
-####
+?> Works for single, factory & scope
 
-[IMPORTANT]
-####
-If you use custom constructors expression like injection parameters or others, don't use the reflection API.
-####
+!> If you use custom constructors expression like injection parameters or others, don't use the reflection API.

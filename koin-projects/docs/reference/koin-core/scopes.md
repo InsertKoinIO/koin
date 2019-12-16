@@ -26,26 +26,96 @@ module {
 }
 ```
 
-## Working with a scope
+> A scope require a _qualifier_ to help name it. It can be eitehr a String Qualifier, either a TypeQualifier
 
-A scope instance can be created with as follow: `val scope = koin.createScope("myScope")`. The "myScope" string here, is the id of your scope instance.
+Declaring a scope for a given type, can be done:
+
+```kotlin
+module {
+    scope(named<MyType>()){
+        scoped { Presenter() }
+        // ...
+    }
+}
+```
+
+or can even declared directly like this:
+
+```kotlin
+module {
+    scope<MyType>{
+        scoped { Presenter() }
+        // ...
+    }
+}
+```
+
+## Using a Scope
+
+Let's have those classes
+
+```kotlin
+class A
+class B
+class C
+```
+
+### Declare a Scoped Instance
+
+Let's scope `B` & `C` instances from `A`, `B` & `C` instanceds are tied to a `A` instance:
+
+```kotlin
+module {
+    single { A() }
+    scope<A> {
+        scoped { B() }
+        scoped { C() }
+    }
+}
+```
+
+### Create a scope and retrieve dependencies
+
+Below is how we can create scope & retrieve dependencies
+
+```kotlin
+// Get A from Koin's main scope
+val a : A = koin.get<A>()
+
+// Get/Create Scope for `a`
+val scopeForA = a.getOrCreateScope()
+
+// Get scoped instances from `a`
+val b = scopeForA.get<B>()
+val c = scopeForA.get<C>()
+```
+
+We use the `getOrCreateScope` function, that will create a scope define by the type.
+
+> Note here that `scopeForA` is tied to `a` instance object
+
+### Destroy scope and linked instances
+
+```kotlin
+// Destroy `a` scope & drop `b` & `c`
+a.closeScope()
+```
+
+We use the `closeScope` function, to drop current scope & related scoped instances.
+
+## More about Scope API
+
+### Working with a scope
+
+A scope instance can be created with as follow: `val scope = koin.createScope(id,qualifier)`. `id` is a ScopeId and `qualifier` the scope qualifier.
 
 To resolve a dependency using the scope we can do it like:
 
 * `val presenter = scope.get<Presenter>()` - directly using the get/inject functions from the scope instance
 
-We have to declare a the scope instance like follow:
+### Create & retrieve a scope
 
-```kotlin
-// create scope instance "myScope" (the scope Id) for scope "A_SCOPE_NAME" (the qualifier)
-val scope = koin.createScope("myScope","A_SCOPE_NAME")
-// resolve presenter instance
-val presenter = scope.get<Presenter>()
-```
-
-## Create & retrieve a scope
-
-From a `KoinComponent` class or where you can access your Koin instance:
+From your `Koin` instance you can access:
 
 - `createScope(id : ScopeID, scopeName : Qualifier)` - create a closed scope instance with given id and scopeName
 - `getScope(id : ScopeID)` - retrieve a previously created scope with given id
@@ -53,19 +123,7 @@ From a `KoinComponent` class or where you can access your Koin instance:
 
 !> Make the difference between a scope instance id, which is the id to find your scope over all your scopes, and the scope name, which is the reference to the tied scope group name.
 
-## Creating scope instances
-
-Using the id, it's then possible to have several instances of the same scope:
-
-```kotlin
-// create an closed scope instance "myScope1" for scope "A_SCOPE_NAME"
-val myScope1 = koin.createScope("myScope1",named("A_SCOPE_NAME"))
-// create an closed scope instance "myScope2" for scope "A_SCOPE_NAME"
-val myScope2 = koin.createScope("myScope2",named("A_SCOPE_NAME"))
-```
-
-
-## Resolving dependencies within a scope
+### Resolving dependencies within a scope
 
 The interest of a scope is to define a common logical unit of time for scoped definitions. It's allow also to resolve definitions from within the given scope
 
@@ -96,7 +154,9 @@ val componentA = myScope1.get<ComponentA>()
 val componentB = myScope1.get<ComponentB>()
 ```
 
-## Closing a scope
+!> By default, all scope fallback to resolve in main scope if no definition is found in the current scope
+
+### Closing a scope
 
 Once your scope instance is finished, just closed it with the `close()` function:
 
@@ -112,6 +172,6 @@ session.close()
 
 !> Beware that you can't inject instances anymore from a closed scope.
 
-## Scope callback -- TODO
+### Scope callback -- TODO
 
 

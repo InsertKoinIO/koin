@@ -23,7 +23,7 @@ class A_inj : KoinComponent {
 class PlayTest {
 
     @Test
-    fun `play setter injection`() {
+    fun `setter injection`() {
         val koin = startKoin {
             modules(module {
                 single { B() }

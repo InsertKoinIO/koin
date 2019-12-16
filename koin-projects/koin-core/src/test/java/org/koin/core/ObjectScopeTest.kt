@@ -7,12 +7,11 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ext.closeScope
 import org.koin.ext.getOrCreateScope
-import org.koin.ext.scope
 
 class ObjectScopeTest {
 
     @Test
-    fun `play with scope`() {
+    fun `scope from instance object`() {
         val koin = startKoin {
             modules(module {
                 single { A() }
@@ -24,13 +23,13 @@ class ObjectScopeTest {
         }.koin
 
         val a = koin.get<A>()
-        val b1 = koin.getOrNull<B>()
-        assertNull(b1)
+        assertNull(koin.getOrNull<B>())
         assertNull(koin.getOrNull<C>())
 
         val scopeForA = a.getOrCreateScope()
 
-        assertNotNull(scopeForA.get<B>())
+        val b1 = scopeForA.get<B>()
+        assertNotNull(b1)
         assertNotNull(scopeForA.get<C>())
 
         a.closeScope()

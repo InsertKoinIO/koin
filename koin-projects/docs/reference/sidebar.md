@@ -7,10 +7,12 @@
 - [Start Koin](koin-core/start-koin)
 - [Koin Component](koin-core/koin-component)
 - [Injecting Parameters](koin-core/injection-parameters)
-- [Scopes](koin-core/scopes)
+- [Setters Injection](koin-core/setters)
+- [Scope API](koin-core/scopes)
 - [Using Java](koin-core/java)
 - [Logging](koin-core/logging)
 - [Properties](koin-core/properties)
+- [Experimental Features](koin-core/experimental)
 - **Koin Test**
 - [JUnit & Mocks](koin-test/testing)
 - **Koin Android**

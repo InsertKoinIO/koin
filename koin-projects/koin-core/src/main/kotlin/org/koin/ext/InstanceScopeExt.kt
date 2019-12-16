@@ -2,22 +2,10 @@ package org.koin.ext
 
 import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
-import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeDefinition
-import org.koin.dsl.ScopeDSL
 import org.koin.java.KoinJavaComponent
-
-//TODO Check Enum Class / Name -> Qualifier
-//TODO Refactor Android Scope - change getOrCreateLifecycleScope
-
-inline fun <reified T> Module.scope(scopeSet: ScopeDSL.() -> Unit) {
-    val scopeDefinition = ScopeDefinition(TypeQualifier(T::class))
-    ScopeDSL(scopeDefinition).apply(scopeSet)
-    otherScopes.add(scopeDefinition)
-}
 
 fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
 fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
