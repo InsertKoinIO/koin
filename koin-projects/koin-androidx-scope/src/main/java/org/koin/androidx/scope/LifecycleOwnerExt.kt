@@ -56,5 +56,13 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
 /**
  * Get current Koin scope, bound to current lifecycle
  */
+val LifecycleOwner.lifecycleScope: Scope
+    get() = getOrCreateAndroidScope()
+
+@Deprecated("Use lifecycleScope instead",replaceWith = ReplaceWith("lifecycleScope"),level = DeprecationLevel.ERROR)
+val LifecycleOwner.scope: Scope
+    get() = error("Don't use scope on a lifecycle component. Use lifecycleScope instead")
+
+@Deprecated("Use lifecycleScope instead")
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateAndroidScope()

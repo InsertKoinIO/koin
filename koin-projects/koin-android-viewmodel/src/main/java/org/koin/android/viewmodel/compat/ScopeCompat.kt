@@ -17,7 +17,7 @@ package org.koin.android.viewmodel.compat
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
-import org.koin.android.scope.currentScope
+import org.koin.android.scope.lifecycleScope
 import org.koin.android.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -70,6 +70,6 @@ object ScopeCompat {
 
     @JvmStatic
     fun currentScope(owner: LifecycleOwner): Scope {
-        return owner.currentScope
+        return owner.lifecycleScope
     }
 }

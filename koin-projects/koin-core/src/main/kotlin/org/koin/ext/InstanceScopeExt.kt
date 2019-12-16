@@ -10,6 +10,9 @@ import org.koin.java.KoinJavaComponent
 fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
 fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
 
+val <T : Any> T.scope: Scope
+    get() = getOrCreateScope()
+
 fun <T : Any> T.getOrCreateScope(): Scope {
     val scopeId = getScopeId()
     return GlobalContext.get().getScopeOrNull(scopeId) ?: createScope(scopeId, getScopeName())

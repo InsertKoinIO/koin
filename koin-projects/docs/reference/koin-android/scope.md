@@ -57,16 +57,16 @@ val androidModule = module {
 !> Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
 
-## CurrentScope - a scope tied to your lifecycle
+## LifecycleScope - a scope tied to your lifecycle
 
-Koin gives the `currentScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
+Koin gives the `lifecycleScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
 
-To benefit from the `currentScope`, you have to declare a scope for your activity (see how we use the `named()` qualifier with our Activity type):
+To benefit from the `lifecycleScope`, you have to declare a scope for your activity (tied our Activity type):
 
 ```kotlin
 val androidModule = module {
 
-    scope(named<MyActivity>()) {
+    scope<MyActivity> {
         scoped { Presenter() }
     }
 }
@@ -76,7 +76,7 @@ val androidModule = module {
 class MyActivity : AppCompatActivity() {
 
     // inject Presenter instance from current scope
-    val presenter : Presenter by currentScope.inject()
+    val presenter : Presenter by lifecycleScope.inject()
 
 ```
 

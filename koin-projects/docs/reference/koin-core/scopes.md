@@ -94,6 +94,19 @@ We use the `getOrCreateScope` function, that will create a scope define by the t
 
 > Note here that `scopeForA` is tied to `a` instance object
 
+### Using the `scope` property
+
+```kotlin
+// Get A from Koin's main scope
+val a : A = koin.get<A>()
+
+// Get scoped instances from `a`
+val b = a.scope.get<B>()
+val c = a.scope.get<C>()
+```
+
+!> Be careful to not use `scope` if you want to use a Scope for a special component, like Android `lifecycleScope` a scope tied to the Android lifecycle
+
 ### Destroy scope and linked instances
 
 ```kotlin

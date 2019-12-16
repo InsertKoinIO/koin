@@ -6,6 +6,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ext.closeScope
+import org.koin.ext.scope
 import org.koin.ext.getOrCreateScope
 
 class ObjectScopeTest {
@@ -26,7 +27,7 @@ class ObjectScopeTest {
         assertNull(koin.getOrNull<B>())
         assertNull(koin.getOrNull<C>())
 
-        val scopeForA = a.getOrCreateScope()
+        val scopeForA = a.scope
 
         val b1 = scopeForA.get<B>()
         assertNotNull(b1)
