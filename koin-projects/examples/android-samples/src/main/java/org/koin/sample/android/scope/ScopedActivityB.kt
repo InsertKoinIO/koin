@@ -6,8 +6,7 @@ import kotlinx.android.synthetic.main.scoped_activity_b.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.koin.android.ext.android.getKoin
-import org.koin.android.scope.currentScope
-import org.koin.core.error.NoScopeDefinitionFoundException
+import org.koin.android.scope.lifecycleScope
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.android.components.ID
@@ -24,9 +23,10 @@ class ScopedActivityB : AppCompatActivity() {
 
         try {
             // No scoped Session definition in current scope
-            currentScope.get<Session>()
+            lifecycleScope.get<Session>()
             fail()
-        } catch (e: NoScopeDefinitionFoundException) {
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         // Check data from ScopedActivityA

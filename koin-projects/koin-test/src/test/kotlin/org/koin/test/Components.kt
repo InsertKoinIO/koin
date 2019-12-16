@@ -14,4 +14,7 @@ class Simple {
     }
 }
 
-object UpperCase : Qualifier
+object UpperCase : Qualifier {
+    override val value: String = "UpperCase"
+
+}

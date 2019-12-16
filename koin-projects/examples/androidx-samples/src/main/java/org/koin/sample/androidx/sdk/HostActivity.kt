@@ -7,7 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.inject
 import org.koin.sample.android.R
-import org.koin.sample.androidx.components.main.Service
+import org.koin.sample.androidx.components.main.SimpleService
 import org.koin.sample.androidx.components.sdk.CustomSDK
 import org.koin.sample.androidx.components.sdk.CustomService
 import org.koin.sample.androidx.components.sdk.SDKActivity
@@ -16,12 +16,12 @@ import org.koin.sample.androidx.utils.navigateTo
 class HostActivity : AppCompatActivity() {
 
     // Inject by Interface - default definition
-    val service: Service by inject()
+    val service: SimpleService by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sdkService = CustomSDK.koinApp.koin.get<Service>()
+        val sdkService = CustomSDK.koinApp.koin.get<SimpleService>()
         assertNotEquals(service, sdkService)
         assertEquals(CustomService().service, sdkService)
 

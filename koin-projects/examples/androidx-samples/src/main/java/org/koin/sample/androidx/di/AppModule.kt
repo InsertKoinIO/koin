@@ -2,17 +2,18 @@ package org.koin.sample.androidx.di
 
 import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.dsl.onRelease
+import org.koin.dsl.onClose
 import org.koin.sample.androidx.components.Counter
 import org.koin.sample.androidx.components.SCOPE_ID
 import org.koin.sample.androidx.components.SCOPE_SESSION
 import org.koin.sample.androidx.components.main.DumbServiceImpl
 import org.koin.sample.androidx.components.main.RandomId
-import org.koin.sample.androidx.components.main.Service
-import org.koin.sample.androidx.components.main.ServiceImpl
+import org.koin.sample.androidx.components.main.SimpleService
+import org.koin.sample.androidx.components.main.SimpleServiceImpl
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
@@ -21,12 +22,13 @@ import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
+import org.koin.sample.androidx.mvvm.MVVMFragment
 import org.koin.sample.androidx.scope.ScopedActivityA
 
 val appModule = module {
 
-    single<Service> { ServiceImpl() }
-    single<Service>(named("dumb")) { DumbServiceImpl() }
+    single<SimpleService> { SimpleServiceImpl() }
+    single<SimpleService>(named("dumb")) { DumbServiceImpl() }
 
     factory { RandomId() }
 }
@@ -34,12 +36,13 @@ val appModule = module {
 val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
-    scope(named<MVPActivity>()) {
+    scope<MVPActivity> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
 
 val mvvmModule = module {
+
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
 
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
@@ -47,23 +50,30 @@ val mvvmModule = module {
 
     viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
 
-    scope(named<MVVMActivity>()) {
+    scope<MVVMActivity> {
         scoped { Session() }
+        fragment { MVVMFragment(get()) }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+        viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) ->
+            SavedStateViewModel(
+                    handle,
+                    id,
+                    get()
+            )
+        }
     }
 }
 
 val scopeModule = module {
     scope(named(SCOPE_ID)) {
-        scoped(named(SCOPE_SESSION)) { Session() } onRelease {
+        scoped(named(SCOPE_SESSION)) { Session() } onClose {
             // onRelease, count it
             Counter.released++
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
-    scope(named<ScopedActivityA>()) {
+    scope<ScopedActivityA> {
         scoped { Session() }
     }
 }

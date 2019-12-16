@@ -1,6 +1,5 @@
 package org.koin.sample.android.compat;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,14 +14,14 @@ import org.koin.sample.android.dynamic.DynamicActivity;
 import kotlin.Lazy;
 
 import static org.junit.Assert.assertEquals;
-import static org.koin.android.viewmodel.compat.ScopeCompat.currentScope;
+import static org.koin.android.scope.compat.ScopeCompat.lifecycleScope;
 import static org.koin.android.viewmodel.compat.ScopeCompat.getViewModel;
 import static org.koin.android.viewmodel.compat.ScopeCompat.viewModel;
 
 public class JavaActivity extends AppCompatActivity {
 
     Lazy<CompatSimpleViewModel> viewModel = viewModel(
-            currentScope(this), this, CompatSimpleViewModel.class
+            lifecycleScope(this), this, CompatSimpleViewModel.class
     );
 
     @Override
@@ -30,7 +29,7 @@ public class JavaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         final CompatSimpleViewModel compatVM = getViewModel(
-                currentScope(this), this, CompatSimpleViewModel.class
+                lifecycleScope(this), this, CompatSimpleViewModel.class
         );
 
         assertEquals(viewModel.getValue(), compatVM);

@@ -15,7 +15,7 @@ inline fun <reified T : ViewModel> Koin.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { rootScope.getViewModel<T>(owner, qualifier, parameters) }
+    return lazy { _scopeRegistry.rootScope.getViewModel<T>(owner, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.viewModel(
@@ -23,7 +23,7 @@ inline fun <reified T : ViewModel> Koin.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { rootScope.getViewModel<T>(owner, qualifier, parameters) }
+    return lazy { _scopeRegistry.rootScope.getViewModel<T>(owner, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.getViewModel(
@@ -31,7 +31,7 @@ inline fun <reified T : ViewModel> Koin.getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return rootScope.getViewModel(owner, qualifier, parameters)
+    return _scopeRegistry.rootScope.getViewModel(owner, qualifier, parameters)
 }
 
 inline fun <reified T : ViewModel> Koin.getViewModel(
@@ -39,7 +39,7 @@ inline fun <reified T : ViewModel> Koin.getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return rootScope.getViewModel(owner, qualifier, parameters)
+    return _scopeRegistry.rootScope.getViewModel(owner, qualifier, parameters)
 }
 
 fun <T : ViewModel> Koin.getViewModel(
@@ -48,7 +48,7 @@ fun <T : ViewModel> Koin.getViewModel(
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): T {
-    return rootScope.getViewModel(owner, clazz, qualifier, parameters)
+    return _scopeRegistry.rootScope.getViewModel(owner, clazz, qualifier, parameters)
 }
 
 fun <T : ViewModel> Koin.getViewModel(
@@ -57,9 +57,9 @@ fun <T : ViewModel> Koin.getViewModel(
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): T {
-    return rootScope.getViewModel(owner, clazz, qualifier, parameters)
+    return _scopeRegistry.rootScope.getViewModel(owner, clazz, qualifier, parameters)
 }
 
 fun <T : ViewModel> Koin.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-    return rootScope.getViewModel(viewModelParameters)
+    return _scopeRegistry.rootScope.getViewModel(viewModelParameters)
 }

@@ -1,0 +1,36 @@
+:doctype: book
+:toc: left
+:toclevels: 4
+:icons: font
+:source-highlighter: prettify
+:numbered:
+:stylesheet: clean.css
+:stylesdir: styles/
+:linkcss:
+
+# Koin core: DSL, Container & API
+
+Arnaud Giuliani <arnaud@insert-koin.io> - and on twitter: @arnogiu
+:revnumber: {project-version}
+
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../kotlin]
+
+Cover the core project features and core sub projects.
+
+include::what-is-koin.adoc[]
+include::dsl.adoc[]
+include::definitions.adoc[]
+include::modules.adoc[]
+include::koin-component.adoc[]
+include::start-koin.adoc[]
+include::injection-parameters.adoc[]
+include::scope-api.adoc[]
+include::logging.adoc[]
+include::properties.adoc[]
+include::extending-koin.adoc[]
+include::examples.adoc[]
+
+include::../../../../koin-test/src/docs/asciidoc/index.adoc[]
+include::../../../../koin-core-ext/src/docs/asciidoc/index.adoc[]
+include::../../../../koin-java/src/docs/asciidoc/index.adoc[]

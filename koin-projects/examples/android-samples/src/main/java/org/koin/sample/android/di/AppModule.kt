@@ -4,7 +4,7 @@ import org.koin.android.experimental.dsl.viewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.dsl.onRelease
+import org.koin.dsl.onClose
 import org.koin.sample.android.compat.JavaActivity
 import org.koin.sample.android.components.Counter
 import org.koin.sample.android.components.SCOPE_ID
@@ -36,7 +36,7 @@ val appModule = module {
 val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
-    scope(named<MVPActivity>()) {
+    scope<MVPActivity> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
@@ -48,7 +48,7 @@ val mvvmModule = module {
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
 
-    scope(named<MVVMActivity>()) {
+    scope<MVVMActivity> {
         scoped { Session() }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
@@ -57,13 +57,13 @@ val mvvmModule = module {
 
 val scopeModule = module {
     scope(named(SCOPE_ID)) {
-        scoped(named(SCOPE_SESSION)) { Session() } onRelease {
+        scoped(named(SCOPE_SESSION)) { Session() } onClose {
             // onRelease, count it
             Counter.released++
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
-    scope(named<ScopedActivityA>()) {
+    scope<ScopedActivityA> {
         scoped { Session() }
     }
 }
@@ -76,7 +76,7 @@ val dynamicModule = module {
 }
 
 val javaModule = module {
-    scope(named<JavaActivity>()) {
+    scope<JavaActivity> {
         scoped { Session() }
         viewModel { CompatSimpleViewModel(get()) }
     }

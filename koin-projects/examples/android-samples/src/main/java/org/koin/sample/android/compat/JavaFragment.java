@@ -1,7 +1,5 @@
 package org.koin.sample.android.compat;
 
-import android.app.Activity;
-import android.arch.lifecycle.LifecycleOwner;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +15,7 @@ import kotlin.Lazy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.koin.android.viewmodel.compat.ScopeCompat.currentScope;
+import static org.koin.android.scope.compat.ScopeCompat.lifecycleScope;
 import static org.koin.android.viewmodel.compat.ScopeCompat.getViewModel;
 import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
 
@@ -39,7 +37,7 @@ public class JavaFragment extends Fragment {
         if (activity == null) return;
 
         final CompatSimpleViewModel compatVM = getViewModel(
-                currentScope(activity), this, CompatSimpleViewModel.class
+                lifecycleScope(activity), this, CompatSimpleViewModel.class
         );
 
         assertNotEquals(viewModel.getValue(), compatVM);

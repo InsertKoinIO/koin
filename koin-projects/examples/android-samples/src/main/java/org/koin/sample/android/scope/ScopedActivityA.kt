@@ -8,7 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.bindScope
-import org.koin.android.scope.currentScope
+import org.koin.android.scope.lifecycleScope
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.android.components.*
@@ -18,14 +18,14 @@ import org.koin.sample.android.utils.navigateTo
 class ScopedActivityA : AppCompatActivity() {
 
     // Inject from current scope
-    val currentSession = currentScope.inject<Session>()
+    val currentSession = lifecycleScope.inject<Session>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        assertEquals(currentSession.value, currentScope.get<Session>())
+        assertEquals(currentSession.value, lifecycleScope.get<Session>())
 
-        // Conpare different scope instances
+        // Compare different scope instances
         val scopeSession1 = getKoin().createScope(SESSION_1, named(SCOPE_ID))
         val scopeSession2 = getKoin().createScope(SESSION_2, named(SCOPE_ID))
         assertNotEquals(scopeSession1.get<Session>(named(SCOPE_SESSION)), currentSession)

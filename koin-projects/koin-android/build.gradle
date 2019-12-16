@@ -25,10 +25,7 @@ dependencies {
     // Koin
     api project(":koin-core")
     testImplementation project(":koin-test")
-    androidTestImplementation (project(":koin-test")) { exclude group: 'org.mockito' }
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'org.mockito:mockito-android:3.1.0'
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
 apply from: '../gradle/publish-android.gradle'

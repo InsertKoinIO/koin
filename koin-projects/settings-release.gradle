@@ -1,10 +1,18 @@
 // Core
-include 'koin-core', 'koin-test', 'koin-core-ext', 'koin-java'
+include 'koin-core'
+include 'koin-test'
+// Core extended
+include 'koin-core-ext'
+
 // Android
-include 'koin-android','koin-android-scope','koin-android-viewmodel'
-include 'koin-androidx-scope','koin-androidx-viewmodel'
+include 'koin-android'
+include 'koin-android-scope' ,'koin-android-viewmodel'
+include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
 
-include 'koin-android-ext','koin-androidx-ext'
+// Android Ext
+include 'koin-android-ext'
+include 'koin-androidx-ext'
 
-// Web
-include 'koin-logger-slf4j','koin-ktor'
+// Ktor
+include 'koin-logger-slf4j'
+include 'koin-ktor'

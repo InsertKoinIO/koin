@@ -1,0 +1,26 @@
+:doctype: book
+:toc: left
+:toclevels: 4
+:icons: font
+:source-highlighter: prettify
+:numbered:
+:stylesheet: clean.css
+:stylesdir: styles/
+:linkcss:
+
+# Koin for Android developers
+
+Arnaud Giuliani <arnaud@insert-koin.io> - and on twitter: @arnogiu
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../kotlin]
+
+Covers Koin features for Android.
+
+include::introduction.adoc[]
+include::starting-with-android.adoc[]
+include::getting-from-android.adoc[]
+include::extended-dsl.adoc[]
+include::../../../../koin-android-scope/src/docs/asciidoc/scope.adoc[]
+include::../../../../koin-android-viewmodel/src/docs/asciidoc/viewmodel.adoc[]

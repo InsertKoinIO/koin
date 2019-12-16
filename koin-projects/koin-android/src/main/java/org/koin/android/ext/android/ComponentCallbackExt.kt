@@ -12,7 +12,7 @@ import org.koin.core.qualifier.Qualifier
  */
 fun ComponentCallbacks.getKoin() = when (this) {
     is KoinComponent -> this.getKoin()
-    else -> GlobalContext.get().koin
+    else -> GlobalContext.get()
 }
 
 /**

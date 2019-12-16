@@ -17,10 +17,12 @@ package org.koin.core.module
 
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
-import org.koin.core.definition.DefinitionFactory
+import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.ScopeSet
+import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.scope.ScopeDefinition
+import org.koin.dsl.ScopeDSL
 
 /**
  * Koin Module
@@ -29,25 +31,31 @@ import org.koin.dsl.ScopeSet
  * @author Arnaud Giuliani
  */
 class Module(
-        internal val isCreatedAtStart: Boolean,
-        internal val override: Boolean
+        val createAtStart: Boolean,
+        val override: Boolean
 ) {
-    internal val definitions = arrayListOf<BeanDefinition<*>>()
-    internal val scopes = arrayListOf<ScopeSet>()
+    val rootScope: ScopeDefinition = ScopeDefinition.rootDefinition()
+    var isLoaded: Boolean = false
+        internal set
+    val otherScopes = arrayListOf<ScopeDefinition>()
 
     /**
-     * Declare a definition in current Module
+     * Declare a group a scoped definition with a given scope qualifier
+     * @param qualifier
      */
-    fun <T> declareDefinition(definition: BeanDefinition<T>, options: Options) {
-        definition.updateOptions(options)
-        definitions.add(definition)
+    fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
+        val scopeDefinition = ScopeDefinition(qualifier)
+        ScopeDSL(scopeDefinition).apply(scopeSet)
+        otherScopes.add(scopeDefinition)
     }
 
     /**
-     * Declare a definition in current Module
+     * Class Typed Scope
      */
-    fun declareScope(scope: ScopeSet) {
-        scopes.add(scope)
+    inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
+        val scopeDefinition = ScopeDefinition(TypeQualifier(T::class))
+        ScopeDSL(scopeDefinition).apply(scopeSet)
+        otherScopes.add(scopeDefinition)
     }
 
     /**
@@ -63,24 +71,16 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createSingle(qualifier, definition = definition)
-        declareDefinition(beanDefinition, Options(createdAtStart, override))
-        return beanDefinition
+        return Definitions.saveSingle(
+                qualifier,
+                definition,
+                rootScope,
+                makeOptions(override, createdAtStart)
+        )
     }
 
-    private fun BeanDefinition<*>.updateOptions(options: Options) {
-        this.options.isCreatedAtStart = options.isCreatedAtStart || isCreatedAtStart
-        this.options.override = options.override || override
-    }
-
-    /**
-     * Declare a group a scoped definition with a given scope qualifier
-     * @param scopeName
-     */
-    fun scope(scopeName: Qualifier, scopeSet: ScopeSet.() -> Unit) {
-        val scope: ScopeSet = ScopeSet(scopeName).apply(scopeSet)
-        declareScope(scope)
-    }
+    fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
+            Options(this.createAtStart || createdAtStart, this.override || override)
 
     /**
      * Declare a Factory definition
@@ -93,9 +93,7 @@ class Module(
             override: Boolean = false,
             noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val beanDefinition = DefinitionFactory.createFactory(qualifier, definition = definition)
-        declareDefinition(beanDefinition, Options(override = override))
-        return beanDefinition
+        return Definitions.saveFactory(qualifier, definition, rootScope, makeOptions(override))
     }
 
     /**

@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import org.koin.core.logger.Level
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs

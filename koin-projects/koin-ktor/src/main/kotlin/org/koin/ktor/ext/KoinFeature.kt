@@ -36,10 +36,10 @@ class Koin {
         override val key: AttributeKey<Koin>
             get() = AttributeKey("Koin")
 
-        override fun install(pipeline: Application, appDeclaration: KoinAppDeclaration): Koin {
+        override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
             val monitor = pipeline.environment.monitor
 
-            val koinApplication = startKoin(appDeclaration)
+            val koinApplication = startKoin(configure)
             monitor.raise(KoinApplicationStarted, koinApplication)
 
             monitor.subscribe(ApplicationStopping) {

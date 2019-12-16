@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.KoinApplication
 import org.koin.core.logger.EmptyLogger
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -91,11 +90,11 @@ class AndroidModuleTest : KoinTest {
     fun `default to empty logger`() {
         val mockedContext = mock(Application::class.java)
 
-        koinApplication {
+        val koin = koinApplication {
             androidContext(mockedContext)
             modules(SampleModule)
         }.koin
 
-        assertTrue(KoinApplication.logger is EmptyLogger)
+        assertTrue(koin._logger is EmptyLogger)
     }
 }
