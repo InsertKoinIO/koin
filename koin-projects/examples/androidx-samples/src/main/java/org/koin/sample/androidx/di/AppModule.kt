@@ -36,7 +36,7 @@ val appModule = module {
 val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
-    scope(named<MVPActivity>()) {
+    scope<MVPActivity> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
@@ -50,7 +50,7 @@ val mvvmModule = module {
 
     viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
 
-    scope(named<MVVMActivity>()) {
+    scope<MVVMActivity> {
         scoped { Session() }
         fragment { MVVMFragment(get()) }
         viewModel { ExtSimpleViewModel(get()) }
@@ -73,7 +73,7 @@ val scopeModule = module {
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
-    scope(named<ScopedActivityA>()) {
+    scope<ScopedActivityA> {
         scoped { Session() }
     }
 }

@@ -17,7 +17,6 @@ package org.koin.android.viewmodel.compat
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
-import org.koin.android.scope.lifecycleScope
 import org.koin.android.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -41,11 +40,11 @@ object ScopeCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
-        scope: Scope,
-        owner: LifecycleOwner,
-        clazz: Class<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            scope: Scope,
+            owner: LifecycleOwner,
+            clazz: Class<T>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): Lazy<T> = lazy { scope.getViewModel(owner, clazz.kotlin, qualifier, parameters) }
 
 
@@ -59,17 +58,12 @@ object ScopeCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getViewModel(
-        scope: Scope,
-        owner: LifecycleOwner,
-        clazz: Class<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            scope: Scope,
+            owner: LifecycleOwner,
+            clazz: Class<T>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T {
         return scope.getViewModel(owner, clazz.kotlin, qualifier, parameters)
-    }
-
-    @JvmStatic
-    fun currentScope(owner: LifecycleOwner): Scope {
-        return owner.lifecycleScope
     }
 }

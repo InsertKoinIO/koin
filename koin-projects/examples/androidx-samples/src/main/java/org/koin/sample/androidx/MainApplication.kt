@@ -22,7 +22,7 @@ class MainApplication : Application() {
             androidContext(this@MainApplication)
             androidFileProperties()
             fragmentFactory()
-            modules(listOf(appModule, mvpModule, mvvmModule, scopeModule))
+            modules(appModule + mvpModule + mvvmModule + scopeModule)
         }
     }
 }

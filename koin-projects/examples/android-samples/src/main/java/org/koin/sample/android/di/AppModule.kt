@@ -36,7 +36,7 @@ val appModule = module {
 val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
-    scope(named<MVPActivity>()) {
+    scope<MVPActivity> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
@@ -48,7 +48,7 @@ val mvvmModule = module {
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
 
-    scope(named<MVVMActivity>()) {
+    scope<MVVMActivity> {
         scoped { Session() }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
@@ -63,7 +63,7 @@ val scopeModule = module {
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
-    scope(named<ScopedActivityA>()) {
+    scope<ScopedActivityA> {
         scoped { Session() }
     }
 }
@@ -76,7 +76,7 @@ val dynamicModule = module {
 }
 
 val javaModule = module {
-    scope(named<JavaActivity>()) {
+    scope<JavaActivity> {
         scoped { Session() }
         viewModel { CompatSimpleViewModel(get()) }
     }

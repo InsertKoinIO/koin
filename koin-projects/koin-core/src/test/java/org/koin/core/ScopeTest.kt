@@ -1,6 +1,6 @@
 package org.koin.core
 
-import junit.framework.Assert.*
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.ClosedScopeException

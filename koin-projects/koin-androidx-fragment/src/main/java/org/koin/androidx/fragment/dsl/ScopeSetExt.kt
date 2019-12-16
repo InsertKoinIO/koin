@@ -30,7 +30,7 @@ import org.koin.dsl.ScopeDSL
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : Fragment> ScopeDSL.viewModel(
+inline fun <reified T : Fragment> ScopeDSL.fragment(
         qualifier: Qualifier? = null,
         override: Boolean = false,
         noinline definition: Definition<T>

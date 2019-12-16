@@ -22,6 +22,7 @@ import org.koin.core.logger.Logger
 import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
@@ -181,11 +182,34 @@ class Koin {
     }
 
     /**
+     * Create a Scope instance
+     * @param scopeId
+     * @param scopeDefinitionName
+     */
+    inline fun <reified T> createScope(scopeId: ScopeID): Scope {
+        val qualifier = TypeQualifier(T::class)
+        if (_logger.isAt(Level.DEBUG)) {
+            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        }
+        return _scopeRegistry.createScope(scopeId, qualifier)
+    }
+
+    /**
      * Get or Create a Scope instance
      * @param scopeId
      * @param qualifier
      */
     fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
+        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
+    }
+
+    /**
+     * Get or Create a Scope instance
+     * @param scopeId
+     * @param qualifier
+     */
+    inline fun <reified T> getOrCreateScope(scopeId: ScopeID): Scope {
+        val qualifier = TypeQualifier(T::class)
         return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }
 
@@ -240,6 +264,14 @@ class Koin {
     }
 
     /**
+     * Delete a property
+     * @param key
+     */
+    fun deleteProperty(key: String) {
+        _propertyRegistry.deleteProperty(key)
+    }
+
+    /**
      * Close all resources from context
      */
     fun close() = synchronized(this) {
@@ -249,13 +281,13 @@ class Koin {
         _propertyRegistry.close()
     }
 
-    fun loadModules(modules: List<Module>) = synchronized(this){
+    fun loadModules(modules: List<Module>) = synchronized(this) {
         _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
     }
 
 
-    fun unloadModules(modules: List<Module>) = synchronized(this){
+    fun unloadModules(modules: List<Module>) = synchronized(this) {
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
     }

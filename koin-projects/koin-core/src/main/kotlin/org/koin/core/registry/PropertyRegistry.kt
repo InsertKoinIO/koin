@@ -73,6 +73,13 @@ class PropertyRegistry(val _koin: Koin) {
     }
 
     /**
+     * Delete a property (key,value)
+     */
+    fun deleteProperty(key: String) {
+        _values.remove(key)
+    }
+
+    /**
      * Get a property
      * @param key
      */

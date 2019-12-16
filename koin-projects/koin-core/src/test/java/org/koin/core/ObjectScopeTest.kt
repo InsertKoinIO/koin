@@ -4,16 +4,18 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.ext.closeScope
 import org.koin.ext.createScope
+import org.koin.ext.getOrCreateScope
 import org.koin.ext.scope
 
 class ObjectScopeTest {
 
     @Test
     fun `typed scope`() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -23,7 +25,7 @@ class ObjectScopeTest {
             })
         }.koin
 
-        val a = koin.get<A>()
+        assertNotNull(koin.get<A>())
         assertNull(koin.getOrNull<B>())
         assertNull(koin.getOrNull<C>())
 
@@ -96,12 +98,12 @@ class ObjectScopeTest {
     fun `scope property 2`() {
         val koin = startKoin {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                })
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                    })
         }.koin
 
         val a = koin.get<A>()
@@ -117,6 +119,31 @@ class ObjectScopeTest {
         assertNotEquals(b1, b2)
 
         stopKoin()
+    }
+
+    @Test
+    fun `scope property - koin isolation`() {
+        val koin = koinApplication {
+            modules(
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                    })
+        }.koin
+
+        val a = koin.get<A>()
+
+        // get current scope
+        val b1 = a.getOrCreateScope(koin).get<B>()
+
+        a.closeScope(koin)
+
+        // recreate a new scope
+        val b2 = a.getOrCreateScope(koin).get<B>()
+
+        assertNotEquals(b1, b2)
     }
 
     @Test

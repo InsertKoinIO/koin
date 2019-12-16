@@ -63,6 +63,6 @@ val LifecycleOwner.lifecycleScope: Scope
 val LifecycleOwner.scope: Scope
     get() = error("Don't use scope on a lifecycle component. Use lifecycleScope instead")
 
-@Deprecated("Use lifecycleScope instead")
+@Deprecated("Use lifecycleScope instead",replaceWith = ReplaceWith("lifecycleScope"))
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateAndroidScope()

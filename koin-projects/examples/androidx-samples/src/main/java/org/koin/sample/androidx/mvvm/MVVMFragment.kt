@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.scope.currentScope
+import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -25,9 +25,9 @@ class MVVMFragment(val session: Session) : Fragment() {
     val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.mvvm_fragment, container, false)
     }
@@ -42,6 +42,6 @@ class MVVMFragment(val session: Session) : Fragment() {
         assertEquals((activity as MVVMActivity).simpleViewModel, shared)
         assertEquals((activity as MVVMActivity).savedVm, sharedSaved)
 
-        assertEquals(activity!!.currentScope.get<Session>(), getKoin().getProperty("session"))
+        assertEquals(activity!!.lifecycleScope.get<Session>(), getKoin().getProperty("session"))
     }
 }
