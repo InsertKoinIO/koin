@@ -24,29 +24,28 @@ I/System.out: [10] started in 3.615312 ms
 I/System.out: [10] measured executed in 0.520886 ms
 I/System.out: Avg execution time: 0.9961667999999999
 
-// New
-I/System.out: [1] started in 177.154948 ms
-I/System.out: [1] measured executed in 0.969844 ms
-I/System.out: [2] started in 31.234896 ms
-    [2] measured executed in 0.279115 ms
-I/System.out: [3] started in 20.228593 ms
-I/System.out: [3] measured executed in 0.247916 ms
-I/System.out: [4] started in 13.106563 ms
-I/System.out: [4] measured executed in 0.224062 ms
-I/.sample.androi: Method exceeds compiler instruction limit: 28870 in void org.koin.perfs.Module_400Kt$perfModule400$1.invoke(org.koin.core.module.Module)
-I/System.out: [5] started in 22.651615 ms
-I/System.out: [5] measured executed in 0.154636 ms
-I/System.out: [6] started in 7.01625 ms
-I/System.out: [6] measured executed in 0.166927 ms
-I/System.out: [7] started in 9.00026 ms
-I/System.out: [7] measured executed in 0.163594 ms
-I/System.out: [8] started in 5.641458 ms
-I/System.out: [8] measured executed in 0.148281 ms
-I/System.out: [9] started in 6.189688 ms
-I/System.out: [9] measured executed in 0.175104 ms
-I/System.out: [10] started in 9.997552 ms
-    [10] measured executed in 0.229583 ms
-I/System.out: Avg execution time: 0.2759062
+// New - alpha-8
+I/System.out: [1] started in 114.183386 ms
+I/System.out: [1] measured executed in 0.921042 ms
+I/System.out: [2] started in 32.400104 ms
+I/System.out: [2] measured executed in 0.160312 ms
+I/System.out: [3] started in 19.523229 ms
+I/System.out: [3] measured executed in 0.183229 ms
+I/System.out: [4] started in 10.427083 ms
+I/System.out: [4] measured executed in 0.13849 ms
+I/System.out: [5] started in 8.085573 ms
+I/System.out: [5] measured executed in 0.166302 ms
+I/System.out: [6] started in 4.266771 ms
+I/System.out: [6] measured executed in 0.164688 ms
+I/System.out: [7] started in 3.836719 ms
+I/System.out: [7] measured executed in 0.133281 ms
+I/System.out: [8] started in 3.301563 ms
+I/System.out: [8] measured executed in 0.119427 ms
+I/System.out: [9] started in 3.746615 ms
+I/System.out: [9] measured executed in 0.134011 ms
+I/System.out: [10] started in 3.311041 ms
+I/System.out: [10] measured executed in 0.134011 ms
+I/System.out: Avg execution time: 0.22547930000000002
 
 - Honor 5x (Android 6)
 --

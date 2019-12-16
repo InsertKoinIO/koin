@@ -6,6 +6,40 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 ## [2.1.0]()
 
 
+### [alpha-8]()
+
+
+_Docs_
+
+* `[UPDATED]` - updated `koin-core` `Scope` section
+* `[ADDED]` - inject on a setter property with `inject()`
+
+_Android-Scope_
+
+* `[UPDATED]` - updated `currentScope` to use `lifecycleScope` instead
+* `[FIXED]` - `ScopeCompat` for Java compat function
+
+_AndroidX-Scope_
+
+* `[UPDATED]` - updated `currentScope` to use `lifecycleScope` instead
+* `[FIXED]` - `ScopeCompat` for Java compat function
+
+_AndroidX-Factory_
+
+* `[FIXED]` - `Fragment` declaration in a scope
+
+_Core_
+
+* `[ADDED]` - DSL declare a scope with type directly with `scope<MyType> { ... }`
+* `[ADDED]` - smarter better API to use scope from an object instance (`getOrCreateScope` ...)
+* `[ADDED]` - `scope` property to any instance, to get tied declared scope
+* `[ADDED]` - inject on a setter property with `inject()`
+
+_Core-Ext_
+
+* `[ADDED]` - inject all setter property with `inject()` on an instance
+
+
 ### [alpha-7]()
 
 _Android-ViewModel_
