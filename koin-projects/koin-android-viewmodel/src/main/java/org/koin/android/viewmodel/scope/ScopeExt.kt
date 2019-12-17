@@ -37,7 +37,7 @@ inline fun <reified T : ViewModel> Scope.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(owner, T::class, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, T::class, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
