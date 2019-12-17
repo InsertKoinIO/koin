@@ -27,6 +27,22 @@ class DefinitionOverrideTest {
     }
 
     @Test
+    fun `allow overrides by type - scope`() {
+        val app = koinApplication {
+            modules(
+                    module {
+                        scope<Simple.ComponentA> {
+                            scoped<Simple.ComponentInterface1> { Simple.Component2() }
+                            scoped<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
+                        }
+                    }
+            )
+        }
+        val scope = app.koin.createScope<Simple.ComponentA>("_ID_")
+        assertTrue(scope.get<Simple.ComponentInterface1>() is Simple.Component1)
+    }
+
+    @Test
     fun `allow overrides by name`() {
 
         val app = koinApplication {
