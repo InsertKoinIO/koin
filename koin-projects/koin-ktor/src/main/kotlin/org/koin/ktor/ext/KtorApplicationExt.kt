@@ -43,7 +43,7 @@ inline fun <reified T : Any> Application.inject(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
-        lazy { get<T>(qualifier, parameters) }
+        lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent

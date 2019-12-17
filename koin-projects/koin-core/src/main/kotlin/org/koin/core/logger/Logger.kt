@@ -45,7 +45,7 @@ const val KOIN_TAG = "[Koin]"
  * Log Level
  */
 enum class Level {
-    DEBUG, INFO, ERROR
+    DEBUG, INFO, ERROR, NONE
 }
 
 typealias MESSAGE = String

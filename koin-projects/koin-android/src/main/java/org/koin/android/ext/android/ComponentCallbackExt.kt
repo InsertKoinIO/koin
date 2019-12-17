@@ -24,7 +24,7 @@ fun ComponentCallbacks.getKoin() = when (this) {
 inline fun <reified T : Any> ComponentCallbacks.inject(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
-) = lazy { get<T>(qualifier, parameters) }
+) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
 /**
  * get given dependency for Android koincomponent
