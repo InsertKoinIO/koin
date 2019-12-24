@@ -15,10 +15,9 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.application.Application
-import io.ktor.application.ApplicationFeature
-import io.ktor.application.ApplicationStopping
+import io.ktor.application.*
 import io.ktor.util.AttributeKey
+import io.ktor.util.pipeline.ContextDsl
 import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
@@ -26,22 +25,32 @@ import org.koin.dsl.KoinAppDeclaration
 
 /**
  * @author Vinicius Carvalho
+ * @author Victor Alenkov
  *
  * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
  *
  */
-class Koin {
+class Koin(internal val koinApplication: KoinApplication) {
 
     companion object Feature : ApplicationFeature<Application, KoinApplication, Koin> {
-        override val key: AttributeKey<Koin>
-            get() = AttributeKey("Koin")
+        override val key = AttributeKey<Koin>("Koin")
 
         override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
-            startKoin(configure)
+            val koinApplication = startKoin(configure)
             pipeline.environment.monitor.subscribe(ApplicationStopping) {
                 GlobalContext.stop()
             }
-            return Koin()
+            return Koin(koinApplication)
         }
     }
 }
+
+/**
+ * @author Victor Alenkov
+ *
+ * Gets or installs a [Koin] feature for the this [Application] and runs a [configuration] script on it
+ */
+@ContextDsl
+fun Application.koin(configuration: KoinAppDeclaration): Koin = featureOrNull(Koin)?.apply {
+    koinApplication.apply(configuration).createEagerInstances()
+} ?: install(Koin, configuration)
