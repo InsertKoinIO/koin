@@ -158,4 +158,19 @@ class ModuleCreationTest {
 
         assertEquals(modA + modB + modC, listOf(modA, modB) + modC)
     }
+
+    @Test
+    fun `can add module to list`() {
+        val modA = module {
+            single { Simple.ComponentA() }
+        }
+        val modB = module {
+            single { Simple.ComponentB(get()) }
+        }
+        val modC = module {
+            single { Simple.ComponentC(get()) }
+        }
+
+        assertEquals(modA + modB + modC, modA + listOf(modB) + modC)
+    }
 }
