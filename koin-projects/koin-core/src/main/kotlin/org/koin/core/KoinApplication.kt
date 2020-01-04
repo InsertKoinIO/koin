@@ -27,9 +27,9 @@ import org.koin.core.time.measureDuration
  *
  * @author Arnaud Giuliani
  */
-class KoinApplication private constructor() {
+class KoinApplication private constructor(val parent: Koin? = null) {
 
-    val koin = Koin()
+    val koin = Koin(parent)
 
     internal fun init() {
         koin._scopeRegistry.createRootScopeDefinition()
@@ -157,6 +157,13 @@ class KoinApplication private constructor() {
         @JvmStatic
         fun init(): KoinApplication {
             val app = KoinApplication()
+            app.init()
+            return app
+        }
+
+        @JvmStatic
+        fun init(parent: Koin): KoinApplication {
+            val app = KoinApplication(parent)
             app.init()
             return app
         }

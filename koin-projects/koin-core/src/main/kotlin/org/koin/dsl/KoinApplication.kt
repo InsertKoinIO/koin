@@ -15,6 +15,7 @@
  */
 package org.koin.dsl
 
+import org.koin.core.Koin
 import org.koin.core.KoinApplication
 
 typealias KoinAppDeclaration = KoinApplication.() -> Unit
@@ -25,6 +26,17 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
  */
 fun koinApplication(appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.init()
+    appDeclaration(koinApplication)
+    koinApplication.koin.createContextIfNeeded()
+    return koinApplication
+}
+
+/**
+ * Create a KoinApplication with parent koin
+ * @author Michal Nikodim
+ */
+fun koinApplication(parent: Koin, appDeclaration: KoinAppDeclaration): KoinApplication {
+    val koinApplication = KoinApplication.init(parent)
     appDeclaration(koinApplication)
     koinApplication.koin.createContextIfNeeded()
     return koinApplication

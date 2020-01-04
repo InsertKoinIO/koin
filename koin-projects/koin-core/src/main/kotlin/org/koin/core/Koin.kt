@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-class Koin {
+class Koin(val parent: Koin? = null) {
     val _scopeRegistry = ScopeRegistry(this)
     val _propertyRegistry = PropertyRegistry(this)
     var _logger: Logger = EmptyLogger()
@@ -200,7 +200,9 @@ class Koin {
      * @param qualifier
      */
     fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
+        return _scopeRegistry.getScopeOrNull(scopeId)
+                ?: parent?._scopeRegistry?.getScopeOrNull(scopeId)
+                ?: createScope(scopeId, qualifier)
     }
 
     /**
@@ -210,7 +212,9 @@ class Koin {
      */
     inline fun <reified T> getOrCreateScope(scopeId: ScopeID): Scope {
         val qualifier = TypeQualifier(T::class)
-        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
+        return _scopeRegistry.getScopeOrNull(scopeId)
+                ?: parent?._scopeRegistry?.getScopeOrNull(scopeId)
+                ?: createScope(scopeId, qualifier)
     }
 
     /**
@@ -219,6 +223,7 @@ class Koin {
      */
     fun getScope(scopeId: ScopeID): Scope {
         return _scopeRegistry.getScopeOrNull(scopeId)
+                ?: parent?._scopeRegistry?.getScopeOrNull(scopeId)
                 ?: throw ScopeNotCreatedException("No scope found for id '$scopeId'")
     }
 
@@ -228,6 +233,7 @@ class Koin {
      */
     fun getScopeOrNull(scopeId: ScopeID): Scope? {
         return _scopeRegistry.getScopeOrNull(scopeId)
+                ?: parent?._scopeRegistry?.getScopeOrNull(scopeId)
     }
 
     /**
@@ -243,7 +249,9 @@ class Koin {
      * @param defaultValue
      */
     fun <T> getProperty(key: String, defaultValue: T): T {
-        return _propertyRegistry.getProperty<T>(key) ?: defaultValue
+        return _propertyRegistry.getProperty<T>(key)
+                ?: parent?._propertyRegistry?.getProperty<T>(key)
+                ?: defaultValue
     }
 
     /**
@@ -252,6 +260,7 @@ class Koin {
      */
     fun <T> getProperty(key: String): T? {
         return _propertyRegistry.getProperty(key)
+                ?: parent?._propertyRegistry?.getProperty(key)
     }
 
     /**

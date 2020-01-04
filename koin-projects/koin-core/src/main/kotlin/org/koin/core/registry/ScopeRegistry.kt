@@ -120,6 +120,8 @@ class ScopeRegistry(private val _koin: Koin) {
         }
 
         val scopeDefinition = scopeDefinitions[qualifier.value]
+                ?: _koin.parent?._scopeRegistry?.scopeDefinitions?.get(qualifier.value)
+
         return if (scopeDefinition != null) {
             val createdScope: Scope = createScope(scopeId, scopeDefinition)
             _scopes[scopeId] = createdScope

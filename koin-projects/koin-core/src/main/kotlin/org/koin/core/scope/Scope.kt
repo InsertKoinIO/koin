@@ -191,6 +191,7 @@ data class Scope(
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
                 ?: findInOtherScope<T>(clazz, qualifier, parameters)
+                ?: getKoin().parent?._scopeRegistry?.getScopeOrNull(id)?.resolveInstance(qualifier, clazz, parameters)
                 ?: throwDefinitionNotFound(qualifier, clazz)
     }
 
@@ -277,7 +278,18 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T : Any> getAll(clazz: KClass<*>): List<T> = _instanceRegistry.getAll(clazz)
+    fun <T : Any> getAll(clazz: KClass<*>): List<T> {
+        val parent = getKoin().parent
+        if (parent != null) {
+            val list = mutableListOf<T>()
+            list.addAll(_instanceRegistry.getAll(clazz))
+            parent._scopeRegistry.getScopeOrNull(id)?.let {
+                list.addAll(it.getAll(clazz))
+            }
+            return list
+        }
+        return _instanceRegistry.getAll(clazz)
+    }
 
     /**
      * Get instance of primary type P and secondary type S
