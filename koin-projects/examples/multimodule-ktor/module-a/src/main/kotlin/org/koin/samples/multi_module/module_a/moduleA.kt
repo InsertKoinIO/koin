@@ -14,9 +14,11 @@ import org.koin.samples.multi_module.common.IService
 
 fun Application.moduleA() {
     koin {
-        modules(module {
-            single<ModuleAService>() bind IService::class
-        })
+        modules(
+                module {
+                    single<ModuleAService>() bind IService::class
+                }
+        )
     }
     routing {
         val service by inject<ModuleAService>()

@@ -15,12 +15,18 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.ApplicationFeature
+import io.ktor.application.ApplicationStopping
+import io.ktor.application.featureOrNull
+import io.ktor.application.install
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.ContextDsl
 import org.koin.core.KoinApplication
+import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
 /**
@@ -51,6 +57,15 @@ class Koin(internal val koinApplication: KoinApplication) {
  * Gets or installs a [Koin] feature for the this [Application] and runs a [configuration] script on it
  */
 @ContextDsl
-fun Application.koin(configuration: KoinAppDeclaration): Koin = featureOrNull(Koin)?.apply {
+fun Application.koin(configuration: KoinAppDeclaration) = featureOrNull(Koin)?.apply {
     koinApplication.apply(configuration).createEagerInstances()
 } ?: install(Koin, configuration)
+
+/**
+ * @author Victor Alenkov
+ *
+ * Gets or installs a [Koin] feature for the this [Application] and install a [block] modules on it
+ */
+@KoinExperimentalAPI
+@ContextDsl
+fun Application.koinModules(vararg block: Module) = koin { modules(block.asList()) }

@@ -3,7 +3,9 @@ package org.koin.ktor.ext
 import io.ktor.application.featureOrNull
 import io.ktor.application.install
 import io.ktor.server.testing.withApplication
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
@@ -82,6 +84,25 @@ class KoinFeatureTest {
                 })
             }
             assertNotNull(application.getKoin().getOrNull<Foo>())
+        }
+    }
+
+    @Test
+    fun `Using the koinModules extension`() {
+        withApplication {
+            assertNull(GlobalContext.getOrNull())
+            assertNull(application.featureOrNull(Koin))
+
+            application.koinModules (
+                        module {
+                            single<Foo>()
+                        },
+                        module {
+                            single<Bar>()
+                        }
+            )
+            assertNotNull(application.getKoin().getOrNull<Foo>())
+            assertNotNull(application.getKoin().getOrNull<Bar>())
         }
     }
 

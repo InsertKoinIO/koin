@@ -9,15 +9,15 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.experimental.builder.single
 import org.koin.ktor.ext.inject
-import org.koin.ktor.ext.koin
+import org.koin.ktor.ext.koinModules
 import org.koin.samples.multi_module.common.IService
 
 fun Application.moduleB() {
-    koin {
-        modules(module {
-            single<ModuleBService>() bind IService::class
-        })
-    }
+    koinModules(
+            module {
+                single<ModuleBService>() bind IService::class
+            }
+    )
     routing {
         val service by inject<ModuleBService>()
         get("/module-b") {
