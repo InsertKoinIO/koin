@@ -59,9 +59,9 @@ on it and can't totally drop it via garbage collection.
 
 ## LifecycleScope - a scope tied to your lifecycle
 
-Koin gives the `koinScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
+Koin gives the `lifecycleScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
 
-To benefit from the `koinScope`, you have to declare a scope for your activity (tied our Activity type):
+To benefit from the `lifecycleScope`, you have to declare a scope for your activity (tied our Activity type):
 
 ```kotlin
 val androidModule = module {
@@ -76,12 +76,12 @@ val androidModule = module {
 class MyActivity : AppCompatActivity() {
 
     // inject Presenter instance from current scope
-    val presenter : Presenter by koinScope.inject()
+    val presenter : Presenter by lifecycleScope.inject()
 
 ```
 
 
-!> Be careful to not use `scope` but `koinScope`. This is a scope tied to the Android lifecycle. Else your scoped instances won't follow your lifecycle.
+!> Be careful to not use `scope` but `lifecycleScope`. This is a scope tied to the Android lifecycle. Else your scoped instances won't follow your lifecycle.
 
 
 ## Sharing instances between components with scopes
