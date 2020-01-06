@@ -100,6 +100,11 @@ class Module(
      * Help write list of Modules
      */
     operator fun plus(module: Module) = listOf(this, module)
+
+    /**
+     * Help write list of Modules
+     */
+    operator fun plus(modules: List<Module>) = listOf(this) + modules
 }
 
 /**
