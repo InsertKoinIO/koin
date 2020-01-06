@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
-import org.koin.android.scope.koinScope
+import org.koin.android.scope.lifecycleScope
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.android.viewmodel.scope.viewModel
@@ -26,8 +26,8 @@ class MVVMActivity : AppCompatActivity() {
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by koinScope.viewModel(this)
-    val extScopeVm: ExtSimpleViewModel by koinScope.viewModel(this, named("ext"))
+    val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this)
+    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this, named("ext"))
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,10 +45,10 @@ class MVVMActivity : AppCompatActivity() {
         setContentView(R.layout.mvvm_activity)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mvvm_frame, MVVMFragment())
-            .commit()
+                .replace(R.id.mvvm_frame, MVVMFragment())
+                .commit()
 
-        getKoin().setProperty("session", koinScope.get<Session>())
+        getKoin().setProperty("session", lifecycleScope.get<Session>())
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)

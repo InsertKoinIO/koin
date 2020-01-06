@@ -9,6 +9,7 @@ import org.koin.ext.inject
 
 class B
 class C
+class D
 
 class A {
     lateinit var b: B

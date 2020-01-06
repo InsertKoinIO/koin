@@ -33,16 +33,41 @@ data class Scope(
         val _scopeDefinition: ScopeDefinition,
         val _koin: Koin
 ) {
-    var _linkedScope: List<Scope> = emptyList()
+    val _linkedScope: ArrayList<Scope> = arrayListOf()
     val _instanceRegistry = InstanceRegistry(_koin, this)
     private val _callbacks = arrayListOf<ScopeCallback>()
     private var _closed: Boolean = false
     val closed: Boolean
         get() = _closed
 
-    internal fun create(rootScope: Scope? = null) {
+    internal fun create(links: List<Scope>) {
         _instanceRegistry.create(_scopeDefinition.definitions)
-        rootScope?.let { _linkedScope = listOf(it) }
+        _linkedScope.addAll(links)
+    }
+
+    /**
+     * Add parent Scopes to allow instance resolution
+     * i.e: linkTo(scopeC) - allow to resolve instance to current scope and scopeC
+     *
+     * @param scopes - Scopes to link with
+     */
+    fun linkTo(vararg scopes: Scope) {
+        if (!_scopeDefinition.isRoot) {
+            _linkedScope.addAll(scopes)
+        } else {
+            error("Can't add scope link to a root scope")
+        }
+    }
+
+    /**
+     * Remove linked scope
+     */
+    fun unlink(vararg scopes: Scope) {
+        if (!_scopeDefinition.isRoot) {
+            _linkedScope.removeAll(scopes)
+        } else {
+            error("Can't remove scope link to a root scope")
+        }
     }
 
     /**

@@ -26,21 +26,10 @@ private fun <T : Any> T.getScopeOrNull(koin: Koin = GlobalContext.get()): Scope?
     return koin.getScopeOrNull(scopeId)
 }
 
-fun <T : Any> T.createScope(): Scope {
+private fun <T : Any> T.createScope(): Scope {
     return GlobalContext.get().createScope(getScopeId(), getScopeName())
 }
 
-fun <T : Any> T.createScope(koin: Koin): Scope {
+private fun <T : Any> T.createScope(koin: Koin): Scope {
     return koin.createScope(getScopeId(), getScopeName())
-}
-
-
-fun <T : Any> T.closeScope() {
-    closeScope(GlobalContext.get())
-}
-
-fun <T : Any> T.closeScope(koin: Koin) {
-    val scope = koin.getScope(getScopeId())
-    scope.close()
-    koin.deleteScope(getScopeId())
 }

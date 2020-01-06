@@ -16,7 +16,7 @@
 package org.koin.androidx.scope.compat
 
 import androidx.lifecycle.LifecycleOwner
-import org.koin.androidx.scope.koinScope
+import org.koin.androidx.scope.lifecycleScope
 import org.koin.core.scope.Scope
 
 /**
@@ -28,6 +28,6 @@ object ScopeCompat {
 
     @JvmStatic
     fun lifecycleScope(owner: LifecycleOwner): Scope {
-        return owner.koinScope
+        return owner.lifecycleScope
     }
 }

@@ -27,6 +27,7 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import org.koin.ext.getScopeId
 import kotlin.reflect.KClass
 
 /**
@@ -184,10 +185,23 @@ class Koin {
     /**
      * Create a Scope instance
      * @param scopeId
-     * @param scopeDefinitionName
      */
     inline fun <reified T> createScope(scopeId: ScopeID): Scope {
         val qualifier = TypeQualifier(T::class)
+        if (_logger.isAt(Level.DEBUG)) {
+            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        }
+        return _scopeRegistry.createScope(scopeId, qualifier)
+    }
+
+    /**
+     * Create a Scope instance
+     * @param scopeDefinitionName
+     */
+    inline fun <reified T> createScope(): Scope {
+        val kClass = T::class
+        val scopeId = kClass.getScopeId()
+        val qualifier = TypeQualifier(kClass)
         if (_logger.isAt(Level.DEBUG)) {
             _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
