@@ -6,7 +6,7 @@ import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.koinScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.viewModel
@@ -32,11 +32,11 @@ class MVVMActivity : AppCompatActivity() {
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this)
-    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this, named("ext"))
+    val scopeVm: ExtSimpleViewModel by koinScope.viewModel(this)
+    val extScopeVm: ExtSimpleViewModel by koinScope.viewModel(this, named("ext"))
 
     val savedVm: SavedStateViewModel by viewModel { parametersOf(Bundle(), "vm1") }
-    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModel(this, named("vm2")) {
+    val scopedSavedVm: SavedStateViewModel by koinScope.viewModel(this, named("vm2")) {
         parametersOf(
                 Bundle(),
                 "vm2"
@@ -46,11 +46,11 @@ class MVVMActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // if not in scope
         //setupKoinFragmentFactory()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
 
         super.onCreate(savedInstanceState)
 
-        assertNotNull(lifecycleScope.get<Session>())
+        assertNotNull(koinScope.get<Session>())
 
         assertEquals(getViewModel<SimpleViewModel> { parametersOf(ID) }, simpleViewModel)
 
@@ -71,7 +71,7 @@ class MVVMActivity : AppCompatActivity() {
                 .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
                 .commit()
 
-        getKoin().setProperty("session", lifecycleScope.get<Session>())
+        getKoin().setProperty("session", koinScope.get<Session>())
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)

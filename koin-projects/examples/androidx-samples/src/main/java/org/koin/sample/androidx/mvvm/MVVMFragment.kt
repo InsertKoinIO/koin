@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.koinScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -42,6 +42,6 @@ class MVVMFragment(val session: Session) : Fragment() {
         assertEquals((activity as MVVMActivity).simpleViewModel, shared)
         assertEquals((activity as MVVMActivity).savedVm, sharedSaved)
 
-        assertEquals(activity!!.lifecycleScope.get<Session>(), getKoin().getProperty("session"))
+        assertEquals(activity!!.koinScope.get<Session>(), getKoin().getProperty("session"))
     }
 }

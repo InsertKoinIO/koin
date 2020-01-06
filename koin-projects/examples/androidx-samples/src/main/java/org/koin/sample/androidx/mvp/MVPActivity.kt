@@ -7,7 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.koinScope
 import org.koin.core.parameter.parametersOf
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
@@ -22,7 +22,7 @@ class MVPActivity : AppCompatActivity() {
     val factoryPresenter: FactoryPresenter by inject { parametersOf(ID) }
 
     // Inject presenter from MVPActivity's scope
-    val scopedPresenter: ScopedPresenter by lifecycleScope.inject { parametersOf(ID) }
+    val scopedPresenter: ScopedPresenter by koinScope.inject { parametersOf(ID) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class MVPActivity : AppCompatActivity() {
         assertEquals(factoryPresenter.service, scopedPresenter.service)
 
         assertNotEquals(get<FactoryPresenter> { parametersOf(ID) }, factoryPresenter)
-        assertEquals(lifecycleScope.get<ScopedPresenter>(), scopedPresenter)
+        assertEquals(koinScope.get<ScopedPresenter>(), scopedPresenter)
 
         setContentView(R.layout.mvp_activity)
         title = "Android MVP"
