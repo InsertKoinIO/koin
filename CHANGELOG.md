@@ -5,6 +5,13 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.1.0]()
 
+### [alpha-10]()
+
+_Core_
+
+* `[UPDATED]` - updated `+` oprator for modules
+* `[ADDED]` - Scope Links, to link scope to another and help resolve shared instances
+
 
 ### [alpha-8]()
 
