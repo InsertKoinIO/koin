@@ -93,7 +93,7 @@ class KoinFeatureTest {
             assertNull(GlobalContext.getOrNull())
             assertNull(application.featureOrNull(Koin))
 
-            application.koinModules (
+            application.modules (
                         module {
                             single<Foo>()
                         },

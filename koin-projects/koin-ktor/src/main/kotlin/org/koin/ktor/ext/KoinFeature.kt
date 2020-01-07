@@ -68,4 +68,4 @@ fun Application.koin(configuration: KoinAppDeclaration) = featureOrNull(Koin)?.a
  */
 @KoinExperimentalAPI
 @ContextDsl
-fun Application.koinModules(vararg block: Module) = koin { modules(block.asList()) }
+fun Application.modules(vararg block: Module) = koin { modules(block.asList()) }

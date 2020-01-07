@@ -9,11 +9,11 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.experimental.builder.single
 import org.koin.ktor.ext.inject
-import org.koin.ktor.ext.koinModules
+import org.koin.ktor.ext.modules
 import org.koin.samples.multi_module.common.IService
 
 fun Application.moduleB() {
-    koinModules(
+    modules(
             module {
                 single<ModuleBService>() bind IService::class
             }
