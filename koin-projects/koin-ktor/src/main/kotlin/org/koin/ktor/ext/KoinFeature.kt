@@ -26,6 +26,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -42,10 +43,17 @@ class Koin(internal val koinApplication: KoinApplication) {
         override val key = AttributeKey<Koin>("Koin")
 
         override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
+            val monitor = pipeline.environment.monitor
+
             val koinApplication = startKoin(configure)
-            pipeline.environment.monitor.subscribe(ApplicationStopping) {
-                GlobalContext.stop()
+            monitor.raise(KoinApplicationStarted, koinApplication)
+
+            monitor.subscribe(ApplicationStopping) {
+                monitor.raise(KoinApplicationStopPreparing, koinApplication)
+                stopKoin()
+                monitor.raise(KoinApplicationStopped, koinApplication)
             }
+
             return Koin(koinApplication)
         }
     }

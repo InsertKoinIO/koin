@@ -43,7 +43,7 @@ module {
 
 ## Android Components as KoinComponents
 
-`Activity`, `Fragment` & `Service` are extendend by Koin to be considered as `KoinComponents` out of the box:
+`Activity`, `Fragment` & `Service` are extended by Koin to be considered as `KoinComponents` out of the box:
 
 ```kotlin
 class MyActivity : AppCompatActivity(){

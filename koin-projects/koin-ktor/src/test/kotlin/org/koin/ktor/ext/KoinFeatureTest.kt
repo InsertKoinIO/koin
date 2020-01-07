@@ -3,10 +3,13 @@ package org.koin.ktor.ext
 import io.ktor.application.featureOrNull
 import io.ktor.application.install
 import io.ktor.server.testing.withApplication
+import io.ktor.server.testing.withTestApplication
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
+import io.ktor.server.testing.withTestApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
@@ -94,12 +97,12 @@ class KoinFeatureTest {
             assertNull(application.featureOrNull(Koin))
 
             application.modules (
-                        module {
-                            single<Foo>()
-                        },
-                        module {
-                            single<Bar>()
-                        }
+                    module {
+                        single<Foo>()
+                    },
+                    module {
+                        single<Bar>()
+                    }
             )
             assertNotNull(application.getKoin().getOrNull<Foo>())
             assertNotNull(application.getKoin().getOrNull<Bar>())
@@ -165,5 +168,50 @@ class KoinFeatureTest {
             assertNotNull(application.getKoin().getOrNull<Bar2>())
             assertEquals("three", s)
         }
+    }
+
+    @Test
+    fun `custom stop listeners`() {
+        val module = module {
+            single { Foo("bar") }
+        }
+        var c = 0
+        withTestApplication {
+            assertEquals(0, c)
+
+            val monitor = environment.monitor
+            monitor.subscribe(KoinApplicationStopPreparing) {
+                c += 1
+            }
+            monitor.subscribe(KoinApplicationStopped) {
+                c += 2
+            }
+
+            application.install(Koin) {
+                modules(module)
+            }
+            val bean = GlobalContext.get().get<Foo>()
+            assertNotNull(bean)
+            assertEquals(0, c)
+        }
+        Assert.assertEquals(3, c)
+
+        withTestApplication {
+            assertEquals(3, c)
+            application.install(Koin) {
+                modules(module)
+                environment.monitor.subscribe(KoinApplicationStarted) {
+                    c = 0
+                }
+                environment.monitor.subscribe(KoinApplicationStopped) {
+                    c += 4
+                }
+            }
+            val bean = GlobalContext.get().get<Foo>()
+            assertNotNull(bean)
+            assertEquals(0, c)
+        }
+        Assert.assertEquals(4, c)
+
     }
 }

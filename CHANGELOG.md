@@ -108,7 +108,7 @@ _Android_
 
 _Android-Scope_
 
-* `[UPDATED]` - rework according to new Scope API (manage compelte Scope Lifecycle)
+* `[UPDATED]` - rework according to new Scope API (manage complete Scope Lifecycle)
 * `[ADDED]` - `currentScope` property scope tied to current Activity or Fragment
 * `[ADDED]` - `currentScope` is aware of any `KoinComponent` & currentScope override
 * `[UPDATED]` - ScopeID generation
@@ -139,7 +139,7 @@ _Core_
 * `[UPDATED]` - startKoin replaced with startKoin DSL and koin in global context
 * `[UPDATED]` - complete internals rewritten for performances optimisation (startup & injection)
 * `[UPDATED]` - `KoinComponent` now can override `getKoin()` to target a custom Koin instance & `currentScope()` to target a Scope that is used for all injections
-* `[ADDED]` - koinApplication function to help declare an instance  for a local context, in ordoer to help isolated Koin instances
+* `[ADDED]` - koinApplication function to help declare an instance  for a local context, in order to help isolated Koin instances
 * `[UPDATED]` - rework Scope API (multiple instances definitions, properties, release, callback ...)
 * `[UPDATED]` - rework Scope DSL (scope/scoped) & lock single/factory
 * `[UPDATED]` - rework internals to use root Scope & separate Scope instances, with different bean registry
@@ -262,7 +262,7 @@ _Core_
 * `[ADDED]` - asciidoc doc updated - [#121](https://github.com/InsertKoinIO/koin/issues/121) - [#100](https://github.com/InsertKoinIO/koin/issues/100) - [#102](https://github.com/InsertKoinIO/koin/issues/102) - [#103](https://github.com/InsertKoinIO/koin/issues/103)
 * `[UPDATED]` - Injection parameter API with destructured declaration - [#133](https://github.com/InsertKoinIO/koin/issues/133)
 * `[ADDED]` - Preload instances with `createAtStart` - [#141](https://github.com/InsertKoinIO/koin/issues/141)
-* `[UPDATED]` - Explicit bean/module overide - [#123](https://github.com/InsertKoinIO/koin/issues/123)
+* `[UPDATED]` - Explicit bean/module override - [#123](https://github.com/InsertKoinIO/koin/issues/123)
 * `[FIXED]` - bind operator check assignable types
 
 
@@ -389,8 +389,8 @@ _Core_
 
 * `[FIXED]` Context resolution and modulePath isolation reworked - now fully functionnal
 * `[FIXED]` Stack resolution
-* `[ADDED]` `StandAloneContext` function `loadKoinModules` to load Koin modules wether Koin is already started
-* `[ADDED]` `StandAloneContext` function `loadProperties` to load Koin properties wether Koin is already started
+* `[ADDED]` `StandAloneContext` function `loadKoinModules` to load Koin modules whether Koin is already started
+* `[ADDED]` `StandAloneContext` function `loadProperties` to load Koin properties whether Koin is already started
 * `[ADDED]` `by inject()` function handle parameters to definition ([#59](https://github.com/Ekito/koin/issues/59))
 * `[FIXED]` Logging with class name need introspection
 * `[ADDED]` Context lifecycle notification callback - to allow a callback when `releaseContext()` is called on a context. You can register with `StandAloneContext.registerContextCallBack()` ([#58](https://github.com/Ekito/koin/pull/58))
@@ -420,7 +420,7 @@ _Core_
 _Android Architecture_
 
 <div class="alert alert-primary" role="alert">
-  Now declare your ViewModel lazyly in attributes, with <b>by viewModel()</b> like <b>by inject()</b>
+  Now declare your ViewModel lazily in attributes, with <b>by viewModel()</b> like <b>by inject()</b>
 </div>
 
 * `by viewModel()` lazy function call the `getViewModel()` function and allow `val` attribute declaration of your `ViewModel` (like with `by inject()`) - ([issue #37](https://github.com/Ekito/koin/issues/37))
@@ -480,13 +480,13 @@ _Core_
 
 * Simplified DSL modules: no more need of `Module` class. Now use directly the `applicationContext`function
 * Default Koin Logger to `PrintLogger` instead of `EmptyLogger`
-* a definition can be overriden (with a definition same name and type)
+* a definition can be overridden (with a definition same name and type)
 * DSL `provide` aliases with `bean` and `factory`
 * direct interface binding writing style (avoid to use `bind` keyword)
 * Koin instances resolution is now thread safe and compatible with coroutines
 * starter chain reviewed to allow better extension of `startKoin()`
-* better logs to display how instance and reoslution are made
-* Context isolation disabled by default. Can be activitaed later
+* better logs to display how instance and resolution are made
+* Context isolation disabled by default. Can be activated later
 
 _Android_
 
@@ -561,7 +561,7 @@ Android
 * fix/better extensions for Android
 * `bindProperty()` renamed to `setProperty()`
 * `startAndroidContext()` has been renamed to `startKoin()`
-* ContextAware Components can be configured for drop stratgey (onDestroy or onPause). Default method is onPause
+* ContextAware Components can be configured for drop strategy (onDestroy or onPause). Default method is onPause
 * load assets/koin.properties if present
 
 ## [0.5.2]()
@@ -626,7 +626,7 @@ The **dry run** feature, allows to run all of you modules in order to check if d
 _DSL_
 
 * replaced `declareContext{}` has been renamed `applicationContext{}`, and behind gives a better idea that you are describing your application context (the root context of your app)
-* Updated `modulePath(){}`has been dropped for `context(){}` - *context* describes a sub context of your application, has a a name and can have also sub context itself (sub contexts are hierarchicals)
+* Updated `modulePath(){}`has been dropped for `context(){}` - *context* describes a sub context of your application, has a a name and can have also sub context itself (sub contexts are hierarchical)
 * Updated `bind{}` doesn't need lambda anymore to declare your bound class, but just the class in argument: `bind()`
 * Added `provideFactory` is a DSL keyword to provide a factory definition instead of singleton
 
@@ -680,7 +680,7 @@ _Sample App_
 
 _DSL_
 
-* Module/AndroiModule class must now give a `context()` function implementation, to return a Context object. The `declareContext` function unlock the Koin DSL to describe dependencies and injection:
+* Module/AndroidModule class must now give a `context()` function implementation, to return a Context object. The `declareContext` function unlock the Koin DSL to describe dependencies and injection:
 
 ```Kotlin
 class MykModule : Module() {
@@ -760,7 +760,7 @@ val ctx = Koin().init(applicationContext).build(Module1(),Module2()...)
 Internal rework for simpler use with Scopes:
 * `Koin().build()` return KoinContext
 * factory, stack operators have been removed, for the modulePath fatures
-* delete/remove replcaed with `release()` Scope operation
+* delete/remove replaced with `release()` Scope operation
 * import is replaced with module instances load
 * All reflection & kotlin-reflect code have been removed
 

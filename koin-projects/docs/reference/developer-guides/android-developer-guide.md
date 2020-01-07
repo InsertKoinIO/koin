@@ -14,7 +14,7 @@ Here you will find some receipes and guide to build your Android application.
 
 To illustrate the eaxmples below, we will take a small usecase: a view that has to display weather detail.
 
-A very good explaination article is one from Florina Muntenescu: [Android Architecture Patterns Part 2:
+A very good explanation article is one from Florina Muntenescu: [Android Architecture Patterns Part 2:
 Model-View-Presenter](https://medium.com/upday-devs/android-architecture-patterns-part-2-model-view-presenter-8a6faaae14a5)
 
 #### The Contract: linking the View & Presenter
@@ -139,9 +139,9 @@ You can find the complete Weather App application in MVP style in the Koin examp
 ### How to build MVVM
 
 
-To illustrate the eaxmples below, we will take a small usecase: a view that has to display weather detail.
+To illustrate the examples below, we will take a small usecase: a view that has to display weather detail.
 
-A very good explaination article is one from Florina Muntenescu: [Android Architecture Patterns Part 3:
+A very good explanation article is one from Florina Muntenescu: [Android Architecture Patterns Part 3:
 Model-View-ViewModel](https://medium.com/upday-devs/android-architecture-patterns-part-3-model-view-viewmodel-e7eeee76b73b)
 
 
@@ -165,7 +165,7 @@ class DetailViewModel(
     fun getDetail(id : String) {
         _states.value = LoadingState
         launch {
-            // get detail in Bacground
+            // get detail in Background
             val detail = weatherRepository.getWeatherDetail(id)
             if (detail != null){
                 _states.value = WeatherDetailState(detail)
