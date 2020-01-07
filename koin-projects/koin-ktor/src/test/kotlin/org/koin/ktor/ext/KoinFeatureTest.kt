@@ -9,7 +9,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
-import io.ktor.server.testing.withTestApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
@@ -96,7 +95,7 @@ class KoinFeatureTest {
             assertNull(GlobalContext.getOrNull())
             assertNull(application.featureOrNull(Koin))
 
-            application.modules (
+            application.modules(
                     module {
                         single<Foo>()
                     },
@@ -211,7 +210,6 @@ class KoinFeatureTest {
             assertNotNull(bean)
             assertEquals(0, c)
         }
-        Assert.assertEquals(4, c)
-
+        assertEquals(4, c)
     }
 }
