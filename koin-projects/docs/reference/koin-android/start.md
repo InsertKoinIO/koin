@@ -55,7 +55,7 @@ class MainApplication : Application() {
 
         startKoin {
             //inject Android context
-            androidContext(/* your androic context */)
+            androidContext(/* your android context */)
             // use Android logger - Level.INFO by default
             androidLogger()
             // use modules
@@ -79,7 +79,7 @@ class MainApplication : Application() {
 
         startKoin {
             //inject Android context
-            androidContext(/* your androic context */)
+            androidContext(/* your android context */)
             // use Android logger - Level.INFO by default
             androidLogger()
             // use properties from assets/koin.properties
