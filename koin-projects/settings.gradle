@@ -25,3 +25,8 @@ include 'koin-logger-slf4j'
 include 'koin-ktor'
 // Kto Sample
 include 'examples:hello-ktor'
+
+include 'examples:multimodule-ktor:app'
+include 'examples:multimodule-ktor:common'
+include 'examples:multimodule-ktor:module-a'
+include 'examples:multimodule-ktor:module-b'
