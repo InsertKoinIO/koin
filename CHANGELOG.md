@@ -34,6 +34,8 @@ _Core_
 * `[ADDED]` - smarter better API to use scope from an object instance (`getOrCreateScope` ...)
 * `[ADDED]` - `scope` property to any instance, to get tied declared scope
 * `[ADDED]` - inject on a setter property with `inject()`
+* `[ADDED]` - Added Koin application events
+* `[ADDED]` - Support multiple module configuration
 
 _Core-Ext_
 

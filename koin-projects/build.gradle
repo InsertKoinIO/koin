@@ -1,5 +1,5 @@
 buildscript {
-    apply from: "./gradle/versions.gradle"
+    apply from: "../buildSrc/src/main/kotlin/versions.gradle.kts"
     apply from: "./gradle/versions-android.gradle"
 
     repositories {
