@@ -14,3 +14,4 @@ includeOldModule("koin-core-ext")
 
 // Ktor
 includeOldModule("koin-logger-slf4j")
+includeOldModule("koin-ktor")
