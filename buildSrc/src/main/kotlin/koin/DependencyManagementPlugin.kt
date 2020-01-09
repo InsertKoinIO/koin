@@ -32,6 +32,7 @@ class DependencyManagementPlugin : Plugin<Project> {
                         "org.mockito"           -> useVersion("2.21.0")
                         "org.slf4j"             -> useVersion("1.7.30")
                         "io.ktor"               -> useVersion("1.2.6")
+                        "ch.qos.logback"        -> useVersion("1.2.3")
 
                     }
                 }

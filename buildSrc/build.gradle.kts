@@ -16,7 +16,7 @@ gradlePlugin {
     plugins {
         register("koin-base-jvm") {
             id = "koin-base-jvm"
-            implementationClass = "koin.GradleBaseModulePlugin"
+            implementationClass = "koin.KoinBaseJvmPlugin"
         }
     }
 }

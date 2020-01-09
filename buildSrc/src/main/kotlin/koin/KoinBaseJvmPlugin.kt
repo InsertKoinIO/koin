@@ -22,7 +22,7 @@ import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
-class GradleBaseModulePlugin : Plugin<Project> {
+class KoinBaseJvmPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = target.run {
         apply<KotlinPluginWrapper>()
         apply<DependencyManagementPlugin>()

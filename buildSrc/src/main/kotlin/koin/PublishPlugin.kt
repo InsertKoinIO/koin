@@ -18,6 +18,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+import useDependencyResolvedVersions
 
 class PublishPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = target.run {
@@ -32,6 +33,9 @@ class PublishPlugin : Plugin<Project> {
                     from(components["java"])
                     artifact(target.tasks.getByName("sourcesJar", Jar::class))
                     artifact(target.tasks.getByName("dokkaJar", Jar::class))
+                    pom {
+                        useDependencyResolvedVersions(configurations)
+                    }
                 }
             }
         }

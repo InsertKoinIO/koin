@@ -23,6 +23,14 @@ gradleRunConfiguration(cfgSubName = "wrapper, refresh dependencies", tasks = lis
 }
 gradleRunConfiguration(cfgSubName = "all tests", tasks = listOf("assemble", "check"))
 gradleRunConfiguration(cfgSubName = "local publish", tasks = listOf("publishToMavenLocal"))
+gradleRunConfiguration(
+    cfgSubName = "resources", tasks = listOf(
+    "processResources", "generatePomFileForMavenJavaPublication",
+    "generateMetadataFileForMavenJavaPublication"
+)
+) {
+    scriptParameters = "--rerun-tasks"
+}
 
 configure<IdeaModel> {
     project {
