@@ -26,6 +26,7 @@ class DependencyManagementPlugin : Plugin<Project> {
 
                         "junit"                 -> useVersion("4.12")
                         "org.mockito"           -> useVersion("2.21.0")
+                        "org.slf4j"             -> useVersion("1.7.30")
                     }
                 }
             }

@@ -21,7 +21,7 @@ gradleRunConfiguration(cfgSubName = "assemble", tasks = listOf("assemble"))
 gradleRunConfiguration(cfgSubName = "wrapper, refresh dependencies", tasks = listOf("clean", "wrapper")) {
     scriptParameters = "--refresh-dependencies"
 }
-gradleRunConfiguration(cfgSubName = "all tests", tasks = listOf("check"))
+gradleRunConfiguration(cfgSubName = "all tests", tasks = listOf("assemble", "check"))
 gradleRunConfiguration(cfgSubName = "local publish", tasks = listOf("publishToMavenLocal"))
 
 configure<IdeaModel> {

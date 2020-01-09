@@ -1,11 +1,11 @@
 // Core
-include 'koin-core'
-include 'koin-test'
+//include 'koin-core'
+//include 'koin-test'
 // Core Sample
 include 'examples:coffee-maker'
 include 'examples:android-perfs'
 // Core extended
-include 'koin-core-ext'
+//include 'koin-core-ext'
 
 // Android
 include 'koin-android'
@@ -21,7 +21,7 @@ include 'examples:android-samples'
 include 'examples:androidx-samples'
 
 // Ktor
-include 'koin-logger-slf4j'
+//include 'koin-logger-slf4j'
 include 'koin-ktor'
 // Kto Sample
 include 'examples:hello-ktor'
