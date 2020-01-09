@@ -17,6 +17,7 @@ tasks {
 }
 
 gradleRunConfiguration(tasks = listOf("clean"))
+gradleRunConfiguration(cfgSubName = "assemble", tasks = listOf("assemble"))
 gradleRunConfiguration(cfgSubName = "wrapper, refresh dependencies", tasks = listOf("clean", "wrapper")) {
     scriptParameters = "--refresh-dependencies"
 }
@@ -51,11 +52,4 @@ configure<IdeaModel> {
             }
         }
     }
-}
-
-// for delete
-subprojects.filter {
-    it.projectDir.path.contains("/koin-projects/")
-}.forEach { sp ->
-    //    sp.apply<koin.DependencyManagementPlugin>()
 }

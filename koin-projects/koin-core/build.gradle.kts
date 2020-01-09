@@ -1,12 +1,10 @@
 plugins {
-    kotlin("jvm")
-    id("koin-versions")
+    id("koin-base-jvm")
 }
 
 description = "Koin - simple dependency injection for Kotlin - $name"
 
 dependencies {
-    api(kotlin("stdlib"))
 
     testApi("junit:junit")
     testApi("org.mockito:mockito-inline")
