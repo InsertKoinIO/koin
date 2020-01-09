@@ -29,6 +29,8 @@ dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
 
     api("gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.7")
+    api("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.3.1")
+
     api("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     api("com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayVersion")
 }

@@ -2,11 +2,14 @@
 
 package koin
 
+import io.gitlab.arturbosch.detekt.DetektPlugin
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getValue
@@ -24,6 +27,17 @@ class GradleBaseModulePlugin : Plugin<Project> {
         apply<KotlinPluginWrapper>()
         apply<DependencyManagementPlugin>()
         apply<DokkaPlugin>()
+        apply<DetektPlugin>()
+
+        configure<DetektExtension> {
+            config = files(rootDir.resolve("gradle/detekt.yml"))
+            parallel = true
+            buildUponDefaultConfig = true
+            ignoreFailures = false
+            reports {
+                txt { enabled = false }
+            }
+        }
 
         val sourcesJar by tasks.registering(Jar::class) {
             archiveClassifier.set("sources")
