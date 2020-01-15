@@ -6,21 +6,21 @@ fun includeOldModule(name: String) {
 }
 
 // Core
-includeOldModule("koin-core")
-includeOldModule("koin-test")
+include("koin-core")
+include("koin-test")
 // Core Sample
-includeOldModule("examples:coffee-maker")
+include("examples:coffee-maker")
 // Core extended
-includeOldModule("koin-core-ext")
+include("koin-core-ext")
 
 // Ktor
-includeOldModule("koin-logger-slf4j")
-includeOldModule("koin-ktor")
+include("koin-logger-slf4j")
+include("koin-ktor")
 // Ktor Sample
-includeOldModule("examples:hello-ktor")
+include("examples:hello-ktor")
 
-includeOldModule("examples:multimodule-ktor")
-includeOldModule("examples:multimodule-ktor:common")
-includeOldModule("examples:multimodule-ktor:module-a")
-includeOldModule("examples:multimodule-ktor:module-b")
-includeOldModule("examples:multimodule-ktor:app")
+include("examples:multimodule-ktor")
+include("examples:multimodule-ktor:common")
+include("examples:multimodule-ktor:module-a")
+include("examples:multimodule-ktor:module-b")
+include("examples:multimodule-ktor:app")

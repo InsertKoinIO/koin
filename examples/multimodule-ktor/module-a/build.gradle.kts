@@ -5,7 +5,7 @@ plugins {
 apply<koin.DependencyManagementPlugin>()
 
 dependencies {
-    api(project(":examples:multimodule-ktor:examples-multimodule-ktor-common"))
+    api(project(":examples:multimodule-ktor:common"))
 
     // Koin
     testApi(project(":koin-test"))

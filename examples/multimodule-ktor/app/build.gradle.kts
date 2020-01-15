@@ -5,8 +5,8 @@ plugins {
 apply<koin.DependencyManagementPlugin>()
 
 dependencies {
-    api(project(":examples:multimodule-ktor:examples-multimodule-ktor-module-a"))
-    api(project(":examples:multimodule-ktor:examples-multimodule-ktor-module-b"))
+    api(project(":examples:multimodule-ktor:module-a"))
+    api(project(":examples:multimodule-ktor:module-b"))
 
     api(project(":koin-logger-slf4j"))
 
