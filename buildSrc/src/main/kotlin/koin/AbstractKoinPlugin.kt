@@ -31,7 +31,7 @@ abstract class AbstractKoinPlugin : Plugin<Project> {
         }
     }
 
-    protected fun Project.addDokkaTask() {
+    protected fun Project.applyDokkaTask() {
         apply<DokkaPlugin>()
         val dokka by tasks.getting(DokkaTask::class) {
             outputDirectory = "$buildDir/javadoc"

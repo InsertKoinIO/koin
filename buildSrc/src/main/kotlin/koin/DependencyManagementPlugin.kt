@@ -22,18 +22,26 @@ class DependencyManagementPlugin : Plugin<Project> {
 
                 eachDependency {
                     when (requested.group) {
-                        "org.jetbrains.kotlin"  -> useVersion(getKotlinPluginVersion()!!)
-                        "org.jetbrains.kotlinx" -> when {
+                        "org.jetbrains.kotlin"   -> useVersion(getKotlinPluginVersion()!!)
+                        "org.jetbrains.kotlinx"  -> when {
                             requested.name.startsWith("kotlinx-coroutines-io") -> useVersion("0.1.16")
                             requested.name.startsWith("kotlinx-coroutines-")   -> useVersion("1.3.0")
                         }
 
-                        "junit"                 -> useVersion("4.12")
-                        "org.mockito"           -> useVersion("2.21.0")
-                        "org.slf4j"             -> useVersion("1.7.30")
-                        "io.ktor"               -> useVersion("1.2.6")
-                        "ch.qos.logback"        -> useVersion("1.2.3")
+                        "junit"                  -> useVersion("4.12")
+                        "org.mockito"            -> useVersion("2.21.0")
+                        "org.slf4j"              -> useVersion("1.7.30")
+                        "io.ktor"                -> useVersion("1.2.6")
+                        "ch.qos.logback"         -> useVersion("1.2.3")
 
+                        "com.android.support"    -> useVersion("28.0.0")
+                        "android.arch.lifecycle" -> useVersion("1.1.1")
+                        "androidx.appcompat"     -> useVersion("1.1.0")
+                        "androidx.lifecycle"     -> when {
+                            requested.name.startsWith("lifecycle-viewmodel-") -> useVersion("1.0.0-rc02")
+                            requested.name.startsWith("lifecycle-")           -> useVersion("2.2.0-rc03")
+                        }
+                        "androidx.fragment"      -> useVersion("1.2.0-rc05")
                     }
                 }
             }

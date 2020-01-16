@@ -43,7 +43,7 @@ class KoinBaseAndroidPlugin : AbstractKoinPlugin() {
         addSourceJarTask {
             from(target.the<LibraryExtension>().sourceSets["main"].java.sourceFiles)
         }
-        // TODO addDokkaTask()
+        applyDokkaTask()
 
         apply<PublishAndroidPlugin>()
     }

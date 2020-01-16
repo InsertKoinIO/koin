@@ -22,7 +22,7 @@ class KoinBaseJvmPlugin : AbstractKoinPlugin() {
         addSourceJarTask {
             target.extensions.getByType(SourceSetContainer::class.java)["main"].allSource
         }
-        addDokkaTask()
+        applyDokkaTask()
 
         dependencies {
             "api"(kotlin("stdlib"))

@@ -8,6 +8,15 @@ include("koin-core-ext")
 
 // Android
 include("koin-android")
+include("koin-android-scope")
+include("koin-android-viewmodel")
+include("koin-android-ext")
+
+// AndroidX
+include("koin-androidx-scope")
+include("koin-androidx-fragment")
+include("koin-androidx-viewmodel")
+include("koin-androidx-ext")
 
 // Ktor
 include("koin-logger-slf4j")
