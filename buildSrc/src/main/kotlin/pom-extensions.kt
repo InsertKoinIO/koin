@@ -13,7 +13,9 @@ fun MavenPom.useDependencyResolvedVersions(configurations: ConfigurationContaine
                 val artifactId = it.getChildValue("artifactId")
                 val scope = it.getChildValue("scope")
                 resolvedVersions["${scope}Classpath"]?.let { entries ->
-                    it.setChildValue("version", entries.getValue("$groupId:$artifactId"))
+                    entries["$groupId:$artifactId"]?.let { version ->
+                        it.setChildValue("version", version)
+                    }
                 }
             }
         }
@@ -21,9 +23,11 @@ fun MavenPom.useDependencyResolvedVersions(configurations: ConfigurationContaine
 }
 
 fun ConfigurationContainer.getResolverVersions() = filter {
-    it.isCanBeResolved
+    return@filter it.name.endsWith("Classpath") && (!it.name.startsWith("debug") && !it.name.startsWith("release"))
 }.mapNotNull { cfg ->
-    cfg.resolvedConfiguration.resolvedArtifacts.mapNotNull {
+    val resolvedConfiguration = cfg.resolvedConfiguration
+    val resolvedArtifacts = resolvedConfiguration.resolvedArtifacts
+    resolvedArtifacts.mapNotNull {
         val mvi = it.moduleVersion.id
         "${mvi.group}:${mvi.name}" to mvi.version
     }.takeUnless {
@@ -35,4 +39,4 @@ fun ConfigurationContainer.getResolverVersions() = filter {
 
 fun Node.getChildValue(key: String) = (((get(key) as NodeList).first() as Node).value() as NodeList).first() as String
 
-fun Node.setChildValue(key: String, value: String) = (  ((get(key) as NodeList).firstOrNull() as? Node) ?: appendNode(key)).setValue(value)
+fun Node.setChildValue(key: String, value: String) = (((get(key) as NodeList).firstOrNull() as? Node) ?: appendNode(key)).setValue(value)
