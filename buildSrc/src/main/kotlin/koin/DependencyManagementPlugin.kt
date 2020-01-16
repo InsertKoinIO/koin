@@ -27,6 +27,7 @@ class DependencyManagementPlugin : Plugin<Project> {
                             requested.name.startsWith("kotlinx-coroutines-io") -> useVersion("0.1.16")
                             requested.name.startsWith("kotlinx-coroutines-")   -> useVersion("1.3.0")
                         }
+                        "org.jetbrains.anko"     -> useVersion("0.10.4")
 
                         "junit"                  -> useVersion("4.12")
                         "org.mockito"            -> useVersion("2.21.0")

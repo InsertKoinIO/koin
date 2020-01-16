@@ -18,6 +18,11 @@ include("koin-androidx-fragment")
 include("koin-androidx-viewmodel")
 include("koin-androidx-ext")
 
+// Android Samples
+include("examples:android-perfs")
+include("examples:android-samples")
+include("examples:androidx-samples")
+
 // Ktor
 include("koin-logger-slf4j")
 include("koin-ktor")

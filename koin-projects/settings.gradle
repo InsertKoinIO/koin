@@ -14,7 +14,7 @@ include 'examples:android-perfs'
 
 // Android Ext
 //include 'koin-android-ext'
-include 'koin-androidx-ext'
+//include 'koin-androidx-ext'
 
 // Android Samples
 include 'examples:android-samples'
