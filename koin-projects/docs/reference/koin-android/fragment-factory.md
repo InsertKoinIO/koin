@@ -1,5 +1,5 @@
 
-Since AndroidX has released `androidx.fragment` packages family t o extend features around Android `Fragment`
+Since AndroidX has released `androidx.fragment` packages family to extend features around Android `Fragment`
 
 https://developer.android.com/jetpack/androidx/releases/fragment
 
@@ -34,7 +34,7 @@ To declare a `Fragment` instance, just declare it as a `fragment` in your Koin m
 Given a `Fragment` class:
 
 ```kotlin
-class MyFragment(val myService: MyService) : Fragment(){
+class MyFragment(val myService: MyService) : Fragment() {
 
 
 }
@@ -75,7 +75,7 @@ supportFragmentManager.beginTransaction()
 
 ## Fragment Factory & Koin Scopes
 
-If you want to use the Koin Activity`s Scope, you have to declare your fragment inside your scope as a `scoped` definition:
+If you want to use the Koin Activity's Scope, you have to declare your fragment inside your scope as a `scoped` definition:
 
 ```kotlin
 val appModule = module {
