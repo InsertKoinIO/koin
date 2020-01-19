@@ -1,0 +1,11 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    compile project(":examples:multimodule-ktor:common")
+
+    // Koin
+    testCompile project(":koin-test")
+
+    // Ktor
+    testCompile "io.ktor:ktor-server-test-host:$ktorVersion"
+}

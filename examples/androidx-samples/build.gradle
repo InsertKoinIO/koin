@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion(androidTargetVersion as Integer)
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion androidMinVersion
+        targetSdkVersion androidTargetVersion
+        applicationId "org.koin.sample.androidx"
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+
+    // Koin
+    implementation project(":koin-androidx-ext")
+    implementation project(":koin-androidx-fragment")
+    implementation "junit:junit:$junitVersion"
+
+    implementation "androidx.appcompat:appcompat:$androidXLibVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidArchVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidXSavedStateVersion"
+    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
+
+}

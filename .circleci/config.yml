@@ -27,7 +27,7 @@ jobs:
         - checkout
         - run:
             name: Run Tests
-            command: ./koin-projects/gradlew -c ./koin-projects/settings.gradle test
+            command: ./gradlew test
 
 workflows:
   version: 2

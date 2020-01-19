@@ -1,0 +1,12 @@
+subprojects {
+    apply plugin: 'kotlin'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+        maven { url "https://dl.bintray.com/kotlin/ktor" }
+    }
+
+}

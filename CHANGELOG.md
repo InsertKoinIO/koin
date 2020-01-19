@@ -6,8 +6,16 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 ## [2.1.0]()
 
 
-### [alpha-8]()
+### [alpha-9]()
 
+_Gradle_
+
+* `[UPDATED]` - Migrated to [Kotlin DSL](https://gradle.org/kotlin/)
+* `[UPDATED]` - Migrated to [Kotlin Multiplatform](https://kotlinlang.org/docs/reference/multiplatform.html)
+* `[FIXED]` - Licenses not included in pom (#694)
+* `[ADDED]` - Added Detekt plugin
+
+### [alpha-8]()
 
 _Docs_
 
