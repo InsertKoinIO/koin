@@ -1,6 +1,5 @@
 package org.koin.java;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.koin.KoinCoreTest;
@@ -13,7 +12,6 @@ import kotlin.Lazy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.koin.core.context.GlobalContext.start;
-import static org.koin.core.context.GlobalContextKt.stopKoin;
 import static org.koin.core.qualifier.QualifierKt.named;
 import static org.koin.java.KoinJavaComponent.get;
 import static org.koin.java.KoinJavaComponent.getKoin;

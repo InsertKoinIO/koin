@@ -20,6 +20,8 @@ import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
 import org.koin.core.time.measureDuration
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * Koin Application

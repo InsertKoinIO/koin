@@ -32,15 +32,15 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 data class BeanDefinition<T>(
-        val scopeDefinition: ScopeDefinition,
-        val primaryType: KClass<*>,
-        val qualifier: Qualifier? = null,
-        val definition: Definition<T>,
-        val kind: Kind,
-        val secondaryTypes: List<KClass<*>> = listOf(),
-        val options: Options = Options(),
-        val properties: Properties = Properties(),
-        val callbacks: Callbacks<T> = Callbacks()
+    val scopeDefinition: ScopeDefinition,
+    val primaryType: KClass<*>,
+    val qualifier: Qualifier? = null,
+    val definition: Definition<T>,
+    val kind: Kind,
+    val secondaryTypes: List<KClass<*>> = listOf(),
+    val options: Options = Options(),
+    val properties: Properties = Properties(),
+    val callbacks: Callbacks<T> = Callbacks()
 ) {
 
     override fun toString(): String {

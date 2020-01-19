@@ -20,16 +20,10 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
-import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
 import org.koin.ext.getScopeId
 import org.koin.ext.getScopeName
-import java.lang.System.err
-import java.lang.System.identityHashCode
 
 /**
  * Provide an scope for given LifecycleOwner component

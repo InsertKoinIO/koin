@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class PropertyRegistry(val _koin: Koin) {
+actual class PropertyRegistry actual constructor(actual val _koin: Koin) {
 
     private val _values: MutableMap<String, Any> = ConcurrentHashMap()
 
@@ -39,7 +39,7 @@ class PropertyRegistry(val _koin: Koin) {
      * saveProperty all properties to registry
      * @param properties
      */
-    fun saveProperties(properties: Map<String, Any>) {
+    actual fun saveProperties(properties: Map<String, Any>) {
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.debug("load ${properties.size} properties")
         }
@@ -58,9 +58,9 @@ class PropertyRegistry(val _koin: Koin) {
         val propertiesMapValues = properties.toMap() as Map<String, String>
         propertiesMapValues.forEach { (k: String, v: String) ->
             when {
-                v.isInt() -> saveProperty(k, v.toInt())
+                v.isInt()   -> saveProperty(k, v.toInt())
                 v.isFloat() -> saveProperty(k, v.toFloat())
-                else -> saveProperty(k, v.quoted())
+                else        -> saveProperty(k, v.quoted())
             }
         }
     }
@@ -68,14 +68,14 @@ class PropertyRegistry(val _koin: Koin) {
     /**
      * save a property (key,value)
      */
-    internal fun <T : Any> saveProperty(key: String, value: T) {
+    internal actual fun <T : Any> saveProperty(key: String, value: T) {
         _values[key] = value
     }
 
     /**
      * Delete a property (key,value)
      */
-    fun deleteProperty(key: String) {
+    actual fun deleteProperty(key: String) {
         _values.remove(key)
     }
 
@@ -83,7 +83,7 @@ class PropertyRegistry(val _koin: Koin) {
      * Get a property
      * @param key
      */
-    fun <T> getProperty(key: String): T? {
+    actual fun <T> getProperty(key: String): T? {
         return _values[key] as? T?
     }
 
@@ -91,7 +91,7 @@ class PropertyRegistry(val _koin: Koin) {
      * Load properties from Property file
      * @param fileName
      */
-    fun loadPropertiesFromFile(fileName: String) {
+    actual fun loadPropertiesFromFile(fileName: String) {
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.debug("load properties from $fileName")
         }
@@ -116,7 +116,7 @@ class PropertyRegistry(val _koin: Koin) {
     /**
      * Load properties from environment
      */
-    fun loadEnvironmentProperties() {
+    actual fun loadEnvironmentProperties() {
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.debug("load properties from environment")
         }
@@ -127,7 +127,7 @@ class PropertyRegistry(val _koin: Koin) {
         saveProperties(sysEnvProperties)
     }
 
-    fun close() {
+    actual fun close() {
         _values.clear()
     }
 }

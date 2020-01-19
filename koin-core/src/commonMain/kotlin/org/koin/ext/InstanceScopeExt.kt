@@ -6,7 +6,7 @@ import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 
 fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
-fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
+fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + this.hashCode()
 
 val <T : Any> T.scope: Scope
     get() = getOrCreateScope()

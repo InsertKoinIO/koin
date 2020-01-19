@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.ext
-
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
+package org.koin.core.definition
 
 /**
- * Give full class qualifier
+ * Definitions Properties
+ *
+ * @author Arnaud Giuliani
+ * @author Victor Alenkov
  */
-actual fun KClass<*>.getFullName(): String {
-    return classNames[this] ?: saveCache()
-}
+expect class Properties() {
+    internal val data: MutableMap<String, Any>
 
-actual fun KClass<*>.saveCache(): String {
-    val name = this.java.name
-    classNames[this] = name
-    return name
-}
+    constructor(data: MutableMap<String, Any>)
 
-private val classNames: MutableMap<KClass<*>, String> = ConcurrentHashMap()
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T> get(key: String): T
+    operator fun <T> set(key: String, value: T)
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getOrNull(key: String): T?
+}

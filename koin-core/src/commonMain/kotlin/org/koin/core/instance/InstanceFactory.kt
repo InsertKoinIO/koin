@@ -52,9 +52,7 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
                 parameters
             )
         } catch (e: Exception) {
-            val stack =
-                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
-                    .joinToString(ERROR_SEPARATOR)
+            val stack = e.getExceptionStack()
             _koin._logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
@@ -70,7 +68,6 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
      */
     abstract fun drop()
 
-    companion object {
-        const val ERROR_SEPARATOR = "\n\t"
-    }
 }
+
+internal expect inline fun Exception.getExceptionStack(): String

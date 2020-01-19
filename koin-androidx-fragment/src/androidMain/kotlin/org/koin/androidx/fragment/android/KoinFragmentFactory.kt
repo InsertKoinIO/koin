@@ -12,7 +12,7 @@ class KoinFragmentFactory(val scope: Scope? = null) : FragmentFactory(), KoinCom
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         val javaClass = Class.forName(className)
-        return scope?.let { it.get<Fragment>(javaClass) }
+        return scope?.get<Fragment>(javaClass.kotlin)
             ?: getKoin().get(javaClass.kotlin)
     }
 

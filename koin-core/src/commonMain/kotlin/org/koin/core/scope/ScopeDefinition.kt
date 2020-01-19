@@ -22,7 +22,9 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
                 _definitions.remove(beanDefinition)
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
-                throw DefinitionOverrideException("Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
+                throw DefinitionOverrideException(
+                    "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'"
+                )
             }
         }
         _definitions.add(beanDefinition)
@@ -35,14 +37,14 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
     internal fun size() = definitions.size
 
     fun <T : Any> saveNewDefinition(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ): BeanDefinition<out Any?> {
         val clazz = instance::class
         val found: BeanDefinition<*>? =
-                definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
+            definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {
             if (override) {
                 remove(found)
@@ -51,12 +53,12 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
             }
         }
         val beanDefinition = Definitions.createSingle(
-                clazz,
-                qualifier,
-                { instance },
-                this,
-                Options(isCreatedAtStart = false, override = override),
-                secondaryTypes ?: emptyList()
+            clazz,
+            qualifier,
+            { instance },
+            this,
+            Options(isCreatedAtStart = false, override = override),
+            secondaryTypes ?: emptyList()
         )
         save(beanDefinition, override)
         return beanDefinition
@@ -69,8 +71,9 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
     }
 
     override fun equals(other: Any?): Boolean {
+        if (other == null) return false
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (this::class != other::class) return false
 
         other as ScopeDefinition
 
