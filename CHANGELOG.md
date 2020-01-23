@@ -13,7 +13,6 @@ _Dependencies_
 * `[UPDATED]` - kotlinx.coroutines 1.3.3
 * `[UPDATED]` - Ktor 1.3.0
 * `[UPDATED]` - JUnit 4.13
-* `[UPDATED]` - JUnit 4.13
 * `[UPDATED]` - Mockito 3.2.4
 * `[UPDATED]` - Dokka 0.9.18
 
