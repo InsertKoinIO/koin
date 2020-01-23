@@ -4,15 +4,15 @@ archivesBaseName = 'hello-ktor'
 
 dependencies {
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     compile project(":koin-logger-slf4j")
     compile project(":koin-ktor")
     testCompile project(":koin-test")
 
     // Ktor
-    compile "io.ktor:ktor-server-netty:$ktor_version"
-    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
+    compile "io.ktor:ktor-server-netty:$ktorVersion"
+    testCompile "io.ktor:ktor-server-test-host:$ktorVersion"
 
     // Logging
     compile "ch.qos.logback:logback-classic:1.2.3"

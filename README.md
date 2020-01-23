@@ -53,7 +53,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 // latest stable
 koin_version = '2.0.1'
 // latest unstable
-koin_version = '2.1.0-alpha-8'
+koin_version = '2.1.0-alpha-9'
 ```
 
 ## Gradle 
@@ -77,26 +77,26 @@ Pick one of your Koin dependency:
 
 ```gradle
 // Koin for Kotlin
-implementation "org.koin:koin-core:$koin_version"
+implementation "org.koin:koin-core:$koinVersion"
 // Koin extended & experimental features
-implementation "org.koin:koin-core-ext:$koin_version"
+implementation "org.koin:koin-core-ext:$koinVersion"
 // Koin for Unit tests
-testImplementation "org.koin:koin-test:$koin_version"
+testImplementation "org.koin:koin-test:$koinVersion"
 // Koin for Java developers
-implementation "org.koin:koin-java:$koin_version"
+implementation "org.koin:koin-java:$koinVersion"
 ```
 
 #### Android
 
 ```gradle
 // Koin for Android
-implementation "org.koin:koin-android:$koin_version"
+implementation "org.koin:koin-android:$koinVersion"
 // Koin Android Scope features
-implementation "org.koin:koin-android-scope:$koin_version"
+implementation "org.koin:koin-android-scope:$koinVersion"
 // Koin Android ViewModel features
-implementation "org.koin:koin-android-viewmodel:$koin_version"
+implementation "org.koin:koin-android-viewmodel:$koinVersion"
 // Koin Android Experimental features
-implementation "org.koin:koin-android-ext:$koin_version"
+implementation "org.koin:koin-android-ext:$koinVersion"
 ```
 
 #### AndroidX
@@ -104,20 +104,20 @@ implementation "org.koin:koin-android-ext:$koin_version"
 ```gradle
 
 // Koin AndroidX Scope features
-implementation "org.koin:koin-androidx-scope:$koin_version"
+implementation "org.koin:koin-androidx-scope:$koinVersion"
 // Koin AndroidX ViewModel features
-implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
 // Koin AndroidX Fragment features
-implementation "org.koin:koin-androidx-fragment:$koin_version"
+implementation "org.koin:koin-androidx-fragment:$koinVersion"
 // Koin AndroidX Experimental features
-implementation "org.koin:koin-androidx-ext:$koin_version"
+implementation "org.koin:koin-androidx-ext:$koinVersion"
 ```
 
 #### Ktor
 
 ```gradle
 // Koin for Ktor Kotlin
-implementation "org.koin:koin-ktor:$koin_version"
+implementation "org.koin:koin-ktor:$koinVersion"
 ```
 
 # Quickstart

@@ -5,12 +5,12 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../../gradle/versions-examples.gradle'
 
 android {
-    compileSdkVersion android_target_version
-    buildToolsVersion android_build_tools_version
+    compileSdkVersion(Integer.parseInt(androidTargetVersion))
+    buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion android_target_version
+        targetSdkVersion androidTargetVersion
         applicationId "org.koin.sample.androidx"
         versionCode 1
         versionName "1.0"
@@ -28,11 +28,11 @@ dependencies {
     // Koin
     implementation project(":koin-androidx-ext")
     implementation project(":koin-androidx-fragment")
-    implementation 'junit:junit:4.12'
+    implementation "junit:junit:$junitVersion"
 
-    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "androidx.appcompat:appcompat:$androidxLibVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidArchVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidxSavedStateVersion"
+    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
 
 }

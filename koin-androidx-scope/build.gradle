@@ -8,24 +8,24 @@ ext {
 }
 
 android {
-    compileSdkVersion android_target_version
-    buildToolsVersion android_build_tools_version
+    compileSdkVersion(Integer.parseInt(androidTargetVersion))
+    buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion android_min_version
+        minSdkVersion androidMinVersion
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
 dependencies {
-    api project(":koin-android") //"org.koin:koin-android:$koin_version"
-    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
+    api project(":koin-android") //"org.koin:koin-android:$koinVersion"
+    implementation "androidx.appcompat:appcompat:$androidxLibVersion"
+    implementation("androidx.lifecycle:lifecycle-common:$androidxArchVersion") {
         exclude group: "core-runtime"
     }
 
     testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
 
 }
 

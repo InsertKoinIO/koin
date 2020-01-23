@@ -6,8 +6,8 @@ dependencies {
 
     compile project(":koin-logger-slf4j")
 
-    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "io.ktor:ktor-server-netty:$ktorVersion"
 
     testCompile project(":koin-test")
-    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
+    testCompile "io.ktor:ktor-server-test-host:$ktorVersion"
 }

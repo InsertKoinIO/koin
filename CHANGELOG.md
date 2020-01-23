@@ -8,6 +8,12 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ### [alpha-9]()
 
+_Gradle_
+
+* `[UPDATED]` - Migrated to [Kotlin DSL](https://gradle.org/kotlin/)
+* `[FIXED]` - Licenses not included in pom (#694)
+* `[ADDED]` - Added [Detekt plugin](https://arturbosch.github.io/detekt/)
+
 _Dependencies_
 
 * `[UPDATED]` - kotlinx.coroutines 1.3.3
