@@ -1,3 +1,3 @@
 #!/bin/sh
 
-koin-projects/gradlew clean build -Dorg.gradle.parallel=false
+./gradlew clean build -Dorg.gradle.parallel=false
