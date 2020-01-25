@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
 description = "Koin - simple dependency injection for Ktor"
 
 apply(from = rootDir.resolve("gradle/target-jvm.gradle.kts"))
@@ -10,11 +12,26 @@ repositories {
 
 val ktorVersion: String by extra
 
-dependencies {
-    "api"(project(":koin-core-ext"))
-    "testImplementation"(project(":koin-test"))
+configure<KotlinMultiplatformExtension> {
+    jvm {
+        sourceSets {
+            named("jvmMain") {
+                dependencies {
+                    api(project(":koin-core-ext"))
 
-    // Ktor
-    "api"("io.ktor:ktor-server-core:$ktorVersion")
-    "testApi"("io.ktor:ktor-server-test-host:$ktorVersion")
+                    // Ktor
+                    api("io.ktor:ktor-server-core:$ktorVersion")
+                }
+            }
+
+            named("jvmTest") {
+                dependencies {
+                    implementation(project(":koin-test"))
+
+                    // Ktor
+                    api("io.ktor:ktor-server-test-host:$ktorVersion")
+                }
+            }
+        }
+    }
 }

@@ -4,8 +4,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.ASSEMBLE_TASK_NAME
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 
-apply(from = rootDir.resolve("gradle/target-common.gradle.kts"))
-
 apply<KotlinMultiplatformPluginWrapper>()
 
 val kotlinVersion: String by extra
@@ -14,20 +12,11 @@ val mockitoVersion: String by extra
 val coroutinesVersion: String by extra
 
 configure<KotlinMultiplatformExtension> {
-    jvm {
+    metadata {
         sourceSets {
-            named("jvmMain") {
+            named("commonMain") {
                 dependencies {
-                    api(kotlin("stdlib-jdk8", kotlinVersion))
-                }
-            }
-
-            named("jvmTest") {
-                dependencies {
-                    api("junit:junit:$junitVersion")
-                    api("org.mockito:mockito-inline:$mockitoVersion")
-
-                    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                    api(kotlin("stdlib", kotlinVersion))
                 }
             }
         }

@@ -3,21 +3,50 @@
 import org.gradle.language.base.plugins.LifecycleBasePlugin.ASSEMBLE_TASK_NAME
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMetadataTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 apply<DokkaPlugin>()
 
-val dokkaTask by tasks.named("dokka", DokkaTask::class) {
+val dokkaVersion: String by extra
+
+val dokka by tasks.getting(DokkaTask::class) {
     configuration {
         reportUndocumented = true
         jdkVersion = 8
     }
 }
 
-val assembleTask by tasks.named(ASSEMBLE_TASK_NAME)
-
-val dokkaJar by tasks.registering(Jar::class) {
-    from(dokkaTask.outputDirectory)
-    dependsOn(dokkaTask)
-    archiveClassifier.set("javadoc")
+val sourcesJarTasks = tasks.filter { it.name.endsWith("SourcesJar") }
+val assembleTask by tasks.named(ASSEMBLE_TASK_NAME) {
+    dependsOn(dokka, sourcesJarTasks)
 }
-assembleTask.dependsOn(dokkaJar)
+
+if (plugins.hasPlugin(KotlinMultiplatformPlugin::class)) {
+    configure<KotlinMultiplatformExtension> {
+        targets.forEach { target ->
+            when (target) {
+                is KotlinMetadataTarget -> KotlinPlatformType.common
+                is KotlinJvmTarget -> KotlinPlatformType.jvm
+                else -> null
+            }?.let { dokkaTarget ->
+                dokka.multiplatform {
+                    register(dokkaTarget.name) {
+                        platform = dokkaTarget.name
+                        targets = targets + dokkaTarget.name
+                    }
+                }
+            }
+        }
+    }
+} else {
+    val dokkaJar = tasks.maybeCreate("dokkaJar", Jar::class).apply {
+        from(dokka.outputDirectory)
+        dependsOn(dokka)
+        archiveClassifier.set("javadoc")
+    }
+    assembleTask.dependsOn(dokkaJar)
+}

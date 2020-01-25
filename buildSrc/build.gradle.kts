@@ -2,6 +2,10 @@ plugins {
     `kotlin-dsl`
 }
 
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
+}
+
 repositories {
     gradlePluginPortal()
     jcenter()
@@ -9,6 +13,7 @@ repositories {
 }
 
 val kotlinVersion: String by extra
+val dokkaVersion: String by extra
 
 dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
@@ -16,7 +21,7 @@ dependencies {
 
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.4.0")
 
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:0.10.0")
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
 
     implementation("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
 

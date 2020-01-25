@@ -1,14 +1,30 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
 description = "Koin - simple dependency injection for Kotlin - $name"
 
 apply(from = rootDir.resolve("gradle/target-jvm.gradle.kts"))
 
 val kotlinVersion: String by extra
 
-dependencies {
-    // Koin
-    "api"(project(":koin-core"))
+configure<KotlinMultiplatformExtension> {
+    jvm {
+        sourceSets {
+            named("jvmMain") {
+                dependencies {
+                    // Koin
+                    api(project(":koin-core"))
 
-    "api"(kotlin("reflect", kotlinVersion))
+                    api(kotlin("reflect", kotlinVersion))
+                }
+            }
+        }
 
-    "testApi"(project(":koin-test"))
+        sourceSets {
+            named("jvmTest") {
+                dependencies {
+                    api(project(":koin-test"))
+                }
+            }
+        }
+    }
 }

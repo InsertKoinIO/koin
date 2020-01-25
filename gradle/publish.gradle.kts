@@ -12,11 +12,6 @@ val siteUrl: String by extra
 val vcsUrl: String by extra
 
 configure<PublishingExtension> {
-    publications.maybeCreate("maven", MavenPublication::class).apply {
-        from(project.components["java"])
-        artifact(tasks.named("dokkaJar").get())
-    }
-
     publications.filterIsInstance<MavenPublication>().forEach { publication ->
         publication.pom {
             url.set(siteUrl)
@@ -38,10 +33,10 @@ configure<PublishingExtension> {
 
 afterEvaluate {
     tasks {
-        register("generateAllPomFiles") {
+        maybeCreate("generateAllPomFiles").apply {
             dependsOn(filter { it.name.startsWith("generatePomFile") && it.name.endsWith("Publication") })
         }
-        register("generateAllMetadataFiles") {
+        maybeCreate("generateAllMetadataFiles").apply {
             dependsOn(filter { it.name.startsWith("generateMetadataFile") && it.name.endsWith("Publication") })
         }
     }

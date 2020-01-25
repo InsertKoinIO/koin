@@ -5,9 +5,17 @@ apply(from = rootDir.resolve("gradle/target-jvm.gradle.kts"))
 val junitVersion: String by extra
 val mockitoVersion: String by extra
 
-dependencies {
-    "api"(project(":koin-core"))
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+    jvm {
+        sourceSets {
+            named("jvmMain") {
+                dependencies {
+                    api(project(":koin-core"))
 
-    "api"("junit:junit:$junitVersion")
-    "testImplementation"("org.mockito:mockito-inline:$mockitoVersion")
+                    api("junit:junit:$junitVersion")
+                    implementation("org.mockito:mockito-inline:$mockitoVersion")
+                }
+            }
+        }
+    }
 }

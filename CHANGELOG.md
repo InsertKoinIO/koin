@@ -11,6 +11,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 _Gradle_
 
 * `[UPDATED]` - Migrated to [Kotlin DSL](https://gradle.org/kotlin/)
+* `[UPDATED]` - Migrated to [MPP](https://kotlinlang.org/docs/reference/multiplatform.html)
 * `[FIXED]` - Licenses not included in pom (#694)
 * `[ADDED]` - Added [Detekt plugin](https://arturbosch.github.io/detekt/)
 

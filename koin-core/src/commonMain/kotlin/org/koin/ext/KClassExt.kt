@@ -15,7 +15,6 @@
  */
 package org.koin.ext
 
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
@@ -25,10 +24,6 @@ fun KClass<*>.getFullName(): String {
     return classNames[this] ?: saveCache()
 }
 
-fun KClass<*>.saveCache(): String {
-    val name = this.java.name
-    classNames[this] = name
-    return name
-}
+expect fun KClass<*>.saveCache(): String
 
-private val classNames: MutableMap<KClass<*>, String> = ConcurrentHashMap()
+internal expect val classNames: MutableMap<KClass<*>, String>

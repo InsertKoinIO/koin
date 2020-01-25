@@ -4,10 +4,18 @@ apply(from = rootDir.resolve("gradle/target-jvm.gradle.kts"))
 
 val slf4jVersion: String by extra
 
-dependencies {
-    // Koin
-    "api"(project(":koin-core"))
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+    jvm {
+        sourceSets {
+            named("jvmMain") {
+                dependencies {
+                    // Koin
+                    api(project(":koin-core"))
 
-    // SLF4J
-    "api"("org.slf4j:slf4j-api:$slf4jVersion")
+                    // SLF4J
+                    api("org.slf4j:slf4j-api:$slf4jVersion")
+                }
+            }
+        }
+    }
 }
