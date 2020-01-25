@@ -19,7 +19,7 @@ package org.koin.core.logger
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-class PrintLogger(level: Level = Level.INFO) : Logger(level) {
+actual class PrintLogger actual constructor(level: Level) : Logger(level) {
 
     override fun log(level: Level, msg: MESSAGE) {
         if (this.level <= level) {
