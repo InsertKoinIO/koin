@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : Any> KoinTest.declareMock(
         qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
+        secondaryTypes: List<KClass<*>> = emptyList(),
         stubbing: StubFunction<T> = {}
 ): T {
     return getKoin().declareMock(qualifier, secondaryTypes, stubbing)
@@ -47,7 +47,7 @@ inline fun <reified T : Any> KoinTest.declareMock(
  */
 inline fun <reified T : Any> Koin.declareMock(
         qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
+        secondaryTypes: List<KClass<*>> = emptyList(),
         stubbing: StubFunction<T> = {}
 ): T {
     return _scopeRegistry.rootScope.declareMock(qualifier, secondaryTypes, stubbing)
@@ -60,11 +60,11 @@ inline fun <reified T : Any> Koin.declareMock(
  */
 inline fun <reified T : Any> Scope.declareMock(
         qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
+        secondaryTypes: List<KClass<*>> = emptyList(),
         stubbing: StubFunction<T> = {}
 ): T {
     val mock = MockProvider.makeMock<T>()
-    declare(mock, qualifier, secondaryTypes, true)
+    declare(mock, qualifier, secondaryTypes + T::class, true)
     mock.apply(stubbing)
     return mock
 }
