@@ -13,7 +13,7 @@ import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 
-@Suppress("DEPRECATION", "UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST")
 class DeclareMockTests : AutoCloseKoinTest() {
 
     @get:Rule
