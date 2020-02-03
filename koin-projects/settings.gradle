@@ -1,11 +1,14 @@
 // Core
 include 'koin-core'
 include 'koin-test'
+
 // Core Sample
 include 'examples:coffee-maker'
 include 'examples:android-perfs'
 // Core extended
 include 'koin-core-ext'
+// Gradle plugin
+include 'koin-gradle-plugin'
 
 // Android
 include 'koin-android'

@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath 'se.thinkcode.gradle:koin-gradle-plugin:1.0.0-SNAPSHOT'
+    }
+}
+
 apply plugin: 'kotlin'
+apply plugin: 'koin'
+
+koin {
+    modules = ["org.koin.example.coffeeAppModule"]
+}
 
 archivesBaseName = 'example-coffee-maker'
 
