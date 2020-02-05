@@ -163,11 +163,9 @@ class DetailActivity : AppCompatActivity() {
 
 ## ViewModel and State Bundle
 
-in `koin-androidx-viewmodel:2.1.0-alpha-3` we reviewed a cleaner way to deal with state bundle for your `ViewModel`.
+in `koin-androidx-viewmodel:2.1.0-alpha-10` we reviewed a cleaner way to deal with state bundle for your `ViewModel`.
 
-Just pass a `Bundle` object as init state for your `ViewModel` as injection param:
-
-Add a new property typed `SavedStateHandle` in your constructor:
+Add a new property typed `SavedStateHandle` to your constructor:
 
 ```kotlin
 class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
@@ -179,10 +177,18 @@ In Koin module, use parameter injection:
 viewModel { (handle: SavedStateHandle) -> MyStateVM(handle, get()) }
 ```
 
-In Your Activity/Fragment, pass the default state as parameter:
+!> `SavedStateHandle` argument is always inserted as the first parameters
+
+In Your Activity/Fragment, use the `getStateViewMoodel()` or `by stateViewMoodel()` API to reach your StateViewModel:
 
 ```kotlin
-val myStateVM: MyStateVM by viewModel { parametersOf(Bundle(), "vm1") }
+val myStateVM: MyStateVM by stateViewMoodel()
+```
+
+You can even pass a bundle as state argument:
+
+```kotlin
+val myStateVM: MyStateVM by stateViewMoodel(bundle = myBundle)
 ```
 
 
