@@ -78,16 +78,16 @@ val appModule = module {
 
 Now that we have a module, let's start it with Koin. Open your application class, or make one (don't forget to declare it in your manifest.xml). Just call the `startKoin()` function:
 
-```kotlin
-class MyApplication : Application(){
-    override fun onCreate() {
+```java
+class MyApplication extends Application {
+    
+     @Override
+    public void onCreate() {
         super.onCreate()
         // Start Koin
-        startKoin{
-            androidLogger()
-            androidContext(this@MyApplication)
-            modules(appModule)
-        }
+        KoinApplication koin = KoinAndroidApplication.create(this)
+            .modules(appModule);
+        start(koin);
     }
 }
 ```
@@ -96,7 +96,7 @@ class MyApplication : Application(){
 
 The `MyJavaPresenter` component will be created with `HelloRepository` instance. To get it into our Activity, let's inject it with the static `inject()` function: 
 
-```kotlin
+```java
 // import inject
 import static org.koin.java.standalone.KoinJavaComponent.inject;
 

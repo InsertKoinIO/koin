@@ -179,16 +179,16 @@ viewModel { (handle: SavedStateHandle) -> MyStateVM(handle, get()) }
 
 !> `SavedStateHandle` argument is always inserted as the first parameters
 
-In Your Activity/Fragment, use the `getStateViewMoodel()` or `by stateViewMoodel()` API to reach your StateViewModel:
+In Your Activity/Fragment, use the `getStateViewModel()` or `by stateViewModel()` API to reach your StateViewModel:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewMoodel()
+val myStateVM: MyStateVM by stateViewModel()
 ```
 
 You can even pass a bundle as state argument:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewMoodel(bundle = myBundle)
+val myStateVM: MyStateVM by stateViewModel(bundle = myBundle)
 ```
 
 
