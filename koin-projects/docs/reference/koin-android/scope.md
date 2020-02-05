@@ -83,6 +83,7 @@ class MyActivity : AppCompatActivity() {
 
 !> Be careful to not use `scope` but `lifecycleScope`. This is a scope tied to the Android lifecycle. Else your scoped instances won't follow your lifecycle.
 
+> If you have any conflict with any API that has also a `lifecycleScope` extension, please name your extension - https://github.com/InsertKoinIO/koin/issues/679
 
 ## Sharing instances between components with scopes
 
