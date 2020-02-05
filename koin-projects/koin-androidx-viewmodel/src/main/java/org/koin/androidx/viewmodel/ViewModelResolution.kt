@@ -1,6 +1,5 @@
 package org.koin.androidx.viewmodel
 
-import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.core.qualifier.Qualifier
@@ -26,22 +25,12 @@ internal fun <T : ViewModel> ViewModelProvider.get(
 internal fun <T : ViewModel> Scope.createViewModelProvider(
         viewModelParameters: ViewModelParameter<T>
 ): ViewModelProvider {
-    val stateBundle: StateBundle? = getStateBundle(viewModelParameters)
-
     return ViewModelProvider(
             viewModelParameters.viewModelStore,
-            if (stateBundle != null) {
-                stateViewModelFactory(viewModelParameters, stateBundle)
+            if (viewModelParameters.bundle != null) {
+                stateViewModelFactory(viewModelParameters)
             } else {
                 defaultViewModelFactory(viewModelParameters)
             }
     )
-}
-
-class StateBundle(val defaultState: Bundle, val index: Int, val currentValues: Array<out Any?>)
-
-private fun <T : ViewModel> getStateBundle(viewModelParameters: ViewModelParameter<T>): StateBundle? {
-    val params = viewModelParameters.parameters?.invoke()
-    val bundle = params?.values?.firstOrNull { it is Bundle } as? Bundle
-    return bundle?.let { StateBundle(bundle, params.values.indexOf(bundle), params.values) }
 }

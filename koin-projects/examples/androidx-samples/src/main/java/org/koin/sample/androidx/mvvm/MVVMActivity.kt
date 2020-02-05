@@ -8,7 +8,9 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.stateViewModel
 import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -35,13 +37,8 @@ class MVVMActivity : AppCompatActivity() {
     val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this)
     val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this, named("ext"))
 
-    val savedVm: SavedStateViewModel by viewModel { parametersOf(Bundle(), "vm1") }
-    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModel(this, named("vm2")) {
-        parametersOf(
-                Bundle(),
-                "vm2"
-        )
-    }
+    val savedVm: SavedStateViewModel by stateViewModel { parametersOf("vm1") }
+    val scopedSavedVm: SavedStateViewModel by lifecycleScope.stateViewModel(this, named("vm2")) { parametersOf("vm2") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // if not in scope
