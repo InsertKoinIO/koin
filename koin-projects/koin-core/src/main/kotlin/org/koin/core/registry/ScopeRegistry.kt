@@ -146,10 +146,15 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     internal fun close() {
+        clearScopes()
         _scopes.clear()
         _scopeDefinitions.clear()
-        _rootScope?.close()
+        _rootScopeDefinition = null
         _rootScope = null
+    }
+
+    private fun clearScopes() {
+        _scopes.values.forEach { scope -> scope.clear() }
     }
 
     fun unloadModules(modules: Iterable<Module>) {

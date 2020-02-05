@@ -355,6 +355,11 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = synchronized(this) {
+        clear()
+        _koin._scopeRegistry.deleteScope(this)
+    }
+
+    internal fun clear() = synchronized(this) {
         _closed = true
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.info("closing scope:'$id'")
@@ -364,7 +369,6 @@ data class Scope(
         _callbacks.clear()
 
         _instanceRegistry.close()
-        _koin._scopeRegistry.deleteScope(this)
     }
 
     override fun toString(): String {

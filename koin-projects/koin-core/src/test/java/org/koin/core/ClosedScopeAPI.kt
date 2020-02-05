@@ -4,6 +4,8 @@ import org.junit.Assert
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -32,6 +34,27 @@ class ClosedScopeAPI {
         val scope1 = koin.createScope("scope1", named<ScopeType>())
         val scope2 = koin.createScope("scope2", named<ScopeType>())
         Assert.assertNotEquals(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
+    }
+
+    @Test
+    fun `stopping Koin closes Scopes`() {
+        val koin = startKoin {
+            printLogger()
+            modules(
+                    module {
+                        scope(named<ScopeType>()) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope1 = koin.createScope("scope1", named<ScopeType>())
+        val scope2 = koin.createScope("scope2", named<ScopeType>())
+
+        stopKoin()
+        assert(scope1.closed)
+        assert(scope2.closed)
     }
 
     @Test
