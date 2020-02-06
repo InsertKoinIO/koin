@@ -5,7 +5,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.1.0]()
 
-### [alpha-11]()
+### [beta-1]()
 
 _Core_
 
