@@ -2,7 +2,7 @@ package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
 import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -12,7 +12,7 @@ import org.koin.core.qualifier.Qualifier
  */
 fun ComponentCallbacks.getKoin() = when (this) {
     is KoinComponent -> this.getKoin()
-    else -> GlobalContext.get()
+    else -> KoinContextHandler.get()
 }
 
 /**

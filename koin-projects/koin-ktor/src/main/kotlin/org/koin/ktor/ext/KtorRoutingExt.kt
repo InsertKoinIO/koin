@@ -16,7 +16,7 @@
 package org.koin.ktor.ext
 
 import io.ktor.routing.Routing
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -33,8 +33,8 @@ import org.koin.core.qualifier.Qualifier
  * @param parameters
  */
 inline fun <reified T : Any> Routing.inject(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ) =
         lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
@@ -44,8 +44,8 @@ inline fun <reified T : Any> Routing.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Routing.get(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, parameters)
 
@@ -71,4 +71,4 @@ inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun Routing.getKoin() = GlobalContext.get()
+fun Routing.getKoin() = KoinContextHandler.get()

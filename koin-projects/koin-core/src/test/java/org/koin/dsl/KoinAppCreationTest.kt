@@ -4,7 +4,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.error.KoinAppAlreadyStartedException
@@ -33,7 +33,7 @@ class KoinAppCreationTest {
     fun `start a Koin application`() {
         val app = startKoin { }
 
-        assertEquals(GlobalContext.get(), app.koin)
+        assertEquals(KoinContextHandler.get(), app.koin)
 
         stopKoin()
 
@@ -56,11 +56,11 @@ class KoinAppCreationTest {
             logger(PrintLogger(Level.ERROR))
         }
 
-        assertEquals(GlobalContext.get()._logger.level, Level.ERROR)
+        assertEquals(KoinContextHandler.get()._logger.level, Level.ERROR)
 
-       GlobalContext.get()._logger.debug("debug")
-       GlobalContext.get()._logger.info("info")
-       GlobalContext.get()._logger.error("error")
+        KoinContextHandler.get()._logger.debug("debug")
+        KoinContextHandler.get()._logger.info("info")
+        KoinContextHandler.get()._logger.error("error")
     }
 
     @Test
@@ -69,10 +69,10 @@ class KoinAppCreationTest {
             printLogger(Level.ERROR)
         }
 
-        assertEquals(GlobalContext.get()._logger.level, Level.ERROR)
+        assertEquals(KoinContextHandler.get()._logger.level, Level.ERROR)
 
-       GlobalContext.get()._logger.debug("debug")
-       GlobalContext.get()._logger.info("info")
-       GlobalContext.get()._logger.error("error")
+        KoinContextHandler.get()._logger.debug("debug")
+        KoinContextHandler.get()._logger.info("info")
+        KoinContextHandler.get()._logger.error("error")
     }
 }

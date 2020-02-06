@@ -15,7 +15,7 @@
  */
 package org.koin.core
 
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -29,7 +29,7 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin(): Koin = GlobalContext.get()
+    fun getKoin(): Koin = KoinContextHandler.get()
 }
 
 /**
