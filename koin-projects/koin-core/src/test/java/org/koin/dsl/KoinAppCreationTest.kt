@@ -12,6 +12,7 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.PrintLogger
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
+import java.lang.IllegalStateException
 
 class KoinAppCreationTest {
 
@@ -46,7 +47,7 @@ class KoinAppCreationTest {
         try {
             startKoin { }
             fail("should throw  KoinAppAlreadyStartedException")
-        } catch (e: KoinAppAlreadyStartedException) {
+        } catch (e: IllegalStateException) {
         }
     }
 

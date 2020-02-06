@@ -19,10 +19,13 @@ object KoinContextHandler {
     /**
      * StandAlone Koin App instance
      */
-    fun getOrNull(): Koin? = getContext().getOrNull()
+    fun getOrNull(): Koin? = _context?.getOrNull()
 
 
-    fun register(koinContext: KoinContext) {
+    fun register(koinContext: KoinContext) = synchronized(this){
+        if (_context != null){
+            error("A KoinContext is already started")
+        }
         _context = koinContext
     }
 
