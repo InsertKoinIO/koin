@@ -8,7 +8,7 @@ import org.koin.core.scope.Scope
 /**
  * FragmentFactory for Koin
  */
-class KoinFragmentFactory(val scope: Scope? = null) : FragmentFactory(), KoinComponent {
+class KoinFragmentFactory(private val scope: Scope? = null) : FragmentFactory(), KoinComponent {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         val clazz = Class.forName(className).kotlin
