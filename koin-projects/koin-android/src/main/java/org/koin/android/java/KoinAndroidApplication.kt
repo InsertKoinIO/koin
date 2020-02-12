@@ -13,7 +13,7 @@ object KoinAndroidApplication {
      * Create Koin Application with Android context - For Java compat
      */
     @JvmStatic
-    @JvmOverloads
+
     fun create(context: Context, androidLoggerLevel: Level = Level.INFO): KoinApplication {
         return KoinApplication.init().androidContext(context).androidLogger(androidLoggerLevel)
     }

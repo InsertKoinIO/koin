@@ -15,6 +15,11 @@ ext {
     // Ktor
     ktor_version = '1.2.0'
 
+    // MP
+    stately_version = "0.9.6"
+    testhelp_version = "0.2.10"
+    uuid_version = "0.0.7"
+
     // Test
     junit_version = "4.12"
     mockito_version = "2.21.0"

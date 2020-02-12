@@ -38,7 +38,7 @@ object SharedViewModelCompat {
      * @param parameters - parameters to pass to the BeanDefinition
      * @param clazz
      */
-    @JvmOverloads
+
     @JvmStatic
     fun <T : ViewModel> sharedViewModel(
         fragment: Fragment,
@@ -56,7 +56,7 @@ object SharedViewModelCompat {
      * @param parameters - parameters to pass to the BeanDefinition
      * @param clazz
      */
-    @JvmOverloads
+
     @JvmStatic
     fun <T : ViewModel> getSharedViewModel(
         fragment: Fragment,

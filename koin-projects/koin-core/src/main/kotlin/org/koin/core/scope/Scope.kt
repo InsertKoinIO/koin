@@ -78,7 +78,7 @@ data class Scope(
      *
      * @return Lazy instance of type T
      */
-    @JvmOverloads
+    
     inline fun <reified T> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -93,7 +93,7 @@ data class Scope(
      *
      * @return Lazy instance of type T or null
      */
-    @JvmOverloads
+    
     inline fun <reified T> injectOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -106,7 +106,7 @@ data class Scope(
      * @param scope
      * @param parameters
      */
-    @JvmOverloads
+    
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -122,7 +122,7 @@ data class Scope(
      *
      * @return instance of type T or null
      */
-    @JvmOverloads
+    
     inline fun <reified T> getOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -138,7 +138,7 @@ data class Scope(
      *
      * @return instance of type T or null
      */
-    @JvmOverloads
+    
     fun <T> getOrNull(
             clazz: KClass<*>,
             qualifier: Qualifier? = null,
@@ -185,7 +185,7 @@ data class Scope(
      *
      * @return instance of type T
      */
-    @JvmOverloads
+    
     fun <T> get(
             clazz: Class<*>,
             qualifier: Qualifier? = null,

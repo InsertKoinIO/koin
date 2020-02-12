@@ -37,7 +37,7 @@ object ViewModelCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
-    @JvmOverloads
+
     @JvmStatic
     fun <T : ViewModel> viewModel(
             owner: LifecycleOwner,
@@ -55,7 +55,7 @@ object ViewModelCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
-    @JvmOverloads
+
     @JvmStatic
     fun <T : ViewModel> getViewModel(
             owner: LifecycleOwner,

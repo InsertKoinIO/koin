@@ -51,7 +51,7 @@ class Koin {
      *
      * @return Lazy instance of type T
      */
-    @JvmOverloads
+    
     inline fun <reified T> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -65,7 +65,7 @@ class Koin {
      *
      * @return Lazy instance of type T or null
      */
-    @JvmOverloads
+    
     inline fun <reified T> injectOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -77,7 +77,7 @@ class Koin {
      * @param scope
      * @param parameters
      */
-    @JvmOverloads
+    
     inline fun <reified T> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
@@ -91,7 +91,7 @@ class Koin {
      *
      * @return instance of type T or null
      */
-    @JvmOverloads
+    
     inline fun <reified T> getOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null

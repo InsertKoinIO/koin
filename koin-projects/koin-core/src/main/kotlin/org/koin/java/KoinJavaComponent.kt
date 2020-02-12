@@ -35,7 +35,7 @@ object KoinJavaComponent {
      * @param scope - scope
      * @param parameters - dependency parameters / optional
      */
-    @JvmOverloads
+    
     @JvmStatic
     fun <T : Any> inject(
             clazz: Class<T>,
@@ -52,7 +52,7 @@ object KoinJavaComponent {
      * @param scope - scope
      * @param parameters - dependency parameters / optional
      */
-    @JvmOverloads
+    
     @JvmStatic
     fun <T : Any> get(
             clazz: Class<T>,
@@ -78,7 +78,7 @@ object KoinJavaComponent {
      * @param scope - scope
      * @param parameters - dependency parameters / optional
      */
-    @JvmOverloads
+    
     @JvmStatic
     fun <P : Any, S : Any> bind(
             primary: Class<P>,

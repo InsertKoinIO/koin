@@ -37,7 +37,7 @@ object ScopeCompat {
      * @param parameters - parameters to pass to the BeanDefinition
      * @param clazz
      */
-    @JvmOverloads
+
     @JvmStatic
     fun <T : ViewModel> viewModel(
             scope: Scope,
@@ -55,7 +55,7 @@ object ScopeCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
-    @JvmOverloads
+
     @JvmStatic
     fun <T : ViewModel> getViewModel(
             scope: Scope,
