@@ -1,6 +1,6 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
-archivesBaseName = 'koin-core'
+archivesBaseName = 'koin-core-mp'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 def ideaActive = System.getProperty('idea.active') == 'true'
 

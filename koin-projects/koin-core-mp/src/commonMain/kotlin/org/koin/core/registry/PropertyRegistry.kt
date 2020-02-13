@@ -16,13 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
-import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
-import org.koin.ext.isFloat
-import org.koin.ext.isInt
-import org.koin.ext.quoted
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Property Registry
@@ -33,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(val _koin: Koin) {
 
-    private val _values: MutableMap<String, Any> = ConcurrentHashMap()
+    private val _values: MutableMap<String, Any> = hashMapOf()
 
     /**
      * saveProperty all properties to registry

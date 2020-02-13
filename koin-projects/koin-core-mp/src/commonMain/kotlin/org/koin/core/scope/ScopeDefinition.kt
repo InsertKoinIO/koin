@@ -11,7 +11,8 @@ import kotlin.reflect.KClass
 /**
  * Imternal Scope Definition
  */
-class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
+class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false,
+    private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
 
     val definitions: Set<BeanDefinition<*>>
         get() = _definitions
@@ -22,7 +23,8 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
                 _definitions.remove(beanDefinition)
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
-                throw DefinitionOverrideException("Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
+                throw DefinitionOverrideException(
+                    "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
             }
         }
         _definitions.add(beanDefinition)
@@ -35,28 +37,29 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
     internal fun size() = definitions.size
 
     fun <T : Any> saveNewDefinition(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ): BeanDefinition<out Any?> {
         val clazz = instance::class
         val found: BeanDefinition<*>? =
-                definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
+            definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {
             if (override) {
                 remove(found)
             } else {
-                throw DefinitionOverrideException("Trying to override existing definition '$found' with new definition typed '$clazz'")
+                throw DefinitionOverrideException(
+                    "Trying to override existing definition '$found' with new definition typed '$clazz'")
             }
         }
         val beanDefinition = Definitions.createSingle(
-                clazz,
-                qualifier,
-                { instance },
-                this,
-                Options(isCreatedAtStart = false, override = override),
-                secondaryTypes ?: emptyList()
+            clazz,
+            qualifier,
+            { instance },
+            this,
+            Options(isCreatedAtStart = false, override = override),
+            secondaryTypes ?: emptyList()
         )
         save(beanDefinition, override)
         return beanDefinition
@@ -70,7 +73,6 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
 
         other as ScopeDefinition
 

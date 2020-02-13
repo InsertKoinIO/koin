@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 archivesBaseName = 'example-coffee-maker'
 
 dependencies {
-    implementation project(":koin-core")
-    testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    implementation project(":koin-core-mp")
+//    testImplementation project(":koin-test")
+//    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
