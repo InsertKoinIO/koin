@@ -6,6 +6,6 @@ package org.koin.core.logger
 class EmptyLogger : Logger(Level.NONE) {
 
     override fun log(level: Level, msg: MESSAGE) {
-        System.err.println("should see this - $level - $msg")
+        System.err.println("should not see this - $level - $msg")
     }
 }

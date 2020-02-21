@@ -29,9 +29,9 @@ import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 data class Scope(
-        val id: ScopeID,
-        val _scopeDefinition: ScopeDefinition,
-        val _koin: Koin
+    val id: ScopeID,
+    val _scopeDefinition: ScopeDefinition,
+    val _koin: Koin
 ) {
     val _linkedScope: ArrayList<Scope> = arrayListOf()
     val _instanceRegistry = InstanceRegistry(_koin, this)
@@ -80,10 +80,10 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> inject(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+        lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -95,10 +95,10 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> injectOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy(LazyThreadSafetyMode.NONE) { getOrNull<T>(qualifier, parameters) }
+        lazy(LazyThreadSafetyMode.NONE) { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -108,8 +108,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -124,8 +124,8 @@ data class Scope(
      */
     @JvmOverloads
     inline fun <reified T> getOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T? {
         return getOrNull(T::class, qualifier, parameters)
     }
@@ -140,9 +140,9 @@ data class Scope(
      */
     @JvmOverloads
     fun <T> getOrNull(
-            clazz: KClass<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
@@ -161,16 +161,17 @@ data class Scope(
      * @return instance of type T
      */
     fun <T> get(
-            clazz: KClass<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         return if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
+            val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
+            _koin._logger.debug("+- '${clazz.getFullName()}'$qualifierString")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
-            _koin._logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+            _koin._logger.debug("|- '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
@@ -187,27 +188,18 @@ data class Scope(
      */
     @JvmOverloads
     fun <T> get(
-            clazz: Class<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: Class<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         val kClass = clazz.kotlin
-        return if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("+- get '${kClass.getFullName()}' with qualifier '$qualifier'")
-            val (instance: T, duration: Double) = measureDurationForResult {
-                resolveInstance<T>(qualifier, kClass, parameters)
-            }
-            _koin._logger.debug("+- got '${kClass.getFullName()}' in $duration ms")
-            return instance
-        } else {
-            resolveInstance(qualifier, kClass, parameters)
-        }
+        return get(kClass, qualifier, parameters)
     }
 
     private fun <T> resolveInstance(
-            qualifier: Qualifier?,
-            clazz: KClass<*>,
-            parameters: ParametersDefinition?
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        parameters: ParametersDefinition?
     ): T {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
@@ -215,34 +207,35 @@ data class Scope(
         //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
-                ?: findInOtherScope<T>(clazz, qualifier, parameters)
-                ?: throwDefinitionNotFound(qualifier, clazz)
+            ?: findInOtherScope<T>(clazz, qualifier, parameters)
+            ?: throwDefinitionNotFound(qualifier, clazz)
     }
 
     private fun <T> findInOtherScope(
-            clazz: KClass<*>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?
     ): T? {
         return _linkedScope.firstOrNull { scope ->
             scope.getOrNull<T>(
-                    clazz,
-                    qualifier,
-                    parameters
-            ) != null
-        }?.get(
                 clazz,
                 qualifier,
                 parameters
+            ) != null
+        }?.get(
+            clazz,
+            qualifier,
+            parameters
         )
     }
 
     private fun throwDefinitionNotFound(
-            qualifier: Qualifier?,
-            clazz: KClass<*>
+        qualifier: Qualifier?,
+        clazz: KClass<*>
     ): Nothing {
         val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
-        throw NoBeanDefFoundException("No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
+        throw NoBeanDefFoundException(
+            "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
     }
 
     internal fun createEagerInstances() {
@@ -262,10 +255,10 @@ data class Scope(
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
     fun <T : Any> declare(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ) = synchronized(this) {
         val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
         _instanceRegistry.saveDefinition(definition, override = true)
@@ -323,12 +316,13 @@ data class Scope(
      * @return instance of type S
      */
     fun <S> bind(
-            primaryType: KClass<*>,
-            secondaryType: KClass<*>,
-            parameters: ParametersDefinition?
+        primaryType: KClass<*>,
+        secondaryType: KClass<*>,
+        parameters: ParametersDefinition?
     ): S {
         return _instanceRegistry.bind(primaryType, secondaryType, parameters)
-                ?: throw NoBeanDefFoundException("No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
+            ?: throw NoBeanDefFoundException(
+                "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
     }
 
     /**
@@ -349,7 +343,7 @@ data class Scope(
      * @param key
      */
     fun <T> getProperty(key: String): T = _koin.getProperty(key)
-            ?: throw MissingPropertyException("Property '$key' not found")
+        ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
      * Close all instances from this scope
