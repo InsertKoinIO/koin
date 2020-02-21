@@ -13,6 +13,6 @@ task checkModules(type: Test) {
         showStandardStreams = true
     }
     useJUnit {
-        includeCategories 'org.koin.example.CheckModuleTest'
+        includeCategories 'org.koin.test.category.CheckModuleTest'
     }
 }
