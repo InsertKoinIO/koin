@@ -124,4 +124,4 @@ kotlin {
     }
 }
 
-//apply from: '../gradle/publish.gradle'
+apply from: '../gradle/publish2.gradle'

@@ -4,6 +4,7 @@ buildscript {
 
     repositories {
       maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+      maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies' }
       mavenLocal()
         google()
         jcenter()
