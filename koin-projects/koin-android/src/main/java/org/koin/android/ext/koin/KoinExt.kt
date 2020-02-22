@@ -21,6 +21,7 @@ import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.logger.Level
+import org.koin.core.registry.saveProperties
 import org.koin.dsl.module
 import java.util.*
 

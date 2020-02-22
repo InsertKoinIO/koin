@@ -1,28 +1,30 @@
 // Core
-//include 'koin-core'
-include 'koin-core-mp'
-//include 'koin-test'
+include 'koin-core'
+//include 'koin-core-mp'
+include 'koin-test'
 // Core Sample
-//include 'examples:coffee-maker'
-//include 'examples:android-perfs'
+include 'examples:coffee-maker'
+include 'examples:android-perfs'
 //// Core extended
-//include 'koin-core-ext'
+include 'koin-core-ext'
 //
 //// Android
-//include 'koin-android'
-//include 'koin-android-scope' ,'koin-android-viewmodel'
-//include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
+include 'koin-android'
+include 'koin-android-scope' ,'koin-android-viewmodel'
+include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
 //
 //// Android Ext
-//include 'koin-android-ext'
-//include 'koin-androidx-ext'
+include 'koin-android-ext'
+include 'koin-androidx-ext'
 //
 //// Android Samples
-//include 'examples:android-samples'
-//include 'examples:androidx-samples'
+include 'examples:android-samples'
+include 'examples:androidx-samples'
 //
 //// Ktor
-//include 'koin-logger-slf4j'
-//include 'koin-ktor'
+include 'koin-logger-slf4j'
+include 'koin-ktor'
 //// Kto Sample
-//include 'examples:hello-ktor'
+include 'examples:hello-ktor'
+
+enableFeaturePreview('GRADLE_METADATA')

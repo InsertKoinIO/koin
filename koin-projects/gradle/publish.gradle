@@ -22,11 +22,11 @@ if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
         publish = true
         override = true
         pkg {
-            repo = 'koin'
+            repo = bintray_repo
             name = archivesBaseName
-            userOrg = 'ekito'
+            userOrg = bintray_org
             licenses = ['Apache-2.0']
-            vcsUrl = 'https://github.com/Ekito/koin.git'
+            vcsUrl = bintray_github
         }
     }
 }

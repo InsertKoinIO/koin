@@ -17,9 +17,6 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-def ourRepo = "kotlin"
-def ourOrg = "touchlabpublic"
-
 def pomConfig = {
   licenses {
     license {
@@ -39,31 +36,33 @@ def pomConfig = {
   }
 }
 
-bintray {
-  user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : ''
-  key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : ''
+if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
+  bintray {
+    user = bintray_user
+    key = bintray_apikey
 
-  pkg {
-    userOrg = ourOrg
-    repo = ourRepo
-    name = archivesBaseName
-    licenses = ['Apache-2.0']
-    vcsUrl = 'https://github.com/touchlab/koin'
-  }
-}
-
-afterEvaluate {
-  project.publishing.publications.forEach { publication ->
-    publication.pom.withXml {
-      def root = asNode()
-      root.appendNode('name', archivesBaseName)
-      root.appendNode('description', 'Kotlin DI')
-      root.appendNode('url', 'https://github.com/russhwolf/multiplatform-settings')
-      root.children().last() + pomConfig
+    pkg {
+      userOrg = bintray_org
+      repo = bintray_repo
+      name = archivesBaseName
+      licenses = ['Apache-2.0']
+      vcsUrl = bintray_github
     }
   }
-}
 
-bintrayUpload.doFirst {
-  publications = project.publishing.publications
+  afterEvaluate {
+    project.publishing.publications.forEach { publication ->
+      publication.pom.withXml {
+        def root = asNode()
+        root.appendNode('name', archivesBaseName)
+        root.appendNode('description', 'Kotlin DI')
+        root.appendNode('url', 'https://github.com/russhwolf/multiplatform-settings')
+        root.children().last() + pomConfig
+      }
+    }
+  }
+
+  bintrayUpload.doFirst {
+    publications = project.publishing.publications
+  }
 }

@@ -3,6 +3,7 @@ package org.koin.androidx.fragment.android
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.scope.Scope
 
 /**

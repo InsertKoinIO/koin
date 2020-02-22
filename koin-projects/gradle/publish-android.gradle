@@ -26,9 +26,9 @@ if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
         key = bintray_apikey
 
         pkg {
-            repo = 'koin'
+            repo = bintray_repo
             name = pom_name
-            userOrg = 'ekito'
+            userOrg = bintray_org
 
             description = pom_description
             publish = true
@@ -36,7 +36,7 @@ if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
 
             publicDownloadNumbers = true
             licenses = ['Apache-2.0']
-            vcsUrl = 'https://github.com/ekito/koin.git'
+            vcsUrl = bintray_github
             websiteUrl = 'https://insert-koin.io'
             dryRun = false
 
