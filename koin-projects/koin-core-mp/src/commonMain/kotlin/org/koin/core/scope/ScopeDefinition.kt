@@ -15,9 +15,9 @@ import kotlin.reflect.KClass
  */
 class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, _def: HashSet<BeanDefinition<*>> = hashSetOf()) {
 
-    private val __definitions: MainIsolatedState<HashSet<BeanDefinition<*>>> = MainIsolatedState(_def)
+    private val scopeDefState: MainIsolatedState<HashSet<BeanDefinition<*>>> = MainIsolatedState(_def)
     private val _definitions: MutableSet<BeanDefinition<*>>
-        get() = __definitions.value
+        get() = scopeDefState.value
     val definitions: Set<BeanDefinition<*>>
         get() = _definitions
 

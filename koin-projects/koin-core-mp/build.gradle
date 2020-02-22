@@ -5,8 +5,10 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 def ideaActive = System.getProperty('idea.active') == 'true'
 
 kotlin {
-    jvm()
-    js() /*{
+    jvm {
+      withJava()
+    }
+  js() /*{
         nodejs()
         browser()
         configure([compilations.main, compilations.test]) {
