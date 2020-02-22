@@ -3,7 +3,7 @@
 include 'koin-core-mp'
 //include 'koin-test'
 // Core Sample
-include 'examples:coffee-maker'
+//include 'examples:coffee-maker'
 //include 'examples:android-perfs'
 //// Core extended
 //include 'koin-core-ext'

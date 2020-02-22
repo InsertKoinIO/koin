@@ -1,12 +1,12 @@
 package org.koin.koincomponent
 
-import org.junit.Assert
-import org.junit.Test
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.inject
 import org.koin.dsl.module
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TasksView
 class TasksPresenter(val view: TasksView)
@@ -32,8 +32,8 @@ class AppTest {
         val koin = app.koin
         val myApp = MyApp()
 
-        Assert.assertEquals(myApp.presenter.view, myApp.view)
-        Assert.assertEquals(myApp.presenter, koin.get<TasksPresenter>())
+        assertEquals(myApp.presenter.view, myApp.view)
+        assertEquals(myApp.presenter, koin.get<TasksPresenter>())
 
         stopKoin()
     }

@@ -1,7 +1,7 @@
 package org.koin.dsl
 
-import org.junit.Assert.*
-import org.junit.Test
+import kotlin.test.*
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
@@ -9,6 +9,8 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier._q
 import org.koin.core.qualifier.named
 import org.koin.core.scope.ScopeDefinition
+import org.koin.core.state.value
+import org.koin.mp.printStackTrace
 
 class ScopeSetDeclarationTest {
 
@@ -26,7 +28,7 @@ class ScopeSetDeclarationTest {
             )
         }.koin
 
-        val def: ScopeDefinition = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
+        val def: ScopeDefinition = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
         assertTrue(def.qualifier == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
@@ -47,10 +49,10 @@ class ScopeSetDeclarationTest {
                     }
             )
         }.koin
-        val defA = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("A") }
+        val defA = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("A") }
         assertTrue(defA.qualifier == StringQualifier("A"))
 
-        val defB = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("B") }
+        val defB = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("B") }
         assertTrue(defB.qualifier == StringQualifier("B"))
 
         val scopeA = koin.createScope("A", named("A")).get<Simple.ComponentA>()
@@ -68,7 +70,7 @@ class ScopeSetDeclarationTest {
                     }
             )
         }.koin
-        val def = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
+        val def = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
         assertTrue(def.qualifier == scopeKey)
     }
 

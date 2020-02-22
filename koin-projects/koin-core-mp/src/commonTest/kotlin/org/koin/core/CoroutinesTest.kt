@@ -1,15 +1,6 @@
 package org.koin.core
 
-import kotlinx.coroutines.*
-import org.junit.Assert
-import org.junit.Test
-import org.koin.Simple
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
-import org.koin.test.getInstanceFactory
-import kotlin.random.Random
-
+/* Reenable once mt coroutines are stable
 class CoroutinesTest {
 
     @Test
@@ -43,9 +34,9 @@ class CoroutinesTest {
         val b = app.getInstanceFactory(Simple.ComponentA::class)!!
         val c = app.getInstanceFactory(Simple.ComponentA::class)!!
 
-        Assert.assertTrue(a.isCreated())
-        Assert.assertTrue(b.isCreated())
-        Assert.assertTrue(c.isCreated())
+        assertTrue(a.isCreated())
+        assertTrue(b.isCreated())
+        assertTrue(c.isCreated())
 
         stopKoin()
     }
@@ -55,4 +46,4 @@ class CoroutinesTest {
         println("thread sleep  $timer")
         delay(timer)
     }
-}
+}*/

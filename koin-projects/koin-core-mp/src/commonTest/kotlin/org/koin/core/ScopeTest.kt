@@ -1,12 +1,13 @@
 package org.koin.core
 
-import org.junit.Assert.*
-import org.junit.Test
+import kotlin.test.*
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.mp.printStackTrace
 
 class ScopeTest {
 
@@ -27,7 +28,7 @@ class ScopeTest {
         assertNotNull(scope.getOrNull<Simple.ComponentA>())
         assertEquals(scope.getOrNull<Simple.ComponentA>(), scope.getOrNull<Simple.ComponentA>())
         scope.close()
-        assertTrue(scope.closed)
+        assertTrue(scope._closed)
         assertNull(scope.getOrNull<Simple.ComponentA>())
         try {
             scope.get<Simple.ComponentA>()

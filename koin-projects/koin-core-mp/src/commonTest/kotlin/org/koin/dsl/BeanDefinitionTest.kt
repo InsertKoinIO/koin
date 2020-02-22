@@ -1,8 +1,5 @@
 package org.koin.dsl
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Kind
@@ -10,13 +7,17 @@ import org.koin.core.definition.Options
 import org.koin.core.instance.InstanceContext
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.named
+import org.koin.core.state.value
 import org.koin.test.getBeanDefinition
 import org.koin.test.getInstanceFactory
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class BeanDefinitionTest {
 
     val koin = koinApplication { }.koin
-    val rootScope = koin._scopeRegistry.rootScope
+    val rootScope = koin._koinState.value._scopeRegistry.rootScope
 
     @Test
     fun `equals definitions`() {

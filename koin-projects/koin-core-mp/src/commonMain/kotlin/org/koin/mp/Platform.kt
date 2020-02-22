@@ -14,3 +14,9 @@ expect object PlatformTools {
 internal fun Throwable.printStackTrace() {
     PlatformTools.printStackTrace(this)
 }
+
+internal expect fun Any.ensureNeverFrozen()
+
+internal expect fun <T> T.freeze(): T
+
+internal expect inline fun <R> mpsynchronized(lock: Any, block: () -> R): R

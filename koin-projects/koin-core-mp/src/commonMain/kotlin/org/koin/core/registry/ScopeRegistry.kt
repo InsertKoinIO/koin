@@ -24,6 +24,7 @@ import org.koin.core.qualifier.QualifierValue
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeID
+import org.koin.mp.ensureNeverFrozen
 
 /**
  * Scope Registry
@@ -32,6 +33,9 @@ import org.koin.core.scope.ScopeID
  * @author Arnaud Giuliani
  */
 class ScopeRegistry(private val _koin: Koin) {
+    init {
+        ensureNeverFrozen()
+    }
 
     //TODO Lock - ConcurrentHashMap
     private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()

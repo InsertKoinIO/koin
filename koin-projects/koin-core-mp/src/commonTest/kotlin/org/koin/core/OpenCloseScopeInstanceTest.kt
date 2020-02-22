@@ -1,14 +1,14 @@
 package org.koin.core
 
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.mp.printStackTrace
+import kotlin.test.fail
 
 class OpenCloseScopeInstanceTest {
 
@@ -27,7 +27,7 @@ class OpenCloseScopeInstanceTest {
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
-        Assert.assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentA>())
+        assertEquals(scope.get<Simple.ComponentA>(), scope.get<Simple.ComponentA>())
     }
 
     @Test

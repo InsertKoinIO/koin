@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
+import org.koin.mp.mpsynchronized
 
 /**
  * Single instance holder
@@ -35,7 +36,7 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
     }
 
     override fun create(context: InstanceContext): T {
-        return synchronized(this) {
+        return mpsynchronized(this) {
             if (value == null) {
                 super.create(context)
             } else value ?: error("Single instance created couldn't return value")

@@ -1,12 +1,12 @@
 package org.koin.dsl
 
-import org.junit.Assert.*
-import org.junit.Ignore
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class AdditionalTypeBindingTest {
 
@@ -158,7 +158,7 @@ class AdditionalTypeBindingTest {
         assertEquals(c1, ci2)
     }
 
-    @Test
+    /*@Test
     @Ignore
     fun `additional type conflict`() {
         val koin = koinApplication {
@@ -172,9 +172,9 @@ class AdditionalTypeBindingTest {
 
         assert(koin.getAll<Simple.ComponentInterface1>().size == 2)
         assertTrue(koin.get<Simple.ComponentInterface1>() is Simple.Component1)
-    }
+    }*/
 
-    @Test
+    /*@Test
     @Ignore
     fun `conflicting with additional types`() {
         val koin = koinApplication {
@@ -189,5 +189,5 @@ class AdditionalTypeBindingTest {
                     })
         }.koin
         assert(koin.getAll<Simple.ComponentInterface1>().size == 2)
-    }
+    }*/
 }

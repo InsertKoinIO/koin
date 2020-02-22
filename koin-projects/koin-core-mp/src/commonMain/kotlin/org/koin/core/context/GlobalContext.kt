@@ -18,6 +18,8 @@ package org.koin.core.context
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.mp.ensureNeverFrozen
+import org.koin.mp.mpsynchronized
 
 /**
  * Global context - current Koin Application available globally
@@ -28,20 +30,24 @@ import org.koin.core.error.KoinAppAlreadyStartedException
  */
 class GlobalContext : KoinContext {
 
+    init {
+        ensureNeverFrozen()
+    }
+
     private var _koin: Koin? = null
 
     override fun get(): Koin = _koin ?: error("KoinApplication has not been started")
 
     override fun getOrNull(): Koin? = _koin
 
-    override fun setup(koinApplication: KoinApplication) = synchronized(this) {
+    override fun setup(koinApplication: KoinApplication) = mpsynchronized(this) {
         if (_koin != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }
         _koin = koinApplication.koin
     }
 
-    override fun stop() = synchronized(this) {
+    override fun stop() = mpsynchronized(this) {
         _koin?.close()
         _koin = null
     }

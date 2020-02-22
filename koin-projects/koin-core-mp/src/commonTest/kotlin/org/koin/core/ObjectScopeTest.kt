@@ -1,7 +1,5 @@
 package org.koin.core
 
-import org.junit.Assert.*
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -9,6 +7,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.ext.getOrCreateScope
 import org.koin.ext.scope
+import kotlin.test.*
 
 class ObjectScopeTest {
 

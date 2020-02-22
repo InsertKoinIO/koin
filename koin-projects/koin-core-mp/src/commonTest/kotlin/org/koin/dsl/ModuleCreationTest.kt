@@ -1,7 +1,7 @@
 package org.koin.dsl
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.test.assertDefinitionsCount

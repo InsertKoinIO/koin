@@ -1,22 +1,19 @@
 package org.koin.dsl
 
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
-import org.junit.Test
+import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import org.koin.core.context.KoinContextHandler
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.logger.Level
 import org.koin.core.logger.PrintLogger
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
-import java.lang.IllegalStateException
 
 class KoinAppCreationTest {
 
-    @After
+    @AfterTest
     fun after() {
         stopKoin()
     }

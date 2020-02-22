@@ -1,13 +1,15 @@
 package org.koin.core
 
-import org.junit.Assert.*
-import org.junit.Test
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class InstanceResolutionTest {
 
@@ -60,7 +62,7 @@ class InstanceResolutionTest {
         val koin = app.koin
         val a: Simple.ComponentA? = koin.getOrNull()
 
-        assert(a == null)
+        assertTrue(a == null)
     }
 
     @Test
@@ -76,7 +78,7 @@ class InstanceResolutionTest {
         val koin = app.koin
         val a: Lazy<Simple.ComponentA?> = koin.injectOrNull()
 
-        assert(a.value == null)
+        assertTrue(a.value == null)
     }
 
     @Test

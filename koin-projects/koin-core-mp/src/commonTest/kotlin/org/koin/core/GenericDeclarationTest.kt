@@ -1,12 +1,14 @@
 package org.koin.core
 
-import org.junit.Assert.*
-import org.junit.Test
+import kotlin.test.Test
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.fail
 
 class GenericDeclarationTest {
 

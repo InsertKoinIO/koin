@@ -1,15 +1,16 @@
 package org.koin.core
 
-import org.junit.Assert.*
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
+
 import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.mp.printStackTrace
+import kotlin.test.*
 
 class ScopeAPITest {
 

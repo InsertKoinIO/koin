@@ -1,14 +1,15 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.mp.printStackTrace
+import kotlin.test.fail
 
 class GlobalToScopeTest {
 

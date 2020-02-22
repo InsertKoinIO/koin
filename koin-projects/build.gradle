@@ -3,6 +3,8 @@ buildscript {
     apply from: "./gradle/versions-android.gradle"
 
     repositories {
+      maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+      mavenLocal()
         google()
         jcenter()
     }
@@ -22,6 +24,8 @@ buildscript {
 allprojects {
 
     repositories {
+      maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+      mavenLocal()
         google()
         jcenter()
     }

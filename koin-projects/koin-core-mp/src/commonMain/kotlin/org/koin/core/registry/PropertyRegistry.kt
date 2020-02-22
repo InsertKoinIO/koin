@@ -17,6 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.logger.Level
+import org.koin.mp.ensureNeverFrozen
 
 /**
  * Property Registry
@@ -27,6 +28,9 @@ import org.koin.core.logger.Level
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(val _koin: Koin) {
 
+    init {
+        ensureNeverFrozen()
+    }
     private val _values: MutableMap<String, Any> = hashMapOf()
 
     /**

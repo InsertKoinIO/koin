@@ -1,11 +1,11 @@
 package org.koin
 
-import org.junit.After
 import org.koin.core.context.stopKoin
+import kotlin.test.AfterTest
 
 abstract class KoinCoreTest {
 
-    @After
+    @AfterTest
     fun after() {
         stopKoin()
     }

@@ -17,13 +17,22 @@ package org.koin.core.context
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.state.MainIsolatedState
+import org.koin.mp.mpsynchronized
 
 /**
  * Help hold any implementation of KoinContext
  */
 object KoinContextHandler {
 
-    private var _context: KoinContext? = null
+    private data class KoinContextNullable(var context: KoinContext?)
+
+    private val contextState = MainIsolatedState(KoinContextNullable(null))
+    private var _context: KoinContext?
+        get() = contextState._get().context
+        set(value) {
+            contextState._get().context = value
+        }
 
     private fun getContext(): KoinContext {
         return _context ?: error("No Koin Context configured. Please use startKoin or koinApplication DSL. ")
@@ -44,7 +53,7 @@ object KoinContextHandler {
      *
      * @throws IllegalStateException if already registered
      */
-    fun register(koinContext: KoinContext) = synchronized(this) {
+    fun register(koinContext: KoinContext) = mpsynchronized(this) {
         if (_context != null) {
             error("A KoinContext is already started")
         }

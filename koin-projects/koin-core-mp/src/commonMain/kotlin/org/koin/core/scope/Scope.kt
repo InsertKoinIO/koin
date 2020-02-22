@@ -24,21 +24,50 @@ import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.InstanceRegistry
+import org.koin.core.state.MainIsolatedState
+import org.koin.core.state.value
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
+import org.koin.mp.ensureNeverFrozen
+import org.koin.mp.mpsynchronized
 import kotlin.reflect.KClass
 
+internal class ScopeState(koin: Koin, scope: Scope) {
+    internal val _linkedScope: MutableList<Scope>
+    internal val _instanceRegistry: InstanceRegistry
+    internal val _callbacks: MutableList<ScopeCallback>
+    internal var _closed: Boolean = false
+    init {
+        ensureNeverFrozen()
+        _linkedScope = arrayListOf()
+        _linkedScope.ensureNeverFrozen()
+        _instanceRegistry = InstanceRegistry(koin, scope)
+        _instanceRegistry.ensureNeverFrozen()
+        _callbacks = arrayListOf<ScopeCallback>()
+        _callbacks.ensureNeverFrozen()
+    }
+}
+
 data class Scope(
-    val id: ScopeID,
-    val _scopeDefinition: ScopeDefinition,
-    val _koin: Koin
+        val id: ScopeID,
+        val _scopeDefinition: ScopeDefinition,
+        val _koin: Koin
 ) {
-    val _linkedScope: ArrayList<Scope> = arrayListOf()
-    val _instanceRegistry = InstanceRegistry(_koin, this)
-    private val _callbacks = arrayListOf<ScopeCallback>()
-    private var _closed: Boolean = false
-    val closed: Boolean
-        get() = _closed
+    init {
+        ensureNeverFrozen()
+    }
+    internal val scopeState = MainIsolatedState(ScopeState(_koin, this))
+    val _linkedScope: MutableList<Scope>
+        get() = scopeState.value._linkedScope
+    val _instanceRegistry: InstanceRegistry
+        get() = scopeState.value._instanceRegistry
+    val _callbacks: MutableList<ScopeCallback>
+        get() = scopeState.value._callbacks
+    var _closed: Boolean
+        get() = scopeState.value._closed
+        set(value) {
+            scopeState.value._closed = value
+        }
 
     internal fun create(links: List<Scope>) {
         _instanceRegistry.create(_scopeDefinition.definitions)
@@ -240,7 +269,7 @@ data class Scope(
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,
         override: Boolean = false
-    ) = synchronized(this) {
+    ) = mpsynchronized(this) {
         val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
         _instanceRegistry.saveDefinition(definition, override = true)
     }
@@ -329,12 +358,12 @@ data class Scope(
     /**
      * Close all instances from this scope
      */
-    fun close() = synchronized(this) {
+    fun close() = mpsynchronized(this) {
         clear()
         _koin._scopeRegistry.deleteScope(this)
     }
 
-    internal fun clear() = synchronized(this) {
+    internal fun clear() = mpsynchronized(this) {
         _closed = true
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.info("closing scope:'$id'")

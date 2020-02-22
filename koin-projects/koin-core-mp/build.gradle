@@ -6,17 +6,17 @@ def ideaActive = System.getProperty('idea.active') == 'true'
 
 kotlin {
     jvm()
-    js() {
+    js() /*{
         nodejs()
-        /*browser()
+        browser()
         configure([compilations.main, compilations.test]) {
             tasks.getByName(compileKotlinTaskName).kotlinOptions {
                 metaInfo = true
                 sourceMap = true
                 moduleKind = 'umd'
             }
-        }*/
-    }
+        }
+    }*/
 
     if(ideaActive) {
         macosX64("native")
@@ -49,7 +49,6 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "co.touchlab:stately:$stately_version"
                 implementation "co.touchlab:testhelp:$testhelp_version"
             }
         }
@@ -64,8 +63,6 @@ kotlin {
             dependencies {
                 implementation kotlin("test-junit")
                 implementation "org.mockito:mockito-inline:$mockito_version"
-                implementation "co.touchlab:stately:$stately_version"
-                implementation "co.touchlab:stately-collections:$stately_version"
             }
         }
 
@@ -84,17 +81,9 @@ kotlin {
         }
 
         nativeMain {
-            dependencies {
-                implementation "co.touchlab:stately:$stately_version"
-                implementation "co.touchlab:stately-collections:$stately_version"
-            }
         }
 
         nativeTest {
-            dependencies {
-                implementation "co.touchlab:stately:$stately_version"
-                implementation "co.touchlab:stately-collections:$stately_version"
-            }
         }
 
         if(!ideaActive) {

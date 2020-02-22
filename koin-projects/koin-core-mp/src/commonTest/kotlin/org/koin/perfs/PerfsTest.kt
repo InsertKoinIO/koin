@@ -1,6 +1,6 @@
 package org.koin.perfs
 
-import org.junit.Test
+import kotlin.test.Test
 import org.koin.core.logger.Level
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication

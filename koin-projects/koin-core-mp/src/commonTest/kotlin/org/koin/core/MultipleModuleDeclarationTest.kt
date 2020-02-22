@@ -1,7 +1,7 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module

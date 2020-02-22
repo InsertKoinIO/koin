@@ -6,14 +6,18 @@ import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
+import org.koin.core.state.MainIsolatedState
+import org.koin.core.state.value
 import kotlin.reflect.KClass
 
 /**
  * Imternal Scope Definition
  */
-class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false,
-    private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
+class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, _def: HashSet<BeanDefinition<*>> = hashSetOf()) {
 
+    private val __definitions: MainIsolatedState<HashSet<BeanDefinition<*>>> = MainIsolatedState(_def)
+    private val _definitions: MutableSet<BeanDefinition<*>>
+        get() = __definitions.value
     val definitions: Set<BeanDefinition<*>>
         get() = _definitions
 

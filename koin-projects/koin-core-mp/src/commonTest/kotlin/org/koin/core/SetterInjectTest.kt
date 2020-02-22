@@ -1,11 +1,11 @@
 package org.koin.core
 
-import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.time.measureDuration
 import org.koin.dsl.module
 import org.koin.ext.inject
+import kotlin.test.Test
 
 class B
 class C

@@ -27,7 +27,11 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import org.koin.core.state.MainIsolatedState
+import org.koin.core.state.value
 import org.koin.ext.getScopeId
+import org.koin.mp.ensureNeverFrozen
+import org.koin.mp.mpsynchronized
 import kotlin.reflect.KClass
 
 /**
@@ -37,11 +41,36 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-class Koin {
-    val _scopeRegistry = ScopeRegistry(this)
-    val _propertyRegistry = PropertyRegistry(this)
+internal class KoinState(koin: Koin) {
+    val _scopeRegistry: ScopeRegistry
+    val _propertyRegistry: PropertyRegistry
     var _logger: Logger = EmptyLogger()
-    val _modules = hashSetOf<Module>()
+    val _modules: MutableSet<Module>
+    init {
+        _scopeRegistry = ScopeRegistry(koin)
+        _scopeRegistry.ensureNeverFrozen()
+        _propertyRegistry = PropertyRegistry(koin)
+        _propertyRegistry.ensureNeverFrozen()
+        _modules = hashSetOf()
+        _modules.ensureNeverFrozen()
+    }
+}
+
+class Koin {
+
+    internal val _koinState = MainIsolatedState(KoinState(this))
+
+    val _scopeRegistry: ScopeRegistry
+        get() = _koinState.value._scopeRegistry
+    val _propertyRegistry: PropertyRegistry
+        get() = _koinState.value._propertyRegistry
+    val _modules: MutableSet<Module>
+        get() = _koinState.value._modules
+    var _logger: Logger
+        get() = _koinState.value._logger
+        set(value) {
+            _koinState.value._logger = value
+        }
 
     /**
      * Lazy inject a Koin instance
@@ -51,7 +80,6 @@ class Koin {
      *
      * @return Lazy instance of type T
      */
-
     inline fun <reified T> inject(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
@@ -288,20 +316,20 @@ class Koin {
     /**
      * Close all resources from context
      */
-    fun close() = synchronized(this) {
+    fun close() = mpsynchronized(this) {
         _modules.forEach { it.isLoaded = false }
         _modules.clear()
         _scopeRegistry.close()
         _propertyRegistry.close()
     }
 
-    fun loadModules(modules: List<Module>) = synchronized(this) {
+    fun loadModules(modules: List<Module>) = mpsynchronized(this) {
         _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
     }
 
 
-    fun unloadModules(modules: List<Module>) = synchronized(this) {
+    fun unloadModules(modules: List<Module>) = mpsynchronized(this) {
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
     }

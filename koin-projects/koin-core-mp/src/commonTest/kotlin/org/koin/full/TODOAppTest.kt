@@ -1,11 +1,12 @@
 package org.koin.full
 
-import org.junit.Test
+import kotlin.test.Test
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.assertTrue
 
-class TODOAppTest {
+class   TODOAppTest {
 
     val defaultModule = module {
         single { TasksRepository(get()) }
@@ -34,7 +35,7 @@ class TODOAppTest {
         val koin = koinApp.koin
 
         val tasksDataSource = koin.get<TasksDataSource>()
-        assert(tasksDataSource is FakeTasksRemoteDataSource)
+        assertTrue(tasksDataSource is FakeTasksRemoteDataSource)
     }
 
     @Test
@@ -46,7 +47,7 @@ class TODOAppTest {
         val koin = koinApp.koin
 
         val tasksDataSource = koin.get<TasksDataSource>()
-        assert(tasksDataSource is TasksLocalDataSource)
+        assertTrue(tasksDataSource is TasksLocalDataSource)
     }
 
     @Test
@@ -58,6 +59,6 @@ class TODOAppTest {
         val koin = koinApp.koin
 
         val tasksDataSource = koin.get<TasksDataSource>()
-        assert(tasksDataSource is TasksLocalDataSource)
+        assertTrue(tasksDataSource is TasksLocalDataSource)
     }
 }
