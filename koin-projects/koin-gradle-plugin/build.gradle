@@ -22,3 +22,5 @@ repositories {
     mavenCentral()
     jcenter()
 }
+
+apply from: '../gradle/publish.gradle'
