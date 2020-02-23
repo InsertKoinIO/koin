@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,10 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin
-import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
 import org.koin.ext.getScopeId
 import org.koin.ext.getScopeName
-import java.lang.System.err
-import java.lang.System.identityHashCode
 
 /**
  * Provide an scope for given LifecycleOwner component
@@ -65,11 +59,11 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
 val LifecycleOwner.lifecycleScope: Scope
     get() = getOrCreateAndroidScope()
 
-@Deprecated("Use lifecycleScope instead",replaceWith = ReplaceWith("lifecycleScope"),level = DeprecationLevel.ERROR)
+@Deprecated("Use lifecycleScope instead", replaceWith = ReplaceWith("lifecycleScope"), level = DeprecationLevel.ERROR)
 val LifecycleOwner.scope: Scope
     get() = error("Don't use scope on a lifecycle component. Use lifecycleScope instead")
 
-@Deprecated("Use lifecycleScope instead",replaceWith = ReplaceWith("lifecycleScope"))
+@Deprecated("Use lifecycleScope instead", replaceWith = ReplaceWith("lifecycleScope"))
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateAndroidScope()
 

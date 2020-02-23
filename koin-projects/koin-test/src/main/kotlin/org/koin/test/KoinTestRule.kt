@@ -21,7 +21,7 @@ class KoinTestRule private constructor(private val appDeclaration: KoinAppDeclar
     override fun apply(base: Statement, description: Description): Statement =
             object : Statement() {
                 override fun evaluate() {
-                    _koin = startKoin(appDeclaration).koin
+                    _koin = startKoin(appDeclaration = appDeclaration).koin
                     base.evaluate()
                     stopKoin()
                     _koin = null

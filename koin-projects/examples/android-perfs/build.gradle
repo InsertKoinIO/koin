@@ -26,7 +26,7 @@ android {
 dependencies {
 
     // Koin
-    implementation project(":koin-core")
+    implementation project(":koin-core-ext")
     implementation 'junit:junit:4.12'
 
     implementation "com.android.support:appcompat-v7:$support_lib_version"

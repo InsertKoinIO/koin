@@ -4,7 +4,7 @@ import io.ktor.application.install
 import io.ktor.server.testing.withApplication
 import org.junit.Assert
 import org.junit.Test
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.dsl.module
 
 /**
@@ -24,7 +24,7 @@ class KoinFeatureTest {
             application.install(Koin) {
                 modules(module)
             }
-            val bean = GlobalContext.get().get<Foo>()
+            val bean = KoinContextHandler.get().get<Foo>()
             Assert.assertNotNull(bean)
         }
     }

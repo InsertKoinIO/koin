@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.koin.core
 
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -29,7 +29,7 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin(): Koin = GlobalContext.get()
+    fun getKoin(): Koin = KoinContextHandler.get()
 }
 
 /**

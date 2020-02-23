@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,24 @@ abstract class Logger(var level: Level = Level.INFO) {
 
     abstract fun log(level: Level, msg: MESSAGE)
 
+    private fun canLog(level: Level): Boolean = this.level <= level
+
+    private fun doLog(level: Level, msg: MESSAGE) {
+        if (canLog(level)) {
+            log(level, msg)
+        }
+    }
+
     fun debug(msg: MESSAGE) {
-        log(Level.DEBUG, msg)
+        doLog(Level.DEBUG, msg)
     }
 
     fun info(msg: MESSAGE) {
-        log(Level.INFO, msg)
+        doLog(Level.INFO, msg)
     }
 
     fun error(msg: MESSAGE) {
-        log(Level.ERROR, msg)
+        doLog(Level.ERROR, msg)
     }
 
     fun isAt(lvl: Level): Boolean = this.level <= lvl

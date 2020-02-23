@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.logger.Level
+import org.koin.core.logger.PrintLogger
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
@@ -32,8 +34,10 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
 /**
  *
  */
-fun checkModules(parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
-    koinApplication(appDeclaration).checkModules(parameters)
+fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
+    koinApplication(appDeclaration)
+        .logger(PrintLogger(level))
+        .checkModules(parameters)
 }
 
 /**
@@ -43,7 +47,6 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     _logger.info("[Check] checking current modules ...")
 
     val allParameters = makeParameters(parametersDefinition)
-
     checkScopedDefinitions(allParameters)
 
     close()
@@ -51,7 +54,8 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     _logger.info("[Check] modules checked")
 }
 
-private fun Koin.makeParameters(parametersDefinition: CheckParameters?): MutableMap<CheckedComponent, ParametersCreator> {
+private fun Koin.makeParameters(
+    parametersDefinition: CheckParameters?): MutableMap<CheckedComponent, ParametersCreator> {
     val bindings = ParametersBinding()
     bindings.koin = this
     parametersDefinition?.let {
@@ -67,15 +71,17 @@ private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedCompone
     }
 }
 
-private fun Koin.runScope(scopeDefinition: ScopeDefinition, allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+private fun Koin.runScope(scopeDefinition: ScopeDefinition,
+    allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
     val scope = getOrCreateScope(scopeDefinition.qualifier.value, scopeDefinition.qualifier)
     scope._scopeDefinition.definitions.forEach {
         runDefinition(allParameters, it, scope)
     }
 }
 
-private fun runDefinition(allParameters: MutableMap<CheckedComponent, ParametersCreator>, it: BeanDefinition<*>, scope: Scope) {
+private fun runDefinition(allParameters: MutableMap<CheckedComponent, ParametersCreator>, it: BeanDefinition<*>,
+    scope: Scope) {
     val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
-            ?: parametersOf()
+        ?: parametersOf()
     scope.get<Any>(it.primaryType, it.qualifier) { parameters }
 }

@@ -5,6 +5,32 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.1.0]()
 
+### [beta-1]()
+
+_Test_
+
+* `[ADDED]` - CheckModule test task
+
+_Core_
+
+* `[ADDED]` - Enum class can be used as Qualifier: `named(MyEnum.MyValue)`
+
+
+### [alpha-11]()
+
+_Core_
+
+* `[FIXED]` - stopKoin closes scopes #702
+
+_AndroidX-ViewModel_
+
+* `[FIXED]` - added/fixed for better State ViewModel `getStateViewModel` and `by stateViewModel()` API
+
+_Android_
+
+* `[ADDED]` - `KoinAndroidApplication` to let you create a `KoinApplication` instance with Android context, and let you use KoinApplication DSL
+
+
 ### [alpha-10]()
 
 _Core_

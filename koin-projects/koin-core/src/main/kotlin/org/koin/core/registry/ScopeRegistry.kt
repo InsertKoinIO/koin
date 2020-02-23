@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,10 +146,15 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     internal fun close() {
+        clearScopes()
         _scopes.clear()
         _scopeDefinitions.clear()
-        _rootScope?.close()
+        _rootScopeDefinition = null
         _rootScope = null
+    }
+
+    private fun clearScopes() {
+        _scopes.values.forEach { scope -> scope.clear() }
     }
 
     fun unloadModules(modules: Iterable<Module>) {

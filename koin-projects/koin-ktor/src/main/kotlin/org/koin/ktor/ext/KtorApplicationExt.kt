@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.koin.ktor.ext
 
 import io.ktor.application.Application
 import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -31,7 +31,7 @@ import org.koin.core.qualifier.Qualifier
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = GlobalContext.get()
+fun Application.getKoin(): Koin = KoinContextHandler.get()
 
 /**
  * inject lazily given dependency
@@ -40,8 +40,8 @@ fun Application.getKoin(): Koin = GlobalContext.get()
  * @param parameters
  */
 inline fun <reified T : Any> Application.inject(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ) =
         lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
@@ -52,8 +52,8 @@ inline fun <reified T : Any> Application.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Application.get(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ) =
         getKoin().get<T>(qualifier, parameters)
 

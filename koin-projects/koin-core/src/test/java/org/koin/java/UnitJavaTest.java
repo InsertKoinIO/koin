@@ -1,6 +1,6 @@
 package org.koin.java;
 
-import org.junit.After;
+import kotlin.Lazy;
 import org.junit.Before;
 import org.junit.Test;
 import org.koin.KoinCoreTest;
@@ -8,28 +8,23 @@ import org.koin.core.KoinApplication;
 import org.koin.core.context.GlobalContext;
 import org.koin.core.scope.Scope;
 
-import kotlin.Lazy;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.koin.core.context.GlobalContext.start;
-import static org.koin.core.context.GlobalContextKt.stopKoin;
+import static org.koin.core.context.ContextFunctionsKt.startKoin;
+import static org.koin.core.context.ContextFunctionsKt.stopKoin;
 import static org.koin.core.qualifier.QualifierKt.named;
-import static org.koin.java.KoinJavaComponent.get;
-import static org.koin.java.KoinJavaComponent.getKoin;
-import static org.koin.java.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.*;
 import static org.koin.java.UnitJavaStuffKt.koinModule;
 
 public class UnitJavaTest extends KoinCoreTest {
 
     @Before
     public void before() {
-        KoinApplication koinApp = KoinApplication
-                .init()
+        KoinApplication koinApp = KoinApplication.init()
                 .printLogger()
                 .modules(koinModule);
 
-        start(koinApp);
+        startKoin(new GlobalContext(), koinApp);
     }
 
     @Test
@@ -63,6 +58,6 @@ public class UnitJavaTest extends KoinCoreTest {
         assertNotNull(session.get(ComponentD.class));
 
         session.close();
-        GlobalContext.stop();
+        stopKoin();
     }
 }

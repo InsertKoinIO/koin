@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@ package org.koin.androidx.viewmodel.scope
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
-import org.koin.androidx.viewmodel.*
+import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.androidx.viewmodel.createViewModelProvider
 import org.koin.androidx.viewmodel.ext.android.getViewModelStore
+import org.koin.androidx.viewmodel.resolveInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -32,68 +33,36 @@ import kotlin.reflect.KClass
  */
 
 inline fun <reified T : ViewModel> Scope.viewModel(
-    owner: LifecycleOwner,
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        owner: LifecycleOwner,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner,T::class,qualifier,parameters) }
-}
-
-inline fun <reified T : ViewModel> Scope.viewModel(
-    owner: SavedStateRegistryOwner,
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner,T::class,qualifier,parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, T::class, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
-    owner: LifecycleOwner,
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        owner: LifecycleOwner,
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(owner,T::class,qualifier,parameters)
-}
-
-inline fun <reified T : ViewModel> Scope.getViewModel(
-    owner: SavedStateRegistryOwner,
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
-): T {
-    return getViewModel(owner,T::class,qualifier,parameters)
+    return getViewModel(owner, T::class, qualifier, parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
-    owner: LifecycleOwner,
-    clazz: KClass<T>,
-    qualifier: Qualifier? = null,
-    parameters: ParametersDefinition? = null
+        owner: LifecycleOwner,
+        clazz: KClass<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(
-        ViewModelParameter(
-            clazz,
-            qualifier,
-            parameters,
-            owner.getViewModelStore(),
-            null
-        )
-    )
-}
-
-fun <T : ViewModel> Scope.getViewModel(
-    owner: SavedStateRegistryOwner,
-    clazz: KClass<T>,
-    qualifier: Qualifier? = null,
-    parameters: ParametersDefinition? = null
-): T {
-    return getViewModel(
-        ViewModelParameter(
-            clazz,
-            qualifier,
-            parameters,
-            owner.getViewModelStore(),
-            owner
-        )
+            ViewModelParameter(
+                    clazz,
+                    qualifier,
+                    parameters,
+                    null,
+                    owner.getViewModelStore(),
+                    null
+            )
     )
 }
 

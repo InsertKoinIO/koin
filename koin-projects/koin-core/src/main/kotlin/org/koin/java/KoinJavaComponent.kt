@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.koin.java
 
 import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -38,9 +38,9 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <T : Any> inject(
-        clazz: Class<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            clazz: Class<T>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE) { get(clazz, qualifier, parameters) }
     }
@@ -55,19 +55,19 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <T : Any> get(
-        clazz: Class<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            clazz: Class<T>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T {
         val kClass = clazz.kotlin
         return getKoin().get(
-            kClass,
-            qualifier,
-            parameters
+                kClass,
+                qualifier,
+                parameters
         ) ?: getKoin().get(
-            kClass,
-            qualifier,
-            parameters
+                kClass,
+                qualifier,
+                parameters
         )
     }
 
@@ -81,12 +81,12 @@ object KoinJavaComponent {
     @JvmOverloads
     @JvmStatic
     fun <P : Any, S : Any> bind(
-        primary: Class<P>,
-        secondary: Class<S>,
-        parameters: ParametersDefinition? = null
+            primary: Class<P>,
+            secondary: Class<S>,
+            parameters: ParametersDefinition? = null
     ): S {
         return getKoin()
-            .bind(primary.kotlin, secondary.kotlin, parameters)
+                .bind(primary.kotlin, secondary.kotlin, parameters)
     }
 
     /**
@@ -94,5 +94,5 @@ object KoinJavaComponent {
      * @param key - key property
      */
     @JvmStatic
-    fun getKoin(): Koin = GlobalContext.get()
+    fun getKoin(): Koin = KoinContextHandler.get()
 }

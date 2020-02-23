@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.koin.core.parameter
 
+import org.koin.core.error.DefinitionParameterException
 import org.koin.core.error.NoParameterFoundException
 import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
 
@@ -79,7 +80,7 @@ class DefinitionParameters internal constructor(vararg val values: Any?) {
  * return ParameterList
  */
 fun parametersOf(vararg parameters: Any?) =
-    if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else error("Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
+    if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else throw DefinitionParameterException("Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
  *

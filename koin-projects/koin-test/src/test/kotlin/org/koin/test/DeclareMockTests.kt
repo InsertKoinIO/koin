@@ -22,14 +22,63 @@ class DeclareMockTests : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `declare a Mock of an existing definition for given scope`() {
-        val componentA = Simple.ComponentA()
+    fun `declare and stub an existing definition`() {
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.UUIDComponent() }
+                    }
+            )
+        }.koin
 
+        val instance = koin.get<Simple.UUIDComponent>()
+        val uuidValue = "UUID"
+
+        koin.declareMock<Simple.UUIDComponent> {
+            given(getUUID()).will { uuidValue }
+        }
+
+        val mock = koin.get<Simple.UUIDComponent>()
+
+        assertNotEquals(instance, mock)
+        assertEquals(uuidValue, mock.getUUID())
+    }
+
+    @Test
+    fun `declare and stub an existing scoped definition`() {
         val koin = koinApplication {
             modules(
                     module {
                         scope(named<Simple>()) {
-                            scoped { componentA }
+                            scoped { Simple.UUIDComponent() }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.getOrCreateScope("scope_id", named<Simple>())
+
+        val instance = scope.get<Simple.UUIDComponent>()
+        val uuidValue = "UUID"
+
+        scope.declareMock<Simple.UUIDComponent> {
+            given(getUUID()).will { uuidValue }
+        }
+
+        val mock = scope.get<Simple.UUIDComponent>()
+
+        assertNotEquals(instance, mock)
+        assertEquals(uuidValue, mock.getUUID())
+    }
+
+    @Test
+    fun `declare a Mock of an existing definition for given scope`() {
+        val koin = koinApplication {
+            modules(
+                    module {
+                        scope(named<Simple>()) {
+                            scoped { Simple.ComponentA() }
                         }
                     }
             )
@@ -64,14 +113,13 @@ class DeclareMockTests : AutoCloseKoinTest() {
         val uuidValue = "UUID"
 
         scope.declareMock<Simple.UUIDComponent> {
-            Mockito.`when`(getUUID()).thenReturn(uuidValue)
+            given(getUUID()).will { uuidValue }
         }
 
         val mock = scope.get<Simple.UUIDComponent>()
 
         assertNotEquals(instance, mock)
         assertEquals(uuidValue, mock.getUUID())
-
     }
 
     @Test
@@ -126,6 +174,7 @@ class DeclareMockTests : AutoCloseKoinTest() {
                 single(named("test")) { Simple.ComponentA() }
             })
         }.koin
+
         koin.declareMock<Simple.ComponentA>(named("test"))
     }
 }
