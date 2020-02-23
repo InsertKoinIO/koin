@@ -15,7 +15,7 @@ apply plugin: 'koin'
 archivesBaseName = 'example-coffee-maker'
 
 dependencies {
-    implementation project(":koin-core-ext")
-    testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    compile project(":koin-core-ext")
+    testCompile project(":koin-test")
+    testCompile "org.mockito:mockito-inline:$mockito_version"
 }

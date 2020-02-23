@@ -18,14 +18,14 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:$support_lib_version"
-    implementation("android.arch.lifecycle:common:$android_arch_version")
+    compile "com.android.support:appcompat-v7:$support_lib_version"
+    compile("android.arch.lifecycle:common:$android_arch_version")
     // Koin
-    api project(":koin-android") //"org.koin:koin-android:$koin_version"
+    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
 
     // Test
-    testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testCompile project(":koin-test")
+    testCompile "org.mockito:mockito-inline:$mockito_version"
 
 }
 

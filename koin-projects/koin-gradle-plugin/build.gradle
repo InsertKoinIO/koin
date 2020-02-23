@@ -9,12 +9,7 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "org.koin:koin-core:$koin_version"
-    compile "org.koin:koin-test:$koin_version"
     compile gradleApi()
-
-    testCompile 'junit:junit:4.12'
 }
 
 repositories {

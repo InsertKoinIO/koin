@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     compile project(':koin-core-ext')
-    testImplementation project(":koin-test")
+    testCompile project(":koin-test")
 
     // Ktor
     compile "io.ktor:ktor-server-core:$ktor_version"
