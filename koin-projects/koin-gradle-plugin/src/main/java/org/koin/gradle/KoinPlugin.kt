@@ -1,4 +1,4 @@
-package se.thinkcode
+package org.koin.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

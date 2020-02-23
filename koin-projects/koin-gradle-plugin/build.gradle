@@ -1,9 +1,10 @@
-group = 'se.thinkcode.gradle'
-version = '1.0.0-SNAPSHOT'
-
 apply plugin: 'kotlin'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+
+archivesBaseName = 'koin-gradle-plugin'
+description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+
 
 dependencies {
     // Kt

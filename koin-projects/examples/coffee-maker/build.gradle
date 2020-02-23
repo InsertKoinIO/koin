@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         mavenLocal()
+        mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath 'se.thinkcode.gradle:koin-gradle-plugin:1.0.0-SNAPSHOT'
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
     }
 }
 
