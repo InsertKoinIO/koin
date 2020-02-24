@@ -13,7 +13,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 _Test_
 
-* `[ADDED]` - CheckModule test task
+* `[ADDED]` - CheckModule category
+
+_Gradle_PLugin_
+
+* `[ADDED]` - CheckModule Gradle Plugin
 
 _Core_
 
