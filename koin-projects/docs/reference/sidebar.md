@@ -15,6 +15,7 @@
 - [Experimental Features](koin-core/experimental)
 - **Koin Test**
 - [JUnit & Mocks](koin-test/testing)
+- [CheckModules gradle Plugin](koin-test/checkmodules_plugin)
 - **Koin Android**
 - [Start on Android](koin-android/start)
 - [Android DSL](koin-android/dsl)

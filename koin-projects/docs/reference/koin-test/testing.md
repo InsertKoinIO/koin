@@ -4,7 +4,7 @@
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
 * `by inject()` & `get()` - function to retrieve yoru instances from Koin
-* `check` & `dryRun` - help you check your configuration
+* `checkModules` - help you check your configuration
 * `declareMock` & `declare` - to declare a mock or a new definition in the current context
 
 ```kotlin
@@ -36,28 +36,67 @@ class MyTest : KoinTest {
 
 ?> Don't hesitate to overload Koin modules configuration to help you partly build your app.
 
+## JUnit Rules
+
+### Create a Koin context for your test
+
+You can easily create and hold a Koin context for each of your test with the following rule:
+
+```kotlin
+@get:Rule
+val koinTestRule = KoinTestRule.create {
+    // Your KoinApplication instance here
+    modules(myModule)
+}
+```
+
+### Specify your Mock Provider
+
+To let you use the `declareMock` API, you need to specify a rule to let Koin know how you build your Mock instance. This let you choose the right
+mocking framework for your need. Below is a Mockito example: 
+
+```kotlin
+@get:Rule
+val mockProvider = MockProviderRule.create { clazz ->
+    // Your way to build a Mock here
+    Mockito.mock(clazz.java)
+}
+```
+
+!> koin-test project is not tied anymroe to mockito
+
 ## Mocking out of the box
 
 Instead of making a new module each time you need a mock, you can declare a mock on the fly with `declareMock`:
 
 ```kotlin
+class ComponentA
+class ComponentB(val a: ComponentA)
+
 class MyTest : KoinTest {
 
-    class ComponentA
-    class ComponentB(val a: ComponentA)
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        modules(
+            module {
+                single { ComponentA() }
+                single { ComponentB(get()) }
+            })
+    }
 
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
+    
     @Test
     fun `should inject my components`() {
-        startKoin{
-            modules(
-                module {
-                    single { ComponentA() }
-                    single { ComponentB(get()) }
-                })
-        }
-        declareMock<ComponentA>()
+    
+    }
+        // Replace current definition by a Mock
+        val mock = declareMock<ComponentA>()
 
-        // retrieve mock
+        // retrieve mock, same as variable above 
         assertNotNull(get<ComponentA>())
 
         // is built with mocked ComponentA
@@ -84,30 +123,16 @@ When a mock is not enough and don't want to create a module just for this, you c
     }
 ```
 
-## Checking your Koin configuration
+## Checking your Koin modules
 
 Koin offers a way to test if you Koin modules are good: `checkModules` - walk through your definition tree and check if each definition is bound
 
 ```kotlin
     @Test
     fun `check MVP hierarchy`() {
-        startKoin{
-            modules(
-                module {
-                    single { ComponentA() }
-                    single { ComponentB(get()) }
-                })
-        }.checkModules()
-
-        // or
-
-        koinApplication{
-            modules(
-                module {
-                    single { ComponentA() }
-                    single { ComponentB(get()) }
-                })
-        }.checkModules()
+        checkModules {
+            modules(myModule1, myModule2 ...)
+        } 
     }
 ```
 

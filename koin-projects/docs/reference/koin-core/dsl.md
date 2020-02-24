@@ -68,7 +68,7 @@ To describe your content in a module, you can use the following functions:
 * `scope { // scope group }` - define a logical group for `scoped` definition 
 * `scoped { //definition }`- provide a bean definition that will exists only in a scope
 
-Note: the `named()` function allow you to give a qualifier either by a string or a type. It is used to name your definitions.
+Note: the `named()` function allow you to give a qualifier either by a string, an enum or a type. It is used to name your definitions.
 
 ### Writing a module
 
