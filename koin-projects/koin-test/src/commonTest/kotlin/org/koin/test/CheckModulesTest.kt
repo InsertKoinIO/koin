@@ -1,7 +1,6 @@
 package org.koin.test
 
-import org.junit.Assert.fail
-import org.junit.Test
+import co.touchlab.testhelp.printStackTrace
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -9,6 +8,8 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import kotlin.test.Test
+import kotlin.test.fail
 
 class CheckModulesTest {
 

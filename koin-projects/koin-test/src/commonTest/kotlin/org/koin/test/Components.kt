@@ -1,7 +1,7 @@
 package org.koin.test
 
+import com.benasher44.uuid.uuid4
 import org.koin.core.qualifier.Qualifier
-import java.util.*
 
 @Suppress("unused")
 class Simple {
@@ -10,7 +10,7 @@ class Simple {
     class MyString(val s: String)
 
     class UUIDComponent {
-        fun getUUID() = UUID.randomUUID().toString()
+        fun getUUID() = uuid4().toString()
     }
 }
 
