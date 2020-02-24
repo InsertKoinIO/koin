@@ -9,8 +9,6 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 * doc updates
 
-### [beta-1]()
-
 _Test_
 
 * `[ADDED]` - CheckModule category
@@ -18,6 +16,8 @@ _Test_
 _Gradle_PLugin_
 
 * `[ADDED]` - CheckModule Gradle Plugin
+
+### [beta-1]()
 
 _Core_
 
