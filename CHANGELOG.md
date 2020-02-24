@@ -5,6 +5,10 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.1.0]()
 
+### [beta-3]()
+
+* doc updates
+
 ### [beta-1]()
 
 _Test_
