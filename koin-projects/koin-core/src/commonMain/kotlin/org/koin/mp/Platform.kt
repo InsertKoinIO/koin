@@ -19,4 +19,4 @@ internal expect fun Any.ensureNeverFrozen()
 
 internal expect fun <T> T.freeze(): T
 
-internal expect inline fun <R> mpsynchronized(lock: Any, block: () -> R): R
+internal expect fun <R> mpsynchronized(lock: Any, block: () -> R): R

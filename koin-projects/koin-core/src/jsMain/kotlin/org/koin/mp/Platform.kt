@@ -24,4 +24,4 @@ actual object PlatformTools {
 internal actual fun Any.ensureNeverFrozen() {}
 
 internal actual fun <T> T.freeze(): T = this
-internal actual inline fun <R> mpsynchronized(lock: Any, block: () -> R): R = block()
+internal actual fun <R> mpsynchronized(lock: Any, block: () -> R): R = block()

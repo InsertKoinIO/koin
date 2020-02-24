@@ -3,6 +3,7 @@ package org.koin.mp
 import org.koin.core.logger.KOIN_TAG
 import org.koin.core.logger.Level
 import org.koin.core.logger.MESSAGE
+import org.koin.core.state.jvmThreading
 import kotlin.reflect.KClass
 
 actual object PlatformTools {
@@ -24,6 +25,4 @@ actual object PlatformTools {
 internal actual fun Any.ensureNeverFrozen() {}
 
 internal actual fun <T> T.freeze(): T = this
-internal actual inline fun <R> mpsynchronized(lock: Any, block: () -> R): R = synchronized(lock) {
-    block()
-}
+internal actual fun <R> mpsynchronized(lock: Any, block: () -> R): R = jvmThreading.mpsynchronized(lock, block)
