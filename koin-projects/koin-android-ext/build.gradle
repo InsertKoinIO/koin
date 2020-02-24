@@ -19,14 +19,14 @@ android {
 
 dependencies {
     // Koin
-    api project(":koin-core-ext")
-    api project(":koin-android-viewmodel")
+    compile project(":koin-core-ext")
+    compile project(":koin-android-viewmodel")
 
     // Test
-    testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testCompile project(":koin-test")
+    testCompile "org.mockito:mockito-inline:$mockito_version"
     // Architecture ViewModel
-    implementation("android.arch.lifecycle:extensions:$android_arch_version") {
+    compile("android.arch.lifecycle:extensions:$android_arch_version") {
         exclude module: "livedata"
         exclude module: "runtime"
     }

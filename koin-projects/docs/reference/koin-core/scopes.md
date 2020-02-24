@@ -26,7 +26,7 @@ module {
 }
 ```
 
-> A scope require a _qualifier_ to help name it. It can be eitehr a String Qualifier, either a TypeQualifier
+> A scope require a _qualifier_ to help name it. It can be either a String Qualifier, either a TypeQualifier
 
 Declaring a scope for a given type, can be done:
 
@@ -62,11 +62,11 @@ class C
 
 ### Declare a Scoped Instance
 
-Let's scope `B` & `C` instances from `A`, `B` & `C` instanceds are tied to a `A` instance:
+Let's scope `B` & `C` instances from `A`, `B` & `C` instances are tied to a `A` instance:
 
 ```kotlin
 module {
-    single { A() }
+    factory { A() }
     scope<A> {
         scoped { B() }
         scoped { C() }

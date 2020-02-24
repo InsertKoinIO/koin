@@ -18,14 +18,14 @@ android {
 
 dependencies {
     // Koin
-    api project(":koin-android")
+    compile project(":koin-android")
 
     // Test
-    testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testCompile project(":koin-test")
+    testCompile "org.mockito:mockito-inline:$mockito_version"
 
     // Architecture ViewModel
-    implementation("androidx.fragment:fragment:$androidx_fragment_version")
+    compile("androidx.fragment:fragment:$androidx_fragment_version")
 }
 
 apply from: '../gradle/publish-android.gradle'

@@ -80,7 +80,7 @@ class DefinitionParameters internal constructor(vararg val values: Any?) {
  * return ParameterList
  */
 fun parametersOf(vararg parameters: Any?) =
-    if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else throw DefinitionParameterException("Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
+        if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else throw DefinitionParameterException("Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
  *

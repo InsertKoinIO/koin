@@ -51,9 +51,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
-koin_version = '2.0.1'
-// latest unstable
-koin_version = '2.1.0-beta-1'
+koin_version = '2.1.0'
 ```
 
 ## Gradle 
@@ -72,6 +70,21 @@ repositories {
 ### Dependencies
 
 Pick one of your Koin dependency:
+
+#### Gradle Plugin
+
+```gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
+apply plugin: 'koin'
+```
 
 #### Core features
 

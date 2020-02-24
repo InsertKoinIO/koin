@@ -5,6 +5,21 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.1.0]()
 
+### [beta-3]()
+
+* doc updates
+
+### [beta-1]()
+
+_Test_
+
+* `[ADDED]` - CheckModule test task
+
+_Core_
+
+* `[ADDED]` - Enum class can be used as Qualifier: `named(MyEnum.MyValue)`
+
+
 ### [alpha-11]()
 
 _Core_

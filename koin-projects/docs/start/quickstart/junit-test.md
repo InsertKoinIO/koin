@@ -39,25 +39,19 @@ val helloModule = module {
 To make our first test, let's write a simple Junit test file and extend it with `KoinTest`. We will be able then, to use `by inject()` operators.
 
 ```kotlin
-class HelloAppTest : KoinTest() {
+class HelloAppTest : KoinTest {
 
     val model by inject<HelloMessageData>()
     val service by inject<HelloService>()
 
-    @Before
-    fun before() {
-        startKoin {
-            modules(helloModule) 
-        }
-    }
-
-    @After
-    fun after() {
-        stopKoin()
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        printLogger()
+        modules(helloModule)
     }
 
     @Test
-    fun testKoinComponents() {
+    fun `unit test`() {
         val helloApp = HelloApplication()
         helloApp.sayHello()
 
@@ -67,37 +61,77 @@ class HelloAppTest : KoinTest() {
 }
 ```
 
-<div class="alert alert-warning" role="alert">
-  For each test, we start <b>startKoin()</b> and stop Koin context <b>stopKoin()</b>.
-</div>
+> We use the Koin KoinTestRule rule to start/stop our Koin context
 
 You can even make Mocks directly into MyPresenter, or test MyRepository. Those components doesn't have any link with Koin API.
 
 ```kotlin
-class HelloMockTest : AutoCloseKoinTest() {
+class HelloMockTest : KoinTest {
 
-    val service: HelloService by inject()
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        printLogger(Level.DEBUG)
+        modules(helloModule)
+    }
 
-    @Before
-    fun before() {
-        startKoin{
-            modules(helloModule)
-        }
-        declareMock<HelloService>()
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
     }
 
     @Test
-    fun tesKoinComponents() {
+    fun `mock test`() {
+        val service = declareMock<HelloService> {
+            given(hello()).willReturn("Hello Mock")
+        }
+
         HelloApplication().sayHello()
 
-        Mockito.verify(service).hello()
+        Mockito.verify(service,times(1)).hello()
     }
 }
 ```
 
+## Verifying modules
 
-## What's next?
+We can use the Koin gradle plugin to let us run our module checks:
 
-* Check the [DSL quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-dsl/)
-* Check the [Core features quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/koin-core/)
-* Read the [full documentation]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html)
+```gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
+apply plugin: 'koin'
+```
+
+Let's write our check test as follow:
+- using a JUnit `CheckModuleTest` category
+- test modules with `checkModules { }` API
+
+```kotlin
+@Category(CheckModuleTest::class)
+class ModuleCheckTest : AutoCloseKoinTest() {
+
+    @Test
+    fun checkModules() = checkModules {
+        modules(helloModule)
+    }
+}
+```
+
+Let's check our modules via Gradle command:
+
+```
+./gradlew checkModules
+```
+
+or 
+
+```
+./gradlew checkModules --continuous
+```

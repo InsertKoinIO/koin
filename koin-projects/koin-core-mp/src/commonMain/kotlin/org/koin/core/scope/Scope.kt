@@ -49,9 +49,9 @@ internal class ScopeState(koin: Koin, scope: Scope) {
 }
 
 data class Scope(
-        val id: ScopeID,
-        val _scopeDefinition: ScopeDefinition,
-        val _koin: Koin
+    val id: ScopeID,
+    val _scopeDefinition: ScopeDefinition,
+    val _koin: Koin
 ) {
     init {
         ensureNeverFrozen()
@@ -195,11 +195,12 @@ data class Scope(
         parameters: ParametersDefinition? = null
     ): T {
         return if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("+- get '${clazz.getFullName()}' with qualifier '$qualifier'")
+            val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
+            _koin._logger.debug("+- '${clazz.getFullName()}'$qualifierString")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
-            _koin._logger.debug("+- got '${clazz.getFullName()}' in $duration ms")
+            _koin._logger.debug("|- '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)

@@ -83,11 +83,11 @@ class MyApplication extends Application {
     
      @Override
     public void onCreate() {
-        super.onCreate()
+        super.onCreate();
         // Start Koin
         KoinApplication koin = KoinAndroidApplication.create(this)
             .modules(appModule);
-        start(koin);
+        startKoin(new GlobalContext(), koin);
     }
 }
 ```

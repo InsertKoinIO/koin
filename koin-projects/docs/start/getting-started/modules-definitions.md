@@ -46,6 +46,16 @@ val myModule = module {
 }
 ```
 
+> This qualifier can be associated to a Enum class or directly to a type:
+
+```kotlin
+// Type qualifier
+single(named<MyClass>()) { MockDataRepository() }
+
+// Enum qualifier
+single(named<MyEnum.MyValue>()) { MockDataRepository() }
+```
+
 ## Additional types
 
 In the module DSL, for a definition, you can give some extra type to bind, with the `bind` operator (`binds` for list of KClass):
@@ -158,7 +168,7 @@ A quick recap of the Koin DSL keywords:
 * `factory { }` - provide a *factory* bean definition
 * `single { }` - provide a bean definition
 * `get()` - resolve a component dependency
-* `named()` - define a qualifier with type or string
+* `named()` - define a qualifier with type, enum or string
 * `bind` - additional Kotlin type binding for given bean definition
 * `binds` - list of additional Kotlin types binding for given bean definition
 * `getProperty()` - resolve a Koin property

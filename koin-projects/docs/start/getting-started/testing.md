@@ -36,21 +36,69 @@ class MyTest : KoinTest {
 }
 ```
 
-## Checking your modules
-
-You can check if your modules are good (all definitions are bounded) with the `checkModules` function on your `KoinApplication` instance:
+you can use the `KoinTestRule` JUnit rule to statr/stop  your Koin context:
 
 ```kotlin
 class MyTest : KoinTest {
-    
+
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        modules(appModule)
+    }
+
+    // Lazy inject property
     val componentA : ComponentA by inject()
 
+    // use it in your tests :)
     @Test
-    fun `checking modules`() {
-        // use koinApplication instead of startKoin, to avoid having to close Koin after each test
-        koinApplication { modules(appModule) }.checkModules()
+    fun `make a test with Koin`() {
+        // use componentA here!
     }
 }
+```
+
+## Checking your modules
+
+We can use the Koin gradle plugin to let us run our module checks:
+
+```gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
+apply plugin: 'koin'
+```
+
+Let's write our check test as follow:
+- using a JUnit `CheckModuleTest` category
+- test modules with `checkModules { }` API
+
+```kotlin
+@Category(CheckModuleTest::class)
+class ModuleCheckTest : AutoCloseKoinTest() {
+
+    @Test
+    fun checkModules() = checkModules {
+        modules(appModule)
+    }
+}
+```
+
+Let's check our modules via Gradle command:
+
+```
+./gradlew checkModules
+```
+
+or 
+
+```
+./gradlew checkModules --continuous
 ```
 
 ## Mocking on the fly
@@ -59,13 +107,22 @@ Once you have tagged your class with `KoinTest` interface, you can use the `decl
 
 ```kotlin
 class MyTest : KoinTest {
+    
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        modules(appModule)
+    }
+    
+    // required to make your Mock via Koin
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
 
     val componentA : ComponentA by inject()
 
     @Test
     fun `declareMock with KoinTest`() {
-        startKoin { modules(appModule) }
-
         declareMock<ComponentA> {
             // do your given behavior here
             given(this.sayHello()).willReturn("Hello mock")

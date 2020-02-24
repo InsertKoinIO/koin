@@ -1,9 +1,21 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
 apply plugin: 'kotlin'
+apply plugin: 'koin'
 
 archivesBaseName = 'example-coffee-maker'
 
 dependencies {
-    implementation project(":koin-core")
-    testImplementation project(":koin-test")
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    compile project(":koin-core-ext")
+    testCompile project(":koin-test")
+    testCompile "org.mockito:mockito-inline:$mockito_version"
 }

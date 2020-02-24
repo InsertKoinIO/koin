@@ -6,10 +6,7 @@ Here are the current versions of Koin:
 
 ```groovy
 // Current stable version
-koin_version= "2.0.1"
-
-// Latest unstable version
-koin_version= "2.1.0-beta-1"
+koin_version= "2.1.0"
 ```
 
 ### Gradle dependencies
@@ -38,6 +35,21 @@ implementation "org.koin:koin-core-ext:$koin_version"
 
 // Koin for Unit tests
 testImplementation "org.koin:koin-test:$koin_version"
+```
+
+#### **Gradle Plugin**
+
+```groovy
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
+apply plugin: 'koin'
 ```
 
 #### **Android**

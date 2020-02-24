@@ -1,31 +1,33 @@
 // Core
 include 'koin-core'
-//include 'koin-core-mp'
 include 'koin-test'
+
 // Core Sample
-include 'examples:coffee-maker'
+//include 'examples:coffee-maker'
 include 'examples:android-perfs'
-//// Core extended
+// Core extended
 include 'koin-core-ext'
-//
-//// Android
+// Gradle plugin
+include 'koin-gradle-plugin'
+
+// Android
 include 'koin-android'
 include 'koin-android-scope' ,'koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
 include 'koin-android-main-thread'
-//
-//// Android Ext
+
+// Android Ext
 include 'koin-android-ext'
 include 'koin-androidx-ext'
-//
-//// Android Samples
+
+// Android Samples
 //include 'examples:android-samples'
 //include 'examples:androidx-samples'
-//
-//// Ktor
+
+// Ktor
 include 'koin-logger-slf4j'
 include 'koin-ktor'
-//// Kto Sample
+// Kto Sample
 include 'examples:hello-ktor'
 
 enableFeaturePreview('GRADLE_METADATA')
