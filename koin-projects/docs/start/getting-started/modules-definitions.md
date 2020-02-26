@@ -1,5 +1,5 @@
 
-Writing definitions in Koin is done via Kotlin functions, that describe ishow is built your instance. Once you have configured your Koin application, let's write some modules and definitions.
+Writing definitions in Koin is done via Kotlin functions, that describe is how is built your instance. Once you have configured your Koin application, let's write some modules and definitions.
 
 ## Module & definitions
 
