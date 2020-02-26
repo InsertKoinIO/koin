@@ -3,6 +3,20 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [2.1.1]()
+
+### [alpha-1]()
+
+_AndroidX-ViewModel_
+
+* `[FIXED]` - shared ViewModel API to get instance from ViewModelStore ont Activity
+
+
+_Android-ViewModel_
+
+* `[FIXED]` - shared ViewModel API to get instance from ViewModelStore ont Activity
+
+
 ## [2.1.0]()
 
 _Core_

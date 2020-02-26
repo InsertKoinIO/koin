@@ -16,7 +16,10 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -52,7 +55,8 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): T {
-    return requireActivity().getViewModel(
+    return getKoin().getViewModel(
+        this.activity as FragmentActivity,
         clazz,
         qualifier,
         parameters
