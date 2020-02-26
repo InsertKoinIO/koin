@@ -31,10 +31,17 @@ Your Koin container can have several options:
 !> The `startKoin` can't be called more than once. If you need several point to load modules, use the `loadKoinModules` function.
 
 
-### Behind the start - KoinApplication & Koin instances
+### Behind the start - Koin instance under the hood
 
 When we start Koin, we create a `KoinApplication` instance that represents the Koin container configuration instance. Once launched, it will produce a `Koin` instance resulting of your modules and options.
-This `Koin` instance is then registered in the `GlobalContext`, to be used by any `KoinComponent` class.
+This `Koin` instance is then hold by the `GlobalContext`, to be used by any `KoinComponent` class.
+
+The `GlobalContext` is a default JVM context strategy for Koin. It's not accessible anymore directly, as we need a component to manage different kind of context: `KoinContextHandler`
+
+`KoinContextHandler` is responsible to register and give access to the underlying KoinContext. It's called by `startKoin` to register a new `GlobalContext`. This will allow us to register a different kind of context, in the perspective of Koin Multiplatform. `KoinContextHandler`  is then ready once `startKoin` has finished.
+
+
+
 
 ### Loading modules after startKoin
 
