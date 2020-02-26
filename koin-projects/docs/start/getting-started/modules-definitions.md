@@ -79,7 +79,7 @@ module {
 
 But here you won't be able to request an instance with `get<Simple.ComponentInterface1>()`. You will have to use `koin.bind<Component1,ComponentInterface1>()` to retrieve an instance of `ComponentInterface1`, with the `Component1` implementation.
 
-Note that you cal also look for all components binding a given type: `getAll<ComponentInterface1>()` will request all instances binding `ComponentInterface1` type.
+Note that you can also look for all components binding a given type: `getAll<ComponentInterface1>()` will request all instances binding `ComponentInterface1` type.
 
 
 ## Combining several modules
@@ -101,7 +101,7 @@ We just need to list them for Koin:
 
 ```kotlin
 startKoin {
-    modules(module1,module2)
+    modules(listOf(module1,module2))
 }
 ```
 
