@@ -16,9 +16,8 @@
 - [Koin for Java](getting-started/koin-for-java)
 - [Koin for Android](getting-started/koin-for-android)
 - [Koin for Ktor](getting-started/koin-for-ktor)
-- **Support & Resources**
-- [Changelog](_changelog)
 - **Links**
+- [Changelog](_https://github.com/InsertKoinIO/koin/blob/master/CHANGELOG.md)
 - [WebSite](https://insert-koin.io/)
 - [Reference Documentation](https://doc.insert-koin.io/)
 - [![Github](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github](https://github.com/InsertKoinIO/koin)
