@@ -5,6 +5,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.1.0]()
 
+_Core_
+
+* `[UPDATED]` - introduce the `KoinContextHandler` component that is responsible to manage `GlobalContext` from startKoin. This will allow us to unlock new kind of context for Koin MP & better isolation (not directly a object that we pass around). To get your Koin instance, now use `KoinContextHandler.get()`, once you have started it. `koinApplication { }` users have to register manually to `KoinContextHandler` if needed
+
+
 ### [beta-3]()
 
 * doc updates
