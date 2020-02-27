@@ -15,8 +15,8 @@
  */
 package org.koin.androidx.viewmodel.compat
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.ParametersDefinition
@@ -40,7 +40,7 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
-        owner: LifecycleOwner,
+        owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
@@ -58,10 +58,10 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getViewModel(
-            owner: LifecycleOwner,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        owner: ViewModelStoreOwner,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         return owner.getViewModel(clazz.kotlin, qualifier, parameters)
     }

@@ -16,7 +16,6 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.koin.getViewModel
@@ -56,7 +55,7 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
     parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(
-        this.activity as FragmentActivity,
+        requireActivity(),
         clazz,
         qualifier,
         parameters

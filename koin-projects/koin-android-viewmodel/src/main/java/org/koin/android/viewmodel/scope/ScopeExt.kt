@@ -15,11 +15,10 @@
  */
 package org.koin.android.viewmodel.scope
 
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelStoreOwner
 import org.koin.android.viewmodel.ViewModelParameter
 import org.koin.android.viewmodel.createViewModelProvider
-import org.koin.android.viewmodel.ext.android.getViewModelStore
 import org.koin.android.viewmodel.resolveInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -33,15 +32,15 @@ import kotlin.reflect.KClass
  */
 
 inline fun <reified T : ViewModel> Scope.viewModel(
-    owner: LifecycleOwner,
+    owner: ViewModelStoreOwner,
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, T::class, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel<T>(owner, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
-    owner: LifecycleOwner,
+    owner: ViewModelStoreOwner,
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
@@ -49,7 +48,7 @@ inline fun <reified T : ViewModel> Scope.getViewModel(
 }
 
 fun <T : ViewModel> Scope.getViewModel(
-    owner: LifecycleOwner,
+    owner: ViewModelStoreOwner,
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
@@ -59,7 +58,7 @@ fun <T : ViewModel> Scope.getViewModel(
             clazz,
             qualifier,
             parameters,
-            owner.getViewModelStore()
+            owner.viewModelStore
         )
     )
 }

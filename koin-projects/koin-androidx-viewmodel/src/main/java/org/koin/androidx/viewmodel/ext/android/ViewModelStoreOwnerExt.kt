@@ -13,59 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.scope
+package org.koin.androidx.viewmodel.ext.android
 
+import android.content.ComponentCallbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelParameter
-import org.koin.androidx.viewmodel.createViewModelProvider
-import org.koin.androidx.viewmodel.resolveInstance
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
- * Scope extensions to help for ViewModel
+ * LifecycleOwner extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
 
-inline fun <reified T : ViewModel> Scope.viewModel(
-    owner: ViewModelStoreOwner,
+fun <T : ViewModel> ViewModelStoreOwner.viewModel(
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, parameters) }
+}
+
+inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, T::class, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(T::class, qualifier, parameters) }
 }
 
-inline fun <reified T : ViewModel> Scope.getViewModel(
-    owner: ViewModelStoreOwner,
+inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(owner, T::class, qualifier, parameters)
+    return getViewModel(T::class, qualifier, parameters)
 }
 
-fun <T : ViewModel> Scope.getViewModel(
-    owner: ViewModelStoreOwner,
+fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(
-        ViewModelParameter(
-            clazz,
-            qualifier,
-            parameters,
-            null,
-            owner.viewModelStore,
-            null
-        )
-    )
+    return getKoin().getViewModel(this, clazz, qualifier, parameters)
 }
 
-fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-    val viewModelProvider = createViewModelProvider(viewModelParameters)
-    return viewModelProvider.resolveInstance(viewModelParameters)
-}
+private fun ViewModelStoreOwner.getKoin() = (this as ComponentCallbacks).getKoin()
