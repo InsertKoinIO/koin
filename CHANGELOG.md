@@ -9,12 +9,12 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 _AndroidX-ViewModel_
 
-* `[FIXED]` - shared ViewModel API to get instance from ViewModelStore ont Activity
+* `[FIXED]` - shared ViewModel API to get instance from Activity's ViewModelStore + clean of API to use directly ViewModelStoreOwner instead of LifecycleOwner
 
 
 _Android-ViewModel_
 
-* `[FIXED]` - shared ViewModel API to get instance from ViewModelStore ont Activity
+* `[FIXED]` - shared ViewModel API to get instance from Activity's ViewModelStore + clean of API to use directly ViewModelStoreOwner instead of LifecycleOwner
 
 
 ## [2.1.0]()
