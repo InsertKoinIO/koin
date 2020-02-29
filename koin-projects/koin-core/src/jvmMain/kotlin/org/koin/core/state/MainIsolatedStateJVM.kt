@@ -21,8 +21,15 @@ internal val jvmThreading:JvmThreading by lazy {
 }
 
 interface JvmThreading {
+    /**
+     * If thread-agnostic, this is always OK. If main thread, this verifies we're on the main thread.
+     */
     fun assertStateThread()
-    fun <R> mpsynchronized(lock: Any, block: () -> R): R
+
+    /**
+     * If thread-agnostic, call synchronized. If main thread, no synchronization needed.
+     */
+    fun <R> mainOrSynchronized(lock: Any, block: () -> R): R
 }
 
 internal class DefaultJvmThreading : JvmThreading{
@@ -30,7 +37,7 @@ internal class DefaultJvmThreading : JvmThreading{
         //Nothing
     }
 
-    override fun <R> mpsynchronized(lock: Any, block: () -> R): R = synchronized(lock) {
+    override fun <R> mainOrSynchronized(lock: Any, block: () -> R): R = synchronized(lock) {
         block()
     }
 }

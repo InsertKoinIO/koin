@@ -17,6 +17,4 @@ internal fun Throwable.printStackTrace() {
 
 internal expect fun Any.ensureNeverFrozen()
 
-internal expect fun <T> T.freeze(): T
-
 internal expect fun <R> mpsynchronized(lock: Any, block: () -> R): R

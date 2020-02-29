@@ -28,7 +28,7 @@ class ScopeSetDeclarationTest {
             )
         }.koin
 
-        val def: ScopeDefinition = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
+        val def: ScopeDefinition = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
         assertTrue(def.qualifier == scopeKey)
 
         val scope = koin.createScope("id", scopeKey)
@@ -49,10 +49,10 @@ class ScopeSetDeclarationTest {
                     }
             )
         }.koin
-        val defA = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("A") }
+        val defA = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("A") }
         assertTrue(defA.qualifier == StringQualifier("A"))
 
-        val defB = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("B") }
+        val defB = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == _q("B") }
         assertTrue(defB.qualifier == StringQualifier("B"))
 
         val scopeA = koin.createScope("A", named("A")).get<Simple.ComponentA>()
@@ -70,7 +70,7 @@ class ScopeSetDeclarationTest {
                     }
             )
         }.koin
-        val def = koin._koinState.value._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
+        val def = koin._scopeRegistry.scopeDefinitions.values.first { def -> def.qualifier == scopeKey }
         assertTrue(def.qualifier == scopeKey)
     }
 

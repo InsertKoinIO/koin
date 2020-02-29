@@ -5,7 +5,6 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.MESSAGE
 import org.koin.core.state.assertMainThread
 import kotlin.native.concurrent.ensureNeverFrozen
-import kotlin.native.concurrent.freeze
 import kotlin.reflect.KClass
 
 actual object PlatformTools {
@@ -26,7 +25,6 @@ actual object PlatformTools {
 
 internal actual fun Any.ensureNeverFrozen() = ensureNeverFrozen()
 
-internal actual fun <T> T.freeze(): T = this.freeze()
 internal actual fun <R> mpsynchronized(lock: Any, block: () -> R): R {
     assertMainThread()
     return block()

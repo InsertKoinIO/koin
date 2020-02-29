@@ -32,22 +32,6 @@ import org.koin.mp.ensureNeverFrozen
 import org.koin.mp.mpsynchronized
 import kotlin.reflect.KClass
 
-internal class ScopeState(koin: Koin, scope: Scope) {
-    internal val _linkedScope: MutableList<Scope>
-    internal val _instanceRegistry: InstanceRegistry
-    internal val _callbacks: MutableList<ScopeCallback>
-    internal var _closed: Boolean = false
-    init {
-        ensureNeverFrozen()
-        _linkedScope = arrayListOf()
-        _linkedScope.ensureNeverFrozen()
-        _instanceRegistry = InstanceRegistry(koin, scope)
-        _instanceRegistry.ensureNeverFrozen()
-        _callbacks = arrayListOf<ScopeCallback>()
-        _callbacks.ensureNeverFrozen()
-    }
-}
-
 data class Scope(
         val id: ScopeID,
         val _scopeDefinition: ScopeDefinition,
@@ -218,35 +202,35 @@ data class Scope(
         //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
-                ?: findInOtherScope<T>(clazz, qualifier, parameters)
-                ?: throwDefinitionNotFound(qualifier, clazz)
+            ?: findInOtherScope<T>(clazz, qualifier, parameters)
+            ?: throwDefinitionNotFound(qualifier, clazz)
     }
 
     private fun <T> findInOtherScope(
-            clazz: KClass<*>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?
     ): T? {
         return _linkedScope.firstOrNull { scope ->
             scope.getOrNull<T>(
-                    clazz,
-                    qualifier,
-                    parameters
-            ) != null
-        }?.get(
                 clazz,
                 qualifier,
                 parameters
+            ) != null
+        }?.get(
+            clazz,
+            qualifier,
+            parameters
         )
     }
 
     private fun throwDefinitionNotFound(
-            qualifier: Qualifier?,
-            clazz: KClass<*>
+        qualifier: Qualifier?,
+        clazz: KClass<*>
     ): Nothing {
         val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
         throw NoBeanDefFoundException(
-                "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
+            "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
     }
 
     internal fun createEagerInstances() {
@@ -266,10 +250,10 @@ data class Scope(
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
     fun <T : Any> declare(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ) = mpsynchronized(this) {
         val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
         _instanceRegistry.saveDefinition(definition, override = true)
@@ -327,13 +311,13 @@ data class Scope(
      * @return instance of type S
      */
     fun <S> bind(
-            primaryType: KClass<*>,
-            secondaryType: KClass<*>,
-            parameters: ParametersDefinition?
+        primaryType: KClass<*>,
+        secondaryType: KClass<*>,
+        parameters: ParametersDefinition?
     ): S {
         return _instanceRegistry.bind(primaryType, secondaryType, parameters)
-                ?: throw NoBeanDefFoundException(
-                        "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
+            ?: throw NoBeanDefFoundException(
+                "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
     }
 
     /**
@@ -390,6 +374,16 @@ data class Scope(
         scopeDefinition.definitions.forEach {
             _instanceRegistry.createDefinition(it)
         }
+    }
+}
+
+internal class ScopeState(koin: Koin, scope: Scope) {
+    internal val _linkedScope: MutableList<Scope> = arrayListOf()
+    internal val _instanceRegistry = InstanceRegistry(koin, scope)
+    internal val _callbacks: MutableList<ScopeCallback> = arrayListOf()
+    internal var _closed = false
+    init {
+        ensureNeverFrozen()
     }
 }
 

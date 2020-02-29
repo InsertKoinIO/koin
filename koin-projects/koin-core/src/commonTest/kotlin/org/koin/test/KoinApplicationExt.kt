@@ -9,11 +9,11 @@ import org.koin.core.state.value
 import kotlin.reflect.KClass
 
 fun KoinApplication.assertDefinitionsCount(count: Int) {
-    assertEquals( count, koin._koinState.value._scopeRegistry.size())
+    assertEquals( count, koin._scopeRegistry.size())
 }
 
 internal fun KoinApplication.getBeanDefinition(clazz: KClass<*>): BeanDefinition<*>? {
-    return koin._koinState.value._scopeRegistry.rootScope._scopeDefinition.definitions.firstOrNull { it.primaryType == clazz }
+    return koin._scopeRegistry.rootScope._scopeDefinition.definitions.firstOrNull { it.primaryType == clazz }
 }
 
 internal fun Scope.getBeanDefinition(clazz: KClass<*>): BeanDefinition<*>? {
@@ -21,7 +21,7 @@ internal fun Scope.getBeanDefinition(clazz: KClass<*>): BeanDefinition<*>? {
 }
 
 internal fun KoinApplication.getInstanceFactory(clazz: KClass<*>): InstanceFactory<*>? {
-    return koin._koinState.value._scopeRegistry.rootScope.scopeState.value._instanceRegistry.instances.values.firstOrNull { it.beanDefinition.primaryType == clazz }
+    return koin._scopeRegistry.rootScope.scopeState.value._instanceRegistry.instances.values.firstOrNull { it.beanDefinition.primaryType == clazz }
 }
 
 internal fun Scope.getInstanceFactory(clazz: KClass<*>): InstanceFactory<*>? {

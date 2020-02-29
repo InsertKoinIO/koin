@@ -6,18 +6,18 @@ import org.koin.core.definition.Options
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
-import org.koin.core.state.MainIsolatedState
-import org.koin.core.state.value
+import org.koin.mp.ensureNeverFrozen
 import kotlin.reflect.KClass
 
 /**
  * Imternal Scope Definition
  */
-class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, _def: HashSet<BeanDefinition<*>> = hashSetOf()) {
+class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
 
-    private val scopeDefState: MainIsolatedState<HashSet<BeanDefinition<*>>> = MainIsolatedState(_def)
-    private val _definitions: MutableSet<BeanDefinition<*>>
-        get() = scopeDefState.value
+    init {
+        ensureNeverFrozen()
+    }
+
     val definitions: Set<BeanDefinition<*>>
         get() = _definitions
 
@@ -27,8 +27,7 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, _de
                 _definitions.remove(beanDefinition)
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
-                throw DefinitionOverrideException(
-                    "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
+                throw DefinitionOverrideException("Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
             }
         }
         _definitions.add(beanDefinition)
@@ -41,29 +40,28 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, _de
     internal fun size() = definitions.size
 
     fun <T : Any> saveNewDefinition(
-        instance: T,
-        qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
-        override: Boolean = false
+            instance: T,
+            qualifier: Qualifier? = null,
+            secondaryTypes: List<KClass<*>>? = null,
+            override: Boolean = false
     ): BeanDefinition<out Any?> {
         val clazz = instance::class
         val found: BeanDefinition<*>? =
-            definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
+                definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {
             if (override) {
                 remove(found)
             } else {
-                throw DefinitionOverrideException(
-                    "Trying to override existing definition '$found' with new definition typed '$clazz'")
+                throw DefinitionOverrideException("Trying to override existing definition '$found' with new definition typed '$clazz'")
             }
         }
         val beanDefinition = Definitions.createSingle(
-            clazz,
-            qualifier,
-            { instance },
-            this,
-            Options(isCreatedAtStart = false, override = override),
-            secondaryTypes ?: emptyList()
+                clazz,
+                qualifier,
+                { instance },
+                this,
+                Options(isCreatedAtStart = false, override = override),
+                secondaryTypes ?: emptyList()
         )
         save(beanDefinition, override)
         return beanDefinition
@@ -77,8 +75,7 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, _de
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-
-        other as ScopeDefinition
+        if (other !is ScopeDefinition) return false
 
         if (qualifier != other.qualifier) return false
         if (isRoot != other.isRoot) return false

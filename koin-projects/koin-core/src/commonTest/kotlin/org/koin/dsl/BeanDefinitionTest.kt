@@ -17,7 +17,7 @@ import kotlin.test.assertTrue
 class BeanDefinitionTest {
 
     val koin = koinApplication { }.koin
-    val rootScope = koin._koinState.value._scopeRegistry.rootScope
+    val rootScope = koin._scopeRegistry.rootScope
 
     @Test
     fun `equals definitions`() {

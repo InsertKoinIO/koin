@@ -8,7 +8,7 @@ class MainJvmThreading : JvmThreading{
             throw IllegalStateException("Must be main thread")
     }
 
-    override fun <R> mpsynchronized(lock: Any, block: () -> R): R {
+    override fun <R> mainOrSynchronized(lock: Any, block: () -> R): R {
         assertStateThread()
         return block()
     }
