@@ -18,5 +18,5 @@ Need help about using Koin? You can ask the Koin community for any help:
 
 ## Contact the team 
 
- Want to talk about Koin projects? Plan an event? Need a speaker, a presentation? Just ask the <a href="mailto:{{ site.mail }}">Koin Team</a>.
+ Want to talk about Koin projects? Plan an event? Need a speaker, a presentation? Just ask the <a href="mailto:contact@insert-koin.io">Koin Team</a>.
 
