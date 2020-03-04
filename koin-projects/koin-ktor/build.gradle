@@ -10,11 +10,11 @@ repositories {
 }
 
 dependencies {
-    api project(':koin-core-ext')
-    testCompile project(":koin-test")
+    compile project(':koin-core-ext')
+    testImplementation project(":koin-test")
 
     // Ktor
-    api "io.ktor:ktor-server-core:$ktor_version"
+    compile "io.ktor:ktor-server-core:$ktor_version"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }
 
