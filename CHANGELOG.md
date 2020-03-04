@@ -3,6 +3,13 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [2.1.2]()
+
+_Core_
+
+* `[FIXED]` - fixed integration for kotlin.time.* API with 1.3.70
+
+
 ## [2.1.1]()
 
 ### [alpha-1]()
