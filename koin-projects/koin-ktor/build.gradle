@@ -10,12 +10,12 @@ repositories {
 }
 
 dependencies {
-    compile project(':koin-core-ext')
+    api project(':koin-core-ext')
     testCompile project(":koin-test")
 
     // Ktor
-    compile "io.ktor:ktor-server-core:$ktor_version"
-    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
+    api "io.ktor:ktor-server-core:$ktor_version"
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }
 
 apply from: '../gradle/publish.gradle'

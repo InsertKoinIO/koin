@@ -12,7 +12,7 @@ buildscript {
         // Bintray
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
         // Dokka
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
         classpath "digital.wup:android-maven-publish:$android_maven_publish"
@@ -34,7 +34,6 @@ allprojects {
     dokka {
         outputFormat = 'html'
         outputDirectory = "$buildDir/javadoc"
-        reportUndocumented = true
     }
     task dokkaJar(type: Jar) {
         classifier = 'javadoc'

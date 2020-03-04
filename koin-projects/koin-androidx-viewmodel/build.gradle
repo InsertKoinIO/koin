@@ -19,14 +19,14 @@ android {
 
 dependencies {
     // Koin
-    compile project(":koin-androidx-scope")
+    api project(":koin-androidx-scope")
 
     // Test
-    testCompile project(":koin-test")
-    testCompile "org.mockito:mockito-inline:$mockito_version"
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
     // Architecture ViewModel
-    compile("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
+    api("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"
@@ -34,7 +34,7 @@ dependencies {
         exclude group: "androidx.legacy"
     }
 
-    compile("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
+    api("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"

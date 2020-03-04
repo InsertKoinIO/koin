@@ -18,14 +18,14 @@ android {
 }
 
 dependencies {
-    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
-    compile "androidx.appcompat:appcompat:$androidx_lib_version"
-    compile("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
+    api project(":koin-android") //"org.koin:koin-android:$koin_version"
+    api "androidx.appcompat:appcompat:$androidx_lib_version"
+    api("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
         exclude group: "core-runtime"
     }
 
-    testCompile project(":koin-test")
-    testCompile "org.mockito:mockito-inline:$mockito_version"
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
 }
 
