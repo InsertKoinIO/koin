@@ -18,9 +18,9 @@ android {
 }
 
 dependencies {
-    api project(":koin-android") //"org.koin:koin-android:$koin_version"
-    api "androidx.appcompat:appcompat:$androidx_lib_version"
-    api("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
+    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
+    compile "androidx.appcompat:appcompat:$androidx_lib_version"
+    compile("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
         exclude group: "core-runtime"
     }
 

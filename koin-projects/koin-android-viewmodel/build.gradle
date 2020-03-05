@@ -20,17 +20,17 @@ android {
 dependencies {
     // Koin
 //    compile project(":koin-core-ext")
-    api project(":koin-android-scope")
+    compile project(":koin-android-scope")
+    // Architecture ViewModel
+    compile("android.arch.lifecycle:extensions:$android_arch_version") {
+        exclude module: "livedata"
+        exclude module: "runtime"
+    }
 
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
-    // Architecture ViewModel
-    api("android.arch.lifecycle:extensions:$android_arch_version") {
-        exclude module: "livedata"
-        exclude module: "runtime"
-    }
 }
 
 apply from: '../gradle/publish-android.gradle'

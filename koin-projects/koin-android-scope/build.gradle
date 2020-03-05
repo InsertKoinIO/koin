@@ -18,10 +18,10 @@ android {
 }
 
 dependencies {
-    api "com.android.support:appcompat-v7:$support_lib_version"
-    api("android.arch.lifecycle:common:$android_arch_version")
+    compile "com.android.support:appcompat-v7:$support_lib_version"
+    compile("android.arch.lifecycle:common:$android_arch_version")
     // Koin
-    api project(":koin-android") //"org.koin:koin-android:$koin_version"
+    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
 
     // Test
     testImplementation project(":koin-test")
