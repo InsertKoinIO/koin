@@ -2,8 +2,13 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.1.3]()
+
+* `[FIXED]` - maven metadata config :(
 
 ## [2.1.2]()
+
+* `[UPDATED]` - maven metadata config
 
 _Core_
 
