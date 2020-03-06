@@ -1,6 +1,5 @@
 - [Intro](introduction)
 - [Setup](setup/index)
-- [Upgrade from 1.0.x](setup/upgrade)
 - **Koin in 5 minutes**
 - [Kotlin](quickstart/kotlin)
 - [Android](quickstart/android)
