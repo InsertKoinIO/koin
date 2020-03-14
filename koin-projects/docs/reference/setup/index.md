@@ -6,7 +6,7 @@ Here are the current versions of Koin:
 
 ```groovy
 // Current stable version
-koin_version= "2.1.3"
+koin_version= "2.1.4"
 ```
 
 ### Gradle dependencies

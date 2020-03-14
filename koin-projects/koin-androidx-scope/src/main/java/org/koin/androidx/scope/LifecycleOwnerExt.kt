@@ -39,7 +39,7 @@ private fun LifecycleOwner.getOrCreateAndroidScope(): Scope {
 }
 
 private fun LifecycleOwner.createAndBindAndroidScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier)
+    val scope = getKoin().createScope(scopeId, qualifier, this)
     bindScope(scope)
     return scope
 }
@@ -59,10 +59,10 @@ fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Ev
 val LifecycleOwner.lifecycleScope: Scope
     get() = getOrCreateAndroidScope()
 
-@Deprecated("Use lifecycleScope instead",replaceWith = ReplaceWith("lifecycleScope"),level = DeprecationLevel.ERROR)
+@Deprecated("Use lifecycleScope instead", replaceWith = ReplaceWith("lifecycleScope"), level = DeprecationLevel.ERROR)
 val LifecycleOwner.scope: Scope
     get() = error("Don't use scope on a lifecycle component. Use lifecycleScope instead")
 
-@Deprecated("Use lifecycleScope instead",replaceWith = ReplaceWith("lifecycleScope"))
+@Deprecated("Use lifecycleScope instead", replaceWith = ReplaceWith("lifecycleScope"))
 val LifecycleOwner.currentScope: Scope
     get() = getOrCreateAndroidScope()

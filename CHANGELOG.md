@@ -2,6 +2,10 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.1.4]()
+
+* `[ADDED]` - Scope's source value to return the object instance, source of the scope 
+
 ## [2.1.3]()
 
 * `[FIXED]` - maven metadata config :(

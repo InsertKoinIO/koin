@@ -90,7 +90,7 @@ class ScopeRegistry(private val _koin: Koin) {
 
     private fun mergeDefinitions(definition: ScopeDefinition) {
         val existing = scopeDefinitions[definition.qualifier.value]
-                ?: error("Scope definition '$definition' not found in $_scopeDefinitions")
+            ?: error("Scope definition '$definition' not found in $_scopeDefinitions")
         definition.definitions.forEach {
             existing.save(it)
         }
@@ -99,14 +99,14 @@ class ScopeRegistry(private val _koin: Koin) {
     internal fun createRootScopeDefinition() {
         val scopeDefinition = ScopeDefinition.rootDefinition()
         _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
-                scopeDefinition
+            scopeDefinition
         _rootScopeDefinition = scopeDefinition
     }
 
     internal fun createRootScope() {
         if (_rootScope == null) {
             _rootScope =
-                    createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+                createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER, null)
         }
     }
 
@@ -114,14 +114,14 @@ class ScopeRegistry(private val _koin: Koin) {
         return scopes[scopeId]
     }
 
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
         if (scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
 
         val scopeDefinition = scopeDefinitions[qualifier.value]
         return if (scopeDefinition != null) {
-            val createdScope: Scope = createScope(scopeId, scopeDefinition)
+            val createdScope: Scope = createScope(scopeId, scopeDefinition, source)
             _scopes[scopeId] = createdScope
             createdScope
         } else {
@@ -129,8 +129,8 @@ class ScopeRegistry(private val _koin: Koin) {
         }
     }
 
-    private fun createScope(scopeId: ScopeID, scopeDefinition: ScopeDefinition): Scope {
-        val scope = Scope(scopeId, scopeDefinition, _koin)
+    private fun createScope(scopeId: ScopeID, scopeDefinition: ScopeDefinition, source: Any?): Scope {
+        val scope = Scope(scopeId, scopeDefinition, _koin, source)
         val links = _rootScope?.let { listOf(it) } ?: emptyList()
         scope.create(links)
         return scope

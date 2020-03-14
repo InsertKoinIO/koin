@@ -39,6 +39,7 @@ class AndroidLogger(level: Level = Level.INFO) : Logger(level) {
             Level.DEBUG -> Log.d(KOIN_TAG, msg)
             Level.INFO -> Log.i(KOIN_TAG, msg)
             Level.ERROR -> Log.e(KOIN_TAG, msg)
+            else -> Log.e(KOIN_TAG, msg)
         }
     }
 }

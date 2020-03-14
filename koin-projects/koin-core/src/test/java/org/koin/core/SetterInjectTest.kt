@@ -11,6 +11,9 @@ class B
 class C
 class D
 
+class BofA(val a: A)
+class CofB(val b: BofA)
+
 class A {
     lateinit var b: B
     lateinit var c: C

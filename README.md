@@ -51,7 +51,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
-koin_version = '2.1.3'
+koin_version = '2.1.4'
 ```
 
 ## Gradle 

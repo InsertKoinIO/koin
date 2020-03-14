@@ -21,6 +21,7 @@ import org.koin.sample.android.components.mvp.ScopedPresenter
 import org.koin.sample.android.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.android.components.mvvm.SimpleViewModel
 import org.koin.sample.android.components.scope.Session
+import org.koin.sample.android.components.scope.SessionActivity
 import org.koin.sample.android.mvp.MVPActivity
 import org.koin.sample.android.mvvm.MVVMActivity
 import org.koin.sample.android.scope.ScopedActivityA
@@ -65,6 +66,7 @@ val scopeModule = module {
     }
     scope<ScopedActivityA> {
         scoped { Session() }
+        scoped { SessionActivity(get()) }
     }
 }
 

@@ -115,6 +115,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     internal fun <S> bind(
             primaryType: KClass<*>,
             secondaryType: KClass<*>,

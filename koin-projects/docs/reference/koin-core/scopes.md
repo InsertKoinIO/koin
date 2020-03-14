@@ -185,6 +185,37 @@ session.close()
 
 !> Beware that you can't inject instances anymore from a closed scope.
 
+### Getting scope's source value [2.1.4]
+
+Koin Scope API in 2.1.4 allow you to pass the original source of a scope, in a definition. Let's take an example below.
+Let's have a singleton instance `A`:
+
+```kotlin
+class A
+class BofA(val a : A)
+
+module {
+    single { A() }
+    scope<A> {
+        scoped { BofA(getSource() /* or even get() */) }
+
+    }
+}
+```
+
+By creating A's scope, we can forward the reference of the scope's source (A instance), to underlying definitions of the scope: `scoped { BofA(getSource()) }` or even `scoped { BofA(get()) }`
+
+This in order to avoid cascading parameter injection, and just retrieve our source value directly in scoped definition.
+
+```kotlin
+val a = koin.get<A>()
+val b = a.scope.get<BofA>()
+assertTrue(b.a == a)
+```
+
+> Difference between `getSource()` and `get()`: getSource will directly get the source value. Get will try to resolve any definition, and fallback to source
+value if possible. `getSource()` is then more efficient in terms of performances.
+
 ### Scope callback -- TODO
 
 

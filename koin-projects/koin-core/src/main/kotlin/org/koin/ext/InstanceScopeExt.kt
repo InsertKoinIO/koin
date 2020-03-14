@@ -18,7 +18,7 @@ fun <T : Any> T.getOrCreateScope(): Scope {
 
 fun <T : Any> T.getOrCreateScope(koin: Koin): Scope {
     val scopeId = getScopeId()
-    return koin.getScopeOrNull(scopeId) ?: koin.createScope(scopeId, getScopeName())
+    return koin.getScopeOrNull(scopeId) ?: koin.createScope(scopeId, getScopeName(), this)
 }
 
 private fun <T : Any> T.getScopeOrNull(koin: Koin = KoinContextHandler.get()): Scope? {
@@ -27,9 +27,9 @@ private fun <T : Any> T.getScopeOrNull(koin: Koin = KoinContextHandler.get()): S
 }
 
 private fun <T : Any> T.createScope(): Scope {
-    return KoinContextHandler.get().createScope(getScopeId(), getScopeName())
+    return KoinContextHandler.get().createScope(getScopeId(), getScopeName(), this)
 }
 
 private fun <T : Any> T.createScope(koin: Koin): Scope {
-    return koin.createScope(getScopeId(), getScopeName())
+    return koin.createScope(getScopeId(), getScopeName(), this)
 }

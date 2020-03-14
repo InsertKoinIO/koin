@@ -13,16 +13,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.koin.core.context.ContextFunctionsKt.startKoin;
 import static org.koin.core.context.ContextFunctionsKt.stopKoin;
 import static org.koin.core.qualifier.QualifierKt.named;
-import static org.koin.java.KoinJavaComponent.*;
+import static org.koin.java.KoinJavaComponent.get;
+import static org.koin.java.KoinJavaComponent.getKoin;
+import static org.koin.java.KoinJavaComponent.inject;
 import static org.koin.java.UnitJavaStuffKt.koinModule;
 
 public class UnitJavaTest extends KoinCoreTest {
 
     @Before
     public void before() {
-        KoinApplication koinApp = KoinApplication.init()
-                .printLogger()
-                .modules(koinModule);
+        KoinApplication koinApp = KoinApplication.init().printLogger().modules(koinModule);
 
         startKoin(new GlobalContext(), koinApp);
     }
@@ -53,7 +53,7 @@ public class UnitJavaTest extends KoinCoreTest {
         assertEquals(lazy_a.getValue(), lazy_b.getValue().getComponentA());
         assertEquals(lazy_a.getValue(), lazy_c.getValue().getA());
 
-        Scope session = getKoin().createScope("mySession", named("Session"));
+        Scope session = getKoin().createScope("mySession", named("Session"), null);
 
         assertNotNull(session.get(ComponentD.class));
 
