@@ -24,8 +24,10 @@ class MainActivity : AppCompatActivity() {
                     runPerf(i)
                 }.await()
             }
-            val avg = launchs.map { it.second }.sum() / launchs.size
-            println("Avg execution time: $avg")
+            val avgStart = launchs.map { it.first }.sum() / launchs.size
+            val avgExec = launchs.map { it.second }.sum() / launchs.size
+            println("Avg start time: $avgStart")
+            println("Avg execution time: $avgExec")
         }
 
         setContentView(R.layout.main_activity)

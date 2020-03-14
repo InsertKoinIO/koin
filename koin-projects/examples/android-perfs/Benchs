@@ -22,6 +22,8 @@
 [9] measured executed in 0.550208 ms
 [10] started in 3.615312 ms
 [10] measured executed in 0.520886 ms
+
+Avg start time: 38,12
 Avg execution time: 0.9961667999999999
 
 -- Nokia 7p (Android 9) - 2.1.0-alpha-8
@@ -45,7 +47,9 @@ Avg execution time: 0.9961667999999999
 [9] measured executed in 0.093229 ms
 [10] started in 3.342761 ms
 [10] measured executed in 0.092865 ms
-Avg execution time: 0.21145320000000006
+
+Avg start time: 17.6362447
+Avg execution time: 0.2195417
 
 - Honor 5x (Android 6) - 2.0.1
 --
@@ -95,6 +99,7 @@ Avg execution time: 1.6750156999999999
 [10] measured executed in 0.080781 ms
 Avg execution time: 0.18504150000000003
 
+
 - LG G4 (Android 6) - 2.0.1
 --
 [1] started in 579.978125 ms
@@ -117,6 +122,8 @@ Avg execution time: 0.18504150000000003
 [9] measured executed in 0.84 ms
 [10] started in 31.146667 ms
 [10] measured executed in 0.9625 ms
+
+Avg start time: 86,85
 Avg execution time: 1.4705
 
 - LG G4 (Android 6) - 2.1.0-alpha-8
@@ -141,4 +148,6 @@ Avg execution time: 1.4705
 [9] measured executed in 0.06323 ms
 [10] started in 9.270625 ms
 [10] measured executed in 0.067083 ms
-Avg execution time: 0.16874479999999997
+
+Avg start time: 24.819687599999998
+Avg execution time: 0.19780730000000002
