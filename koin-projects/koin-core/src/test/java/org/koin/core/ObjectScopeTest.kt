@@ -247,10 +247,9 @@ class ObjectScopeTest {
         }.koin
 
         val a = koin.get<A>()
-        val b1 = a.scope.get<B>()
-        a.scope.linkTo(b1.scope)
-        val c1 = a.scope.get<C>()
-        assertNotNull(c1)
+        val b = a.scope.get<B>()
+        a.scope.linkTo(b.scope)
+        assertTrue(a.scope.get<C>() == b.scope.get<C>())
         stopKoin()
     }
 

@@ -185,6 +185,7 @@ session.close()
 
 !> Beware that you can't inject instances anymore from a closed scope.
 
+
 ### Getting scope's source value [2.1.4]
 
 Koin Scope API in 2.1.4 allow you to pass the original source of a scope, in a definition. Let's take an example below.
@@ -215,6 +216,36 @@ assertTrue(b.a == a)
 
 > Difference between `getSource()` and `get()`: getSource will directly get the source value. Get will try to resolve any definition, and fallback to source
 value if possible. `getSource()` is then more efficient in terms of performances.
+
+
+### Scope Linking [2.1.0]
+
+Koin Scope API in 2.1 allow you to link a scope to another, and then allow to resolve joined definition space. Let's take an example.
+Here we are defining, 2 scopes spaces: a scope for A and a scope for B. In A's scope, we don't have access to C (defined in B's scope).
+
+```kotlin
+module {
+    single { A() }
+    scope<A> {
+        scoped { B() }
+    }
+    scope<B> {
+        scoped { C() }
+    }
+}
+```
+
+With scope linking API, we can allow to resolve B's scope instance C, directly from A'scope. For this we use `linkTo()` on scope instance:
+
+```kotlin
+val a = koin.get<A>()
+// let's get B from A's scope
+val b = a.scope.get<B>()
+// let's link A' scope to B's scope
+a.scope.linkTo(b.scope)
+// we got the same C instance from A or B scope
+assertTrue(a.scope.get<C>() == b.scope.get<C>())
+```
 
 ### Scope callback -- TODO
 
