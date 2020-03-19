@@ -80,7 +80,7 @@ If you want to use the Koin Activity's Scope, you have to declare your fragment 
 ```kotlin
 val appModule = module {
     scope<MyActivity> {
-        scoped { MyFragment(get()) }
+        fragment { MyFragment(get()) }
     }
 }
 ```

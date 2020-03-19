@@ -27,7 +27,7 @@ class MVVMActivity : AppCompatActivity() {
 
     val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) {
         parametersOf(
-                ID
+            ID
         )
     }
 
@@ -42,8 +42,7 @@ class MVVMActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // if not in scope
-        //setupKoinFragmentFactory()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory()
 
         super.onCreate(savedInstanceState)
 
@@ -65,8 +64,8 @@ class MVVMActivity : AppCompatActivity() {
         assertNotEquals(savedVm.id, scopedSavedVm.id)
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
-                .commit()
+            .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
+            .commit()
 
         getKoin().setProperty("session", lifecycleScope.get<Session>())
 
