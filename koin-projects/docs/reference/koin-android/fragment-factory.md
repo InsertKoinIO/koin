@@ -17,9 +17,6 @@ At start, in your KoinApplication declaration, use the `fragmentFactory()` keywo
 
 ```kotlin
  startKoin {
-    androidLogger(Level.DEBUG)
-    androidContext(this@MainApplication)
-    androidFileProperties()
     // setup a KoinFragmentFactory instance
     fragmentFactory()
 
@@ -85,14 +82,14 @@ val appModule = module {
 }
 ```
 
-and setup your Koin Fragment Factory with your scope: `setupKoinFragmentFactory(currentScope)`
+and setup your Koin Fragment Factory with your scope: `setupKoinFragmentFactory(lifecycleScope)`
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Koin Fragment Factory
-        setupKoinFragmentFactory(currentScope)
+        setupKoinFragmentFactory(lifecycleScope)
 
         super.onCreate(savedInstanceState)
         //...
