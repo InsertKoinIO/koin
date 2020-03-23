@@ -122,13 +122,14 @@ class Koin {
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    fun <T : Any> declare(
+    inline fun <reified T : Any> declare(
         instance: T,
         qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
+        secondaryTypes: List<KClass<*>> = emptyList(),
         override: Boolean = false
     ) {
-        _scopeRegistry.rootScope.declare(instance, qualifier, secondaryTypes, override)
+        val firstType = listOf(T::class)
+        _scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, override)
     }
 
     /**
