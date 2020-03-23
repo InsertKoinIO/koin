@@ -10,6 +10,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.core.context.GlobalContext
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import org.koin.experimental.builder.create
@@ -36,7 +37,7 @@ class KoinFeatureTest {
             application.install(Koin) {
                 modules(module)
             }
-            val bean = GlobalContext.get().get<Foo>()
+            val bean = KoinContextHandler.get().get<Foo>()
             assertNotNull(bean)
         }
     }
@@ -44,12 +45,12 @@ class KoinFeatureTest {
     @Test
     fun `Koin does not contain modules`() {
         withApplication {
-            assertNull(GlobalContext.getOrNull())
+            assertNull(KoinContextHandler.getOrNull())
             assertNull(application.featureOrNull(Koin))
 
             application.install(Koin)
             assertNotNull(application.featureOrNull(Koin))
-            val koin = GlobalContext.getOrNull()
+            val koin = KoinContextHandler.getOrNull()
             assertNotNull(koin)
             requireNotNull(koin)
 
@@ -77,7 +78,7 @@ class KoinFeatureTest {
     @Test
     fun `Using the koin extension`() {
         withApplication {
-            assertNull(GlobalContext.getOrNull())
+            assertNull(KoinContextHandler.getOrNull())
             assertNull(application.featureOrNull(Koin))
 
             application.koin {
@@ -92,7 +93,7 @@ class KoinFeatureTest {
     @Test
     fun `Using the koinModules extension`() {
         withApplication {
-            assertNull(GlobalContext.getOrNull())
+            assertNull(KoinContextHandler.getOrNull())
             assertNull(application.featureOrNull(Koin))
 
             application.modules(
@@ -111,11 +112,11 @@ class KoinFeatureTest {
     @Test
     fun `Using the koin extension (with pre-installation of the module)`() {
         withApplication {
-            assertNull(GlobalContext.getOrNull())
+            assertNull(KoinContextHandler.getOrNull())
             assertNull(application.featureOrNull(Koin))
 
             application.install(Koin)
-            assertNotNull(GlobalContext.getOrNull())
+            assertNotNull(KoinContextHandler.getOrNull())
             assertNotNull(application.featureOrNull(Koin))
             assertNull(application.getKoin().getOrNull<Foo>())
 
@@ -189,7 +190,7 @@ class KoinFeatureTest {
             application.install(Koin) {
                 modules(module)
             }
-            val bean = GlobalContext.get().get<Foo>()
+            val bean = KoinContextHandler.get().get<Foo>()
             assertNotNull(bean)
             assertEquals(0, c)
         }
@@ -206,7 +207,7 @@ class KoinFeatureTest {
                     c += 4
                 }
             }
-            val bean = GlobalContext.get().get<Foo>()
+            val bean = KoinContextHandler.get().get<Foo>()
             assertNotNull(bean)
             assertEquals(0, c)
         }
