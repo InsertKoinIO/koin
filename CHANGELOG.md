@@ -8,11 +8,16 @@ _Core_
 
 * `[FIXED]` - declare to use reified type
 * `[FIXED]` - Qualifier type as pure string
+* `[FIXED]` - docs contribution
+
 
 _Ktor_
 
 * `[ADDED]` - Contributions about modules and events
 
+_AndroidX-Fragment_
+
+* `[FIXED]` - contribution to help fallback on empty constructor instance for FragmentFactory
 
 ## [2.1.4]()
 
