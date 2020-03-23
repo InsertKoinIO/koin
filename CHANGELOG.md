@@ -2,7 +2,21 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.1.5]()
+
+_Core_
+
+* `[FIXED]` - declare to use reified type
+* `[FIXED]` - Qualifier type as pure string
+
+_Ktor_
+
+* `[ADDED]` - Contributions about modules and events
+
+
 ## [2.1.4]()
+
+_Core_
 
 * `[ADDED]` - Scope's source value to return the object instance, source of the scope 
 
