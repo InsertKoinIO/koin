@@ -11,9 +11,13 @@ import org.koin.core.scope.Scope
 class KoinFragmentFactory(val scope: Scope? = null) : FragmentFactory(), KoinComponent {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
-        val javaClass = Class.forName(className)
-        return scope?.let { it.get<Fragment>(javaClass) }
-            ?: getKoin().get(javaClass.kotlin)
+        val clazz = Class.forName(className).kotlin
+        val instance = if (scope != null) {
+            scope.getOrNull<Fragment>(clazz)
+        }else{
+            getKoin().getOrNull<Fragment>(clazz)
+        }
+        return instance ?: super.instantiate(classLoader, className)
     }
 
 }

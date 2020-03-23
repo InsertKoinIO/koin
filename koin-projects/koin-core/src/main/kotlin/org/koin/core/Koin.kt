@@ -112,6 +112,21 @@ class Koin {
         parameters: ParametersDefinition? = null
     ): T = _scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
+    /**
+     * Get a Koin instance if available
+     * @param clazz
+     * @param qualifier
+     * @param scope
+     * @param parameters
+     *
+     * @return instance of type T or null
+     */
+    fun <T> getOrNull(
+            clazz: KClass<*>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
+    ): T? = _scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
+
 
     /**
      * Declare a component definition from the given instance
