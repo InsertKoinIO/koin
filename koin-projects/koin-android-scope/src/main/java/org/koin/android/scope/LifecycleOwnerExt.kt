@@ -39,7 +39,7 @@ private fun LifecycleOwner.getOrCreateAndroidScope(): Scope {
 }
 
 private fun LifecycleOwner.createAndBindAndroidScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier)
+    val scope = getKoin().createScope(scopeId, qualifier, this)
     bindScope(scope)
     return scope
 }

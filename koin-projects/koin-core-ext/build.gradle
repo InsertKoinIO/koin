@@ -1,3 +1,4 @@
+apply from: "../gradle/versions.gradle"
 apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-core-ext'
@@ -6,8 +7,10 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Koin
     compile project(":koin-core")
+
+    // Kt
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    testCompile project(":koin-test")
+    testImplementation project(":koin-test")
 }
 
 apply from: '../gradle/publish.gradle'

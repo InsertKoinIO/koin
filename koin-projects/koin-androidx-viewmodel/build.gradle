@@ -22,8 +22,8 @@ dependencies {
     compile project(":koin-androidx-scope")
 
     // Test
-    testCompile project(":koin-test")
-    testCompile "org.mockito:mockito-inline:$mockito_version"
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
     // Architecture ViewModel
     compile("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {

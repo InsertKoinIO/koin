@@ -18,30 +18,61 @@ package org.koin.ktor.ext
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
 import io.ktor.application.ApplicationStopping
+import io.ktor.application.featureOrNull
+import io.ktor.application.install
 import io.ktor.util.AttributeKey
+import io.ktor.util.pipeline.ContextDsl
 import org.koin.core.KoinApplication
-import org.koin.core.context.KoinContextHandler
+import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
 /**
+ * @author Arnaud Giuliani
  * @author Vinicius Carvalho
+ * @author Victor Alenkov
  *
  * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
  *
  */
-class Koin {
+class Koin(internal val koinApplication: KoinApplication) {
 
     companion object Feature : ApplicationFeature<Application, KoinApplication, Koin> {
-        override val key: AttributeKey<Koin>
-            get() = AttributeKey("Koin")
+        override val key = AttributeKey<Koin>("Koin")
 
         override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
-            startKoin(appDeclaration = configure)
-            pipeline.environment.monitor.subscribe(ApplicationStopping) {
-                KoinContextHandler.stop()
+            val monitor = pipeline.environment.monitor
+
+            val koinApplication = startKoin(appDeclaration = configure)
+            monitor.raise(KoinApplicationStarted, koinApplication)
+
+            monitor.subscribe(ApplicationStopping) {
+                monitor.raise(KoinApplicationStopPreparing, koinApplication)
+                stopKoin()
+                monitor.raise(KoinApplicationStopped, koinApplication)
             }
-            return Koin()
+
+            return Koin(koinApplication)
         }
     }
 }
+
+/**
+ * @author Victor Alenkov
+ *
+ * Gets or installs a [Koin] feature for the this [Application] and runs a [configuration] script on it
+ */
+@ContextDsl
+fun Application.koin(configuration: KoinAppDeclaration) = featureOrNull(Koin)?.apply {
+    koinApplication.apply(configuration).createEagerInstances()
+} ?: install(Koin, configuration)
+
+/**
+ * @author Victor Alenkov
+ *
+ * Gets or installs a [Koin] feature for the this [Application] and install a [block] modules on it
+ */
+@ContextDsl
+fun Application.modules(vararg block: Module) = koin { modules(block.asList()) }

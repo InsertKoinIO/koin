@@ -32,15 +32,16 @@ class SLF4JLogger(level: Level = Level.INFO) : Logger(level) {
 
     override fun log(level: Level, msg: MESSAGE) {
         if (this.level <= level) {
-            LogOnLevel(msg)
+            logOnLevel(msg)
         }
     }
 
-    private fun LogOnLevel(msg: MESSAGE) {
+    private fun logOnLevel(msg: MESSAGE) {
         when (this.level) {
             Level.DEBUG -> logger.debug(msg)
             Level.INFO -> logger.info(msg)
             Level.ERROR -> logger.error(msg)
+            else -> logger.error(msg)
         }
     }
 }

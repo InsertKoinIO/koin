@@ -17,9 +17,10 @@ package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.androidx.viewmodel.ViewModelParameter
-import org.koin.androidx.viewmodel.ext.android.getViewModelStore
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -32,59 +33,56 @@ import kotlin.reflect.KClass
  */
 
 inline fun <reified T : ViewModel> Scope.getStateViewModel(
-        owner: SavedStateRegistryOwner,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        noinline parameters: ParametersDefinition? = null
+    owner: SavedStateRegistryOwner,
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T {
-    val bundleOrDefault: Bundle = bundle ?: Bundle()
-    return getViewModel(
-            ViewModelParameter(
-                    T::class,
-                    qualifier,
-                    parameters,
-                    bundleOrDefault,
-                    owner.getViewModelStore(),
-                    owner
-            )
-    )
+    return getStateViewModel(owner, T::class, qualifier, bundle, parameters)
 }
 
 fun <T : ViewModel> Scope.getStateViewModel(
-        owner: SavedStateRegistryOwner,
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        parameters: ParametersDefinition? = null
+    owner: SavedStateRegistryOwner,
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     val bundleOrDefault: Bundle = bundle ?: Bundle()
     return getViewModel(
-            ViewModelParameter(
-                    clazz,
-                    qualifier,
-                    parameters,
-                    bundleOrDefault,
-                    owner.getViewModelStore(),
-                    owner
-            )
+        ViewModelParameter(
+            clazz,
+            qualifier,
+            parameters,
+            bundleOrDefault,
+            owner.getViewModelStore(),
+            owner
+        )
     )
 }
 
+private fun SavedStateRegistryOwner.getViewModelStore(): ViewModelStore {
+    return when (this) {
+        is ViewModelStoreOwner -> this.viewModelStore
+        else -> error("getStateViewModel error - Can't get ViewModelStore from $this")
+    }
+}
+
 inline fun <reified T : ViewModel> Scope.stateViewModel(
-        owner: SavedStateRegistryOwner,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        noinline parameters: ParametersDefinition? = null
+    owner: SavedStateRegistryOwner,
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(owner, T::class, qualifier, bundle, parameters) }
 }
 
 fun <T : ViewModel> Scope.stateViewModel(
-        owner: SavedStateRegistryOwner,
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        parameters: ParametersDefinition? = null
+    owner: SavedStateRegistryOwner,
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(owner, clazz, qualifier, bundle, parameters) }
 }

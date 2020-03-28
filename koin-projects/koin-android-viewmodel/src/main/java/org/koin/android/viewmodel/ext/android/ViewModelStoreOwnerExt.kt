@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.ext.android
+package org.koin.android.viewmodel.ext.android
 
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelStoreOwner
 import android.content.ComponentCallbacks
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStore
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.android.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -33,7 +30,13 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
-fun <T : ViewModel> LifecycleOwner.viewModel(
+/**
+ * LifecycleOwner extensions to help for ViewModel
+ *
+ * @author Arnaud Giuliani
+ */
+
+fun <T : ViewModel> ViewModelStoreOwner.viewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
@@ -41,21 +44,21 @@ fun <T : ViewModel> LifecycleOwner.viewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, parameters) }
 }
 
-inline fun <reified T : ViewModel> LifecycleOwner.viewModel(
+inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(T::class, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel<T>(qualifier, parameters) }
 }
 
-inline fun <reified T : ViewModel> LifecycleOwner.getViewModel(
+inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(T::class, qualifier, parameters)
 }
 
-fun <T : ViewModel> LifecycleOwner.getViewModel(
+fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
@@ -63,12 +66,4 @@ fun <T : ViewModel> LifecycleOwner.getViewModel(
     return getKoin().getViewModel(this, clazz, qualifier, parameters)
 }
 
-fun LifecycleOwner.getViewModelStore(): ViewModelStore {
-    return when (this) {
-        is FragmentActivity -> this.viewModelStore
-        is Fragment -> this.viewModelStore
-        else -> error("LifecycleOwner is not either FragmentActivity nor Fragment")
-    }
-}
-
-private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
+private fun ViewModelStoreOwner.getKoin() = (this as ComponentCallbacks).getKoin()

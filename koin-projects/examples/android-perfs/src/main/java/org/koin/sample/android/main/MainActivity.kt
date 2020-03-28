@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.koin.androidLogger
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs
@@ -24,8 +25,10 @@ class MainActivity : AppCompatActivity() {
                     runPerf(i)
                 }.await()
             }
-            val avg = launchs.map { it.second }.sum() / launchs.size
-            println("Avg execution time: $avg")
+            val avgStart = launchs.map { it.first }.sum() / launchs.size
+            val avgExec = launchs.map { it.second }.sum() / launchs.size
+            println("Avg start time: $avgStart")
+            println("Avg execution time: $avgExec")
         }
 
         setContentView(R.layout.main_activity)
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     fun runPerf(count: Int): Pair<Double, Double> {
         val (app, duration) = measureDurationForResult {
             koinApplication {
+                androidLogger()
                 modules(perfModule400())
             }
         }

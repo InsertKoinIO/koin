@@ -22,10 +22,6 @@ dependencies {
     compile project(":koin-core-ext")
     compile project(":koin-androidx-viewmodel")
 
-    // Test
-    testCompile project(":koin-test")
-    testCompile "org.mockito:mockito-inline:$mockito_version"
-
     // Architecture ViewModel
     compile("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
         exclude module: "lifecycle-livedata"
@@ -41,6 +37,10 @@ dependencies {
         exclude module: "runtime"
         exclude group: "androidx.legacy"
     }
+
+    // Test
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
 apply from: '../gradle/publish-android.gradle'

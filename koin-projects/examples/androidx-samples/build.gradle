@@ -26,13 +26,13 @@ android {
 dependencies {
 
     // Koin
-    compile project(":koin-androidx-ext")
-    compile project(":koin-androidx-fragment")
-    compile 'junit:junit:4.12'
+    implementation project(":koin-androidx-ext")
+    implementation project(":koin-androidx-fragment")
+    implementation 'junit:junit:4.12'
 
-    compile "androidx.appcompat:appcompat:$androidx_lib_version"
-    compile "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
-    compile "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
-    compile "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
 }

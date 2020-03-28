@@ -51,7 +51,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
-koin_version = '2.1.0'
+koin_version = '2.1.5'
 ```
 
 ## Gradle 
@@ -95,8 +95,8 @@ implementation "org.koin:koin-core:$koin_version"
 implementation "org.koin:koin-core-ext:$koin_version"
 // Koin for Unit tests
 testImplementation "org.koin:koin-test:$koin_version"
-// Koin for Java developers
-implementation "org.koin:koin-java:$koin_version"
+// Koin for Java developers is now part of core
+// implementation "org.koin:koin-java:$koin_version"
 ```
 
 #### Android

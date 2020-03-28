@@ -10,7 +10,7 @@ import org.koin.mp.ensureNeverFrozen
 import kotlin.reflect.KClass
 
 /**
- * Imternal Scope Definition
+ * Internal Scope Definition
  */
 class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
 

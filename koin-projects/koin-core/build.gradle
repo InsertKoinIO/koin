@@ -6,9 +6,9 @@ def ideaActive = System.getProperty('idea.active') == 'true'
 
 kotlin {
     jvm {
-      withJava()
+        withJava()
     }
-  js() /*{
+    js() /*{
         nodejs()
         browser()
         configure([compilations.main, compilations.test]) {

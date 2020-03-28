@@ -1,5 +1,5 @@
 
-# Getting Started with JUnit Tests {docsify-ignore-all}
+# Getting Started with Ktor
 
 > Ktor is a framework for building asynchronous servers and clients in connected systems using the powerful Kotlin programming language. We will use Ktor here, to build a simple web application.
 

@@ -10,14 +10,7 @@ class CheckCoffeeModuleTest {
 
     @Test
     fun checkCoffeeModule() =
-        checkModules {
-            modules(coffeeAppModule)
-        }
-
-    @Test
-    fun checkCoffeeModuleExt() =
-        checkModules {
-            modules(coffeeAppModuleExt)
-        }
-
+            checkModules {
+                modules(coffeeAppModule)
+            }
 }

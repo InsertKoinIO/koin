@@ -65,6 +65,8 @@ public class JavaActivity extends AppCompatActivity {
 }
 ```
 
+> ViewModel API is accessible from Koin & Scope instances. But also from [`ViewModelStoreOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
+
 ## Shared ViewModel
 
 One ViewModel instance can be shared between Fragments and their host Activity.
@@ -191,6 +193,8 @@ You can even pass a bundle as state argument:
 val myStateVM: MyStateVM by stateViewModel(bundle = myBundle)
 ```
 
+
+> StateViewModel API is accessible from Koin & Scope instances. But also from [`SavedStateRegistryOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
 
 
 

@@ -24,8 +24,8 @@ dependencies {
     compile project(":koin-android") //"org.koin:koin-android:$koin_version"
 
     // Test
-    testCompile project(":koin-test")
-    testCompile "org.mockito:mockito-inline:$mockito_version"
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
 }
 

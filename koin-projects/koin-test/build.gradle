@@ -33,8 +33,8 @@ kotlin {
         watchosX86()
         tvosArm64()
         tvosX64()
-//    androidNativeArm32()
-//    androidNativeArm64()
+        //    androidNativeArm32()
+        //    androidNativeArm64()
         mingwX64()
     }
 
@@ -99,19 +99,19 @@ kotlin {
 
         if(!ideaActive) {
             configure([
-                    targets.macosX64,
-                    targets.watchosArm32,
-                    targets.watchosArm64,
-                    targets.watchosX86,
-                    targets.tvosArm64,
-                    targets.tvosX64,
-                    targets.iosX64,
-                    targets.iosArm32,
-                    targets.iosArm64,
-                    targets.linuxX64,
-                    targets.linuxArm32Hfp,
-                    targets.linuxMips32,
-                    targets.mingwX64
+                targets.macosX64,
+                targets.watchosArm32,
+                targets.watchosArm64,
+                targets.watchosX86,
+                targets.tvosArm64,
+                targets.tvosX64,
+                targets.iosX64,
+                targets.iosArm32,
+                targets.iosArm64,
+                targets.linuxX64,
+                targets.linuxArm32Hfp,
+                targets.linuxMips32,
+                targets.mingwX64
             ]) {
                 compilations.main.source(sourceSets.nativeMain)
                 compilations.test.source(sourceSets.nativeTest)
