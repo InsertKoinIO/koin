@@ -1,4 +1,4 @@
 #!/bin/sh
 
-./gradlew install publishToMavenLocal -c settings-release.gradle
+./gradlew publishToMavenLocal -Dorg.gradle.parallel=false
 

@@ -1,12 +1,5 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
-import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -14,6 +7,8 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.ext.getOrCreateScope
 import org.koin.ext.scope
+import org.koin.mp.printStackTrace
+import kotlin.test.*
 
 class ObjectScopeTest {
 
@@ -150,12 +145,12 @@ class ObjectScopeTest {
     fun `scope property 2`() {
         val koin = startKoin {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                })
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                    })
         }.koin
 
         val a = koin.get<A>()
@@ -177,12 +172,12 @@ class ObjectScopeTest {
     fun `scope property - koin isolation`() {
         val koin = koinApplication {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                })
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                    })
         }.koin
 
         val a = koin.get<A>()
@@ -203,15 +198,15 @@ class ObjectScopeTest {
     fun `cascade scope `() {
         val koin = startKoin {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                    scope<B> {
-                        scoped { C() }
-                    }
-                })
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                        scope<B> {
+                            scoped { C() }
+                        }
+                    })
         }.koin
 
         val a = koin.get<A>()
@@ -235,15 +230,15 @@ class ObjectScopeTest {
     fun `cascade linked scope `() {
         val koin = startKoin {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                    scope<B> {
-                        scoped { C() }
-                    }
-                })
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                        scope<B> {
+                            scoped { C() }
+                        }
+                    })
         }.koin
 
         val a = koin.get<A>()
@@ -257,15 +252,15 @@ class ObjectScopeTest {
     fun `cascade unlink scope `() {
         val koin = startKoin {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                    scope<B> {
-                        scoped { C() }
-                    }
-                })
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                        scope<B> {
+                            scoped { C() }
+                        }
+                    })
         }.koin
 
         val a = koin.get<A>()
@@ -283,17 +278,17 @@ class ObjectScopeTest {
     fun `shared linked scope `() {
         val koin: Koin = startKoin {
             modules(
-                module {
-                    scope<A> {
-                        scoped { Simple.ComponentB(get()) }
-                    }
-                    scope<B> {
-                        scoped { Simple.ComponentB(get()) }
-                    }
-                    scope<C> {
-                        scoped { Simple.ComponentA() }
-                    }
-                })
+                    module {
+                        scope<A> {
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                        scope<B> {
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                        scope<C> {
+                            scoped { Simple.ComponentA() }
+                        }
+                    })
         }.koin
 
 
@@ -317,13 +312,12 @@ class ObjectScopeTest {
     fun `error for root linked scope `() {
         val koin = startKoin {
             modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                })
-import kotlin.test.*
+                    module {
+                        single { A() }
+                        scope<A> {
+                            scoped { B() }
+                        }
+                    })
         }.koin
 
 

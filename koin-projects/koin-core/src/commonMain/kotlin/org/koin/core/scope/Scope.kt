@@ -33,14 +33,15 @@ import org.koin.mp.mpsynchronized
 import kotlin.reflect.KClass
 
 data class Scope(
-    val id: ScopeID,
-    val _scopeDefinition: ScopeDefinition,
-    val _koin: Koin,
-    val _source: Any? = null
+        val id: ScopeID,
+        val _scopeDefinition: ScopeDefinition,
+        val _koin: Koin,
+        val _source: Any? = null
 ) {
     init {
         ensureNeverFrozen()
     }
+
     internal val scopeState = MainIsolatedState(ScopeState(_koin, this))
     val _linkedScope: MutableList<Scope>
         get() = scopeState.value._linkedScope
@@ -60,7 +61,7 @@ data class Scope(
     }
 
     inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
-        "Can't use Scope source for ${T::class.getFullName()} - source is:$_source")
+            "Can't use Scope source for ${T::class.getFullName()} - source is:$_source")
 
     /**
      * Add parent Scopes to allow instance resolution
@@ -97,10 +98,10 @@ data class Scope(
      */
 
     inline fun <reified T> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-        lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+            lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -112,10 +113,10 @@ data class Scope(
      */
 
     inline fun <reified T> injectOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-        lazy(LazyThreadSafetyMode.NONE) { getOrNull<T>(qualifier, parameters) }
+            lazy(LazyThreadSafetyMode.NONE) { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -125,8 +126,8 @@ data class Scope(
      */
 
     inline fun <reified T> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -139,10 +140,9 @@ data class Scope(
      *
      * @return instance of type T or null
      */
-
     inline fun <reified T> getOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T? {
         return getOrNull(T::class, qualifier, parameters)
     }
@@ -157,9 +157,9 @@ data class Scope(
      */
 
     fun <T> getOrNull(
-        clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            clazz: KClass<*>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
@@ -178,9 +178,9 @@ data class Scope(
      * @return instance of type T
      */
     fun <T> get(
-        clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            clazz: KClass<*>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T {
         return if (_koin._logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
@@ -195,28 +195,10 @@ data class Scope(
         }
     }
 
-    /**
-     * Get a Koin instance
-     * @param java class
-     * @param qualifier
-     * @param parameters
-     *
-     * @return instance of type T
-     */
-    fun <T> get(
-        clazz: Class<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
-    ): T {
-        val kClass = clazz.kotlin
-        return get(kClass, qualifier, parameters)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> resolveInstance(
-        qualifier: Qualifier?,
-        clazz: KClass<*>,
-        parameters: ParametersDefinition?
+    fun <T> resolveInstance(
+            qualifier: Qualifier?,
+            clazz: KClass<*>,
+            parameters: ParametersDefinition?
     ): T {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
@@ -224,8 +206,8 @@ data class Scope(
         //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
-            ?: findInOtherScope<T>(clazz, qualifier, parameters) ?: getFromSource(clazz)
-            ?: throwDefinitionNotFound(qualifier, clazz)
+                ?: findInOtherScope<T>(clazz, qualifier, parameters) ?: getFromSource(clazz)
+                ?: throwDefinitionNotFound(qualifier, clazz)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -234,30 +216,30 @@ data class Scope(
     }
 
     private fun <T> findInOtherScope(
-        clazz: KClass<*>,
-        qualifier: Qualifier?,
-        parameters: ParametersDefinition?
+            clazz: KClass<*>,
+            qualifier: Qualifier?,
+            parameters: ParametersDefinition?
     ): T? {
         return _linkedScope.firstOrNull { scope ->
             scope.getOrNull<T>(
+                    clazz,
+                    qualifier,
+                    parameters
+            ) != null
+        }?.get(
                 clazz,
                 qualifier,
                 parameters
-            ) != null
-        }?.get(
-            clazz,
-            qualifier,
-            parameters
         )
     }
 
     private fun throwDefinitionNotFound(
-        qualifier: Qualifier?,
-        clazz: KClass<*>
+            qualifier: Qualifier?,
+            clazz: KClass<*>
     ): Nothing {
         val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
         throw NoBeanDefFoundException(
-            "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
+                "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
     }
 
     internal fun createEagerInstances() {
@@ -277,10 +259,10 @@ data class Scope(
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
     fun <T : Any> declare(
-        instance: T,
-        qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>>? = null,
-        override: Boolean = false
+            instance: T,
+            qualifier: Qualifier? = null,
+            secondaryTypes: List<KClass<*>>? = null,
+            override: Boolean = false
     ) = mpsynchronized(this) {
         val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
         _instanceRegistry.saveDefinition(definition, override = true)
@@ -338,13 +320,13 @@ data class Scope(
      * @return instance of type S
      */
     fun <S> bind(
-        primaryType: KClass<*>,
-        secondaryType: KClass<*>,
-        parameters: ParametersDefinition?
+            primaryType: KClass<*>,
+            secondaryType: KClass<*>,
+            parameters: ParametersDefinition?
     ): S {
         return _instanceRegistry.bind(primaryType, secondaryType, parameters)
-            ?: throw NoBeanDefFoundException(
-                "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
+                ?: throw NoBeanDefFoundException(
+                        "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
     }
 
     /**
@@ -409,6 +391,7 @@ internal class ScopeState(koin: Koin, scope: Scope) {
     internal val _instanceRegistry = InstanceRegistry(koin, scope)
     internal val _callbacks: MutableList<ScopeCallback> = arrayListOf()
     internal var _closed = false
+
     init {
         ensureNeverFrozen()
     }
