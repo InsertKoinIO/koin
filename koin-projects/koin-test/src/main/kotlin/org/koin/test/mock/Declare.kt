@@ -22,6 +22,6 @@ inline fun <reified T : Any> KoinTest.declare(
         noinline instance: () -> T
 ): T {
     val koin = KoinContextHandler.get()
-    koin.declare(instance(), qualifier, override = true)
+    koin.declare(instance(), qualifier = qualifier, override = true)
     return get(qualifier)
 }
