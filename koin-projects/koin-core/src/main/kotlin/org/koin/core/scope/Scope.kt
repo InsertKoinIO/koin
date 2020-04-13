@@ -226,17 +226,16 @@ data class Scope(
         qualifier: Qualifier?,
         parameters: ParametersDefinition?
     ): T? {
-        return _linkedScope.firstOrNull { scope ->
-            scope.getOrNull<T>(
-                clazz,
-                qualifier,
-                parameters
-            ) != null
-        }?.get(
-            clazz,
-            qualifier,
-            parameters
-        )
+        var instance: T? = null
+        for (scope in _linkedScope) {
+            instance = scope.getOrNull<T>(
+                    clazz,
+                    qualifier,
+                    parameters
+            )
+            if (instance != null) break
+        }
+        return instance
     }
 
     private fun throwDefinitionNotFound(
