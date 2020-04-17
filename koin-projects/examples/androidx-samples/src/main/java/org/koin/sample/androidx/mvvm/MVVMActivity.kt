@@ -67,7 +67,7 @@ class MVVMActivity : AppCompatActivity() {
             .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
             .commit()
 
-        getKoin().setProperty("session", lifecycleScope.get<Session>())
+        getKoin().setProperty("session_id", lifecycleScope.get<Session>().id)
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)

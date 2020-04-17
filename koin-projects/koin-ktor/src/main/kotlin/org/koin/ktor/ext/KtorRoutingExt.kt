@@ -52,10 +52,9 @@ inline fun <reified T : Any> Routing.get(
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
- * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Routing.getProperty(key: String) =
-        getKoin().getProperty<T>(key)
+fun Routing.getProperty(key: String) =
+        getKoin().getProperty(key)
 
 /**
  * Retrieve given property for KoinComponent

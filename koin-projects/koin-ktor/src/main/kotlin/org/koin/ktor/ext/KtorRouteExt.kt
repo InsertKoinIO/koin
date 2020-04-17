@@ -52,10 +52,9 @@ inline fun <reified T : Any> Route.get(
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
- * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Route.getProperty(key: String) =
-        getKoin().getProperty<T>(key)
+fun Route.getProperty(key: String) =
+        getKoin().getProperty(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -65,7 +64,7 @@ inline fun <reified T> Route.getProperty(key: String) =
  * @param defaultValue - default value if property is missing
  *
  */
-inline fun <reified T> Route.getProperty(key: String, defaultValue: T) =
+fun Route.getProperty(key: String, defaultValue: String) =
         getKoin().getProperty(key) ?: defaultValue
 
 /**

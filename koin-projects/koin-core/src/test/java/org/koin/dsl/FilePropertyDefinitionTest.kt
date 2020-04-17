@@ -4,6 +4,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.core.error.NoPropertyFileFoundException
+import org.koin.ext.getFloatProperty
+import org.koin.ext.getIntProperty
 
 class FilePropertyDefinitionTest {
 
@@ -17,7 +19,7 @@ class FilePropertyDefinitionTest {
             fileProperties("/koin.properties")
         }.koin
 
-        val gotValue = koin.getProperty<String>(key)
+        val gotValue = koin.getProperty(key)
 
         assertEquals(value, gotValue)
     }
@@ -32,7 +34,7 @@ class FilePropertyDefinitionTest {
             fileProperties()
         }.koin
 
-        val gotValue = koin.getProperty<String>(key)
+        val gotValue = koin.getProperty(key)
 
         assertEquals(value, gotValue)
     }
@@ -56,7 +58,7 @@ class FilePropertyDefinitionTest {
             fileProperties()
         }.koin
 
-        assertEquals("this is a string", koin.getProperty<String>("string.value"))
+        assertEquals("this is a string", koin.getProperty("string.value"))
     }
 
     @Test
@@ -66,7 +68,7 @@ class FilePropertyDefinitionTest {
             fileProperties()
         }.koin
 
-        assertEquals(42, koin.getProperty<Int>("int.value"))
+        assertEquals(42, koin.getIntProperty("int.value"))
     }
 
     @Test
@@ -76,6 +78,6 @@ class FilePropertyDefinitionTest {
             fileProperties()
         }.koin
 
-        assertEquals(42.0f, koin.getProperty<Int>("float.value"))
+        assertEquals(42.0f, koin.getFloatProperty("float.value"))
     }
 }

@@ -340,19 +340,19 @@ data class Scope(
      * @param key
      * @param defaultValue
      */
-    fun <T> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
+    fun getProperty(key: String, defaultValue: String): String = _koin.getProperty(key, defaultValue)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun <T> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
+    fun getPropertyOrNull(key: String): String? = _koin.getProperty(key)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun <T> getProperty(key: String): T = _koin.getProperty(key)
+    fun getProperty(key: String): String = _koin.getProperty(key)
         ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
