@@ -2,6 +2,9 @@
 include 'koin-core'
 include 'koin-test'
 
+// JUnit
+include 'koin-test-junit4'
+
 // Core Sample
 include 'examples:coffee-maker'
 // Core extended
