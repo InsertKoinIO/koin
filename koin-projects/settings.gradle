@@ -4,6 +4,7 @@ include 'koin-test'
 
 // JUnit
 include 'koin-test-junit4'
+include 'koin-test-junit5'
 
 // Core Sample
 include 'examples:coffee-maker'

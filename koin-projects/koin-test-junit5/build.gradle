@@ -1,0 +1,18 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'koin-test-junit5'
+description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+
+dependencies {
+    // Koin
+    implementation project(":koin-core")
+    implementation project(":koin-test")
+    implementation "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+}
+
+apply from: '../gradle/publish.gradle'
+
+test {
+    useJUnitPlatform()
+}
