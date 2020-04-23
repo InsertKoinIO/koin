@@ -25,15 +25,6 @@ def pomConfig = {
       distribution "repo"
     }
   }
-  developers {
-    developer {
-      id "kpgalligan"
-      name "Kevin Galligan"
-    }
-  }
-  scm {
-    url "https://github.com/touchlab/koin"
-  }
 }
 
 if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
@@ -47,18 +38,6 @@ if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
       name = archivesBaseName
       licenses = ['Apache-2.0']
       vcsUrl = bintray_github
-    }
-  }
-
-  afterEvaluate {
-    project.publishing.publications.forEach { publication ->
-      publication.pom.withXml {
-        def root = asNode()
-        root.appendNode('name', archivesBaseName)
-        root.appendNode('description', 'Kotlin DI')
-        root.appendNode('url', 'https://github.com/russhwolf/multiplatform-settings')
-        root.children().last() + pomConfig
-      }
     }
   }
 
