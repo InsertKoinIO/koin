@@ -32,12 +32,25 @@ if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
     user = bintray_user
     key = bintray_apikey
 
+    override = true
+
     pkg {
       userOrg = bintray_org
       repo = bintray_repo
       name = archivesBaseName
       licenses = ['Apache-2.0']
       vcsUrl = bintray_github
+    }
+  }
+
+  afterEvaluate {
+    project.publishing.publications.forEach { publication ->
+      publication.pom.withXml {
+        def root = asNode()
+        root.appendNode('name', archivesBaseName)
+        root.appendNode('description', 'Koin')
+        root.children().last() + pomConfig
+      }
     }
   }
 
