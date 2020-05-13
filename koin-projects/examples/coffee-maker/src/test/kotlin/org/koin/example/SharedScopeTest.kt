@@ -48,10 +48,14 @@ class SharedScopeTest : MockitoTest() {
         override val presenter by getOrCreateScope().inject<PumpPresenter>()
     }
 
-    private val testModule = module {
+    private val testDataModule = module {
         single<Heater> { ElectricHeater() }
         single<Pump> { Thermosiphon(get()) }
+    }
+    private val testInteractorModule = module {
         scope(named(commonScopeId)) { scoped { CommonInteractor() } }
+    }
+    private val testAppModule = module {
         scope<HeaterFragment> { scoped { HeaterPresenter(get()) } }
         scope<PumpFragment> { scoped { PumpPresenter(get()) } }
     }
@@ -59,7 +63,7 @@ class SharedScopeTest : MockitoTest() {
     @get:Rule
     val koinTestRule = KoinTestRule.create {
         printLogger(Level.DEBUG)
-        modules(testModule)
+        modules(testDataModule, testInteractorModule, testAppModule)
     }
 
     @Test
@@ -88,5 +92,21 @@ class SharedScopeTest : MockitoTest() {
         }
         heaterView.presenter.detach()
         assertEquals(heaterView.presenter.interactor, pumpView.presenter.interactor)
+    }
+
+    @Test
+    fun `reuse common element when screen open while other reopen`() {
+        val heaterView = HeaterFragment()
+        heaterView.presenter.attach(heaterView)
+        var pumpView: View? = null
+        repeat(2) {
+            pumpView = PumpFragment()
+            pumpView?.apply {
+                presenter.attach(this@apply)
+                presenter.detach()
+            }
+        }
+        heaterView.presenter.detach()
+        assertEquals(heaterView.presenter.interactor, pumpView?.presenter?.interactor)
     }
 }
