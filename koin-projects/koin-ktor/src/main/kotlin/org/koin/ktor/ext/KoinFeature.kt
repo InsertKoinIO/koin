@@ -74,6 +74,5 @@ fun Application.koin(configuration: KoinAppDeclaration) = featureOrNull(Koin)?.a
  *
  * Gets or installs a [Koin] feature for the this [Application] and install a [block] modules on it
  */
-@KoinExperimentalAPI
 @ContextDsl
 fun Application.modules(vararg block: Module) = koin { modules(block.asList()) }

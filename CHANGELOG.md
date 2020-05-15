@@ -9,6 +9,7 @@ _Core_
 * `[FIXED]` - declare to use reified type
 * `[FIXED]` - Qualifier type as pure string
 * `[FIXED]` - docs contribution
+* `[UPDATED]` - Kotlin 1.3.71
 
 
 _Ktor_

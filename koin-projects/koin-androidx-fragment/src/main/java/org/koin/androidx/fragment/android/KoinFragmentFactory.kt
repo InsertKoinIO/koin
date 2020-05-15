@@ -14,7 +14,7 @@ class KoinFragmentFactory(val scope: Scope? = null) : FragmentFactory(), KoinCom
         val clazz = Class.forName(className).kotlin
         val instance = if (scope != null) {
             scope.getOrNull<Fragment>(clazz)
-        }else{
+        } else {
             getKoin().getOrNull<Fragment>(clazz)
         }
         return instance ?: super.instantiate(classLoader, className)
