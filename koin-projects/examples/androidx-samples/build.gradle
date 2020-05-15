@@ -21,6 +21,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.all {
+            useJUnit()
+        }
+    }
 }
 
 dependencies {
@@ -30,9 +35,25 @@ dependencies {
     implementation project(":koin-androidx-fragment")
     implementation 'junit:junit:4.12'
 
+    testImplementation project(":koin-test")
+
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
+}
+
+task checkModules(
+        type: Test,
+        description: 'Run integration tests only. Pass in \'-Pintegration=true\''
+) {
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams true
+    }
+    useJUnit {
+        includeCategories 'org.koin.test.category.CheckModuleTest'
+    }
 }
