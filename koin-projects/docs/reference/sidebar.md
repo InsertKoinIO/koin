@@ -1,5 +1,6 @@
 - [Intro](introduction)
 - [Setup](setup/index)
+- [Koin MP - Alpha](setup/koin_mp)
 - **Koin Core**
 - [Koin DSL](koin-core/dsl)
 - [Definitions](koin-core/definitions)
