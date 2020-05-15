@@ -34,7 +34,7 @@ repositories {
 }
 dependencies {
     // Koin for Kotlin apps
-    compile 'org.koin:koin-ktor:$koin_version'
+    compile "org.koin:koin-ktor:$koin_version"
 }
 ```
 
