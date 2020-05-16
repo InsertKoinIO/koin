@@ -260,19 +260,17 @@ data class Scope(
      * (single definition of th current scope is root)
      *
      * @param instance The instance you're declaring.
-     * @param clazz The primary type for this declaration
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    fun <T : Any> declare(
+    inline fun <reified T : Any> declare(
         instance: T,
-        clazz: KClass<*> = instance::class,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,
         override: Boolean = false
     ) = synchronized(this) {
-        val definition = _scopeDefinition.saveNewDefinition(instance, clazz, qualifier, secondaryTypes, override)
+        val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
         _instanceRegistry.saveDefinition(definition, override = true)
     }
 

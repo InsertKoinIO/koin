@@ -139,13 +139,12 @@ class Koin {
      */
     inline fun <reified T : Any> declare(
         instance: T,
-        clazz: KClass<*> = instance::class,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
         override: Boolean = false
     ) {
         val firstType = listOf(T::class)
-        _scopeRegistry.rootScope.declare(instance, clazz, qualifier, firstType + secondaryTypes, override)
+        _scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, override)
     }
 
     /**

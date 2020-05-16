@@ -3,7 +3,6 @@ package org.koin.core.scope
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
-import org.koin.core.error.BadDefinitionException
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
@@ -35,16 +34,13 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
 
     internal fun size() = definitions.size
 
-    fun <T : Any> saveNewDefinition(
+    inline fun <reified T : Any> saveNewDefinition(
             instance: T,
-            clazz: KClass<*> = instance::class,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
     ): BeanDefinition<out Any?> {
-        if (!clazz.isInstance(instance)) {
-            throw BadDefinitionException("Primary type '$clazz' should be or supertype of '${instance::class}'")
-        }
+        val clazz = T::class
         val found: BeanDefinition<*>? =
                 definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {

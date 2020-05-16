@@ -58,7 +58,7 @@ inline fun <reified T : Any> Scope.declareMock(
         stubbing: StubFunction<T> = {}
 ): T {
     val mock = MockProvider.makeMock<T>()
-    declare(mock, qualifier = qualifier, secondaryTypes = secondaryTypes + T::class, override = true)
+    declare(mock, qualifier, secondaryTypes + T::class, true)
     mock.apply(stubbing)
     return mock
 }
