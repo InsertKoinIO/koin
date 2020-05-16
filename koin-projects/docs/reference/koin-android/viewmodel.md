@@ -190,7 +190,7 @@ val myStateVM: MyStateVM by stateViewModel()
 You can even pass a bundle as state argument:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel(bundle = myBundle)
+val myStateVM: MyStateVM by stateViewModel(bundle = { myBundle })
 ```
 
 
