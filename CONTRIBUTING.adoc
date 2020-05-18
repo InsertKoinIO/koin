@@ -68,7 +68,7 @@ NOTE: you can use the `test.sh` and `install.sh` scripts to test all modules and
 
 the `koin-test` module gather all test against `koin-core`. Here you'll found most of usecase tests.
 
-The following command scrtip launch all tests from projects:
+The following command script launch all tests from projects:
 
 [indent=0]
 ----
