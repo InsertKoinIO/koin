@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.androidx.viewmodel.StateBundleParameter
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -71,10 +72,10 @@ private fun SavedStateRegistryOwner.getViewModelStore(): ViewModelStore {
 inline fun <reified T : ViewModel> Scope.stateViewModel(
     owner: SavedStateRegistryOwner,
     qualifier: Qualifier? = null,
-    bundle: Bundle? = null,
+    noinline bundle: StateBundleParameter? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(owner, T::class, qualifier, bundle, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(owner, T::class, qualifier, bundle?.invoke(), parameters) }
 }
 
 fun <T : ViewModel> Scope.stateViewModel(

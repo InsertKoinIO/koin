@@ -21,6 +21,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.StateBundleParameter
 import org.koin.androidx.viewmodel.koin.getStateViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -43,10 +44,10 @@ fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
 
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
-    bundle: Bundle? = null,
+    noinline bundle: StateBundleParameter? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(T::class, qualifier, bundle, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(T::class, qualifier, bundle?.invoke(), parameters) }
 }
 
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(

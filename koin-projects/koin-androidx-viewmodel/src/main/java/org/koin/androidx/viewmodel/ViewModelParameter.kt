@@ -15,3 +15,5 @@ class ViewModelParameter<T : Any>(
         val viewModelStore: ViewModelStore,
         val stateRegistryOwner: SavedStateRegistryOwner? = null
 )
+
+typealias StateBundleParameter = () -> Bundle
