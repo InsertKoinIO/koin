@@ -37,12 +37,20 @@ class MVVMActivity : AppCompatActivity() {
     val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this)
     val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(this, named("ext"))
 
-    val savedVm: SavedStateViewModel by stateViewModel { parametersOf("vm1") }
-    val scopedSavedVm: SavedStateViewModel by lifecycleScope.stateViewModel(this, named("vm2")) { parametersOf("vm2") }
+    val bundleStateVm = Bundle().apply { putString("vm1", "value to stateViewModel") }
+    val savedVm: SavedStateViewModel by stateViewModel(bundle = { bundleStateVm }) { parametersOf("vm1") }
+
+    val bundleStateScope = Bundle().apply {
+        putString("vm2", "value to lifecycleScope.stateViewModel")
+    }
+    val scopedSavedVm: SavedStateViewModel by lifecycleScope.stateViewModel(this, named("vm2"), bundle = { bundleStateScope }) {
+        parametersOf("vm2")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // if not in scope
-        setupKoinFragmentFactory()
+        // should set `lifecycleScope` here because we're
+        // using MVVMActivity with scope in mvvmModule (AppModule)
+        setupKoinFragmentFactory(lifecycleScope)
 
         super.onCreate(savedInstanceState)
 
@@ -62,6 +70,9 @@ class MVVMActivity : AppCompatActivity() {
         assertNotNull(savedVm)
         assertNotNull(scopedSavedVm)
         assertNotEquals(savedVm.id, scopedSavedVm.id)
+
+        assertEquals("value to stateViewModel", savedVm.handle.get("vm1"))
+        assertEquals("value to lifecycleScope.stateViewModel", scopedSavedVm.handle.get("vm2"))
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
