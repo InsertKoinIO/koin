@@ -17,12 +17,3 @@ dependencies {
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
-
-task checkModules(type: Test) {
-    testLogging {
-        showStandardStreams = true
-    }
-    useJUnit {
-        includeCategories 'org.koin.test.category.CheckModuleTest'
-    }
-}

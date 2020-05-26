@@ -5,6 +5,7 @@ import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.di.appModule
 import org.koin.sample.androidx.di.mvpModule
+import org.koin.sample.androidx.di.mvvmModule
 import org.koin.test.category.CheckModuleTest
 import org.koin.test.check.checkModules
 
@@ -18,7 +19,7 @@ class CheckModulesTest {
                 create<ScopedPresenter> { parametersOf("_ID_") }
             }
     ) {
-        modules(appModule + mvpModule)// + mvpModule + mvvmModule + scopeModule)
+        modules(appModule + mvpModule + mvvmModule)// + mvpModule + mvvmModule + scopeModule)
     }
 
 }
