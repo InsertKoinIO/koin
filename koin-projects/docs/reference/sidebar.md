@@ -27,7 +27,7 @@
 - **Koin Ktor**
 - [Injecting with Ktor](koin-ktor/ktor)
 - **Links**
-- [Changelog](_https://github.com/InsertKoinIO/koin/blob/master/CHANGELOG.md)
+- [Changelog](https://github.com/InsertKoinIO/koin/blob/master/CHANGELOG.md)
 - [WebSite](https://insert-koin.io/)
 - [Getting Started Documentation](https://start.insert-koin.io/)
 - [![Github](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github](https://github.com/InsertKoinIO/koin)
