@@ -18,8 +18,6 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
-import org.koin.ext.isFloat
-import org.koin.ext.isInt
 import org.koin.ext.quoted
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -33,13 +31,13 @@ import java.util.concurrent.ConcurrentHashMap
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(val _koin: Koin) {
 
-    private val _values: MutableMap<String, Any> = ConcurrentHashMap()
+    private val _values: MutableMap<String, String> = ConcurrentHashMap()
 
     /**
      * saveProperty all properties to registry
      * @param properties
      */
-    fun saveProperties(properties: Map<String, Any>) {
+    fun saveProperties(properties: Map<String, String>) {
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.debug("load ${properties.size} properties")
         }
@@ -57,18 +55,14 @@ class PropertyRegistry(val _koin: Koin) {
 
         val propertiesMapValues = properties.toMap() as Map<String, String>
         propertiesMapValues.forEach { (k: String, v: String) ->
-            when {
-                v.isInt() -> saveProperty(k, v.toInt())
-                v.isFloat() -> saveProperty(k, v.toFloat())
-                else -> saveProperty(k, v.quoted())
-            }
+            saveProperty(k, v.quoted())
         }
     }
 
     /**
      * save a property (key,value)
      */
-    internal fun <T : Any> saveProperty(key: String, value: T) {
+    internal fun saveProperty(key: String, value: String) {
         _values[key] = value
     }
 
@@ -83,8 +77,8 @@ class PropertyRegistry(val _koin: Koin) {
      * Get a property
      * @param key
      */
-    fun <T> getProperty(key: String): T? {
-        return _values[key] as? T?
+    fun getProperty(key: String): String? {
+        return _values[key]
     }
 
     /**

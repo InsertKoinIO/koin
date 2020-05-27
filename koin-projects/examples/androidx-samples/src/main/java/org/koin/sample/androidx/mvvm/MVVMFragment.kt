@@ -51,6 +51,6 @@ class MVVMFragment(val session: Session) : Fragment() {
         assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved2)
         assertEquals(sharedSaved, sharedSaved2)
 
-        assertEquals(requireActivity().lifecycleScope.get<Session>(), getKoin().getProperty("session"))
+        assertEquals(requireActivity().lifecycleScope.get<Session>().id, getKoin().getProperty("session_id"))
     }
 }
