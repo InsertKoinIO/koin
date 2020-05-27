@@ -36,4 +36,27 @@ class ScopeTest {
             e.printStackTrace()
         }
     }
+
+    @Test
+    fun `call linked scope factory definition only once if not found in current scope`() {
+        var factoryCallCounter = 0
+
+        val koin = koinApplication {
+            printLogger()
+            modules(
+                    module {
+                        factory {
+                            factoryCallCounter++
+                            Simple.ComponentA()
+                        }
+                        scope(named<ClosedScopeAPI.ScopeType>()) {}
+                    }
+            )
+        }
+                .koin
+
+        val scope = koin.createScope("scope1", named<ClosedScopeAPI.ScopeType>())
+        scope.get<Simple.ComponentA>()
+        assertEquals(factoryCallCounter, 1)
+    }
 }
