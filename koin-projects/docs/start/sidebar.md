@@ -1,5 +1,6 @@
 - [Intro](introduction)
 - [Setup](setup/index)
+- [Koin MP - Alpha](setup/koin_mp)
 - **Koin in 5 minutes**
 - [Kotlin](quickstart/kotlin)
 - [Android](quickstart/android)
