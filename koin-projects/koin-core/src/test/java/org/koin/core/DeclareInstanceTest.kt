@@ -194,6 +194,25 @@ class DeclareInstanceTest {
     }
 
     @Test
+    fun `can declare a scoped on the fly with primary type`() {
+
+        val koin = koinApplication {
+            printLogger()
+            modules(module {
+                scope(named("Session")) {
+                }
+            })
+        }.koin
+
+        val a = Simple.Component2()
+
+        val session1 = koin.createScope("session1", named("Session"))
+
+        session1.declare<Simple.ComponentInterface1>(a, named("another_a"))
+        assertEquals(a, session1.get<Simple.ComponentInterface1>(named("another_a")))
+    }
+
+    @Test
     fun `can't declare a scoped-single on the fly`() {
 
         val koin = koinApplication {

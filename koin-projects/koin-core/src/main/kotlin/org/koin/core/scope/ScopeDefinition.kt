@@ -34,13 +34,13 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
 
     internal fun size() = definitions.size
 
-    fun <T : Any> saveNewDefinition(
+    inline fun <reified T : Any> saveNewDefinition(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
     ): BeanDefinition<out Any?> {
-        val clazz = instance::class
+        val clazz = T::class
         val found: BeanDefinition<*>? =
                 definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
         if (found != null) {
