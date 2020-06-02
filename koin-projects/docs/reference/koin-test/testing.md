@@ -54,7 +54,7 @@ val koinTestRule = KoinTestRule.create {
 
 To let you use the `declareMock` API, you need to specify a rule to let Koin know how you build your Mock instance. This let you choose the right mocking framework for your need. 
 
-Specify mock provider using Mockito: 
+Create mocks using Mockito: 
 
 ```kotlin
 @get:Rule
@@ -64,7 +64,7 @@ val mockProvider = MockProviderRule.create { clazz ->
 }
 ```
 
-Specify mock provider using Mockk: 
+Create mocks using Mockk: 
 
 ```kotlin
 @get:Rule
