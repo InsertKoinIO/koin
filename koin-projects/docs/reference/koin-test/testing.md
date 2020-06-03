@@ -64,7 +64,7 @@ val mockProvider = MockProviderRule.create { clazz ->
 }
 ```
 
-Create mocks using Mockk: 
+Create mocks using MockK: 
 
 ```kotlin
 @get:Rule
