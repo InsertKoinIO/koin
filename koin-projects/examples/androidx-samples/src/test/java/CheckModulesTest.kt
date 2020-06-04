@@ -19,7 +19,7 @@ class CheckModulesTest {
                 create<ScopedPresenter> { parametersOf("_ID_") }
             }
     ) {
-        modules(appModule + mvpModule + mvvmModule)// + mvpModule + mvvmModule + scopeModule)
+        modules(appModule + mvpModule)
     }
 
 }
