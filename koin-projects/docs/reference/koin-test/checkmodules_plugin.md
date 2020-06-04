@@ -37,7 +37,7 @@ class CheckModulesTest : KoinTest {
 }
 ```
 
-### Verify your modules
+### Verify your modules (Kotlin project) - checkModules task
 
 Once done, you can verify your modules:
 
@@ -49,4 +49,18 @@ You can also verify your modules in a continuous way:
 
 ```
 ./gradlew checkModules --continuous
+```
+
+### Verify your modules (Android project) - checkAndroidModules task
+
+Once done, you can verify your modules:
+
+```
+./gradlew checkAndroidModules
+```
+
+You can also verify your modules in a continuous way:
+
+```
+./gradlew checkAndroidModules --continuous
 ```

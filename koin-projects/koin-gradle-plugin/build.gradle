@@ -10,6 +10,7 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(":koin-test")
     compile gradleApi()
 }
 
