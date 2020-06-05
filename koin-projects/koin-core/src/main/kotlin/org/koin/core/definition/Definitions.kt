@@ -35,7 +35,8 @@ object Definitions {
         )
     }
 
-    fun createSingle(
+    @PublishedApi
+    internal fun createSingle(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
         definition: Definition<*>,
