@@ -1,7 +1,7 @@
 ![logo](./img/koin_2.0.jpg)
 
 ## What is KOIN?
- 
+
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 Written in pure Kotlin, using functional resolution only: no proxy, no code generation, no reflection.
@@ -18,7 +18,7 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 ### Getting Help 🚒
 
 Documentation:
-* [Getting Stared](https://start.insert-koin.io/)
+* [Getting Started](https://start.insert-koin.io/)
 * [Documentation References](https://doc.insert-koin.io/)
 
 Any question about Koin usage? 
