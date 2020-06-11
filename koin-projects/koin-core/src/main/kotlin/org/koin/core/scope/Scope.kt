@@ -226,17 +226,16 @@ data class Scope(
         qualifier: Qualifier?,
         parameters: ParametersDefinition?
     ): T? {
-        return _linkedScope.firstOrNull { scope ->
-            scope.getOrNull<T>(
-                clazz,
-                qualifier,
-                parameters
-            ) != null
-        }?.get(
-            clazz,
-            qualifier,
-            parameters
-        )
+        var instance: T? = null
+        for (scope in _linkedScope) {
+            instance = scope.getOrNull<T>(
+                    clazz,
+                    qualifier,
+                    parameters
+            )
+            if (instance != null) break
+        }
+        return instance
     }
 
     private fun throwDefinitionNotFound(
@@ -264,7 +263,7 @@ data class Scope(
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    fun <T : Any> declare(
+    inline fun <reified T : Any> declare(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,
@@ -340,19 +339,19 @@ data class Scope(
      * @param key
      * @param defaultValue
      */
-    fun <T> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
+    fun getProperty(key: String, defaultValue: String): String = _koin.getProperty(key, defaultValue)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun <T> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
+    fun getPropertyOrNull(key: String): String? = _koin.getProperty(key)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun <T> getProperty(key: String): T = _koin.getProperty(key)
+    fun getProperty(key: String): String = _koin.getProperty(key)
         ?: throw MissingPropertyException("Property '$key' not found")
 
     /**

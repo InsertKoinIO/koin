@@ -80,3 +80,5 @@ val scopeModule = module {
         scoped { SessionActivity(get()) }
     }
 }
+
+val allModules = appModule + mvpModule + mvvmModule + scopeModule

@@ -1,5 +1,5 @@
 
-Writing definitions in Koin is done via Kotlin functions, that describe ishow is built your instance. Once you have configured your Koin application, let's write some modules and definitions.
+Writing definitions in Koin is done via Kotlin functions, that describe is how is built your instance. Once you have configured your Koin application, let's write some modules and definitions.
 
 ## Module & definitions
 
@@ -79,7 +79,7 @@ module {
 
 But here you won't be able to request an instance with `get<Simple.ComponentInterface1>()`. You will have to use `koin.bind<Component1,ComponentInterface1>()` to retrieve an instance of `ComponentInterface1`, with the `Component1` implementation.
 
-Note that you cal also look for all components binding a given type: `getAll<ComponentInterface1>()` will request all instances binding `ComponentInterface1` type.
+Note that you can also look for all components binding a given type: `getAll<ComponentInterface1>()` will request all instances binding `ComponentInterface1` type.
 
 
 ## Combining several modules

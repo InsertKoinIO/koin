@@ -15,7 +15,7 @@ class PropertyDefinitionTest {
             properties(values)
         }.koin
 
-        val gotValue = koin.getProperty<String>(key)
+        val gotValue = koin.getProperty(key)
 
         assertEquals(value, gotValue)
     }
@@ -25,7 +25,7 @@ class PropertyDefinitionTest {
         val koin = koinApplication {}.koin
 
         val defaultValue = "defaultValue"
-        val gotValue = koin.getProperty<String>("aKey", defaultValue)
+        val gotValue = koin.getProperty("aKey", defaultValue)
 
         assertEquals(defaultValue, gotValue)
     }
@@ -38,7 +38,7 @@ class PropertyDefinitionTest {
         val koin = koinApplication { }.koin
 
         koin.setProperty(key, value)
-        val gotValue = koin.getProperty<String>(key)
+        val gotValue = koin.getProperty(key)
         assertEquals(value, gotValue)
     }
 
@@ -47,7 +47,7 @@ class PropertyDefinitionTest {
         val key = "KEY"
         val koin = koinApplication { }.koin
 
-        val gotValue = koin.getProperty<String>(key)
+        val gotValue = koin.getProperty(key)
         assertNull(gotValue)
     }
 
@@ -62,7 +62,7 @@ class PropertyDefinitionTest {
         }.koin
 
         koin.setProperty(key, value2)
-        val gotValue = koin.getProperty<String>(key)
+        val gotValue = koin.getProperty(key)
         assertEquals(value2, gotValue)
     }
 }

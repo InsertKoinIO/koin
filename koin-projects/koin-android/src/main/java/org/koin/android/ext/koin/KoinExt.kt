@@ -81,18 +81,18 @@ fun KoinApplication.androidFileProperties(
                 val nb =
                         koin._propertyRegistry.saveProperties(koinProperties)
                 if (koin._logger.isAt(Level.INFO)) {
-                    koin._logger.info("[Android-Properties] loaded $nb properties from assets/koin.properties")
+                    koin._logger.info("[Android-Properties] loaded $nb properties from assets/$koinPropertyFile")
                 }
             } catch (e: Exception) {
                 koin._logger.error("[Android-Properties] error for binding properties : $e")
             }
         } else {
             if (koin._logger.isAt(Level.INFO)) {
-                koin._logger.info("[Android-Properties] no assets/koin.properties file to load")
+                koin._logger.info("[Android-Properties] no assets/$koinPropertyFile file to load")
             }
         }
     } catch (e: Exception) {
-        koin._logger.error("[Android-Properties] error while loading properties from assets/koin.properties : $e")
+        koin._logger.error("[Android-Properties] error while loading properties from assets/$koinPropertyFile : $e")
     }
     return this
 }

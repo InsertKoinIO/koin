@@ -4,15 +4,13 @@ buildscript {
         mavenCentral()
         jcenter()
     }
-//    dependencies {
+    dependencies {
 //        classpath "org.koin:koin-gradle-plugin:$koin_version"
-//    }
+    }
 }
 
 apply plugin: 'kotlin'
 //apply plugin: 'koin'
-
-archivesBaseName = 'example-coffee-maker'
 
 dependencies {
     implementation project(":koin-core")

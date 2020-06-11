@@ -1,8 +1,19 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+//        classpath "org.koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-
 apply from: '../../gradle/versions-examples.gradle'
+//apply plugin: 'koin'
 
 android {
     compileSdkVersion android_target_version
@@ -14,11 +25,19 @@ android {
         applicationId "org.koin.sample.androidx"
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnit()
         }
     }
 }
@@ -29,6 +48,15 @@ dependencies {
     implementation project(":koin-androidx-ext")
     implementation project(":koin-androidx-fragment")
     implementation 'junit:junit:4.12'
+
+    testImplementation project(":koin-test")
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation "androidx.test:core:1.1.1"
+    testImplementation "androidx.test.ext:junit:1.1.1"
+    testImplementation "org.robolectric:robolectric:4.2.1"
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"

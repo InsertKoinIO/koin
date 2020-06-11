@@ -35,7 +35,7 @@ object Definitions {
         )
     }
 
-    internal fun createSingle(
+    fun createSingle(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
         definition: Definition<*>,

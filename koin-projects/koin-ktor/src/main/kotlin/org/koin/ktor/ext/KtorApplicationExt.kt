@@ -60,10 +60,9 @@ inline fun <reified T : Any> Application.get(
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
- * throw MissingPropertyException if property is not found
  */
-inline fun <reified T> Application.getProperty(key: String) =
-        getKoin().getProperty<T>(key)
+fun Application.getProperty(key: String) =
+        getKoin().getProperty(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -73,5 +72,5 @@ inline fun <reified T> Application.getProperty(key: String) =
  * @param defaultValue - default value if property is missing
  *
  */
-inline fun <reified T> Application.getProperty(key: String, defaultValue: T) =
+fun Application.getProperty(key: String, defaultValue: String) =
         getKoin().getProperty(key) ?: defaultValue

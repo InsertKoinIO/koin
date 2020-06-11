@@ -15,8 +15,4 @@
  */
 package org.koin.ext
 
-fun String.isFloat() = this.toFloatOrNull() != null
-
-fun String.isInt() = this.toIntOrNull() != null
-
 fun String.quoted() = this.replace("\"", "")

@@ -37,7 +37,7 @@ class MVVMFragment : Fragment() {
         assertNotEquals(sharedViewModel, simpleViewModel)
         assertEquals((activity as MVVMActivity).simpleViewModel, sharedViewModel)
 
-        assertEquals(session, getKoin().getProperty("session"))
+        assertEquals(session?.id, getKoin().getProperty("session_id"))
 
         assertNotEquals(simpleViewModel, (activity as MVVMActivity).simpleViewModel)
         assertEquals(sharedViewModel, (activity as MVVMActivity).simpleViewModel)

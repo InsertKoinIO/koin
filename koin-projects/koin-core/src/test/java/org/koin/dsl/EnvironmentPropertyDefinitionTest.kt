@@ -17,7 +17,7 @@ class EnvironmentPropertyDefinitionTest {
             environmentProperties()
         }.koin
 
-        val foundValue = koin.getProperty<String>(aPropertyKey)
+        val foundValue = koin.getProperty(aPropertyKey)
         assertEquals(aPropertyValue, foundValue)
     }
 }
