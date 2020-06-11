@@ -5,7 +5,6 @@ import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.di.appModule
 import org.koin.sample.androidx.di.mvpModule
-import org.koin.sample.androidx.di.mvvmModule
 import org.koin.test.category.CheckModuleTest
 import org.koin.test.check.checkModules
 
@@ -13,13 +12,13 @@ import org.koin.test.check.checkModules
 class CheckModulesTest {
 
     @Test
-    fun `test DI modules`() = checkModules(
+    fun `test DI modules`() =
+        checkModules(
             parameters = {
                 create<FactoryPresenter> { parametersOf("_ID_") }
                 create<ScopedPresenter> { parametersOf("_ID_") }
             }
-    ) {
-        modules(appModule + mvpModule)
-    }
-
+        ) {
+            modules(appModule + mvpModule)
+        }
 }
