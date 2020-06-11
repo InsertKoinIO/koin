@@ -2,6 +2,32 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.1.6]()
+
+_koin-core_
+
+* `[ADDED]` Disable property type cast https://github.com/InsertKoinIO/koin/pull/781
+* `[FIXED]` Scope issue - Breaking looping linked scopes when first got instance https://github.com/InsertKoinIO/koin/pull/775
+* `[FIXED]` On the fly declaration with primary type fix - https://github.com/InsertKoinIO/koin/pull/773
+
+_koin-androidx-viewmodel_
+
+* `[FIXED]` stateViewModel bundle argument fixed - https://github.com/InsertKoinIO/koin/pull/795/files
+* `[ADDED]` added `stateSharedViewModel` extensions for `Fragment` https://github.com/InsertKoinIO/koin/pull/768/files
+
+_koin-androidx-fragment_
+
+* `[FIXED]` Add fallback for instantiate function in FragmentFactory - https://github.com/InsertKoinIO/koin/pull/742
+
+_koin-test_
+
+* `[FIXED]` KoinTestRule test exception handling - https://github.com/InsertKoinIO/koin/pull/808
+
+_koin-gradle-plugin_
+
+* `[FIXED]` Fixed Koin gradle plugin task for Kotlin & Android project. Added `checkAndroidModules` task  - https://github.com/InsertKoinIO/koin/pull/817
+
+
 ## [2.1.5]()
 
 _Core_

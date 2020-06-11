@@ -8,33 +8,34 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
+## [https://insert-koin.io](https://insert-koin.io)
 
-### Latest News 🌐
+## Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
 
-### Getting Help 🚒
-
-Documentation:
-* [Getting Started](https://start.insert-koin.io/)
-* [Documentation References](https://doc.insert-koin.io/)
-
-Any question about Koin usage? 
-- Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
-- Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
-
-### Articles, Videos & other resources 🎉
+## Articles, Videos & other resources 🎉
 
 Online resources about Koin - [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
 
-### Reporting issues 🚑
+## Documentation 🚒
 
-Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
+* [Getting Started](https://start.insert-koin.io/)
+* [Documentation References](https://doc.insert-koin.io/)
+
+## Ask a Question? 🚑
+
+- Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
+- Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
 
-### Contributing 🛠
+## Reporting issues 💥
+
+Found a bug on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
+
+
+## Contribute 🛠
 
 Want to help or share a proposal about Koin? problem on a specific feature? 
 
@@ -51,7 +52,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
-koin_version = '2.1.5'
+koin_version = '2.1.6'
 ```
 
 ## Gradle 
