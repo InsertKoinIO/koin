@@ -1,6 +1,6 @@
 ![logo](./img/koin_2.0.jpg)
 
-## What is KOIN?
+## What is KOIN? - [https://insert-koin.io](https://insert-koin.io)
 
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
@@ -8,16 +8,10 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## [https://insert-koin.io](https://insert-koin.io)
-
 ## Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
-
-## Articles, Videos & other resources 🎉
-
-Online resources about Koin - [Talking about Koin](https://github.com/InsertKoinIO/koin/blob/master/README.md#talking-about-koin)
 
 ## Documentation 🚒
 
@@ -29,11 +23,9 @@ Online resources about Koin - [Talking about Koin](https://github.com/InsertKoin
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
 - Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
-
 ## Reporting issues 💥
 
 Found a bug on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
-
 
 ## Contribute 🛠
 
