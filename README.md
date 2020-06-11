@@ -1,7 +1,7 @@
 ![logo](./img/koin_2.0.jpg)
 
 ## What is KOIN?
- 
+
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 Written in pure Kotlin, using functional resolution only: no proxy, no code generation, no reflection.
@@ -18,7 +18,7 @@ Written in pure Kotlin, using functional resolution only: no proxy, no code gene
 ### Getting Help 🚒
 
 Documentation:
-* [Getting Stared](https://start.insert-koin.io/)
+* [Getting Started](https://start.insert-koin.io/)
 * [Documentation References](https://doc.insert-koin.io/)
 
 Any question about Koin usage? 
@@ -217,7 +217,7 @@ class MyApplication : Application() {
 * [Simplify your Android development with Koin - Mobilization @ Lodz, Poland](https://www.youtube.com/watch?v=KzQbJFVjr9w&t=1s)
 * [Talking Kotlin - Dependency injection with Koin](http://talkingkotlin.com/dependency-injection-with-koin/)
 * [L'injection de poireaux avec Koin - AndroidLeaks ep42 (French)](https://androidleakspodcast.com/2018/08/05/episode-42-linjection-de-poireaux-avec-koin/)
-* [Insert Koin. Mobile Fest 2018, Kiev, Urkaine (Russian)](https://youtu.be/HrTz5jToQkk)
+* [Insert Koin. Mobile Fest 2018, Kiev, Ukraine (Russian)](https://youtu.be/HrTz5jToQkk)
 
 ### Koin Developers Hub
 
