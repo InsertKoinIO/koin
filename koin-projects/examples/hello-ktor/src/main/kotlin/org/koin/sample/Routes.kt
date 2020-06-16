@@ -26,3 +26,9 @@ fun Route.bye() {
         call.respondText("[/v1/bye] " + service.sayHello())
     }
 }
+
+fun Route.respondWithHello() {
+    get("/v1/respondWithHello") {
+        call.respondWithHello()
+    }
+}
