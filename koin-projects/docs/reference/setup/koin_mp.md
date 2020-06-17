@@ -19,6 +19,10 @@ Add the following Gradle dependencies to add Koin to your project:
 // Add Jcenter to your repositories if needed
 repositories {
     jcenter()
+    // if some metadata or not found add this one also
+    maven {
+        url  "https://dl.bintray.com/ekito/koin" 
+    }
 }
 ```
 
@@ -26,15 +30,17 @@ repositories {
 
 #### **Kotlin**
 
+Please adapt to your native platform target (jvm, ios ...)
+
 ```groovy
 // Koin for Kotlin
-implementation "org.koin:koin-core-jvm:$koin_version"
+implementation "org.koin:koin-core:$koin_version"
 
 // Koin Extended & experimental features
 implementation "org.koin:koin-core-ext:$koin_version"
 
 // Koin for Unit tests
-testImplementation "org.koin:koin-test-jvm:$koin_version"
+testImplementation "org.koin:koin-test:$koin_version"
 ```
 
 #### **Gradle Plugin**

@@ -6,7 +6,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 _koin-core_
 
-* `[ADDED]` Disable property type cast https://github.com/InsertKoinIO/koin/pull/781
+* `[BREAKING]` Disable property type cast https://github.com/InsertKoinIO/koin/pull/781
 * `[FIXED]` Scope issue - Breaking looping linked scopes when first got instance https://github.com/InsertKoinIO/koin/pull/775
 * `[FIXED]` On the fly declaration with primary type fix - https://github.com/InsertKoinIO/koin/pull/773
 
