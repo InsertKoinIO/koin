@@ -20,11 +20,14 @@ import org.koin.core.KoinApplication
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.logger.Level
 import org.koin.core.logger.PrintLogger
-import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
+import org.koin.test.parameter.MockParameter
+import org.mockito.Mockito
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
@@ -46,42 +49,52 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     _logger.info("[Check] checking current modules ...")
 
-    val allParameters = makeParameters(parametersDefinition)
-    checkScopedDefinitions(allParameters)
+    checkScopedDefinitions(declareParameterCreators(parametersDefinition))
 
     close()
 
     _logger.info("[Check] modules checked")
 }
 
-private fun Koin.makeParameters(
-    parametersDefinition: CheckParameters?): MutableMap<CheckedComponent, ParametersCreator> {
-    val bindings = ParametersBinding()
-    bindings.koin = this
-    parametersDefinition?.let {
-        bindings.parametersDefinition()
-    }
-    val allParameters = bindings.creators
-    return allParameters
+private fun Koin.declareParameterCreators(
+    parametersDefinition: CheckParameters?
+): MutableMap<CheckedComponent, ParametersCreator> {
+    val bindings = ParametersBinding(this)
+    parametersDefinition?.let { bindings.parametersDefinition() }
+    return bindings.parametersCreators
 }
 
 private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
     _scopeRegistry.scopeDefinitions.values.forEach { scopeDefinition ->
-        runScope(scopeDefinition, allParameters)
+        checkScope(scopeDefinition, allParameters)
     }
 }
 
-private fun Koin.runScope(scopeDefinition: ScopeDefinition,
-    allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
-    val scope = getOrCreateScope(scopeDefinition.qualifier.value, scopeDefinition.qualifier)
+private fun Koin.checkScope(
+    scopeDefinition: ScopeDefinition,
+    allParameters: MutableMap<CheckedComponent, ParametersCreator>
+) {
+    val qualifier = scopeDefinition.qualifier
+    val sourceScopeValue = mockSourceValue(qualifier)
+    val scope = getOrCreateScope(qualifier.value, qualifier, sourceScopeValue)
     scope._scopeDefinition.definitions.forEach {
-        runDefinition(allParameters, it, scope)
+        checkDefinition(allParameters, it, scope)
     }
 }
 
-private fun runDefinition(allParameters: MutableMap<CheckedComponent, ParametersCreator>, it: BeanDefinition<*>,
-    scope: Scope) {
-    val parameters = allParameters[CheckedComponent(it.qualifier, it.primaryType)]?.invoke(it.qualifier)
-        ?: parametersOf()
-    scope.get<Any>(it.primaryType, it.qualifier) { parameters }
+private fun mockSourceValue(qualifier: Qualifier): Any? {
+    return if (qualifier is TypeQualifier) {
+        Mockito.mock(qualifier.type.java)
+    } else null
+}
+
+private fun checkDefinition(
+    allParameters: MutableMap<CheckedComponent, ParametersCreator>,
+    definition: BeanDefinition<*>,
+    scope: Scope
+) {
+    val parameters = allParameters[CheckedComponent(definition.qualifier, definition.primaryType)]?.invoke(
+        definition.qualifier)
+        ?: MockParameter(scope) //TODO add default param check here
+    scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
 }

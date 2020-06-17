@@ -17,7 +17,7 @@ class MainApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             androidFileProperties()
-            modules(appModule + mvpModule + mvvmModule + scopeModule + dynamicModule + javaModule)
+            modules(allModules)
         }
     }
 }
