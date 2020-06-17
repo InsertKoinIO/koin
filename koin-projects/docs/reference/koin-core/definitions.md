@@ -220,11 +220,11 @@ Koin DSL also proposes some flags.
 
 ### Create instances at start
 
-A definition or a module can be flagged as `createOnStart`, to be created at start (or when you want). First set the `createOnStart` flag on your module
+A definition or a module can be flagged as `CreatedAtStart`, to be created at start (or when you want). First set the `createOnStart` flag on your module
 or on your definition.
 
 
-CreateAtStart flag on a definition
+CreatedAtStart flag on a definition
 
 ```kotlin
 val myModuleA = module {
@@ -235,11 +235,11 @@ val myModuleA = module {
 val myModuleB = module {
 
     // eager creation for this definition
-    single<Service>(createAtStart=true) { TestServiceImp() }
+    single<Service>(createdAtStart=true) { TestServiceImp() }
 }
 ```
 
-CreateAtStart flag on a module
+CreatedAtStart flag on a module
 
 ```kotlin
 val myModuleA = module {
@@ -247,13 +247,13 @@ val myModuleA = module {
     single<Service> { ServiceImp() }
 }
 
-val myModuleB = module(createAtStart=true) {
+val myModuleB = module(createdAtStart=true) {
 
     single<Service>{ TestServiceImp() }
 }
 ```
 
-The `startKoin` function will automatically create definitions instances flagged with `createAtStart`.
+The `startKoin` function will automatically create definitions instances flagged with `createdAtStart`.
 
 ```kotlin
 // Start Koin modules
