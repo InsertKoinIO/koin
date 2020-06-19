@@ -2,7 +2,7 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
-## [2.1.6]()
+## [2.1.6](https://github.com/mohadian/koin/releases/tag/2.1.6)
 
 _koin-core_
 
@@ -28,7 +28,7 @@ _koin-gradle-plugin_
 * `[FIXED]` Fixed Koin gradle plugin task for Kotlin & Android project. Added `checkAndroidModules` task  - https://github.com/InsertKoinIO/koin/pull/817
 
 
-## [2.1.5]()
+## [2.1.5](https://github.com/mohadian/koin/releases/tag/2.1.5)
 
 _Core_
 
@@ -46,17 +46,17 @@ _AndroidX-Fragment_
 
 * `[FIXED]` - contribution to help fallback on empty constructor instance for FragmentFactory
 
-## [2.1.4]()
+## [2.1.4](https://github.com/mohadian/koin/releases/tag/2.1.4)
 
 _Core_
 
 * `[ADDED]` - Scope's source value to return the object instance, source of the scope 
 
-## [2.1.3]()
+## [2.1.3](https://github.com/mohadian/koin/releases/tag/2.1.3)
 
 * `[FIXED]` - maven metadata config :(
 
-## [2.1.2]()
+## [2.1.2](https://github.com/mohadian/koin/releases/tag/2.1.2)
 
 * `[UPDATED]` - maven metadata config
 
@@ -65,7 +65,7 @@ _Core_
 * `[FIXED]` - fixed integration for kotlin.time.* API with 1.3.70
 
 
-## [2.1.1]()
+## [2.1.1](https://github.com/mohadian/koin/releases/tag/2.1.1)
 
 ### [alpha-1]()
 
@@ -79,7 +79,7 @@ _Android-ViewModel_
 * `[FIXED]` - shared ViewModel API to get instance from Activity's ViewModelStore + clean of API to use directly ViewModelStoreOwner instead of LifecycleOwner
 
 
-## [2.1.0]()
+## [2.1.0](https://github.com/mohadian/koin/releases/tag/2.1.0)
 
 _Core_
 
@@ -128,7 +128,7 @@ _Core_
 * `[ADDED]` - Scope Links, to link scope to another and help resolve shared instances
 
 
-### [alpha-8]()
+### [alpha-8](https://github.com/mohadian/koin/releases/tag/2.1.0-alpha-8)
 
 
 _Docs_
@@ -204,7 +204,7 @@ _Documentation_
 * `[UPDATED]` - New documentation system based on docisfy, to help deploy easily markdown doc. Documentation is now in `/docs` folder
 
 
-## [2.0.1]()
+## [2.0.1](https://github.com/mohadian/koin/releases/tag/2.0.1)
 
 _Android-ViewModel_
 
@@ -222,7 +222,7 @@ _Core_
 * `[BREAKING]` - `loadKoinModules(vararg modules: Module)` in `GlobalContext` has been removed for performance reasons. Please use `loadKoinModules(module: Module)` or `loadKoinModules(modules: List<Module>)`
 * `[BREAKING]` - `unloadKoinModules(vararg modules: Module)` in `GlobalContext` has been removed for performance reasons. Please use `unloadKoinModules(module: Module)`
 
-## [2.0.0]()
+## [2.0.0](https://github.com/mohadian/koin/releases/tag/2.0.0)
 
 _Android_
 
@@ -295,7 +295,7 @@ _Spark_
 * `[REMOVED]` project non ported to Koin 2.0
 
 
-## [1.0.2]()
+## [1.0.2](https://github.com/mohadian/koin/releases/tag/1.0.2)
 
 _Android_
 
@@ -330,14 +330,14 @@ _Test_
 
 
 
-## [1.0.1]()
+## [1.0.1](https://github.com/mohadian/koin/releases/tag/1.0.1)
 
 _Android_
 
 * `[FIXED]` - `koin-android-viewmodel` & `koin-androidx-viewmodel` parameter & factory review - https://github.com/InsertKoinIO/koin/issues/236
 
 
-## [1.0.0]()
+## [1.0.0](https://github.com/mohadian/koin/releases/tag/1.0.0)
 
 Core_
 
@@ -445,13 +445,13 @@ _Samples_
 * `[ADDED]` - Thermosiphon example - [#116](https://github.com/InsertKoinIO/koin/issues/116)
 
 
-## [0.9.3]()
+## [0.9.3](https://github.com/mohadian/koin/releases/tag/0.9.3)
 
 Gradle & Continuous Integration
 
 *version published with new build chain*
 
-## [0.9.2]()
+## [0.9.2](https://github.com/mohadian/koin/releases/tag/0.9.2)
 
 _Core_
 
@@ -474,7 +474,7 @@ _Samples_
 
 * `FIXED` Ktor hello appp sample
 
-## [0.9.1]()
+## [0.9.1](https://github.com/mohadian/koin/releases/tag/0.9.1)
 
 _DSL_
 
@@ -499,7 +499,7 @@ _Android Architecture_
 * `[UPDATED]` ViewModel factory logs to see what Activity/Fragment is getting `ViewModel` instance
 
 
-## [0.9.0]()
+## [0.9.0](https://github.com/mohadian/koin/releases/tag/0.9.0)
 
 _DSL_
 
@@ -531,13 +531,13 @@ _Android Architecture_
 * `[ADDED]` `by viewModel()` function handle key instance for Android ViewModelFactory ([#49](https://github.com/Ekito/koin/issues/49))
 
 
-## [0.8.2]()
+## [0.8.2](https://github.com/mohadian/koin/releases/tag/0.8.2)
 
 _Core_
 
 * fix internal instance registry due to compat error with Kolin `1.1.61` & `1.2.21` - broke  Koin API for app using jdk 7 under the hood - [issue #43](https://github.com/Ekito/koin/issues/43)
 
-## [0.8.1]()
+## [0.8.1](https://github.com/mohadian/koin/releases/tag/0.8.1)
 
 _Android Architecture_
 
@@ -566,7 +566,7 @@ _Core_
 * Fixed loading from koin.properties (for embedded jar)
 
 
-## [0.8.0]()
+## [0.8.0](https://github.com/mohadian/koin/releases/tag/0.8.0)
 
 <div class="alert alert-secondary" role="alert">
   Introducing new modules: koin-spark and koin-android-architecture
@@ -590,7 +590,7 @@ _Core_
 
 <br/>
 
-## [0.7.1]()
+## [0.7.1](https://github.com/mohadian/koin/releases/tag/0.7.1)
 
 <div class="alert alert-warning" role="alert">
 This 0.7.x branch brings great simplifications in DSL and API.  Users from Koin 0.6.x may check the <a href="{{ site.baseurl }}/docs/{{ site.docs_version }}/updates/whats-new">What's new in 0.7.x</a> guide 👍
@@ -627,7 +627,7 @@ _Samples_
 * Simple Kotlin app sample added
 
 <br/>
-## [0.6.1]()
+## [0.6.1](https://github.com/mohadian/koin/releases/tag/0.6.1)
 
 _Core_
 
@@ -651,7 +651,7 @@ _Ktor_
 * koin-ktor module has been started
 
 
-## [0.6.0]()
+## [0.6.0](https://github.com/mohadian/koin/releases/tag/0.6.0)
 
 The target of this release was to simplify and make clearer the syntax of Koin.
 
@@ -686,7 +686,7 @@ Android
 * ContextAware Components can be configured for drop strategy (onDestroy or onPause). Default method is onPause
 * load assets/koin.properties if present
 
-## [0.5.2]()
+## [0.5.2](https://github.com/mohadian/koin/releases/tag/0.5.2)
 
 _Core_
 
@@ -698,7 +698,7 @@ _Android_
 * `applicationContext` has been renamed `androidApplication`
 
 
-## [0.5.1]()
+## [0.5.1](https://github.com/mohadian/koin/releases/tag/0.5.1)
 
 _Core_
 
@@ -717,7 +717,7 @@ _Tests_
 javadoc is now generated with Dokka
 
 
-## [0.5.0]()
+## [0.5.0](https://github.com/mohadian/koin/releases/tag/0.5.0)
 
 _Core_ 
 
@@ -739,7 +739,7 @@ _Tests_
 * Creation of 'org.koin:koin-test:' module, provide testing feature about Koin
 
 
-## [0.4.0]()
+## [0.4.0](https://github.com/mohadian/koin/releases/tag/0.4.0)
 
 Koin DSL has been reviewed to be more easy to understand, and allow easy writing of modules. No need anymore of several module classes, you can now include subcontexts in one module. You can now provide factory components, and bind is simpler to write.
 
@@ -762,7 +762,7 @@ _Sample App_ & _Android_
 
 * updated for the new core update
 
-## [0.3.1]()
+## [0.3.1](https://github.com/mohadian/koin/releases/tag/0.3.1)
 
 _Core_
 * Kotlin 1.1.51
@@ -775,7 +775,7 @@ _Android_
 _Sample App_
 * moved to folder koin-sample-app
 
-## [0.3.0]()
+## [0.3.0](https://github.com/mohadian/koin/releases/tag/0.3.0)
 
 _Core_
 * Kotlin 1.1.50
