@@ -52,6 +52,7 @@ fun Application.main() {
 private fun Routing.declareRoutes() {
     v1()
     bye()
+    respondWithHello()
 }
 
 val helloAppModule = module(createdAtStart = true) {
