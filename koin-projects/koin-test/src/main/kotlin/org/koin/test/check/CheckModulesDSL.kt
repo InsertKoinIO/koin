@@ -25,9 +25,12 @@ data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*
 class ParametersBinding(val koin: Koin) {
 
     val parametersCreators = mutableMapOf<CheckedComponent, ParametersCreator>()
+    val defaultValues = mutableMapOf<String, Any>()
 
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
         parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+
+    inline fun <reified T : Any> defaultValue(t: T) = defaultValues.put(T::class.java.simpleName, t)
 }
 
 typealias ParametersCreator = (Qualifier?) -> DefinitionParameters

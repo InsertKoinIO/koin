@@ -182,6 +182,48 @@ class CheckModulesTest {
     }
 
     @Test
+    fun `check a module with params - default value`() {
+        val id = "_ID_"
+        var injectedValue: String? = null
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { (s: String) ->
+                        injectedValue = s
+                        Simple.MyString(s)
+                    }
+                }
+            )
+        }.checkModules {
+            defaultValue(id)
+        }
+
+        assert(injectedValue == id)
+    }
+
+    @Test
+    fun `check a module with params - default value object`() {
+        val a = Simple.ComponentA()
+        var injectedValue: Simple.ComponentA? = null
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { (a: Simple.ComponentA) ->
+                        injectedValue = a
+                        Simple.ComponentB(a)
+                    }
+                }
+            )
+        }.checkModules {
+            defaultValue(a)
+        }
+
+        assert(injectedValue == a)
+    }
+
+    @Test
     fun `check a module with params - auto scope`() {
         koinApplication {
             printLogger(Level.DEBUG)

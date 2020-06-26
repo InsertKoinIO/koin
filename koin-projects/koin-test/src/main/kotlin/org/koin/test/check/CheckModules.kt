@@ -58,13 +58,13 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
 
 private fun Koin.declareParameterCreators(
     parametersDefinition: CheckParameters?
-): MutableMap<CheckedComponent, ParametersCreator> {
+): ParametersBinding {
     val bindings = ParametersBinding(this)
     parametersDefinition?.let { bindings.parametersDefinition() }
-    return bindings.parametersCreators
+    return bindings
 }
 
-private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedComponent, ParametersCreator>) {
+private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
     _scopeRegistry.scopeDefinitions.values.forEach { scopeDefinition ->
         checkScope(scopeDefinition, allParameters)
     }
@@ -72,7 +72,7 @@ private fun Koin.checkScopedDefinitions(allParameters: MutableMap<CheckedCompone
 
 private fun Koin.checkScope(
     scopeDefinition: ScopeDefinition,
-    allParameters: MutableMap<CheckedComponent, ParametersCreator>
+    allParameters: ParametersBinding
 ) {
     val qualifier = scopeDefinition.qualifier
     val sourceScopeValue = mockSourceValue(qualifier)
@@ -89,12 +89,13 @@ private fun mockSourceValue(qualifier: Qualifier): Any? {
 }
 
 private fun checkDefinition(
-    allParameters: MutableMap<CheckedComponent, ParametersCreator>,
+    allParameters: ParametersBinding,
     definition: BeanDefinition<*>,
     scope: Scope
 ) {
-    val parameters = allParameters[CheckedComponent(definition.qualifier, definition.primaryType)]?.invoke(
+    val parameters = allParameters.parametersCreators[CheckedComponent(definition.qualifier,
+        definition.primaryType)]?.invoke(
         definition.qualifier)
-        ?: MockParameter(scope) //TODO add default param check here
+        ?: MockParameter(scope, allParameters.defaultValues) //TODO add default param check here
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
 }
