@@ -16,12 +16,7 @@ class MockParameter(
             Double::class.java.simpleName -> 0.0 as T
             Float::class.java.simpleName -> 0.0f as T
             else -> {
-                val found = try {
-                    scope.getOrNull<T?>(clazz = clazz)
-                } catch (e: Exception) {
-                    // not found
-                }
-                (found ?: Mockito.mock(clazz.java)) as T
+                (scope.getOrNull<T?>(clazz = clazz) ?: Mockito.mock(clazz.java)) as T
             }
         }
     }
