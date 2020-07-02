@@ -58,9 +58,8 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
 
 private fun Koin.declareParameterCreators(
     parametersDefinition: CheckParameters?
-) = ParametersBinding(this).also { binding -> 
-    parametersDefinition?.invoke(binding) 
-}
+) = ParametersBinding(this).also { binding ->
+    parametersDefinition?.invoke(binding)
 }
 
 private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
