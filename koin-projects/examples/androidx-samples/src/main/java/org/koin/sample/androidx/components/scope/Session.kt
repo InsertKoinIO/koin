@@ -1,7 +1,7 @@
 package org.koin.sample.androidx.components.scope
 
 import org.koin.sample.androidx.scope.ScopedActivityA
-import java.util.*
+import java.util.UUID
 
 data class Session(var id: String = UUID.randomUUID().toString())
 
