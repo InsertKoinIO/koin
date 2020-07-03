@@ -29,6 +29,11 @@ Each of the module test will use the `checkModules` API to check the module:
 ```kotlin
 @Category(CheckModuleTest::class)
 class CheckModulesTest : KoinTest {
+    
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
 
     @Test
     fun checkAllModules() = checkModules {
@@ -36,6 +41,8 @@ class CheckModulesTest : KoinTest {
     }
 }
 ```
+
+> You can notice that we need a `MockProviderRule` declaration to allow Koin mock any injected definition
 
 #### Verifying graph with injected parameters [since 2.2.0]
 
@@ -57,17 +64,13 @@ If you need, you can set a default value for all type in the checked modules. Fo
 Let's use the `defaultValues()` function, to define a default value for all definitions:
 
 ```kotlin
-@Category(CheckModuleTest::class)
-class CheckModulesTest : KoinTest {
-
-    @Test
-    fun checkAllModules() = checkModules(
-        parameters = {
-            defaultValues<String>("_ID_")
-        }   
-    ){
-        modules(myModules)
-    }
+@Test
+fun checkAllModules() = checkModules(
+    parameters = {
+        defaultValues<String>("_ID_")
+    }   
+){
+    modules(myModules)
 }
 ```
 
@@ -85,17 +88,13 @@ module {
 You can define default value to be injected for one specific definition, with `create` function:
 
 ```kotlin
-@Category(CheckModuleTest::class)
-class CheckModulesTest : KoinTest {
-
-    @Test
-    fun checkAllModules() = checkModules(
-        parameters = {
-            create<FactoryPresenter> { parametersOf("_FactoryId_") }
-        }   
-    ){
-        modules(myModules)
-    }
+@Test
+fun checkAllModules() = checkModules(
+    parameters = {
+        create<FactoryPresenter> { parametersOf("_FactoryId_") }
+    }   
+){
+    modules(myModules)
 }
 ```
 
