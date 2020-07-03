@@ -1,6 +1,7 @@
 package org.koin.test
 
 import org.junit.Assert.fail
+import org.junit.Rule
 import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
@@ -9,8 +10,15 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import org.koin.test.mock.MockProviderRule
+import org.mockito.Mockito
 
 class CheckModulesTest {
+
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
 
     @Test
     fun `check a scoped module`() {

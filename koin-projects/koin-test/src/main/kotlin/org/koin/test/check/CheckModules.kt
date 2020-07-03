@@ -26,8 +26,8 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
+import org.koin.test.mock.MockProvider
 import org.koin.test.parameter.MockParameter
-import org.mockito.Mockito
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
@@ -82,7 +82,7 @@ private fun Koin.checkScope(
 
 private fun mockSourceValue(qualifier: Qualifier): Any? {
     return if (qualifier is TypeQualifier) {
-        Mockito.mock(qualifier.type.java)
+        MockProvider.makeMock(qualifier.type)
     } else null
 }
 
@@ -94,6 +94,6 @@ private fun checkDefinition(
     val parameters = allParameters.parametersCreators[CheckedComponent(definition.qualifier,
         definition.primaryType)]?.invoke(
         definition.qualifier)
-        ?: MockParameter(scope, allParameters.defaultValues) //TODO add default param check here
+        ?: MockParameter(scope, allParameters.defaultValues)
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
 }

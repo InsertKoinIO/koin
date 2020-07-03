@@ -63,4 +63,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+
 }
