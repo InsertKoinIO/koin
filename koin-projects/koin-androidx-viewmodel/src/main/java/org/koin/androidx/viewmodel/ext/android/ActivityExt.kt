@@ -17,7 +17,6 @@ package org.koin.androidx.viewmodel.ext.android
 
 import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoin
@@ -34,7 +33,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-inline fun <reified T : ViewModel> Fragment.viewModel(
+inline fun <reified T : ViewModel> AppCompatActivity.viewModel(
     qualifier: Qualifier? = null,
     noinline store: ViewModelStoreDefinition = { this.viewModelStore },
     noinline stateRegistry: SavedStateRegistryOwnerDefinition = { this },
@@ -46,7 +45,7 @@ inline fun <reified T : ViewModel> Fragment.viewModel(
     }
 }
 
-fun <T : ViewModel> Fragment.viewModel(
+fun <T : ViewModel> AppCompatActivity.viewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition = { this.viewModelStore },
@@ -57,7 +56,7 @@ fun <T : ViewModel> Fragment.viewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, store, stateRegistry, state, parameters) }
 }
 
-inline fun <reified T : ViewModel> Fragment.getViewModel(
+inline fun <reified T : ViewModel> AppCompatActivity.getViewModel(
     qualifier: Qualifier? = null,
     noinline store: ViewModelStoreDefinition = { this.viewModelStore },
     noinline stateRegistry: SavedStateRegistryOwnerDefinition = { this },
@@ -67,7 +66,7 @@ inline fun <reified T : ViewModel> Fragment.getViewModel(
     return getViewModel(T::class, qualifier, store, stateRegistry, state, parameters)
 }
 
-fun <T : ViewModel> Fragment.getViewModel(
+fun <T : ViewModel> AppCompatActivity.getViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition = { this.viewModelStore },
@@ -78,4 +77,4 @@ fun <T : ViewModel> Fragment.getViewModel(
     return getKoin().getViewModel(clazz, qualifier, store, stateRegistry, state, parameters)
 }
 
-internal fun Fragment.getKoin() = (this as ComponentCallbacks).getKoin()
+internal fun ViewModelStoreOwner.getKoin() = (this as ComponentCallbacks).getKoin()

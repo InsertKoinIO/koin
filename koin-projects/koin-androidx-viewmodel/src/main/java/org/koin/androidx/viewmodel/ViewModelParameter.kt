@@ -8,12 +8,10 @@ import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 class ViewModelParameter<T : Any>(
-        val clazz: KClass<T>,
-        val qualifier: Qualifier? = null,
-        val parameters: ParametersDefinition? = null,
-        val bundle: Bundle? = null,
-        val viewModelStore: ViewModelStore,
-        val stateRegistryOwner: SavedStateRegistryOwner? = null
+    val clazz: KClass<T>,
+    val qualifier: Qualifier? = null,
+    val parameters: ParametersDefinition? = null,
+    val bundle: Bundle? = null,
+    val viewModelStore: ViewModelStore,
+    val registryOwner: SavedStateRegistryOwner
 )
-
-typealias StateBundleParameter = () -> Bundle

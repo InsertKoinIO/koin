@@ -15,8 +15,10 @@
  */
 package org.koin.androidx.viewmodel.scope
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.ViewModelStore
+import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.createViewModelProvider
 import org.koin.androidx.viewmodel.resolveInstance
@@ -32,25 +34,39 @@ import kotlin.reflect.KClass
  */
 
 inline fun <reified T : ViewModel> Scope.viewModel(
-    owner: ViewModelStoreOwner,
+    noinline store: ViewModelStoreDefinition,
+    noinline stateRegistry: SavedStateRegistryOwnerDefinition,
     qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, T::class, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(T::class, store, stateRegistry, qualifier, state, parameters)
+    }
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
-    owner: ViewModelStoreOwner,
+    noinline store: ViewModelStoreDefinition,
+    noinline stateRegistry: SavedStateRegistryOwnerDefinition,
     qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(owner, T::class, qualifier, parameters)
+    return getViewModel(T::class, store, stateRegistry, qualifier, state, parameters)
 }
 
+typealias SavedStateRegistryOwnerDefinition = () -> SavedStateRegistryOwner
+typealias ViewModelStoreDefinition = () -> ViewModelStore
+
+fun emptyState(): BundleDefinition = { Bundle() }
+typealias BundleDefinition = () -> Bundle
+
 fun <T : ViewModel> Scope.getViewModel(
-    owner: ViewModelStoreOwner,
     clazz: KClass<T>,
+    store: ViewModelStoreDefinition,
+    stateRegistry: SavedStateRegistryOwnerDefinition,
     qualifier: Qualifier? = null,
+    state: BundleDefinition? = null,
     parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(
@@ -58,9 +74,9 @@ fun <T : ViewModel> Scope.getViewModel(
             clazz,
             qualifier,
             parameters,
-            null,
-            owner.viewModelStore,
-            null
+            state?.invoke(),
+            store(),
+            stateRegistry()
         )
     )
 }
