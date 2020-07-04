@@ -13,5 +13,5 @@ class ViewModelParameter<T : Any>(
     val parameters: ParametersDefinition? = null,
     val bundle: Bundle? = null,
     val viewModelStore: ViewModelStore,
-    val registryOwner: SavedStateRegistryOwner
+    val registryOwner: SavedStateRegistryOwner? = null
 )

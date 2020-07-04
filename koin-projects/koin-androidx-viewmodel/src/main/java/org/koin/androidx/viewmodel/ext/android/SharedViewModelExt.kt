@@ -45,19 +45,19 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel(T::class, qualifier, store, stateRegistry, state, parameters)
+        getViewModel<T>(qualifier, store, stateRegistry, state, parameters)
     }
 }
 
 fun <T : ViewModel> Fragment.sharedViewModel(
-    clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition = { requireActivity().viewModelStore },
     stateRegistry: SavedStateRegistryOwnerDefinition = { requireActivity() },
     state: BundleDefinition? = null,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, store, stateRegistry, state, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, store, stateRegistry, state, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
@@ -67,15 +67,15 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(T::class, qualifier, store, stateRegistry, state, parameters)
+    return getViewModel(qualifier, store, stateRegistry, state, T::class, parameters)
 }
 
 fun <T : ViewModel> Fragment.getSharedViewModel(
-    clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition = { requireActivity().viewModelStore },
     stateRegistry: SavedStateRegistryOwnerDefinition = { requireActivity() },
     state: BundleDefinition? = null,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(clazz, qualifier, store, stateRegistry, state, parameters)

@@ -16,10 +16,8 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import android.content.ComponentCallbacks
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
@@ -42,19 +40,19 @@ inline fun <reified T : ViewModel> Fragment.viewModel(
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel(T::class, qualifier, store, stateRegistry, state, parameters)
+        getViewModel<T>(qualifier, store, stateRegistry, state, parameters)
     }
 }
 
 fun <T : ViewModel> Fragment.viewModel(
-    clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition = { this.viewModelStore },
     stateRegistry: SavedStateRegistryOwnerDefinition = { this },
     state: BundleDefinition? = null,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, store, stateRegistry, state, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, store, stateRegistry, state, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(
@@ -64,15 +62,15 @@ inline fun <reified T : ViewModel> Fragment.getViewModel(
     noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(T::class, qualifier, store, stateRegistry, state, parameters)
+    return getViewModel(qualifier, store, stateRegistry, state, T::class, parameters)
 }
 
 fun <T : ViewModel> Fragment.getViewModel(
-    clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition = { this.viewModelStore },
     stateRegistry: SavedStateRegistryOwnerDefinition = { this },
     state: BundleDefinition? = null,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
     return getKoin().getViewModel(clazz, qualifier, store, stateRegistry, state, parameters)

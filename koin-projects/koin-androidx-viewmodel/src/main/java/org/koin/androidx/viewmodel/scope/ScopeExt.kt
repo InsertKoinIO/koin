@@ -35,7 +35,7 @@ import kotlin.reflect.KClass
 
 inline fun <reified T : ViewModel> Scope.viewModel(
     noinline store: ViewModelStoreDefinition,
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition,
+    noinline stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
@@ -47,7 +47,7 @@ inline fun <reified T : ViewModel> Scope.viewModel(
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
     noinline store: ViewModelStoreDefinition,
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition,
+    noinline stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
@@ -64,7 +64,7 @@ typealias BundleDefinition = () -> Bundle
 fun <T : ViewModel> Scope.getViewModel(
     clazz: KClass<T>,
     store: ViewModelStoreDefinition,
-    stateRegistry: SavedStateRegistryOwnerDefinition,
+    stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
     parameters: ParametersDefinition? = null
@@ -76,7 +76,7 @@ fun <T : ViewModel> Scope.getViewModel(
             parameters,
             state?.invoke(),
             store(),
-            stateRegistry()
+            stateRegistry?.invoke()
         )
     )
 }

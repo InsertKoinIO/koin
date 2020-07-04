@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> Koin.viewModel(
     qualifier: Qualifier? = null,
     noinline store: ViewModelStoreDefinition,
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition,
+    noinline stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
@@ -24,7 +24,7 @@ inline fun <reified T : ViewModel> Koin.viewModel(
 inline fun <reified T : ViewModel> Koin.getViewModel(
     qualifier: Qualifier? = null,
     noinline store: ViewModelStoreDefinition,
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition,
+    noinline stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     noinline state: BundleDefinition? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
@@ -35,7 +35,7 @@ fun <T : ViewModel> Koin.getViewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     store: ViewModelStoreDefinition,
-    stateRegistry: SavedStateRegistryOwnerDefinition,
+    stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     state: BundleDefinition? = null,
     parameters: ParametersDefinition? = null
 ): T {
