@@ -122,9 +122,9 @@ class Koin {
      * @return instance of type T or null
      */
     fun <T> getOrNull(
-            clazz: KClass<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T? = _scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
 
 
@@ -228,9 +228,10 @@ class Koin {
      * Get or Create a Scope instance
      * @param scopeId
      * @param qualifier
+     * @param source
      */
-    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
+        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier, source)
     }
 
     /**

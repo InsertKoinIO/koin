@@ -2,6 +2,15 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.2.0]()
+
+_koin-test_
+
+* `[FIXED]` fixed checkModules to use Mock for injected parameters or default origin value of a Scope
+* `[ADDED]` setup detault values for injected parameters, for checkModules
+* `[UPDATED]` fixed `DefinitionParameters` to add the ability to know the injected type value
+
+
 ## [2.1.6]()
 
 _koin-core_
