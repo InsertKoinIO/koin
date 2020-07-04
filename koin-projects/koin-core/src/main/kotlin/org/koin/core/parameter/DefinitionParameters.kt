@@ -65,6 +65,17 @@ open class DefinitionParameters(vararg val values: Any?) {
      */
     fun isNotEmpty() = !isEmpty()
 
+    fun insert(index: Int, value: Any): DefinitionParameters {
+        if (values.size > MAX_PARAMS - 1) {
+            throw DefinitionParameterException(
+                "Can't insert $value at $index in DefinitionParameters. Exceed $MAX_PARAMS arguments")
+        } else {
+            val list = values.toMutableList()
+            list.add(index, value)
+            return DefinitionParameters(*list.toTypedArray())
+        }
+    }
+
     /**
      * Get first element of given type T
      * return T

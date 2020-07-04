@@ -10,6 +10,7 @@ import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.viewModel
+import org.koin.androidx.viewmodel.scope.viewModelFromActivity
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
@@ -27,22 +28,19 @@ class MVVMActivity : AppCompatActivity() {
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
-    val vm3: SimpleViewModel by viewModel { parametersOf("") }
 
     val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(store = { this.viewModelStore })
-    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(store = { this.viewModelStore }, qualifier = named("ext"))
+    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModelFromActivity(activity = { this },
+        qualifier = named("ext"))
 
     val bundle = Bundle().apply { putString("vm1", "value to stateViewModel") }
     val savedVm: SavedStateViewModel by viewModel(state = { bundle }) { parametersOf("vm1") }
 
-    val bundleStateScope = Bundle().apply {
-        putString("vm2", "value to lifecycleScope.stateViewModel")
-    }
-    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModel(
+    val bundleStateScope = Bundle().apply { putString("vm2", "value to lifecycleScope.stateViewModel") }
+    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModelFromActivity(activity = { this },
         qualifier = named("vm2"),
-        state = { bundleStateScope },
-        stateRegistry = { this },
-        store = { this.viewModelStore }) { parametersOf("vm2") }
+        state = { bundleStateScope }
+    ) { parametersOf("vm2") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
@@ -80,6 +78,5 @@ class MVVMActivity : AppCompatActivity() {
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)
         }
-
     }
 }

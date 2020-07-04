@@ -16,6 +16,8 @@
 package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.savedstate.SavedStateRegistryOwner
@@ -32,6 +34,46 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+
+inline fun <reified T : ViewModel> Scope.viewModelFromFragment(
+    noinline fragment: () -> Fragment,
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(T::class, { fragment().viewModelStore }, { fragment() }, qualifier, state, parameters)
+    }
+}
+
+inline fun <reified T : ViewModel> Scope.getViewModelFromFragment(
+    noinline fragment: () -> Fragment,
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModel(T::class, { fragment().viewModelStore }, { fragment() }, qualifier, state, parameters)
+}
+
+inline fun <reified T : ViewModel> Scope.viewModelFromActivity(
+    noinline activity: () -> AppCompatActivity,
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(T::class, { activity().viewModelStore }, { activity() }, qualifier, state, parameters)
+    }
+}
+
+inline fun <reified T : ViewModel> Scope.getViewModelFromActivity(
+    noinline activity: () -> AppCompatActivity,
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModel(T::class, { activity().viewModelStore }, { activity() }, qualifier, state, parameters)
+}
 
 inline fun <reified T : ViewModel> Scope.viewModel(
     noinline store: ViewModelStoreDefinition,

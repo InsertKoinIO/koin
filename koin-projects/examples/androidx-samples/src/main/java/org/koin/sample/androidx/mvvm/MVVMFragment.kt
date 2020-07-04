@@ -10,6 +10,7 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.parameter.parametersOf
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
@@ -19,12 +20,13 @@ import org.koin.sample.androidx.components.scope.Session
 
 class MVVMFragment(val session: Session) : Fragment() {
 
-    val shared: SimpleViewModel by sharedViewModel { parametersOf(ID) }
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
 
-    val saved by viewModel<SavedStateViewModel> { parametersOf(ID) }
+    val shared: SimpleViewModel by sharedViewModel { parametersOf(ID) }
     val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
-    val sharedSaved2 by viewModel<SavedStateViewModel> { parametersOf(ID) }
+
+    val saved by viewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
+    val saved2 by viewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,14 +42,14 @@ class MVVMFragment(val session: Session) : Fragment() {
         assertNotNull(session)
 
         assertNotEquals(shared, simpleViewModel)
-        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved)
 
         assertEquals((requireActivity() as MVVMActivity).simpleViewModel, shared)
         assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved)
-        assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved)
-        assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved)
-        assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved2)
-        assertEquals(sharedSaved, sharedSaved2)
+
+        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved)
+        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved2)
+
+        assertEquals(saved, saved2)
 
         assertEquals(requireActivity().lifecycleScope.get<Session>().id, getKoin().getProperty("session_id"))
     }
