@@ -70,7 +70,7 @@ Create mocks using MockK:
 @get:Rule
 val mockProvider = MockProviderRule.create { clazz ->
     // Your way to build a Mock here
-    mockkClass(clazz.java.kotlin)
+    mockkClass(clazz)
 }
 ```
 

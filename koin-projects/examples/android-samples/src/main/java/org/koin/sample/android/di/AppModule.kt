@@ -83,3 +83,5 @@ val javaModule = module {
         viewModel { CompatSimpleViewModel(get()) }
     }
 }
+
+val allModules = appModule + mvpModule + mvvmModule + scopeModule + dynamicModule + javaModule

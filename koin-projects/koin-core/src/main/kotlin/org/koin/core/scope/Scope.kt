@@ -151,7 +151,7 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: Exception) {
-            _koin._logger.error("Can't get instance for ${clazz.getFullName()}")
+            _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()}")
             null
         }
     }
@@ -229,9 +229,9 @@ data class Scope(
         var instance: T? = null
         for (scope in _linkedScope) {
             instance = scope.getOrNull<T>(
-                    clazz,
-                    qualifier,
-                    parameters
+                clazz,
+                qualifier,
+                parameters
             )
             if (instance != null) break
         }

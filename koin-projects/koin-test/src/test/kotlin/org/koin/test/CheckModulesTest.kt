@@ -1,6 +1,7 @@
 package org.koin.test
 
 import org.junit.Assert.fail
+import org.junit.Rule
 import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
@@ -9,20 +10,27 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import org.koin.test.mock.MockProviderRule
+import org.mockito.Mockito
 
 class CheckModulesTest {
+
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
 
     @Test
     fun `check a scoped module`() {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        scope(named("scope")) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(named("scope")) {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) }
                     }
+                }
             )
         }.checkModules()
     }
@@ -33,12 +41,12 @@ class CheckModulesTest {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
-                        module {
-                            single { Simple.ComponentB(get()) }
-                            scope(named("scope")) {
-                                scoped { Simple.ComponentA() }
-                            }
+                    module {
+                        single { Simple.ComponentB(get()) }
+                        scope(named("scope")) {
+                            scoped { Simple.ComponentA() }
                         }
+                    }
                 )
             }.checkModules()
             fail()
@@ -53,14 +61,14 @@ class CheckModulesTest {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
-                        module {
-                            scope(named("scope2")) {
-                                scoped { Simple.ComponentB(get()) }
-                            }
-                            scope(named("scope1")) {
-                                scoped { Simple.ComponentA() }
-                            }
+                    module {
+                        scope(named("scope2")) {
+                            scoped { Simple.ComponentB(get()) }
                         }
+                        scope(named("scope1")) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
                 )
             }.checkModules()
             fail()
@@ -74,17 +82,17 @@ class CheckModulesTest {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        scope(named("scope2")) {
-                            scoped {
-                                val a = getScope("scopei1").get<Simple.ComponentA>()
-                                Simple.ComponentB(a)
-                            }
-                        }
-                        scope(named("scope1")) {
-                            scoped { Simple.ComponentA() }
+                module {
+                    scope(named("scope2")) {
+                        scoped {
+                            val a = getScope("scopei1").get<Simple.ComponentA>()
+                            Simple.ComponentB(a)
                         }
                     }
+                    scope(named("scope1")) {
+                        scoped { Simple.ComponentA() }
+                    }
+                }
             )
         }.checkModules {
             koin.createScope("scopei1", named("scope1"))
@@ -96,14 +104,14 @@ class CheckModulesTest {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        scope(named("scope2")) {
-                            scoped { (scope1: Scope) -> Simple.ComponentB(scope1.get()) }
-                        }
-                        scope(named("scope1")) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named("scope2")) {
+                        scoped { (scope1: Scope) -> Simple.ComponentB(scope1.get()) }
                     }
+                    scope(named("scope1")) {
+                        scoped { Simple.ComponentA() }
+                    }
+                }
             )
         }.checkModules {
             create<Simple.ComponentB> { parametersOf(koin.createScope("scopei1", named("scope1"))) }
@@ -115,9 +123,9 @@ class CheckModulesTest {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    }
+                module {
+                    single { Simple.ComponentA() }
+                }
             )
         }.checkModules()
     }
@@ -127,10 +135,10 @@ class CheckModulesTest {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                        single { Simple.ComponentB(get()) }
-                    }
+                module {
+                    single { Simple.ComponentA() }
+                    single { Simple.ComponentB(get()) }
+                }
             )
         }.checkModules()
     }
@@ -141,9 +149,9 @@ class CheckModulesTest {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
-                        module {
-                            single { Simple.ComponentB(get()) }
-                        }
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    }
                 )
             }.checkModules()
             fail("should not pass with borken definitions")
@@ -157,14 +165,101 @@ class CheckModulesTest {
         koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { (s: String) -> Simple.MyString(s) }
-                        single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
-                    }
+                module {
+                    single { (s: String) -> Simple.MyString(s) }
+                    single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
+                }
             )
         }.checkModules {
             create<Simple.MyString> { parametersOf("param") }
             create<Simple.MyString>(UpperCase) { qualifier -> parametersOf(qualifier.toString()) }
+        }
+    }
+
+    @Test
+    fun `check a module with params - auto`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { (s: String) -> Simple.MyString(s) }
+                    single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with params - default value`() {
+        val id = "_ID_"
+        var injectedValue: String? = null
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { (s: String) ->
+                        injectedValue = s
+                        Simple.MyString(s)
+                    }
+                }
+            )
+        }.checkModules {
+            defaultValue(id)
+        }
+
+        assert(injectedValue == id)
+    }
+
+    @Test
+    fun `check a module with params - default value object`() {
+        val a = Simple.ComponentA()
+        var injectedValue: Simple.ComponentA? = null
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { (a: Simple.ComponentA) ->
+                        injectedValue = a
+                        Simple.ComponentB(a)
+                    }
+                }
+            )
+        }.checkModules {
+            defaultValue(a)
+        }
+
+        assert(injectedValue == a)
+    }
+
+    @Test
+    fun `check a module with params - auto scope`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    scope<Simple.ComponentA> {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with params - auto scope - error`() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                    module {
+                        scope<Simple.ComponentA> {
+                            scoped { Simple.ComponentC(get()) }
+                        }
+                    }
+                )
+            }.checkModules()
+            fail()
+        } catch (e: Exception) {
         }
     }
 
@@ -184,9 +279,9 @@ class CheckModulesTest {
             printLogger(Level.DEBUG)
             properties(hashMapOf("aValue" to "value"))
             modules(
-                    module {
-                        single { Simple.MyString(getProperty("aValue")) }
-                    }
+                module {
+                    single { Simple.MyString(getProperty("aValue")) }
+                }
             )
         }.checkModules()
     }

@@ -22,11 +22,15 @@ import kotlin.reflect.KClass
 
 data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*>)
 
-class ParametersBinding {
-    val creators = mutableMapOf<CheckedComponent, ParametersCreator>()
-    lateinit var koin: Koin
+class ParametersBinding(val koin: Koin) {
+
+    val parametersCreators = mutableMapOf<CheckedComponent, ParametersCreator>()
+    val defaultValues = mutableMapOf<String, Any>()
+
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
-            creators.put(CheckedComponent(qualifier, T::class), creator)
+        parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+
+    inline fun <reified T : Any> defaultValue(t: T) = defaultValues.put(T::class.java.simpleName, t)
 }
 
 typealias ParametersCreator = (Qualifier?) -> DefinitionParameters
