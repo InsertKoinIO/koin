@@ -28,7 +28,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class DefinitionParameters(vararg val values: Any?) {
+open class DefinitionParameters(val values: MutableList<Any> = arrayListOf()) {
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
         if (values.size > i) values[i] as T else throw NoParameterFoundException(
@@ -47,7 +47,7 @@ open class DefinitionParameters(vararg val values: Any?) {
     operator fun <T> get(i: Int) = values[i] as T
 
     fun <T> set(i: Int, t: T) {
-        values.toMutableList()[i] = t
+        values.toMutableList()[i] = t as Any
     }
 
     /**
@@ -72,7 +72,7 @@ open class DefinitionParameters(vararg val values: Any?) {
         } else {
             val list = values.toMutableList()
             list.add(index, value)
-            return DefinitionParameters(*list.toTypedArray())
+            return DefinitionParameters(list)
         }
     }
 
@@ -95,8 +95,9 @@ open class DefinitionParameters(vararg val values: Any?) {
  * @see parameters
  * return ParameterList
  */
-fun parametersOf(vararg parameters: Any?) =
-    if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else throw DefinitionParameterException(
+fun parametersOf(vararg parameters: Any) =
+    if (parameters.size <= MAX_PARAMS) DefinitionParameters(
+        parameters.toMutableList()) else throw DefinitionParameterException(
         "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
