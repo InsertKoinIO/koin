@@ -15,15 +15,13 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
-import org.koin.androidx.viewmodel.scope.SavedStateRegistryOwnerDefinition
-import org.koin.androidx.viewmodel.scope.ViewModelStoreDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -36,45 +34,39 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> AppCompatActivity.viewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
-    noinline store: ViewModelStoreDefinition = { this.viewModelStore },
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition = { this },
+    noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel<T>(qualifier, state, store, stateRegistry, parameters)
+        getViewModel<T>(qualifier, state, owner, parameters)
     }
 }
 
 fun <T : ViewModel> AppCompatActivity.viewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
-    store: ViewModelStoreDefinition = { this.viewModelStore },
-    stateRegistry: SavedStateRegistryOwnerDefinition = { this },
+    owner: ViewModelOwnerDefinition = { from(this,this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, store, stateRegistry, clazz, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> AppCompatActivity.getViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
-    noinline store: ViewModelStoreDefinition = { this.viewModelStore },
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition = { this },
+    noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(qualifier, state, store, stateRegistry, T::class, parameters)
+    return getViewModel(qualifier, state, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> AppCompatActivity.getViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
-    store: ViewModelStoreDefinition = { this.viewModelStore },
-    stateRegistry: SavedStateRegistryOwnerDefinition = { this },
+    owner: ViewModelOwnerDefinition = { from(this,this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(clazz, qualifier, store, stateRegistry, state, parameters)
+    return getKoin().getViewModel(qualifier, state, owner, clazz, parameters)
 }
-
-internal fun ViewModelStoreOwner.getKoin() = (this as ComponentCallbacks).getKoin()

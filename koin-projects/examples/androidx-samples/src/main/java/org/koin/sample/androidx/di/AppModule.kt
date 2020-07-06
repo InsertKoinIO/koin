@@ -56,7 +56,7 @@ val mvvmModule = module {
         fragment { MVVMFragment(get()) }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) ->
+        viewModel(named("vm3")) { (handle: SavedStateHandle, id: String) ->
             SavedStateViewModel(
                 handle,
                 id,

@@ -16,11 +16,10 @@
 package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.createViewModelProvider
 import org.koin.androidx.viewmodel.resolveInstance
@@ -34,91 +33,49 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-
-inline fun <reified T : ViewModel> Scope.viewModelFromFragment(
-    noinline fragment: () -> Fragment,
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel(T::class, { fragment().viewModelStore }, { fragment() }, qualifier, state, parameters)
-    }
-}
-
-inline fun <reified T : ViewModel> Scope.getViewModelFromFragment(
-    noinline fragment: () -> Fragment,
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
-): T {
-    return getViewModel(T::class, { fragment().viewModelStore }, { fragment() }, qualifier, state, parameters)
-}
-
-inline fun <reified T : ViewModel> Scope.viewModelFromActivity(
-    noinline activity: () -> AppCompatActivity,
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel(T::class, { activity().viewModelStore }, { activity() }, qualifier, state, parameters)
-    }
-}
-
-inline fun <reified T : ViewModel> Scope.getViewModelFromActivity(
-    noinline activity: () -> AppCompatActivity,
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
-): T {
-    return getViewModel(T::class, { activity().viewModelStore }, { activity() }, qualifier, state, parameters)
-}
-
-inline fun <reified T : ViewModel> Scope.viewModel(
-    noinline store: ViewModelStoreDefinition,
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition? = null,
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel(T::class, store, stateRegistry, qualifier, state, parameters)
-    }
-}
-
-inline fun <reified T : ViewModel> Scope.getViewModel(
-    noinline store: ViewModelStoreDefinition,
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition? = null,
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
-): T {
-    return getViewModel(T::class, store, stateRegistry, qualifier, state, parameters)
-}
-
 typealias SavedStateRegistryOwnerDefinition = () -> SavedStateRegistryOwner
 typealias ViewModelStoreDefinition = () -> ViewModelStore
 
 fun emptyState(): BundleDefinition = { Bundle() }
 typealias BundleDefinition = () -> Bundle
 
+
+inline fun <reified T : ViewModel> Scope.viewModel(
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline owner: ViewModelOwnerDefinition,
+    noinline parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel<T>(qualifier, state, owner, parameters)
+    }
+}
+
+inline fun <reified T : ViewModel> Scope.getViewModel(
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline owner: ViewModelOwnerDefinition,
+    noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModel(qualifier, state, owner, T::class, parameters)
+}
+
 fun <T : ViewModel> Scope.getViewModel(
-    clazz: KClass<T>,
-    store: ViewModelStoreDefinition,
-    stateRegistry: SavedStateRegistryOwnerDefinition? = null,
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
+    owner: ViewModelOwnerDefinition,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
+    val ownerDef = owner()
     return getViewModel(
         ViewModelParameter(
             clazz,
             qualifier,
             parameters,
             state?.invoke(),
-            store(),
-            stateRegistry?.invoke()
+            ownerDef.store,
+            ownerDef.stateRegistry
         )
     )
 }

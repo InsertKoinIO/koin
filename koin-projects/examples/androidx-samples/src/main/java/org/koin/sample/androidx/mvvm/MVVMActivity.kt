@@ -7,10 +7,11 @@ import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.fromAny
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.viewModel
-import org.koin.androidx.viewmodel.scope.viewModelFromActivity
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
@@ -29,18 +30,18 @@ class MVVMActivity : AppCompatActivity() {
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(store = { this.viewModelStore })
-    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModelFromActivity(activity = { this },
+    val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(owner = { from(this) })
+    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(owner = { from(this) },
         qualifier = named("ext"))
 
     val bundle = Bundle().apply { putString("vm1", "value to stateViewModel") }
     val savedVm: SavedStateViewModel by viewModel(state = { bundle }) { parametersOf("vm1") }
 
     val bundleStateScope = Bundle().apply { putString("vm2", "value to lifecycleScope.stateViewModel") }
-    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModelFromActivity(activity = { this },
-        qualifier = named("vm2"),
+    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModel(owner = { fromAny(this) },
+        qualifier = named("vm3"),
         state = { bundleStateScope }
-    ) { parametersOf("vm2") }
+    ) { parametersOf("vm3") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're

@@ -15,14 +15,14 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.content.ComponentCallbacks
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ViewModelOwner
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
-import org.koin.androidx.viewmodel.scope.SavedStateRegistryOwnerDefinition
-import org.koin.androidx.viewmodel.scope.ViewModelStoreDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -34,46 +34,40 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
-    noinline store: ViewModelStoreDefinition = { this.viewModelStore },
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition = { this },
     noinline state: BundleDefinition? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel<T>(qualifier, store, stateRegistry, state, parameters)
+        getViewModel<T>(qualifier, state, owner, parameters)
     }
 }
 
 fun <T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
-    store: ViewModelStoreDefinition = { this.viewModelStore },
-    stateRegistry: SavedStateRegistryOwnerDefinition = { this },
     state: BundleDefinition? = null,
+    owner: ViewModelOwnerDefinition = { from(this,this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, store, stateRegistry, state, clazz, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(
     qualifier: Qualifier? = null,
-    noinline store: ViewModelStoreDefinition = { this.viewModelStore },
-    noinline stateRegistry: SavedStateRegistryOwnerDefinition = { this },
     noinline state: BundleDefinition? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(qualifier, store, stateRegistry, state, T::class, parameters)
+    return getViewModel(qualifier, state, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> Fragment.getViewModel(
     qualifier: Qualifier? = null,
-    store: ViewModelStoreDefinition = { this.viewModelStore },
-    stateRegistry: SavedStateRegistryOwnerDefinition = { this },
     state: BundleDefinition? = null,
+    owner: ViewModelOwnerDefinition = { from(this,this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(clazz, qualifier, store, stateRegistry, state, parameters)
+    return getKoin().getViewModel(qualifier, state, owner, clazz, parameters)
 }
-
-internal fun Fragment.getKoin() = (this as ComponentCallbacks).getKoin()

@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 
@@ -24,7 +25,11 @@ fun <T : ViewModel> Scope.stateViewModelFactory(
                 vmParams.clazz,
                 vmParams.qualifier
             ) {
-                vmParams.parameters?.invoke()?.insert(0, handle) ?: parametersOf(handle)
+                if (vmParams.initialState != null) {
+                    vmParams.parameters?.invoke()?.insert(0, handle) ?: parametersOf(handle)
+                } else {
+                    vmParams.parameters?.invoke() ?: emptyParametersHolder()
+                }
             }
         }
     }

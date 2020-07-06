@@ -34,7 +34,7 @@ internal fun <T : ViewModel> Scope.createViewModelProvider(
 
 private fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>): ViewModelProvider.Factory {
-    return if (viewModelParameters.registryOwner != null && viewModelParameters.initialState != null)
+    return if (viewModelParameters.registryOwner != null)
         stateViewModelFactory(viewModelParameters)
     else defaultViewModelFactory(viewModelParameters)
 }
