@@ -17,7 +17,7 @@ import org.koin.core.qualifier.Qualifier
  *
  * @return Lazy instance of type T
  */
-
+@ExperimentalComposeInject
 @Composable
 inline fun <reified T> inject(
     qualifier: Qualifier? = null,

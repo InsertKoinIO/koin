@@ -5,14 +5,12 @@ import androidx.ui.core.Modifier
 import androidx.ui.core.testTag
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.gestures.DragDirection
 import androidx.ui.layout.Arrangement
 import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.size
-import androidx.ui.test.*
-import androidx.ui.text.TextStyle
-import androidx.ui.unit.dp
+import androidx.ui.test.assertLabelEquals
+import androidx.ui.test.createComposeRule
+import androidx.ui.test.findByTag
 import androidx.ui.unit.sp
 import org.junit.Before
 import org.junit.Rule
@@ -38,6 +36,7 @@ class InjectOnComposableTest {
         }
     }
 
+    @OptIn(ExperimentalComposeInject::class)
     private fun prepareComposable() {
         composeTestRule.setContent {
             Column(

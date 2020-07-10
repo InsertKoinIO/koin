@@ -8,6 +8,7 @@ import androidx.ui.foundation.AdapterList
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
 import androidx.ui.tooling.preview.Preview
+import org.koin.androidx.compose.ExperimentalComposeInject
 import org.koin.androidx.compose.inject
 import org.koin.sample.androidx.compose.data.UserRepository
 
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@OptIn(ExperimentalComposeInject::class)
 @Composable
 fun App() {
     val userRepository: UserRepository by inject()
