@@ -1,6 +1,6 @@
 // Core
 include 'koin-core'
-include 'koin-test'
+include 'koin-test-core'
 
 // JUnit
 include 'koin-test-junit4'
