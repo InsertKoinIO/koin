@@ -7,6 +7,7 @@ import java.util.*
 class Simple {
     class ComponentA
     class ComponentB(val a: ComponentA)
+    class ComponentC(val b: ComponentB)
     class MyString(val s: String)
 
     class UUIDComponent {
