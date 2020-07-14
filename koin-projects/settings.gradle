@@ -3,7 +3,7 @@ include 'koin-core'
 include 'koin-test-core'
 
 // JUnit
-include 'koin-test-junit4'
+include 'koin-test'
 include 'koin-test-junit5'
 
 // Core Sample
