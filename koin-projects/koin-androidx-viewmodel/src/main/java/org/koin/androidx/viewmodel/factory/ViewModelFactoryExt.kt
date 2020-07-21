@@ -33,7 +33,7 @@ fun <T : ViewModel> Scope.stateViewModelFactory(
                             parameters.insert(StateDefinitionParameter.DEFAULT_INDEX, handle))
                     }
                     vmParams.initialState != null -> StateDefinitionParameter(arrayListOf(handle))
-                    else -> parameters?.let { StateDefinitionParameter.from(it) } ?: emptyParametersHolder()
+                    else -> parameters ?: emptyParametersHolder()
                 }
             }
         }
