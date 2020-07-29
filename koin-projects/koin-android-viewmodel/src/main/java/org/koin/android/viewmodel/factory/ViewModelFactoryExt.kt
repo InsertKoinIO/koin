@@ -1,8 +1,10 @@
-package org.koin.android.viewmodel
+package org.koin.android.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import org.koin.android.viewmodel.ViewModelParameter
 import org.koin.core.scope.Scope
+
 
 /**
  * Create Default ViewModel Factory

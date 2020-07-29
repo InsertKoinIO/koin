@@ -50,10 +50,10 @@ import static org.koin.android.viewmodel.compat.ViewModelCompat.getViewModel;
 public class JavaActivity extends AppCompatActivity {
 
     // lazy ViewModel
-    private Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
+    private final Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
 
     // directly get the ViewModel instance
-    private DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
+    private final DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,7 +126,7 @@ import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedView
 
 public class JavaFragment extends Fragment {
 
-    private Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
+    private final Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -163,6 +163,28 @@ class DetailActivity : AppCompatActivity() {
 }
 ```
 
+## Custom ViewModelStore, ViewModelStoreOwner & SavedStateRegistryOwner
+
+When you need to target a particular `ViewModelStore`, `ViewModelStoreOwner` or even a `SavedStateRegistryOwner` you can specify it in the ViewModel API.
+
+To do so, you can use the `ViewModelOwnerDefinition` API to let you define what you need, with the `from` function, with the `owner : ViewModelOwnerDefinition` attribute:
+
+```kotlin
+fun from(store: ViewModelStore, stateRegistry: SavedStateRegistryOwner?)
+fun from(storeOwner: ViewModelStoreOwner, stateRegistry: SavedStateRegistryOwner?)
+fun fromAny(owner: Any)
+```
+
+For example:
+
+```kotlin
+class DetailActivity : AppCompatActivity() {
+
+    // Lazy inject ViewModel from myViewModelStoreOwner, a custom ViewModelStoreOwner
+    val detailViewModel: DetailViewModel by viewModel( owner = { from(myViewModelStoreOwner) })
+}
+```
+
 ## ViewModel and State Bundle
 
 in `koin-androidx-viewmodel:2.1.0-alpha-10` we reviewed a cleaner way to deal with state bundle for your `ViewModel`.
@@ -190,7 +212,7 @@ val myStateVM: MyStateVM by stateViewModel()
 You can even pass a bundle as state argument:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel(bundle = { myBundle })
+val myStateVM: MyStateVM by stateViewModel(state = { myBundle })
 ```
 
 

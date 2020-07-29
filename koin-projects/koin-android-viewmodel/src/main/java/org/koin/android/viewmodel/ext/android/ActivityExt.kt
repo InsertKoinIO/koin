@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.android.viewmodel.scope
+package org.koin.android.viewmodel.ext.android
 
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelStore
+import android.support.v7.app.AppCompatActivity
+import org.koin.android.ext.android.getKoin
+import org.koin.android.viewmodel.ViewModelOwner.Companion.from
 import org.koin.android.viewmodel.ViewModelOwnerDefinition
-import org.koin.android.viewmodel.ViewModelParameter
-import org.koin.android.viewmodel.createViewModelProvider
-import org.koin.android.viewmodel.resolveInstance
+import org.koin.android.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
- * Scope extensions to help for ViewModel
+ * LifecycleOwner extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-
-typealias ViewModelStoreDefinition = () -> ViewModelStore
-
-inline fun <reified T : ViewModel> Scope.viewModel(
+inline fun <reified T : ViewModel> AppCompatActivity.viewModel(
     qualifier: Qualifier? = null,
-    noinline owner: ViewModelOwnerDefinition,
+    noinline owner: ViewModelOwnerDefinition = { from(this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
@@ -44,32 +40,28 @@ inline fun <reified T : ViewModel> Scope.viewModel(
     }
 }
 
-inline fun <reified T : ViewModel> Scope.getViewModel(
+fun <T : ViewModel> AppCompatActivity.viewModel(
     qualifier: Qualifier? = null,
-    noinline owner: ViewModelOwnerDefinition,
+    owner: ViewModelOwnerDefinition = { from(this) },
+    clazz: KClass<T>,
+    parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, owner, clazz, parameters) }
+}
+
+inline fun <reified T : ViewModel> AppCompatActivity.getViewModel(
+    qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this) },
     noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(qualifier, owner, T::class, parameters)
 }
 
-fun <T : ViewModel> Scope.getViewModel(
+fun <T : ViewModel> AppCompatActivity.getViewModel(
     qualifier: Qualifier? = null,
-    owner: ViewModelOwnerDefinition,
+    owner: ViewModelOwnerDefinition = { from(this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    val ownerDef = owner()
-    return getViewModel(
-        ViewModelParameter(
-            clazz,
-            qualifier,
-            parameters,
-            ownerDef.store
-        )
-    )
-}
-
-fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-    val viewModelProvider = createViewModelProvider(viewModelParameters)
-    return viewModelProvider.resolveInstance(viewModelParameters)
+    return getKoin().getViewModel(qualifier, owner, clazz, parameters)
 }

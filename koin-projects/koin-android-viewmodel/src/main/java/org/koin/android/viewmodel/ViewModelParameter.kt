@@ -1,6 +1,7 @@
 package org.koin.android.viewmodel
 
 import android.arch.lifecycle.ViewModelStore
+import android.os.Bundle
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
