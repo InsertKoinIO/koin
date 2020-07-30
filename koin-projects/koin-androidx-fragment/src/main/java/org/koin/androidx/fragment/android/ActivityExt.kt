@@ -1,7 +1,7 @@
 package org.koin.androidx.fragment.android
 
 import android.os.Bundle
-import androidx.annotation.LayoutRes
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
@@ -27,7 +27,7 @@ fun FragmentActivity.setupKoinFragmentFactory(scope: Scope? = null) {
  * @param tag
  */
 inline fun <reified F : Fragment> FragmentTransaction.replace(
-    @LayoutRes containerViewId: Int,
+    @IdRes containerViewId: Int,
     args: Bundle? = null,
     tag: String? = null
 ): FragmentTransaction {
