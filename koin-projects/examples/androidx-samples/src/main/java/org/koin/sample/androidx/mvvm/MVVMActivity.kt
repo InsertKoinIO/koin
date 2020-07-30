@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -75,7 +76,7 @@ class MVVMActivity : AppCompatActivity() {
         assertEquals("value to lifecycleScope.stateViewModel", scopedSavedVm.handle.get("vm2"))
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
+            .replace<MVVMFragment>(R.id.mvvm_frame)
             .commit()
 
         getKoin().setProperty("session_id", lifecycleScope.get<Session>().id)
