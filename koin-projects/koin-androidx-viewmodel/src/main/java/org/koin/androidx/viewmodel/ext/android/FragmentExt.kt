@@ -28,7 +28,7 @@ import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * LifecycleOwner extensions to help for ViewModel
+ * ViewModel extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */

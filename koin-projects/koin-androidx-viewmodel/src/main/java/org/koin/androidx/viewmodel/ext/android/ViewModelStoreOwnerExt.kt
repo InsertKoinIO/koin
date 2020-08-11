@@ -15,58 +15,53 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
-import org.koin.android.ext.android.getKoin
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
-import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * ComponentActivity extensions to help for ViewModel
+ * ViewModelStoreOwner extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-inline fun <reified T : ViewModel> ComponentActivity.viewModel(
+inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition = { from(this, this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel<T>(qualifier, state, owner, parameters)
+        getViewModel<T>(qualifier, state, parameters)
     }
 }
 
-fun <T : ViewModel> ComponentActivity.viewModel(
+fun <T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
-    owner: ViewModelOwnerDefinition = { from(this, this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, clazz, parameters) }
 }
 
-inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
+inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition = { from(this, this) },
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(qualifier, state, owner, T::class, parameters)
+    return getViewModel(qualifier, state, T::class, parameters)
 }
 
-fun <T : ViewModel> ComponentActivity.getViewModel(
+fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
-    owner: ViewModelOwnerDefinition = { from(this, this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(qualifier, state, owner, clazz, parameters)
+    return KoinContextHandler.get().getViewModel(qualifier, state, { from(this, null) }, clazz, parameters)
 }
