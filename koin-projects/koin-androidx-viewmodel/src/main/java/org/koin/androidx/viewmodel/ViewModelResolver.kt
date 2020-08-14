@@ -2,8 +2,8 @@ package org.koin.androidx.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.koin.androidx.viewmodel.factory.defaultViewModelFactory
-import org.koin.androidx.viewmodel.factory.stateViewModelFactory
+import org.koin.androidx.viewmodel.factory.DefaultViewModelFactory
+import org.koin.androidx.viewmodel.factory.StateViewModelFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
@@ -34,7 +34,8 @@ internal fun <T : ViewModel> Scope.createViewModelProvider(
 
 private fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>): ViewModelProvider.Factory {
-    return if (viewModelParameters.registryOwner != null)
-        stateViewModelFactory(viewModelParameters)
-    else defaultViewModelFactory(viewModelParameters)
+    return when {
+        viewModelParameters.registryOwner != null -> StateViewModelFactory(this, viewModelParameters)
+        else -> DefaultViewModelFactory(this, viewModelParameters)
+    }
 }

@@ -28,7 +28,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class DefinitionParameters(val values: MutableList<Any> = arrayListOf()) {
+open class DefinitionParameters(val values: List<Any> = listOf()) {
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
         if (values.size > i) values[i] as T else throw NoParameterFoundException(
@@ -70,9 +70,9 @@ open class DefinitionParameters(val values: MutableList<Any> = arrayListOf()) {
             throw DefinitionParameterException(
                 "Can't insert $value at $index in DefinitionParameters. Exceed $MAX_PARAMS arguments")
         } else {
-            val list = values.toMutableList()
-            list.add(index, value)
-            return DefinitionParameters(list)
+            val start = values.subList(0, index)
+            val end = if (index < values.lastIndex) values.subList(index, values.lastIndex) else emptyList()
+            return DefinitionParameters(start + value + end)
         }
     }
 

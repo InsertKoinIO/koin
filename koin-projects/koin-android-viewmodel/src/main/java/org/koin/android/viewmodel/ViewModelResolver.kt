@@ -2,7 +2,7 @@ package org.koin.android.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import org.koin.android.viewmodel.factory.defaultViewModelFactory
+import org.koin.android.viewmodel.factory.DefaultViewModelFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
@@ -33,5 +33,5 @@ internal fun <T : ViewModel> Scope.createViewModelProvider(
 
 private fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>): ViewModelProvider.Factory {
-    return defaultViewModelFactory(viewModelParameters)
+    return DefaultViewModelFactory(this, viewModelParameters)
 }
