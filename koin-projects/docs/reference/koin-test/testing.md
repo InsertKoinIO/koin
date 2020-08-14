@@ -74,7 +74,7 @@ val mockProvider = MockProviderRule.create { clazz ->
 }
 ```
 
-!> koin-test project is not tied anymroe to mockito
+!> koin-test project is not tied anymore to mockito
 
 ## Mocking out of the box
 
