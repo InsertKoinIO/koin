@@ -9,6 +9,30 @@ import org.koin.core.parameter.parametersOf
 class ParametersHolderTest {
 
     @Test
+    fun `create a parameters holder - 1 param`() {
+        val myString = "empty"
+        val myInt = 42
+        val params = parametersOf(myString)
+        val newParams = params.insert(0,myInt)
+
+        assertEquals(2, newParams.size())
+        assertTrue(newParams.get<Int>(0) == myInt)
+        assertTrue(newParams.get<String>(1) == myString)
+    }
+
+    @Test
+    fun `create a parameters holder - 2 params`() {
+        val myString = "empty"
+        val myInt = 42
+        val params = parametersOf(myString,myInt)
+        val newParams = params.insert(0,myInt)
+
+        assertEquals(3, newParams.size())
+        assertTrue(newParams.get<Int>(0) == myInt)
+        assertTrue(newParams.get<String>(1) == myString)
+    }
+
+    @Test
     fun `create a parameters holder`() {
         val myString = "empty"
         val myInt = 42

@@ -70,8 +70,7 @@ open class DefinitionParameters(val values: List<Any> = listOf()) {
             throw DefinitionParameterException(
                 "Can't insert $value at $index in DefinitionParameters. Exceed $MAX_PARAMS arguments")
         } else {
-            val start = values.subList(0, index)
-            val end = if (index < values.lastIndex) values.subList(index, values.lastIndex) else emptyList()
+            val (start, end) = values.partition { element -> values.indexOf(element) < index }
             return DefinitionParameters(start + value + end)
         }
     }

@@ -24,10 +24,9 @@ class StateViewModelFactory<T : ViewModel>(
             val definitionParameters: DefinitionParameters? = parameters.parameters?.invoke()
             when {
                 parameters.initialState != null && definitionParameters != null -> {
-                    StateDefinitionParameter.from(
-                        definitionParameters.insert(StateDefinitionParameter.DEFAULT_INDEX, handle))
+                    StateDefinitionParameter.from(definitionParameters.insert(StateDefinitionParameter.DEFAULT_INDEX, handle))
                 }
-                parameters.initialState != null -> StateDefinitionParameter(arrayListOf(handle))
+                parameters.initialState != null -> StateDefinitionParameter(listOf(handle))
                 else -> definitionParameters ?: emptyParametersHolder()
             }
         }
