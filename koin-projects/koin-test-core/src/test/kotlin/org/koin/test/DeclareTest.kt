@@ -7,7 +7,7 @@ import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.test.mock.declareModule
 
-class DeclareTest : AutoCloseKoinTest() {
+class DeclareTest : KoinTest {
 
     @Test
     fun `declare on the fly with KoinTest`() {
