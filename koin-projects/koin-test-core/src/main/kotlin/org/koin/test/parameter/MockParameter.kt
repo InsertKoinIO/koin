@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 class MockParameter(
     private val scope: Scope,
     private val defaultValues: MutableMap<String, Any>
-) : DefinitionParameters(null) {
+) : DefinitionParameters(arrayListOf()) {
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
         return defaultValues[clazz.simpleName] as? T ?: when (clazz.simpleName) {
             String::class.java.simpleName -> "" as T

@@ -13,37 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.scope
+package org.koin.androidx.viewmodel.ext.android
 
-import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStore
-import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
-import org.koin.androidx.viewmodel.ViewModelParameter
-import org.koin.androidx.viewmodel.createViewModelProvider
-import org.koin.androidx.viewmodel.resolveInstance
+import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
- * Scope extensions to help for ViewModel
+ * ComponentActivity extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-typealias SavedStateRegistryOwnerDefinition = () -> SavedStateRegistryOwner
-typealias ViewModelStoreDefinition = () -> ViewModelStore
-
-fun emptyState(): BundleDefinition = { Bundle() }
-typealias BundleDefinition = () -> Bundle
-
-
-inline fun <reified T : ViewModel> Scope.viewModel(
+inline fun <reified T : ViewModel> ComponentActivity.viewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition,
+    noinline owner: ViewModelOwnerDefinition = { from(this, this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
@@ -51,36 +42,31 @@ inline fun <reified T : ViewModel> Scope.viewModel(
     }
 }
 
-inline fun <reified T : ViewModel> Scope.getViewModel(
+fun <T : ViewModel> ComponentActivity.viewModel(
+    qualifier: Qualifier? = null,
+    state: BundleDefinition? = null,
+    owner: ViewModelOwnerDefinition = { from(this, this) },
+    clazz: KClass<T>,
+    parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
+}
+
+inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition,
+    noinline owner: ViewModelOwnerDefinition = { from(this, this) },
     noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(qualifier, state, owner, T::class, parameters)
 }
 
-fun <T : ViewModel> Scope.getViewModel(
+fun <T : ViewModel> ComponentActivity.getViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
-    owner: ViewModelOwnerDefinition,
+    owner: ViewModelOwnerDefinition = { from(this, this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    val ownerDef = owner()
-    return getViewModel(
-        ViewModelParameter(
-            clazz,
-            qualifier,
-            parameters,
-            state?.invoke(),
-            ownerDef.store,
-            ownerDef.stateRegistry
-        )
-    )
-}
-
-fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-    val viewModelProvider = createViewModelProvider(viewModelParameters)
-    return viewModelProvider.resolveInstance(viewModelParameters)
+    return getKoin().getViewModel(qualifier, state, owner, clazz, parameters)
 }

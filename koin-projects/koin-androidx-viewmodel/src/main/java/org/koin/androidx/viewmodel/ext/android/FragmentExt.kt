@@ -15,86 +15,59 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.viewmodel.koin.getStateViewModel
+import org.koin.androidx.viewmodel.ViewModelOwner
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * Fragment extension to help for Viewmodel
+ * ViewModel extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-
-inline fun <reified T : ViewModel> Fragment.sharedViewModel(
+inline fun <reified T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
-): Lazy<T> =
-    lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel<T>(qualifier, parameters) }
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel<T>(qualifier, state, owner, parameters)
+    }
+}
 
-fun <T : ViewModel> Fragment.sharedViewModel(
+fun <T : ViewModel> Fragment.viewModel(
+    qualifier: Qualifier? = null,
+    state: BundleDefinition? = null,
+    owner: ViewModelOwnerDefinition = { from(this,this) },
     clazz: KClass<T>,
-    qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
-): Lazy<T> =
-    lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(clazz, qualifier, parameters) }
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
+}
 
-inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
+inline fun <reified T : ViewModel> Fragment.getViewModel(
     qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getSharedViewModel(T::class, qualifier, parameters)
+    return getViewModel(qualifier, state, owner, T::class, parameters)
 }
 
-fun <T : ViewModel> Fragment.getSharedViewModel(
-    clazz: KClass<T>,
+fun <T : ViewModel> Fragment.getViewModel(
     qualifier: Qualifier? = null,
+    state: BundleDefinition? = null,
+    owner: ViewModelOwnerDefinition = { from(this,this) },
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(
-        requireActivity(),
-        clazz,
-        qualifier,
-        parameters
-    )
-}
-
-fun <T : ViewModel> Fragment.stateSharedViewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getStateSharedViewModel(clazz, qualifier, bundle, parameters) }
-}
-
-inline fun <reified T : ViewModel> Fragment.stateSharedViewModel(
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        noinline parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getStateSharedViewModel(T::class, qualifier, bundle, parameters) }
-}
-
-inline fun <reified T : ViewModel> Fragment.getStateSharedViewModel(
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        noinline parameters: ParametersDefinition? = null
-): T {
-    return getStateViewModel(T::class, qualifier, bundle, parameters)
-}
-
-fun <T : ViewModel> Fragment.getStateSharedViewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        parameters: ParametersDefinition? = null
-): T {
-    val bundleOrDefault: Bundle = bundle ?: Bundle()
-    return getKoin().getStateViewModel(requireActivity(), clazz, qualifier, bundleOrDefault, parameters)
+    return getKoin().getViewModel(qualifier, state, owner, clazz, parameters)
 }

@@ -28,7 +28,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class DefinitionParameters(vararg val values: Any?) {
+open class DefinitionParameters(val values: List<Any> = listOf()) {
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
         if (values.size > i) values[i] as T else throw NoParameterFoundException(
@@ -47,7 +47,7 @@ open class DefinitionParameters(vararg val values: Any?) {
     operator fun <T> get(i: Int) = values[i] as T
 
     fun <T> set(i: Int, t: T) {
-        values.toMutableList()[i] = t
+        values.toMutableList()[i] = t as Any
     }
 
     /**
@@ -64,6 +64,16 @@ open class DefinitionParameters(vararg val values: Any?) {
      * Tells if it has parameters
      */
     fun isNotEmpty() = !isEmpty()
+
+    fun insert(index: Int, value: Any): DefinitionParameters {
+        if (values.size > MAX_PARAMS - 1) {
+            throw DefinitionParameterException(
+                "Can't insert $value at $index in DefinitionParameters. Exceed $MAX_PARAMS arguments")
+        } else {
+            val (start, end) = values.partition { element -> values.indexOf(element) < index }
+            return DefinitionParameters(start + value + end)
+        }
+    }
 
     /**
      * Get first element of given type T
@@ -84,8 +94,9 @@ open class DefinitionParameters(vararg val values: Any?) {
  * @see parameters
  * return ParameterList
  */
-fun parametersOf(vararg parameters: Any?) =
-    if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else throw DefinitionParameterException(
+fun parametersOf(vararg parameters: Any) =
+    if (parameters.size <= MAX_PARAMS) DefinitionParameters(
+        parameters.toMutableList()) else throw DefinitionParameterException(
         "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
