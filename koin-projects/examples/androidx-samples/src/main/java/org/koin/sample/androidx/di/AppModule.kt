@@ -64,6 +64,9 @@ val mvvmModule = module {
             )
         }
     }
+    scope<MVVMFragment> {
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
+    }
 }
 
 val scopeModule = module {

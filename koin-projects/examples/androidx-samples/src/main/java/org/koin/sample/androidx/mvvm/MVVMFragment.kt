@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.emptyState
@@ -18,7 +17,7 @@ import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 
-class MVVMFragment(val session: Session) : Fragment() {
+class MVVMFragment(val session: Session) : ScopeFragment() {
 
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
 
@@ -51,6 +50,6 @@ class MVVMFragment(val session: Session) : Fragment() {
 
         assertEquals(saved, saved2)
 
-        assertEquals(requireActivity().lifecycleScope.get<Session>().id, getKoin().getProperty("session_id"))
+        assertEquals(scopeActivity?.get<Session>()?.id, getKoin().getProperty("session_id"))
     }
 }

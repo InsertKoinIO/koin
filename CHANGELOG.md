@@ -4,6 +4,16 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
+_koin-androidx-scope_
+
+* `[ADDED]` New `ScopeActivity`. `ScopeFragment`, `ScopeService` to enable Scope API direclty into Android components. Offers injection directly from tied Scope.
+* `[BREAKING]` Old Scope API extensions are deprecated: `scope`, `lifecycleScope`
+
+_koin-android-scope_
+
+* `[ADDED]` New `ScopeActivity`. `ScopeFragment`, `ScopeService` to enable Scope API direclty into Android components. Offers injection directly from tied Scope.
+* `[BREAKING]` Old Scope API extensions are deprecated: `scope`, `lifecycleScope`
+
 _koin-androidx-viewmodel_
 
 * `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore & SavedStateRegistryOwner
@@ -15,12 +25,16 @@ _koin-android-viewmodel_
 * `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore
 * `[BREAKING]` rewrite ViewModel API and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition
 
+_koin-core_
+
+* `[ADDED]` New `KoinScopeComponent` to help build component with Koin scopes
+* `[REMOVED]` removed generic Scope API extensions
+
 _koin-test_
 
 * `[FIXED]` fixed checkModules to use Mock for injected parameters or default origin value of a Scope
 * `[ADDED]` setup detault values for injected parameters, for checkModules
 * `[UPDATED]` fixed `DefinitionParameters` to add the ability to know the injected type value
-
 
 ## [2.1.6]()
 

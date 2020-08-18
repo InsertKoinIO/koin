@@ -1,14 +1,13 @@
 package org.koin.sample.android.mvvm
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.getKoin
-import org.koin.android.scope.lifecycleScope
+import org.koin.android.scope.ScopeFragment
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -17,11 +16,11 @@ import org.koin.sample.android.components.ID
 import org.koin.sample.android.components.mvvm.SimpleViewModel
 import org.koin.sample.android.components.scope.Session
 
-class MVVMFragment : Fragment() {
+class MVVMFragment : ScopeFragment() {
 
     val sharedViewModel: SimpleViewModel by sharedViewModel { parametersOf(ID) }
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
-    val session: Session? by lazy { activity?.lifecycleScope?.get<Session>() }
+    val session: Session? by lazy { scopeActivity?.scope?.get<Session>() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
