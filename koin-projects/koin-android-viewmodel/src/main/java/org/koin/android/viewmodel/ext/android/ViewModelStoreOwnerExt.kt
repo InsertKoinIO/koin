@@ -30,12 +30,6 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
-/**
- * LifecycleOwner extensions to help for ViewModel
- *
- * @author Arnaud Giuliani
- */
-
 fun <T : ViewModel> ViewModelStoreOwner.viewModel(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
