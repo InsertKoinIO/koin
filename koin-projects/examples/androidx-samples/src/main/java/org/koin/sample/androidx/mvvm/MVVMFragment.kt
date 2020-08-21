@@ -1,9 +1,7 @@
 package org.koin.sample.androidx.mvvm
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeFragment
@@ -17,7 +15,7 @@ import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 
-class MVVMFragment(val session: Session) : ScopeFragment() {
+class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.layout.mvvm_fragment) {
 
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
 
@@ -26,14 +24,6 @@ class MVVMFragment(val session: Session) : ScopeFragment() {
 
     val saved by viewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
     val saved2 by viewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.mvvm_fragment, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
