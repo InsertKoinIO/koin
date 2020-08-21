@@ -92,6 +92,8 @@ You can define default value to be injected for one specific definition, with `c
 fun checkAllModules() = checkModules(
     parameters = {
         create<FactoryPresenter> { parametersOf("_FactoryId_") }
+        // or
+        create(FactoryPresenter::class) { parametersOf("_FactoryId_") }
     }   
 ){
     modules(myModules)

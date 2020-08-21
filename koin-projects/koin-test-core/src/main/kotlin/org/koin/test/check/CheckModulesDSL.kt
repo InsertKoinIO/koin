@@ -28,7 +28,10 @@ class ParametersBinding(val koin: Koin) {
     val defaultValues = mutableMapOf<String, Any>()
 
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
-        parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+            parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+
+    fun create(clazz: KClass<*>, qualifier: Qualifier? = null, creator: ParametersCreator) =
+            parametersCreators.put(CheckedComponent(qualifier, clazz), creator)
 
     inline fun <reified T : Any> defaultValue(t: T) = defaultValues.put(T::class.java.simpleName, t)
 }

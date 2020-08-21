@@ -177,6 +177,24 @@ class CheckModulesTest {
     }
 
     @Test
+    fun `check a module with params using create method with KClass`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (s: String) -> Simple.MyString(s) }
+                        single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
+                    }
+            )
+        }.checkModules {
+            create(Simple.MyString::class) { parametersOf("param") }
+            create(Simple.MyString::class, UpperCase) { qualifier ->
+                parametersOf(qualifier.toString())
+            }
+        }
+    }
+
+    @Test
     fun `check a module with params - auto`() {
         koinApplication {
             printLogger(Level.DEBUG)
