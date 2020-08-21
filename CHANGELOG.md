@@ -19,9 +19,14 @@ _koin-androidx-viewmodel_
 * `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore & SavedStateRegistryOwner
 * `[BREAKING]` rewrite ViewModel API to better use StateViewModel factory and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition. Bundle is now used as `state` lazy attributes, `BundleDefinition = () -> Bundle`
 * `[ADDED]` verification to help check parameter injection for SavedStateRegistryOwner, as the right argument (misplaced injection param)
+* `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore & SavedStateRegistryOwner
+* `[BREAKING]` rewrite ViewModel API to better use StateViewModel factory and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition. Bundle is now used as `state` lazy attributes, `BundleDefinition = () -> Bundle`
+* `[ADDED]` verification to help check parameter injection for SavedStateRegistryOwner, as the right argument (misplaced injection param)
 
 _koin-android-viewmodel_
 
+* `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore
+* `[BREAKING]` rewrite ViewModel API and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition
 * `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore
 * `[BREAKING]` rewrite ViewModel API and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition
 
@@ -35,6 +40,7 @@ _koin-test_
 * `[FIXED]` fixed checkModules to use Mock for injected parameters or default origin value of a Scope
 * `[ADDED]` setup detault values for injected parameters, for checkModules
 * `[UPDATED]` fixed `DefinitionParameters` to add the ability to know the injected type value
+
 
 ## [2.1.6]()
 
