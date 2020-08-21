@@ -1,15 +1,13 @@
 package org.koin.sample.android.mvvm
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
-import org.koin.android.scope.lifecycleScope
+import org.koin.android.scope.ScopeActivity
 import org.koin.android.viewmodel.ViewModelOwner.Companion.from
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.android.viewmodel.scope.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
@@ -20,15 +18,15 @@ import org.koin.sample.android.components.scope.Session
 import org.koin.sample.android.scope.ScopedActivityA
 import org.koin.sample.android.utils.navigateTo
 
-class MVVMActivity : AppCompatActivity() {
+class MVVMActivity : ScopeActivity() {
 
     val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(owner = { from(this) })
-    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(named("ext"), owner = { from(this) })
+    val scopeVm: ExtSimpleViewModel by viewModel(owner = { from(this) })
+    val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"), owner = { from(this) })
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +47,7 @@ class MVVMActivity : AppCompatActivity() {
             .replace(R.id.mvvm_frame, MVVMFragment())
             .commit()
 
-        getKoin().setProperty("session_id", lifecycleScope.get<Session>().id)
+        getKoin().setProperty("session_id", get<Session>().id)
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)

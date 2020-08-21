@@ -1,19 +1,12 @@
 package org.koin.core
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.ext.getOrCreateScope
-import org.koin.ext.scope
 
 class ObjectScopeTest {
 
@@ -98,7 +91,7 @@ class ObjectScopeTest {
 
         val a = koin.get<A>()
 
-        val scopeForA = koin.createScope<A>()
+        val scopeForA = koin.createScope(a)
 
         val b1 = scopeForA.get<B>()
         assertNotNull(b1)
@@ -109,7 +102,7 @@ class ObjectScopeTest {
         assertNull(scopeForA.getOrNull<B>())
         assertNull(scopeForA.getOrNull<C>())
 
-        val scopeForA2 = koin.createScope<A>()
+        val scopeForA2 = koin.createScope(a)
 
         val b2 = scopeForA2.getOrNull<B>()
         assertNotNull(b2)
@@ -138,38 +131,11 @@ class ObjectScopeTest {
 
         a.scope.close()
 
-        val b2 = a.scope.get<B>()
-        assertNotNull(b2)
-        assertNotNull(a.scope.get<C>())
-        assertNotEquals(b1, b2)
+        try {
+            a.scope.get<B>()
+        } catch (e: Exception) {
 
-        stopKoin()
-    }
-
-    @Test
-    fun `scope property 2`() {
-        val koin = startKoin {
-            modules(
-                module {
-                    single { A() }
-                    scope<A> {
-                        scoped { B() }
-                    }
-                })
-        }.koin
-
-        val a = koin.get<A>()
-
-        // get current scope
-        val b1 = a.scope.get<B>()
-
-        a.scope.close()
-
-        // recreate a new scope
-        val b2 = a.scope.get<B>()
-
-        assertNotEquals(b1, b2)
-
+        }
         stopKoin()
     }
 
@@ -188,11 +154,11 @@ class ObjectScopeTest {
         val a = koin.get<A>()
 
         // get current scope
-        var scope = a.getOrCreateScope(koin)
+        var scope = koin.createScope(a)
         val b1 = scope.get<B>()
         scope.close()
 
-        scope = a.getOrCreateScope(koin)
+        scope = koin.createScope(a)
         // recreate a new scope
         val b2 = scope.get<B>()
 
@@ -204,7 +170,7 @@ class ObjectScopeTest {
         val koin = startKoin {
             modules(
                 module {
-                    single { A() }
+                    factory { A() }
                     scope<A> {
                         scoped { B() }
                     }
@@ -214,7 +180,7 @@ class ObjectScopeTest {
                 })
         }.koin
 
-        val a = koin.get<A>()
+        var a = koin.get<A>()
         val b1 = a.scope.get<B>()
         val c1 = b1.scope.get<C>()
 
@@ -222,6 +188,7 @@ class ObjectScopeTest {
         b1.scope.close()
 
         // recreate a new scope
+        a = koin.get()
         val b2 = a.scope.get<B>()
         val c2 = b2.scope.get<C>()
 

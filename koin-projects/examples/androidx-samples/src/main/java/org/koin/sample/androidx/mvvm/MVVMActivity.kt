@@ -1,12 +1,11 @@
 package org.koin.sample.androidx.mvvm
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.fromAny
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -23,22 +22,22 @@ import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.scope.ScopedActivityA
 import org.koin.sample.androidx.utils.navigateTo
 
-class MVVMActivity : AppCompatActivity() {
+class MVVMActivity : ScopeActivity() {
 
     val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(owner = { from(this) })
-    val extScopeVm: ExtSimpleViewModel by lifecycleScope.viewModel(owner = { from(this) },
+    val scopeVm: ExtSimpleViewModel by scope.viewModel(owner = { from(this) })
+    val extScopeVm: ExtSimpleViewModel by scope.viewModel(owner = { from(this) },
         qualifier = named("ext"))
 
     val bundle = Bundle().apply { putString("vm1", "value to stateViewModel") }
     val savedVm: SavedStateViewModel by viewModel(state = { bundle }) { parametersOf("vm1") }
 
-    val bundleStateScope = Bundle().apply { putString("vm2", "value to lifecycleScope.stateViewModel") }
-    val scopedSavedVm: SavedStateViewModel by lifecycleScope.viewModel(owner = { fromAny(this) },
+    val bundleStateScope = Bundle().apply { putString("vm2", "value to scope.stateViewModel") }
+    val scopedSavedVm: SavedStateViewModel by scope.viewModel(owner = { fromAny(this) },
         qualifier = named("vm3"),
         state = { bundleStateScope }
     ) { parametersOf("vm3") }
@@ -46,11 +45,11 @@ class MVVMActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
         // using MVVMActivity with scope in mvvmModule (AppModule)
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(scope)
 
         super.onCreate(savedInstanceState)
 
-        assertNotNull(lifecycleScope.get<Session>())
+        assertNotNull(scope.get<Session>())
 
         assertEquals(getViewModel<SimpleViewModel> { parametersOf(ID) }, simpleViewModel)
 
@@ -68,13 +67,13 @@ class MVVMActivity : AppCompatActivity() {
         assertNotEquals(savedVm.id, scopedSavedVm.id)
 
         assertEquals("value to stateViewModel", savedVm.handle.get("vm1"))
-        assertEquals("value to lifecycleScope.stateViewModel", scopedSavedVm.handle.get("vm2"))
+        assertEquals("value to scope.stateViewModel", scopedSavedVm.handle.get("vm2"))
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.mvvm_frame, MVVMFragment::class.java, null, null)
             .commit()
 
-        getKoin().setProperty("session_id", lifecycleScope.get<Session>().id)
+        getKoin().setProperty("session_id", scope.get<Session>().id)
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)

@@ -31,15 +31,15 @@ import kotlin.reflect.KClass
 data class Scope(
     val id: ScopeID,
     val _scopeDefinition: ScopeDefinition,
-    val _koin: Koin,
-    val _source: Any? = null
+    val _koin: Koin
 ) {
     val _linkedScope: ArrayList<Scope> = arrayListOf()
     val _instanceRegistry = InstanceRegistry(_koin, this)
-    private val _callbacks = arrayListOf<ScopeCallback>()
-    private var _closed: Boolean = false
+    var _source: Any? = null
     val closed: Boolean
         get() = _closed
+    private val _callbacks = arrayListOf<ScopeCallback>()
+    private var _closed: Boolean = false
 
     internal fun create(links: List<Scope>) {
         _instanceRegistry.create(_scopeDefinition.definitions)
@@ -364,6 +364,7 @@ data class Scope(
 
     internal fun clear() = synchronized(this) {
         _closed = true
+        _source = null
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.info("closing scope:'$id'")
         }
