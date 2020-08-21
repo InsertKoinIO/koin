@@ -7,7 +7,7 @@ import org.koin.core.state.jvmThreading
 import kotlin.reflect.KClass
 
 actual object PlatformTools {
-    actual fun className(kClass: KClass<*>): String = kClass.java.simpleName
+    actual fun className(kClass: KClass<*>): String = kClass.java.name
     actual fun printStackTrace(throwable: Throwable) {
         throwable.printStackTrace()
     }
