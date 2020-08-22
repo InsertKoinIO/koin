@@ -1,6 +1,5 @@
 package org.koin.androidx.workmanager
 
-import android.app.Application
 import android.content.Context
 import androidx.work.WorkerParameters
 import org.junit.Assert.*
@@ -74,7 +73,6 @@ class ScopeDSLExtKtTest : AutoCloseKoinTest() {
         }
 
         val wp = mock(WorkerParameters::class.java)
-
 
         assertNotNull(wp)
 

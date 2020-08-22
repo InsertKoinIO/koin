@@ -13,8 +13,16 @@ android {
 
     defaultConfig {
         minSdkVersion android_min_version
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
+def workManagerVersion = '2.3.0'
 
 dependencies {
     // Koin
@@ -22,13 +30,17 @@ dependencies {
     api project(":koin-androidx-scope")
 
     // Android
-    implementation("androidx.work:work-runtime-ktx:2.3.0")
+    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
 
     // Test
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"
-    testImplementation "org.robolectric:robolectric:4.2.1"
-    testImplementation 'androidx.work:work-testing:2.3.0'
+
+    androidTestImplementation project(":koin-test")
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1' //+ androidxTestJUnitVersion
+    androidTestImplementation "androidx.work:work-testing:$workManagerVersion"
+
 }
 
 apply from: '../gradle/publish-android.gradle'

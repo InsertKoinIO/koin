@@ -1,9 +1,9 @@
 package org.koin.androidx.workmanager
 
-import android.app.Application
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import com.google.common.util.concurrent.ListenableFuture
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.androidx.workmanager.KoinWorkerFactory.Companion.getQualifier
@@ -217,7 +217,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `qualifier must match`() {
+    fun `Given standalone class Then qualifier must match`() {
 
         // this simulates how koin create the qualifier
         val qualifierByClass = getQualifier<MyListenableWorker1>()
@@ -225,6 +225,19 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
         // this simulates how OS creates the qualifier through WorkerFactory::createWorker
         val qualifierByName =
             getQualifier(MyListenableWorker1::class.qualifiedName ?: "")
+
+        assertEquals(qualifierByClass, qualifierByName)
+    }
+
+    @Test
+    fun `Given inner class Then qualifier must match`() {
+
+        // this simulates how koin create the qualifier
+        val qualifierByClass = getQualifier<InnerWorkerClass>()
+
+        // this simulates how OS creates the qualifier through WorkerFactory::createWorker
+        val qualifierByName =
+            getQualifier(InnerWorkerClass::class.java.name)
 
         assertEquals(qualifierByClass, qualifierByName)
     }
@@ -272,4 +285,10 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
     }
 
 
+    class InnerWorkerClass(context: Context, workerParameters: WorkerParameters) :
+        ListenableWorker(context, workerParameters) {
+        override fun startWork(): ListenableFuture<Result> {
+            TODO("Not yet implemented")
+        }
+    }
 }

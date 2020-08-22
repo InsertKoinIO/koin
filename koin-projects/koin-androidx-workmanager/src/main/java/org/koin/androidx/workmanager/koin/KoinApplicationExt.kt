@@ -34,7 +34,7 @@ fun KoinApplication.workManagerFactory(
 }
 
 
-fun setupWorkManagerFactory(
+private fun setupWorkManagerFactory(
     koin: Koin,
     context: Context,
     workerFactories: Array<out WorkerFactory>

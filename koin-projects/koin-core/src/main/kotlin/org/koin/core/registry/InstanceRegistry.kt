@@ -12,14 +12,12 @@ import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
-import org.koin.ext.scope
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     //TODO Lock - ConcurrentHashMap
-    private val _instances = ConcurrentHashMap<IndexKey, InstanceFactory<*>>()
+    private val _instances = HashMap<IndexKey, InstanceFactory<*>>()
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
@@ -86,11 +84,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T> resolveInstance(indexKey: IndexKey, parameters: ParametersDefinition?): T? {
-        return (_instances[indexKey]?.get(defaultInstanceContext(parameters)) as? T)
-            .also {
-
-                _koin._logger.debug("resolveInstance on class ${indexKey}  result $it")
-            }
+        return _instances[indexKey]?.get(defaultInstanceContext(parameters)) as? T
     }
 
     private fun defaultInstanceContext(parameters: ParametersDefinition?) =

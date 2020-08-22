@@ -1,13 +1,10 @@
 package org.koin.androidx.workmanager.dsl
 
 import androidx.work.ListenableWorker
-import org.koin.androidx.workmanager.KoinWorkerFactory
 import org.koin.androidx.workmanager.KoinWorkerFactory.Companion.getQualifier
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
-import org.koin.core.qualifier.named
-import org.koin.ext.getOrCreateScope
 
 /**
  * @author : Fabio de Matos

@@ -9,8 +9,8 @@ import androidx.work.WorkerParameters
  * @author : Fabio de Matos
  * @since : 16/02/2020
  **/
-class DummyWorker(
-    private val dummyService: DummyService,
+class SimpleWorker(
+    private val simpleWorkerService: SimpleWorkerService,
     appContext: Context,
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
@@ -19,7 +19,7 @@ class DummyWorker(
         const val answer1st = 42
         const val answer2nd = 43
 
-        private const val KEY_ANSWER = "KEY_ANSWER"
+          const val KEY_ANSWER = "KEY_ANSWER"
 
         fun createData(answer: Int): Data {
             return Data.Builder()
@@ -35,10 +35,14 @@ class DummyWorker(
             .inputData
             .getInt(KEY_ANSWER, 0)
             .let {
-                dummyService.addAnswer(it)
+                simpleWorkerService.addAnswer(it)
             }
 
-        return Result.success()
+        val d = Data.Builder()
+            .putString("yes", "no")
+            .build()
+
+        return Result.success(d)
     }
 
 }

@@ -171,7 +171,7 @@ data class Scope(
     ): T {
         return if (_koin._logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin._logger.debug("+- '${clazz.getFullName()}'$qualifierString on scope ${toString()}")
+            _koin._logger.debug("+- '${clazz.getFullName()}'$qualifierString")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }

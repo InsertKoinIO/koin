@@ -24,7 +24,6 @@ import org.koin.core.qualifier.QualifierValue
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeID
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Scope Registry
@@ -35,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap
 class ScopeRegistry(private val _koin: Koin) {
 
     //TODO Lock - ConcurrentHashMap
-    private val _scopeDefinitions = ConcurrentHashMap<QualifierValue, ScopeDefinition>()
+    private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()
     val scopeDefinitions: Map<QualifierValue, ScopeDefinition>
         get() = _scopeDefinitions
 

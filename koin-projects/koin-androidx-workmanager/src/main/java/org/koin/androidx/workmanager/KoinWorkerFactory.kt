@@ -6,16 +6,10 @@ import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import org.jetbrains.annotations.TestOnly
 import org.koin.core.KoinComponent
-import org.koin.core.definition.Kind
 import org.koin.core.error.NoScopeDefFoundException
-import org.koin.core.parameter.DefinitionParameters
-import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
-import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeDefinition
-import org.koin.ext.scope
 import java.util.concurrent.atomic.AtomicLong
 
 /**
@@ -32,14 +26,15 @@ class KoinWorkerFactory : WorkerFactory(), KoinComponent {
     companion object {
 
         /**
-         * Android framework uses [Class::canonicalName] to identify the class names it wants created.
+         * Android framework uses [Class::name] to identify the class names it wants created.
          */
-        inline fun <reified T : ListenableWorker> getQualifier(): Qualifier = //named("yes")
-            named(T::class.qualifiedName ?: "ANONYMOUS_CLASS")
+        inline fun <reified T : ListenableWorker> getQualifier(): Qualifier =
+            named(T::class.java.name)
 
-        fun getQualifier(workerClassName: String): Qualifier =  //named("yes")
+        fun getQualifier(workerClassName: String): Qualifier =
             named(workerClassName)
     }
+
 
     private val workManagerKoinCounter = AtomicLong(0)
 
@@ -78,11 +73,7 @@ class KoinWorkerFactory : WorkerFactory(), KoinComponent {
                 .also { newScope ->
 
                     getKoin()._scopeRegistry.rootScope._scopeDefinition
-//                        ?.also {
-//                            newScope.loadDefinitions(it)
-//                        }
                         .let { it.definitions }
-//                        .filter { it.kind == Kind.Factory }
                         .filter { it.hasType(ListenableWorker::class) }
                         .forEach {
                             newScope._instanceRegistry.saveDefinition(it, false)
