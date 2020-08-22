@@ -23,9 +23,9 @@ import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.scope.KoinScopeComponent
 
 /**
  * ScopeFragment
@@ -35,7 +35,7 @@ import org.koin.core.scope.KoinScopeComponent
  * @author Arnaud Giuliani
  */
 abstract class ScopeFragment(
-        @LayoutRes private val contentLayoutId: Int = 0
+        @LayoutRes contentLayoutId: Int = 0
 ) : Fragment(contentLayoutId), KoinScopeComponent {
 
     private val scopeID: ScopeID by lazy { getScopeId() }

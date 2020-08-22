@@ -34,7 +34,7 @@ import org.koin.core.scope.ScopeID
  * @author Arnaud Giuliani
  */
 abstract class ScopeActivity(
-        @LayoutRes private val contentLayoutId: Int = 0
+        @LayoutRes contentLayoutId: Int = 0
 ) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
 
     private val scopeID: ScopeID by lazy { getScopeId() }
