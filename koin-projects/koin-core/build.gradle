@@ -20,9 +20,9 @@ kotlin {
         }
     }*/
 
-    if(ideaActive) {
-        macosX64("native")
-    }else{
+    if (ideaActive) {
+        macosX64("darwin")
+    } else {
         macosX64()
         iosArm32()
         iosArm64()
@@ -83,16 +83,22 @@ kotlin {
         }
 
         nativeMain {
+            dependsOn commonMain
         }
 
         nativeTest {
+            dependsOn commonTest
+        }
+
+        darwinMain {
+            dependsOn nativeMain
+        }
+
+        darwinTest {
+            dependsOn nativeTest
         }
 
         if(!ideaActive) {
-            darwinMain {
-                dependsOn nativeMain
-            }
-
             otherMain {
                 dependsOn nativeMain
             }
