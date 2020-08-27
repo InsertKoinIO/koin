@@ -52,15 +52,17 @@ dependencies {
     testImplementation project(":koin-test")
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "androidx.test:core:1.1.1"
+    testImplementation "androidx.test:core:1.2.0"
     testImplementation "androidx.test.ext:junit:1.1.1"
     testImplementation "org.robolectric:robolectric:4.2.1"
-    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
+
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
 }

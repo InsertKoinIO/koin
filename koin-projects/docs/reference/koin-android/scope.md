@@ -48,7 +48,7 @@ val androidModule = module {
 ```kotlin
 val androidModule = module {
 
-    scope(named("scope_id")) {
+    scope<DetailActivity> {
         scoped { Presenter() }
     }
 }
@@ -57,11 +57,11 @@ val androidModule = module {
 !> Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
 
-## LifecycleScope - a scope tied to your lifecycle
+## Scope for Android Components
 
-Koin gives the `lifecycleScope` property already bound to your Android component lifecycle. On lifecycle's end, it will close automatically.
+Koin provides `ScopeActivity` & `ScopeFragment` classes, to bind to your Android component to its scope. It will close its scope automatically on destroy steps.
 
-To benefit from the `lifecycleScope`, you have to declare a scope for your activity (tied our Activity type):
+To use a scoped Android component, you have to declare a scope for your activity (tied our Activity type):
 
 ```kotlin
 val androidModule = module {
@@ -72,20 +72,36 @@ val androidModule = module {
 }
 ```
 
+And then use the `ScopeActivity` class:
+
 ```kotlin
-class MyActivity : AppCompatActivity() {
+class MyActivity : ScopeActivity() {
 
-    // inject Presenter instance from current scope
-    val presenter : Presenter by lifecycleScope.inject()
+    // inject Presenter instance from MyActivity's Koin scope
+    val presenter : Presenter by inject()
 
+}
+```
+
+> You can do the same with `ScopeFragment` & `ScopeService` components
+> ViewModel extensions are also compatible with `ScopeActivity` & `ScopeFragment`
+
+`ScopeActivity` & `ScopeFragment` are providing the source component: You can inject your Activity or Fragment into the needed component:
+
+```kotlin
+class Presenter(val view : MyViewContract)
+
+val androidModule = module {
+
+    scope<MyActivity> {
+        // inject current MyActivity
+        scoped { Presenter(get()) }
+    }
+}
 ```
 
 
-!> Be careful to not use `scope` but `lifecycleScope`. This is a scope tied to the Android lifecycle. Else your scoped instances won't follow your lifecycle.
-
-> If you have any conflict with any API that has also a `lifecycleScope` extension, please name your extension - https://github.com/InsertKoinIO/koin/issues/679
-
-## Sharing instances between components with scopes
+## Sharing instances between components with custom scopes & Scope Links
 
 In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
 
@@ -104,45 +120,36 @@ When needed to begin use a `UserSession` instance, create a scope for it:
 
 ```kotlin
 val ourSession = getKoin().createScope("ourSession",named("session"))
+
+// link ourSession scope to current `scope`, from ScopeActivity or ScopeFragment
+scope.linkTo(ourSession)
 ```
 
 Then use it anywhere you need it:
 
 ```kotlin
-class MyActivity1 : AppCompatActivity() {
+class MyActivity1 : ScopeActivity() {
+    
+    fun reuseSession(){
+        val ourSession = getKoin().createScope("ourSession",named("session"))
+        
+        // link ourSession scope to current `scope`, from ScopeActivity or ScopeFragment
+        scope.linkTo(ourSession)
 
-    val userSession : UserSession by ourSession.inject()
-}
-class MyActivity2 : AppCompatActivity() {
-
-    val userSession : UserSession by ourSession.inject()
-}
-```
-
-or you can also inject it with Koin DSL. If a presenter need it:
-
-```kotlin
-class Presenter(val userSession : UserSession)
-```
-
-Just inject it into constructor, with the right scope id:
-
-```kotlin
-module {
-    // Shared user session data
-    scope(named("session")) {
-        scoped { UserSession() }
+        // will look at MyActivity1's Scope + ourSession scope to resolve
+        val userSession = get<UserSession>()
     }
+}
+class MyActivity2 : ScopeActivity() {
 
-    // Inject UserSession instance from "session" Scope
-    factory { (scopeId : ScopeID) -> Presenter(getScope(scopeId).get())}
+    fun reuseSession(){
+        val ourSession = getKoin().createScope("ourSession",named("session"))
+        
+        // link ourSession scope to current `scope`, from ScopeActivity or ScopeFragment
+        scope.linkTo(ourSession)
+
+        // will look at MyActivity2's Scope + ourSession scope to resolve
+        val userSession = get<UserSession>()
+    }
 }
 ```
-
-When you have to finish with your scope, just close it:
-
-```kotlin
-val ourSession = getKoin().getScope("ourSession")
-ourSession.close()
-```
-

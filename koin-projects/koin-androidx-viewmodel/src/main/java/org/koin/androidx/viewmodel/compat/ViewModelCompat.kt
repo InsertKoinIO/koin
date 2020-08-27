@@ -17,8 +17,9 @@ package org.koin.androidx.viewmodel.compat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ViewModelOwner
+import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -44,7 +45,7 @@ object ViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = owner.viewModel(clazz.kotlin, qualifier, parameters)
+    ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, parameters) }
 
 
     /**
@@ -62,7 +63,7 @@ object ViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T {
-        return owner.getViewModel(clazz.kotlin, qualifier, parameters)
-    }
+    ): T = getKoin().getViewModel(qualifier, null, { ViewModelOwner.from(owner) }, clazz.kotlin, parameters)
 }
+
+private fun getKoin() = KoinContextHandler.get()

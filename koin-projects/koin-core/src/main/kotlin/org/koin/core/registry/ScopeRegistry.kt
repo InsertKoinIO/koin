@@ -130,7 +130,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun createScope(scopeId: ScopeID, scopeDefinition: ScopeDefinition, source: Any?): Scope {
-        val scope = Scope(scopeId, scopeDefinition, _koin, source)
+        val scope = Scope(scopeId, scopeDefinition, _koin).apply { _source = source }
         val links = _rootScope?.let { listOf(it) } ?: emptyList()
         scope.create(links)
         return scope

@@ -65,10 +65,20 @@ And retrieve your `Fragment` with your `supportFragmentManager`:
 
 ```kotlin
 supportFragmentManager.beginTransaction()
-            .replace(R.id.mvvm_frame, MyFragment::class.java, null, null)
+            .replace<MyFragment>(R.id.mvvm_frame)
             .commit()
 ```
 
+Put your `bundle` or `tag` using the overloaded optional params:
+
+```kotlin
+supportFragmentManager.beginTransaction()
+            .replace<MyFragment>(
+                containerViewId = R.id.mvvm_frame,
+                args = MyBundle(),
+                tag = MyString()
+            )
+```
 
 ## Fragment Factory & Koin Scopes
 

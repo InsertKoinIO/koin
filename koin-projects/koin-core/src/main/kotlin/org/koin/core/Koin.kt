@@ -25,9 +25,10 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
+import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.ext.getScopeId
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -122,9 +123,9 @@ class Koin {
      * @return instance of type T or null
      */
     fun <T> getOrNull(
-            clazz: KClass<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T? = _scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
 
 
@@ -214,10 +215,21 @@ class Koin {
      * Create a Scope instance
      * @param scopeDefinitionName
      */
-    inline fun <reified T> createScope(): Scope {
-        val kClass = T::class
-        val scopeId = kClass.getScopeId()
-        val qualifier = TypeQualifier(kClass)
+    inline fun <reified T> createScope(scopeId: ScopeID = UUID.randomUUID().toString()): Scope {
+        val qualifier = TypeQualifier(T::class)
+        if (_logger.isAt(Level.DEBUG)) {
+            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        }
+        return _scopeRegistry.createScope(scopeId, qualifier, null)
+    }
+
+    /**
+     * Create a Scope instance
+     * @param scopeDefinitionName
+     */
+    fun <T : KoinScopeComponent> createScope(t: T): Scope {
+        val scopeId = t.getScopeId()
+        val qualifier = t.getScopeName()
         if (_logger.isAt(Level.DEBUG)) {
             _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
@@ -228,9 +240,10 @@ class Koin {
      * Get or Create a Scope instance
      * @param scopeId
      * @param qualifier
+     * @param source
      */
-    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier): Scope {
-        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
+    fun getOrCreateScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
+        return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier, source)
     }
 
     /**

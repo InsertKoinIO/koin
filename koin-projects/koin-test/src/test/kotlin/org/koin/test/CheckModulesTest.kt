@@ -1,6 +1,7 @@
 package org.koin.test
 
 import org.junit.Assert.fail
+import org.junit.Rule
 import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
@@ -9,8 +10,15 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import org.koin.test.mock.MockProviderRule
+import org.mockito.Mockito
 
 class CheckModulesTest {
+
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
 
     @Test
     fun `check a scoped module`() {
@@ -165,6 +173,111 @@ class CheckModulesTest {
         }.checkModules {
             create<Simple.MyString> { parametersOf("param") }
             create<Simple.MyString>(UpperCase) { qualifier -> parametersOf(qualifier.toString()) }
+        }
+    }
+
+    @Test
+    fun `check a module with params using create method with KClass`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (s: String) -> Simple.MyString(s) }
+                        single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
+                    }
+            )
+        }.checkModules {
+            create(Simple.MyString::class) { parametersOf("param") }
+            create(Simple.MyString::class, UpperCase) { qualifier ->
+                parametersOf(qualifier.toString())
+            }
+        }
+    }
+
+    @Test
+    fun `check a module with params - auto`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (s: String) -> Simple.MyString(s) }
+                        single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
+                    }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with params - default value`() {
+        val id = "_ID_"
+        var injectedValue: String? = null
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (s: String) ->
+                            injectedValue = s
+                            Simple.MyString(s)
+                        }
+                    }
+            )
+        }.checkModules {
+            defaultValue(id)
+        }
+
+        assert(injectedValue == id)
+    }
+
+    @Test
+    fun `check a module with params - default value object`() {
+        val a = Simple.ComponentA()
+        var injectedValue: Simple.ComponentA? = null
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (a: Simple.ComponentA) ->
+                            injectedValue = a
+                            Simple.ComponentB(a)
+                        }
+                    }
+            )
+        }.checkModules {
+            defaultValue(a)
+        }
+
+        assert(injectedValue == a)
+    }
+
+    @Test
+    fun `check a module with params - auto scope`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        scope<Simple.ComponentA> {
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with params - auto scope - error`() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                        module {
+                            scope<Simple.ComponentA> {
+                                scoped { Simple.ComponentC(get()) }
+                            }
+                        }
+                )
+            }.checkModules()
+            fail()
+        } catch (e: Exception) {
         }
     }
 

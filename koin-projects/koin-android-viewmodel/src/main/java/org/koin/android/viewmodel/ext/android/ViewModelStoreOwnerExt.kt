@@ -17,53 +17,46 @@ package org.koin.android.viewmodel.ext.android
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelStoreOwner
-import android.content.ComponentCallbacks
-import org.koin.android.ext.android.getKoin
+import org.koin.android.viewmodel.ViewModelOwner.Companion.from
 import org.koin.android.viewmodel.koin.getViewModel
+import org.koin.core.context.KoinContextHandler
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * LifecycleOwner extensions to help for ViewModel
+ * ViewModelStoreOwner extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-
-/**
- * LifecycleOwner extensions to help for ViewModel
- *
- * @author Arnaud Giuliani
- */
-
-fun <T : ViewModel> ViewModelStoreOwner.viewModel(
-    clazz: KClass<T>,
-    qualifier: Qualifier? = null,
-    parameters: ParametersDefinition? = null
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(clazz, qualifier, parameters) }
-}
-
 inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel<T>(qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel<T>(qualifier, parameters)
+    }
+}
+
+fun <T : ViewModel> ViewModelStoreOwner.viewModel(
+    qualifier: Qualifier? = null,
+    clazz: KClass<T>,
+    parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(T::class, qualifier, parameters)
+    return getViewModel(qualifier, T::class, parameters)
 }
 
 fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
-    clazz: KClass<T>,
     qualifier: Qualifier? = null,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(this, clazz, qualifier, parameters)
+    return KoinContextHandler.get().getViewModel(qualifier, { from(this) }, clazz, parameters)
 }
-
-private fun ViewModelStoreOwner.getKoin() = (this as ComponentCallbacks).getKoin()

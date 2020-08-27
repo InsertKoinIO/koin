@@ -15,9 +15,9 @@
  */
 package org.koin.androidx.viewmodel.compat
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -41,12 +41,14 @@ object ScopeCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
-            scope: Scope,
-            owner: ViewModelStoreOwner,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
-    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) { scope.getViewModel(owner, clazz.kotlin, qualifier, parameters) }
+        scope: Scope,
+        owner: ViewModelStoreOwner,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
+    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
+        scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
+    }
 
 
     /**
@@ -59,12 +61,12 @@ object ScopeCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getViewModel(
-            scope: Scope,
-            owner: ViewModelStoreOwner,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        scope: Scope,
+        owner: ViewModelStoreOwner,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
-        return scope.getViewModel(owner, clazz.kotlin, qualifier, parameters)
+        return scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
     }
 }
