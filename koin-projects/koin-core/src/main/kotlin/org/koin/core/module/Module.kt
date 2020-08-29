@@ -31,31 +31,30 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  */
 class Module(
-        val createAtStart: Boolean,
-        val override: Boolean
+    val createAtStart: Boolean,
+    val override: Boolean
 ) {
-    val rootScope: ScopeDefinition = ScopeDefinition.rootDefinition()
-    var isLoaded: Boolean = false
-        internal set
-    val otherScopes = arrayListOf<ScopeDefinition>()
+    val rootScope: Qualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
+    internal var isLoaded: Boolean = false
+    val scopes = arrayListOf<Qualifier>()
+    val definitions = hashSetOf<BeanDefinition<*>>()
 
     /**
      * Declare a group a scoped definition with a given scope qualifier
      * @param qualifier
      */
     fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
-        val scopeDefinition = ScopeDefinition(qualifier)
-        ScopeDSL(scopeDefinition).apply(scopeSet)
-        otherScopes.add(scopeDefinition)
+        ScopeDSL(qualifier, definitions).apply(scopeSet)
+        scopes.add(qualifier)
     }
 
     /**
      * Class Typed Scope
      */
     inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
-        val scopeDefinition = ScopeDefinition(TypeQualifier(T::class))
-        ScopeDSL(scopeDefinition).apply(scopeSet)
-        otherScopes.add(scopeDefinition)
+        val qualifier = TypeQualifier(T::class)
+        ScopeDSL(qualifier, definitions).apply(scopeSet)
+        scopes.add(qualifier)
     }
 
     /**
@@ -66,21 +65,23 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-            qualifier: Qualifier? = null,
-            createdAtStart: Boolean = false,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        createdAtStart: Boolean = false,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveSingle(
-                qualifier,
-                definition,
-                rootScope,
-                makeOptions(override, createdAtStart)
+        val def = Definitions.createSingle(
+            qualifier,
+            definition,
+            makeOptions(override, createdAtStart),
+            scopeQualifier = rootScope,
         )
+        definitions.add(def)
+        return def
     }
 
     fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
-            Options(this.createAtStart || createdAtStart, this.override || override)
+        Options(this.createAtStart || createdAtStart, this.override || override)
 
     /**
      * Declare a Factory definition
@@ -89,11 +90,13 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-            qualifier: Qualifier? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveFactory(qualifier, definition, rootScope, makeOptions(override))
+        val def = Definitions.createFactory(qualifier, definition, makeOptions(override), scopeQualifier = rootScope)
+        definitions.add(def)
+        return def
     }
 
     /**

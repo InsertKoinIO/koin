@@ -32,8 +32,8 @@ import kotlin.reflect.KClass
  */
 infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
     val copy = copy(secondaryTypes = secondaryTypes + clazz)
-    scopeDefinition.remove(this)
-    scopeDefinition.save(copy)
+//    scopeQualifier.remove(this)
+//    scopeQualifier.save(copy)
     return copy
 }
 
@@ -50,8 +50,8 @@ inline fun <reified T> BeanDefinition<*>.bind(): BeanDefinition<*> {
  */
 infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> {
     val copy = copy(secondaryTypes = secondaryTypes + classes)
-    scopeDefinition.remove(this)
-    scopeDefinition.save(copy)
+//    scopeQualifier.remove(this)
+//    scopeQualifier.save(copy)
     return copy
 }
 
@@ -60,7 +60,7 @@ infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> 
  */
 infix fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>): BeanDefinition<T> {
     val copy = copy(callbacks = Callbacks(onClose))
-    scopeDefinition.remove(this)
-    scopeDefinition.save(copy)
+//    scopeQualifier.remove(this)
+//    scopeQualifier.save(copy)
     return copy
 }

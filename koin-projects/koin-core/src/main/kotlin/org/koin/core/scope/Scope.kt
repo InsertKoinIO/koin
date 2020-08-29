@@ -16,6 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
@@ -385,10 +386,8 @@ data class Scope(
         }
     }
 
-    fun loadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.createDefinition(it)
-        }
+    fun loadDefinition(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.createDefinition(beanDefinition)
     }
 }
 

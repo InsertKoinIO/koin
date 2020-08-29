@@ -23,12 +23,12 @@ class BeanDefinitionTest {
 
         val def1 = Definitions.createSingle(
             definition = { Simple.ComponentA() },
-            scopeDefinition = rootScope._scopeDefinition,
+            scopeQualifier = rootScope._scopeDefinition.qualifier,
             options = Options()
         )
         val def2 = Definitions.createSingle(
             definition = { Simple.ComponentA() },
-            scopeDefinition = rootScope._scopeDefinition,
+            scopeQualifier = rootScope._scopeDefinition.qualifier,
             options = Options()
         )
         assertEquals(def1, def2)
@@ -38,25 +38,25 @@ class BeanDefinitionTest {
     fun `scope definition`() {
         val def1 = Definitions.createSingle(
             definition = { Simple.ComponentA() },
-            scopeDefinition = rootScope._scopeDefinition,
+            scopeQualifier = rootScope._scopeDefinition.qualifier,
             options = Options()
         )
 
-        assertEquals(rootScope._scopeDefinition, def1.scopeDefinition)
+        assertEquals(rootScope._scopeDefinition, def1.scopeQualifier)
         assertEquals(Kind.Single, def1.kind)
-        assertEquals(rootScope._scopeDefinition, def1.scopeDefinition)
+        assertEquals(rootScope._scopeDefinition, def1.scopeQualifier)
     }
 
     @Test
     fun `equals definitions - but diff kind`() {
         val def1 = Definitions.createSingle(
             definition = { Simple.ComponentA() },
-            scopeDefinition = rootScope._scopeDefinition,
+            scopeQualifier = rootScope._scopeDefinition.qualifier,
             options = Options()
         )
         val def2 = Definitions.createSingle(
             definition = { Simple.ComponentA() },
-            scopeDefinition = rootScope._scopeDefinition,
+            scopeQualifier = rootScope._scopeDefinition.qualifier,
             options = Options()
         )
         assertEquals(def1, def2)

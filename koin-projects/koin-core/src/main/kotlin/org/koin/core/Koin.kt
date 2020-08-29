@@ -177,14 +177,7 @@ class Koin {
     ): S = _scopeRegistry.rootScope.bind(primaryType, secondaryType, parameters)
 
     internal fun createEagerInstances() {
-        createContextIfNeeded()
         _scopeRegistry.rootScope.createEagerInstances()
-    }
-
-    internal fun createContextIfNeeded() {
-        if (_scopeRegistry._rootScope == null) {
-            _scopeRegistry.createRootScope()
-        }
     }
 
     /**
@@ -333,9 +326,5 @@ class Koin {
     fun unloadModules(modules: List<Module>) = synchronized(this) {
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
-    }
-
-    fun createRootScope() {
-        _scopeRegistry.createRootScope()
     }
 }

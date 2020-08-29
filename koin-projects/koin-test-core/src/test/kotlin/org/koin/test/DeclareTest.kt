@@ -2,10 +2,11 @@ package org.koin.test
 
 import org.junit.Assert.fail
 import org.junit.Test
+import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
-import org.koin.test.mock.declareModule
+import org.koin.dsl.module
 
 class DeclareTest : KoinTest {
 
@@ -21,9 +22,11 @@ class DeclareTest : KoinTest {
         } catch (e: Exception) {
         }
 
-        declareModule {
-            single { Simple.ComponentA() }
-        }
+        loadKoinModules(
+            module {
+                single { Simple.ComponentA() }
+            }
+        )
 
         get<Simple.ComponentA>()
 

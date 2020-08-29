@@ -32,15 +32,15 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 data class BeanDefinition<T>(
-        val scopeDefinition: ScopeDefinition,
-        val primaryType: KClass<*>,
-        val qualifier: Qualifier? = null,
-        val definition: Definition<T>,
-        val kind: Kind,
-        val secondaryTypes: List<KClass<*>> = listOf(),
-        val options: Options = Options(),
-        val properties: Properties = Properties(),
-        val callbacks: Callbacks<T> = Callbacks()
+    val scopeQualifier: Qualifier,
+    val primaryType: KClass<*>,
+    val qualifier: Qualifier? = null,
+    val definition: Definition<T>,
+    val kind: Kind,
+    val secondaryTypes: List<KClass<*>> = listOf(),
+    val options: Options = Options(),
+    val properties: Properties = Properties(),
+    val callbacks: Callbacks<T> = Callbacks()
 ) {
 
     override fun toString(): String {
@@ -48,7 +48,7 @@ data class BeanDefinition<T>(
         val defType = "'${primaryType.getFullName()}'"
         val defName = qualifier?.let { ",qualifier:$qualifier" } ?: ""
         val defScope =
-                scopeDefinition.let { if (it.isRoot) "" else ",scope:${scopeDefinition.qualifier}" }
+            scopeQualifier.let { if (it == ScopeDefinition.ROOT_SCOPE_QUALIFIER) "" else ",scope:${scopeQualifier}" }
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
             ",binds:$typesAsString"
@@ -63,7 +63,7 @@ data class BeanDefinition<T>(
 
         if (primaryType != other.primaryType) return false
         if (qualifier != other.qualifier) return false
-        if (scopeDefinition != other.scopeDefinition) return false
+        if (scopeQualifier != other.scopeQualifier) return false
 
         return true
     }
@@ -72,8 +72,8 @@ data class BeanDefinition<T>(
         return primaryType == clazz || secondaryTypes.contains(clazz)
     }
 
-    fun `is`(clazz: KClass<*>, qualifier: Qualifier?, scopeDefinition: ScopeDefinition): Boolean {
-        return hasType(clazz) && this.qualifier == qualifier && this.scopeDefinition == scopeDefinition
+    fun `is`(clazz: KClass<*>, qualifier: Qualifier?, scopeDefinition: Qualifier): Boolean {
+        return hasType(clazz) && this.qualifier == qualifier && this.scopeQualifier == scopeDefinition
     }
 
     fun canBind(primary: KClass<*>, secondary: KClass<*>): Boolean {
@@ -83,7 +83,7 @@ data class BeanDefinition<T>(
     override fun hashCode(): Int {
         var result = qualifier?.hashCode() ?: 0
         result = 31 * result + primaryType.hashCode()
-        result = 31 * result + scopeDefinition.hashCode()
+        result = 31 * result + scopeQualifier.hashCode()
         return result
     }
 
