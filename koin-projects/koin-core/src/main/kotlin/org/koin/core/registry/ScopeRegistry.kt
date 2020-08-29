@@ -69,10 +69,17 @@ class ScopeRegistry(private val _koin: Koin) {
 
     private fun declareDefinitions(definitions: HashSet<BeanDefinition<*>>) {
         definitions.forEach { bean ->
-            val scopeDef = _scopeDefinitions[bean.scopeQualifier.value] ?: ScopeDefinition(bean.scopeQualifier)
+            val scopeDef = _scopeDefinitions[bean.scopeQualifier.value] ?: createScopeDefinition(bean)
             scopeDef.save(bean)
             _scopes.values.filter { it._scopeDefinition == scopeDef }.forEach { it.loadDefinition(bean) }
         }
+    }
+
+    private fun createScopeDefinition(
+        bean: BeanDefinition<*>): ScopeDefinition {
+        val def = ScopeDefinition(bean.scopeQualifier)
+        _scopeDefinitions[bean.scopeQualifier.value] = def
+        return def
     }
 
     internal fun createRootScopeDefinition() {
