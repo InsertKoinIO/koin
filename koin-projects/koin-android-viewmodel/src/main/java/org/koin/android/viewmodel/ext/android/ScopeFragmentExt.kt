@@ -19,7 +19,7 @@ import android.arch.lifecycle.ViewModel
 import org.koin.android.scope.ScopeFragment
 import org.koin.android.viewmodel.ViewModelOwner.Companion.from
 import org.koin.android.viewmodel.ViewModelOwnerDefinition
-import org.koin.android.viewmodel.koin.getViewModel
+import org.koin.android.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -62,5 +62,5 @@ fun <T : ViewModel> ScopeFragment.getViewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return koin.getViewModel(qualifier, owner, clazz, parameters)
+    return scope.getViewModel(qualifier, owner, clazz, parameters)
 }

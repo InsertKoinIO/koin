@@ -56,7 +56,11 @@ val mvvmModule = module {
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
     }
-    scope<MVVMFragment> { }
+    scope<MVVMFragment> {
+        scoped { Session() }
+        viewModel { ExtSimpleViewModel(get()) }
+        viewModel(named("ext")) { ExtSimpleViewModel(get()) }
+    }
 }
 
 val scopeModule = module {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import org.junit.Assert.*
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeFragment
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.emptyState
@@ -56,6 +57,10 @@ class MVVMFragment(val session: Session) : ScopeFragment() {
 
         assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved)
         assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved2)
+        val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
+        val shared3 = getSharedViewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
+        assertEquals(shared, shared2)
+        assertEquals(shared2, shared3)
 
         assertEquals(saved, saved2)
 
