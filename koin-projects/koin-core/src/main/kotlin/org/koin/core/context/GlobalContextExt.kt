@@ -22,9 +22,8 @@ import org.koin.dsl.KoinAppDeclaration
 /**
  * Start a Koin Application as StandAlone
  */
-fun startKoin(koinContext: KoinContext = GlobalContext(), koinApplication: KoinApplication): KoinApplication {
-    KoinContextHandler.register(koinContext)
-    KoinContextHandler.start(koinApplication)
+fun startKoin(koinContext: KoinContext = GlobalContext, koinApplication: KoinApplication): KoinApplication {
+    koinContext.register(koinApplication)
     koinApplication.createEagerInstances()
     return koinApplication
 }
@@ -32,10 +31,9 @@ fun startKoin(koinContext: KoinContext = GlobalContext(), koinApplication: KoinA
 /**
  *
  */
-fun startKoin(koinContext: KoinContext = GlobalContext(), appDeclaration: KoinAppDeclaration): KoinApplication {
-    KoinContextHandler.register(koinContext)
+fun startKoin(koinContext: KoinContext = GlobalContext, appDeclaration: KoinAppDeclaration): KoinApplication {
     val koinApplication = KoinApplication.init()
-    KoinContextHandler.start(koinApplication)
+    koinContext.register(koinApplication)
     appDeclaration(koinApplication)
     koinApplication.createEagerInstances()
     return koinApplication
@@ -44,32 +42,32 @@ fun startKoin(koinContext: KoinContext = GlobalContext(), appDeclaration: KoinAp
 /**
  * Stop current StandAlone Koin application
  */
-fun stopKoin() = KoinContextHandler.stop()
+fun stopKoin() = GlobalContext.stop()
 
 /**
  * load Koin module in global Koin context
  */
 fun loadKoinModules(module: Module) {
-    KoinContextHandler.get().loadModules(listOf(module))
+    GlobalContext.get().loadModules(listOf(module))
 }
 
 /**
  * load Koin modules in global Koin context
  */
 fun loadKoinModules(modules: List<Module>) {
-    KoinContextHandler.get().loadModules(modules)
+    GlobalContext.get().loadModules(modules)
 }
 
 /**
  * unload Koin modules from global Koin context
  */
 fun unloadKoinModules(module: Module) {
-    KoinContextHandler.get().unloadModules(listOf(module))
+    GlobalContext.get().unloadModules(listOf(module))
 }
 
 /**
  * unload Koin modules from global Koin context
  */
 fun unloadKoinModules(modules: List<Module>) {
-    KoinContextHandler.get().unloadModules(modules)
+    GlobalContext.get().unloadModules(modules)
 }

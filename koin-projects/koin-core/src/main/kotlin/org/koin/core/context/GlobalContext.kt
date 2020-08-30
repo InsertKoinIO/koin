@@ -26,7 +26,7 @@ import org.koin.core.error.KoinAppAlreadyStartedException
  *
  * @author Arnaud Giuliani
  */
-class GlobalContext : KoinContext {
+object GlobalContext : KoinContext {
 
     private var _koin: Koin? = null
 
@@ -34,7 +34,7 @@ class GlobalContext : KoinContext {
 
     override fun getOrNull(): Koin? = _koin
 
-    override fun setup(koinApplication: KoinApplication) = synchronized(this) {
+    override fun register(koinApplication: KoinApplication) = synchronized(this) {
         if (_koin != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }

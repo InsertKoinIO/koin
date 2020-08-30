@@ -19,7 +19,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelStoreOwner
 import org.koin.android.viewmodel.ViewModelOwner.Companion.from
 import org.koin.android.viewmodel.koin.getViewModel
-import org.koin.core.context.KoinContextHandler
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -58,5 +58,5 @@ fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return KoinContextHandler.get().getViewModel(qualifier, { from(this) }, clazz, parameters)
+    return GlobalContext.get().getViewModel(qualifier, { from(this) }, clazz, parameters)
 }
