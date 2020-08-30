@@ -23,8 +23,8 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
  * Create a KoinApplication instance and help configure it
  * @author Arnaud Giuliani
  */
-fun koinApplication(appDeclaration: KoinAppDeclaration): KoinApplication {
+fun koinApplication(appDeclaration: KoinAppDeclaration? = null): KoinApplication {
     val koinApplication = KoinApplication.init()
-    appDeclaration(koinApplication)
+    appDeclaration?.invoke(koinApplication)
     return koinApplication
 }

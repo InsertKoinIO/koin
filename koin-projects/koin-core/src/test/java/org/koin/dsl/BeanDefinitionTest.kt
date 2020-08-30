@@ -42,9 +42,9 @@ class BeanDefinitionTest {
             options = Options()
         )
 
-        assertEquals(rootScope._scopeDefinition, def1.scopeQualifier)
+        assertEquals(rootScope._scopeDefinition.qualifier, def1.scopeQualifier)
         assertEquals(Kind.Single, def1.kind)
-        assertEquals(rootScope._scopeDefinition, def1.scopeQualifier)
+        assertEquals(rootScope._scopeDefinition.qualifier, def1.scopeQualifier)
     }
 
     @Test

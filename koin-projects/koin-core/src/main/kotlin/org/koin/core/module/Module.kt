@@ -19,6 +19,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.ScopeDefinition
@@ -70,13 +71,9 @@ class Module(
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val def = Definitions.createSingle(
-            qualifier,
-            definition,
-            makeOptions(override, createdAtStart),
-            scopeQualifier = rootScope,
-        )
-        definitions.add(def)
+        val options = makeOptions(override, createdAtStart)
+        val def = Definitions.createSingle(qualifier, definition, options, scopeQualifier = rootScope)
+        definitions.addDefinition(def)
         return def
     }
 
@@ -94,8 +91,9 @@ class Module(
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        val def = Definitions.createFactory(qualifier, definition, makeOptions(override), scopeQualifier = rootScope)
-        definitions.add(def)
+        val options = makeOptions(override)
+        val def = Definitions.createFactory(qualifier, definition, options, scopeQualifier = rootScope)
+        definitions.addDefinition(def)
         return def
     }
 
@@ -108,6 +106,16 @@ class Module(
      * Help write list of Modules
      */
     operator fun plus(modules: List<Module>) = listOf(this) + modules
+}
+
+
+
+fun HashSet<BeanDefinition<*>>.addDefinition(bean : BeanDefinition<*>){
+    val added = add(bean)
+    if (!added && !bean.options.override){
+        throw DefinitionOverrideException(
+            "Definition '$bean' try to override existing definition. Please use override option to fix it")
+    }
 }
 
 /**

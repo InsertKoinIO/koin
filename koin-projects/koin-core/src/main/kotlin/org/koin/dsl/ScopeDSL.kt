@@ -19,6 +19,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
+import org.koin.core.module.addDefinition
 import org.koin.core.qualifier.Qualifier
 
 /**
@@ -46,7 +47,7 @@ class ScopeDSL(val scopeQualifier: Qualifier, val definitions: HashSet<BeanDefin
             Options(isCreatedAtStart = false, override = override),
             scopeQualifier = scopeQualifier
         )
-        definitions.add(def)
+        definitions.addDefinition(def)
         return def
     }
 
@@ -61,7 +62,7 @@ class ScopeDSL(val scopeQualifier: Qualifier, val definitions: HashSet<BeanDefin
             Options(isCreatedAtStart = false, override = override),
             scopeQualifier = scopeQualifier
         )
-        definitions.add(def)
+        definitions.addDefinition(def)
         return def
     }
 }

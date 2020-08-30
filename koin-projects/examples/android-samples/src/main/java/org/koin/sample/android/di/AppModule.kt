@@ -56,7 +56,9 @@ val mvvmModule = module {
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
     }
-    scope<MVVMFragment> { }
+    scope<MVVMFragment> {
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
+    }
 }
 
 val scopeModule = module {
@@ -86,7 +88,7 @@ val javaModule = module {
         viewModel { CompatSimpleViewModel(get()) }
     }
     scope<JavaFragment> {
-
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
 

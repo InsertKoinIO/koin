@@ -15,6 +15,7 @@
  */
 package org.koin.core
 
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level

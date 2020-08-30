@@ -1,9 +1,13 @@
 package org.koin.perfs
 
 import org.junit.Test
-import org.koin.core.logger.Level
+import org.koin.core.A
+import org.koin.core.definition.Definitions
+import org.koin.core.definition.Options
+import org.koin.core.scope.ScopeDefinition
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import org.koin.test.assertDefinitionsCount
 
 class PerfsTest {
@@ -11,11 +15,46 @@ class PerfsTest {
     @Test
     fun `empty module perfs`() {
         val app = measureDurationForResult("empty - start ") {
-            koinApplication {}
+            koinApplication()
         }
 
         app.assertDefinitionsCount(0)
         app.close()
+    }
+
+    @Test
+    fun `module no dsl`() {
+        koinApplication().close()
+
+        (1..10).forEach {
+            useDSL()
+            dontUseDSL()
+        }
+    }
+
+    private fun dontUseDSL() {
+        measureDurationForResult("no dsl ") {
+            val app = koinApplication()
+            app.koin._scopeRegistry.declareDefinition(
+                Definitions.createSingle(
+                    A::class,
+                    definition = { A() },
+                    options = Options(),
+                    scopeQualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+            )
+            app.close()
+        }
+    }
+
+    private fun useDSL() {
+        measureDurationForResult("dsl ") {
+            val app = koinApplication {
+                modules(module {
+                    single { A() }
+                })
+            }
+            app.close()
+        }
     }
 
     /*

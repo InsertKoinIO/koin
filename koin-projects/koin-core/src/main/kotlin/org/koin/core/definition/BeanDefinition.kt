@@ -37,11 +37,11 @@ data class BeanDefinition<T>(
     val qualifier: Qualifier? = null,
     val definition: Definition<T>,
     val kind: Kind,
-    val secondaryTypes: List<KClass<*>> = listOf(),
+    var secondaryTypes: List<KClass<*>> = listOf(),
     val options: Options = Options(),
     val properties: Properties = Properties(),
-    val callbacks: Callbacks<T> = Callbacks()
 ) {
+    var callbacks: Callbacks<T> = Callbacks()
 
     override fun toString(): String {
         val defKind = kind.toString()
