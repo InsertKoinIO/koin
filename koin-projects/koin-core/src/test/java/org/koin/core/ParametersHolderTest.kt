@@ -86,14 +86,15 @@ class ParametersHolderTest {
     }
 
     @Test
-    fun `can't insert param`() {
-        val p = parametersOf(1, 2, 3, 4, 5)
-        try {
-            assert(p.insert(0, 0).get<Int>(0) == 0)
-            fail()
-        } catch (e: Exception) {
+    fun `can add into empty param`() {
+        val p = parametersOf()
+        assert(p.add(5).get<Int>(0) == 5)
+    }
 
-        }
+    @Test
+    fun `can insert at 0`() {
+        val p = parametersOf(1, 2, 3, 4, 5)
+        assert(p.insert(0, 0).get<Int>(0) == 0)
     }
 
     @Test

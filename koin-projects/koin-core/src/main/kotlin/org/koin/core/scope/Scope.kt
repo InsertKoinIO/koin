@@ -212,12 +212,24 @@ data class Scope(
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
-            ?: _parameters?.getOrNull<T>(clazz)
-            ?: findInOtherScope<T>(clazz, qualifier, parameters) ?: getFromSource(clazz)
-            ?: throwDefinitionNotFound(qualifier, clazz)
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
+                getFromSource(clazz)
+            }
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
+                _parameters?.getOrNull<T>(clazz)
+            }
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
+                findInOtherScope<T>(clazz, qualifier, parameters)
+            }
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
+                throwDefinitionNotFound(qualifier, clazz)
+            }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -391,11 +403,11 @@ data class Scope(
         _instanceRegistry.createDefinition(beanDefinition)
     }
 
-    internal fun addParameters(parameters: DefinitionParameters) {
+    fun addParameters(parameters: DefinitionParameters) {
         _parameters = parameters
     }
 
-    internal fun clearParameters() {
+    fun clearParameters() {
         _parameters = null
     }
 }

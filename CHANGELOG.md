@@ -40,6 +40,7 @@ _koin-core_
 * `[REMOVED]` removed inconsistent synchronized calls
 * `[ADDED]` added synchronized call from GlobalContext
 * `[BREAKING]` empty scope is not taken in account anymore, a scope definition is created only if there is at least one scoped definition
+* `[ADDED]` Injection parameters can be used directly as a dependency and can be resolved as `get()` or directly with builder API
 
 _koin-test_
 
