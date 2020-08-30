@@ -34,6 +34,12 @@ _koin-core_
 
 * `[ADDED]` New `KoinScopeComponent` to help build component with Koin scopes
 * `[REMOVED]` removed generic Scope API extensions
+* `[DEPRECATED]` KoinContextHandler in favor of GlobalContext
+* `[ADDED]` Better Definition to help further Kotlin Compiler Plugin, simplify Module loading process (API to help declare definition without DSL)
+* `[REMOVED]` ScopeDefinition internal from module, and prefer qualifier to avoid create stucture outside of registry
+* `[REMOVED]` removed inconsistent synchronized calls
+* `[ADDED]` added synchronized call from GlobalContext
+* `[BREAKING]` empty scope is not taken in account anymore, a scope definition is created only if there is at least one scoped definition
 
 _koin-test_
 

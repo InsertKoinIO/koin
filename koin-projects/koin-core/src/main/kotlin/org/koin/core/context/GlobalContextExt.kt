@@ -22,22 +22,14 @@ import org.koin.dsl.KoinAppDeclaration
 /**
  * Start a Koin Application as StandAlone
  */
-fun startKoin(koinContext: KoinContext = GlobalContext, koinApplication: KoinApplication): KoinApplication {
-    koinContext.register(koinApplication)
-    koinApplication.createEagerInstances()
-    return koinApplication
-}
+fun startKoin(koinContext: KoinContext = GlobalContext,
+    koinApplication: KoinApplication): KoinApplication = GlobalContext.startKoin(koinContext, koinApplication)
 
 /**
  *
  */
-fun startKoin(koinContext: KoinContext = GlobalContext, appDeclaration: KoinAppDeclaration): KoinApplication {
-    val koinApplication = KoinApplication.init()
-    koinContext.register(koinApplication)
-    appDeclaration(koinApplication)
-    koinApplication.createEagerInstances()
-    return koinApplication
-}
+fun startKoin(koinContext: KoinContext = GlobalContext,
+    appDeclaration: KoinAppDeclaration): KoinApplication = GlobalContext.startKoin(koinContext, appDeclaration)
 
 /**
  * Stop current StandAlone Koin application
@@ -47,27 +39,19 @@ fun stopKoin() = GlobalContext.stop()
 /**
  * load Koin module in global Koin context
  */
-fun loadKoinModules(module: Module) {
-    GlobalContext.get().loadModules(listOf(module))
-}
+fun loadKoinModules(module: Module) = GlobalContext.loadKoinModules(module)
 
 /**
  * load Koin modules in global Koin context
  */
-fun loadKoinModules(modules: List<Module>) {
-    GlobalContext.get().loadModules(modules)
-}
+fun loadKoinModules(modules: List<Module>) = GlobalContext.loadKoinModules(modules)
 
 /**
  * unload Koin modules from global Koin context
  */
-fun unloadKoinModules(module: Module) {
-    GlobalContext.get().unloadModules(listOf(module))
-}
+fun unloadKoinModules(module: Module) = GlobalContext.unloadKoinModules(module)
 
 /**
  * unload Koin modules from global Koin context
  */
-fun unloadKoinModules(modules: List<Module>) {
-    GlobalContext.get().unloadModules(modules)
-}
+fun unloadKoinModules(modules: List<Module>) = GlobalContext.unloadKoinModules(modules)

@@ -15,7 +15,6 @@
  */
 package org.koin.core
 
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
@@ -311,20 +310,20 @@ class Koin {
     /**
      * Close all resources from context
      */
-    fun close() = synchronized(this) {
+    fun close() {
         _modules.forEach { it.isLoaded = false }
         _modules.clear()
         _scopeRegistry.close()
         _propertyRegistry.close()
     }
 
-    fun loadModules(modules: List<Module>) = synchronized(this) {
+    fun loadModules(modules: List<Module>) {
         _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
     }
 
 
-    fun unloadModules(modules: List<Module>) = synchronized(this) {
+    fun unloadModules(modules: List<Module>) {
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
     }

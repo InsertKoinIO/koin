@@ -363,7 +363,7 @@ data class Scope(
         _koin._scopeRegistry.deleteScope(this)
     }
 
-    internal fun clear() = synchronized(this) {
+    internal fun clear() {
         _closed = true
         _source = null
         if (_koin._logger.isAt(Level.DEBUG)) {
