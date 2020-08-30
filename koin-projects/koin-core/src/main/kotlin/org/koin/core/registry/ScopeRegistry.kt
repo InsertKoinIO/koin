@@ -157,7 +157,8 @@ class ScopeRegistry(private val _koin: Koin) {
 
     fun unloadModules(module: Module) {
         module.definitions.forEach { bean ->
-            val scopeDefinition = _scopeDefinitions[bean.scopeQualifier.value] ?: error("Can't find scope for definition $bean")
+            val scopeDefinition = _scopeDefinitions[bean.scopeQualifier.value] ?: error(
+                "Can't find scope for definition $bean")
             scopeDefinition.unloadDefinition(bean)
             _scopes.values
                 .filter { it._scopeDefinition.qualifier == scopeDefinition.qualifier }

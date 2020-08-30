@@ -22,6 +22,7 @@ import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.InstanceRegistry
@@ -41,6 +42,7 @@ data class Scope(
         get() = _closed
     private val _callbacks = arrayListOf<ScopeCallback>()
     private var _closed: Boolean = false
+    private var _parameters: DefinitionParameters? = null
 
     internal fun create(links: List<Scope>) {
         _instanceRegistry.create(_scopeDefinition.definitions)
@@ -213,6 +215,7 @@ data class Scope(
         //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
+            ?: _parameters?.getOrNull<T>(clazz)
             ?: findInOtherScope<T>(clazz, qualifier, parameters) ?: getFromSource(clazz)
             ?: throwDefinitionNotFound(qualifier, clazz)
     }
@@ -386,6 +389,14 @@ data class Scope(
 
     fun loadDefinition(beanDefinition: BeanDefinition<*>) {
         _instanceRegistry.createDefinition(beanDefinition)
+    }
+
+    internal fun addParameters(parameters: DefinitionParameters) {
+        _parameters = parameters
+    }
+
+    internal fun clearParameters() {
+        _parameters = null
     }
 }
 

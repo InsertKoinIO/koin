@@ -66,20 +66,33 @@ open class DefinitionParameters(val values: List<Any> = listOf()) {
     fun isNotEmpty() = !isEmpty()
 
     fun insert(index: Int, value: Any): DefinitionParameters {
-        if (values.size > MAX_PARAMS - 1) {
-            throw DefinitionParameterException(
-                "Can't insert $value at $index in DefinitionParameters. Exceed $MAX_PARAMS arguments")
-        } else {
-            val (start, end) = values.partition { element -> values.indexOf(element) < index }
-            return DefinitionParameters(start + value + end)
-        }
+        val (start, end) = values.partition { element -> values.indexOf(element) < index }
+        return DefinitionParameters(start + value + end)
+    }
+
+    fun add(value: Any): DefinitionParameters {
+        return insert(size(), value)
     }
 
     /**
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T> get() = values.first { it is T }
+    inline fun <reified T> get(): T = values.first { it is T } as T
+
+    /**
+     * Get first element of given type T
+     * return T
+     */
+    fun <T> getOrNull(clazz: KClass<*>): T? {
+        val values = values.filter { it::class == clazz }
+        return when (values.size) {
+            1 -> values.first() as T
+            0 -> null
+            else -> throw DefinitionParameterException(
+                "Ambiguous parameter injection: more than one value of type '${clazz.getFullName()}' to get from $this. Check your injection parameters")
+        }
+    }
 
     companion object {
         const val MAX_PARAMS = 5
