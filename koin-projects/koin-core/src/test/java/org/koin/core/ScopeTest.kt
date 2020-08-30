@@ -49,7 +49,9 @@ class ScopeTest {
                             factoryCallCounter++
                             Simple.ComponentA()
                         }
-                        scope(named<ClosedScopeAPI.ScopeType>()) {}
+                        scope(named<ClosedScopeAPI.ScopeType>()) {
+                            scoped { B() }
+                        }
                     }
             )
         }

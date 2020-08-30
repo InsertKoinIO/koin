@@ -115,6 +115,9 @@ fun HashSet<BeanDefinition<*>>.addDefinition(bean : BeanDefinition<*>){
     if (!added && !bean.options.override){
         throw DefinitionOverrideException(
             "Definition '$bean' try to override existing definition. Please use override option to fix it")
+    } else if(!added && bean.options.override) {
+        remove(bean)
+        add(bean)
     }
 }
 

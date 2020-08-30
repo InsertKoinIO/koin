@@ -65,10 +65,8 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
         return beanDefinition
     }
 
-    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _definitions.remove(it)
-        }
+    fun unloadDefinition(beanDefinition: BeanDefinition<*>) {
+        _definitions.remove(beanDefinition)
     }
 
     companion object {

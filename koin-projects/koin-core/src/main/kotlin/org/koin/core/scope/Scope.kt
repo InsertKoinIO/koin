@@ -380,10 +380,8 @@ data class Scope(
         return "['$id']"
     }
 
-    fun dropInstances(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.dropDefinition(it)
-        }
+    fun dropInstance(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.dropDefinition(beanDefinition)
     }
 
     fun loadDefinition(beanDefinition: BeanDefinition<*>) {

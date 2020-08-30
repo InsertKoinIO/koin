@@ -156,23 +156,14 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     fun unloadModules(module: Module) {
-        val scopeDefinitions = module.scopes + rootScopeDefinition.qualifier
-        scopeDefinitions.forEach {
-            unloadDefinitions(it)
+        module.definitions.forEach { bean ->
+            val scopeDefinition = _scopeDefinitions[bean.scopeQualifier.value] ?: error("Can't find scope for definition $bean")
+            scopeDefinition.unloadDefinition(bean)
+            _scopes.values
+                .filter { it._scopeDefinition.qualifier == scopeDefinition.qualifier }
+                .forEach { it.dropInstance(bean) }
         }
         module.isLoaded = false
     }
 
-    private fun unloadDefinitions(scopeDefinition: Qualifier) {
-        unloadInstances(scopeDefinition)
-        _scopeDefinitions.values.firstOrNull { it.qualifier.value == scopeDefinition.value }?.let {
-            it.unloadDefinitions(it)
-        }
-    }
-
-    private fun unloadInstances(scopeDefinition: Qualifier) {
-        _scopes.values.filter { it._scopeDefinition.qualifier.value == scopeDefinition.value }.forEach {
-            it.dropInstances(it._scopeDefinition)
-        }
-    }
 }
