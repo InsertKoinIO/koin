@@ -1,7 +1,7 @@
 package org.koin.core
 
 import org.junit.Test
-import org.koin.core.context.KoinContextHandler
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.scope.KoinScopeComponent
@@ -12,7 +12,7 @@ import org.koin.ext.inject
 
 class B : KoinScopeComponent {
     override val scope: Scope by lazy { createScope() }
-    override val koin: Koin by lazy { KoinContextHandler.get() }
+    override val koin: Koin by lazy { GlobalContext.get() }
 }
 
 class C
@@ -20,14 +20,14 @@ class D
 
 class BofA(val a: A) : KoinScopeComponent {
     override val scope: Scope by lazy { createScope() }
-    override val koin: Koin by lazy { KoinContextHandler.get() }
+    override val koin: Koin by lazy { GlobalContext.get() }
 }
 
 class CofB(val b: BofA)
 
 class A : KoinScopeComponent {
     override val scope: Scope by lazy { createScope() }
-    override val koin: Koin by lazy { KoinContextHandler.get() }
+    override val koin: Koin by lazy { GlobalContext.get() }
 
     lateinit var b: B
     lateinit var c: C

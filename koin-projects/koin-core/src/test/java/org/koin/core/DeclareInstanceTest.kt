@@ -200,6 +200,7 @@ class DeclareInstanceTest {
             printLogger()
             modules(module {
                 scope(named("Session")) {
+                    scoped { B() }
                 }
             })
         }.koin
@@ -219,6 +220,7 @@ class DeclareInstanceTest {
             printLogger()
             modules(module {
                 scope(named("Session")) {
+                    scoped { B() }
                 }
             })
         }.koin
@@ -243,6 +245,7 @@ class DeclareInstanceTest {
             printLogger()
             modules(module {
                 scope(named("Session")) {
+                    scoped { B() }
                 }
             })
         }.koin

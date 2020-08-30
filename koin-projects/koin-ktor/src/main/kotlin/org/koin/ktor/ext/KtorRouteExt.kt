@@ -15,8 +15,8 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.routing.Route
-import org.koin.core.context.KoinContextHandler
+import io.ktor.routing.*
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -33,10 +33,10 @@ import org.koin.core.qualifier.Qualifier
  * @param parameters
  */
 inline fun <reified T : Any> Route.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
-        lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+    lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -44,17 +44,17 @@ inline fun <reified T : Any> Route.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Route.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
-        getKoin().get<T>(qualifier, parameters)
+    getKoin().get<T>(qualifier, parameters)
 
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
 fun Route.getProperty(key: String) =
-        getKoin().getProperty(key)
+    getKoin().getProperty(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -65,9 +65,9 @@ fun Route.getProperty(key: String) =
  *
  */
 fun Route.getProperty(key: String, defaultValue: String) =
-        getKoin().getProperty(key) ?: defaultValue
+    getKoin().getProperty(key) ?: defaultValue
 
 /**
  * Help work on ModuleDefinition
  */
-fun Route.getKoin() = KoinContextHandler.get()
+fun Route.getKoin() = GlobalContext.get()

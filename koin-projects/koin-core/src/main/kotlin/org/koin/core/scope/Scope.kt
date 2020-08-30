@@ -16,6 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
@@ -362,7 +363,7 @@ data class Scope(
         _koin._scopeRegistry.deleteScope(this)
     }
 
-    internal fun clear() = synchronized(this) {
+    internal fun clear() {
         _closed = true
         _source = null
         if (_koin._logger.isAt(Level.DEBUG)) {
@@ -379,16 +380,12 @@ data class Scope(
         return "['$id']"
     }
 
-    fun dropInstances(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.dropDefinition(it)
-        }
+    fun dropInstance(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.dropDefinition(beanDefinition)
     }
 
-    fun loadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.createDefinition(it)
-        }
+    fun loadDefinition(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.createDefinition(beanDefinition)
     }
 }
 

@@ -20,7 +20,7 @@ class ScopeDelcarationTest {
                         single<ComponentA>()
 
                         scope(scopeName) {
-                            single<ComponentB>()
+                            scoped<ComponentB>()
                         }
                     }
             )

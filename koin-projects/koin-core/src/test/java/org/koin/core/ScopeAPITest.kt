@@ -18,6 +18,7 @@ class ScopeAPITest {
         modules(
             module {
                 scope(scopeKey) {
+                    scoped { A() }
                 }
             }
         )

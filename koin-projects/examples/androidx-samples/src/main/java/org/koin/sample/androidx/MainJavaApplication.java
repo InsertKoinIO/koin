@@ -1,13 +1,13 @@
 package org.koin.sample.androidx;
 
 import android.app.Application;
+import java.util.Collections;
 import org.koin.android.java.KoinAndroidApplication;
 import org.koin.core.KoinApplication;
 import org.koin.core.context.GlobalContext;
+import org.koin.core.module.Module;
 
-import java.util.ArrayList;
-
-import static org.koin.core.context.ContextFunctionsKt.startKoin;
+import static org.koin.core.context.GlobalContextExtKt.startKoin;
 
 public class MainJavaApplication extends Application {
 
@@ -15,10 +15,10 @@ public class MainJavaApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        KoinApplication koin = KoinAndroidApplication
-                .create(this)
+        KoinApplication koin =
+            KoinAndroidApplication.create(this)
                 .printLogger()
-                .modules(new ArrayList());
-        startKoin(new GlobalContext(), koin);
+                .modules(Collections.<Module>emptyList());
+        startKoin(GlobalContext.INSTANCE, koin);
     }
 }
