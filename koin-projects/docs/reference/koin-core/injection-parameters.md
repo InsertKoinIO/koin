@@ -9,7 +9,7 @@ Below is an example of injection parameters. We established that we need a `view
 class Presenter(val view : View)
 
 val myModule = module {
-    single{ (view : View) -> Presenter(view) }
+    single { (view : View) -> Presenter(view) }
 }
 ```
 
