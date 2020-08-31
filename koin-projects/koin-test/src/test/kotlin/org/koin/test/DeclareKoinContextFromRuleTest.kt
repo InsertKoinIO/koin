@@ -7,7 +7,7 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 
-class DeclareKoinContextFromRuleTest : AutoCloseKoinTest() {
+class DeclareKoinContextFromRuleTest : AutoCloseKoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
