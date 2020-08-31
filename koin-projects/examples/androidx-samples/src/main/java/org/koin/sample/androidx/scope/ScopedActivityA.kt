@@ -11,7 +11,7 @@ import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.components.scope.SessionActivity
 import org.koin.sample.androidx.utils.navigateTo
 
-class ScopedActivityA : ScopeActivity() {
+class ScopedActivityA : ScopeActivity(contentLayoutId = R.layout.scoped_activity_a) {
 
     // Inject from current scope
     val currentSession by inject<Session>()
@@ -35,7 +35,6 @@ class ScopedActivityA : ScopeActivity() {
         session.id = ID
 
         title = "Scope Activity A"
-        setContentView(R.layout.scoped_activity_a)
 
         scoped_a_button.setOnClickListener {
             navigateTo<ScopedActivityB>(isRoot = true)
