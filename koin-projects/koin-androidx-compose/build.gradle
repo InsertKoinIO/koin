@@ -37,7 +37,7 @@ android {
 
 dependencies {
     // Koin
-    compile project(":koin-core")
+    compile project(":koin-android")
     testImplementation project(":koin-test")
 
     /* Compose */
