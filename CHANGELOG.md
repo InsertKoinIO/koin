@@ -2,6 +2,52 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [2.2.0]()
+
+_koin-androidx-scope_
+
+* `[ADDED]` New `ScopeActivity`. `ScopeFragment`, `ScopeService` to enable Scope API direclty into Android components. Offers injection directly from tied Scope.
+* `[BREAKING]` Old Scope API extensions are deprecated: `scope`, `lifecycleScope`
+
+_koin-android-scope_
+
+* `[ADDED]` New `ScopeActivity`. `ScopeFragment`, `ScopeService` to enable Scope API direclty into Android components. Offers injection directly from tied Scope.
+* `[BREAKING]` Old Scope API extensions are deprecated: `scope`, `lifecycleScope`
+
+_koin-androidx-viewmodel_
+
+* `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore & SavedStateRegistryOwner
+* `[BREAKING]` rewrite ViewModel API to better use StateViewModel factory and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition. Bundle is now used as `state` lazy attributes, `BundleDefinition = () -> Bundle`
+* `[ADDED]` verification to help check parameter injection for SavedStateRegistryOwner, as the right argument (misplaced injection param)
+* `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore & SavedStateRegistryOwner
+* `[BREAKING]` rewrite ViewModel API to better use StateViewModel factory and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition. Bundle is now used as `state` lazy attributes, `BundleDefinition = () -> Bundle`
+* `[ADDED]` verification to help check parameter injection for SavedStateRegistryOwner, as the right argument (misplaced injection param)
+
+_koin-android-viewmodel_
+
+* `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore
+* `[BREAKING]` rewrite ViewModel API and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition
+* `[ADDED]` New `ViewModelOwnerDefinition` API definition for lazy define ViewModelStore
+* `[BREAKING]` rewrite ViewModel API and allow to use `ViewModelOwnerDefinition = () -> ViewModelOwner` ViewModelOwner lazy definition
+
+_koin-core_
+
+* `[ADDED]` New `KoinScopeComponent` to help build component with Koin scopes
+* `[REMOVED]` removed generic Scope API extensions
+* `[DEPRECATED]` KoinContextHandler in favor of GlobalContext
+* `[ADDED]` Better Definition to help further Kotlin Compiler Plugin, simplify Module loading process (API to help declare definition without DSL)
+* `[REMOVED]` ScopeDefinition internal from module, and prefer qualifier to avoid create stucture outside of registry
+* `[REMOVED]` removed inconsistent synchronized calls
+* `[ADDED]` added synchronized call from GlobalContext
+* `[BREAKING]` empty scope is not taken in account anymore, a scope definition is created only if there is at least one scoped definition
+
+_koin-test_
+
+* `[FIXED]` fixed checkModules to use Mock for injected parameters or default origin value of a Scope
+* `[ADDED]` setup detault values for injected parameters, for checkModules
+* `[UPDATED]` fixed `DefinitionParameters` to add the ability to know the injected type value
+
+
 ## [2.1.6]()
 
 _koin-core_

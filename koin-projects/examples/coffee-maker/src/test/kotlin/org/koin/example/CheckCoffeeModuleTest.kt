@@ -6,7 +6,7 @@ import org.koin.test.category.CheckModuleTest
 import org.koin.test.check.checkModules
 
 @Category(CheckModuleTest::class)
-class CheckCoffeeModuleTest {
+class CheckCoffeeModuleTest : MockitoTest() {
 
     @Test
     fun checkCoffeeModule() =

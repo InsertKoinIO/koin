@@ -16,7 +16,8 @@
 package org.koin.android.viewmodel.scope
 
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelStoreOwner
+import android.arch.lifecycle.ViewModelStore
+import org.koin.android.viewmodel.ViewModelOwnerDefinition
 import org.koin.android.viewmodel.ViewModelParameter
 import org.koin.android.viewmodel.createViewModelProvider
 import org.koin.android.viewmodel.resolveInstance
@@ -31,34 +32,39 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 
+typealias ViewModelStoreDefinition = () -> ViewModelStore
+
 inline fun <reified T : ViewModel> Scope.viewModel(
-    owner: ViewModelStoreOwner,
     qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel<T>(owner, qualifier, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel<T>(qualifier, owner, parameters)
+    }
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
-    owner: ViewModelStoreOwner,
     qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition,
     noinline parameters: ParametersDefinition? = null
 ): T {
-    return getViewModel(owner, T::class, qualifier, parameters)
+    return getViewModel(qualifier, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
-    owner: ViewModelStoreOwner,
-    clazz: KClass<T>,
     qualifier: Qualifier? = null,
+    owner: ViewModelOwnerDefinition,
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
+    val ownerDef = owner()
     return getViewModel(
         ViewModelParameter(
             clazz,
             qualifier,
             parameters,
-            owner.viewModelStore
+            ownerDef.store
         )
     )
 }

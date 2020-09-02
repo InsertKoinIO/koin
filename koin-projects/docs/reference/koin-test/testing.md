@@ -151,4 +151,97 @@ Koin offers a way to test if you Koin modules are good: `checkModules` - walk th
 
 Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
 
+## Testing with JUnit5
+JUnit 5 support provides Extensions that will handle the starting and stopping of Koin context.
+This means that if you are using the extension you don't need to use the AutoCloseKoinTest.
 
+### Dependency
+For testing with JUnit5 you need to use koin-junit5 dependency.
+
+### Writing tests
+You need to Register the KoinTestExtension and provide your module configuration. After this is done
+ you can either get or inject your components to the test. Remember to use @JvmField with the
+  @RegisterExtension.
+
+```kotlin
+class ExtensionTests: KoinTest {
+
+    private val componentB by inject<Simple.ComponentB>()
+
+    @JvmField
+    @RegisterExtension
+    val koinTestExtension = KoinTestExtension.create {
+        modules(
+                module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentB(get()) }
+        })
+    }
+
+    @Test
+    fun contextIsCreatedForTheTest() {
+        Assertions.assertNotNull(get<Simple.ComponentA>())
+        Assertions.assertNotNull(componentB)
+    }
+}
+
+```
+
+### Mocking with JUnit5
+This works the same way as in JUnit4 except you need to use @RegisterExtension.
+
+```kotlin
+class MockExtensionTests: KoinTest {
+
+    val mock: Simple.UUIDComponent by inject()
+
+    @JvmField
+    @RegisterExtension
+    val koinTestExtension = KoinTestExtension.create {
+        modules(
+                module {
+                    single { Simple.UUIDComponent() }
+                })
+    }
+
+    @JvmField
+    @RegisterExtension
+    val mockProvider = MockProviderExtension.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
+
+    @Test
+    fun mockProviderTest() {
+        val uuidValue = "UUID"
+        declareMock<Simple.UUIDComponent> {
+            BDDMockito.given(getUUID()).will { uuidValue }
+        }
+
+        Assertions.assertEquals(uuidValue, mock.getUUID())
+    }
+}
+```
+
+### Getting the created Koin instances 
+You can also get the created koin context as a function parameter. This can be achieved by adding
+ a function parameter to the test function.
+
+```kotlin
+class ExtensionTests: KoinTest {
+    
+    @RegisterExtension
+    @JvmField
+    val koinTestExtension = KoinTestExtension.create {
+        modules(
+                module {
+                    single { Simple.ComponentA() }
+                })
+    }
+
+    @Test
+    fun contextIsCreatedForTheTest(koin: Koin) {
+        // get<SimpleComponentA>() == koin.get<Simple.ComponentA>()
+        Assertions.assertNotNull(koin.get<Simple.ComponentA>())
+    }
+}
+```

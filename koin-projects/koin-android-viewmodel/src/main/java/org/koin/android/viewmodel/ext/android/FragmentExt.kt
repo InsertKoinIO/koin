@@ -18,46 +18,50 @@ package org.koin.android.viewmodel.ext.android
 import android.arch.lifecycle.ViewModel
 import android.support.v4.app.Fragment
 import org.koin.android.ext.android.getKoin
+import org.koin.android.viewmodel.ViewModelOwner.Companion.from
+import org.koin.android.viewmodel.ViewModelOwnerDefinition
 import org.koin.android.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * Fragment extension to help for Viewmodel
+ * LifecycleOwner extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-
-inline fun <reified T : ViewModel> Fragment.sharedViewModel(
+inline fun <reified T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this) },
     noinline parameters: ParametersDefinition? = null
-): Lazy<T> =
-    lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel<T>(qualifier, parameters) }
-
-fun <T : ViewModel> Fragment.sharedViewModel(
-    clazz: KClass<T>,
-    qualifier: Qualifier? = null,
-    parameters: ParametersDefinition? = null
-): Lazy<T> =
-    lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(clazz, qualifier, parameters) }
-
-inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
-): T {
-    return getSharedViewModel(T::class, qualifier, parameters)
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel<T>(qualifier, owner, parameters)
+    }
 }
 
-fun <T : ViewModel> Fragment.getSharedViewModel(
-    clazz: KClass<T>,
+fun <T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
+    owner: ViewModelOwnerDefinition = { from(this) },
+    clazz: KClass<T>,
+    parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, owner, clazz, parameters) }
+}
+
+inline fun <reified T : ViewModel> Fragment.getViewModel(
+    qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(this) },
+    noinline parameters: ParametersDefinition? = null
+): T {
+    return getViewModel(qualifier, owner, T::class, parameters)
+}
+
+fun <T : ViewModel> Fragment.getViewModel(
+    qualifier: Qualifier? = null,
+    owner: ViewModelOwnerDefinition = { from(this) },
+    clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(
-        requireActivity(),
-        clazz,
-        qualifier,
-        parameters
-    )
+    return getKoin().getViewModel(qualifier, owner, clazz, parameters)
 }

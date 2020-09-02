@@ -6,6 +6,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.dsl.onClose
 import org.koin.sample.android.compat.JavaActivity
+import org.koin.sample.android.compat.JavaFragment
 import org.koin.sample.android.components.Counter
 import org.koin.sample.android.components.SCOPE_ID
 import org.koin.sample.android.components.SCOPE_SESSION
@@ -24,6 +25,7 @@ import org.koin.sample.android.components.scope.Session
 import org.koin.sample.android.components.scope.SessionActivity
 import org.koin.sample.android.mvp.MVPActivity
 import org.koin.sample.android.mvvm.MVVMActivity
+import org.koin.sample.android.mvvm.MVVMFragment
 import org.koin.sample.android.scope.ScopedActivityA
 
 val appModule = module {
@@ -54,6 +56,9 @@ val mvvmModule = module {
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
     }
+    scope<MVVMFragment> {
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
+    }
 }
 
 val scopeModule = module {
@@ -82,4 +87,9 @@ val javaModule = module {
         scoped { Session() }
         viewModel { CompatSimpleViewModel(get()) }
     }
+    scope<JavaFragment> {
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
+    }
 }
+
+val allModules = appModule + mvpModule + mvvmModule + scopeModule + dynamicModule + javaModule

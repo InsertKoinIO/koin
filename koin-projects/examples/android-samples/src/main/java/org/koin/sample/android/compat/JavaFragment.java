@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.koin.android.scope.ScopeFragment;
 import org.koin.sample.android.R;
 import org.koin.sample.android.components.compat.CompatSimpleViewModel;
 
@@ -15,11 +16,10 @@ import kotlin.Lazy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.koin.android.scope.compat.ScopeCompat.lifecycleScope;
 import static org.koin.android.viewmodel.compat.ScopeCompat.getViewModel;
 import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
 
-public class JavaFragment extends Fragment {
+public class JavaFragment extends ScopeFragment {
 
     private Lazy<CompatSimpleViewModel> viewModel = sharedViewModel(this,
             CompatSimpleViewModel.class);
@@ -37,7 +37,7 @@ public class JavaFragment extends Fragment {
         if (activity == null) return;
 
         final CompatSimpleViewModel compatVM = getViewModel(
-                lifecycleScope(activity), this, CompatSimpleViewModel.class
+                getScopeActivity().getScope(), this, CompatSimpleViewModel.class
         );
 
         assertNotEquals(viewModel.getValue(), compatVM);

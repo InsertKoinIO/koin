@@ -19,13 +19,13 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
+import org.koin.core.module.addDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeDefinition
 
 /**
  * DSL Scope Definition
  */
-class ScopeDSL(val scopeDefinition: ScopeDefinition) {
+class ScopeDSL(val scopeQualifier: Qualifier, val definitions: HashSet<BeanDefinition<*>>) {
 
     @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)
     inline fun <reified T> single(
@@ -41,12 +41,14 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveSingle(
+        val def = Definitions.createSingle(
             qualifier,
             definition,
-            scopeDefinition,
-            Options(isCreatedAtStart = false, override = override)
+            Options(isCreatedAtStart = false, override = override),
+            scopeQualifier = scopeQualifier
         )
+        definitions.addDefinition(def)
+        return def
     }
 
     inline fun <reified T> factory(
@@ -54,11 +56,13 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveFactory(
+        val def = Definitions.createFactory(
             qualifier,
             definition,
-            scopeDefinition,
-            Options(isCreatedAtStart = false, override = override)
+            Options(isCreatedAtStart = false, override = override),
+            scopeQualifier = scopeQualifier
         )
+        definitions.addDefinition(def)
+        return def
     }
 }

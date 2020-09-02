@@ -33,4 +33,10 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$android_arch_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
+    testImplementation project(":koin-test")
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation "org.robolectric:robolectric:4.2.1"
+
+    testImplementation "io.mockk:mockk:$mockk_version"
 }

@@ -16,55 +16,21 @@
 
 package org.koin.android.scope
 
-import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
-import android.content.ComponentCallbacks
-import org.koin.android.ext.android.getKoin
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import org.koin.ext.getScopeId
-import org.koin.ext.getScopeName
 
-/**
- * Provide an scope for given LifecycleOwner component
- *
- * @author Arnaud Giuliani
- */
 
-private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()
-
-private fun LifecycleOwner.getOrCreateAndroidScope(): Scope {
-    val scopeId = getScopeId()
-    return getKoin().getScopeOrNull(scopeId) ?: createAndBindAndroidScope(scopeId, getScopeName())
-}
-
-private fun LifecycleOwner.createAndBindAndroidScope(scopeId: String, qualifier: Qualifier): Scope {
-    val scope = getKoin().createScope(scopeId, qualifier, this)
-    bindScope(scope)
-    return scope
-}
-
-/**
- * Bind given scope to current LifecycleOwner
- * @param scope
- * @param event
- */
-fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
-    lifecycle.addObserver(ScopeObserver(event, this, scope))
-}
-
-/**
- * Get current Koin scope, bound to current lifecycle
- */
+@Deprecated("Use ScopeActivity or ScopeFragment instead", replaceWith = ReplaceWith("lifecycleScope"),
+    level = DeprecationLevel.ERROR)
 val LifecycleOwner.lifecycleScope: Scope
-    get() = getOrCreateAndroidScope()
+    get() = kotlin.error("Don't use scope on a lifecycle component. Use ScopeActivity or ScopeFragment instead")
 
-@Deprecated("Use lifecycleScope instead", replaceWith = ReplaceWith("lifecycleScope"), level = DeprecationLevel.ERROR)
+@Deprecated("Use ScopeActivity or ScopeFragment instead", replaceWith = ReplaceWith("lifecycleScope"),
+    level = DeprecationLevel.ERROR)
 val LifecycleOwner.scope: Scope
-    get() = error("Don't use scope on a lifecycle component. Use lifecycleScope instead")
+    get() = kotlin.error("Don't use scope on a lifecycle component. Use ScopeActivity or ScopeFragment instead")
 
-@Deprecated("Use lifecycleScope instead", replaceWith = ReplaceWith("lifecycleScope"))
+@Deprecated("Use ScopeActivity or ScopeFragment instead", replaceWith = ReplaceWith("lifecycleScope"),
+    level = DeprecationLevel.ERROR)
 val LifecycleOwner.currentScope: Scope
-    get() = getOrCreateAndroidScope()
-
-
+    get() = kotlin.error("Don't use scope on a lifecycle component. Use ScopeActivity or ScopeFragment instead")

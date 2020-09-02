@@ -15,9 +15,6 @@
  */
 package org.koin.core.time
 
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeSource
-
 
 /**
  * Measure functions
@@ -28,15 +25,13 @@ import kotlin.time.TimeSource
 /**
  * Measure code execution
  */
-@OptIn(ExperimentalTime::class)
 fun measureDuration(code: () -> Unit): Double {
-    val clock = TimeSource.Monotonic
-    val mark = clock.markNow()
+    val startTime = System.nanoTime().toDouble()
     code()
-    return mark.elapsedNow().inMilliseconds
+    val endTime = System.nanoTime().toDouble()
+    return (endTime - startTime).inMilliseconds()
 }
 
-@OptIn(ExperimentalTime::class)
 fun measureDuration(message: String, code: () -> Unit) {
     val time = measureDuration(code)
     println("$message - $time ms")
@@ -45,17 +40,17 @@ fun measureDuration(message: String, code: () -> Unit) {
 /**
  * Measure code execution and get result
  */
-@OptIn(ExperimentalTime::class)
 fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
-    val clock = TimeSource.Monotonic
-    val mark = clock.markNow()
+    val startTime = System.nanoTime().toDouble()
     val result = code()
-    return Pair(result, mark.elapsedNow().inMilliseconds)
+    val endTime = System.nanoTime().toDouble()
+    return Pair(result, (endTime - startTime).inMilliseconds())
 }
 
-@OptIn(ExperimentalTime::class)
 fun <T> measureDurationForResult(message: String, code: () -> T): T {
     val (result, time) = measureDurationForResult(code)
     println("$message - $time ms")
     return result
 }
+
+private fun Double.inMilliseconds(): Double = (this / 1000000)

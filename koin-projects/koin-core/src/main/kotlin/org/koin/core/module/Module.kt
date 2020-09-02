@@ -19,6 +19,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
+import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.ScopeDefinition
@@ -31,31 +32,30 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  */
 class Module(
-        val createAtStart: Boolean,
-        val override: Boolean
+    val createAtStart: Boolean,
+    val override: Boolean
 ) {
-    val rootScope: ScopeDefinition = ScopeDefinition.rootDefinition()
-    var isLoaded: Boolean = false
-        internal set
-    val otherScopes = arrayListOf<ScopeDefinition>()
+    val rootScope: Qualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
+    internal var isLoaded: Boolean = false
+    val scopes = arrayListOf<Qualifier>()
+    val definitions = hashSetOf<BeanDefinition<*>>()
 
     /**
      * Declare a group a scoped definition with a given scope qualifier
      * @param qualifier
      */
     fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
-        val scopeDefinition = ScopeDefinition(qualifier)
-        ScopeDSL(scopeDefinition).apply(scopeSet)
-        otherScopes.add(scopeDefinition)
+        ScopeDSL(qualifier, definitions).apply(scopeSet)
+        scopes.add(qualifier)
     }
 
     /**
      * Class Typed Scope
      */
     inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
-        val scopeDefinition = ScopeDefinition(TypeQualifier(T::class))
-        ScopeDSL(scopeDefinition).apply(scopeSet)
-        otherScopes.add(scopeDefinition)
+        val qualifier = TypeQualifier(T::class)
+        ScopeDSL(qualifier, definitions).apply(scopeSet)
+        scopes.add(qualifier)
     }
 
     /**
@@ -66,21 +66,19 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-            qualifier: Qualifier? = null,
-            createdAtStart: Boolean = false,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        createdAtStart: Boolean = false,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveSingle(
-                qualifier,
-                definition,
-                rootScope,
-                makeOptions(override, createdAtStart)
-        )
+        val options = makeOptions(override, createdAtStart)
+        val def = Definitions.createSingle(qualifier, definition, options, scopeQualifier = rootScope)
+        definitions.addDefinition(def)
+        return def
     }
 
     fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
-            Options(this.createAtStart || createdAtStart, this.override || override)
+        Options(this.createAtStart || createdAtStart, this.override || override)
 
     /**
      * Declare a Factory definition
@@ -89,11 +87,14 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-            qualifier: Qualifier? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveFactory(qualifier, definition, rootScope, makeOptions(override))
+        val options = makeOptions(override)
+        val def = Definitions.createFactory(qualifier, definition, options, scopeQualifier = rootScope)
+        definitions.addDefinition(def)
+        return def
     }
 
     /**
@@ -105,6 +106,19 @@ class Module(
      * Help write list of Modules
      */
     operator fun plus(modules: List<Module>) = listOf(this) + modules
+}
+
+
+
+fun HashSet<BeanDefinition<*>>.addDefinition(bean : BeanDefinition<*>){
+    val added = add(bean)
+    if (!added && !bean.options.override){
+        throw DefinitionOverrideException(
+            "Definition '$bean' try to override existing definition. Please use override option to fix it")
+    } else if(!added && bean.options.override) {
+        remove(bean)
+        add(bean)
+    }
 }
 
 /**

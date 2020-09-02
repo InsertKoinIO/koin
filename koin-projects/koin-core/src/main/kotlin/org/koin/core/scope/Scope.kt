@@ -16,6 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
@@ -31,15 +32,15 @@ import kotlin.reflect.KClass
 data class Scope(
     val id: ScopeID,
     val _scopeDefinition: ScopeDefinition,
-    val _koin: Koin,
-    val _source: Any? = null
+    val _koin: Koin
 ) {
     val _linkedScope: ArrayList<Scope> = arrayListOf()
     val _instanceRegistry = InstanceRegistry(_koin, this)
-    private val _callbacks = arrayListOf<ScopeCallback>()
-    private var _closed: Boolean = false
+    var _source: Any? = null
     val closed: Boolean
         get() = _closed
+    private val _callbacks = arrayListOf<ScopeCallback>()
+    private var _closed: Boolean = false
 
     internal fun create(links: List<Scope>) {
         _instanceRegistry.create(_scopeDefinition.definitions)
@@ -151,7 +152,7 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: Exception) {
-            _koin._logger.error("Can't get instance for ${clazz.getFullName()}")
+            _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()}")
             null
         }
     }
@@ -229,9 +230,9 @@ data class Scope(
         var instance: T? = null
         for (scope in _linkedScope) {
             instance = scope.getOrNull<T>(
-                    clazz,
-                    qualifier,
-                    parameters
+                clazz,
+                qualifier,
+                parameters
             )
             if (instance != null) break
         }
@@ -362,8 +363,9 @@ data class Scope(
         _koin._scopeRegistry.deleteScope(this)
     }
 
-    internal fun clear() = synchronized(this) {
+    internal fun clear() {
         _closed = true
+        _source = null
         if (_koin._logger.isAt(Level.DEBUG)) {
             _koin._logger.info("closing scope:'$id'")
         }
@@ -378,16 +380,12 @@ data class Scope(
         return "['$id']"
     }
 
-    fun dropInstances(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.dropDefinition(it)
-        }
+    fun dropInstance(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.dropDefinition(beanDefinition)
     }
 
-    fun loadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.createDefinition(it)
-        }
+    fun loadDefinition(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.createDefinition(beanDefinition)
     }
 }
 
