@@ -38,5 +38,5 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     testImplementation "org.robolectric:robolectric:4.2.1"
 
-    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }

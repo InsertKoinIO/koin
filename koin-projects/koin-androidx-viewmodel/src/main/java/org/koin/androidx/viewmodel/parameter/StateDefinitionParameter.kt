@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import org.koin.core.parameter.DefinitionParameters
 import kotlin.reflect.KClass
 
-class StateDefinitionParameter(values: List<Any> = emptyList()) : DefinitionParameters(values) {
+class StateDefinitionParameter(values: List<Any?> = emptyList()) : DefinitionParameters(values) {
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
         return when {
             i == DEFAULT_INDEX && clazz == SavedStateHandle::class -> {

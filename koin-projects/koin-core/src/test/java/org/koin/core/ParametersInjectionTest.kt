@@ -27,9 +27,27 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `can create a single with nullable parameters`() {
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (i: Int?) -> Simple.MySingleWithNull(i) }
+                    })
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingleWithNull = koin.get { parametersOf(null) }
+
+        assertEquals(null, a.id)
+    }
+
+    @Test
     fun `can get a single created with parameters - no need of give it again`() {
 
         val app = koinApplication {
+            printLogger(Level.DEBUG)
             modules(
                 module {
                     single { (i: Int) -> Simple.MySingle(i) }
@@ -72,6 +90,44 @@ class ParametersInjectionTest {
                 module {
                     factory { (i: Int) -> Simple.MyIntFactory(i) }
                     factory { (s: String) -> Simple.MyStringFactory(s) }
+                    factory { (i: Int, s: String) ->
+                        Simple.AllFactory(
+                            get { parametersOf(i) },
+                            get { parametersOf(s) })
+                    }
+                })
+        }.koin
+
+        val f = koin.get<Simple.AllFactory> { parametersOf(42, "42") }
+
+        assertEquals(42, f.ints.id)
+        assertEquals("42", f.strings.s)
+    }
+
+    @Test
+    fun `inject in graph`() {
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { Simple.MySingle(get()) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingle = koin.get { parametersOf(42) }
+
+        assertEquals(42, a.id)
+    }
+
+    @Test
+    fun `chained factory injection - graph`() {
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    factory { Simple.MyIntFactory(get()) }
+                    factory { Simple.MyStringFactory(get()) }
                     factory { (i: Int, s: String) ->
                         Simple.AllFactory(
                             get { parametersOf(i) },

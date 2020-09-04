@@ -44,6 +44,7 @@ inline fun <reified T : Any> Koin.declareMock(
         secondaryTypes: List<KClass<*>> = emptyList(),
         stubbing: StubFunction<T> = {}
 ): T {
+    _logger.debug("declareMock - class:${T::class} q:$qualifier")
     return _scopeRegistry.rootScope.declareMock(qualifier, secondaryTypes, stubbing)
 }
 
