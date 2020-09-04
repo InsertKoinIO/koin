@@ -10,6 +10,13 @@ import org.koin.core.parameter.parametersOf
 class ParametersHolderTest {
 
     @Test
+    fun `create a parameters holder - nullable params`() {
+        val (i: Int, s: String?) = parametersOf(42, null)
+        assert(i == 42)
+        assert(s == null)
+    }
+
+    @Test
     fun `create a parameters holder - 1 param`() {
         val myString = "empty"
         val myInt = 42
