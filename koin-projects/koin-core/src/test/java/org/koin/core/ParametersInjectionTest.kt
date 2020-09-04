@@ -27,6 +27,23 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `can create a single with nullable parameters`() {
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { (i: Int?) -> Simple.MySingleWithNull(i) }
+                    })
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingleWithNull = koin.get { parametersOf(null) }
+
+        assertEquals(null, a.id)
+    }
+
+    @Test
     fun `can get a single created with parameters - no need of give it again`() {
 
         val app = koinApplication {

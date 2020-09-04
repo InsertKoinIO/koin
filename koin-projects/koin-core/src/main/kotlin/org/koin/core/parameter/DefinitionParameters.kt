@@ -28,11 +28,11 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class DefinitionParameters(val values: List<Any> = listOf()) {
+open class DefinitionParameters(val values: List<Any?> = listOf()) {
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
-        if (values.size > i) values[i] as T else throw NoParameterFoundException(
-            "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
+            if (values.size > i) values[i] as T else throw NoParameterFoundException(
+                    "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
 
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
     inline operator fun <reified T> component2(): T = elementAt(1, T::class)
@@ -85,12 +85,12 @@ open class DefinitionParameters(val values: List<Any> = listOf()) {
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        val values = values.filter { it::class == clazz }
+        val values = values.filterNotNull().filter { it::class == clazz }
         return when (values.size) {
             1 -> values.first() as T
             0 -> null
             else -> throw DefinitionParameterException(
-                "Ambiguous parameter injection: more than one value of type '${clazz.getFullName()}' to get from $this. Check your injection parameters")
+                    "Ambiguous parameter injection: more than one value of type '${clazz.getFullName()}' to get from $this. Check your injection parameters")
         }
     }
 
@@ -107,10 +107,10 @@ open class DefinitionParameters(val values: List<Any> = listOf()) {
  * @see parameters
  * return ParameterList
  */
-fun parametersOf(vararg parameters: Any) =
-    if (parameters.size <= MAX_PARAMS) DefinitionParameters(
-        parameters.toMutableList()) else throw DefinitionParameterException(
-        "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
+fun parametersOf(vararg parameters: Any?) =
+        if (parameters.size <= MAX_PARAMS) DefinitionParameters(
+                parameters.toMutableList()) else throw DefinitionParameterException(
+                "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
  *

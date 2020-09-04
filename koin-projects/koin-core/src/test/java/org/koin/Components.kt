@@ -1,5 +1,3 @@
-
-
 package org.koin
 
 class Simple {
@@ -11,9 +9,10 @@ class Simple {
     interface ComponentInterface2
     class Component1 : ComponentInterface1, ComponentInterface2
     class Component2 : ComponentInterface1
-    class UserComponent(val c1 : ComponentInterface1)
+    class UserComponent(val c1: ComponentInterface1)
 
     class MySingle(val id: Int)
+    class MySingleWithNull(val id: Int?)
     class MyIntFactory(val id: Int)
     class MyStringFactory(val s: String)
     class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)
@@ -26,6 +25,7 @@ class Errors {
             error("Got error while init :(")
         }
     }
+
     class CycleA(val b: CycleB)
     class CycleB(val a: CycleA)
 }
