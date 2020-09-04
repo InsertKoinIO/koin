@@ -39,8 +39,8 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     koinApplication(appDeclaration)
-        .logger(PrintLogger(level))
-        .checkModules(parameters)
+            .logger(PrintLogger(level))
+            .checkModules(parameters)
 }
 
 /**
@@ -49,15 +49,16 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     _logger.info("[Check] checking current modules ...")
 
-    checkScopedDefinitions(declareParameterCreators(parametersDefinition))
-
-    close()
+    checkScopedDefinitions(
+            declareParameterCreators(parametersDefinition)
+    )
 
     _logger.info("[Check] modules checked")
+    close()
 }
 
 private fun Koin.declareParameterCreators(
-    parametersDefinition: CheckParameters?
+        parametersDefinition: CheckParameters?
 ) = ParametersBinding(this).also { binding ->
     parametersDefinition?.invoke(binding)
 }
@@ -69,13 +70,14 @@ private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
 }
 
 private fun Koin.checkScope(
-    scopeDefinition: ScopeDefinition,
-    allParameters: ParametersBinding
+        scopeDefinition: ScopeDefinition,
+        allParameters: ParametersBinding
 ) {
     val qualifier = scopeDefinition.qualifier
     val sourceScopeValue = mockSourceValue(qualifier)
     val scope = getOrCreateScope(qualifier.value, qualifier, sourceScopeValue)
     scope._scopeDefinition.definitions.forEach {
+        _logger.info("Checking: $it ...")
         checkDefinition(allParameters, it, scope)
     }
 }
@@ -87,13 +89,19 @@ private fun mockSourceValue(qualifier: Qualifier): Any? {
 }
 
 private fun checkDefinition(
-    allParameters: ParametersBinding,
-    definition: BeanDefinition<*>,
-    scope: Scope
+        allParameters: ParametersBinding,
+        definition: BeanDefinition<*>,
+        scope: Scope
 ) {
     val parameters = allParameters.parametersCreators[CheckedComponent(definition.qualifier,
-        definition.primaryType)]?.invoke(
-        definition.qualifier)
-        ?: MockParameter(scope, allParameters.defaultValues)
+            definition.primaryType)]?.invoke(
+            definition.qualifier)
+            ?: MockParameter(scope, allParameters.defaultValues)
+    val scopeQualifier = scope._scopeDefinition.qualifier
+    if (scopeQualifier is TypeQualifier) {
+        scope._source = MockProvider.makeMock(scopeQualifier.type)
+    }
+    scope.addParameters(parameters)
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
+    scope.clearParameters()
 }

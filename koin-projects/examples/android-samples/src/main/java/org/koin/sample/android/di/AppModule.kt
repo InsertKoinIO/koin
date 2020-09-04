@@ -90,7 +90,7 @@ val javaModule = module {
         viewModel { CompatSimpleViewModel(get()) }
     }
     scope<JavaFragment> {
-
+        scoped { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
 

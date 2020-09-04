@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '2.2.0-alpha-1'
+    koin_version = '2.2.0-beta-1'
 
     // Kotlin
     kotlin_version = '1.4.0'
@@ -18,7 +18,7 @@ ext {
     // Test
     junit_version = "4.12"
     junit5_version = "5.6.2"
-    mockito_version = "2.21.0"
+    mockito_version = "3.5.9"
     mockk_version = "1.10.0"
 
     asciidoctor_version = "1.5.3"

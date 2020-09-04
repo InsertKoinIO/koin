@@ -13,14 +13,12 @@ inline fun <reified T : Any> Scope.create(): T {
     val kClass = T::class
     val instance: Any
 
-    if (_koin._logger.level == Level.DEBUG) {
-        _koin._logger.debug("!- creating class:${kClass.getFullName()}")
-    }
+    _koin._logger.debug("!- creating class:${kClass.getFullName()}")
 
     val constructor = kClass.java.constructors.firstOrNull()
         ?: error("No constructor found for class '${kClass.getFullName()}'")
 
-    val args = if (_koin._logger.level == Level.DEBUG) {
+    val args = if (_koin._logger.isAt(Level.DEBUG)) {
         val (_args, duration) = measureDurationForResult {
             getArguments(constructor, this)
         }
@@ -30,7 +28,7 @@ inline fun <reified T : Any> Scope.create(): T {
         getArguments(constructor, this)
     }
 
-    instance = if (_koin._logger.level == Level.DEBUG) {
+    instance = if (_koin._logger.isAt(Level.DEBUG)) {
         val (_instance, duration) = measureDurationForResult {
             createInstance(args, constructor)
         }

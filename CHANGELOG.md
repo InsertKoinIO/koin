@@ -32,15 +32,28 @@ _koin-android-viewmodel_
 
 _koin-core_
 
+* `[FIXED]` fixed time API - Kotlin 1.4
 * `[ADDED]` New `KoinScopeComponent` to help build component with Koin scopes
-* `[REMOVED]` removed generic Scope API extensions
+* `[REMOVED]` removed generic Scope API extensions, was preivously on any class. Please use now `KoinScopeComponent`
+* `[DEPRECATED]` KoinContextHandler in favor of GlobalContext
+* `[ADDED]` Better Definition to help further Kotlin Compiler Plugin, simplify Module loading process (API to help declare definition without DSL)
+* `[REMOVED]` ScopeDefinition internal from module, and prefer qualifier to avoid create stucture outside of registry
+* `[REMOVED]` removed inconsistent synchronized calls
+* `[ADDED]` cleaned synchronized API - better call from GlobalContext to ensure synced call
+* `[BREAKING]` empty scope is not taken in account anymore, a scope definition is created only if there is at least one scoped definition
+* `[ADDED]` Injection parameters can be used directly as a dependency and can be resolved as `get()` or directly with builder API
+* `[FIXED]` fixed starting context effect (deprecating KoinContextHanlder for GlobalContext)
 
 _koin-test_
 
 * `[FIXED]` fixed checkModules to use Mock for injected parameters or default origin value of a Scope
 * `[ADDED]` setup detault values for injected parameters, for checkModules
+* `[BREAKING]` `AutoCloseKoinTest` is now an interface, please remove any constructor
 * `[UPDATED]` fixed `DefinitionParameters` to add the ability to know the injected type value
 
+_koin-test-junit5_
+
+* `[ADDED]` JUnit5 test module
 
 ## [2.1.6]()
 

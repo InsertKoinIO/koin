@@ -10,8 +10,8 @@ import org.koin.core.scope.Scope;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.koin.core.context.ContextFunctionsKt.startKoin;
-import static org.koin.core.context.ContextFunctionsKt.stopKoin;
+import static org.koin.core.context.GlobalContextExtKt.startKoin;
+import static org.koin.core.context.GlobalContextExtKt.stopKoin;
 import static org.koin.core.qualifier.QualifierKt.named;
 import static org.koin.java.KoinJavaComponent.get;
 import static org.koin.java.KoinJavaComponent.getKoin;
@@ -24,7 +24,7 @@ public class UnitJavaTest extends KoinCoreTest {
     public void before() {
         KoinApplication koinApp = KoinApplication.init().printLogger().modules(koinModule);
 
-        startKoin(new GlobalContext(), koinApp);
+        startKoin(GlobalContext.INSTANCE, koinApp);
     }
 
     @Test

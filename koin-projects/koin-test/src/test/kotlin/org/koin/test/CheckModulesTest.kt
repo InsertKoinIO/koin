@@ -229,6 +229,68 @@ class CheckModulesTest {
     }
 
     @Test
+    fun `check a module with params - added default value in graph`() {
+        val id = "_ID_"
+        var _id = ""
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single {
+                            _id = get()
+                            Simple.MyString(_id)
+                        }
+                    }
+            )
+        }
+        app.checkModules {
+            defaultValue(id)
+        }
+
+        assert(id == _id)
+    }
+
+    @Test
+    fun `check a module with params - default value in graph`() {
+        var _value: String? = null
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single {
+                            _value = get()
+                            Simple.MyString(_value!!)
+                        }
+                    }
+            )
+        }
+        app.checkModules()
+
+        assert(_value == "")
+    }
+
+    @Test
+    fun `check a module with complex params - default mocked value in graph`() {
+        var _a: Simple.ComponentA? = null
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single {
+                            _a = get()
+                            Simple.ComponentB(_a!!)
+                        }
+                    }
+            )
+        }
+        app.checkModules {
+            defaultValue<Simple.ComponentA>()
+        }
+
+        assert(_a != null)
+    }
+
+    @Test
     fun `check a module with params - default value object`() {
         val a = Simple.ComponentA()
         var injectedValue: Simple.ComponentA? = null
@@ -278,6 +340,7 @@ class CheckModulesTest {
             }.checkModules()
             fail()
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

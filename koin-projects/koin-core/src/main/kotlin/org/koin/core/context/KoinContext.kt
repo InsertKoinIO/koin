@@ -36,7 +36,7 @@ interface KoinContext {
     /**
      * Start a Koin Application
      */
-    fun setup(koinApplication: KoinApplication)
+    fun register(koinApplication: KoinApplication)
 
     /**
      * Stop current Koin instance

@@ -15,9 +15,9 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.application.Application
+import io.ktor.application.*
 import org.koin.core.Koin
-import org.koin.core.context.KoinContextHandler
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -31,7 +31,7 @@ import org.koin.core.qualifier.Qualifier
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = KoinContextHandler.get()
+fun Application.getKoin(): Koin = GlobalContext.get()
 
 /**
  * inject lazily given dependency
@@ -40,10 +40,10 @@ fun Application.getKoin(): Koin = KoinContextHandler.get()
  * @param parameters
  */
 inline fun <reified T : Any> Application.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
-        lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+    lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -52,17 +52,17 @@ inline fun <reified T : Any> Application.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Application.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) =
-        getKoin().get<T>(qualifier, parameters)
+    getKoin().get<T>(qualifier, parameters)
 
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
 fun Application.getProperty(key: String) =
-        getKoin().getProperty(key)
+    getKoin().getProperty(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -73,4 +73,4 @@ fun Application.getProperty(key: String) =
  *
  */
 fun Application.getProperty(key: String, defaultValue: String) =
-        getKoin().getProperty(key) ?: defaultValue
+    getKoin().getProperty(key) ?: defaultValue

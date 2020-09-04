@@ -13,7 +13,7 @@ import org.mockito.BDDMockito
 import org.mockito.Mockito
 import java.util.*
 
-class DeclareMockFromKoinTest : AutoCloseKoinTest() {
+class DeclareMockFromKoinTest : AutoCloseKoinTest {
 
     @get:Rule
     val mockProvider = MockProviderRule.create { clazz ->

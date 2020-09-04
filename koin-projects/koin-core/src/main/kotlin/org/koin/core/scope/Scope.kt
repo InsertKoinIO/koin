@@ -16,11 +16,13 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.InstanceRegistry
@@ -40,6 +42,7 @@ data class Scope(
         get() = _closed
     private val _callbacks = arrayListOf<ScopeCallback>()
     private var _closed: Boolean = false
+    private var _parameters: DefinitionParameters? = null
 
     internal fun create(links: List<Scope>) {
         _instanceRegistry.create(_scopeDefinition.definitions)
@@ -209,11 +212,24 @@ data class Scope(
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
-            ?: findInOtherScope<T>(clazz, qualifier, parameters) ?: getFromSource(clazz)
-            ?: throwDefinitionNotFound(qualifier, clazz)
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
+                getFromSource(clazz)
+            }
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
+                _parameters?.getOrNull<T>(clazz)
+            }
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
+                findInOtherScope<T>(clazz, qualifier, parameters)
+            }
+            ?: run {
+                _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
+                throwDefinitionNotFound(qualifier, clazz)
+            }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -362,7 +378,7 @@ data class Scope(
         _koin._scopeRegistry.deleteScope(this)
     }
 
-    internal fun clear() = synchronized(this) {
+    internal fun clear() {
         _closed = true
         _source = null
         if (_koin._logger.isAt(Level.DEBUG)) {
@@ -379,16 +395,20 @@ data class Scope(
         return "['$id']"
     }
 
-    fun dropInstances(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.dropDefinition(it)
-        }
+    fun dropInstance(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.dropDefinition(beanDefinition)
     }
 
-    fun loadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.createDefinition(it)
-        }
+    fun loadDefinition(beanDefinition: BeanDefinition<*>) {
+        _instanceRegistry.createDefinition(beanDefinition)
+    }
+
+    fun addParameters(parameters: DefinitionParameters) {
+        _parameters = parameters
+    }
+
+    fun clearParameters() {
+        _parameters = null
     }
 }
 

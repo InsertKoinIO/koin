@@ -2,7 +2,7 @@ package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
 import org.koin.core.KoinComponent
-import org.koin.core.context.KoinContextHandler
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -12,7 +12,7 @@ import org.koin.core.qualifier.Qualifier
  */
 fun ComponentCallbacks.getKoin() = when (this) {
     is KoinComponent -> this.getKoin()
-    else -> KoinContextHandler.get()
+    else -> GlobalContext.get()
 }
 
 /**
@@ -22,8 +22,8 @@ fun ComponentCallbacks.getKoin() = when (this) {
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
 /**
@@ -33,8 +33,8 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T = getKoin().get(qualifier, parameters)
 
 /**
@@ -44,5 +44,5 @@ inline fun <reified T : Any> ComponentCallbacks.get(
  * @param parameters - injection parameters
  */
 inline fun <reified S, reified P> ComponentCallbacks.bind(
-        noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null
 ): S = getKoin().bind<S, P>(parameters)

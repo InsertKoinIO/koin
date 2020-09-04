@@ -23,7 +23,7 @@ import org.koin.core.context.stopKoin
  *
  * @author Arnaud Giuliani
  */
-abstract class AutoCloseKoinTest : KoinTest {
+interface AutoCloseKoinTest : KoinTest {
 
     @After
     fun autoClose() {

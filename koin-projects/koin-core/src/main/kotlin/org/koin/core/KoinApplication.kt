@@ -33,6 +33,7 @@ class KoinApplication private constructor() {
 
     internal fun init() {
         koin._scopeRegistry.createRootScopeDefinition()
+        koin._scopeRegistry.createRootScope()
     }
 
     /**
@@ -64,14 +65,6 @@ class KoinApplication private constructor() {
             koin._logger.info("loaded $count definitions - $duration ms")
         } else {
             loadModules(modules)
-        }
-        if (koin._logger.isAt(Level.INFO)) {
-            val duration = measureDuration {
-                koin.createRootScope()
-            }
-            koin._logger.info("create context - $duration ms")
-        } else {
-            koin.createRootScope()
         }
         return this
     }
