@@ -4,6 +4,8 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
+### [2.2.0-beta-1]()
+
 _koin-androidx-scope_
 
 * `[ADDED]` New `ScopeActivity`. `ScopeFragment`, `ScopeService` to enable Scope API direclty into Android components. Offers injection directly from tied Scope.
