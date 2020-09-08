@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '3.0.0-alpha-2'
+    koin_version = '3.0.0-alpha-3'
 
     // Kotlin
     kotlin_version = '1.4.0'
@@ -10,7 +10,7 @@ ext {
     dokka_version = '0.10.1'
 
     // Bintray
-    bintray_version = "1.8.4-jetbrains-3"
+    bintray_version = "1.8.5" //"1.8.4-jetbrains-3"
 
     // Ktor
     ktor_version = '1.4.0'
