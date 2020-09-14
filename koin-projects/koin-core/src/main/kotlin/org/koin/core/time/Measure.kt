@@ -22,14 +22,9 @@ package org.koin.core.time
  * @author Arnaud Giuliani
  */
 
-/**
- * Measure code execution
- */
+@OptIn(ExperimentalTime::class)
 fun measureDuration(code: () -> Unit): Double {
-    val startTime = System.nanoTime().toDouble()
-    code()
-    val endTime = System.nanoTime().toDouble()
-    return (endTime - startTime).inMilliseconds()
+    return measureTime(code).inMilliseconds
 }
 
 fun measureDuration(message: String, code: () -> Unit) {
@@ -40,11 +35,10 @@ fun measureDuration(message: String, code: () -> Unit) {
 /**
  * Measure code execution and get result
  */
+@OptIn(ExperimentalTime::class)
 fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
-    val startTime = System.nanoTime().toDouble()
-    val result = code()
-    val endTime = System.nanoTime().toDouble()
-    return Pair(result, (endTime - startTime).inMilliseconds())
+    val result = measureTimedValue(code)
+    return Pair(result.value, result.duration.inMilliseconds)
 }
 
 fun <T> measureDurationForResult(message: String, code: () -> T): T {
@@ -52,5 +46,3 @@ fun <T> measureDurationForResult(message: String, code: () -> T): T {
     println("$message - $time ms")
     return result
 }
-
-private fun Double.inMilliseconds(): Double = (this / 1000000)
