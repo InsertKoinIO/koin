@@ -44,13 +44,13 @@ abstract class ScopeActivity(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getKoin()._logger.debug("Open activity scope: $scope")
+        getKoin().logger.debug("Open activity scope: $scope")
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        getKoin()._logger.debug("Close activity scope: $scope")
+        getKoin().logger.debug("Close activity scope: $scope")
         scope.close()
     }
 
