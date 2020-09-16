@@ -25,8 +25,14 @@
         <activity android:name="org.koin.sample.androidx.scope.ScopedActivityA" />
         <activity android:name="org.koin.sample.androidx.scope.ScopedActivityB" />
         <activity android:name="org.koin.sample.androidx.sdk.HostActivity" />
+        <activity android:name="org.koin.sample.androidx.workmanager.WorkManagerActivity" />
 
         <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
+
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
 
     </application>
 

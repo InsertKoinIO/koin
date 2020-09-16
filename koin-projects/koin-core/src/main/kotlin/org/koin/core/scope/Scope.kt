@@ -169,7 +169,7 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: Exception) {
-            _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()}")
+            _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
@@ -287,7 +287,7 @@ data class Scope(
     /**
      * Declare a component definition from the given instance
      * This result of declaring a scoped/single definition of type T, returning the given instance
-     * (single definition of th current scope is root)
+     * (single definition of the current scope is root)
      *
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
