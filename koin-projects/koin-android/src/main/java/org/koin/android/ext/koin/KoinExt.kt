@@ -20,7 +20,9 @@ import android.app.Application
 import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.logger.Level
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.util.*
 
@@ -34,10 +36,11 @@ import java.util.*
  * Setup Android Logger for Koin
  * @param level
  */
+@OptIn(KoinApiExtension::class)
 fun KoinApplication.androidLogger(
         level: Level = Level.INFO
 ): KoinApplication {
-    koin._logger = AndroidLogger(level)
+    koin.setLogger(AndroidLogger(level))
     return this
 }
 
@@ -46,18 +49,19 @@ fun KoinApplication.androidLogger(
  * @param androidContext - Context
  */
 fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
-    if (koin._logger.isAt(Level.INFO)) {
-        koin._logger.info("[init] declare Android Context")
+    if (koin.logger.isAt(Level.INFO)) {
+        koin.logger.info("[init] declare Android Context")
     }
 
     if (androidContext is Application) {
         koin.loadModules(listOf(module {
-            single<Application> { androidContext }
+            single<Context> { androidContext } bind Application::class
+        }))
+    } else {
+        koin.loadModules(listOf(module {
+            single<Context> { androidContext }
         }))
     }
-    koin.loadModules(listOf(module {
-        single { androidContext }
-    }))
 
     return this
 }
@@ -67,10 +71,10 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  * @param androidContext
  * @param koinPropertyFile
  */
+@OptIn(KoinApiExtension::class)
 fun KoinApplication.androidFileProperties(
         koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
-    koin.createRootScope()
     val koinProperties = Properties()
     val androidContext = koin.get<Context>()
     try {
@@ -78,21 +82,20 @@ fun KoinApplication.androidFileProperties(
         if (hasFile) {
             try {
                 androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }
-                val nb =
-                        koin._propertyRegistry.saveProperties(koinProperties)
-                if (koin._logger.isAt(Level.INFO)) {
-                    koin._logger.info("[Android-Properties] loaded $nb properties from assets/$koinPropertyFile")
+                val nb = koin.onPropertyRegistry { saveProperties(koinProperties) }
+                if (koin.logger.isAt(Level.INFO)) {
+                    koin.logger.info("[Android-Properties] loaded $nb properties from assets/$koinPropertyFile")
                 }
             } catch (e: Exception) {
-                koin._logger.error("[Android-Properties] error for binding properties : $e")
+                koin.logger.error("[Android-Properties] error for binding properties : $e")
             }
         } else {
-            if (koin._logger.isAt(Level.INFO)) {
-                koin._logger.info("[Android-Properties] no assets/$koinPropertyFile file to load")
+            if (koin.logger.isAt(Level.INFO)) {
+                koin.logger.info("[Android-Properties] no assets/$koinPropertyFile file to load")
             }
         }
     } catch (e: Exception) {
-        koin._logger.error("[Android-Properties] error while loading properties from assets/$koinPropertyFile : $e")
+        koin.logger.error("[Android-Properties] error while loading properties from assets/$koinPropertyFile : $e")
     }
     return this
 }

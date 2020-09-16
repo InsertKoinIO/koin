@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
@@ -11,7 +12,7 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 import java.io.Serializable
 
-inline fun <reified T : AppCompatActivity> Context.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
+inline fun <reified T : Activity> Context.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
     val intent = intentFor<T>()
     intent.apply {
         applyExtras(extras)
@@ -20,7 +21,7 @@ inline fun <reified T : AppCompatActivity> Context.navigateTo(isRoot: Boolean = 
     startActivity(callWithFlag)
 }
 
-inline fun <reified T : AppCompatActivity> AppCompatActivity.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
+inline fun <reified T : Activity> AppCompatActivity.navigateTo(isRoot: Boolean = false, extras: Map<String, Any> = emptyMap()) {
     val intent = intentFor<T>()
     intent.apply {
         applyExtras(extras)

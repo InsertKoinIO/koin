@@ -78,6 +78,7 @@ class OpenCloseScopeInstanceTest {
             modules(
                     module {
                         scope(scope1Name) {
+                            scoped { B() }
                         }
                         scope(named("SCOPE_2")) {
                             scoped { Simple.ComponentA() }

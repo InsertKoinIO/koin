@@ -18,6 +18,7 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
+import org.koin.test.mock.MockProvider
 import kotlin.reflect.KClass
 
 data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*>)
@@ -28,9 +29,13 @@ class ParametersBinding(val koin: Koin) {
     val defaultValues = mutableMapOf<String, Any>()
 
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
-        parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+            parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+
+    fun create(clazz: KClass<*>, qualifier: Qualifier? = null, creator: ParametersCreator) =
+            parametersCreators.put(CheckedComponent(qualifier, clazz), creator)
 
     inline fun <reified T : Any> defaultValue(t: T) = defaultValues.put(T::class.java.simpleName, t)
+    inline fun <reified T : Any> defaultValue() = defaultValues.put(T::class.java.simpleName, MockProvider.makeMock<T>())
 }
 
 typealias ParametersCreator = (Qualifier?) -> DefinitionParameters

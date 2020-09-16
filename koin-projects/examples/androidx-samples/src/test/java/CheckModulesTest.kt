@@ -1,16 +1,14 @@
-import android.app.Activity
+import androidx.lifecycle.SavedStateHandle
 import org.junit.Rule
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.koin.core.logger.Level
-import org.koin.dsl.module
 import org.koin.sample.androidx.di.allModules
 import org.koin.test.category.CheckModuleTest
 import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
 
-@Category(CheckModuleTest::class)
 class CheckModulesTest {
 
     @get:Rule
@@ -20,7 +18,9 @@ class CheckModulesTest {
 
     @Test
     fun `test DI modules`() =
-        checkModules {
+        checkModules(parameters = {
+            defaultValue<SavedStateHandle>()
+        }) {
             printLogger(Level.DEBUG)
             modules(allModules)
         }

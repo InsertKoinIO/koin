@@ -135,7 +135,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     internal fun createDefinition(definition: BeanDefinition<*>) {
-        saveDefinition(definition, false)
+        saveDefinition(definition, definition.options.override)
     }
 
 }

@@ -1,5 +1,6 @@
 package org.koin.core.scope
 
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
@@ -11,10 +12,12 @@ import kotlin.reflect.KClass
 /**
  * Internal Scope Definition
  */
-class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()) {
+data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
 
-    val definitions: Set<BeanDefinition<*>>
-        get() = _definitions
+    private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+
+    @KoinApiExtension
+    val definitions: Set<BeanDefinition<*>> = _definitions
 
     fun save(beanDefinition: BeanDefinition<*>, forceOverride: Boolean = false) {
         if (definitions.contains(beanDefinition)) {
@@ -22,7 +25,8 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
                 _definitions.remove(beanDefinition)
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
-                throw DefinitionOverrideException("Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
+                throw DefinitionOverrideException(
+                        "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
             }
         }
         _definitions.add(beanDefinition)
@@ -36,65 +40,40 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
 
     inline fun <reified T : Any> saveNewDefinition(
             instance: T,
-            qualifier: Qualifier? = null,
+            defQualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
     ): BeanDefinition<out Any?> {
         val clazz = T::class
         val found: BeanDefinition<*>? =
-                definitions.firstOrNull { def -> def.`is`(clazz, qualifier, this) }
+                definitions.firstOrNull { def -> def.`is`(clazz, defQualifier, this.qualifier) }
         if (found != null) {
             if (override) {
                 remove(found)
             } else {
-                throw DefinitionOverrideException("Trying to override existing definition '$found' with new definition typed '$clazz'")
+                throw DefinitionOverrideException(
+                        "Trying to override existing definition '$found' with new definition typed '$clazz'")
             }
         }
         val beanDefinition = Definitions.createSingle(
                 clazz,
-                qualifier,
+                defQualifier,
                 { instance },
-                this,
                 Options(isCreatedAtStart = false, override = override),
-                secondaryTypes ?: emptyList()
+                secondaryTypes ?: emptyList(),
+                qualifier,
         )
         save(beanDefinition, override)
         return beanDefinition
     }
 
-    fun unloadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _definitions.remove(it)
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ScopeDefinition
-
-        if (qualifier != other.qualifier) return false
-        if (isRoot != other.isRoot) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = qualifier.hashCode()
-        result = 31 * result + isRoot.hashCode()
-        return result
-    }
-
-    fun copy(): ScopeDefinition {
-        val copy = ScopeDefinition(qualifier, isRoot, HashSet())
-        copy._definitions.addAll(definitions)
-        return copy
+    fun unloadDefinition(beanDefinition: BeanDefinition<*>) {
+        _definitions.remove(beanDefinition)
     }
 
     companion object {
         const val ROOT_SCOPE_ID = "-Root-"
         val ROOT_SCOPE_QUALIFIER = _q(ROOT_SCOPE_ID)
-        fun rootDefinition() = ScopeDefinition(ROOT_SCOPE_QUALIFIER, isRoot = true)
+        internal fun rootDefinition() = ScopeDefinition(ROOT_SCOPE_QUALIFIER, isRoot = true)
     }
 }

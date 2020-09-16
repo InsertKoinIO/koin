@@ -17,6 +17,7 @@ package org.koin.test.check
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.logger.Level
 import org.koin.core.logger.PrintLogger
@@ -39,43 +40,48 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     koinApplication(appDeclaration)
-        .logger(PrintLogger(level))
-        .checkModules(parameters)
+            .logger(PrintLogger(level))
+            .checkModules(parameters)
 }
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
-    _logger.info("[Check] checking current modules ...")
+    logger.info("[Check] checking current modules ...")
 
-    checkScopedDefinitions(declareParameterCreators(parametersDefinition))
+    checkScopedDefinitions(
+            declareParameterCreators(parametersDefinition)
+    )
 
+    logger.info("[Check] modules checked")
     close()
-
-    _logger.info("[Check] modules checked")
 }
 
 private fun Koin.declareParameterCreators(
-    parametersDefinition: CheckParameters?
+        parametersDefinition: CheckParameters?
 ) = ParametersBinding(this).also { binding ->
     parametersDefinition?.invoke(binding)
 }
 
+@OptIn(KoinApiExtension::class)
 private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
-    _scopeRegistry.scopeDefinitions.values.forEach { scopeDefinition ->
-        checkScope(scopeDefinition, allParameters)
+    onScopeRegistry {
+        scopeDefinitions.values.forEach { scopeDefinition ->
+            checkScope(scopeDefinition, allParameters)
+        }
     }
 }
 
 private fun Koin.checkScope(
-    scopeDefinition: ScopeDefinition,
-    allParameters: ParametersBinding
+        scopeDefinition: ScopeDefinition,
+        allParameters: ParametersBinding
 ) {
     val qualifier = scopeDefinition.qualifier
     val sourceScopeValue = mockSourceValue(qualifier)
     val scope = getOrCreateScope(qualifier.value, qualifier, sourceScopeValue)
     scope._scopeDefinition.definitions.forEach {
+        logger.info("Checking: $it ...")
         checkDefinition(allParameters, it, scope)
     }
 }
@@ -86,14 +92,21 @@ private fun mockSourceValue(qualifier: Qualifier): Any? {
     } else null
 }
 
+@OptIn(KoinApiExtension::class)
 private fun checkDefinition(
-    allParameters: ParametersBinding,
-    definition: BeanDefinition<*>,
-    scope: Scope
+        allParameters: ParametersBinding,
+        definition: BeanDefinition<*>,
+        scope: Scope
 ) {
     val parameters = allParameters.parametersCreators[CheckedComponent(definition.qualifier,
-        definition.primaryType)]?.invoke(
-        definition.qualifier)
-        ?: MockParameter(scope, allParameters.defaultValues)
+            definition.primaryType)]?.invoke(
+            definition.qualifier)
+            ?: MockParameter(scope, allParameters.defaultValues)
+    val scopeQualifier = scope._scopeDefinition.qualifier
+    if (scopeQualifier is TypeQualifier) {
+        scope.setSource(MockProvider.makeMock(scopeQualifier.type))
+    }
+    scope.addParameters(parameters)
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
+    scope.clearParameters()
 }
