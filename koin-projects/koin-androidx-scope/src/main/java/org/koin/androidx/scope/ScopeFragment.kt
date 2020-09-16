@@ -47,13 +47,13 @@ abstract class ScopeFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        koin._logger.debug("Open fragment scope: $scope")
+        koin.logger.debug("Open fragment scope: $scope")
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        koin._logger.debug("Close fragment scope: $scope")
+        koin.logger.debug("Close fragment scope: $scope")
         scope.close()
     }
 

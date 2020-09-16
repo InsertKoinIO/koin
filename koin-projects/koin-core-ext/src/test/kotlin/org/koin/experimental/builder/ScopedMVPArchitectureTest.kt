@@ -9,7 +9,7 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.check.checkModules
 import org.koin.test.get
 
-class ScopedMVPArchitectureTest : AutoCloseKoinTest {
+class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
 
     val MVPModule = module {
         single<Repository>()

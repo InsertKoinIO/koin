@@ -19,7 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
 import org.koin.ext.quoted
-import java.util.*
+import java.util.Properties
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class PropertyRegistry(val _koin: Koin) {
+class PropertyRegistry(private val _koin: Koin) {
 
     private val _values: MutableMap<String, String> = ConcurrentHashMap()
 
