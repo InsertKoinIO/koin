@@ -4,12 +4,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.Koin
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertHasNoStandaloneInstance
 
+@OptIn(KoinApiExtension::class)
 abstract class CustomKoinComponent : KoinComponent {
 
     override fun getKoin(): Koin = customKoin

@@ -16,6 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
@@ -34,7 +35,6 @@ import org.koin.core.scope.ScopeID
  */
 class ScopeRegistry(private val _koin: Koin) {
 
-    //TODO Lock - ConcurrentHashMap
     private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()
     val scopeDefinitions: Map<QualifierValue, ScopeDefinition>
         get() = _scopeDefinitions
@@ -46,7 +46,8 @@ class ScopeRegistry(private val _koin: Koin) {
     private var _rootScopeDefinition: ScopeDefinition? = null
     val rootScopeDefinition: ScopeDefinition
         get() = _rootScopeDefinition ?: error("No root scope definition")
-    var _rootScope: Scope? = null
+
+    internal var _rootScope: Scope? = null
     val rootScope: Scope
         get() = _rootScope ?: error("No root scope")
 
@@ -80,7 +81,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun createScopeDefinition(
-        bean: BeanDefinition<*>): ScopeDefinition {
+            bean: BeanDefinition<*>): ScopeDefinition {
         val def = ScopeDefinition(bean.scopeQualifier)
         _scopeDefinitions[bean.scopeQualifier.value] = def
         return def
@@ -90,7 +91,7 @@ class ScopeRegistry(private val _koin: Koin) {
         if (_rootScopeDefinition == null) {
             val scopeDefinition = ScopeDefinition.rootDefinition()
             _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
-                scopeDefinition
+                    scopeDefinition
             _rootScopeDefinition = scopeDefinition
         } else error("Try to recreate Root scope definition")
     }
@@ -98,7 +99,7 @@ class ScopeRegistry(private val _koin: Koin) {
     internal fun createRootScope() {
         if (_rootScope == null) {
             _rootScope =
-                createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER, null)
+                    createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER, null)
         } else error("Try to recreate Root scope")
     }
 
@@ -157,11 +158,12 @@ class ScopeRegistry(private val _koin: Koin) {
 
     fun unloadModules(module: Module) {
         module.definitions.forEach { bean ->
-            val scopeDefinition = _scopeDefinitions[bean.scopeQualifier.value] ?: error("Can't find scope for definition $bean")
+            val scopeDefinition = _scopeDefinitions[bean.scopeQualifier.value] ?: error(
+                    "Can't find scope for definition $bean")
             scopeDefinition.unloadDefinition(bean)
             _scopes.values
-                .filter { it._scopeDefinition.qualifier == scopeDefinition.qualifier }
-                .forEach { it.dropInstance(bean) }
+                    .filter { it._scopeDefinition.qualifier == scopeDefinition.qualifier }
+                    .forEach { it.dropInstance(bean) }
         }
         module.isLoaded = false
     }

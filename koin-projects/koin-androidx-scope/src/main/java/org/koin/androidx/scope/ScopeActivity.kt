@@ -17,6 +17,7 @@
 package org.koin.androidx.scope
 
 import android.os.Bundle
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import org.koin.android.ext.android.getKoin
 import org.koin.core.parameter.ParametersDefinition
@@ -32,7 +33,9 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeActivity : AppCompatActivity(), KoinScopeComponent {
+abstract class ScopeActivity(
+        @LayoutRes contentLayoutId: Int = 0
+) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
 
     private val scopeID: ScopeID by lazy { getScopeId() }
     override val koin by lazy { getKoin() }
@@ -41,13 +44,13 @@ abstract class ScopeActivity : AppCompatActivity(), KoinScopeComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getKoin()._logger.debug("Open activity scope: $scope")
+        getKoin().logger.debug("Open activity scope: $scope")
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        getKoin()._logger.debug("Close activity scope: $scope")
+        getKoin().logger.debug("Close activity scope: $scope")
         scope.close()
     }
 
@@ -58,8 +61,8 @@ abstract class ScopeActivity : AppCompatActivity(), KoinScopeComponent {
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
@@ -69,7 +72,7 @@ abstract class ScopeActivity : AppCompatActivity(), KoinScopeComponent {
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T = scope.get(qualifier, parameters)
 }

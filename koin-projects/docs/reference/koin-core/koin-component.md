@@ -70,7 +70,7 @@ Koin offers two ways of retrieving instances from the Koin container:
 val myService : MyService by inject()
 
 // retrieve directly the instance
-val myService : MyService get()
+val myService : MyService = get()
 ```
 
 ?> The lazy inject form is better to define property that need lazy evaluation.

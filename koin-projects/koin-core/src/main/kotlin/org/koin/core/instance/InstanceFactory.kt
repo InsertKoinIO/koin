@@ -47,10 +47,13 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
         }
         try {
             val parameters: DefinitionParameters = context.parameters
-            return beanDefinition.definition.invoke(
+            context.scope.addParameters(parameters)
+            val value = beanDefinition.definition(
                 context.scope,
                 parameters
             )
+            context.scope.clearParameters()
+            return value
         } catch (e: Exception) {
             val stack =
                 e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }

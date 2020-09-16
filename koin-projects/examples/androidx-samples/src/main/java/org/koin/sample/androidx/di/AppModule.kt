@@ -44,12 +44,15 @@ val mvpModule = module {
 
 val mvvmModule = module {
 
-    viewModel { (id: String) -> SimpleViewModel(id, get()) }
+//    viewModel { (id: String) -> SimpleViewModel(id, get()) }
+    viewModel { SimpleViewModel(get(), get()) } // graph injected usage
 
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
-    viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
+//    viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
+    viewModel(named("vm2")) { SimpleViewModel(get(), get()) } // graph injected usage
 
-    viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+//    viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
+    viewModel { SavedStateViewModel(get(), get(), get()) } // graph injected usage
 
     scope<MVVMActivity> {
         scoped { Session() }
@@ -66,6 +69,9 @@ val mvvmModule = module {
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
+        scoped { Session() }
+        viewModel { ExtSimpleViewModel(get()) }
+        viewModel(named("ext")) { ExtSimpleViewModel(get()) }
     }
 }
 

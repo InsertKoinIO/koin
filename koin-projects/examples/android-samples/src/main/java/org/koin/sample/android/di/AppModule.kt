@@ -57,7 +57,9 @@ val mvvmModule = module {
         viewModel<ExtSimpleViewModel>(named("ext"))
     }
     scope<MVVMFragment> {
-        scoped { (id: String) -> ScopedPresenter(id, get()) }
+        scoped { Session() }
+        viewModel { ExtSimpleViewModel(get()) }
+        viewModel(named("ext")) { ExtSimpleViewModel(get()) }
     }
 }
 

@@ -13,7 +13,7 @@ import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.utils.navigateTo
 
-class MVPActivity : ScopeActivity() {
+class MVPActivity : ScopeActivity(contentLayoutId = R.layout.mvp_activity) {
 
     // Inject presenter as Factory
     val factoryPresenter: FactoryPresenter by inject { parametersOf(ID) }
@@ -30,7 +30,6 @@ class MVPActivity : ScopeActivity() {
         assertNotEquals(get<FactoryPresenter> { parametersOf(ID) }, factoryPresenter)
         assertEquals(get<ScopedPresenter>(), scopedPresenter)
 
-        setContentView(R.layout.mvp_activity)
         title = "Android MVP"
 
         mvp_button.setOnClickListener {

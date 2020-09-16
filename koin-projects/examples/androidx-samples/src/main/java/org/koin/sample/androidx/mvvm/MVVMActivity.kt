@@ -23,7 +23,7 @@ import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.scope.ScopedActivityA
 import org.koin.sample.androidx.utils.navigateTo
 
-class MVVMActivity : ScopeActivity() {
+class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
     val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
 
@@ -57,7 +57,6 @@ class MVVMActivity : ScopeActivity() {
         assertNotEquals(vm1, vm2)
 
         title = "Android MVVM"
-        setContentView(R.layout.mvvm_activity)
 
         assertNotNull(scopeVm)
         assertNotNull(extScopeVm)

@@ -32,13 +32,17 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  */
 class Module(
-    val createAtStart: Boolean,
-    val override: Boolean
+    internal val createAtStart: Boolean,
+    internal val override: Boolean
 ) {
-    val rootScope: Qualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
+    @PublishedApi
+    internal val rootScope: Qualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
+    @PublishedApi
     internal var isLoaded: Boolean = false
-    val scopes = arrayListOf<Qualifier>()
-    val definitions = hashSetOf<BeanDefinition<*>>()
+    @PublishedApi
+    internal val scopes = arrayListOf<Qualifier>()
+    @PublishedApi
+    internal val definitions = hashSetOf<BeanDefinition<*>>()
 
     /**
      * Declare a group a scoped definition with a given scope qualifier

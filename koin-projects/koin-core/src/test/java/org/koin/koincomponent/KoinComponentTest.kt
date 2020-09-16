@@ -3,18 +3,21 @@ package org.koin.koincomponent
 import org.junit.Assert
 import org.junit.Test
 import org.koin.Simple
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.get
-import org.koin.core.inject
 import org.koin.dsl.module
 
+@OptIn(KoinApiExtension::class)
 class MyComponent : KoinComponent {
     val anInject: Simple.ComponentA by inject()
     val aGet: Simple.ComponentA = get()
 }
 
+@OptIn(KoinApiExtension::class)
 class MyLazyComponent : KoinComponent {
     val anInject: Simple.ComponentA by inject()
 }
@@ -26,9 +29,9 @@ class KoinComponentTest {
         val app = startKoin {
             printLogger()
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val koin = app.koin
@@ -55,9 +58,9 @@ class KoinComponentTest {
         val app = startKoin {
             printLogger()
             modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
+                    module {
+                        single { Simple.ComponentA() }
+                    })
         }
 
         val koin = app.koin
