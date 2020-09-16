@@ -15,6 +15,10 @@
  */
 package org.koin.core.time
 
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
+
 
 /**
  * Measure functions
