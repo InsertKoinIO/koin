@@ -44,6 +44,19 @@ inline fun <reified T> KoinComponent.get(
     getKoin().get(qualifier, parameters)
 
 /**
+ * Get a Koin instance if available
+ * @param qualifier
+ * @param parameters
+ *
+ * @return instance of type T or null
+ */
+inline fun <reified T> KoinComponent.getOrNull(
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
+): T? =
+    getKoin().getOrNull(qualifier, parameters)
+
+/**
  * Lazy inject instance from Koin
  * @param qualifier
  * @param parameters
@@ -53,6 +66,19 @@ inline fun <reified T> KoinComponent.inject(
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
     lazy(LazyThreadSafetyMode.NONE) { getKoin().get<T>(qualifier, parameters) }
+
+/**
+ * Lazy inject a Koin instance if available
+ * @param qualifier
+ * @param parameters
+ *
+ * @return Lazy instance of type T or null
+ */
+inline fun <reified T> KoinComponent.injectOrNull(
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
+): Lazy<T?> =
+    getKoin().injectOrNull(qualifier, parameters)
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S
