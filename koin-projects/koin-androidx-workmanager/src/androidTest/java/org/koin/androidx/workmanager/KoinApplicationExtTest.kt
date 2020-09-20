@@ -15,7 +15,7 @@ import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 import org.koin.androidx.workmanager.initialize.EchoService
 import org.koin.androidx.workmanager.initialize.EchoWorker
-import org.koin.androidx.workmanager.koin.setupWorkManagerFactory
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.core.error.InstanceCreationException
@@ -67,7 +67,7 @@ class KoinApplicationExtTest : AutoCloseKoinTest() {
                     EchoWorker(get(), get(), get())
                 }
             })
-            setupWorkManagerFactory(
+            workManagerFactory(
                 context, init = ::setupWorkManagerFactoryTest
             )
         }
@@ -92,7 +92,7 @@ class KoinApplicationExtTest : AutoCloseKoinTest() {
                 }
                 factory { EchoService() }
             })
-            setupWorkManagerFactory(
+            workManagerFactory(
                 context, init = ::setupWorkManagerFactoryTest
             )
 
@@ -132,7 +132,7 @@ class KoinApplicationExtTest : AutoCloseKoinTest() {
                     InnerClassWorker(get(), get())
                 }
             })
-            setupWorkManagerFactory(
+            workManagerFactory(
                 context, init = ::setupWorkManagerFactoryTest
             )
         }

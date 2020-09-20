@@ -11,7 +11,7 @@ import org.junit.Test
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.factory.KoinWorkerFactory
-import org.koin.androidx.workmanager.koin.setupWorkManagerFactory
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
@@ -42,7 +42,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 }
             })
             androidContext(context)
-            setupWorkManagerFactory()
+            workManagerFactory()
         }
 
         koinApp.koin
@@ -73,7 +73,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 worker { MyListenableWorker1(get(), get()) }
             })
             androidContext(context)
-            setupWorkManagerFactory()
+            workManagerFactory()
         }
 
         //////////////////////////////////
@@ -123,7 +123,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 worker { MyListenableWorker1(get(), get()) }
             })
             androidContext(context)
-            setupWorkManagerFactory()
+            workManagerFactory()
         }
 
         koinApp.koin.get<KoinWorkerFactory>()
@@ -151,7 +151,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 worker { MyListenableWorker1(get(), get()) }
             })
             androidContext(context)
-            setupWorkManagerFactory()
+            workManagerFactory()
         }
 
         koinApp.koin.get<KoinWorkerFactory>()
@@ -184,7 +184,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
 
             })
             androidContext(context)
-            setupWorkManagerFactory()
+            workManagerFactory()
         }
 
         //////////////////////////////////
@@ -242,7 +242,7 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 single { DummyPayload("1") }
             })
             androidContext(context)
-            setupWorkManagerFactory()
+            workManagerFactory()
         }
 
 

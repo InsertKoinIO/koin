@@ -8,7 +8,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
-import org.koin.androidx.workmanager.koin.setupWorkManagerFactory
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
@@ -25,7 +25,7 @@ class MainApplication : Application() {
             androidContext(this@MainApplication)
             androidFileProperties()
             fragmentFactory()
-            setupWorkManagerFactory()
+            workManagerFactory()
             modules(allModules)
         }
 

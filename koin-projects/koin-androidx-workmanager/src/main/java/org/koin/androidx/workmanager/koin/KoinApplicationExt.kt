@@ -14,7 +14,7 @@ import org.koin.dsl.module
  * Setup the KoinFragmentFactory instance
  */
 @KoinExperimentalAPI
-fun KoinApplication.setupWorkManagerFactory() {
+fun KoinApplication.workManagerFactory() {
     declareWorkerFactory()
     createWorkManagerFactory()
 }
