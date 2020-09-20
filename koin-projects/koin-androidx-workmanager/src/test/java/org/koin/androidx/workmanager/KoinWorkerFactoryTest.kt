@@ -4,13 +4,17 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
-import org.koin.androidx.workmanager.KoinWorkerFactory.Companion.getQualifier
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.worker
-import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.androidx.workmanager.factory.KoinWorkerFactory
+import org.koin.androidx.workmanager.koin.setupWorkManagerFactory
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.mockito.Mockito.mock
@@ -22,9 +26,8 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
     private val workerParams = mock(WorkerParameters::class.java)
 
     private fun ListenableWorker.getWorkerParameters(): WorkerParameters? {
-
         return this
-            ?.let { it as? MyListenableWorker1 }
+            .let { it as? MyListenableWorker1 }
             ?.workerParams
     }
 
@@ -38,7 +41,8 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                     MyListenableWorker1(get(), get())
                 }
             })
-            workManagerFactory(context, init = null)
+            androidContext(context)
+            setupWorkManagerFactory()
         }
 
         koinApp.koin
@@ -68,7 +72,8 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
             modules(module {
                 worker { MyListenableWorker1(get(), get()) }
             })
-            workManagerFactory(context, init = null)
+            androidContext(context)
+            setupWorkManagerFactory()
         }
 
         //////////////////////////////////
@@ -76,31 +81,31 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
         val worker1 = koinApp.koin.get<KoinWorkerFactory>()
             .createWorker(
                 context,
-                getQualifier<MyListenableWorker1>().value,
+                named<MyListenableWorker1>().value,
                 workerParams1
             )
 
         val worker2 = koinApp.koin.get<KoinWorkerFactory>()
             .createWorker(
                 context,
-                getQualifier<MyListenableWorker1>().value,
+                named<MyListenableWorker1>().value,
                 workerParams2
             )
 
         //////////////////////////////////
         // check sanity of all objects
         assertNotNull(worker1)
-        assertNotNull(worker1?.getWorkerParameters())
-        assertEquals(workerParams1, worker1?.getWorkerParameters())
+        assertNotNull(worker1.getWorkerParameters())
+        assertEquals(workerParams1, worker1.getWorkerParameters())
 
         assertNotNull(worker2)
-        assertNotNull(worker2?.getWorkerParameters())
-        assertEquals(workerParams2, worker2?.getWorkerParameters())
+        assertNotNull(worker2.getWorkerParameters())
+        assertEquals(workerParams2, worker2.getWorkerParameters())
 
         //////////////////////////////////
         // verify objects are different
         assertNotEquals(worker1, worker2)
-        assertNotEquals(worker1?.getWorkerParameters(), worker2?.getWorkerParameters())
+        assertNotEquals(worker1.getWorkerParameters(), worker2.getWorkerParameters())
 
 
     }
@@ -117,7 +122,8 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 factory(override = true) { context }
                 worker { MyListenableWorker1(get(), get()) }
             })
-            workManagerFactory(context, init = null)
+            androidContext(context)
+            setupWorkManagerFactory()
         }
 
         koinApp.koin.get<KoinWorkerFactory>()
@@ -144,7 +150,8 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 factory(override = false) { context }
                 worker { MyListenableWorker1(get(), get()) }
             })
-            workManagerFactory(context, init = null)
+            androidContext(context)
+            setupWorkManagerFactory()
         }
 
         koinApp.koin.get<KoinWorkerFactory>()
@@ -176,7 +183,8 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
                 single { DummyPayload("1") }
 
             })
-            workManagerFactory(context, init = null)
+            androidContext(context)
+            setupWorkManagerFactory()
         }
 
         //////////////////////////////////
@@ -184,18 +192,18 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
         val worker1 = koinApp.koin.get<KoinWorkerFactory>()
             .createWorker(
                 context,
-                getQualifier<MyListenableWorker1>().value,
+                named<MyListenableWorker1>().value,
                 workerParams1
             )
-                as? MyListenableWorker1
+            as? MyListenableWorker1
 
         val worker2 = koinApp.koin.get<KoinWorkerFactory>()
             .createWorker(
                 context,
-                getQualifier<MyListenableWorker2>().value,
+                named<MyListenableWorker2>().value,
                 workerParams2
             )
-                as? MyListenableWorker2
+            as? MyListenableWorker2
 
         //////////////////////////////////
         // check sanity of all objects
@@ -216,31 +224,6 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
 
     }
 
-    @Test
-    fun `Given standalone class Then qualifier must match`() {
-
-        // this simulates how koin create the qualifier
-        val qualifierByClass = getQualifier<MyListenableWorker1>()
-
-        // this simulates how OS creates the qualifier through WorkerFactory::createWorker
-        val qualifierByName =
-            getQualifier(MyListenableWorker1::class.qualifiedName ?: "")
-
-        assertEquals(qualifierByClass, qualifierByName)
-    }
-
-    @Test
-    fun `Given inner class Then qualifier must match`() {
-
-        // this simulates how koin create the qualifier
-        val qualifierByClass = getQualifier<InnerWorkerClass>()
-
-        // this simulates how OS creates the qualifier through WorkerFactory::createWorker
-        val qualifierByName =
-            getQualifier(InnerWorkerClass::class.java.name)
-
-        assertEquals(qualifierByClass, qualifierByName)
-    }
 
     @Test
     fun `problems with singleton`() {
@@ -258,25 +241,26 @@ class KoinWorkerFactoryTest : AutoCloseKoinTest() {
 
                 single { DummyPayload("1") }
             })
-            workManagerFactory(context, init = null)
+            androidContext(context)
+            setupWorkManagerFactory()
         }
 
 
         val worker1 = koinApp.koin.get<KoinWorkerFactory>()
             .createWorker(
                 context,
-                getQualifier<MyListenableWorker2>().value,
+                named<MyListenableWorker2>().value,
                 workerParams1
             )
-                as? MyListenableWorker2
+            as? MyListenableWorker2
 
         val worker2 = koinApp.koin.get<KoinWorkerFactory>()
             .createWorker(
                 context,
-                getQualifier<MyListenableWorker2>().value,
+                named<MyListenableWorker2>().value,
                 workerParams2
             )
-                as? MyListenableWorker2
+            as? MyListenableWorker2
 
 
         assertNotNull(worker1?.dummyPayload)

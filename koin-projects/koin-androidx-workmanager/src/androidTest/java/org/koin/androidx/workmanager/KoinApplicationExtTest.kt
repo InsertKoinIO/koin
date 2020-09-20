@@ -12,9 +12,10 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.workmanager.dsl.worker
+import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 import org.koin.androidx.workmanager.initialize.EchoService
 import org.koin.androidx.workmanager.initialize.EchoWorker
-import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.androidx.workmanager.koin.setupWorkManagerFactory
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.core.error.InstanceCreationException
@@ -66,7 +67,7 @@ class KoinApplicationExtTest : AutoCloseKoinTest() {
                     EchoWorker(get(), get(), get())
                 }
             })
-            workManagerFactory(
+            setupWorkManagerFactory(
                 context, init = ::setupWorkManagerFactoryTest
             )
         }
@@ -91,7 +92,7 @@ class KoinApplicationExtTest : AutoCloseKoinTest() {
                 }
                 factory { EchoService() }
             })
-            workManagerFactory(
+            setupWorkManagerFactory(
                 context, init = ::setupWorkManagerFactoryTest
             )
 
@@ -131,7 +132,7 @@ class KoinApplicationExtTest : AutoCloseKoinTest() {
                     InnerClassWorker(get(), get())
                 }
             })
-            workManagerFactory(
+            setupWorkManagerFactory(
                 context, init = ::setupWorkManagerFactoryTest
             )
         }

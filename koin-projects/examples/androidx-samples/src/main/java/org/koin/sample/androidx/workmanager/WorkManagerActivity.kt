@@ -3,10 +3,21 @@ package org.koin.sample.androidx.workmanager
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.*
-import junit.framework.Assert.*
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.ListenableWorker
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.await
+import junit.framework.Assert.assertTrue
 import kotlinx.android.synthetic.main.workmanager_activity.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import org.junit.Assert
 import org.koin.android.ext.android.inject
 import org.koin.sample.android.R
@@ -22,8 +33,6 @@ class WorkManagerActivity : AppCompatActivity() {
 
     private val workManager = WorkManager.getInstance(this)
     private val service1: SimpleWorkerService by inject()
-    private val service2: SimpleWorkerService by inject()
-
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,15 +42,15 @@ class WorkManagerActivity : AppCompatActivity() {
         setContentView(R.layout.workmanager_activity)
         title = "Android Work Manager"
         workmanager_message.text = "Work Manager is starting."
-
         workmanager_button.setOnClickListener {
             navigateTo<MVPActivity>(isRoot = true)
         }
-
         workmanager_button.isEnabled = false
 
-        assertEquals(service1, service2) // checks for bug related to singleton
+        runWorkers()
+    }
 
+    private fun runWorkers() {
         CoroutineScope(Dispatchers.Default)
             .launch {
                 assertTrue(service1.isEmpty())
@@ -62,9 +71,7 @@ class WorkManagerActivity : AppCompatActivity() {
      */
     @SuppressLint("SetTextI18n")
     private suspend fun assertResponses(timeoutMs: Long) {
-
-
-        val answer1 = try {
+        try {
             withTimeout(timeoutMs) {
 
                 service1.popAnswer()
@@ -76,6 +83,8 @@ class WorkManagerActivity : AppCompatActivity() {
                     .let {
                         Assert.assertEquals(SimpleWorker.answer2nd, it)
                     }
+
+                service1.isEmpty()
             }
         } catch (e: CancellationException) {
             throw RuntimeException(e) // taking too long to receive 42 means WorkManager failed somehow
@@ -85,7 +94,6 @@ class WorkManagerActivity : AppCompatActivity() {
             workmanager_message.text = "Work Manager completed!"
             workmanager_button.isEnabled = true
         }
-
     }
 
     private suspend fun enqueuesWorkers() {
@@ -95,16 +103,9 @@ class WorkManagerActivity : AppCompatActivity() {
             .result
             .await()
 
-        // TODO find a way to make sure these run in the order expected,
-        // TODO or implement it with something more complex than a shared channel for both workers.
-        val workData1 = createData(42)
-        val workData2 = createData(43)
-
-        val request1 = enqueueWork<SimpleWorker>(workData1)
-        val request2 = enqueueWork<SimpleWorker>(workData2)
-
+        enqueueWork<SimpleWorker>(createData(42))
+        enqueueWork<SimpleWorker>(createData(43))
     }
-
 
     /**
      * @param T ListenableWorker that will perform work
@@ -112,10 +113,7 @@ class WorkManagerActivity : AppCompatActivity() {
      */
     private inline fun <reified T : ListenableWorker> enqueueWork(data: Data): OneTimeWorkRequest {
 
-        // ensures unique work name, so we can schedule 2 runs using the same class but different parameters
-        val workName =
-            SimpleWorker::class.java.canonicalName?.toString() +
-                    data.keyValueMap.getValue(SimpleWorker.KEY_ANSWER)
+        val workName = SimpleWorker::class.simpleName + data.keyValueMap.getValue(SimpleWorker.KEY_ANSWER)
 
         return OneTimeWorkRequestBuilder<T>()
             .setInputData(data)
@@ -124,7 +122,7 @@ class WorkManagerActivity : AppCompatActivity() {
                 workManager
                     .enqueueUniqueWork(
                         workName,
-                        ExistingWorkPolicy.REPLACE,
+                        ExistingWorkPolicy.APPEND,
                         it
                     )
             }

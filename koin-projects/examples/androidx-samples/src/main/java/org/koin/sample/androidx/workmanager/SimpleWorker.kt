@@ -15,22 +15,7 @@ class SimpleWorker(
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
-    companion object {
-        const val answer1st = 42
-        const val answer2nd = 43
-
-          const val KEY_ANSWER = "KEY_ANSWER"
-
-        fun createData(answer: Int): Data {
-            return Data.Builder()
-                .putInt(KEY_ANSWER, answer)
-                .build()
-        }
-    }
-
-
     override suspend fun doWork(): Result {
-
         params
             .inputData
             .getInt(KEY_ANSWER, 0)
@@ -45,4 +30,16 @@ class SimpleWorker(
         return Result.success(d)
     }
 
+
+    companion object {
+        const val answer1st = 42
+        const val answer2nd = 43
+        const val KEY_ANSWER = "KEY_ANSWER"
+
+        fun createData(answer: Int): Data {
+            return Data.Builder()
+                .putInt(KEY_ANSWER, answer)
+                .build()
+        }
+    }
 }

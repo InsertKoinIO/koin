@@ -8,13 +8,14 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
-import org.koin.androidx.workmanager.koin.workManagerFactory
-import org.koin.core.KoinComponent
+import org.koin.androidx.workmanager.koin.setupWorkManagerFactory
+import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.sample.androidx.di.allModules
 
-class MainApplication : Application(), KoinComponent {
+@OptIn(KoinExperimentalAPI::class)
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -24,27 +25,23 @@ class MainApplication : Application(), KoinComponent {
             androidContext(this@MainApplication)
             androidFileProperties()
             fragmentFactory()
-            workManagerFactory(this@MainApplication)
+            setupWorkManagerFactory()
             modules(allModules)
         }
 
-
-        cancelPendingWorkManager()
-
+        cancelPendingWorkManager(this)
     }
+}
 
-    /**
-     * If there is a pending work because of previous crash we'd like it to not run.
-     *
-     */
-    private fun cancelPendingWorkManager() {
-
-        runBlocking {
-            WorkManager.getInstance(this@MainApplication)
-                .cancelAllWork()
-                .result
-                .await()
-        }
-
+/**
+ * If there is a pending work because of previous crash we'd like it to not run.
+ *
+ */
+private fun cancelPendingWorkManager(mainApplication: MainApplication) {
+    runBlocking {
+        WorkManager.getInstance(mainApplication)
+            .cancelAllWork()
+            .result
+            .await()
     }
 }

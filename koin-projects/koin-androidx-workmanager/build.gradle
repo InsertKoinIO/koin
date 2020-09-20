@@ -22,7 +22,6 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
-def workManagerVersion = '2.3.0'
 
 dependencies {
     // Koin
@@ -30,7 +29,7 @@ dependencies {
     api project(":koin-androidx-scope")
 
     // Android
-    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
+    implementation("androidx.work:work-runtime-ktx:$androidx_workmanager")
 
     // Test
     testImplementation project(":koin-test")
@@ -39,7 +38,7 @@ dependencies {
     androidTestImplementation project(":koin-test")
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1' //+ androidxTestJUnitVersion
-    androidTestImplementation "androidx.work:work-testing:$workManagerVersion"
+    androidTestImplementation "androidx.work:work-testing:$androidx_workmanager"
 
 }
 
