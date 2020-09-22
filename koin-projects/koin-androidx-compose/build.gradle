@@ -1,8 +1,11 @@
+
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
     // id 'kotlin-android-extensions'
 }
+
+apply from: "../gradle/versions.gradle"
 
 ext {
     android_sourceSet = true
@@ -16,7 +19,6 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,26 +29,35 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
+        useIR = true
     }
 
     buildFeatures {
         compose true
     }
+
+    composeOptions {
+        kotlinCompilerVersion kotlin_version //"1.4.10"
+        kotlinCompilerExtensionVersion androidx_compose_version //"1.0.0-alpha03"
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
+    }
 }
 
 dependencies {
     // Koin
-    compile project(":koin-android")
+    compile project(":koin-androidx-viewmodel")
     testImplementation project(":koin-test")
 
     /* Compose */
-    compile "androidx.compose:compose-runtime:$androidx_compose_version"
-    compile "androidx.compose:compose-compiler:$androidx_compose_version"
-    compile "androidx.ui:ui-layout:$androidx_compose_version"
-    compile "androidx.ui:ui-material:$androidx_compose_version"
-    compile "androidx.ui:ui-tooling:$androidx_compose_version"
-    compile "androidx.ui:ui-test:$androidx_compose_version"
+    compile "androidx.compose.runtime:runtime:$androidx_compose_version"
+    compile "androidx.compose.ui:ui:$androidx_compose_version"
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

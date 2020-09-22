@@ -2,15 +2,15 @@ package org.koin.sample.androidx.compose.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Composable
-import androidx.ui.core.setContent
-import androidx.ui.foundation.AdapterList
-import androidx.ui.material.ListItem
-import androidx.ui.material.MaterialTheme
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.setContent
 import androidx.ui.tooling.preview.Preview
-import org.koin.androidx.compose.ExperimentalComposeInject
-import org.koin.androidx.compose.inject
-import org.koin.sample.androidx.compose.data.UserRepository
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.KoinExperimentalAPI
+import org.koin.sample.androidx.compose.viewmodel.UserViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,27 +22,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    @Preview(showDecoration = true)
+    @Preview
     fun Preview() {
         App()
     }
 }
 
-@OptIn(ExperimentalComposeInject::class)
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App() {
-    val userRepository: UserRepository by inject()
-    UsersView(userRepository)
+    UsersView(getViewModel())
 }
 
 @Composable
-fun UsersView(userRepository: UserRepository) {
-    AdapterList(userRepository.getUsers()) { user ->
-        ListItem(
-            text = user.name,
-            secondaryText = user.age.toString(),
-            onClick = {}
-        )
+fun UsersView(viewModel: UserViewModel) {
+    Column {
+        viewModel.getUsers().forEach { user ->
+            Text(text = user.name)
+        }
     }
 }
-
