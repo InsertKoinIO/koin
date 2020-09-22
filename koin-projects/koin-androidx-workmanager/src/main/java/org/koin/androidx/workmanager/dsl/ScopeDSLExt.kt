@@ -21,13 +21,13 @@ import org.koin.core.definition.Definition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
+import org.koin.dsl.ScopeDSL
 import org.koin.dsl.bind
 
 /**
- * @author : Fabio de Matos
  * @author Arnaud Giuliani
  **/
-inline fun <reified T : ListenableWorker> Module.worker(
+inline fun <reified T : ListenableWorker> ScopeDSL.worker(
     qualifier: Qualifier = named<T>(),
     override: Boolean = false,
     noinline definition: Definition<T>
