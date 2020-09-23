@@ -13,26 +13,26 @@ inline fun <reified T : Any> Scope.create(): T {
     val kClass = T::class
     val instance: Any
 
-    _koin._logger.debug("!- creating class:${kClass.getFullName()}")
+    logger.debug("!- creating class:${kClass.getFullName()}")
 
     val constructor = kClass.java.constructors.firstOrNull()
         ?: error("No constructor found for class '${kClass.getFullName()}'")
 
-    val args = if (_koin._logger.isAt(Level.DEBUG)) {
+    val args = if (logger.isAt(Level.DEBUG)) {
         val (_args, duration) = measureDurationForResult {
             getArguments(constructor, this)
         }
-        _koin._logger.debug("!- got arguments in $duration ms")
+        logger.debug("!- got arguments in $duration ms")
         _args
     } else {
         getArguments(constructor, this)
     }
 
-    instance = if (_koin._logger.isAt(Level.DEBUG)) {
+    instance = if (logger.isAt(Level.DEBUG)) {
         val (_instance, duration) = measureDurationForResult {
             createInstance(args, constructor)
         }
-        _koin._logger.debug("!- created instance in $duration ms")
+        logger.debug("!- created instance in $duration ms")
         _instance
     } else {
         createInstance(args, constructor)

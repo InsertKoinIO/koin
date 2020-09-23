@@ -15,6 +15,7 @@
  */
 package org.koin.core
 
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
@@ -39,10 +40,30 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 class Koin {
-    val _scopeRegistry = ScopeRegistry(this)
-    val _propertyRegistry = PropertyRegistry(this)
-    var _logger: Logger = EmptyLogger()
-    val _modules = hashSetOf<Module>()
+    @PublishedApi
+    internal val _scopeRegistry = ScopeRegistry(this)
+    @KoinApiExtension
+    fun <T : Any> onScopeRegistry(code: ScopeRegistry.() -> T): T {
+        return code(_scopeRegistry)
+    }
+
+    @PublishedApi
+    internal val _propertyRegistry = PropertyRegistry(this)
+    @KoinApiExtension
+    fun onPropertyRegistry(code: PropertyRegistry.() -> Unit) {
+        code(_propertyRegistry)
+    }
+
+    @PublishedApi
+    internal var _logger: Logger = EmptyLogger()
+    val logger: Logger = _logger
+    @KoinApiExtension
+    fun setLogger(logger: Logger) {
+        _logger = logger
+    }
+
+    @PublishedApi
+    internal val _modules = hashSetOf<Module>()
 
     /**
      * Lazy inject a Koin instance
@@ -54,8 +75,8 @@ class Koin {
      */
     @JvmOverloads
     inline fun <reified T> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T> = _scopeRegistry.rootScope.inject(qualifier, parameters)
 
     /**
@@ -68,8 +89,8 @@ class Koin {
      */
     @JvmOverloads
     inline fun <reified T> injectOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> = _scopeRegistry.rootScope.injectOrNull(qualifier, parameters)
 
     /**
@@ -80,8 +101,8 @@ class Koin {
      */
     @JvmOverloads
     inline fun <reified T> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T = _scopeRegistry.rootScope.get(qualifier, parameters)
 
     /**
@@ -94,8 +115,8 @@ class Koin {
      */
     @JvmOverloads
     inline fun <reified T> getOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T? = _scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
     /**
@@ -108,9 +129,9 @@ class Koin {
      * @return instance of type T
      */
     fun <T> get(
-        clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            clazz: KClass<*>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T = _scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
     /**
@@ -123,9 +144,9 @@ class Koin {
      * @return instance of type T or null
      */
     fun <T> getOrNull(
-        clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+            clazz: KClass<*>,
+            qualifier: Qualifier? = null,
+            parameters: ParametersDefinition? = null
     ): T? = _scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
 
 
@@ -139,10 +160,10 @@ class Koin {
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T : Any> declare(
-        instance: T,
-        qualifier: Qualifier? = null,
-        secondaryTypes: List<KClass<*>> = emptyList(),
-        override: Boolean = false
+            instance: T,
+            qualifier: Qualifier? = null,
+            secondaryTypes: List<KClass<*>> = emptyList(),
+            override: Boolean = false
     ) {
         val firstType = listOf(T::class)
         _scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, override)
@@ -162,7 +183,7 @@ class Koin {
      * @return instance of type S
      */
     inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S =
-        _scopeRegistry.rootScope.bind<S, P>(parameters)
+            _scopeRegistry.rootScope.bind<S, P>(parameters)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -171,9 +192,9 @@ class Koin {
      * @return instance of type S
      */
     fun <S> bind(
-        primaryType: KClass<*>,
-        secondaryType: KClass<*>,
-        parameters: ParametersDefinition? = null
+            primaryType: KClass<*>,
+            secondaryType: KClass<*>,
+            parameters: ParametersDefinition? = null
     ): S = _scopeRegistry.rootScope.bind(primaryType, secondaryType, parameters)
 
     internal fun createEagerInstances() {
@@ -255,7 +276,7 @@ class Koin {
      */
     fun getScope(scopeId: ScopeID): Scope {
         return _scopeRegistry.getScopeOrNull(scopeId)
-            ?: throw ScopeNotCreatedException("No scope found for id '$scopeId'")
+                ?: throw ScopeNotCreatedException("No scope found for id '$scopeId'")
     }
 
     /**

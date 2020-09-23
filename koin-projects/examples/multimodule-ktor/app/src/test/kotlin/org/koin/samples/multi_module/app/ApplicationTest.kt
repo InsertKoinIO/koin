@@ -9,7 +9,7 @@ import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
 import kotlin.test.assertEquals
 
-internal class ApplicationTest : AutoCloseKoinTest {
+internal class ApplicationTest : AutoCloseKoinTest() {
     private val expectMessageA = "Hello! I am org.koin.samples.multi_module.module_a.ModuleAService"
     private val expectMessageB = "Hello! I am org.koin.samples.multi_module.module_b.ModuleBService"
 

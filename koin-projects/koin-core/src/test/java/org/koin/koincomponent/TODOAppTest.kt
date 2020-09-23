@@ -1,10 +1,11 @@
 package org.koin.koincomponent
 
 import org.junit.Test
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.inject
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -14,12 +15,12 @@ class TODOAppTest {
 
     val todoAppModule = module {
         single { TasksView() } bind TasksContract.View::class
-        single { TasksPresenter(get()) as TasksContract.Presenter }
+        single { TasksPresenter(get()) } bind TasksContract.Presenter::class
     }
 
     val repositoryModule = module {
-        single(named("remoteDataSource")) { FakeTasksRemoteDataSource() as TasksDataSource }
-        single(named("localDataSource")) { TasksLocalDataSource() as TasksDataSource }
+        single(named("remoteDataSource")) { FakeTasksRemoteDataSource() } bind TasksDataSource::class
+        single(named("localDataSource")) { TasksLocalDataSource() } bind TasksDataSource::class
         single {
             TasksRepository(
                     get(named("remoteDataSource")),
@@ -33,6 +34,7 @@ class TODOAppTest {
         interface Presenter
     }
 
+    @OptIn(KoinApiExtension::class)
     class TasksView : KoinComponent, TasksContract.View {
         val taskPreenter by inject<TasksContract.Presenter>()
     }

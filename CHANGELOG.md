@@ -45,12 +45,15 @@ _koin-core_
 * `[BREAKING]` empty scope is not taken in account anymore, a scope definition is created only if there is at least one scoped definition
 * `[ADDED]` Injection parameters can be used directly as a dependency and can be resolved as `get()` or directly with builder API
 * `[FIXED]` fixed starting context effect (deprecating KoinContextHanlder for GlobalContext)
+* `[FIXED]` Internal API exposition. Lock down API to internal. Expose extension point with @KoinApiExtension
+* `[BREAKING]` KoinComponent has been moved to `.component` package, and need @KoinApiExtension optIn. As we consider KoinComponent a way to extend Koin, not make DI configuration.
+
 
 _koin-test_
 
 * `[FIXED]` fixed checkModules to use Mock for injected parameters or default origin value of a Scope
 * `[ADDED]` setup detault values for injected parameters, for checkModules
-* `[BREAKING]` `AutoCloseKoinTest` is now an interface, please remove any constructor
+* `[BREAKING]` `ClosingKoinTest` is an interface, similar to `AutoCloseKoinTest`. Avoid need of abstract class extension.
 * `[UPDATED]` fixed `DefinitionParameters` to add the ability to know the injected type value
 
 _koin-test-junit5_
