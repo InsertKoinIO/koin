@@ -15,6 +15,7 @@ include 'koin-gradle-plugin'
 include 'koin-android'
 include 'koin-android-scope' ,'koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
+include 'koin-androidx-workmanager'
 
 // Android Ext
 include 'koin-android-ext'

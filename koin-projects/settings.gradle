@@ -16,9 +16,14 @@ include 'koin-gradle-plugin'
 // Android
 include 'koin-android'
 include 'examples:android-perfs'
-include 'koin-android-scope' ,'koin-android-viewmodel','koin-android-ext'
-include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel','koin-androidx-ext'
+include 'koin-android-scope' ,'koin-android-viewmodel'
+include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
+include 'koin-androidx-workmanager'
 include 'koin-androidx-compose'
+
+// Android Ext
+include 'koin-android-ext'
+include 'koin-androidx-ext'
 
 // Android Samples
 include 'examples:android-samples'
