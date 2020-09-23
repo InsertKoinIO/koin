@@ -58,6 +58,7 @@ inline fun <reified T> KoinComponent.get(
  *
  * @return instance of type T or null
  */
+@OptIn(KoinApiExtension::class)
 inline fun <reified T> KoinComponent.getOrNull(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
@@ -83,6 +84,7 @@ inline fun <reified T> KoinComponent.inject(
  *
  * @return Lazy instance of type T or null
  */
+@OptIn(KoinApiExtension::class)
 inline fun <reified T> KoinComponent.injectOrNull(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
