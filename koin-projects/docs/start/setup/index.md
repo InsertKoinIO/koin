@@ -7,6 +7,10 @@ Here are the current versions of Koin:
 ```groovy
 // Current stable version
 koin_version= "2.1.6"
+
+// Current unstable version
+koin_version= "2.2.0-beta-2"
+
 ```
 
 ### Gradle dependencies
@@ -74,8 +78,14 @@ implementation "org.koin:koin-androidx-scope:$koin_version"
 // Koin AndroidX ViewModel feature
 implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
-// Koin AndroidX Fragment Factory (unstable version)
+// Koin AndroidX Fragment Factory
 implementation "org.koin:koin-androidx-fragment:$koin_version"
+
+// Koin AndroidX Work Manager (unstable version)
+implementation "org.koin:koin-androidx-workmanager:$koin_version"
+
+// Koin AndroidX Compose (unstable version)
+implementation "org.koin:koin-androidx-compose:$koin_version"
 ```
 
 #### **Ktor**
