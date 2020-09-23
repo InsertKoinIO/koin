@@ -16,6 +16,7 @@
 package org.koin.test.mock
 
 import org.koin.core.Koin
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.test.KoinTest
@@ -29,7 +30,7 @@ import kotlin.reflect.KClass
 inline fun <reified T : Any> KoinTest.declareMock(
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        stubbing: StubFunction<T> = {}
+        crossinline stubbing: StubFunction<T> = {}
 ): T {
     return getKoin().declareMock(qualifier, secondaryTypes, stubbing)
 }
@@ -39,13 +40,16 @@ inline fun <reified T : Any> KoinTest.declareMock(
  *
  * @author Christian Schmitz
  */
+@OptIn(KoinApiExtension::class)
 inline fun <reified T : Any> Koin.declareMock(
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        stubbing: StubFunction<T> = {}
+        crossinline stubbing: StubFunction<T> = {}
 ): T {
-    _logger.debug("declareMock - class:${T::class} q:$qualifier")
-    return _scopeRegistry.rootScope.declareMock(qualifier, secondaryTypes, stubbing)
+    logger.debug("declareMock - class:${T::class} q:$qualifier")
+    return onScopeRegistry {
+        rootScope.declareMock(qualifier, secondaryTypes, stubbing)
+    }
 }
 
 /**

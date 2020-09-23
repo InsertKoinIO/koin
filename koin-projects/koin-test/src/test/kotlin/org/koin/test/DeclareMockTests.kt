@@ -14,7 +14,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 
 @Suppress("UNCHECKED_CAST")
-class DeclareMockTests : AutoCloseKoinTest {
+class DeclareMockTests : AutoCloseKoinTest() {
 
     @get:Rule
     val mockProvider = MockProviderRule.create { clazz ->

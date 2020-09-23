@@ -1,6 +1,9 @@
 package org.koin.core
 
 import org.junit.Test
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -33,6 +36,7 @@ class A : KoinScopeComponent {
     lateinit var c: C
 }
 
+@OptIn(KoinApiExtension::class)
 class A_inj : KoinComponent {
     val b: B by inject()
     val c: C by inject()

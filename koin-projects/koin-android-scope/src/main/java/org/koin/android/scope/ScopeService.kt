@@ -40,13 +40,13 @@ abstract class ScopeService : Service(), KoinScopeComponent {
     override fun onCreate() {
         super.onCreate()
 
-        koin._logger.debug("Open service scope: $scope")
+        koin.logger.debug("Open service scope: $scope")
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        koin._logger.debug("Close service scope: $scope")
+        koin.logger.debug("Close service scope: $scope")
         scope.close()
     }
 

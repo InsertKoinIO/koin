@@ -10,7 +10,7 @@ import org.koin.test.AutoCloseKoinTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
-class ApplicationJobRoutesTest : AutoCloseKoinTest {
+class ApplicationJobRoutesTest : AutoCloseKoinTest() {
 
     @Test
     fun testHelloRequest() = withTestApplication(Application::main) {
