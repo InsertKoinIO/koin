@@ -13,4 +13,5 @@ ext {
     androidx_fragment_version = "1.2.5"
 
     androidx_savedstate = '2.2.0'
+    androidx_workmanager = '2.3.0'
 }

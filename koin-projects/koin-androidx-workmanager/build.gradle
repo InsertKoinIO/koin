@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+ext {
+    android_sourceSet = true
+    pom_name = "koin-androidx-workmanager"
+    pom_description = "Koin project - koin-androidx-workmanager"
+}
+
+android {
+    compileSdkVersion android_target_version
+    buildToolsVersion android_build_tools_version
+
+    defaultConfig {
+        minSdkVersion android_min_version
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    // Koin
+    api project(":koin-core")
+    api project(":koin-androidx-scope")
+
+    // Android
+    implementation("androidx.work:work-runtime-ktx:$androidx_workmanager")
+
+    // Test
+    testImplementation project(":koin-test")
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+
+    androidTestImplementation project(":koin-test")
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1' //+ androidxTestJUnitVersion
+    androidTestImplementation "androidx.work:work-testing:$androidx_workmanager"
+
+}
+
+apply from: '../gradle/publish-android.gradle'

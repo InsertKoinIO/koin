@@ -1,11 +1,12 @@
 import androidx.lifecycle.SavedStateHandle
+import androidx.work.WorkerParameters
 import org.junit.Rule
 import org.junit.Test
-import org.junit.experimental.categories.Category
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.logger.Level
-import org.koin.sample.androidx.di.allModules
-import org.koin.test.category.CheckModuleTest
+import org.koin.sample.androidx.di.*
 import org.koin.test.check.checkModules
+import org.koin.test.mock.MockProvider
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
 
@@ -20,8 +21,10 @@ class CheckModulesTest {
     fun `test DI modules`() =
         checkModules(parameters = {
             defaultValue<SavedStateHandle>()
+            defaultValue<WorkerParameters>()
         }) {
+            androidContext(MockProvider.makeMock())
             printLogger(Level.DEBUG)
-            modules(allModules)
+            modules(appModule + mvpModule + mvvmModule + scopeModule)
         }
 }
