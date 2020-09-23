@@ -12,7 +12,6 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T : ViewModel> viewModel(
         qualifier: Qualifier? = null,
@@ -24,7 +23,6 @@ inline fun <reified T : ViewModel> viewModel(
     }
 }
 
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T : ViewModel> getViewModel(
         qualifier: Qualifier? = null,

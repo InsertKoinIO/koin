@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import org.koin.androidx.compose.getKoin
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.KoinExperimentalAPI
 import org.koin.sample.androidx.compose.viewmodel.UserViewModel
@@ -32,7 +33,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App() {
     UsersView(getViewModel())

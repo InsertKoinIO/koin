@@ -2,7 +2,7 @@ package org.koin.androidx.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import org.koin.core.KoinExperimentalAPI
+import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -16,7 +16,6 @@ import org.koin.core.qualifier.Qualifier
  *
  * @author Henrique Horbovyi
  */
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T> inject(
         qualifier: Qualifier? = null,
@@ -25,11 +24,15 @@ inline fun <reified T> inject(
     GlobalContext.get().inject(qualifier, parameters)
 }
 
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T> get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
 ): T = remember {
     GlobalContext.get().get(qualifier, parameters)
+}
+
+@Composable
+fun getKoin(): Koin = remember {
+    GlobalContext.get()
 }

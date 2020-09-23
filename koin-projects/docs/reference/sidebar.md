@@ -24,6 +24,8 @@
 - [Koin Scope](koin-android/scope)
 - [ViewModel](koin-android/viewmodel)
 - [Fragment Factory](koin-android/fragment-factory)
+- [Work Manager](koin-android/workmanager)
+- [Compose](koin-android/compose)
 - **Koin Ktor**
 - [Injecting with Ktor](koin-ktor/ktor)
 - **Links**
