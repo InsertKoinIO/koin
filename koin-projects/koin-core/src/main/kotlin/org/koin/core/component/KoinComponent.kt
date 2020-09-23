@@ -60,10 +60,10 @@ inline fun <reified T> KoinComponent.get(
  */
 @OptIn(KoinApiExtension::class)
 inline fun <reified T> KoinComponent.getOrNull(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ): T? =
-    getKoin().getOrNull(qualifier, parameters)
+        getKoin().getOrNull(qualifier, parameters)
 
 /**
  * Lazy inject instance from Koin
@@ -86,10 +86,10 @@ inline fun <reified T> KoinComponent.inject(
  */
 @OptIn(KoinApiExtension::class)
 inline fun <reified T> KoinComponent.injectOrNull(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
 ): Lazy<T?> =
-    getKoin().injectOrNull(qualifier, parameters)
+        getKoin().injectOrNull(qualifier, parameters)
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S
