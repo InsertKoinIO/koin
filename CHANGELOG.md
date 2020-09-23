@@ -6,6 +6,8 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ### [2.2.0-beta-2]()
 
+Updated to kotlin 1.4.10
+
 _koin-androidx-workmanager_
 
 * `[ADDED]` New API to declare your `ListenableWorker` with `worker { }` DSL
