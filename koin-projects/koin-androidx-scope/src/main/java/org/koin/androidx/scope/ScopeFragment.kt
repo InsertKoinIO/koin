@@ -42,7 +42,11 @@ abstract class ScopeFragment(
     override val koin by lazy { getKoin() }
     override val scope: Scope by lazy { koin.createScope(scopeID, getScopeName(), this) }
 
-    val scopeActivity : ScopeActivity? by lazy { activity as? ScopeActivity }
+    val scopeActivity: ScopeActivity?
+        get() = activity as? ScopeActivity
+
+    inline fun <reified T : ScopeActivity> requireScopeActivity(): T = activity as? T
+            ?: error("can't get ScopeActivity ${T::class}")
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,8 +67,8 @@ abstract class ScopeFragment(
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
@@ -73,7 +77,7 @@ abstract class ScopeFragment(
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T = scope.get(qualifier, parameters)
 }

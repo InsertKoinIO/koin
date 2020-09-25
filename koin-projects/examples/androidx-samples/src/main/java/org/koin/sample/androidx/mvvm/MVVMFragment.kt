@@ -54,6 +54,6 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
 
         assertEquals(saved, saved2)
 
-        assertEquals(scopeActivity?.get<Session>()?.id, getKoin().getProperty("session_id"))
+        assertEquals(requireScopeActivity<MVVMActivity>().get<Session>().id, getKoin().getProperty("session_id"))
     }
 }

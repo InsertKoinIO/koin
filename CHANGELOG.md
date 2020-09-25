@@ -8,6 +8,10 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 Updated to kotlin 1.4.10
 
+_koin-androidx-scope_
+
+* `[FIXED]` added `scopeActivity` & `requireScopeActivity()` API on ScopeFragment
+
 _koin-androidx-compose_
 
 * `[ADDED]` New API to inject Jetpack Compose: `get()`, `by inject()`, `getKoin()`

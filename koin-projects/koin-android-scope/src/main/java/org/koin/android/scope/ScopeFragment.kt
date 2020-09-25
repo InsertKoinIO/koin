@@ -39,7 +39,11 @@ abstract class ScopeFragment : Fragment(), KoinScopeComponent {
     override val koin by lazy { getKoin() }
     override val scope: Scope by lazy { koin.createScope(scopeID, getScopeName(), this) }
 
-    val scopeActivity : ScopeActivity? by lazy { activity as? ScopeActivity }
+    val scopeActivity: ScopeActivity?
+        get() = activity as? ScopeActivity
+
+    inline fun <reified T : ScopeActivity> requireScopeActivity(): T = activity as? T
+            ?: error("can't get ScopeActivity ${T::class}")
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
