@@ -8,8 +8,6 @@ Activity, Fragment & Service are extended with the KoinComponents extension. You
 
 * `by inject()` - lazy evaluated instance from Koin container
 * `get()` - eager fetch instance from Koin container
-* `release()` - release module's instances from its path
-* `getProperty()`/`setProperty()` - get/set property
 
 For a module that declares a 'presenter' component:
 

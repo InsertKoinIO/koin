@@ -19,6 +19,7 @@ include 'examples:android-perfs'
 include 'koin-android-scope' ,'koin-android-viewmodel'
 include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
 include 'koin-androidx-workmanager'
+include 'koin-androidx-compose'
 
 // Android Ext
 include 'koin-android-ext'
@@ -27,6 +28,7 @@ include 'koin-androidx-ext'
 // Android Samples
 include 'examples:android-samples'
 include 'examples:androidx-samples'
+include 'examples:androidx-compose'
 
 // Ktor
 include 'koin-logger-slf4j'

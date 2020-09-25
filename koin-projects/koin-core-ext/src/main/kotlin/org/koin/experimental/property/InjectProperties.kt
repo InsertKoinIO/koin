@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package org.koin.experimental.property
 
 import org.koin.core.Koin
