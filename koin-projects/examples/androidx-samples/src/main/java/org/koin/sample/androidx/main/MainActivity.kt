@@ -15,8 +15,8 @@ import org.koin.sample.androidx.components.main.DUMB_SERVICE
 import org.koin.sample.androidx.components.main.RandomId
 import org.koin.sample.androidx.components.main.SERVICE_IMPL
 import org.koin.sample.androidx.components.main.SimpleService
-import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.utils.navigateTo
+import org.koin.sample.androidx.workmanager.WorkManagerActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         title = "Android First Samples"
 
         main_button.setOnClickListener {
-            navigateTo<MVPActivity>()
+            navigateTo<WorkManagerActivity>()
         }
     }
 }

@@ -26,7 +26,7 @@ fun startKoin(koinContext: KoinContext = GlobalContext,
     koinApplication: KoinApplication): KoinApplication = GlobalContext.startKoin(koinContext, koinApplication)
 
 /**
- *
+ * Start a Koin Application as StandAlone
  */
 fun startKoin(koinContext: KoinContext = GlobalContext,
     appDeclaration: KoinAppDeclaration): KoinApplication = GlobalContext.startKoin(koinContext, appDeclaration)

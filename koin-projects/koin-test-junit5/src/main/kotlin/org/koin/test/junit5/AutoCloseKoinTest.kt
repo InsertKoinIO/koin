@@ -31,3 +31,11 @@ abstract class AutoCloseKoinTest : KoinTest {
         stopKoin()
     }
 }
+
+interface ClosingKoinTest : KoinTest {
+
+    @AfterEach
+    fun autoClose() {
+        stopKoin()
+    }
+}

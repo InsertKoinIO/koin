@@ -4,6 +4,30 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
+### [2.2.0-beta-2]()
+
+Updated to kotlin 1.4.10
+
+_koin-androidx-compose_
+
+* `[ADDED]` New API to inject Jetpack Compose: `get()`, `by inject()`, `getKoin()`
+* `[ADDED]` New API to inject Jetpack Compose with ViewModel: `getViewModel()`, `by viewModel()`
+
+_koin-androidx-workmanager_
+
+* `[ADDED]` New API to declare your `ListenableWorker` with `worker { }` DSL
+* `[ADDED]` KoinWorkerFactory wired to the standard WorkManagerFactory, to let build declared component. Use `workManagerFactory()` in your `KoinApplication` DSL to setup the WorkManagerFactory. (nb: tedious to checkModules - as it depends on android internals)
+
+
+_koin-core_
+
+* `[ADDED]` KoinExtensionAPI: annotation for tagging Koin API usage. i.e: KoinComponent requires OptIn, as it's part of Koin API extension
+* `[FIXED]` turn all API to internal as possible
+
+_koin-test_
+
+* `[FIXED]` revert `AutoCloseKoinTest` to class, add `ClosingKoinTest` interface
+
 ### [2.2.0-beta-1]()
 
 _koin-androidx-scope_

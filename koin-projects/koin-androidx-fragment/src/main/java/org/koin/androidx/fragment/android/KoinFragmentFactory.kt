@@ -2,13 +2,15 @@ package org.koin.androidx.fragment.android
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
 import org.koin.core.scope.Scope
 
 /**
  * FragmentFactory for Koin
  */
-class KoinFragmentFactory(val scope: Scope? = null) : FragmentFactory(), KoinComponent {
+@OptIn(KoinApiExtension::class)
+class KoinFragmentFactory(private val scope: Scope? = null) : FragmentFactory(), KoinComponent {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         val clazz = Class.forName(className).kotlin

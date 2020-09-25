@@ -25,6 +25,7 @@ import org.koin.core.qualifier.Qualifier
 /**
  * DSL Scope Definition
  */
+@Suppress("UNUSED_PARAMETER")
 class ScopeDSL(val scopeQualifier: Qualifier, val definitions: HashSet<BeanDefinition<*>>) {
 
     @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)

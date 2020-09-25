@@ -15,7 +15,8 @@
  */
 package org.koin.test
 
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -28,6 +29,7 @@ import org.koin.core.qualifier.Qualifier
 /**
  * Koin Test Component
  */
+@OptIn(KoinApiExtension::class)
 interface KoinTest : KoinComponent
 
 /**
@@ -37,7 +39,7 @@ inline fun <reified T> KoinTest.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, parameters)
+    getKoin().get(qualifier, parameters)
 
 /**
  * Lazy inject an instance from Koin

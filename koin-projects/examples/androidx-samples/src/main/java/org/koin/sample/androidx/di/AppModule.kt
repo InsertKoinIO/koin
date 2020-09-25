@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.dsl.onClose
@@ -25,6 +26,8 @@ import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.mvvm.MVVMFragment
 import org.koin.sample.androidx.scope.ScopedActivityA
+import org.koin.sample.androidx.workmanager.SimpleWorkerService
+import org.koin.sample.androidx.workmanager.SimpleWorker
 
 val appModule = module {
 
@@ -90,4 +93,9 @@ val scopeModule = module {
     }
 }
 
-val allModules = appModule + mvpModule + mvvmModule + scopeModule
+val workerScopedModule = module {
+    single { SimpleWorkerService() }
+    worker { SimpleWorker(get(), get(), get()) }
+}
+
+val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule
