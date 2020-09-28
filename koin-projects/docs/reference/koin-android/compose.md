@@ -7,6 +7,7 @@ While writing your composable function, you gain access to the following Koin AP
 
 * `get()` - fetch instance from Koin container
 * `by inject()` - lazy evaluated instance from Koin container
+* `getKoin()` - get current Koin instance
 
 For a module that declares a 'MyService' component:
 
@@ -27,12 +28,11 @@ fun App() {
 }
 ```
 
-Koin Global instance is also accessible with `getKoin()`:
+> To keep aligned on the functional aspect of Jetpack Compose, the best writing approach is to inject instances directly into functions properties. This way allow to have default implementation with Koin, but keep open to inject instances how you want.
 
 ```kotlin
 @Composable
-fun App() {
-    val koin = getKoin()
+fun App(myService: MyService = get()) {
 }
 ```
 
