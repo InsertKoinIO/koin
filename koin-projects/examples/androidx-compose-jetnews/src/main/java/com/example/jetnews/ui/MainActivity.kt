@@ -20,7 +20,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.setContent
-import com.example.jetnews.JetnewsApplication
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,10 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appContainer = (application as JetnewsApplication).container
         setContent {
-            JetnewsApp(appContainer, navigationViewModel)
+            JetnewsApp(navigationViewModel)
         }
     }
 

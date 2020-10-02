@@ -9,7 +9,7 @@ Here are the current versions of Koin:
 koin_version= "2.1.6"
 
 // Current unstable version
-koin_version= "2.2.0-beta-2"
+koin_version= "2.2.0-rc-1"
 
 ```
 

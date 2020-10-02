@@ -61,6 +61,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(":koin-androidx-compose")
 
     implementation "androidx.compose.runtime:runtime:$androidx_compose_version"
     implementation "androidx.compose.ui:ui:$androidx_compose_version"

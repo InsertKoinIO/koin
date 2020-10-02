@@ -4,6 +4,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
+
+### [2.2.0-rc-1]()
+
+* `[ADDED]` JetNews Compose app example 
+
 ### [2.2.0-beta-2]()
 
 Updated to kotlin 1.4.10

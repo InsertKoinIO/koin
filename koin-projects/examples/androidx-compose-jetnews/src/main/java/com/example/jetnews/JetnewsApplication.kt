@@ -17,16 +17,20 @@
 package com.example.jetnews
 
 import android.app.Application
-import com.example.jetnews.data.AppContainer
-import com.example.jetnews.data.AppContainerImpl
+import com.example.jetnews.di.appModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class JetnewsApplication : Application() {
 
-    // AppContainer instance used by the rest of classes to obtain dependencies
-    lateinit var container: AppContainer
-
     override fun onCreate() {
         super.onCreate()
-        container = AppContainerImpl(this)
+        startKoin {
+            androidLogger(Level.DEBUG)
+            androidContext(this@JetnewsApplication)
+            modules(appModule)
+        }
     }
 }
