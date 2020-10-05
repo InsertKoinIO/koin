@@ -12,7 +12,7 @@ fun <T : Any> T.inject(vararg properties: KMutableProperty0<*>) {
     properties.forEach {
         val prop = it as KMutableProperty0<Any>
         val type = prop.returnType.classifier as KClass<*>
-        val value = GlobalContext.get().get<Any>(type)
+        val value = GlobalContext.get().get(type)
         prop.set(value)
     }
 }
@@ -21,7 +21,7 @@ fun <T : Any> T.inject(koin: Koin, vararg properties: KMutableProperty0<*>) {
     properties.forEach {
         val prop = it as KMutableProperty0<Any>
         val type = prop.returnType.classifier as KClass<*>
-        val value = koin.get<Any>(type)
+        val value = koin.get(type)
         prop.set(value)
     }
 }
@@ -30,7 +30,7 @@ fun <T : Any> T.inject(scope: Scope, vararg properties: KMutableProperty0<*>) {
     properties.forEach {
         val prop = it as KMutableProperty0<Any>
         val type = prop.returnType.classifier as KClass<*>
-        val value = scope.get<Any>(type)
+        val value = scope.get(type)
         prop.set(value)
     }
 }

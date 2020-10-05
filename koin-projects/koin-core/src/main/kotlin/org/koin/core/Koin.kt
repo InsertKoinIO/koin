@@ -42,6 +42,7 @@ import kotlin.reflect.KClass
 class Koin {
     @PublishedApi
     internal val _scopeRegistry = ScopeRegistry(this)
+
     @KoinApiExtension
     fun <T : Any> onScopeRegistry(code: ScopeRegistry.() -> T): T {
         return code(_scopeRegistry)
@@ -49,6 +50,7 @@ class Koin {
 
     @PublishedApi
     internal val _propertyRegistry = PropertyRegistry(this)
+
     @KoinApiExtension
     fun onPropertyRegistry(code: PropertyRegistry.() -> Unit) {
         code(_propertyRegistry)
@@ -57,6 +59,7 @@ class Koin {
     @PublishedApi
     internal var _logger: Logger = EmptyLogger()
     val logger: Logger = _logger
+
     @KoinApiExtension
     fun setLogger(logger: Logger) {
         _logger = logger
@@ -74,7 +77,7 @@ class Koin {
      * @return Lazy instance of type T
      */
     @JvmOverloads
-    inline fun <reified T> inject(
+    inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> = _scopeRegistry.rootScope.inject(qualifier, parameters)
@@ -88,7 +91,7 @@ class Koin {
      * @return Lazy instance of type T or null
      */
     @JvmOverloads
-    inline fun <reified T> injectOrNull(
+    inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> = _scopeRegistry.rootScope.injectOrNull(qualifier, parameters)
@@ -100,7 +103,7 @@ class Koin {
      * @param parameters
      */
     @JvmOverloads
-    inline fun <reified T> get(
+    inline fun <reified T : Any> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T = _scopeRegistry.rootScope.get(qualifier, parameters)
@@ -114,7 +117,7 @@ class Koin {
      * @return instance of type T or null
      */
     @JvmOverloads
-    inline fun <reified T> getOrNull(
+    inline fun <reified T : Any> getOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T? = _scopeRegistry.rootScope.getOrNull(qualifier, parameters)
@@ -128,8 +131,8 @@ class Koin {
      *
      * @return instance of type T
      */
-    fun <T> get(
-            clazz: KClass<*>,
+    fun <T : Any> get(
+            clazz: KClass<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T = _scopeRegistry.rootScope.get(clazz, qualifier, parameters)
@@ -143,8 +146,8 @@ class Koin {
      *
      * @return instance of type T or null
      */
-    fun <T> getOrNull(
-            clazz: KClass<*>,
+    fun <T : Any> getOrNull(
+            clazz: KClass<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T? = _scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
@@ -217,7 +220,7 @@ class Koin {
      * Create a Scope instance
      * @param scopeId
      */
-    inline fun <reified T> createScope(scopeId: ScopeID, source: Any? = null): Scope {
+    inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null): Scope {
         val qualifier = TypeQualifier(T::class)
         if (_logger.isAt(Level.DEBUG)) {
             _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
@@ -229,7 +232,7 @@ class Koin {
      * Create a Scope instance
      * @param scopeDefinitionName
      */
-    inline fun <reified T> createScope(scopeId: ScopeID = UUID.randomUUID().toString()): Scope {
+    inline fun <reified T : Any> createScope(scopeId: ScopeID = UUID.randomUUID().toString()): Scope {
         val qualifier = TypeQualifier(T::class)
         if (_logger.isAt(Level.DEBUG)) {
             _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
@@ -265,7 +268,7 @@ class Koin {
      * @param scopeId
      * @param qualifier
      */
-    inline fun <reified T> getOrCreateScope(scopeId: ScopeID): Scope {
+    inline fun <reified T : Any> getOrCreateScope(scopeId: ScopeID): Scope {
         val qualifier = TypeQualifier(T::class)
         return _scopeRegistry.getScopeOrNull(scopeId) ?: createScope(scopeId, qualifier)
     }

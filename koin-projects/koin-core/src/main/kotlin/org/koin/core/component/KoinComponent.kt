@@ -45,7 +45,7 @@ interface KoinComponent {
  * @param parameters
  */
 @OptIn(KoinApiExtension::class)
-inline fun <reified T> KoinComponent.get(
+inline fun <reified T : Any> KoinComponent.get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
 ): T =
@@ -57,7 +57,7 @@ inline fun <reified T> KoinComponent.get(
  * @param parameters
  */
 @OptIn(KoinApiExtension::class)
-inline fun <reified T> KoinComponent.inject(
+inline fun <reified T : Any> KoinComponent.inject(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
@@ -68,7 +68,7 @@ inline fun <reified T> KoinComponent.inject(
  * @param parameters
  */
 @OptIn(KoinApiExtension::class)
-inline fun <reified S, reified P> KoinComponent.bind(
+inline fun <reified S : Any, reified P : Any> KoinComponent.bind(
         noinline parameters: ParametersDefinition? = null
 ): S =
         getKoin().bind<S, P>(parameters)

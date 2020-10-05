@@ -11,8 +11,8 @@ import org.koin.sample.androidx.components.ID
 import org.koin.sample.androidx.components.SCOPE_ID
 import org.koin.sample.androidx.components.SCOPE_SESSION
 import org.koin.sample.androidx.components.scope.Session
-import org.koin.sample.androidx.sdk.HostActivity
 import org.koin.sample.androidx.utils.navigateTo
+import org.koin.sample.androidx.workmanager.WorkManagerActivity
 
 class ScopedActivityB : AppCompatActivity() {
 
@@ -30,7 +30,7 @@ class ScopedActivityB : AppCompatActivity() {
         setContentView(R.layout.scoped_activity_b)
 
         scoped_b_button.setOnClickListener {
-            navigateTo<HostActivity>()
+            navigateTo<WorkManagerActivity>()
         }
     }
 }

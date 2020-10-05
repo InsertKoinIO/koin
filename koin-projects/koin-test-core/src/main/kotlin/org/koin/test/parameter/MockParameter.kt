@@ -26,7 +26,7 @@ class MockParameter(
         }
     }
 
-    override fun <T> getOrNull(clazz: KClass<*>): T? {
+    override fun <T : Any> getOrNull(clazz: KClass<T>): T? {
         return defaultValues.values.firstOrNull { it::class == clazz } as? T ?: getDefaultPrimaryValue(clazz) //?: elementAt(0, clazz)
     }
 }

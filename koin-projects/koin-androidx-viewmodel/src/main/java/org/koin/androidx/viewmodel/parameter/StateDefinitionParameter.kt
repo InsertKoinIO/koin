@@ -4,26 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import org.koin.core.parameter.DefinitionParameters
 import kotlin.reflect.KClass
 
-class StateDefinitionParameter(values: List<Any?> = emptyList()) : DefinitionParameters(values) {
-    override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
-        return when {
-            i == DEFAULT_INDEX && clazz == SavedStateHandle::class -> {
-                super.elementAt(i, clazz)
-            }
-            i == DEFAULT_INDEX -> {
-                throw WrongStateDefinitionParameterException(
-                    "Try to inject SavedStateHandle into $clazz. Please check your parameters: $values")
-            }
-            clazz == SavedStateHandle::class -> {
-                throw WrongStateDefinitionParameterException(
-                    "Try to inject SavedStateHandle into position $i but should be $DEFAULT_INDEX. Please check your parameters to add SavedStateHandle first: $values")
-            }
-            else -> super.elementAt(i, clazz)
-        }
+class StateDefinitionParameter(val state : SavedStateHandle, values: List<Any?> = emptyList()) : DefinitionParameters(values) {
+    override fun <T : Any> getOrNull(clazz: KClass<T>): T? {
+        return if (clazz == SavedStateHandle::class){ state as T?}
+        else super.getOrNull(clazz)
     }
 
     companion object {
-        const val DEFAULT_INDEX = 0
-        fun from(params: DefinitionParameters) = StateDefinitionParameter(params.values)
+        fun from(state : SavedStateHandle, params: DefinitionParameters) = StateDefinitionParameter(state, params.values)
     }
 }

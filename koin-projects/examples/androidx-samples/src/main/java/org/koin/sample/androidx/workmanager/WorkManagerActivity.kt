@@ -3,25 +3,14 @@ package org.koin.sample.androidx.workmanager
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.ListenableWorker
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.await
+import androidx.work.*
 import junit.framework.Assert.assertTrue
 import kotlinx.android.synthetic.main.workmanager_activity.*
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 import org.junit.Assert
 import org.koin.android.ext.android.inject
 import org.koin.sample.android.R
-import org.koin.sample.androidx.mvp.MVPActivity
+import org.koin.sample.androidx.sdk.HostActivity
 import org.koin.sample.androidx.utils.navigateTo
 import org.koin.sample.androidx.workmanager.SimpleWorker.Companion.createData
 
@@ -43,7 +32,7 @@ class WorkManagerActivity : AppCompatActivity() {
         title = "Android Work Manager"
         workmanager_message.text = "Work Manager is starting."
         workmanager_button.setOnClickListener {
-            navigateTo<MVPActivity>(isRoot = true)
+            navigateTo<HostActivity>(isRoot = true)
         }
         workmanager_button.isEnabled = false
 
@@ -52,15 +41,15 @@ class WorkManagerActivity : AppCompatActivity() {
 
     private fun runWorkers() {
         CoroutineScope(Dispatchers.Default)
-            .launch {
-                assertTrue(service1.isEmpty())
+                .launch {
+                    assertTrue(service1.isEmpty())
 
-                // start test
-                enqueuesWorkers()
+                    // start test
+                    enqueuesWorkers()
 
-                // verify it worked
-                assertResponses(timeoutMs = 5_000)
-            }
+                    // verify it worked
+                    assertResponses(timeoutMs = 5_000)
+                }
     }
 
     /**
@@ -75,14 +64,14 @@ class WorkManagerActivity : AppCompatActivity() {
             withTimeout(timeoutMs) {
 
                 service1.popAnswer()
-                    .let {
-                        Assert.assertEquals(SimpleWorker.answer1st, it)
-                    }
+                        .let {
+                            Assert.assertEquals(SimpleWorker.answer1st, it)
+                        }
 
                 service1.popAnswer()
-                    .let {
-                        Assert.assertEquals(SimpleWorker.answer2nd, it)
-                    }
+                        .let {
+                            Assert.assertEquals(SimpleWorker.answer2nd, it)
+                        }
 
                 service1.isEmpty()
             }
@@ -99,9 +88,9 @@ class WorkManagerActivity : AppCompatActivity() {
     private suspend fun enqueuesWorkers() {
 
         WorkManager.getInstance(this@WorkManagerActivity)
-            .cancelAllWork()
-            .result
-            .await()
+                .cancelAllWork()
+                .result
+                .await()
 
         enqueueWork<SimpleWorker>(createData(42))
         enqueueWork<SimpleWorker>(createData(43))
@@ -116,15 +105,15 @@ class WorkManagerActivity : AppCompatActivity() {
         val workName = SimpleWorker::class.simpleName + data.keyValueMap.getValue(SimpleWorker.KEY_ANSWER)
 
         return OneTimeWorkRequestBuilder<T>()
-            .setInputData(data)
-            .build()
-            .also {
-                workManager
-                    .enqueueUniqueWork(
-                        workName,
-                        ExistingWorkPolicy.APPEND,
-                        it
-                    )
-            }
+                .setInputData(data)
+                .build()
+                .also {
+                    workManager
+                            .enqueueUniqueWork(
+                                    workName,
+                                    ExistingWorkPolicy.APPEND,
+                                    it
+                            )
+                }
     }
 }

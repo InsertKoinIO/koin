@@ -1,6 +1,5 @@
 package org.koin.sample.androidx.di
 
-import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -26,8 +25,8 @@ import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.mvvm.MVVMFragment
 import org.koin.sample.androidx.scope.ScopedActivityA
-import org.koin.sample.androidx.workmanager.SimpleWorkerService
 import org.koin.sample.androidx.workmanager.SimpleWorker
+import org.koin.sample.androidx.workmanager.SimpleWorkerService
 
 val appModule = module {
 
@@ -54,21 +53,14 @@ val mvvmModule = module {
 //    viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { SimpleViewModel(get(), get()) } // graph injected usage
 
-//    viewModel { (handle: SavedStateHandle, id: String) -> SavedStateViewModel(handle, id, get()) }
-    viewModel { SavedStateViewModel(get(), get(), get()) } // graph injected usage
+    viewModel { (id: String) -> SavedStateViewModel(get(), id, get()) } // injected params
 
     scope<MVVMActivity> {
         scoped { Session() }
         fragment { MVVMFragment(get()) }
         viewModel { ExtSimpleViewModel(get()) }
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel(named("vm3")) { (handle: SavedStateHandle, id: String) ->
-            SavedStateViewModel(
-                handle,
-                id,
-                get()
-            )
-        }
+        viewModel<SavedStateViewModel>(named("vm3")) // graph injected usage + builder API
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }

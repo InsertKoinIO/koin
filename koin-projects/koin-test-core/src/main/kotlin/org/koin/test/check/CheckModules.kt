@@ -107,6 +107,6 @@ private fun checkDefinition(
         scope.setSource(MockProvider.makeMock(scopeQualifier.type))
     }
     scope.addParameters(parameters)
-    scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
+    scope.get(definition.primaryType, definition.qualifier) { parameters }
     scope.clearParameters()
 }

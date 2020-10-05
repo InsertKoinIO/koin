@@ -73,7 +73,7 @@ fun <T : ViewModel> Scope.getViewModel(
             clazz,
             qualifier,
             parameters,
-            state?.invoke(),
+            state?.invoke() ?: Bundle(),
             ownerDef.store,
             ownerDef.stateRegistry
         )

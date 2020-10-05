@@ -16,7 +16,7 @@ inline fun <reified T : Any> Scope.create(): T {
     logger.debug("!- creating class:${kClass.getFullName()}")
 
     val constructor = kClass.java.constructors.firstOrNull()
-        ?: error("No constructor found for class '${kClass.getFullName()}'")
+            ?: error("No constructor found for class '${kClass.getFullName()}'")
 
     val args = if (logger.isAt(Level.DEBUG)) {
         val (_args, duration) = measureDurationForResult {
@@ -58,7 +58,7 @@ fun getArguments(constructor: Constructor<*>, context: Scope): Array<Any> {
         val result = Array<Any>(length) { Unit }
         for (i in 0 until length) {
             val p = constructor.parameterTypes[i]
-            result[i] = context.get<Any>(p.kotlin, null, null)
+            result[i] = context.get(p.kotlin, null, null)
         }
         result
     }

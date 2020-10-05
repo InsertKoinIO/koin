@@ -78,13 +78,13 @@ open class DefinitionParameters(val values: List<Any?> = listOf()) {
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T> get(): T = values.first { it is T } as T
+    inline fun <reified T : Any> get(): T = getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
 
     /**
      * Get first element of given type T
      * return T
      */
-    open fun <T> getOrNull(clazz: KClass<*>): T? {
+    open fun <T : Any> getOrNull(clazz: KClass<T>): T? {
         val values = values.filterNotNull().filter { it::class == clazz }
         return when (values.size) {
             1 -> values.first() as T

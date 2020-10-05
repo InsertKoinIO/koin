@@ -101,7 +101,7 @@ data class Scope(
      * @return Lazy instance of type T
      */
     @JvmOverloads
-    inline fun <reified T> inject(
+    inline fun <reified T: Any> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
@@ -116,7 +116,7 @@ data class Scope(
      * @return Lazy instance of type T or null
      */
     @JvmOverloads
-    inline fun <reified T> injectOrNull(
+    inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
@@ -129,7 +129,7 @@ data class Scope(
      * @param parameters
      */
     @JvmOverloads
-    inline fun <reified T> get(
+    inline fun <reified T : Any> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
@@ -145,7 +145,7 @@ data class Scope(
      * @return instance of type T or null
      */
     @JvmOverloads
-    inline fun <reified T> getOrNull(
+    inline fun <reified T : Any> getOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T? {
@@ -161,8 +161,8 @@ data class Scope(
      * @return instance of type T or null
      */
     @JvmOverloads
-    fun <T> getOrNull(
-            clazz: KClass<*>,
+    fun <T : Any> getOrNull(
+            clazz: KClass<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T? {
@@ -182,8 +182,8 @@ data class Scope(
      *
      * @return instance of type T
      */
-    fun <T> get(
-            clazz: KClass<*>,
+    fun <T : Any> get(
+            clazz: KClass<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T {
@@ -209,8 +209,8 @@ data class Scope(
      * @return instance of type T
      */
     @JvmOverloads
-    fun <T> get(
-            clazz: Class<*>,
+    fun <T : Any> get(
+            clazz: Class<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T {
@@ -219,9 +219,9 @@ data class Scope(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> resolveInstance(
+    private fun <T : Any> resolveInstance(
             qualifier: Qualifier?,
-            clazz: KClass<*>,
+            clazz: KClass<T>,
             parameters: ParametersDefinition?
     ): T {
         if (_closed) {
@@ -252,8 +252,8 @@ data class Scope(
         return if (clazz.isInstance(_source)) _source as? T else null
     }
 
-    private fun <T> findInOtherScope(
-            clazz: KClass<*>,
+    private fun <T : Any> findInOtherScope(
+            clazz: KClass<T>,
             qualifier: Qualifier?,
             parameters: ParametersDefinition?
     ): T? {

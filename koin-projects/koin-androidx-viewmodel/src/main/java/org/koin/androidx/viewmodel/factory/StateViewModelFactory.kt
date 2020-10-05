@@ -10,25 +10,25 @@ import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 
 class StateViewModelFactory<T : ViewModel>(
-    val scope: Scope,
-    val parameters: ViewModelParameter<T>
+        val scope: Scope,
+        val parameters: ViewModelParameter<T>
 ) : AbstractSavedStateViewModelFactory(
-    parameters.registryOwner ?: error("Can't create SavedStateViewModelFactory without a proper stateRegistryOwner"),
-    parameters.initialState
+        parameters.registryOwner
+                ?: error("Can't create SavedStateViewModelFactory without a proper stateRegistryOwner"),
+        parameters.initialState
 ) {
-    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+    override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
         return scope.get(
-            parameters.clazz,
-            parameters.qualifier
+                parameters.clazz,
+                parameters.qualifier
         ) {
-            val definitionParameters: DefinitionParameters? = parameters.parameters?.invoke()
+            val definitionParameters: DefinitionParameters? = parameters.parameters?.invoke() ?: DefinitionParameters()
             when {
-                parameters.initialState != null && definitionParameters != null -> {
-                    StateDefinitionParameter.from(definitionParameters.insert(StateDefinitionParameter.DEFAULT_INDEX, handle))
+                definitionParameters != null -> {
+                    StateDefinitionParameter.from(handle, definitionParameters)
                 }
-                parameters.initialState != null -> StateDefinitionParameter(listOf(handle))
                 else -> definitionParameters ?: emptyParametersHolder()
             }
-        }
+        } as T
     }
 }
