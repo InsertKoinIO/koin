@@ -187,37 +187,31 @@ class DetailActivity : AppCompatActivity() {
 
 ## ViewModel and State Bundle
 
-in `koin-androidx-viewmodel:2.1.0-alpha-10` we reviewed a cleaner way to deal with state bundle for your `ViewModel`.
-
-Add a new property typed `SavedStateHandle` to your constructor:
+Add a new property typed `SavedStateHandle` to your constructor to handle your ViewModel state:
 
 ```kotlin
 class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
 ```
 
-In Koin module, use parameter injection:
+In Koin module, just resolve it with `get()`:
 
 ```kotlin
-viewModel { (handle: SavedStateHandle) -> MyStateVM(handle, get()) }
+viewModel { MyStateVM(get(), get()) }
 ```
 
-!> `SavedStateHandle` argument is always inserted as the first parameters
-
-In Your Activity/Fragment, use the `getStateViewModel()` or `by stateViewModel()` API to reach your StateViewModel:
+Just call your ViewModel:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel()
+val myStateVM: MyStateVM by viewModel()
 ```
 
-You can even pass a bundle as state argument:
+You can even pass a bundle data as your state argument. Use the `state` property like follow:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel(state = { myBundle })
+val myStateVM: MyStateVM by viewModel(state = { myBundle })
 ```
 
-
-> StateViewModel API is accessible from Koin & Scope instances. But also from [`SavedStateRegistryOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
-
+> StateViewModel API is accessible from Koin & Scope instances.
 
 
 

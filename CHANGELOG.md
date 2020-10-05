@@ -5,6 +5,12 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 ## [2.2.0]()
 
 
+### [2.2.0-rc-2]()
+
+* `[FIXED]` AndroidX ViewModel API merge for stateViewModel. No need anymore to pass Bundle as injected parameters, jsut use `get()`
+* `[FIXED]` Resolution API to precise generic type to `Any`
+
+
 ### [2.2.0-rc-1]()
 
 * `[ADDED]` JetNews Compose app example 
