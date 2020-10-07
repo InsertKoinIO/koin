@@ -4,6 +4,9 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
+### [2.2.0-rc-3]()
+
+* `[FIXED]` Fix Scoped Components (ScopeActivity, ScopeFragment & ScopeService) to keep `scope` lazy and avoid forced initialisation
 
 ### [2.2.0-rc-2]()
 

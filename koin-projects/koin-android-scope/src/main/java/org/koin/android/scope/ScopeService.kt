@@ -31,7 +31,7 @@ import org.koin.core.scope.KoinScopeComponent
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeService : Service(), KoinScopeComponent {
+abstract class ScopeService(private val initialiseScope : Boolean = true) : Service(), KoinScopeComponent {
 
     private val scopeID: ScopeID by lazy { getScopeId() }
     override val koin by lazy { getKoin() }
@@ -40,13 +40,15 @@ abstract class ScopeService : Service(), KoinScopeComponent {
     override fun onCreate() {
         super.onCreate()
 
-        koin.logger.debug("Open service scope: $scope")
+        if (initialiseScope){
+            koin.logger.debug("Create Service scope: $scope")
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close service scope: $scope")
+        koin.logger.debug("Close Service scope: $scopeID")
         scope.close()
     }
 

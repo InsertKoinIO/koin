@@ -34,7 +34,8 @@ import org.koin.core.scope.ScopeID
  * @author Arnaud Giuliani
  */
 abstract class ScopeActivity(
-        @LayoutRes contentLayoutId: Int = 0
+        @LayoutRes contentLayoutId: Int = 0,
+        private val initialiseScope : Boolean = true
 ) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
 
     private val scopeID: ScopeID by lazy { getScopeId() }
@@ -44,13 +45,15 @@ abstract class ScopeActivity(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getKoin().logger.debug("Open activity scope: $scope")
+        if (initialiseScope){
+            koin.logger.debug("Open Activity Scope: $scope")
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        getKoin().logger.debug("Close activity scope: $scope")
+        koin.logger.debug("Close Activity scope: $scopeID")
         scope.close()
     }
 

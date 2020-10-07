@@ -33,7 +33,7 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeFragment : Fragment(), KoinScopeComponent {
+abstract class ScopeFragment(private val initialiseScope : Boolean = true) : Fragment(), KoinScopeComponent {
 
     private val scopeID: ScopeID by lazy { getScopeId() }
     override val koin by lazy { getKoin() }
@@ -48,13 +48,15 @@ abstract class ScopeFragment : Fragment(), KoinScopeComponent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        koin.logger.debug("Open fragment scope: $scope")
+        if (initialiseScope){
+            koin.logger.debug("Create Fragment scope: $scope")
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close fragment scope: $scope")
+        koin.logger.debug("Close Fragment scope: $scopeID")
         scope.close()
     }
 
