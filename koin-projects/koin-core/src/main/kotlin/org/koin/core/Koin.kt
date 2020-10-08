@@ -341,14 +341,20 @@ class Koin {
         _propertyRegistry.close()
     }
 
-    fun loadModules(modules: List<Module>) {
+    fun loadModules(modules: List<Module>, createEagerInstances: Boolean = false) {
         _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
+        if (createEagerInstances){
+            createEagerInstances()
+        }
     }
 
 
-    fun unloadModules(modules: List<Module>) {
+    fun unloadModules(modules: List<Module>, createEagerInstances: Boolean = false) {
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
+        if (createEagerInstances){
+            createEagerInstances()
+        }
     }
 }

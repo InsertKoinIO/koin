@@ -4,6 +4,10 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
+* `[FIXED]` GetOrNull hide exceptions - https://github.com/InsertKoinIO/koin/issues/913
+* `[FIXED]` SingleInstanceFactory concurrency fixed - https://github.com/InsertKoinIO/koin/pull/914
+* `[ADDED]` add `createEagerInstances` parameter to `Koin.loadModule` , `Koin.loadModules` 
+
 ### [2.2.0-rc-3]()
 
 * `[FIXED]` Fix Scoped Components (ScopeActivity, ScopeFragment & ScopeService) to keep `scope` lazy and avoid forced initialisation

@@ -168,7 +168,7 @@ data class Scope(
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
-        } catch (e: Exception) {
+        } catch (e: NoBeanDefFoundException) {
             _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
