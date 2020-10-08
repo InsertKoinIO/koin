@@ -44,8 +44,10 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
 
     @Suppress("UNCHECKED_CAST")
     override fun get(context: InstanceContext): T {
-        if (!isCreated()) {
-            value = create(context)
+        synchronized(this) {
+            if (!isCreated()) {
+                value = create(context)
+            }
         }
         return value ?: error("Single instance created couldn't return value")
     }
