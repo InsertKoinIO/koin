@@ -19,12 +19,14 @@ package org.koin.android.scope
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
-import org.koin.android.ext.android.getKoin
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
+import org.koin.core.scope.createScope
+import org.koin.core.scope.koinScopeDelegate
 
 /**
  * ScopeFragment
@@ -33,11 +35,12 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeFragment(private val initialiseScope : Boolean = true) : Fragment(), KoinScopeComponent {
+abstract class ScopeFragment(
+        private val initialiseScope: Boolean = true,
+        override val koin: Koin = GlobalContext.get()
+) : Fragment(), KoinScopeComponent by koinScopeDelegate(koin) {
 
-    private val scopeID: ScopeID by lazy { getScopeId() }
-    override val koin by lazy { getKoin() }
-    override val scope: Scope by lazy { koin.createScope(scopeID, getScopeName(), this) }
+    override val scope: Scope by lazy { createScope(this) }
 
     val scopeActivity: ScopeActivity?
         get() = activity as? ScopeActivity
@@ -48,7 +51,7 @@ abstract class ScopeFragment(private val initialiseScope : Boolean = true) : Fra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (initialiseScope){
+        if (initialiseScope) {
             koin.logger.debug("Create Fragment scope: $scope")
         }
     }
@@ -56,7 +59,7 @@ abstract class ScopeFragment(private val initialiseScope : Boolean = true) : Fra
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close Fragment scope: $scopeID")
+        koin.logger.debug("Close Fragment scope: $scope")
         scope.close()
     }
 
@@ -66,8 +69,8 @@ abstract class ScopeFragment(private val initialiseScope : Boolean = true) : Fra
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
@@ -76,7 +79,7 @@ abstract class ScopeFragment(private val initialiseScope : Boolean = true) : Fra
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T = scope.get(qualifier, parameters)
 }

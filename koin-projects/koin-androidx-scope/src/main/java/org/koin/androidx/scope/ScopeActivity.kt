@@ -19,12 +19,14 @@ package org.koin.androidx.scope
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import org.koin.android.ext.android.getKoin
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
+import org.koin.core.scope.createScope
+import org.koin.core.scope.koinScopeDelegate
 
 /**
  * ScopeActivity
@@ -35,17 +37,16 @@ import org.koin.core.scope.ScopeID
  */
 abstract class ScopeActivity(
         @LayoutRes contentLayoutId: Int = 0,
-        private val initialiseScope : Boolean = true
-) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
+        private val initialiseScope: Boolean = true,
+        override val koin: Koin = GlobalContext.get()
+) : AppCompatActivity(contentLayoutId), KoinScopeComponent by koinScopeDelegate(koin) {
 
-    private val scopeID: ScopeID by lazy { getScopeId() }
-    override val koin by lazy { getKoin() }
-    override val scope: Scope by lazy { getKoin().createScope(scopeID, getScopeName(), this) }
+    override val scope: Scope by lazy { createScope(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (initialiseScope){
+        if (initialiseScope) {
             koin.logger.debug("Open Activity Scope: $scope")
         }
     }
@@ -53,7 +54,7 @@ abstract class ScopeActivity(
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close Activity scope: $scopeID")
+        koin.logger.debug("Close Activity scope: $scope")
         scope.close()
     }
 

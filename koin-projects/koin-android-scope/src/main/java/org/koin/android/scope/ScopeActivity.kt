@@ -18,12 +18,14 @@ package org.koin.android.scope
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import org.koin.android.ext.android.getKoin
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
+import org.koin.core.scope.createScope
+import org.koin.core.scope.koinScopeDelegate
 
 /**
  * ScopeActivity
@@ -32,16 +34,17 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeActivity(private val initialiseScope : Boolean = true) : AppCompatActivity(), KoinScopeComponent {
+abstract class ScopeActivity(
+        private val initialiseScope: Boolean = true,
+        override val koin: Koin = GlobalContext.get()
+) : AppCompatActivity(), KoinScopeComponent by koinScopeDelegate(koin) {
 
-    private val scopeID: ScopeID by lazy { getScopeId() }
-    override val koin by lazy { getKoin() }
-    override val scope: Scope by lazy { getKoin().createScope(scopeID, getScopeName(), this) }
+    override val scope: Scope by lazy { createScope(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (initialiseScope){
+        if (initialiseScope) {
             koin.logger.debug("Open Activity scope: $scope")
         }
     }
@@ -49,7 +52,7 @@ abstract class ScopeActivity(private val initialiseScope : Boolean = true) : App
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close Activity scope: $scopeID")
+        koin.logger.debug("Close Activity scope: $scope")
         scope.close()
     }
 
@@ -60,8 +63,8 @@ abstract class ScopeActivity(private val initialiseScope : Boolean = true) : App
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
@@ -71,7 +74,7 @@ abstract class ScopeActivity(private val initialiseScope : Boolean = true) : App
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T = scope.get(qualifier, parameters)
 }

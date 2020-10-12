@@ -17,12 +17,14 @@
 package org.koin.android.scope
 
 import android.app.Service
-import org.koin.android.ext.android.getKoin
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
 import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.scope.Scope
+import org.koin.core.scope.createScope
+import org.koin.core.scope.koinScopeDelegate
 
 /**
  * ScopeService
@@ -31,16 +33,17 @@ import org.koin.core.scope.KoinScopeComponent
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeService(private val initialiseScope : Boolean = true) : Service(), KoinScopeComponent {
+abstract class ScopeService(
+        private val initialiseScope: Boolean = true,
+        override val koin: Koin = GlobalContext.get()
+) : Service(), KoinScopeComponent by koinScopeDelegate(koin) {
 
-    private val scopeID: ScopeID by lazy { getScopeId() }
-    override val koin by lazy { getKoin() }
-    override val scope: Scope by lazy { koin.createScope(scopeID, getScopeName(), this) }
+    override val scope: Scope by lazy { createScope(this) }
 
     override fun onCreate() {
         super.onCreate()
 
-        if (initialiseScope){
+        if (initialiseScope) {
             koin.logger.debug("Create Service scope: $scope")
         }
     }
@@ -48,7 +51,7 @@ abstract class ScopeService(private val initialiseScope : Boolean = true) : Serv
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close Service scope: $scopeID")
+        koin.logger.debug("Close Service scope: $scope")
         scope.close()
     }
 
@@ -58,8 +61,8 @@ abstract class ScopeService(private val initialiseScope : Boolean = true) : Serv
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
 
     /**
@@ -68,7 +71,7 @@ abstract class ScopeService(private val initialiseScope : Boolean = true) : Serv
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+            qualifier: Qualifier? = null,
+            noinline parameters: ParametersDefinition? = null
     ): T = scope.get(qualifier, parameters)
 }

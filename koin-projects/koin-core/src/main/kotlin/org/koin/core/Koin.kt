@@ -26,9 +26,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.KoinScopeComponent
-import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
+import org.koin.core.scope.*
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -344,7 +342,7 @@ class Koin {
     fun loadModules(modules: List<Module>, createEagerInstances: Boolean = false) {
         _modules.addAll(modules)
         _scopeRegistry.loadModules(modules)
-        if (createEagerInstances){
+        if (createEagerInstances) {
             createEagerInstances()
         }
     }
@@ -353,7 +351,7 @@ class Koin {
     fun unloadModules(modules: List<Module>, createEagerInstances: Boolean = false) {
         _scopeRegistry.unloadModules(modules)
         _modules.removeAll(modules)
-        if (createEagerInstances){
+        if (createEagerInstances) {
             createEagerInstances()
         }
     }
