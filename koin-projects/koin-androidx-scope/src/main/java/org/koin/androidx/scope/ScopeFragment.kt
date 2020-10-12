@@ -20,14 +20,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.core.scope.createScope
-import org.koin.core.scope.koinScopeDelegate
 
 /**
  * ScopeFragment
@@ -38,9 +35,8 @@ import org.koin.core.scope.koinScopeDelegate
  */
 abstract class ScopeFragment(
         @LayoutRes contentLayoutId: Int = 0,
-        private val initialiseScope: Boolean = true,
-        override val koin: Koin = GlobalContext.get()
-) : Fragment(contentLayoutId), KoinScopeComponent by koinScopeDelegate(koin) {
+        private val initialiseScope: Boolean = true
+) : Fragment(contentLayoutId), KoinScopeComponent {
 
     override val scope: Scope by lazy { createScope(this) }
 
@@ -54,14 +50,14 @@ abstract class ScopeFragment(
         super.onViewCreated(view, savedInstanceState)
 
         if (initialiseScope) {
-            koin.logger.debug("Open Fragment Scope: $scope")
+            getKoin().logger.debug("Open Fragment Scope: $scope")
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close Fragment scope: $scope")
+        getKoin().logger.debug("Close Fragment scope: $scope")
         scope.close()
     }
 

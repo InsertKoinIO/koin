@@ -14,7 +14,7 @@ import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.utils.navigateTo
 
-class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent by koinScopeDelegate() {
+class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
 
     override val scope: Scope by lazy { createScope(this) }
 

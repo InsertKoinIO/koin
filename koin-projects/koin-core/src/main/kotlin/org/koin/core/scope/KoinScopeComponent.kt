@@ -1,6 +1,7 @@
 package org.koin.core.scope
 
-import org.koin.core.Koin
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
@@ -11,9 +12,9 @@ import org.koin.ext.getFullName
  *
  * Help bring Scope API = Create/Destroy Scope for the given object
  */
-interface KoinScopeComponent {
+@OptIn(KoinApiExtension::class)
+interface KoinScopeComponent : KoinComponent {
 
-    val koin: Koin
     val scope: Scope
 
     fun destroyScope() {
@@ -24,17 +25,8 @@ interface KoinScopeComponent {
 fun <T : KoinScopeComponent> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
 fun <T : KoinScopeComponent> T.getScopeName() = TypeQualifier(this::class)
 fun <T : KoinScopeComponent> T.createScope(source: Any? = null): Scope {
-    return koin.createScope(getScopeId(), getScopeName(), source)
+    return getKoin().createScope(getScopeId(), getScopeName(), source)
 }
-
-class KoinScopeComponentDelegate(
-        override val koin: Koin
-) : KoinScopeComponent {
-
-    override val scope: Scope by lazy { createScope() }
-}
-
-fun koinScopeDelegate(koin: Koin) = KoinScopeComponentDelegate(koin)
 
 /**
  * inject lazily

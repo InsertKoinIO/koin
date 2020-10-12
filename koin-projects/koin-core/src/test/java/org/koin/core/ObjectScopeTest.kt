@@ -35,7 +35,7 @@ class ObjectScopeTest {
             modules(module {
                 single { A() }
                 scope<A> {
-                    scoped { BofA(getSource()) }
+                    scoped { BofA(get()) }
 
                 }
                 scope<BofA> {

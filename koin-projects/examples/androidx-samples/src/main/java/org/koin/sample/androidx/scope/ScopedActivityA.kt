@@ -23,15 +23,15 @@ class ScopedActivityA : ScopeActivity(contentLayoutId = R.layout.scoped_activity
         assertEquals(currentSession, get<Session>())
 
         // Conpare different scope instances
-        val scopeSession1 = koin.createScope(SESSION_1, named(SCOPE_ID))
-        val scopeSession2 = koin.createScope(SESSION_2, named(SCOPE_ID))
+        val scopeSession1 = getKoin().createScope(SESSION_1, named(SCOPE_ID))
+        val scopeSession2 = getKoin().createScope(SESSION_2, named(SCOPE_ID))
         assertNotEquals(scopeSession1.get<Session>(named(SCOPE_SESSION)), currentSession)
         assertNotEquals(scopeSession1.get<Session>(named(SCOPE_SESSION)),
-            scopeSession2.get<Session>(named(SCOPE_SESSION)))
+                scopeSession2.get<Session>(named(SCOPE_SESSION)))
 
 
         // set data in scope SCOPE_ID
-        val session = koin.createScope(SCOPE_ID, named(SCOPE_ID)).get<Session>(named(SCOPE_SESSION))
+        val session = getKoin().createScope(SCOPE_ID, named(SCOPE_ID)).get<Session>(named(SCOPE_SESSION))
         session.id = ID
 
         title = "Scope Activity A"

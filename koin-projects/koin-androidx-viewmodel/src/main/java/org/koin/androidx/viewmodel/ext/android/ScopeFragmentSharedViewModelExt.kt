@@ -16,12 +16,11 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.lifecycle.ViewModel
-import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
-import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
+import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -38,10 +37,10 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : ViewModel> ScopeFragment.sharedViewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline state: BundleDefinition? = null,
+        noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+        noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
         getViewModel<T>(qualifier, state, owner, parameters)
@@ -49,30 +48,30 @@ inline fun <reified T : ViewModel> ScopeFragment.sharedViewModel(
 }
 
 fun <T : ViewModel> ScopeFragment.sharedViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition? = null,
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        state: BundleDefinition? = null,
+        owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+        clazz: KClass<T>,
+        parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ScopeFragment.getSharedViewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline state: BundleDefinition? = null,
+        noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+        noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(qualifier, state, owner, parameters)
 }
 
 fun <T : ViewModel> ScopeFragment.getSharedViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition? = null,
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        state: BundleDefinition? = null,
+        owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+        clazz: KClass<T>,
+        parameters: ParametersDefinition? = null
 ): T {
-    return getKoin().getViewModel(qualifier, state, owner, clazz, parameters)
+    return scope.getViewModel(qualifier, state, owner, clazz, parameters)
 }

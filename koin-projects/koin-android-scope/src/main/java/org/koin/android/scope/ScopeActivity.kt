@@ -18,14 +18,11 @@ package org.koin.android.scope
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.core.scope.createScope
-import org.koin.core.scope.koinScopeDelegate
 
 /**
  * ScopeActivity
@@ -36,8 +33,7 @@ import org.koin.core.scope.koinScopeDelegate
  */
 abstract class ScopeActivity(
         private val initialiseScope: Boolean = true,
-        override val koin: Koin = GlobalContext.get()
-) : AppCompatActivity(), KoinScopeComponent by koinScopeDelegate(koin) {
+) : AppCompatActivity(), KoinScopeComponent {
 
     override val scope: Scope by lazy { createScope(this) }
 
@@ -45,14 +41,14 @@ abstract class ScopeActivity(
         super.onCreate(savedInstanceState)
 
         if (initialiseScope) {
-            koin.logger.debug("Open Activity scope: $scope")
+            getKoin().logger.debug("Open Activity scope: $scope")
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        koin.logger.debug("Close Activity scope: $scope")
+        getKoin().logger.debug("Close Activity scope: $scope")
         scope.close()
     }
 

@@ -101,7 +101,7 @@ data class Scope(
      * @return Lazy instance of type T
      */
     @JvmOverloads
-    inline fun <reified T: Any> inject(
+    inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
@@ -168,6 +168,9 @@ data class Scope(
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
+        } catch (e: ClosedScopeException) {
+            _koin._logger.debug("Koin.getOrNull - scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            null
         } catch (e: NoBeanDefFoundException) {
             _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null

@@ -30,9 +30,9 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : ViewModel> ScopeFragment.viewModel(
-    qualifier: Qualifier? = null,
-    noinline owner: ViewModelOwnerDefinition = { from(this) },
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline owner: ViewModelOwnerDefinition = { from(this) },
+        noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
         getViewModel<T>(qualifier, owner, parameters)
@@ -40,27 +40,27 @@ inline fun <reified T : ViewModel> ScopeFragment.viewModel(
 }
 
 fun <T : ViewModel> ScopeFragment.viewModel(
-    qualifier: Qualifier? = null,
-    owner: ViewModelOwnerDefinition = { from(this) },
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        owner: ViewModelOwnerDefinition = { from(this) },
+        clazz: KClass<T>,
+        parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ScopeFragment.getViewModel(
-    qualifier: Qualifier? = null,
-    noinline owner: ViewModelOwnerDefinition = { from(this) },
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline owner: ViewModelOwnerDefinition = { from(this) },
+        noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(qualifier, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> ScopeFragment.getViewModel(
-    qualifier: Qualifier? = null,
-    owner: ViewModelOwnerDefinition = { from(this) },
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        owner: ViewModelOwnerDefinition = { from(this) },
+        clazz: KClass<T>,
+        parameters: ParametersDefinition? = null
 ): T {
     return scope.getViewModel(qualifier, owner, clazz, parameters)
 }
