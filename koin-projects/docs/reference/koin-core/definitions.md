@@ -171,7 +171,7 @@ val myModule = module {
     single<Service>(named("test")) { ServiceImpl() }
 }
 
-val service : Service by inject(qualifer = named("default"))
+val service : Service by inject(qualifier = named("default"))
 ```
 
 `get()` and `by inject()` functions let you specify a definition name if needed. This name is a `qualifier` produced by the `named()` function.
