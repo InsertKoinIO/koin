@@ -66,9 +66,9 @@ fun JetnewsApp(
 
 @Composable
 private fun AppContent(
-        navigationViewModel: NavigationViewModel,
-        postsRepository: PostsRepository = get(),
-        interestsRepository: InterestsRepository = get()
+    navigationViewModel: NavigationViewModel,
+    postsRepository: PostsRepository = get(),
+    interestsRepository: InterestsRepository = get()
 ) {
     Crossfade(navigationViewModel.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
