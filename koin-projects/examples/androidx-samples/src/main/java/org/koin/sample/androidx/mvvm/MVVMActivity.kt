@@ -30,15 +30,15 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
-    val scopeVm: ExtSimpleViewModel by scope.viewModel(owner = { from(this) })
-    val extScopeVm: ExtSimpleViewModel by scope.viewModel(owner = { from(this) },
+    val scopeVm: ExtSimpleViewModel by viewModel(owner = { from(this) })
+    val extScopeVm: ExtSimpleViewModel by viewModel(owner = { from(this) },
         qualifier = named("ext"))
 
     val bundle = Bundle().apply { putString("vm1", "value to stateViewModel") }
     val savedVm: SavedStateViewModel by viewModel(state = { bundle }) { parametersOf("vm1") }
 
     val bundleStateScope = Bundle().apply { putString("vm2", "value to scope.stateViewModel") }
-    val scopedSavedVm: SavedStateViewModel by scope.viewModel(owner = { fromAny(this) },
+    val scopedSavedVm: SavedStateViewModel by viewModel(owner = { fromAny(this) },
         qualifier = named("vm3"),
         state = { bundleStateScope }
     ) { parametersOf("vm3") }

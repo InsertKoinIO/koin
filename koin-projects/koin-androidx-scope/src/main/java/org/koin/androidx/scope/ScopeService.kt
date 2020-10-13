@@ -21,7 +21,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.createScope
+import org.koin.core.scope.newScope
 
 /**
  * ScopeService
@@ -34,7 +34,7 @@ abstract class ScopeService(
         private val initialiseScope: Boolean = true
 ) : Service(), KoinScopeComponent {
 
-    override val scope: Scope by lazy { createScope(this) }
+    override val scope: Scope by lazy { newScope(this) }
 
     override fun onCreate() {
         super.onCreate()

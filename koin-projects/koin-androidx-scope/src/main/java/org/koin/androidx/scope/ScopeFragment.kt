@@ -24,7 +24,6 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.createScope
 
 /**
  * ScopeFragment
@@ -38,7 +37,7 @@ abstract class ScopeFragment(
         private val initialiseScope: Boolean = true
 ) : Fragment(contentLayoutId), KoinScopeComponent {
 
-    override val scope: Scope by lazy { createScope(this) }
+    override val scope: Scope by lazy { fragmentScope() }
 
     val scopeActivity: ScopeActivity?
         get() = activity as? ScopeActivity
@@ -52,13 +51,6 @@ abstract class ScopeFragment(
         if (initialiseScope) {
             getKoin().logger.debug("Open Fragment Scope: $scope")
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        getKoin().logger.debug("Close Fragment scope: $scope")
-        scope.close()
     }
 
     /**

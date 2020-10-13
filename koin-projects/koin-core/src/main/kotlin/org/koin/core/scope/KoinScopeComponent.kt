@@ -24,7 +24,7 @@ interface KoinScopeComponent : KoinComponent {
 
 fun <T : KoinScopeComponent> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
 fun <T : KoinScopeComponent> T.getScopeName() = TypeQualifier(this::class)
-fun <T : KoinScopeComponent> T.createScope(source: Any? = null): Scope {
+fun <T : KoinScopeComponent> T.newScope(source: Any? = null): Scope {
     return getKoin().createScope(getScopeId(), getScopeName(), source)
 }
 
