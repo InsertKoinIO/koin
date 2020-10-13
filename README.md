@@ -117,7 +117,7 @@ implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 implementation "org.koin:koin-androidx-fragment:$koin_version"
 // Koin AndroidX WorkManager
 implementation "org.koin:koin-androidx-workmanager:$koin_version"
-// Koin AndroidX Jetpack COmpose
+// Koin AndroidX Jetpack Compose
 implementation "org.koin:koin-androidx-compose:$koin_version"
 // Koin AndroidX Experimental features
 implementation "org.koin:koin-androidx-ext:$koin_version"
