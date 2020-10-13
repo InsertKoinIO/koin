@@ -39,4 +39,9 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent
             navigateTo<MVVMActivity>(isRoot = true)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.close()
+    }
 }
