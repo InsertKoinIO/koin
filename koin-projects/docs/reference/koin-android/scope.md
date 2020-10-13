@@ -100,6 +100,42 @@ val androidModule = module {
 }
 ```
 
+Here below, you can directly use `KoinScopeComponent` to declare some scope in your Activity/Fragment:
+
+```kotlin
+// Implementing our own Scope delegation 
+class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
+  
+    // Create scope
+    override val scope: Scope by lazy { newScope() }
+
+    // Inject presenter with org.koin.core.scope.inject extension
+    // also can use directly the scope: scope.inject<>()
+    val presenter: ScopedPresenter by inject()
+  
+    // Don't forget to close it when finish
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.close()
+    }
+}
+```
+
+> You can use `activityScope()` & `fragmentScope()` to create your own scope:
+
+```kotlin
+// Implementing our own Scope delegation 
+class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
+  
+    // Create Activity scope (backed by ViewModel)
+    override val scope: Scope by lazy { activityScope() }
+
+    // Inject presenter with org.koin.core.scope.inject extension
+    // also can use directly the scope: scope.inject<>()
+    val presenter: ScopedPresenter by inject()
+}
+```
+
 
 ## Sharing instances between components with custom scopes & Scope Links
 
