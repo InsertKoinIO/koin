@@ -32,5 +32,5 @@
 - [Changelog](https://github.com/InsertKoinIO/koin/blob/master/CHANGELOG.md)
 - [WebSite](https://insert-koin.io/)
 - [Getting Started Documentation](https://start.insert-koin.io/)
-- [![Github](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github](https://github.com/InsertKoinIO/koin)
-- [![Twitter](https://icongram.jgog.in/simple/twitter.svg?colored&size=16)@insertkoin_io](http://twitter.com/insertkoin_io)
+- [![GitHub](https://icongr.am/simple/github.svg?color=808080&size=16)GitHub](https://github.com/InsertKoinIO/koin)
+- [![Twitter](https://icongr.am/simple/twitter.svg?colored&size=16)@insertkoin_io](http://twitter.com/insertkoin_io)
