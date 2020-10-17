@@ -23,8 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.jetnews.ui.Screen.*
-import com.example.jetnews.ui.ScreenName.*
+import com.example.jetnews.ui.Screen.Article
+import com.example.jetnews.ui.Screen.Home
+import com.example.jetnews.ui.Screen.Interests
+import com.example.jetnews.ui.ScreenName.ARTICLE
+import com.example.jetnews.ui.ScreenName.HOME
+import com.example.jetnews.ui.ScreenName.INTERESTS
 import com.example.jetnews.utils.getMutableStateOf
 
 /**
@@ -87,7 +91,7 @@ private fun Bundle.toScreen(): Screen {
  * @see Bundle.getString
  */
 private fun Bundle.getStringOrThrow(key: String) =
-        requireNotNull(getString(key)) { "Missing key '$key' in $this" }
+    requireNotNull(getString(key)) { "Missing key '$key' in $this" }
 
 /**
  * This is expected to be replaced by the navigation component, but for now handle navigation
@@ -109,10 +113,10 @@ class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : View
      * supports observability via property delegate syntax as shown here.
      */
     var currentScreen: Screen by savedStateHandle.getMutableStateOf<Screen>(
-            key = SIS_SCREEN,
-            default = Home,
-            save = { it.toBundle() },
-            restore = { it.toScreen() }
+        key = SIS_SCREEN,
+        default = Home,
+        save = { it.toBundle() },
+        restore = { it.toScreen() }
     )
         private set // limit the writes to only inside this class.
 
