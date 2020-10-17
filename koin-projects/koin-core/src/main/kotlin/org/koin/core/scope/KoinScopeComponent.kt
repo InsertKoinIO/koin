@@ -17,7 +17,7 @@ interface KoinScopeComponent : KoinComponent {
 
     val scope: Scope
 
-    fun destroyScope() {
+    fun closeScope() {
         scope.close()
     }
 }
