@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-apply from: '../../gradle/versions-examples.gradle'
+apply from: "$rootDir/gradle/versions-examples.gradle"
 
 android {
     compileSdkVersion android_target_version

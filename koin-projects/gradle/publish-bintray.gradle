@@ -1,0 +1,25 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+// Bintray
+if (hasProperty('bintray_user') && hasProperty('bintray_apikey')) {
+    bintray {
+        user = bintray_user
+        key = bintray_apikey
+
+        pkg {
+            repo = 'koin'
+            userOrg = 'ekito'
+
+            publish = true
+            override = true
+
+            publicDownloadNumbers = true
+
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/InsertKoinIO/koin.git'
+            websiteUrl = 'https://insert-koin.io'
+            dryRun = false
+        }
+    }
+}

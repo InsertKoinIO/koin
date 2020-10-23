@@ -52,4 +52,4 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-apply from: '../gradle/publish-android.gradle'
+apply from: "$rootDir/gradle/publish-android.gradle"

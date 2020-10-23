@@ -10,4 +10,4 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: "$rootDir/gradle/publish-archives.gradle"

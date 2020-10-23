@@ -5,7 +5,7 @@ plugins {
     // id 'kotlin-android-extensions'
 }
 
-apply from: "../gradle/versions.gradle"
+apply from: "$rootDir/gradle/versions.gradle"
 
 ext {
     android_sourceSet = true
@@ -63,4 +63,4 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 }
 
-apply from: '../gradle/publish-android.gradle'
+apply from: "$rootDir/gradle/publish-android.gradle"

@@ -8,6 +8,7 @@ include 'koin-test-junit5'
 
 // Core extended
 include 'koin-core-ext'
+
 // Gradle plugin
 include 'koin-gradle-plugin'
 
@@ -29,3 +30,6 @@ include 'examples:androidx-samples'
 // Ktor
 include 'koin-logger-slf4j'
 include 'koin-ktor'
+
+// BOM
+include 'koin-bom'

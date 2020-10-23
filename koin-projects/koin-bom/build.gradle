@@ -1,0 +1,31 @@
+apply plugin: 'java-platform'
+
+archivesBaseName = 'koin-bom'
+description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+
+dependencies {
+    constraints {
+        rootProject.subprojects.each {
+            if (it != project) {
+                api(it)
+            }
+        }
+    }
+}
+
+apply from: "$rootDir/gradle/publish-bintray.gradle"
+
+publishing {
+    publications {
+        mavenBom(MavenPublication) {
+            from components.javaPlatform
+        }
+    }
+}
+
+bintray {
+    pkg {
+        name = archivesBaseName
+    }
+    publications = ['mavenBom']
+}

@@ -17,8 +17,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-apply from: '../../gradle/versions-examples.gradle'
-apply from: "../../gradle/versions.gradle"
+apply from: "$rootDir/gradle/versions-examples.gradle"
+apply from: "$rootDir/gradle/versions.gradle"
 
 android {
     compileSdkVersion 30

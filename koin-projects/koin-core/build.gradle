@@ -1,4 +1,4 @@
-apply from: "../gradle/versions.gradle"
+apply from: "$rootDir/gradle/versions.gradle"
 apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-core'
@@ -20,4 +20,4 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: "$rootDir/gradle/publish-archives.gradle"

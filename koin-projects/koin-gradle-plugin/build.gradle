@@ -1,4 +1,4 @@
-apply from: "../gradle/versions.gradle"
+apply from: "$rootDir/gradle/versions.gradle"
 apply plugin: 'kotlin'
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -20,4 +20,4 @@ repositories {
     jcenter()
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: "$rootDir/gradle/publish-archives.gradle"

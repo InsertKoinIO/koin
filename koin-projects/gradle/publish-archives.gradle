@@ -1,0 +1,19 @@
+apply plugin: 'maven'
+apply from: "$rootDir/gradle/publish-bintray.gradle"
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar, dokkaJar
+}
+
+bintray {
+    pkg {
+        name = archivesBaseName
+    }
+    configurations = ['archives']
+}
