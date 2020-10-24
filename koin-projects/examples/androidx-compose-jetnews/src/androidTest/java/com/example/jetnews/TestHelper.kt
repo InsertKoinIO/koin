@@ -29,7 +29,6 @@ import com.example.jetnews.ui.NavigationViewModel
 fun ComposeTestRuleJUnit.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(
-            TestAppContainer(context),
             remember { NavigationViewModel(SavedStateHandle()) }
         )
     }

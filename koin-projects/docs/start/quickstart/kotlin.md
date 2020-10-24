@@ -19,9 +19,9 @@ repositories {
 }
 dependencies {
     // Koin for Kotlin apps
-    compile "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-core:$koin_version"
     // Testing
-    testCompile "org.koin:koin-test:$koin_version"
+    testImplementation "org.koin:koin-test:$koin_version"
 }
 ```
 

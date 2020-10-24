@@ -19,18 +19,18 @@ android {
 
 dependencies {
     // Koin
-    compile project(":koin-core-ext")
-    compile project(":koin-androidx-viewmodel")
+    api project(":koin-core-ext")
+    api project(":koin-androidx-viewmodel")
 
     // Architecture ViewModel
-    compile("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
+    api("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"
         exclude module: "runtime"
         exclude group: "androidx.legacy"
     }
-    compile("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
+    api("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"

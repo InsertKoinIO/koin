@@ -18,9 +18,9 @@ android {
 
 dependencies {
     // Koin
-    compile project(":koin-android")
+    api project(":koin-android")
     // Architecture ViewModel
-    compile("androidx.fragment:fragment-ktx:$androidx_fragment_version")
+    api "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
     // Test
     testImplementation project(":koin-test")

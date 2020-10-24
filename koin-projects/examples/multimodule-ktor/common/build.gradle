@@ -2,13 +2,12 @@ apply plugin: 'kotlin'
 
 dependencies {
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     // Koin
-    compile project(":koin-ktor")
-    testCompile project(":koin-test")
+    api project(":koin-ktor")
+    testImplementation project(":koin-test")
 
     // Ktor
-    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
-
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }

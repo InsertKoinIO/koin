@@ -18,12 +18,12 @@ android {
 }
 
 dependencies {
-    compile project(":koin-android") //"org.koin:koin-android:$koin_version"
-    compile "androidx.appcompat:appcompat:$androidx_lib_version"
-    compile("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
+    api project(":koin-android") //"org.koin:koin-android:$koin_version"
+    api "androidx.appcompat:appcompat:$androidx_lib_version"
+    api("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
         exclude group: "core-runtime"
     }
-    compile("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
+    api("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"
@@ -31,9 +31,9 @@ dependencies {
         exclude group: "androidx.legacy"
     }
 
-    compile "androidx.activity:activity:1.2.0-beta01"
-    compile "androidx.activity:activity-ktx:1.1.0"
-    compile "androidx.fragment:fragment-ktx:$androidx_fragment_version"
+    api "androidx.activity:activity:1.2.0-beta01"
+    api "androidx.activity:activity-ktx:1.1.0"
+    api "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
     testImplementation project(":koin-test")
     testImplementation "org.mockito:mockito-inline:$mockito_version"

@@ -5,7 +5,7 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 
 dependencies {
     // Koin
-    compile project(":koin-core")
+    api project(":koin-core")
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 }

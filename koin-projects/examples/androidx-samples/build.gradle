@@ -52,22 +52,22 @@ dependencies {
     implementation project(":koin-androidx-ext")
     implementation project(":koin-androidx-fragment")
     implementation project(":koin-androidx-workmanager")
-    implementation 'junit:junit:4.12'
+    implementation 'junit:junit:4.13.1'
 
     testImplementation project(":koin-test")
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation "androidx.test:core:1.2.0"
-    testImplementation "androidx.test.ext:junit:1.1.1"
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation "androidx.test:core:1.3.0"
+    testImplementation "androidx.test.ext:junit:1.1.2"
     testImplementation "org.robolectric:robolectric:4.2.1"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
-    implementation("androidx.work:work-runtime-ktx:$work_manager_version")
+    implementation "androidx.work:work-runtime-ktx:$work_manager_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
     testImplementation "org.mockito:mockito-inline:$mockito_version"
