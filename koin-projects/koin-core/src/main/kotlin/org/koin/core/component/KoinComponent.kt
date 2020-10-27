@@ -20,7 +20,7 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-@RequiresOptIn(message = "Used to extend current API with Koin API")
+@RequiresOptIn(message = "Used to extend current API with Koin API",level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FIELD)
 annotation class KoinApiExtension

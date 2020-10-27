@@ -7,6 +7,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 * `[FIXED]` GetOrNull hide exceptions - https://github.com/InsertKoinIO/koin/issues/913
 * `[FIXED]` SingleInstanceFactory concurrency fixed - https://github.com/InsertKoinIO/koin/pull/914
 * `[ADDED]` add `createEagerInstances` parameter to `Koin.loadModule` , `Koin.loadModules` 
+* `[FIXED]` @KoinApiExtension is using Warning compiler message, not error
 
 ### [2.2.0-rc-3]()
 

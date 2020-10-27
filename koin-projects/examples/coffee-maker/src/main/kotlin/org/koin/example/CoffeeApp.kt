@@ -13,7 +13,6 @@ class CoffeeApp : KoinComponent {
     val maker: CoffeeMaker by inject()
 }
 
-@OptIn(KoinApiExtension::class)
 fun main() {
     startKoin {
         printLogger()
