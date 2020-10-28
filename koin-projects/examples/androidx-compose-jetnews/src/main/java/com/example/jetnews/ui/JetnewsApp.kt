@@ -59,7 +59,9 @@ fun JetnewsApp(
 ) {
     JetnewsTheme {
         AppContent(
-            navigationViewModel = navigationViewModel
+            navigationViewModel = navigationViewModel,
+            interestsRepository = get(),
+            postsRepository = get()
         )
     }
 }
@@ -67,8 +69,8 @@ fun JetnewsApp(
 @Composable
 private fun AppContent(
     navigationViewModel: NavigationViewModel,
-    postsRepository: PostsRepository = get(),
-    interestsRepository: InterestsRepository = get()
+    postsRepository: PostsRepository,
+    interestsRepository: InterestsRepository
 ) {
     Crossfade(navigationViewModel.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
@@ -189,8 +191,7 @@ private fun DrawerButton(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,
-                    color = textIconColor,
-                    modifier = Modifier.fillMaxWidth()
+                    color = textIconColor
                 )
             }
         }

@@ -12,6 +12,16 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
+/**
+ * Inject ViewModel a given dependency for [Composable] functions
+ * @param qualifier
+ * @param parameters
+ *
+ * @return Lazy instance of type T
+ *
+ * @author Arnaud Giuliani
+ */
+
 @Composable
 inline fun <reified T : ViewModel> viewModel(
         qualifier: Qualifier? = null,

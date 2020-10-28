@@ -15,6 +15,7 @@ import org.koin.core.qualifier.Qualifier
  * @return Lazy instance of type T
  *
  * @author Henrique Horbovyi
+ * @author Arnaud Giuliani
  */
 @Composable
 inline fun <reified T> inject(
