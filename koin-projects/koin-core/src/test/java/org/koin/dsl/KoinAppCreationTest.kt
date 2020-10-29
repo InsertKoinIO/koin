@@ -56,11 +56,11 @@ class KoinAppCreationTest {
             logger(PrintLogger(Level.ERROR))
         }
 
-        assertEquals(GlobalContext.get()._logger.level, Level.ERROR)
+        assertEquals(GlobalContext.get().logger.level, Level.ERROR)
 
-        GlobalContext.get()._logger.debug("debug")
-        GlobalContext.get()._logger.info("info")
-        GlobalContext.get()._logger.error("error")
+        GlobalContext.get().logger.debug("debug")
+        GlobalContext.get().logger.info("info")
+        GlobalContext.get().logger.error("error")
     }
 
     @Test
@@ -69,10 +69,10 @@ class KoinAppCreationTest {
             printLogger(Level.ERROR)
         }
 
-        assertEquals(GlobalContext.get()._logger.level, Level.ERROR)
+        assertEquals(GlobalContext.get().logger.level, Level.ERROR)
 
-        GlobalContext.get()._logger.debug("debug")
-        GlobalContext.get()._logger.info("info")
-        GlobalContext.get()._logger.error("error")
+        GlobalContext.get().logger.debug("debug")
+        GlobalContext.get().logger.info("info")
+        GlobalContext.get().logger.error("error")
     }
 }

@@ -26,7 +26,11 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.*
+import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
+import org.koin.core.scope.getScopeId
+import org.koin.core.scope.getScopeName
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -54,13 +58,13 @@ class Koin {
         code(_propertyRegistry)
     }
 
-    @PublishedApi
-    internal var _logger: Logger = EmptyLogger()
-    val logger: Logger = _logger
+    @KoinApiExtension
+    var logger: Logger = EmptyLogger()
+        private set
 
     @KoinApiExtension
-    fun setLogger(logger: Logger) {
-        _logger = logger
+    fun setupLogger(logger: Logger){
+        this.logger = logger
     }
 
     @PublishedApi
@@ -208,8 +212,8 @@ class Koin {
      * @param scopeDefinitionName
      */
     fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
-        if (_logger.isAt(Level.DEBUG)) {
-            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
         return _scopeRegistry.createScope(scopeId, qualifier, source)
     }
@@ -220,8 +224,8 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null): Scope {
         val qualifier = TypeQualifier(T::class)
-        if (_logger.isAt(Level.DEBUG)) {
-            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
         return _scopeRegistry.createScope(scopeId, qualifier, source)
     }
@@ -232,8 +236,8 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID = UUID.randomUUID().toString()): Scope {
         val qualifier = TypeQualifier(T::class)
-        if (_logger.isAt(Level.DEBUG)) {
-            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
         return _scopeRegistry.createScope(scopeId, qualifier, null)
     }
@@ -245,8 +249,8 @@ class Koin {
     fun <T : KoinScopeComponent> createScope(t: T): Scope {
         val scopeId = t.getScopeId()
         val qualifier = t.getScopeName()
-        if (_logger.isAt(Level.DEBUG)) {
-            _logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("!- create scope - id:'$scopeId' q:$qualifier")
         }
         return _scopeRegistry.createScope(scopeId, qualifier, null)
     }

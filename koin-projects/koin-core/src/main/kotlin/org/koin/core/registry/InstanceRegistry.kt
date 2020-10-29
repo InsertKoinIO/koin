@@ -23,11 +23,11 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     internal fun create(definitions: Set<BeanDefinition<*>>) {
         definitions.forEach { definition ->
-            if (_koin._logger.isAt(Level.DEBUG)) {
+            if (_koin.logger.isAt(Level.DEBUG)) {
                 if (_scope._scopeDefinition.isRoot) {
-                    _koin._logger.debug("- $definition")
+                    _koin.logger.debug("- $definition")
                 } else {
-                    _koin._logger.debug("$_scope -> $definition")
+                    _koin.logger.debug("$_scope -> $definition")
                 }
             }
             saveDefinition(definition, override = false)

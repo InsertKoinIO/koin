@@ -14,26 +14,24 @@ import kotlin.reflect.KClass
  */
 data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
 
-    private val _definitions: HashSet<BeanDefinition<*>> = hashSetOf()
-
     @KoinApiExtension
-    val definitions: Set<BeanDefinition<*>> = _definitions
-
+    val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
+    
     fun save(beanDefinition: BeanDefinition<*>, forceOverride: Boolean = false) {
         if (definitions.contains(beanDefinition)) {
             if (beanDefinition.options.override || forceOverride) {
-                _definitions.remove(beanDefinition)
+                definitions.remove(beanDefinition)
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
                 throw DefinitionOverrideException(
                         "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
             }
         }
-        _definitions.add(beanDefinition)
+        definitions.add(beanDefinition)
     }
 
     fun remove(beanDefinition: BeanDefinition<*>) {
-        _definitions.remove(beanDefinition)
+        definitions.remove(beanDefinition)
     }
 
     internal fun size() = definitions.size
@@ -68,7 +66,7 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
     }
 
     fun unloadDefinition(beanDefinition: BeanDefinition<*>) {
-        _definitions.remove(beanDefinition)
+        definitions.remove(beanDefinition)
     }
 
     companion object {

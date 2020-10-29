@@ -38,8 +38,8 @@ class PropertyRegistry(private val _koin: Koin) {
      * @param properties
      */
     fun saveProperties(properties: Map<String, String>) {
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("load ${properties.size} properties")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load ${properties.size} properties")
         }
 
         _values.putAll(properties)
@@ -49,8 +49,8 @@ class PropertyRegistry(private val _koin: Koin) {
      *Save properties values into PropertyRegister
      */
     fun saveProperties(properties: Properties) {
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("load ${properties.size} properties")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load ${properties.size} properties")
         }
 
         val propertiesMapValues = properties.toMap() as Map<String, String>
@@ -86,13 +86,13 @@ class PropertyRegistry(private val _koin: Koin) {
      * @param fileName
      */
     fun loadPropertiesFromFile(fileName: String) {
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("load properties from $fileName")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load properties from $fileName")
         }
         val content = Koin::class.java.getResource(fileName)?.readText()
         if (content != null) {
-            if (_koin._logger.isAt(Level.INFO)) {
-                _koin._logger.info("loaded properties from file:'$fileName'")
+            if (_koin.logger.isAt(Level.INFO)) {
+                _koin.logger.info("loaded properties from file:'$fileName'")
             }
             val properties = readDataFromFile(content)
             saveProperties(properties)
@@ -111,8 +111,8 @@ class PropertyRegistry(private val _koin: Koin) {
      * Load properties from environment
      */
     fun loadEnvironmentProperties() {
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("load properties from environment")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load properties from environment")
         }
         val sysProperties = System.getProperties()
         saveProperties(sysProperties)

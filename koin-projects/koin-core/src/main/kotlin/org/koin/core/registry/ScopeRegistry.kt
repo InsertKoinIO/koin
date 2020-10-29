@@ -58,7 +58,7 @@ class ScopeRegistry(private val _koin: Koin) {
             if (!module.isLoaded) {
                 loadModule(module)
             } else {
-                _koin._logger.error("module '$module' already loaded!")
+                _koin.logger.error("module '$module' already loaded!")
             }
         }
     }

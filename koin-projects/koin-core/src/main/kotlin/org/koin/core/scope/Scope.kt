@@ -169,10 +169,10 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: ClosedScopeException) {
-            _koin._logger.debug("Koin.getOrNull - scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("Koin.getOrNull - scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin._logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
@@ -190,13 +190,13 @@ data class Scope(
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T {
-        return if (_koin._logger.isAt(Level.DEBUG)) {
+        return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin._logger.debug("+- '${clazz.getFullName()}'$qualifierString")
+            _koin.logger.debug("+- '${clazz.getFullName()}'$qualifierString")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
-            _koin._logger.debug("|- '${clazz.getFullName()}' in $duration ms")
+            _koin.logger.debug("|- '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
@@ -233,19 +233,19 @@ data class Scope(
         val indexKey = indexKey(clazz, qualifier)
         return _instanceRegistry.resolveInstance(indexKey, parameters)
                 ?: run {
-                    _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
                     getFromSource(clazz)
                 }
                 ?: run {
-                    _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
                     _parameters?.getOrNull<T>(clazz)
                 }
                 ?: run {
-                    _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
                     findInOtherScope<T>(clazz, qualifier, parameters)
                 }
                 ?: run {
-                    _koin._logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
                     throwDefinitionNotFound(qualifier, clazz)
                 }
     }
@@ -399,8 +399,8 @@ data class Scope(
     internal fun clear() {
         _closed = true
         _source = null
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.info("closing scope:'$id'")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.info("closing scope:'$id'")
         }
         // call on close from callbacks
         _callbacks.forEach { it.onScopeClose(this) }

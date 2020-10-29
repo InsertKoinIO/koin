@@ -159,7 +159,6 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
-    @Ignore
     fun `additional type conflict`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
@@ -175,7 +174,6 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
-    @Ignore
     fun `conflicting with additional types`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)

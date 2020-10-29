@@ -40,7 +40,7 @@ import java.util.*
 fun KoinApplication.androidLogger(
         level: Level = Level.INFO
 ): KoinApplication {
-    koin.setLogger(AndroidLogger(level))
+    koin.setupLogger(AndroidLogger(level))
     return this
 }
 
