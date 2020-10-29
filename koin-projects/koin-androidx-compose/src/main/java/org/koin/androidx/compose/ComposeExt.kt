@@ -16,13 +16,14 @@ import org.koin.core.qualifier.Qualifier
  *
  * @author Henrique Horbovyi
  */
-@Composable
-inline fun <reified T> inject(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
-): Lazy<T> = remember {
-    GlobalContext.get().inject(qualifier, parameters)
-}
+
+//@Composable
+//inline fun <reified T> inject(
+//        qualifier: Qualifier? = null,
+//        noinline parameters: ParametersDefinition? = null
+//): Lazy<T> = remember {
+//    GlobalContext.get().inject(qualifier, parameters)
+//}
 
 @Composable
 inline fun <reified T> get(

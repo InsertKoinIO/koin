@@ -12,16 +12,16 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-@Composable
-inline fun <reified T : ViewModel> viewModel(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
-): Lazy<T> {
-    val owner = ViewModelStoreOwnerAmbient.current.viewModelStore
-    return remember {
-        GlobalContext.get().getViewModel(qualifier, owner = { from(owner) }, parameters = parameters)
-    }
-}
+//@Composable
+//inline fun <reified T : ViewModel> viewModel(
+//        qualifier: Qualifier? = null,
+//        noinline parameters: ParametersDefinition? = null
+//): Lazy<T> {
+//    val owner = ViewModelStoreOwnerAmbient.current.viewModelStore
+//    return remember {
+//        GlobalContext.get().getViewModel(qualifier, owner = { from(owner) }, parameters = parameters)
+//    }
+//}
 
 @Composable
 inline fun <reified T : ViewModel> getViewModel(

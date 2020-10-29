@@ -4,10 +4,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [2.2.0]()
 
-* `[FIXED]` GetOrNull hide exceptions - https://github.com/InsertKoinIO/koin/issues/913
-* `[FIXED]` SingleInstanceFactory concurrency fixed - https://github.com/InsertKoinIO/koin/pull/914
-* `[ADDED]` add `createEagerInstances` parameter to `Koin.loadModule` , `Koin.loadModules` 
-* `[FIXED]` @KoinApiExtension is using Warning compiler message, not error
+* `[FIXED]` `[core]` GetOrNull hide exceptions - https://github.com/InsertKoinIO/koin/issues/913
+* `[FIXED]` `[core]` SingleInstanceFactory concurrency fixed - https://github.com/InsertKoinIO/koin/pull/914
+* `[ADDED]` `[core]` add `createEagerInstances` parameter to `Koin.loadModule` , `Koin.loadModules` 
+* `[FIXED]` `[core]` @KoinApiExtension is using Warning compiler message, not error
+* `[FIXED]` `[androidx-compose]` - Remove lazy API, as things are not sure for now about resolving Lazy<T> in a remember block (to be foloowed later). Best is to keep it with `get()` & `getViewModel()` in @Composable
 
 ### [2.2.0-rc-3]()
 
