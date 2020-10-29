@@ -17,7 +17,7 @@ package org.koin.test.check
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.logger.Level
 import org.koin.core.logger.PrintLogger
@@ -64,15 +64,14 @@ private fun Koin.declareParameterCreators(
     parametersDefinition?.invoke(binding)
 }
 
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
-    onScopeRegistry {
-        scopeDefinitions.values.forEach { scopeDefinition ->
-            checkScope(scopeDefinition, allParameters)
-        }
+    scopeRegistry.scopeDefinitions.values.forEach { scopeDefinition ->
+        checkScope(scopeDefinition, allParameters)
     }
 }
 
+@OptIn(KoinInternal::class)
 private fun Koin.checkScope(
         scopeDefinition: ScopeDefinition,
         allParameters: ParametersBinding
@@ -92,7 +91,7 @@ private fun mockSourceValue(qualifier: Qualifier): Any? {
     } else null
 }
 
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 private fun checkDefinition(
         allParameters: ParametersBinding,
         definition: BeanDefinition<*>,

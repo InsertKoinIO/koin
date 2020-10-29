@@ -16,7 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
@@ -31,17 +31,17 @@ import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
+@OptIn(KoinInternal::class)
 data class Scope(
         val id: ScopeID,
-        @KoinApiExtension
+        @KoinInternal
         val _scopeDefinition: ScopeDefinition,
         private val _koin: Koin
 ) {
-    @PublishedApi
-    internal val _linkedScope: ArrayList<Scope> = arrayListOf()
+    private val linkedScope: ArrayList<Scope> = arrayListOf()
 
     @PublishedApi
-    internal val _instanceRegistry = InstanceRegistry(_koin, this)
+    internal val instanceRegistry = InstanceRegistry(_koin, this)
 
     @PublishedApi
     internal var _source: Any? = null
@@ -55,14 +55,14 @@ data class Scope(
     val logger = _koin.logger
 
     internal fun create(links: List<Scope>) {
-        _instanceRegistry.create(_scopeDefinition.definitions)
-        _linkedScope.addAll(links)
+        instanceRegistry.create(_scopeDefinition.definitions)
+        linkedScope.addAll(links)
     }
 
     inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
             "Can't use Scope source for ${T::class.getFullName()} - source is:$_source")
 
-    @KoinApiExtension
+    @KoinInternal
     fun setSource(t: Any?) {
         _source = t
     }
@@ -75,7 +75,7 @@ data class Scope(
      */
     fun linkTo(vararg scopes: Scope) {
         if (!_scopeDefinition.isRoot) {
-            _linkedScope.addAll(scopes)
+            linkedScope.addAll(scopes)
         } else {
             error("Can't add scope link to a root scope")
         }
@@ -86,7 +86,7 @@ data class Scope(
      */
     fun unlink(vararg scopes: Scope) {
         if (!_scopeDefinition.isRoot) {
-            _linkedScope.removeAll(scopes)
+            linkedScope.removeAll(scopes)
         } else {
             error("Can't remove scope link to a root scope")
         }
@@ -231,7 +231,7 @@ data class Scope(
             throw ClosedScopeException("Scope '$id' is closed")
         }
         val indexKey = indexKey(clazz, qualifier)
-        return _instanceRegistry.resolveInstance(indexKey, parameters)
+        return instanceRegistry.resolveInstance(indexKey, parameters)
                 ?: run {
                     _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
                     getFromSource(clazz)
@@ -261,7 +261,7 @@ data class Scope(
             parameters: ParametersDefinition?
     ): T? {
         var instance: T? = null
-        for (scope in _linkedScope) {
+        for (scope in linkedScope) {
             instance = scope.getOrNull<T>(
                     clazz,
                     qualifier,
@@ -283,7 +283,7 @@ data class Scope(
 
     internal fun createEagerInstances() {
         if (_scopeDefinition.isRoot) {
-            _instanceRegistry.createEagerInstances()
+            instanceRegistry.createEagerInstances()
         }
     }
 
@@ -304,7 +304,7 @@ data class Scope(
             override: Boolean = false
     ) = synchronized(this) {
         val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
-        _instanceRegistry.saveDefinition(definition, override = true)
+        instanceRegistry.saveDefinition(definition, override = true)
     }
 
     /**
@@ -338,7 +338,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T : Any> getAll(clazz: KClass<*>): List<T> = _instanceRegistry.getAll(clazz)
+    fun <T : Any> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -363,7 +363,7 @@ data class Scope(
             secondaryType: KClass<*>,
             parameters: ParametersDefinition?
     ): S {
-        return _instanceRegistry.bind(primaryType, secondaryType, parameters)
+        return instanceRegistry.bind(primaryType, secondaryType, parameters)
                 ?: throw NoBeanDefFoundException(
                         "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
     }
@@ -393,7 +393,7 @@ data class Scope(
      */
     fun close() = synchronized(this) {
         clear()
-        _koin._scopeRegistry.deleteScope(this)
+        _koin.scopeRegistry.deleteScope(this)
     }
 
     internal fun clear() {
@@ -406,7 +406,7 @@ data class Scope(
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
 
-        _instanceRegistry.close()
+        instanceRegistry.close()
     }
 
     override fun toString(): String {
@@ -414,11 +414,11 @@ data class Scope(
     }
 
     fun dropInstance(beanDefinition: BeanDefinition<*>) {
-        _instanceRegistry.dropDefinition(beanDefinition)
+        instanceRegistry.dropDefinition(beanDefinition)
     }
 
     fun loadDefinition(beanDefinition: BeanDefinition<*>) {
-        _instanceRegistry.createDefinition(beanDefinition)
+        instanceRegistry.createDefinition(beanDefinition)
     }
 
     fun addParameters(parameters: DefinitionParameters) {

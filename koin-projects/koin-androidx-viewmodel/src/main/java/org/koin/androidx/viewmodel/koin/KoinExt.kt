@@ -6,7 +6,7 @@ import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.Koin
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -29,7 +29,7 @@ inline fun <reified T : ViewModel> Koin.getViewModel(
     return getViewModel(qualifier, state, owner, T::class, parameters)
 }
 
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 fun <T : ViewModel> Koin.getViewModel(
         qualifier: Qualifier? = null,
         state: BundleDefinition? = null,
@@ -37,10 +37,10 @@ fun <T : ViewModel> Koin.getViewModel(
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null
 ): T {
-    return onScopeRegistry { rootScope.getViewModel(qualifier, state, owner, clazz, parameters) }
+    return scopeRegistry.rootScope.getViewModel(qualifier, state, owner, clazz, parameters)
 }
 
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 fun <T : ViewModel> Koin.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-    return onScopeRegistry { rootScope.getViewModel(viewModelParameters) }
+    return scopeRegistry.rootScope.getViewModel(viewModelParameters)
 }

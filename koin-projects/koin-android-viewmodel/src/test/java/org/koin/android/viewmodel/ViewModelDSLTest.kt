@@ -5,6 +5,7 @@ import org.junit.Test
 import org.koin.android.viewmodel.dsl.isViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.KoinApplication
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Kind
@@ -47,8 +48,8 @@ class ViewModelDSLTest {
  * Find definition
  * @param clazz
  */
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 fun KoinApplication.getDefinition(clazz: KClass<*>): BeanDefinition<*>? {
-    val scopeDefinition = this.koin.onScopeRegistry { rootScopeDefinition }
+    val scopeDefinition = this.koin.scopeRegistry.rootScope._scopeDefinition
     return scopeDefinition.definitions.firstOrNull { it.`is`(clazz, null, scopeDefinition.qualifier) }
 }

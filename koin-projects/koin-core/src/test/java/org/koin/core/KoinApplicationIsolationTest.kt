@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -35,6 +36,7 @@ class KoinApplicationIsolationTest {
         assertNotEquals(a1, a2)
     }
 
+    @OptIn(KoinInternal::class)
     @Test
     fun `koin app instance run instance `() {
         val app = koinApplication {
@@ -46,7 +48,7 @@ class KoinApplicationIsolationTest {
         app.createEagerInstances()
 
         app.getBeanDefinition(Simple.ComponentA::class)!!
-        assertTrue(app.koin._scopeRegistry._rootScope!!._instanceRegistry.instances.values
+        assertTrue(app.koin.scopeRegistry.rootScope.instanceRegistry.instances.values
             .first { instanceFactory -> instanceFactory.beanDefinition.primaryType == Simple.ComponentA::class }.isCreated()
         )
     }

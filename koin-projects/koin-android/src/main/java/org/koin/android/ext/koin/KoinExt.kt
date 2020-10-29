@@ -20,7 +20,7 @@ import android.app.Application
 import android.content.Context
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -36,7 +36,7 @@ import java.util.*
  * Setup Android Logger for Koin
  * @param level
  */
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 fun KoinApplication.androidLogger(
         level: Level = Level.INFO
 ): KoinApplication {
@@ -71,7 +71,7 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  * @param androidContext
  * @param koinPropertyFile
  */
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 fun KoinApplication.androidFileProperties(
         koinPropertyFile: String = "koin.properties"
 ): KoinApplication {
@@ -82,7 +82,7 @@ fun KoinApplication.androidFileProperties(
         if (hasFile) {
             try {
                 androidContext.assets.open(koinPropertyFile).use { koinProperties.load(it) }
-                val nb = koin.onPropertyRegistry { saveProperties(koinProperties) }
+                val nb = koin.propertyRegistry.saveProperties(koinProperties)
                 if (koin.logger.isAt(Level.INFO)) {
                     koin.logger.info("[Android-Properties] loaded $nb properties from assets/$koinPropertyFile")
                 }

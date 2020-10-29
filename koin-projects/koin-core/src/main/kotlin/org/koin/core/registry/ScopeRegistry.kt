@@ -16,7 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
@@ -33,6 +33,7 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternal::class)
 class ScopeRegistry(private val _koin: Koin) {
 
     private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()
@@ -40,14 +41,10 @@ class ScopeRegistry(private val _koin: Koin) {
         get() = _scopeDefinitions
 
     private val _scopes = HashMap<ScopeID, Scope>()
-    val scopes: Map<ScopeID, Scope>
-        get() = _scopes
 
     private var _rootScopeDefinition: ScopeDefinition? = null
-    val rootScopeDefinition: ScopeDefinition
-        get() = _rootScopeDefinition ?: error("No root scope definition")
 
-    internal var _rootScope: Scope? = null
+    private var _rootScope: Scope? = null
     val rootScope: Scope
         get() = _rootScope ?: error("No root scope")
 
@@ -104,11 +101,11 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     fun getScopeOrNull(scopeId: ScopeID): Scope? {
-        return scopes[scopeId]
+        return _scopes[scopeId]
     }
 
     fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
-        if (scopes.contains(scopeId)) {
+        if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
 

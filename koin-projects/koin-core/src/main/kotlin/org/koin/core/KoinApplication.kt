@@ -15,7 +15,7 @@
  */
 package org.koin.core
 
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
@@ -28,14 +28,14 @@ import org.koin.core.time.measureDuration
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinApiExtension::class)
+@OptIn(KoinInternal::class)
 class KoinApplication private constructor() {
 
     val koin = Koin()
 
     internal fun init() {
-        koin._scopeRegistry.createRootScopeDefinition()
-        koin._scopeRegistry.createRootScope()
+        koin.scopeRegistry.createRootScopeDefinition()
+        koin.scopeRegistry.createRootScope()
     }
 
     /**
@@ -63,7 +63,7 @@ class KoinApplication private constructor() {
             val duration = measureDuration {
                 loadModules(modules)
             }
-            val count = koin._scopeRegistry.size()
+            val count = koin.scopeRegistry.size()
             koin.logger.info("loaded $count definitions - $duration ms")
         } else {
             loadModules(modules)
@@ -80,7 +80,7 @@ class KoinApplication private constructor() {
      * @param values
      */
     fun properties(values: Map<String, String>): KoinApplication {
-        koin._propertyRegistry.saveProperties(values)
+        koin.propertyRegistry.saveProperties(values)
         return this
     }
 
@@ -89,7 +89,7 @@ class KoinApplication private constructor() {
      * @param fileName
      */
     fun fileProperties(fileName: String = "/koin.properties"): KoinApplication {
-        koin._propertyRegistry.loadPropertiesFromFile(fileName)
+        koin.propertyRegistry.loadPropertiesFromFile(fileName)
         return this
     }
 
@@ -97,7 +97,7 @@ class KoinApplication private constructor() {
      * Load properties from environment
      */
     fun environmentProperties(): KoinApplication {
-        koin._propertyRegistry.loadEnvironmentProperties()
+        koin.propertyRegistry.loadEnvironmentProperties()
         return this
     }
 
@@ -136,11 +136,11 @@ class KoinApplication private constructor() {
     }
 
     fun unloadModules(module: Module) {
-        koin._scopeRegistry.unloadModules(module)
+        koin.scopeRegistry.unloadModules(module)
     }
 
     fun unloadModules(modules: List<Module>) {
-        koin._scopeRegistry.unloadModules(modules)
+        koin.scopeRegistry.unloadModules(modules)
     }
 
 

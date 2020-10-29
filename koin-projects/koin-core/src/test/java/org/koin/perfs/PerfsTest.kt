@@ -2,6 +2,7 @@ package org.koin.perfs
 
 import org.junit.Test
 import org.koin.core.A
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
 import org.koin.core.scope.ScopeDefinition
@@ -32,10 +33,11 @@ class PerfsTest {
         }
     }
 
+    @OptIn(KoinInternal::class)
     private fun dontUseDSL() {
         measureDurationForResult("no dsl ") {
             val app = koinApplication()
-            app.koin._scopeRegistry.declareDefinition(
+            app.koin.scopeRegistry.declareDefinition(
                 Definitions.createSingle(
                     A::class,
                     definition = { A() },

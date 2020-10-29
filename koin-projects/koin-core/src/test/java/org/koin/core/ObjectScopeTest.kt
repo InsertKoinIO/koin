@@ -3,6 +3,7 @@ package org.koin.core
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.Simple
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -280,6 +281,7 @@ class ObjectScopeTest {
         stopKoin()
     }
 
+    @OptIn(KoinInternal::class)
     @Test
     fun `error for root linked scope `() {
         val koin = startKoin {
@@ -295,7 +297,7 @@ class ObjectScopeTest {
 
         val a = koin.get<A>()
         try {
-            koin._scopeRegistry.rootScope.linkTo(a.scope)
+            koin.scopeRegistry.rootScope.linkTo(a.scope)
             fail()
         } catch (e: Exception) {
             e.printStackTrace()
