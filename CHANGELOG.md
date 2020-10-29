@@ -10,6 +10,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 * `[FIXED]` `[core]` @KoinApiExtension is using Warning compiler message, not error
 * `[FIXED]` `[androidx-compose]` - Remove lazy API, as things are not sure for now about resolving Lazy<T> in a remember block (to be foloowed later). Best is to keep it with `get()` & `getViewModel()` in @Composable
 * `[FIXED]` `[core]` Replace back Lazy(None) to standard Lazy delegate
+* `[ADDED]` `[core]` @KoinInternal to help protect internal components, without reusing @KoinApiExtension - dedicated to KoinComponent
 
 ### [2.2.0-rc-3]()
 
