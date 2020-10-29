@@ -33,7 +33,7 @@ inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
+    return lazy {
         getViewModel<T>(qualifier, parameters)
     }
 }
@@ -43,7 +43,7 @@ fun <T : ViewModel> ViewModelStoreOwner.viewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, clazz, parameters) }
+    return lazy { getViewModel(qualifier, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(

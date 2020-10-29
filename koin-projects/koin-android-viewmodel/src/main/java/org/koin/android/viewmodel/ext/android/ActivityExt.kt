@@ -35,7 +35,7 @@ inline fun <reified T : ViewModel> AppCompatActivity.viewModel(
     noinline owner: ViewModelOwnerDefinition = { from(this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
+    return lazy {
         getViewModel<T>(qualifier, owner, parameters)
     }
 }
@@ -46,7 +46,7 @@ fun <T : ViewModel> AppCompatActivity.viewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, owner, clazz, parameters) }
+    return lazy { getViewModel(qualifier, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> AppCompatActivity.getViewModel(

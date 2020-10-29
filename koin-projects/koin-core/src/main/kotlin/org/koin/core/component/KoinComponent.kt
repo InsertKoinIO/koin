@@ -61,7 +61,7 @@ inline fun <reified T : Any> KoinComponent.inject(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-        lazy(LazyThreadSafetyMode.NONE) { getKoin().get<T>(qualifier, parameters) }
+        lazy { getKoin().get<T>(qualifier, parameters) }
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S

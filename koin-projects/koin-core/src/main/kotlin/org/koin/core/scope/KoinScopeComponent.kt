@@ -37,7 +37,7 @@ fun <T : KoinScopeComponent> T.newScope(source: Any? = null): Scope {
 inline fun <reified T : Any> KoinScopeComponent.inject(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null
-) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+) = lazy { get<T>(qualifier, parameters) }
 
 /**
  * get given dependency

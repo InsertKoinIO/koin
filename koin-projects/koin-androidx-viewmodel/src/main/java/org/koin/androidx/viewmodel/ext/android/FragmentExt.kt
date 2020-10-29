@@ -38,7 +38,7 @@ inline fun <reified T : ViewModel> Fragment.viewModel(
     noinline owner: ViewModelOwnerDefinition = { from(this,this) },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
+    return lazy {
         getViewModel<T>(qualifier, state, owner, parameters)
     }
 }
@@ -50,7 +50,7 @@ fun <T : ViewModel> Fragment.viewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
+    return lazy { getViewModel(qualifier, state, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(

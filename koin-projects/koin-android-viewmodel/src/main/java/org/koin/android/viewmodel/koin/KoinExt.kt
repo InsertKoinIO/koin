@@ -15,7 +15,7 @@ inline fun <reified T : ViewModel> Koin.viewModel(
         noinline owner: ViewModelOwnerDefinition,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getViewModel<T>(qualifier, owner, parameters) }
+    return lazy { getViewModel<T>(qualifier, owner, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.getViewModel(

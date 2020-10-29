@@ -39,7 +39,7 @@ inline fun <reified T : ViewModel> Scope.viewModel(
     noinline owner: ViewModelOwnerDefinition,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
+    return lazy {
         getViewModel<T>(qualifier, owner, parameters)
     }
 }

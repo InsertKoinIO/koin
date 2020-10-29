@@ -46,7 +46,7 @@
 //        clazz: Class<T>,
 //        qualifier: Qualifier? = null,
 //        parameters: ParametersDefinition? = null
-//    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
+//    ): Lazy<T> = lazy {
 //        scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
 //    }
 //

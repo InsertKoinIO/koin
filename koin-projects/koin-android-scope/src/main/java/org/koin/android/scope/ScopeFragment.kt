@@ -67,7 +67,7 @@ abstract class ScopeFragment(
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
-    ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+    ) = lazy { get<T>(qualifier, parameters) }
 
     /**
      * get given dependency
