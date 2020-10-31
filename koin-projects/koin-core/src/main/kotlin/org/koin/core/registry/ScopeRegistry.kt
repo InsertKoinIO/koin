@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,27 +61,35 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun loadModule(module: Module) {
-        declareDefinitions(module.definitions)
+        declareScopeDefinitions(module.scopes)
+        declareBeanDefinitions(module.definitions)
         module.isLoaded = true
     }
 
-    private fun declareDefinitions(definitions: HashSet<BeanDefinition<*>>) {
+    private fun declareScopeDefinitions(scopes: List<Qualifier>) {
+        scopes.forEach { scopeQualifier ->
+            createScopeDefinition(scopeQualifier)
+        }
+    }
+
+    private fun declareBeanDefinitions(definitions: HashSet<BeanDefinition<*>>) {
         definitions.forEach { bean ->
             declareDefinition(bean)
         }
     }
 
     fun declareDefinition(bean: BeanDefinition<*>) {
-        val scopeDef = _scopeDefinitions[bean.scopeQualifier.value] ?: createScopeDefinition(bean)
+        val scopeDef = _scopeDefinitions[bean.scopeQualifier.value]
+                ?: error("Undeclared scope definition for definition: $bean")
         scopeDef.save(bean)
         _scopes.values.filter { it._scopeDefinition == scopeDef }.forEach { it.loadDefinition(bean) }
     }
 
-    private fun createScopeDefinition(
-            bean: BeanDefinition<*>): ScopeDefinition {
-        val def = ScopeDefinition(bean.scopeQualifier)
-        _scopeDefinitions[bean.scopeQualifier.value] = def
-        return def
+    private fun createScopeDefinition(qualifier: Qualifier) {
+        val def = ScopeDefinition(qualifier)
+        if (_scopeDefinitions[qualifier.value] == null) {
+            _scopeDefinitions[qualifier.value] = def
+        }
     }
 
     internal fun createRootScopeDefinition() {

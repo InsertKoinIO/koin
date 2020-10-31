@@ -1,6 +1,10 @@
 package org.koin.core
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 import org.koin.Simple
 import org.koin.core.error.ClosedScopeException
@@ -83,13 +87,59 @@ class ScopeTest {
 
         val scope = koin.createScope(scopeId, scopeKey)
         scope.declare(baseUrl, baseUrlKey)
-        assertEquals(baseUrl,scope.get<String>(baseUrlKey))
+        assertEquals(baseUrl, scope.get<String>(baseUrlKey))
 
         scope.close()
 
         val scope2 = koin.createScope(scopeId, scopeKey)
         scope2.declare(baseUrl2, baseUrlKey)
 
-        assertEquals(baseUrl2,scope2.get<String>(baseUrlKey))
+        assertEquals(baseUrl2, scope2.get<String>(baseUrlKey))
+    }
+
+    @Test
+    fun `can create empty scope`() {
+        val baseUrl = "base_url"
+        val baseUrlKey = named("BASE_URL_KEY")
+
+        val scopeId = "user_scope"
+        val scopeKey = named("KEY")
+
+        val koin = koinApplication {
+            modules(
+                    module {
+                        scope(scopeKey) {
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope(scopeId, scopeKey)
+        scope.declare(baseUrl, baseUrlKey)
+        assertEquals(baseUrl, scope.get<String>(baseUrlKey))
+        scope.close()
+    }
+
+    @Test
+    fun `redeclare scope`() {
+        val scopeId = "user_scope"
+        val scopeKey = named("KEY")
+
+        val koin = koinApplication {
+            modules(
+                    module {
+                        scope(scopeKey) {
+                            scoped { Simple.ComponentA() }
+                        }
+                        scope(scopeKey) {
+                            scoped { Simple.ComponentB(get()) }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope(scopeId, scopeKey)
+        scope.get<Simple.ComponentB>()
+        scope.close()
     }
 }

@@ -12,6 +12,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 * `[FIXED]` `[core]` Replace back Lazy(None) to standard Lazy delegate - https://github.com/InsertKoinIO/koin/issues/797
 * `[ADDED]` `[core]` @KoinInternal to help protect internal components, without reusing @KoinApiExtension - dedicated to KoinComponent
 * `[FIXED]` `[core]` Scope to drop extra declared definitions - https://github.com/InsertKoinIO/koin/issues/758 
+* `[FIXED]` `[core]` Allow empty Scope declaration. Allow redeclaration of same scope, to complete it. 
 
 ### [2.2.0-rc-3]()
 
