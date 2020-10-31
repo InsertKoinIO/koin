@@ -22,7 +22,6 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-
 //@Composable
 //inline fun <reified T> inject(
 //        qualifier: Qualifier? = null,
@@ -40,6 +39,7 @@ import org.koin.core.qualifier.Qualifier
  *
  * @author Arnaud Giuliani
  * @author Henrique Horbovyi
+ * @author Arnaud Giuliani
  */
 @Composable
 inline fun <reified T> get(

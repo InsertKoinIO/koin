@@ -21,15 +21,14 @@ import com.example.jetnews.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import org.koin.core.logger.Level
 
 class JetnewsApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            androidLogger(Level.DEBUG)
             androidContext(this@JetnewsApplication)
+            androidLogger()
             modules(appModule)
         }
     }

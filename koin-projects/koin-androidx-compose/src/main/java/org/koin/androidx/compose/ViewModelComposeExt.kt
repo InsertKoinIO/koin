@@ -21,8 +21,6 @@ import androidx.compose.ui.platform.ViewModelStoreOwnerAmbient
 import androidx.lifecycle.ViewModel
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.koin.getViewModel
-import org.koin.androidx.viewmodel.koin.viewModel
-import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
