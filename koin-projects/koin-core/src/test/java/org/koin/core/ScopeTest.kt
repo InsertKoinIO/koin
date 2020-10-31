@@ -61,4 +61,35 @@ class ScopeTest {
         scope.get<Simple.ComponentA>()
         assertEquals(factoryCallCounter, 1)
     }
+
+    @Test
+    fun `recreate a scope`() {
+        val baseUrl = "base_url"
+        val baseUrl2 = "base_url"
+        val baseUrlKey = named("BASE_URL_KEY")
+
+        val scopeId = "user_scope"
+        val scopeKey = named("KEY")
+
+        val koin = koinApplication {
+            modules(
+                    module {
+                        scope(scopeKey) {
+                            scoped { Simple.ComponentA() }
+                        }
+                    }
+            )
+        }.koin
+
+        val scope = koin.createScope(scopeId, scopeKey)
+        scope.declare(baseUrl, baseUrlKey)
+        assertEquals(baseUrl,scope.get<String>(baseUrlKey))
+
+        scope.close()
+
+        val scope2 = koin.createScope(scopeId, scopeKey)
+        scope2.declare(baseUrl2, baseUrlKey)
+
+        assertEquals(baseUrl2,scope2.get<String>(baseUrlKey))
+    }
 }

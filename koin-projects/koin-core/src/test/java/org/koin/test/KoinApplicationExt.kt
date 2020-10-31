@@ -27,7 +27,3 @@ internal fun Scope.getBeanDefinition(clazz: KClass<*>): BeanDefinition<*>? {
 internal fun KoinApplication.getInstanceFactory(clazz: KClass<*>): InstanceFactory<*>? {
     return this.koin.scopeRegistry.rootScope.instanceRegistry.instances.values.firstOrNull { it.beanDefinition.primaryType == clazz }
 }
-
-internal fun Scope.getInstanceFactory(clazz: KClass<*>): InstanceFactory<*>? {
-    return instanceRegistry.instances.values.firstOrNull { it.beanDefinition.primaryType == clazz }
-}

@@ -36,7 +36,7 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
 
     internal fun size() = definitions.size
 
-    inline fun <reified T : Any> saveNewDefinition(
+    inline fun <reified T : Any> declareNewDefinition(
             instance: T,
             defQualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
@@ -57,7 +57,7 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
                 clazz,
                 defQualifier,
                 { instance },
-                Options(isCreatedAtStart = false, override = override),
+                Options(isCreatedAtStart = false, override = override, isExtraDefinition = true),
                 secondaryTypes ?: emptyList(),
                 qualifier,
         )
@@ -65,8 +65,13 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
         return beanDefinition
     }
 
-    fun unloadDefinition(beanDefinition: BeanDefinition<*>) {
+    internal fun unloadDefinition(beanDefinition: BeanDefinition<*>) {
         definitions.remove(beanDefinition)
+    }
+
+    internal fun removeExtras() {
+        val extras = definitions.filter { it.options.isExtraDefinition }
+        definitions.removeAll(extras)
     }
 
     companion object {

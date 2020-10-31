@@ -132,6 +132,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     fun deleteScope(scope: Scope) {
+        scope._scopeDefinition.removeExtras()
         _scopes.remove(scope.id)
     }
 
