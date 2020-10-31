@@ -44,7 +44,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
-koin_version = '2.2.0-rc-3'
+koin_version = '2.2.0-rc-4'
 ```
 
 ## Gradle 
