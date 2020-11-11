@@ -70,8 +70,9 @@ class Koin {
     @JvmOverloads
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
-    ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, parameters)
+    ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
 
     /**
      * Lazy inject a Koin instance if available
@@ -84,8 +85,9 @@ class Koin {
     @JvmOverloads
     inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
-    ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, parameters)
+    ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
 
     /**
      * Get a Koin instance

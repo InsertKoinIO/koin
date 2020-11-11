@@ -54,14 +54,16 @@ inline fun <reified T : Any> KoinComponent.get(
 /**
  * Lazy inject instance from Koin
  * @param qualifier
+ * @param mode - LazyThreadSafetyMode
  * @param parameters
  */
 @OptIn(KoinApiExtension::class)
 inline fun <reified T : Any> KoinComponent.inject(
         qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-        lazy { getKoin().get<T>(qualifier, parameters) }
+        lazy(mode) { getKoin().get<T>(qualifier, parameters) }
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S

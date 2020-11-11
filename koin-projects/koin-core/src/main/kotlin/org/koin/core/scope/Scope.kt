@@ -95,7 +95,7 @@ data class Scope(
     /**
      * Lazy inject a Koin instance
      * @param qualifier
-     * @param scope
+     * @param mode - LazyThreadSafetyMode
      * @param parameters
      *
      * @return Lazy instance of type T
@@ -103,14 +103,15 @@ data class Scope(
     @JvmOverloads
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy { get<T>(qualifier, parameters) }
+            lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
      * @param qualifier
-     * @param scope
+     * @param mode - LazyThreadSafetyMode
      * @param parameters
      *
      * @return Lazy instance of type T or null
@@ -118,9 +119,10 @@ data class Scope(
     @JvmOverloads
     inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy { getOrNull<T>(qualifier, parameters) }
+            lazy(mode) { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance

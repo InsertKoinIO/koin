@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.junit.Assert.*
-import org.koin.android.ext.android.getKoin
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.koin.android.scope.ScopeFragment
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -27,9 +28,9 @@ class MVVMFragment : ScopeFragment() {
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.mvvm_fragment, container, false)
     }

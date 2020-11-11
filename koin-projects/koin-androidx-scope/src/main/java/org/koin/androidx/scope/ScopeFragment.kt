@@ -56,13 +56,14 @@ abstract class ScopeFragment(
     /**
      * inject lazily
      * @param qualifier - bean qualifier / optional
-     * @param scope
+     * @param mode
      * @param parameters - injection parameters
      */
     inline fun <reified T : Any> KoinScopeComponent.inject(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
-    ) = lazy { get<T>(qualifier, parameters) }
+    ) = lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
      * get given dependency

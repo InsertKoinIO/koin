@@ -44,10 +44,11 @@ inline fun <reified T : ViewModel> Scope.viewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
     noinline owner: ViewModelOwnerDefinition,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy {
-        getViewModel<T>(qualifier, state, owner, parameters)
+    return lazy(mode) {
+        getViewModel(qualifier, state, owner, parameters)
     }
 }
 

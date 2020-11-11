@@ -42,8 +42,8 @@ inline fun <reified T : ViewModel> ScopeFragment.sharedViewModel(
         noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy {
-        getViewModel<T>(qualifier, state, owner, parameters)
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(qualifier, state, owner, parameters)
     }
 }
 
@@ -54,7 +54,7 @@ fun <T : ViewModel> ScopeFragment.sharedViewModel(
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(qualifier, state, owner, clazz, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, state, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ScopeFragment.getSharedViewModel(

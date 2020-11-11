@@ -30,10 +30,11 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> Koin.viewModel(
         qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline owner: ViewModelOwnerDefinition,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel<T>(qualifier, owner, parameters) }
+    return lazy(mode) { getViewModel<T>(qualifier, owner, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.getViewModel(

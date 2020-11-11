@@ -46,18 +46,18 @@ fun <T : KoinScopeComponent> T.newScope(source: Any? = null): Scope {
 /**
  * inject lazily
  * @param qualifier - bean qualifier / optional
- * @param scope
+ * @param mode - Lazy initialization mode - see LazyThreadSafetyMode
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> KoinScopeComponent.inject(
         qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null
-) = lazy { get<T>(qualifier, parameters) }
+) = lazy(mode) { get<T>(qualifier, parameters) }
 
 /**
  * get given dependency
- * @param name - bean name
- * @param scope
+ * @param qualifier - bean name
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> KoinScopeComponent.get(

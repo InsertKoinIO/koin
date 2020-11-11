@@ -45,7 +45,7 @@ object ViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, parameters) }
+    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, clazz, qualifier, parameters) }
 
 
     /**

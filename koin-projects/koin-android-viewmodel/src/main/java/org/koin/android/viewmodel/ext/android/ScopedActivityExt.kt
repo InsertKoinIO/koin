@@ -20,8 +20,8 @@ inline fun <reified T : ViewModel> ScopeActivity.viewModel(
         noinline owner: ViewModelOwnerDefinition = { ViewModelOwner.from(this) },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy {
-        getViewModel<T>(qualifier, owner, parameters)
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(qualifier, owner, parameters)
     }
 }
 
@@ -31,7 +31,7 @@ fun <T : ViewModel> ScopeActivity.viewModel(
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(qualifier, owner, clazz, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ScopeActivity.getViewModel(

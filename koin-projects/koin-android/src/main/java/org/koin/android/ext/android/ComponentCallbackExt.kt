@@ -35,13 +35,14 @@ fun ComponentCallbacks.getKoin() = when (this) {
 /**
  * inject lazily given dependency for Android koincomponent
  * @param qualifier - bean qualifier / optional
- * @param scope
+ * @param mode - LazyThreadSafetyMode
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
     qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline parameters: ParametersDefinition? = null
-) = lazy { get<T>(qualifier, parameters) }
+) = lazy(mode) { get<T>(qualifier, parameters) }
 
 /**
  * get given dependency for Android koincomponent

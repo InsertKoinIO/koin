@@ -34,8 +34,8 @@ inline fun <reified T : ViewModel> ScopeFragment.viewModel(
         noinline owner: ViewModelOwnerDefinition = { from(this) },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy {
-        getViewModel<T>(qualifier, owner, parameters)
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(qualifier, owner, parameters)
     }
 }
 
@@ -45,7 +45,7 @@ fun <T : ViewModel> ScopeFragment.viewModel(
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(qualifier, owner, clazz, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getViewModel(qualifier, owner, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ScopeFragment.getViewModel(

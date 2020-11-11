@@ -33,9 +33,10 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy {
+    return lazy(mode) {
         getViewModel<T>(qualifier, state, parameters)
     }
 }
@@ -44,9 +45,10 @@ fun <T : ViewModel> ViewModelStoreOwner.viewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
     clazz: KClass<T>,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy { getViewModel(qualifier, state, clazz, parameters) }
+    return lazy(mode) { getViewModel(qualifier, state, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(

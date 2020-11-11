@@ -32,7 +32,7 @@ object KoinJavaComponent {
      * Retrieve given dependency lazily
      * @param clazz - dependency class
      * @param qualifier - bean canonicalName / optional
-     * @param scope - scope
+     * @param mode - LazyThreadSafetyMode
      * @param parameters - dependency parameters / optional
      */
     @JvmOverloads
@@ -40,9 +40,10 @@ object KoinJavaComponent {
     fun <T : Any> inject(
         clazz: Class<T>,
         qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         parameters: ParametersDefinition? = null
     ): Lazy<T> {
-        return lazy { get(clazz, qualifier, parameters) }
+        return lazy(mode) { get(clazz, qualifier, parameters) }
     }
 
     /**

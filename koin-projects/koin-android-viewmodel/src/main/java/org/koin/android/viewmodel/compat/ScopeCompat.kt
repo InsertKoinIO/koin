@@ -47,7 +47,7 @@ object ScopeCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = lazy {
+    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
         scope.getViewModel(qualifier, { from(owner) }, clazz.kotlin, parameters)
     }
 

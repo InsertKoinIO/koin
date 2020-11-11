@@ -23,7 +23,7 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent
     override val scope: Scope by lazy { activityScope() }
 
     // Inject presenter as Factory
-    val factoryPresenter: FactoryPresenter by inject { parametersOf(ID) }
+    val factoryPresenter: FactoryPresenter by inject(mode = LazyThreadSafetyMode.NONE) { parametersOf(ID) }
 
     // Inject presenter from MVPActivity's scope
     val scopedPresenter: ScopedPresenter by inject { parametersOf(ID) }

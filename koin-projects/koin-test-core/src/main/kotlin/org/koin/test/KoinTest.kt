@@ -46,5 +46,6 @@ inline fun <reified T> KoinTest.get(
  */
 inline fun <reified T> KoinTest.inject(
     qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline parameters: ParametersDefinition? = null
-): Lazy<T> = lazy { get<T>(qualifier, parameters) }
+): Lazy<T> = lazy(mode) { get<T>(qualifier, parameters) }

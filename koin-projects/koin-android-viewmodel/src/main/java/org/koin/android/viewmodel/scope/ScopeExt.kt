@@ -37,10 +37,11 @@ typealias ViewModelStoreDefinition = () -> ViewModelStore
 inline fun <reified T : ViewModel> Scope.viewModel(
     qualifier: Qualifier? = null,
     noinline owner: ViewModelOwnerDefinition,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy {
-        getViewModel<T>(qualifier, owner, parameters)
+    return lazy(mode) {
+        getViewModel(qualifier, owner, parameters)
     }
 }
 
