@@ -6,10 +6,7 @@ Here are the current versions of Koin:
 
 ```groovy
 // Current stable version
-koin_version= "2.1.6"
-
-// Current unstable version
-koin_version= "2.2.0-rc-4"
+koin_version= "2.2.0"
 
 ```
 
