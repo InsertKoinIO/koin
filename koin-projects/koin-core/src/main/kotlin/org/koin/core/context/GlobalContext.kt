@@ -51,7 +51,7 @@ object GlobalContext : KoinContext {
     /**
      * Start a Koin Application as StandAlone
      */
-    fun startKoin(koinContext: KoinContext = GlobalContext,
+    internal fun startKoin(koinContext: KoinContext = GlobalContext,
         koinApplication: KoinApplication): KoinApplication = synchronized(this) {
         koinContext.register(koinApplication)
         koinApplication.createEagerInstances()
@@ -61,7 +61,7 @@ object GlobalContext : KoinContext {
     /**
      * Start a Koin Application as StandAlone
      */
-    fun startKoin(koinContext: KoinContext = GlobalContext,
+    internal fun startKoin(koinContext: KoinContext = GlobalContext,
         appDeclaration: KoinAppDeclaration): KoinApplication = synchronized(this) {
         val koinApplication = KoinApplication.init()
         koinContext.register(koinApplication)
@@ -71,35 +71,30 @@ object GlobalContext : KoinContext {
     }
 
     /**
-     * Stop current StandAlone Koin application
-     */
-    fun stopKoin() = stop()
-
-    /**
      * load Koin module in global Koin context
      */
-    fun loadKoinModules(module: Module) = synchronized(this) {
+    internal fun loadKoinModules(module: Module) = synchronized(this) {
         get().loadModules(listOf(module))
     }
 
     /**
      * load Koin modules in global Koin context
      */
-    fun loadKoinModules(modules: List<Module>) = synchronized(this) {
+    internal fun loadKoinModules(modules: List<Module>) = synchronized(this) {
         get().loadModules(modules)
     }
 
     /**
      * unload Koin modules from global Koin context
      */
-    fun unloadKoinModules(module: Module) = synchronized(this) {
+    internal fun unloadKoinModules(module: Module) = synchronized(this) {
         get().unloadModules(listOf(module))
     }
 
     /**
      * unload Koin modules from global Koin context
      */
-    fun unloadKoinModules(modules: List<Module>) = synchronized(this) {
+    internal fun unloadKoinModules(modules: List<Module>) = synchronized(this) {
         get().unloadModules(modules)
     }
 }

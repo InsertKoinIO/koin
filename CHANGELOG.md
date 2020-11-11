@@ -16,6 +16,8 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 * `[FIXED]` `[core, android, androidx, test]` Inject is ny default is using `LazyThreadSafetyMode.SYNCHRONIZED` by default
 * `[FIXED]` `[android, androidx]` by viewModel is using `LazyThreadSafetyMode.NONE` by default
 * `[ADDED]` `[core, android, androidx, test]` Inject allow to specify `mode`, to specify `LazyThreadSafetyMode`
+* `[FIXED]` `[core]` hide to internal GlobalContext functions, to avoid redundancy with context.* functions: org.koin.core.context.GlobalContext.startKoin -> org.koin.core.context.startKoin
+
 
 ### [2.2.0-rc-3]()
 
