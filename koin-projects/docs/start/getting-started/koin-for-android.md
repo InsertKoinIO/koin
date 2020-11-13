@@ -94,7 +94,7 @@ Easy to declare your Android component's scope:
 ```kotlin
 module {
     // declare a scope for DetailActivity
-    scope(named<DetailActivity>)> {
+    scope<DetailActivity> {
         scoped<DetailContract.Presenter> { DetailPresenter(get(), get()) }
     }
 }
