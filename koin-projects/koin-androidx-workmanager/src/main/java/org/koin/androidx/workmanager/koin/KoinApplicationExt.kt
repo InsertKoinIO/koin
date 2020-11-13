@@ -23,7 +23,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.KoinExperimentalAPI
 
 /**
- * Setup the KoinFragmentFactory instance
+ * Setup the KoinWorkerFactory instance
  *
  * @author Arnaud Giuliani
  */
