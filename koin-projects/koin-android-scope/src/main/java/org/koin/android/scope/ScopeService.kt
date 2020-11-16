@@ -34,7 +34,7 @@ abstract class ScopeService(
         private val initialiseScope: Boolean = true,
 ) : Service(), KoinScopeComponent {
 
-    override val scope: Scope by lazy { newScope(this) }
+    override val scope: Scope by lazy { newScope() }
 
     override fun onCreate() {
         super.onCreate()

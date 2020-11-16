@@ -36,7 +36,7 @@ abstract class ScopeFragment(
         private val initialiseScope: Boolean = true,
 ) : Fragment(), KoinScopeComponent {
 
-    override val scope: Scope by lazy { newScope(this) }
+    override val scope: Scope by lazy { newScope() }
 
     val scopeActivity: ScopeActivity?
         get() = activity as? ScopeActivity

@@ -28,7 +28,7 @@ import org.koin.ext.getFullName
 fun <T : ComponentActivity> T.activityScope() : Scope {
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null){
-        scopeViewModel.scope = newScope(this)
+        scopeViewModel.scope = newScope()
     }
     return scopeViewModel.scope!!
 }
