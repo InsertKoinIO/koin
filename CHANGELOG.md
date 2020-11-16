@@ -5,6 +5,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 ## [2.2.1]()
 
 * `[FIXED]` `[android]` activityScope & fragmentScope are not injecting source to avoid leak through ViewModel support handler - https://github.com/InsertKoinIO/koin/issues/953
+* `[UPDATE]` `[koin-androidx-compose]` version 1.0.0-alpha07
 
 
 ## [2.2.0]()

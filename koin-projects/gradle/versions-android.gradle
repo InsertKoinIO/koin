@@ -13,7 +13,7 @@ ext {
     androidx_arch_version = '2.2.0'
     
     androidx_fragment_version = "1.2.5"
-    androidx_compose_version = "1.0.0-alpha05"
+    androidx_compose_version = "1.0.0-alpha07"
 
     androidx_savedstate = '2.2.0'
     androidx_workmanager = '2.3.0'
