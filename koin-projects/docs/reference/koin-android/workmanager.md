@@ -2,9 +2,9 @@ The `koin-androidx-workmanager` project is dedicated to bring Android WorkManage
 
 ## WorkManager DSL
 
-## Setup Fragment Factory
+## Setup WorkManager
 
-At start, in your KoinApplication declaration, use the `fragmentFactory()` keyword to setup a default `KoinFragmentFactory` instance:
+At start, in your KoinApplication declaration, use the `workManagerFactory()` keyword to a setup custom WorkManager instance:
 
 ```kotlin
 class MainApplication : Application(), KoinComponent {
