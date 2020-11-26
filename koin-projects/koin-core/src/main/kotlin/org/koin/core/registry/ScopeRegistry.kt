@@ -42,7 +42,8 @@ class ScopeRegistry(private val _koin: Koin) {
 
     private val _scopes = HashMap<ScopeID, Scope>()
 
-    private var _rootScope: Scope? = null
+    private val _rootScope: Scope?
+        get() = _scopes[ScopeDefinition.ROOT_SCOPE_ID]
     val rootScope: Scope
         get() = _rootScope ?: error("No root scope")
 
@@ -91,16 +92,12 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     internal fun createRootScopeDefinition() {
-            val scopeDefinition = ScopeDefinition.rootDefinition()
-            _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
-                    scopeDefinition
+        _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
+                ScopeDefinition.rootDefinition()
     }
 
     internal fun createRootScope() {
-        if (_rootScope == null) {
-            _rootScope =
-                    createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER, null)
-        } else error("Try to recreate Root scope")
+        createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER, null)
     }
 
     fun getScopeOrNull(scopeId: ScopeID): Scope? {
@@ -143,7 +140,6 @@ class ScopeRegistry(private val _koin: Koin) {
         clearScopes()
         _scopes.clear()
         _scopeDefinitions.clear()
-        _rootScope = null
     }
 
     private fun clearScopes() {
