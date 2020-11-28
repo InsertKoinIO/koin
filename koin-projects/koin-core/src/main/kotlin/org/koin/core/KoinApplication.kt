@@ -33,11 +33,6 @@ class KoinApplication private constructor() {
 
     val koin = Koin()
 
-    internal fun init() {
-        koin.scopeRegistry.createRootScopeDefinition()
-        koin.scopeRegistry.createRootScope()
-    }
-
     /**
      * Load definitions from modules
      * @param modules
@@ -151,9 +146,7 @@ class KoinApplication private constructor() {
          */
         @JvmStatic
         fun init(): KoinApplication {
-            val app = KoinApplication()
-            app.init()
-            return app
+            return KoinApplication()
         }
     }
 }

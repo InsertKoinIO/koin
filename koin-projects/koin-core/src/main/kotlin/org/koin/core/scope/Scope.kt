@@ -52,7 +52,7 @@ data class Scope(
     private var _closed: Boolean = false
     private var _parameters: DefinitionParameters? = null
 
-    val logger = _koin.logger
+    val logger by lazy { _koin.logger }
 
     internal fun create(links: List<Scope>) {
         instanceRegistry.create(_scopeDefinition.definitions)

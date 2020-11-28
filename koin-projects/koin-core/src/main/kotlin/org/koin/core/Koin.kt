@@ -44,7 +44,7 @@ import kotlin.reflect.KClass
 @OptIn(KoinInternal::class)
 class Koin {
     @KoinInternal
-    val scopeRegistry = ScopeRegistry(this)
+    val scopeRegistry = ScopeRegistry.init(this)
 
     @KoinInternal
     val propertyRegistry = PropertyRegistry(this)
