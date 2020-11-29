@@ -34,7 +34,7 @@ import org.koin.core.scope.ScopeID
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternal::class)
-class ScopeRegistry private constructor(private val _koin: Koin) {
+class ScopeRegistry(private val _koin: Koin) {
 
     private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()
     val scopeDefinitions: Map<QualifierValue, ScopeDefinition>
@@ -49,6 +49,11 @@ class ScopeRegistry private constructor(private val _koin: Koin) {
         get() = _rootScope ?: error("No root scope")
 
     fun size() = _scopeDefinitions.values.map { it.size() }.sum()
+
+    init {
+        createRootScopeDefinition()
+        createRootScope()
+    }
 
     internal fun loadModules(modules: Iterable<Module>) {
         modules.forEach { module ->
@@ -172,20 +177,5 @@ class ScopeRegistry private constructor(private val _koin: Koin) {
                     .forEach { it.dropInstance(bean) }
         }
         module.isLoaded = false
-    }
-
-    companion object {
-        /**
-         * Create a new instance of ScopeRegistry
-         */
-        @JvmStatic
-        internal fun init(koin: Koin): ScopeRegistry {
-            val scopeRegistry = ScopeRegistry(koin).also {
-                it.createRootScopeDefinition()
-                it.createRootScope()
-            }
-            
-            return scopeRegistry
-        }
     }
 }
