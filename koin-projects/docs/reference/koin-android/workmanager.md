@@ -42,7 +42,7 @@ Android initializing its default WorkManagerFactory, as shown in https://develop
 ```kotlin
 val appModule = module {
     single { MyService() }
-    worker { MyListenableWorker(get()) }
+    worker { (params: WorkerParameters) -> MyListenableWorker(get(), params) }
 }
 ```
 

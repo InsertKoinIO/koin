@@ -87,7 +87,7 @@ val scopeModule = module {
 
 val workerScopedModule = module {
     single { SimpleWorkerService() }
-    worker { SimpleWorker(get(), get(), get()) }
+    worker { (params: WorkerParameters) -> SimpleWorker(get(), get(), params) }
 }
 
 val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule
