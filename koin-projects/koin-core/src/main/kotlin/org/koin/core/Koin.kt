@@ -295,7 +295,7 @@ class Koin {
      * @param key
      * @param defaultValue
      */
-    fun getProperty(key: String, defaultValue: String): String {
+    fun <T : Any> getProperty(key: String, defaultValue: T): T {
         return propertyRegistry.getProperty(key) ?: defaultValue
     }
 
@@ -303,7 +303,7 @@ class Koin {
      * Retrieve a property
      * @param key
      */
-    fun getProperty(key: String): String? {
+    fun <T : Any> getProperty(key: String): T? {
         return propertyRegistry.getProperty(key)
     }
 
@@ -312,7 +312,7 @@ class Koin {
      * @param key
      * @param value
      */
-    fun setProperty(key: String, value: String) {
+    fun setProperty(key: String, value: Any) {
         propertyRegistry.saveProperty(key, value)
     }
 

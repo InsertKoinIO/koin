@@ -2,6 +2,13 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+
+## [2.2.2]()
+
+* `[ADDED]` `[android]` FragmentScope class is now linked to its parent ActivityScope class
+* `[FIXED]` `[core]` fixed back to handle any type of property (not only String). File properties are saved as Strings. 
+
+
 ## [2.2.1]()
 
 * `[FIXED]` `[android]` activityScope & fragmentScope are not injecting source to avoid leak through ViewModel support handler - https://github.com/InsertKoinIO/koin/issues/953

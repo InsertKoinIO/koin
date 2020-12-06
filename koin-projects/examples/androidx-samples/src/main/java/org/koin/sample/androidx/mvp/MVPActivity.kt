@@ -42,11 +42,10 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent
         mvp_button.setOnClickListener {
             navigateTo<MVVMActivity>(isRoot = true)
         }
+
+        val my_int = 42
+        getKoin().setProperty("my_int", my_int)
+        assertEquals(my_int, getKoin().getProperty<Int>("my_int"))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // don't forget to close current scope if not activityScope() or fragmentScope()
-        // closeScope()
-    }
 }

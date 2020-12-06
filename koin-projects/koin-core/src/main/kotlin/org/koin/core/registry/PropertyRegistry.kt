@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(private val _koin: Koin) {
 
-    private val _values: MutableMap<String, String> = ConcurrentHashMap()
+    private val _values: MutableMap<String, Any> = ConcurrentHashMap()
 
     /**
      * saveProperty all properties to registry
@@ -62,7 +62,7 @@ class PropertyRegistry(private val _koin: Koin) {
     /**
      * save a property (key,value)
      */
-    internal fun saveProperty(key: String, value: String) {
+    internal fun <T : Any> saveProperty(key: String, value: T) {
         _values[key] = value
     }
 
@@ -77,8 +77,8 @@ class PropertyRegistry(private val _koin: Koin) {
      * Get a property
      * @param key
      */
-    fun getProperty(key: String): String? {
-        return _values[key]
+    fun <T> getProperty(key: String): T? {
+        return _values[key] as? T
     }
 
     /**

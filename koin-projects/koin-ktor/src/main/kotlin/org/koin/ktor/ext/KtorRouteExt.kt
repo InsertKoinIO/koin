@@ -53,8 +53,8 @@ inline fun <reified T : Any> Route.get(
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
-fun Route.getProperty(key: String) =
-    getKoin().getProperty(key)
+fun <T: Any> Route.getProperty(key: String) =
+    getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent

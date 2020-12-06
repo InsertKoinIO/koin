@@ -61,8 +61,8 @@ inline fun <reified T : Any> Application.get(
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
-fun Application.getProperty(key: String) =
-    getKoin().getProperty(key)
+fun <T: Any> Application.getProperty(key: String) =
+    getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
