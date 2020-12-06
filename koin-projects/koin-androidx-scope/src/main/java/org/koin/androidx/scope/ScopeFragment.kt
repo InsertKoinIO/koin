@@ -37,7 +37,11 @@ abstract class ScopeFragment(
         private val initialiseScope: Boolean = true
 ) : Fragment(contentLayoutId), KoinScopeComponent {
 
-    override val scope: Scope by lazy { fragmentScope() }
+    override val scope: Scope by lazy {
+        val scope = fragmentScope()
+        scopeActivity?.let { scope.linkTo(it.scope) }
+        scope
+    }
 
     val scopeActivity: ScopeActivity?
         get() = activity as? ScopeActivity
@@ -51,6 +55,11 @@ abstract class ScopeFragment(
         if (initialiseScope) {
             getKoin().logger.debug("Open Fragment Scope: $scope")
         }
+    }
+
+    override fun onDestroy() {
+        scope.close()
+        super.onDestroy()
     }
 
     /**

@@ -45,6 +45,11 @@ abstract class ScopeActivity(
         }
     }
 
+    override fun onDestroy() {
+        scope.close()
+        super.onDestroy()
+    }
+
     /**
      * inject lazily
      * @param qualifier - bean qualifier / optional

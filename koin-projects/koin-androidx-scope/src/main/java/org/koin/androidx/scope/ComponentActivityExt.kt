@@ -25,7 +25,12 @@ import org.koin.ext.getFullName
 /**
  * Provide Koin Scope tied to ComponentActivity
  */
+
 fun <T : ComponentActivity> T.activityScope() : Scope {
+    return newScope(this)
+}
+
+fun <T : ComponentActivity> T.activityRetainedScope() : Scope {
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null){
         scopeViewModel.scope = newScope()

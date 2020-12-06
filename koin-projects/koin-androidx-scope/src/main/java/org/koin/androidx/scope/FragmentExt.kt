@@ -16,7 +16,6 @@
 package org.koin.androidx.scope
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import org.koin.android.ext.android.getKoin
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
@@ -26,11 +25,7 @@ import org.koin.ext.getFullName
  * Provide scope tied to Fragment
  */
 fun <T : Fragment> T.fragmentScope(): Scope {
-    val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
-    if (scopeViewModel.scope == null) {
-        scopeViewModel.scope = newScope()
-    }
-    return scopeViewModel.scope!!
+    return newScope(this)
 }
 
 fun <T : Fragment> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)

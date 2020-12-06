@@ -35,7 +35,7 @@ abstract class ScopeActivity(
         private val initialiseScope: Boolean = true,
 ) : AppCompatActivity(), KoinScopeComponent {
 
-    override val scope: Scope by lazy { newScope() }
+    override val scope: Scope by lazy { newScope(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +46,9 @@ abstract class ScopeActivity(
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
         getKoin().logger.debug("Close Activity scope: $scope")
         scope.close()
+        super.onDestroy()
     }
 
     /**
