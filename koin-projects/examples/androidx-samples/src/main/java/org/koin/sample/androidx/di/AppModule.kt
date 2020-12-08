@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.di
 
+import androidx.work.WorkerParameters
 import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
