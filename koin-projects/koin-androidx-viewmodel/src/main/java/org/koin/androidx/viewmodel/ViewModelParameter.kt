@@ -11,7 +11,7 @@ class ViewModelParameter<T : Any>(
         val clazz: KClass<T>,
         val qualifier: Qualifier? = null,
         val parameters: ParametersDefinition? = null,
-        val initialState: Bundle,
+        val initialState: Bundle? = null,
         val viewModelStore: ViewModelStore,
         val registryOwner: SavedStateRegistryOwner? = null
 )

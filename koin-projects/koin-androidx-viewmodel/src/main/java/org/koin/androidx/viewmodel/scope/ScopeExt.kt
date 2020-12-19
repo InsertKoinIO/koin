@@ -41,11 +41,11 @@ typealias BundleDefinition = () -> Bundle
 
 
 inline fun <reified T : ViewModel> Scope.viewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition,
-    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline state: BundleDefinition? = null,
+        noinline owner: ViewModelOwnerDefinition,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     return lazy(mode) {
         getViewModel(qualifier, state, owner, parameters)
@@ -53,31 +53,31 @@ inline fun <reified T : ViewModel> Scope.viewModel(
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline owner: ViewModelOwnerDefinition,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline state: BundleDefinition? = null,
+        noinline owner: ViewModelOwnerDefinition,
+        noinline parameters: ParametersDefinition? = null,
 ): T {
     return getViewModel(qualifier, state, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition? = null,
-    owner: ViewModelOwnerDefinition,
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        state: BundleDefinition? = null,
+        owner: ViewModelOwnerDefinition,
+        clazz: KClass<T>,
+        parameters: ParametersDefinition? = null,
 ): T {
     val ownerDef = owner()
     return getViewModel(
-        ViewModelParameter(
-            clazz,
-            qualifier,
-            parameters,
-            state?.invoke() ?: Bundle(),
-            ownerDef.store,
-            ownerDef.stateRegistry
-        )
+            ViewModelParameter(
+                    clazz,
+                    qualifier,
+                    parameters,
+                    state?.invoke(),
+                    ownerDef.store,
+                    ownerDef.stateRegistry
+            )
     )
 }
 

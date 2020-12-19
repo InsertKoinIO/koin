@@ -13,9 +13,9 @@ internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParamete
 }
 
 internal fun <T : ViewModel> ViewModelProvider.get(
-    viewModelParameters: ViewModelParameter<T>,
-    qualifier: Qualifier?,
-    javaClass: Class<T>
+        viewModelParameters: ViewModelParameter<T>,
+        qualifier: Qualifier?,
+        javaClass: Class<T>,
 ): T {
     return if (viewModelParameters.qualifier != null) {
         get(qualifier.toString(), javaClass)
@@ -25,17 +25,18 @@ internal fun <T : ViewModel> ViewModelProvider.get(
 }
 
 internal fun <T : ViewModel> Scope.createViewModelProvider(
-    viewModelParameters: ViewModelParameter<T>
+        viewModelParameters: ViewModelParameter<T>,
 ): ViewModelProvider {
     return ViewModelProvider(
-        viewModelParameters.viewModelStore, pickFactory(viewModelParameters)
+            viewModelParameters.viewModelStore, pickFactory(viewModelParameters)
     )
 }
 
 private fun <T : ViewModel> Scope.pickFactory(
-    viewModelParameters: ViewModelParameter<T>): ViewModelProvider.Factory {
+        viewModelParameters: ViewModelParameter<T>,
+): ViewModelProvider.Factory {
     return when {
-        viewModelParameters.registryOwner != null -> StateViewModelFactory(this, viewModelParameters)
+        viewModelParameters.registryOwner != null && viewModelParameters.initialState != null -> StateViewModelFactory(this, viewModelParameters)
         else -> DefaultViewModelFactory(this, viewModelParameters)
     }
 }

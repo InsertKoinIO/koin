@@ -7,6 +7,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 * `[ADDED]` `[android]` FragmentScope class is now linked to its parent ActivityScope class
 * `[FIXED]` `[core]` fixed back to handle any type of property (not only String). File properties are saved as Strings. 
+* `[FIXED]` `[android]` ViewModel factory use DefaultViewModelFactory by default, StateViewModelFactory if `state` parameter is used.
 
 
 ## [2.2.1]()
