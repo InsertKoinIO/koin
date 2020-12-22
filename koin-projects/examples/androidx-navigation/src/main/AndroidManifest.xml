@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.androidx_navigation">
 
+    <!-- This is here to test revoking permissions while the app is active -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
