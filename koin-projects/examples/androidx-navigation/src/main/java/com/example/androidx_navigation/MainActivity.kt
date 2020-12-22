@@ -14,6 +14,7 @@ private val loadKoinModules by lazy { loadKoinModules(activityModule) }
 
 fun injectMainActivity() = loadKoinModules
 
+// Declare a simple dependency that is created in the MainActivity and should only exist as long as the MainActivity is alive.
 class MainActivityScopeDep(private val appScopeDep: AppScopeDep)
 
 class MainActivity : AppCompatActivity() {

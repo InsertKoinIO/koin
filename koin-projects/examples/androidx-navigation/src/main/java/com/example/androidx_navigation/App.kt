@@ -7,6 +7,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 
+// This is a global dependency that should be injectable from anywhere
 class AppScopeDep
 
 class App : Application() {
