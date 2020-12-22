@@ -2,7 +2,9 @@ package com.example.androidx_navigation
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.logger.AndroidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 
 class AppScopeDep
@@ -12,9 +14,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            module {
-                single { AppScopeDep() }
-            }
+            modules(module { single { AppScopeDep() } })
         }
     }
 }
