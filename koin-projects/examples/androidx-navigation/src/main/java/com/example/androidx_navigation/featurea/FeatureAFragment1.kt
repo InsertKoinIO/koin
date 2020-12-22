@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.androidx_navigation.AppScopeDep
 import com.example.androidx_navigation.MainActivityScopeDep
 import com.example.androidx_navigation.R
+import com.example.androidx_navigation.featureb.FeatureBDependency
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
@@ -22,7 +23,7 @@ fun injectFeatureA() = loadKoinModules
 class FeatureAFragment1 : Fragment(R.layout.fragment_feature_a_1) {
 
     private val featureADependency: FeatureADependency by inject()
-    //Feature A should not be able to inject FeatureADependency
+    //Feature A should not be able to inject FeatureBDependency
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
