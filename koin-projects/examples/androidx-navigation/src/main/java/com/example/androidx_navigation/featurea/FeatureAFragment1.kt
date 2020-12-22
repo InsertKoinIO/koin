@@ -22,6 +22,7 @@ fun injectFeatureA() = loadKoinModules
 class FeatureAFragment1 : Fragment(R.layout.fragment_feature_a_1) {
 
     private val featureADependency: FeatureADependency by inject()
+    //Feature A should not be able to inject FeatureADependency
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
