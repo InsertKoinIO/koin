@@ -19,9 +19,8 @@ class MainThreadValue<T : Any>(startVal: T) {
     }
 }
 
-val isMainThread: Boolean
+val isMainThread: Boolean = NSThread.isMainThread
 
 internal fun assertMainThread() {
-    if (!isMainThread)
-        throw IllegalStateException("Must be main thread")
+    if (!isMainThread) throw IllegalStateException("Must be main thread")
 }
