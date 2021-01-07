@@ -6,26 +6,25 @@ import kotlin.reflect.KClass
 
 object Definitions {
 
-    inline fun <reified T> saveSingle(
-        qualifier: Qualifier? = null,
-        noinline definition: Definition<T>,
-        scopeDefinition: ScopeDefinition,
-        options: Options
-    ): BeanDefinition<T> {
-        val beanDefinition = createSingle(qualifier, definition, scopeDefinition, options)
-        scopeDefinition.save(beanDefinition)
-        return beanDefinition
-    }
+//    inline fun <reified T> saveSingle(
+//        qualifier: Qualifier? = null,
+//        noinline definition: Definition<T>,
+//        options: Options
+//    ): BeanDefinition<T> {
+//        val beanDefinition = createSingle(qualifier, definition, scopeDefinition, options)
+//        scopeDefinition.save(beanDefinition)
+//        return beanDefinition
+//    }
 
     inline fun <reified T> createSingle(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
-        scopeDefinition: ScopeDefinition,
         options: Options,
-        secondaryTypes: List<KClass<*>> = emptyList()
+        secondaryTypes: List<KClass<*>> = emptyList(),
+        scopeQualifier: Qualifier
     ): BeanDefinition<T> {
         return BeanDefinition(
-            scopeDefinition,
+            scopeQualifier,
             T::class,
             qualifier,
             definition,
@@ -35,16 +34,16 @@ object Definitions {
         )
     }
 
-    internal fun createSingle(
+    fun createSingle(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
         definition: Definition<*>,
-        scopeDefinition: ScopeDefinition,
         options: Options,
-        secondaryTypes: List<KClass<*>> = emptyList()
+        secondaryTypes: List<KClass<*>> = emptyList(),
+        scopeQualifier: Qualifier
     ): BeanDefinition<*> {
         return BeanDefinition(
-            scopeDefinition,
+            scopeQualifier,
             clazz,
             qualifier,
             definition,
@@ -57,12 +56,12 @@ object Definitions {
     inline fun <reified T> createFactory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
-        scopeDefinition: ScopeDefinition,
         options: Options,
-        secondaryTypes: List<KClass<*>> = emptyList()
+        secondaryTypes: List<KClass<*>> = emptyList(),
+        scopeQualifier: Qualifier
     ): BeanDefinition<T> {
         return BeanDefinition(
-            scopeDefinition,
+            scopeQualifier,
             T::class,
             qualifier,
             definition,
@@ -72,14 +71,13 @@ object Definitions {
         )
     }
 
-    inline fun <reified T> saveFactory(
-        qualifier: Qualifier? = null,
-        noinline definition: Definition<T>,
-        scopeDefinition: ScopeDefinition,
-        options: Options
-    ): BeanDefinition<T> {
-        val beanDefinition = createFactory(qualifier, definition, scopeDefinition, options)
-        scopeDefinition.save(beanDefinition)
-        return beanDefinition
-    }
+//    inline fun <reified T> saveFactory(
+//        qualifier: Qualifier? = null,
+//        noinline definition: Definition<T>,
+//        options: Options
+//    ): BeanDefinition<T> {
+//        val beanDefinition = createFactory(qualifier, definition, scopeDefinition, options)
+//        scopeDefinition.save(beanDefinition)
+//        return beanDefinition
+//    }
 }

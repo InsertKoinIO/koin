@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
-import org.koin.mp.mpsynchronized
+import org.koin.mp.PlatformTools
 
 /**
  * Single instance holder
@@ -36,17 +36,17 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
     }
 
     override fun create(context: InstanceContext): T {
-        return mpsynchronized(this) {
-            if (value == null) {
-                super.create(context)
-            } else value ?: error("Single instance created couldn't return value")
-        }
+        return if (value == null) {
+            super.create(context)
+        } else value ?: error("Single instance created couldn't return value")
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun get(context: InstanceContext): T {
-        if (!isCreated()) {
-            value = create(context)
+        PlatformTools.synchronized(this) {
+            if (!isCreated()) {
+                value = create(context)
+            }
         }
         return value ?: error("Single instance created couldn't return value")
     }

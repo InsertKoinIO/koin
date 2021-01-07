@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@ package org.koin.core.context
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.module.Module
+import org.koin.dsl.KoinAppDeclaration
 
 /**
- * Component thath hold the Koin instance
+ * Hold Current Koin context
  */
 interface KoinContext {
 
@@ -34,12 +36,37 @@ interface KoinContext {
     fun getOrNull(): Koin?
 
     /**
-     * Start a Koin Application
-     */
-    fun setup(koinApplication: KoinApplication)
-
-    /**
      * Stop current Koin instance
      */
-    fun stop()
+    fun stopKoin()
+
+    /**
+     * Start a Koin Application as StandAlone
+     */
+    fun startKoin(koinApplication: KoinApplication): KoinApplication
+
+    /**
+     * Start a Koin Application as StandAlone
+     */
+    fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication
+
+    /**
+     * load Koin module in global Koin context
+     */
+    fun loadKoinModules(module: Module)
+
+    /**
+     * load Koin modules in global Koin context
+     */
+    fun loadKoinModules(modules: List<Module>)
+
+    /**
+     * unload Koin module from global Koin context
+     */
+    fun unloadKoinModules(module: Module)
+
+    /**
+     * unload Koin modules from global Koin context
+     */
+    fun unloadKoinModules(modules: List<Module>)
 }

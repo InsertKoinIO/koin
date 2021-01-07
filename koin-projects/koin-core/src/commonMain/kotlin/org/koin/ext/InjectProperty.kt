@@ -1,12 +1,12 @@
 package org.koin.ext
 
 import org.koin.core.Koin
-import org.koin.core.context.KoinContextHandler
 import org.koin.core.scope.Scope
+import org.koin.mp.PlatformTools
 import kotlin.reflect.KMutableProperty0
 
 inline fun <reified T> KMutableProperty0<T>.inject() {
-    set(KoinContextHandler.get().get())
+    set(PlatformTools.defaultContext().get().get())
 }
 
 inline fun <reified T> KMutableProperty0<T>.inject(koin: Koin) {

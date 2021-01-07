@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
+import org.koin.core.module.addDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.ScopeDefinition
 
 /**
  * DSL Scope Definition
  */
-class ScopeDSL(val scopeDefinition: ScopeDefinition) {
+@Suppress("UNUSED_PARAMETER")
+class ScopeDSL(val scopeQualifier: Qualifier, val definitions: HashSet<BeanDefinition<*>>) {
 
     @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)
     inline fun <reified T> single(
@@ -41,12 +42,14 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveSingle(
+        val def = Definitions.createSingle(
             qualifier,
             definition,
-            scopeDefinition,
-            Options(isCreatedAtStart = false, override = override)
+            Options(isCreatedAtStart = false, override = override),
+            scopeQualifier = scopeQualifier
         )
+        definitions.addDefinition(def)
+        return def
     }
 
     inline fun <reified T> factory(
@@ -54,11 +57,13 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
         override: Boolean = false,
         noinline definition: Definition<T>
     ): BeanDefinition<T> {
-        return Definitions.saveFactory(
+        val def = Definitions.createFactory(
             qualifier,
             definition,
-            scopeDefinition,
-            Options(isCreatedAtStart = false, override = override)
+            Options(isCreatedAtStart = false, override = override),
+            scopeQualifier = scopeQualifier
         )
+        definitions.addDefinition(def)
+        return def
     }
 }

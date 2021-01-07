@@ -1,6 +1,22 @@
+/*
+ * Copyright 2017-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
@@ -14,20 +30,20 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
+@OptIn(KoinInternal::class)
 class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
-    //TODO Lock - ConcurrentHashMap
     private val _instances = HashMap<IndexKey, InstanceFactory<*>>()
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
     internal fun create(definitions: Set<BeanDefinition<*>>) {
         definitions.forEach { definition ->
-            if (_koin._logger.isAt(Level.DEBUG)) {
+            if (_koin.logger.isAt(Level.DEBUG)) {
                 if (_scope._scopeDefinition.isRoot) {
-                    _koin._logger.debug("- $definition")
+                    _koin.logger.debug("- $definition")
                 } else {
-                    _koin._logger.debug("$_scope -> $definition")
+                    _koin.logger.debug("$_scope -> $definition")
                 }
             }
             saveDefinition(definition, override = false)
@@ -135,7 +151,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     internal fun createDefinition(definition: BeanDefinition<*>) {
-        saveDefinition(definition, false)
+        saveDefinition(definition, definition.options.override)
     }
 
 }

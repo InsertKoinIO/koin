@@ -3,27 +3,21 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
-import org.koin.ext.isFloat
-import org.koin.ext.isInt
 import org.koin.ext.quoted
-import java.util.Properties
+import java.util.*
 
 
 /**
  *Save properties values into PropertyRegister
  */
 fun PropertyRegistry.saveProperties(properties: Properties) {
-    if (_koin._logger.isAt(Level.DEBUG)) {
-        _koin._logger.debug("load ${properties.size} properties")
+    if (_koin.logger.isAt(Level.DEBUG)) {
+        _koin.logger.debug("load ${properties.size} properties")
     }
 
     val propertiesMapValues = properties.toMap() as Map<String, String>
     propertiesMapValues.forEach { (k: String, v: String) ->
-        when {
-            v.isInt() -> saveProperty(k, v.toInt())
-            v.isFloat() -> saveProperty(k, v.toFloat())
-            else -> saveProperty(k, v.quoted())
-        }
+        saveProperty(k, v.quoted())
     }
 }
 
@@ -32,13 +26,13 @@ fun PropertyRegistry.saveProperties(properties: Properties) {
  * @param fileName
  */
 fun PropertyRegistry.loadPropertiesFromFile(fileName: String) {
-    if (_koin._logger.isAt(Level.DEBUG)) {
-        _koin._logger.debug("load properties from $fileName")
+    if (_koin.logger.isAt(Level.DEBUG)) {
+        _koin.logger.debug("load properties from $fileName")
     }
     val content = Koin::class.java.getResource(fileName)?.readText()
     if (content != null) {
-        if (_koin._logger.isAt(Level.INFO)) {
-            _koin._logger.info("loaded properties from file:'$fileName'")
+        if (_koin.logger.isAt(Level.INFO)) {
+            _koin.logger.info("loaded properties from file:'$fileName'")
         }
         val properties = readDataFromFile(content)
         saveProperties(properties)
@@ -47,7 +41,7 @@ fun PropertyRegistry.loadPropertiesFromFile(fileName: String) {
     }
 }
 
-private fun PropertyRegistry.readDataFromFile(content: String): Properties {
+private fun readDataFromFile(content: String): Properties {
     val properties = Properties()
     properties.load(content.byteInputStream())
     return properties
@@ -57,8 +51,8 @@ private fun PropertyRegistry.readDataFromFile(content: String): Properties {
  * Load properties from environment
  */
 fun PropertyRegistry.loadEnvironmentProperties() {
-    if (_koin._logger.isAt(Level.DEBUG)) {
-        _koin._logger.debug("load properties from environment")
+    if (_koin.logger.isAt(Level.DEBUG)) {
+        _koin.logger.debug("load properties from environment")
     }
     val sysProperties = System.getProperties()
     saveProperties(sysProperties)

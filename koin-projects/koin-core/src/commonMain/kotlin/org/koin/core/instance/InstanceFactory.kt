@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,13 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
-import org.koin.mp.ensureNeverFrozen
+import org.koin.mp.PlatformTools
 
 /**
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
 abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: BeanDefinition<T>) {
-
-    init {
-        ensureNeverFrozen()
-    }
 
     /**
      * Retrieve an instance
@@ -47,19 +43,21 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
      * @return T
      */
     open fun create(context: InstanceContext): T {
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("| create instance for $beanDefinition")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("| create instance for $beanDefinition")
         }
         try {
             val parameters: DefinitionParameters = context.parameters
-            return beanDefinition.definition.invoke(
+            context.scope.addParameters(parameters)
+            val value = beanDefinition.definition(
                 context.scope,
                 parameters
             )
+            context.scope.clearParameters()
+            return value
         } catch (e: Exception) {
-            //TODO
-//            val stack = ERROR_SEPARATOR + KoinMultiPlatform.stackTrace().joinToString(ERROR_SEPARATOR)
-//            _koin._logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
+            val stack = PlatformTools.getStackTrace(e)
+            _koin.logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }

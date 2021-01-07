@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,52 +16,57 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternal
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
+import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.InstanceRegistry
-import org.koin.core.state.MainIsolatedState
-import org.koin.core.state.value
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
-import org.koin.mp.ensureNeverFrozen
-import org.koin.mp.mpsynchronized
+import org.koin.mp.PlatformTools
 import kotlin.reflect.KClass
 
+@OptIn(KoinInternal::class)
 data class Scope(
         val id: ScopeID,
+        @KoinInternal
         val _scopeDefinition: ScopeDefinition,
-        val _koin: Koin,
-        val _source: Any? = null
+        internal val _koin: Koin
 ) {
-    init {
-        ensureNeverFrozen()
-    }
+    private val linkedScope: ArrayList<Scope> = arrayListOf()
 
-    internal val scopeState = MainIsolatedState(ScopeState(_koin, this))
-    val _linkedScope: MutableList<Scope>
-        get() = scopeState.value._linkedScope
-    val _instanceRegistry: InstanceRegistry
-        get() = scopeState.value._instanceRegistry
-    val _callbacks: MutableList<ScopeCallback>
-        get() = scopeState.value._callbacks
-    var _closed: Boolean
-        get() = scopeState.value._closed
-        set(value) {
-            scopeState.value._closed = value
-        }
+    @PublishedApi
+    internal val instanceRegistry = InstanceRegistry(_koin, this)
+
+    @PublishedApi
+    internal var _source: Any? = null
+
+    val closed: Boolean
+        get() = _closed
+    private val _callbacks = arrayListOf<ScopeCallback>()
+    private var _closed: Boolean = false
+    private var _parameters: DefinitionParameters? = null
+
+    val logger = _koin.logger
 
     internal fun create(links: List<Scope>) {
-        _instanceRegistry.create(_scopeDefinition.definitions)
-        _linkedScope.addAll(links)
+        instanceRegistry.create(_scopeDefinition.definitions)
+        linkedScope.addAll(links)
     }
 
     inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
             "Can't use Scope source for ${T::class.getFullName()} - source is:$_source")
+
+    @KoinInternal
+    fun setSource(t: Any?) {
+        _source = t
+    }
 
     /**
      * Add parent Scopes to allow instance resolution
@@ -71,7 +76,7 @@ data class Scope(
      */
     fun linkTo(vararg scopes: Scope) {
         if (!_scopeDefinition.isRoot) {
-            _linkedScope.addAll(scopes)
+            linkedScope.addAll(scopes)
         } else {
             error("Can't add scope link to a root scope")
         }
@@ -82,7 +87,7 @@ data class Scope(
      */
     fun unlink(vararg scopes: Scope) {
         if (!_scopeDefinition.isRoot) {
-            _linkedScope.removeAll(scopes)
+            linkedScope.removeAll(scopes)
         } else {
             error("Can't remove scope link to a root scope")
         }
@@ -91,32 +96,32 @@ data class Scope(
     /**
      * Lazy inject a Koin instance
      * @param qualifier
-     * @param scope
+     * @param mode - LazyThreadSafetyMode
      * @param parameters
      *
      * @return Lazy instance of type T
      */
-
-    inline fun <reified T> inject(
+    inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+            lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
      * @param qualifier
-     * @param scope
+     * @param mode - LazyThreadSafetyMode
      * @param parameters
      *
      * @return Lazy instance of type T or null
      */
-
-    inline fun <reified T> injectOrNull(
+    inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
+            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy(LazyThreadSafetyMode.NONE) { getOrNull<T>(qualifier, parameters) }
+            lazy(mode) { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -124,8 +129,7 @@ data class Scope(
      * @param scope
      * @param parameters
      */
-
-    inline fun <reified T> get(
+    inline fun <reified T : Any> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T {
@@ -140,7 +144,7 @@ data class Scope(
      *
      * @return instance of type T or null
      */
-    inline fun <reified T> getOrNull(
+    inline fun <reified T : Any> getOrNull(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null
     ): T? {
@@ -155,16 +159,18 @@ data class Scope(
      *
      * @return instance of type T or null
      */
-
-    fun <T> getOrNull(
-            clazz: KClass<*>,
+    fun <T : Any> getOrNull(
+            clazz: KClass<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
-        } catch (e: Exception) {
-            _koin._logger.error("Can't get instance for ${clazz.getFullName()}")
+        } catch (e: ClosedScopeException) {
+            _koin.logger.debug("Koin.getOrNull - scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            null
+        } catch (e: NoBeanDefFoundException) {
+            _koin.logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
@@ -177,37 +183,51 @@ data class Scope(
      *
      * @return instance of type T
      */
-    fun <T> get(
-            clazz: KClass<*>,
+    fun <T : Any> get(
+            clazz: KClass<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T {
-        return if (_koin._logger.isAt(Level.DEBUG)) {
+        return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin._logger.debug("+- '${clazz.getFullName()}'$qualifierString")
+            _koin.logger.debug("+- '${clazz.getFullName()}'$qualifierString")
             val (instance: T, duration: Double) = measureDurationForResult {
                 resolveInstance<T>(qualifier, clazz, parameters)
             }
-            _koin._logger.debug("|- '${clazz.getFullName()}' in $duration ms")
+            _koin.logger.debug("|- '${clazz.getFullName()}' in $duration ms")
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
         }
     }
 
-    fun <T> resolveInstance(
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Any> resolveInstance(
             qualifier: Qualifier?,
-            clazz: KClass<*>,
+            clazz: KClass<T>,
             parameters: ParametersDefinition?
     ): T {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        //TODO Resolve in Root or link
         val indexKey = indexKey(clazz, qualifier)
-        return _instanceRegistry.resolveInstance(indexKey, parameters)
-                ?: findInOtherScope<T>(clazz, qualifier, parameters) ?: getFromSource(clazz)
-                ?: throwDefinitionNotFound(qualifier, clazz)
+        return instanceRegistry.resolveInstance(indexKey, parameters)
+                ?: run {
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
+                    getFromSource(clazz)
+                }
+                ?: run {
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
+                    _parameters?.getOrNull<T>(clazz)
+                }
+                ?: run {
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
+                    findInOtherScope<T>(clazz, qualifier, parameters)
+                }
+                ?: run {
+                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
+                    throwDefinitionNotFound(qualifier, clazz)
+                }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -215,22 +235,21 @@ data class Scope(
         return if (clazz.isInstance(_source)) _source as? T else null
     }
 
-    private fun <T> findInOtherScope(
-            clazz: KClass<*>,
+    private fun <T : Any> findInOtherScope(
+            clazz: KClass<T>,
             qualifier: Qualifier?,
             parameters: ParametersDefinition?
     ): T? {
-        return _linkedScope.firstOrNull { scope ->
-            scope.getOrNull<T>(
+        var instance: T? = null
+        for (scope in linkedScope) {
+            instance = scope.getOrNull<T>(
                     clazz,
                     qualifier,
                     parameters
-            ) != null
-        }?.get(
-                clazz,
-                qualifier,
-                parameters
-        )
+            )
+            if (instance != null) break
+        }
+        return instance
     }
 
     private fun throwDefinitionNotFound(
@@ -244,28 +263,28 @@ data class Scope(
 
     internal fun createEagerInstances() {
         if (_scopeDefinition.isRoot) {
-            _instanceRegistry.createEagerInstances()
+            instanceRegistry.createEagerInstances()
         }
     }
 
     /**
      * Declare a component definition from the given instance
      * This result of declaring a scoped/single definition of type T, returning the given instance
-     * (single definition of th current scope is root)
+     * (single definition of the current scope is root)
      *
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    fun <T : Any> declare(
+    inline fun <reified T : Any> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
-    ) = mpsynchronized(this) {
-        val definition = _scopeDefinition.saveNewDefinition(instance, qualifier, secondaryTypes, override)
-        _instanceRegistry.saveDefinition(definition, override = true)
+    ) = PlatformTools.synchronized(this) {
+        val definition = _scopeDefinition.declareNewDefinition(instance, qualifier, secondaryTypes, override)
+        instanceRegistry.saveDefinition(definition, override = true)
     }
 
     /**
@@ -299,7 +318,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T : Any> getAll(clazz: KClass<*>): List<T> = _instanceRegistry.getAll(clazz)
+    fun <T : Any> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -324,7 +343,7 @@ data class Scope(
             secondaryType: KClass<*>,
             parameters: ParametersDefinition?
     ): S {
-        return _instanceRegistry.bind(primaryType, secondaryType, parameters)
+        return instanceRegistry.bind(primaryType, secondaryType, parameters)
                 ?: throw NoBeanDefFoundException(
                         "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
     }
@@ -334,66 +353,60 @@ data class Scope(
      * @param key
      * @param defaultValue
      */
-    fun <T> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
+    fun getProperty(key: String, defaultValue: String): String = _koin.getProperty(key, defaultValue)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun <T> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
+    fun getPropertyOrNull(key: String): String? = _koin.getProperty(key)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun <T> getProperty(key: String): T = _koin.getProperty(key)
+    fun getProperty(key: String): String = _koin.getProperty(key)
             ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
      * Close all instances from this scope
      */
-    fun close() = mpsynchronized(this) {
+    fun close() = PlatformTools.synchronized(this) {
         clear()
-        _koin._scopeRegistry.deleteScope(this)
+        _koin.scopeRegistry.deleteScope(this)
     }
 
-    internal fun clear() = mpsynchronized(this) {
+    internal fun clear() {
         _closed = true
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.info("closing scope:'$id'")
+        _source = null
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.info("closing scope:'$id'")
         }
         // call on close from callbacks
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
 
-        _instanceRegistry.close()
+        instanceRegistry.close()
     }
 
     override fun toString(): String {
         return "['$id']"
     }
 
-    fun dropInstances(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.dropDefinition(it)
-        }
+    fun dropInstance(beanDefinition: BeanDefinition<*>) {
+        instanceRegistry.dropDefinition(beanDefinition)
     }
 
-    fun loadDefinitions(scopeDefinition: ScopeDefinition) {
-        scopeDefinition.definitions.forEach {
-            _instanceRegistry.createDefinition(it)
-        }
+    fun loadDefinition(beanDefinition: BeanDefinition<*>) {
+        instanceRegistry.createDefinition(beanDefinition)
     }
-}
 
-internal class ScopeState(koin: Koin, scope: Scope) {
-    internal val _linkedScope: MutableList<Scope> = arrayListOf()
-    internal val _instanceRegistry = InstanceRegistry(koin, scope)
-    internal val _callbacks: MutableList<ScopeCallback> = arrayListOf()
-    internal var _closed = false
+    fun addParameters(parameters: DefinitionParameters) {
+        _parameters = parameters
+    }
 
-    init {
-        ensureNeverFrozen()
+    fun clearParameters() {
+        _parameters = null
     }
 }
 

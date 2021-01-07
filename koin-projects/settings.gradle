@@ -1,22 +1,22 @@
 // Core
 include 'koin-core'
-include 'koin-test'
-include 'koin-core-ext'
-
-// Gradle plugin
-include 'koin-gradle-plugin'
-
-// Android
-include 'koin-android'
-include 'koin-android-scope' ,'koin-android-viewmodel'
-include 'koin-android-ext'
-include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
-include 'koin-android-main-thread'
-include 'koin-androidx-ext'
-
-// Ktor
-include 'koin-logger-slf4j'
-include 'koin-ktor'
+//include 'koin-test'
+//include 'koin-core-ext'
+//
+//// Gradle plugin
+//include 'koin-gradle-plugin'
+//
+//// Android
+//include 'koin-android'
+//include 'koin-android-scope' ,'koin-android-viewmodel'
+//include 'koin-android-ext'
+//include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
+//include 'koin-android-main-thread'
+//include 'koin-androidx-ext'
+//
+//// Ktor
+//include 'koin-logger-slf4j'
+//include 'koin-ktor'
 
 enableFeaturePreview('GRADLE_METADATA')
 

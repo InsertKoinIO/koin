@@ -4,6 +4,7 @@ import co.touchlab.testhelp.concurrency.background
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.mp.native.isMainThread
 import kotlin.test.*
 
 class PlatformThreadingTest {

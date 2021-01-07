@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,4 +20,4 @@ package org.koin.core.definition
  *
  * @author Arnaud Giuliani
  */
-data class Options(var isCreatedAtStart: Boolean = false, var override: Boolean = false)
+data class Options(var isCreatedAtStart: Boolean = false, var override: Boolean = false, var isExtraDefinition : Boolean = false)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.logger.Level
-import org.koin.mp.ensureNeverFrozen
+import org.koin.mp.PlatformTools
 
 /**
  * Property Registry
@@ -26,20 +26,17 @@ import org.koin.mp.ensureNeverFrozen
  * @author Arnaud Giuliani
  */
 @Suppress("UNCHECKED_CAST")
-class PropertyRegistry(val _koin: Koin) {
+class PropertyRegistry(internal val _koin: Koin) {
 
-    init {
-        ensureNeverFrozen()
-    }
-    private val _values: MutableMap<String, Any> = hashMapOf()
+    private val _values: MutableMap<String, Any> = PlatformTools.safeHashMap()
 
     /**
      * saveProperty all properties to registry
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        if (_koin._logger.isAt(Level.DEBUG)) {
-            _koin._logger.debug("load ${properties.size} properties")
+        if (_koin.logger.isAt(Level.DEBUG)) {
+            _koin.logger.debug("load ${properties.size} properties")
         }
 
         _values.putAll(properties)
@@ -64,7 +61,7 @@ class PropertyRegistry(val _koin: Koin) {
      * @param key
      */
     fun <T> getProperty(key: String): T? {
-        return _values[key] as? T?
+        return _values[key] as? T
     }
 
     fun close() {

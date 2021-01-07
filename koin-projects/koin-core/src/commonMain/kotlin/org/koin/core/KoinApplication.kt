@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package org.koin.core
 
+import org.koin.core.annotation.KoinInternal
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
-import org.koin.core.logger.PrintLogger
 import org.koin.core.module.Module
 import org.koin.core.time.measureDuration
-import kotlin.jvm.JvmStatic
+import org.koin.mp.PlatformTools
 
 /**
  * Koin Application
@@ -28,12 +28,14 @@ import kotlin.jvm.JvmStatic
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternal::class)
 class KoinApplication private constructor() {
 
     val koin = Koin()
 
     internal fun init() {
-        koin._scopeRegistry.createRootScopeDefinition()
+        koin.scopeRegistry.createRootScopeDefinition()
+        koin.scopeRegistry.createRootScope()
     }
 
     /**
@@ -57,22 +59,14 @@ class KoinApplication private constructor() {
      * @param modules
      */
     fun modules(modules: List<Module>): KoinApplication {
-        if (koin._logger.isAt(Level.INFO)) {
+        if (koin.logger.isAt(Level.INFO)) {
             val duration = measureDuration {
                 loadModules(modules)
             }
-            val count = koin._scopeRegistry.size()
-            koin._logger.info("loaded $count definitions - $duration ms")
+            val count = koin.scopeRegistry.size()
+            koin.logger.info("loaded $count definitions - $duration ms")
         } else {
             loadModules(modules)
-        }
-        if (koin._logger.isAt(Level.INFO)) {
-            val duration = measureDuration {
-                koin.createRootScope()
-            }
-            koin._logger.info("create context - $duration ms")
-        } else {
-            koin.createRootScope()
         }
         return this
     }
@@ -85,8 +79,25 @@ class KoinApplication private constructor() {
      * Load properties from Map
      * @param values
      */
-    fun properties(values: Map<String, Any>): KoinApplication {
-        koin._propertyRegistry.saveProperties(values)
+    fun properties(values: Map<String, String>): KoinApplication {
+        koin.propertyRegistry.saveProperties(values)
+        return this
+    }
+
+    /**
+     * Load properties from file
+     * @param fileName
+     */
+    fun fileProperties(fileName: String = "/koin.properties"): KoinApplication {
+        koin.propertyRegistry.loadPropertiesFromFile(fileName)
+        return this
+    }
+
+    /**
+     * Load properties from environment
+     */
+    fun environmentProperties(): KoinApplication {
+        koin.propertyRegistry.loadEnvironmentProperties()
         return this
     }
 
@@ -95,25 +106,24 @@ class KoinApplication private constructor() {
      * @param logger - logger
      */
     fun logger(logger: Logger): KoinApplication {
-        koin._logger = logger
+        koin.setupLogger(logger)
         return this
     }
 
     /**
      * Set Koin to use [PrintLogger], by default at [Level.INFO]
      */
-
-    fun printLogger(level: Level = Level.INFO) = logger(PrintLogger(level))
+    fun printLogger(level: Level = Level.INFO) = PlatformTools.defaultLogger(level)
 
     /**
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(): KoinApplication {
-        if (koin._logger.isAt(Level.DEBUG)) {
+        if (koin.logger.isAt(Level.DEBUG)) {
             val duration = measureDuration {
                 koin.createEagerInstances()
             }
-            koin._logger.debug("instances started in $duration ms")
+            koin.logger.debug("instances started in $duration ms")
         } else {
             koin.createEagerInstances()
         }
@@ -125,11 +135,11 @@ class KoinApplication private constructor() {
     }
 
     fun unloadModules(module: Module) {
-        koin._scopeRegistry.unloadModules(module)
+        koin.scopeRegistry.unloadModules(module)
     }
 
     fun unloadModules(modules: List<Module>) {
-        koin._scopeRegistry.unloadModules(modules)
+        koin.scopeRegistry.unloadModules(modules)
     }
 
 
@@ -138,7 +148,6 @@ class KoinApplication private constructor() {
         /**
          * Create a new instance of KoinApplication
          */
-        @JvmStatic
         fun init(): KoinApplication {
             val app = KoinApplication()
             app.init()

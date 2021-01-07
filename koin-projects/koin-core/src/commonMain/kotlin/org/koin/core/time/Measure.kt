@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.koin.core.time
 
 import kotlin.time.ExperimentalTime
-import kotlin.time.TimeSource
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
@@ -27,9 +26,6 @@ import kotlin.time.measureTimedValue
  * @author Arnaud Giuliani
  */
 
-/**
- * Measure code execution
- */
 @OptIn(ExperimentalTime::class)
 fun measureDuration(code: () -> Unit): Double {
     return measureTime(code).inMilliseconds

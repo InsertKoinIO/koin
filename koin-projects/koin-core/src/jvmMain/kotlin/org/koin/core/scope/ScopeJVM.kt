@@ -1,18 +1,21 @@
-package org.koin.core.scope
-
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
  * Get a Koin instance
- * @param clazz
+ * @param java class
  * @param qualifier
  * @param parameters
  *
  * @return instance of type T
  */
-fun <T> Scope.get(
-        clazz: Class<*>,
+@JvmOverloads
+fun <T : Any> Scope.get(
+        clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-): T = get(clazz.kotlin, qualifier, parameters)
+): T {
+    val kClass = clazz.kotlin
+    return get(kClass, qualifier, parameters)
+}

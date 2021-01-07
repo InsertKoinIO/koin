@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.koin.core.parameter
 import org.koin.core.error.DefinitionParameterException
 import org.koin.core.error.NoParameterFoundException
 import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
+import org.koin.ext.getFullName
+import kotlin.reflect.KClass
 
 /**
  * DefinitionParameters - Parameter holder
@@ -26,16 +28,17 @@ import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-class DefinitionParameters internal constructor(vararg val values: Any?) {
+open class DefinitionParameters(val values: List<Any?> = listOf()) {
 
-    private fun <T> elementAt(i: Int): T =
-        if (values.size > i) values[i] as T else throw NoParameterFoundException("Can't get parameter value #$i from $this")
+    open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
+            if (values.size > i) values[i] as T else throw NoParameterFoundException(
+                    "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
 
-    operator fun <T> component1(): T = elementAt(0)
-    operator fun <T> component2(): T = elementAt(1)
-    operator fun <T> component3(): T = elementAt(2)
-    operator fun <T> component4(): T = elementAt(3)
-    operator fun <T> component5(): T = elementAt(4)
+    inline operator fun <reified T> component1(): T = elementAt(0, T::class)
+    inline operator fun <reified T> component2(): T = elementAt(1, T::class)
+    inline operator fun <reified T> component3(): T = elementAt(2, T::class)
+    inline operator fun <reified T> component4(): T = elementAt(3, T::class)
+    inline operator fun <reified T> component5(): T = elementAt(4, T::class)
 
     /**
      * get element at given index
@@ -43,8 +46,8 @@ class DefinitionParameters internal constructor(vararg val values: Any?) {
      */
     operator fun <T> get(i: Int) = values[i] as T
 
-    fun <T> set(i: Int,t : T) {
-        values.toMutableList()[i] = t
+    fun <T> set(i: Int, t: T) {
+        values.toMutableList()[i] = t as Any
     }
 
     /**
@@ -62,15 +65,40 @@ class DefinitionParameters internal constructor(vararg val values: Any?) {
      */
     fun isNotEmpty() = !isEmpty()
 
+    fun insert(index: Int, value: Any): DefinitionParameters {
+        val (start, end) = values.partition { element -> values.indexOf(element) < index }
+        return DefinitionParameters(start + value + end)
+    }
+
+    fun add(value: Any): DefinitionParameters {
+        return insert(size(), value)
+    }
+
     /**
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T> get() = values.first { it is T }
+    inline fun <reified T : Any> get(): T = getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
+
+    /**
+     * Get first element of given type T
+     * return T
+     */
+    open fun <T : Any> getOrNull(clazz: KClass<T>): T? {
+        val values = values.filterNotNull().filter { it::class == clazz }
+        return when (values.size) {
+            1 -> values.first() as T
+            0 -> null
+            else -> throw DefinitionParameterException(
+                    "Ambiguous parameter injection: more than one value of type '${clazz.getFullName()}' to get from $this. Check your injection parameters")
+        }
+    }
 
     companion object {
         const val MAX_PARAMS = 5
     }
+
+    override fun toString(): String = "DefinitionParameters${values.toList()}"
 }
 
 /**
@@ -80,12 +108,15 @@ class DefinitionParameters internal constructor(vararg val values: Any?) {
  * return ParameterList
  */
 fun parametersOf(vararg parameters: Any?) =
-        if (parameters.size <= MAX_PARAMS) DefinitionParameters(*parameters) else throw DefinitionParameterException("Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
+        if (parameters.size <= MAX_PARAMS) DefinitionParameters(
+                parameters.toMutableList()) else throw DefinitionParameterException(
+                "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
  *
  */
 fun emptyParametersHolder() = DefinitionParameters()
+
 
 /**
  * Help define a DefinitionParameters

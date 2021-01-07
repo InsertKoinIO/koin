@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ fun KClass<*>.getFullName(): String {
 }
 
 fun KClass<*>.saveCache(): String {
-    val name = PlatformTools.className(this)
+    val name = PlatformTools.getClassName(this)
     classNames[this] = name
     return name
 }
 
-private val classNames: MutableMap<KClass<*>, String> = hashMapOf()
+private val classNames: MutableMap<KClass<*>, String> = PlatformTools.safeHashMap()
