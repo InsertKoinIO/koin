@@ -1,44 +1,33 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 archivesBaseName = 'koin-core'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
-def ideaActive = System.getProperty('idea.active') == 'true'
 
 kotlin {
     jvm {
         withJava()
     }
-    js() /*{
+    js() {
         nodejs()
         browser()
-        configure([compilations.main, compilations.test]) {
-            tasks.getByName(compileKotlinTaskName).kotlinOptions {
-                metaInfo = true
-                sourceMap = true
-                moduleKind = 'umd'
-            }
-        }
-    }*/
-
-    if (ideaActive) {
-        macosX64("darwin")
-    } else {
-        macosX64()
-        iosArm32()
-        iosArm64()
-        iosX64()
-        linuxX64()
-        linuxArm32Hfp()
-        linuxMips32()
-        watchosArm32()
-        watchosArm64()
-        watchosX86()
-        tvosArm64()
-        tvosX64()
-        //    androidNativeArm32()
-        //    androidNativeArm64()
-        mingwX64()
+//        configure([compilations.main, compilations.test]) {
+//            tasks.getByName(compileKotlinTaskName).kotlinOptions {
+//                metaInfo = true
+//                sourceMap = true
+//                moduleKind = 'umd'
+//            }
+//        }
     }
+
+    def hostOs = System.getProperty("os.name")
+    def isMingwX64 = hostOs.startsWith("Windows")
+    KotlinNativeTargetWithTests nativeTarget
+    if (hostOs == "Mac OS X") nativeTarget = macosX64('native')
+    else if (hostOs == "Linux") nativeTarget = linuxX64("native")
+    else if (isMingwX64) nativeTarget = mingwX64("native")
+    else throw new GradleException("Host OS is not supported in Kotlin/Native.")
 
     sourceSets {
         commonMain {
@@ -47,13 +36,13 @@ kotlin {
             }
         }
 
-        commonTest {
-            dependencies {
-                implementation kotlin("test-common")
-                implementation kotlin("test-annotations-common")
-                implementation "co.touchlab:testhelp:$testhelp_version"
-            }
-        }
+//        commonTest {
+//            dependencies {
+//                implementation kotlin("test-common")
+//                implementation kotlin("test-annotations-common")
+////                implementation "co.touchlab:testhelp:$testhelp_version"
+//            }
+//        }
 
         jvmMain {
             dependencies {
@@ -61,12 +50,12 @@ kotlin {
             }
         }
 
-        jvmTest {
-            dependencies {
-                implementation kotlin("test-junit")
-                implementation "org.mockito:mockito-inline:$mockito_version"
-            }
-        }
+//        jvmTest {
+//            dependencies {
+//                implementation kotlin("test-junit")
+//                implementation "org.mockito:mockito-inline:$mockito_version"
+//            }
+//        }
 
         jsMain {
             dependsOn commonMain
@@ -75,59 +64,29 @@ kotlin {
             }
         }
 
-        jsTest {
-            dependsOn commonTest
-            dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-test-js'
-            }
-        }
+//        jsTest {
+//            dependsOn commonTest
+//            dependencies {
+//                implementation 'org.jetbrains.kotlin:kotlin-test-js'
+//            }
+//        }
 
         nativeMain {
             dependsOn commonMain
         }
 
-        nativeTest {
-            dependsOn commonTest
-        }
+//        nativeTest {
+//            dependsOn commonTest
+//        }
 
         darwinMain {
             dependsOn nativeMain
         }
 
-        darwinTest {
-            dependsOn nativeTest
-        }
-
-        if(!ideaActive) {
-            otherMain {
-                dependsOn nativeMain
-            }
-
-            configure([
-                targets.macosX64,
-                targets.watchosArm32,
-                targets.watchosArm64,
-                targets.watchosX86,
-                targets.tvosArm64,
-                targets.tvosX64,
-                targets.iosX64,
-                targets.iosArm32,
-                targets.iosArm64
-            ]) {
-                compilations.main.source(sourceSets.darwinMain)
-                compilations.test.source(sourceSets.nativeTest)
-            }
-            configure([
-                targets.linuxX64,
-                targets.linuxArm32Hfp,
-                targets.linuxMips32,
-                targets.mingwX64
-            ]) {
-                compilations.main.source(sourceSets.otherMain)
-                compilations.test.source(sourceSets.nativeTest)
-            }
-        }
+//        darwinTest {
+//            dependsOn nativeTest
+//        }
     }
 }
 
-apply from: '../gradle/publish2.gradle'
+//apply from: '../gradle/publish2.gradle'

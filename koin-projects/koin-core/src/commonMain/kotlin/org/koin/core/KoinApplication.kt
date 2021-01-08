@@ -85,23 +85,6 @@ class KoinApplication private constructor() {
     }
 
     /**
-     * Load properties from file
-     * @param fileName
-     */
-    fun fileProperties(fileName: String = "/koin.properties"): KoinApplication {
-        koin.propertyRegistry.loadPropertiesFromFile(fileName)
-        return this
-    }
-
-    /**
-     * Load properties from environment
-     */
-    fun environmentProperties(): KoinApplication {
-        koin.propertyRegistry.loadEnvironmentProperties()
-        return this
-    }
-
-    /**
      * Set Koin Logger
      * @param logger - logger
      */

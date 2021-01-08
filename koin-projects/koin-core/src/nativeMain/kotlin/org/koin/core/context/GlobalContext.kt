@@ -21,6 +21,7 @@ import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.mp.PlatformTools
+import org.koin.mp.native.MainThreadValue
 
 /**
  * Global context - current Koin Application available globally
@@ -31,22 +32,22 @@ import org.koin.mp.PlatformTools
  */
 object GlobalContext : KoinContext {
 
-    private var _koin: Koin? = null
+    private var safeKoin: MainThreadValue<Koin>? = null
 
-    override fun get(): Koin = _koin ?: error("KoinApplication has not been started")
+    override fun get(): Koin = safeKoin?.get() ?: error("KoinApplication has not been started")
 
-    override fun getOrNull(): Koin? = _koin
+    override fun getOrNull(): Koin? = safeKoin?.get()
 
     private fun register(koinApplication: KoinApplication) {
-        if (_koin != null) {
+        if (safeKoin?.get() != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }
-        _koin = koinApplication.koin
+        safeKoin = MainThreadValue(koinApplication.koin)
     }
 
     override fun stopKoin() = PlatformTools.synchronized(this) {
-        _koin?.close()
-        _koin = null
+        safeKoin?.get()?.close()
+        safeKoin = null
     }
 
 

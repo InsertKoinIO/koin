@@ -3,8 +3,8 @@ buildscript {
     apply from: "./gradle/versions-android.gradle"
 
     repositories {
-      maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-      maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies' }
+//      maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+//      maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies' }
       mavenLocal()
         google()
         jcenter()
@@ -12,13 +12,13 @@ buildscript {
     dependencies {
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // Bintray
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
-        // Dokka
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
-        // Android
-        classpath "com.android.tools.build:gradle:$android_gradle_version"
-        classpath "digital.wup:android-maven-publish:$android_maven_publish"
+//        // Bintray
+//        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
+//        // Dokka
+//        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+//        // Android
+//        classpath "com.android.tools.build:gradle:$android_gradle_version"
+//        classpath "digital.wup:android-maven-publish:$android_maven_publish"
     }
 }
 
@@ -28,7 +28,7 @@ wrapper {
 allprojects {
 
     repositories {
-      maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+//      maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
       mavenLocal()
         google()
         jcenter()
@@ -38,13 +38,13 @@ allprojects {
     version = "$koin_version"
 
     // Dokka
-    apply plugin: 'org.jetbrains.dokka'
-    dokka {
-        outputFormat = 'html'
-        outputDirectory = "$buildDir/javadoc"
-    }
-    task dokkaJar(type: Jar) {
-        classifier = 'javadoc'
-        from dokka
-    }
+//    apply plugin: 'org.jetbrains.dokka'
+//    dokka {
+//        outputFormat = 'html'
+//        outputDirectory = "$buildDir/javadoc"
+//    }
+//    task dokkaJar(type: Jar) {
+//        classifier = 'javadoc'
+//        from dokka
+//    }
 }
