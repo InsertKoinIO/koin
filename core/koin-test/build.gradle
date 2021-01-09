@@ -1,0 +1,14 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'koin-test'
+description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+
+dependencies {
+    // Koin
+    api project(":koin-core")
+    api project(":koin-test-core")
+    implementation "junit:junit:$junit_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+}
+
+apply from: '../../gradle/publish.gradle'
