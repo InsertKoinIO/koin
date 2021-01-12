@@ -1,14 +1,4 @@
 
-// Android
-include 'koin-android'
-//include 'koin-android-scope' ,'koin-android-viewmodel'
-//include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
-//include 'koin-androidx-workmanager'
-//include 'koin-androidx-compose'
-//
-//// Android Ext
-//include 'koin-android-ext'
-//include 'koin-androidx-ext'
-
+include 'koin-android-compose'
 
 enableFeaturePreview('GRADLE_METADATA')

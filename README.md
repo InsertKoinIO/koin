@@ -51,7 +51,7 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
-koin_version = '2.1.5'
+koin_version = '3.0.1-alpha-1'
 ```
 
 ## Gradle 
@@ -95,35 +95,19 @@ implementation "org.koin:koin-core:$koin_version"
 implementation "org.koin:koin-core-ext:$koin_version"
 // Koin for Unit tests
 testImplementation "org.koin:koin-test:$koin_version"
-// Koin for Java developers is now part of core
-// implementation "org.koin:koin-java:$koin_version"
 ```
 
 #### Android
 
 ```gradle
-// Koin for Android
+// Main Android features, Scope, ViewModel
 implementation "org.koin:koin-android:$koin_version"
-// Koin Android Scope features
-implementation "org.koin:koin-android-scope:$koin_version"
-// Koin Android ViewModel features
-implementation "org.koin:koin-android-viewmodel:$koin_version"
 // Koin Android Experimental features
 implementation "org.koin:koin-android-ext:$koin_version"
-```
-
-#### AndroidX
-
-```gradle
-
-// Koin AndroidX Scope features
-implementation "org.koin:koin-androidx-scope:$koin_version"
-// Koin AndroidX ViewModel features
-implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-// Koin AndroidX Fragment features
-implementation "org.koin:koin-androidx-fragment:$koin_version"
-// Koin AndroidX Experimental features
-implementation "org.koin:koin-androidx-ext:$koin_version"
+// Work Manager
+implementation "org.koin:koin-android-workmanager:$koin_version"
+// Compose features
+implementation "org.koin:koin-android-compose:$koin_version"
 ```
 
 #### Ktor
