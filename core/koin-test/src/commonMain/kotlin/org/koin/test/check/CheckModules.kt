@@ -20,13 +20,13 @@ import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternal
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.logger.Level
-import org.koin.core.logger.PrintLogger
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
+import org.koin.mp.PlatformTools
 import org.koin.test.mock.MockProvider
 import org.koin.test.parameter.MockParameter
 
@@ -40,8 +40,8 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     koinApplication(appDeclaration)
-            .logger(PrintLogger(level))
-            .checkModules(parameters)
+        .logger(PlatformTools.defaultLogger(level))
+        .checkModules(parameters)
 }
 
 /**
@@ -51,7 +51,7 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     logger.info("[Check] checking current modules ...")
 
     checkScopedDefinitions(
-            declareParameterCreators(parametersDefinition)
+        declareParameterCreators(parametersDefinition)
     )
 
     logger.info("[Check] modules checked")
@@ -59,7 +59,7 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
 }
 
 private fun Koin.declareParameterCreators(
-        parametersDefinition: CheckParameters?
+    parametersDefinition: CheckParameters?
 ) = ParametersBinding(this).also { binding ->
     parametersDefinition?.invoke(binding)
 }
@@ -73,8 +73,8 @@ private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
 
 @OptIn(KoinInternal::class)
 private fun Koin.checkScope(
-        scopeDefinition: ScopeDefinition,
-        allParameters: ParametersBinding
+    scopeDefinition: ScopeDefinition,
+    allParameters: ParametersBinding
 ) {
     val qualifier = scopeDefinition.qualifier
     val sourceScopeValue = mockSourceValue(qualifier)
@@ -93,14 +93,17 @@ private fun mockSourceValue(qualifier: Qualifier): Any? {
 
 @OptIn(KoinInternal::class)
 private fun checkDefinition(
-        allParameters: ParametersBinding,
-        definition: BeanDefinition<*>,
-        scope: Scope
+    allParameters: ParametersBinding,
+    definition: BeanDefinition<*>,
+    scope: Scope
 ) {
-    val parameters = allParameters.parametersCreators[CheckedComponent(definition.qualifier,
-            definition.primaryType)]?.invoke(
-            definition.qualifier)
-            ?: MockParameter(scope, allParameters.defaultValues)
+    val parameters = allParameters.parametersCreators[CheckedComponent(
+        definition.qualifier,
+        definition.primaryType
+    )]?.invoke(
+        definition.qualifier
+    )
+        ?: MockParameter(scope, allParameters.defaultValues)
     val scopeQualifier = scope._scopeDefinition.qualifier
     if (scopeQualifier is TypeQualifier) {
         scope.setSource(MockProvider.makeMock(scopeQualifier.type))

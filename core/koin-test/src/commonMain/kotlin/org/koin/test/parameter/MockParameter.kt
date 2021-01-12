@@ -2,6 +2,7 @@ package org.koin.test.parameter
 
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.scope.Scope
+import org.koin.mp.PlatformTools
 import org.koin.test.mock.MockProvider
 import kotlin.reflect.KClass
 
@@ -11,22 +12,23 @@ class MockParameter(
     private val defaultValues: MutableMap<String, Any>
 ) : DefinitionParameters(arrayListOf()) {
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
-        return defaultValues[clazz.simpleName] as? T
+        return defaultValues[PlatformTools.getClassName(clazz)] as? T
             ?: getDefaultPrimaryValue(clazz)
             ?: (MockProvider.makeMock(clazz)) as T
     }
 
     private fun <T> getDefaultPrimaryValue(clazz: KClass<*>): T? {
-        return when (clazz.simpleName) {
-            String::class.java.simpleName -> "" as T
-            Int::class.java.simpleName -> 0 as T
-            Double::class.java.simpleName -> 0.0 as T
-            Float::class.java.simpleName -> 0.0f as T
+        return when (PlatformTools.getClassName(clazz)) {
+            PlatformTools.getClassName(String::class) -> "" as T
+            PlatformTools.getClassName(Int::class) -> 0 as T
+            PlatformTools.getClassName(Double::class) -> 0.0 as T
+            PlatformTools.getClassName(Float::class) -> 0.0f as T
             else -> null
         }
     }
 
     override fun <T : Any> getOrNull(clazz: KClass<T>): T? {
-        return defaultValues.values.firstOrNull { it::class == clazz } as? T ?: getDefaultPrimaryValue(clazz) //?: elementAt(0, clazz)
+        return defaultValues.values.firstOrNull { it::class == clazz } as? T
+            ?: getDefaultPrimaryValue(clazz) //?: elementAt(0, clazz)
     }
 }

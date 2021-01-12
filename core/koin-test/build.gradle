@@ -1,13 +1,55 @@
-apply plugin: 'kotlin'
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 archivesBaseName = 'koin-test'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
-dependencies {
-    // Koin
-    api project(":koin-core")
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+kotlin {
+    jvm {
+        withJava()
+    }
+    js() {
+        nodejs()
+        browser()
+    }
+
+    def hostOs = System.getProperty("os.name")
+    def isMingwX64 = hostOs.startsWith("Windows")
+    KotlinNativeTargetWithTests nativeTarget
+    if (hostOs == "Mac OS X") nativeTarget = macosX64('native')
+    else if (hostOs == "Linux") nativeTarget = linuxX64("native")
+    else if (isMingwX64) nativeTarget = mingwX64("native")
+    else throw new GradleException("Host OS is not supported in Kotlin/Native.")
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(":koin-core")
+                api kotlin("stdlib-common")
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                api kotlin("stdlib-jdk8")
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation kotlin("test-junit")
+                implementation "org.mockito:mockito-inline:$mockito_version"
+            }
+        }
+    }
 }
 
-apply from: '../../gradle/publish.gradle'
+apply from: '../../gradle/publish2.gradle'
