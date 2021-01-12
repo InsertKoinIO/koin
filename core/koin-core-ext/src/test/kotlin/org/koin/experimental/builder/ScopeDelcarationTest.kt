@@ -1,7 +1,7 @@
 package org.koin.experimental.builder
 
 import org.junit.Assert
-import kotlin.test.Test
+import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication

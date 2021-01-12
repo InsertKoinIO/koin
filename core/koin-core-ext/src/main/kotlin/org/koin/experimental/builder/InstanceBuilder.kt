@@ -57,10 +57,10 @@ fun getArguments(constructor: Constructor<*>, context: Scope): Array<Any> {
     val length = constructor.parameterTypes.size
     return if (length == 0) emptyArray()
     else {
-        val result = Array<Any>(length) { Unit }
+        val result = Array<Any>(length) {}
         for (i in 0 until length) {
             val p = constructor.parameterTypes[i]
-            result[i] = context.get<Any>(p.kotlin, null, null)
+            result[i] = context.get(p.kotlin, null, null)
         }
         result
     }

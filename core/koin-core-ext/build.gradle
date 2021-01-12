@@ -8,10 +8,8 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 dependencies {
     // Koin
     api project(":koin-core")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-    testImplementation project(":koin-test")
+    testImplementation project(":koin-test-junit4")
+    testImplementation "junit:junit:$junit_version"
 }
 
 apply from: '../../gradle/publish.gradle'

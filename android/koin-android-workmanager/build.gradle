@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-androidx-workmanager"
+    pom_name = "koin-android-workmanager"
     pom_description = "Koin project - koin-androidx-workmanager"
 }
 
@@ -36,9 +36,10 @@ dependencies {
 
     // Test
     testImplementation "org.koin:koin-test:$koin_version"
+    testImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
-    androidTestImplementation "org.koin:koin-test:$koin_version"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1' //+ androidxTestJUnitVersion
     androidTestImplementation "androidx.work:work-testing:$androidx_workmanager"

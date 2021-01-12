@@ -19,11 +19,14 @@ android {
 
 dependencies {
     // Koin
+    api "org.koin:koin-core-ext:$koin_version"
     api project(":koin-android")
 
-    // Test
-    testImplementation "org-koin:koin-test:$koin_version"
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+//    // Test
+//    testImplementation "org.koin:koin-test:$koin_version"
+//    testImplementation "org.koin:koin-test-junit4:$koin_version"
+//    testImplementation "junit:junit:$junit_version"
+//    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
 apply from: '../../gradle/publish-android.gradle'

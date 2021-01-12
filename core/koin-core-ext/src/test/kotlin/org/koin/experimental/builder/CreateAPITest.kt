@@ -1,7 +1,7 @@
 package org.koin.experimental.builder
 
-import kotlin.test.*
-import kotlin.test.Test
+import org.junit.Assert.*
+import org.junit.Test
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.time.measureDuration

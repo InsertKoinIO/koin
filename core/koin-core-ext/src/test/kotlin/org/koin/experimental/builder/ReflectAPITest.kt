@@ -1,6 +1,6 @@
 package org.koin.experimental.builder
 
-import kotlin.test.Test
+import org.junit.Test
 import org.koin.core.time.measureDurationForResult
 import kotlin.reflect.KClass
 
