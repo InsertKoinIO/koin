@@ -1,13 +1,16 @@
 package org.koin.sample.androidx;
 
 import android.app.Application;
-import java.util.Collections;
+
 import org.koin.android.java.KoinAndroidApplication;
 import org.koin.core.KoinApplication;
-import org.koin.core.context.GlobalContext;
+import org.koin.core.logger.Level;
 import org.koin.core.module.Module;
 
-import static org.koin.core.context.GlobalContextExtKt.startKoin;
+import java.util.Collections;
+
+import static org.koin.core.context.DefaultContextExtKt.startKoin;
+
 
 public class MainJavaApplication extends Application {
 
@@ -16,9 +19,9 @@ public class MainJavaApplication extends Application {
         super.onCreate();
 
         KoinApplication koin =
-            KoinAndroidApplication.create(this)
-                .printLogger()
-                .modules(Collections.<Module>emptyList());
-        startKoin(GlobalContext.INSTANCE, koin);
+                KoinAndroidApplication.create(this)
+                        .printLogger(Level.INFO)
+                        .modules(Collections.<Module>emptyList());
+        startKoin(koin);
     }
 }

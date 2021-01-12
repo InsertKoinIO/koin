@@ -1,0 +1,17 @@
+
+// Main
+include 'coffee-maker'
+include 'android-perfs'
+
+
+// Android Samples
+//include 'android-samples'
+include 'androidx-samples'
+////include 'androidx-compose'
+////include 'androidx-compose-jetnews'
+
+include 'hello-ktor'
+//include 'multimodule-ktor:app'
+//include 'multimodule-ktor:common'
+//include 'multimodule-ktor:module-a'
+//include 'multimodule-ktor:module-b'

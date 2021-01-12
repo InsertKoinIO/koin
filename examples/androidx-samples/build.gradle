@@ -49,14 +49,19 @@ android {
 dependencies {
 
     // Koin
-    implementation project(":koin-androidx-ext")
-    implementation project(":koin-androidx-fragment")
-    implementation project(":koin-androidx-workmanager")
-    implementation 'junit:junit:4.12'
+    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-core-ext:$koin_version"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-android-ext:$koin_version"
+    implementation "org.koin:koin-android-workmanager:$koin_version"
 
-    testImplementation project(":koin-test")
+    implementation "junit:junit:$junit_version"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation "org.koin:koin-test:$koin_version"
+    testImplementation "org.koin:koin-test-junit4:$koin_version"
+
+    testImplementation "junit:junit:$junit_version"
+
     testImplementation "androidx.test:core:1.2.0"
     testImplementation "androidx.test.ext:junit:1.1.1"
     testImplementation "org.robolectric:robolectric:4.2.1"

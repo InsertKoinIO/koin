@@ -1,21 +1,10 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-//        classpath "org.koin:koin-gradle-plugin:$koin_version"
-    }
-}
-
 apply plugin: 'kotlin'
-//apply plugin: 'koin'
 
 dependencies {
-    implementation project(":koin-core")
-    testImplementation project(":koin-test")
+    implementation "org.koin:koin-core:$koin_version"
 
+    testImplementation "org.koin:koin-test:$koin_version"
+    testImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "junit:junit:$junit_version"
     testImplementation "io.mockk:mockk:$mockk_version"
-//    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }

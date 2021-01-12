@@ -96,7 +96,10 @@ class KoinApplication private constructor() {
     /**
      * Set Koin to use [PrintLogger], by default at [Level.INFO]
      */
-    fun printLogger(level: Level = Level.INFO) = PlatformTools.defaultLogger(level)
+    fun printLogger(level: Level = Level.INFO): KoinApplication {
+        koin.setupLogger(PlatformTools.defaultLogger(level))
+        return this
+    }
 
     /**
      * Create Single instances Definitions marked as createdAtStart
