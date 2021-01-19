@@ -71,21 +71,6 @@ repositories {
 
 Pick one of your Koin dependency:
 
-#### Gradle Plugin
-
-```gradle
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "org.koin:koin-gradle-plugin:$koin_version"
-    }
-}
-
-apply plugin: 'koin'
-```
-
 #### Core features
 
 ```gradle
