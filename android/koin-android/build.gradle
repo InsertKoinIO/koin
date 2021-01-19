@@ -43,9 +43,8 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.1.0"
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
-    testImplementation "org.koin:koin-test:$koin_version"
     testImplementation "org.koin:koin-test-junit4:$koin_version"
-    testImplementation "junit:junit:$junit_version"
+//    testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
 }
