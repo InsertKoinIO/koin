@@ -1,4 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.koin.android.ext">
+    package="org.koin.android.compat">
     <application/>
 </manifest>

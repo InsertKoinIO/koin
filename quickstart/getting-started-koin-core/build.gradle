@@ -1,0 +1,31 @@
+buildscript {
+    apply from: "../../gradle/versions.gradle"
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply from: "../../gradle/versions.gradle"
+apply plugin: 'kotlin'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    // Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // Koin
+    compile "org.koin:koin-core:$koin_version"
+    testCompile "org.koin:koin-test-junit4:$koin_version"
+
+    testCompile "org.mockito:mockito-inline:$mockito_version"
+}

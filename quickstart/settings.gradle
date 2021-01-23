@@ -1,0 +1,5 @@
+
+include 'getting-started-koin-core'
+include 'getting-started-koin-android'
+include 'getting-started-koin-android:app'
+include 'getting-started-koin-ktor'

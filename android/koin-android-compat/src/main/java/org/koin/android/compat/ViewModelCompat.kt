@@ -13,62 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.compat
+package org.koin.android.compat
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import androidx.lifecycle.ViewModelStoreOwner
+import org.koin.androidx.viewmodel.ViewModelOwner
+import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
 /**
- * Functions to help shared view models in Java
+ * LifecycleOwner functions to help for ViewModel in Java
  *
  * @author Jeziel Lago
  */
-object SharedViewModelCompat {
+object ViewModelCompat {
 
     /**
-     * Lazy getByClass a viewModel instance shared with Activity
+     * Lazy get a viewModel instance
      *
-     * @param fragment - Fragment
+     * @param owner - LifecycleOwner
+     * @param clazz - viewModel class dependency
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
-     * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: "parentFragment", "activity". Default: "activity"
      * @param parameters - parameters to pass to the BeanDefinition
-     * @param clazz
      */
     @JvmOverloads
     @JvmStatic
-    fun <T : ViewModel> sharedViewModel(
-        fragment: Fragment,
+    fun <T : ViewModel> viewModel(
+        owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = fragment.sharedViewModel(qualifier, null, { from(fragment.requireActivity().viewModelStore) },
-        clazz.kotlin,
-        parameters)
+    ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, parameters) }
+
 
     /**
-     * Get a shared viewModel instance from underlying Activity
+     * Get a viewModel instance
      *
-     * @param fragment - Fragment
+     * @param owner - LifecycleOwner
+     * @param clazz - Class of the BeanDefinition to retrieve
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
-     * @param from - ViewModelStoreOwner that will store the viewModel instance. Examples: ("parentFragment", "activity"). Default: "activity"
      * @param parameters - parameters to pass to the BeanDefinition
-     * @param clazz
      */
     @JvmOverloads
     @JvmStatic
-    fun <T : ViewModel> getSharedViewModel(
-        fragment: Fragment,
+    fun <T : ViewModel> getViewModel(
+        owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T {
-        return fragment.getSharedViewModel(qualifier, null, { from(fragment.requireActivity().viewModelStore) },
-            clazz.kotlin,
-            parameters)
-    }
+    ): T = GlobalContext.get().getViewModel(qualifier, null, { ViewModelOwner.from(owner) }, clazz.kotlin, parameters)
 }

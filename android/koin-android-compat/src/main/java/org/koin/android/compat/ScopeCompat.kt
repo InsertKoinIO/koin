@@ -13,45 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.viewmodel.compat
+package org.koin.android.compat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.koin.getViewModel
-import org.koin.core.context.GlobalContext
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
- * LifecycleOwner functions to help for ViewModel in Java
+ * Scope functions to help for ViewModel in Java
  *
  * @author Jeziel Lago
  */
-object ViewModelCompat {
+object ScopeCompat {
 
     /**
      * Lazy get a viewModel instance
      *
-     * @param owner - LifecycleOwner
-     * @param clazz - viewModel class dependency
+     * @param scope
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
+     * @param clazz
      */
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
+        scope: Scope,
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, parameters) }
+    ): Lazy<T> = lazy(mode) {
+        scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
+    }
 
 
     /**
      * Get a viewModel instance
      *
-     * @param owner - LifecycleOwner
      * @param clazz - Class of the BeanDefinition to retrieve
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
@@ -59,9 +62,12 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getViewModel(
+        scope: Scope,
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T = GlobalContext.get().getViewModel(qualifier, null, { ViewModelOwner.from(owner) }, clazz.kotlin, parameters)
+    ): T {
+        return scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
+    }
 }
