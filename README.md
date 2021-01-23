@@ -74,7 +74,7 @@ Pick one of your Koin dependency:
 #### Core features
 
 ```gradle
-// Koin for Kotlin
+// Koin for Kotlin (Multiplatform)
 implementation "org.koin:koin-core:$koin_version"
 // Koin extended & experimental features
 implementation "org.koin:koin-core-ext:$koin_version"
@@ -90,9 +90,9 @@ implementation "org.koin:koin-android:$koin_version"
 // Koin Android Experimental features
 implementation "org.koin:koin-android-ext:$koin_version"
 // Work Manager
-implementation "org.koin:koin-android-workmanager:$koin_version"
+implementation "org.koin:koin-androidx-workmanager:$koin_version"
 // Compose features
-implementation "org.koin:koin-android-compose:$koin_version"
+implementation "org.koin:koin-androidx-compose:$koin_version"
 ```
 
 #### Ktor
@@ -100,6 +100,8 @@ implementation "org.koin:koin-android-compose:$koin_version"
 ```gradle
 // Koin for Ktor Kotlin
 implementation "org.koin:koin-ktor:$koin_version"
+// SLF4J Logger
+implementation "org.koin:koin-logger-slf4j:$koin_version"
 ```
 
 # Quickstart
