@@ -1,4 +1,4 @@
 
-include 'koin-android-compose'
+include 'koin-androidx-compose'
 
 enableFeaturePreview('GRADLE_METADATA')

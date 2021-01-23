@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-androidx-ext"
+    pom_name = "koin-android-ext"
     pom_description = "Koin project - koin-androidx-ext"
 }
 

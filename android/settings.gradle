@@ -2,6 +2,6 @@
 // Android
 include 'koin-android'
 include 'koin-android-ext'
-include 'koin-android-workmanager'
+include 'koin-androidx-workmanager'
 
 enableFeaturePreview('GRADLE_METADATA')

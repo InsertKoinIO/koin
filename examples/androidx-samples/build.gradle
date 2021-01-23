@@ -53,7 +53,7 @@ dependencies {
     implementation "org.koin:koin-core-ext:$koin_version"
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-android-ext:$koin_version"
-    implementation "org.koin:koin-android-workmanager:$koin_version"
+    implementation "org.koin:koin-androidx-workmanager:$koin_version"
 
     implementation "junit:junit:$junit_version"
 

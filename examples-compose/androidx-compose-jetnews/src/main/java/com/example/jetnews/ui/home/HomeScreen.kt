@@ -47,14 +47,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
@@ -134,17 +135,23 @@ fun HomeScreen(
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
+
+        // If onRefreshPosts or onErrorDismiss change while the LaunchedEffect is running,
+        // don't restart the effect and use the latest lambda values.
+        val onRefreshPostsState by rememberUpdatedState(onRefreshPosts)
+        val onErrorDismissState by rememberUpdatedState(onErrorDismiss)
+
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
-        // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
-        // only start when posts.hasError is true (due to the above if-check).
-        LaunchedEffect(posts.hasError) {
+        // automatically dismiss. This coroutine will cancel whenever posts.hasError is false
+        // (thanks to the surrounding if statement) or if scaffoldState changes.
+        LaunchedEffect(scaffoldState) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
             )
             when (snackbarResult) {
-                SnackbarResult.ActionPerformed -> onRefreshPosts()
-                SnackbarResult.Dismissed -> onErrorDismiss()
+                SnackbarResult.ActionPerformed -> onRefreshPostsState()
+                SnackbarResult.Dismissed -> onErrorDismissState()
             }
         }
     }
@@ -423,7 +430,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -441,7 +448,7 @@ fun PreviewHomeScreenBodyDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val posts = runBlocking {
         BlockingFakePostsRepository(context).getPosts()
     }
@@ -456,7 +463,7 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

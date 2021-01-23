@@ -39,12 +39,10 @@ dependencies {
         exclude group: "androidx.legacy"
     }
 
-//    implementation "androidx.activity:activity:1.2.0-rc01"
     implementation "androidx.activity:activity-ktx:1.1.0"
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
     testImplementation "org.koin:koin-test-junit4:$koin_version"
-//    testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
 }
