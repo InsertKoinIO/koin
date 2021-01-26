@@ -1,3 +1,6 @@
+---
+title: Injection Parameters
+---
 
 In any definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
@@ -9,7 +12,7 @@ Below is an example of injection parameters. We established that we need a `view
 class Presenter(val view : View)
 
 val myModule = module {
-    single{ (view : View) -> Presenter(view) }
+    single { (view : View) -> Presenter(view) }
 }
 ```
 

@@ -1,12 +1,14 @@
-
-# Getting Started with Kotlin app {docsify-ignore-all}
+---
+title: Kotlin
+---
 
 > This tutorial lets you write a Kotlin application and use Koin inject and retrieve your components.
 
 ## Get the code
 
-> Checkout the project directly on Github or download the zip file <br>
-> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-core) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-core/archive/master.zip)
+:::info
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-core)
+:::
 
 ## Setup
 
@@ -19,9 +21,9 @@ repositories {
 }
 dependencies {
     // Koin for Kotlin apps
-    compile 'org.koin:koin-core:$koin_version'
+    compile "org.koin:koin-core:$koin_version"
     // Testing
-    testCompile 'org.koin:koin-test:$koin_version'
+    testCompile "org.koin:koin-test:$koin_version"
 }
 ```
 

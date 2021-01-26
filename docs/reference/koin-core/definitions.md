@@ -1,3 +1,6 @@
+---
+title: Definitions
+---
 
 By using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
 
@@ -38,7 +41,7 @@ The result type of your lambda is the main type of your component
 
 ## Defining a factory
 
-A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition (this instance is not retrained by Koin container, as it won't inject this instance in other definitions later). Use the `factory` function with a lambda expression to build a component.
+A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition (this instance is not retained by Koin container, as it won't inject this instance in other definitions later). Use the `factory` function with a lambda expression to build a component.
 
 ```kotlin
 class Controller()
@@ -50,15 +53,18 @@ val myModule = module {
 }
 ```
 
-?> Koin container doesn't retain factory instances as it will give a new instance each time the definition is asked.
+:::info
+ Koin container doesn't retain factory instances as it will give a new instance each time the definition is asked.
+:::
 
 ## Resolving & injecting dependencies
 
 Now that we can declare components definitions, we want to link instances with dependency injection. To *resolve an instance* in a Koin module, just use the `get()`
 function to the requested needed component instance. This `get()` function is usually used into constructor, to inject constructor values.
 
-!> To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve dependencies in class constructors. This way, your instance will be created with injected instances from Koin.
-
+:::info
+ To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve dependencies in class constructors. This way, your instance will be created with injected instances from Koin.
+:::
 
 Let's take an example with several classes:
 
@@ -125,7 +131,9 @@ val myModule = module {
 }
 ```
 
-?> This 2nd way of style declaration is preferred and will be used for the rest of the documentation.
+:::note
+ This 2nd way of style declaration is preferred and will be used for the rest of the documentation.
+:::
 
 ## Additional type binding
 
@@ -171,7 +179,7 @@ val myModule = module {
     single<Service>(named("test")) { ServiceImpl() }
 }
 
-val service : Service by inject(name = named("default"))
+val service : Service by inject(qualifier = named("default"))
 ```
 
 `get()` and `by inject()` functions let you specify a definition name if needed. This name is a `qualifier` produced by the `named()` function.
@@ -220,11 +228,11 @@ Koin DSL also proposes some flags.
 
 ### Create instances at start
 
-A definition or a module can be flagged as `createOnStart`, to be created at start (or when you want). First set the `createOnStart` flag on your module
+A definition or a module can be flagged as `CreatedAtStart`, to be created at start (or when you want). First set the `createOnStart` flag on your module
 or on your definition.
 
 
-CreateAtStart flag on a definition
+CreatedAtStart flag on a definition
 
 ```kotlin
 val myModuleA = module {
@@ -235,11 +243,11 @@ val myModuleA = module {
 val myModuleB = module {
 
     // eager creation for this definition
-    single<Service>(createAtStart=true) { TestServiceImp() }
+    single<Service>(createdAtStart=true) { TestServiceImp() }
 }
 ```
 
-CreateAtStart flag on a module
+CreatedAtStart flag on a module
 
 ```kotlin
 val myModuleA = module {
@@ -247,13 +255,13 @@ val myModuleA = module {
     single<Service> { ServiceImp() }
 }
 
-val myModuleB = module(createAtStart=true) {
+val myModuleB = module(createdAtStart=true) {
 
     single<Service>{ TestServiceImp() }
 }
 ```
 
-The `startKoin` function will automatically create definitions instances flagged with `createAtStart`.
+The `startKoin` function will automatically create definitions instances flagged with `createdAtStart`.
 
 ```kotlin
 // Start Koin modules
@@ -262,8 +270,9 @@ startKoin {
 }
 ```
 
-?> if you need to load some definition at a special time (in a background thread instead of UI for example), just get/inject the desired components.
-
+:::info
+if you need to load some definition at a special time (in a background thread instead of UI for example), just get/inject the desired components.
+:::
 
 
 ### Dealing with generics

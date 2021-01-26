@@ -1,3 +1,6 @@
+---
+title: Logging
+---
 
 Koin has a simple logging API to log any Koin activity (allocation, lookup ...). The logging API is represented by the class below:
 

@@ -1,15 +1,22 @@
+---
+title: Experimental Features
+---
 
 The `koin-core-ext` brings extensions & experimental features to Koin.
 
-!> Those features are experimental
+:::caution
+ Those features are experimental
+:::
 
 ## Better definition declaration (Experimental)
 
 Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters
 or special scope Id), we can go with more compact writing style thanks to API below.
 
-?> Using reflection is not costless. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on
+:::note
+ Using reflection is not costless. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on
 performances constraints platform (Android for example)
+:::
 
 ## Building any instance with create()
 
@@ -49,6 +56,10 @@ module {
 }
 ```
 
-?> Works for single, factory & scope
+:::note
+ Works for single, factory & scope
+:::
 
-!> If you use custom constructors expression like injection parameters or others, don't use the reflection API.
+:::info
+ If you use custom constructors expression like injection parameters or others, don't use the reflection API.
+:::

@@ -1,3 +1,6 @@
+---
+title: Properties
+---
 
 Koin can handle properties from environment or external property file, to help you inject values into your definitions.
 

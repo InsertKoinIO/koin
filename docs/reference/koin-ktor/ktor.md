@@ -1,3 +1,6 @@
+---
+title: Koin for Ktor
+---
 
 The `koin-ktor` project is dedicated to bring dependency injection for Ktor.
 
@@ -19,7 +22,11 @@ fun Application.main() {
 }
 ```
 
-?> You can also start it from outside of Ktor, but you won't be compatible with `autoreload` feature.
+:::note
+ You can also start it from outside of Ktor, but you won't be compatible with `autoreload` feature.
+:::
+
+### Application
 
 KoinComponent powers are available from `Application` class:
 
@@ -38,6 +45,8 @@ fun Application.main() {
     }
 }
 ```
+
+### Routing
 
 From `Routing` class:
 
@@ -66,6 +75,7 @@ fun Routing.v1() {
 
 ```
 
+### Route
 
 From `Route` class:
 
@@ -98,13 +108,11 @@ fun Route.hello() {
 
 ```
 
+### Events
 
 Use Koin events
 
-see link:++../../../examples/hello-ktor++[hello-ktor] example
-
-[source,kotlin]
-----
+```kotlin
 fun Application.main() {
     // ...
 
@@ -124,6 +132,5 @@ fun Application.main() {
 
     //...
 }
-
-----
+```
 

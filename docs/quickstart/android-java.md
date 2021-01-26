@@ -1,12 +1,14 @@
-# Getting Started with Android Java application {docsify-ignore-all}
+---
+title: Android Java
+---
 
 > This tutorial lets you write an Android Java application and use Koin inject and retrieve your components.
 
 ## Get the code
 
-Checkout the project directly on Github or download the zip file
-
-> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-android) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-android/archive/master.zip)
+:::info
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-android)
+:::
 
 ## Gradle Setup
 
@@ -19,7 +21,7 @@ repositories {
 }
 dependencies {
     // Koin for Android
-    compile 'org.koin:koin-android:$koin_version'
+    compile "org.koin:koin-android:$koin_version"
 }
 ```
 
@@ -72,7 +74,9 @@ val appModule = module {
 }
 ```
 
-?> we declare our MySimplePresenter class as `factory` to have a create a new instance each time our Activity will need one.
+:::info
+we declare our MySimplePresenter class as `factory` to have a create a new instance each time our Activity will need one.
+:::
 
 ## Start Koin
 
@@ -87,7 +91,7 @@ class MyApplication extends Application {
         // Start Koin
         KoinApplication koin = KoinAndroidApplication.create(this)
             .modules(appModule);
-        startKoin(new GlobalContext(), koin);
+        startKoin(koin);
     }
 }
 ```
@@ -115,6 +119,9 @@ public class JavaActivity extends AppCompatActivity {
 }
 ```
 
-?> The `inject()` function allows us to retrieve a lazy Koin instances, in Android components runtime (Activity, fragment, Service...)
+:::info
 
-?> The `get()`function is here to retrieve directly an instance (non lazy)
+* The `inject()` function allows us to retrieve a lazy Koin instances, in Android components runtime (Activity, fragment, Service...)
+* The `get()`function is here to retrieve directly an instance (non lazy)
+
+:::

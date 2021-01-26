@@ -1,5 +1,6 @@
-
-# Getting Started with Ktor
+---
+title: Ktor
+---
 
 > Ktor is a framework for building asynchronous servers and clients in connected systems using the powerful Kotlin programming language. We will use Ktor here, to build a simple web application.
 
@@ -19,9 +20,9 @@ Let's go 🚀
 
 ## Get the code
 
-> Checkout the project directly on Github or download the zip file <br>
-> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-ktor) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-ktor/archive/master.zip)
-
+:::info
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-ktor)
+:::
 
 ## Gradle Setup
 
@@ -34,7 +35,7 @@ repositories {
 }
 dependencies {
     // Koin for Kotlin apps
-    compile 'org.koin:koin-ktor:$koin_version'
+    compile "org.koin:koin-ktor:$koin_version"
 }
 ```
 
@@ -147,16 +148,4 @@ fun main(args: Array<String>) {
 }
 ```
 
-That's it! You're ready to go. Chech the `http://localhost:8080/hello` url!
-
-## What's Next?
-
-You have finished this starting tutorial. Below are some topics for further reading:
-
-* Check the [DSL quick references]({{ site.baseurl }}/docs/{{ site.docs_version }}/quick-references/)
-* Read the [full documentation]({{ site.baseurl }}/docs/{{ site.docs_version }}/documentation/reference/index.html)
-
-Also other getting started project:
-
-* [Getting started Android]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/android/)
-* [Getting started Core]({{ site.baseurl }}/docs/{{ site.docs_version }}/getting-started/kotlin/)
+That's it! You're ready to go. Check the `http://localhost:8080/hello` url!

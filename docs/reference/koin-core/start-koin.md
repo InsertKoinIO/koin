@@ -1,8 +1,7 @@
-## What is Koin?
+---
+title: Start Koin
+---
 
-Koin is pragmatic lightweight dependency injection framework for Kotlin developers. Written in pure Kotlin, using functional resolution as key concept. Koin is a DSL, a lightweight container and a pragmatic API.
-
-## Start the container
 
 Koin is a DSL, a lightweight container and a pragmatic API. Once you have declared your definitions within Koin modules, your are ready to start the Koin container.
 
@@ -28,20 +27,16 @@ Your Koin container can have several options:
 * `properties()`, `fileProperties( )` or `environmentProperties( )` to load properties from environment, koin.properties file, extra properties ... - see <<properties.adoc#_lproperties,properties>> section
 
 
-!> The `startKoin` can't be called more than once. If you need several point to load modules, use the `loadKoinModules` function.
-
+:::info
+ The `startKoin` can't be called more than once. If you need several point to load modules, use the `loadKoinModules` function.
+:::
 
 ### Behind the start - Koin instance under the hood
 
 When we start Koin, we create a `KoinApplication` instance that represents the Koin container configuration instance. Once launched, it will produce a `Koin` instance resulting of your modules and options.
 This `Koin` instance is then hold by the `GlobalContext`, to be used by any `KoinComponent` class.
 
-The `GlobalContext` is a default JVM context strategy for Koin. It's not accessible anymore directly, as we need a component to manage different kind of context: `KoinContextHandler`
-
-`KoinContextHandler` is responsible to register and give access to the underlying KoinContext. It's called by `startKoin` to register a new `GlobalContext`. This will allow us to register a different kind of context, in the perspective of Koin Multiplatform. `KoinContextHandler`  is then ready once `startKoin` has finished.
-
-
-
+The `GlobalContext` is a default JVM context strategy for Koin. It's called by `startKoin` and register to `GlobalContext`. This will allow us to register a different kind of context, in the perspective of Koin Multiplatform.
 
 ### Loading modules after startKoin
 

@@ -1,7 +1,6 @@
-
-The `koin-android-viewmodel` project is dedicated to bring Android Architecture ViewModel features.
-
-## ViewModel DSL
+---
+title: ViewModel
+---
 
 The `koin-android-viewmodel` introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel
 component and bind it to an Android Component lifecycle.
@@ -18,9 +17,11 @@ val appModule = module {
 Your declared component must at least extends the `android.arch.lifecycle.ViewModel` class. You can specify how you inject the *constructor* of the class
 and use the `get()` function to inject dependencies.
 
-?> The `viewModel` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
+:::info
+- The `viewModel` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
 
-?> The `viewModel` keyword can also let you use the injection parameters.
+- The `viewModel` keyword can also let you use the injection parameters.
+:::
 
 ## Injecting your ViewModel
 
@@ -50,10 +51,10 @@ import static org.koin.android.viewmodel.compat.ViewModelCompat.getViewModel;
 public class JavaActivity extends AppCompatActivity {
 
     // lazy ViewModel
-    private Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
+    private final Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
 
     // directly get the ViewModel instance
-    private DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
+    private final DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +66,9 @@ public class JavaActivity extends AppCompatActivity {
 }
 ```
 
-> ViewModel API is accessible from Koin & Scope instances. But also from [`ViewModelStoreOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
+:::note 
+ViewModel API is accessible from Koin & Scope instances. But also from [`ViewModelStoreOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
+:::
 
 ## Shared ViewModel
 
@@ -116,7 +119,9 @@ class WeatherListFragment : Fragment() {
 }
 ```
 
-?> The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
+:::info 
+The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
+:::
 
 For your Java Fragment, must be used `sharedViewModel` or `getSharedViewModel` from `SharedViewModelCompat`.
 
@@ -126,7 +131,7 @@ import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedView
 
 public class JavaFragment extends Fragment {
 
-    private Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
+    private final Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -163,40 +168,57 @@ class DetailActivity : AppCompatActivity() {
 }
 ```
 
+## Custom ViewModelStore, ViewModelStoreOwner & SavedStateRegistryOwner
+
+When you need to target a particular `ViewModelStore`, `ViewModelStoreOwner` or even a `SavedStateRegistryOwner` you can specify it in the ViewModel API.
+
+To do so, you can use the `ViewModelOwnerDefinition` API to let you define what you need, with the `from` function, with the `owner : ViewModelOwnerDefinition` attribute:
+
+```kotlin
+fun from(store: ViewModelStore, stateRegistry: SavedStateRegistryOwner?)
+fun from(storeOwner: ViewModelStoreOwner, stateRegistry: SavedStateRegistryOwner?)
+fun fromAny(owner: Any)
+```
+
+For example:
+
+```kotlin
+class DetailActivity : AppCompatActivity() {
+
+    // Lazy inject ViewModel from myViewModelStoreOwner, a custom ViewModelStoreOwner
+    val detailViewModel: DetailViewModel by viewModel( owner = { from(myViewModelStoreOwner) })
+}
+```
+
 ## ViewModel and State Bundle
 
-in `koin-androidx-viewmodel:2.1.0-alpha-10` we reviewed a cleaner way to deal with state bundle for your `ViewModel`.
-
-Add a new property typed `SavedStateHandle` to your constructor:
+Add a new property typed `SavedStateHandle` to your constructor to handle your ViewModel state:
 
 ```kotlin
 class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
 ```
 
-In Koin module, use parameter injection:
+In Koin module, just resolve it with `get()`:
 
 ```kotlin
-viewModel { (handle: SavedStateHandle) -> MyStateVM(handle, get()) }
+viewModel { MyStateVM(get(), get()) }
 ```
 
-!> `SavedStateHandle` argument is always inserted as the first parameters
-
-In Your Activity/Fragment, use the `getStateViewModel()` or `by stateViewModel()` API to reach your StateViewModel:
+Just call your ViewModel:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel()
+val myStateVM: MyStateVM by viewModel()
 ```
 
-You can even pass a bundle as state argument:
+You can even pass a bundle data as your state argument. Use the `state` property like follow:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel(bundle = myBundle)
+val myStateVM: MyStateVM by viewModel(state = { myBundle })
 ```
 
-
-> StateViewModel API is accessible from Koin & Scope instances. But also from [`SavedStateRegistryOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
-
-
+:::note 
+StateViewModel API is accessible from Koin & Scope instances.
+:::
 
 
 

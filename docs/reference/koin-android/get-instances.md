@@ -1,3 +1,6 @@
+---
+title: Inject instances
+---
 
 Once you have declared some modules and you have started Koin, how can you retrieve your instances in your
 Android Activity Fragments or Services?
@@ -8,8 +11,6 @@ Activity, Fragment & Service are extended with the KoinComponents extension. You
 
 * `by inject()` - lazy evaluated instance from Koin container
 * `get()` - eager fetch instance from Koin container
-* `release()` - release module's instances from its path
-* `getProperty()`/`setProperty()` - get/set property
 
 For a module that declares a 'presenter' component:
 
@@ -22,7 +23,6 @@ val androidModule = module {
 
 We can declare a property as lazy injected:
 
-.Lazy inject a property
 ```kotlin
 class DetailActivity : AppCompatActivity() {
 
@@ -37,7 +37,6 @@ class DetailActivity : AppCompatActivity() {
 
 Or we can just directly get an instance:
 
-.Get directly an instance
 ```kotlin
 class DetailActivity : AppCompatActivity() {
 

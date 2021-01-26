@@ -1,12 +1,14 @@
-# Getting Started with Android ViewModel application {docsify-ignore-all}
+---
+title: Android ViewModel
+---
 
 > This tutorial lets you write an Android/Kotlin application and use Koin inject and retrieve your ViewModel components.
 
 ## Get the code
 
-Checkout the project directly on Github or download the zip file
-
-> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-android) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-android/archive/master.zip)
+:::info
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-android)
+:::
 
 ## Gradle Setup
 
@@ -20,7 +22,7 @@ repositories {
 dependencies {
     // Koin for Android - Scope feature
     // include koin-android-scope & koin-android
-    compile 'org.koin:koin-android-viewmodel:$koin_version'
+    compile "org.koin:koin-android:$koin_version"
 }
 ```
 
@@ -61,8 +63,9 @@ val appModule = module {
     viewModel { MyViewModel(get()) }
 }
 ```
-
-?> we declare our MyViewModel class as a `viewModel` in a `module`. Koin will give a `MyViewModel` to the lifecycle ViewModelFactory and help bind it to the current component.
+:::info
+we declare our MyViewModel class as a `viewModel` in a `module`. Koin will give a `MyViewModel` to the lifecycle ViewModelFactory and help bind it to the current component.
+:::
 
 ## Start Koin
 
@@ -101,6 +104,8 @@ class MyViewModelActivity : AppCompatActivity() {
 }
 ```
 
-?>The `by viewModel()` function allows us to retrieve a ViewModel instance from Koin, linked to the Android ViewModelFactory.
+:::info
+>The `by viewModel()` function allows us to retrieve a ViewModel instance from Koin, linked to the Android ViewModelFactory.
 
-?> The `getViewModel()` function is here to retrieve directly an instance (non lazy)
+> The `getViewModel()` function is here to retrieve directly an instance (non lazy)
+:::

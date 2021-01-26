@@ -1,3 +1,6 @@
+---
+title: Starting Koin on Android
+---
 
 The `koin-android` project is dedicated to provide Koin powers to Android world.
 
@@ -46,7 +49,6 @@ This logger is an Android implementation of the Koin logger.
 
 Up to you to change this logger if it doesn't suits to your needs.
 
-.Shut off Koin Logger
 ```kotlin
 class MainApplication : Application() {
 
@@ -69,7 +71,6 @@ class MainApplication : Application() {
 
 You can use Koin properties in the `assets/koin.properties` file, to store keys/values:
 
-.Use Koin extra properties
 ```kotlin
 // Shut off Koin Logger
 class MainApplication : Application() {

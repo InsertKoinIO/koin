@@ -1,12 +1,14 @@
-
-# Getting Started with JUnit Tests {docsify-ignore-all}
+---
+title: JUnit Tests
+---
 
 > This tutorial lets you test a Kotlin application and use Koin inject and retrieve your components.
 
 ## Get the code
 
-> Checkout the project directly on Github or download the zip file <br>
-> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-core) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-core/archive/master.zip)
+:::info
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-core)
+:::
 
 ## Gradle Setup
 
@@ -19,7 +21,9 @@ repositories {
 }
 dependencies {
     // Koin testing tools
-    testcompile 'org.koin:koin-test:$koin_version'
+    testcompile "org.koin:koin-test:$koin_version"
+    // Needed JUnit version
+    testcompile "org.koin:koin-test-junit4:$koin_version"
 }
 ```
 
@@ -90,48 +94,4 @@ class HelloMockTest : KoinTest {
         Mockito.verify(service,times(1)).hello()
     }
 }
-```
-
-## Verifying modules
-
-We can use the Koin gradle plugin to let us run our module checks:
-
-```gradle
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "org.koin:koin-gradle-plugin:$koin_version"
-    }
-}
-
-apply plugin: 'koin'
-```
-
-Let's write our check test as follow:
-- using a JUnit `CheckModuleTest` category
-- test modules with `checkModules { }` API
-
-```kotlin
-@Category(CheckModuleTest::class)
-class ModuleCheckTest : AutoCloseKoinTest() {
-
-    @Test
-    fun checkModules() = checkModules {
-        modules(helloModule)
-    }
-}
-```
-
-Let's check our modules via Gradle command:
-
-```
-./gradlew checkModules
-```
-
-or 
-
-```
-./gradlew checkModules --continuous
 ```

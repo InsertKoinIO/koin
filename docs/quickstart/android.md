@@ -1,12 +1,14 @@
-# Getting Started with Android application {docsify-ignore-all}
+---
+title: Android
+---
 
 > This tutorial lets you write an Android/Kotlin application and use Koin inject and retrieve your components.
 
 ## Get the code
 
-Checkout the project directly on Github or download the zip file
-
-> 🚀 Go to [Github](https://github.com/InsertKoinIO/getting-started-koin-android) or [download Zip](https://github.com/InsertKoinIO/getting-started-koin-android/archive/master.zip)
+:::info
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-android)
+:::
 
 ## Gradle Setup
 
@@ -19,7 +21,7 @@ repositories {
 }
 dependencies {
     // Koin for Android
-    compile 'org.koin:koin-android:$koin_version
+    compile "org.koin:koin-android:$koin_version"
 }
 ```
 
@@ -99,7 +101,10 @@ class MySimpleActivity : AppCompatActivity() {
 }
 ```
 
-?> The `by inject()` function allows us to retrieve Koin instances, in Android components runtime (Activity, fragment, Service...)
+:::info
+The `by inject()` function allows us to retrieve Koin instances, in Android components runtime (Activity, fragment, Service...)
+:::
 
-?> The `get()` function is here to retrieve directly an instance (non lazy)
-
+:::info
+The `get()` function is here to retrieve directly an instance (non lazy)
+:::

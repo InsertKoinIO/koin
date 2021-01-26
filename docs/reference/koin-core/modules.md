@@ -1,3 +1,6 @@
+---
+title: Modules
+---
 
 By using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
 
@@ -34,7 +37,9 @@ val moduleB = module {
 }
 ```
 
-?> Koin does't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done.
+:::info 
+Koin does't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done.
+:::
 
 We just have to declare list of used modules when we start our Koin container:
 
@@ -139,5 +144,6 @@ val myModuleB = module(override#true) {
 }
 ```
 
-!> Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
-
+:::note
+ Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
+:::

@@ -1,4 +1,6 @@
-## Koin Components
+---
+title: Koin Component
+---
 
 Koin is a DSL to help describe your modules & definitions, a container to make definition resolution. What we need now is
 an API to retrieve our instances outside of the container. That's the goal of Koin components.
@@ -70,10 +72,12 @@ Koin offers two ways of retrieving instances from the Koin container:
 val myService : MyService by inject()
 
 // retrieve directly the instance
-val myService : MyService get()
+val myService : MyService = get()
 ```
 
-?> The lazy inject form is better to define property that need lazy evaluation.
+:::note
+ The lazy inject form is better to define property that need lazy evaluation.
+:::
 
 ## Resolving instance from its name
 
