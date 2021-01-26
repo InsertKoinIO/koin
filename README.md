@@ -1,4 +1,4 @@
-![logo](./img/koin_2.0.jpg)
+![logo](./docs/img/koin_2.0.jpg)
 
 ## What is KOIN?
  
