@@ -1,4 +1,4 @@
-package org.koin.core.state
+package org.koin.mp.native
 
 actual val isMainThread: Boolean
     get() {

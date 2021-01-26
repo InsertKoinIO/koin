@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 api project(":koin-core")
                 api kotlin("stdlib-common")
+                api kotlin("test-common")
             }
         }
 

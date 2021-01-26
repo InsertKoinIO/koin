@@ -1,7 +1,6 @@
 package org.koin.mp.native
 
 import kotlinx.cinterop.StableRef
-import platform.Foundation.NSThread
 import kotlin.native.concurrent.ensureNeverFrozen
 import kotlin.native.concurrent.freeze
 
@@ -20,8 +19,7 @@ class MainThreadValue<T : Any>(startVal: T) {
     }
 }
 
-// TODO is it ok?
-val isMainThread: Boolean = NSThread.isMainThread
+expect val isMainThread: Boolean// = NSThread.isMainThread
 
 internal fun assertMainThread() {
     if (!isMainThread) throw IllegalStateException("Must be main thread")
