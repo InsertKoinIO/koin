@@ -8,10 +8,9 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-Documentation:
-* [Setup](https://insert-koin.io/docs/setup/stable)
-* [Getting Stared](https://insert-koin.io/docs/quickstart/kotlin)
-* [Documentation References](https://insert-koin.io/docs/reference/introduction)
+### [Setup](https://insert-koin.io/docs/setup/stable)
+### [Getting Started](https://insert-koin.io/docs/quickstart/kotlin)
+### [Documentation References](https://insert-koin.io/docs/reference/introduction)
 
 ## Current Version
 
@@ -23,12 +22,12 @@ koin_version = '2.2.2'
 koin_version = '3.0.1-alpha-1'
 ```
 
-### Latest News 🌐
+## Latest News 🌐
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
 
-### Getting Help 🚒
+## Getting Help 🚒
 
 Any question about Koin usage? 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
@@ -49,9 +48,7 @@ Want to help or share a proposal about Koin? problem on a specific feature?
 
 Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob/master/CONTRIBUTING.adoc
 
-# Project support
-
-## Contributors
+### Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.adoc)].
 <a href="https://github.com/InsertKoinIO/koin/graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
