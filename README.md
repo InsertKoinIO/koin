@@ -8,6 +8,8 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
+### Setup 👉 https://insert-koin.io/docs/setup/](https://insert-koin.io/docs/setup/stable)
+
 ### Getting started 👉 [https://insert-koin.io/docs/quickstart/](https://insert-koin.io/docs/quickstart/kotlin)
 
 ## Current Version
