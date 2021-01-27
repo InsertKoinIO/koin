@@ -8,9 +8,10 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-### Setup 👉 https://insert-koin.io/docs/setup/](https://insert-koin.io/docs/setup/stable)
-
-### Getting started 👉 [https://insert-koin.io/docs/quickstart/](https://insert-koin.io/docs/quickstart/kotlin)
+Documentation:
+* [Setup](https://insert-koin.io/docs/setup/stable)
+* [Getting Stared](https://insert-koin.io/docs/quickstart/kotlin)
+* [Documentation References](https://insert-koin.io/docs/reference/introduction)
 
 ## Current Version
 
@@ -28,10 +29,6 @@ koin_version = '3.0.1-alpha-1'
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
 
 ### Getting Help 🚒
-
-Documentation:
-* [Getting Stared](https://start.insert-koin.io/)
-* [Documentation References](https://doc.insert-koin.io/)
 
 Any question about Koin usage? 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
