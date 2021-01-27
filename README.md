@@ -45,58 +45,13 @@ Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob
 
 ```gradle
 // latest stable
+koin_version = '2.2.2'
+
+// latest unstable
 koin_version = '3.0.1-alpha-1'
 ```
 
-## Gradle 
-
-### Jcenter 
-
-Check that you have the `jcenter` repository. 
-
-```gradle
-// Add Jcenter to your repositories if needed
-repositories {
-	jcenter()    
-}
-```
-
-### Dependencies
-
-Pick one of your Koin dependency:
-
-#### Core features
-
-```gradle
-// Koin for Kotlin (Multiplatform)
-implementation "org.koin:koin-core:$koin_version"
-// Koin extended & experimental features
-implementation "org.koin:koin-core-ext:$koin_version"
-// Koin for Unit tests
-testImplementation "org.koin:koin-test:$koin_version"
-```
-
-#### Android
-
-```gradle
-// Main Android features, Scope, ViewModel
-implementation "org.koin:koin-android:$koin_version"
-// Koin Android Experimental features
-implementation "org.koin:koin-android-ext:$koin_version"
-// Work Manager
-implementation "org.koin:koin-androidx-workmanager:$koin_version"
-// Compose features
-implementation "org.koin:koin-androidx-compose:$koin_version"
-```
-
-#### Ktor
-
-```gradle
-// Koin for Ktor Kotlin
-implementation "org.koin:koin-ktor:$koin_version"
-// SLF4J Logger
-implementation "org.koin:koin-logger-slf4j:$koin_version"
-```
+## Setup & getting started 👉 [https://insert-koin.io/docs/quickstart/](https://insert-koin.io/docs/quickstart/kotlin)
 
 ## Contributors
 

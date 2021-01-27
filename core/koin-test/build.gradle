@@ -1,33 +1,43 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
-
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 archivesBaseName = 'koin-test'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
+def ideaActive = System.getProperty('idea.active') == 'true'
 
 kotlin {
-    jvm {
-        withJava()
-    }
+    jvm()
     js() {
         nodejs()
         browser()
     }
 
-    def hostOs = System.getProperty("os.name")
-    def isMingwX64 = hostOs.startsWith("Windows")
-    KotlinNativeTargetWithTests nativeTarget
-    if (hostOs == "Mac OS X") nativeTarget = macosX64('native')
-    else if (hostOs == "Linux") nativeTarget = linuxX64("native")
-    else if (isMingwX64) nativeTarget = mingwX64("native")
-    else throw new GradleException("Host OS is not supported in Kotlin/Native.")
+    if(ideaActive) {
+        macosX64("native")
+    }else{
+        macosX64()
+        iosArm32()
+        iosArm64()
+        iosX64()
+        linuxX64()
+        linuxArm32Hfp()
+        linuxMips32()
+        watchosArm32()
+        watchosArm64()
+        watchosX86()
+        tvosArm64()
+        tvosX64()
+        //    androidNativeArm32()
+        //    androidNativeArm64()
+        mingwX64()
+    }
 
     sourceSets {
         commonMain {
             dependencies {
-                api project(":koin-core")
                 api kotlin("stdlib-common")
+                api project(":koin-core")
                 api kotlin("test-common")
+                api kotlin("test-annotations-common")
             }
         }
 
@@ -35,12 +45,15 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
+//                implementation "co.touchlab:testhelp:$testhelp_version"
+//                implementation "com.benasher44:uuid:$uuid_version"
             }
         }
 
         jvmMain {
             dependencies {
                 api kotlin("stdlib-jdk8")
+                api kotlin("test-junit")
             }
         }
 
@@ -48,6 +61,33 @@ kotlin {
             dependencies {
                 implementation kotlin("test-junit")
                 implementation "org.mockito:mockito-inline:$mockito_version"
+            }
+        }
+
+        jsMain {
+            dependsOn commonMain
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+                implementation 'org.jetbrains.kotlin:kotlin-test-js'
+            }
+        }
+
+        jsTest {
+            dependsOn commonTest
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test-js'
+            }
+        }
+
+        nativeMain {
+            dependencies {
+
+            }
+        }
+
+        nativeTest {
+            dependencies {
+
             }
         }
     }
