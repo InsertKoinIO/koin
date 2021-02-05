@@ -17,19 +17,30 @@
 package org.koin.androidx.scope
 
 import androidx.lifecycle.LifecycleOwner
+import org.koin.androidx.scope.observer.LifecycleOnDestroyCloser
+import org.koin.androidx.scope.observer.LifecycleOnStopCloser
 import org.koin.core.scope.Scope
 
 @Deprecated("Use ScopeActivity or ScopeFragment instead", replaceWith = ReplaceWith("lifecycleScope"),
-    level = DeprecationLevel.ERROR)
+        level = DeprecationLevel.ERROR)
 val LifecycleOwner.lifecycleScope: Scope
     get() = error("Don't use scope on a lifecycle component. Use ScopeActivity or ScopeFragment instead")
 
 @Deprecated("Use ScopeActivity or ScopeFragment instead", replaceWith = ReplaceWith("lifecycleScope"),
-    level = DeprecationLevel.ERROR)
+        level = DeprecationLevel.ERROR)
 val LifecycleOwner.scope: Scope
     get() = error("Don't use scope on a lifecycle component. Use ScopeActivity or ScopeFragment instead")
 
 @Deprecated("Use ScopeActivity or ScopeFragment instead", replaceWith = ReplaceWith("lifecycleScope"),
-    level = DeprecationLevel.ERROR)
+        level = DeprecationLevel.ERROR)
 val LifecycleOwner.currentScope: Scope
     get() = error("Don't use scope on a lifecycle component. Use ScopeActivity or ScopeFragment instead")
+
+
+fun Scope.closeOnStop(owner: LifecycleOwner) {
+    owner.lifecycle.addObserver(LifecycleOnStopCloser(this))
+}
+
+fun Scope.closeOnDestroy(owner: LifecycleOwner) {
+    owner.lifecycle.addObserver(LifecycleOnDestroyCloser(this))
+}

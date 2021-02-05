@@ -21,7 +21,6 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.newScope
 
 /**
  * ScopeService
@@ -31,10 +30,10 @@ import org.koin.core.scope.newScope
  * @author Arnaud Giuliani
  */
 abstract class ScopeService(
-        private val initialiseScope: Boolean = true
+        private val initialiseScope: Boolean = true,
 ) : Service(), KoinScopeComponent {
 
-    override val scope: Scope by lazy { newScope(this) }
+    override val scope: Scope by lazy { serviceScope() }
 
     override fun onCreate() {
         super.onCreate()
@@ -60,7 +59,7 @@ abstract class ScopeService(
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
             mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-            noinline parameters: ParametersDefinition? = null
+            noinline parameters: ParametersDefinition? = null,
     ) = lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
@@ -71,6 +70,6 @@ abstract class ScopeService(
      */
     inline fun <reified T : Any> get(
             qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+            noinline parameters: ParametersDefinition? = null,
     ): T = scope.get(qualifier, parameters)
 }

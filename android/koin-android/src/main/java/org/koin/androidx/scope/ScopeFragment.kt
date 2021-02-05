@@ -34,20 +34,10 @@ import org.koin.core.scope.Scope
  */
 abstract class ScopeFragment(
         @LayoutRes contentLayoutId: Int = 0,
-        private val initialiseScope: Boolean = true
+        private val initialiseScope: Boolean = true,
 ) : Fragment(contentLayoutId), KoinScopeComponent {
 
-    override val scope: Scope by lazy {
-        val scope = fragmentScope()
-        scopeActivity?.let { scope.linkTo(it.scope) }
-        scope
-    }
-
-    val scopeActivity: ScopeActivity?
-        get() = activity as? ScopeActivity
-
-    inline fun <reified T : ScopeActivity> requireScopeActivity(): T = activity as? T
-            ?: error("can't get ScopeActivity ${T::class}")
+    override val scope: Scope by lazy { fragmentScope() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,7 +61,7 @@ abstract class ScopeFragment(
     inline fun <reified T : Any> KoinScopeComponent.inject(
             qualifier: Qualifier? = null,
             mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-            noinline parameters: ParametersDefinition? = null
+            noinline parameters: ParametersDefinition? = null,
     ) = lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
@@ -82,6 +72,6 @@ abstract class ScopeFragment(
      */
     inline fun <reified T : Any> KoinScopeComponent.get(
             qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+            noinline parameters: ParametersDefinition? = null,
     ): T = scope.get(qualifier, parameters)
 }

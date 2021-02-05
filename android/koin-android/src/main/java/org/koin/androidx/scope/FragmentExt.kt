@@ -24,12 +24,20 @@ import org.koin.ext.getFullName
 /**
  * Provide scope tied to Fragment
  */
-fun <T : Fragment> T.fragmentScope(): Scope {
-    return newScope(this)
+fun Fragment.fragmentScope(): Scope {
+    return getScopeOrNull() ?: createScope(this).let { scope ->
+        scopeActivity?.let { scope.linkTo(it.scope) }
+        scope
+    }
 }
 
-fun <T : Fragment> T.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-fun <T : Fragment> T.getScopeName() = TypeQualifier(this::class)
-fun <T : Fragment> T.newScope(source: Any? = null): Scope {
-    return getKoin().createScope(getScopeId(), getScopeName(), source)
-}
+fun Fragment.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
+fun Fragment.getScopeName() = TypeQualifier(this::class)
+fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
+fun Fragment.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
+
+val Fragment.scopeActivity: ScopeActivity?
+    get() = activity as? ScopeActivity
+
+inline fun <reified T : ScopeActivity> Fragment.requireScopeActivity(): T = activity as? T
+        ?: error("can't get ScopeActivity for class ${T::class}")

@@ -32,7 +32,7 @@ import org.koin.core.scope.Scope
  */
 abstract class ScopeActivity(
         @LayoutRes contentLayoutId: Int = 0,
-        private val initialiseScope: Boolean = true
+        private val initialiseScope: Boolean = true,
 ) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
 
     override val scope: Scope by lazy { activityScope() }
@@ -59,7 +59,7 @@ abstract class ScopeActivity(
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
             mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-            noinline parameters: ParametersDefinition? = null
+            noinline parameters: ParametersDefinition? = null,
     ) = lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
@@ -70,6 +70,6 @@ abstract class ScopeActivity(
      */
     inline fun <reified T : Any> get(
             qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+            noinline parameters: ParametersDefinition? = null,
     ): T = scope.get(qualifier, parameters)
 }

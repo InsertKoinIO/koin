@@ -15,9 +15,7 @@
  */
 package org.koin.androidx.scope
 
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
+import android.app.Service
 import org.koin.android.ext.android.getKoin
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
@@ -27,23 +25,15 @@ import org.koin.ext.getFullName
  * Provide Koin Scope tied to ComponentActivity
  */
 
-fun ComponentActivity.activityScope() : Scope {
+fun Service.serviceScope(): Scope {
     return getScopeOrNull() ?: createScope(this)
-}
-
-fun ComponentActivity.activityRetainedScope() : Scope {
-    val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
-    if (scopeViewModel.scope == null){
-        scopeViewModel.scope = createScope()
-    }
-    return scopeViewModel.scope!!
 }
 
 /**
  * Create new scope
  */
-fun ComponentActivity.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
-fun ComponentActivity.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
+fun Service.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
+fun Service.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 
-fun ComponentActivity.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-fun ComponentActivity.getScopeName() = TypeQualifier(this::class)
+fun Service.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
+fun Service.getScopeName() = TypeQualifier(this::class)
