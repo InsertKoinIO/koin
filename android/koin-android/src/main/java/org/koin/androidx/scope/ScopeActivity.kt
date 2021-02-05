@@ -35,7 +35,7 @@ abstract class ScopeActivity(
         private val initialiseScope: Boolean = true,
 ) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
 
-    override val scope: Scope by lazy { activityScope() }
+    override val scope: Scope by lazy { activityScope }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

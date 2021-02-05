@@ -24,12 +24,13 @@ import org.koin.ext.getFullName
 /**
  * Provide scope tied to Fragment
  */
-fun Fragment.fragmentScope(): Scope {
-    return getScopeOrNull() ?: createScope(this).let { scope ->
-        scopeActivity?.let { scope.linkTo(it.scope) }
-        scope
+val Fragment.fragmentScope: Scope
+    get() {
+        return getScopeOrNull() ?: createScope(this).let { scope ->
+            scopeActivity?.let { scope.linkTo(it.scope) }
+            return scope
+        }
     }
-}
 
 fun Fragment.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
 fun Fragment.getScopeName() = TypeQualifier(this::class)

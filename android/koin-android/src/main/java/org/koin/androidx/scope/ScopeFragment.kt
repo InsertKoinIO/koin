@@ -37,7 +37,7 @@ abstract class ScopeFragment(
         private val initialiseScope: Boolean = true,
 ) : Fragment(contentLayoutId), KoinScopeComponent {
 
-    override val scope: Scope by lazy { fragmentScope() }
+    override val scope: Scope by lazy { fragmentScope }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
