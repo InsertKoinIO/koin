@@ -3,8 +3,8 @@ package org.koin.sample.androidx.mvvm
 import android.os.Bundle
 import android.view.View
 import org.junit.Assert.*
-import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeFragment
+import org.koin.androidx.scope.requireScopeActivity
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

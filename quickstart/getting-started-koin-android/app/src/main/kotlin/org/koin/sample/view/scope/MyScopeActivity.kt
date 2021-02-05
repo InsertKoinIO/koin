@@ -11,7 +11,7 @@ import org.koin.sample.view.viewmodel.MyViewModelActivity
 class MyScopeActivity : AppCompatActivity() {
 
     // lazy injected MyScopePresenter
-    val presenter: MyScopePresenter by activityScope().inject()
+    val presenter: MyScopePresenter by activityScope.inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

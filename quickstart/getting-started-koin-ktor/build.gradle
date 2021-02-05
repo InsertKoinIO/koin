@@ -31,6 +31,7 @@ dependencies {
     // Koin
     compile "org.koin:koin-ktor:$koin_version"
     compile "org.koin:koin-logger-slf4j:$koin_version"
+    testCompile "org.koin:koin-test:$koin_version"
     testCompile "org.koin:koin-test-junit4:$koin_version"
 
     // Ktor

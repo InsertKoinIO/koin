@@ -20,7 +20,7 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
 
-    override val scope: Scope by lazy { activityRetainedScope() }
+    override val scope: Scope by lazy { activityRetainedScope }
 
     // Inject presenter as Factory
     val factoryPresenter: FactoryPresenter by inject(mode = LazyThreadSafetyMode.NONE) { parametersOf(ID) }

@@ -22,7 +22,7 @@ class MainApplication : Application() {
         super.onCreate()
 
         startKoin {
-            androidLogger()
+            androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             androidFileProperties()
             fragmentFactory()
