@@ -37,8 +37,10 @@ class Module(
 ) {
     @PublishedApi
     internal val rootScope: Qualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
-    @PublishedApi
-    internal var isLoaded: Boolean = false
+
+    var isLoaded: Boolean = false
+        private set
+
     @PublishedApi
     internal val scopes = arrayListOf<Qualifier>()
     @PublishedApi
