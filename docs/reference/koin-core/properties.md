@@ -14,6 +14,16 @@ You can load several type of properties at start:
 
 ## Read property from a module
 
+Be sure to load properties at Koin start:
+
+```kotlin
+startKoin {
+    // Load properties from the default location
+    // (i.e. `/src/main/resources/koin.properties`)
+    fileProperties()
+}
+```
+
 In a Koin module, you can get a property by its key:
 
 in /src/main/resoucres/koin.properties file
