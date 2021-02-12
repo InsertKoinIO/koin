@@ -30,7 +30,7 @@ class ScopedActivityB : AppCompatActivity() {
         setContentView(R.layout.scoped_activity_b)
 
         scoped_b_button.setOnClickListener {
-            navigateTo<WorkManagerActivity>()
+            navigateTo<WorkManagerActivity>(isRoot = true)
         }
     }
 }

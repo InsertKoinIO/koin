@@ -15,11 +15,13 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import android.content.ComponentCallbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
+import org.koin.android.ext.android.getDefaultScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.koin.getViewModel
-import org.koin.androidx.viewmodel.scope.BundleDefinition
+import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -31,39 +33,42 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     return lazy(mode) {
-        getViewModel<T>(qualifier, state, parameters)
+        getViewModel<T>(qualifier, parameters)
     }
 }
 
 fun <T : ViewModel> ViewModelStoreOwner.viewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition? = null,
-    clazz: KClass<T>,
-    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        clazz: KClass<T>,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy(mode) { getViewModel(qualifier, state, clazz, parameters) }
+    return lazy(mode) { getViewModel(qualifier, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition? = null,
-    noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(qualifier, state, T::class, parameters)
+    return getViewModel(qualifier, T::class, parameters)
 }
 
 fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition? = null,
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        clazz: KClass<T>,
+        parameters: ParametersDefinition? = null,
 ): T {
-    return GlobalContext.get().getViewModel(qualifier, state, { from(this, null) }, clazz, parameters)
+    return when (this) {
+        is ComponentCallbacks -> {
+            getDefaultScope().getViewModel(qualifier, null, { from(this) }, clazz, parameters)
+        }
+        else -> {
+            GlobalContext.get().getViewModel(qualifier, null, { from(this) }, clazz, parameters)
+        }
+    }
 }

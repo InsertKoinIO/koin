@@ -5,11 +5,12 @@ import android.view.View
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
-import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.android.get
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.scope.requireScopeActivity
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.parameter.parametersOf
@@ -31,8 +32,8 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
     val shared: SimpleViewModel by sharedViewModel { parametersOf(ID) }
     val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
 
-    val saved by viewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
-    val saved2 by viewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
+    val saved by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
+    val saved2 by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

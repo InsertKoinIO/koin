@@ -20,9 +20,6 @@ dependencies {
     api "org.koin:koin-core:$koin_version"
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation("androidx.lifecycle:lifecycle-common-java8:$androidx_lfiecycle_common_version") {
-        exclude group: "core-runtime"
-    }
     api("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"

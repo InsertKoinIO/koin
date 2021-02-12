@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         title = "Android First Samples"
 
         main_button.setOnClickListener {
-            navigateTo<MVPActivity>()
+            navigateTo<MVPActivity>(isRoot = true)
         }
     }
 }

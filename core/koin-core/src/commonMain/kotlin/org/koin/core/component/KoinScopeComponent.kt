@@ -15,8 +15,6 @@
  */
 package org.koin.core.component
 
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
@@ -50,25 +48,3 @@ fun <T : KoinScopeComponent> T.getScopeOrNull(): Scope? {
 
 fun <T : KoinScopeComponent> T.newScope() = lazy { createScope() }
 fun <T : KoinScopeComponent> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
-
-/**
- * inject lazily
- * @param qualifier - bean qualifier / optional
- * @param mode - Lazy initialization mode - see LazyThreadSafetyMode
- * @param parameters - injection parameters
- */
-inline fun <reified T : Any> KoinScopeComponent.inject(
-    qualifier: Qualifier? = null,
-    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-    noinline parameters: ParametersDefinition? = null
-) = lazy(mode) { get<T>(qualifier, parameters) }
-
-/**
- * get given dependency
- * @param qualifier - bean name
- * @param parameters - injection parameters
- */
-inline fun <reified T : Any> KoinScopeComponent.get(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
-): T = scope.get(qualifier, parameters)

@@ -18,8 +18,7 @@ package org.koin.androidx.scope
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -32,9 +31,9 @@ import org.koin.core.scope.Scope
 abstract class ScopeActivity(
         @LayoutRes contentLayoutId: Int = 0,
         private val initialiseScope: Boolean = true,
-) : AppCompatActivity(contentLayoutId) {
+) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
 
-    val scope: Scope by activityScope()
+    override val scope: Scope by activityScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,27 +42,4 @@ abstract class ScopeActivity(
             scope.logger.debug("Open Activity Scope: $scope")
         }
     }
-
-    /**
-     * inject lazily
-     * @param qualifier - bean qualifier / optional
-     * @param mode
-     * @param parameters - injection parameters
-     */
-    inline fun <reified T : Any> inject(
-            qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-            noinline parameters: ParametersDefinition? = null,
-    ) = lazy(mode) { get<T>(qualifier, parameters) }
-
-    /**
-     * get given dependency
-     * @param name - bean name
-     * @param scope
-     * @param parameters - injection parameters
-     */
-    inline fun <reified T : Any> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null,
-    ): T = scope.get(qualifier, parameters)
 }

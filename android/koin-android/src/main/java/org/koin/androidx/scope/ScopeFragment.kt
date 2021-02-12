@@ -20,8 +20,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -34,9 +33,9 @@ import org.koin.core.scope.Scope
 abstract class ScopeFragment(
         @LayoutRes contentLayoutId: Int = 0,
         private val initialiseScope: Boolean = true,
-) : Fragment(contentLayoutId) {
+) : Fragment(contentLayoutId), KoinScopeComponent {
 
-    val scope: Scope by fragmentScope()
+    override val scope: Scope by fragmentScope()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,27 +44,4 @@ abstract class ScopeFragment(
             scope.logger.debug("Open Fragment Scope: $scope")
         }
     }
-
-    /**
-     * inject lazily
-     * @param qualifier - bean qualifier / optional
-     * @param mode
-     * @param parameters - injection parameters
-     */
-    inline fun <reified T : Any> inject(
-            qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-            noinline parameters: ParametersDefinition? = null,
-    ) = lazy(mode) { get<T>(qualifier, parameters) }
-
-    /**
-     * get given dependency
-     * @param name - bean name
-     * @param scope
-     * @param parameters - injection parameters
-     */
-    inline fun <reified T : Any> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null,
-    ): T = scope.get(qualifier, parameters)
 }

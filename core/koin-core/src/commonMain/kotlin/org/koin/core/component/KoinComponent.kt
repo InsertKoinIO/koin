@@ -41,8 +41,11 @@ interface KoinComponent {
 inline fun <reified T : Any> KoinComponent.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
-): T =
-    getKoin().get(qualifier, parameters)
+): T {
+    return if (this is KoinScopeComponent) {
+        scope.get(qualifier, parameters)
+    } else getKoin().get(qualifier, parameters)
+}
 
 /**
  * Lazy inject instance from Koin
@@ -55,7 +58,7 @@ inline fun <reified T : Any> KoinComponent.inject(
     mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-    lazy(mode) { getKoin().get<T>(qualifier, parameters) }
+    lazy(mode) { get<T>(qualifier, parameters) }
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S

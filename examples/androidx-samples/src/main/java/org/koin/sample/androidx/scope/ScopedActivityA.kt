@@ -5,7 +5,8 @@ import kotlinx.android.synthetic.main.scoped_activity_a.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
-import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeActivity
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named

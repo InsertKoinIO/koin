@@ -59,6 +59,9 @@ class Koin {
 
     private val modules = hashSetOf<Module>()
 
+    @KoinInternalApi
+    fun getRootScope() = scopeRegistry.rootScope
+
     /**
      * Lazy inject a Koin instance
      * @param qualifier

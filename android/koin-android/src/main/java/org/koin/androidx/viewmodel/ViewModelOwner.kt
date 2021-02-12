@@ -7,18 +7,16 @@ import androidx.savedstate.SavedStateRegistryOwner
 typealias ViewModelOwnerDefinition = () -> ViewModelOwner
 
 class ViewModelOwner(
-    val store: ViewModelStore,
-    val stateRegistry: SavedStateRegistryOwner? = null
+        val store: ViewModelStore,
+        val stateRegistry: SavedStateRegistryOwner? = null,
 ) {
     companion object {
-        fun from(store: ViewModelStore, stateRegistry: SavedStateRegistryOwner? = null) = ViewModelOwner(
-            store,
-            stateRegistry)
-
         fun from(storeOwner: ViewModelStoreOwner, stateRegistry: SavedStateRegistryOwner? = null) = ViewModelOwner(
-            storeOwner.viewModelStore, stateRegistry)
+                storeOwner.viewModelStore, stateRegistry)
+
+        fun from(storeOwner: ViewModelStoreOwner) = ViewModelOwner(storeOwner.viewModelStore)
 
         fun fromAny(owner: Any) = ViewModelOwner((owner as ViewModelStoreOwner).viewModelStore,
-            owner as? SavedStateRegistryOwner)
+                owner as? SavedStateRegistryOwner)
     }
 }
