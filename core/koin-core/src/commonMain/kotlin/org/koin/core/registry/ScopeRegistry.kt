@@ -16,7 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
@@ -33,7 +33,7 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 class ScopeRegistry(private val _koin: Koin) {
 
     private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()

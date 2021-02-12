@@ -16,7 +16,7 @@
 package org.koin.test.mock
 
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.test.KoinTest
@@ -40,7 +40,7 @@ inline fun <reified T : Any> KoinTest.declareMock(
  *
  * @author Christian Schmitz
  */
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> Koin.declareMock(
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),

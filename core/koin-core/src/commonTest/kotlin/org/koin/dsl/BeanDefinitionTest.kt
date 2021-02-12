@@ -3,7 +3,7 @@ package org.koin.dsl
 import kotlin.test.assertEquals
 import kotlin.test.Test
 import org.koin.Simple
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Kind
 import org.koin.core.definition.Options
@@ -14,7 +14,7 @@ import org.koin.test.getBeanDefinition
 import org.koin.test.getInstanceFactory
 import kotlin.test.assertTrue
 
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 class BeanDefinitionTest {
 
     val koin = koinApplication { }.koin

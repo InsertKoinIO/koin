@@ -1,22 +1,21 @@
 package org.koin.koincomponent
 
-import kotlin.test.*
 import org.koin.Simple
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-@OptIn(KoinApiExtension::class)
 class MyComponent : KoinComponent {
     val anInject: Simple.ComponentA by inject()
     val aGet: Simple.ComponentA = get()
 }
 
-@OptIn(KoinApiExtension::class)
 class MyLazyComponent : KoinComponent {
     val anInject: Simple.ComponentA by inject()
 }
@@ -24,13 +23,13 @@ class MyLazyComponent : KoinComponent {
 class KoinComponentTest {
 
     @Test
-    fun `can lazy inject from KoinComponent`() {
+    fun can_lazy_inject_from_KoinComponent() {
         val app = startKoin {
             printLogger()
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    })
+                module {
+                    single { Simple.ComponentA() }
+                })
         }
 
         val koin = app.koin
@@ -44,7 +43,7 @@ class KoinComponentTest {
     }
 
     @Test
-    fun `can lazy inject before starting Koin`() {
+    fun can_lazy_inject_before_starting_Koin() {
         var caughtException: Exception? = null
         var component: MyLazyComponent? = null
         try {
@@ -57,9 +56,9 @@ class KoinComponentTest {
         val app = startKoin {
             printLogger()
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    })
+                module {
+                    single { Simple.ComponentA() }
+                })
         }
 
         val koin = app.koin

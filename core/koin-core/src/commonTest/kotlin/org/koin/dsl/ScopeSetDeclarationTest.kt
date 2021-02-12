@@ -3,7 +3,7 @@ package org.koin.dsl
 import kotlin.test.*
 import org.koin.Simple
 import org.koin.core.A
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.error.DefinitionOverrideException
@@ -13,7 +13,7 @@ import org.koin.core.qualifier._q
 import org.koin.core.qualifier.named
 import org.koin.core.scope.ScopeDefinition
 
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 class ScopeSetDeclarationTest {
 
     val scopeKey = named("KEY")

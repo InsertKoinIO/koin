@@ -17,21 +17,18 @@ package org.koin.androidx.scope
 
 import android.app.Service
 import org.koin.android.ext.android.getKoin
-import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.component.getScopeId
+import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
 
 /**
  * Provide Koin Scope tied to ComponentActivity
  */
 
-val Service.serviceScope: Scope
-    get() = getScopeOrNull() ?: createScope(this)
+fun Service.serviceScope() = lazy { getScopeOrNull() ?: createScope() }
 
 /**
  * Create new scope
  */
 fun Service.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
 fun Service.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
-fun Service.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-fun Service.getScopeName() = TypeQualifier(this::class)

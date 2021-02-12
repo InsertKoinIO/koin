@@ -17,28 +17,19 @@ package org.koin.androidx.scope
 
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
-import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.component.getScopeId
+import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
-import org.koin.ext.getFullName
 
 /**
  * Provide scope tied to Fragment
  */
-val Fragment.fragmentScope: Scope
-    get() {
-        return getScopeOrNull() ?: createScope(this).let { scope ->
-            scopeActivity?.let { scope.linkTo(it.scope) }
-            return scope
-        }
-    }
+//TODO Link to parent activity if it's possible
+fun Fragment.fragmentScope() = LifecycleScopeDelegate(this)
 
-fun Fragment.getScopeId() = this::class.getFullName() + "@" + System.identityHashCode(this)
-fun Fragment.getScopeName() = TypeQualifier(this::class)
 fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
+
 fun Fragment.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 
-val Fragment.scopeActivity: ScopeActivity?
-    get() = activity as? ScopeActivity
-
-inline fun <reified T : ScopeActivity> Fragment.requireScopeActivity(): T = activity as? T
-        ?: error("can't get ScopeActivity for class ${T::class}")
+val Fragment.scopeActivity: ScopeActivity? get() = activity as? ScopeActivity
+inline fun <reified T : ScopeActivity> Fragment.requireScopeActivity(): T = activity as? T ?: error("can't get ScopeActivity for class ${T::class}")

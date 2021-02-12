@@ -3,7 +3,7 @@ package org.koin.core
 import kotlin.test.*
 import kotlin.test.Test
 import org.koin.Simple
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
@@ -36,7 +36,7 @@ class KoinApplicationIsolationTest {
         assertNotEquals(a1, a2)
     }
 
-    @OptIn(KoinInternal::class)
+    @OptIn(KoinInternalApi::class)
     @Test
     fun `koin app instance run instance `() {
         val app = koinApplication {

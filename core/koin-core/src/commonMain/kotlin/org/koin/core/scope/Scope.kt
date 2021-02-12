@@ -16,7 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.error.ClosedScopeException
@@ -32,10 +32,10 @@ import org.koin.ext.getFullName
 import org.koin.mp.PlatformTools
 import kotlin.reflect.KClass
 
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 data class Scope(
         val id: ScopeID,
-        @KoinInternal
+        @KoinInternalApi
         val _scopeDefinition: ScopeDefinition,
         internal val _koin: Koin
 ) {
@@ -49,6 +49,8 @@ data class Scope(
 
     val closed: Boolean
         get() = _closed
+    fun isNotClosed() = !closed
+
     private val _callbacks = arrayListOf<ScopeCallback>()
     private var _closed: Boolean = false
     private var _parameters: DefinitionParameters? = null
@@ -63,7 +65,7 @@ data class Scope(
     inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
             "Can't use Scope source for ${T::class.getFullName()} - source is:$_source")
 
-    @KoinInternal
+    @KoinInternalApi
     fun setSource(t: Any?) {
         _source = t
     }

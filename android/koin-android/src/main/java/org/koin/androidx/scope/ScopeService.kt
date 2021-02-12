@@ -19,7 +19,6 @@ package org.koin.androidx.scope
 import android.app.Service
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -31,22 +30,23 @@ import org.koin.core.scope.Scope
  */
 abstract class ScopeService(
         private val initialiseScope: Boolean = true,
-) : Service(), KoinScopeComponent {
+) : Service() {
 
-    override val scope: Scope by lazy { serviceScope }
+    val scope: Scope by serviceScope()
 
     override fun onCreate() {
         super.onCreate()
 
         if (initialiseScope) {
-            getKoin().logger.debug("Open Service Scope: $scope")
+            scope.logger.debug("Open Service Scope: $scope")
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        getKoin().logger.debug("Close service scope: $scope")
+        scope.logger.debug("Close service scope: $scope")
+        if (!scope.closed)
         scope.close()
     }
 

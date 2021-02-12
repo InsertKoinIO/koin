@@ -22,7 +22,6 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -35,21 +34,16 @@ import org.koin.core.scope.Scope
 abstract class ScopeFragment(
         @LayoutRes contentLayoutId: Int = 0,
         private val initialiseScope: Boolean = true,
-) : Fragment(contentLayoutId), KoinScopeComponent {
+) : Fragment(contentLayoutId) {
 
-    override val scope: Scope by lazy { fragmentScope }
+    val scope: Scope by fragmentScope()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if (initialiseScope) {
-            getKoin().logger.debug("Open Fragment Scope: $scope")
+            scope.logger.debug("Open Fragment Scope: $scope")
         }
-    }
-
-    override fun onDestroy() {
-        scope.close()
-        super.onDestroy()
     }
 
     /**
@@ -58,7 +52,7 @@ abstract class ScopeFragment(
      * @param mode
      * @param parameters - injection parameters
      */
-    inline fun <reified T : Any> KoinScopeComponent.inject(
+    inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
             mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
             noinline parameters: ParametersDefinition? = null,
@@ -70,7 +64,7 @@ abstract class ScopeFragment(
      * @param scope
      * @param parameters - injection parameters
      */
-    inline fun <reified T : Any> KoinScopeComponent.get(
+    inline fun <reified T : Any> get(
             qualifier: Qualifier? = null,
             noinline parameters: ParametersDefinition? = null,
     ): T = scope.get(qualifier, parameters)

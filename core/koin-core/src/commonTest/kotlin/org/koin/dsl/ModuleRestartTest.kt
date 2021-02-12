@@ -1,7 +1,6 @@
 package org.koin.dsl
 
 import org.koin.Simple
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
@@ -10,7 +9,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-@OptIn(KoinApiExtension::class)
 class ModuleRestartTest : KoinComponent {
 
     @BeforeTest
@@ -28,12 +26,12 @@ class ModuleRestartTest : KoinComponent {
     }
 
     @Test
-    fun `1st test`() {
+    fun first_test() {
         get<Simple.ComponentA>()
     }
 
     @Test
-    fun `2nd test`() {
+    fun second_test() {
         get<Simple.ComponentA>()
     }
 }

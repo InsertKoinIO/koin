@@ -3,7 +3,7 @@ package org.koin.core
 import kotlin.test.*
 import kotlin.test.Test
 import org.koin.Simple
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -281,7 +281,7 @@ class ObjectScopeTest {
         stopKoin()
     }
 
-    @OptIn(KoinInternal::class)
+    @OptIn(KoinInternalApi::class)
     @Test
     fun `error for root linked scope `() {
         val koin = startKoin {

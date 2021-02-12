@@ -1,7 +1,5 @@
 package org.koin.koincomponent
 
-import kotlin.test.Test
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -10,6 +8,7 @@ import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.test.Test
 
 class TODOAppTest {
 
@@ -23,8 +22,8 @@ class TODOAppTest {
         single(named("localDataSource")) { TasksLocalDataSource() } bind TasksDataSource::class
         single {
             TasksRepository(
-                    get(named("remoteDataSource")),
-                    get(named("localDataSource"))
+                get(named("remoteDataSource")),
+                get(named("localDataSource"))
             )
         } bind TasksDataSource::class
     }
@@ -34,7 +33,6 @@ class TODOAppTest {
         interface Presenter
     }
 
-    @OptIn(KoinApiExtension::class)
     class TasksView : KoinComponent, TasksContract.View {
         val taskPreenter by inject<TasksContract.Presenter>()
     }
@@ -44,12 +42,12 @@ class TODOAppTest {
     class FakeTasksRemoteDataSource : TasksDataSource
     class TasksLocalDataSource : TasksDataSource
     class TasksRepository(
-            val remoteDataSource: TasksDataSource,
-            val localDatasource: TasksDataSource
+        val remoteDataSource: TasksDataSource,
+        val localDatasource: TasksDataSource
     ) : TasksDataSource
 
     @Test
-    fun `should create all components`() {
+    fun should_create_all_components() {
         val koinApp = startKoin {
             printLogger(Level.DEBUG)
             modules(todoAppModule + repositoryModule)

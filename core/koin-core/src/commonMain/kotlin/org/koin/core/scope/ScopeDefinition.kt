@@ -15,7 +15,7 @@
  */
 package org.koin.core.scope
 
-import org.koin.core.component.KoinApiExtension
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
@@ -29,9 +29,9 @@ import kotlin.reflect.KClass
  */
 data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false) {
 
-    @KoinApiExtension
+    @OptIn(KoinInternalApi::class)
     val definitions: HashSet<BeanDefinition<*>> = hashSetOf()
-    
+
     fun save(beanDefinition: BeanDefinition<*>, forceOverride: Boolean = false) {
         if (definitions.contains(beanDefinition)) {
             if (beanDefinition.options.override || forceOverride) {
@@ -39,7 +39,8 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
             } else {
                 val current = definitions.firstOrNull { it == beanDefinition }
                 throw DefinitionOverrideException(
-                        "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'")
+                    "Definition '$beanDefinition' try to override existing definition. Please use override option or check for definition '$current'"
+                )
             }
         }
         definitions.add(beanDefinition)
@@ -52,29 +53,30 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
     internal fun size() = definitions.size
 
     inline fun <reified T : Any> declareNewDefinition(
-            instance: T,
-            defQualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+        instance: T,
+        defQualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ): BeanDefinition<out Any?> {
         val clazz = T::class
         val found: BeanDefinition<*>? =
-                definitions.firstOrNull { def -> def.`is`(clazz, defQualifier, this.qualifier) }
+            definitions.firstOrNull { def -> def.`is`(clazz, defQualifier, this.qualifier) }
         if (found != null) {
             if (override) {
                 remove(found)
             } else {
                 throw DefinitionOverrideException(
-                        "Trying to override existing definition '$found' with new definition typed '$clazz'")
+                    "Trying to override existing definition '$found' with new definition typed '$clazz'"
+                )
             }
         }
         val beanDefinition = Definitions.createSingle(
-                clazz,
-                defQualifier,
-                { instance },
-                Options(isCreatedAtStart = false, override = override, isExtraDefinition = true),
-                secondaryTypes ?: emptyList(),
-                qualifier,
+            clazz,
+            defQualifier,
+            { instance },
+            Options(isCreatedAtStart = false, override = override, isExtraDefinition = true),
+            secondaryTypes ?: emptyList(),
+            qualifier,
         )
         save(beanDefinition, override)
         return beanDefinition

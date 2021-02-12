@@ -29,8 +29,10 @@ class ScopeHandlerViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         scope?.apply {
-            logger.debug("Closing scope $scope")
-            close()
+            if (isNotClosed()) {
+                logger.debug("Closing scope $scope")
+                close()
+            }
         }
         scope = null
     }

@@ -20,7 +20,7 @@ dependencies {
     api "org.koin:koin-core:$koin_version"
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation("androidx.lifecycle:lifecycle-common:$androidx_arch_version") {
+    implementation("androidx.lifecycle:lifecycle-common-java8:$androidx_lfiecycle_common_version") {
         exclude group: "core-runtime"
     }
     api("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
@@ -39,7 +39,7 @@ dependencies {
         exclude group: "androidx.legacy"
     }
 
-    implementation "androidx.activity:activity-ktx:1.1.0"
+    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
     testImplementation "org.koin:koin-test:$koin_version"

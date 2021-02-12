@@ -13,36 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.scope
+package org.koin.core.component
 
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
-import org.koin.mp.PlatformTools
 
 /**
  * Koin Scope Component
  *
  * Help bring Scope API = Create/Destroy Scope for the given object
  */
-@OptIn(KoinApiExtension::class)
 interface KoinScopeComponent : KoinComponent {
 
     val scope: Scope
 
     fun closeScope() {
-        scope.close()
+        if (scope.isNotClosed()) {
+            scope.close()
+        }
     }
 }
 
-fun <T : KoinScopeComponent> T.getScopeId() = this::class.getFullName() + "@" + this.hashCode()
-fun <T : KoinScopeComponent> T.getScopeName() = TypeQualifier(this::class)
-fun <T : KoinScopeComponent> T.newScope(source: Any? = null): Scope {
+fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + this.hashCode()
+fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
+
+fun <T : KoinScopeComponent> T.createScope(source: Any? = null): Scope {
     return getKoin().createScope(getScopeId(), getScopeName(), source)
 }
+
+fun <T : KoinScopeComponent> T.getScopeOrNull(): Scope? {
+    return getKoin().getScopeOrNull(getScopeId())
+}
+
+fun <T : KoinScopeComponent> T.newScope() = lazy { createScope() }
+fun <T : KoinScopeComponent> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
 
 /**
  * inject lazily
@@ -51,9 +58,9 @@ fun <T : KoinScopeComponent> T.newScope(source: Any? = null): Scope {
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> KoinScopeComponent.inject(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null
 ) = lazy(mode) { get<T>(qualifier, parameters) }
 
 /**
@@ -62,6 +69,6 @@ inline fun <reified T : Any> KoinScopeComponent.inject(
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> KoinScopeComponent.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T = scope.get(qualifier, parameters)

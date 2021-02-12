@@ -1,6 +1,5 @@
 package org.koin.experimental.builder
 
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -14,7 +13,6 @@ interface Component {
 
 class ComponentD(override val a: ComponentA) : Component
 
-@OptIn(KoinApiExtension::class)
 class View : KoinComponent {
     val presenter: Presenter by inject()
 }

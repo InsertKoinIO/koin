@@ -15,7 +15,7 @@
  */
 package org.koin.core
 
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
@@ -28,7 +28,7 @@ import org.koin.mp.PlatformTools
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 class KoinApplication private constructor() {
 
     val koin = Koin()

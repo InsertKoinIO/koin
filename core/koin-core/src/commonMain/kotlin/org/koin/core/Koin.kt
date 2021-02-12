@@ -15,7 +15,7 @@
  */
 package org.koin.core
 
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
@@ -26,11 +26,11 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.scope.getScopeId
-import org.koin.core.scope.getScopeName
+import org.koin.core.component.getScopeId
+import org.koin.core.component.getScopeName
 import org.koin.mp.PlatformTools
 import kotlin.reflect.KClass
 
@@ -41,18 +41,18 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 class Koin {
-    @KoinInternal
+    @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)
 
-    @KoinInternal
+    @KoinInternalApi
     val propertyRegistry = PropertyRegistry(this)
 
     var logger: Logger = EmptyLogger()
         private set
 
-    @KoinInternal
+    @KoinInternalApi
     fun setupLogger(logger: Logger) {
         this.logger = logger
     }

@@ -2,7 +2,7 @@ package org.koin.perfs
 
 import kotlin.test.Test
 import org.koin.core.A
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definitions
 import org.koin.core.definition.Options
 import org.koin.core.scope.ScopeDefinition
@@ -33,7 +33,7 @@ class PerfsTest {
         }
     }
 
-    @OptIn(KoinInternal::class)
+    @OptIn(KoinInternalApi::class)
     private fun dontUseDSL() {
         measureDurationForResult("no dsl ") {
             val app = koinApplication()

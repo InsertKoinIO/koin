@@ -20,17 +20,11 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.PlatformTools
 
-@RequiresOptIn(message = "Used to extend current API with Koin API",level = RequiresOptIn.Level.WARNING)
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FIELD)
-annotation class KoinApiExtension
-
 /**
  * KoinComponent interface marker to bring Koin extensions features
  *
  * @author Arnaud Giuliani
  */
-@KoinApiExtension
 interface KoinComponent {
 
     /**
@@ -44,12 +38,11 @@ interface KoinComponent {
  * @param qualifier
  * @param parameters
  */
-@OptIn(KoinApiExtension::class)
 inline fun <reified T : Any> KoinComponent.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T =
-        getKoin().get(qualifier, parameters)
+    getKoin().get(qualifier, parameters)
 
 /**
  * Lazy inject instance from Koin
@@ -57,20 +50,18 @@ inline fun <reified T : Any> KoinComponent.get(
  * @param mode - LazyThreadSafetyMode
  * @param parameters
  */
-@OptIn(KoinApiExtension::class)
 inline fun <reified T : Any> KoinComponent.inject(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
-        lazy(mode) { getKoin().get<T>(qualifier, parameters) }
+    lazy(mode) { getKoin().get<T>(qualifier, parameters) }
 
 /**
  * Get instance instance from Koin by Primary Type P, as secondary type S
  * @param parameters
  */
-@OptIn(KoinApiExtension::class)
 inline fun <reified S : Any, reified P : Any> KoinComponent.bind(
-        noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null
 ): S =
-        getKoin().bind<S, P>(parameters)
+    getKoin().bind<S, P>(parameters)

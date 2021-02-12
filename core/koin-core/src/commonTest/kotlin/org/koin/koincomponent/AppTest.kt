@@ -1,17 +1,16 @@
 package org.koin.koincomponent
 
-import kotlin.test.*
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TasksView
 class TasksPresenter(val view: TasksView)
 
-@OptIn(KoinApiExtension::class)
 class MyApp : KoinComponent {
     val view: TasksView by inject()
     val presenter: TasksPresenter by inject()
@@ -20,7 +19,7 @@ class MyApp : KoinComponent {
 class AppTest {
 
     @Test
-    fun `can run KoinComponent app`() {
+    fun can_run_KoinComponent_app() {
         val app = startKoin {
             printLogger()
             modules(

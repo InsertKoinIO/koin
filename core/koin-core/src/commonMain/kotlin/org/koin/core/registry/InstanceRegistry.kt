@@ -16,7 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinInternal
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
@@ -30,7 +30,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
-@OptIn(KoinInternal::class)
+@OptIn(KoinInternalApi::class)
 class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
 
     private val _instances = HashMap<IndexKey, InstanceFactory<*>>()
