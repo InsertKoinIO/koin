@@ -17,7 +17,6 @@
 package org.koin.androidx.scope
 
 import android.app.Service
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -29,7 +28,7 @@ import org.koin.core.scope.Scope
  */
 abstract class ScopeService(
         private val initialiseScope: Boolean = true,
-) : Service(), KoinScopeComponent {
+) : Service(), AndroidScopeComponent {
 
     override val scope: Scope by serviceScope()
 

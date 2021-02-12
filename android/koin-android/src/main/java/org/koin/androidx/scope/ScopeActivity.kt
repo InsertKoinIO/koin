@@ -18,7 +18,6 @@ package org.koin.androidx.scope
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -31,7 +30,7 @@ import org.koin.core.scope.Scope
 abstract class ScopeActivity(
         @LayoutRes contentLayoutId: Int = 0,
         private val initialiseScope: Boolean = true,
-) : AppCompatActivity(contentLayoutId), KoinScopeComponent {
+) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
     override val scope: Scope by activityScope()
 

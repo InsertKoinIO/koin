@@ -5,6 +5,7 @@ import kotlinx.android.synthetic.main.mvvm_activity.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.ScopeActivity

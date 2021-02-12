@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 
 /**
@@ -33,7 +32,7 @@ import org.koin.core.scope.Scope
 abstract class ScopeFragment(
         @LayoutRes contentLayoutId: Int = 0,
         private val initialiseScope: Boolean = true,
-) : Fragment(contentLayoutId), KoinScopeComponent {
+) : Fragment(contentLayoutId), AndroidScopeComponent {
 
     override val scope: Scope by fragmentScope()
 

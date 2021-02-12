@@ -6,6 +6,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.scope.requireScopeActivity
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
