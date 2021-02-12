@@ -49,9 +49,6 @@ android {
 dependencies {
 
     // Koin
-    implementation "org.koin:koin-core:$koin_version"
-    implementation "org.koin:koin-core-ext:$koin_version"
-    implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-android-ext:$koin_version"
     implementation "org.koin:koin-androidx-workmanager:$koin_version"
 
@@ -72,7 +69,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
-    implementation("androidx.work:work-runtime-ktx:$work_manager_version")
+    implementation("androidx.work:work-runtime-ktx:$androidx_workmanager")
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
     testImplementation "org.mockito:mockito-inline:$mockito_version"
