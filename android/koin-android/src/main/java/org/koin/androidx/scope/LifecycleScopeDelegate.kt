@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty
 class LifecycleScopeDelegate(
         val lifecycleOwner: LifecycleOwner,
         koinContext: KoinContext = GlobalContext,
-        val createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeId(), lifecycleOwner.getScopeName()) },
+        createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeId(), lifecycleOwner.getScopeName()) },
 ) : ReadOnlyProperty<LifecycleOwner, Scope> {
 
     private var _scope: Scope? = null
@@ -25,24 +25,18 @@ class LifecycleScopeDelegate(
 
         logger.debug("setup scope: $_scope for $lifecycleOwner")
         val scopeId = lifecycleOwner.getScopeId()
+        _scope = koin.getScopeOrNull(scopeId) ?: createScope(koin)
+        logger.debug("got scope: $_scope for $lifecycleOwner")
 
         lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onCreate(owner: LifecycleOwner) {
-                _scope = koin.getScopeOrNull(scopeId) ?: createScope(koin)
-                logger.debug("got scope: $_scope for $lifecycleOwner")
-
-                lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                    override fun onDestroy(owner: LifecycleOwner) {
-                        logger.debug("destroying scope: $_scope for $lifecycleOwner")
-                        if (_scope?.closed == false) {
-                            _scope?.close()
-                        }
-                        _scope = null
-                    }
-                })
+            override fun onDestroy(owner: LifecycleOwner) {
+                logger.debug("destroying scope: $_scope for $lifecycleOwner")
+                if (_scope?.closed == false) {
+                    _scope?.close()
+                }
+                _scope = null
             }
         })
-
     }
 
     override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): Scope {

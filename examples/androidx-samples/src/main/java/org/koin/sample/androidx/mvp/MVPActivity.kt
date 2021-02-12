@@ -5,12 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvp_activity.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.koin.android.ext.android.get
 import org.koin.androidx.scope.activityRetainedScope
+import org.koin.androidx.scope.activityScope
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import org.koin.core.scope.KoinScopeComponent
 import org.koin.core.scope.Scope
-import org.koin.core.scope.get
-import org.koin.core.scope.inject
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
@@ -20,10 +21,10 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
 
-    override val scope: Scope by lazy { activityRetainedScope }
+    override val scope: Scope by activityRetainedScope()
 
     // Inject presenter as Factory
-    val factoryPresenter: FactoryPresenter by inject(mode = LazyThreadSafetyMode.NONE) { parametersOf(ID) }
+    val factoryPresenter: FactoryPresenter by inject { parametersOf(ID) }
 
     // Inject presenter from MVPActivity's scope
     val scopedPresenter: ScopedPresenter by inject { parametersOf(ID) }
@@ -35,7 +36,7 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent
         assertEquals(factoryPresenter.service, scopedPresenter.service)
 
         assertNotEquals(get<FactoryPresenter> { parametersOf(ID) }, factoryPresenter)
-        assertEquals(get<ScopedPresenter>(), scopedPresenter)
+        assertEquals(scope.get<ScopedPresenter>(), scopedPresenter)
 
         title = "Android MVP"
 

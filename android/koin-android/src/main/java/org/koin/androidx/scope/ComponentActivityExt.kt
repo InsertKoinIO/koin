@@ -28,7 +28,7 @@ import org.koin.core.scope.Scope
 
 fun ComponentActivity.activityScope() = LifecycleScopeDelegate(this)
 
-fun ComponentActivity.activityRetainedScope() = LifecycleScopeDelegate(this) {
+fun ComponentActivity.activityRetainedScope(): Lazy<Scope> = lazy {
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null) {
         scopeViewModel.scope = createScope()

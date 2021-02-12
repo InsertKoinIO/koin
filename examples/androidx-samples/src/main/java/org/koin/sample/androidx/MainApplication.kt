@@ -1,6 +1,5 @@
 package org.koin.sample.androidx
 
-//import org.koin.core.KoinExperimentalAPI
 import android.app.Application
 import androidx.work.WorkManager
 import androidx.work.await

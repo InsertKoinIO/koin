@@ -17,6 +17,7 @@ package org.koin.androidx.scope
 
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
+import org.koin.core.Koin
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
@@ -24,8 +25,12 @@ import org.koin.core.scope.Scope
 /**
  * Provide scope tied to Fragment
  */
-//TODO Link to parent activity if it's possible
-fun Fragment.fragmentScope() = LifecycleScopeDelegate(this)
+fun Fragment.fragmentScope() = LifecycleScopeDelegate(this){ koin: Koin ->
+    val scope = koin.createScope(getScopeId(), getScopeName())
+    val activityScope = activity?.getScopeOrNull()
+    activityScope?.let { scope.linkTo(it) }
+    scope
+}
 
 fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
 
