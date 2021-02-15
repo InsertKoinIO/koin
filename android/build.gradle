@@ -3,6 +3,7 @@ buildscript {
     apply from: "../gradle/versions-android.gradle"
 
     repositories {
+        mavenLocal()
         google()
         jcenter()
     }
@@ -15,7 +16,6 @@ buildscript {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
-        classpath "digital.wup:android-maven-publish:$android_maven_publish"
     }
 }
 
