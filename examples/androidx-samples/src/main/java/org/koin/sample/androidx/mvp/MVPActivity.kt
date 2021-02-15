@@ -8,7 +8,7 @@ import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
-import org.koin.androidx.scope.AndroidScopeComponent
+import org.koin.android.scope.AndroidScopeComponent
 import org.koin.androidx.scope.activityRetainedScope
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope

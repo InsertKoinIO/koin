@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.scope
+package org.koin.android.scope
 
 import android.app.Service
 import org.koin.android.ext.android.getKoin

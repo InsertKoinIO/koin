@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.scope.Scope
 
 /**

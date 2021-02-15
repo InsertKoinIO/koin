@@ -1,4 +1,4 @@
-package org.koin.androidx.scope
+package org.koin.android.scope
 
 import android.content.ComponentCallbacks
 import org.koin.android.ext.android.getKoin

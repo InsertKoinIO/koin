@@ -18,6 +18,7 @@ package org.koin.androidx.scope
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.scope.Scope
 
 /**

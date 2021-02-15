@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.koin.androidx.scope
+package org.koin.android.scope
 
 import android.app.Service
 import org.koin.core.scope.Scope
