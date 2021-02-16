@@ -19,7 +19,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 koin_version = '2.2.2'
 
 // latest unstable
-koin_version = '3.0.1-alpha-1'
+koin_version = '3.0.1-alpha-5'
 ```
 
 ## Latest News 🌐
