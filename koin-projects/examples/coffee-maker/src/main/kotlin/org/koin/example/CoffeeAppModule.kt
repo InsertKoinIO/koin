@@ -7,3 +7,13 @@ val coffeeAppModule = module {
     single<Pump> { Thermosiphon(get()) }
     single<Heater> { ElectricHeater() }
 }
+
+val testModule = module {
+
+}
+
+val invalidModule = Module()
+val dummy = Dummy()
+
+class Module
+class Dummy
