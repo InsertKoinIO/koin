@@ -29,6 +29,7 @@ import org.koin.core.qualifier.named
  *
  * @author Fabio de Matos
  * @author Arnaud Giuliani
+ * @author Konstantin Mutasov
  **/
 class KoinWorkerFactory : WorkerFactory(), KoinComponent {
 
@@ -36,8 +37,8 @@ class KoinWorkerFactory : WorkerFactory(), KoinComponent {
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters,
-    ): ListenableWorker {
-        return get(qualifier = named(workerClassName)) { parametersOf(workerParameters) }
+    ): ListenableWorker? {
+        return getKoin().getOrNull(qualifier = named(workerClassName)) { parametersOf(workerParameters) }
     }
 }
 
