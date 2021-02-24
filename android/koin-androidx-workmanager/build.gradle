@@ -45,4 +45,4 @@ dependencies {
 
 }
 
-apply from: '../../gradle/publish-android.gradle'
+apply from: '../../gradle/publish-to-central.gradle'

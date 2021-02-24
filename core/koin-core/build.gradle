@@ -123,4 +123,4 @@ kotlin {
     }
 }
 
-apply from: '../../gradle/publish2.gradle'
+apply from: '../../gradle/publish-to-central.gradle'

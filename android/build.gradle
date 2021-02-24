@@ -10,8 +10,6 @@ buildscript {
     dependencies {
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // Bintray
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_version"
         // Dokka
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         // Android

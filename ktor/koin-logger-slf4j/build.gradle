@@ -11,4 +11,4 @@ dependencies {
     compile "org.slf4j:slf4j-api:1.7.25"
 }
 
-apply from: '../../gradle/publish.gradle'
+apply from: '../../gradle/publish-to-central.gradle'

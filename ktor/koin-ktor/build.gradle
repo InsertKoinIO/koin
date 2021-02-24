@@ -19,4 +19,4 @@ dependencies {
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }
 
-apply from: '../../gradle/publish.gradle'
+apply from: '../../gradle/publish-to-central.gradle'
