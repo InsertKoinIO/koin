@@ -12,4 +12,4 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
 }
 
-apply from: '../../gradle/publish.gradle'
+apply from: '../../gradle/publish-to-central.gradle'

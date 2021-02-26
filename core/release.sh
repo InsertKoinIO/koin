@@ -1,5 +1,5 @@
 #!/bin/sh
 
-../gradlew bintrayUpload --info --no-parallel
+../gradlew publishAllPublicationsToStagingRepository --info --no-parallel
 
 

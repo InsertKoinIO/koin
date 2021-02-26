@@ -9,9 +9,6 @@ ext {
     // Dokka
     dokka_version = '0.10.1'
 
-    // Bintray
-    bintray_version = "1.8.5"
-
     // Ktor
     ktor_version = '1.4.0'
 
