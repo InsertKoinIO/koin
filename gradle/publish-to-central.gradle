@@ -2,7 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 def isReleaseBuild() {
-    return is_snaptshot
+    return !is_snaptshot
 }
 
 def getRepositoryUsername() {
@@ -108,7 +108,7 @@ afterEvaluate {
                 sign publishing.publications.release
             }
 
-            useGpgCmd()
+//            useGpgCmd()
         }
     }
 }
