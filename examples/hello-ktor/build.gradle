@@ -6,10 +6,10 @@ dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    implementation "org.koin:koin-ktor:$koin_version"
-    implementation "org.koin:koin-logger-slf4j:$koin_version"
+    implementation "io.insert-koin:koin-ktor:$koin_version"
+    implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
 
-    testImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     // Ktor
     implementation "io.ktor:ktor-server-netty:$ktor_version"

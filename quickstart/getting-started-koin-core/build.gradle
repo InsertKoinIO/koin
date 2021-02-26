@@ -24,8 +24,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // Koin
-    compile "org.koin:koin-core:$koin_version"
-    testCompile "org.koin:koin-test-junit4:$koin_version"
+    compile "io.insert-koin:koin-core:$koin_version"
+    testCompile "io.insert-koin:koin-test-junit4:$koin_version"
 
     testCompile "org.mockito:mockito-inline:$mockito_version"
 }

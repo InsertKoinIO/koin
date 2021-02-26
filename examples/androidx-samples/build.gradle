@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-//        classpath "org.koin:koin-gradle-plugin:$koin_version"
+//        classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
     }
 }
 
@@ -49,13 +49,13 @@ android {
 dependencies {
 
     // Koin
-    implementation "org.koin:koin-android-ext:$koin_version"
-    implementation "org.koin:koin-androidx-workmanager:$koin_version"
+    implementation "io.insert-koin:koin-android-ext:$koin_version"
+    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
 
     implementation "junit:junit:$junit_version"
 
-    testImplementation "org.koin:koin-test:$koin_version"
-    testImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     testImplementation "junit:junit:$junit_version"
 

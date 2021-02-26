@@ -4,12 +4,12 @@ dependencies {
     api(project(":multimodule-ktor:module-a"))
     api(project(":multimodule-ktor:module-b"))
 
-    implementation "org.koin:koin-ktor:$koin_version"
-    implementation "org.koin:koin-logger-slf4j:$koin_version"
+    implementation "io.insert-koin:koin-ktor:$koin_version"
+    implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
 
     implementation "io.ktor:ktor-server-netty:$ktor_version"
 
-    testImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
     testImplementation "junit:junit:$junit_version"
 
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"

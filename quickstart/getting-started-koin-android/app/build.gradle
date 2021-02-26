@@ -49,11 +49,11 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     // Koins
-    implementation "org.koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
-    testImplementation "org.koin:koin-test-junit4:$koin_version"
-    androidTestImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
+    androidTestImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     // ViewModel and LiveData
 //    implementation "android.arch.lifecycle:extensions:$androidArchitectureVersion"
