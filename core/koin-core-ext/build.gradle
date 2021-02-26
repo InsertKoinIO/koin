@@ -3,7 +3,6 @@ plugins {
 }
 
 archivesBaseName = 'koin-core-ext'
-description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
     // Koin

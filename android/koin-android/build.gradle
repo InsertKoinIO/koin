@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android'
 ext {
     android_sourceSet = true
     pom_name = "koin-android"
-    pom_description = "Koin project - koin-android"
 }
 
 android {
@@ -14,10 +13,15 @@ android {
     defaultConfig {
         minSdkVersion android_min_version
     }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
-    api "org.koin:koin-core:$koin_version"
+    api "io.insert-koin:koin-core:$koin_version"
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     api("androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate") {
@@ -39,8 +43,8 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$androidx_activity_version"
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
-    testImplementation "org.koin:koin-test:$koin_version"
-    testImplementation "org.koin:koin-test-junit4:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 
 }

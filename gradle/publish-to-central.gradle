@@ -2,7 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 def isReleaseBuild() {
-    return version.contains("SNAPSHOT") == false
+    return is_snaptshot
 }
 
 def getRepositoryUsername() {
@@ -11,14 +11,6 @@ def getRepositoryUsername() {
 
 def getRepositoryPassword() {
     return findProperty('SONATYPE_NEXUS_PASSWORD') ?: System.getenv('SONATYPE_NEXUS_PASSWORD') ?: ""
-}
-
-def getGPGSigningKey() {
-    return findProperty('GPG_SIGNING_KEY') ?: System.getenv('GPG_SIGNING_KEY') ?: ""
-}
-
-def getGPGSigningPassphrase() {
-    return findProperty('GPG_SIGNING_PASSPHRASE') ?: System.getenv('GPG_SIGNING_PASSPHRASE') ?: ""
 }
 
 if (!project.tasks.findByName('sourcesJar')) {
@@ -81,7 +73,7 @@ afterEvaluate {
                 root.children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
 
-                    description "KOIN - Kotlin simple Dependency Injection Framework\n"
+                    description "KOIN - Kotlin simple Dependency Injection Framework"
                     name project.name
                     url "https://insert-koin.io/"
                     licenses {
@@ -116,9 +108,7 @@ afterEvaluate {
                 sign publishing.publications.release
             }
 
-            useInMemoryPgpKeys(getGPGSigningKey(), getGPGSigningPassphrase())
-            // Uncomment useGpgCmd instead if you're signing locally.
-            // useGpgCmd()
+            useGpgCmd()
         }
     }
 }

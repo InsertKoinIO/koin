@@ -28,7 +28,7 @@ allprojects {
         jcenter()
     }
 
-    group = 'org.koin'
+    group = 'io.insert-koin'
     version = "$koin_version"
 
     // Dokka

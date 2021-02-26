@@ -1,7 +1,6 @@
 apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-test-junit4'
-description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
     // Koin
