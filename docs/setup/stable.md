@@ -94,3 +94,166 @@ implementation "org.koin:koin-androidx-ext:$koin_version"
 // Koin for Ktor Kotlin
 implementation "org.koin:koin-ktor:$koin_version"
 ```
+
+## Maven
+
+Pick one of your Koin dependency:
+
+#### Maven Repository
+
+```xml
+<repositories>
+    <repository>
+        <id>jcenter</id>
+        <name>jcenter</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+```
+
+### Set version
+
+```
+<properties>
+    <koin.version>2.2.2</koin.version>
+</properties>
+```
+
+#### Core features
+
+```xml
+<dependencies>
+    <!-- Koin for Kotlin -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-core</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+    
+    <!-- Koin extended & experimental features -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-core-ext</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+    
+    <!-- Koin for Unit tests -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-test</artifactId>
+        <version>${koin.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Koin for Java developers is now part of core (so it has another version) -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-java</artifactId>
+        <version>2.0.1</version>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+```
+
+#### Android
+
+```xml
+<dependencies>
+    <!-- Koin for Android -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin Android Scope features -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-scope</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin Android ViewModel features -->
+     <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android-viewmodel</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+    
+    <!-- Koin Android Experimental features -->
+     <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android-ext</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+</dependencies>
+```
+
+#### AndroidX
+
+```xml
+
+<dependencies>
+    <!-- Koin AndroidX Scope features -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-scope</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin Android ViewModel features -->
+     <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android-viewmodel</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+    
+    <!-- Koin Android Experimental features -->
+     <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android-ext</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin AndroidX Fragment features -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-fragment</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin AndroidX WorkManager -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-workmanager</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin AndroidX Jetpack Compose -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-compose</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin AndroidX Experimental features -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-ext</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+</dependencies>
+```
+
+#### Ktor
+
+```xml
+<dependencies>
+    <!-- Koin for Ktor Kotlin-->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-ktor</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+</dependencies>
+```

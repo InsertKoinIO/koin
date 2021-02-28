@@ -63,3 +63,127 @@ implementation "org.koin:koin-ktor:$koin_version"
 // SLF4J Logger
 implementation "org.koin:koin-logger-slf4j:$koin_version"
 ```
+
+
+
+## Maven
+
+Pick one of your Koin dependency:
+
+#### Maven Repository
+
+```xml
+<repositories>
+    <repository>
+        <id>jcenter</id>
+        <name>jcenter</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+```
+
+### Set version
+
+```
+<properties>
+    <koin.version>3.0.1-alpha-3</koin.version>
+</properties>
+```
+
+#### Kotlin
+
+```xml
+<dependencies>
+    <!-- Koin for Kotlin -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-core</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+    
+    <!-- Koin extended & experimental features (JVM) -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-core-ext</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+    
+    <!-- Koin for Unit tests -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-test</artifactId>
+        <version>${koin.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Koin for JUnit 4 -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-test-junit4</artifactId>
+        <version>${koin.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Koin for JUnit 5 -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-test-junit5</artifactId>
+        <version>${koin.version}</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+#### Android
+
+```xml
+<dependencies>
+    <!-- Koin for Android -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin Android Experimental features -->
+     <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-android-ext</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin AndroidX WorkManager -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-workmanager</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- Koin AndroidX Jetpack Compose -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-androidx-compose</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+</dependencies>
+```
+
+#### Ktor
+
+```xml
+<dependencies>
+    <!-- Koin for Ktor Kotlin -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>koin-ktor</artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+
+    <!-- SLF4J Logger -->
+    <dependency>
+        <groupId>org.koin</groupId>
+        <artifactId>    <!-- Koin for Ktor Kotlin--></artifactId>
+        <version>${koin.version}</version>
+    </dependency>
+</dependencies>
+```
