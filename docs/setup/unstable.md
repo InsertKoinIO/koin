@@ -182,7 +182,7 @@ Pick one of your Koin dependency:
     <!-- SLF4J Logger -->
     <dependency>
         <groupId>org.koin</groupId>
-        <artifactId>    <!-- Koin for Ktor Kotlin--></artifactId>
+        <artifactId>koin-logger-slf4j</artifactId>
         <version>${koin.version}</version>
     </dependency>
 </dependencies>
