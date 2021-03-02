@@ -14,8 +14,6 @@ Ktor Controller (http) -> Service (business) -> Repository (data)
 - a Service to *handle business* and take data from repository
 - a Repository to provide data
 
-All sources are available in the Koin's [github repository](https://github.com/Ekito/koin-samples/tree/master/samples/ktor-hellowebapp)
-
 Let's go 🚀
 
 ## Get the code

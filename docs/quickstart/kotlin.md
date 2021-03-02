@@ -7,7 +7,7 @@ title: Kotlin
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/3.0.1/quickstart/getting-started-koin-core)
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/master/quickstart/getting-started-koin-core)
 :::
 
 ## Setup

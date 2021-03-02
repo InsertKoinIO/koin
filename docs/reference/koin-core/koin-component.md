@@ -5,6 +5,10 @@ title: Koin Component
 Koin is a DSL to help describe your modules & definitions, a container to make definition resolution. What we need now is
 an API to retrieve our instances outside of the container. That's the goal of Koin components.
 
+:::caution
+ The `KoinComponent` interface is here to help you inject your instances where you current technical stack doesn"t offer it. Avoid to use it if you can use `modules`
+:::
+
 ## Create a Koin Component
 
 To give a class the capacity to use Koin features, we need to *tag it* with `KoinComponent` interface. Let's take an example.

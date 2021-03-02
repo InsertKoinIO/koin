@@ -20,22 +20,7 @@ By default in Koin, we have 3 kind of scopes:
 
 To declare a scoped definition, use the `scoped` function like follow. A scope gathers scoped definitions as a logical unit of time.
 
-:::note
- A scope require a _qualifier_ to help name it. It can be either a String Qualifier, either a TypeQualifier
-:::
-
-Declaring a scope for a given type:
-
-```kotlin
-module {
-    scope(named<MyType>()){
-        scoped { Presenter() }
-        // ...
-    }
-}
-```
-
-or can even declared directly like this:
+Declaring a scope for a given type, we need to use the `scope` keyword:
 
 ```kotlin
 module {
@@ -45,32 +30,6 @@ module {
     }
 }
 ```
-
-### Declare & use scoped instances
-
-Let's declare definition `B` in scope of type `A`:
-
-```kotlin
-module {
-    scope<A> {
-        scoped { B() } // Tied to A's scope
-    }
-}
-```
-
-Let's create the scope & retrieve our `B` instance:
-
-```kotlin]
-// Create scope
-val scopeForA = koin.createScope<A>()
-
-// Get scoped instances
-val b = scopeForA.get<B>()
-```
-
-:::note
- Note here that `createScope` is using directly `named<T>()` to use its scopeId & scopeName. 
-:::
 
 ### Scope Id & Scope Name
 
@@ -83,11 +42,12 @@ A Koin Scope is defined by its:
  `scope<A> { }` is equivalent to `scope(named<A>()){ } `, but more convenient to write. Note that you can also use a string qualifier like: `scope(named("SCOPE_NAME")) { }`
 :::
 
-From `Koin` instance, you can access:
+From a `Koin` instance, you can access:
 
 - `createScope(id : ScopeID, scopeName : Qualifier)` - create a closed scope instance with given id and scopeName
 - `getScope(id : ScopeID)` - retrieve a previously created scope with given id
 - `getOrCreateScope(id : ScopeID, scopeName : Qualifier)` - create or retrieve if already created, the closed scope instance with given id and scopeName
+
 
 ### Scope Component: Associate a scope to a component [2.2.0]
 
@@ -104,7 +64,6 @@ class B
 The `KoinScopeComponent` interface brings several extensions:
 - `newScope` to create scope from current component's scope Id & name
 - `get`, `inject` - to resolve instances from scope (equivalent to `scope.get()` & `scope.inject()`)
-- `closeScope` to close current scope
 
 Let's define a scope for A, to resolve B:
 
@@ -131,7 +90,7 @@ class A : KoinScopeComponent {
     }
 
     fun close(){
-        closeScope() // don't forget to close current scope
+        scope.close() // don't forget to close current scope
     }
 }
 ```
@@ -162,7 +121,7 @@ The dependency resolution is then straight forward:
 
 ```kotlin
 // create scope
-val myScope = koin.createScope<A>())
+val myScope = koin.createScope<A>()
 
 // from the same scope
 val componentA = myScope.get<ComponentA>()

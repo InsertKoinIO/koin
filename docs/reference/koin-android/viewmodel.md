@@ -207,13 +207,13 @@ viewModel { MyStateVM(get(), get()) }
 Just call your ViewModel:
 
 ```kotlin
-val myStateVM: MyStateVM by viewModel()
+val myStateVM: MyStateVM by stateViewModel()
 ```
 
 You can even pass a bundle data as your state argument. Use the `state` property like follow:
 
 ```kotlin
-val myStateVM: MyStateVM by viewModel(state = { myBundle })
+val myStateVM: MyStateVM by stateViewModel(state = { myBundle })
 ```
 
 :::note 

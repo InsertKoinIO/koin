@@ -62,84 +62,49 @@ on it and can't totally drop it via garbage collection.
 
 ## Scope for Android Components
 
-Koin provides `ScopeActivity` & `ScopeFragment` classes, to bind to your Android component to its scope. It will close its scope automatically on destroy steps.
+### Declare a scope
 
-To use a scoped Android component, you have to declare a scope for your activity (tied our Activity type):
+To use a scoped Android component, you have to declare a scope for your component with the `scope` block like follow:
 
 ```kotlin
-val androidModule = module {
+class MyPresenter()
+class MyAdapter(val presenter : MyPresenter)
 
-    scope<MyActivity> {
-        scoped { Presenter() }
-    }
+module {
+  // Declare scope for MyActivity
+  scope<MyActivity> {
+    // get MyPresenter instance from current scope 
+    scoped { MyAdapter(get()) }
+    scoped { MyPresenter() }
+  }
 }
 ```
 
-And then use the `ScopeActivity` class:
+### Setup the scope
+
+To use a scope declared in a module, we need to use the `AndroidScopeComponent` interface and implement the `scope` property.
+This `scope` property can be used with the following property delegates, regarding your component:
+- `activityScope()` - Follow Activity lifecycle
+- `activityRetainedScope()` - Follow Activity's ViewModel lifecycle 
+- `fragmentScope()` - Follow Fragment lifecycle, and is linked to parent's scope
+- `serviceScope()` - Follow Service lifecycle
 
 ```kotlin
-class MyActivity : ScopeActivity() {
-
-    // inject Presenter instance from MyActivity's Koin scope
-    val presenter : Presenter by inject()
-
+class MyActivity : AppCompatActivity, AndroidScopeComponent {
+    // get current Activity's scope
+    override val scope : Scope by activityScope()
+    // MyPresenter is resolved from MyActivity's scope 
+    val presenter : MyPresenter by inject()
 }
 ```
 
-:::note
-- You can do the same with `ScopeFragment` & `ScopeService` components
-- ViewModel extensions are also compatible with `ScopeActivity` & `ScopeFragment`
-:::
-
-`ScopeActivity` & `ScopeFragment` are providing the source component: You can inject your Activity or Fragment into the needed component:
+We can also setup a scope, tied to a ViewModel with teh following:
 
 ```kotlin
-class Presenter(val view : MyViewContract)
-
-val androidModule = module {
-
-    scope<MyActivity> {
-        // inject current MyActivity
-        scoped { Presenter(get()) }
-    }
-}
-```
-
-Here below, you can directly use `KoinScopeComponent` to declare some scope in your Activity/Fragment:
-
-```kotlin
-// Implementing our own Scope delegation 
-class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
-  
-    // Create scope
-    override val scope: Scope by lazy { newScope() }
-
-    // Inject presenter with org.koin.core.scope.inject extension
-    // also can use directly the scope: scope.inject<>()
-    val presenter: ScopedPresenter by inject()
-  
-    // Don't forget to close it when finish
-    override fun onDestroy() {
-        super.onDestroy()
-        scope.close()
-    }
-}
-```
-
-:::note
- You can use `activityScope()` & `fragmentScope()` to create your own scope:
-:::
-
-```kotlin
-// Implementing our own Scope delegation 
-class MVPActivity : AppCompatActivity(R.layout.mvp_activity), KoinScopeComponent {
-  
-    // Create Activity scope (backed by ViewModel)
-    override val scope: Scope by lazy { activityScope() }
-
-    // Inject presenter with org.koin.core.scope.inject extension
-    // also can use directly the scope: scope.inject<>()
-    val presenter: ScopedPresenter by inject()
+class MyActivity : AppCompatActivity, AndroidScopeComponent {
+    // use Activity Retained Scope
+    override val scope : Scope by activityRetainedScope()
+    val presenter : MyPresenter by inject()
 }
 ```
 
