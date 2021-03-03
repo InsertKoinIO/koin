@@ -39,9 +39,9 @@ object KoinJavaComponent {
     @JvmStatic
     @JvmOverloads
     fun <T : Any> inject(
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: Class<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             get(clazz, qualifier, parameters)
@@ -59,15 +59,15 @@ object KoinJavaComponent {
     @JvmStatic
     @JvmOverloads
     fun <T : Any> get(
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: Class<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         val kClass = clazz.kotlin
         return getKoin().get(
-                kClass,
-                qualifier,
-                parameters
+            kClass,
+            qualifier,
+            parameters
         )
     }
 
@@ -82,12 +82,12 @@ object KoinJavaComponent {
     @JvmStatic
     @JvmOverloads
     fun <P : Any, S : Any> bind(
-            primary: Class<P>,
-            secondary: Class<S>,
-            parameters: ParametersDefinition? = null
+        primary: Class<P>,
+        secondary: Class<S>,
+        parameters: ParametersDefinition? = null
     ): S {
         return getKoin()
-                .bind(primary.kotlin, secondary.kotlin, parameters)
+            .bind(primary.kotlin, secondary.kotlin, parameters)
     }
 
     /**

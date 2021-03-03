@@ -49,7 +49,7 @@ class ReflectAPITest {
 
 }
 
-fun <T : Any> measure(message: String, code: () -> T): T {
+fun <T> measure(message: String, code: () -> T): T {
     val (i, time) = measureDurationForResult(code)
     println("$message in $time ms")
     return i

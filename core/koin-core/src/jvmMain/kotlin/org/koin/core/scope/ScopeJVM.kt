@@ -12,9 +12,9 @@ import org.koin.core.scope.Scope
  */
 @JvmOverloads
 fun <T : Any> Scope.get(
-        clazz: Class<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    clazz: Class<*>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     val kClass = clazz.kotlin
     return get(kClass, qualifier, parameters)

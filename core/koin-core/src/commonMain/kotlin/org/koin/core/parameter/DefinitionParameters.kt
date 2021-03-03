@@ -84,7 +84,7 @@ open class DefinitionParameters(val values: List<Any?> = listOf()) {
      * Get first element of given type T
      * return T
      */
-    open fun <T : Any> getOrNull(clazz: KClass<T>): T? {
+    open fun <T> getOrNull(clazz: KClass<*>): T? {
         val values = values.filterNotNull().filter { it::class == clazz }
         return when (values.size) {
             1 -> values.first() as T

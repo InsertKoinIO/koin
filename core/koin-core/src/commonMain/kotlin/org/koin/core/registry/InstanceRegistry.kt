@@ -122,7 +122,7 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    internal fun <T : Any> getAll(clazz: KClass<*>): List<T> {
+    internal fun <T> getAll(clazz: KClass<*>): List<T> {
         val instances = instances.values.toSet()
         val potentialKeys: List<InstanceFactory<*>> =
                 instances.filter { instance -> instance.beanDefinition.hasType(clazz) }

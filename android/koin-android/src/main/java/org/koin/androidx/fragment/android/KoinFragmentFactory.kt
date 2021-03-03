@@ -27,12 +27,12 @@ class KoinFragmentFactory(private val scope: Scope? = null) : FragmentFactory(),
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         val clazz = Class.forName(className).kotlin
-        val instance = if (scope != null) {
+        val instance: Fragment? = if (scope != null) {
             scope.getOrNull(clazz)
         } else {
             getKoin().getOrNull(clazz)
         }
-        return (instance ?: super.instantiate(classLoader, className)) as Fragment
+        return (instance ?: super.instantiate(classLoader, className))
     }
 
 }

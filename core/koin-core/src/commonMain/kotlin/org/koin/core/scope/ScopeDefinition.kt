@@ -52,7 +52,7 @@ data class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false
 
     internal fun size() = definitions.size
 
-    inline fun <reified T : Any> declareNewDefinition(
+    inline fun <reified T> declareNewDefinition(
         instance: T,
         defQualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>>? = null,

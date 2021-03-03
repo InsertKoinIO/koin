@@ -34,10 +34,10 @@ import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
 data class Scope(
-        val id: ScopeID,
-        @KoinInternalApi
-        val _scopeDefinition: ScopeDefinition,
-        internal val _koin: Koin
+    val id: ScopeID,
+    @KoinInternalApi
+    val _scopeDefinition: ScopeDefinition,
+    internal val _koin: Koin
 ) {
     private val linkedScope: ArrayList<Scope> = arrayListOf()
 
@@ -49,6 +49,7 @@ data class Scope(
 
     val closed: Boolean
         get() = _closed
+
     fun isNotClosed() = !closed
 
     private val _callbacks = arrayListOf<ScopeCallback>()
@@ -63,7 +64,8 @@ data class Scope(
     }
 
     inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
-            "Can't use Scope source for ${T::class.getFullName()} - source is:$_source")
+        "Can't use Scope source for ${T::class.getFullName()} - source is:$_source"
+    )
 
     @KoinInternalApi
     fun setSource(t: Any?) {
@@ -104,11 +106,11 @@ data class Scope(
      * @return Lazy instance of type T
      */
     inline fun <reified T : Any> inject(
-            qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
-            lazy(mode) { get<T>(qualifier, parameters) }
+        lazy(mode) { get<T>(qualifier, parameters) }
 
     /**
      * Lazy inject a Koin instance if available
@@ -119,11 +121,11 @@ data class Scope(
      * @return Lazy instance of type T or null
      */
     inline fun <reified T : Any> injectOrNull(
-            qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
-            lazy(mode) { getOrNull<T>(qualifier, parameters) }
+        lazy(mode) { getOrNull<T>(qualifier, parameters) }
 
     /**
      * Get a Koin instance
@@ -132,8 +134,8 @@ data class Scope(
      * @param parameters
      */
     inline fun <reified T : Any> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -147,8 +149,8 @@ data class Scope(
      * @return instance of type T or null
      */
     inline fun <reified T : Any> getOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T? {
         return getOrNull(T::class, qualifier, parameters)
     }
@@ -161,10 +163,10 @@ data class Scope(
      *
      * @return instance of type T or null
      */
-    fun <T : Any> getOrNull(
-            clazz: KClass<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+    fun <T> getOrNull(
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
@@ -185,10 +187,10 @@ data class Scope(
      *
      * @return instance of type T
      */
-    fun <T : Any> get(
-            clazz: KClass<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+    fun <T> get(
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
@@ -204,32 +206,32 @@ data class Scope(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Any> resolveInstance(
-            qualifier: Qualifier?,
-            clazz: KClass<T>,
-            parameters: ParametersDefinition?
+    private fun <T> resolveInstance(
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        parameters: ParametersDefinition?
     ): T {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
         val indexKey = indexKey(clazz, qualifier)
         return instanceRegistry.resolveInstance(indexKey, parameters)
-                ?: run {
-                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
-                    getFromSource(clazz)
-                }
-                ?: run {
-                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
-                    _parameters?.getOrNull<T>(clazz)
-                }
-                ?: run {
-                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
-                    findInOtherScope<T>(clazz, qualifier, parameters)
-                }
-                ?: run {
-                    _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
-                    throwDefinitionNotFound(qualifier, clazz)
-                }
+            ?: run {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
+                getFromSource(clazz)
+            }
+            ?: run {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
+                _parameters?.getOrNull<T>(clazz)
+            }
+            ?: run {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
+                findInOtherScope<T>(clazz, qualifier, parameters)
+            }
+            ?: run {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
+                throwDefinitionNotFound(qualifier, clazz)
+            }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -237,17 +239,17 @@ data class Scope(
         return if (clazz.isInstance(_source)) _source as? T else null
     }
 
-    private fun <T : Any> findInOtherScope(
-            clazz: KClass<T>,
-            qualifier: Qualifier?,
-            parameters: ParametersDefinition?
+    private fun <T> findInOtherScope(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?
     ): T? {
         var instance: T? = null
         for (scope in linkedScope) {
             instance = scope.getOrNull<T>(
-                    clazz,
-                    qualifier,
-                    parameters
+                clazz,
+                qualifier,
+                parameters
             )
             if (instance != null) break
         }
@@ -255,12 +257,13 @@ data class Scope(
     }
 
     private fun throwDefinitionNotFound(
-            qualifier: Qualifier?,
-            clazz: KClass<*>
+        qualifier: Qualifier?,
+        clazz: KClass<*>
     ): Nothing {
         val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
         throw NoBeanDefFoundException(
-                "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!")
+            "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!"
+        )
     }
 
     internal fun createEagerInstances() {
@@ -279,11 +282,11 @@ data class Scope(
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    inline fun <reified T : Any> declare(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>>? = null,
-            override: Boolean = false
+    inline fun <reified T> declare(
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>>? = null,
+        override: Boolean = false
     ) = KoinPlatformTools.synchronized(this) {
         val definition = _scopeDefinition.declareNewDefinition(instance, qualifier, secondaryTypes, override)
         instanceRegistry.saveDefinition(definition, override = true)
@@ -320,7 +323,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T : Any> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
+    fun <T> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
 
     /**
      * Get instance of primary type P and secondary type S
@@ -341,13 +344,14 @@ data class Scope(
      * @return instance of type S
      */
     fun <S> bind(
-            primaryType: KClass<*>,
-            secondaryType: KClass<*>,
-            parameters: ParametersDefinition?
+        primaryType: KClass<*>,
+        secondaryType: KClass<*>,
+        parameters: ParametersDefinition?
     ): S {
         return instanceRegistry.bind(primaryType, secondaryType, parameters)
-                ?: throw NoBeanDefFoundException(
-                        "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!")
+            ?: throw NoBeanDefFoundException(
+                "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!"
+            )
     }
 
     /**
@@ -368,7 +372,7 @@ data class Scope(
      * @param key
      */
     fun getProperty(key: String): String = _koin.getProperty(key)
-            ?: throw MissingPropertyException("Property '$key' not found")
+        ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
      * Close all instances from this scope

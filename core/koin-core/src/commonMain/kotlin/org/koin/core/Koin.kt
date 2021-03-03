@@ -123,8 +123,8 @@ class Koin {
      *
      * @return instance of type T
      */
-    fun <T : Any> get(
-            clazz: KClass<T>,
+    fun <T> get(
+            clazz: KClass<*>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T = scopeRegistry.rootScope.get(clazz, qualifier, parameters)
@@ -138,8 +138,8 @@ class Koin {
      *
      * @return instance of type T or null
      */
-    fun <T : Any> getOrNull(
-            clazz: KClass<T>,
+    fun <T> getOrNull(
+            clazz: KClass<*>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): T? = scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
@@ -154,7 +154,7 @@ class Koin {
      * @param secondaryTypes List of secondary bound types
      * @param override Allows to override a previous declaration of the same type (default to false).
      */
-    inline fun <reified T : Any> declare(
+    inline fun <reified T> declare(
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>> = emptyList(),
@@ -169,7 +169,7 @@ class Koin {
      *
      * @return list of instances of type T
      */
-    inline fun <reified T : Any> getAll(): List<T> = scopeRegistry.rootScope.getAll()
+    inline fun <reified T> getAll(): List<T> = scopeRegistry.rootScope.getAll()
 
     /**
      * Get instance of primary type P and secondary type S
