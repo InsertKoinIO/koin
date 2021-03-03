@@ -27,6 +27,40 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `can create a single with parameters - resolved in graph`() {
+
+        val app = koinApplication {
+            modules(
+                module {
+                    factory { Simple.MySingle(get()) }
+                })
+        }
+
+        val koin = app.koin
+        val a42: Simple.MySingle = koin.get { parametersOf(42) }
+        assertEquals(42, a42.id)
+        
+        val a24: Simple.MySingle = koin.get { parametersOf(24) }
+        assertEquals(24, a24.id)
+    }
+
+    @Test
+    fun `can create a single with parameters - using param object resolution`() {
+
+        val app = koinApplication {
+            modules(
+                module {
+                    single { params -> Simple.MySingle(params.get()) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingle = koin.get { parametersOf(42) }
+
+        assertEquals(42, a.id)
+    }
+
+    @Test
     fun `can create a single with nullable parameters`() {
 
         val app = koinApplication {

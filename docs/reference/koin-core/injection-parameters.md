@@ -4,9 +4,29 @@ title: Injection Parameters
 
 In any definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
-## Defining an injection parameter
+## Defining an injected parameter
 
-Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class:
+Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class. We use the `params` function argument  to help retrieve our injected parqmeters:
+
+```kotlin
+class Presenter(val view : View)
+
+val myModule = module {
+    single { params -> Presenter(view = params.get()) }
+}
+```
+
+You can also let the Koin graph resolution find your injected parameter for you. Just use the usual `get()` function:
+
+```kotlin
+class Presenter(val view : View)
+
+val myModule = module {
+    single { Presenter(get()) }
+}
+```
+
+Finally, you can also write your injected parameters directly with the parameters object, as destructured declaration:
 
 ```kotlin
 class Presenter(val view : View)
@@ -16,41 +36,32 @@ val myModule = module {
 }
 ```
 
+:::caution
+ Even if the "destrutured" declaration is more conveient and readable, it's not type safe. Kotlinb won't detect that passed type are in good orders if you have several values
+:::
 
-## Injecting with values
 
-In contrary to resolved dependencies (resolved with with `get()`), injection parameters are *parameters passed through the resolution API*.
-This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf()` function:
+## Passing values to inject
 
-```kotlin
-class MyComponent : View, KoinComponent {
-
-    // inject this as View value
-    val presenter : Presenter by inject { parametersOf(this) }
-}
-```
-
-## Multiple parameters
-
-If we want to have multiple parameters in our definition, we can use the *destructured declaration* to list our parameters:
+Given a definition that is using injected parameters:
 
 ```kotlin
-class Presenter(val view : View, id : String)
+class Presenter(val a : A, val b : B)
 
 val myModule = module {
-    single{ (view : View, id : String) -> Presenter(view,id) }
+    single { params -> Presenter(a = params.get(), b = params.get()) }
 }
-```
 
-In a `KoinComponent`, just use the `parametersOf` function with your arguments like below:
+Injection parameters are parameters passed through the resolution API with the `parametersOf()` function (each value seperated by comma): 
 
 ```kotlin
 class MyComponent : View, KoinComponent {
 
-    val id : String ...
+    val a : A ...
+    val b : B ... 
 
-    // inject with view & id
-    val presenter : Presenter by inject { parametersOf(this,id) }
+    // inject this as View value
+    val presenter : Presenter by inject { parametersOf(a, b) }
 }
 ```
 
