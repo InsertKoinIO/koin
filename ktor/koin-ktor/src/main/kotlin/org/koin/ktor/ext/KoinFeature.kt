@@ -24,6 +24,7 @@ import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.ContextDsl
 import org.koin.core.KoinApplication
 import org.koin.core.KoinExperimentalAPI
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
@@ -45,7 +46,7 @@ class Koin(internal val koinApplication: KoinApplication) {
         override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
             val monitor = pipeline.environment.monitor
 
-            val koinApplication = startKoin(appDeclaration = configure)
+            val koinApplication = GlobalContext.getOrNull() ?: startKoin(appDeclaration = configure)
             monitor.raise(KoinApplicationStarted, koinApplication)
 
             monitor.subscribe(ApplicationStopping) {
