@@ -18,7 +18,7 @@ package org.koin.java
 import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Koin Java Helper - inject/get into Java code
@@ -43,7 +43,7 @@ object KoinJavaComponent {
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
     ): Lazy<T> {
-        return lazy(LazyThreadSafetyMode.NONE) {
+        return lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             get(clazz, qualifier, parameters)
         }
     }
@@ -95,5 +95,5 @@ object KoinJavaComponent {
      * @param key - key property
      */
     @JvmStatic
-    fun getKoin(): Koin = PlatformTools.defaultContext().get()
+    fun getKoin(): Koin = KoinPlatformTools.defaultContext().get()
 }

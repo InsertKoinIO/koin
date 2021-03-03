@@ -17,7 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.logger.Level
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Property Registry
@@ -28,7 +28,7 @@ import org.koin.mp.PlatformTools
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(internal val _koin: Koin) {
 
-    private val _values: MutableMap<String, Any> = PlatformTools.safeHashMap()
+    private val _values: MutableMap<String, Any> = KoinPlatformTools.safeHashMap()
 
     /**
      * saveProperty all properties to registry

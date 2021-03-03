@@ -29,7 +29,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.InstanceRegistry
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
@@ -105,7 +105,7 @@ data class Scope(
      */
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> =
             lazy(mode) { get<T>(qualifier, parameters) }
@@ -120,7 +120,7 @@ data class Scope(
      */
     inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> =
             lazy(mode) { getOrNull<T>(qualifier, parameters) }
@@ -284,7 +284,7 @@ data class Scope(
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>>? = null,
             override: Boolean = false
-    ) = PlatformTools.synchronized(this) {
+    ) = KoinPlatformTools.synchronized(this) {
         val definition = _scopeDefinition.declareNewDefinition(instance, qualifier, secondaryTypes, override)
         instanceRegistry.saveDefinition(definition, override = true)
     }
@@ -373,7 +373,7 @@ data class Scope(
     /**
      * Close all instances from this scope
      */
-    fun close() = PlatformTools.synchronized(this) {
+    fun close() = KoinPlatformTools.synchronized(this) {
         clear()
         _koin.scopeRegistry.deleteScope(this)
     }

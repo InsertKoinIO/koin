@@ -26,7 +26,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeDefinition
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import org.koin.test.parameter.MockParameter
 
@@ -40,7 +40,7 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     koinApplication(appDeclaration)
-        .logger(PlatformTools.defaultLogger(level))
+        .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
 }
 

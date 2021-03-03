@@ -4,7 +4,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.logger.Level
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import org.koin.test.assertDefinitionsCount
 import org.koin.test.assertHasNoStandaloneInstance
 import kotlin.test.AfterTest
@@ -32,7 +32,7 @@ class KoinAppCreationTest {
     fun `start a Koin application`() {
         val app = startKoin { }
 
-        assertEquals(PlatformTools.defaultContext().get(), app.koin)
+        assertEquals(KoinPlatformTools.defaultContext().get(), app.koin)
 
         stopKoin()
 
@@ -52,14 +52,14 @@ class KoinAppCreationTest {
     @Test
     fun `allow declare a logger`() {
         startKoin {
-            logger(PlatformTools.defaultLogger(Level.ERROR))
+            logger(KoinPlatformTools.defaultLogger(Level.ERROR))
         }
 
-        assertEquals(PlatformTools.defaultContext().get().logger.level, Level.ERROR)
+        assertEquals(KoinPlatformTools.defaultContext().get().logger.level, Level.ERROR)
 
-        PlatformTools.defaultContext().get().logger.debug("debug")
-        PlatformTools.defaultContext().get().logger.info("info")
-        PlatformTools.defaultContext().get().logger.error("error")
+        KoinPlatformTools.defaultContext().get().logger.debug("debug")
+        KoinPlatformTools.defaultContext().get().logger.info("info")
+        KoinPlatformTools.defaultContext().get().logger.error("error")
     }
 
 //    @Test

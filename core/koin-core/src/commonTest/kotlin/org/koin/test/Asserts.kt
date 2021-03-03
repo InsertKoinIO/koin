@@ -1,8 +1,8 @@
 package org.koin.test
 
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import kotlin.test.assertNull
 
 fun assertHasNoStandaloneInstance() {
-    assertNull(PlatformTools.defaultContext().getOrNull())
+    assertNull(KoinPlatformTools.defaultContext().getOrNull())
 }

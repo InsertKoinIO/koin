@@ -16,14 +16,14 @@
 package org.koin.core.definition
 
 import org.koin.core.error.MissingPropertyException
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Definitions Properties
  *
  * @author Arnaud Giuliani
  */
-data class Properties(private val data: MutableMap<String, Any> = PlatformTools.safeHashMap()) {
+data class Properties(private val data: MutableMap<String, Any> = KoinPlatformTools.safeHashMap()) {
 
     operator fun <T> set(key: String, value: T) {
         data[key] = value as Any

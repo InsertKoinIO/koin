@@ -32,12 +32,13 @@ import kotlin.reflect.KClass
 //    return block()
 //}
 
-actual object PlatformTools {
+actual object KoinPlatformTools {
     actual fun getStackTrace(e: Exception): String = e.toString() + Exception().toString().split("\n")
     actual fun getClassName(kClass: KClass<*>): String = kClass.simpleName ?: "KClass@${hashCode()}"
 
     // TODO Better Id generation?
     actual fun generateId(): String = Random.nextDouble().hashCode().toString()
+    actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.PUBLICATION
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext
     actual fun <R> synchronized(lock: Any, block: () -> R): R {

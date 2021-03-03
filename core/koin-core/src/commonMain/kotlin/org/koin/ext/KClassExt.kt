@@ -15,7 +15,7 @@
  */
 package org.koin.ext
 
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
 /**
@@ -26,9 +26,9 @@ fun KClass<*>.getFullName(): String {
 }
 
 fun KClass<*>.saveCache(): String {
-    val name = PlatformTools.getClassName(this)
+    val name = KoinPlatformTools.getClassName(this)
     classNames[this] = name
     return name
 }
 
-private val classNames: MutableMap<KClass<*>, String> = PlatformTools.safeHashMap()
+private val classNames: MutableMap<KClass<*>, String> = KoinPlatformTools.safeHashMap()
