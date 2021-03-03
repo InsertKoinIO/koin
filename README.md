@@ -15,11 +15,11 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 ## Current Version
 
 ```gradle
-// latest stable
+// latest stable (Jcenter)
 koin_version = '2.2.2'
 
-// latest unstable
-koin_version = '3.0.1-alpha-5'
+// latest unstable (Maven Central)
+koin_version = '3.0.1-alpha-6'
 ```
 
 ## Latest News 🌐
