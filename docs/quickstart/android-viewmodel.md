@@ -22,7 +22,8 @@ repositories {
 dependencies {
     // Koin for Android - Scope feature
     // include koin-android-scope & koin-android
-    compile "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-android-viewmodel:$koin_version"
 }
 ```
 
