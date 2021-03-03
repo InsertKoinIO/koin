@@ -17,7 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Single instance holder
@@ -43,7 +43,7 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
 
     @Suppress("UNCHECKED_CAST")
     override fun get(context: InstanceContext): T {
-        PlatformTools.synchronized(this) {
+        KoinPlatformTools.synchronized(this) {
             if (!isCreated()) {
                 value = create(context)
             }

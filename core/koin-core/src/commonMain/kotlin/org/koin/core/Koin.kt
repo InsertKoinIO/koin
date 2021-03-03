@@ -31,7 +31,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
 /**
@@ -72,7 +72,7 @@ class Koin {
      */
     inline fun <reified T : Any> inject(
             qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
 
@@ -86,7 +86,7 @@ class Koin {
      */
     inline fun <reified T : Any> injectOrNull(
             qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
             noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
 
@@ -224,7 +224,7 @@ class Koin {
      * Create a Scope instance
      * @param scopeDefinitionName
      */
-    inline fun <reified T : Any> createScope(scopeId: ScopeID = PlatformTools.generateId()): Scope {
+    inline fun <reified T : Any> createScope(scopeId: ScopeID = KoinPlatformTools.generateId()): Scope {
         val qualifier = TypeQualifier(T::class)
         if (logger.isAt(Level.DEBUG)) {
             logger.debug("!- create scope - id:'$scopeId' q:$qualifier")

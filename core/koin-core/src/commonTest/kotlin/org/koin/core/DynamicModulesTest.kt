@@ -14,7 +14,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import org.koin.test.getBeanDefinition
 
 class DynamicModulesTest : KoinCoreTest() {
@@ -226,7 +226,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             42,
-            PlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id
         )
 
         unloadKoinModules(module)
@@ -234,7 +234,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             24,
-            PlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id
         )
 
         stopKoin()
@@ -314,7 +314,7 @@ class DynamicModulesTest : KoinCoreTest() {
             modules(module)
         }
 
-        val scope = PlatformTools.defaultContext().get().createScope("id", scopeKey)
+        val scope = KoinPlatformTools.defaultContext().get().createScope("id", scopeKey)
         assertNotNull(scope.get<Simple.ComponentA>())
 
         unloadKoinModules(module)

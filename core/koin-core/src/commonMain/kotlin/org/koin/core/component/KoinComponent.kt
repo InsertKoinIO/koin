@@ -18,7 +18,7 @@ package org.koin.core.component
 import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * KoinComponent interface marker to bring Koin extensions features
@@ -30,7 +30,7 @@ interface KoinComponent {
     /**
      * Get the associated Koin instance
      */
-    fun getKoin(): Koin = PlatformTools.defaultContext().get()
+    fun getKoin(): Koin = KoinPlatformTools.defaultContext().get()
 }
 
 /**
@@ -55,7 +55,7 @@ inline fun <reified T : Any> KoinComponent.get(
  */
 inline fun <reified T : Any> KoinComponent.inject(
     qualifier: Qualifier? = null,
-    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> =
     lazy(mode) { get<T>(qualifier, parameters) }

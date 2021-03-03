@@ -10,10 +10,11 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-actual object PlatformTools {
+actual object KoinPlatformTools {
     actual fun getStackTrace(e: Exception): String = e.toString() + InstanceFactory.ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }.joinToString(InstanceFactory.ERROR_SEPARATOR)
     actual fun getClassName(kClass: KClass<*>): String = kClass.java.name
     actual fun generateId(): String = UUID.randomUUID().toString()
+    actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext
     actual fun <R> synchronized(lock: Any, block: () -> R) = kotlin.synchronized(lock, block)

@@ -9,7 +9,7 @@ import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import org.koin.test.getBeanDefinition
 
 class KoinApplicationIsolationTest {
@@ -69,7 +69,7 @@ class KoinApplicationIsolationTest {
                 })
         }
 
-        val a1: Simple.ComponentA = PlatformTools.defaultContext().get().get()
+        val a1: Simple.ComponentA = KoinPlatformTools.defaultContext().get().get()
         val a2: Simple.ComponentA = app2.koin.get()
 
         assertNotEquals(a1, a2)
@@ -87,8 +87,8 @@ class KoinApplicationIsolationTest {
         startKoin {
             modules(module)
         }
-        val a1: Simple.ComponentA = PlatformTools.defaultContext().get().get()
-        val scope1 = PlatformTools.defaultContext().get().createScope("simple", named<Simple>())
+        val a1: Simple.ComponentA = KoinPlatformTools.defaultContext().get().get()
+        val scope1 = KoinPlatformTools.defaultContext().get().createScope("simple", named<Simple>())
         val b1: Simple.ComponentB = scope1.get()
 
         stopKoin()
@@ -96,8 +96,8 @@ class KoinApplicationIsolationTest {
         startKoin {
             modules(module)
         }
-        val a2: Simple.ComponentA = PlatformTools.defaultContext().get().get()
-        val scope2 = PlatformTools.defaultContext().get().createScope("simple", named<Simple>())
+        val a2: Simple.ComponentA = KoinPlatformTools.defaultContext().get().get()
+        val scope2 = KoinPlatformTools.defaultContext().get().createScope("simple", named<Simple>())
         val b2: Simple.ComponentB = scope2.get()
 
         assertNotEquals(a1, a2)

@@ -5,10 +5,11 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import kotlin.reflect.KClass
 
-expect object PlatformTools {
+expect object KoinPlatformTools {
     fun getStackTrace(e: Exception): String
     fun getClassName(kClass: KClass<*>): String
     fun generateId(): String
+    fun defaultLazyMode(): LazyThreadSafetyMode
     fun defaultLogger(level: Level = Level.INFO): Logger
     fun defaultContext(): KoinContext
     fun <R> synchronized(lock: Any, block: () -> R): R

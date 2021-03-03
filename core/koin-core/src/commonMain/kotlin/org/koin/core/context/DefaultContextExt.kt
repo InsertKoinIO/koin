@@ -18,39 +18,39 @@ package org.koin.core.context
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Start a Koin Application as StandAlone
  */
-fun startKoin(koinApplication: KoinApplication): KoinApplication = PlatformTools.defaultContext().startKoin(koinApplication)
+fun startKoin(koinApplication: KoinApplication): KoinApplication = KoinPlatformTools.defaultContext().startKoin(koinApplication)
 
 /**
  * Start a Koin Application as StandAlone
  */
-fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = PlatformTools.defaultContext().startKoin(appDeclaration)
+fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = KoinPlatformTools.defaultContext().startKoin(appDeclaration)
 
 /**
  * Stop current StandAlone Koin application
  */
-fun stopKoin() = PlatformTools.defaultContext().stopKoin()
+fun stopKoin() = KoinPlatformTools.defaultContext().stopKoin()
 
 /**
  * load Koin module in global Koin context
  */
-fun loadKoinModules(module: Module) = PlatformTools.defaultContext().loadKoinModules(module)
+fun loadKoinModules(module: Module) = KoinPlatformTools.defaultContext().loadKoinModules(module)
 
 /**
  * load Koin modules in global Koin context
  */
-fun loadKoinModules(modules: List<Module>) = PlatformTools.defaultContext().loadKoinModules(modules)
+fun loadKoinModules(modules: List<Module>) = KoinPlatformTools.defaultContext().loadKoinModules(modules)
 
 /**
  * unload Koin modules from global Koin context
  */
-fun unloadKoinModules(module: Module) = PlatformTools.defaultContext().unloadKoinModules(module)
+fun unloadKoinModules(module: Module) = KoinPlatformTools.defaultContext().unloadKoinModules(module)
 
 /**
  * unload Koin modules from global Koin context
  */
-fun unloadKoinModules(modules: List<Module>) = PlatformTools.defaultContext().unloadKoinModules(modules)
+fun unloadKoinModules(modules: List<Module>) = KoinPlatformTools.defaultContext().unloadKoinModules(modules)

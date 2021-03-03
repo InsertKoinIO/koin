@@ -20,7 +20,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 import org.koin.mp.native.MainThreadValue
 
 /**
@@ -46,19 +46,19 @@ object GlobalContext : KoinContext {
         contextHolder.get().koin = koinApplication.koin
     }
 
-    override fun stopKoin() = PlatformTools.synchronized(this) {
+    override fun stopKoin() = KoinPlatformTools.synchronized(this) {
         contextHolder.get().koin?.close()
         contextHolder.get().koin = null
     }
 
 
-    override fun startKoin(koinApplication: KoinApplication): KoinApplication = PlatformTools.synchronized(this) {
+    override fun startKoin(koinApplication: KoinApplication): KoinApplication = KoinPlatformTools.synchronized(this) {
         register(koinApplication)
         koinApplication.createEagerInstances()
         koinApplication
     }
 
-    override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = PlatformTools.synchronized(this) {
+    override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = KoinPlatformTools.synchronized(this) {
         val koinApplication = KoinApplication.init()
         register(koinApplication)
         appDeclaration(koinApplication)
@@ -67,19 +67,19 @@ object GlobalContext : KoinContext {
     }
 
 
-    override fun loadKoinModules(module: Module) = PlatformTools.synchronized(this) {
+    override fun loadKoinModules(module: Module) = KoinPlatformTools.synchronized(this) {
         get().loadModules(listOf(module))
     }
 
-    override fun loadKoinModules(modules: List<Module>) = PlatformTools.synchronized(this) {
+    override fun loadKoinModules(modules: List<Module>) = KoinPlatformTools.synchronized(this) {
         get().loadModules(modules)
     }
 
-    override fun unloadKoinModules(module: Module) = PlatformTools.synchronized(this) {
+    override fun unloadKoinModules(module: Module) = KoinPlatformTools.synchronized(this) {
         get().unloadModules(listOf(module))
     }
 
-    override fun unloadKoinModules(modules: List<Module>) = PlatformTools.synchronized(this) {
+    override fun unloadKoinModules(modules: List<Module>) = KoinPlatformTools.synchronized(this) {
         get().unloadModules(modules)
     }
 }

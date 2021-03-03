@@ -20,7 +20,7 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
 import org.koin.core.time.measureDuration
-import org.koin.mp.PlatformTools
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Koin Application
@@ -97,7 +97,7 @@ class KoinApplication private constructor() {
      * Set Koin to use [PrintLogger], by default at [Level.INFO]
      */
     fun printLogger(level: Level = Level.INFO): KoinApplication {
-        koin.setupLogger(PlatformTools.defaultLogger(level))
+        koin.setupLogger(KoinPlatformTools.defaultLogger(level))
         return this
     }
 
