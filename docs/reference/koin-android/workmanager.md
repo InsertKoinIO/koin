@@ -90,8 +90,6 @@ val workerFactoryModule = module {
    factory<WorkFactory> { WorkFactory1() }
    factory<WorkFactory> { WorkFactory2() }
 }
-
-}
 ```
 
 then have koin internals do something like
