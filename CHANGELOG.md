@@ -9,7 +9,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 * Merge branch 2.2.x & 3.0.0
 * New folder modules/strategy
-* Merge of main Android modules
+* Merge of main Android modules (koin-androidx-scope, koin-androidx-viewmodel are merged in koin-android)
 * Update Gradle dependencies to use proper `api` / `implementation`
 * Refresh Scope API
 
