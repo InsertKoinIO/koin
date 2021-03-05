@@ -13,6 +13,8 @@ import kotlin.test.*
 class ClosedScopeAPI {
 
     class ScopeType
+    class ScopeType2
+
 
     val scopeName = "MY_SCOPE"
 
@@ -32,6 +34,29 @@ class ClosedScopeAPI {
         val scope1 = koin.createScope("scope1", named<ScopeType>())
         val scope2 = koin.createScope("scope2", named<ScopeType>())
         assertNotEquals(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
+    }
+
+    @Test
+    fun `get all definition from current scope and linked scopes`() {
+        val koin = koinApplication {
+            printLogger()
+            modules(
+                module {
+                    scope(named<ScopeType>()) {
+                        scoped { Simple.ComponentA() }
+                    }
+                    scope(named<ScopeType2>()) {
+                        scoped { Simple.ComponentA() }
+                    }
+                }
+            )
+        }.koin
+
+        val scope1 = koin.createScope("scope1", named<ScopeType>())
+        val scope2 = koin.createScope("scope2", named<ScopeType2>())
+        scope1.linkTo(scope2)
+        val all = listOf(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
+        assertEquals(scope1.getAll<Simple.ComponentA>(),all)
     }
 
     @Test

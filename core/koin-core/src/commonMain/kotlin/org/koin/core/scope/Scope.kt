@@ -39,7 +39,7 @@ data class Scope(
     val _scopeDefinition: ScopeDefinition,
     internal val _koin: Koin
 ) {
-    private val linkedScope: ArrayList<Scope> = arrayListOf()
+    private val linkedScopes: ArrayList<Scope> = arrayListOf()
 
     @PublishedApi
     internal val instanceRegistry = InstanceRegistry(_koin, this)
@@ -60,7 +60,7 @@ data class Scope(
 
     internal fun create(links: List<Scope>) {
         instanceRegistry.create(_scopeDefinition.definitions)
-        linkedScope.addAll(links)
+        linkedScopes.addAll(links)
     }
 
     inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
@@ -80,7 +80,7 @@ data class Scope(
      */
     fun linkTo(vararg scopes: Scope) {
         if (!_scopeDefinition.isRoot) {
-            linkedScope.addAll(scopes)
+            linkedScopes.addAll(scopes)
         } else {
             error("Can't add scope link to a root scope")
         }
@@ -91,7 +91,7 @@ data class Scope(
      */
     fun unlink(vararg scopes: Scope) {
         if (!_scopeDefinition.isRoot) {
-            linkedScope.removeAll(scopes)
+            linkedScopes.removeAll(scopes)
         } else {
             error("Can't remove scope link to a root scope")
         }
@@ -245,7 +245,7 @@ data class Scope(
         parameters: ParametersDefinition?
     ): T? {
         var instance: T? = null
-        for (scope in linkedScope) {
+        for (scope in linkedScopes) {
             instance = scope.getOrNull<T>(
                 clazz,
                 qualifier,
@@ -323,7 +323,7 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll(clazz)
+    fun <T> getAll(clazz: KClass<*>): List<T> = instanceRegistry.getAll<T>(clazz) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
 
     /**
      * Get instance of primary type P and secondary type S
