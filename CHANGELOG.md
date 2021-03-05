@@ -5,6 +5,23 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [3.0.1]()
 
+### [3.0.1-beta-1]()
+
+* Update Platform tools for default Lazy Mode - https://github.com/InsertKoinIO/koin/pull/1031
+* Revert/Relax Typing resolution constraints - https://github.com/InsertKoinIO/koin/pull/1032
+* Update Ktor 1.5.2
+* Injection parameters doc update
+* Koin Native KClass in hashcode naming - https://github.com/InsertKoinIO/koin/pull/1036
+* Jetpack compose Beta01 - https://github.com/InsertKoinIO/koin/pull/1037
+* Fix getAll oeprator, to look in linked scopes - https://github.com/InsertKoinIO/koin/pull/1038
+* Ktor check for existing KoinApplication ready - https://github.com/InsertKoinIO/koin/pull/1023
+* Work manager resolution fix - https://github.com/InsertKoinIO/koin/pull/1018 
+* Koin Gradle Plugin drop for now (many issues for Android side)
+
+### [3.0.1-beta-6]()
+
+* Maven central publication scripts
+
 ### [3.0.1-alpha-3]()
 
 * Merge branch 2.2.x & 3.0.0
