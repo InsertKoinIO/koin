@@ -31,15 +31,19 @@ import org.koin.dsl.KoinAppDeclaration
 object GlobalContext : KoinContext {
 
     private var _koin: Koin? = null
+    private var _koinApplication: KoinApplication? = null
 
     override fun get(): Koin = _koin ?: error("KoinApplication has not been started")
 
     override fun getOrNull(): Koin? = _koin
 
+    fun getKoinApplicationOrNull(): KoinApplication? = _koinApplication
+
     private fun register(koinApplication: KoinApplication) {
         if (_koin != null) {
             throw KoinAppAlreadyStartedException("A Koin Application has already been started")
         }
+        _koinApplication = koinApplication
         _koin = koinApplication.koin
     }
 

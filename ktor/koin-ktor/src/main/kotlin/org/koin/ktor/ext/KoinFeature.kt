@@ -46,7 +46,7 @@ class Koin(internal val koinApplication: KoinApplication) {
         override fun install(pipeline: Application, configure: KoinAppDeclaration): Koin {
             val monitor = pipeline.environment.monitor
 
-            val koinApplication = GlobalContext.getOrNull() ?: startKoin(appDeclaration = configure)
+            val koinApplication = GlobalContext.getKoinApplicationOrNull() ?: startKoin(appDeclaration = configure)
             monitor.raise(KoinApplicationStarted, koinApplication)
 
             monitor.subscribe(ApplicationStopping) {

@@ -63,7 +63,6 @@ object GlobalContext : KoinContext {
         return koinApplication
     }
 
-
     override fun loadKoinModules(module: Module) {
         get().loadModules(listOf(module))
     }
