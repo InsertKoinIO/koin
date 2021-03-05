@@ -26,7 +26,7 @@ import kotlin.reflect.KClass
 
 actual object KoinPlatformTools {
     actual fun getStackTrace(e: Exception): String = e.toString() + Exception().toString().split("\n")
-    actual fun getClassName(kClass: KClass<*>): String = kClass.simpleName ?: "KClass@${hashCode()}"
+    actual fun getClassName(kClass: KClass<*>): String = kClass.simpleName ?: "KClass@${kClass.hashCode()}"
     // TODO Better Id generation?
     actual fun generateId(): String = Random.nextDouble().hashCode().toString()
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.NONE
