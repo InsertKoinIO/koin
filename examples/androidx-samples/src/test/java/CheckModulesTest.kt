@@ -1,3 +1,4 @@
+import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.work.WorkerParameters
 import org.junit.Rule
@@ -23,7 +24,7 @@ class CheckModulesTest {
             defaultValue<SavedStateHandle>()
             defaultValue<WorkerParameters>()
         }) {
-            androidContext(MockProvider.makeMock())
+            androidContext(MockProvider.makeMock<Application>())
             printLogger(Level.DEBUG)
             modules(appModule + mvpModule + mvvmModule + scopeModule)
         }
