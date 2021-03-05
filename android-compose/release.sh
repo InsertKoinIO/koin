@@ -1,5 +1,5 @@
 #!/bin/sh
 
-../gradlew publishAllPublicationsToStagingRepository --info
+./gradlew publishAllPublicationsToStagingRepository --info
 
 
