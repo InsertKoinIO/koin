@@ -152,9 +152,22 @@ In the module:
 val appModule = module {
 
     // ViewModel for Detail View with id as parameter injection
-    viewModel { (id : String) -> DetailViewModel(id, get(), get()) }
+    viewModel { parameters -> DetailViewModel(id = parameters.get(), get(), get()) }
 }
 ```
+
+or even
+
+In the module:
+
+```kotlin
+val appModule = module {
+
+    // ViewModel for Detail View with id as parameter injection, resolved from graph
+    viewModel { DetailViewModel(get(), get(), get()) }
+}
+```
+
 
 From the injection call site:
 
@@ -165,28 +178,6 @@ class DetailActivity : AppCompatActivity() {
 
     // Lazy inject ViewModel with id parameter
     val detailViewModel: DetailViewModel by viewModel{ parametersOf(id)}
-}
-```
-
-## Custom ViewModelStore, ViewModelStoreOwner & SavedStateRegistryOwner
-
-When you need to target a particular `ViewModelStore`, `ViewModelStoreOwner` or even a `SavedStateRegistryOwner` you can specify it in the ViewModel API.
-
-To do so, you can use the `ViewModelOwnerDefinition` API to let you define what you need, with the `from` function, with the `owner : ViewModelOwnerDefinition` attribute:
-
-```kotlin
-fun from(store: ViewModelStore, stateRegistry: SavedStateRegistryOwner?)
-fun from(storeOwner: ViewModelStoreOwner, stateRegistry: SavedStateRegistryOwner?)
-fun fromAny(owner: Any)
-```
-
-For example:
-
-```kotlin
-class DetailActivity : AppCompatActivity() {
-
-    // Lazy inject ViewModel from myViewModelStoreOwner, a custom ViewModelStoreOwner
-    val detailViewModel: DetailViewModel by viewModel( owner = { from(myViewModelStoreOwner) })
 }
 ```
 
