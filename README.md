@@ -19,6 +19,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 koin_version = '2.2.2'
 
 // latest version (Maven Central)
+// New group id moved from `org.koin` to `io.insert-koin`
 koin_version = '3.0.1-beta-1'
 ```
 
