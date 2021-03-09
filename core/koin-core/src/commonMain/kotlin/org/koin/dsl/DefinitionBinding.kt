@@ -38,7 +38,7 @@ infix fun <S : Any, P : S> BeanDefinition<P>.bind(clazz: KClass<S>): BeanDefinit
 /**
  * Add a compatible type to match for definition
  *
- * FIXME: this method is not type safe.
+ * Type-safety may be checked by "checkModules" from "koin-test" module.
  */
 inline fun <reified T> BeanDefinition<*>.bind(): BeanDefinition<*> {
     secondaryTypes = secondaryTypes + T::class
