@@ -1,6 +1,6 @@
 ![logo](./docs/img/koin_2.0.jpg)
 
-## What is KOIN?
+# What is KOIN?
  
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
@@ -8,13 +8,9 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 ## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
 
-### [Setup](https://insert-koin.io/docs/setup/v3)
-### [Getting Started](https://insert-koin.io/docs/quickstart/kotlin)
-### [Documentation References](https://insert-koin.io/docs/reference/introduction)
-
 ## Latest Version
 
-## JCenter
+## [JCenter](https://insert-koin.io/docs/setup/v2)
 
 ⚠️ Jcenter Will sunset in 2022 [https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)
 
@@ -23,9 +19,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 koin_version = '2.2.2'
 ```
 
-[Setup Koin with v2](https://insert-koin.io/docs/setup/v2)
-
-## Maven Central
+## [Maven Central](https://insert-koin.io/docs/setup/v3)
 
 ### The koin project's maven group id was previously `org.koin`. It's now `io.insert-koin` on maven central
 
@@ -35,7 +29,7 @@ koin_version = '2.2.2'
 koin_version = '3.0.1-beta-1'
 ```
 
-[Setup Koin with v3](https://insert-koin.io/docs/setup/v3)
+# Where to find resources?
 
 ## Latest News 🌐
 
@@ -53,7 +47,7 @@ Any question about Koin usage?
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
 
-### Contributing 🛠
+# Contributing 🛠
 
 Want to help or share a proposal about Koin? problem on a specific feature? 
 
@@ -63,7 +57,7 @@ Want to help or share a proposal about Koin? problem on a specific feature?
 
 Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob/master/CONTRIBUTING.adoc
 
-### Contributors
+## Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.adoc)].
 <a href="https://github.com/InsertKoinIO/koin/graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
