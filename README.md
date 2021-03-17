@@ -1,44 +1,51 @@
 ![logo](./docs/img/koin_2.0.jpg)
 
-## What is KOIN?
+# What is KOIN? - [https://insert-koin.io](https://insert-koin.io)
  
 A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## Official Website 👉 [https://insert-koin.io](https://insert-koin.io)
+## Latest Version 🚀
 
-### [Setup](https://insert-koin.io/docs/setup/stable)
-### [Getting Started](https://insert-koin.io/docs/quickstart/kotlin)
-### [Documentation References](https://insert-koin.io/docs/reference/introduction)
+## [JCenter](https://insert-koin.io/docs/setup/v2)
 
-## Current Version
+⚠️ Jcenter Will sunset in 2022 [https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)
 
 ```gradle
-// latest stable (Jcenter)
+// latest version (Jcenter)
 koin_version = '2.2.2'
-
-// latest unstable (Maven Central)
-koin_version = '3.0.1-alpha-6'
 ```
 
-## Latest News 🌐
+## [Maven Central](https://insert-koin.io/docs/setup/v3)
+
+### The koin project's maven group id was previously `org.koin`. It's now `io.insert-koin` on maven central
+
+```gradle
+// latest version (Maven Central)
+// New group id moved from `org.koin` to `io.insert-koin`
+koin_version = '3.0.1-beta-1'
+```
+
+# Where to find resources? 🌐
+
+## Latest News
 
 - Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Koin developers on Medium: [koin developers hub](https://medium.com/koin-developers)
 
-## Getting Help 🚒
+## Getting Help
 
 Any question about Koin usage? 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
 - Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
-### Reporting issues 🚑
+### Reporting issues
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
 
-### Contributing 🛠
+# Contributing 🛠
 
 Want to help or share a proposal about Koin? problem on a specific feature? 
 
@@ -48,7 +55,7 @@ Want to help or share a proposal about Koin? problem on a specific feature?
 
 Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob/master/CONTRIBUTING.adoc
 
-### Contributors
+## Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.adoc)].
 <a href="https://github.com/InsertKoinIO/koin/graphs/contributors"><img src="https://opencollective.com/koin/contributors.svg?width=890&button=false" /></a>
