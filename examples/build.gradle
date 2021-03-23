@@ -21,7 +21,7 @@ wrapper {
 allprojects {
 
     repositories {
-//        mavenLocal()
+        mavenLocal()
         mavenCentral()
         google()
         jcenter()
