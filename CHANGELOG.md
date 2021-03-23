@@ -5,6 +5,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAK
 
 ## [3.0.1]()
 
+### [3.0.1-beta-2]()
+
+* Koin Gradle Plugin is back
+* Fix back Ktor feature starter
+
 ### [3.0.1-beta-1]()
 
 * Update Platform tools for default Lazy Mode - https://github.com/InsertKoinIO/koin/pull/1031
