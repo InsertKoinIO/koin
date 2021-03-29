@@ -1,5 +1,6 @@
 package org.koin.example
 
+import jdk.nashorn.internal.ir.annotations.Ignore
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -11,6 +12,13 @@ import org.koin.core.time.measureDuration
 class CoffeeApp : KoinComponent {
 
     val maker: CoffeeMaker by inject()
+
+    val str: String by inject()
+
+    @Ignore
+    val aaa = "aaaa"
+
+    fun method(b:Boolean ):Int  = 3
 }
 
 fun main() {

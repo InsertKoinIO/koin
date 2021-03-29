@@ -3,9 +3,10 @@ package org.koin.ksp
 import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.module.Module
 
 import java.io.OutputStream
-import kotlin.reflect.KType
 
 /**
  * @author Fabio de Matos
@@ -34,6 +35,26 @@ open class TestProcessor : SymbolProcessor {
 
     }
 
+    private fun getKsTypeFromClass(resolver: Resolver, clazz: Class<out Any>): KSType? {
+
+        return clazz
+            .let {
+                object : KSName {
+                    override fun asString(): String = it.canonicalName
+                    override fun getQualifier(): String = "Not important "
+                    override fun getShortName(): String = it.simpleName
+                }
+            }
+            .let {
+                resolver.getClassDeclarationByName(it)
+                    ?.asStarProjectedType()
+            }
+            .also {
+                emit("Did it work? $it", "    ")
+            }
+
+    }
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
 
         if (invoked) {
@@ -41,44 +62,47 @@ open class TestProcessor : SymbolProcessor {
         }
         invoked = true
 
-        val moduleKsType =
-            org.koin.core.module.Module::class.java
-                .let {
-                    object : KSName {
-                        override fun asString(): String = it.canonicalName
-                        override fun getQualifier(): String = "Not important "
-                        override fun getShortName(): String = it.simpleName
+        val moduleKsType = getKsTypeFromClass(resolver, org.koin.core.module.Module::class.java)
+        val koinComponentKsType = getKsTypeFromClass(resolver, KoinComponent::class.java)
+        val stringKsType = getKsTypeFromClass(resolver, String::class.java)
+
+        resolver
+            .getAllFiles()
+            .let { lookupInjects(it) }
+
+        listOf(
+            moduleKsType
+//            koinComponentKsType,
+//            stringKsType
+        )
+            .forEach { type ->
+                resolver.getAllFiles()
+                    .let {
+                        writeSampleFile(it, type)
                     }
-                }
-                .let {
-                    resolver.getClassDeclarationByName(it)
-                        ?.asStarProjectedType()
-                }
-                .also {
-                    emit("Did it work? $it", "    ")
-                }
-
-
-
-        resolver.getAllFiles()
-            .let {
-                writeSampleFile(it, moduleKsType)
             }
+
 
 
         return listOf()
     }
 
-    private fun writeSampleFile(
-        list: List<KSFile>,
-        moduleKsType: KSType?
-    ) {
+    private fun lookupInjects(list: List<KSFile>) {
 
-        val fileKt = codeGenerator.createNewFile(Dependencies(false), "", "HELLO", "java")
-        fileKt.appendText("public class HELLO{\n")
-        fileKt.appendText("public int foo() { return 123455; }\n")
-        fileKt.appendText("public String bar() { return \"whaaaaaat\"; }\n")
+        secondLevelDeclarations(list)
+            .map {
+                emit("class ${it.closestClassDeclaration()}  ${it.isDelegated()} Property is $it - type ${it.type} - package ${it.typeParameters} - " +
+                        "${it.annotations} - " +
+                        "-- ${it.getter} -  -  ${it.extensionReceiver}" +
+                        "ppp ${it.findActuals()} - ${it.findExpects()}", indent = "____")
+            }
 
+    }
+
+    /**
+     * Returns all 1st level declarations (class fields) and 2nd level ( fields of class of class?)
+     */
+    private fun secondLevelDeclarations(list: List<KSFile>): List<KSPropertyDeclaration> {
 
         val first = list
             .map {
@@ -99,11 +123,32 @@ open class TestProcessor : SymbolProcessor {
                 it as? KSPropertyDeclaration
             }
 
-        val combined = mutableListOf<KSPropertyDeclaration>()
+        return mutableListOf<KSPropertyDeclaration>()
             .also {
                 it.addAll(first)
                 it.addAll(second)
             }
+    }
+
+    /**
+     * Writes one java file by scanning [list] list of files and looking for objects of type [moduleKsType]
+     */
+    private fun writeSampleFile(
+        list: List<KSFile>,
+        moduleKsType: KSType?
+    ) {
+
+        val fileKt = codeGenerator.createNewFile(Dependencies(false), "", "HELLO", "java")
+        fileKt.appendText("public class HELLO{\n")
+        fileKt.appendText("public int foo() { return 1234556; }\n")
+        fileKt.appendText("public String bar() { return \"whaaaaaat\"; }\n")
+
+
+
+
+        fileKt.appendText("public String barr() { return \"")
+
+        val combined = secondLevelDeclarations(list)
             .filter {
                 it.type.resolve().declaration == moduleKsType?.declaration
             }
@@ -112,15 +157,19 @@ open class TestProcessor : SymbolProcessor {
                     "Found $it type ${it.type} -- ${it.type.resolve().declaration} from file ${it.containingFile} a // ${moduleKsType?.declaration}",
                     "   +-+-+-  "
                 )
+                fileKt.appendText("$it ")
+
                 it
             }
             .map {
                 it.findActuals()
             }
             .flatten()
-            .map{
-                emit("What is this $it","          ---")
+            .map {
+                emit("What is this $it", "          ---")
             }
+
+        fileKt.appendText("\"; }\n")
 
         fileKt.appendText("}")
         return
