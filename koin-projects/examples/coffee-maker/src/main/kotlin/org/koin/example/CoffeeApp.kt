@@ -3,6 +3,7 @@ package org.koin.example
 import jdk.nashorn.internal.ir.annotations.Ignore
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.bind
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -12,13 +13,14 @@ import org.koin.core.time.measureDuration
 class CoffeeApp : KoinComponent {
 
     val maker: CoffeeMaker by inject()
+    val aaa = "aaa"
 
-    val str: String by inject()
+    val str: String = getKoin().get<String>()
 
     @Ignore
-    val aaa = "aaaa"
 
-    fun method(b:Boolean ):Int  = 3
+    val l by lazy { "lazy" }
+    fun method(b: Boolean): Int = 3
 }
 
 fun main() {

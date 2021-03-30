@@ -1,6 +1,7 @@
 package org.koin.ksp
 
 import com.google.devtools.ksp.closestClassDeclaration
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import org.koin.core.component.KoinComponent
@@ -67,6 +68,18 @@ open class TestProcessor : SymbolProcessor {
         val stringKsType = getKsTypeFromClass(resolver, String::class.java)
 
         resolver
+//            .getClassDeclarationByName(Module::class.java.canonicalName)
+            .getClassDeclarationByName("org.koin.example.CoffeeApp")
+            ?.let {
+                emit("MModule??? $it  - ${it.containingFile} - ${it.location} ${it.asStarProjectedType()}", ".")
+            }
+        resolver
+            .getAllFiles()
+            .forEach {
+                emit("File scanned $it", indent = ".")
+            }
+
+        resolver
             .getAllFiles()
             .let { lookupInjects(it) }
 
@@ -91,10 +104,13 @@ open class TestProcessor : SymbolProcessor {
 
         secondLevelDeclarations(list)
             .map {
-                emit("class ${it.closestClassDeclaration()}  ${it.isDelegated()} Property is $it - type ${it.type} - package ${it.typeParameters} - " +
-                        "${it.annotations} - " +
-                        "-- ${it.getter} -  -  ${it.extensionReceiver}" +
-                        "ppp ${it.findActuals()} - ${it.findExpects()}", indent = "____")
+                emit(
+                    "class ${it.closestClassDeclaration()}  ${it.isDelegated()} Property is $it - type ${it.type} - package ${it.typeParameters} - " +
+                            "${it.annotations} -  fff ${it.type.resolve().arguments}" +
+                            "-- ${it.getter} -  -  ${it.setter}" +
+                            "ppp ${it.findActuals()} - ${it.findExpects()} - ${it.origin}",
+                    indent = "____"
+                )
             }
 
     }
