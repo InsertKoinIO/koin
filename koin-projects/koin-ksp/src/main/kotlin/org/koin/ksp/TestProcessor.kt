@@ -1,9 +1,12 @@
 package org.koin.ksp
 
+import com.google.devtools.ksp.closestClassDeclaration
+import com.google.devtools.ksp.getClassDeclarationByName
+import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-
 import java.io.OutputStream
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author Fabio de Matos
@@ -17,14 +20,22 @@ open class TestProcessor : SymbolProcessor {
     private var logFile: OutputStream? = null
     var invoked = false
 
-    private val targetList = mutableListOf<KSPropertyDeclaration>()
+    private val maxDepth = 10
+    private val depthCount = AtomicInteger(0)
+
+    private val rootDependencyList = mutableSetOf<KSPropertyDeclaration>()
+    private val indirectDependencyList = mutableSetOf<KSClassDeclaration>()
+
+    private val activityInjectors = mutableMapOf<KSClassDeclaration, KSPropertyDeclaration>()
 
     override fun finish() {
 
-        logFile = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor_finish", "log")
+        logFile =
+            codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor_finish", "log")
         emit("Finish")
 
-        writeKoinModule(targetList)
+        writeKoinModule()
+        InjectorWriter(codeGenerator).writeKoinInjectors(activityInjectors)
 
         emit("Finish end")
         logFile?.close()
@@ -39,7 +50,8 @@ open class TestProcessor : SymbolProcessor {
         this.codeGenerator = codeGenerator
 
         this.logger = logger
-        logFile = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor_process", "log")
+        logFile =
+            codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor_process", "log")
 
         emit("hello")
         emit("TestProcessor: init($options)", "")
@@ -70,34 +82,109 @@ open class TestProcessor : SymbolProcessor {
 
         emit("TestProcessor: process", "")
 
-        return resolver
+        resolver
             .getSymbolsWithAnnotation(KoinInject::class.java.canonicalName)
-            .map {
-                emit("Yep now what $it")
-                it
-            }
-            .map {
-                if (it is KSPropertyDeclaration) {
-                    emit("It is property $it ")
-                    targetList.add(it)
-                }
-                it
-            }
             .map {
                 it.accept(KoinVisitor(it, lambda = { property ->
                     emit("Found something for target $property / ${property.type}")
-                    targetList
+                    rootDependencyList
                         .add(property)
+
+                    val closestClass = property.parentDeclaration
+                        ?.closestClassDeclaration()
+                        ?.let {
+                            emit("Closest class $it - $property")
+                            activityInjectors.put(it, property)
+                        }
+
+
                 }), Unit)
-                it
             }
 
+        depthCount.set(0)
+        processIndirectDependencies(resolver, rootDependencyList)
+
         logFile?.close()
+
+        return listOf()
     }
 
-    private fun writeKoinModule(injectedFieldList: List<KSPropertyDeclaration>) {
+    /**
+     * Recursively searches the target list for all dependencies of its dependencies.
+     *
+     * TODO: not recursive yet, only goes 1 level deep
+     */
+    private fun processIndirectDependencies(
+        resolver: Resolver,
+        targetList: Set<KSPropertyDeclaration>
+    ) {
 
-        emit("Writing module: $injectedFieldList")
+        if (depthCount.incrementAndGet() > maxDepth) {
+            logger.error("Max depth of $maxDepth reached. Check for circular dependencies.")
+        }
+
+        targetList
+            .also {
+
+                it.map { injectedReference ->
+
+                    injectedReference
+                        .type
+                        .resolve()
+//                    .resolve()
+//                    .declaration
+
+                    val clazz = injectedReference.type.resolve().declaration
+                        .let { it as? KSClassDeclaration }
+
+                    val constructor = clazz?.getConstructors()
+                        ?.firstOrNull()
+
+                    val parameters =
+                        constructor?.parameters
+                            ?.map {
+                                it.toString() + ":" + it.type + "__" + it.type.resolve().declaration.qualifiedName?.let { "${it.getQualifier()}.${it.getShortName()}" }
+                            }
+
+                    emit(
+                        "Looking at constructors for $injectedReference - ${injectedReference.type} ${clazz} --- ${parameters}",
+                        "---"
+                    )
+                }
+            }
+            .mapNotNull { injectedReference ->
+                injectedReference
+                    .type.resolve().declaration
+                    .let { it as? KSClassDeclaration }
+                    ?.getConstructors()
+                    ?.firstOrNull()
+                    ?.parameters
+                    ?.map {
+                        it
+                            .type.resolve().declaration
+                            .qualifiedName
+                            ?.let { "${it.getQualifier()}.${it.getShortName()}" }
+                    }
+            }
+            .flatten()
+            .mapNotNull { it }
+            .mapNotNull {
+                resolver.getClassDeclarationByName(it)
+            }
+            .map {
+
+                indirectDependencyList.add(it)
+                emit("Look what I found ${it?.toString()}")
+            }
+
+        depthCount.decrementAndGet()
+
+    }
+
+    private fun writeKoinModule() {
+
+        emit("Writing module: 1- $rootDependencyList")
+        emit("Writing module: 2- $indirectDependencyList")
 
         val fileKt = codeGenerator.createNewFile(
             Dependencies(false),
@@ -106,39 +193,78 @@ open class TestProcessor : SymbolProcessor {
             "kt"
         )
 
+        fileKt.appendText("package org.koin.ksp.generated\n")
+        fileKt.appendText("\n")
+        fileKt.appendText("\n")
         fileKt.appendText("import org.koin.dsl.module\n")
-//        fileKt.appendText("import org.koin.example.CoffeeMaker\n")
         fileKt.appendText("\n")
         fileKt.appendText("\n")
         fileKt.appendText("class KoinKspModule {\n")
         fileKt.appendText("val module = module { \n", identation = "\t")
 
         emit("Hello write koin")
-        createFactories(fileKt, injectedFieldList)
+        createFactories(fileKt, rootDependencyList, indirectDependencyList)
 
         fileKt.appendText("}\n", identation = "\t")
         fileKt.appendText("}\n")
         fileKt.close()
 
-        emit("Writing module done : $injectedFieldList")
+        emit("Writing module done : $rootDependencyList")
     }
 
     private fun createFactories(
         fileKt: OutputStream,
-        injectedFieldList: List<KSPropertyDeclaration>
+        injectedFieldList: Set<KSPropertyDeclaration>,
+        injectedIndirectClasses: Set<KSClassDeclaration>
     ) {
 
         emit("Factories now $injectedFieldList")
 
         injectedFieldList
-            .associateBy { it.type }
-            .values
             .map {
                 emit("Factory for $it")
 
                 createFactory(fileKt, it)
 
             }
+
+        injectedIndirectClasses
+            .map {
+                createFactory(fileKt, it)
+            }
+    }
+
+    private fun createFactory(fileKt: OutputStream, injectedReference: KSClassDeclaration) {
+
+        val clazz = injectedReference
+            .superTypes // we need a list of subclasses of injectedReference
+            .also {
+                emit("Trying to find implementation of $injectedReference in $it ")
+            }
+
+
+        val location = injectedReference.location
+
+
+        injectedReference.javaClass
+            .constructors
+            .first()
+            .parameterCount
+            .let {
+                Array(it) {
+                    "get()"
+                }
+            }
+            .joinToString(separator = ", ")
+            .let {
+
+                "factory { $clazz($it) }"
+            }
+            .let {
+                fileKt.appendText("// location $location\n", identation = "\t\t")
+//                fileKt.appendText("$it\n", identation = "\t\t")
+            }
+
     }
 
     private fun createFactory(fileKt: OutputStream, injectedReference: KSPropertyDeclaration) {
@@ -166,7 +292,7 @@ open class TestProcessor : SymbolProcessor {
             .joinToString(separator = ", ")
             .let {
 
-                "factory { $clazz($it) }"
+                "single (override=true){ $clazz($it) }"
             }
             .let {
                 fileKt.appendText("// location $location\n", identation = "\t\t")
@@ -174,6 +300,7 @@ open class TestProcessor : SymbolProcessor {
             }
 
     }
+
 
     fun emit(s: String, indent: String = ".") {
 

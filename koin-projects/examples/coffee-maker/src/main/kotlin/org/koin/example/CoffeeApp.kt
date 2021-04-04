@@ -3,7 +3,6 @@ package org.koin.example
 import jdk.nashorn.internal.ir.annotations.Ignore
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.bind
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -19,17 +18,8 @@ class CoffeeApp : KoinComponent {
     @KoinInject
     lateinit var maker2: CoffeeMaker
 
-    val aaaa = "aaa"
-
-    val str: String = getKoin().get<String>()
-
-    @Ignore
-
-    val l by lazy { "lazy" }
-    fun method(b: Boolean): Int = 3
-
     init {
-        maker2 = getKoin().get() //bind<CoffeeMaker>()
+        KoinKspInjector().inject(this)
     }
 }
 
