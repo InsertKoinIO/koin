@@ -1,11 +1,7 @@
 package org.koin.ksp
 
-import com.google.devtools.ksp.closestClassDeclaration
-import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-import org.koin.core.component.KoinComponent
-import org.koin.core.module.Module
 
 import java.io.OutputStream
 
@@ -15,12 +11,23 @@ import java.io.OutputStream
  */
 open class TestProcessor : SymbolProcessor {
 
+    private lateinit var logger: KSPLogger
     lateinit var codeGenerator: CodeGenerator
-    lateinit var file: OutputStream
+
+    private var logFile: OutputStream? = null
     var invoked = false
+
+    private val targetList = mutableListOf<KSPropertyDeclaration>()
 
     override fun finish() {
 
+        logFile = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor_finish", "log")
+        emit("Finish")
+
+        writeKoinModule(targetList)
+
+        emit("Finish end")
+        logFile?.close()
     }
 
     override fun init(
@@ -31,8 +38,11 @@ open class TestProcessor : SymbolProcessor {
     ) {
         this.codeGenerator = codeGenerator
 
-        file = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor", "log")
-//        emit("TestProcessor: init($options)", "")
+        this.logger = logger
+        logFile = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor_process", "log")
+
+        emit("hello")
+        emit("TestProcessor: init($options)", "")
 
     }
 
@@ -58,184 +68,121 @@ open class TestProcessor : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
 
-        if (invoked) {
-            return emptyList()
-        }
-        invoked = true
+        emit("TestProcessor: process", "")
 
-        val moduleKsType = getKsTypeFromClass(resolver, org.koin.core.module.Module::class.java)
-        val koinComponentKsType = getKsTypeFromClass(resolver, KoinComponent::class.java)
-        val stringKsType = getKsTypeFromClass(resolver, String::class.java)
-
-        resolver
-//            .getClassDeclarationByName(Module::class.java.canonicalName)
-            .getClassDeclarationByName("org.koin.example.CoffeeApp")
-            ?.let {
-                emit("MModule??? $it  - ${it.containingFile} - ${it.location} ${it.asStarProjectedType()}", ".")
+        return resolver
+            .getSymbolsWithAnnotation(KoinInject::class.java.canonicalName)
+            .map {
+                emit("Yep now what $it")
+                it
             }
-        resolver
-            .getAllFiles()
-            .forEach {
-                emit("File scanned $it", indent = ".")
+            .map {
+                if (it is KSPropertyDeclaration) {
+                    emit("It is property $it ")
+                    targetList.add(it)
+                }
+                it
+            }
+            .map {
+                it.accept(KoinVisitor(it, lambda = { property ->
+                    emit("Found something for target $property / ${property.type}")
+                    targetList
+                        .add(property)
+                }), Unit)
+                it
             }
 
-        resolver
-            .getAllFiles()
-            .let { lookupInjects(it) }
+        logFile?.close()
+    }
 
-        listOf(
-            moduleKsType
-//            koinComponentKsType,
-//            stringKsType
+    private fun writeKoinModule(injectedFieldList: List<KSPropertyDeclaration>) {
+
+        emit("Writing module: $injectedFieldList")
+
+        val fileKt = codeGenerator.createNewFile(
+            Dependencies(false),
+            "org.koin.ksp.generated",
+            "KoinKspModule",
+            "kt"
         )
-            .forEach { type ->
-                resolver.getAllFiles()
-                    .let {
-                        writeSampleFile(it, type)
-                    }
-            }
 
+        fileKt.appendText("import org.koin.dsl.module\n")
+//        fileKt.appendText("import org.koin.example.CoffeeMaker\n")
+        fileKt.appendText("\n")
+        fileKt.appendText("\n")
+        fileKt.appendText("class KoinKspModule {\n")
+        fileKt.appendText("val module = module { \n", identation = "\t")
 
+        emit("Hello write koin")
+        createFactories(fileKt, injectedFieldList)
 
-        return listOf()
+        fileKt.appendText("}\n", identation = "\t")
+        fileKt.appendText("}\n")
+        fileKt.close()
+
+        emit("Writing module done : $injectedFieldList")
     }
 
-    private fun lookupInjects(list: List<KSFile>) {
-
-        secondLevelDeclarations(list)
-            .map {
-                emit(
-                    "class ${it.closestClassDeclaration()}  ${it.isDelegated()} Property is $it - type ${it.type} - package ${it.typeParameters} - " +
-                            "${it.annotations} -  fff ${it.type.resolve().arguments}" +
-                            "-- ${it.getter} -  -  ${it.setter}" +
-                            "ppp ${it.findActuals()} - ${it.findExpects()} - ${it.origin}",
-                    indent = "____"
-                )
-            }
-
-    }
-
-    /**
-     * Returns all 1st level declarations (class fields) and 2nd level ( fields of class of class?)
-     */
-    private fun secondLevelDeclarations(list: List<KSFile>): List<KSPropertyDeclaration> {
-
-        val first = list
-            .map {
-                it.declarations
-            }
-            .flatten()
-            .mapNotNull {
-                it as? KSPropertyDeclaration
-            }
-
-        val second = list
-            .map { it.declarations }
-            .flatten()
-            .mapNotNull { it as? KSClassDeclaration }
-            .map { it.declarations }
-            .flatten()
-            .mapNotNull {
-                it as? KSPropertyDeclaration
-            }
-
-        return mutableListOf<KSPropertyDeclaration>()
-            .also {
-                it.addAll(first)
-                it.addAll(second)
-            }
-    }
-
-    /**
-     * Writes one java file by scanning [list] list of files and looking for objects of type [moduleKsType]
-     */
-    private fun writeSampleFile(
-        list: List<KSFile>,
-        moduleKsType: KSType?
+    private fun createFactories(
+        fileKt: OutputStream,
+        injectedFieldList: List<KSPropertyDeclaration>
     ) {
 
-        val fileKt = codeGenerator.createNewFile(Dependencies(false), "", "HELLO", "java")
-        fileKt.appendText("public class HELLO{\n")
-        fileKt.appendText("public int foo() { return 1234556; }\n")
-        fileKt.appendText("public String bar() { return \"whaaaaaat\"; }\n")
+        emit("Factories now $injectedFieldList")
 
-
-
-
-        fileKt.appendText("public String barr() { return \"")
-
-        val combined = secondLevelDeclarations(list)
-            .filter {
-                it.type.resolve().declaration == moduleKsType?.declaration
-            }
+        injectedFieldList
+            .associateBy { it.type }
+            .values
             .map {
-                emit(
-                    "Found $it type ${it.type} -- ${it.type.resolve().declaration} from file ${it.containingFile} a // ${moduleKsType?.declaration}",
-                    "   +-+-+-  "
-                )
-                fileKt.appendText("$it ")
+                emit("Factory for $it")
 
-                it
+                createFactory(fileKt, it)
+
             }
-            .map {
-                it.findActuals()
+    }
+
+    private fun createFactory(fileKt: OutputStream, injectedReference: KSPropertyDeclaration) {
+
+        val clazz = injectedReference
+            .type
+            .resolve()
+            .declaration
+            .qualifiedName
+            ?.let { "${it.getQualifier()}.${it.getShortName()}" }
+
+
+        val location = injectedReference.location
+
+
+        injectedReference.javaClass
+            .constructors
+            .first()
+            .parameterCount
+            .let {
+                Array(it) {
+                    "get()"
+                }
             }
-            .flatten()
-            .map {
-                emit("What is this $it", "          ---")
-            }
+            .joinToString(separator = ", ")
+            .let {
 
-        fileKt.appendText("\"; }\n")
-
-        fileKt.appendText("}")
-        return
-
-        list
-            .map {
-                it.declarations
-            }
-            .flatten()
-//            .mapNotNull { it as? KSClassDeclaration }
-//            .mapNotNull { it.declarations }
-//            .flatten()
-            .mapNotNull { it as? KSPropertyDeclaration }
-//            .filter { it.type.javaClass.canonicalName == Module::class.java.canonicalName }
-            .map {
-
-
-//                val a = it
-//                    .let {
-//                        "${it.extensionReceiver} ${it.isDelegated()}  sss ${it.findOverridee()} ${it.findExpects()} ${it.findExpects()} ${it.containingFile}" +
-//                                "this --> ${it.closestClassDeclaration()}  that-> ${it.type}  ${it.type.element} -- ${it.typeParameters}" +
-//                                "parent decl ${it.parentDeclaration}" +
-//                                "\n +++++ ${it.type.resolve()
-//                                    .isAssignableFrom(moduleType)} //////////${it.type} - ${it.type.element?.typeArguments} - ${it.type.resolve()}-  ${it.type.javaClass.canonicalName} == ${Module::class.java.canonicalName}"
-//                    }
-
-                emit(
-                    "Processing ${it} - ${it.javaClass.canonicalName} - ${it.type.resolve()
-                        .starProjection()}",
-                    "   "
-                )
-                it
-            }
-            .joinToString(",")
-            .filter {
-                true
+                "factory { $clazz($it) }"
             }
             .let {
-                "public String list = \"$it\";  "
+                fileKt.appendText("// location $location\n", identation = "\t\t")
+                fileKt.appendText("$it\n", identation = "\t\t")
             }
-            .let {
-                fileKt.appendText(it)
-            }
-        fileKt.appendText("}")
 
     }
 
+    fun emit(s: String, indent: String = ".") {
 
-    fun emit(s: String, indent: String) {
-        file.appendText("$indent$s\n")
+        try {
+            logger.info("message= $s")
+            logFile?.appendText("$indent$s\n")
+        } catch (t: Throwable) {
+            println("Cannot write to log")
+        }
     }
 
 
