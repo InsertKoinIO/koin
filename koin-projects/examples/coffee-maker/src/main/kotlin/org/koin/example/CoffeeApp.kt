@@ -1,6 +1,5 @@
 package org.koin.example
 
-import jdk.nashorn.internal.ir.annotations.Ignore
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

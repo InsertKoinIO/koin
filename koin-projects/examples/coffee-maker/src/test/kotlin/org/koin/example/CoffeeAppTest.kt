@@ -18,8 +18,7 @@ class CoffeeAppTest : KoinTest {
     val koinTestRule = KoinTestRule.create {
         printLogger(Level.DEBUG)
         modules(
-            KoinKspModule().module,
-            coffeeAppModule
+            KoinKspModule().module
         )
     }
 

@@ -1,6 +1,7 @@
 package org.koin.ksp
 
 import com.google.devtools.ksp.closestClassDeclaration
+import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.processing.*
@@ -35,6 +36,8 @@ open class TestProcessor : SymbolProcessor {
         emit("Finish")
 
         writeKoinModule()
+
+        emit("Injector over ${activityInjectors.keys}", "++")
         InjectorWriter(codeGenerator).writeKoinInjectors(activityInjectors)
 
         emit("Finish end")
@@ -82,23 +85,51 @@ open class TestProcessor : SymbolProcessor {
 
         emit("TestProcessor: process", "")
 
+        val injectAnnotation = resolver
+            .getClassDeclarationByName(KoinInject::class.java.canonicalName)
+
         resolver
             .getSymbolsWithAnnotation(KoinInject::class.java.canonicalName)
             .map {
-                it.accept(KoinVisitor(it, lambda = { property ->
-                    emit("Found something for target $property / ${property.type}")
-                    rootDependencyList
-                        .add(property)
+                it.accept(
+                    KoinVisitor(it,
+                        lambdaClass = { clazz ->
+                            emit("Found something for target ${clazz.closestClassDeclaration()}")
 
-                    val closestClass = property.parentDeclaration
-                        ?.closestClassDeclaration()
-                        ?.let {
-                            emit("Closest class $it - $property")
-                            activityInjectors.put(it, property)
-                        }
+                            indirectDependencyList.add(clazz)
+
+                        },
+                        lambdaProperty = { property ->
+
+                            property
+                                .annotations
+                                .map {
+//                                    emit(
+//                                        "$property annotation $it  //  ${it.shortName.getQualifier()} == ${injectAnnotation?.simpleName?.getQualifier()} == ${KoinInject::class.java.simpleName} === @${KoinInject::class.java.simpleName}",
+//                                        ",,,"
+//                                    )
+                                    it
+                                }
+                                .filter {
+                                    val a = it.shortName.asString()
+                                    val b = "${KoinInject::class.java.simpleName}"
+
+//                                    emit("Really $a == $b -> ${a == b}")
+                                    a == b
+                                }
+                                .map {
+                                    emit("$property annotation $it ", "+++")
+                                    val closestClass = property.parentDeclaration
+                                        ?.closestClassDeclaration()
+                                        ?.let {
+                                            activityInjectors.put(it, property)
+                                        }
+
+                                }
 
 
-                }), Unit)
+                        }), Unit
+                )
             }
 
         depthCount.set(0)
@@ -234,37 +265,66 @@ open class TestProcessor : SymbolProcessor {
             }
     }
 
+    /**
+     * Creates a singleton out of [injectedReference]
+     */
     private fun createFactory(fileKt: OutputStream, injectedReference: KSClassDeclaration) {
 
-        val clazz = injectedReference
-            .superTypes // we need a list of subclasses of injectedReference
-            .also {
-                emit("Trying to find implementation of $injectedReference in $it ")
-            }
 
+        val fullClassName = injectedReference
+            .closestClassDeclaration()
+            .let {
+                "${it?.qualifiedName?.getQualifier()}.$it"
+            }
 
         val location = injectedReference.location
 
-
-        injectedReference.javaClass
-            .constructors
-            .first()
-            .parameterCount
-            .let {
+        injectedReference
+            .closestClassDeclaration()
+            ?.primaryConstructor
+            ?.parameters
+            ?.size
+            ?.let {
                 Array(it) {
                     "get()"
                 }
             }
-            .joinToString(separator = ", ")
+            ?.joinToString(separator = ", ")
             .let {
 
-                "factory { $clazz($it) }"
+                "single { $fullClassName($it) }"
             }
             .let {
+                fileKt.appendText("\n\n")
                 fileKt.appendText("// location $location\n", identation = "\t\t")
-//                fileKt.appendText("$it\n", identation = "\t\t")
+                fileKt.appendText("$it\n", identation = "\t\t")
             }
 
+
+        createSuperFactory(fileKt, injectedReference)
+    }
+
+    /**
+     * Creates a factory out of the supertypes of [injectedReference]
+     */
+    fun createSuperFactory(fileKt: OutputStream, injectedReference: KSClassDeclaration) {
+
+        injectedReference
+//            .getAllSuperTypes()
+            .superTypes
+            .mapNotNull {
+                emit("Super types for $injectedReference = $it", "\t")
+//                it.declaration.closestClassDeclaration()
+                it.resolve().declaration.closestClassDeclaration()
+            }
+            .map {
+
+                emit("Factory with $injectedReference", "\t\t")
+                "factory<${it.toFullName()}> { get<${injectedReference.toFullName()}>() } "
+            }
+            .map {
+                fileKt.appendText("$it\n", identation = "\t\t")
+            }
     }
 
     private fun createFactory(fileKt: OutputStream, injectedReference: KSPropertyDeclaration) {
@@ -292,10 +352,11 @@ open class TestProcessor : SymbolProcessor {
             .joinToString(separator = ", ")
             .let {
 
-                "single (override=true){ $clazz($it) }"
+                "single(){ $clazz($it) }"
             }
             .let {
-                fileKt.appendText("// location $location\n", identation = "\t\t")
+                fileKt.appendText("\n")
+                fileKt.appendText("// llocation $location\n", identation = "\t\t")
                 fileKt.appendText("$it\n", identation = "\t\t")
             }
 
@@ -319,4 +380,16 @@ open class TestProcessor : SymbolProcessor {
 fun OutputStream.appendText(str: String, identation: String = "") {
 
     this.write((identation + str).toByteArray())
+}
+
+fun KSClassDeclaration.toFullName(): String {
+
+    return "${this.toPackageName()}.${this.qualifiedName?.getShortName()}"
+
+}
+
+fun KSClassDeclaration.toPackageName(): String {
+
+    return this.qualifiedName?.getQualifier() ?: ""
+
 }

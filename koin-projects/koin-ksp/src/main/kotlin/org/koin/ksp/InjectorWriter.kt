@@ -14,6 +14,7 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
 
     fun writeKoinInjectors(activityInjectors: MutableMap<KSClassDeclaration, KSPropertyDeclaration>) {
 
+//        return
 
         // this should be a Map<class, List<property> >
         activityInjectors
@@ -68,7 +69,7 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
         fileKt.appendText("}\n", "\t")
         fileKt.appendText("}\n")
 
-        fileKt.close()
+//        fileKt.close()
     }
 
 }
