@@ -21,9 +21,8 @@ class KoinVisitor(
 
         when (node) {
             is KSClassDeclaration -> lambdaClass(node)
-            is KSPropertyDeclaration -> {
-                lambdaProperty(node)
-            }
+            is KSPropertyDeclaration -> lambdaProperty(node)
+
         }
 
     }

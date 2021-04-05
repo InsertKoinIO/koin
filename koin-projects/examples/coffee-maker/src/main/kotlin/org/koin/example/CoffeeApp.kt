@@ -18,7 +18,7 @@ class CoffeeApp : KoinComponent {
     lateinit var maker2: CoffeeMaker
 
     init {
-        KoinKspInjector().inject(this)
+        CoffeeAppKspInjector().inject(this)
     }
 }
 

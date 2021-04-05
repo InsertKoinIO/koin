@@ -14,9 +14,6 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
 
     fun writeKoinInjectors(activityInjectors: MutableMap<KSClassDeclaration, KSPropertyDeclaration>) {
 
-//        return
-
-        // this should be a Map<class, List<property> >
         activityInjectors
             .map {
                 writeKoinInjector(it.key, it.value)
@@ -46,7 +43,7 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
         val fileKt = codeGenerator.createNewFile(
             Dependencies(false),
             classPackageName,
-            "KoinKspInjector",
+            "CoffeeAppKspInjector",
             "kt"
         )
 
@@ -57,7 +54,7 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
         fileKt.appendText("import $fullClassName\n")
         fileKt.appendText("\n")
         fileKt.appendText("\n")
-        fileKt.appendText("class KoinKspInjector {\n\n")
+        fileKt.appendText("class CoffeeAppKspInjector {\n\n")
 
         fileKt.appendText("fun inject(injectee: $enclosingClass)  {\n", "\t")
 
@@ -69,7 +66,7 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
         fileKt.appendText("}\n", "\t")
         fileKt.appendText("}\n")
 
-//        fileKt.close()
+        fileKt.close()
     }
 
 }

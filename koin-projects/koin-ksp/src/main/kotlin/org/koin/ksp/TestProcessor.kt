@@ -85,9 +85,6 @@ open class TestProcessor : SymbolProcessor {
 
         emit("TestProcessor: process", "")
 
-        val injectAnnotation = resolver
-            .getClassDeclarationByName(KoinInject::class.java.canonicalName)
-
         resolver
             .getSymbolsWithAnnotation(KoinInject::class.java.canonicalName)
             .map {
@@ -162,8 +159,6 @@ open class TestProcessor : SymbolProcessor {
                     injectedReference
                         .type
                         .resolve()
-//                    .resolve()
-//                    .declaration
 
                     val clazz = injectedReference.type.resolve().declaration
                         .let { it as? KSClassDeclaration }
@@ -310,11 +305,9 @@ open class TestProcessor : SymbolProcessor {
     fun createSuperFactory(fileKt: OutputStream, injectedReference: KSClassDeclaration) {
 
         injectedReference
-//            .getAllSuperTypes()
             .superTypes
             .mapNotNull {
                 emit("Super types for $injectedReference = $it", "\t")
-//                it.declaration.closestClassDeclaration()
                 it.resolve().declaration.closestClassDeclaration()
             }
             .map {
