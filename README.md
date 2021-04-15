@@ -24,7 +24,7 @@ koin_version = '2.2.2'
 ```gradle
 // latest version (Maven Central)
 // New group id moved from `org.koin` to `io.insert-koin`
-koin_version = '3.0.1-beta-2'
+koin_version = '3.0.1'
 ```
 
 # Where to find resources? 🌐

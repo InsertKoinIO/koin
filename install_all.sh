@@ -1,21 +1,21 @@
 #!/bin/sh
 
 cd ./core
-./release.sh
+./install.sh
 cd ..
 
 cd ./android
-./release.sh
+./install.sh
 cd ..
 
 cd ./android-compose
-./release.sh
+./install.sh
 cd ..
 
 cd ./ktor
-./release.sh
+./install.sh
 cd ..
 
 cd ./plugins
-./release.sh
+./install.sh
 cd ..
