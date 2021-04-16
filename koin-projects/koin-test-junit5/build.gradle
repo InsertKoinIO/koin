@@ -1,7 +1,6 @@
 apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-test-junit5'
-description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
     // Koin
@@ -11,7 +10,8 @@ dependencies {
     testCompile "org.mockito:mockito-inline:$mockito_version"
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: '../gradle/sources.gradle'
+apply from: '../gradle/publish-maven-central.gradle'
 
 test {
     useJUnitPlatform()

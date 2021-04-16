@@ -33,4 +33,5 @@ dependencies {
 
 }
 
-apply from: '../gradle/publish-android.gradle'
+apply from: '../gradle/sources-android.gradle'
+apply from: '../gradle/publish-maven-central.gradle'

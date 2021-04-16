@@ -4,7 +4,6 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 archivesBaseName = 'koin-gradle-plugin'
-description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 
 dependencies {
@@ -20,4 +19,5 @@ repositories {
     jcenter()
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: '../gradle/sources.gradle'
+apply from: '../gradle/publish-maven-central.gradle'

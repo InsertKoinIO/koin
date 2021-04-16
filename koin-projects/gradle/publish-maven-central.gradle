@@ -1,0 +1,98 @@
+/*
+ * Copyright 2019-2021 Arnaud Giuliani
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+apply from: '../gradle/dokka.gradle'
+apply from: '../gradle/versions.gradle'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+def getRepositoryUsername() {
+    return findProperty('SONATYPE_NEXUS_USERNAME') ?: System.getenv('SONATYPE_NEXUS_USERNAME') ?: ""
+}
+
+def getRepositoryPassword() {
+    return findProperty('SONATYPE_NEXUS_PASSWORD') ?: System.getenv('SONATYPE_NEXUS_PASSWORD') ?: ""
+}
+
+
+def isSnapshotBuild() {
+    return is_snapshot
+}
+
+afterEvaluate { project ->
+    def pubComponent
+    if (PLATFORM == "kmm") { pubComponent = components.kotlin } else if (PLATFORM == "android") {pubComponent = components.release} else {pubComponent = components.java}
+    def sourcesArtifact = (PLATFORM == "kmm") ? jvmSourcesJar : sourcesJar
+    def implementations = (PLATFORM == "kmm") ? project.configurations.jvmImplementation : project.configurations.implementation
+
+    artifacts {
+        archives sourcesArtifact, dokkaJar
+    }
+
+    publishing {
+        publications {
+            mavenPublication(MavenPublication) {
+                from pubComponent
+                artifact sourcesArtifact
+                artifact dokkaJar
+                pom {
+                    name = POM_NAME
+                    description = POM_DESCRIPTION
+                    url = POM_URL
+                    inceptionYear = POM_INCEPTION_YEAR
+                    licenses {
+                        license {
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = POM_DEVELOPER_ID
+                            name = POM_DEVELOPER_NAME
+                            email = POM_DEVELOPER_EMAIL
+                            url = POM_DEVELOPER_URL
+                        }
+                    }
+                    scm {
+                        url = POM_SCM_URL
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_DEV_CONNECTION
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "sonatype"
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = isSnapshotBuild() ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
+                }
+            }
+        }
+    }
+
+    signing {
+        publishing.publications.all { publication ->
+            sign publication
+        }
+    }
+}

@@ -1,6 +1,7 @@
 ext {
     // Koin
     koin_version = '2.2.2'
+    is_snapshot = false
 
     // Kotlin
     kotlin_version = '1.4.10'

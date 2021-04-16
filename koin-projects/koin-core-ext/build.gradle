@@ -2,7 +2,6 @@ apply from: "../gradle/versions.gradle"
 apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-core-ext'
-description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
     // Koin
@@ -13,4 +12,5 @@ dependencies {
     testImplementation project(":koin-test")
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: '../gradle/sources.gradle'
+apply from: '../gradle/publish-maven-central.gradle'

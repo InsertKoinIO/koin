@@ -1,0 +1,5 @@
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    duplicatesStrategy = "exclude"
+    from android.sourceSets.main.java.source
+}

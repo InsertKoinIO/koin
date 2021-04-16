@@ -28,8 +28,6 @@ include 'koin-androidx-ext'
 // Android Samples
 include 'examples:android-samples'
 include 'examples:androidx-samples'
-include 'examples:androidx-compose'
-include 'examples:androidx-compose-jetnews'
 
 // Ktor
 include 'koin-logger-slf4j'

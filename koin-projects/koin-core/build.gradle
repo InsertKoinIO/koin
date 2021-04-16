@@ -2,7 +2,6 @@ apply from: "../gradle/versions.gradle"
 apply plugin: 'kotlin'
 
 archivesBaseName = 'koin-core'
-description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
 
 dependencies {
     // Kt
@@ -20,4 +19,5 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-apply from: '../gradle/publish.gradle'
+apply from: '../gradle/sources.gradle'
+apply from: '../gradle/publish-maven-central.gradle'
