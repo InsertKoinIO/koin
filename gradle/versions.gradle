@@ -4,7 +4,7 @@ ext {
     is_snaptshot = false
 
     // Kotlin
-    kotlin_version = '1.4.30'
+    kotlin_version = '1.4.32'
     coroutines_version = "1.4.2"
     
     // Dokka
