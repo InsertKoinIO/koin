@@ -1,0 +1,33 @@
+name: Koin CI/CD
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Start CI/CD tasks"
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Run CORE tests
+        run: cd core && ./test.sh
+
+      - name: Run Android tests
+        run: cd android && ./test.sh
+
+      - name: Run Android Compose tests
+        run: cd android-compose && ./test.sh
+
+      - name: Run Ktor tests
+        run: cd ktor && ./test.sh
+
+      - name: Run Plugins tests
+        run: cd plugins && ./test.sh
