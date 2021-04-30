@@ -8,15 +8,6 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 ## Latest Version 🚀
 
-## [JCenter](https://insert-koin.io/docs/setup/v2)
-
-⚠️ Jcenter Will sunset in 2022 [https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)
-
-```gradle
-// latest version (Jcenter)
-koin_version = '2.2.2'
-```
-
 ## [Maven Central](https://insert-koin.io/docs/setup/v3)
 
 ### The koin project's maven group id was previously `org.koin`. It's now `io.insert-koin` on maven central
@@ -24,6 +15,10 @@ koin_version = '2.2.2'
 ```gradle
 // latest version (Maven Central)
 // New group id moved from `org.koin` to `io.insert-koin`
+
+// 2.x Branch
+koin_version = '2.2.2'
+// 3.x branch
 koin_version = '3.0.1'
 ```
 
