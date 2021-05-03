@@ -8,7 +8,7 @@ kotlin {
     jvm {
         withJava()
     }
-    js() {
+    js(BOTH) {
         nodejs()
         browser()
     }
