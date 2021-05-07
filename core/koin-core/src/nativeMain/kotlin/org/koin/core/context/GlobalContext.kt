@@ -54,7 +54,6 @@ object GlobalContext : KoinContext {
 
     override fun startKoin(koinApplication: KoinApplication): KoinApplication = KoinPlatformTools.synchronized(this) {
         register(koinApplication)
-        koinApplication.createEagerInstances()
         koinApplication
     }
 
@@ -62,7 +61,6 @@ object GlobalContext : KoinContext {
         val koinApplication = KoinApplication.init()
         register(koinApplication)
         appDeclaration(koinApplication)
-        koinApplication.createEagerInstances()
         koinApplication
     }
 

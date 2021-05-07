@@ -25,11 +25,10 @@ android {
 
 dependencies {
     // Koin
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-core:$koin_version"
 
     implementation "junit:junit:$junit_version"
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 
