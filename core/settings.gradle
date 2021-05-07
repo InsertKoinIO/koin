@@ -1,9 +1,9 @@
 // Core
 include 'koin-core'
-//include 'koin-test'
-//include 'koin-core-ext'
-//include 'koin-test-junit4'
-//include 'koin-test-junit5'
+include 'koin-test'
+include 'koin-core-ext'
+include 'koin-test-junit4'
+include 'koin-test-junit5'
 
 enableFeaturePreview('GRADLE_METADATA')
 

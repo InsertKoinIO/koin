@@ -32,6 +32,8 @@ class FactoryInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         beanDefinition.callbacks.onClose?.invoke(null)
     }
 
+    override fun dropAll(){}
+
     override fun get(context: InstanceContext): T {
         return create(context)
     }

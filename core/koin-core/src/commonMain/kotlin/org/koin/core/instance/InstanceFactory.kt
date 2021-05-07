@@ -73,6 +73,8 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) {
      */
     abstract fun drop(scope: Scope? = null)
 
+    abstract fun dropAll()
+
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }

@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
 import org.koin.core.scope.Scope
@@ -40,8 +41,8 @@ class ScopeRegistry(private val _koin: Koin) {
 
     private val _scopes = safeHashMap<ScopeID, Scope>()
 
-    @PublishedApi
-    internal val rootScope = Scope(rootScopeQualifier, ROOT_SCOPE_ID, isRoot = true, _koin = _koin)
+    @KoinInternalApi
+    val rootScope = Scope(rootScopeQualifier, ROOT_SCOPE_ID, isRoot = true, _koin = _koin)
 
     init {
         _scopeDefinitions.add(rootScope.scopeQualifier)
@@ -58,11 +59,11 @@ class ScopeRegistry(private val _koin: Koin) {
         if (!_scopeDefinitions.contains(qualifier)){
             throw NoScopeDefFoundException("Scope '$qualifier' doesn't exist. Please declare it in a module.")
         }
-
         if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
         val scope = Scope(qualifier,scopeId, _koin = _koin)
+        scope.linkTo(rootScope)
         _scopes[scopeId] = scope
         return scope
     }
@@ -81,8 +82,18 @@ class ScopeRegistry(private val _koin: Koin) {
         _scopeDefinitions.clear()
     }
 
+    fun loadScopes(modules: List<Module>) {
+        modules.forEach {
+            loadModule(it)
+        }
+    }
+
+    private fun loadModule(module: Module) {
+        _scopeDefinitions.addAll(module.scopes)
+    }
+
     companion object {
-        private const val ROOT_SCOPE_ID = "-Root-"
+        private const val ROOT_SCOPE_ID = "_"
         @PublishedApi
         internal val rootScopeQualifier = _q(ROOT_SCOPE_ID)
     }

@@ -32,7 +32,7 @@ class ObjectScopeTest {
 
     @Test
     fun `typed scope & source`() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -56,7 +56,7 @@ class ObjectScopeTest {
 
     @Test
     fun `typed scope & source with get`() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -80,7 +80,7 @@ class ObjectScopeTest {
 
     @Test
     fun `scope from instance object`() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -114,7 +114,7 @@ class ObjectScopeTest {
 
     @Test
     fun `scope property`() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -168,7 +168,7 @@ class ObjectScopeTest {
 
     @Test
     fun `cascade scope `() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(
                 module {
                     factory { A() }
@@ -201,7 +201,7 @@ class ObjectScopeTest {
 
     @Test
     fun `cascade linked scope `() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(
                 module {
                     single { A() }
@@ -223,7 +223,7 @@ class ObjectScopeTest {
 
     @Test
     fun `cascade unlink scope `() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(
                 module {
                     single { A() }
@@ -249,7 +249,7 @@ class ObjectScopeTest {
 
     @Test
     fun `shared linked scope `() {
-        val koin: Koin = startKoin {
+        val koin: Koin = koinApplication {
             modules(
                 module {
                     scope<A> {
@@ -284,7 +284,7 @@ class ObjectScopeTest {
     @OptIn(KoinInternalApi::class)
     @Test
     fun `error for root linked scope `() {
-        val koin = startKoin {
+        val koin = koinApplication {
             modules(
                 module {
                     single { A() }

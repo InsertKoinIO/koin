@@ -331,7 +331,8 @@ class Koin {
      * Load module
      */
     fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
-        instanceRegistry.loadModules(modules,allowOverride)
+        instanceRegistry.loadModules(modules, allowOverride)
+        scopeRegistry.loadScopes(modules)
     }
 
 

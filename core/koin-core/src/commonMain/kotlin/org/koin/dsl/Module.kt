@@ -25,8 +25,8 @@ typealias ModuleDeclaration = Module.() -> Unit
  *
  * @author Arnaud Giuliani
  */
-fun module(createdAtStart: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
-    val module = Module(createdAtStart)
+fun module(moduleDeclaration: ModuleDeclaration): Module {
+    val module = Module()
     moduleDeclaration(module)
     return module
 }

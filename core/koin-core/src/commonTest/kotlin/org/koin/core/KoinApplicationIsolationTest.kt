@@ -75,6 +75,13 @@ class KoinApplicationIsolationTest {
         stopKoin()
     }
 
+    fun module() = module {
+        single { Simple.ComponentA() }
+        scope(named<Simple>()) {
+            scoped { Simple.ComponentB(get()) }
+        }
+    }
+
     @Test
     fun `stopping koin releases resources`() {
         val module = module {
@@ -86,8 +93,9 @@ class KoinApplicationIsolationTest {
         startKoin {
             modules(module)
         }
-        val a1: Simple.ComponentA = KoinPlatformTools.defaultContext().get().get()
-        val scope1 = KoinPlatformTools.defaultContext().get().createScope("simple", named<Simple>())
+        var koin = KoinPlatformTools.defaultContext().get()
+        val a1: Simple.ComponentA = koin.get()
+        val scope1 = koin.createScope("simple", named<Simple>())
         val b1: Simple.ComponentB = scope1.get()
 
         stopKoin()
@@ -95,8 +103,9 @@ class KoinApplicationIsolationTest {
         startKoin {
             modules(module)
         }
-        val a2: Simple.ComponentA = KoinPlatformTools.defaultContext().get().get()
-        val scope2 = KoinPlatformTools.defaultContext().get().createScope("simple", named<Simple>())
+        koin = KoinPlatformTools.defaultContext().get()
+        val a2: Simple.ComponentA = koin.get()
+        val scope2 = koin.createScope("simple", named<Simple>())
         val b2: Simple.ComponentB = scope2.get()
 
         assertNotEquals(a1, a2)

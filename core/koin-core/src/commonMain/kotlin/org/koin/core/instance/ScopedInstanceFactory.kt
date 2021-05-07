@@ -30,22 +30,19 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
 
     private var values = hashMapOf<ScopeID,T>()
 
-    private fun getValueOrNull(scope : Scope) : T? = values[scope.id]
-    private fun getValue(scope : Scope) : T = values[scope.id] ?: error("Scoped instance not found for ${scope.id}")
-
-    override fun isCreated(context: InstanceContext?): Boolean = (values != null)
+    override fun isCreated(context: InstanceContext?): Boolean = (values[context?.scope?.id] != null)
 
     override fun drop(scope: Scope?) {
         scope?.let {
             beanDefinition.callbacks.onClose?.invoke(values[it.id])
             values.remove(it.id)
-        } ?: error("trying to drop scoped instance without scope")
+        }
     }
 
     override fun create(context: InstanceContext): T {
-        return if (getValueOrNull(context.scope) == null) {
+        return if (values[context.scope.id] == null) {
             super.create(context)
-        } else getValue(context.scope)
+        } else values[context.scope.id] ?:  error("Scoped instance not found for ${context.scope.id}")
     }
 
     override fun get(context: InstanceContext): T {
@@ -54,6 +51,10 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
                 values[context.scope.id] = create(context)
             }
         }
-        return getValue(context.scope)
+        return values[context.scope.id] ?:  error("Scoped instance not found for ${context.scope.id}")
+    }
+
+    override fun dropAll(){
+        values.clear()
     }
 }

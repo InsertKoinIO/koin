@@ -76,10 +76,8 @@ class KoinApplication private constructor() {
         allowOverride = override
     }
 
-
-    // TODO Allow Override?
     private fun loadModules(modules: List<Module>) {
-        koin.loadModules(modules,allowOverride = allowOverride)
+        koin.loadModules(modules, allowOverride = allowOverride)
     }
 
     /**

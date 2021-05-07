@@ -17,6 +17,7 @@ package org.koin.core.module
 
 import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
@@ -30,17 +31,15 @@ import org.koin.dsl.ScopeDSL
  *
  * @author Arnaud Giuliani
  */
-class Module(
-    internal val createAtStart: Boolean,
-) {
-    var isLoaded: Boolean = false
-        internal set
-
+class Module {
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
     @PublishedApi
     internal val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
+
+    val isLoaded: Boolean
+        get() = mappings.size > 0
 
     @PublishedApi
     internal val scopes = hashSetOf<Qualifier>()
@@ -113,7 +112,7 @@ class Module(
     ): Pair<Module, InstanceFactory<T>> {
         val def = createDefinition(Kind.Factory, qualifier, definition, scopeQualifier = scopeQualifier)
         val mapping = indexKey(def.primaryType, qualifier, scopeQualifier)
-        val instanceFactory = SingleInstanceFactory(def)
+        val instanceFactory = FactoryInstanceFactory(def)
         saveMapping(mapping, instanceFactory)
         return Pair(this, instanceFactory)
     }

@@ -212,7 +212,8 @@ data class Scope(
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        return _koin.instanceRegistry.resolveInstance(qualifier,clazz,this.scopeQualifier, InstanceContext(_koin,this,parameters))
+        val instanceContext = InstanceContext(_koin, this, parameters)
+        return _koin.instanceRegistry.resolveInstance(qualifier,clazz,this.scopeQualifier, instanceContext)
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
                 getFromSource<T>(clazz)
@@ -313,8 +314,10 @@ data class Scope(
      *
      * @return list of instances of type T
      */
-    fun <T> getAll(clazz: KClass<*>): List<T> =
-        _koin.instanceRegistry.getAll<T>(clazz) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
+    fun <T> getAll(clazz: KClass<*>): List<T> {
+        val context = InstanceContext(_koin,this)
+        return _koin.instanceRegistry.getAll<T>(clazz,context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
+    }
 
 //    /**
 //     * Get instance of primary type P and secondary type S

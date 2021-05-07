@@ -27,7 +27,6 @@ import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
 import org.koin.core.module.overrideError
-import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools.safeHashMap
@@ -48,11 +47,8 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     private fun loadModule(module: Module, allowOverride: Boolean) {
-        if (!module.isLoaded) {
-            module.mappings.forEach { (mapping, factory) ->
-                saveMapping(allowOverride, mapping, factory)
-            }
-            module.isLoaded = true
+        module.mappings.forEach { (mapping, factory) ->
+            saveMapping(allowOverride, mapping, factory)
         }
     }
 
@@ -62,10 +58,12 @@ class InstanceRegistry(val _koin: Koin) {
         mapping: IndexKey,
         factory: InstanceFactory<*>
     ) {
-        if (!allowOverride && _instances.containsKey(mapping)) {
-            overrideError(factory, mapping)
-        } else {
-            _koin.logger.info("")
+        if (_instances.containsKey(mapping)) {
+            if (!allowOverride) {
+                overrideError(factory, mapping)
+            } else {
+                _koin.logger.info("Warning - override mapping: $mapping defintion:${factory.beanDefinition}")
+            }
         }
         _instances[mapping] = factory
     }
@@ -73,7 +71,7 @@ class InstanceRegistry(val _koin: Koin) {
     private fun createEagerInstances(eagerInstances: HashSet<SingleInstanceFactory<*>>) {
         val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
         eagerInstances.forEach { factory ->
-            factory.create(defaultContext)
+            factory.get(defaultContext)
         }
     }
 
@@ -112,11 +110,20 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun close() {
+        _instances.forEach { (key,factory) ->
+            factory.dropAll()
+        }
         _instances.clear()
     }
 
-    fun <T> getAll(clazz: KClass<*>): List<T> {
-        TODO("Not yet implemented")
+    fun <T> getAll(clazz: KClass<*>, instanceContext: InstanceContext): List<T> {
+        return _instances.values
+            .filter { factory ->
+                factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(
+                    clazz
+                )
+            }
+            .map { it.get(instanceContext) as T }
     }
 
     fun unloadModules(modules: List<Module>) {

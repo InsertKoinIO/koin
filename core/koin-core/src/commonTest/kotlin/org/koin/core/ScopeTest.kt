@@ -1,16 +1,11 @@
 package org.koin.core
 
-import kotlin.test.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import kotlin.test.fail
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.*
 
 class ScopeTest {
 

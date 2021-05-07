@@ -37,6 +37,10 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         value = null
     }
 
+    override fun dropAll(){
+        drop()
+    }
+
     override fun create(context: InstanceContext): T {
         return if (value == null) {
             super.create(context)
