@@ -15,20 +15,20 @@
  */
 package org.koin.core.instance
 
-import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.scope.Scope
 
 /**
  * Factory Instance Holder
  *
  * @author Arnaud Giuliani
  */
-class FactoryInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
-    InstanceFactory<T>(koin, beanDefinition) {
+class FactoryInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
+    InstanceFactory<T>(beanDefinition) {
 
-    override fun isCreated(): Boolean = false
+    override fun isCreated(context: InstanceContext?): Boolean = false
 
-    override fun drop() {
+    override fun drop(scope: Scope?) {
         beanDefinition.callbacks.onClose?.invoke(null)
     }
 

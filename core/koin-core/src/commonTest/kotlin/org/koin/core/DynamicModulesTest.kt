@@ -30,7 +30,7 @@ class DynamicModulesTest : KoinCoreTest() {
         }
 
         val defA = app.getBeanDefinition(Simple.ComponentA::class) ?: error("no definition found")
-        assertEquals(Kind.Single, defA.kind)
+        assertEquals(Kind.Singleton, defA.kind)
 
         assertNotNull(app.koin.get<Simple.ComponentA>())
 
@@ -57,7 +57,7 @@ class DynamicModulesTest : KoinCoreTest() {
         }
 
         val defA = app.getBeanDefinition(Simple.Component1::class) ?: error("no definition found")
-        assertEquals(Kind.Single, defA.kind)
+        assertEquals(Kind.Singleton, defA.kind)
 
         assertNotNull(app.koin.get<Simple.Component1>())
         assertNotNull(app.koin.get<Simple.ComponentInterface1>())
@@ -148,7 +148,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val module1 = module {
             single { Simple.MySingle(42) }
         }
-        val module2 = module(override = true) {
+        val module2 = module {
             single { Simple.MySingle(24) }
         }
         val app = koinApplication {
@@ -209,7 +209,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         val koin = app.koin
 
-        koin.loadModules(listOf(module),createEagerInstances = true)
+        koin.loadModules(listOf(module))
 
         assertTrue(created)
     }
@@ -256,7 +256,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val scope = app.koin.createScope("id", scopeKey)
         val defA = scope.getBeanDefinition(clazz = Simple.ComponentA::class)
             ?: error("no definition found")
-        assertEquals(Kind.Single, defA.kind)
+        assertEquals(Kind.Singleton, defA.kind)
         assertEquals(scopeKey, defA.scopeQualifier)
         assertNotNull(scope.get<Simple.ComponentA>())
 
@@ -290,7 +290,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val defA = scope.getBeanDefinition(clazz = Simple.ComponentA::class)
             ?: error("no definition found")
 
-        assertEquals(Kind.Single, defA.kind)
+        assertEquals(Kind.Singleton, defA.kind)
         assertEquals(scopeKey, defA.scopeQualifier)
         assertNotNull(scope.get<Simple.ComponentA>())
 

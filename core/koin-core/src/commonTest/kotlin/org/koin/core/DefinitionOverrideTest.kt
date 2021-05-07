@@ -17,7 +17,7 @@ class DefinitionOverrideTest {
             modules(
                     module {
                         single<Simple.ComponentInterface1> { Simple.Component2() }
-                        single<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
+                        single<Simple.ComponentInterface1> { Simple.Component1() }
                     }
             )
         }
@@ -33,7 +33,7 @@ class DefinitionOverrideTest {
                     module {
                         scope<Simple.ComponentA> {
                             scoped<Simple.ComponentInterface1> { Simple.Component2() }
-                            scoped<Simple.ComponentInterface1>(override = true) { Simple.Component1() }
+                            scoped<Simple.ComponentInterface1> { Simple.Component1() }
                         }
                     }
             )
@@ -49,7 +49,7 @@ class DefinitionOverrideTest {
             modules(
                     module {
                         single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
-                        single<Simple.ComponentInterface1>(named("DEF"), override = true) { Simple.Component1() }
+                        single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component1() }
                     }
             )
         }

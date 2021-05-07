@@ -17,15 +17,13 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
-import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.QualifierValue
+import org.koin.core.qualifier._q
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeDefinition
 import org.koin.core.scope.ScopeID
+import org.koin.mp.KoinPlatformTools.safeHashMap
 
 /**
  * Scope Registry
@@ -36,142 +34,56 @@ import org.koin.core.scope.ScopeID
 @OptIn(KoinInternalApi::class)
 class ScopeRegistry(private val _koin: Koin) {
 
-    private val _scopeDefinitions = HashMap<QualifierValue, ScopeDefinition>()
-    val scopeDefinitions: Map<QualifierValue, ScopeDefinition>
+    private val _scopeDefinitions = HashSet<Qualifier>()
+    val scopeDefinitions: Set<Qualifier>
         get() = _scopeDefinitions
 
-    private val _scopes = HashMap<ScopeID, Scope>()
+    private val _scopes = safeHashMap<ScopeID, Scope>()
 
-    private var _rootScopeDefinition: ScopeDefinition? = null
+    @PublishedApi
+    internal val rootScope = Scope(rootScopeQualifier, ROOT_SCOPE_ID, isRoot = true, _koin = _koin)
 
-    private var _rootScope: Scope? = null
-    val rootScope: Scope
-        get() = _rootScope ?: error("No root scope")
-
-    fun size() = _scopeDefinitions.values.map { it.size() }.sum()
-
-    internal fun loadModules(modules: Iterable<Module>) {
-        modules.forEach { module ->
-            if (!module.isLoaded) {
-                loadModule(module)
-            } else {
-                _koin.logger.error("module '$module' already loaded!")
-            }
-        }
+    init {
+        _scopeDefinitions.add(rootScope.scopeQualifier)
+        _scopes[rootScope.id] = rootScope
     }
 
-    private fun loadModule(module: Module) {
-        declareScopeDefinitions(module.scopes)
-        declareBeanDefinitions(module.definitions)
-        module.isLoaded = true
-    }
-
-    private fun declareScopeDefinitions(scopes: List<Qualifier>) {
-        scopes.forEach { scopeQualifier ->
-            createScopeDefinition(scopeQualifier)
-        }
-    }
-
-    private fun declareBeanDefinitions(definitions: HashSet<BeanDefinition<*>>) {
-        definitions.forEach { bean ->
-            declareDefinition(bean)
-        }
-    }
-
-    fun declareDefinition(bean: BeanDefinition<*>) {
-        val scopeDef = _scopeDefinitions[bean.scopeQualifier.value]
-                ?: error("Undeclared scope definition for definition: $bean")
-        scopeDef.save(bean)
-        _scopes.values.filter { it._scopeDefinition == scopeDef }.forEach { it.loadDefinition(bean) }
-    }
-
-    private fun createScopeDefinition(qualifier: Qualifier) {
-        val def = ScopeDefinition(qualifier)
-        if (_scopeDefinitions[qualifier.value] == null) {
-            _scopeDefinitions[qualifier.value] = def
-        }
-    }
-
-    internal fun createRootScopeDefinition() {
-        if (_rootScopeDefinition == null) {
-            val scopeDefinition = ScopeDefinition.rootDefinition()
-            _scopeDefinitions[ScopeDefinition.ROOT_SCOPE_QUALIFIER.value] =
-                    scopeDefinition
-            _rootScopeDefinition = scopeDefinition
-        } else error("Try to recreate Root scope definition")
-    }
-
-    internal fun createRootScope() {
-        if (_rootScope == null) {
-            _rootScope =
-                    createScope(ScopeDefinition.ROOT_SCOPE_ID, ScopeDefinition.ROOT_SCOPE_QUALIFIER, null)
-        } else error("Try to recreate Root scope")
-    }
-
-    fun getScopeOrNull(scopeId: ScopeID): Scope? {
+    @PublishedApi
+    internal fun getScopeOrNull(scopeId: ScopeID): Scope? {
         return _scopes[scopeId]
     }
 
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
+    @PublishedApi
+    internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
+        if (!_scopeDefinitions.contains(qualifier)){
+            throw NoScopeDefFoundException("Scope '$qualifier' doesn't exist. Please declare it in a module.")
+        }
+
         if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
-
-        val scopeDefinition = _scopeDefinitions[qualifier.value]
-        return if (scopeDefinition != null) {
-            val createdScope: Scope = createScope(scopeId, scopeDefinition, source)
-            _scopes[scopeId] = createdScope
-            createdScope
-        } else {
-            throw NoScopeDefFoundException("No Scope Definition found for qualifer '${qualifier.value}'")
-        }
-    }
-
-    private fun createScope(scopeId: ScopeID, scopeDefinition: ScopeDefinition, source: Any?): Scope {
-        val scope = Scope(scopeId, scopeDefinition, _koin).apply { _source = source }
-        val links = _rootScope?.let { listOf(it) } ?: emptyList()
-        scope.create(links)
+        val scope = Scope(qualifier,scopeId, _koin = _koin)
+        _scopes[scopeId] = scope
         return scope
     }
 
-    //TODO Lock
-    fun deleteScope(scopeId: ScopeID) {
-        _scopes.remove(scopeId)
+    internal fun deleteScope(scopeId: ScopeID) {
+        _scopes[scopeId]?.let { deleteScope(it) }
     }
 
-    fun deleteScope(scope: Scope) {
-        scope._scopeDefinition.removeExtras()
+    internal fun deleteScope(scope: Scope) {
+        _koin.instanceRegistry.dropScopeInstances(scope)
         _scopes.remove(scope.id)
     }
 
     internal fun close() {
-        clearScopes()
         _scopes.clear()
         _scopeDefinitions.clear()
-        _rootScopeDefinition = null
-        _rootScope = null
     }
 
-    private fun clearScopes() {
-        _scopes.values.forEach { scope -> scope.clear() }
+    companion object {
+        private const val ROOT_SCOPE_ID = "-Root-"
+        @PublishedApi
+        internal val rootScopeQualifier = _q(ROOT_SCOPE_ID)
     }
-
-    fun unloadModules(modules: Iterable<Module>) {
-        modules.forEach {
-            unloadModules(it)
-        }
-    }
-
-    fun unloadModules(module: Module) {
-        module.definitions.forEach { bean ->
-            val scopeDefinition = _scopeDefinitions[bean.scopeQualifier.value] ?: error(
-                    "Can't find scope for definition $bean")
-            scopeDefinition.unloadDefinition(bean)
-            _scopes.values
-                    .filter { it._scopeDefinition.qualifier == scopeDefinition.qualifier }
-                    .forEach { it.dropInstance(bean) }
-        }
-        module.isLoaded = false
-    }
-
 }

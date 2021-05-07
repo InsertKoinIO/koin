@@ -2,7 +2,7 @@ package org.koin.perfs
 
 import org.koin.dsl.module
 
-val perfModule400 = module {
+ fun perfModule400() = module {
     single { Perfs.A1() }
     single { Perfs.B1(get()) }
     single { Perfs.C1(get(), get()) }

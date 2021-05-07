@@ -31,6 +31,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
+import org.koin.core.registry.InstanceRegistry
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
@@ -47,6 +48,9 @@ class Koin {
     val scopeRegistry = ScopeRegistry(this)
 
     @KoinInternalApi
+    val instanceRegistry = InstanceRegistry(this)
+
+    @KoinInternalApi
     val propertyRegistry = PropertyRegistry(this)
 
     var logger: Logger = EmptyLogger()
@@ -56,11 +60,6 @@ class Koin {
     fun setupLogger(logger: Logger) {
         this.logger = logger
     }
-
-    private val modules = hashSetOf<Module>()
-
-    @KoinInternalApi
-    fun getRootScope() = scopeRegistry.rootScope
 
     /**
      * Lazy inject a Koin instance
@@ -171,30 +170,26 @@ class Koin {
      */
     inline fun <reified T> getAll(): List<T> = scopeRegistry.rootScope.getAll()
 
-    /**
-     * Get instance of primary type P and secondary type S
-     * (not for scoped instances)
-     *
-     * @return instance of type S
-     */
-    inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S =
-            scopeRegistry.rootScope.bind<S, P>(parameters)
-
-    /**
-     * Get instance of primary type P and secondary type S
-     * (not for scoped instances)
-     *
-     * @return instance of type S
-     */
-    fun <S> bind(
-            primaryType: KClass<*>,
-            secondaryType: KClass<*>,
-            parameters: ParametersDefinition? = null
-    ): S = scopeRegistry.rootScope.bind(primaryType, secondaryType, parameters)
-
-    internal fun createEagerInstances() {
-        scopeRegistry.rootScope.createEagerInstances()
-    }
+//    /**
+//     * Get instance of primary type P and secondary type S
+//     * (not for scoped instances)
+//     *
+//     * @return instance of type S
+//     */
+//    inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S =
+//            scopeRegistry.rootScope.bind<S, P>(parameters)
+//
+//    /**
+//     * Get instance of primary type P and secondary type S
+//     * (not for scoped instances)
+//     *
+//     * @return instance of type S
+//     */
+//    fun <S> bind(
+//            primaryType: KClass<*>,
+//            secondaryType: KClass<*>,
+//            parameters: ParametersDefinition? = null
+//    ): S = scopeRegistry.rootScope.bind(primaryType, secondaryType, parameters)
 
     /**
      * Create a Scope instance
@@ -327,26 +322,20 @@ class Koin {
      * Close all resources from context
      */
     fun close() {
-        modules.forEach { it.isLoaded = false }
-        modules.clear()
         scopeRegistry.close()
+        instanceRegistry.close()
         propertyRegistry.close()
     }
 
-    fun loadModules(modules: List<Module>, createEagerInstances: Boolean = false) {
-        this.modules.addAll(modules)
-        scopeRegistry.loadModules(modules)
-        if (createEagerInstances) {
-            createEagerInstances()
-        }
+    /**
+     * Load module
+     */
+    fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
+        instanceRegistry.loadModules(modules,allowOverride)
     }
 
 
-    fun unloadModules(modules: List<Module>, createEagerInstances: Boolean = false) {
-        scopeRegistry.unloadModules(modules)
-        this.modules.removeAll(modules)
-        if (createEagerInstances) {
-            createEagerInstances()
-        }
+    fun unloadModules(modules: List<Module>) {
+        instanceRegistry.unloadModules(modules)
     }
 }

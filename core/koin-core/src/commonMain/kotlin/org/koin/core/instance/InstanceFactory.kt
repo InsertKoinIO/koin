@@ -17,18 +17,18 @@
 
 package org.koin.core.instance
 
-import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 
 /**
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: BeanDefinition<T>) {
+abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) {
 
     /**
      * Retrieve an instance
@@ -43,8 +43,9 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
      * @return T
      */
     open fun create(context: InstanceContext): T {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("| create instance for $beanDefinition")
+        val koin = context.koin
+        if (koin.logger.isAt(Level.DEBUG)) {
+            koin.logger.debug("| create instance for $beanDefinition")
         }
         try {
             val parameters: DefinitionParameters = context.parameters
@@ -57,7 +58,7 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
             return value
         } catch (e: Exception) {
             val stack = KoinPlatformTools.getStackTrace(e)
-            _koin.logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
+            koin.logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
             throw InstanceCreationException("Could not create instance for $beanDefinition", e)
         }
     }
@@ -65,12 +66,12 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
     /**
      * Is instance created
      */
-    abstract fun isCreated(): Boolean
+    abstract fun isCreated(context: InstanceContext? = null): Boolean
 
     /**
      * Drop the instance
      */
-    abstract fun drop()
+    abstract fun drop(scope: Scope? = null)
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"

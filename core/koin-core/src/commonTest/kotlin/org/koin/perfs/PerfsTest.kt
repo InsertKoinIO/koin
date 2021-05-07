@@ -2,10 +2,6 @@ package org.koin.perfs
 
 import kotlin.test.Test
 import org.koin.core.A
-import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.definition.Definitions
-import org.koin.core.definition.Options
-import org.koin.core.scope.ScopeDefinition
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -23,30 +19,30 @@ class PerfsTest {
         app.close()
     }
 
-    @Test
-    fun `module no dsl`() {
-        koinApplication().close()
+//    @Test
+//    fun `module no dsl`() {
+//        koinApplication().close()
+//
+//        (1..10).forEach {
+//            useDSL()
+//            dontUseDSL()
+//        }
+//    }
 
-        (1..10).forEach {
-            useDSL()
-            dontUseDSL()
-        }
-    }
-
-    @OptIn(KoinInternalApi::class)
-    private fun dontUseDSL() {
-        measureDurationForResult("no dsl ") {
-            val app = koinApplication()
-            app.koin.scopeRegistry.declareDefinition(
-                Definitions.createSingle(
-                    A::class,
-                    definition = { A() },
-                    options = Options(),
-                    scopeQualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER)
-            )
-            app.close()
-        }
-    }
+//    @OptIn(KoinInternalApi::class)
+//    private fun dontUseDSL() {
+//        measureDurationForResult("no dsl ") {
+//            val app = koinApplication()
+//            app.koin.scopeRegistry.declareDefinition(
+//                Definitions.createSingle(
+//                    A::class,
+//                    definition = { A() },
+//                    options = Options(),
+//                    scopeQualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+//            )
+//            app.close()
+//        }
+//    }
 
     private fun useDSL() {
         measureDurationForResult("dsl ") {
@@ -75,7 +71,7 @@ class PerfsTest {
     private fun runPerfs() {
         val app = measureDurationForResult("perf400 - start ") {
             koinApplication {
-                modules(perfModule400)
+                modules(perfModule400())
             }
         }
         val koin = app.koin

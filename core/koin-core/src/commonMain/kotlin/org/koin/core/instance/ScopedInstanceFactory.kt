@@ -17,38 +17,43 @@ package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools
+import org.koin.mp.KoinPlatformTools.safeHashMap
 
 /**
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
+class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     InstanceFactory<T>(beanDefinition) {
 
-    private var value: T? = null
+    private var values = hashMapOf<ScopeID,T>()
 
-    private fun getValue() : T = value ?: error("Single instance created couldn't return value")
+    private fun getValueOrNull(scope : Scope) : T? = values[scope.id]
+    private fun getValue(scope : Scope) : T = values[scope.id] ?: error("Scoped instance not found for ${scope.id}")
 
-    override fun isCreated(context: InstanceContext?): Boolean = (value != null)
+    override fun isCreated(context: InstanceContext?): Boolean = (values != null)
 
     override fun drop(scope: Scope?) {
-        beanDefinition.callbacks.onClose?.invoke(value)
-        value = null
+        scope?.let {
+            beanDefinition.callbacks.onClose?.invoke(values[it.id])
+            values.remove(it.id)
+        } ?: error("trying to drop scoped instance without scope")
     }
 
     override fun create(context: InstanceContext): T {
-        return if (value == null) {
+        return if (getValueOrNull(context.scope) == null) {
             super.create(context)
-        } else getValue()
+        } else getValue(context.scope)
     }
 
     override fun get(context: InstanceContext): T {
         KoinPlatformTools.synchronized(this) {
             if (!isCreated(context)) {
-                value = create(context)
+                values[context.scope.id] = create(context)
             }
         }
-        return getValue()
+        return getValue(context.scope)
     }
 }

@@ -17,17 +17,14 @@ package org.koin.core.definition
 
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeDefinition
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
 /**
  * Koin bean definition
  * main structure to make definition in Koin
- *
- * @param qualifier
- * @param primaryType
  *
  * @author Arnaud Giuliani
  */
@@ -38,8 +35,6 @@ data class BeanDefinition<T>(
     val definition: Definition<T>,
     val kind: Kind,
     var secondaryTypes: List<KClass<*>> = listOf(),
-    val options: Options = Options(),
-    val properties: Properties = Properties(),
 ) {
     var callbacks: Callbacks<T> = Callbacks()
 
@@ -48,7 +43,7 @@ data class BeanDefinition<T>(
         val defType = "'${primaryType.getFullName()}'"
         val defName = qualifier?.let { ",qualifier:$qualifier" } ?: ""
         val defScope =
-            scopeQualifier.let { if (it == ScopeDefinition.ROOT_SCOPE_QUALIFIER) "" else ",scope:${scopeQualifier}" }
+            scopeQualifier.let { if (it == rootScopeQualifier) "" else ",scope:${scopeQualifier}" }
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
             ",binds:$typesAsString"
@@ -89,15 +84,31 @@ data class BeanDefinition<T>(
 
 }
 
-fun indexKey(clazz: KClass<*>, qualifier: Qualifier?): String {
-    return if (qualifier?.value != null) {
-        "${clazz.getFullName()}::${qualifier.value}"
-    } else clazz.getFullName()
+fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
+    val typeQs = typeQualifier?.value ?: ""
+    return "$scopeQualifier:${clazz.getFullName()}:$typeQs"
 }
 
 enum class Kind {
-    Single, Factory
+    Singleton, Factory, Scoped
 }
 
 typealias IndexKey = String
 typealias Definition<T> = Scope.(DefinitionParameters) -> T
+
+inline fun <reified T> createDefinition(
+    kind: Kind = Kind.Singleton,
+    qualifier: Qualifier? = null,
+    noinline definition: Definition<T>,
+    secondaryTypes: List<KClass<*>> = emptyList(),
+    scopeQualifier: Qualifier
+): BeanDefinition<T> {
+    return BeanDefinition(
+        scopeQualifier,
+        T::class,
+        qualifier,
+        definition,
+        kind,
+        secondaryTypes = secondaryTypes
+    )
+}

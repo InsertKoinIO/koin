@@ -12,12 +12,12 @@ class TODOAppTest {
         single<TasksDataSource> { FakeTasksRemoteDataSource() }
     }
 
-    val overrideModule = module(override = true) {
+    val overrideModule = module {
         single<TasksDataSource> { TasksLocalDataSource() }
     }
 
     val overrideDef = module {
-        single<TasksDataSource>(override = true) { TasksLocalDataSource() }
+        single<TasksDataSource>{ TasksLocalDataSource() }
     }
 
     interface TasksDataSource

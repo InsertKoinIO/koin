@@ -18,6 +18,10 @@ package org.koin.dsl
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Callbacks
 import org.koin.core.definition.OnCloseCallback
+import org.koin.core.definition.indexKey
+import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
 /**
@@ -30,15 +34,17 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun <T> BeanDefinition<T>.bind(clazz: KClass<*>): BeanDefinition<T> {
-    secondaryTypes = secondaryTypes + clazz
+infix fun Pair<Module,InstanceFactory<*>>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<*>> {
+    second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
+    val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
+    first.saveMapping(mapping,second)
     return this
 }
 
 /**
  * Add a compatible type to match for definition
  */
-inline fun <reified T> BeanDefinition<*>.bind(): BeanDefinition<*> {
+inline fun <reified T> Pair<Module,InstanceFactory<*>>.bind(): Pair<Module,InstanceFactory<*>> {
     return bind(T::class)
 }
 
@@ -46,8 +52,12 @@ inline fun <reified T> BeanDefinition<*>.bind(): BeanDefinition<*> {
  * Add compatible types to match for definition
  * @param classes
  */
-infix fun BeanDefinition<*>.binds(classes: Array<KClass<*>>): BeanDefinition<*> {
-    secondaryTypes = secondaryTypes + classes
+infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pair<Module,InstanceFactory<*>> {
+    second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + classes
+    classes.forEach { clazz ->
+        val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
+        first.saveMapping(mapping,second)
+    }
     return this
 }
 

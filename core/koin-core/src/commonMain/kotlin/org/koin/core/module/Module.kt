@@ -15,14 +15,13 @@
  */
 package org.koin.core.module
 
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.Definition
-import org.koin.core.definition.Definitions
-import org.koin.core.definition.Options
+import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
-import org.koin.core.scope.ScopeDefinition
+import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.dsl.ScopeDSL
 
 /**
@@ -33,25 +32,25 @@ import org.koin.dsl.ScopeDSL
  */
 class Module(
     internal val createAtStart: Boolean,
-    internal val override: Boolean
 ) {
-    @PublishedApi
-    internal val rootScope: Qualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
-
     var isLoaded: Boolean = false
         internal set
 
+    var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
+        internal set
+
     @PublishedApi
-    internal val scopes = arrayListOf<Qualifier>()
+    internal val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
+
     @PublishedApi
-    internal val definitions = hashSetOf<BeanDefinition<*>>()
+    internal val scopes = hashSetOf<Qualifier>()
 
     /**
      * Declare a group a scoped definition with a given scope qualifier
      * @param qualifier
      */
     fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
-        ScopeDSL(qualifier, definitions).apply(scopeSet)
+        ScopeDSL(qualifier, this).apply(scopeSet)
         scopes.add(qualifier)
     }
 
@@ -60,7 +59,7 @@ class Module(
      */
     inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
         val qualifier = TypeQualifier(T::class)
-        ScopeDSL(qualifier, definitions).apply(scopeSet)
+        ScopeDSL(qualifier, this).apply(scopeSet)
         scopes.add(qualifier)
     }
 
@@ -68,23 +67,30 @@ class Module(
      * Declare a Single definition
      * @param qualifier
      * @param createdAtStart
-     * @param override
      * @param definition - definition function
      */
     inline fun <reified T> single(
         qualifier: Qualifier? = null,
         createdAtStart: Boolean = false,
-        override: Boolean = false,
         noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        val options = makeOptions(override, createdAtStart)
-        val def = Definitions.createSingle(qualifier, definition, options, scopeQualifier = rootScope)
-        definitions.addDefinition(def)
-        return def
+    ): Pair<Module, InstanceFactory<T>> {
+        val def = createDefinition(Kind.Singleton, qualifier, definition, scopeQualifier = rootScopeQualifier)
+        val mapping = indexKey(def.primaryType, qualifier, rootScopeQualifier)
+        val instanceFactory = SingleInstanceFactory(def)
+        saveMapping(mapping, instanceFactory)
+        if (createdAtStart) {
+            eagerInstances.add(instanceFactory)
+        }
+        return Pair(this, instanceFactory)
     }
 
-    fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
-        Options(this.createAtStart || createdAtStart, this.override || override)
+    @PublishedApi
+    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>) {
+        if (mappings.contains(mapping)) {
+            overrideError(factory, mapping)
+        }
+        mappings[mapping] = factory
+    }
 
     /**
      * Declare a Factory definition
@@ -94,13 +100,22 @@ class Module(
      */
     inline fun <reified T> factory(
         qualifier: Qualifier? = null,
-        override: Boolean = false,
         noinline definition: Definition<T>
-    ): BeanDefinition<T> {
-        val options = makeOptions(override)
-        val def = Definitions.createFactory(qualifier, definition, options, scopeQualifier = rootScope)
-        definitions.addDefinition(def)
-        return def
+    ): Pair<Module, InstanceFactory<T>> {
+        return factory(qualifier, definition, rootScopeQualifier)
+    }
+
+    @PublishedApi
+    internal inline fun <reified T> factory(
+        qualifier: Qualifier? = null,
+        noinline definition: Definition<T>,
+        scopeQualifier: Qualifier
+    ): Pair<Module, InstanceFactory<T>> {
+        val def = createDefinition(Kind.Factory, qualifier, definition, scopeQualifier = scopeQualifier)
+        val mapping = indexKey(def.primaryType, qualifier, scopeQualifier)
+        val instanceFactory = SingleInstanceFactory(def)
+        saveMapping(mapping, instanceFactory)
+        return Pair(this, instanceFactory)
     }
 
     /**
@@ -114,20 +129,26 @@ class Module(
     operator fun plus(modules: List<Module>) = listOf(this) + modules
 }
 
-
-
-fun HashSet<BeanDefinition<*>>.addDefinition(bean : BeanDefinition<*>){
-    val added = add(bean)
-    if (!added && !bean.options.override){
-        throw DefinitionOverrideException(
-            "Definition '$bean' try to override existing definition. Please use override option to fix it")
-    } else if(!added && bean.options.override) {
-        remove(bean)
-        add(bean)
-    }
+@PublishedApi
+internal fun overrideError(
+    factory: InstanceFactory<*>,
+    mapping: IndexKey
+) {
+    throw DefinitionOverrideException("Already existing definition for ${factory.beanDefinition} at $mapping")
 }
 
-/**
- * Help write list of Modules
- */
-operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
+//fun HashSet<BeanDefinition<*>>.addDefinition(bean : BeanDefinition<*>){
+//    val added = add(bean)
+//    if (!added && !bean.options.override){
+//        throw DefinitionOverrideException(
+//            "Definition '$bean' try to override existing definition. Please use override option to fix it")
+//    } else if(!added && bean.options.override) {
+//        remove(bean)
+//        add(bean)
+//    }
+//}
+
+///**
+// * Help write list of Modules
+// */
+//operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)

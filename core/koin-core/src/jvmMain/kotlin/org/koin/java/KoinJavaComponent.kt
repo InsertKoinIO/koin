@@ -71,24 +71,24 @@ object KoinJavaComponent {
         )
     }
 
-    /**
-     * Retrieve given dependency
-     * @param clazz - dependency class
-     * @param qualifier - bean canonicalName / optional
-     * @param scope - scope
-     * @param parameters - dependency parameters / optional
-     */
-
-    @JvmStatic
-    @JvmOverloads
-    fun <P : Any, S : Any> bind(
-        primary: Class<P>,
-        secondary: Class<S>,
-        parameters: ParametersDefinition? = null
-    ): S {
-        return getKoin()
-            .bind(primary.kotlin, secondary.kotlin, parameters)
-    }
+//    /**
+//     * Retrieve given dependency
+//     * @param clazz - dependency class
+//     * @param qualifier - bean canonicalName / optional
+//     * @param scope - scope
+//     * @param parameters - dependency parameters / optional
+//     */
+//
+//    @JvmStatic
+//    @JvmOverloads
+//    fun <P : Any, S : Any> bind(
+//        primary: Class<P>,
+//        secondary: Class<S>,
+//        parameters: ParametersDefinition? = null
+//    ): S {
+//        return getKoin()
+//            .bind(primary.kotlin, secondary.kotlin, parameters)
+//    }
 
     /**
      * inject lazily given property

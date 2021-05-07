@@ -32,11 +32,7 @@ import org.koin.mp.KoinPlatformTools
 class KoinApplication private constructor() {
 
     val koin = Koin()
-
-    internal fun init() {
-        koin.scopeRegistry.createRootScopeDefinition()
-        koin.scopeRegistry.createRootScope()
-    }
+    private var allowOverride = true
 
     /**
      * Load definitions from modules
@@ -63,7 +59,7 @@ class KoinApplication private constructor() {
             val duration = measureDuration {
                 loadModules(modules)
             }
-            val count = koin.scopeRegistry.size()
+            val count = koin.instanceRegistry.size()
             koin.logger.info("loaded $count definitions - $duration ms")
         } else {
             loadModules(modules)
@@ -71,8 +67,19 @@ class KoinApplication private constructor() {
         return this
     }
 
+    /**
+     * Allow definition override or not, in a global manner
+     *
+     * @param override
+     */
+    public fun allowOverride(override : Boolean){
+        allowOverride = override
+    }
+
+
+    // TODO Allow Override?
     private fun loadModules(modules: List<Module>) {
-        koin.loadModules(modules)
+        koin.loadModules(modules,allowOverride = allowOverride)
     }
 
     /**
@@ -101,31 +108,16 @@ class KoinApplication private constructor() {
         return this
     }
 
-    /**
-     * Create Single instances Definitions marked as createdAtStart
-     */
-    fun createEagerInstances(): KoinApplication {
-        if (koin.logger.isAt(Level.DEBUG)) {
-            val duration = measureDuration {
-                koin.createEagerInstances()
-            }
-            koin.logger.debug("instances started in $duration ms")
-        } else {
-            koin.createEagerInstances()
-        }
-        return this
-    }
-
     fun close() {
         koin.close()
     }
 
-    fun unloadModules(module: Module) {
-        koin.scopeRegistry.unloadModules(module)
+    fun unloadModules(modules: List<Module>) {
+        koin.unloadModules(modules)
     }
 
-    fun unloadModules(modules: List<Module>) {
-        koin.scopeRegistry.unloadModules(modules)
+    fun unloadModules(module : Module) {
+        koin.unloadModules(listOf(module))
     }
 
 
@@ -136,7 +128,6 @@ class KoinApplication private constructor() {
          */
         fun init(): KoinApplication {
             val app = KoinApplication()
-            app.init()
             return app
         }
     }

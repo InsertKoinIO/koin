@@ -45,10 +45,9 @@ class KoinApplicationIsolationTest {
                     single(createdAtStart = true) { Simple.ComponentA() }
                 })
         }
-        app.createEagerInstances()
 
         app.getBeanDefinition(Simple.ComponentA::class)!!
-        assertTrue(app.koin.scopeRegistry.rootScope.instanceRegistry.instances.values
+        assertTrue(app.koin.scopeRegistry.rootScope._koin.instanceRegistry.instances.values
             .first { instanceFactory -> instanceFactory.beanDefinition.primaryType == Simple.ComponentA::class }.isCreated()
         )
     }
