@@ -71,9 +71,9 @@ data class BeanDefinition<T>(
         return hasType(clazz) && this.qualifier == qualifier && this.scopeQualifier == scopeDefinition
     }
 
-    fun canBind(primary: KClass<*>, secondary: KClass<*>): Boolean {
-        return primaryType == primary && secondaryTypes.contains(secondary)
-    }
+//    fun canBind(primary: KClass<*>, secondary: KClass<*>): Boolean {
+//        return primaryType == primary && secondaryTypes.contains(secondary)
+//    }
 
     override fun hashCode(): Int {
         var result = qualifier?.hashCode() ?: 0

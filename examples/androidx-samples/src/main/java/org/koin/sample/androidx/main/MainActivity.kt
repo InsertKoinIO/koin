@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         assertEquals(SERVICE_IMPL, service.id)
         assertEquals(DUMB_SERVICE, dumbService.id)
         assertNotEquals(get<RandomId>().id, randomId.id)
-        assertEquals(APP_TITLE, propertyTitle)
+        assertEquals(APP_TITLE, propertyTitle?.replace("\"",""))
 
         setContentView(R.layout.main_activity)
         title = "Android First Samples"

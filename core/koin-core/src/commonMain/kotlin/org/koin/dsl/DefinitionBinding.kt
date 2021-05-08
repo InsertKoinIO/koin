@@ -64,7 +64,7 @@ infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pai
 /**
  * Callback when closing instance
  */
-infix fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>): BeanDefinition<T> {
-    callbacks = Callbacks(onClose)
+infix fun <T> Pair<Module, InstanceFactory<T>>.onClose(onClose: OnCloseCallback<T>): Pair<Module, InstanceFactory<T>> {
+    second.beanDefinition.callbacks = Callbacks(onClose)
     return this
 }
