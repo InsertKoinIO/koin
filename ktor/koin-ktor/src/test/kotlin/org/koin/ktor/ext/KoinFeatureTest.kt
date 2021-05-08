@@ -8,7 +8,7 @@ import org.junit.Test
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
-import org.koin.experimental.builder.create
+import org.koin.experimental.builder.newInstance
 import org.koin.experimental.builder.single
 
 /**
@@ -133,7 +133,7 @@ class KoinFeatureTest {
                 modules(module {
                     single {
                         s = "two"
-                        create<Foo>()
+                        newInstance<Foo>()
                     }
                 })
             }
@@ -143,11 +143,11 @@ class KoinFeatureTest {
                 modules(module {
                     single(createdAtStart = true) {
                         s = "one"
-                        create<Bar>()
+                        newInstance<Bar>()
                     }
                     single {
                         s = "three"
-                        create<Bar2>()
+                        newInstance<Bar2>()
                     }
                 })
             }

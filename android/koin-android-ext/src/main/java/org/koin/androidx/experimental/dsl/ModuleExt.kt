@@ -16,11 +16,10 @@
 package org.koin.androidx.experimental.dsl
 
 import androidx.lifecycle.ViewModel
-import org.koin.androidx.viewmodel.dsl.setIsViewModel
-import org.koin.core.definition.BeanDefinition
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.experimental.builder.create
+import org.koin.experimental.builder.newInstance
 
 /**
  * ViewModel DSL Extension
@@ -32,10 +31,7 @@ import org.koin.experimental.builder.create
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
-        qualifier: Qualifier? = null,
-        override: Boolean = false
-): BeanDefinition<T> {
-    val factory = factory(qualifier, override) { create<T>() }
-    factory.setIsViewModel()
-    return factory
+    qualifier: Qualifier? = null,
+): Pair<Module, InstanceFactory<T>> {
+    return factory(qualifier) { newInstance() }
 }

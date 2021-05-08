@@ -9,7 +9,9 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs
-import org.koin.perfs.perfModule400
+//import org.koin.perfs.perfModule400
+import org.koin.perfs.perfModule400Ext
+//import org.koin.perfs.perfModule400Ext
 import org.koin.sample.android.R
 
 class MainActivity : AppCompatActivity() {
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     fun runPerf(count: Int): Pair<Double, Double> {
         val (app, duration) = measureDurationForResult {
             koinApplication {
-                modules(perfModule400())
+                modules(perfModule400Ext())
             }
         }
         println("[$count] started in $duration ms")

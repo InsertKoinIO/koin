@@ -25,7 +25,7 @@ android {
 
 dependencies {
     // Koin
-    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-core-ext:$koin_version"
 
     implementation "junit:junit:$junit_version"
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"

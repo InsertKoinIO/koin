@@ -16,8 +16,9 @@
 package org.koin.androidx.viewmodel.dsl
 
 import androidx.lifecycle.ViewModel
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
+import org.koin.core.instance.InstanceFactory
+import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeDSL
 
@@ -31,11 +32,8 @@ import org.koin.dsl.ScopeDSL
  * @param override - allow definition override
  */
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
-        qualifier: Qualifier? = null,
-        override: Boolean = false,
-        noinline definition: Definition<T>
-): BeanDefinition<T> {
-    val beanDefinition = factory(qualifier, override, definition)
-    beanDefinition.setIsViewModel()
-    return beanDefinition
+    qualifier: Qualifier? = null,
+    noinline definition: Definition<T>
+): Pair<Module, InstanceFactory<T>> {
+    return factory(qualifier, definition)
 }

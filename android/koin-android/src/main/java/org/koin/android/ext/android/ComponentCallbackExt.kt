@@ -38,7 +38,7 @@ fun ComponentCallbacks.getKoin() = when (this) {
 fun ComponentCallbacks.getDefaultScope(): Scope = when (this) {
     is AndroidScopeComponent -> this.scope
     is KoinScopeComponent -> this.scope
-    else -> getKoin().getRootScope()
+    else -> getKoin().scopeRegistry.rootScope
 }
 
 /**
@@ -66,12 +66,12 @@ inline fun <reified T : Any> ComponentCallbacks.get(
     return getDefaultScope().get(qualifier, parameters)
 }
 
-/**
- * get given dependency for Android koincomponent, from primary and secondary types
- * @param name - bean name
- * @param scope
- * @param parameters - injection parameters
- */
-inline fun <reified S, reified P> ComponentCallbacks.bind(
-        noinline parameters: ParametersDefinition? = null,
-): S = getKoin().bind<S, P>(parameters)
+///**
+// * get given dependency for Android koincomponent, from primary and secondary types
+// * @param name - bean name
+// * @param scope
+// * @param parameters - injection parameters
+// */
+//inline fun <reified S, reified P> ComponentCallbacks.bind(
+//        noinline parameters: ParametersDefinition? = null,
+//): S = getKoin().bind<S, P>(parameters)

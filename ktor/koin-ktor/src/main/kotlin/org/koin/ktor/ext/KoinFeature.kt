@@ -67,7 +67,7 @@ class Koin(internal val koinApplication: KoinApplication) {
  */
 @ContextDsl
 fun Application.koin(configuration: KoinAppDeclaration) = featureOrNull(Koin)?.apply {
-    koinApplication.apply(configuration).createEagerInstances()
+    koinApplication.apply(configuration)
 } ?: install(Koin, configuration)
 
 /**
