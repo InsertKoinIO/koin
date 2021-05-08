@@ -63,6 +63,7 @@ class ScopeRegistry(private val _koin: Koin) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
         val scope = Scope(qualifier,scopeId, _koin = _koin)
+        source?.let { scope._source = source }
         scope.linkTo(rootScope)
         _scopes[scopeId] = scope
         return scope
@@ -78,8 +79,15 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     internal fun close() {
+        closeAllScopes()
         _scopes.clear()
         _scopeDefinitions.clear()
+    }
+
+    private fun closeAllScopes() {
+        _scopes.values.forEach { scope ->
+            scope.close()
+        }
     }
 
     fun loadScopes(modules: List<Module>) {

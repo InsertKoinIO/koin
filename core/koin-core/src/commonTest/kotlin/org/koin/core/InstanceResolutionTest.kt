@@ -44,7 +44,7 @@ class InstanceResolutionTest {
 
         val instances = koin.getAll<Simple.ComponentInterface1>()
 
-        assertTrue(instances.size == 2 && instances.contains(a1) && instances.contains(a2))
+        assertTrue(instances.size == 3 && instances.contains(a1) && instances.contains(a2))
     }
 
     @Test

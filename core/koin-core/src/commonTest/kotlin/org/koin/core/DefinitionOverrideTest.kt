@@ -17,6 +17,8 @@ class DefinitionOverrideTest {
             modules(
                     module {
                         single<Simple.ComponentInterface1> { Simple.Component2() }
+                    },
+                    module {
                         single<Simple.ComponentInterface1> { Simple.Component1() }
                     }
             )
@@ -33,9 +35,13 @@ class DefinitionOverrideTest {
                     module {
                         scope<Simple.ComponentA> {
                             scoped<Simple.ComponentInterface1> { Simple.Component2() }
-                            scoped<Simple.ComponentInterface1> { Simple.Component1() }
                         }
+                    },
+                module {
+                    scope<Simple.ComponentA> {
+                        scoped<Simple.ComponentInterface1> { Simple.Component1() }
                     }
+                }
             )
         }
         val scope = app.koin.createScope<Simple.ComponentA>("_ID_")
@@ -49,6 +55,8 @@ class DefinitionOverrideTest {
             modules(
                     module {
                         single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
+                    },
+                    module {
                         single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component1() }
                     }
             )

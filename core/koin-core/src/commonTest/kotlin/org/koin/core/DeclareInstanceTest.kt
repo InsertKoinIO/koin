@@ -42,7 +42,7 @@ class DeclareInstanceTest {
         val a = Simple.ComponentA()
 
         try {
-            koin.declare(a)
+            koin.declare(a, allowOverride = false)
             fail()
         } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
@@ -61,7 +61,7 @@ class DeclareInstanceTest {
 
         val a = Simple.MySingle(2)
 
-        koin.declare(a, override = true)
+        koin.declare(a, allowOverride = true)
         assertEquals(2, koin.get<Simple.MySingle>().id)
     }
 
@@ -78,7 +78,7 @@ class DeclareInstanceTest {
         val a = Simple.MySingle(2)
 
         try {
-            koin.declare(a, override = false)
+            koin.declare(a, allowOverride = false)
             fail()
         } catch (e: DefinitionOverrideException) {
             e.printStackTrace()
@@ -116,7 +116,7 @@ class DeclareInstanceTest {
 
         val a = Simple.ComponentA()
 
-        koin.declare(a, named("another_a"), override = true)
+        koin.declare(a, named("another_a"), allowOverride = true)
 
         assertEquals(a, koin.get<Simple.ComponentA>(named("another_a")))
         assertNotEquals(a, koin.get<Simple.ComponentA>())
@@ -127,7 +127,6 @@ class DeclareInstanceTest {
 
         val koin = koinApplication {
             printLogger()
-            modules(emptyList())
         }.koin
 
         val a = Simple.Component1()
@@ -150,7 +149,7 @@ class DeclareInstanceTest {
         val b = Simple.Component1()
 
         koin.declare(a)
-        koin.declare(b, override = true)
+        koin.declare(b, allowOverride = true)
 
         assertEquals(b, koin.get<Simple.Component1>())
     }
@@ -166,7 +165,7 @@ class DeclareInstanceTest {
         val b = Simple.Component1()
 
         koin.declare(a, secondaryTypes = listOf(Simple.ComponentInterface1::class))
-        koin.declare(b, secondaryTypes = listOf(Simple.ComponentInterface1::class), override = true)
+        koin.declare(b, secondaryTypes = listOf(Simple.ComponentInterface1::class), allowOverride = true)
 
         assertEquals(b, koin.get<Simple.Component1>())
         assertEquals(koin.get<Simple.Component1>(), koin.get<Simple.Component1>())
@@ -240,7 +239,7 @@ class DeclareInstanceTest {
     }
 
     @Test
-    fun `can't declare a other scoped on the fly`() {
+    fun `can declare a other scoped on the fly`() {
 
         val koin = koinApplication {
             printLogger()
@@ -255,13 +254,8 @@ class DeclareInstanceTest {
 
         val session1 = koin.createScope("session1", named("Session"))
         val session2 = koin.createScope("session2", named("Session"))
-        session1.declare(a)
+        session1.declare(a, allowOverride = false)
 
-        try {
-            session2.get<Simple.ComponentA>()
-            fail()
-        } catch (e: NoBeanDefFoundException) {
-            e.printStackTrace()
-        }
+        session2.get<Simple.ComponentA>()
     }
 }

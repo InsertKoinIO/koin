@@ -46,6 +46,9 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     }
 
     override fun get(context: InstanceContext): T {
+        if (context.scope.scopeQualifier != beanDefinition.scopeQualifier){
+            error("Wrong Scope: trying to open instance for ${context.scope.id} in $beanDefinition")
+        }
         KoinPlatformTools.synchronized(this) {
             if (!isCreated(context)) {
                 values[context.scope.id] = create(context)

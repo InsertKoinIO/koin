@@ -84,8 +84,8 @@ class Module {
     }
 
     @PublishedApi
-    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>) {
-        if (mappings.contains(mapping)) {
+    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>, allowOverride : Boolean = false) {
+        if (!allowOverride && mappings.contains(mapping)) {
             overrideError(factory, mapping)
         }
         mappings[mapping] = factory

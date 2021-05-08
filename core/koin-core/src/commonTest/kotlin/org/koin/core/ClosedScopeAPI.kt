@@ -3,6 +3,7 @@ package org.koin.core
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -39,7 +40,7 @@ class ClosedScopeAPI {
     @Test
     fun `get all definition from current scope and linked scopes`() {
         val koin = koinApplication {
-            printLogger()
+            printLogger(Level.DEBUG)
             modules(
                 module {
                     scope(named<ScopeType>()) {
@@ -56,7 +57,8 @@ class ClosedScopeAPI {
         val scope2 = koin.createScope("scope2", named<ScopeType2>())
         scope1.linkTo(scope2)
         val all = listOf(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
-        assertEquals(scope1.getAll<Simple.ComponentA>(),all)
+        val expected = scope1.getAll<Simple.ComponentA>()
+        assertEquals(expected,all)
     }
 
     @Test

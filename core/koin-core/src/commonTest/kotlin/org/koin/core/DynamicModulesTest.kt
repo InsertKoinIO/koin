@@ -256,7 +256,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val scope = app.koin.createScope("id", scopeKey)
         val defA = scope.getBeanDefinition(clazz = Simple.ComponentA::class)
             ?: error("no definition found")
-        assertEquals(Kind.Singleton, defA.kind)
+        assertEquals(Kind.Scoped, defA.kind)
         assertEquals(scopeKey, defA.scopeQualifier)
         assertNotNull(scope.get<Simple.ComponentA>())
 
@@ -290,7 +290,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val defA = scope.getBeanDefinition(clazz = Simple.ComponentA::class)
             ?: error("no definition found")
 
-        assertEquals(Kind.Singleton, defA.kind)
+        assertEquals(Kind.Scoped, defA.kind)
         assertEquals(scopeKey, defA.scopeQualifier)
         assertNotNull(scope.get<Simple.ComponentA>())
 

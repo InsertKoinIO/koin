@@ -25,6 +25,7 @@ import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.overrideError
 import org.koin.core.qualifier.Qualifier
@@ -65,6 +66,9 @@ class InstanceRegistry(val _koin: Koin) {
                 _koin.logger.info("Warning - override mapping: $mapping defintion:${factory.beanDefinition}")
             }
         }
+        if (_koin.logger.isAt(Level.DEBUG)){
+            _koin.logger.debug("add mapping '$mapping' for ${factory.beanDefinition}")
+        }
         _instances[mapping] = factory
     }
 
@@ -91,16 +95,16 @@ class InstanceRegistry(val _koin: Koin) {
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        override: Boolean = true,
+        allowOverride: Boolean = true,
         scopeQualifier: Qualifier
     ) {
         val def = createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
         val factory = ScopedInstanceFactory(def)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
-        saveMapping(override, indexKey, factory)
+        saveMapping(allowOverride, indexKey, factory)
         def.secondaryTypes.forEach { clazz ->
             val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
-            saveMapping(override, index, factory)
+            saveMapping(allowOverride, index, factory)
         }
     }
 
@@ -110,14 +114,17 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun close() {
-        _instances.forEach { (key,factory) ->
+        _instances.forEach { (key, factory) ->
             factory.dropAll()
         }
         _instances.clear()
     }
 
-    fun <T> getAll(clazz: KClass<*>, instanceContext: InstanceContext): List<T> {
+    internal fun <T> getAll(clazz: KClass<*>, instanceContext: InstanceContext): List<T> {
         return _instances.values
+            .filter { factory ->
+                factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier
+            }
             .filter { factory ->
                 factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(
                     clazz
@@ -126,12 +133,20 @@ class InstanceRegistry(val _koin: Koin) {
             .map { it.get(instanceContext) as T }
     }
 
-    fun unloadModules(modules: List<Module>) {
-        TODO("Not yet implemented")
+    internal fun unloadModules(modules: List<Module>) {
+        modules.forEach { unloadModule(it) }
+    }
+
+    private fun unloadModule(module: Module) {
+        module.mappings.keys.forEach { mapping ->
+            if (_instances.containsKey(mapping)) {
+                _instances[mapping]?.dropAll()
+                _instances.remove(mapping)
+            }
+        }
     }
 
     fun size(): Int {
         return _instances.size
     }
-
 }

@@ -157,10 +157,10 @@ class Koin {
             instance: T,
             qualifier: Qualifier? = null,
             secondaryTypes: List<KClass<*>> = emptyList(),
-            override: Boolean = false
+            allowOverride: Boolean = true
     ) {
         val firstType = listOf(T::class)
-        scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, override)
+        scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, allowOverride)
     }
 
     /**

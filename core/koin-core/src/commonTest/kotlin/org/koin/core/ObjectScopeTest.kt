@@ -11,6 +11,11 @@ import org.koin.dsl.module
 
 class ObjectScopeTest {
 
+    @AfterTest
+    fun after(){
+        stopKoin()
+    }
+
     @Test
     fun `typed scope`() {
         val koin = koinApplication {
@@ -26,13 +31,11 @@ class ObjectScopeTest {
         assertNotNull(koin.get<A>())
         assertNull(koin.getOrNull<B>())
         assertNull(koin.getOrNull<C>())
-
-        stopKoin()
     }
 
     @Test
     fun `typed scope & source`() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -50,13 +53,11 @@ class ObjectScopeTest {
         assertTrue(b.a == a)
         val c = b.scope.get<CofB>()
         assertTrue(c.b == b)
-
-        stopKoin()
     }
 
     @Test
     fun `typed scope & source with get`() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -74,13 +75,11 @@ class ObjectScopeTest {
         assertTrue(b.a == a)
         val c = b.scope.get<CofB>()
         assertTrue(c.b == b)
-
-        stopKoin()
     }
 
     @Test
     fun `scope from instance object`() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -108,13 +107,11 @@ class ObjectScopeTest {
         val b2 = scopeForA2.getOrNull<B>()
         assertNotNull(b2)
         assertNotEquals(b1, b2)
-
-        stopKoin()
     }
 
     @Test
     fun `scope property`() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(module {
                 single { A() }
                 scope<A> {
@@ -137,12 +134,11 @@ class ObjectScopeTest {
         } catch (e: Exception) {
 
         }
-        stopKoin()
     }
 
     @Test
     fun `scope property - koin isolation`() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(
                 module {
                     single { A() }
@@ -168,7 +164,7 @@ class ObjectScopeTest {
 
     @Test
     fun `cascade scope `() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(
                 module {
                     factory { A() }
@@ -195,13 +191,11 @@ class ObjectScopeTest {
 
         assertNotEquals(b1, b2)
         assertNotEquals(c1, c2)
-
-        stopKoin()
     }
 
     @Test
     fun `cascade linked scope `() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(
                 module {
                     single { A() }
@@ -218,12 +212,11 @@ class ObjectScopeTest {
         val b = a.scope.get<B>()
         a.scope.linkTo(b.scope)
         assertTrue(a.scope.get<C>() == b.scope.get<C>())
-        stopKoin()
     }
 
     @Test
     fun `cascade unlink scope `() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(
                 module {
                     single { A() }
@@ -244,12 +237,11 @@ class ObjectScopeTest {
 
         a.scope.unlink(b1.scope)
         assertNull(a.scope.getOrNull<C>())
-        stopKoin()
     }
 
     @Test
     fun `shared linked scope `() {
-        val koin: Koin = koinApplication {
+        val koin: Koin = startKoin() {
             modules(
                 module {
                     scope<A> {
@@ -277,14 +269,12 @@ class ObjectScopeTest {
         assertNotEquals(compb_scopeA, compb_scopeB)
         //shared ComponentA instance
         assertEquals(compb_scopeA.a, compb_scopeB.a)
-
-        stopKoin()
     }
 
     @OptIn(KoinInternalApi::class)
     @Test
     fun `error for root linked scope `() {
-        val koin = koinApplication {
+        val koin = startKoin {
             modules(
                 module {
                     single { A() }
@@ -302,7 +292,6 @@ class ObjectScopeTest {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        stopKoin()
     }
 
 }

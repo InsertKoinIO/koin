@@ -17,13 +17,10 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.definition.Kind
-import org.koin.core.definition.createDefinition
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
-import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
@@ -213,7 +210,7 @@ data class Scope(
             throw ClosedScopeException("Scope '$id' is closed")
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
-        return _koin.instanceRegistry.resolveInstance(qualifier,clazz,this.scopeQualifier, instanceContext)
+        return _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
                 getFromSource<T>(clazz)
@@ -278,9 +275,9 @@ data class Scope(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        override: Boolean = true
+        allowOverride: Boolean = true
     ) = KoinPlatformTools.synchronized(this) {
-        _koin.instanceRegistry.declareInstance(instance,qualifier, secondaryTypes, override, scopeQualifier)
+        _koin.instanceRegistry.declareInstance(instance, qualifier, secondaryTypes, allowOverride, scopeQualifier)
     }
 
     /**
@@ -315,8 +312,8 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
-        val context = InstanceContext(_koin,this)
-        return _koin.instanceRegistry.getAll<T>(clazz,context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
+        val context = InstanceContext(_koin, this)
+        return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
 //    /**
@@ -371,12 +368,12 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = KoinPlatformTools.synchronized(this) {
+        _closed = true
         clearData()
         _koin.scopeRegistry.deleteScope(this)
     }
 
     private fun clearData() {
-        _closed = true
         _source = null
         if (_koin.logger.isAt(Level.DEBUG)) {
             _koin.logger.info("closing scope:'$id'")

@@ -37,7 +37,7 @@ import kotlin.reflect.KClass
 infix fun Pair<Module,InstanceFactory<*>>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<*>> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
     val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-    first.saveMapping(mapping,second)
+    first.saveMapping(mapping,second,allowOverride = true)
     return this
 }
 
@@ -56,7 +56,7 @@ infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pai
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + classes
     classes.forEach { clazz ->
         val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-        first.saveMapping(mapping,second)
+        first.saveMapping(mapping,second, allowOverride = true)
     }
     return this
 }
