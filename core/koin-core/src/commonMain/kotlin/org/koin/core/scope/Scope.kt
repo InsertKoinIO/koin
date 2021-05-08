@@ -22,6 +22,7 @@ import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
 import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -52,7 +53,7 @@ data class Scope(
     private var _closed: Boolean = false
     private var _parameters: DefinitionParameters? = null
 
-    val logger = _koin.logger
+    val logger : Logger get() = _koin.logger
 
     internal fun create(links: List<Scope>) {
         linkedScopes.addAll(links)

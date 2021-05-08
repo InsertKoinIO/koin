@@ -21,6 +21,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 
@@ -48,9 +49,9 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) {
             koin.logger.debug("| create instance for $beanDefinition")
         }
         try {
-            val parameters: DefinitionParameters = context.parameters
+            val parameters: DefinitionParameters = context.parameters?.invoke() ?: emptyParametersHolder()
             context.scope.addParameters(parameters)
-            val value = beanDefinition.definition(
+            val value = beanDefinition.definition.invoke(
                 context.scope,
                 parameters
             )

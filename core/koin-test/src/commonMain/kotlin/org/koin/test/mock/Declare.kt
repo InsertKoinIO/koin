@@ -10,6 +10,6 @@ inline fun <reified T : Any> KoinTest.declare(
     noinline instance: () -> T
 ): T {
     val koin = KoinPlatformTools.defaultContext().get()
-    koin.declare(instance(), qualifier, override = true)
+    koin.declare(instance(), qualifier, allowOverride = true)
     return get(qualifier)
 }

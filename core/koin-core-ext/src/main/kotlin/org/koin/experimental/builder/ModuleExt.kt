@@ -15,7 +15,6 @@
  */
 package org.koin.experimental.builder
 
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
@@ -27,10 +26,10 @@ import org.koin.core.qualifier.Qualifier
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.single(
-        qualifier: Qualifier? = null,
-        createOnStart: Boolean = false,
+    qualifier: Qualifier? = null,
+    createOnStart: Boolean = false,
 ): Pair<Module, InstanceFactory<T>> {
-    return single(qualifier, createOnStart) { create<T>() }
+    return single(qualifier, createOnStart) { newInstance(T::class) }
 }
 
 /**
@@ -40,34 +39,32 @@ inline fun <reified T : Any> Module.single(
  * @param override - allow definition override
  */
 inline fun <reified T : Any> Module.factory(
-        qualifier: Qualifier? = null
+    qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { create<T>() }
+    return factory(qualifier) { newInstance(T::class) }
 }
 
-/**
- * Create a Single definition for given type T to modules and cast as R
- * @param qualifier
- * @param createOnStart - need to be created at start
- * @param override - allow definition override
- */
-inline fun <reified R : Any, reified T : R> Module.singleBy(
-        qualifier: Qualifier? = null,
-        createOnStart: Boolean = false,
-        override: Boolean = false
-): Pair<Module, InstanceFactory<R>> {
-    return single(qualifier, createOnStart) { create<T>() }
-}
-
-/**
- * Create a Factory definition for given type T to modules and cast as R
- *
- * @param qualifier
- * @param override - allow definition override
- */
-inline fun <reified R : Any, reified T : R> Module.factoryBy(
-        qualifier: Qualifier? = null,
-        override: Boolean = false
-): Pair<Module, InstanceFactory<R>> {
-    return factory(qualifier) { create<T>() }
-}
+///**
+// * Create a Single definition for given type T to modules and cast as R
+// * @param qualifier
+// * @param createOnStart - need to be created at start
+// * @param override - allow definition override
+// */
+//inline fun <reified R : Any, reified T : R> Module.singleBy(
+//    qualifier: Qualifier? = null,
+//    createOnStart: Boolean = false,
+//): Pair<Module, InstanceFactory<R>> {
+//    return single(qualifier, createOnStart) { create<T>() }
+//}
+//
+///**
+// * Create a Factory definition for given type T to modules and cast as R
+// *
+// * @param qualifier
+// * @param override - allow definition override
+// */
+//inline fun <reified R : Any, reified T : R> Module.factoryBy(
+//    qualifier: Qualifier? = null,
+//): Pair<Module, InstanceFactory<R>> {
+//    return factory(qualifier) { create<T>() }
+//}

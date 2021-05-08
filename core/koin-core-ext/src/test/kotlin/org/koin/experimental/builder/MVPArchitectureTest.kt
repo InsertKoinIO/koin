@@ -4,6 +4,7 @@ import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.koin.core.logger.Level
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
@@ -18,7 +19,7 @@ class MVPArchitectureTest : KoinTest {
     }
 
     val DataSourceModule = module {
-        singleBy<Datasource, DebugDatasource>()
+        single<DebugDatasource>() bind Datasource::class
     }
 
     @get:Rule

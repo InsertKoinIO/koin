@@ -30,7 +30,7 @@ class CreateAPITest : KoinTest {
             printLogger(Level.DEBUG)
             modules(module {
                 single { ComponentA() }
-                single { create<ComponentB>() }
+                single { newInstance(ComponentB::class) }
             })
         }.koin
 
@@ -46,7 +46,7 @@ class CreateAPITest : KoinTest {
             val koin = koinApplication {
                 printLogger(Level.DEBUG)
                 modules(module {
-                    single { create<ComponentB>() }
+                    single { newInstance(ComponentB::class) }
                 })
             }.koin
 
@@ -62,7 +62,7 @@ class CreateAPITest : KoinTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(module {
-                single { create<ComponentA>() }
+                single { newInstance(ComponentA::class) }
             })
         }.koin
 
@@ -75,7 +75,7 @@ class CreateAPITest : KoinTest {
             printLogger(Level.DEBUG)
             modules(module {
                 single { ComponentA() }
-                single<Component> { create<ComponentD>() }
+                single<Component> { newInstance(ComponentD::class) }
             })
         }.koin
 
@@ -88,7 +88,7 @@ class CreateAPITest : KoinTest {
             printLogger(Level.DEBUG)
             modules(module {
                 single { ComponentA() }
-                factory<Component> { create<ComponentD>() }
+                factory<Component> { newInstance(ComponentD::class) }
             })
         }.koin
 
@@ -103,8 +103,8 @@ class CreateAPITest : KoinTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(module {
-                single { create<ComponentA>() }
-                factory<Component> { create<ComponentD>() }
+                single { newInstance<ComponentA>() }
+                factory<Component> { newInstance<ComponentD>() }
             })
         }.koin
 
