@@ -5,12 +5,13 @@ import org.koin.core.scope.Scope
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
+import kotlin.reflect.KClass
 
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
-inline fun <reified T : Any> Scope.create(): T {
-    val kClass = T::class
+inline fun <reified T : Any> Scope.create(): T = create(T::class)
+fun <T : Any> Scope.create(kClass: KClass<T>): T {
     val instance: Any
 
     if (logger.level == Level.DEBUG) {
