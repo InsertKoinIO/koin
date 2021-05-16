@@ -9,8 +9,8 @@ This POC covers generating a single module with a number of `single{}` and `fact
 
 ## Files added to this branch
 
-- TestProcessor is the entry point to a new ksp plugin
-- InjectorWriter helps generate ??
+- [TestProcessor] is the entry point to a new ksp plugin
+- [InjectorWriter] helps generate ??
 - KoinVisitor is a class that inherits `KSTopDownVisitor`, and can be used to scrutinize and filter classes and fields that `TestProcessor` is interested in. In this branch, we're interested in anything that has the `@KoinInject` annotation
 - KoinInject is an annotation for classes and fields. When used to annotate a class it indicates we want a factory/single for it. When used in a field it also indicates we want a factory/single for it (to help with `checkModules` later on). 
 - CoffeeAppTest runs a unit test with the generated module

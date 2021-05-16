@@ -29,7 +29,7 @@ class InjectorWriter(private val codeGenerator: CodeGenerator) {
         val classPackageName = enclosingClass
             .closestClassDeclaration()
             ?.let {
-                " ${it.qualifiedName?.getQualifier()}"
+                "${it.qualifiedName?.getQualifier()}"
             }
             ?: "org.koin.ksp"
 

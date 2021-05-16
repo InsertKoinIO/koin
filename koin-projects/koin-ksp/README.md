@@ -1,8 +1,8 @@
 # Setup
 ## How to develop it it?
-./gradlew :koin-ksp:build examples:coffee-maker:build --continuous
+<code>./gradlew :koin-ksp:build examples:coffee-maker:build --continuous</code>
 
-or ./gradlew examples:coffee-maker:test
+or <code>./gradlew examples:coffee-maker:test</code>
 
 - See source code files generated at `examples/coffee-maker/build/generated/ksp/main/java/`
 - See logs at `examples/coffee-maker/build/generated/ksp/main/resources/`

@@ -11,7 +11,6 @@ import com.google.devtools.ksp.visitor.KSTopDownVisitor
  * @param lambdaProperty used to detect fields that need to be fulfilled by koin, through "KoinKspInjector"
  */
 class KoinVisitor(
-    val ksAnnotated: KSAnnotated,
     val lambdaClass: Function1<KSClassDeclaration, Unit>,
     val lambdaProperty: Function1<KSPropertyDeclaration, Unit>
 ) : KSTopDownVisitor<Unit, Unit>() {

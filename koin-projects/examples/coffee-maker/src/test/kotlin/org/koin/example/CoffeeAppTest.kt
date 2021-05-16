@@ -14,6 +14,7 @@ import org.koin.ksp.generated.*
  */
 class CoffeeAppTest : KoinTest {
 
+
     @get:Rule
     val koinTestRule = KoinTestRule.create {
         printLogger(Level.DEBUG)
