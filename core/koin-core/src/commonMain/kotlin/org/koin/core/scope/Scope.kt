@@ -218,7 +218,7 @@ data class Scope(
         return instanceRegistry.resolveInstance(indexKey, parameters)
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
-                getFromSource(clazz)
+                getFromSource<T>(clazz)
             }
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")

@@ -1,6 +1,7 @@
 import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.work.WorkerParameters
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.koin.android.ext.koin.androidContext
@@ -19,6 +20,7 @@ class CheckModulesTest {
     }
 
     @Test
+    @Ignore
     fun `test DI modules`() =
         checkModules(parameters = {
             defaultValue<SavedStateHandle>()
