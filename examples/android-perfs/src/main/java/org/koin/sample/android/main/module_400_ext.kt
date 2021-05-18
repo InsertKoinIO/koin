@@ -1,7 +1,7 @@
 package org.koin.perfs
 
 import org.koin.dsl.module
-import org.koin.experimental.builder.single
+import org.koin.dsl.single
 
 fun perfModule400Ext() = module {
     single<Perfs.A1>()

@@ -1,4 +1,4 @@
-package org.koin.experimental.builder
+package org.koin.core.instance
 
 import org.junit.Assert.*
 import org.junit.Test
@@ -7,9 +7,8 @@ import org.koin.core.logger.Level
 import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.KoinTest
 
-class CreateAPITest : KoinTest {
+class CreateAPITest {
 
     @Test
     fun `should find 1st constructor and build`() {

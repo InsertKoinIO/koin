@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.experimental.dsl
+package org.koin.dsl
 
-import androidx.lifecycle.ViewModel
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.experimental.builder.newInstance
 
 /**
- * ViewModel DSL Extension
- * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
- *
- * @author Arnaud Giuliani
- *
- * @param qualifier - definition qualifier
+ * Create a Single definition for given type T
+ * @param qualifier
+ * @param createOnStart - need to be created at start
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> Module.viewModel(
+inline fun <reified T : Any> Module.single(
     qualifier: Qualifier? = null,
+    createOnStart: Boolean = false,
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { newInstance() }
+    return single(qualifier, createOnStart) { newInstance(T::class) }
+}
+
+/**
+ * Create a Factory definition for given type T
+ *
+ * @param qualifier
+ * @param override - allow definition override
+ */
+inline fun <reified T : Any> Module.factory(
+    qualifier: Qualifier? = null
+): Pair<Module, InstanceFactory<T>> {
+    return factory(qualifier) { newInstance(T::class) }
 }

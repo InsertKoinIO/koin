@@ -12,7 +12,7 @@ class CoffeeApp : KoinComponent {
 
 fun main() {
     startKoin {
-        printLogger(Level.DEBUG)
+        printLogger()
         modules(listOf(coffeeAppModule))
     }
 

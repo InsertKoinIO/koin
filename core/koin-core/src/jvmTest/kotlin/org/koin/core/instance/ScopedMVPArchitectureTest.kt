@@ -1,16 +1,17 @@
-package org.koin.experimental.builder
+package org.koin.core.instance
 
+import org.junit.After
 import org.junit.Assert
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
+import org.koin.dsl.factory
 import org.koin.dsl.module
-import org.koin.test.AutoCloseKoinTest
-import org.koin.test.check.checkModules
-import org.koin.test.get
+import org.koin.dsl.single
 
-class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
+class ScopedMVPArchitectureTest {
 
     val MVPModule = module {
         single<Repository>()
@@ -22,29 +23,26 @@ class ScopedMVPArchitectureTest : AutoCloseKoinTest() {
         single<DebugDatasource>() bind Datasource::class
     }
 
+    @After
+    fun after(){
+        stopKoin()
+    }
+
     @Test
     fun `should create all MVP hierarchy`() {
-        startKoin {
+        val koin = startKoin {
             printLogger(Level.DEBUG)
             modules(MVPModule + DataSourceModule)
-        }
+        }.koin
 
-        val view = get<View>()
-        val presenter = get<Presenter>()
-        val repository = get<Repository>()
-        val datasource = get<Datasource>()
+        val view = koin.get<View>()
+        val presenter = koin.get<Presenter>()
+        val repository = koin.get<Repository>()
+        val datasource = koin.get<Datasource>()
 
         Assert.assertNotEquals(presenter, view.presenter)
         Assert.assertEquals(repository, presenter.repository)
         Assert.assertEquals(repository, view.presenter.repository)
         Assert.assertEquals(datasource, repository.datasource)
-    }
-
-    @Test
-    fun `check MVP hierarchy`() {
-        checkModules {
-            printLogger(Level.DEBUG)
-            modules(MVPModule + DataSourceModule)
-        }
     }
 }

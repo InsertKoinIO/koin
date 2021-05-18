@@ -1,4 +1,4 @@
-package org.koin.experimental.builder
+package org.koin.core.instance
 
 import org.junit.Test
 import org.koin.core.time.measureDurationForResult

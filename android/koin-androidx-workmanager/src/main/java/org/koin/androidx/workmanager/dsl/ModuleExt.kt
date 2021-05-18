@@ -19,6 +19,7 @@ import androidx.work.ListenableWorker
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
@@ -35,4 +36,10 @@ inline fun <reified T : ListenableWorker> Module.worker(
     noinline definition: Definition<T>
 ): Pair<Module, InstanceFactory<*>> {
     return factory(qualifier, definition).bind(ListenableWorker::class)
+}
+
+inline fun <reified T : ListenableWorker> Module.worker(
+    qualifier: Qualifier = named<T>()
+): Pair<Module, InstanceFactory<*>> {
+    return factory(qualifier) { newInstance<T>() }.bind(ListenableWorker::class)
 }

@@ -17,7 +17,6 @@ import org.koin.dsl.bind
 import org.koin.logger.slf4jLogger
 import org.koin.dsl.module
 import org.koin.experimental.builder.single
-import org.koin.experimental.builder.singleBy
 import org.koin.ktor.ext.*
 
 fun Application.main() {
@@ -56,10 +55,10 @@ private fun Routing.declareRoutes() {
     respondWithHello()
 }
 
-val helloAppModule = module(createdAtStart = true) {
-    single<HelloServiceImpl>() bind HelloService::class
+val helloAppModule = module {
+    single<HelloServiceImpl>(createOnStart = true) bind HelloService::class
     // also singleBy<HelloService, HelloServiceImpl>()
-    single<HelloRepository>()
+    single<HelloRepository>(createOnStart = true)
 }
 
 fun main(args: Array<String>) {

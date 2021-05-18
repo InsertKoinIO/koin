@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.experimental.dsl
 
-import androidx.lifecycle.ViewModel
+package org.koin.dsl
+
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.ScopeDSL
-import org.koin.experimental.builder.newInstance
 
 /**
- * ViewModel DSL Extension
- * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
- *
- * @author Arnaud Giuliani
- *
- * @param qualifier - definition qualifier
+ * Create a Single definition for given type T
+ * @param qualifier
  * @param override - allow definition override
  */
-inline fun <reified T : ViewModel> ScopeDSL.viewModel(
-    qualifier: Qualifier? = null,
-): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { newInstance() }
+inline fun <reified R : Any> ScopeDSL.scoped(
+    qualifier: Qualifier? = null
+): Pair<Module, InstanceFactory<R>> {
+    return scoped(qualifier) { newInstance(R::class) }
+}
+
+/**
+ * Create a Factory definition for given type T
+ *
+ * @param qualifier
+ * @param override - allow definition override
+ */
+inline fun <reified R : Any> ScopeDSL.factory(
+    qualifier: Qualifier? = null
+): Pair<Module, InstanceFactory<R>> {
+    return factory(qualifier) { newInstance(R::class) }
 }

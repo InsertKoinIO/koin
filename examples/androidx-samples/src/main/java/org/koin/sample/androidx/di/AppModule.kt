@@ -1,12 +1,14 @@
 package org.koin.sample.androidx.di
 
-import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.dsl.onClose
+import org.koin.dsl.scoped
+import org.koin.dsl.single
 import org.koin.sample.androidx.components.Counter
 import org.koin.sample.androidx.components.SCOPE_ID
 import org.koin.sample.androidx.components.SCOPE_SESSION
@@ -30,8 +32,8 @@ import org.koin.sample.androidx.workmanager.SimpleWorkerService
 
 val appModule = module {
 
-    single<SimpleService> { SimpleServiceImpl() }
-    single<SimpleService>(named("dumb")) { DumbServiceImpl() }
+    single<SimpleServiceImpl>() bind SimpleService::class
+    single<DumbServiceImpl>(named("dumb")) bind SimpleService::class
 
     factory { RandomId() }
 }
@@ -47,25 +49,23 @@ val mvpModule = module {
 val mvvmModule = module {
 
     viewModel { (id: String) -> SimpleViewModel(id, get()) }
-//    viewModel { SimpleViewModel(get(), get()) } // graph injected usage
 
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
-//    viewModel(named("vm2")) { SimpleViewModel(get(), get()) } // graph injected usage
 
     viewModel { (id: String) -> SavedStateViewModel(get(), id, get()) } // injected params
 
     scope<MVVMActivity> {
         scoped { Session() }
-        fragment { MVVMFragment(get()) }
-        viewModel { ExtSimpleViewModel(get()) }
+        fragment<MVVMFragment>()
+        viewModel<ExtSimpleViewModel>()
         viewModel<ExtSimpleViewModel>(named("ext"))
         viewModel<SavedStateViewModel>(named("vm3")) // graph injected usage + builder API
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
-        scoped { Session() }
-        viewModel { ExtSimpleViewModel(get()) }
+        scoped<Session>()
+        viewModel<ExtSimpleViewModel>()
         viewModel(named("ext")) { ExtSimpleViewModel(get()) }
     }
 }
@@ -80,14 +80,14 @@ val scopeModule = module {
     }
 
     scope<ScopedActivityA> {
-        scoped { Session() }
+        scoped<Session>()
         scoped { SessionActivity(get()) }
     }
 }
 
 val workerScopedModule = module {
-    single { SimpleWorkerService() }
-    worker { SimpleWorker(get(), get(), get()) }
+    single<SimpleWorkerService>()
+    worker<SimpleWorker>()
 }
 
 val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule

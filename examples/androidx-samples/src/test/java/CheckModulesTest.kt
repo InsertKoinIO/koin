@@ -19,15 +19,15 @@ class CheckModulesTest {
         Mockito.mock(clazz.java)
     }
 
-    @Test
-    @Ignore
-    fun `test DI modules`() =
-        checkModules(parameters = {
-            defaultValue<SavedStateHandle>()
-            defaultValue<WorkerParameters>()
-        }) {
-            androidContext(MockProvider.makeMock<Application>())
-            printLogger(Level.DEBUG)
-            modules(appModule + mvpModule + mvvmModule + scopeModule)
-        }
+    // @Test
+    // @Ignore
+    // fun `test DI modules`() =
+    //     checkModules(parameters = {
+    //         defaultValue<SavedStateHandle>()
+    //         defaultValue<WorkerParameters>()
+    //     }) {
+    //         androidContext(MockProvider.makeMock<Application>())
+    //         printLogger(Level.DEBUG)
+    //         modules(appModule + mvpModule + mvvmModule + scopeModule)
+    //     }
 }

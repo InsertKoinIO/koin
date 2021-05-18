@@ -1,4 +1,4 @@
-package org.koin.experimental.builder
+package org.koin.core.instance
 
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -1,4 +1,4 @@
-package org.koin.experimental.builder
+package org.koin.core.instance
 
 import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
@@ -7,14 +7,9 @@ import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
-@Deprecated("use newInstance instead")
-inline fun <reified T : Any> Scope.create(): T = create(T::class)
-@Deprecated("use newInstance instead")
-fun <T : Any> Scope.create(kClass: KClass<T>): T = newInstance(kClass)
 inline fun <reified T : Any> Scope.newInstance(): T {
     return newInstance(T::class)
 }
-
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
