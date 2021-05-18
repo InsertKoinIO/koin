@@ -15,6 +15,7 @@
  */
 package org.koin.core.time
 
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
@@ -28,7 +29,7 @@ import kotlin.time.measureTimedValue
 
 @OptIn(ExperimentalTime::class)
 fun measureDuration(code: () -> Unit): Double {
-    return measureTime(code).inMilliseconds
+    return measureTime(code).toDouble(DurationUnit.MILLISECONDS)
 }
 
 fun measureDuration(message: String, code: () -> Unit) {
@@ -42,7 +43,7 @@ fun measureDuration(message: String, code: () -> Unit) {
 @OptIn(ExperimentalTime::class)
 fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
     val result = measureTimedValue(code)
-    return Pair(result.value, result.duration.inMilliseconds)
+    return Pair(result.value, result.duration.toDouble(DurationUnit.MILLISECONDS))
 }
 
 fun <T> measureDurationForResult(message: String, code: () -> T): T {
