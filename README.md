@@ -19,7 +19,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 // 2.x Branch
 koin_version = '2.2.2'
 // 3.x branch
-koin_version = '3.0.1'
+koin_version = '3.0.2'
 ```
 
 # Where to find resources? 🌐
