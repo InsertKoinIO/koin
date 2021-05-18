@@ -3,6 +3,11 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [2.2.2]()
+
+* Update Kotlin 1.5.0
+* Clean up Time API
+
 ## [3.0.2]()
 
 * Update Kotlin 1.5.0

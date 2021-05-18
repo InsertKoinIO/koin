@@ -17,7 +17,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 // New group id moved from `org.koin` to `io.insert-koin`
 
 // 2.x Branch
-koin_version = '2.2.2'
+koin_version = '2.2.3'
 // 3.x branch
 koin_version = '3.0.2'
 ```
