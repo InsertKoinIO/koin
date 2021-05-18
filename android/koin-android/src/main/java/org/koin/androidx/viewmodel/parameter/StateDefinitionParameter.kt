@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import org.koin.core.parameter.DefinitionParameters
 import kotlin.reflect.KClass
 
-class StateDefinitionParameter(val state: SavedStateHandle, values: List<Any?> = emptyList()) :
+class StateDefinitionParameter(val state: SavedStateHandle, values: MutableList<Any?> = mutableListOf()) :
     DefinitionParameters(values) {
     override fun <T> getOrNull(clazz: KClass<*>): T? {
         return if (clazz == SavedStateHandle::class) {
@@ -14,6 +14,6 @@ class StateDefinitionParameter(val state: SavedStateHandle, values: List<Any?> =
 
     companion object {
         fun from(state: SavedStateHandle, params: DefinitionParameters) =
-            StateDefinitionParameter(state, params.values)
+            StateDefinitionParameter(state, params.values.toMutableList())
     }
 }
