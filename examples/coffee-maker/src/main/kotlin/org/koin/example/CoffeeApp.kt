@@ -20,3 +20,9 @@ fun main() {
         coffeeShop.maker.brew()
     }
 }
+
+fun measureDuration(msg : String, code: () -> Unit): Double {
+    val duration = measureDuration(code)
+    println(msg)
+    return duration
+}

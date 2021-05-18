@@ -1,6 +1,5 @@
 package org.koin.perfs
 
-import kotlin.test.Test
 import org.koin.core.A
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definitions
@@ -10,6 +9,7 @@ import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.Test
 
 class PerfsTest {
 
@@ -42,7 +42,8 @@ class PerfsTest {
                     A::class,
                     definition = { A() },
                     options = Options(),
-                    scopeQualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER)
+                    scopeQualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER
+                )
             )
             app.close()
         }
@@ -89,4 +90,10 @@ class PerfsTest {
 
         app.close()
     }
+}
+
+fun <T> measureDurationForResult(msg: String, code: () -> T): T {
+    val result = measureDurationForResult(code)
+    println(msg)
+    return result.first
 }

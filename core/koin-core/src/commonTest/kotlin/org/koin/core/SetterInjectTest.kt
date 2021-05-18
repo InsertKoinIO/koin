@@ -11,6 +11,8 @@ import org.koin.core.time.measureDuration
 import org.koin.dsl.module
 import org.koin.ext.inject
 import kotlin.test.Test
+import kotlin.time.DurationUnit
+import kotlin.time.measureTime
 
 class B : KoinScopeComponent {
     override val scope: Scope by lazy { createScope(this) }
@@ -68,4 +70,10 @@ class PlayTest {
 
         stopKoin()
     }
+}
+
+fun measureDuration(msg : String, code: () -> Unit): Double {
+    val duration = measureDuration(code)
+    println(msg)
+    return duration
 }
