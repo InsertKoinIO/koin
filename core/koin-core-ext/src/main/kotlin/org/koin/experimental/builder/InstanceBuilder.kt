@@ -7,6 +7,10 @@ import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
+@Deprecated("use newInstance instead")
+inline fun <reified T : Any> Scope.create(): T = create(T::class)
+@Deprecated("use newInstance instead")
+fun <T : Any> Scope.create(kClass: KClass<T>): T = newInstance(kClass)
 inline fun <reified T : Any> Scope.newInstance(): T {
     return newInstance(T::class)
 }

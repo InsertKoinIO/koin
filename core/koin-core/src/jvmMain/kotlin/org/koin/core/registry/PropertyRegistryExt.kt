@@ -3,7 +3,7 @@ package org.koin.core.registry
 import org.koin.core.Koin
 import org.koin.core.error.NoPropertyFileFoundException
 import org.koin.core.logger.Level
-import org.koin.ext.quoted
+import org.koin.ext.clearQuotes
 import java.util.*
 
 
@@ -17,7 +17,7 @@ fun PropertyRegistry.saveProperties(properties: Properties) {
 
     val propertiesMapValues = properties.toMap() as Map<String, String>
     propertiesMapValues.forEach { (k: String, v: String) ->
-        saveProperty(k, v)
+        saveProperty(k, v.clearQuotes())
     }
 }
 

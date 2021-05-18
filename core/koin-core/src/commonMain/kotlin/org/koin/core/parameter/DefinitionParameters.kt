@@ -28,10 +28,12 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class DefinitionParameters(val values: List<Any?> = listOf()) {
+open class DefinitionParameters(private val _values: MutableList<Any?> = mutableListOf()) {
+
+    val values : List<Any?> get() = _values
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
-            if (values.size > i) values[i] as T else throw NoParameterFoundException(
+            if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
                     "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
 
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
@@ -44,16 +46,16 @@ open class DefinitionParameters(val values: List<Any?> = listOf()) {
      * get element at given index
      * return T
      */
-    operator fun <T> get(i: Int) = values[i] as T
+    operator fun <T> get(i: Int) = _values[i] as T
 
     fun <T> set(i: Int, t: T) {
-        values.toMutableList()[i] = t as Any
+        _values.toMutableList()[i] = t as Any
     }
 
     /**
      * Number of contained elements
      */
-    fun size() = values.size
+    fun size() = _values.size
 
     /**
      * Tells if it has no parameter
@@ -66,8 +68,8 @@ open class DefinitionParameters(val values: List<Any?> = listOf()) {
     fun isNotEmpty() = !isEmpty()
 
     fun insert(index: Int, value: Any): DefinitionParameters {
-        val (start, end) = values.partition { element -> values.indexOf(element) < index }
-        return DefinitionParameters(start + value + end)
+        _values.add(index,value)
+        return this
     }
 
     fun add(value: Any): DefinitionParameters {
@@ -85,7 +87,7 @@ open class DefinitionParameters(val values: List<Any?> = listOf()) {
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        val values = values.filterNotNull().filter { it::class == clazz }
+        val values = _values.filterNotNull().filter { it::class == clazz }
         return when (values.size) {
             1 -> values.first() as T
             0 -> null
@@ -98,7 +100,7 @@ open class DefinitionParameters(val values: List<Any?> = listOf()) {
         const val MAX_PARAMS = 5
     }
 
-    override fun toString(): String = "DefinitionParameters${values.toList()}"
+    override fun toString(): String = "DefinitionParameters${_values.toList()}"
 }
 
 /**

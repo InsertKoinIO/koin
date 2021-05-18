@@ -3,6 +3,17 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [3.0.2]()
+
+* Update Kotlin 1.5.0
+* Update Ktor 1.5.4
+* Clean up Time API - 64ceaae94f1084eb708142a6b9fd029390e20714
+* Fix Property import quote replace - 94ceed397b10d08e17880a9a0e2ac87d0a272a18
+* Fix Definition Param internal values - 067b9d95847b74a6c9b88058a649b27266053013
+* KClass for new instance builder - #1093 Erik@ErikSchouten.com
+* WatchOS64 native target - #1091 email@robertdewilde.nl
+* Enable IR for JS - #1067 subroh.0508@gmail.com
+
 ## [3.0.1]()
 
 ### [3.0.1-beta-2]()

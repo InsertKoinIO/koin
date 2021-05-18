@@ -19,31 +19,6 @@ class PerfsTest {
         app.close()
     }
 
-//    @Test
-//    fun `module no dsl`() {
-//        koinApplication().close()
-//
-//        (1..10).forEach {
-//            useDSL()
-//            dontUseDSL()
-//        }
-//    }
-
-//    @OptIn(KoinInternalApi::class)
-//    private fun dontUseDSL() {
-//        measureDurationForResult("no dsl ") {
-//            val app = koinApplication()
-//            app.koin.scopeRegistry.declareDefinition(
-//                Definitions.createSingle(
-//                    A::class,
-//                    definition = { A() },
-//                    options = Options(),
-//                    scopeQualifier = ScopeDefinition.ROOT_SCOPE_QUALIFIER)
-//            )
-//            app.close()
-//        }
-//    }
-
     private fun useDSL() {
         measureDurationForResult("dsl ") {
             val app = koinApplication {
@@ -85,4 +60,10 @@ class PerfsTest {
 
         app.close()
     }
+}
+
+fun <T> measureDurationForResult(msg: String, code: () -> T): T {
+    val result = measureDurationForResult(code)
+    println(msg)
+    return result.first
 }
