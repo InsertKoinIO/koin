@@ -30,13 +30,6 @@ class PerfsTest {
         }
     }
 
-    /*
-    Perfs on MBP 2018
-        perf400 - start  - 136.426839 ms
-        perf400 - executed - 0.95179 ms
-        perf400 - start  - 0.480203 ms
-        perf400 - executed - 0.034498 ms
-     */
     @Test
     fun `perfModule400 module perfs`() {
         runPerfs()
@@ -64,6 +57,6 @@ class PerfsTest {
 
 fun <T> measureDurationForResult(msg: String, code: () -> T): T {
     val result = measureDurationForResult(code)
-    println(msg)
+    println("$msg in ${result.second} ms")
     return result.first
 }

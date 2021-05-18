@@ -147,7 +147,7 @@ internal fun overrideError(
 //    }
 //}
 
-///**
-// * Help write list of Modules
-// */
-//operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
+/**
+ * Help write list of Modules
+ */
+operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
