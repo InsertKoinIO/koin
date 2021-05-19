@@ -50,7 +50,10 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) {
         }
         try {
             val parameters: ParametersHolder = context.parameters?.invoke() ?: emptyParametersHolder()
-            context.scope._source?.let { parameters.add(it) }
+            val source = context.scope._source
+            if (source != null) {
+                parameters.add(source)
+            }
             return beanDefinition.definition.invoke(
                 context.scope,
                 parameters
