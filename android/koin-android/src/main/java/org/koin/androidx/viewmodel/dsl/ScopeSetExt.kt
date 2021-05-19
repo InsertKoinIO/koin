@@ -42,5 +42,5 @@ inline fun <reified T : ViewModel> ScopeDSL.viewModel(
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { newInstance() }
+    return factory(qualifier) { newInstance(it) }
 }

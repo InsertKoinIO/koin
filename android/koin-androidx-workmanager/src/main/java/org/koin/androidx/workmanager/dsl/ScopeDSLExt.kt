@@ -41,5 +41,5 @@ inline fun <reified T : ListenableWorker> ScopeDSL.worker(
 inline fun <reified T : ListenableWorker> ScopeDSL.worker(
     qualifier: Qualifier = named<T>()
 ): Pair<Module, InstanceFactory<*>> {
-    return factory(qualifier) { newInstance<T>() }.bind<ListenableWorker>()
+    return factory(qualifier) { newInstance<T>(it) }.bind<ListenableWorker>()
 }

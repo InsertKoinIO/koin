@@ -4,9 +4,11 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.logger.Level
+import org.koin.core.parameter.parametersOf
 import org.koin.core.time.measureDuration
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.dsl.single
 
 class CreateAPITest {
 
@@ -29,7 +31,7 @@ class CreateAPITest {
             printLogger(Level.DEBUG)
             modules(module {
                 single { ComponentA() }
-                single { newInstance(ComponentB::class) }
+                single { newInstance(ComponentB::class, it) }
             })
         }.koin
 
@@ -45,7 +47,7 @@ class CreateAPITest {
             val koin = koinApplication {
                 printLogger(Level.DEBUG)
                 modules(module {
-                    single { newInstance(ComponentB::class) }
+                    single { newInstance(ComponentB::class, it) }
                 })
             }.koin
 
@@ -61,7 +63,7 @@ class CreateAPITest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(module {
-                single { newInstance(ComponentA::class) }
+                single { newInstance(ComponentA::class, it) }
             })
         }.koin
 
@@ -74,7 +76,7 @@ class CreateAPITest {
             printLogger(Level.DEBUG)
             modules(module {
                 single { ComponentA() }
-                single<Component> { newInstance(ComponentD::class) }
+                single<Component> { newInstance(ComponentD::class, it) }
             })
         }.koin
 
@@ -87,7 +89,7 @@ class CreateAPITest {
             printLogger(Level.DEBUG)
             modules(module {
                 single { ComponentA() }
-                factory<Component> { newInstance(ComponentD::class) }
+                factory<Component> { newInstance(ComponentD::class, it) }
             })
         }.koin
 
@@ -102,13 +104,25 @@ class CreateAPITest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(module {
-                single { newInstance<ComponentA>() }
-                factory<Component> { newInstance<ComponentD>() }
+                single { newInstance<ComponentA>(it) }
+                factory<Component> { newInstance<ComponentD>(it) }
             })
         }.koin
 
         (1..3).forEach {
             koin.get<Component>()
         }
+    }
+
+    @Test
+    fun `create API with param`() {
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(module {
+                single<ComponentD>()
+            })
+        }.koin
+
+        koin.get<ComponentD> { parametersOf(ComponentA()) }
     }
 }

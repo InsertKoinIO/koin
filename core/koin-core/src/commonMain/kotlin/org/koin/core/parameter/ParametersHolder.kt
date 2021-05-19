@@ -17,7 +17,7 @@ package org.koin.core.parameter
 
 import org.koin.core.error.DefinitionParameterException
 import org.koin.core.error.NoParameterFoundException
-import org.koin.core.parameter.DefinitionParameters.Companion.MAX_PARAMS
+import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -28,7 +28,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class DefinitionParameters(private val _values: MutableList<Any?> = mutableListOf()) {
+open class ParametersHolder(private val _values: MutableList<Any?> = mutableListOf()) {
 
     val values : List<Any?> get() = _values
 
@@ -36,10 +36,15 @@ open class DefinitionParameters(private val _values: MutableList<Any?> = mutable
             if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
                     "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
 
+    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
+    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component2(): T = elementAt(1, T::class)
+    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component3(): T = elementAt(2, T::class)
+    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component4(): T = elementAt(3, T::class)
+    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component5(): T = elementAt(4, T::class)
 
     /**
@@ -49,7 +54,7 @@ open class DefinitionParameters(private val _values: MutableList<Any?> = mutable
     operator fun <T> get(i: Int) = _values[i] as T
 
     fun <T> set(i: Int, t: T) {
-        _values.toMutableList()[i] = t as Any
+        _values[i] = t as Any
     }
 
     /**
@@ -67,13 +72,14 @@ open class DefinitionParameters(private val _values: MutableList<Any?> = mutable
      */
     fun isNotEmpty() = !isEmpty()
 
-    fun insert(index: Int, value: Any): DefinitionParameters {
+    fun insert(index: Int, value: Any): ParametersHolder {
         _values.add(index,value)
         return this
     }
 
-    fun add(value: Any): DefinitionParameters {
-        return insert(size(), value)
+    fun add(value: Any): ParametersHolder {
+        _values.add(value)
+        return this
     }
 
     /**
@@ -87,13 +93,7 @@ open class DefinitionParameters(private val _values: MutableList<Any?> = mutable
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        val values = _values.filterNotNull().filter { it::class == clazz }
-        return when (values.size) {
-            1 -> values.first() as T
-            0 -> null
-            else -> throw DefinitionParameterException(
-                    "Ambiguous parameter injection: more than one value of type '${clazz.getFullName()}' to get from $this. Check your injection parameters")
-        }
+        return _values.filterNotNull().firstNotNullOfOrNull { value -> if (value::class == clazz) value as? T? else null }
     }
 
     companion object {
@@ -110,17 +110,17 @@ open class DefinitionParameters(private val _values: MutableList<Any?> = mutable
  * return ParameterList
  */
 fun parametersOf(vararg parameters: Any?) =
-        if (parameters.size <= MAX_PARAMS) DefinitionParameters(
+        if (parameters.size <= MAX_PARAMS) ParametersHolder(
                 parameters.toMutableList()) else throw DefinitionParameterException(
                 "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
 
 /**
  *
  */
-fun emptyParametersHolder() = DefinitionParameters()
+fun emptyParametersHolder() = ParametersHolder()
 
 
 /**
  * Help define a DefinitionParameters
  */
-typealias ParametersDefinition = () -> DefinitionParameters
+typealias ParametersDefinition = () -> ParametersHolder

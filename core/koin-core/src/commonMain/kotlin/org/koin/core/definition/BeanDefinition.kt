@@ -15,7 +15,7 @@
  */
 package org.koin.core.definition
 
-import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.core.scope.Scope
@@ -94,7 +94,7 @@ enum class Kind {
 }
 
 typealias IndexKey = String
-typealias Definition<T> = Scope.(DefinitionParameters) -> T
+typealias Definition<T> = Scope.(ParametersHolder) -> T
 
 inline fun <reified T> createDefinition(
     kind: Kind = Kind.Singleton,

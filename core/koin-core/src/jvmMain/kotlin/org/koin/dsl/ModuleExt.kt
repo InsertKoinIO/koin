@@ -30,7 +30,7 @@ inline fun <reified T : Any> Module.single(
     qualifier: Qualifier? = null,
     createOnStart: Boolean = false,
 ): Pair<Module, InstanceFactory<T>> {
-    return single(qualifier, createOnStart) { newInstance(T::class) }
+    return single(qualifier, createOnStart) { params -> newInstance(T::class, params) }
 }
 
 /**
@@ -42,5 +42,5 @@ inline fun <reified T : Any> Module.single(
 inline fun <reified T : Any> Module.factory(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { newInstance(T::class) }
+    return factory(qualifier) { params -> newInstance(T::class,params) }
 }

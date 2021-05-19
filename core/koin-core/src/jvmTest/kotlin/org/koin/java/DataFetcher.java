@@ -17,7 +17,7 @@ package org.koin.java;
 
 import kotlin.Lazy;
 
-import static org.koin.core.parameter.DefinitionParametersKt.parametersOf;
+import static org.koin.core.parameter.ParametersHolderKt.parametersOf;
 import static org.koin.core.qualifier.QualifierKt.named;
 
 /**

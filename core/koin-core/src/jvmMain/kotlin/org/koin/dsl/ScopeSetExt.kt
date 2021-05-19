@@ -29,7 +29,7 @@ import org.koin.core.qualifier.Qualifier
 inline fun <reified R : Any> ScopeDSL.scoped(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<R>> {
-    return scoped(qualifier) { newInstance(R::class) }
+    return scoped(qualifier) { params -> newInstance(R::class, params) }
 }
 
 /**
@@ -41,5 +41,5 @@ inline fun <reified R : Any> ScopeDSL.scoped(
 inline fun <reified R : Any> ScopeDSL.factory(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<R>> {
-    return factory(qualifier) { newInstance(R::class) }
+    return factory(qualifier) { params -> newInstance(R::class, params) }
 }

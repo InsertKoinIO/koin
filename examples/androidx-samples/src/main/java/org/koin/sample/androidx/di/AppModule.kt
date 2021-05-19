@@ -53,7 +53,7 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-    viewModel { (id: String) -> SavedStateViewModel(get(), id, get()) } // injected params
+    viewModel { params -> SavedStateViewModel(params.get(), params.get(), get()) }// injected params
 
     scope<MVVMActivity> {
         scoped { Session() }
@@ -81,7 +81,7 @@ val scopeModule = module {
 
     scope<ScopedActivityA> {
         scoped<Session>()
-        scoped { SessionActivity(get()) }
+        scoped { SessionActivity(it.get()) }
     }
 }
 

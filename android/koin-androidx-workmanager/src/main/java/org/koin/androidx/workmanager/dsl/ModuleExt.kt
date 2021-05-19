@@ -41,5 +41,5 @@ inline fun <reified T : ListenableWorker> Module.worker(
 inline fun <reified T : ListenableWorker> Module.worker(
     qualifier: Qualifier = named<T>()
 ): Pair<Module, InstanceFactory<*>> {
-    return factory(qualifier) { newInstance<T>() }.bind(ListenableWorker::class)
+    return factory(qualifier) { newInstance<T>(it) }.bind(ListenableWorker::class)
 }

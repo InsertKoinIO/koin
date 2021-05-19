@@ -16,7 +16,7 @@
 package org.koin.test.check
 
 import org.koin.core.Koin
-import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
@@ -39,5 +39,5 @@ class ParametersBinding(val koin: Koin) {
     inline fun <reified T : Any> defaultValue() = defaultValues.put(KoinPlatformTools.getClassName(T::class), MockProvider.makeMock<T>())
 }
 
-typealias ParametersCreator = (Qualifier?) -> DefinitionParameters
+typealias ParametersCreator = (Qualifier?) -> ParametersHolder
 typealias CheckParameters = ParametersBinding.() -> Unit

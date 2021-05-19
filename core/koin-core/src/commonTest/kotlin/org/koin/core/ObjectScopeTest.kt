@@ -43,7 +43,7 @@ class ObjectScopeTest {
 
                 }
                 scope<BofA> {
-                    scoped { CofB(getSource()) }
+                    scoped { p -> CofB(p.get()) }
                 }
             })
         }.koin
@@ -61,11 +61,11 @@ class ObjectScopeTest {
             modules(module {
                 single { A() }
                 scope<A> {
-                    scoped { BofA(get()) }
+                    scoped { BofA(it.get()) }
 
                 }
                 scope<BofA> {
-                    scoped { CofB(get()) }
+                    scoped { CofB(it.get()) }
                 }
             })
         }.koin

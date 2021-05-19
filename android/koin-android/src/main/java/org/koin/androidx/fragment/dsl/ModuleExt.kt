@@ -39,4 +39,4 @@ inline fun <reified T : Fragment> Module.fragment(
 
 inline fun <reified T : Fragment> Module.fragment(
     qualifier: Qualifier? = null
-): Pair<Module, InstanceFactory<T>> = factory(qualifier) { newInstance() }
+): Pair<Module, InstanceFactory<T>> = factory(qualifier) { newInstance(it) }

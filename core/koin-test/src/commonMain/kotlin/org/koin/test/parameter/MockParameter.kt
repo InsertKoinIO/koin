@@ -1,6 +1,6 @@
 package org.koin.test.parameter
 
-import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 class MockParameter(
     private val scope: Scope,
     private val defaultValues: MutableMap<String, Any>
-) : DefinitionParameters(arrayListOf()) {
+) : ParametersHolder(arrayListOf()) {
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
         return defaultValues[KoinPlatformTools.getClassName(clazz)] as? T
             ?: getDefaultPrimaryValue(clazz)

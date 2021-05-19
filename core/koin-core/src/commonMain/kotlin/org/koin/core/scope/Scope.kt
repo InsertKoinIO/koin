@@ -23,7 +23,6 @@ import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
-import org.koin.core.parameter.DefinitionParameters
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.time.measureDurationForResult
@@ -46,26 +45,15 @@ data class Scope(
 
     val closed: Boolean
         get() = _closed
-
     fun isNotClosed() = !closed
 
     private val _callbacks = arrayListOf<ScopeCallback>()
-    private var _closed: Boolean = false
-    private var _parameters: DefinitionParameters? = null
 
+    private var _closed: Boolean = false
     val logger : Logger get() = _koin.logger
 
     internal fun create(links: List<Scope>) {
         linkedScopes.addAll(links)
-    }
-
-    inline fun <reified T : Any> getSource(): T = _source as? T ?: error(
-        "Can't use Scope source for ${T::class.getFullName()} - source is:$_source"
-    )
-
-    @KoinInternalApi
-    fun setSource(t: Any?) {
-        _source = t
     }
 
     /**
@@ -205,24 +193,24 @@ data class Scope(
     private fun <T> resolveInstance(
         qualifier: Qualifier?,
         clazz: KClass<*>,
-        parameters: ParametersDefinition?
+        parameterDef: ParametersDefinition?
     ): T {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        val instanceContext = InstanceContext(_koin, this, parameters)
+        val instanceContext = InstanceContext(_koin, this, parameterDef)
         return _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
-            ?: run {
-                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
-                getFromSource<T>(clazz)
-            }
-            ?: run {
-                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
-                _parameters?.getOrNull<T>(clazz)
-            }
+//            ?: run {
+//                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
+//                getFromSource<T>(clazz)
+//            }
+//            ?: run {
+//                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
+//                parameters?.getOrNull<T>(clazz)
+//            }
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
-                findInOtherScope<T>(clazz, qualifier, parameters)
+                findInOtherScope<T>(clazz, qualifier, parameterDef)
             }
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
@@ -386,14 +374,6 @@ data class Scope(
 
     override fun toString(): String {
         return "['$id']"
-    }
-
-    fun addParameters(parameters: DefinitionParameters) {
-        _parameters = parameters
-    }
-
-    fun clearParameters() {
-        _parameters = null
     }
 }
 
