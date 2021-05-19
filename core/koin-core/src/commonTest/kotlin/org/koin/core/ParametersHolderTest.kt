@@ -3,10 +3,7 @@ package org.koin.core
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class ParametersHolderTest {
 
@@ -72,12 +69,7 @@ class ParametersHolderTest {
 
     @Test
     fun `can't create parameters more than max params`() {
-        try {
-            parametersOf(1, 2, 3, 4, 5, 6)
-            fail("Can't build more than $MAX_PARAMS")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        assertNotNull(parametersOf(1, 2, 3, 4, 5, 6))
     }
 
     @Test

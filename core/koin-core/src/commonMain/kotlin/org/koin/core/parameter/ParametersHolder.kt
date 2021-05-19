@@ -93,7 +93,7 @@ open class ParametersHolder(private val _values: MutableList<Any?> = mutableList
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return _values.filterNotNull().firstNotNullOfOrNull { value -> if (value::class == clazz) value as? T? else null }
+        return _values.firstNotNullOfOrNull { value -> if (value != null && value::class == clazz) value as? T? else null }
     }
 
     companion object {
@@ -109,16 +109,12 @@ open class ParametersHolder(private val _values: MutableList<Any?> = mutableList
  * @see parameters
  * return ParameterList
  */
-fun parametersOf(vararg parameters: Any?) =
-        if (parameters.size <= MAX_PARAMS) ParametersHolder(
-                parameters.toMutableList()) else throw DefinitionParameterException(
-                "Can't build DefinitionParameters for more than $MAX_PARAMS arguments")
+fun parametersOf(vararg parameters: Any?) = ParametersHolder(parameters.toMutableList())
 
 /**
  *
  */
 fun emptyParametersHolder() = ParametersHolder()
-
 
 /**
  * Help define a DefinitionParameters
