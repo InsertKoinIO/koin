@@ -7,7 +7,7 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koin.experimental.builder.single
+import org.koin.dsl.single
 import org.koin.ktor.ext.inject
 import org.koin.ktor.ext.koin
 import org.koin.samples.multi_module.common.IService

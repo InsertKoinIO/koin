@@ -56,7 +56,7 @@ val mvvmModule = module {
     viewModel { params -> SavedStateViewModel(params.get(), params.get(), get()) }// injected params
 
     scope<MVVMActivity> {
-        // scoped { Session() }
+        scoped { Session() }
         fragment<MVVMFragment>()
         viewModel<ExtSimpleViewModel>()
         viewModel<ExtSimpleViewModel>(named("ext"))

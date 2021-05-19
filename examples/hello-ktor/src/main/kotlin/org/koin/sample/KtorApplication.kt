@@ -16,7 +16,7 @@ import io.ktor.server.netty.Netty
 import org.koin.dsl.bind
 import org.koin.logger.slf4jLogger
 import org.koin.dsl.module
-import org.koin.experimental.builder.single
+import org.koin.dsl.single
 import org.koin.ktor.ext.*
 
 fun Application.main() {

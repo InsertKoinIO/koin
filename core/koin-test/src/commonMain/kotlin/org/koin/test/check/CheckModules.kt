@@ -78,9 +78,10 @@ fun Koin.checkModules(
     // Execute resolution
     definitions.forEach { beanDefinition ->
         logger.info("Checking $beanDefinition ...")
-        var source : Pair<KClass<*>,Any>? = null
+        var source: Pair<KClass<*>, Any>? = null
         val scope = if (beanDefinition.scopeQualifier != scopeRegistry.rootScope.scopeQualifier) {
-            source = (beanDefinition.scopeQualifier as? TypeQualifier)?.let { Pair(it.type, MockProvider.makeMock(it.type)) }
+            source =
+                (beanDefinition.scopeQualifier as? TypeQualifier)?.let { Pair(it.type, MockProvider.makeMock(it.type)) }
             getOrCreateScope(beanDefinition.scopeQualifier.value, beanDefinition.scopeQualifier, source)
         } else scopeRegistry.rootScope
         try {
@@ -99,6 +100,7 @@ fun Koin.checkModules(
     }
 
     close()
+    logger.info("All definitions are OK!")
 }
 
 val breakingExceptions = listOf<KClass<*>>(

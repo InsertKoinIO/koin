@@ -85,8 +85,8 @@ data class BeanDefinition<T>(
 }
 
 fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
-    val typeQs = typeQualifier?.value ?: ""
-    return "c_${clazz.getFullName()}:tq_$typeQs:sq_$scopeQualifier"
+    val tq = typeQualifier?.value ?: ""
+    return "${clazz.getFullName()}:$tq:$scopeQualifier"
 }
 
 enum class Kind {

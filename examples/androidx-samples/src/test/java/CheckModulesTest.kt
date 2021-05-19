@@ -26,11 +26,7 @@ class CheckModulesTest {
 
     @Test
     fun `test DI modules`() =
-        startKoin {
-            androidContext(MockProvider.makeMock<Application>())
-            printLogger(Level.DEBUG)
-            modules(allModules)
-        }.checkModules(
+        checkModules(
             allowedMocks = listOf(
                 WorkerParameters::class,
                 SavedStateHandle::class
@@ -38,5 +34,8 @@ class CheckModulesTest {
             allowedExceptions = listOf(
                 NullPointerException::class
             )
-        )
+        ){
+            androidContext(MockProvider.makeMock<Application>())
+            modules(allModules)
+        }
 }
