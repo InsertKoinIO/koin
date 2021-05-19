@@ -1,5 +1,6 @@
 package org.koin.core.instance
 
+import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.Scope
@@ -19,7 +20,7 @@ fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T 
     val instance: Any
 
     if (logger.level == Level.DEBUG) {
-        logger.debug("!- creating class:${kClass.getFullName()}")
+        logger.debug("|- creating new instance - ${kClass.getFullName()}")
     }
 
     val constructor = kClass.java.constructors.firstOrNull()
@@ -29,7 +30,7 @@ fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T 
         val (_args, duration) = measureDurationForResult {
             getArguments(constructor, this, params)
         }
-        logger.debug("!- got arguments in $duration ms")
+        logger.debug("|- got arguments in $duration ms")
         _args
     } else {
         getArguments(constructor, this, params)
@@ -39,7 +40,7 @@ fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T 
         val (_instance, duration) = measureDurationForResult {
             createInstance(args, constructor)
         }
-        logger.debug("!- created instance in $duration ms")
+        logger.debug("|- created instance in $duration ms")
         _instance
     } else {
         createInstance(args, constructor)
@@ -66,7 +67,7 @@ fun getArguments(constructor: Constructor<*>, scope: Scope, parameters: Paramete
         for (i in 0 until length) {
             val p = constructor.parameterTypes[i]
             val parameterClass = p.kotlin
-            result[i] = parameters.getOrNull(parameterClass) ?: scope.get(parameterClass, null) { parameters }
+            result[i] = scope.getOrNull(parameterClass, null) { parameters } ?: parameters.getOrNull(parameterClass) ?: throw NoBeanDefFoundException("No definition found for class '$parameterClass'")
         }
         result
     }

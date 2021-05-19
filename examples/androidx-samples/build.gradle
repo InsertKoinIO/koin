@@ -40,6 +40,7 @@ android {
     }
 
     testOptions {
+        unitTests.returnDefaultValues = true
         unitTests.all {
             useJUnit()
         }
@@ -66,6 +67,7 @@ dependencies {
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation "junit:junit:$junit_version"
 
     testImplementation "androidx.test:core:1.2.0"

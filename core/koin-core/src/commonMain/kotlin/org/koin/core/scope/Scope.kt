@@ -155,10 +155,10 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: ClosedScopeException) {
-            _koin.logger.debug("Koin.getOrNull - scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin.logger.debug("Koin.getOrNull - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("No instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
@@ -200,14 +200,6 @@ data class Scope(
         }
         val instanceContext = InstanceContext(_koin, this, parameterDef)
         return _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
-//            ?: run {
-//                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope")
-//                getFromSource<T>(clazz)
-//            }
-//            ?: run {
-//                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in current scope's source")
-//                parameters?.getOrNull<T>(clazz)
-//            }
             ?: run {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
                 findInOtherScope<T>(clazz, qualifier, parameterDef)

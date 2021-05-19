@@ -53,20 +53,21 @@ class InstanceRegistry(val _koin: Koin) {
         }
     }
 
-    @PublishedApi
-    internal fun saveMapping(
+    @KoinInternalApi
+    fun saveMapping(
         allowOverride: Boolean,
         mapping: IndexKey,
-        factory: InstanceFactory<*>
+        factory: InstanceFactory<*>,
+        logWarning : Boolean = true
     ) {
         if (_instances.containsKey(mapping)) {
             if (!allowOverride) {
                 overrideError(factory, mapping)
             } else {
-                _koin.logger.info("Warning - override mapping: $mapping defintion:${factory.beanDefinition}")
+                if (logWarning) _koin.logger.info("Warning - override mapping: $mapping defintion:${factory.beanDefinition}")
             }
         }
-        if (_koin.logger.isAt(Level.DEBUG)){
+        if (_koin.logger.isAt(Level.DEBUG) && logWarning){
             _koin.logger.debug("add mapping '$mapping' for ${factory.beanDefinition}")
         }
         _instances[mapping] = factory

@@ -87,23 +87,22 @@ class AdditionalTypeBindingTest {
 //        assertNotEquals(koin.bind<Simple.ComponentInterface1, Simple.Component1>(), koin.bind<Simple.ComponentInterface1, Simple.Component2>())
 //    }
 //
-//    @Test
-//    fun `can resolve an additional type in DSL`() {
-//        val app = koinApplication {
-//            printLogger(Level.DEBUG)
-//            modules(
-//                    module {
-//                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-//                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-//                        single { Simple.UserComponent(bind<Simple.ComponentInterface1, Simple.Component1>()) }
-//                    })
-//        }
-//
-//        app.assertDefinitionsCount(3)
-//
-//        val koin = app.koin
-//        assertEquals(koin.get<Simple.UserComponent>().c1, koin.get<Simple.Component1>())
-//    }
+    @Test
+    fun `can resolve an additional type in DSL`() {
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                    module {
+                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                    })
+        }
+
+        app.assertDefinitionsCount(3)
+
+        val koin = app.koin
+        assertEquals(koin.get<Simple.Component2>(), koin.get<Simple.ComponentInterface1>())
+    }
 
     @Test
     fun `additional type conflict - error`() {
@@ -173,7 +172,6 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
-    @Ignore
     fun `resolve all`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)

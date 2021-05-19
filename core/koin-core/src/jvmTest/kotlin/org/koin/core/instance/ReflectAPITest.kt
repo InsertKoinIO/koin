@@ -33,13 +33,13 @@ class ReflectAPITest {
             return@measure if (types.isEmpty()) {
                 ctor.newInstance() as T
             } else {
-                println("!- types:${types.toList()}")
+                println("|- types:${types.toList()}")
                 val (map, duration) = measureDurationForResult {
                     types.map { it.constructors.first().newInstance() }
                 }
-                println("!- make sub instances:$map in $duration")
+                println("|- make sub instances:$map in $duration")
                 val toTypedArray = map.toTypedArray()
-                measure("!- created with subtypes") {
+                measure("|- created with subtypes") {
                     ctor.newInstance(*toTypedArray) as T
                 }
             }

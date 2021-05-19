@@ -56,7 +56,7 @@ val mvvmModule = module {
     viewModel { params -> SavedStateViewModel(params.get(), params.get(), get()) }// injected params
 
     scope<MVVMActivity> {
-        scoped { Session() }
+        // scoped { Session() }
         fragment<MVVMFragment>()
         viewModel<ExtSimpleViewModel>()
         viewModel<ExtSimpleViewModel>(named("ext"))
@@ -87,7 +87,7 @@ val scopeModule = module {
 
 val workerScopedModule = module {
     single<SimpleWorkerService>()
-    worker<SimpleWorker>()
+    worker { SimpleWorker(get(), get(), it.get()) }
 }
 
 val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule
