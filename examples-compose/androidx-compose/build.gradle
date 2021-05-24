@@ -39,7 +39,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion kotlin_version//"1.4.10"
+        kotlinCompilerVersion kotlin_version //"1.4.10"
         kotlinCompilerExtensionVersion androidx_compose_version //"1.0.0-alpha03"
     }
 }

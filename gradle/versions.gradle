@@ -4,9 +4,9 @@ ext {
     is_snaptshot = false
 
     // Kotlin
-    kotlin_version = '1.5.0'
-    coroutines_version = "1.4.2"
-    
+    kotlin_version = '1.5.10'
+    coroutines_version = "1.5.10"
+
     // Dokka
     dokka_version = '0.10.1'
 
