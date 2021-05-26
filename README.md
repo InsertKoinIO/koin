@@ -6,11 +6,13 @@ A pragmatic lightweight dependency injection framework for Kotlin developers.
 
 `Koin is a DSL, a light container and a pragmatic API`
 
-## Latest Version 🚀
+## [Latest Version 🚀](https://search.maven.org/search?q=io.insert-koin)
 
-## [Maven Central](https://insert-koin.io/docs/setup/v3)
+## Maven Central
 
 ### The koin project's maven group id was previously `org.koin`. It's now `io.insert-koin` on maven central
+
+You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3)
 
 ```gradle
 // latest version (Maven Central)
