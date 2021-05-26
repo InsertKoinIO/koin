@@ -112,6 +112,9 @@ class InstanceRegistry(val _koin: Koin, val _scope: Scope) {
     }
 
     internal fun createEagerInstances() {
+        if (_koin.logger.isAt(Level.DEBUG)){
+            _koin.logger.debug("Creating eager instances ...")
+        }
         instances.values.filterIsInstance<SingleInstanceFactory<*>>()
                 .filter { instance -> instance.beanDefinition.options.isCreatedAtStart }
                 .forEach { instance ->
