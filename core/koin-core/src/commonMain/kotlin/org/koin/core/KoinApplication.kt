@@ -105,14 +105,7 @@ class KoinApplication private constructor() {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(): KoinApplication {
-        if (koin.logger.isAt(Level.DEBUG)) {
-            val duration = measureDuration {
-                koin.createEagerInstances()
-            }
-            koin.logger.debug("instances started in $duration ms")
-        } else {
-            koin.createEagerInstances()
-        }
+        koin.createEagerInstances()
         return this
     }
 
