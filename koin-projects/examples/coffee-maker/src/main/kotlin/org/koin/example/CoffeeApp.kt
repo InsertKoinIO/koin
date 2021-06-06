@@ -15,10 +15,10 @@ class CoffeeApp : KoinComponent {
     val maker: CoffeeMaker by inject()
 
     @KoinInject
-    lateinit var maker2: CoffeeMaker
+    var maker2: CoffeeMaker?=null
 
     init {
-        CoffeeAppKspInjector().inject(this)
+//        CoffeeAppKspInjector().inject(this)
     }
 }
 

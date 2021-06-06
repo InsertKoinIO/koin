@@ -5,22 +5,27 @@ buildscript {
         jcenter()
     }
     dependencies {
-//        classpath "org.koin:koin-gradle-plugin:$koin_version"
+
     }
 }
 plugins {
     id 'kotlin'
-    id 'com.google.devtools.ksp' version "1.4.30-1.0.0-alpha02"
+    id 'com.google.devtools.ksp' version "1.5.10-1.0.0-beta01"
 }
-//apply plugin: 'koin'
+
 
 dependencies {
     implementation project(":koin-core")
     testImplementation project(":koin-test")
 
     testImplementation "io.mockk:mockk:$mockk_version"
-//    testImplementation "org.mockito:mockito-inline:$mockito_version"
+
 
     implementation(project(":koin-ksp"))
     ksp(project(":koin-ksp"))
+}
+
+ksp {
+    arg("option1", "value1")
+    arg("option2", "value2")
 }
