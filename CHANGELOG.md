@@ -1,6 +1,13 @@
 # Change Log
 
-Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
+Badges: `[UPDATE]`, `[FIX]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
+
+
+## [3.1.0]()
+
+* `[UPDATE]` `[core]` - Kotlin 1.5.10
+* `[UPDATE]` `[ktor]` - Ktor 1.6.0
+* `[UPDATE]` `[android-compose]` - Compose 1.0.0-Beta08
 
 
 ## [2.2.3]()
