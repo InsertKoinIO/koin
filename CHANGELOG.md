@@ -3,7 +3,16 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[ADDED]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
-## [2.2.2]()
+## [3.1.0]()
+
+* `[UPDATED]` `[core]` - Kotlin 1.5.10
+* `[UPDATED]` `[ktor]` - Ktor 1.6.0
+* `[UPDATED]` `[android-compose]` - Compose 1.0.0-Beta08
+* `[FIXED]` `[core]` - String property import
+* `[FIXED]` `[test]` - KoinTestRule close existing Koin isntance before trying to start a new one
+
+
+## [2.2.3]()
 
 * Update Kotlin 1.5.0
 * Clean up Time API

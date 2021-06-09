@@ -22,6 +22,7 @@ import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.mp.KoinPlatformTools
 
 /**
  * [TestRule] which will automatically start and stop Koin.
@@ -36,7 +37,15 @@ class KoinTestRule private constructor(private val appDeclaration: KoinAppDeclar
         get() = _koin ?: error("No Koin application found")
 
     override fun starting(description: Description?) {
+        closeExistingInstance()
         _koin = startKoin(appDeclaration = appDeclaration).koin
+    }
+
+    private fun closeExistingInstance() {
+        KoinPlatformTools.defaultContext().getOrNull()?.let { koin ->
+            koin.logger.info("closing existing instance")
+            koin.close()
+        }
     }
 
     override fun finished(description: Description?) {

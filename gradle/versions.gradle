@@ -1,17 +1,17 @@
 ext {
     // Koin
-    koin_version = '3.1.0-beta-1'
+    koin_version = '3.1.0-beta-2'
     is_snaptshot = false
 
     // Kotlin
     kotlin_version = '1.5.10'
-    coroutines_version = "1.4.2"
-    
+    coroutines_version = "1.5.0-native-mt"
+
     // Dokka
     dokka_version = '0.10.1'
 
     // Ktor
-    ktor_version = '1.5.4'
+    ktor_version = '1.6.0'
 
     // Test
     junit_version = "4.13.1"
@@ -20,8 +20,8 @@ ext {
     mockk_version = "1.10.0"
 
     // Doc
-    asciidoctor_version = "1.5.3"
-    asciidoctor_pdf_version = "1.5.0-alpha.15"
+    // asciidoctor_version = "1.5.3"
+    // asciidoctor_pdf_version = "1.5.0-alpha.15"
 
     // Publish
     // android_maven_publish = "3.6.3"

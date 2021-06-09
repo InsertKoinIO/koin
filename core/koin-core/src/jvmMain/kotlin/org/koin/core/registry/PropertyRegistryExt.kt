@@ -17,7 +17,7 @@ fun PropertyRegistry.saveProperties(properties: Properties) {
 
     val propertiesMapValues = properties.toMap() as Map<String, String>
     propertiesMapValues.forEach { (k: String, v: String) ->
-        saveProperty(k, v.clearQuotes())
+        saveProperty(k, v)
     }
 }
 
