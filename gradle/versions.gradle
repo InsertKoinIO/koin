@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '3.0.2'
+    koin_version = '3.1.0-beta-2'
     is_snaptshot = false
 
     // Kotlin
