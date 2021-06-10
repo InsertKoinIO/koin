@@ -15,8 +15,8 @@ import kotlin.reflect.KProperty
 
 class LifecycleScopeDelegate(
         val lifecycleOwner: LifecycleOwner,
-        koinContext: KoinContext = GlobalContext,
-        createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeId(), lifecycleOwner.getScopeName()) },
+        private val koinContext: KoinContext = GlobalContext,
+        private val createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeId(), lifecycleOwner.getScopeName()) },
 ) : ReadOnlyProperty<LifecycleOwner, Scope> {
 
     private var _scope: Scope? = null
@@ -43,6 +43,16 @@ class LifecycleScopeDelegate(
     }
 
     override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): Scope {
-        return _scope ?: error("can't get Scope for $lifecycleOwner")
+        if (_scope != null) return _scope!!
+
+        val ownerState = thisRef.lifecycle.currentState
+        val ownerIsActive = ownerState.isAtLeast(Lifecycle.State.CREATED)
+        if (!ownerIsActive) {
+            error("can't get Scope for $lifecycleOwner")
+        }
+
+        val koin = koinContext.get()
+        _scope = koin.getScopeOrNull(thisRef.getScopeId()) ?: createScope(koin)
+        return _scope!!
     }
 }
