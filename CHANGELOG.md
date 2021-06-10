@@ -10,7 +10,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` `[core]` - Kotlin 1.5.10
 * `[UPDATED]` `[ktor]` - Ktor 1.6.0
 * `[UPDATED]` `[android-compose]` - Compose 1.0.0-Beta08
-* `[FIXED]` `[core]` - String property import
+* `[FIXED]` `[core]` - String property import - https://github.com/InsertKoinIO/koin/issues/1099
 * `[FIXED]` `[test]` - KoinTestRule close existing Koin isntance before trying to start a new one
 * `[FIXED]` `[core]` - ScopeJVM.kt bad package - https://github.com/InsertKoinIO/koin/issues/1094
 
