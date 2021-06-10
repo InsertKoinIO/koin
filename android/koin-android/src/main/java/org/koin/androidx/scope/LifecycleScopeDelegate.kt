@@ -43,16 +43,21 @@ class LifecycleScopeDelegate(
     }
 
     override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): Scope {
-        if (_scope != null) return _scope!!
-
-        val ownerState = thisRef.lifecycle.currentState
-        val ownerIsActive = ownerState.isAtLeast(Lifecycle.State.CREATED)
-        if (!ownerIsActive) {
-            error("can't get Scope for $lifecycleOwner")
+        return if (_scope != null) _scope!!
+        else {
+            if (!thisRef.isActive()) {
+                error("can't get Scope for $lifecycleOwner - LifecycleOwner is not Active")
+            } else {
+                val koin = koinContext.get()
+                _scope = koin.getScopeOrNull(thisRef.getScopeId()) ?: createScope(koin)
+                koin.logger.debug("got scope: $_scope for $lifecycleOwner")
+                _scope!!
+            }
         }
-
-        val koin = koinContext.get()
-        _scope = koin.getScopeOrNull(thisRef.getScopeId()) ?: createScope(koin)
-        return _scope!!
     }
+}
+
+private fun LifecycleOwner.isActive(): Boolean {
+    val ownerState = lifecycle.currentState
+    return ownerState.isAtLeast(Lifecycle.State.CREATED)
 }
