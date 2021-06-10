@@ -5,15 +5,15 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 ## [3.1.0]()
 
-* `[NEW]` `[core]` - Reworked Enginewith new  Module/DSL/Index creation to make faster Index/InstanceFactory allocation at start. Reworked internal architecture for Factory & scope allocations
-* `[NEW]` `[core-jvm]` - Smarter DSL is now stable
+* `[NEW]` `[core]` - Improved resolution engine with new Module/DSL/Index creation to make faster Index/InstanceFactory allocation at start. Reworked internal architecture for Factory & scope allocations. Should improve greatly startup performances!
+* `[NEW]` `[core-jvm]` - Smarter DSL is now stable, no more `get()` needed. Unlock `single<MyType>()` builder, for any kind of definition.
 * `[UPDATED]` `[core]` - Kotlin 1.5.10
 * `[UPDATED]` `[ktor]` - Ktor 1.6.0
 * `[UPDATED]` `[android-compose]` - Compose 1.0.0-Beta08
 * `[FIXED]` `[core]` - String property import - https://github.com/InsertKoinIO/koin/issues/1099
 * `[FIXED]` `[test]` - KoinTestRule close existing Koin isntance before trying to start a new one
 * `[FIXED]` `[core]` - ScopeJVM.kt bad package - https://github.com/InsertKoinIO/koin/issues/1094
-
+* `[FIXED]` `[android]` - Fix Fragment Scope Lifecycle delegate - https://github.com/InsertKoinIO/koin/issues/1101
 
 ## [2.2.3]()
 
