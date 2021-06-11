@@ -59,7 +59,7 @@ dependencies {
     /* Compose */
     api "androidx.compose.runtime:runtime:$androidx_compose_version"
     api "androidx.compose.ui:ui:$androidx_compose_version"
-    api "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02"
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha06"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 }
