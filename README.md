@@ -21,7 +21,7 @@ You can find the following page to help setup your project: [Koin Gradle Setup](
 // 2.x Branch
 koin_version = '2.2.3'
 // 3.x branch
-koin_version = '3.0.2'
+koin_version = '3.1.0'
 ```
 
 # Where to find resources? 🌐
