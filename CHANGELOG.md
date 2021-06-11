@@ -16,7 +16,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[core]` - ScopeJVM.kt bad package - https://github.com/InsertKoinIO/koin/issues/1094
 * `[FIXED]` `[android]` - Fix Fragment Scope Lifecycle delegate - https://github.com/InsertKoinIO/koin/issues/1101
 * `[DEPRECATED]` `[core]` - Module `override` is now a global option into `KoinApplication`, not a local option to a module. Override strategy is now a global option.
-* `[DEPRECATED]` `[core]` - injection parameters as `destructured` declaration are deprecated. Now use injected parameters with get: `single { params -> MyClass(params.get()) }`
+* `[DEPRECATED]` `[core]` - injection parameters as `destructured` declaration are deprecated. Instead of writing ``single { (myParam) -> MyClass(param) }`` now use injected parameters with get: `single { params -> MyClass(params.get()) }`
 
 
 ## [2.2.3]()
