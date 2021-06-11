@@ -25,8 +25,15 @@ typealias ModuleDeclaration = Module.() -> Unit
  *
  * @author Arnaud Giuliani
  */
-fun module(moduleDeclaration: ModuleDeclaration): Module {
-    val module = Module()
+@Deprecated("'override' parameter is not used anymore. See 'allowOverride' in KoinApplication")
+fun module(createdAtStart: Boolean = false, override: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
+    val module = Module(createdAtStart)
+    moduleDeclaration(module)
+    return module
+}
+
+fun module(createdAtStart: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
+    val module = Module(createdAtStart)
     moduleDeclaration(module)
     return module
 }

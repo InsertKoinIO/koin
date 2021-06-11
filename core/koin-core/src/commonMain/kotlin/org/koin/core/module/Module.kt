@@ -31,7 +31,7 @@ import org.koin.dsl.ScopeDSL
  *
  * @author Arnaud Giuliani
  */
-class Module {
+class Module(val createdAtStart: Boolean = false) {
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
@@ -77,7 +77,7 @@ class Module {
         val mapping = indexKey(def.primaryType, qualifier, rootScopeQualifier)
         val instanceFactory = SingleInstanceFactory(def)
         saveMapping(mapping, instanceFactory)
-        if (createdAtStart) {
+        if (createdAtStart || this.createdAtStart) {
             eagerInstances.add(instanceFactory)
         }
         return Pair(this, instanceFactory)

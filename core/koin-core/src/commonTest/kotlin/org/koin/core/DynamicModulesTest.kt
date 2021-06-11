@@ -195,10 +195,30 @@ class DynamicModulesTest : KoinCoreTest() {
     }
 
     @Test
-    fun `create at start for external modules`() {
+    fun `create at start for external modules - definition`() {
         var created = false
         val module = module {
             single(createdAtStart = true) {
+                created = true
+                Simple.MySingle(42)
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+        }
+
+        val koin = app.koin
+
+        koin.loadModules(listOf(module))
+
+        assertTrue(created)
+    }
+
+    @Test
+    fun `create at start for external modules`() {
+        var created = false
+        val module = module(createdAtStart = true) {
+            single {
                 created = true
                 Simple.MySingle(42)
             }
