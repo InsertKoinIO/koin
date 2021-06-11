@@ -7,6 +7,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 * `[NEW]` `[core]` - Improved resolution engine with new Module/DSL/Index creation to make faster Index/InstanceFactory allocation at start. Reworked internal architecture for Factory & scope allocations. Should improve greatly startup performances!
 * `[NEW]` `[core-jvm]` - Smarter DSL is now stable, no more `get()` needed. Unlock `single<MyType>()` builder, for any kind of definition.
+* `[BREAKING]` `[-ext]` - builder extension are now part of core API
 * `[UPDATED]` `[core]` - Kotlin 1.5.10
 * `[UPDATED]` `[ktor]` - Ktor 1.6.0
 * `[UPDATED]` `[android-compose]` - Compose 1.0.0-Beta08
