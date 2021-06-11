@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // Dokka
+//        // Dokka
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         // Android
         classpath "com.android.tools.build:gradle:$androidx_compose_gradle_version"
@@ -32,12 +32,10 @@ allprojects {
 
     // Dokka
     apply plugin: 'org.jetbrains.dokka'
-    dokka {
-        outputFormat = 'html'
-        outputDirectory = "$buildDir/javadoc"
+    dokkaJavadoc {
     }
     task dokkaJar(type: Jar) {
         classifier = 'javadoc'
-        from dokka
+        from dokkaJavadoc
     }
 }

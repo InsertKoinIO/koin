@@ -31,13 +31,12 @@ import org.koin.core.qualifier.Qualifier
  *
  * @author Arnaud Giuliani
  * @author Henrique Horbovyi
- * @author Arnaud Giuliani
  */
 @Composable
 inline fun <reified T> get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-): T = remember {
+): T = remember(qualifier,parameters) {
     GlobalContext.get().get(qualifier, parameters)
 }
 

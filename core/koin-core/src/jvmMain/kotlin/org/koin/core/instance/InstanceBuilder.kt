@@ -3,13 +3,14 @@ package org.koin.core.instance
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersHolder
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
-inline fun <reified T : Any> Scope.newInstance(defParams: ParametersHolder): T {
+inline fun <reified T : Any> Scope.newInstance(defParams: ParametersHolder = emptyParametersHolder()): T {
     return newInstance(T::class, defParams)
 }
 

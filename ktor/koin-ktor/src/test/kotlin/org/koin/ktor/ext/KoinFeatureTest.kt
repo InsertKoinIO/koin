@@ -7,9 +7,10 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
+import org.koin.core.instance.newInstance
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.dsl.module
-import org.koin.experimental.builder.newInstance
-import org.koin.experimental.builder.single
+import org.koin.dsl.single
 
 /**
  * @author vinicius
@@ -133,7 +134,7 @@ class KoinFeatureTest {
                 modules(module {
                     single {
                         s = "two"
-                        newInstance<Foo>()
+                        newInstance<Foo>(emptyParametersHolder())
                     }
                 })
             }
@@ -143,11 +144,11 @@ class KoinFeatureTest {
                 modules(module {
                     single(createdAtStart = true) {
                         s = "one"
-                        newInstance<Bar>()
+                        newInstance<Bar>(emptyParametersHolder())
                     }
                     single {
                         s = "three"
-                        newInstance<Bar2>()
+                        newInstance<Bar2>(emptyParametersHolder())
                     }
                 })
             }

@@ -32,12 +32,10 @@ allprojects {
 
     // Dokka
     apply plugin: 'org.jetbrains.dokka'
-    dokka {
-        outputFormat = 'html'
-        outputDirectory = "$buildDir/javadoc"
+    dokkaJavadoc {
     }
     task dokkaJar(type: Jar) {
         classifier = 'javadoc'
-        from dokka
+        from dokkaJavadoc
     }
 }

@@ -18,7 +18,11 @@ ext {
     
     androidx_workmanager = '2.5.0'
 
-    androidx_compose_gradle_version = "4.2.0-beta03" //"7.0.0-alpha08"
+    // when using in AS
+    // androidx_compose_gradle_version = "7.0.0-beta01"
+    // for global build
+    androidx_compose_gradle_version = "4.2.0-beta03"
+
     androidx_compose_version = "1.0.0-beta08"
 
 }
