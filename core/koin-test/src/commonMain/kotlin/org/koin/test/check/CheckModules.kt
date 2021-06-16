@@ -18,6 +18,7 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.context.startKoin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
@@ -40,7 +41,7 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  *
  */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
-    koinApplication(appDeclaration)
+    startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
 }
@@ -49,30 +50,26 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
-    logger.info("[Check] checking current modules ...")
+    logger.info("[Check] checking modules ...")
 
-    checkScopedDefinitions(
+    checkAllDefinitions(
         declareParameterCreators(parametersDefinition)
     )
 
-    logger.info("[Check] modules checked")
+    logger.info("[Check] All checked")
     close()
 }
 
-private fun Koin.declareParameterCreators(
-    parametersDefinition: CheckParameters?
-) = ParametersBinding(this).also { binding ->
-    parametersDefinition?.invoke(binding)
-}
+private fun Koin.declareParameterCreators(parametersDefinition: CheckParameters?) =
+    ParametersBinding(this).also { binding -> parametersDefinition?.invoke(binding) }
 
 @OptIn(KoinInternalApi::class)
-private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
-    instanceRegistry.instances.forEach { (index,factory) ->
+private fun Koin.checkAllDefinitions(allParameters: ParametersBinding) {
+    instanceRegistry.instances.values.toSet().forEach { factory ->
         check(factory,allParameters)
     }
 }
 
-@OptIn(KoinInternalApi::class)
 private fun Koin.check(
     factory: InstanceFactory<*>,
     allParameters: ParametersBinding
@@ -89,8 +86,7 @@ private fun mockSourceValue(qualifier: Qualifier): Any? {
     } else null
 }
 
-@OptIn(KoinInternalApi::class)
-private fun checkDefinition(
+private fun Koin.checkDefinition(
     allParameters: ParametersBinding,
     definition: BeanDefinition<*>,
     scope: Scope
@@ -101,5 +97,6 @@ private fun checkDefinition(
     )]?.invoke(
         definition.qualifier
     ) ?: MockParameter(scope, allParameters.defaultValues)
+    logger.info("[Check] definition: $definition")
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
 }

@@ -81,7 +81,7 @@ val scopeModule = module {
 
     scope<ScopedActivityA> {
         scoped<Session>()
-        scoped { SessionActivity(it.get()) }
+        scoped { SessionActivity(get()) }
     }
 }
 

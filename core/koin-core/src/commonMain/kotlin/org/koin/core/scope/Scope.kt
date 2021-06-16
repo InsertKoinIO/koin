@@ -222,19 +222,23 @@ data class Scope(
         parameterDef: ParametersDefinition?
     ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
-            _koin.logger.log(Level.DEBUG){"'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters" }
+            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters" }
             _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG){"'${clazz.getFullName()}' - q:'$qualifier' look at scope source" }
-            _source as? T
+            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' look at scope source" }
+            _source?.let {
+                if (clazz.isInstance(it)) {
+                    _source as? T
+                } else null
+            }
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG){"'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" }
+            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" }
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG){"'${clazz.getFullName()}' - q:'$qualifier' not found" }
+            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' not found" }
             _parameterStack.clear()
             throwDefinitionNotFound(qualifier, clazz)
         })

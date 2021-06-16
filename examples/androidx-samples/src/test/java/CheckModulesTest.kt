@@ -2,11 +2,10 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import androidx.work.WorkerParameters
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.sample.androidx.di.*
 import org.koin.test.check.checkModules
@@ -17,25 +16,21 @@ import org.mockito.Mockito
 class CheckModulesTest {
 
     @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
+    @get:Rule
     val mockProvider = MockProviderRule.create { clazz ->
         Mockito.mock(clazz.java)
     }
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
     @Test
     fun `test DI modules`() =
-        checkModules(
-            allowedMocks = listOf(
-                WorkerParameters::class,
-                SavedStateHandle::class
-            ),
-            allowedExceptions = listOf(
-                NullPointerException::class
-            )
-        ){
+        checkModules(parameters = {
+            defaultValue<SavedStateHandle>()
+            defaultValue<WorkerParameters>()
+        }) {
             androidContext(MockProvider.makeMock<Application>())
-            modules(allModules)
+            printLogger(Level.DEBUG)
+            modules(appModule + mvpModule + mvvmModule + scopeModule)
         }
 }

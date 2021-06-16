@@ -36,6 +36,35 @@ class CheckModulesTest {
     }
 
     @Test
+    fun `check a type scope module`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    scope<Simple> {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a type scope source module`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    scope<Simple.ComponentA> {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
     fun `check a scoped module and ext deps - failed `() {
         try {
             koinApplication {

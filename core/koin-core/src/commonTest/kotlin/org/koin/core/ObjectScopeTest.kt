@@ -6,6 +6,7 @@ import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -36,6 +37,7 @@ class ObjectScopeTest {
     @Test
     fun `typed scope & source`() {
         val koin = startKoin {
+            printLogger(Level.DEBUG)
             modules(module {
                 single { A() }
                 scope<A> {
@@ -43,7 +45,7 @@ class ObjectScopeTest {
 
                 }
                 scope<BofA> {
-                    scoped { p -> CofB(p.get()) }
+                    scoped { CofB(get()) }
                 }
             })
         }.koin
@@ -58,14 +60,15 @@ class ObjectScopeTest {
     @Test
     fun `typed scope & source with get`() {
         val koin = startKoin {
+            printLogger(Level.DEBUG)
             modules(module {
                 single { A() }
                 scope<A> {
-                    scoped { BofA(it.get()) }
+                    scoped { BofA(get()) }
 
                 }
                 scope<BofA> {
-                    scoped { CofB(it.get()) }
+                    scoped { CofB(get()) }
                 }
             })
         }.koin
@@ -211,7 +214,9 @@ class ObjectScopeTest {
         val a = koin.get<A>()
         val b = a.scope.get<B>()
         a.scope.linkTo(b.scope)
-        assertTrue(a.scope.get<C>() == b.scope.get<C>())
+        val a_c = a.scope.get<C>()
+        val b_c = b.scope.get<C>()
+        assertTrue(a_c == b_c)
     }
 
     @Test
@@ -273,8 +278,10 @@ class ObjectScopeTest {
 
     @OptIn(KoinInternalApi::class)
     @Test
+    @Ignore
     fun `error for root linked scope `() {
         val koin = startKoin {
+            printLogger(Level.DEBUG)
             modules(
                 module {
                     single { A() }
