@@ -17,6 +17,7 @@ package org.koin.core.instance
 
 import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.Scope
 
 
@@ -27,5 +28,5 @@ import org.koin.core.scope.Scope
 class InstanceContext(
     val koin: Koin,
     val scope: Scope,
-    val parameters: ParametersDefinition? = null
+    val parameters: ParametersHolder? = null
 )

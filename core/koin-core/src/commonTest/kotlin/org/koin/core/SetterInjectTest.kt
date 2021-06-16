@@ -74,6 +74,6 @@ class PlayTest {
 
 fun measureDuration(msg : String, code: () -> Unit): Double {
     val duration = measureDuration(code)
-    println(msg)
+    println("$msg in $duration ms")
     return duration
 }

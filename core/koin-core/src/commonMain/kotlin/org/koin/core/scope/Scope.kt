@@ -24,6 +24,7 @@ import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
@@ -45,12 +46,14 @@ data class Scope(
 
     val closed: Boolean
         get() = _closed
+
     fun isNotClosed() = !closed
 
     private val _callbacks = arrayListOf<ScopeCallback>()
+    private val _parameterStack = ArrayDeque<ParametersHolder>()
 
     private var _closed: Boolean = false
-    val logger : Logger get() = _koin.logger
+    val logger: Logger get() = _koin.logger
 
     internal fun create(links: List<Scope>) {
         linkedScopes.addAll(links)
@@ -198,17 +201,50 @@ data class Scope(
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        val instanceContext = InstanceContext(_koin, this, parameterDef)
-        return _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
-            ?: run {
-                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in injected parameters")
-                findInOtherScope<T>(clazz, qualifier, parameterDef)
-            }
-            ?: run {
-                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found in linked scopes")
-                throwDefinitionNotFound(qualifier, clazz)
-            }
+        val parameters = parameterDef?.invoke()
+        if (parameters != null) {
+            _parameterStack.addFirst(parameters)
+        }
+        val instanceContext = InstanceContext(_koin, this, parameters)
+        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef,parameters)
+        if (parameters != null) {
+            _parameterStack.removeFirst()
+        }
+        return value
     }
+
+    private fun <T> resolveValue(
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        instanceContext: InstanceContext,
+        parameterDef: ParametersDefinition?,
+        parameters: ParametersHolder?
+    ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
+        ?: run {
+            if (_koin.logger.isAt(Level.DEBUG)) {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
+            }
+            parameters?.let { it.getOrNull<T>(clazz) }
+        }
+        ?: run {
+            if (_koin.logger.isAt(Level.DEBUG)) {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' look at scope source")
+            }
+            _source as? T
+        }
+        ?: run {
+            if (_koin.logger.isAt(Level.DEBUG)) {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' look in other scopes")
+            }
+            findInOtherScope<T>(clazz, qualifier, parameterDef)
+        }
+        ?: run {
+            if (_koin.logger.isAt(Level.DEBUG)) {
+                _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' not found")
+            }
+            _parameterStack.clear()
+            throwDefinitionNotFound(qualifier, clazz)
+        })
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> getFromSource(clazz: KClass<*>): T? {

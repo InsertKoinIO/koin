@@ -10,5 +10,8 @@ class StringTest {
         assert("test".clearQuotes() == "test")
         assert("te\"st".clearQuotes() == "te\"st")
         assert("\"test\"".clearQuotes() == "test")
+        assert("\"\"".clearQuotes() == "")
+        assert("\"".clearQuotes() == "\"")
+        assert("\"test".clearQuotes() == "\"test")
     }
 }

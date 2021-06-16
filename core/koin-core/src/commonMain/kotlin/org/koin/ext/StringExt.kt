@@ -18,7 +18,11 @@ package org.koin.ext
 fun String.clearQuotes(): String {
     val chars = this.toCharArray()
     val quoteChar = '"'
-    return if (chars[0] == quoteChar && chars[chars.lastIndex] == quoteChar) {
-        chars.copyOfRange(1, chars.lastIndex).concatToString()
-    } else this
+    return when {
+        this.length <= 1 -> this
+        chars[0] == quoteChar && chars[chars.lastIndex] == quoteChar -> {
+            chars.copyOfRange(1, chars.lastIndex).concatToString()
+        }
+        else -> this
+    }
 }

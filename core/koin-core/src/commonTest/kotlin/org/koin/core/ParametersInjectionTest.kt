@@ -5,6 +5,7 @@ import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -40,6 +41,37 @@ class ParametersInjectionTest {
         val a: Simple.MySingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
+    }
+
+    @Test
+    fun `can create a single with parameters - using graph resolution`() {
+
+        val app = koinApplication {
+            modules(
+                module {
+                    single { Simple.MySingle(get()) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingle = koin.get { parametersOf(42) }
+
+        assertEquals(42, a.id)
+    }
+
+    @Test
+    fun `can create a single with parameters - using double graph resolution`() {
+
+        val app = koinApplication {
+            modules(
+                module {
+                    single { Simple.MySingle(get()) }
+                    single(named("2")) { Simple.MySingle(get()) }
+                })
+        }
+        val koin = app.koin
+        assertEquals(42, koin.get<Simple.MySingle> { parametersOf(42) }.id)
+        assertEquals(24, koin.get<Simple.MySingle>(named("2")) { parametersOf(24) }.id)
     }
 
     @Test

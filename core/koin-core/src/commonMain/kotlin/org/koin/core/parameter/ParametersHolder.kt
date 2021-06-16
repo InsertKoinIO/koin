@@ -28,7 +28,10 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
-open class ParametersHolder(private val _values: MutableList<Any?> = mutableListOf()) {
+open class ParametersHolder(
+    @PublishedApi
+    internal val _values: MutableList<Any?> = mutableListOf()
+) {
 
     val values : List<Any?> get() = _values
 
@@ -36,15 +39,10 @@ open class ParametersHolder(private val _values: MutableList<Any?> = mutableList
             if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
                     "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
 
-    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
-    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component2(): T = elementAt(1, T::class)
-    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component3(): T = elementAt(2, T::class)
-    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component4(): T = elementAt(3, T::class)
-    @Deprecated("replace with parameters -> parameters.get()")
     inline operator fun <reified T> component5(): T = elementAt(4, T::class)
 
     /**
@@ -94,6 +92,14 @@ open class ParametersHolder(private val _values: MutableList<Any?> = mutableList
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
         return _values.firstNotNullOfOrNull { value -> if (value != null && value::class == clazz) value as? T? else null }
+    }
+
+    /**
+     * Get first element of given type T
+     * return T
+     */
+    inline fun <reified T> getOrNull(): T? {
+        return _values.firstNotNullOfOrNull { value -> if (value is T) value else null }
     }
 
     companion object {
