@@ -45,9 +45,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) {
      */
     open fun create(context: InstanceContext): T {
         val koin = context.koin
-        if (koin.logger.isAt(Level.DEBUG)) {
-            koin.logger.debug("| create instance for $beanDefinition")
-        }
+        koin.logger.log(Level.DEBUG) { "| create instance for $beanDefinition" }
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
             return beanDefinition.definition.invoke(

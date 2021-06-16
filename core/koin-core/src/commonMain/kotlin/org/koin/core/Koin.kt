@@ -197,9 +197,7 @@ class Koin {
      * @param scopeDefinitionName
      */
     fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("|- create scope - id:'$scopeId' q:$qualifier")
-        }
+        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, source)
     }
 
@@ -209,9 +207,7 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null): Scope {
         val qualifier = TypeQualifier(T::class)
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("|- create scope - id:'$scopeId' q:$qualifier")
-        }
+        logger.log(Level.DEBUG) {"|- create scope - id:'$scopeId' q:$qualifier"}
         return scopeRegistry.createScope(scopeId, qualifier, source)
     }
 
@@ -221,9 +217,7 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID = KoinPlatformTools.generateId()): Scope {
         val qualifier = TypeQualifier(T::class)
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("|- create scope - id:'$scopeId' q:$qualifier")
-        }
+        logger.log(Level.DEBUG) {"|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, null)
     }
 
@@ -234,9 +228,7 @@ class Koin {
     fun <T : KoinScopeComponent> createScope(t: T): Scope {
         val scopeId = t.getScopeId()
         val qualifier = t.getScopeName()
-        if (logger.isAt(Level.DEBUG)) {
-            logger.debug("|- create scope - id:'$scopeId' q:$qualifier")
-        }
+        logger.log(Level.DEBUG) {"|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, null)
     }
 

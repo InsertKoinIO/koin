@@ -35,10 +35,7 @@ class PropertyRegistry(internal val _koin: Koin) {
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.debug("load ${properties.size} properties")
-        }
-
+        _koin.logger.log(Level.DEBUG) { "load ${properties.size} properties" }
         _values.putAll(properties)
     }
 
