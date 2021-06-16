@@ -41,8 +41,8 @@ data class Scope(
 ) {
     private val linkedScopes: ArrayList<Scope> = arrayListOf()
 
-    @PublishedApi
-    internal var _source: Any? = null
+    @KoinInternalApi
+    var _source: Any? = null
 
     val closed: Boolean
         get() = _closed
@@ -50,7 +50,9 @@ data class Scope(
     fun isNotClosed() = !closed
 
     private val _callbacks = arrayListOf<ScopeCallback>()
-    private val _parameterStack = ArrayDeque<ParametersHolder>()
+
+    @KoinInternalApi
+    val _parameterStack = ArrayDeque<ParametersHolder>()
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -206,7 +208,7 @@ data class Scope(
             _parameterStack.addFirst(parameters)
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
-        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef,parameters)
+        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
         if (parameters != null) {
             _parameterStack.removeFirst()
         }
@@ -217,14 +219,13 @@ data class Scope(
         qualifier: Qualifier?,
         clazz: KClass<*>,
         instanceContext: InstanceContext,
-        parameterDef: ParametersDefinition?,
-        parameters: ParametersHolder?
+        parameterDef: ParametersDefinition?
     ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
             if (_koin.logger.isAt(Level.DEBUG)) {
                 _koin.logger.debug("'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
             }
-            parameters?.let { it.getOrNull<T>(clazz) }
+            _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
             if (_koin.logger.isAt(Level.DEBUG)) {

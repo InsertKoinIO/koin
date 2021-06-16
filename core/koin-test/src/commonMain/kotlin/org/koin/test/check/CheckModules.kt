@@ -18,94 +18,88 @@ package org.koin.test.check
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.context.startKoin
-import org.koin.core.error.*
+import org.koin.core.definition.BeanDefinition
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
+import org.koin.core.parameter.ParametersHolder
+import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
-import kotlin.reflect.KClass
+import org.koin.test.parameter.MockParameter
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
-fun KoinApplication.checkModules(
-    defaultValues: Map<KClass<*>, Any> = hashMapOf(),
-    allowedMocks: List<KClass<*>> = listOf(),
-    allowedExceptions: List<KClass<*>> = listOf()
-) = koin.checkModules(defaultValues, allowedMocks, allowedExceptions)
+fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
 /**
  *
  */
-fun checkModules(
-    level: Level = Level.INFO,
-    defaultValues: Map<KClass<*>, Any> = hashMapOf(),
-    allowedMocks: List<KClass<*>> = listOf(),
-    allowedExceptions: List<KClass<*>> = listOf(),
-    appDeclaration: KoinAppDeclaration
-) {
-    startKoin(appDeclaration)
+fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
+    koinApplication(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
-        .checkModules(defaultValues, allowedMocks, allowedExceptions)
+        .checkModules(parameters)
 }
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
-@OptIn(KoinInternalApi::class)
-fun Koin.checkModules(
-    defaultValues: Map<KClass<*>, Any> = hashMapOf(),
-    allowedMocks: List<KClass<*>> = listOf(),
-    allowedExceptions: List<KClass<*>> = listOf()
-) {
+fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     logger.info("[Check] checking current modules ...")
 
-    // Extract all definitions to check
-    val definitions = instanceRegistry.instances.values.map { it.beanDefinition }.distinct()
+    checkScopedDefinitions(
+        declareParameterCreators(parametersDefinition)
+    )
 
-    // Reconfigure with MockInstanceFactory
-    instanceRegistry.instances.forEach { (mapping, factory) ->
-        instanceRegistry.saveMapping(
-            allowOverride = true,
-            mapping = mapping,
-            factory = MockInstanceFactory(factory.beanDefinition),
-            logWarning = false
-        )
-    }
-
-    // Execute resolution
-    definitions.forEach { beanDefinition ->
-        logger.info("Checking $beanDefinition ...")
-        var source: Pair<KClass<*>, Any>? = null
-        val scope = if (beanDefinition.scopeQualifier != scopeRegistry.rootScope.scopeQualifier) {
-            source =
-                (beanDefinition.scopeQualifier as? TypeQualifier)?.let { Pair(it.type, MockProvider.makeMock(it.type)) }
-            getOrCreateScope(beanDefinition.scopeQualifier.value, beanDefinition.scopeQualifier, source)
-        } else scopeRegistry.rootScope
-        try {
-            val allValues = source?.let { defaultValues + it } ?: defaultValues
-            beanDefinition.definition.invoke(scope, MockParametersHolder(allValues, allowedMocks))
-        } catch (e: Exception) {
-            val errorClass = e::class
-            if (errorClass in breakingExceptions || errorClass !in allowedExceptions) {
-                throw BrokenDefinitionException("Definition is broken: $beanDefinition \n- due to error: $e")
-            } else logger.error("Intercepted Error: $e")
-            e.printStackTrace()
-        }
-        if (!scope.isRoot) {
-            scope.close()
-        }
-    }
-
+    logger.info("[Check] modules checked")
     close()
-    logger.info("All definitions are OK!")
 }
 
-val breakingExceptions = listOf<KClass<*>>(
-    NoBeanDefFoundException::class,
-    NoScopeDefFoundException::class,
-    InstanceCreationException::class,
-    DefinitionParameterException::class
-)
+private fun Koin.declareParameterCreators(
+    parametersDefinition: CheckParameters?
+) = ParametersBinding(this).also { binding ->
+    parametersDefinition?.invoke(binding)
+}
+
+@OptIn(KoinInternalApi::class)
+private fun Koin.checkScopedDefinitions(allParameters: ParametersBinding) {
+    instanceRegistry.instances.forEach { (index,factory) ->
+        check(factory,allParameters)
+    }
+}
+
+@OptIn(KoinInternalApi::class)
+private fun Koin.check(
+    factory: InstanceFactory<*>,
+    allParameters: ParametersBinding
+) {
+    val qualifier = factory.beanDefinition.scopeQualifier
+    val sourceScopeValue = mockSourceValue(qualifier)
+    val scope = getOrCreateScope(qualifier.value, qualifier, sourceScopeValue)
+    checkDefinition(allParameters,factory.beanDefinition,scope)
+}
+
+private fun mockSourceValue(qualifier: Qualifier): Any? {
+    return if (qualifier is TypeQualifier) {
+        MockProvider.makeMock(qualifier.type)
+    } else null
+}
+
+@OptIn(KoinInternalApi::class)
+private fun checkDefinition(
+    allParameters: ParametersBinding,
+    definition: BeanDefinition<*>,
+    scope: Scope
+) {
+    val parameters : ParametersHolder = allParameters.parametersCreators[CheckedComponent(
+        definition.qualifier,
+        definition.primaryType
+    )]?.invoke(
+        definition.qualifier
+    ) ?: MockParameter(scope, allParameters.defaultValues)
+    scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
+}
