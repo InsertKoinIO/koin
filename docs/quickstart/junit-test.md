@@ -15,9 +15,9 @@ title: JUnit Tests
 First, add the Koin dependency like below:
 
 ```groovy
-// Add Jcenter to your repositories if needed
+// Add Maven Central to your repositories if needed
 repositories {
-    jcenter()
+	mavenCentral()    
 }
 dependencies {
     // Koin testing tools

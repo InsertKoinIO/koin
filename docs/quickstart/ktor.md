@@ -27,9 +27,9 @@ Let's go 🚀
 First, add the Koin dependency like below:
 
 ```kotlin
-// Add Jcenter to your repositories if needed
+// Add Maven Central to your repositories if needed
 repositories {
-    jcenter()    
+	mavenCentral()    
 }
 dependencies {
     // Koin for Kotlin apps
