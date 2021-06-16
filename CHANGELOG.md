@@ -3,6 +3,14 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [3.1.1]()
+
+* `[FIXED]` `[core]` - injection parameter resolved in graph
+* `[FIXED]` `[core]` - parameter injection is not deprecated
+* `[FIXED]` `[test]` - checkModules API is reverted
+* `[UPDATED]` `[core]` - Lazy eval logger operator Logger.log(lvl, message)
+* `[UPDATED]` `[core]` - ParametersHolder getOrNull<T> added
+
 ## [3.1.0]()
 
 * `[NEW]` `[core]` - Improved resolution engine with new Module/DSL/Index creation to make faster Index/InstanceFactory allocation at start. Reworked internal architecture for Factory & scope allocations. Should improve greatly startup performances!
