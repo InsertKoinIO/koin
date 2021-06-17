@@ -4,6 +4,7 @@ import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.koin.core.logger.Level
 import org.koin.test.mock.declare
 
 /**
@@ -16,7 +17,9 @@ import org.koin.test.mock.declare
 class KoinTestRuleTest : KoinTest {
 
     @get:Rule
-    val koinTestRule = KoinTestRule.create()
+    val koinTestRule = KoinTestRule.create {
+        printLogger(Level.DEBUG)
+    }
 
     @Test
     fun `A - can declare dependency because Koin was started`() {

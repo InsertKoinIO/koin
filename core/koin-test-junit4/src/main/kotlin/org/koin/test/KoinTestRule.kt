@@ -39,16 +39,18 @@ class KoinTestRule private constructor(private val appDeclaration: KoinAppDeclar
     override fun starting(description: Description?) {
         closeExistingInstance()
         _koin = startKoin(appDeclaration = appDeclaration).koin
+        koin.logger.info("Koin Rule - starting")
     }
 
     private fun closeExistingInstance() {
         KoinPlatformTools.defaultContext().getOrNull()?.let { koin ->
-            koin.logger.info("closing existing instance")
+            koin.logger.info("Koin Rule - closing existing instance")
             koin.close()
         }
     }
 
     override fun finished(description: Description?) {
+        koin.logger.info("Koin Rule - finished")
         stopKoin()
         _koin = null
     }
