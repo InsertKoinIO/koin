@@ -1,8 +1,10 @@
 package org.koin.sample
 
+import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.sample.view.simple.MySimplePresenter
 import org.koin.test.KoinTest
@@ -17,19 +19,24 @@ import org.mockito.Mockito.verify
 
 class MySimplePresenterTest : KoinTest {
 
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        printLogger(Level.DEBUG)
-        modules(appModule)
-    }
 
     @get:Rule
     val mockProvider = MockProviderRule.create { clazz ->
         Mockito.mock(clazz.java)
     }
 
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        printLogger(Level.DEBUG)
+        modules(appModule)
+    }
+
     val presenter: MySimplePresenter by inject()
 
+    @After
+    fun after(){
+        stopKoin()
+    }
 
     @Test
     fun `say hello`() {

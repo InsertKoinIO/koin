@@ -3,8 +3,9 @@ buildscript {
     apply from: "../gradle/versions-android.gradle"
 
     repositories {
+        mavenLocal()
+        mavenCentral()
         google()
-        jcenter()
     }
     dependencies {
         // Kotlin
@@ -21,7 +22,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        mavenCentral()
         google()
-        jcenter()
     }
 }
