@@ -3,7 +3,8 @@ buildscript {
     apply from: "../../gradle/versions.gradle"
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
+        google()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
