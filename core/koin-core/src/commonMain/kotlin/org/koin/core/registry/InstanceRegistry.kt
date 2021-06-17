@@ -64,7 +64,7 @@ class InstanceRegistry(val _koin: Koin) {
             if (!allowOverride) {
                 overrideError(factory, mapping)
             } else {
-                if (logWarning) _koin.logger.info("Warning - override mapping: $mapping defintion:${factory.beanDefinition}")
+                if (logWarning) _koin.logger.info("Override Mapping '$mapping' with ${factory.beanDefinition}")
             }
         }
         if (_koin.logger.isAt(Level.DEBUG) && logWarning){
