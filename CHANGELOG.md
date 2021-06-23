@@ -10,6 +10,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[test]` - checkModules API is reverted
 * `[UPDATED]` `[core]` - Lazy eval logger operator Logger.log(lvl, message)
 * `[UPDATED]` `[core]` - ParametersHolder getOrNull<T> added
+* `[UPDATED]` `[androidx-compose]` - update to Beta-09
 
 ## [3.1.0]()
 
