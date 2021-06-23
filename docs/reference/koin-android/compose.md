@@ -9,7 +9,6 @@ This page describe how you can inject your dependencies for your Jetpack Compose
 While writing your composable function, you gain access to the following Koin API:
 
 * `get()` - fetch instance from Koin container
-* `by inject()` - lazy evaluated instance from Koin container
 * `getKoin()` - get current Koin instance
 
 For a module that declares a 'MyService' component:
@@ -46,7 +45,6 @@ fun App(myService: MyService = get()) {
 The same way you have access to classical single/factory instances, you gain access to the following Koin ViewModel API:
 
 * `getViewModel()` - fetch instance
-* `by viewModel()` - lazy evaluated
 
 For a module that declares a 'MyViewModel' component:
 

@@ -1,5 +1,5 @@
 ---
-title: ViewModel
+title: Easy injection into ViewModel
 ---
 
 The `koin-android-viewmodel` introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel
@@ -189,10 +189,12 @@ Add a new property typed `SavedStateHandle` to your constructor to handle your V
 class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
 ```
 
-In Koin module, just resolve it with `get()`:
+In Koin module, just resolve it with `get()` or by parameters:
 
 ```kotlin
 viewModel { MyStateVM(get(), get()) }
+// or
+viewModel { params -> MyStateVM(params.get(), get()) }
 ```
 
 Just call your ViewModel:
@@ -204,7 +206,8 @@ val myStateVM: MyStateVM by stateViewModel()
 You can even pass a bundle data as your state argument. Use the `state` property like follow:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel(state = { myBundle })
+// state = emptyState() by default
+val myStateVM: MyStateVM by stateViewModel(state = { myBundle }) 
 ```
 
 :::note 

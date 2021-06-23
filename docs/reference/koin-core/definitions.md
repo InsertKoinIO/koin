@@ -201,7 +201,7 @@ Then:
 
 ## Declaring injection parameters
 
-In any `single`, `factory` or `scoped` definition, you can use injection parameters: parameters that will be injected and used by your definition:
+In any definition, you can use injection parameters: parameters that will be injected and used by your definition:
 
 ```kotlin
 class Presenter(val view : View)
@@ -219,7 +219,7 @@ This means that those parameters are values passed with `get()` and `by inject()
 val presenter : Presenter by inject { parametersOf(view) }
 ```
 
-Further reading in the <<injection-parameters.adoc#_injection_parameters,injection parameters section>>.
+Further reading in the [Injection Parameters Section](/docs/reference/koin-core/injection-parameters)
 
 
 ## Using definition flags
@@ -228,7 +228,7 @@ Koin DSL also proposes some flags.
 
 ### Create instances at start
 
-A definition or a module can be flagged as `CreatedAtStart`, to be created at start (or when you want). First set the `createOnStart` flag on your module
+A definition or a module can be flagged as `CreatedAtStart`, to be created at start (or when you want). First set the `createdAtStart` flag on your module
 or on your definition.
 
 
@@ -247,7 +247,7 @@ val myModuleB = module {
 }
 ```
 
-CreatedAtStart flag on a module
+CreatedAtStart flag on a module:
 
 ```kotlin
 val myModuleA = module {

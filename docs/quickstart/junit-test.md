@@ -21,9 +21,9 @@ repositories {
 }
 dependencies {
     // Koin testing tools
-    testcompile "org.koin:koin-test:$koin_version"
+    testcompile "io.insert-koin:koin-test:$koin_version"
     // Needed JUnit version
-    testcompile "org.koin:koin-test-junit4:$koin_version"
+    testcompile "io.insert-koin:koin-test-junit4:$koin_version"
 }
 ```
 

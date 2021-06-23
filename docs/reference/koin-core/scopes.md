@@ -55,14 +55,14 @@ Koin has the concept of `KoinScopeComponent` to help bring a scope instance to i
 
 ```kotlin
 class A : KoinScopeComponent {
-    override val scope: Scope by lazy { newScope() }
+    override val scope: Scope by lazy { createScope(this) }
 }
 
 class B
 ```
 
 The `KoinScopeComponent` interface brings several extensions:
-- `newScope` to create scope from current component's scope Id & name
+- `createScope` to create scope from current component's scope Id & name
 - `get`, `inject` - to resolve instances from scope (equivalent to `scope.get()` & `scope.inject()`)
 
 Let's define a scope for A, to resolve B:
@@ -150,7 +150,7 @@ scope.close()
  Beware that you can't inject instances anymore from a closed scope.
 :::
 
-### Getting scope's source value [2.1.4]
+### Getting scope's source value
 
 Koin Scope API in 2.1.4 allow you to pass the original source of a scope, in a definition. Let's take an example below.
 Let's have a singleton instance `A`:
@@ -183,7 +183,7 @@ assertTrue(b.a == a)
 value if possible. `getSource()` is then more efficient in terms of performances.
 :::
 
-### Scope Linking [2.1.0]
+### Scope Linking
 
 Koin Scope API in 2.1 allow you to link a scope to another, and then allow to resolve joined definition space. Let's take an example.
 Here we are defining, 2 scopes spaces: a scope for A and a scope for B. In A's scope, we don't have access to C (defined in B's scope).

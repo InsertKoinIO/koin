@@ -5,8 +5,8 @@ title: Koin Component
 Koin is a DSL to help describe your modules & definitions, a container to make definition resolution. What we need now is
 an API to retrieve our instances outside of the container. That's the goal of Koin components.
 
-:::caution
- The `KoinComponent` interface is here to help you inject your instances where you current technical stack doesn"t offer it. Avoid to use it if you can use `modules`
+:::info
+ The `KoinComponent` interface is here to help you retrieve instances directly from Koin. Be careful, this links your class to the Koin container API. Avoid to use it on classes that you can declare in `modules`, and prefer cosntructor injection
 :::
 
 ## Create a Koin Component
@@ -107,10 +107,3 @@ We can make the following resolutions:
 // retrieve from given module
 val a = get<ComponentA>(named("A"))
 ```
-
-
-## No inject() or get() in your API?
-
-If your are using an API and want to use Koin inside it, just tag the desired class with `KoinComponent` interface.
-
-

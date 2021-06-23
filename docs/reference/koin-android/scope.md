@@ -1,5 +1,5 @@
 ---
-title: Android Scopes
+title: Managing Android Scopes
 ---
 
 

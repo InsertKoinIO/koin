@@ -52,6 +52,94 @@ startKoin{
 
 Koin will then resolve dependencies from all given modules.
 
+## Overriding definition or module [3.1.0+]
+
+New Koin override strategy allow to override any definition by default. You don't need to specify `oevrride = true` anymore in your module.
+
+If you have 2 definitions in different modules, that have the same mapping, the last will override the current definition.
+
+```kotlin
+val myModuleA = module {
+    single<Service> { ServiceImp() }
+}
+val myModuleB = module {
+    single<Service> { TestServiceImp() }
+}
+
+startKoin {
+    // TestServiceImp will override ServiceImp definition
+    modules(myModuleA,myModuleB)
+}
+```
+
+You can check in Koin logs, about definition mapping override.
+
+You can specify to not allow overriding in your Koin application configuration with `allowOverride(false)`:
+
+```kotlin
+startKoin {
+    // Forbid definition override
+    allowOverride(false)
+}
+```
+
+In the case of disabling override, Koin will throw an `DefinitionOverrideException` exception on any attempt of override.
+
+
+## Overriding definition or module [< 3.1.0]
+
+Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an an error if you try this:
+
+```kotlin
+val myModuleA = module {
+
+    single<Service> { ServiceImp() }
+}
+
+val myModuleB = module {
+
+    single<Service> { TestServiceImp() }
+}
+
+// Will throw an BeanOverrideException
+startKoin {
+    modules(myModuleA,myModuleB)
+}
+```
+
+To allow definition overriding, you have to use the `override` parameter:
+
+```kotlin
+val myModuleA = module {
+
+    single<Service> { ServiceImp() }
+}
+
+val myModuleB = module {
+
+    // override for this definition
+    single<Service>(override=true) { TestServiceImp() }
+}
+```
+
+```kotlin
+val myModuleA = module {
+
+    single<Service> { ServiceImp() }
+}
+
+// Allow override for all definitions from module
+val myModuleB = module(override=true) {
+
+    single<Service> { TestServiceImp() }
+}
+```
+
+:::note
+ Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
+:::
+
+
 ## Linking modules strategies
 
 *As definitions between modules are lazy*, we can use modules to implement different strategy implementation: declare an implementation per module.
@@ -94,56 +182,3 @@ startKoin {
     modules(repositoryModule,remoteDatasourceModule)
 }
 ```
-
-## Overriding definition or module
-
-Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an an error if you try this:
-
-```kotlin
-val myModuleA = module {
-
-    single<Service> { ServiceImp() }
-}
-
-val myModuleB = module {
-
-    single<Service> { TestServiceImp() }
-}
-
-// Will throw an BeanOverrideException
-startKoin {
-    modules(myModuleA,myModuleB)
-}
-```
-
-To allow definition overriding, you have to use the `override` parameter:
-
-```kotlin
-val myModuleA = module {
-
-    single<Service> { ServiceImp() }
-}
-
-val myModuleB = module {
-
-    // override for this definition
-    single<Service>(override#true) { TestServiceImp() }
-}
-```
-
-```kotlin
-val myModuleA = module {
-
-    single<Service> { ServiceImp() }
-}
-
-// Allow override for all definitions from module
-val myModuleB = module(override#true) {
-
-    single<Service> { TestServiceImp() }
-}
-```
-
-:::note
- Order matters when listing modules and overriding definitions. You must have your overriding definitions in last of your module list.
-:::

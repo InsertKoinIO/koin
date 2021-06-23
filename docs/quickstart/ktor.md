@@ -33,7 +33,7 @@ repositories {
 }
 dependencies {
     // Koin for Kotlin apps
-    compile "org.koin:koin-ktor:$koin_version"
+    compile "io.insert-koin:koin-ktor:$koin_version"
 }
 ```
 

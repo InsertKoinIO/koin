@@ -39,7 +39,7 @@ a::c.inject()
 - For any special injection (like ViewModel for Android ...), use manual injection like `a.b = getViewModel(...)`
 :::
 
-## Injecting all properties [reflect API]
+## Injecting all properties
 
 Another way to inject all your dependencies, is to use `inject` from your instance:
 
