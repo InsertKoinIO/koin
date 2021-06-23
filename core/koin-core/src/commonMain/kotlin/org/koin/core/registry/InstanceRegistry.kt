@@ -74,7 +74,9 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     private fun createEagerInstances(eagerInstances: HashSet<SingleInstanceFactory<*>>) {
-        _koin.logger.log(Level.DEBUG) { "Creating eager instances ..." }
+        if ( _koin.logger.isAt(Level.DEBUG)){
+            _koin.logger.debug("Creating eager instances ...")
+        }
         val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
         eagerInstances.forEach { factory ->
             factory.get(defaultContext)

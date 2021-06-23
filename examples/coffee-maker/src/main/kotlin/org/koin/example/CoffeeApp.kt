@@ -13,7 +13,7 @@ class CoffeeApp : KoinComponent {
 fun main() {
     startKoin {
         printLogger()
-        modules(listOf(coffeeAppModule))
+        modules(coffeeAppModule)
     }
 
     val coffeeShop = CoffeeApp()
