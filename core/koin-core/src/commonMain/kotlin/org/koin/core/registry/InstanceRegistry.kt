@@ -41,10 +41,8 @@ class InstanceRegistry(val _koin: Koin) {
         get() = _instances
 
     internal fun loadModules(modules: List<Module>, allowOverride: Boolean) {
-        modules.forEach { module ->
-            loadModule(module, allowOverride)
-            createEagerInstances(module.eagerInstances)
-        }
+        modules.forEach { module -> loadModule(module, allowOverride) }
+        modules.forEach { module -> createEagerInstances(module.eagerInstances) }
     }
 
     private fun loadModule(module: Module, allowOverride: Boolean) {
@@ -58,7 +56,7 @@ class InstanceRegistry(val _koin: Koin) {
         allowOverride: Boolean,
         mapping: IndexKey,
         factory: InstanceFactory<*>,
-        logWarning : Boolean = true
+        logWarning: Boolean = true
     ) {
         if (_instances.containsKey(mapping)) {
             if (!allowOverride) {
@@ -67,14 +65,14 @@ class InstanceRegistry(val _koin: Koin) {
                 if (logWarning) _koin.logger.info("Override Mapping '$mapping' with ${factory.beanDefinition}")
             }
         }
-        if (_koin.logger.isAt(Level.DEBUG) && logWarning){
+        if (_koin.logger.isAt(Level.DEBUG) && logWarning) {
             _koin.logger.debug("add mapping '$mapping' for ${factory.beanDefinition}")
         }
         _instances[mapping] = factory
     }
 
     private fun createEagerInstances(eagerInstances: HashSet<SingleInstanceFactory<*>>) {
-        if ( _koin.logger.isAt(Level.DEBUG)){
+        if (_koin.logger.isAt(Level.DEBUG)) {
             _koin.logger.debug("Creating eager instances ...")
         }
         val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)

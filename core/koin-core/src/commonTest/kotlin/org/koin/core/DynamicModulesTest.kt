@@ -146,25 +146,25 @@ class DynamicModulesTest : KoinCoreTest() {
     @Test
     fun `should unload module override definition`() {
         val module1 = module {
-            single { Simple.MySingle(42) }
+            single { Simple.MyIntSingle(42) }
         }
         val module2 = module {
-            single { Simple.MySingle(24) }
+            single { Simple.MyIntSingle(24) }
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(listOf(module1, module2))
         }
 
-        app.getBeanDefinition(Simple.MySingle::class) ?: error("no definition found")
-        assertEquals(24, app.koin.get<Simple.MySingle>().id)
+        app.getBeanDefinition(Simple.MyIntSingle::class) ?: error("no definition found")
+        assertEquals(24, app.koin.get<Simple.MyIntSingle>().id)
 
         app.unloadModules(module2)
 
-        assertNull(app.getBeanDefinition(Simple.MySingle::class))
+        assertNull(app.getBeanDefinition(Simple.MyIntSingle::class))
 
         try {
-            app.koin.get<Simple.MySingle>()
+            app.koin.get<Simple.MyIntSingle>()
             fail()
         } catch (e: NoBeanDefFoundException) {
             e.printStackTrace()
@@ -174,7 +174,7 @@ class DynamicModulesTest : KoinCoreTest() {
     @Test
     fun `should reload module definition`() {
         val module = module {
-            single { (id: Int) -> Simple.MySingle(id) }
+            single { (id: Int) -> Simple.MyIntSingle(id) }
         }
         val app = koinApplication {
             printLogger(Level.DEBUG)
@@ -183,15 +183,15 @@ class DynamicModulesTest : KoinCoreTest() {
 
         val koin = app.koin
 
-        app.getBeanDefinition(Simple.MySingle::class) ?: error("no definition found")
-        assertEquals(42, app.koin.get<Simple.MySingle> { parametersOf(42) }.id)
+        app.getBeanDefinition(Simple.MyIntSingle::class) ?: error("no definition found")
+        assertEquals(42, app.koin.get<Simple.MyIntSingle> { parametersOf(42) }.id)
 
         koin.unloadModules(listOf(module))
         koin.loadModules(listOf(module))
 
-        assertNotNull(app.getBeanDefinition(Simple.MySingle::class))
+        assertNotNull(app.getBeanDefinition(Simple.MyIntSingle::class))
 
-        assertEquals(24, app.koin.get<Simple.MySingle> { parametersOf(24) }.id)
+        assertEquals(24, app.koin.get<Simple.MyIntSingle> { parametersOf(24) }.id)
     }
 
     @Test
@@ -200,7 +200,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val module = module {
             single(createdAtStart = true) {
                 created = true
-                Simple.MySingle(42)
+                Simple.MyIntSingle(42)
             }
         }
         val app = koinApplication {
@@ -215,12 +215,75 @@ class DynamicModulesTest : KoinCoreTest() {
     }
 
     @Test
+    fun `create at start for external modules - linked eager definitions`() {
+        var createdInt = false
+        var createdString = false
+        val module1 = module {
+            single(createdAtStart = true) {
+                createdInt = true
+                Simple.MyIntSingle(get<Simple.MyStringSingle>().id.length)
+            }
+        }
+        val module2 = module {
+            single {
+                createdString = true
+                Simple.MyStringSingle("test")
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+        }
+
+        val koin = app.koin
+        koin.loadModules(listOf(module1, module2))
+
+        assertTrue(createdInt)
+        assertTrue(createdString)
+    }
+
+    @Test
+    fun `create at start for external modules - linked overridden eager definitions`() {
+        var createdInt = false
+        var createdStringModule1 = false
+        var createdStringModule3 = false
+        val module1 = module {
+            single {
+                createdStringModule1 = true
+                Simple.MyStringSingle("module 1")
+            }
+        }
+        val module2 = module {
+            single(createdAtStart = true) {
+                createdInt = true
+                Simple.MyIntSingle(get<Simple.MyStringSingle>().id.length)
+            }
+        }
+        val module3 = module {
+            single {
+                createdStringModule3 = true
+                Simple.MyStringSingle("module 3")
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+        }
+
+        val koin = app.koin
+
+        koin.loadModules(listOf(module1, module2, module3))
+
+        assertTrue(createdInt)
+        assertFalse(createdStringModule1)
+        assertTrue(createdStringModule3)
+    }
+
+    @Test
     fun `create at start for external modules`() {
         var created = false
         val module = module(createdAtStart = true) {
             single {
                 created = true
-                Simple.MySingle(42)
+                Simple.MyIntSingle(42)
             }
         }
         val app = koinApplication {
@@ -237,7 +300,7 @@ class DynamicModulesTest : KoinCoreTest() {
     @Test
     fun `should reload module definition - global context`() {
         val module = module {
-            single { (id: Int) -> Simple.MySingle(id) }
+            single { (id: Int) -> Simple.MyIntSingle(id) }
         }
         startKoin {
             printLogger(Level.DEBUG)
@@ -246,7 +309,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             42,
-            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MyIntSingle> { parametersOf(42) }.id
         )
 
         unloadKoinModules(module)
@@ -254,7 +317,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             24,
-            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MyIntSingle> { parametersOf(24) }.id
         )
 
         stopKoin()

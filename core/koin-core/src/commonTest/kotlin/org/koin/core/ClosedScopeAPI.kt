@@ -269,7 +269,7 @@ class ClosedScopeAPI {
             modules(
                     module {
                         scope(named("SCOPE_1")) {
-                            scoped { (i: Int) -> Simple.MySingle(i) }
+                            scoped { (i: Int) -> Simple.MyIntSingle(i) }
                         }
                     }
             )
@@ -277,7 +277,7 @@ class ClosedScopeAPI {
 
         val scope1 = koin.createScope("myScope1", named("SCOPE_1"))
         val parameters = 42
-        val a = scope1.get<Simple.MySingle> { parametersOf(parameters) }
+        val a = scope1.get<Simple.MyIntSingle> { parametersOf(parameters) }
         assertEquals(parameters, a.id)
     }
 }

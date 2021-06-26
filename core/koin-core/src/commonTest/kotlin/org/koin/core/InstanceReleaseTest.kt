@@ -14,7 +14,7 @@ class InstanceReleaseTest {
     @Test
     fun `can resolve a single`() {
         val module = module {
-            single { (i: Int) -> Simple.MySingle(i) }
+            single { (i: Int) -> Simple.MyIntSingle(i) }
         }
 
         startKoin {
@@ -22,7 +22,7 @@ class InstanceReleaseTest {
         }
 
         val koin = KoinPlatformTools.defaultContext().get()
-        val a1 = koin.get<Simple.MySingle> { parametersOf(42) }
+        val a1 = koin.get<Simple.MyIntSingle> { parametersOf(42) }
         assertEquals(42, a1.id)
         stopKoin()
 
@@ -30,7 +30,7 @@ class InstanceReleaseTest {
             modules(module)
         }
 
-        val a3 = KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }
+        val a3 = KoinPlatformTools.defaultContext().get().get<Simple.MyIntSingle> { parametersOf(24) }
 
         assertEquals(24, a3.id)
 

@@ -55,14 +55,14 @@ class DeclareInstanceTest {
         val koin = koinApplication {
             printLogger()
             modules(module {
-                single { Simple.MySingle(1) }
+                single { Simple.MyIntSingle(1) }
             })
         }.koin
 
-        val a = Simple.MySingle(2)
+        val a = Simple.MyIntSingle(2)
 
         koin.declare(a, allowOverride = true)
-        assertEquals(2, koin.get<Simple.MySingle>().id)
+        assertEquals(2, koin.get<Simple.MyIntSingle>().id)
     }
 
     @Test
@@ -71,11 +71,11 @@ class DeclareInstanceTest {
         val koin = koinApplication {
             printLogger()
             modules(module {
-                single { Simple.MySingle(1) }
+                single { Simple.MyIntSingle(1) }
             })
         }.koin
 
-        val a = Simple.MySingle(2)
+        val a = Simple.MyIntSingle(2)
 
         try {
             koin.declare(a, allowOverride = false)

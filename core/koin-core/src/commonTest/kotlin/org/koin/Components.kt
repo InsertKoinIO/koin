@@ -11,8 +11,9 @@ class Simple {
     class Component2 : ComponentInterface1
     class UserComponent(val c1: ComponentInterface1)
 
-    class MySingle(val id: Int)
-    class MySingleWithNull(val id: Int?)
+    class MyIntSingle(val id: Int)
+    class MyStringSingle(val id: String)
+    class MyIntSingleWithNull(val id: Int?)
     class MyIntFactory(val id: Int)
     class MyStringFactory(val s: String)
     class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)

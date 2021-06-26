@@ -15,17 +15,17 @@ class NamingTest {
             printLogger(Level.DEBUG)
             modules(module {
 
-                single(named("24")) { Simple.MySingle(24) }
+                single(named("24")) { Simple.MyIntSingle(24) }
 
                 scope(scopeName) {
-                    scoped { Simple.MySingle(42) }
+                    scoped { Simple.MyIntSingle(42) }
                 }
             })
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
-        assertEquals(24, scope.get<Simple.MySingle>(named("24")).id)
-        assertEquals(42, scope.get<Simple.MySingle>().id)
+        assertEquals(24, scope.get<Simple.MyIntSingle>(named("24")).id)
+        assertEquals(42, scope.get<Simple.MyIntSingle>().id)
     }
 
     @Test
@@ -37,12 +37,12 @@ class NamingTest {
     fun `can resolve enum naming`() {
         val koin = koinApplication {
             modules(module {
-                single(named(MyNames.MY_STRING)) { Simple.MySingle(24) }
+                single(named(MyNames.MY_STRING)) { Simple.MyIntSingle(24) }
 
             })
         }.koin
 
-        assertEquals(24, koin.get<Simple.MySingle>(named(MyNames.MY_STRING)).id)
+        assertEquals(24, koin.get<Simple.MyIntSingle>(named(MyNames.MY_STRING)).id)
     }
 
     @Test
@@ -52,13 +52,13 @@ class NamingTest {
             modules(module {
 
                 scope(scopeName) {
-                    scoped { Simple.MySingle(42) }
+                    scoped { Simple.MyIntSingle(42) }
                 }
             })
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
-        assertEquals(42, scope.get<Simple.MySingle>().id)
+        assertEquals(42, scope.get<Simple.MyIntSingle>().id)
     }
 
     @Test
@@ -67,17 +67,17 @@ class NamingTest {
         val koin = koinApplication {
             modules(module {
 
-                single(_q("24")) { Simple.MySingle(24) }
+                single(_q("24")) { Simple.MyIntSingle(24) }
 
                 scope(scopeName) {
-                    scoped { Simple.MySingle(42) }
+                    scoped { Simple.MyIntSingle(42) }
                 }
             })
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
-        assertEquals(24, scope.get<Simple.MySingle>(named("24")).id)
-        assertEquals(42, scope.get<Simple.MySingle>().id)
+        assertEquals(24, scope.get<Simple.MyIntSingle>(named("24")).id)
+        assertEquals(42, scope.get<Simple.MyIntSingle>().id)
     }
 }
 

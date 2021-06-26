@@ -17,12 +17,12 @@ class ParametersInjectionTest {
         val app = koinApplication {
             modules(
                 module {
-                    single { (i: Int) -> Simple.MySingle(i) }
+                    single { (i: Int) -> Simple.MyIntSingle(i) }
                 })
         }
 
         val koin = app.koin
-        val a: Simple.MySingle = koin.get { parametersOf(42) }
+        val a: Simple.MyIntSingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
     }
@@ -33,12 +33,12 @@ class ParametersInjectionTest {
         val app = koinApplication {
             modules(
                 module {
-                    single { params -> Simple.MySingle(params.get()) }
+                    single { params -> Simple.MyIntSingle(params.get()) }
                 })
         }
 
         val koin = app.koin
-        val a: Simple.MySingle = koin.get { parametersOf(42) }
+        val a: Simple.MyIntSingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
     }
@@ -49,12 +49,12 @@ class ParametersInjectionTest {
         val app = koinApplication {
             modules(
                 module {
-                    single { Simple.MySingle(get()) }
+                    single { Simple.MyIntSingle(get()) }
                 })
         }
 
         val koin = app.koin
-        val a: Simple.MySingle = koin.get { parametersOf(42) }
+        val a: Simple.MyIntSingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
     }
@@ -65,13 +65,13 @@ class ParametersInjectionTest {
         val app = koinApplication {
             modules(
                 module {
-                    single { Simple.MySingle(get()) }
-                    single(named("2")) { Simple.MySingle(get()) }
+                    single { Simple.MyIntSingle(get()) }
+                    single(named("2")) { Simple.MyIntSingle(get()) }
                 })
         }
         val koin = app.koin
-        assertEquals(42, koin.get<Simple.MySingle> { parametersOf(42) }.id)
-        assertEquals(24, koin.get<Simple.MySingle>(named("2")) { parametersOf(24) }.id)
+        assertEquals(42, koin.get<Simple.MyIntSingle> { parametersOf(42) }.id)
+        assertEquals(24, koin.get<Simple.MyIntSingle>(named("2")) { parametersOf(24) }.id)
     }
 
     @Test
@@ -81,12 +81,12 @@ class ParametersInjectionTest {
             printLogger(Level.DEBUG)
             modules(
                     module {
-                        single { (i: Int?) -> Simple.MySingleWithNull(i) }
+                        single { (i: Int?) -> Simple.MyIntSingleWithNull(i) }
                     })
         }
 
         val koin = app.koin
-        val a: Simple.MySingleWithNull = koin.get { parametersOf(null) }
+        val a: Simple.MyIntSingleWithNull = koin.get { parametersOf(null) }
 
         assertEquals(null, a.id)
     }
@@ -98,16 +98,16 @@ class ParametersInjectionTest {
             printLogger(Level.DEBUG)
             modules(
                 module {
-                    single { (i: Int) -> Simple.MySingle(i) }
+                    single { (i: Int) -> Simple.MyIntSingle(i) }
                 })
         }
 
         val koin = app.koin
-        val a: Simple.MySingle = koin.get { parametersOf(42) }
+        val a: Simple.MyIntSingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
 
-        val a2: Simple.MySingle = koin.get()
+        val a2: Simple.MyIntSingle = koin.get()
 
         assertEquals(42, a2.id)
     }
@@ -158,12 +158,12 @@ class ParametersInjectionTest {
             printLogger(Level.DEBUG)
             modules(
                 module {
-                    single { Simple.MySingle(it.get()) }
+                    single { Simple.MyIntSingle(it.get()) }
                 })
         }
 
         val koin = app.koin
-        val a: Simple.MySingle = koin.get { parametersOf(42) }
+        val a: Simple.MyIntSingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
     }
