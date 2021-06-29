@@ -331,4 +331,11 @@ class Koin {
     fun unloadModules(modules: List<Module>) {
         instanceRegistry.unloadModules(modules)
     }
+
+    /**
+     * Create Single instances Definitions marked as createdAtStart
+     */
+    fun createEagerInstances(){
+        instanceRegistry.createAllEagerInstances()
+    }
 }

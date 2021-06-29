@@ -78,6 +78,7 @@ class KoinApplication private constructor() {
 
     private fun loadModules(modules: List<Module>) {
         koin.loadModules(modules, allowOverride = allowOverride)
+        createEagerInstances()
     }
 
     /**
@@ -118,6 +119,21 @@ class KoinApplication private constructor() {
         koin.unloadModules(listOf(module))
     }
 
+    /**
+     * Create Single instances Definitions marked as createdAtStart
+     */
+    fun createEagerInstances(): KoinApplication {
+        if (koin.logger.isAt(Level.DEBUG)) {
+            koin.logger.debug("create eager instances ...")
+            val duration = measureDuration {
+                koin.createEagerInstances()
+            }
+            koin.logger.debug("eager instances created in $duration ms")
+        } else {
+            koin.createEagerInstances()
+        }
+        return this
+    }
 
     companion object {
 

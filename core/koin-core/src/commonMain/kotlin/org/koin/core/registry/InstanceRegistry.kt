@@ -40,11 +40,18 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
+    private val eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
+
     internal fun loadModules(modules: List<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
             loadModule(module, allowOverride)
-            createEagerInstances(module.eagerInstances)
+            eagerInstances.addAll(module.eagerInstances)
         }
+    }
+
+    internal fun createAllEagerInstances() {
+        createEagerInstances(eagerInstances)
+        eagerInstances.clear()
     }
 
     private fun loadModule(module: Module, allowOverride: Boolean) {
@@ -58,7 +65,7 @@ class InstanceRegistry(val _koin: Koin) {
         allowOverride: Boolean,
         mapping: IndexKey,
         factory: InstanceFactory<*>,
-        logWarning : Boolean = true
+        logWarning: Boolean = true
     ) {
         if (_instances.containsKey(mapping)) {
             if (!allowOverride) {
@@ -67,19 +74,21 @@ class InstanceRegistry(val _koin: Koin) {
                 if (logWarning) _koin.logger.info("Override Mapping '$mapping' with ${factory.beanDefinition}")
             }
         }
-        if (_koin.logger.isAt(Level.DEBUG) && logWarning){
+        if (_koin.logger.isAt(Level.DEBUG) && logWarning) {
             _koin.logger.debug("add mapping '$mapping' for ${factory.beanDefinition}")
         }
         _instances[mapping] = factory
     }
 
     private fun createEagerInstances(eagerInstances: HashSet<SingleInstanceFactory<*>>) {
-        if ( _koin.logger.isAt(Level.DEBUG)){
-            _koin.logger.debug("Creating eager instances ...")
-        }
-        val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
-        eagerInstances.forEach { factory ->
-            factory.get(defaultContext)
+        if (eagerInstances.isNotEmpty()) {
+            if (_koin.logger.isAt(Level.DEBUG)) {
+                _koin.logger.debug("Creating eager instances ...")
+            }
+            val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
+            eagerInstances.forEach { factory ->
+                factory.get(defaultContext)
+            }
         }
     }
 

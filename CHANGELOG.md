@@ -3,6 +3,11 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [3.1.2]()
+
+* `[FIXED]` `[core]` - `createeagerInstances()` is fixed back. It's seperated from module loading process.
+
+
 ## [3.1.1]()
 
 * `[FIXED]` `[core]` - injection parameter resolved in graph
