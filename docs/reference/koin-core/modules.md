@@ -52,7 +52,7 @@ startKoin{
 
 Koin will then resolve dependencies from all given modules.
 
-## Overriding definition or module [3.1.0+]
+## Overriding definition or module (3.1.0+)
 
 New Koin override strategy allow to override any definition by default. You don't need to specify `oevrride = true` anymore in your module.
 
@@ -86,7 +86,7 @@ startKoin {
 In the case of disabling override, Koin will throw an `DefinitionOverrideException` exception on any attempt of override.
 
 
-## Overriding definition or module [< 3.1.0]
+## Overriding definition or module (before 3.1.0)
 
 Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an an error if you try this:
 
