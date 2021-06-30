@@ -32,6 +32,7 @@ import org.koin.core.scope.ScopeID
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
 import org.koin.core.registry.InstanceRegistry
+import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
@@ -320,11 +321,12 @@ class Koin {
     }
 
     /**
-     * Load module
+     * Load module & create eager instances
      */
     fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
         instanceRegistry.loadModules(modules, allowOverride)
         scopeRegistry.loadScopes(modules)
+        createEagerInstances()
     }
 
 
@@ -336,6 +338,14 @@ class Koin {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(){
-        instanceRegistry.createAllEagerInstances()
+        if (logger.isAt(Level.DEBUG)) {
+            logger.debug("create eager instances ...")
+            val duration = measureDuration {
+                instanceRegistry.createAllEagerInstances()
+            }
+            logger.debug("eager instances created in $duration ms")
+        } else {
+            instanceRegistry.createAllEagerInstances()
+        }
     }
 }

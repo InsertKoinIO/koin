@@ -58,6 +58,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation kotlin("test-junit")
+                implementation "junit:junit:$junit_version"
                 implementation "org.mockito:mockito-inline:$mockito_version"
             }
         }
