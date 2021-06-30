@@ -26,7 +26,7 @@ class LazyInstanceResolution {
     }
 
     @Test
-    fun `create  eager`() {
+    fun `create eager`() {
         var i = 0
         val app = koinApplication {
             printLogger(Level.DEBUG)
@@ -37,15 +37,13 @@ class LazyInstanceResolution {
         }
 
         val koin = app.koin
-        assertEquals(0,i)
-        koin.createEagerInstances()
         assertEquals(1,i)
         koin.get<Simple.ComponentA>()
         assertEquals(1,i)
     }
 
     @Test
-    fun `create  eager twice`() {
+    fun `create eager twice`() {
         var i = 0
         val app = koinApplication {
             printLogger(Level.DEBUG)
@@ -56,74 +54,9 @@ class LazyInstanceResolution {
         }
 
         val koin = app.koin
-        assertEquals(0,i)
-        koin.createEagerInstances()
         assertEquals(1,i)
         koin.createEagerInstances()
         assertEquals(1,i)
-    }
-
-    @Test
-    fun `create  eager definitions`() {
-        var i = 0
-        val app = koinApplication {
-            printLogger(Level.DEBUG)
-            modules(
-                module(createdAtStart = true) {
-                    single { i++; Simple.ComponentA() }
-                    single { i++; Simple.ComponentB(get()) }
-                })
-            createEagerInstances()
-        }
-
-        val koin = app.koin
-        assertEquals(2,i)
-        koin.get<Simple.ComponentA>()
-        koin.get<Simple.ComponentB>()
-        assertEquals(2,i)
-    }
-
-    @Test
-    fun `create  eager definitions - one create`() {
-        var i = 0
-        val app = koinApplication {
-            printLogger(Level.DEBUG)
-            modules(
-                module {
-                    single(createdAtStart = true) { i++; Simple.ComponentA() }
-                    single { i++; Simple.ComponentB(get()) }
-                })
-            createEagerInstances()
-        }
-
-        val koin = app.koin
-        assertEquals(1,i)
-        koin.get<Simple.ComponentA>()
-        assertEquals(1,i)
-        koin.get<Simple.ComponentB>()
-        assertEquals(2,i)
-    }
-
-    @Test
-    fun `create  eager definitions different modules`() {
-        var i = 0
-        val app = koinApplication {
-            printLogger(Level.DEBUG)
-            modules(
-                module(createdAtStart = true) {
-                    single { i++; Simple.ComponentA() }
-                },
-                module(createdAtStart = true) {
-                    single { i++; Simple.ComponentB(get()) }
-                })
-            createEagerInstances()
-        }
-
-        val koin = app.koin
-        assertEquals(2,i)
-        koin.get<Simple.ComponentA>()
-        koin.get<Simple.ComponentB>()
-        assertEquals(2,i)
     }
 
     @Test
@@ -148,7 +81,7 @@ class LazyInstanceResolution {
     }
 
     @Test
-    fun `create eager definitions different modules - one eager`() {
+    fun `create  eager definitions different modules - one eager`() {
         var i = 0
         val app = koinApplication {
             printLogger(Level.DEBUG)
@@ -156,10 +89,9 @@ class LazyInstanceResolution {
                 module {
                     single { i++; Simple.ComponentA() }
                 },
-                module {
-                    single(createdAtStart = true) { i++; Simple.ComponentB(get()) }
+                module(createdAtStart = true) {
+                    single { i++; Simple.ComponentB(get()) }
                 })
-            createEagerInstances()
         }
 
         val koin = app.koin
