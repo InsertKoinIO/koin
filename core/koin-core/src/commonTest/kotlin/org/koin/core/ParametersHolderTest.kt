@@ -1,5 +1,6 @@
 package org.koin.core
 
+import org.koin.Simple
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
@@ -109,5 +110,11 @@ class ParametersHolderTest {
     fun `ambiguous values`() {
         val p = parametersOf("42", "43")
         assertTrue(p.getOrNull<String>(String::class) == "42")
+    }
+
+    @Test
+    fun `assignable type values`() {
+        val p = parametersOf(Simple.Component1())
+        assertNotNull(p.get<Simple.ComponentInterface1>())
     }
 }
