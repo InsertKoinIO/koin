@@ -27,6 +27,7 @@ To configure your `KoinApplication` instance, you can use any of the following f
 * `properties()` - load HashMap properties into Koin container
 * `fileProperties( )` - load properties from given file into Koin container
 * `environmentProperties( )` - load properties from OS environment into Koin container
+* `createEagerInstances()` - create eager instances (Single definitions marked as `createdAtStart`)
 
 ## KoinApplication instance: Global vs Local
 
