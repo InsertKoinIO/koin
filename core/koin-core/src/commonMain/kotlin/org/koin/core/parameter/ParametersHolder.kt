@@ -91,7 +91,7 @@ open class ParametersHolder(
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return _values.firstNotNullOfOrNull { value -> if (value != null && value::class == clazz) value as? T? else null }
+        return _values.firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
     }
 
     /**
