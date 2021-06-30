@@ -6,6 +6,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 ## [3.1.2]()
 
 * `[FIXED]` `[core]` - `createeagerInstances()` is fixed back. It's seperated from module loading process.
+* `[FIXED]` `[core]` - `ParameterHolder.getOrNull` is now checking assignable type
 
 
 ## [3.1.1]()
