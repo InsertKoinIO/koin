@@ -40,7 +40,7 @@ inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val owner = LocalViewModelStoreOwner.current
+    val owner = requireNotNull(LocalViewModelStoreOwner.current)
     return remember(qualifier,parameters) {
         owner.getViewModel(qualifier, parameters)
     }

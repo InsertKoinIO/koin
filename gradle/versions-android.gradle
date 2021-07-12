@@ -21,8 +21,8 @@ ext {
     // when using in AS
     // androidx_compose_gradle_version = "7.0.0-beta01"
     // for global build
-    androidx_compose_gradle_version = "4.2.0-beta03"
+    androidx_compose_gradle_version = '4.2.2'
 
-    androidx_compose_version = "1.0.0-beta09"
+    androidx_compose_version = "1.0.0-rc01"
 
 }

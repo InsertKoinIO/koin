@@ -2,3 +2,7 @@
 // Main
 include 'androidx-compose'
 //include 'androidx-compose-jetnews'
+include 'koin-androidx-compose'
+project(":koin-androidx-compose").projectDir = new File("../android-compose/koin-androidx-compose")
+
+
