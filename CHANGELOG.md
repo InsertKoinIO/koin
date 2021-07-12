@@ -3,6 +3,10 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [3.1.3]()
+
+* `[UPDATED]` `[android-compose]` - update to lifecycle-viewmodel-compose 1.0.0-alpha07
+
 ## [3.1.2]()
 
 * `[FIXED]` `[core]` - `createeagerInstances()` is fixed back. It's seperated from module loading process.
