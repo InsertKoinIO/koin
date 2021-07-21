@@ -6,7 +6,7 @@ title: Injecting in Tests
 
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
-* `by inject()` & `get()` - function to retrieve yoru instances from Koin
+* `by inject()` & `get()` - function to retrieve your instances from Koin
 * `checkModules` - help you check your configuration
 * `declareMock` & `declare` - to declare a mock or a new definition in the current context
 
