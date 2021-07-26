@@ -42,7 +42,7 @@ MyKoinContext.koinApp = KoinApp
 ```kotlin
 abstract class CustomKoinComponent : KoinComponent {
     // Override default Koin instance, intially target on GlobalContext to yours
-    override fun getKoin(): Koin = MyKoinContext?.koinApp.koin
+    override fun getKoin(): Koin = MyKoinContext.koinApp?.koin
 }
 ```
 
