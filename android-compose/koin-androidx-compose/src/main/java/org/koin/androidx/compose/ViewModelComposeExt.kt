@@ -41,8 +41,8 @@ inline fun <reified T : ViewModel> getViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): T {
     val owner = LocalViewModelStoreOwner.current
-    return remember(qualifier,parameters) {
-        owner.getViewModel(qualifier, parameters)
+    return remember(qualifier, parameters) {
+        owner?.getViewModel(qualifier, parameters)
     }
 }
 
@@ -61,7 +61,7 @@ inline fun <reified T : ViewModel> getStateViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): T {
     val owner = LocalSavedStateRegistryOwner.current
-    return remember(qualifier,parameters) {
-        owner.getStateViewModel(qualifier, state, parameters)
+    return remember(qualifier, parameters) {
+        owner?.getStateViewModel(qualifier, state, parameters)
     }
 }
