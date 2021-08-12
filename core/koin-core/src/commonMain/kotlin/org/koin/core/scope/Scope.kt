@@ -208,11 +208,13 @@ data class Scope(
             _parameterStack.addFirst(parameters)
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
-        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
-        if (parameters != null) {
-            _parameterStack.removeFirst()
+        try {
+            return resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
+        } finally {
+            if (parameters != null) {
+                _parameterStack.removeFirst()
+            }
         }
-        return value
     }
 
     private fun <T> resolveValue(
@@ -239,7 +241,6 @@ data class Scope(
         }
         ?: run {
             _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' not found" }
-            _parameterStack.clear()
             throwDefinitionNotFound(qualifier, clazz)
         })
 

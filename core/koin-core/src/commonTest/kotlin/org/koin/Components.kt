@@ -16,6 +16,7 @@ class Simple {
     class MyIntFactory(val id: Int)
     class MyStringFactory(val s: String)
     class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)
+    class WithOptional(val mySingle: MySingle, componentA: ComponentA?)
 }
 
 @Suppress("unused")

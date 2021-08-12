@@ -92,6 +92,28 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `can get a single created with parameters - with nullable dependency`() {
+
+        val app = koinApplication {
+            modules(
+                module {
+                    single { (i: Int) ->
+                        Simple.WithOptional(
+                            get { parametersOf(i) },
+                            getOrNull()
+                        )
+                    }
+                    single { (i: Int) -> Simple.MySingle(i) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.WithOptional = koin.get { parametersOf(42) }
+
+        assertEquals(42, a.mySingle.id)
+    }
+
+    @Test
     fun `can get a single created with parameters - no need of give it again`() {
 
         val app = koinApplication {
