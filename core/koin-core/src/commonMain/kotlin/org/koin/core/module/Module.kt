@@ -94,7 +94,6 @@ class Module(val createdAtStart: Boolean = false) {
     /**
      * Declare a Factory definition
      * @param qualifier
-     * @param override
      * @param definition - definition function
      */
     inline fun <reified T> factory(
