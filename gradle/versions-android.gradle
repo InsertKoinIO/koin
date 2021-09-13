@@ -23,6 +23,5 @@ ext {
     // for global build
     androidx_compose_gradle_version = "4.2.0-beta03"
 
-    androidx_compose_version = "1.0.0-beta09"
-
+    androidx_compose_version = "1.0.0"
 }
