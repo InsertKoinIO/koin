@@ -41,6 +41,7 @@ inline fun <reified T : ViewModel> getViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): T {
     val owner = LocalViewModelStoreOwner.current
+        ?: error("ViewModel in LocalViewModelStoreOwner is null")
     return remember(qualifier,parameters) {
         owner.getViewModel(qualifier, parameters)
     }
