@@ -17,30 +17,33 @@ package org.koin.androidx.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.get
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-/**
- * Resolve a dependency for [Composable] functions
- * @param qualifier
- * @param parameters
- *
- * @return Lazy instance of type T
- *
- * @author Arnaud Giuliani
- * @author Henrique Horbovyi
- */
 @Composable
-inline fun <reified T> get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null,
-): T = remember(qualifier,parameters) {
-    GlobalContext.get().get(qualifier, parameters)
+fun getKoinComponent(): KoinComponent {
+    val koin = getKoin()
+    val currentScope = getScope()
+    return currentScope?.let { scope ->
+        object : KoinScopeComponent {
+            override val scope = scope
+            override fun getKoin() = koin
+        }
+    } ?: object : KoinComponent {
+        override fun getKoin() = koin
+    }
 }
 
 @Composable
-fun getKoin(): Koin = remember {
-    GlobalContext.get()
+inline fun <reified T> get(
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null,
+): T {
+    val scopeComponent = getKoinComponent()
+    return remember(qualifier, parameters) {
+        scopeComponent.get(qualifier, parameters)
+    }
 }
