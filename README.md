@@ -9,7 +9,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers. `K
 You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3)
 
 ```gradle
-koin_version = '3.1.1'
+koin_version = '3.1.3'
 ```
 
 # Where to find resources? 🌐
