@@ -15,21 +15,14 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.content.ComponentCallbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import org.koin.android.ext.android.getKoin
-import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.KoinScopeComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -38,9 +31,9 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     return lazy(mode) {
         getViewModel<T>(qualifier, parameters)
@@ -48,33 +41,28 @@ inline fun <reified T : ViewModel> ViewModelStoreOwner.viewModel(
 }
 
 fun <T : ViewModel> ViewModelStoreOwner.viewModel(
-        qualifier: Qualifier? = null,
-        clazz: KClass<T>,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    clazz: KClass<T>,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     return lazy(mode) { getViewModel(qualifier, clazz, parameters) }
 }
 
 inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null,
 ): T {
     return getViewModel(qualifier, T::class, parameters)
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
-        qualifier: Qualifier? = null,
-        clazz: KClass<T>,
-        parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    clazz: KClass<T>,
+    parameters: ParametersDefinition? = null,
 ): T {
     val owner = { from(this, this as? SavedStateRegistryOwner) }
-    val scope : Scope = when (this) {
-        is ComponentCallbacks -> getKoinScope()
-        is KoinScopeComponent -> this.scope
-        is KoinComponent -> this.getKoin().scopeRegistry.rootScope
-        else -> GlobalContext.get().scopeRegistry.rootScope
-    }
+    val scope = getKoinScope(this)
     return scope.getViewModel(qualifier, null, owner, clazz, parameters)
 }

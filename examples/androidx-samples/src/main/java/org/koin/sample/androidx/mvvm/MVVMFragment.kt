@@ -2,9 +2,6 @@ package org.koin.sample.androidx.mvvm
 
 import android.os.Bundle
 import android.view.View
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeFragment
@@ -39,26 +36,23 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        assertNotNull(session)
 
-        assertNotEquals(shared, simpleViewModel)
-        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved)
-        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved2)
+        assert(shared != simpleViewModel)
+        assert((requireActivity() as MVVMActivity).savedVm != saved)
+        assert((requireActivity() as MVVMActivity).savedVm != saved2)
 
-        assertNotNull(scopeVm)
-        assertNotNull(extScopeVm)
-        assertEquals(scopeVm.session.id, extScopeVm.session.id)
+        assert(scopeVm.session.id == extScopeVm.session.id)
 
-        assertEquals((requireActivity() as MVVMActivity).simpleViewModel, shared)
-        assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved)
+        assert((requireActivity() as MVVMActivity).simpleViewModel == shared)
+        assert((requireActivity() as MVVMActivity).savedVm == sharedSaved)
 
         val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
         val shared3 = getSharedViewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
-        assertEquals(shared, shared2)
-        assertEquals(shared2, shared3)
+        assert(shared == shared2)
+        assert(shared2 == shared3)
 
-        assertEquals(saved, saved2)
+        assert(saved == saved2)
 
-        assertEquals(requireScopeActivity<MVVMActivity>().get<Session>().id, getKoin().getProperty("session_id"))
+        assert(requireScopeActivity<MVVMActivity>().get<Session>().id == getKoin().getProperty("session_id"))
     }
 }

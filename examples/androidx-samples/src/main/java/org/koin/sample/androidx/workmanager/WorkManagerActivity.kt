@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
-import junit.framework.Assert.assertTrue
 import kotlinx.android.synthetic.main.workmanager_activity.*
 import kotlinx.coroutines.*
-import org.junit.Assert
 import org.koin.android.ext.android.inject
 import org.koin.sample.android.R
 import org.koin.sample.androidx.sdk.HostActivity
@@ -41,15 +39,15 @@ class WorkManagerActivity : AppCompatActivity() {
 
     private fun runWorkers() {
         CoroutineScope(Dispatchers.Default)
-                .launch {
-                    assertTrue(service1.isEmpty())
+            .launch {
+                assert(service1.isEmpty())
 
-                    // start test
-                    enqueuesWorkers()
+                // start test
+                enqueuesWorkers()
 
-                    // verify it worked
-                    assertResponses(timeoutMs = 5_000)
-                }
+                // verify it worked
+                assertResponses(timeoutMs = 5_000)
+            }
     }
 
     /**
@@ -62,16 +60,15 @@ class WorkManagerActivity : AppCompatActivity() {
     private suspend fun assertResponses(timeoutMs: Long) {
         try {
             withTimeout(timeoutMs) {
+                service1.popAnswer()
+                    .let {
+                        assert(SimpleWorker.answer1st == it)
+                    }
 
                 service1.popAnswer()
-                        .let {
-                            Assert.assertEquals(SimpleWorker.answer1st, it)
-                        }
-
-                service1.popAnswer()
-                        .let {
-                            Assert.assertEquals(SimpleWorker.answer2nd, it)
-                        }
+                    .let {
+                        assert(SimpleWorker.answer2nd == it)
+                    }
 
                 service1.isEmpty()
             }
@@ -86,11 +83,10 @@ class WorkManagerActivity : AppCompatActivity() {
     }
 
     private suspend fun enqueuesWorkers() {
-
         WorkManager.getInstance(this@WorkManagerActivity)
-                .cancelAllWork()
-                .result
-                .await()
+            .cancelAllWork()
+            .result
+            .await()
 
         enqueueWork<SimpleWorker>(createData(42))
         enqueueWork<SimpleWorker>(createData(43))
@@ -105,15 +101,15 @@ class WorkManagerActivity : AppCompatActivity() {
         val workName = SimpleWorker::class.simpleName + data.keyValueMap.getValue(SimpleWorker.KEY_ANSWER)
 
         return OneTimeWorkRequestBuilder<T>()
-                .setInputData(data)
-                .build()
-                .also {
-                    workManager
-                            .enqueueUniqueWork(
-                                    workName,
-                                    ExistingWorkPolicy.APPEND,
-                                    it
-                            )
-                }
+            .setInputData(data)
+            .build()
+            .also {
+                workManager
+                    .enqueueUniqueWork(
+                        workName,
+                        ExistingWorkPolicy.APPEND,
+                        it
+                    )
+            }
     }
 }

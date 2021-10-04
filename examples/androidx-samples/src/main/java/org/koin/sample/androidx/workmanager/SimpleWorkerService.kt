@@ -10,7 +10,6 @@ class SimpleWorkerService {
 
     private val channel = Channel<Int>(Channel.BUFFERED)
 
-
     /**
      * Returns the next answer
      */

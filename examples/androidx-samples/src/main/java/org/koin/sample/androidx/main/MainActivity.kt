@@ -3,8 +3,6 @@ package org.koin.sample.androidx.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.main_activity.*
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
@@ -17,7 +15,6 @@ import org.koin.sample.androidx.components.main.SERVICE_IMPL
 import org.koin.sample.androidx.components.main.SimpleService
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.utils.navigateTo
-import org.koin.sample.androidx.workmanager.WorkManagerActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,10 +33,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        assertEquals(SERVICE_IMPL, service.id)
-        assertEquals(DUMB_SERVICE, dumbService.id)
-        assertNotEquals(get<RandomId>().id, randomId.id)
-        assertEquals(APP_TITLE, propertyTitle?.replace("\"",""))
+        assert(SERVICE_IMPL == service.id)
+        assert(DUMB_SERVICE == dumbService.id)
+        assert(get<RandomId>().id != randomId.id)
+        assert(APP_TITLE == propertyTitle?.replace("\"", ""))
 
         setContentView(R.layout.main_activity)
         title = "Android First Samples"

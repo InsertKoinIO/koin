@@ -16,15 +16,12 @@
 package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
-import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getKoinScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 
 
 /**
@@ -33,13 +30,6 @@ import org.koin.core.scope.Scope
 fun ComponentCallbacks.getKoin() = when (this) {
     is KoinComponent -> this.getKoin()
     else -> GlobalContext.get()
-}
-
-@OptIn(KoinInternalApi::class)
-fun ComponentCallbacks.getKoinScope(): Scope = when (this) {
-    is AndroidScopeComponent -> this.scope
-    is KoinScopeComponent -> this.scope
-    else -> getKoin().scopeRegistry.rootScope
 }
 
 /**
@@ -60,11 +50,12 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  * @param scope
  * @param parameters - injection parameters
  */
+@OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> ComponentCallbacks.get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getKoinScope().get(qualifier, parameters)
+    return getKoinScope(this).get(qualifier, parameters)
 }
 
 ///**
