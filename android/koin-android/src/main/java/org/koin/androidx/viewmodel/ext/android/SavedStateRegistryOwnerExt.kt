@@ -19,15 +19,19 @@ import android.content.ComponentCallbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import org.koin.android.ext.android.getDefaultScope
+import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.androidx.viewmodel.scope.getViewModel
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -62,18 +66,19 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     return getStateViewModel(qualifier, state, T::class, parameters)
 }
 
+@OptIn(KoinInternalApi::class)
 fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
         qualifier: Qualifier? = null,
         state: BundleDefinition = emptyState(),
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
 ): T {
-    return when (this) {
-        is ComponentCallbacks -> {
-            getDefaultScope().getViewModel(qualifier, state, { from(this as ViewModelStoreOwner, this) }, clazz, parameters)
-        }
-        else -> {
-            GlobalContext.get().getViewModel(qualifier, state, { from(this as ViewModelStoreOwner, this) }, clazz, parameters)
-        }
+    val owner = { from(this as ViewModelStoreOwner, this) }
+    val scope : Scope = when (this) {
+        is ComponentCallbacks -> getKoinScope()
+        is KoinScopeComponent -> this.scope
+        is KoinComponent -> this.getKoin().scopeRegistry.rootScope
+        else -> GlobalContext.get().scopeRegistry.rootScope
     }
+    return scope.getViewModel(qualifier, state, owner, clazz, parameters)
 }

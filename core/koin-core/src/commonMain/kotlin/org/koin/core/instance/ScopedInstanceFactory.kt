@@ -54,10 +54,14 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
                 values[context.scope.id] = create(context)
             }
         }
-        return values[context.scope.id] ?:  error("Scoped instance not found for ${context.scope.id}")
+        return values[context.scope.id] ?: error("Scoped instance not found for ${context.scope.id}")
     }
 
     override fun dropAll(){
         values.clear()
+    }
+
+    fun refreshInstance(scopeID: ScopeID, instance: Any) {
+        values[scopeID] = instance as T
     }
 }

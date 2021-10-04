@@ -92,6 +92,14 @@ class InstanceRegistry(val _koin: Koin) {
         }
     }
 
+    internal fun resolveDefinition(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        scopeQualifier: Qualifier
+    ): InstanceFactory<*>? {
+        val indexKey = indexKey(clazz, qualifier, scopeQualifier)
+        return _instances[indexKey]
+    }
 
     internal fun <T> resolveInstance(
         qualifier: Qualifier?,
@@ -99,8 +107,7 @@ class InstanceRegistry(val _koin: Koin) {
         scopeQualifier: Qualifier,
         instanceContext: InstanceContext
     ): T? {
-        val indexKey = indexKey(clazz, qualifier, scopeQualifier)
-        return _instances[indexKey]?.get(instanceContext) as? T
+        return resolveDefinition(clazz, qualifier, scopeQualifier)?.get(instanceContext) as? T
     }
 
     @PublishedApi

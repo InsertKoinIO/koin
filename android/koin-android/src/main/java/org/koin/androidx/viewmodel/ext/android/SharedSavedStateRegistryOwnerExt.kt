@@ -19,7 +19,7 @@ import android.content.ComponentCallbacks
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.android.ext.android.getDefaultScope
+import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
@@ -68,19 +68,5 @@ fun <T : ViewModel> Fragment.getStateViewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return when (this) {
-        is ComponentCallbacks -> {
-            getDefaultScope().getViewModel(
-                qualifier,
-                state,
-                { from(activity as ViewModelStoreOwner, this) },
-                clazz,
-                parameters
-            )
-        }
-        else -> {
-            GlobalContext.get()
-                .getViewModel(qualifier, state, { from(activity as ViewModelStoreOwner, this) }, clazz, parameters)
-        }
-    }
+    return getKoinScope().getViewModel(qualifier, state, { from(activity as ViewModelStoreOwner, this) }, clazz, parameters)
 }

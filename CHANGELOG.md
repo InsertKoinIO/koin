@@ -6,6 +6,8 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 ## [3.1.3]()
 
 * `[UPDATED]` `[android-compose]` - update to lifecycle-viewmodel-compose 1.0.0-alpha07
+* `[FIXED]` `[android]` - ViewModel instances are reinjected into Koin scopes
+
 
 ## [3.1.2]()
 

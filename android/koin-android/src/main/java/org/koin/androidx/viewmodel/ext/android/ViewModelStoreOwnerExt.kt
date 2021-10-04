@@ -18,13 +18,18 @@ package org.koin.androidx.viewmodel.ext.android
 import android.content.ComponentCallbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.android.ext.android.getDefaultScope
+import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
-import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.getViewModel
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -58,17 +63,18 @@ inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(
     return getViewModel(qualifier, T::class, parameters)
 }
 
+@OptIn(KoinInternalApi::class)
 fun <T : ViewModel> ViewModelStoreOwner.getViewModel(
         qualifier: Qualifier? = null,
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
 ): T {
-    return when (this) {
-        is ComponentCallbacks -> {
-            getDefaultScope().getViewModel(qualifier, null, { from(this) }, clazz, parameters)
-        }
-        else -> {
-            GlobalContext.get().getViewModel(qualifier, null, { from(this) }, clazz, parameters)
-        }
+    val owner = { from(this, this as? SavedStateRegistryOwner) }
+    val scope : Scope = when (this) {
+        is ComponentCallbacks -> getKoinScope()
+        is KoinScopeComponent -> this.scope
+        is KoinComponent -> this.getKoin().scopeRegistry.rootScope
+        else -> GlobalContext.get().scopeRegistry.rootScope
     }
+    return scope.getViewModel(qualifier, null, owner, clazz, parameters)
 }

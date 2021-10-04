@@ -6,19 +6,23 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.ScopeActivity
+import org.koin.androidx.scope.activityRetainedScope
+import org.koin.androidx.viewmodel.ViewModelOwner
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.getViewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
-import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
-import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
-import org.koin.sample.androidx.components.mvvm.SimpleViewModel
+import org.koin.sample.androidx.components.mvvm.*
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.scope.ScopedActivityA
 import org.koin.sample.androidx.utils.navigateTo
@@ -38,6 +42,11 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
     val bundleStateScope = Bundle().apply { putString("vm2", "value to scope.stateViewModel") }
     val scopedSavedVm: SavedStateViewModel by stateViewModel(qualifier = named("vm3"), state = { bundleStateScope }) { parametersOf("vm3") }
+
+    //TODO Test activityRetainedScope
+
+    val oneViewModel : OneViewModel by viewModel()
+    val useOneViewModel : UseOneViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
@@ -61,7 +70,6 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         assertNotNull(savedVm)
         assertNotNull(scopedSavedVm)
         assertNotEquals(savedVm.id, scopedSavedVm.id)
-
         assertEquals("value to stateViewModel", savedVm.handle.get("vm1"))
         assertEquals("value to scope.stateViewModel", scopedSavedVm.handle.get("vm2"))
 
@@ -74,5 +82,9 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)
         }
+        println("oneViewModel => $oneViewModel")
+        println("useOneViewModel => ${useOneViewModel.vm}")
+
+        assertEquals(oneViewModel, useOneViewModel.vm)
     }
 }

@@ -17,6 +17,7 @@ package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.KoinScopeComponent
@@ -35,7 +36,7 @@ fun ComponentCallbacks.getKoin() = when (this) {
 }
 
 @OptIn(KoinInternalApi::class)
-fun ComponentCallbacks.getDefaultScope(): Scope = when (this) {
+fun ComponentCallbacks.getKoinScope(): Scope = when (this) {
     is AndroidScopeComponent -> this.scope
     is KoinScopeComponent -> this.scope
     else -> getKoin().scopeRegistry.rootScope
@@ -63,7 +64,7 @@ inline fun <reified T : Any> ComponentCallbacks.get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getDefaultScope().get(qualifier, parameters)
+    return getKoinScope().get(qualifier, parameters)
 }
 
 ///**

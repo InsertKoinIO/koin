@@ -17,10 +17,12 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.component.getScopeId
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
+import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersDefinition
@@ -191,6 +193,24 @@ data class Scope(
             return instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
+        }
+    }
+
+    /**
+     * Refresh instance value of given ScopedInstanceFactory
+     */
+    fun <T : Any> refreshScopeInstance(
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        instance: T
+    ) {
+        if (_closed) {
+            throw ClosedScopeException("Scope '$id' is closed")
+        }
+        val definition = _koin.instanceRegistry.resolveDefinition(clazz, qualifier, scopeQualifier)
+        (definition as? ScopedInstanceFactory)?.apply {
+            _koin.logger.debug("|- '${clazz.getFullName()}' refresh with $instance")
+            refreshInstance(id, instance)
         }
     }
 

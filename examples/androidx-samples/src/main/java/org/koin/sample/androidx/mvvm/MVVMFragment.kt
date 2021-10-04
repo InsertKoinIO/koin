@@ -31,8 +31,8 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
     val shared: SimpleViewModel by sharedViewModel { parametersOf(ID) }
-    val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
 
+    val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
     val saved by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
     val saved2 by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
 
@@ -42,6 +42,8 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
         assertNotNull(session)
 
         assertNotEquals(shared, simpleViewModel)
+        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved)
+        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved2)
 
         assertNotNull(scopeVm)
         assertNotNull(extScopeVm)
@@ -50,8 +52,6 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
         assertEquals((requireActivity() as MVVMActivity).simpleViewModel, shared)
         assertEquals((requireActivity() as MVVMActivity).savedVm, sharedSaved)
 
-        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved)
-        assertNotEquals((requireActivity() as MVVMActivity).savedVm, saved2)
         val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
         val shared3 = getSharedViewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
         assertEquals(shared, shared2)

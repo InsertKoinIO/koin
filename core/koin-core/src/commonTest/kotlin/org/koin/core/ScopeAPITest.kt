@@ -34,6 +34,19 @@ class ScopeAPITest {
     }
 
     @Test
+    fun `refresh a scoped intance`() {
+        val scopeId = "myScope"
+        val scope1 = koin.createScope(scopeId, scopeKey)
+        val a1 = scope1.get<A>()
+        val newA = A()
+        scope1.refreshScopeInstance(A::class,instance = newA)
+        val a2 = scope1.get<A>()
+
+        assertEquals(newA, a2)
+        assertNotEquals(a1, a2)
+    }
+
+    @Test
     fun `can't find a non created scope instance`() {
         val scopeId = "myScope"
         try {

@@ -18,9 +18,7 @@ import org.koin.sample.androidx.components.main.SimpleService
 import org.koin.sample.androidx.components.main.SimpleServiceImpl
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
-import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
-import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
-import org.koin.sample.androidx.components.mvvm.SimpleViewModel
+import org.koin.sample.androidx.components.mvvm.*
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.components.scope.SessionActivity
 import org.koin.sample.androidx.mvp.MVPActivity
@@ -53,9 +51,13 @@ val mvvmModule = module {
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-    viewModel { params -> SavedStateViewModel(params.get(), params.get(), get()) }// injected params
+    viewModel { params -> SavedStateViewModel(get(), params.get(), get()) }// injected params
 
     scope<MVVMActivity> {
+
+        viewModel { OneViewModel() }
+        scoped { UseOneViewModel(get())}
+
         scoped { Session() }
         fragment<MVVMFragment>()
         viewModel<ExtSimpleViewModel>()

@@ -17,7 +17,7 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.koin.android.ext.android.getDefaultScope
+import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
@@ -58,5 +58,5 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
 ): T {
-    return getDefaultScope().getViewModel(qualifier, null, { from(requireActivity()) }, clazz, parameters)
+    return getKoinScope().getViewModel(qualifier, null, { from(requireActivity(),requireActivity()) }, clazz, parameters)
 }

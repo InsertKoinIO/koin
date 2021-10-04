@@ -9,6 +9,7 @@ import org.koin.sample.android.R
 class SDKActivity : AppCompatActivity(), CustomKoinComponent {
 
     // Here we use Koin instance from CustomKoinComponent
+    //TODO Debug here
     val sdkViewModel: SDKVIewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
