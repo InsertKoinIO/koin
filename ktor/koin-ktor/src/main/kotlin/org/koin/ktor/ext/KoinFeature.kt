@@ -23,7 +23,6 @@ import io.ktor.application.install
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.ContextDsl
 import org.koin.core.KoinApplication
-import org.koin.core.KoinExperimentalAPI
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin

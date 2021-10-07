@@ -5,8 +5,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 ## [3.1.3]()
 
-* `[UPDATED]` `[android-compose]` - update to lifecycle-viewmodel-compose 1.0.0-alpha07
+* `[UPDATED]` `[core]` - update to Kotlin 1.5.30
+* `[UPDATED]` `[android]` - update to latest ktx lib
+* `[UPDATED]` `[android-compose]` - update to lifecycle-viewmodel-compose 1.0.3
 * `[FIXED]` `[android]` - ViewModel instances are reinjected into Koin scopes
+* `[FIXED]` `[android]` - Scope can help inject current Activity/Fragment (no need of explicit inject from the source)
 
 
 ## [3.1.2]()

@@ -20,7 +20,7 @@ class ScopedActivityA : ScopeActivity(contentLayoutId = R.layout.scoped_activity
 
     // Inject from current scope
     val currentSession by inject<Session>()
-    val currentActivitySession by inject<SessionActivity> { parametersOf(this) }
+    val currentActivitySession by inject<SessionActivity>()
 
     // Don't mix Activity Android Scopes
     val longActivityScope: Scope by activityRetainedScope()

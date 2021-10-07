@@ -2,7 +2,6 @@ package org.koin.ktor.ext
 
 import io.ktor.application.*
 import io.ktor.server.testing.*
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.context.GlobalContext
@@ -18,7 +17,6 @@ import org.koin.dsl.single
  *
  */
 class Foo(val name: String = "")
-
 class Bar(val name: String = "")
 class Bar2(val name: String = "")
 
@@ -166,6 +164,7 @@ class KoinFeatureTest {
         }
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE_FUTURE_ERROR")
     @Test
     fun `custom stop listeners`() {
         val module = module {
@@ -190,7 +189,7 @@ class KoinFeatureTest {
             assertNotNull(bean)
             assertEquals(0, c)
         }
-        Assert.assertEquals(3, c)
+        assertEquals(3, c)
 
         withTestApplication {
             assertEquals(3, c)

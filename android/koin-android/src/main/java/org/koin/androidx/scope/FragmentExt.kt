@@ -25,7 +25,7 @@ import org.koin.core.scope.Scope
 /**
  * Provide scope tied to Fragment
  */
-fun Fragment.fragmentScope() = LifecycleScopeDelegate(this){ koin: Koin ->
+fun Fragment.fragmentScope() = LifecycleScopeDelegate<Fragment>(this){ koin: Koin ->
     val scope = koin.createScope(getScopeId(), getScopeName())
     val activityScope = activity?.getScopeOrNull()
     activityScope?.let { scope.linkTo(it) }
