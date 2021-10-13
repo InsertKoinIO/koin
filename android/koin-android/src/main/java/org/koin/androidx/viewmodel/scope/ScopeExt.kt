@@ -34,18 +34,6 @@ import kotlin.reflect.KClass
 fun emptyState(): BundleDefinition = { Bundle() }
 typealias BundleDefinition = () -> Bundle
 
-inline fun <reified T : ViewModel> Scope.viewModel(
-        qualifier: Qualifier? = null,
-        noinline state: BundleDefinition? = null,
-        noinline owner: ViewModelOwnerDefinition,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null,
-): Lazy<T> {
-    return lazy(mode) {
-        getViewModel(qualifier, state, owner, parameters)
-    }
-}
-
 inline fun <reified T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
         noinline state: BundleDefinition? = null,

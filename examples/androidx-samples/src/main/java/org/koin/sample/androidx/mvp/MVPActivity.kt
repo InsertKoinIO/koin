@@ -39,7 +39,11 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), AndroidScopeCompon
         title = "Android MVP"
 
         mvp_button.setOnClickListener {
-            navigateTo<MVVMActivity>(isRoot = true)
+            navigateTo<MVVMActivity>(isRoot = true, extras =
+                mapOf(
+                    "vm1" to "value to stateViewModel"
+                )
+            )
         }
 
         val my_int = 42

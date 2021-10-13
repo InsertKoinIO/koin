@@ -3,6 +3,7 @@ package org.koin.androidx.viewmodel
 import androidx.lifecycle.StateViewModelFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import org.koin.androidx.viewmodel.factory.DefaultViewModelFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
@@ -18,7 +19,6 @@ internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParamete
 internal fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>,
 ): ViewModelProvider.Factory {
-    //TODO Move out initialState (as it's already injected by bundle) - can be a boolean
-    val injectHandle : Boolean = viewModelParameters.registryOwner != null && viewModelParameters.initialState != null
-    return StateViewModelFactory(this, viewModelParameters, injectHandle = injectHandle)
+    return if (viewModelParameters.registryOwner != null) StateViewModelFactory(this, viewModelParameters)
+            else DefaultViewModelFactory(this,viewModelParameters)
 }
