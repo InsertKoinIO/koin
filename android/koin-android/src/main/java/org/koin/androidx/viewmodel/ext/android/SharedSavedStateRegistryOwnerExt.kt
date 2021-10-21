@@ -32,6 +32,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("getStateViewModel will be merged to getViewModel")
 inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -42,6 +43,7 @@ inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
     }
 }
 
+@Deprecated("getStateViewModel will be merged to getViewModel")
 fun <T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
@@ -51,6 +53,7 @@ fun <T : ViewModel> Fragment.sharedStateViewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, clazz, parameters) }
 }
 
+@Deprecated("getStateViewModel will be merged to getViewModel")
 inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -59,6 +62,7 @@ inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     return getStateViewModel(qualifier, state, T::class, parameters)
 }
 
+@Deprecated("getStateViewModel will be merged to getViewModel")
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,

@@ -4,6 +4,7 @@ import io.mockk.mockkClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.experimental.categories.Category
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.category.CheckModuleTest
 import org.koin.test.check.checkModules
@@ -18,8 +19,12 @@ class CheckCoffeeModuleTest : KoinTest {
     }
 
     @Test
-    fun checkCoffeeModule() =
+    fun checkCoffeeModule(){
+
         checkModules {
             modules(coffeeAppModule)
         }
+
+        stopKoin()
+    }
 }

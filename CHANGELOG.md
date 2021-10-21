@@ -11,6 +11,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[android]` - ViewModel instances are reinjected into Koin scopes
 * `[FIXED]` `[android]` - Scope can help inject current Activity/Fragment (no need of explicit inject from the source)
 * `[ADDED]` `[android]` - added koin-androidx-navigation with 
+* `[DEPRECATED]` `[android]` - `by stateViewModel()` is merged in by `viewModel()`, to inject SavedStateHandle
 
 
 ## [3.1.2]()

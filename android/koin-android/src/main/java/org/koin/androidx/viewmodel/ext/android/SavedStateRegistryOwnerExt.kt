@@ -37,6 +37,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("getStateViewModel will be merged to getViewModel")
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -46,7 +47,7 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
         getStateViewModel(qualifier, state, parameters)
     }
 }
-
+@Deprecated("getStateViewModel will be merged to getViewModel")
 fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
@@ -56,6 +57,7 @@ fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, clazz, parameters) }
 }
 
+@Deprecated("getStateViewModel will be merged to getViewModel")
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -65,6 +67,7 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
 }
 
 @OptIn(KoinInternalApi::class)
+@Deprecated("getStateViewModel will be merged to getViewModel")
 fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
