@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.di
 
+import org.koin.sample.androidx.navigation.NavViewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
@@ -92,4 +93,8 @@ val workerScopedModule = module {
     worker { SimpleWorker(get(), get(), it.get()) }
 }
 
-val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule
+val navModule = module {
+    viewModel<NavViewModel>()
+}
+
+val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule + navModule

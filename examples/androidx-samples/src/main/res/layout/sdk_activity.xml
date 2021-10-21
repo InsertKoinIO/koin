@@ -12,4 +12,10 @@
         android:gravity="center"
         android:text="SDK Activity completed!" />
 
+    <Button
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+
 </LinearLayout>
