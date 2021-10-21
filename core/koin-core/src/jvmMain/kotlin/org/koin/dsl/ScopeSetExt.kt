@@ -16,6 +16,7 @@
 
 package org.koin.dsl
 
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
@@ -26,6 +27,7 @@ import org.koin.core.qualifier.Qualifier
  * @param qualifier
  * @param override - allow definition override
  */
+@KoinReflectAPI
 inline fun <reified R : Any> ScopeDSL.scoped(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<R>> {
@@ -38,6 +40,7 @@ inline fun <reified R : Any> ScopeDSL.scoped(
  * @param qualifier
  * @param override - allow definition override
  */
+@KoinReflectAPI
 inline fun <reified R : Any> ScopeDSL.factory(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<R>> {

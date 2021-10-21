@@ -4,6 +4,7 @@ import io.ktor.application.*
 import io.ktor.server.testing.*
 import org.junit.Assert.*
 import org.junit.Test
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.instance.newInstance
@@ -20,6 +21,7 @@ class Foo(val name: String = "")
 class Bar(val name: String = "")
 class Bar2(val name: String = "")
 
+@OptIn(KoinReflectAPI::class)
 class KoinFeatureTest {
 
     @Test

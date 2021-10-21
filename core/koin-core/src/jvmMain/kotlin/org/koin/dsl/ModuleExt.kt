@@ -15,6 +15,7 @@
  */
 package org.koin.dsl
 
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
@@ -25,7 +26,9 @@ import org.koin.core.qualifier.Qualifier
  * @param qualifier
  * @param createOnStart - need to be created at start
  * @param override - allow definition override
+ *
  */
+@KoinReflectAPI
 inline fun <reified T : Any> Module.single(
     qualifier: Qualifier? = null,
     createOnStart: Boolean = false,
@@ -39,8 +42,9 @@ inline fun <reified T : Any> Module.single(
  * @param qualifier
  * @param override - allow definition override
  */
+@KoinReflectAPI
 inline fun <reified T : Any> Module.factory(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { params -> newInstance(T::class,params) }
+    return factory(qualifier) { params -> newInstance(T::class, params) }
 }

@@ -16,6 +16,7 @@
 package org.koin.androidx.workmanager.dsl
 
 import androidx.work.ListenableWorker
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
@@ -38,6 +39,7 @@ inline fun <reified T : ListenableWorker> Module.worker(
     return factory(qualifier, definition).bind(ListenableWorker::class)
 }
 
+@KoinReflectAPI
 inline fun <reified T : ListenableWorker> Module.worker(
     qualifier: Qualifier = named<T>()
 ): Pair<Module, InstanceFactory<*>> {

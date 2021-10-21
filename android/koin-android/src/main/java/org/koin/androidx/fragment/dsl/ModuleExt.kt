@@ -16,6 +16,7 @@
 package org.koin.androidx.fragment.dsl
 
 import androidx.fragment.app.Fragment
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
@@ -37,6 +38,7 @@ inline fun <reified T : Fragment> Module.fragment(
     noinline definition: Definition<T>
 ): Pair<Module, InstanceFactory<T>> = factory(qualifier, definition)
 
+@KoinReflectAPI
 inline fun <reified T : Fragment> Module.fragment(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> = factory(qualifier) { newInstance(it) }
