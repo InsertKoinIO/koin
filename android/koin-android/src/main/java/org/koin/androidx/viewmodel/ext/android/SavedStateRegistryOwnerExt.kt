@@ -18,18 +18,13 @@ package org.koin.androidx.viewmodel.ext.android
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import org.koin.android.scope.AndroidScopeComponent
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.KoinScopeComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -37,7 +32,10 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-@Deprecated("getStateViewModel will be merged to getViewModel")
+@Deprecated(
+    "getStateViewModel will be merged to viewModel",
+    ReplaceWith("viewModel(qualifier,parameters = parameters)")
+)
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -47,7 +45,11 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
         getStateViewModel(qualifier, state, parameters)
     }
 }
-@Deprecated("getStateViewModel will be merged to getViewModel")
+
+@Deprecated(
+    "getStateViewModel will be merged to viewModel",
+    ReplaceWith("viewModel(qualifier,clazz,parameters = parameters)")
+)
 fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
@@ -57,7 +59,10 @@ fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, clazz, parameters) }
 }
 
-@Deprecated("getStateViewModel will be merged to getViewModel")
+@Deprecated(
+    "getStateViewModel will be merged to getViewModel",
+    ReplaceWith("getViewModel(qualifier,parameters = parameters)")
+)
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -67,7 +72,10 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
 }
 
 @OptIn(KoinInternalApi::class)
-@Deprecated("getStateViewModel will be merged to getViewModel")
+@Deprecated(
+    "getStateViewModel will be merged to getViewModel",
+    ReplaceWith("getViewModel(qualifier,clazz, parameters)")
+)
 fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
