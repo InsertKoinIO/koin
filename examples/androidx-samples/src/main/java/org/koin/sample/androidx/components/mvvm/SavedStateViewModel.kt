@@ -7,8 +7,8 @@ import java.util.*
 
 class SavedStateViewModel(val handle: SavedStateHandle, val id: String, val service: SimpleService) : ViewModel(){
     init {
-        val get = handle.get<String>("vm1")
+        val get = handle.get<String>(id)
         println("handle: $get")
-        handle.set("vm1",UUID.randomUUID().toString())
+        handle.set(id,UUID.randomUUID().toString())
     }
 }

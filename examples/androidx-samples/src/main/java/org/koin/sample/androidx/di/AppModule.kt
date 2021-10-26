@@ -63,7 +63,7 @@ val mvvmModule = module {
         fragment<MVVMFragment>()
         viewModel<ExtSimpleViewModel>()
         viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel<SavedStateViewModel>(named("vm3")) // graph injected usage + builder API
+        viewModel<SavedStateViewModel>(named("vm2")) // graph injected usage + builder API
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }

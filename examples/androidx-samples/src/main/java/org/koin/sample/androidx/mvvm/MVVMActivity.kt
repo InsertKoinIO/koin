@@ -27,16 +27,12 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
     val scopeVm: ExtSimpleViewModel by viewModel()
-    val extScopeVm: ExtSimpleViewModel by viewModel(qualifier = named("ext"))
+    val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
-//    val bundle = Bundle().apply { putString("vm1", "value to stateViewModel") }
     val savedVm: SavedStateViewModel by viewModel { parametersOf("vm1") }
+//    val scopedSavedVm: SavedStateViewModel by viewModel(named("vm2")){ parametersOf("vm2") }
 
-    val bundleStateScope = Bundle().apply { putString("vm2", "value to scope.stateViewModel") }
-    val scopedSavedVm: SavedStateViewModel by stateViewModel(
-        qualifier = named("vm3"),
-        state = { bundleStateScope }) { parametersOf("vm3") }
-
+    // scope recreate
     val oneViewModel: OneViewModel by viewModel()
     val useOneViewModel: UseOneViewModel by inject()
 
@@ -57,9 +53,9 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
         assert(scopeVm.session.id == extScopeVm.session.id)
 
-        assert(savedVm.id != scopedSavedVm.id)
-//        assert("value to stateViewModel" == savedVm.handle.get("vm1"))
-        assert("value to scope.stateViewModel" == scopedSavedVm.handle.get("vm2"))
+//        assert(savedVm.id != scopedSavedVm.id)
+////        assert("value to stateViewModel" == savedVm.handle.get("vm1"))
+//        assert("value to scope.stateViewModel" == scopedSavedVm.handle.get("vm3"))
 
         supportFragmentManager.beginTransaction()
             .replace<MVVMFragment>(R.id.mvvm_frame)

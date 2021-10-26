@@ -28,6 +28,7 @@
         <activity android:name="org.koin.sample.androidx.workmanager.WorkManagerActivity" />
 
         <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
+        <activity android:name="org.koin.sample.androidx.navigation.NavActivity" />
 
         <provider
                 android:name="androidx.startup.InitializationProvider"
