@@ -15,9 +15,11 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import android.content.ComponentCallbacks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
@@ -32,10 +34,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-@Deprecated(
-    "getStateViewModel will be merged to viewModel",
-    ReplaceWith("viewModel(qualifier,parameters = parameters)")
-)
+@Deprecated("getStateViewModel will be merged to viewModel - no need anymore of state parameter")
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -46,10 +45,7 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     }
 }
 
-@Deprecated(
-    "getStateViewModel will be merged to viewModel",
-    ReplaceWith("viewModel(qualifier,clazz,parameters = parameters)")
-)
+@Deprecated("getStateViewModel will be merged to viewModel - no need anymore of state parameter")
 fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
@@ -59,10 +55,7 @@ fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, clazz, parameters) }
 }
 
-@Deprecated(
-    "getStateViewModel will be merged to getViewModel",
-    ReplaceWith("getViewModel(qualifier,parameters = parameters)")
-)
+@Deprecated("getStateViewModel will be merged to getViewModel - no need anymore of state parameter")
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -72,10 +65,7 @@ inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
 }
 
 @OptIn(KoinInternalApi::class)
-@Deprecated(
-    "getStateViewModel will be merged to getViewModel",
-    ReplaceWith("getViewModel(qualifier,clazz, parameters)")
-)
+@Deprecated("getStateViewModel will be merged to getViewModel - no need anymore of state parameter")
 fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
@@ -83,6 +73,6 @@ fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
     parameters: ParametersDefinition? = null,
 ): T {
     val owner = { from(this as ViewModelStoreOwner, this) }
-    val scope = getKoinScope(this)
+    val scope = (this as ComponentCallbacks).getKoinScope()
     return scope.getViewModel(qualifier, state, owner, clazz, parameters)
 }

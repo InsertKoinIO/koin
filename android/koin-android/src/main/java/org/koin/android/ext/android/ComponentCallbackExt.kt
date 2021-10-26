@@ -16,13 +16,11 @@
 package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
-import org.koin.androidx.viewmodel.ext.android.getKoinScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-
 
 /**
  * Get Koin context
@@ -39,9 +37,9 @@ fun ComponentCallbacks.getKoin() = when (this) {
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null,
 ) = lazy(mode) { get<T>(qualifier, parameters) }
 
 /**
@@ -52,18 +50,8 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  */
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> ComponentCallbacks.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getKoinScope(this).get(qualifier, parameters)
+    return getKoinScope().get(qualifier, parameters)
 }
-
-///**
-// * get given dependency for Android koincomponent, from primary and secondary types
-// * @param name - bean name
-// * @param scope
-// * @param parameters - injection parameters
-// */
-//inline fun <reified S, reified P> ComponentCallbacks.bind(
-//        noinline parameters: ParametersDefinition? = null,
-//): S = getKoin().bind<S, P>(parameters)

@@ -45,7 +45,7 @@ object SharedViewModelCompat {
             clazz: Class<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null,
-    ): Lazy<T> = fragment.sharedViewModel(qualifier, clazz.kotlin, parameters)
+    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(fragment, clazz, qualifier, parameters) }
 
     /**
      * Get a shared viewModel instance from underlying Activity
@@ -64,6 +64,6 @@ object SharedViewModelCompat {
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null,
     ): T {
-        return fragment.getSharedViewModel(qualifier, clazz.kotlin, parameters)
+        return fragment.getSharedViewModel(qualifier, clazz.kotlin, parameters = parameters)
     }
 }

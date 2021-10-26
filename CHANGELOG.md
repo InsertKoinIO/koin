@@ -12,7 +12,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[android]` - Scope can help inject current Activity/Fragment (no need of explicit inject from the source)
 * `[ADDED]` `[android]` - added koin-androidx-navigation with 
 * `[DEPRECATED]` `[android]` - `by stateViewModel()` is merged in by `viewModel()`, to inject SavedStateHandle
-
+* `[FIXED]` `[android]` - ViewModel API to get back `owner` property and write it against Activity/Fragment
 
 ## [3.1.2]()
 
