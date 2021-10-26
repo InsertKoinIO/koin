@@ -48,7 +48,7 @@ object ScopeCompat {
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         parameters: ParametersDefinition? = null
     ): Lazy<T> = lazy(mode) {
-        scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
+        scope.getViewModel(qualifier, { from(owner) }, clazz.kotlin, parameters)
     }
 
 
@@ -68,6 +68,6 @@ object ScopeCompat {
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): T {
-        return scope.getViewModel(qualifier, null, { from(owner) }, clazz.kotlin, parameters)
+        return scope.getViewModel(qualifier, { from(owner) }, clazz.kotlin, parameters)
     }
 }

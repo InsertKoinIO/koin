@@ -74,5 +74,5 @@ fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
 ): T {
     val owner = { from(this as ViewModelStoreOwner, this) }
     val scope = (this as ComponentCallbacks).getKoinScope()
-    return scope.getViewModel(qualifier, state, owner, clazz, parameters)
+    return scope.getViewModel(qualifier, owner, clazz, parameters)
 }

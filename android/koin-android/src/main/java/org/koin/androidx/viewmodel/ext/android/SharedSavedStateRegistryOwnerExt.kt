@@ -71,5 +71,5 @@ fun <T : ViewModel> Fragment.getStateViewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return getKoinScope().getViewModel(qualifier, state, { from(activity as ViewModelStoreOwner, this) }, clazz, parameters)
+    return getKoinScope().getViewModel(qualifier, { from(activity as ViewModelStoreOwner, this) }, clazz, parameters)
 }

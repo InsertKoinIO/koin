@@ -20,12 +20,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import org.koin.androidx.viewmodel.ViewModelOwner
 import org.koin.androidx.viewmodel.ext.android.getStateViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
+import org.koin.androidx.viewmodel.scope.getViewModel
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
  * Resolve ViewModel instance
@@ -35,14 +39,35 @@ import org.koin.core.qualifier.Qualifier
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
+    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val owner = LocalViewModelStoreOwner.current
-    return remember(qualifier,parameters) {
-        owner!!.getViewModel(qualifier, parameters)
+    val owner = LocalViewModelStoreOwner.current!!
+    return remember(qualifier, parameters) {
+        scope.getViewModel(qualifier, { ViewModelOwner.from(owner) }, parameters)
+    }
+}
+
+@OptIn(KoinInternalApi::class)
+@Composable
+inline fun <reified T : ViewModel> viewModel(
+    qualifier: Qualifier? = null,
+    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
+    noinline parameters: ParametersDefinition? = null,
+): Lazy<T> {
+    val owner = LocalViewModelStoreOwner.current!!
+    return remember(qualifier, parameters) {
+        lazy(LazyThreadSafetyMode.NONE) {
+            scope.getViewModel(
+                qualifier,
+                { ViewModelOwner.from(owner) },
+                parameters
+            )
+        }
     }
 }
 
@@ -55,13 +80,14 @@ inline fun <reified T : ViewModel> getViewModel(
  * @author Arnaud Giuliani
  */
 @Composable
+@Deprecated("getStateViewModel will be merged to sharedViewModel - no need anymore of state parameter")
 inline fun <reified T : ViewModel> getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
     val owner = LocalSavedStateRegistryOwner.current
-    return remember(qualifier,parameters) {
-        owner!!.getStateViewModel(qualifier, state, parameters)
+    return remember(qualifier, parameters) {
+        owner.getStateViewModel(qualifier, state, parameters)
     }
 }

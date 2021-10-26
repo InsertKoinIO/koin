@@ -21,7 +21,7 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
-    val simpleViewModel: SimpleViewModel by viewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
+    val simpleViewModel: SimpleViewModel by viewModel() { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }

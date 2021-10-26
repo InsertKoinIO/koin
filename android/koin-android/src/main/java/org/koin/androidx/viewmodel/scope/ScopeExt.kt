@@ -36,16 +36,14 @@ typealias BundleDefinition = () -> Bundle
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
-        noinline state: BundleDefinition? = null,
         noinline owner: ViewModelOwnerDefinition,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(qualifier, state, owner, T::class, parameters)
+    return getViewModel(qualifier, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
-        state: BundleDefinition? = null,
         owner: ViewModelOwnerDefinition,
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
@@ -56,14 +54,13 @@ fun <T : ViewModel> Scope.getViewModel(
                     clazz,
                     qualifier,
                     parameters,
-                    state?.invoke(),
                     ownerDef.store,
                     ownerDef.stateRegistry
             )
     )
 }
 
-fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
+internal fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
     val viewModelProvider = ViewModelProvider(viewModelParameters.viewModelStore, pickFactory(viewModelParameters))
     return viewModelProvider.resolveInstance(viewModelParameters)
 }
