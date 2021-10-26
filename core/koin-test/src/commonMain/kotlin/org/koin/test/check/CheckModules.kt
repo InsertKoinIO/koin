@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
@@ -46,17 +47,20 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
 }
 
 fun checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
-    koinApplication(null)
+    val koinApp = koinApplication(null)
         .logger(KoinPlatformTools.defaultLogger(logLevel))
         .modules(modules)
+
+    KoinPlatformTools.defaultContext().startKoin(koinApp)
+
+    koinApp
         .checkModules(parameters)
+
+    stopKoin()
 }
 
 fun checkKoinModules(vararg modules : Module, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
-    koinApplication(null)
-        .logger(KoinPlatformTools.defaultLogger(logLevel))
-        .modules(modules.toList())
-        .checkModules(parameters)
+    checkKoinModules(modules.toList(),logLevel, parameters)
 }
 
 /**

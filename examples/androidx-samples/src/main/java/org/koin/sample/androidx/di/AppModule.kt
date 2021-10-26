@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.di
 
+import org.koin.android.ext.koin.androidContext
 import org.koin.sample.androidx.navigation.NavViewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -88,13 +89,19 @@ val scopeModule = module {
     }
 }
 
-val workerScopedModule = module {
+val workerServiceModule = module {
     single<SimpleWorkerService>()
-    worker { SimpleWorker(get(), get(), it.get()) }
+}
+
+val workerScopedModule = module {
+    worker { SimpleWorker(get(), androidContext(), it.get()) }
 }
 
 val navModule = module {
     viewModel<NavViewModel>()
 }
 
-val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerScopedModule + navModule
+// workerScopedModule can't be runned in unit test
+val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule
+
+val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule
