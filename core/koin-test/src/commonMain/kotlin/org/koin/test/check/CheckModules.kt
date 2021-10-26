@@ -22,6 +22,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
+import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
@@ -37,12 +38,24 @@ import org.koin.test.parameter.MockParameter
  */
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
-/**
- *
- */
+@Deprecated("use checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null)")
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
+        .checkModules(parameters)
+}
+
+fun checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
+    koinApplication(null)
+        .logger(KoinPlatformTools.defaultLogger(logLevel))
+        .modules(modules)
+        .checkModules(parameters)
+}
+
+fun checkKoinModules(vararg modules : Module, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
+    koinApplication(null)
+        .logger(KoinPlatformTools.defaultLogger(logLevel))
+        .modules(modules.toList())
         .checkModules(parameters)
 }
 
