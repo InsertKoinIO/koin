@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.resolver
+package org.koin.core
 
 import org.koin.core.scope.Scope
 
