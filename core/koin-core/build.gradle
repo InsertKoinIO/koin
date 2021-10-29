@@ -103,13 +103,16 @@ kotlin {
 
             configure([
                     targets.macosX64,
+                    targets.macosArm64,
                     targets.watchosArm32,
                     targets.watchosArm64,
                     targets.watchosX86,
                     targets.watchosX64,
+                    targets.watchosSimulatorArm64,
                     targets.tvosArm64,
                     targets.tvosX64,
                     targets.iosX64,
+                    targets.iosSimulatorArm64,
                     targets.iosArm32,
                     targets.iosArm64
             ]) {
