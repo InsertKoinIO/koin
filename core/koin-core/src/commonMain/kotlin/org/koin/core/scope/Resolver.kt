@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core
-
-import org.koin.core.scope.Scope
+package org.koin.core.scope
 
 /**
  * Auto resolve a dependency by using its constructor reference.
