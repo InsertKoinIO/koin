@@ -14,7 +14,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[DEPRECATED]` `[android]` - `by stateViewModel()` is merged in by `viewModel()`, to inject SavedStateHandle
 * `[FIXED]` `[android]` - ViewModel API to get back `owner` property and write it against Activity/Fragment
 * `[ADDED]` `[test]` - introduce new `checkKoinModules` and DSL to help verify modules
-* `[DEPRECATED]` `[test]` - deprecate old `checkModules` function, in faver of new API `checkKoinModules`
+* `[DEPRECATED]` `[test]` - deprecate old `checkModules` function, in favor of new API `checkKoinModules`
 
 ## [3.1.2]()
 
