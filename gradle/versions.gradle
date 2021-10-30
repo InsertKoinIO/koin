@@ -25,4 +25,7 @@ ext {
 
     // Publish
     // android_maven_publish = "3.6.3"
+
+    // Ksp
+    ksp_version = "1.5.31-1.0.0" 
 }

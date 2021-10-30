@@ -1,60 +1,33 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
-archivesBaseName = 'koin-annotations'
-
-def ideaActive = System.getProperty('idea.active') == 'true'
+archivesBaseName = 'koin-compiler'
 
 kotlin {
     jvm()
-//    js(BOTH) {
-//        nodejs()
-//        browser()
-//    }
-
-    if(ideaActive) {
-        macosX64("native")
-    }else{
-        macosX64()
-        iosArm32()
-        iosArm64()
-        iosX64()
-        linuxX64()
-        linuxArm32Hfp()
-        linuxMips32()
-        watchosArm32()
-        watchosArm64()
-        watchosX86()
-        watchosX64()
-        tvosArm64()
-        tvosX64()
-        //    androidNativeArm32()
-        //    androidNativeArm64()
-        mingwX64()
-    }
 
     sourceSets {
         commonMain {
             dependencies {
                 api kotlin("stdlib-common")
+                api project(":koin-annotations")
+                api "io.insert-koin:koin-core:$koin_version"
             }
         }
 
         commonTest {
             dependencies {
-
             }
         }
 
         jvmMain {
             dependencies {
                 api kotlin("stdlib-jdk8")
-                api kotlin("test-junit")
+                api "com.google.devtools.ksp:symbol-processing-api:$ksp_version"
             }
         }
 
         jvmTest {
             dependencies {
-                implementation kotlin("test-junit")
             }
         }
 
