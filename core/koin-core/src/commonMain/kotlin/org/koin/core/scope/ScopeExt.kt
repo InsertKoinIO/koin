@@ -16,7 +16,7 @@
 package org.koin.core.scope
 
 /**
- * Auto resolve a dependency by using its constructor reference.
+ * Auto resolve a class dependencies by using its constructor reference.
  * The resolution is done at compile time by leveraging inline functions, no reflection is required.
  *
  * Example:
