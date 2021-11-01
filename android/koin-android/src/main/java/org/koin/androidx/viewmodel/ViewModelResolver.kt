@@ -1,9 +1,9 @@
 package org.koin.androidx.viewmodel
 
-import androidx.lifecycle.StateViewModelFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.factory.DefaultViewModelFactory
+import org.koin.androidx.viewmodel.factory.StateViewModelFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 

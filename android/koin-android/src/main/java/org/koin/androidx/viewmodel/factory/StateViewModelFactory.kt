@@ -1,4 +1,4 @@
-package androidx.lifecycle
+package org.koin.androidx.viewmodel.factory
 
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.core.parameter.ParametersDefinition
