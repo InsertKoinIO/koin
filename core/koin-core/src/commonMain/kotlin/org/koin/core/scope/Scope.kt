@@ -273,16 +273,9 @@ data class Scope(
         qualifier: Qualifier?,
         parameters: ParametersDefinition?
     ): T? {
-        var instance: T? = null
-        for (scope in linkedScopes) {
-            instance = scope.getOrNull<T>(
-                clazz,
-                qualifier,
-                parameters
-            )
-            if (instance != null) break
+        return linkedScopes.firstNotNullOfOrNull { scope ->
+            scope.getOrNull<T>(clazz, qualifier, parameters)
         }
-        return instance
     }
 
     private fun throwDefinitionNotFound(
