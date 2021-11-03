@@ -32,6 +32,7 @@ kotlin {
         watchosSimulatorArm64()
         tvosArm64()
         tvosX64()
+        tvosSimulatorArm64()
         //    androidNativeArm32()
         //    androidNativeArm64()
         mingwX64()
@@ -111,6 +112,7 @@ kotlin {
                     targets.watchosSimulatorArm64,
                     targets.tvosArm64,
                     targets.tvosX64,
+                    targets.tvosSimulatorArm64,
                     targets.iosX64,
                     targets.iosSimulatorArm64,
                     targets.iosArm32,
