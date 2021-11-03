@@ -67,7 +67,7 @@ class ComponentScanner(
                     className = className,
                     constructorParameters = ctorParams
                         ?: emptyList(),
-                    bindings = declaredBindings ?: defaultBindings
+                    bindings = allBindings
                 )
             }
             KOIN_VIEWMODEL.annotationName -> {
@@ -77,7 +77,7 @@ class ComponentScanner(
                     className = className,
                     constructorParameters = ctorParams
                         ?: emptyList(),
-                    bindings = declaredBindings ?: defaultBindings
+                    bindings = allBindings
                 )
             }
             SCOPE.annotationName -> {
@@ -90,7 +90,7 @@ class ComponentScanner(
                     className = className,
                     constructorParameters = ctorParams
                         ?: emptyList(),
-                    bindings = declaredBindings ?: defaultBindings,
+                    bindings = allBindings,
                     scope = scopeData
                 )
             }
