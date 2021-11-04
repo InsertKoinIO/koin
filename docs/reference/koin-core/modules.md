@@ -38,7 +38,7 @@ val moduleB = module {
 ```
 
 :::info 
-Koin does't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done.
+Koin doesn't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done.
 :::
 
 We just have to declare list of used modules when we start our Koin container:
@@ -54,7 +54,7 @@ Koin will then resolve dependencies from all given modules.
 
 ## Overriding definition or module (3.1.0+)
 
-New Koin override strategy allow to override any definition by default. You don't need to specify `oevrride = true` anymore in your module.
+New Koin override strategy allow to override any definition by default. You don't need to specify `override = true` anymore in your module.
 
 If you have 2 definitions in different modules, that have the same mapping, the last will override the current definition.
 
