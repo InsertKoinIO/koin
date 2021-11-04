@@ -26,7 +26,7 @@ startKoin {
 
 In a Koin module, you can get a property by its key:
 
-in /src/main/resoucres/koin.properties file
+in /src/main/resources/koin.properties file
 ```java
 // Key - value
 server_url=http://service_url
