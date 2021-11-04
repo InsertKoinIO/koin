@@ -10,6 +10,7 @@ import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.GlobalContext
+import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.scope.Scope
 
 /**
@@ -20,12 +21,13 @@ import org.koin.core.scope.Scope
  * @author Arnaud Giuliani
  */
 inline fun <reified VM : ViewModel> Fragment.koinNavGraphViewModel(
-    @IdRes navGraphId: Int
+    @IdRes navGraphId: Int,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<VM> {
     val backStackEntry: NavBackStackEntry by lazy { findNavController().getBackStackEntry(navGraphId) }
     return lazy(LazyThreadSafetyMode.NONE) {
         getKoinScope(this).getViewModel(
-            owner = { ViewModelOwner(backStackEntry.viewModelStore) }
+            owner = { ViewModelOwner(backStackEntry.viewModelStore) }, parameters = parameters
         )
     }
 }

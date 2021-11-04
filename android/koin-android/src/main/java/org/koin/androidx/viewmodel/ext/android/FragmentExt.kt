@@ -33,25 +33,27 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getSharedViewModel(qualifier, parameters)
+        getSharedViewModel(qualifier, owner, parameters)
     }
 }
 
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
+    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getSharedViewModel(qualifier, T::class, parameters = parameters)
+    return getSharedViewModel(qualifier, T::class, owner, parameters = parameters)
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
     clazz: KClass<T>,
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+    owner: ViewModelOwnerDefinition,
     parameters: ParametersDefinition? = null,
 ): T {
     return getKoinScope().getViewModel(qualifier, owner, clazz, parameters)
