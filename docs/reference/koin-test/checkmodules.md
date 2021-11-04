@@ -23,11 +23,11 @@ class CheckModulesTest : KoinTest {
 
 #### CheckKoinModules DSL
 
-For any definition that is using injected parameters, properties or dynamic instances, the `checkKoinModules` DSL allow to specify how to wotk with the following case:
+For any definition that is using injected parameters, properties or dynamic instances, the `checkKoinModules` DSL allow to specify how to work with the following case:
 
-* `withInstance(value)` - will add `value` instance to Koin graph (can be used in depednency or parameter)
+* `withInstance(value)` - will add `value` instance to Koin graph (can be used in dependency or parameter)
 
-* `withInstance<MyType>()` - will add a mocked instance of `MyType`. Use MockProviderRule. (can be used in depednency or parameter)
+* `withInstance<MyType>()` - will add a mocked instance of `MyType`. Use MockProviderRule. (can be used in dependency or parameter)
 
 * `withParameter<Type>(qualifier){ qualifier -> value }` - will add `value` instance to be injected as parameter
 
@@ -41,7 +41,7 @@ To use mocks with `checkKoinModules`, you need to provide a `MockProviderRule`
 ```kotlin
 @get:Rule
 val mockProvider = MockProviderRule.create { clazz ->
-    // Mock with your framwork here given clazz 
+    // Mock with your framework here given clazz
 }
 ```
 
