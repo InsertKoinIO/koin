@@ -16,15 +16,19 @@
 package org.koin.core.scope
 
 /**
- * Auto resolve a class dependencies by using its constructor reference.
+ * Resolve a dependency by using a constructor reference.
  * The resolution is done at compile time by leveraging inline functions, no reflection is required.
  *
  * Example:
  * ```
+ * class ViewModel : ViewModel()
+ *
  * val myModule = module {
  *   viewModel { new(::MyViewModel) }
  * }
  * ```
+ *
+ * @author Marcello Galhardo
  */
 inline fun <reified R> Scope.new(
     constructor: () -> R,
