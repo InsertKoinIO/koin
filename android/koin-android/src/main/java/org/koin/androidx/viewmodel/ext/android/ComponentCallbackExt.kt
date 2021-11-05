@@ -56,7 +56,7 @@ inline fun <reified T : ViewModel> ComponentCallbacks.getViewModel(
 fun <T : ViewModel> ComponentCallbacks.getViewModel(
         qualifier: Qualifier? = null,
         clazz: KClass<T>,
-        owner : ViewModelOwnerDefinition,
+        owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
         parameters: ParametersDefinition? = null,
 ): T {
         val scope = getKoinScope()

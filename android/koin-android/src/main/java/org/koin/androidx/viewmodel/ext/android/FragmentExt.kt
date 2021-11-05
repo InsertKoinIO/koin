@@ -53,7 +53,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
 fun <T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
     clazz: KClass<T>,
-    owner: ViewModelOwnerDefinition,
+    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     parameters: ParametersDefinition? = null,
 ): T {
     return getKoinScope().getViewModel(qualifier, owner, clazz, parameters)
