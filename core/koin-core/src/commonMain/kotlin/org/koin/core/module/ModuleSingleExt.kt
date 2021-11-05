@@ -35,7 +35,7 @@ import org.koin.core.scope.new
  *
  * @see new
  */
-inline fun <reified R> Module.single(
+inline fun <reified R> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: () -> R,
 ) {
@@ -43,18 +43,18 @@ inline fun <reified R> Module.single(
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R> Module.single(
+inline fun <reified R> Module.singleOf(
     crossinline constructor: () -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1> Module.single(
+inline fun <reified R, reified T1> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1) -> R,
 ) {
@@ -62,18 +62,18 @@ inline fun <reified R, reified T1> Module.single(
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1> Module.single(
+inline fun <reified R, reified T1> Module.singleOf(
     crossinline constructor: (T1) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2> Module.single(
+inline fun <reified R, reified T1, reified T2> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2) -> R,
 ) {
@@ -81,18 +81,18 @@ inline fun <reified R, reified T1, reified T2> Module.single(
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2> Module.single(
+inline fun <reified R, reified T1, reified T2> Module.singleOf(
     crossinline constructor: (T1, T2) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3) -> R,
 ) {
@@ -100,18 +100,18 @@ inline fun <reified R, reified T1, reified T2, reified T3> Module.single(
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3> Module.singleOf(
     crossinline constructor: (T1, T2, T3) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4) -> R,
 ) {
@@ -119,18 +119,18 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.si
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4, T5) -> R,
 ) {
@@ -138,18 +138,18 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4, T5) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4, T5, T6) -> R,
 ) {
@@ -157,18 +157,18 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> R,
 ) {
@@ -176,18 +176,18 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8) -> R,
 ) {
@@ -195,18 +195,18 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R,
 ) {
@@ -214,18 +214,18 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R,
 ) {
     single(definition = { new(constructor) })
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> Module.singleOf(
     qualifier: Qualifier,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> R,
 ) {
@@ -233,9 +233,9 @@ inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T
 }
 
 /**
- * @see single
+ * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> Module.single(
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> Module.singleOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> R,
 ) {
     single(definition = { new(constructor) })
