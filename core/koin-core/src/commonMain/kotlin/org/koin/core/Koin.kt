@@ -327,6 +327,7 @@ class Koin {
         val flattedModules = modules.flatten()
         instanceRegistry.loadModules(flattedModules, allowOverride)
         scopeRegistry.loadScopes(flattedModules)
+        createEagerInstances()
     }
 
     fun unloadModules(modules: List<Module>) {
