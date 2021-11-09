@@ -324,13 +324,35 @@ class Koin {
      * Load module & create eager instances
      */
     fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
-        instanceRegistry.loadModules(modules, allowOverride)
-        scopeRegistry.loadScopes(modules)
+        val flattedModules = modules.flatten()
+        instanceRegistry.loadModules(flattedModules, allowOverride)
+        scopeRegistry.loadScopes(flattedModules)
     }
 
-
     fun unloadModules(modules: List<Module>) {
-        instanceRegistry.unloadModules(modules)
+        val flattedModules = modules.flatten()
+        instanceRegistry.unloadModules(flattedModules)
+    }
+
+    /**
+     * Returns a single list of all [Module] with their [includedModules] in the given list.
+     * Duplicated modules are ignored.
+     */
+    private fun List<Module>.flatten(): List<Module> {
+        val deque = ArrayDeque(elements = this)
+
+        val allModules = mutableListOf<Module>()
+        while (deque.isNotEmpty()) {
+            val module = deque.removeFirstOrNull()
+
+            // We want to ensure duplicated modules aren't visited more than once.
+            if (module != null && !allModules.contains(module)) {
+                allModules += module
+                deque += module.includedModules
+            }
+        }
+
+        return allModules
     }
 
     /**
