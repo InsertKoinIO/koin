@@ -17,7 +17,6 @@ package org.koin.core.scope
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.component.getScopeId
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
@@ -385,19 +384,19 @@ data class Scope(
      * @param key
      * @param defaultValue
      */
-    fun getProperty(key: String, defaultValue: String): String = _koin.getProperty(key, defaultValue)
+    fun <T : Any> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun getPropertyOrNull(key: String): String? = _koin.getProperty(key)
+    fun <T : Any> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun getProperty(key: String): String = _koin.getProperty(key)
+    fun <T : Any> getProperty(key: String): T = _koin.getProperty(key)
         ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
