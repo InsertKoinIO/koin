@@ -72,13 +72,14 @@ fun generateConstructor(constructorParameters: List<KoinMetaData.ConstructorPara
     LOGGER.logging("generate ctor ...")
     return constructorParameters.joinToString(prefix = "(", separator = ",", postfix = ")") { ctorParam ->
         LOGGER.logging("generate ctor: $ctorParam")
+        val isNullable : Boolean = ctorParam.nullable
         when (ctorParam) {
             is KoinMetaData.ConstructorParameter.Dependency -> {
                 val qualifier = ctorParam.value?.let { "qualifier=StringQualifier(\"${it}\")" } ?: ""
-                "get($qualifier)" // value -> qualifier =
+                if (!isNullable) "get($qualifier)" else "getOrNull($qualifier)"
             }
-            is KoinMetaData.ConstructorParameter.ParameterInject -> "params.get()"
-            is KoinMetaData.ConstructorParameter.Property -> "getProperty(\"${ctorParam.value}\")"
+            is KoinMetaData.ConstructorParameter.ParameterInject -> if (!isNullable) "params.get()" else "params.getOrNull()"
+            is KoinMetaData.ConstructorParameter.Property -> if (!isNullable) "getProperty(\"${ctorParam.value}\")" else "getPropertyOrNull(\"${ctorParam.value}\")"
         }
     }
 }
