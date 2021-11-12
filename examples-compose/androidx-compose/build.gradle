@@ -5,7 +5,7 @@ apply from: '../../gradle/versions-examples.gradle'
 apply from: "../../gradle/versions.gradle"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
