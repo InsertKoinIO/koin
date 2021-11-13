@@ -8,8 +8,11 @@ annotation class Single(val binds: Array<KClass<*>> = [], val createdAtStart: Bo
 annotation class Factory(val binds: Array<KClass<*>> = [])
 
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
-annotation class Scope(val value: KClass<*> = NoClass::class, val name : String = "", val binds: Array<KClass<*>> = [])
+annotation class Scope(val value: KClass<*> = NoClass::class, val name : String = "")
 private object NoClass
+
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
+annotation class Scoped(val binds: Array<KClass<*>> = [])
 
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION,AnnotationTarget.VALUE_PARAMETER)
 annotation class Qualifier(val value: String)
