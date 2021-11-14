@@ -81,11 +81,12 @@ class ModuleScanner(
         functionName: String,
         ksFunctionDeclaration: KSFunctionDeclaration,
         annotations: Map<String, KSAnnotation> = emptyMap()
-    ): KoinMetaData.Definition.FunctionDeclarationDefinition? {
+    ): KoinMetaData.Definition.FunctionDefinition? {
         logger.logging("definition(function) -> kind $annotationName", annotation)
         logger.logging("definition(function) -> kind ${annotation.arguments}", annotation)
 
         val binds = annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
+        val allBindings = binds?.map { it.declaration } ?: emptyList()
         logger.logging("definition(function) -> binds=$binds", annotation)
 
         val functionParameters = ksFunctionDeclaration.parameters.getConstructorParameters()
@@ -96,47 +97,41 @@ class ModuleScanner(
                     annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
                         ?: false
                 logger.logging("definition(function) -> createdAtStart=$createdAtStart", annotation)
-                KoinMetaData.Definition.FunctionDeclarationDefinition.Single(
-                    packageName = packageName,
-                    qualifier = qualifier,
-                    functionName = functionName,
-                    functionParameters = functionParameters,
-                    createdAtStart = createdAtStart,
-                    bindings = binds?.map { it.declaration } ?: emptyList()
-                )
+                createFunctionDefinition(SINGLE,packageName,qualifier,functionName,functionParameters,allBindings, isCreatedAtStart = createdAtStart)
             }
             FACTORY.annotationName -> {
-                KoinMetaData.Definition.FunctionDeclarationDefinition.Factory(
-                    packageName = packageName,
-                    qualifier = qualifier,
-                    functionName = functionName,
-                    functionParameters = functionParameters,
-                    bindings = binds?.map { it.declaration } ?: emptyList()
-                )
+                createFunctionDefinition(FACTORY,packageName,qualifier,functionName,functionParameters,allBindings)
             }
             KOIN_VIEWMODEL.annotationName -> {
-                KoinMetaData.Definition.FunctionDeclarationDefinition.ViewModel(
-                    packageName = packageName,
-                    qualifier = qualifier,
-                    functionName = functionName,
-                    functionParameters = functionParameters,
-                    bindings = binds?.map { it.declaration } ?: emptyList()
-                )
+                createFunctionDefinition(KOIN_VIEWMODEL,packageName,qualifier,functionName,functionParameters,allBindings)
             }
             SCOPE.annotationName -> {
                 //TODO Any other annotation?
                 val scopeData : KoinMetaData.Scope = annotation.arguments.getScope()
                 logger.logging("definition(function) -> scope $scopeData", annotation)
-                KoinMetaData.Definition.FunctionDeclarationDefinition.Scope(
-                    packageName = packageName,
-                    qualifier = qualifier,
-                    functionName = functionName,
-                    functionParameters = functionParameters,
-                    bindings = binds?.map { it.declaration } ?: emptyList(),
-                    scope = scopeData
-                )
+                createFunctionDefinition(SCOPE,packageName,qualifier,functionName,functionParameters,allBindings,scope = scopeData)
             }
             else -> null
         }
     }
+
+    private fun createFunctionDefinition(
+        keyword : DefinitionAnnotation,
+        packageName: String,
+        qualifier: String?,
+        functionName: String,
+        parameters: List<KoinMetaData.ConstructorParameter>?,
+        allBindings: List<KSDeclaration>,
+        isCreatedAtStart : Boolean? = null,
+        scope: KoinMetaData.Scope? = null,
+    ) = KoinMetaData.Definition.FunctionDefinition(
+        packageName = packageName,
+        qualifier = qualifier,
+        isCreatedAtStart = isCreatedAtStart,
+        functionName = functionName,
+        parameters = parameters ?: emptyList(),
+        bindings = allBindings,
+        keyword = keyword,
+        scope = scope
+    )
 }

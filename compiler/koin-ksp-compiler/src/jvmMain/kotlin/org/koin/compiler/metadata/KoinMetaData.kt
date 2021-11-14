@@ -16,128 +16,13 @@ sealed class KoinMetaData {
         fun acceptDefinition(defPackageName: String): Boolean {
             return when {
                 componentScan == null -> false
-                componentScan.packageName.isNotEmpty() -> defPackageName.contains(componentScan.packageName, ignoreCase = true)
+                componentScan.packageName.isNotEmpty() -> defPackageName.contains(
+                    componentScan.packageName,
+                    ignoreCase = true
+                )
                 componentScan.packageName.isEmpty() -> defPackageName.contains(packageName, ignoreCase = true)
                 else -> false
             }
-        }
-    }
-
-    sealed class Scope {
-        data class ClassScope(val type: KSDeclaration) : Scope()
-        data class StringScope(val name: String) : Scope()
-    }
-    interface ScopeDefinition {
-        val scope: KoinMetaData.Scope
-    }
-
-    sealed class Definition(
-        val packageName: String,
-        val qualifier: String? = null,
-        val keyword: DefinitionAnnotation,
-        val bindings: List<KSDeclaration>,
-        val isAndroidDefinition: Boolean = false,
-    ) : KoinMetaData() {
-
-        sealed class FunctionDeclarationDefinition(
-            packageName: String,
-            qualifier: String?,
-            keyword: DefinitionAnnotation,
-            val functionName: String,
-            val parameters: List<ConstructorParameter> = emptyList(),
-            bindings: List<KSDeclaration>
-        ) : Definition(packageName, qualifier, keyword, bindings) {
-
-            class Single(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                val createdAtStart: Boolean = false,
-                bindings: List<KSDeclaration>
-            ) : FunctionDeclarationDefinition(
-                packageName,
-                qualifier,
-                SINGLE,
-                functionName,
-                functionParameters,
-                bindings
-            )
-
-            open class Factory(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>,
-                _keyword: DefinitionAnnotation = FACTORY
-            ) : FunctionDeclarationDefinition(packageName, qualifier, _keyword, functionName, functionParameters, bindings)
-
-            class ViewModel(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>,
-                _keyword: DefinitionAnnotation = KOIN_VIEWMODEL
-            ) : Factory(packageName, qualifier, functionName, functionParameters, bindings, _keyword)
-
-            open class Scope(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>,
-                _keyword: DefinitionAnnotation = SCOPE,
-                override val scope: KoinMetaData.Scope
-            ) : ScopeDefinition, FunctionDeclarationDefinition(packageName, qualifier, _keyword, functionName, functionParameters, bindings)
-        }
-
-        sealed class ClassDeclarationDefinition(
-            packageName: String,
-            qualifier: String?,
-            keyword: DefinitionAnnotation,
-            val className: String,
-            val constructorParameters: List<ConstructorParameter> = emptyList(),
-            bindings: List<KSDeclaration>
-        ) : Definition(packageName, qualifier, keyword, bindings) {
-
-            class Single(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                val createdAtStart: Boolean,
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(packageName, qualifier, SINGLE, className, constructorParameters, bindings)
-
-            open class Factory(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>,
-                _keyword: DefinitionAnnotation = FACTORY,
-            ) : ClassDeclarationDefinition(packageName, qualifier, _keyword, className, constructorParameters, bindings)
-
-            class ViewModel(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>,
-                _keyword: DefinitionAnnotation = KOIN_VIEWMODEL,
-            ) : Factory(packageName, qualifier, className, constructorParameters, bindings, _keyword)
-
-            open class Scope(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>,
-                _keyword: DefinitionAnnotation = SCOPE,
-                override val scope: KoinMetaData.Scope
-            ) : ScopeDefinition, ClassDeclarationDefinition(packageName, qualifier, _keyword, className, constructorParameters, bindings)
         }
     }
 
@@ -145,9 +30,55 @@ sealed class KoinMetaData {
         FIELD, CLASS
     }
 
+    sealed class Scope {
+        data class ClassScope(val type: KSDeclaration) : Scope()
+        data class StringScope(val name: String) : Scope()
+    }
+
+    sealed class Definition(
+        val label: String,
+        val parameters: List<ConstructorParameter>,
+        val packageName: String,
+        val qualifier: String? = null,
+        val isCreatedAtStart: Boolean? = null,
+        val keyword: DefinitionAnnotation,
+        val bindings: List<KSDeclaration>,
+        val scope: Scope? = null,
+    ) : KoinMetaData() {
+
+        fun isScoped(): Boolean = scope != null
+        fun isNotScoped(): Boolean = !isScoped()
+        fun isType(keyword: DefinitionAnnotation): Boolean = this.keyword == keyword
+
+        class FunctionDefinition(
+            packageName: String,
+            qualifier: String?,
+            isCreatedAtStart: Boolean? = null,
+            keyword: DefinitionAnnotation,
+            val functionName: String,
+            parameters: List<ConstructorParameter> = emptyList(),
+            bindings: List<KSDeclaration>,
+            scope: Scope? = null
+        ) : Definition(functionName, parameters, packageName, qualifier, isCreatedAtStart, keyword, bindings, scope)
+
+        class ClassDefinition(
+            packageName: String,
+            qualifier: String?,
+            isCreatedAtStart: Boolean? = null,
+            keyword: DefinitionAnnotation,
+            val className: String,
+            val constructorParameters: List<ConstructorParameter> = emptyList(),
+            bindings: List<KSDeclaration>,
+            scope: Scope? = null
+        ) : Definition(className, constructorParameters,packageName, qualifier, isCreatedAtStart, keyword, bindings, scope)
+    }
+
     sealed class ConstructorParameter(val nullable: Boolean = false) {
-        data class Dependency(val value: String? = null,val isNullable: Boolean = false) : ConstructorParameter(isNullable)
+        data class Dependency(val value: String? = null, val isNullable: Boolean = false) :
+            ConstructorParameter(isNullable)
+
         data class ParameterInject(val isNullable: Boolean = false) : ConstructorParameter(isNullable)
-        data class Property(val value: String? = null,val isNullable: Boolean = false) : ConstructorParameter(isNullable)
+        data class Property(val value: String? = null, val isNullable: Boolean = false) :
+            ConstructorParameter(isNullable)
     }
 }

@@ -1,7 +1,7 @@
 package org.koin.compiler.metadata
 
 import com.google.devtools.ksp.symbol.*
-import org.koin.compiler.generator.KoinCodeGenerator
+import org.koin.compiler.generator.KoinGenerator
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.Property
 import org.koin.core.annotation.Qualifier
@@ -57,7 +57,7 @@ private fun getConstructorParameter(param: KSValueParameter): KoinMetaData.Const
     val annotationName = firstAnnotation?.shortName?.asString()
     val annotationValue = firstAnnotation?.arguments?.getValueArgument()
     val isNullable = param.type.resolve().isMarkedNullable
-    KoinCodeGenerator.LOGGER.logging("annotation? $firstAnnotation  name:$annotationName  value:$annotationValue")
+    KoinGenerator.LOGGER.logging("annotation? $firstAnnotation  name:$annotationName  value:$annotationValue")
     return when (annotationName) {
         "${InjectedParam::class.simpleName}" -> KoinMetaData.ConstructorParameter.ParameterInject(isNullable)
         "${Property::class.simpleName}" -> KoinMetaData.ConstructorParameter.Property(annotationValue,isNullable)

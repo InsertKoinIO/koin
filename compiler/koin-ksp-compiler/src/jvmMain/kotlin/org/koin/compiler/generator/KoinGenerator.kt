@@ -10,7 +10,7 @@ import generateDefaultModuleHeader
 import generateFieldModule
 import org.koin.compiler.metadata.KoinMetaData
 
-class KoinCodeGenerator(
+class KoinGenerator(
     val codeGenerator: CodeGenerator,
     val logger: KSPLogger
 ) {

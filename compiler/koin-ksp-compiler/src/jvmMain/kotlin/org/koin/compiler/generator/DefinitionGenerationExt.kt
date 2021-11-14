@@ -1,32 +1,28 @@
 import com.google.devtools.ksp.symbol.KSDeclaration
-import org.koin.compiler.generator.KoinCodeGenerator.Companion.LOGGER
+import org.koin.compiler.generator.KoinGenerator.Companion.LOGGER
 import org.koin.compiler.metadata.KoinMetaData
+import org.koin.compiler.metadata.SINGLE
 import java.io.OutputStream
 
-
-fun OutputStream.generateFunctionDeclarationDefinition(def: KoinMetaData.Definition.FunctionDeclarationDefinition) {
+fun OutputStream.generateDefinition(def: KoinMetaData.Definition, label : () -> String) {
     LOGGER.logging("generate $def")
     val param = def.parameters.generateParamFunction()
     val ctor = generateConstructor(def.parameters)
     val binds = generateBindings(def.bindings)
     val qualifier = def.qualifier.generateQualifier()
-    val createAtStart = if (def is KoinMetaData.Definition.FunctionDeclarationDefinition.Single) {
-        if (def.createdAtStart) CREATED_AT_START else ""
-    } else ""
-    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { ${param}moduleInstance.${def.functionName}$ctor } $binds")
+    val createAtStart = if (def.isType(SINGLE) && def.isCreatedAtStart == true) CREATED_AT_START else ""
+    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { ${param}${label()}$ctor } $binds")
+}
+
+fun OutputStream.generateFunctionDeclarationDefinition(def: KoinMetaData.Definition.FunctionDefinition) {
+//    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { ${param}moduleInstance.${def.functionName}$ctor } $binds")
+    generateDefinition(def){"moduleInstance.${def.functionName}"}
 }
 
 
-fun OutputStream.generateClassDeclarationDefinition(def: KoinMetaData.Definition.ClassDeclarationDefinition) {
-    LOGGER.logging("generate $def")
-    val param = def.constructorParameters.generateParamFunction()
-    val ctor = generateConstructor(def.constructorParameters)
-    val binds = generateBindings(def.bindings)
-    val qualifier = def.qualifier.generateQualifier()
-    val createAtStart = if (def is KoinMetaData.Definition.ClassDeclarationDefinition.Single) {
-        if (def.createdAtStart) CREATED_AT_START else ""
-    } else ""
-    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { $param${def.packageName}.${def.className}$ctor } $binds")
+fun OutputStream.generateClassDeclarationDefinition(def: KoinMetaData.Definition.ClassDefinition) {
+//    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { $param${def.packageName}.${def.className}$ctor } $binds")
+    generateDefinition(def){"${def.packageName}.${def.className}"}
 }
 
 const val CREATED_AT_START = ",createdAtStart=true"

@@ -2,7 +2,7 @@ package org.koin.compiler
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
-import org.koin.compiler.generator.KoinCodeGenerator
+import org.koin.compiler.generator.KoinGenerator
 import org.koin.compiler.metadata.KoinMetaData
 import org.koin.compiler.scanner.KoinMetaDataScanner
 
@@ -11,7 +11,7 @@ class BuilderProcessor(
     private val logger: KSPLogger
 ) : SymbolProcessor {
 
-    private val koinCodeGenerator = KoinCodeGenerator(codeGenerator, logger)
+    private val koinCodeGenerator = KoinGenerator(codeGenerator, logger)
     private val koinMetaDataScanner = KoinMetaDataScanner(logger)
 
     override fun process(resolver: Resolver): List<KSAnnotated> {

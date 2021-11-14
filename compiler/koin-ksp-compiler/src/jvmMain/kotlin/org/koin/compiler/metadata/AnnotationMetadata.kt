@@ -19,7 +19,6 @@ val SCOPE = DefinitionAnnotation("scoped", annotationType = Scope::class)
 val KOIN_VIEWMODEL = DefinitionAnnotation("viewModel", "org.koin.androidx.viewmodel.dsl.viewModel", KoinViewModel::class)
 
 val DEFINITION_ANNOTATION_LIST = listOf(SINGLE, FACTORY, KOIN_VIEWMODEL, SCOPE)
-
 val DEFINITION_ANNOTATION_LIST_TYPES = DEFINITION_ANNOTATION_LIST.map { it.annotationType }
 val DEFINITION_ANNOTATION_LIST_NAMES = DEFINITION_ANNOTATION_LIST.map { it.annotationName?.lowercase(Locale.getDefault()) }
 
