@@ -50,6 +50,26 @@ sealed class KoinMetaData {
         fun isNotScoped(): Boolean = !isScoped()
         fun isType(keyword: DefinitionAnnotation): Boolean = this.keyword == keyword
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Definition
+
+            if (label != other.label) return false
+            if (packageName != other.packageName) return false
+            if (scope != other.scope) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = label.hashCode()
+            result = 31 * result + packageName.hashCode()
+            result = 31 * result + (scope?.hashCode() ?: 0)
+            return result
+        }
+
         class FunctionDefinition(
             packageName: String,
             qualifier: String?,
@@ -71,6 +91,8 @@ sealed class KoinMetaData {
             bindings: List<KSDeclaration>,
             scope: Scope? = null
         ) : Definition(className, constructorParameters,packageName, qualifier, isCreatedAtStart, keyword, bindings, scope)
+
+
     }
 
     sealed class ConstructorParameter(val nullable: Boolean = false) {

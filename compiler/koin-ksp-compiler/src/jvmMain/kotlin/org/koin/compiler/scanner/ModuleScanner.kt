@@ -86,9 +86,8 @@ class ModuleScanner(
         logger.logging("definition(function) -> kind $annotationName", annotation)
         logger.logging("definition(function) -> kind ${annotation.arguments}", annotation)
 
-        val binds = annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
-        val allBindings = binds?.map { it.declaration } ?: emptyList()
-        logger.logging("definition(function) -> binds=$binds", annotation)
+        val allBindings = declaredBindings(annotation) ?: emptyList()
+        logger.logging("definition(function) -> binds=$allBindings", annotation)
 
         val functionParameters = ksFunctionDeclaration.parameters.getConstructorParameters()
         logger.logging("definition(function) ctor -> $functionParameters", annotation)
@@ -115,16 +114,6 @@ class ModuleScanner(
             }
             else -> null
         }
-    }
-
-    private fun getExtraScopeAnnotation(annotations: Map<String, KSAnnotation>): DefinitionAnnotation? {
-        val key = annotations.keys.firstOrNull { k -> isValidScopeExtraAnnotation(k) }
-        val definitionAnnotation = when (key) {
-            FACTORY.annotationName -> FACTORY
-            KOIN_VIEWMODEL.annotationName -> KOIN_VIEWMODEL
-            else -> null
-        }
-        return definitionAnnotation
     }
 
     private fun createFunctionDefinition(

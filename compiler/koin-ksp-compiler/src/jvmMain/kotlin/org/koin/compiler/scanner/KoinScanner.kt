@@ -50,7 +50,8 @@ class KoinMetaDataScanner(
         // component scan
         logger.logging("scan definitions ...")
 
-        val definitions = DEFINITION_ANNOTATION_LIST_TYPES.flatMap { a -> resolver.scanDefinition(a) { d -> componentMetadataScanner.extractDefinition(d) } }
+        val definitions =
+            DEFINITION_ANNOTATION_LIST_TYPES.flatMap { a -> resolver.scanDefinition(a) { d -> componentMetadataScanner.extractDefinition(d) } }
 
         definitions.forEach { addToModule(it, defaultModule) }
         return definitions
@@ -71,7 +72,12 @@ class KoinMetaDataScanner(
         val foundModule = moduleMap.values.firstOrNull { it.acceptDefinition(definitionPackage) }
         val module = foundModule ?: defaultModule
         logger.logging("addToModule - definition(class) -> $definition -> module $module")
-        module.definitions.add(definition)
+        val alreadyExists = module.definitions.contains(definition)
+        if (!alreadyExists) {
+            module.definitions.add(definition)
+        } else {
+            logger.logging("skip addToModule - definition(class) -> $definition -> module $module - already exists")
+        }
     }
 }
 

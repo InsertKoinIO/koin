@@ -9,7 +9,7 @@ class ComponentScanner(
 ) {
 
     fun extractDefinition(element: KSAnnotated): KoinMetaData.Definition {
-        logger.logging("definition(class) -> $element", element)
+        logger.warn("definition(class) -> $element", element)
         val ksClassDeclaration = (element as KSClassDeclaration)
         val packageName = ksClassDeclaration.containingFile!!.packageName.asString()
         val className = ksClassDeclaration.simpleName.asString()
@@ -38,10 +38,9 @@ class ComponentScanner(
         annotations: Map<String, KSAnnotation> = emptyMap()
     ): KoinMetaData.Definition.ClassDefinition {
         logger.logging("definition(class) bindings ...", element)
-        val declaredBindingsTypes = annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
-        val declaredBindings = declaredBindingsTypes?.map { it.declaration }
+        val declaredBindings = declaredBindings(annotation)
         val defaultBindings = ksClassDeclaration.superTypes.map { it.resolve().declaration }.toList()
-        val allBindings = if (declaredBindings?.isNotEmpty() == true) declaredBindings else defaultBindings
+        val allBindings: List<KSDeclaration> = if (declaredBindings?.isNotEmpty() == true) declaredBindings else defaultBindings
         logger.logging("definition(class) bindings -> $allBindings", element)
 
         val ctorParams = ksClassDeclaration.primaryConstructor?.parameters?.getConstructorParameters()
@@ -59,11 +58,15 @@ class ComponentScanner(
                 createClassDefinition(FACTORY,packageName, qualifier, className, ctorParams, allBindings)
             }
             SCOPE.annotationName -> {
-                // TODO Any other annotation?
-                logger.warn("other annotations: ${annotations.keys}",element)
+                logger.warn("scope extra annotations: ${annotations.keys}",element)
                 val scopeData : KoinMetaData.Scope = annotation.arguments.getScope()
-                logger.logging("definition(class) scope -> $$scopeData", element)
-                createClassDefinition(SCOPE,packageName, qualifier, className, ctorParams, allBindings,scope = scopeData)
+                val extraAnnotationDefinition = getExtraScopeAnnotation(annotations)
+                logger.warn("definition(class) scope -> $$scopeData", element)
+                logger.warn("definition(class) default allBindings -> $$allBindings", element)
+                val extraAnnotation = annotations[extraAnnotationDefinition?.annotationName]
+                val extraDeclaredBindings = extraAnnotation?.let { declaredBindings(it) }
+                val extraScopeBindings = if(extraDeclaredBindings?.isNotEmpty() == true) extraDeclaredBindings else allBindings
+                createClassDefinition(extraAnnotationDefinition ?: SCOPE,packageName, qualifier, className, ctorParams, extraScopeBindings,scope = scopeData)
             }
             else -> error("Unknown annotation type: $annotationName")
         }

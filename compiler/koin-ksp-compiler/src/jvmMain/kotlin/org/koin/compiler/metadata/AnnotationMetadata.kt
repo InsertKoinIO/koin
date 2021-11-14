@@ -1,5 +1,8 @@
 package org.koin.compiler.metadata
 
+import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.*
 import java.util.*
@@ -30,3 +33,17 @@ fun isValidAnnotation(s: String): Boolean = s.lowercase(Locale.getDefault()) in 
 fun isValidScopeExtraAnnotation(s: String): Boolean = s.lowercase(Locale.getDefault()) in SCOPE_DEFINITION_ANNOTATION_LIST_NAMES
 fun isScopeAnnotation(s: String): Boolean = s.lowercase(Locale.getDefault()) == SCOPE.annotationName?.lowercase(Locale.getDefault())
 
+fun getExtraScopeAnnotation(annotations: Map<String, KSAnnotation>): DefinitionAnnotation? {
+    val key = annotations.keys.firstOrNull { k -> isValidScopeExtraAnnotation(k) }
+    val definitionAnnotation = when (key) {
+        FACTORY.annotationName -> FACTORY
+        KOIN_VIEWMODEL.annotationName -> KOIN_VIEWMODEL
+        else -> null
+    }
+    return definitionAnnotation
+}
+
+fun declaredBindings(annotation: KSAnnotation): List<KSDeclaration>? {
+    val declaredBindingsTypes = annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
+    return declaredBindingsTypes?.map { it.declaration }
+}
