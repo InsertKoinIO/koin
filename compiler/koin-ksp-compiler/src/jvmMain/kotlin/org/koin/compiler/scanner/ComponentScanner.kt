@@ -9,7 +9,7 @@ class ComponentScanner(
 ) {
 
     fun extractDefinition(element: KSAnnotated): KoinMetaData.Definition {
-        logger.warn("definition(class) -> $element", element)
+        logger.logging("definition(class) -> $element", element)
         val ksClassDeclaration = (element as KSClassDeclaration)
         val packageName = ksClassDeclaration.containingFile!!.packageName.asString()
         val className = ksClassDeclaration.simpleName.asString()
@@ -58,11 +58,10 @@ class ComponentScanner(
                 createClassDefinition(FACTORY,packageName, qualifier, className, ctorParams, allBindings)
             }
             SCOPE.annotationName -> {
-                logger.warn("scope extra annotations: ${annotations.keys}",element)
+                logger.logging("scope extra annotations: ${annotations.keys}",element)
                 val scopeData : KoinMetaData.Scope = annotation.arguments.getScope()
                 val extraAnnotationDefinition = getExtraScopeAnnotation(annotations)
-                logger.warn("definition(class) scope -> $$scopeData", element)
-                logger.warn("definition(class) default allBindings -> $$allBindings", element)
+                logger.logging("definition(class) scope -> $$scopeData", element)
                 val extraAnnotation = annotations[extraAnnotationDefinition?.annotationName]
                 val extraDeclaredBindings = extraAnnotation?.let { declaredBindings(it) }
                 val extraScopeBindings = if(extraDeclaredBindings?.isNotEmpty() == true) extraDeclaredBindings else allBindings
