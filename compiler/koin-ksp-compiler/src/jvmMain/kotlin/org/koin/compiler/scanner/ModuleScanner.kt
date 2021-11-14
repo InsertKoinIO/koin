@@ -3,6 +3,7 @@ package org.koin.compiler.scanner
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import org.koin.compiler.metadata.*
+import java.util.*
 
 class ModuleScanner(
     val logger: KSPLogger
@@ -106,13 +107,24 @@ class ModuleScanner(
                 createFunctionDefinition(KOIN_VIEWMODEL,packageName,qualifier,functionName,functionParameters,allBindings)
             }
             SCOPE.annotationName -> {
-                //TODO Any other annotation?
                 val scopeData : KoinMetaData.Scope = annotation.arguments.getScope()
                 logger.logging("definition(function) -> scope $scopeData", annotation)
-                createFunctionDefinition(SCOPE,packageName,qualifier,functionName,functionParameters,allBindings,scope = scopeData)
+                val extraAnnotation = getExtraScopeAnnotation(annotations)
+                logger.logging("definition(function) -> extra scope annotation $extraAnnotation", annotation)
+                createFunctionDefinition(extraAnnotation ?: SCOPE,packageName,qualifier,functionName,functionParameters,allBindings,scope = scopeData)
             }
             else -> null
         }
+    }
+
+    private fun getExtraScopeAnnotation(annotations: Map<String, KSAnnotation>): DefinitionAnnotation? {
+        val key = annotations.keys.firstOrNull { k -> isValidScopeExtraAnnotation(k) }
+        val definitionAnnotation = when (key) {
+            FACTORY.annotationName -> FACTORY
+            KOIN_VIEWMODEL.annotationName -> KOIN_VIEWMODEL
+            else -> null
+        }
+        return definitionAnnotation
     }
 
     private fun createFunctionDefinition(

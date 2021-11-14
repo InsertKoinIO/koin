@@ -11,17 +11,17 @@ fun OutputStream.generateDefinition(def: KoinMetaData.Definition, label : () -> 
     val binds = generateBindings(def.bindings)
     val qualifier = def.qualifier.generateQualifier()
     val createAtStart = if (def.isType(SINGLE) && def.isCreatedAtStart == true) CREATED_AT_START else ""
-    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { ${param}${label()}$ctor } $binds")
+    val defaultSpace = "\n\t\t\t\t"
+    val space = if (def.isScoped()) defaultSpace + "\t" else defaultSpace
+    appendText("$space${def.keyword.keyword}($qualifier$createAtStart) { ${param}${label()}$ctor } $binds")
 }
 
 fun OutputStream.generateFunctionDeclarationDefinition(def: KoinMetaData.Definition.FunctionDefinition) {
-//    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { ${param}moduleInstance.${def.functionName}$ctor } $binds")
     generateDefinition(def){"moduleInstance.${def.functionName}"}
 }
 
 
 fun OutputStream.generateClassDeclarationDefinition(def: KoinMetaData.Definition.ClassDefinition) {
-//    appendText("\n\t\t\t\t${def.keyword.keyword}($qualifier$createAtStart) { $param${def.packageName}.${def.className}$ctor } $binds")
     generateDefinition(def){"${def.packageName}.${def.className}"}
 }
 
@@ -54,7 +54,7 @@ fun generateScope(scope: KoinMetaData.Scope): String {
             val className = type.simpleName.asString()
             "\n\t\t\t\tscope<$packageName.$className> {"
         }
-        is KoinMetaData.Scope.StringScope -> "\n\t\t\t\tscope(named(\"${scope.name}\")) {"
+        is KoinMetaData.Scope.StringScope -> "\n\t\t\t\tscope(StringQualifier(\"${scope.name}\")) {"
     }
 }
 

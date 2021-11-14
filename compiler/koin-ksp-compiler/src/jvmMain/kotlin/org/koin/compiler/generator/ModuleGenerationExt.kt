@@ -27,12 +27,18 @@ fun OutputStream.generateFieldModule(definitions: List<KoinMetaData.Definition>)
 
 fun generateClassModule(classFile: OutputStream, module: KoinMetaData.Module) {
     classFile.appendText(MODULE_HEADER)
+    if (module.definitions.any { it.qualifier != null || it.scope != null }) {
+        classFile.appendText(MODULE_HEADER_STRING_QUALIFIER)
+    }
     classFile.appendText(module.definitions.generateImports())
 
     val generatedField = "${module.name}Module"
     val classModule = "${module.packageName}.${module.name}"
     classFile.appendText("\nval $generatedField = module {")
-    classFile.appendText("\n\t\t\t\tval moduleInstance = $classModule()")
+
+    if (module.definitions.any { it is KoinMetaData.Definition.FunctionDefinition }) {
+        classFile.appendText("\n\t\t\t\tval moduleInstance = $classModule()")
+    }
 
     val standardDefinitions = module.definitions.filter { it.isNotScoped() }
 
@@ -90,6 +96,9 @@ fun KoinGenerator.generateDefaultModuleForDefinitions(
 
 fun OutputStream.generateDefaultModuleHeader(definitions: List<KoinMetaData.Definition> = emptyList()) {
     appendText(DEFAULT_MODULE_HEADER)
+    if (definitions.any { it.qualifier != null || it.scope != null }) {
+        appendText(MODULE_HEADER_STRING_QUALIFIER)
+    }
     appendText(definitions.generateImports())
     appendText(DEFAULT_MODULE_FUNCTION)
 }

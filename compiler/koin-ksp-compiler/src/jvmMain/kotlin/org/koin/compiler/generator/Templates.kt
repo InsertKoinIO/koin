@@ -5,9 +5,7 @@ val DEFAULT_MODULE_HEADER = """
     
         import org.koin.core.KoinApplication
         import org.koin.core.module.Module
-        import org.koin.core.qualifier.*
         import org.koin.dsl.*
-        
     """.trimIndent()
 
 val DEFAULT_MODULE_FUNCTION = """
@@ -22,8 +20,9 @@ val DEFAULT_MODULE_FOOTER = """
 
 val MODULE_HEADER = """
             package org.koin.ksp.generated
-            import org.koin.core.qualifier.*
             import org.koin.dsl.*
+        """.trimIndent()
+
+val MODULE_HEADER_STRING_QUALIFIER = """
             import org.koin.core.qualifier.StringQualifier
-            
         """.trimIndent()
