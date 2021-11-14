@@ -30,7 +30,7 @@ kotlin {
         watchosSimulatorArm64()
         tvosArm64()
         tvosX64()
-        tvosSimulatorArmX64()
+        tvosSimulatorArm64()
         //    androidNativeArm32()
         //    androidNativeArm64()
         mingwX64()
