@@ -3,7 +3,6 @@ package org.koin.compiler.scanner
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import org.koin.compiler.metadata.*
-import java.util.*
 
 class ModuleScanner(
     val logger: KSPLogger
@@ -80,10 +79,10 @@ class ModuleScanner(
 
         return when (annotationName) {
             SINGLE.annotationName -> {
-                val createdAtStart: Boolean =
-                    annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
-                        ?: false
-                createFunctionDefinition(SINGLE,packageName,qualifier,functionName,functionParameters,allBindings, isCreatedAtStart = createdAtStart)
+                createSingleDefinition(annotation, packageName, qualifier, functionName, functionParameters, allBindings)
+            }
+            SINGLETON.annotationName -> {
+                createSingleDefinition(annotation, packageName, qualifier, functionName, functionParameters, allBindings)
             }
             FACTORY.annotationName -> {
                 createFunctionDefinition(FACTORY,packageName,qualifier,functionName,functionParameters,allBindings)
@@ -98,6 +97,28 @@ class ModuleScanner(
             }
             else -> null
         }
+    }
+
+    private fun createSingleDefinition(
+        annotation: KSAnnotation,
+        packageName: String,
+        qualifier: String?,
+        functionName: String,
+        functionParameters: List<KoinMetaData.ConstructorParameter>,
+        allBindings: List<KSDeclaration>
+    ): KoinMetaData.Definition.FunctionDefinition {
+        val createdAtStart: Boolean =
+            annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
+                ?: false
+        return createFunctionDefinition(
+            SINGLE,
+            packageName,
+            qualifier,
+            functionName,
+            functionParameters,
+            allBindings,
+            isCreatedAtStart = createdAtStart
+        )
     }
 
     private fun createFunctionDefinition(

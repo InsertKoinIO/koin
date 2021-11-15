@@ -4,6 +4,8 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
 annotation class Single(val binds: Array<KClass<*>> = [], val createdAtStart: Boolean = false)
+annotation class Singleton(val binds: Array<KClass<*>> = [], val createdAtStart: Boolean = false)
+
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
 annotation class Factory(val binds: Array<KClass<*>> = [])
 
@@ -15,7 +17,8 @@ private object NoClass
 annotation class Scoped(val binds: Array<KClass<*>> = [])
 
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION,AnnotationTarget.VALUE_PARAMETER)
-annotation class Qualifier(val value: String)
+annotation class Named(val value: String)
+
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class InjectedParam()

@@ -42,8 +42,10 @@ class ComponentScanner(
 
         return when (annotationName) {
             SINGLE.annotationName -> {
-                val createdAtStart: Boolean = annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean? ?: false
-                createClassDefinition(SINGLE,packageName, qualifier, className, ctorParams, allBindings, isCreatedAtStart = createdAtStart)
+                createSingleDefinition(annotation, packageName, qualifier, className, ctorParams, allBindings)
+            }
+            SINGLETON.annotationName -> {
+                createSingleDefinition(annotation, packageName, qualifier, className, ctorParams, allBindings)
             }
             FACTORY.annotationName -> {
                 createClassDefinition(FACTORY,packageName, qualifier, className, ctorParams, allBindings)
@@ -61,6 +63,19 @@ class ComponentScanner(
             }
             else -> error("Unknown annotation type: $annotationName")
         }
+    }
+
+    private fun createSingleDefinition(
+        annotation: KSAnnotation,
+        packageName: String,
+        qualifier: String?,
+        className: String,
+        ctorParams: List<KoinMetaData.ConstructorParameter>?,
+        allBindings: List<KSDeclaration>
+    ): KoinMetaData.Definition.ClassDefinition {
+        val createdAtStart: Boolean =
+            annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean? ?: false
+        return createClassDefinition(SINGLE, packageName, qualifier, className, ctorParams, allBindings, isCreatedAtStart = createdAtStart)
     }
 
     private fun createClassDefinition(
