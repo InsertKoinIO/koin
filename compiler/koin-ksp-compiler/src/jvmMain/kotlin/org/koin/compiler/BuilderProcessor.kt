@@ -19,10 +19,10 @@ class BuilderProcessor(
             packageName = "",
             name = "defaultModule"
         )
-        logger.logging("Scan org.koin.compiler.metadata ...")
+        logger.logging("Scan metadata ...")
         val (moduleMap, definitions) = koinMetaDataScanner.scanAllMetaData(resolver, defaultModule)
 
-        logger.logging("Code generation ...")
+        logger.logging("Generate code ...")
         if (moduleMap.isNotEmpty()) {
             koinCodeGenerator.generateModules(moduleMap, defaultModule)
         } else {

@@ -57,7 +57,6 @@ private fun getConstructorParameter(param: KSValueParameter): KoinMetaData.Const
     val annotationName = firstAnnotation?.shortName?.asString()
     val annotationValue = firstAnnotation?.arguments?.getValueArgument()
     val isNullable = param.type.resolve().isMarkedNullable
-    KoinGenerator.LOGGER.logging("annotation? $firstAnnotation  name:$annotationName  value:$annotationValue")
     return when (annotationName) {
         "${InjectedParam::class.simpleName}" -> KoinMetaData.ConstructorParameter.ParameterInject(isNullable)
         "${Property::class.simpleName}" -> KoinMetaData.ConstructorParameter.Property(annotationValue,isNullable)

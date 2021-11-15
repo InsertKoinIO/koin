@@ -14,8 +14,6 @@ class ComponentScanner(
         val packageName = ksClassDeclaration.containingFile!!.packageName.asString()
         val className = ksClassDeclaration.simpleName.asString()
         val qualifier = ksClassDeclaration.getStringQualifier()
-        logger.logging("definition(class) qualifier -> $qualifier", element)
-
         val annotations = element.getKoinAnnotations()
         val scopeAnnotation = annotations.getScopeAnnotation()
         return if (scopeAnnotation != null){
@@ -37,14 +35,10 @@ class ComponentScanner(
         className: String,
         annotations: Map<String, KSAnnotation> = emptyMap()
     ): KoinMetaData.Definition.ClassDefinition {
-        logger.logging("definition(class) bindings ...", element)
         val declaredBindings = declaredBindings(annotation)
         val defaultBindings = ksClassDeclaration.superTypes.map { it.resolve().declaration }.toList()
         val allBindings: List<KSDeclaration> = if (declaredBindings?.isNotEmpty() == true) declaredBindings else defaultBindings
-        logger.logging("definition(class) bindings -> $allBindings", element)
-
         val ctorParams = ksClassDeclaration.primaryConstructor?.parameters?.getConstructorParameters()
-        logger.logging("definition(class) ctor -> $ctorParams", element)
 
         return when (annotationName) {
             SINGLE.annotationName -> {
@@ -58,10 +52,8 @@ class ComponentScanner(
                 createClassDefinition(FACTORY,packageName, qualifier, className, ctorParams, allBindings)
             }
             SCOPE.annotationName -> {
-                logger.logging("scope extra annotations: ${annotations.keys}",element)
                 val scopeData : KoinMetaData.Scope = annotation.arguments.getScope()
                 val extraAnnotationDefinition = getExtraScopeAnnotation(annotations)
-                logger.logging("definition(class) scope -> $$scopeData", element)
                 val extraAnnotation = annotations[extraAnnotationDefinition?.annotationName]
                 val extraDeclaredBindings = extraAnnotation?.let { declaredBindings(it) }
                 val extraScopeBindings = if(extraDeclaredBindings?.isNotEmpty() == true) extraDeclaredBindings else allBindings

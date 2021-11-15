@@ -71,7 +71,6 @@ class KoinMetaDataScanner(
         val definitionPackage = definition.packageName
         val foundModule = moduleMap.values.firstOrNull { it.acceptDefinition(definitionPackage) }
         val module = foundModule ?: defaultModule
-        logger.logging("addToModule - definition(class) -> $definition -> module $module")
         val alreadyExists = module.definitions.contains(definition)
         if (!alreadyExists) {
             module.definitions.add(definition)

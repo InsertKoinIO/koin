@@ -41,8 +41,11 @@ fun String?.generateQualifier(): String = when {
 fun generateBindings(bindings: List<KSDeclaration>): String {
     return when {
         bindings.isEmpty() -> ""
-        bindings.size == 1 -> "bind(${generateBinding(bindings.first())})"
-        else -> bindings.joinToString(prefix = "binds(", separator = ",", postfix = ")") { generateBinding(it) }
+        bindings.size == 1 -> {
+            val generateBinding = generateBinding(bindings.first())
+            generateBinding?.let { "bind($generateBinding)" } ?: ""
+        }
+        else -> bindings.joinToString(prefix = "binds(", separator = ",", postfix = ")") { generateBinding(it) ?: "" }
     }
 }
 
@@ -58,16 +61,14 @@ fun generateScope(scope: KoinMetaData.Scope): String {
     }
 }
 
-fun generateBinding(declaration: KSDeclaration): String {
-    val packageName = declaration.containingFile!!.packageName.asString()
+fun generateBinding(declaration: KSDeclaration): String? {
+    val packageName = declaration.containingFile?.packageName?.asString()
     val className = declaration.simpleName.asString()
-    return "$packageName.$className::class"
+    return packageName?.let { "$packageName.$className::class" }
 }
 
 fun generateConstructor(constructorParameters: List<KoinMetaData.ConstructorParameter>): String {
-    LOGGER.logging("generate ctor ...")
     return constructorParameters.joinToString(prefix = "(", separator = ",", postfix = ")") { ctorParam ->
-        LOGGER.logging("generate ctor: $ctorParam")
         val isNullable : Boolean = ctorParam.nullable
         when (ctorParam) {
             is KoinMetaData.ConstructorParameter.Dependency -> {
