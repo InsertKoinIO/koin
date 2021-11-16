@@ -45,7 +45,7 @@ fun generateBindings(bindings: List<KSDeclaration>): String {
             val generateBinding = generateBinding(bindings.first())
             generateBinding?.let { "bind($generateBinding)" } ?: ""
         }
-        else -> bindings.joinToString(prefix = "binds(", separator = ",", postfix = ")") { generateBinding(it) ?: "" }
+        else -> bindings.joinToString(prefix = "binds(arrayOf(", separator = ",", postfix = "))") { generateBinding(it) ?: "" }
     }
 }
 

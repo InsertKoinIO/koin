@@ -19,7 +19,6 @@ annotation class Scoped(val binds: Array<KClass<*>> = [])
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION,AnnotationTarget.VALUE_PARAMETER)
 annotation class Named(val value: String)
 
-
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class InjectedParam()
 
