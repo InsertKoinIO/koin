@@ -7,6 +7,8 @@ import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.scope.activityRetainedScope
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -14,9 +16,14 @@ import org.koin.sample.android.R
 import org.koin.sample.androidx.components.*
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.components.scope.SessionActivity
+import org.koin.sample.androidx.di.scopeModuleActivityA
 import org.koin.sample.androidx.utils.navigateTo
 
 class ScopedActivityA : ScopeActivity(contentLayoutId = R.layout.scoped_activity_a) {
+
+    init {
+        loadKoinModules(scopeModuleActivityA)
+    }
 
     // Inject from current scope
     val currentSession by inject<Session>()
@@ -58,6 +65,11 @@ class ScopedActivityA : ScopeActivity(contentLayoutId = R.layout.scoped_activity
 
         scopeSession1.close()
         scopeSession2.close()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unloadKoinModules(scopeModuleActivityA)
     }
 
     companion object {

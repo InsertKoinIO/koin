@@ -66,11 +66,10 @@ class ScopeAPITest {
     }
 
     @Test
-    fun `can't create scope instance with unknown scope def`() {
+    fun `can create scope instance with unknown scope def`() {
 
         try {
             koin.createScope("myScope", named("a_scope"))
-            fail()
         } catch (e: NoScopeDefFoundException) {
             e.printStackTrace()
         }

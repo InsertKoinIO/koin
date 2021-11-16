@@ -76,6 +76,9 @@ val scopeModule = module {
         }
     }
 
+}
+
+val scopeModuleActivityA = module {
     scope<ScopedActivityA> {
         scoped<Session>()
         scoped { SessionActivity(get()) }
@@ -97,4 +100,4 @@ val navModule = module {
 // workerScopedModule can't be runned in unit test
 val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule
 
-val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule
+val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule + scopeModuleActivityA

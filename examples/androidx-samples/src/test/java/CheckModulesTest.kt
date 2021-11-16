@@ -1,3 +1,4 @@
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -30,6 +31,7 @@ class CheckModulesTest {
     fun `test DI modules`(){
         checkKoinModules(allTestModules){
             withInstance<Context>()
+            withInstance<Activity>()
             withInstance<Application>()
             withInstance<SavedStateHandle>()
             withInstance<WorkerParameters>()

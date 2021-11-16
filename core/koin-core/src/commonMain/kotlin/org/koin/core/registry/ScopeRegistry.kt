@@ -57,7 +57,8 @@ class ScopeRegistry(private val _koin: Koin) {
     @PublishedApi
     internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
         if (!_scopeDefinitions.contains(qualifier)){
-            throw NoScopeDefFoundException("Scope '$qualifier' doesn't exist. Please declare it in a module.")
+            _koin.logger.info("Warning: Scope '$qualifier' not defined. Creating it")
+            _scopeDefinitions.add(qualifier)
         }
         if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
