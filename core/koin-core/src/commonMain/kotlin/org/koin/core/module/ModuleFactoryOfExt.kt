@@ -25,10 +25,10 @@ import org.koin.core.scope.new
  *
  * Example:
  * ```
- * class ViewModel
+ * class Model
  *
  * val myModule = module {
- *   factory(::ViewModel)
+ *   factory(::Model)
  * }
  * ```
  *
