@@ -27,10 +27,10 @@ import org.koin.core.scope.new
  *
  * Example:
  * ```
- * class ViewModel
+ * class MyViewModel : ViewModel()
  *
  * val myModule = module {
- *   viewModel(::ViewModel)
+ *   viewModel(::MyViewModel)
  * }
  * ```
  *
