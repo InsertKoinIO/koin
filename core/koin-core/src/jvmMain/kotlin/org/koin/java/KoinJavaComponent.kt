@@ -38,7 +38,7 @@ object KoinJavaComponent {
 
     @JvmStatic
     @JvmOverloads
-    fun <T : Any> inject(
+    fun <T> inject(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
@@ -58,12 +58,12 @@ object KoinJavaComponent {
 
     @JvmStatic
     @JvmOverloads
-    fun <T : Any> injectOrNull(
+    fun <T> injectOrNull(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> {
-        return lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    ): Lazy<T?> {
+        return lazy {
             getOrNull(clazz, qualifier, parameters)
         }
     }
@@ -78,7 +78,7 @@ object KoinJavaComponent {
 
     @JvmStatic
     @JvmOverloads
-    fun <T : Any> get(
+    fun <T> get(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
@@ -101,7 +101,7 @@ object KoinJavaComponent {
 
     @JvmStatic
     @JvmOverloads
-    fun <T : Any> getOrNull(
+    fun <T> getOrNull(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
@@ -113,25 +113,6 @@ object KoinJavaComponent {
             parameters
         )
     }
-
-//    /**
-//     * Retrieve given dependency
-//     * @param clazz - dependency class
-//     * @param qualifier - bean canonicalName / optional
-//     * @param scope - scope
-//     * @param parameters - dependency parameters / optional
-//     */
-//
-//    @JvmStatic
-//    @JvmOverloads
-//    fun <P : Any, S : Any> bind(
-//        primary: Class<P>,
-//        secondary: Class<S>,
-//        parameters: ParametersDefinition? = null
-//    ): S {
-//        return getKoin()
-//            .bind(primary.kotlin, secondary.kotlin, parameters)
-//    }
 
     /**
      * inject lazily given property
