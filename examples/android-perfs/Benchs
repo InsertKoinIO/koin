@@ -1,5 +1,31 @@
 - Execution of android-perfs app -
 
+- OnePlus Nord
+--
+
+[1] started in 67.643593 ms
+[1] measured executed in 0.675052 ms
+[2] started in 7.200364 ms
+[2] measured executed in 0.15099 ms
+[3] started in 7.424063 ms
+[3] measured executed in 0.13875 ms
+[4] started in 6.076094 ms
+[4] measured executed in 0.130208 ms
+[5] started in 5.333489 ms
+[5] measured executed in 0.143854 ms
+[6] started in 4.841771 ms
+[6] measured executed in 0.107031 ms
+[7] started in 4.611615 ms
+[7] measured executed in 0.119011 ms
+[8] started in 4.065208 ms
+[8] measured executed in 0.127031 ms
+[9] started in 4.058386 ms
+[9] measured executed in 0.086771 ms
+[10] started in 3.925886 ms
+[10] measured executed in 0.10125 ms
+Avg start time: 11.518046899999998
+Avg execution time: 0.1779948
+
 - Nokia 7p (Android 9) - 2.0.1
 --
 [1] started in 235.78224 ms
