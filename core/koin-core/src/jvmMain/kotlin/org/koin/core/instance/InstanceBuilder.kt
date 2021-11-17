@@ -1,5 +1,6 @@
 package org.koin.core.instance
 
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersHolder
@@ -10,6 +11,7 @@ import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
+@KoinReflectAPI
 inline fun <reified T : Any> Scope.newInstance(defParams: ParametersHolder = emptyParametersHolder()): T {
     return newInstance(T::class, defParams)
 }
@@ -17,6 +19,7 @@ inline fun <reified T : Any> Scope.newInstance(defParams: ParametersHolder = emp
 /**
  * Create instance for type T and inject dependencies into 1st constructor
  */
+@KoinReflectAPI
 fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T {
     val instance: Any
 
@@ -49,7 +52,7 @@ fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T 
     return instance as T
 }
 
-fun createInstance(args: Array<Any>, constructor: Constructor<out Any>): Any {
+private fun createInstance(args: Array<Any>, constructor: Constructor<out Any>): Any {
     return if (args.isEmpty()) {
         constructor.newInstance()
     } else {
@@ -60,7 +63,7 @@ fun createInstance(args: Array<Any>, constructor: Constructor<out Any>): Any {
 /**
  * Retrieve arguments for given constructor
  */
-fun getArguments(constructor: Constructor<*>, scope: Scope, parameters: ParametersHolder): Array<Any> {
+private fun getArguments(constructor: Constructor<*>, scope: Scope, parameters: ParametersHolder): Array<Any> {
     val length = constructor.parameterTypes.size
     return if (length == 0) emptyArray()
     else {

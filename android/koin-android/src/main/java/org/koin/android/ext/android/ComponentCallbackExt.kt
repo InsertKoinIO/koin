@@ -16,15 +16,12 @@
 package org.koin.android.ext.android
 
 import android.content.ComponentCallbacks
-import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
-
 
 /**
  * Get Koin context
@@ -34,13 +31,6 @@ fun ComponentCallbacks.getKoin() = when (this) {
     else -> GlobalContext.get()
 }
 
-@OptIn(KoinInternalApi::class)
-fun ComponentCallbacks.getDefaultScope(): Scope = when (this) {
-    is AndroidScopeComponent -> this.scope
-    is KoinScopeComponent -> this.scope
-    else -> getKoin().scopeRegistry.rootScope
-}
-
 /**
  * inject lazily given dependency for Android koincomponent
  * @param qualifier - bean qualifier / optional
@@ -48,9 +38,9 @@ fun ComponentCallbacks.getDefaultScope(): Scope = when (this) {
  * @param parameters - injection parameters
  */
 inline fun <reified T : Any> ComponentCallbacks.inject(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null,
 ) = lazy(mode) { get<T>(qualifier, parameters) }
 
 /**
@@ -59,19 +49,11 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
  * @param scope
  * @param parameters - injection parameters
  */
+@OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> ComponentCallbacks.get(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getDefaultScope().get(qualifier, parameters)
+    val params: ParametersDefinition = parameters?.let { { it().add(this) } } ?: { parametersOf(this) }
+    return getKoinScope().get(qualifier, params)
 }
-
-///**
-// * get given dependency for Android koincomponent, from primary and secondary types
-// * @param name - bean name
-// * @param scope
-// * @param parameters - injection parameters
-// */
-//inline fun <reified S, reified P> ComponentCallbacks.bind(
-//        noinline parameters: ParametersDefinition? = null,
-//): S = getKoin().bind<S, P>(parameters)

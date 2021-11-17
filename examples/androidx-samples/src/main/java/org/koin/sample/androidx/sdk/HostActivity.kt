@@ -3,8 +3,6 @@ package org.koin.sample.androidx.sdk
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.host_activity.*
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.inject
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.main.SimpleService
@@ -22,8 +20,8 @@ class HostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val sdkService = CustomSDK.koinApp.koin.get<SimpleService>()
-        assertNotEquals(service, sdkService)
-        assertEquals(CustomService().service, sdkService)
+        assert(service != sdkService)
+        assert(CustomService().service == sdkService)
 
         title = "Host Activity with SDK"
         setContentView(R.layout.host_activity)

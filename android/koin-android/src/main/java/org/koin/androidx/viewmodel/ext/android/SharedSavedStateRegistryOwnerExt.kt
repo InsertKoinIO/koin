@@ -15,17 +15,15 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.content.ComponentCallbacks
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.android.ext.android.getDefaultScope
+import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
-import org.koin.androidx.viewmodel.koin.getViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.androidx.viewmodel.scope.getViewModel
-import org.koin.core.context.GlobalContext
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -35,6 +33,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("getStateViewModel will be merged to sharedViewModel - no need anymore of state parameter")
 inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -45,6 +44,7 @@ inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
     }
 }
 
+@Deprecated("getStateViewModel will be merged to sharedViewModel - no need anymore of state parameter")
 fun <T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
@@ -54,6 +54,7 @@ fun <T : ViewModel> Fragment.sharedStateViewModel(
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, clazz, parameters) }
 }
 
+@Deprecated("getStateViewModel will be merged to getViewModel - no need anymore of state parameter")
 inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -62,25 +63,13 @@ inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     return getStateViewModel(qualifier, state, T::class, parameters)
 }
 
+@Deprecated("getStateViewModel will be merged to getViewModel - no need anymore of state parameter")
+@OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return when (this) {
-        is ComponentCallbacks -> {
-            getDefaultScope().getViewModel(
-                qualifier,
-                state,
-                { from(activity as ViewModelStoreOwner, this) },
-                clazz,
-                parameters
-            )
-        }
-        else -> {
-            GlobalContext.get()
-                .getViewModel(qualifier, state, { from(activity as ViewModelStoreOwner, this) }, clazz, parameters)
-        }
-    }
+    return getKoinScope().getViewModel(qualifier, { from(activity as ViewModelStoreOwner, this) }, clazz, parameters)
 }

@@ -63,5 +63,5 @@ object ViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T = GlobalContext.get().getViewModel(qualifier, null, { ViewModelOwner.from(owner) }, clazz.kotlin, parameters)
+    ): T = GlobalContext.get().getViewModel(qualifier, { ViewModelOwner.from(owner) }, clazz.kotlin, parameters)
 }

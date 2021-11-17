@@ -5,7 +5,7 @@ apply from: '../../gradle/versions-examples.gradle'
 apply from: "../../gradle/versions.gradle"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
@@ -54,14 +54,13 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 dependencies {
 
     // Koin
-    implementation "org.koin:koin-androidx-compose:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
 
     // Compose
     implementation "androidx.compose.runtime:runtime:$androidx_compose_version"
     implementation "androidx.compose.ui:ui:$androidx_compose_version"
     implementation "androidx.compose.foundation:foundation-layout:$androidx_compose_version"
     implementation "androidx.compose.material:material:$androidx_compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$androidx_compose_version"
     implementation "androidx.compose.foundation:foundation:$androidx_compose_version"
     implementation "androidx.compose.animation:animation:$androidx_compose_version"
 //    implementation "androidx.ui:ui-tooling:$androidx_compose_version"
@@ -69,6 +68,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
     implementation 'androidx.activity:activity-ktx:1.1.0'
+    implementation "androidx.activity:activity-compose:1.3.1"
     implementation 'androidx.core:core-ktx:1.5.0-alpha02'
 
     testImplementation 'junit:junit:4.13'

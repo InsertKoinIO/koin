@@ -21,6 +21,7 @@ import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
+import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersDefinition
@@ -160,10 +161,10 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: ClosedScopeException) {
-            _koin.logger.debug("Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("|- Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin.logger.debug("No instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("|- No instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
@@ -194,6 +195,24 @@ data class Scope(
         }
     }
 
+    /**
+     * Refresh instance value of given ScopedInstanceFactory
+     */
+    fun <T : Any> refreshScopeInstance(
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        instance: T
+    ) {
+        if (_closed) {
+            throw ClosedScopeException("Scope '$id' is closed")
+        }
+        val definition = _koin.instanceRegistry.resolveDefinition(clazz, qualifier, scopeQualifier)
+        (definition as? ScopedInstanceFactory)?.apply {
+            _koin.logger.debug("|- '${clazz.getFullName()}' refresh with $instance")
+            refreshInstance(id, instance)
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun <T> resolveInstance(
         qualifier: Qualifier?,
@@ -205,12 +224,14 @@ data class Scope(
         }
         val parameters = parameterDef?.invoke()
         if (parameters != null) {
+            _koin.logger.log(Level.DEBUG) { "| put parameters on stack $parameters " }
             _parameterStack.addFirst(parameters)
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
         if (parameters != null) {
-            _parameterStack.removeFirst()
+            _koin.logger.log(Level.DEBUG) { "| remove parameters from stack" }
+            _parameterStack.removeFirstOrNull()
         }
         return value
     }
@@ -222,11 +243,11 @@ data class Scope(
         parameterDef: ParametersDefinition?
     ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters" }
+            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters" }
             _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' look at scope source" }
+            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" }
             _source?.let {
                 if (clazz.isInstance(it)) {
                     _source as? T
@@ -234,12 +255,12 @@ data class Scope(
             }
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" }
+            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" }
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "'${clazz.getFullName()}' - q:'$qualifier' not found" }
             _parameterStack.clear()
+            _koin.logger.log(Level.DEBUG) { "| clear parameter stack" }
             throwDefinitionNotFound(qualifier, clazz)
         })
 
@@ -271,7 +292,7 @@ data class Scope(
     ): Nothing {
         val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
         throw NoBeanDefFoundException(
-            "No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!"
+            "|- No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!"
         )
     }
 
@@ -363,19 +384,19 @@ data class Scope(
      * @param key
      * @param defaultValue
      */
-    fun getProperty(key: String, defaultValue: String): String = _koin.getProperty(key, defaultValue)
+    fun <T : Any> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun getPropertyOrNull(key: String): String? = _koin.getProperty(key)
+    fun <T : Any> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
 
     /**
      * Retrieve a property
      * @param key
      */
-    fun getProperty(key: String): String = _koin.getProperty(key)
+    fun <T : Any> getProperty(key: String): T = _koin.getProperty(key)
         ?: throw MissingPropertyException("Property '$key' not found")
 
     /**

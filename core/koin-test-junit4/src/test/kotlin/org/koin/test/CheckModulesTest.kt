@@ -9,6 +9,7 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.test.check.checkKoinModules
 import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
@@ -18,6 +19,33 @@ class CheckModulesTest {
     @get:Rule
     val mockProvider = MockProviderRule.create { clazz ->
         Mockito.mock(clazz.java)
+    }
+
+    @Test
+    fun `check a module - all dsl`() {
+        val modules = module {
+            single { p -> Simple.ComponentB(p.get()) }
+            single(named("param")) { p -> Simple.MyString(p.get()) }
+            single { Simple.MyString(getProperty("aValue")) }
+        }
+
+        checkKoinModules(modules){
+            withInstance<Simple.ComponentA>()
+//            withInstance<String>("a_parameter")
+            withParameter<String> { "a_parameter" }
+            withProperty("aValue", "string_value")
+        }
+    }
+
+    @Test
+    fun `check a module - named dsl value`() {
+        val modules = module {
+            single { Simple.ComponentB(get(named("_a_"))) }
+        }
+
+        checkKoinModules(modules){
+            withInstance<Simple.ComponentA>()
+        }
     }
 
     @Test
@@ -33,6 +61,52 @@ class CheckModulesTest {
                 }
             )
         }.checkModules()
+    }
+
+    @Test
+    fun `check a scoped module - injected missing`() {
+        koinApplication {
+            modules(
+                module {
+                    scope(named("scope")) {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                }
+            )
+        }.checkModules {
+            withInstance<Simple.ComponentA>()
+        }
+    }
+
+    @Test
+    fun `check a scoped module compact - injected missing`() {
+        val m = module {
+            scope(named("scope")) {
+                scoped { Simple.ComponentB(get()) }
+            }
+        }
+
+        checkKoinModules(m,logLevel = Level.DEBUG){
+            withInstance<Simple.ComponentA>()
+        }
+    }
+
+    @Test
+    fun `check a scoped modules compact - injected missing`() {
+        val m1 = module {
+            scope(named("scope")) {
+                scoped { Simple.ComponentA() }
+            }
+        }
+        val m2 = module {
+            scope(named("scope")) {
+                scoped { Simple.ComponentB(get()) }
+            }
+        }
+
+        checkKoinModules(m1+m2,logLevel = Level.DEBUG){
+            withInstance<Simple.ComponentA>()
+        }
     }
 
     @Test
@@ -129,25 +203,6 @@ class CheckModulesTest {
     }
 
     @Test
-    fun `check a scoped module and ext scope - inject scope`() {
-        koinApplication {
-            printLogger(Level.DEBUG)
-            modules(
-                module {
-                    scope(named("scope2")) {
-                        scoped { (scope1: Scope) -> Simple.ComponentB(scope1.get()) }
-                    }
-                    scope(named("scope1")) {
-                        scoped { Simple.ComponentA() }
-                    }
-                }
-            )
-        }.checkModules {
-            create<Simple.ComponentB> { parametersOf(koin.createScope("scopei1", named("scope1"))) }
-        }
-    }
-
-    @Test
     fun `check a simple module`() {
         koinApplication {
             printLogger(Level.DEBUG)
@@ -200,8 +255,8 @@ class CheckModulesTest {
                 }
             )
         }.checkModules {
-            create<Simple.MyString> { parametersOf("param") }
-            create<Simple.MyString>(UpperCase) { qualifier -> parametersOf(qualifier.toString()) }
+            withParameter<Simple.MyString> { "param" }
+            withParameter<Simple.MyString>(UpperCase) { qualifier -> qualifier.toString() }
         }
     }
 
@@ -216,9 +271,9 @@ class CheckModulesTest {
                 }
             )
         }.checkModules {
-            create(Simple.MyString::class) { parametersOf("param") }
-            create(Simple.MyString::class, UpperCase) { qualifier ->
-                parametersOf(qualifier.toString())
+            withParameter(Simple.MyString::class) { "param" }
+            withParameter(Simple.MyString::class, UpperCase) { qualifier ->
+                qualifier.toString()
             }
         }
     }
@@ -251,7 +306,7 @@ class CheckModulesTest {
                 }
             )
         }.checkModules {
-            defaultValue(id)
+            withParameter<Simple.MyString> { id }
         }
 
         assert(injectedValue == id)
@@ -273,7 +328,7 @@ class CheckModulesTest {
             )
         }
         app.checkModules {
-            defaultValue(id)
+            withInstance(id)
         }
 
         assert(id == _id)
@@ -313,7 +368,7 @@ class CheckModulesTest {
             )
         }
         app.checkModules {
-            defaultValue<Simple.ComponentA>()
+            withInstance<Simple.ComponentA>()
         }
 
         assert(_a != null)
@@ -334,7 +389,7 @@ class CheckModulesTest {
                 }
             )
         }.checkModules {
-            defaultValue(a)
+            withInstance(a)
         }
 
         assert(injectedValue == a)
@@ -394,5 +449,16 @@ class CheckModulesTest {
                 }
             )
         }.checkModules()
+    }
+
+    @Test
+    fun `check a module with property - compact`() {
+        val modules = module {
+            single { Simple.MyString(getProperty("aValue")) }
+        }
+
+        checkKoinModules(modules){
+            withProperty("aValue", "value")
+        }
     }
 }

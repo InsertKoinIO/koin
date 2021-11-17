@@ -1,0 +1,60 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+archivesBaseName = 'koin-ksp-compiler'
+
+kotlin {
+    jvm()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api kotlin("stdlib-common")
+                api project(":koin-annotations")
+                api "io.insert-koin:koin-core:$koin_version"
+            }
+        }
+
+        commonTest {
+            dependencies {
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                api kotlin("stdlib-jdk8")
+                api "com.google.devtools.ksp:symbol-processing-api:$ksp_version"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+            }
+        }
+
+        jsMain {
+            dependsOn commonMain
+            dependencies {
+            }
+        }
+
+        jsTest {
+            dependsOn commonTest
+            dependencies {
+            }
+        }
+
+        nativeMain {
+            dependencies {
+
+            }
+        }
+
+        nativeTest {
+            dependencies {
+
+            }
+        }
+    }
+}
+
+apply from: '../../gradle/publish-to-central.gradle'

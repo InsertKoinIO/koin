@@ -17,12 +17,10 @@ package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.savedstate.SavedStateRegistryOwner
-import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
-import org.koin.androidx.viewmodel.ViewModelParameter
-import org.koin.androidx.viewmodel.createViewModelProvider
-import org.koin.androidx.viewmodel.resolveInstance
+import org.koin.androidx.viewmodel.*
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -33,37 +31,19 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-typealias SavedStateRegistryOwnerDefinition = () -> SavedStateRegistryOwner
-typealias ViewModelStoreDefinition = () -> ViewModelStore
-
 fun emptyState(): BundleDefinition = { Bundle() }
 typealias BundleDefinition = () -> Bundle
 
-
-inline fun <reified T : ViewModel> Scope.viewModel(
-        qualifier: Qualifier? = null,
-        noinline state: BundleDefinition? = null,
-        noinline owner: ViewModelOwnerDefinition,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null,
-): Lazy<T> {
-    return lazy(mode) {
-        getViewModel(qualifier, state, owner, parameters)
-    }
-}
-
 inline fun <reified T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
-        noinline state: BundleDefinition? = null,
         noinline owner: ViewModelOwnerDefinition,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(qualifier, state, owner, T::class, parameters)
+    return getViewModel(qualifier, owner, T::class, parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
-        state: BundleDefinition? = null,
         owner: ViewModelOwnerDefinition,
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
@@ -74,14 +54,13 @@ fun <T : ViewModel> Scope.getViewModel(
                     clazz,
                     qualifier,
                     parameters,
-                    state?.invoke(),
                     ownerDef.store,
                     ownerDef.stateRegistry
             )
     )
 }
 
-fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-    val viewModelProvider = createViewModelProvider(viewModelParameters)
+internal fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
+    val viewModelProvider = ViewModelProvider(viewModelParameters.viewModelStore, pickFactory(viewModelParameters))
     return viewModelProvider.resolveInstance(viewModelParameters)
 }

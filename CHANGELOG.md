@@ -5,7 +5,16 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 ## [3.1.3]()
 
-* `[UPDATED]` `[android-compose]` - update to lifecycle-viewmodel-compose 1.0.0-alpha07
+* `[UPDATED]` `[core]` - Update to Kotlin 1.5.30
+* `[UPDATED]` `[android]` - Update to latest android ktx
+* `[UPDATED]` `[android-compose]` - update to jetpack compose 1.0.3
+* `[FIXED]` `[android]` - ViewModel instances are now reinjected into Koin Android scopes
+* `[FIXED]` `[android]` - Activity/Fragment are now available in their own scopes (no need of explicit inject from the source)
+* `[ADDED]` `[android]` - new koin-androidx-navigation package, offering `by koinNavGraphViewModel()` to allow scope a ViewModel for a given navigation graph - https://insert-koin.io/docs/reference/koin-android/viewmodel#navigation-graph-viewmodel-updated-in-313
+* `[DEPRECATED]` `[android]` - `by stateViewModel()` is deprecated. `state` parameter is not needed anymore. It's now merged into `viewModel()`, to inject SavedStateHandle
+* `[FIXED]` `[android]` - Fix from Koin 2.x. ViewModel API get back the `owner` property, to allow specify from where we are instanciating ViewModel.
+* `[ADDED]` `[test]` - Introduce new `checkKoinModules` and DSL to help verify modules - https://insert-koin.io/docs/reference/koin-test/checkmodules
+* `[DEPRECATED]` `[test]` - deprecate old `checkModules` function, in favor of new API `checkKoinModules`
 
 ## [3.1.2]()
 

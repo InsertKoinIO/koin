@@ -15,8 +15,8 @@
  */
 package org.koin.androidx.scope
 
+import android.app.Activity
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import org.koin.android.ext.android.getKoin
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
@@ -26,15 +26,7 @@ import org.koin.core.scope.Scope
  * Provide Koin Scope tied to ComponentActivity
  */
 
-fun ComponentActivity.activityScope() = LifecycleScopeDelegate(this)
-
-fun ComponentActivity.activityRetainedScope(): Lazy<Scope> = lazy {
-    val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
-    if (scopeViewModel.scope == null) {
-        scopeViewModel.scope = createScope()
-    }
-    scopeViewModel.scope!!
-}
-
+fun ComponentActivity.activityScope() = LifecycleScopeDelegate<Activity>(this)
+fun ComponentActivity.activityRetainedScope() = LifecycleViewModelScopeDelegate(this)
 fun ComponentActivity.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
 fun ComponentActivity.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())

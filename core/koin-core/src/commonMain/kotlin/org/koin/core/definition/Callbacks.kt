@@ -15,6 +15,9 @@
  */
 package org.koin.core.definition
 
+/**
+ * Definition callbacks
+ */
 data class Callbacks<T>(val onClose: OnCloseCallback<T>? = null)
 
 typealias OnCloseCallback<T> = (T?) -> Unit

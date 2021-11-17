@@ -13,35 +13,32 @@ import kotlin.reflect.KClass
 
 inline fun <reified T : ViewModel> Koin.viewModel(
         qualifier: Qualifier? = null,
-        noinline state: BundleDefinition? = null,
         noinline owner: ViewModelOwnerDefinition,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy(mode) { getViewModel(qualifier, state, owner, parameters) }
+    return lazy(mode) { getViewModel(qualifier, owner, parameters) }
 }
 
 inline fun <reified T : ViewModel> Koin.getViewModel(
         qualifier: Qualifier? = null,
-        noinline state: BundleDefinition? = null,
         noinline owner: ViewModelOwnerDefinition,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(qualifier, state, owner, T::class, parameters)
+    return getViewModel(qualifier, owner, T::class, parameters)
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Koin.getViewModel(
         qualifier: Qualifier? = null,
-        state: BundleDefinition? = null,
         owner: ViewModelOwnerDefinition,
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
 ): T {
-    return scopeRegistry.rootScope.getViewModel(qualifier, state, owner, clazz, parameters)
+    return scopeRegistry.rootScope.getViewModel(qualifier, owner, clazz, parameters)
 }
 
 @OptIn(KoinInternalApi::class)
-fun <T : ViewModel> Koin.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
+internal fun <T : ViewModel> Koin.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
     return scopeRegistry.rootScope.getViewModel(viewModelParameters)
 }

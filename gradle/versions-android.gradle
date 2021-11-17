@@ -1,28 +1,29 @@
 ext {
     // Sdk and tools
     android_min_version = 14
-    android_target_version = 29
+    android_target_version = 30
 
     android_gradle_version = "4.2.1"
     android_build_tools_version = '30.0.3'
     
     // old
     support_lib_version = "28.0.0"
-    androidx_lib_version = "1.2.0"
     android_arch_version = '1.1.1'
 
+    androidx_lib_version = "1.3.1"
     androidx_arch_version = '2.2.0'
-	androidx_savedstate = '2.3.0'
-    androidx_activity_version = "1.2.0"
-    androidx_fragment_version = "1.3.0"
+	androidx_savedstate = '2.3.1'
+    androidx_activity_version = "1.3.1"
+    androidx_fragment_version = "1.3.6"
     
-    androidx_workmanager = '2.5.0'
+    androidx_workmanager = '2.6.0'
+    androidx_nav = '2.3.5'
 
     // when using in AS
-    // androidx_compose_gradle_version = "7.0.0-beta01"
+    // androidx_compose_gradle_version = "7.0.3"
     // for global build
     androidx_compose_gradle_version = "4.2.0-beta03"
 
-    androidx_compose_version = "1.0.0-beta09"
+    androidx_compose_version = "1.0.4"
 
 }

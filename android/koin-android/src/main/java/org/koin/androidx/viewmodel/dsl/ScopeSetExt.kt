@@ -16,6 +16,7 @@
 package org.koin.androidx.viewmodel.dsl
 
 import androidx.lifecycle.ViewModel
+import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
@@ -36,11 +37,12 @@ inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier, definition)
+    return scoped(qualifier, definition)
 }
 
+@KoinReflectAPI
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {
-    return factory(qualifier) { newInstance(it) }
+    return scoped(qualifier) { newInstance(it) }
 }

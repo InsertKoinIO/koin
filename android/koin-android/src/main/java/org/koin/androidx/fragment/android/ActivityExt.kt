@@ -21,13 +21,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import org.koin.android.ext.android.get
-import org.koin.core.KoinExperimentalAPI
 import org.koin.core.scope.Scope
 
 /**
  * Set supportFragmentManager.fragmentFactory to KoinFragmentFactory
  */
-@KoinExperimentalAPI
 fun FragmentActivity.setupKoinFragmentFactory(scope: Scope? = null) {
     if (scope == null) {
         supportFragmentManager.fragmentFactory = get()
@@ -43,7 +41,6 @@ fun FragmentActivity.setupKoinFragmentFactory(scope: Scope? = null) {
  * @param args
  * @param tag
  */
-@KoinExperimentalAPI
 inline fun <reified F : Fragment> FragmentTransaction.replace(
     @IdRes containerViewId: Int,
     args: Bundle? = null,

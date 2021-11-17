@@ -16,6 +16,13 @@ class ParametersHolderTest {
     }
 
     @Test
+    fun `create a parameters holder - nullable resolution`() {
+        val p = parametersOf(42)
+        assertTrue(p.get<Int>() == 42)
+        assertTrue(p.getOrNull<String>() == null)
+    }
+
+    @Test
     fun `create a parameters holder - 1 param`() {
         val myString = "empty"
         val myInt = 42

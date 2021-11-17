@@ -3,8 +3,6 @@ package org.koin.sample.androidx.mvp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.mvp_activity.*
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
@@ -32,21 +30,25 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), AndroidScopeCompon
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        assertEquals(factoryPresenter.id, scopedPresenter.id)
-        assertEquals(factoryPresenter.service, scopedPresenter.service)
+        assert(factoryPresenter.id == scopedPresenter.id)
+        assert(factoryPresenter.service == scopedPresenter.service)
 
-        assertNotEquals(get<FactoryPresenter> { parametersOf(ID) }, factoryPresenter)
-        assertEquals(scope.get<ScopedPresenter>(), scopedPresenter)
+        assert(get<FactoryPresenter> { parametersOf(ID) } != factoryPresenter)
+        assert(scope.get<ScopedPresenter>() == scopedPresenter)
 
         title = "Android MVP"
 
         mvp_button.setOnClickListener {
-            navigateTo<MVVMActivity>(isRoot = true)
+            navigateTo<MVVMActivity>(isRoot = true, extras =
+                mapOf(
+                    "vm1" to "value to stateViewModel"
+                )
+            )
         }
 
         val my_int = 42
         getKoin().setProperty("my_int", my_int)
-        assertEquals(my_int, getKoin().getProperty<Int>("my_int"))
+        assert(my_int == getKoin().getProperty<Int>("my_int"))
     }
 
 }

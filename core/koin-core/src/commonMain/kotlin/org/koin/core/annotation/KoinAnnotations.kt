@@ -20,7 +20,41 @@ package org.koin.core.annotation
  *
  * Help limit internal access
  */
-@RequiresOptIn(message = "Used to extend current API with Koin API", level = RequiresOptIn.Level.ERROR)
+@RequiresOptIn(message = "Used to extend current API with Koin API. Shouldn't be used outside of Koin API", level = RequiresOptIn.Level.ERROR)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 annotation class KoinInternalApi
+
+/**
+ * API marked with this annotation is experimental and is not guaranteed to be stable.
+ *
+ * @author Arnaud Giuliani
+ * @author Victor Alenkov
+ */
+@RequiresOptIn(message = "This API is experimental and can change in the next versions",level = RequiresOptIn.Level.WARNING)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR
+)
+annotation class KoinExperimentalAPI
+
+/**
+ * API marked with this annotation is using reflection
+ *
+ * @author Arnaud Giuliani
+ * @author Victor Alenkov
+ */
+@RequiresOptIn(message = "This API is using reflection and implies some introspection performance penalties on limited capacity devices (Android)",level = RequiresOptIn.Level.WARNING)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR
+)
+annotation class KoinReflectAPI

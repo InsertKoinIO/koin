@@ -8,6 +8,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.assertNull
 
 class ParametersInjectionTest {
 
@@ -25,6 +26,43 @@ class ParametersInjectionTest {
         val a: Simple.MySingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
+    }
+
+    @Test
+    fun nullable_injection_param() {
+
+        val app = koinApplication {
+            modules(
+                module {
+                    single { p -> Simple.MySingleWithNull(p.getOrNull()) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingleWithNull = koin.get()
+
+        assertNull(a.id)
+    }
+
+    internal class MyOptionalSingle(val i : Int, val o : String? = null)
+
+    @Test
+    fun nullable_injection_param_in_graph() {
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { p -> MyOptionalSingle(p.get(),getOrNull()) }
+                })
+        }
+
+        val koin = app.koin
+        val value = 42
+        val a: MyOptionalSingle = koin.get { parametersOf(value)}
+
+        assertEquals(value,a.i)
+        assertNull(a.o)
     }
 
     @Test

@@ -57,12 +57,14 @@ android {
 }
 
 dependencies {
+    // Leak
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // Koin
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
-
-    implementation "junit:junit:$junit_version"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
+//    implementation "junit:junit:$junit_version"
 
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
@@ -77,9 +79,11 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
+    implementation "androidx.navigation:navigation-fragment-ktx:$androidx_nav"
     implementation("androidx.work:work-runtime-ktx:$androidx_workmanager")
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 

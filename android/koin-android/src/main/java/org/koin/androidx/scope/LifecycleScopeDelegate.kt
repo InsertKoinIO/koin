@@ -13,10 +13,10 @@ import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class LifecycleScopeDelegate(
+class LifecycleScopeDelegate<T>(
         val lifecycleOwner: LifecycleOwner,
         private val koinContext: KoinContext = GlobalContext,
-        private val createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeId(), lifecycleOwner.getScopeName()) },
+        private val createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeId(), lifecycleOwner.getScopeName(), lifecycleOwner as T) },
 ) : ReadOnlyProperty<LifecycleOwner, Scope> {
 
     private var _scope: Scope? = null
@@ -57,7 +57,7 @@ class LifecycleScopeDelegate(
     }
 }
 
-private fun LifecycleOwner.isActive(): Boolean {
+internal fun LifecycleOwner.isActive(): Boolean {
     val ownerState = lifecycle.currentState
     return ownerState.isAtLeast(Lifecycle.State.CREATED)
 }

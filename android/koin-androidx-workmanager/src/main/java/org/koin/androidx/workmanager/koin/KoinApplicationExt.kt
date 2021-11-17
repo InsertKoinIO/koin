@@ -20,14 +20,12 @@ import androidx.work.DelegatingWorkerFactory
 import androidx.work.WorkManager
 import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 import org.koin.core.KoinApplication
-import org.koin.core.KoinExperimentalAPI
 
 /**
  * Setup the KoinWorkerFactory instance
  *
  * @author Arnaud Giuliani
  */
-@KoinExperimentalAPI
 fun KoinApplication.workManagerFactory() {
     createWorkManagerFactory()
 }
