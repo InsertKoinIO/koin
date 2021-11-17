@@ -56,7 +56,7 @@ val androidModule = module {
 ```
 
 :::note
- Most of Android memory leaks comes from referencing a UI/Android component from a non Android component. The system keeps a reference
+ Most of Android memory leaks come from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
 :::
 
@@ -98,7 +98,7 @@ class MyActivity : AppCompatActivity, AndroidScopeComponent {
 }
 ```
 
-We can also setup a scope, tied to a ViewModel with teh following:
+We can also setup a scope, tied to a ViewModel with the following:
 
 ```kotlin
 class MyActivity : AppCompatActivity, AndroidScopeComponent {

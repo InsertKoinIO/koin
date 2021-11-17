@@ -6,18 +6,11 @@ import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.qualifier.named
-import org.koin.dsl.bind
-import org.koin.dsl.module
-import org.koin.dsl.onClose
-import org.koin.dsl.scoped
-import org.koin.dsl.single
+import org.koin.dsl.*
 import org.koin.sample.androidx.components.Counter
 import org.koin.sample.androidx.components.SCOPE_ID
 import org.koin.sample.androidx.components.SCOPE_SESSION
-import org.koin.sample.androidx.components.main.DumbServiceImpl
-import org.koin.sample.androidx.components.main.RandomId
-import org.koin.sample.androidx.components.main.SimpleService
-import org.koin.sample.androidx.components.main.SimpleServiceImpl
+import org.koin.sample.androidx.components.main.*
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvp.ScopedPresenter
 import org.koin.sample.androidx.components.mvvm.*
@@ -34,7 +27,7 @@ val appModule = module {
 
     single<SimpleServiceImpl>() bind SimpleService::class
     single<DumbServiceImpl>(named("dumb")) bind SimpleService::class
-
+    factory { p -> SimplePresenter(p.get())}
     factory { RandomId() }
 }
 
@@ -83,6 +76,9 @@ val scopeModule = module {
         }
     }
 
+}
+
+val scopeModuleActivityA = module {
     scope<ScopedActivityA> {
         scoped<Session>()
         scoped { SessionActivity(get()) }
@@ -104,4 +100,4 @@ val navModule = module {
 // workerScopedModule can't be runned in unit test
 val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule
 
-val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule
+val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule + scopeModuleActivityA

@@ -42,7 +42,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     override fun create(context: InstanceContext): T {
         return if (values[context.scope.id] == null) {
             super.create(context)
-        } else values[context.scope.id] ?:  error("Scoped instance not found for ${context.scope.id}")
+        } else values[context.scope.id] ?:  error("Scoped instance not found for ${context.scope.id} in $beanDefinition")
     }
 
     override fun get(context: InstanceContext): T {
@@ -54,7 +54,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
                 values[context.scope.id] = create(context)
             }
         }
-        return values[context.scope.id] ?: error("Scoped instance not found for ${context.scope.id}")
+        return values[context.scope.id] ?: error("Scoped instance not found for ${context.scope.id} in $beanDefinition")
     }
 
     override fun dropAll(){

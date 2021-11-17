@@ -1,10 +1,10 @@
 ext {
     // Koin
-    koin_version = '3.1.3'
+    koin_version = '3.1.4-alpha-1'
     is_snaptshot = false
 
     // Kotlin
-    kotlin_version = '1.5.30'
+    kotlin_version = '1.5.31'
     coroutines_version = "1.5.2-native-mt"
 
     // Dokka
@@ -25,4 +25,8 @@ ext {
 
     // Publish
     // android_maven_publish = "3.6.3"
+
+    // Ksp
+    koin_ksp_version = "1.0.0-alpha-1"
+    ksp_version = "1.5.31-1.0.0" 
 }

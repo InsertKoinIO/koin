@@ -1,0 +1,87 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+archivesBaseName = 'koin-annotations'
+
+def ideaActive = System.getProperty('idea.active') == 'true'
+
+kotlin {
+    jvm()
+//    js(BOTH) {
+//        nodejs()
+//        browser()
+//    }
+
+    if(ideaActive) {
+        macosX64("native")
+    }else{
+        macosX64()
+        iosArm32()
+        iosArm64()
+        iosX64()
+        linuxX64()
+        linuxArm32Hfp()
+        linuxMips32()
+        watchosArm32()
+        watchosArm64()
+        watchosX86()
+        watchosX64()
+        tvosArm64()
+        tvosX64()
+        //    androidNativeArm32()
+        //    androidNativeArm64()
+        mingwX64()
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api kotlin("stdlib-common")
+            }
+        }
+
+        commonTest {
+            dependencies {
+
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                api kotlin("stdlib-jdk8")
+                api kotlin("test-junit")
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation kotlin("test-junit")
+            }
+        }
+
+        jsMain {
+            dependsOn commonMain
+            dependencies {
+            }
+        }
+
+        jsTest {
+            dependsOn commonTest
+            dependencies {
+            }
+        }
+
+        nativeMain {
+            dependencies {
+
+            }
+        }
+
+        nativeTest {
+            dependencies {
+
+            }
+        }
+    }
+}
+
+apply from: '../../gradle/publish-to-central.gradle'

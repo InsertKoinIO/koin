@@ -9,10 +9,7 @@ import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.APP_TITLE
-import org.koin.sample.androidx.components.main.DUMB_SERVICE
-import org.koin.sample.androidx.components.main.RandomId
-import org.koin.sample.androidx.components.main.SERVICE_IMPL
-import org.koin.sample.androidx.components.main.SimpleService
+import org.koin.sample.androidx.components.main.*
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.utils.navigateTo
 
@@ -20,6 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     // Inject by Interface - default definition
     val service: SimpleService by inject()
+
+    val simplePresenter : SimplePresenter by inject()
 
     // Inject by Interface - qualified definition with a String name
     val dumbService: SimpleService by inject(named("dumb"))
@@ -37,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         assert(DUMB_SERVICE == dumbService.id)
         assert(get<RandomId>().id != randomId.id)
         assert(APP_TITLE == propertyTitle?.replace("\"", ""))
+
+        assert(simplePresenter.activity == this)
 
         setContentView(R.layout.main_activity)
         title = "Android First Samples"

@@ -181,7 +181,7 @@ class DetailActivity : AppCompatActivity() {
 }
 ```
 
-## ViewModel and State Bundle
+## ViewModel and State Bundle (updated in 3.1.3)
 
 Add a new property typed `SavedStateHandle` to your constructor to handle your ViewModel state:
 
@@ -200,19 +200,26 @@ viewModel { params -> MyStateVM(params.get(), get()) }
 Just call your ViewModel:
 
 ```kotlin
-val myStateVM: MyStateVM by stateViewModel()
+val myStateVM: MyStateVM by viewModel()
 ```
 
-You can even pass a bundle data as your state argument. Use the `state` property like follow:
-
-```kotlin
-// state = emptyState() by default
-val myStateVM: MyStateVM by stateViewModel(state = { myBundle }) 
-```
+:::warning 
+by stateViewModel() is deprecated and will merged in by viewModel()
+:::
 
 :::note 
 StateViewModel API is accessible from Koin & Scope instances.
 :::
 
 
+## Navigation Graph ViewModel (updated in 3.1.3)
 
+You can scope a ViewModel instance to your Navigation graph. Just retrieve with `by koinNavGraphViewModel()`. You just need your graph Id.
+
+```kotlin
+class NavFragment : Fragment() {
+
+    val mainViewModel: NavViewModel by koinNavGraphViewModel(R.id.my_graph)
+
+}
+```

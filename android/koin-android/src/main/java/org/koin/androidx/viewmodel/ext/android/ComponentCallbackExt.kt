@@ -36,25 +36,27 @@ import kotlin.reflect.KClass
  */
 inline fun <reified T : ViewModel> ComponentCallbacks.viewModel(
         qualifier: Qualifier? = null,
+        noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE) {
-                getViewModel(qualifier, parameters)
+                getViewModel(qualifier, owner, parameters)
         }
 }
 
 inline fun <reified T : ViewModel> ComponentCallbacks.getViewModel(
         qualifier: Qualifier? = null,
+        noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
         noinline parameters: ParametersDefinition? = null,
 ): T {
-        return getViewModel(qualifier, T::class, parameters = parameters)
+        return getViewModel(qualifier, T::class, owner,  parameters = parameters)
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> ComponentCallbacks.getViewModel(
         qualifier: Qualifier? = null,
         clazz: KClass<T>,
-        owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
+        owner : ViewModelOwnerDefinition,
         parameters: ParametersDefinition? = null,
 ): T {
         val scope = getKoinScope()

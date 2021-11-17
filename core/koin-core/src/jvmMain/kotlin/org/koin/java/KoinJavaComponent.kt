@@ -49,6 +49,26 @@ object KoinJavaComponent {
     }
 
     /**
+     * Retrieve given dependency lazily if available
+     * @param clazz - dependency class
+     * @param qualifier - bean canonicalName / optional
+     * @param scope - scope
+     * @param parameters - dependency parameters / optional
+     */
+
+    @JvmStatic
+    @JvmOverloads
+    fun <T : Any> injectOrNull(
+        clazz: Class<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
+    ): Lazy<T> {
+        return lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            getOrNull(clazz, qualifier, parameters)
+        }
+    }
+
+    /**
      * Retrieve given dependency
      * @param clazz - dependency class
      * @param qualifier - bean canonicalName / optional
@@ -65,6 +85,29 @@ object KoinJavaComponent {
     ): T {
         val kClass = clazz.kotlin
         return getKoin().get(
+            kClass,
+            qualifier,
+            parameters
+        )
+    }
+
+    /**
+     * Retrieve given dependency if available
+     * @param clazz - dependency class
+     * @param qualifier - bean canonicalName / optional
+     * @param scope - scope
+     * @param parameters - dependency parameters / optional
+     */
+
+    @JvmStatic
+    @JvmOverloads
+    fun <T : Any> getOrNull(
+        clazz: Class<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
+    ): T? {
+        val kClass = clazz.kotlin
+        return getKoin().getOrNull(
             kClass,
             qualifier,
             parameters

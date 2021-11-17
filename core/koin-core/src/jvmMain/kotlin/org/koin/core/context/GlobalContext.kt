@@ -82,3 +82,9 @@ object GlobalContext : KoinContext {
         get().unloadModules(modules)
     }
 }
+
+/**
+ * Help hold any implementation of KoinContext
+ */
+@Deprecated("KoinContextHandler is deprecated. Now use GlobalContext")
+typealias KoinContextHandler = GlobalContext
