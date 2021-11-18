@@ -17,9 +17,11 @@ kotlin {
         macosX64("darwin")
     } else {
         macosX64()
+        macosArm64()
         iosArm32()
         iosArm64()
         iosX64()
+        iosSimulatorArm64()
         linuxX64()
         linuxArm32Hfp()
         linuxMips32()
@@ -27,8 +29,10 @@ kotlin {
         watchosArm64()
         watchosX86()
         watchosX64()
+        watchosSimulatorArm64()
         tvosArm64()
         tvosX64()
+        tvosSimulatorArm64()
         //    androidNativeArm32()
         //    androidNativeArm64()
         mingwX64()
@@ -100,13 +104,17 @@ kotlin {
 
             configure([
                     targets.macosX64,
+                    targets.macosArm64,
                     targets.watchosArm32,
                     targets.watchosArm64,
                     targets.watchosX86,
                     targets.watchosX64,
+                    targets.watchosSimulatorArm64,
                     targets.tvosArm64,
                     targets.tvosX64,
+                    targets.tvosSimulatorArm64,
                     targets.iosX64,
+                    targets.iosSimulatorArm64,
                     targets.iosArm32,
                     targets.iosArm64
             ]) {
