@@ -1,10 +1,10 @@
-name: Koin CI/CD
+name: Koin Build & Test
 on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Start CI/CD tasks"
+      - run: echo "- KOIN - Build Test -"
 
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -18,13 +18,10 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: Run CORE tests
-        run: cd core && ./test.sh
+        run: cd core && ./test.sh && ./install.sh
 
       - name: Run Android tests
         run: cd android && ./test.sh
-
-      - name: Run Android Compose tests
-        run: cd android-compose && ./test.sh
 
       - name: Run Ktor tests
         run: cd ktor && ./test.sh
