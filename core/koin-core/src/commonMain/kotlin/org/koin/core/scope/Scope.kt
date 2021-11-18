@@ -131,6 +131,16 @@ data class Scope(
     }
 
     /**
+     * Get Koin Scope "source" instance. Retrive the object instance, that initiated the creation of the scope.
+     *
+     * Deprecation: Source instance resolution is now done within graph resolution part. It's done in the regular "get()" function.
+     */
+    @Deprecated("No need to use getSource(). You can an use get() directly.", ReplaceWith("get()"))
+    inline fun <reified T : Any> getSource(): T? {
+        return _source as? T
+    }
+
+    /**
      * Get a Koin instance if available
      * @param qualifier
      * @param scope
