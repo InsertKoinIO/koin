@@ -1,10 +1,10 @@
 name: Koin Build & Test
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Build-and-Test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "- KOIN - Build Test -"
+      - run: echo "- KOIN - Build & Test -"
 
       - name: Check out repository code
         uses: actions/checkout@v2
