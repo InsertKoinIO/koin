@@ -15,12 +15,10 @@
  */
 package org.koin.dsl
 
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Callbacks
 import org.koin.core.definition.OnCloseCallback
 import org.koin.core.definition.indexKey
 import org.koin.core.instance.InstanceFactory
-import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
@@ -34,29 +32,33 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun Pair<Module,InstanceFactory<*>>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<*>> {
-    second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
-    val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-    first.saveMapping(mapping,second,allowOverride = true)
+infix fun <S : Any, P : S> Pair<Module, InstanceFactory<P>>.bind(clazz: KClass<S>): Pair<Module, InstanceFactory<P>> {
+    binds(arrayOf(clazz))
     return this
 }
 
 /**
  * Add a compatible type to match for definition
+ *
+ * Type-safety may be checked by "checkModules" from "koin-test" module.
  */
-inline fun <reified T> Pair<Module,InstanceFactory<*>>.bind(): Pair<Module,InstanceFactory<*>> {
-    return bind(T::class)
+inline fun <reified T> Pair<Module, InstanceFactory<*>>.bind(): Pair<Module, InstanceFactory<*>> {
+    binds(arrayOf(T::class))
+    return this
 }
 
 /**
  * Add compatible types to match for definition
+ *
+ * Type-safety may be checked by "checkModules" from "koin-test" module.
+ *
  * @param classes
  */
-infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pair<Module,InstanceFactory<*>> {
+infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pair<Module, InstanceFactory<*>> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + classes
     classes.forEach { clazz ->
-        val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-        first.saveMapping(mapping,second, allowOverride = true)
+        val mapping = indexKey(clazz, second.beanDefinition.qualifier, second.beanDefinition.scopeQualifier)
+        first.saveMapping(mapping, second, allowOverride = true)
     }
     return this
 }

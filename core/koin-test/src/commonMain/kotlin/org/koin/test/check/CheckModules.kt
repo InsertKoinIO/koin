@@ -116,4 +116,9 @@ private fun Koin.checkDefinition(
     ) ?: MockParameter(scope, allParameters.defaultValues)
     logger.info("[Check] definition: $definition")
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
+
+    for (secondaryType in definition.secondaryTypes) {
+        val valueAsSecondary = scope.get<Any>(secondaryType, definition.qualifier) { parameters }
+        require(secondaryType.isInstance(valueAsSecondary))
+    }
 }
