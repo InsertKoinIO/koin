@@ -1,5 +1,5 @@
 ---
-title: Koin DSL - 3.1.x update
+title: Koin Reflection DSL
 ---
 
 ## Compact definition declaration - no more "get()"
