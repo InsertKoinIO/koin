@@ -27,7 +27,7 @@ For any definition that is using injected parameters, properties or dynamic inst
 
 * `withInstance(value)` - will add `value` instance to Koin graph (can be used in dependency or parameter)
 
-* `withInstance<MyType>()` - will add a mocked instance of `MyType`. Use MockProviderRule. (can be used in depednency or parameter)
+* `withInstance<MyType>()` - will add a mocked instance of `MyType`. Use MockProviderRule. (can be used in dependency or parameter)
 
 * `withParameter<Type>(qualifier){ qualifier -> value }` - will add `value` instance to be injected as parameter
 
