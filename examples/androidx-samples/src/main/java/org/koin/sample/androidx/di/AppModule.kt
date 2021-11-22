@@ -27,7 +27,7 @@ val appModule = module {
 
     single<SimpleServiceImpl>() bind SimpleService::class
     single<DumbServiceImpl>(named("dumb")) bind SimpleService::class
-    factory { p -> SimplePresenter(p.get())}
+//    factory { p -> SimplePresenter(p.get())}
     factory { RandomId() }
 }
 
