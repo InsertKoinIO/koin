@@ -54,7 +54,5 @@ inline fun <reified T : Any> ComponentCallbacks.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    // TODO insert parameter on the fly, to avoid having to compose with complex Scope binding
-//    val params: ParametersDefinition = parameters?.let { { it().add(this) } } ?: { parametersOf(this) }
     return getKoinScope().get(qualifier, parameters)
 }
