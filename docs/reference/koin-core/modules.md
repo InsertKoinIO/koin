@@ -85,6 +85,17 @@ startKoin {
 
 In the case of disabling override, Koin will throw an `DefinitionOverrideException` exception on any attempt of override.
 
+## Sharing Modules
+
+When using the `module { }` function, Koin preallocate all instance factories. If you need to share a module, please consider return your module with a function. 
+
+```kotlin
+fun sharedModule() = module {
+    // Your definitions ...
+}
+```
+
+This way, your share the definitions and avoid preallocate factories in a value.
 
 ## Overriding definition or module (before 3.1.0)
 
