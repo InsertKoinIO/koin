@@ -255,7 +255,7 @@ class CheckModulesTest {
                 }
             )
         }.checkModules {
-            withParameter<Simple.MyString> { "param" }
+            withParameters<Simple.MyString> { parametersOf("param") }
             withParameter<Simple.MyString>(UpperCase) { qualifier -> qualifier.toString() }
         }
     }

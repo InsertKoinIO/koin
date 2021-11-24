@@ -30,19 +30,25 @@ class ParametersBinding(val koin: Koin) {
     val parametersCreators = mutableMapOf<CheckedComponent, ParametersCreator>()
     val defaultValues = mutableMapOf<String, Any>()
 
-    @Deprecated("use withParameter() instead", ReplaceWith("withParameter(qualifier,creator)"))
+    @Deprecated("use withParameter() instead", ReplaceWith("withParameters(qualifier,creator)"))
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
         parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
 
     inline fun <reified T> withParameter(qualifier: Qualifier? = null, noinline creator: ParametersInstance) =
         parametersCreators.put(CheckedComponent(qualifier, T::class)) { q -> parametersOf(creator(q)) }
 
-    @Deprecated("use withParameter() instead", ReplaceWith("withParameter(clazz,qualifier,creator)"))
+    inline fun <reified T> withParameters(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
+        parametersCreators.put(CheckedComponent(qualifier, T::class), creator)
+
+    @Deprecated("use withParameter() instead", ReplaceWith("withParameters(clazz,qualifier,creator)"))
     fun create(clazz: KClass<*>, qualifier: Qualifier? = null, creator: ParametersCreator) =
         parametersCreators.put(CheckedComponent(qualifier, clazz), creator)
 
     fun withParameter(clazz: KClass<*>, qualifier: Qualifier? = null, creator: ParametersInstance) =
         parametersCreators.put(CheckedComponent(qualifier, clazz)) { q -> parametersOf(creator(q)) }
+
+    fun withParameters(clazz: KClass<*>, qualifier: Qualifier? = null, creator: ParametersCreator) =
+        parametersCreators.put(CheckedComponent(qualifier, clazz), creator)
 
     @Deprecated("use withInstance() instead", ReplaceWith("withInstance(t)"))
     inline fun <reified T : Any> defaultValue(t: T) = defaultValues.put(KoinPlatformTools.getClassName(T::class), t)
