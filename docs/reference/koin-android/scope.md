@@ -80,14 +80,28 @@ module {
 }
 ```
 
-### Setup the scope
+### Use an Android scope
 
-To use a scope declared in a module, we need to use the `AndroidScopeComponent` interface and implement the `scope` property.
+Koin offers `ActivityScope` and `FragmentScope` classes, to let you use directly a declared scope for Activity or Fragment:
+
+```kotlin
+class MyActivity : ActivityScope() {
+    
+    // MyPresenter is resolved from MyActivity's scope 
+    val presenter : MyPresenter by inject()
+}
+```
+
+If you can't use such classes, we need to use the `AndroidScopeComponent` interface and implement the `scope` property. This will setup the default scope used by your class.
 This `scope` property can be used with the following property delegates, regarding your component:
 - `activityScope()` - Follow Activity lifecycle
 - `activityRetainedScope()` - Follow Activity's ViewModel lifecycle 
 - `fragmentScope()` - Follow Fragment lifecycle, and is linked to parent's scope
 - `serviceScope()` - Follow Service lifecycle
+
+:::note
+`ActivityScope` class will use a `activityScope()` and `FragmentScope` class will use `fragmentScope()` by default.
+:::
 
 ```kotlin
 class MyActivity : AppCompatActivity, AndroidScopeComponent {
