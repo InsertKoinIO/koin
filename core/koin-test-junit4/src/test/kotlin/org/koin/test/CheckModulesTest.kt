@@ -6,13 +6,12 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.check.checkKoinModules
 import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
+import java.util.*
 
 class CheckModulesTest {
 
@@ -29,11 +28,14 @@ class CheckModulesTest {
             single { Simple.MyString(getProperty("aValue")) }
         }
 
-        checkKoinModules(modules){
-            withInstance<Simple.ComponentA>()
-//            withInstance<String>("a_parameter")
-            withParameter<String> { "a_parameter" }
-            withProperty("aValue", "string_value")
+        koinApplication {
+            modules(modules)
+            checkModules {
+                withInstance<Simple.ComponentA>()
+                //            withInstance<String>("a_parameter")
+                withParameter<String> { "a_parameter" }
+                withProperty("aValue", "string_value")
+            }
         }
     }
 
@@ -43,8 +45,11 @@ class CheckModulesTest {
             single { Simple.ComponentB(get(named("_a_"))) }
         }
 
-        checkKoinModules(modules){
-            withInstance<Simple.ComponentA>()
+        koinApplication {
+            modules(modules)
+            checkModules {
+                withInstance<Simple.ComponentA>()
+            }
         }
     }
 
@@ -86,8 +91,12 @@ class CheckModulesTest {
             }
         }
 
-        checkKoinModules(m,logLevel = Level.DEBUG){
-            withInstance<Simple.ComponentA>()
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(m)
+            checkModules {
+                withInstance<Simple.ComponentA>()
+            }
         }
     }
 
@@ -104,8 +113,12 @@ class CheckModulesTest {
             }
         }
 
-        checkKoinModules(m1+m2,logLevel = Level.DEBUG){
-            withInstance<Simple.ComponentA>()
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(m1 + m2)
+            checkModules {
+                withInstance<Simple.ComponentA>()
+            }
         }
     }
 
@@ -251,7 +264,7 @@ class CheckModulesTest {
             modules(
                 module {
                     single { (s: String) -> Simple.MyString(s) }
-                    single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
+                    single(UpperCase) { (s: String) -> Simple.MyString(s.uppercase(Locale.getDefault())) }
                 }
             )
         }.checkModules {
@@ -267,7 +280,7 @@ class CheckModulesTest {
             modules(
                 module {
                     single { (s: String) -> Simple.MyString(s) }
-                    single(UpperCase) { (s: String) -> Simple.MyString(s.toUpperCase()) }
+                    single(UpperCase) { (s: String) -> Simple.MyString(s.uppercase(Locale.getDefault())) }
                 }
             )
         }.checkModules {
@@ -457,8 +470,13 @@ class CheckModulesTest {
             single { Simple.MyString(getProperty("aValue")) }
         }
 
-        checkKoinModules(modules){
-            withProperty("aValue", "value")
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(modules)
+            checkModules {
+                withProperty("aValue", "value")
+                withInstance<Simple.ComponentA>()
+            }
         }
     }
 }
