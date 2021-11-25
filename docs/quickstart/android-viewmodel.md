@@ -20,10 +20,8 @@ repositories {
 	mavenCentral()    
 }
 dependencies {
-    // Koin for Android - Scope feature
-    // include koin-android-scope & koin-android
+    // Koin for Android
     implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-android-viewmodel:$koin_version"
 }
 ```
 
