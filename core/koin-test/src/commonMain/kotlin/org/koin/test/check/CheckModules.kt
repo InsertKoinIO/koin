@@ -39,7 +39,23 @@ import org.koin.test.parameter.MockParameter
  */
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
+/**
+ * Verify Modules by running each definition
+ *
+ * @param level - Log level
+ * @param parameters - parameter setup
+ * @param appDeclaration - koin Application
+ */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
+    startKoin(appDeclaration)
+        .logger(KoinPlatformTools.defaultLogger(level))
+        .checkModules(parameters)
+}
+
+/**
+ * @see checkModules
+ */
+fun checkKoinModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
