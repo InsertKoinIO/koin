@@ -56,5 +56,5 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
     owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     parameters: ParametersDefinition? = null,
 ): T {
-    return getKoinScope().getViewModel(qualifier, owner, clazz, parameters)
+    return getKoinScope().getViewModel(qualifier, owner, clazz, parameters = parameters)
 }

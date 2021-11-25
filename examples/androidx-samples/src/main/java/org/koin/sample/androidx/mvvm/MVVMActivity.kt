@@ -37,6 +37,9 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val oneViewModel: OneViewModel by viewModel()
     val useOneViewModel: UseOneViewModel by inject()
 
+    val state = Bundle().apply { putString("id","vm1") }
+    val stateVM: SavedStateBundleViewModel by stateViewModel(state = {state})
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
         // using MVVMActivity with scope in mvvmModule (AppModule)
@@ -71,5 +74,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         println("useOneViewModel => ${useOneViewModel.vm}")
 
         assert(oneViewModel == useOneViewModel.vm)
+
+        assert(stateVM.result == "vm1")
     }
 }

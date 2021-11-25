@@ -47,6 +47,7 @@ val mvvmModule = module {
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
     viewModel { params -> SavedStateViewModel(get(), params.get(), get()) }// injected params
+    viewModel { SavedStateBundleViewModel(get(), get()) }// injected params
 
     scope<MVVMActivity> {
 

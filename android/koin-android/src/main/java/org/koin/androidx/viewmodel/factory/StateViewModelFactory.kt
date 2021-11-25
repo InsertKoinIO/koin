@@ -10,7 +10,7 @@ class StateViewModelFactory<T : ViewModel>(
     val parameters: ViewModelParameter<T>,
 ) : AbstractSavedStateViewModelFactory(
     parameters.registryOwner ?: error("Can't create SavedStateViewModelFactory without a proper stateRegistryOwner"),
-    null
+    parameters.state?.invoke()
 ) {
     override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
         val params: ParametersDefinition = addHandle(handle)

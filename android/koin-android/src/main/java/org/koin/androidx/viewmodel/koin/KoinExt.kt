@@ -35,7 +35,7 @@ fun <T : ViewModel> Koin.getViewModel(
         clazz: KClass<T>,
         parameters: ParametersDefinition? = null,
 ): T {
-    return scopeRegistry.rootScope.getViewModel(qualifier, owner, clazz, parameters)
+    return scopeRegistry.rootScope.getViewModel(qualifier, owner, clazz, parameters = parameters)
 }
 
 @OptIn(KoinInternalApi::class)

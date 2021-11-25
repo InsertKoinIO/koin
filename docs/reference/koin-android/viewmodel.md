@@ -124,7 +124,7 @@ class DetailActivity : AppCompatActivity() {
 }
 ```
 
-## State Bundle Injection (3.1.3)
+## State Handle Injection
 
 Add a new property typed `SavedStateHandle` to your constructor to handle your ViewModel state:
 
@@ -146,14 +146,24 @@ Just call your ViewModel:
 val myStateVM: MyStateVM by viewModel()
 ```
 
-:::warning 
-by stateViewModel() is deprecated and will merged in by viewModel()
-:::
+## Bundle Injection
 
-:::note 
-StateViewModel API is accessible from Koin & Scope instances.
-:::
+Passing `SavedStateHandle` to your ViewModel can also help you pass Bundle arguments. Just declare your ViewModel:
 
+```kotlin
+class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
+```
+
+```kotlin
+// in your module
+viewModel { params -> MyStateVM(params.get(), get()) }
+```
+
+Just call your ViewModel with following `stateViewModel` function and `state` parameter:
+
+```kotlin
+val myStateVM: MyStateVM by stateViewModel( state = { Bundle(...) })
+```
 
 ## Navigation Graph ViewModel (3.1.3)
 
