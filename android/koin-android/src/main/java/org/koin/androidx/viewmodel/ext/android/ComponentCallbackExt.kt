@@ -60,5 +60,5 @@ fun <T : ViewModel> ComponentCallbacks.getViewModel(
         parameters: ParametersDefinition? = null,
 ): T {
         val scope = getKoinScope()
-        return scope.getViewModel(qualifier, owner, clazz, parameters)
+        return scope.getViewModel(qualifier, owner, clazz, parameters = parameters)
 }

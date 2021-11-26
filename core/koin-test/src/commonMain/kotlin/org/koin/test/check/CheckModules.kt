@@ -39,28 +39,26 @@ import org.koin.test.parameter.MockParameter
  */
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
-@Deprecated("use checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null)")
+/**
+ * Verify Modules by running each definition
+ *
+ * @param level - Log level
+ * @param parameters - parameter setup
+ * @param appDeclaration - koin Application
+ */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
 }
 
-fun checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
-    val koinApp = koinApplication(null)
-        .logger(KoinPlatformTools.defaultLogger(logLevel))
-        .modules(modules)
-
-    KoinPlatformTools.defaultContext().startKoin(koinApp)
-
-    koinApp
+/**
+ * @see checkModules
+ */
+fun checkKoinModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
+    startKoin(appDeclaration)
+        .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
-
-    stopKoin()
-}
-
-fun checkKoinModules(vararg modules : Module, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
-    checkKoinModules(modules.toList(),logLevel, parameters)
 }
 
 /**

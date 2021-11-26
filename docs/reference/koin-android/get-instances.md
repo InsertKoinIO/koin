@@ -1,5 +1,5 @@
 ---
-title: Koin in Android Classes
+title: Koin with Android Classes
 ---
 
 Once you have declared some modules and you have started Koin, how can you retrieve your instances in your

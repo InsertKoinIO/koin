@@ -21,7 +21,7 @@ repositories {
 }
 dependencies {
     // Koin for Android
-    compile "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
 }
 ```
 

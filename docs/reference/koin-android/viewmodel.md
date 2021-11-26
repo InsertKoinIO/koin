@@ -1,8 +1,8 @@
 ---
-title: Easy injection into ViewModel
+title: Injecting Android ViewModel
 ---
 
-The `koin-android-viewmodel` introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel
+The `koin-android` Gradle module introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel
 component and bind it to an Android Component lifecycle.
 
 ```kotlin
@@ -37,38 +37,6 @@ class DetailActivity : AppCompatActivity() {
     val detailViewModel: DetailViewModel by viewModel()
 }
 ```
-
-
-In a similar way, in Java you can inject the ViewModel instance, but using `viewModel()` or `getViewModel` static functions from `ViewModelCompat`:
-
-```java
-// import viewModel
-import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
-
-// import getViewModel
-import static org.koin.android.viewmodel.compat.ViewModelCompat.getViewModel;
-
-public class JavaActivity extends AppCompatActivity {
-
-    // lazy ViewModel
-    private final Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
-
-    // directly get the ViewModel instance
-    private final DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple);
-
-        //...
-    }
-}
-```
-
-:::note 
-ViewModel API is accessible from Koin & Scope instances. But also from [`ViewModelStoreOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
-:::
 
 ## Shared ViewModel
 
@@ -119,30 +87,7 @@ class WeatherListFragment : Fragment() {
 }
 ```
 
-:::info 
-The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
-:::
-
-For your Java Fragment, must be used `sharedViewModel` or `getSharedViewModel` from `SharedViewModelCompat`.
-
-```java
-// import sharedViewModel static function
-import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
-
-public class JavaFragment extends Fragment {
-
-    private final Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //...
-    }
-}
-```
-
-
-## ViewModel and injection parameters
+## Passing Parameters to Constructor
 
 the `viewModel` keyword and injection API is compatible with injection parameters.
 
@@ -156,9 +101,7 @@ val appModule = module {
 }
 ```
 
-or even
-
-In the module:
+or even In the module:
 
 ```kotlin
 val appModule = module {
@@ -181,7 +124,7 @@ class DetailActivity : AppCompatActivity() {
 }
 ```
 
-## ViewModel and State Bundle (updated in 3.1.3)
+## State Handle Injection
 
 Add a new property typed `SavedStateHandle` to your constructor to handle your ViewModel state:
 
@@ -203,16 +146,26 @@ Just call your ViewModel:
 val myStateVM: MyStateVM by viewModel()
 ```
 
-:::warning 
-by stateViewModel() is deprecated and will merged in by viewModel()
-:::
+## Bundle Injection
 
-:::note 
-StateViewModel API is accessible from Koin & Scope instances.
-:::
+Passing `SavedStateHandle` to your ViewModel can also help you pass Bundle arguments. Just declare your ViewModel:
 
+```kotlin
+class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
+```
 
-## Navigation Graph ViewModel (updated in 3.1.3)
+```kotlin
+// in your module
+viewModel { params -> MyStateVM(params.get(), get()) }
+```
+
+Just call your ViewModel with following `stateViewModel` function and `state` parameter:
+
+```kotlin
+val myStateVM: MyStateVM by stateViewModel( state = { Bundle(...) })
+```
+
+## Navigation Graph ViewModel (3.1.3)
 
 You can scope a ViewModel instance to your Navigation graph. Just retrieve with `by koinNavGraphViewModel()`. You just need your graph Id.
 
@@ -221,5 +174,60 @@ class NavFragment : Fragment() {
 
     val mainViewModel: NavViewModel by koinNavGraphViewModel(R.id.my_graph)
 
+}
+```
+
+## ViewModel API - Java Compat 
+
+In a similar way, in Java you can inject the ViewModel instance, but using `viewModel()` or `getViewModel` static functions from `ViewModelCompat`:
+
+```java
+// import viewModel
+import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
+
+// import getViewModel
+import static org.koin.android.viewmodel.compat.ViewModelCompat.getViewModel;
+
+public class JavaActivity extends AppCompatActivity {
+
+    // lazy ViewModel
+    private final Lazy<DetailViewModel> viewModelLazy = viewModel(this, DetailViewModel.class);
+
+    // directly get the ViewModel instance
+    private final DetailViewModel viewModel = getViewModel(this, DetailViewModel.class);
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_simple);
+
+        //...
+    }
+}
+```
+
+:::note 
+ViewModel API is accessible from Koin & Scope instances. But also from [`ViewModelStoreOwner` class](https://github.com/InsertKoinIO/koin/tree/master/koin-projects/koin-androidx-viewmodel/src/main/java/org/koin/androidx/viewmodel/ext/android)
+:::
+
+:::info 
+The Activity sharing its ViewModel injects it with `by viewModel()` or `getViewModel()`. Fragments are reusing  the shared ViewModel with `by sharedViewModel()`.
+:::
+
+For your Java Fragment, must be used `sharedViewModel` or `getSharedViewModel` from `SharedViewModelCompat`.
+
+```java
+// import sharedViewModel static function
+import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
+
+public class JavaFragment extends Fragment {
+
+    private final Lazy<WeatherViewModel> viewModel = sharedViewModel(this, WeatherViewModel.class);
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //...
+    }
 }
 ```
