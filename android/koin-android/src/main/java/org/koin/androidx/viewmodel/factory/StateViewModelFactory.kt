@@ -25,15 +25,4 @@ class StateViewModelFactory<T : ViewModel>(
         val definitionParameters = parameters.parameters?.invoke() ?: emptyParametersHolder()
         return { definitionParameters.add(handle) }
     }
-
-    override fun onRequery(viewModel: ViewModel) {
-        if (!scope.isRoot) {
-            scope.refreshScopeInstance(
-                parameters.clazz,
-                parameters.qualifier,
-                viewModel
-            )
-        }
-        super.onRequery(viewModel)
-    }
 }

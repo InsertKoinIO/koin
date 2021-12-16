@@ -51,9 +51,6 @@ val mvvmModule = module {
 
     scope<MVVMActivity> {
 
-        viewModel { OneViewModel() }
-        scoped { UseOneViewModel(get())}
-
         scoped { Session() }
         fragment<MVVMFragment>()
         viewModel<ExtSimpleViewModel>()

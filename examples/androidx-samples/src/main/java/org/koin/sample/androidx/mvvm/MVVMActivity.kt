@@ -33,10 +33,6 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val savedVm: SavedStateViewModel by viewModel { parametersOf("vm1") }
 //    val scopedSavedVm: SavedStateViewModel by viewModel(named("vm2")){ parametersOf("vm2") }
 
-    // scope recreate
-    val oneViewModel: OneViewModel by viewModel()
-    val useOneViewModel: UseOneViewModel by inject()
-
     val state = Bundle().apply { putString("id","vm1") }
     val stateVM: SavedStateBundleViewModel by stateViewModel(state = {state})
 
@@ -70,10 +66,6 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)
         }
-        println("oneViewModel => $oneViewModel")
-        println("useOneViewModel => ${useOneViewModel.vm}")
-
-        assert(oneViewModel == useOneViewModel.vm)
 
         assert(stateVM.result == "vm1")
     }
