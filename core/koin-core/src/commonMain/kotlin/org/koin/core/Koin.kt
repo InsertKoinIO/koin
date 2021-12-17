@@ -326,7 +326,6 @@ class Koin {
     fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
         instanceRegistry.loadModules(modules, allowOverride)
         scopeRegistry.loadScopes(modules)
-        createEagerInstances()
     }
 
 
@@ -338,8 +337,8 @@ class Koin {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(){
+        logger.info("create eager instances ...")
         if (logger.isAt(Level.DEBUG)) {
-            logger.debug("create eager instances ...")
             val duration = measureDuration {
                 instanceRegistry.createAllEagerInstances()
             }

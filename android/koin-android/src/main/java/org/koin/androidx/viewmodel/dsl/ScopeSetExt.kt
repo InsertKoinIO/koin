@@ -37,12 +37,12 @@ inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
 ): Pair<Module, InstanceFactory<T>> {
-    return scoped(qualifier, definition)
+    return factory(qualifier, definition)
 }
 
 @KoinReflectAPI
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {
-    return scoped(qualifier) { newInstance(it) }
+    return factory(qualifier) { newInstance(it) }
 }

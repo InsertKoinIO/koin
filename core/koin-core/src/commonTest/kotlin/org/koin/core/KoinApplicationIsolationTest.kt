@@ -44,6 +44,7 @@ class KoinApplicationIsolationTest {
                 module {
                     single(createdAtStart = true) { Simple.ComponentA() }
                 })
+            createEagerInstances()
         }
 
         app.getBeanDefinition(Simple.ComponentA::class)!!

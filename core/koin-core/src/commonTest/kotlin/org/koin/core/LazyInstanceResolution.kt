@@ -34,6 +34,7 @@ class LazyInstanceResolution {
                 module(createdAtStart = true) {
                     single { i++; Simple.ComponentA() }
                 })
+            createEagerInstances()
         }
 
         val koin = app.koin
@@ -51,6 +52,7 @@ class LazyInstanceResolution {
                 module(createdAtStart = true) {
                     single { i++; Simple.ComponentA() }
                 })
+            createEagerInstances()
         }
 
         val koin = app.koin
@@ -71,6 +73,7 @@ class LazyInstanceResolution {
                 module(createdAtStart = true) {
                     single { i++; Simple.ComponentB(get()) }
                 })
+            createEagerInstances()
         }
 
         val koin = app.koin
@@ -92,6 +95,7 @@ class LazyInstanceResolution {
                 module(createdAtStart = true) {
                     single { i++; Simple.ComponentB(get()) }
                 })
+            createEagerInstances()
         }
 
         val koin = app.koin

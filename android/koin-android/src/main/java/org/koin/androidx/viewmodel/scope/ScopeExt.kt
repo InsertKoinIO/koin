@@ -39,13 +39,14 @@ inline fun <reified T : ViewModel> Scope.getViewModel(
         noinline owner: ViewModelOwnerDefinition,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(qualifier, owner, T::class, parameters)
+    return getViewModel(qualifier, owner, T::class, parameters = parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
         owner: ViewModelOwnerDefinition,
         clazz: KClass<T>,
+        state: BundleDefinition? = null,
         parameters: ParametersDefinition? = null,
 ): T {
     val ownerDef = owner()
@@ -53,6 +54,7 @@ fun <T : ViewModel> Scope.getViewModel(
             ViewModelParameter(
                     clazz,
                     qualifier,
+                    state,
                     parameters,
                     ownerDef.store,
                     ownerDef.stateRegistry

@@ -81,12 +81,11 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
-    implementation "androidx.navigation:navigation-fragment-ktx:$androidx_nav"
+//    implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
+//    implementation "androidx.navigation:navigation-fragment-ktx:$androidx_nav"
     implementation("androidx.work:work-runtime-ktx:$androidx_workmanager")
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
 }
