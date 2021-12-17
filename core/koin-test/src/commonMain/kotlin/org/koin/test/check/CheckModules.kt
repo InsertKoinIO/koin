@@ -53,6 +53,20 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
 }
 
 /**
+ * Check given modules directly
+ *
+ * @param modules - list of modules
+ * @param appDeclaration - Koin app config if needed
+ * @param parameters - Check parameters DSL
+ */
+fun checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
+    startKoin(appDeclaration)
+        .modules(modules)
+        .checkModules(parameters)
+    stopKoin()
+}
+
+/**
  * @see checkModules
  *
  * Deprecated
@@ -66,15 +80,14 @@ fun checkKoinModules(level: Level = Level.INFO, parameters: CheckParameters? = n
 }
 
 /**
- * Check given modules directly
+ * @see checkKoinModules
  *
- * @param modules - list of modules
- * @param appDeclaration - Koin app config if needed
- * @param parameters - Check parameters DSL
+ * Deprecated
  */
-fun checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
-    startKoin(appDeclaration)
-        .modules(modules)
+@Deprecated("use instead checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null)")
+fun checkKoinModules(vararg modules : Module, level: Level = Level.INFO, parameters: CheckParameters? = null) {
+    startKoin({})
+        .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
     stopKoin()
 }
