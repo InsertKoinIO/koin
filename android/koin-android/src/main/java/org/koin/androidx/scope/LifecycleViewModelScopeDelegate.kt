@@ -17,7 +17,7 @@ import kotlin.reflect.KProperty
 
 class LifecycleViewModelScopeDelegate(
         val lifecycleOwner: LifecycleOwner,
-        private val koinContext: KoinContext = GlobalContext,
+        private val koin : Koin,
         private val createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeName().value, lifecycleOwner.getScopeName()) },
 ) : ReadOnlyProperty<LifecycleOwner, Scope> {
 
@@ -28,7 +28,6 @@ class LifecycleViewModelScopeDelegate(
     init {
         assert(lifecycleOwner is AppCompatActivity){ "$lifecycleOwner should be an AppCompatActivity" }
 
-        val koin = koinContext.get()
         val logger = koin.logger
 
         logger.debug("setup scope: $_scope for $lifecycleOwner")
@@ -53,7 +52,6 @@ class LifecycleViewModelScopeDelegate(
             if (!thisRef.isActive()) {
                 error("can't get Scope for $lifecycleOwner - LifecycleOwner is not Active")
             } else {
-                val koin = koinContext.get()
                 _scope = koin.getScopeOrNull(lifecycleOwner.getScopeName().value) ?: createScope(koin)
                 koin.logger.debug("got scope: $_scope for $lifecycleOwner")
                 _scope!!
