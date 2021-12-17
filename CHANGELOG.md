@@ -3,6 +3,17 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [3.1.5]()
+* `[FIXED]` `[android]` - #1240 - ViewModel scope instance creation fixed
+* `[FIXED]` `[android]` - #1232 & #1207 - Android minimum dependencies is clean up and should avoid indirect library crash
+* `[ADDED]` `[android]` - #1250 - Android instrumented test doc
+* `[FIXED]` `[core]` - #1213 - withInstance() mock instance fixed
+* `[FIXED]` `[core]` - #1248 - fix createeagerInstances() to be seperated back of modules()
+* `[FIXED]` `[core]` - checkKoinModules API is fixed / deprecate old signatures
+* `[FIXED]` `[androidx-compose]` - ViewModelStoreOwner property fixed for Compose
+* `[UPDATED]` `[androidx-compose]` - Compose 1.0.5
+
+
 ## [3.1.4]()
 
 * `[FIXED]` `[core]` - #1149 - Nullable parameter resolution

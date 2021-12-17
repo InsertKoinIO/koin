@@ -23,6 +23,19 @@ class CheckModulesTest : KoinTest {
 }
 ```
 
+also possible to use `checkKoinModules`:
+
+```kotlin
+class CheckModulesTest : KoinTest {
+
+    @Test
+    fun verifyKoinApp() {
+        
+        checkKoinModules(listOf(module1,module2))
+    }
+}
+```
+
 #### CheckModule DSL
 
 For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allow to specify how to wotk with the following case:
@@ -140,6 +153,31 @@ class CheckModulesTest {
                 withInstance<SavedStateHandle>()
                 withInstance<WorkerParameters>()
             }
+        }
+    }
+}
+```
+
+also possible to use `checkKoinModules`:
+
+```kotlin
+class CheckModulesTest {
+
+    @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
+
+    @Test
+    fun `test DI modules`(){
+        checkKoinModules(allModules) {
+            withInstance<Context>()
+            withInstance<Application>()
+            withInstance<SavedStateHandle>()
+            withInstance<WorkerParameters>()
         }
     }
 }
