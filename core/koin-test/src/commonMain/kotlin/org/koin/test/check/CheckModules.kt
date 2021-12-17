@@ -54,11 +54,29 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
 
 /**
  * @see checkModules
+ *
+ * Deprecated
  */
+@Deprecated("use instead checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null)")
 fun checkKoinModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
+    stopKoin()
+}
+
+/**
+ * Check given modules directly
+ *
+ * @param modules - list of modules
+ * @param appDeclaration - Koin app config if needed
+ * @param parameters - Check parameters DSL
+ */
+fun checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
+    startKoin(appDeclaration)
+        .modules(modules)
+        .checkModules(parameters)
+    stopKoin()
 }
 
 /**

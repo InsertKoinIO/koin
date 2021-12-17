@@ -8,6 +8,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.test.check.checkKoinModules
 import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
@@ -36,6 +37,21 @@ class CheckModulesTest {
                 withParameter<String> { "a_parameter" }
                 withProperty("aValue", "string_value")
             }
+        }
+    }
+
+    @Test
+    fun `check a module - all dsl - checkKoinModules`() {
+        val modules = module {
+            single { p -> Simple.ComponentB(p.get()) }
+            single(named("param")) { p -> Simple.MyString(p.get()) }
+            single { Simple.MyString(getProperty("aValue")) }
+        }
+
+        checkKoinModules(listOf(modules)) {
+            withInstance<Simple.ComponentA>()
+            withParameter<String> { "a_parameter" }
+            withProperty("aValue", "string_value")
         }
     }
 
@@ -238,6 +254,15 @@ class CheckModulesTest {
                 }
             )
         }.checkModules()
+    }
+
+    @Test
+    fun `check a module with link - checkKoinModules`() {
+        val m = module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentB(get()) }
+        }
+        checkKoinModules(listOf(m))
     }
 
     @Test
