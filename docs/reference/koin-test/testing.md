@@ -4,6 +4,8 @@ title: Injecting in Tests
 
 ## Making your test a KoinComponent with KoinTest
 
+*Warning*: This does not apply to Android Instrumented tests. For Instrumented testing with Koin, please see [Android Instrumented Testing](../koin-android/instrumented-testing.md)
+
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
 * `by inject()` & `get()` - function to retrieve your instances from Koin
