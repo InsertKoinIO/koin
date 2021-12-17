@@ -210,6 +210,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val koin = app.koin
 
         koin.loadModules(listOf(module))
+        koin.createEagerInstances()
 
         assertTrue(created)
     }
@@ -230,6 +231,7 @@ class DynamicModulesTest : KoinCoreTest() {
         val koin = app.koin
 
         koin.loadModules(listOf(module))
+        koin.createEagerInstances()
 
         assertTrue(created)
     }

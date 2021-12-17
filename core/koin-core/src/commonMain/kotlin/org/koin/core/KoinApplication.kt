@@ -68,6 +68,13 @@ class KoinApplication private constructor() {
     }
 
     /**
+     * Create eager instances (single with createdAtStart)
+     */
+    fun createEagerInstances(){
+        koin.createEagerInstances()
+    }
+
+    /**
      * Allow definition override or not, in a global manner
      *
      * @param override
