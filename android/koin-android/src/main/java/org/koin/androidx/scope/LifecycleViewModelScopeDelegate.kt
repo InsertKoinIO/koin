@@ -2,15 +2,10 @@ package org.koin.androidx.scope
 
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import org.koin.core.Koin
-import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
-import org.koin.core.context.GlobalContext
-import org.koin.core.context.KoinContext
 import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -34,9 +29,8 @@ class LifecycleViewModelScopeDelegate(
         _scope = koin.getScopeOrNull(scopeId) ?: createScope(koin)
         logger.debug("got scope: $_scope for $lifecycleOwner")
 
-        lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-            fun onCreate(owner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onCreate(owner: LifecycleOwner) {
                 logger.debug("Attach ViewModel scope: $_scope to $lifecycleOwner")
                 val scopeViewModel : ScopeHandlerViewModel = (lifecycleOwner as AppCompatActivity).viewModels<ScopeHandlerViewModel>().value
                 if (scopeViewModel.scope == null) {
