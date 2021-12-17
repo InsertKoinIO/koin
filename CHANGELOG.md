@@ -12,7 +12,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[core]` - checkKoinModules API is fixed / deprecate old signatures
 * `[FIXED]` `[androidx-compose]` - ViewModelStoreOwner property fixed for Compose
 * `[UPDATED]` `[androidx-compose]` - Compose 1.0.5
-
+* `[FIXED]` `[android]` - fixed scope delegate property to help create scope later for fragment, and bind with parent activity scope 
 
 ## [3.1.4]()
 
