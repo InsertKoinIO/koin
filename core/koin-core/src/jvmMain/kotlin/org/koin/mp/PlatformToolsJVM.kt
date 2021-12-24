@@ -17,5 +17,8 @@ actual object KoinPlatformTools {
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext
+    actual fun <R> synchronized(lock: SyncCapable, block: () -> R) = kotlin.synchronized(lock, block)
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentHashMap<K, V>()
 }
+
+actual typealias SyncCapable = Any
