@@ -1,6 +1,6 @@
 package org.koin.mp.native
 
-internal actual val isMainThread: Boolean
+actual val isMainThread: Boolean
     get() {
         return try {
             //Trying to access a global val on a background thread will throw an exception

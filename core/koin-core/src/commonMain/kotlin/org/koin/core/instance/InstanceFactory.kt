@@ -24,12 +24,13 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
+import org.koin.mp.SyncCapable
 
 /**
  * Koin Instance Holder
  * create/get/release an instance of given definition
  */
-abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) {
+abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : SyncCapable() {
 
     /**
      * Retrieve an instance
