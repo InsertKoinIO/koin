@@ -21,7 +21,7 @@ import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.mp.KoinPlatformTools
-import org.koin.mp.native.MainThreadValue
+import org.koin.mp.native.createdGuardedValue
 
 /**
  * Global context - current Koin Application available globally
@@ -34,7 +34,7 @@ object GlobalContext : KoinContext {
 
     data class KoinInstanceHolder(var koin: Koin? = null)
 
-    private val contextHolder = MainThreadValue(KoinInstanceHolder(null))
+    private val contextHolder = createdGuardedValue(KoinInstanceHolder(null))
 
     override fun getOrNull(): Koin? = contextHolder.get().koin
     override fun get(): Koin = getOrNull() ?: error("KoinApplication has not been started")

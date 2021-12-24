@@ -32,6 +32,5 @@ actual object KoinPlatformTools {
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.NONE
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext
-    actual fun <R> synchronized(lock: Any, block: () -> R) = block()
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = HashMap()
 }
