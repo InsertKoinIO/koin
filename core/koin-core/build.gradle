@@ -36,7 +36,6 @@ kotlin {
         commonMain {
             dependencies {
                 api kotlin("stdlib-common")
-                implementation "co.touchlab:stately-concurrency:1.2.0"
             }
         }
 
@@ -78,6 +77,9 @@ kotlin {
 
         nativeMain {
             dependsOn commonMain
+            dependencies {
+                implementation "co.touchlab:stately-concurrency:1.2.0"
+            }
         }
 
         nativeTest {
