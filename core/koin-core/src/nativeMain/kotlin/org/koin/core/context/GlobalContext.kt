@@ -34,7 +34,7 @@ internal fun globalContextByMemoryModel(): KoinContext = if (isExperimentalMM())
 /**
  * Main thread only global context for the strict memory model
  */
-internal class StrictGlobalContxt: KoinContext {
+internal class StrictGlobalContext: KoinContext {
     data class KoinInstanceHolder(var koin: Koin? = null)
 
     private val contextHolder = MainThreadValue(KoinInstanceHolder(null))
