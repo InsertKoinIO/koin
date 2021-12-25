@@ -28,7 +28,7 @@ import org.koin.mp.native.MainThreadValue
 internal fun globalContextByMemoryModel(): KoinContext = if (isExperimentalMM()) {
     MutableGlobalContext()
 } else {
-    StrictGlobalContxt()
+    StrictGlobalContext()
 }
 
 /**
