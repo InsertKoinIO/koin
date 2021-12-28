@@ -17,7 +17,7 @@ package org.koin.ktor.ext
 
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
-import io.ktor.application.ApplicationStopping
+import io.ktor.application.ApplicationStopped
 import io.ktor.application.featureOrNull
 import io.ktor.application.install
 import io.ktor.util.AttributeKey
@@ -48,7 +48,7 @@ class Koin(internal val koinApplication: KoinApplication) {
             val koinApplication = startKoin(appDeclaration = configure)
             monitor.raise(KoinApplicationStarted, koinApplication)
 
-            monitor.subscribe(ApplicationStopping) {
+            monitor.subscribe(ApplicationStopped) {
                 monitor.raise(KoinApplicationStopPreparing, koinApplication)
                 stopKoin()
                 monitor.raise(KoinApplicationStopped, koinApplication)
