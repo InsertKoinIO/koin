@@ -1,6 +1,6 @@
 apply plugin: 'kotlin'
 
-archivesBaseName = 'koin-ktor'
+archivesBaseName = 'koin-ktor2'
 
 repositories {
     mavenCentral()
@@ -11,8 +11,7 @@ dependencies {
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     // Ktor
-    compile "io.ktor:ktor-server-core:$ktor_version"
-    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
+    compile "io.ktor:ktor-server-core:$ktor2_version"
 }
 
 apply from: '../../gradle/publish-to-central.gradle'

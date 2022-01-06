@@ -2,6 +2,7 @@
 // Ktor
 include 'koin-logger-slf4j'
 include 'koin-ktor'
+include 'koin-ktor2'
 
 enableFeaturePreview('GRADLE_METADATA')
 
