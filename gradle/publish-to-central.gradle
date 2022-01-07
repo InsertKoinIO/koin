@@ -29,12 +29,17 @@ artifacts {
     archives sourcesJar
 }
 
+// OSS Sonatype Repo
+// s01.oss.sonatype.com
+def OSSRepo = "s01.oss.sonatype.org"
+//def OSSRepo = "oss.sonatype.org"
+
 afterEvaluate {
     publishing {
         repositories {
             maven {
                 name "snapshot"
-                url = "https://oss.sonatype.org/content/repositories/snapshots"
+                url = "https://$OSSRepo/content/repositories/snapshots"
                 credentials {
                     username = getRepositoryUsername()
                     password = getRepositoryPassword()
@@ -42,7 +47,7 @@ afterEvaluate {
             }
             maven {
                 name "staging"
-                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                url = "https://$OSSRepo/service/local/staging/deploy/maven2"
                 credentials {
                     username = getRepositoryUsername()
                     password = getRepositoryPassword()
