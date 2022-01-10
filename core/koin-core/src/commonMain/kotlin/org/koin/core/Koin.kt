@@ -152,7 +152,7 @@ class Koin {
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
-     * @param override Allows to override a previous declaration of the same type (default to false).
+     * @param allowOverride Allows to override a previous declaration of the same type (default to true).
      */
     inline fun <reified T> declare(
             instance: T,
