@@ -1,10 +1,35 @@
 ---
-title: Injection Parameters
+title: Passing Parameters - Injected Parameters
 ---
 
-In any definition, you can use injection parameters: parameters that will be injected and used by your definition:
+In any definition, you can use injection parameters: parameters that will be injected and used by your definition.
 
-## Defining an injected parameter
+## Passing values to inject
+
+Given a definition, you can pass paramaters to that definition:
+
+```kotlin
+class Presenter(val a : A, val b : B)
+
+val myModule = module {
+    single { params -> Presenter(a = params.get(), b = params.get()) }
+}
+```
+
+Parameters are sent to your definition with the `parametersOf()` function (each value seperated by comma): 
+
+```kotlin
+class MyComponent : View, KoinComponent {
+
+    val a : A ...
+    val b : B ... 
+
+    // inject this as View value
+    val presenter : Presenter by inject { parametersOf(a, b) }
+}
+```
+
+## Defining an "injected parameter"
 
 Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class. We use the `params` function argument  to help retrieve our injected parameters:
 
@@ -30,7 +55,7 @@ val myModule = module {
  Even if the "destructured" declaration is more convenient and readable, it's not type safe. Kotlin won't detect that passed type are in good orders if you have several values
 :::
 
-## Parameters injection from the Graph resolution
+## Resolving injected parameters
 
 Koin graph resolution (main tree of resolution of all definitions) also let you find your injected parameter. Just use the usual `get()` function:
 
@@ -41,29 +66,3 @@ val myModule = module {
     single { Presenter(get()) }
 }
 ```
-
-## Passing values to inject
-
-Given a definition that is using injected parameters:
-
-```kotlin
-class Presenter(val a : A, val b : B)
-
-val myModule = module {
-    single { params -> Presenter(a = params.get(), b = params.get()) }
-}
-```
-
-Injection parameters are parameters passed through the resolution API with the `parametersOf()` function (each value separated by comma):
-
-```kotlin
-class MyComponent : View, KoinComponent {
-
-    val a : A ...
-    val b : B ... 
-
-    // inject this as View value
-    val presenter : Presenter by inject { parametersOf(a, b) }
-}
-```
-

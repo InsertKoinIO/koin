@@ -54,6 +54,5 @@ inline fun <reified T : Any> ComponentCallbacks.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val params: ParametersDefinition = parameters?.let { { it().add(this) } } ?: { parametersOf(this) }
-    return getKoinScope().get(qualifier, params)
+    return getKoinScope().get(qualifier, parameters)
 }

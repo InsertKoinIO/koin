@@ -3,6 +3,32 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 
+## [3.1.5]()
+* `[FIXED]` `[android]` - #1240 - ViewModel scope instance creation fixed
+* `[FIXED]` `[android]` - #1232 & #1207 - Android minimum dependencies is clean up and should avoid indirect library crash
+* `[ADDED]` `[android]` - #1250 - Android instrumented test doc
+* `[FIXED]` `[core]` - #1213 - withInstance() mock instance fixed
+* `[FIXED]` `[core]` - #1248 - fix createeagerInstances() to be seperated back of modules()
+* `[FIXED]` `[core]` - checkKoinModules API is fixed / deprecate old signatures
+* `[FIXED]` `[androidx-compose]` - ViewModelStoreOwner property fixed for Compose
+* `[UPDATED]` `[androidx-compose]` - Compose 1.0.5
+* `[FIXED]` `[android]` - fixed scope delegate property to help create scope later for fragment, and bind with parent activity scope 
+
+## [3.1.4]()
+
+* `[FIXED]` `[core]` - #1149 - Nullable parameter resolution
+* `[FIXED]` `[docs]` - Documentation fixes #1170 #1160 #1152 #1155 #1169 #1231 #1234 #1222 #1079
+* `[FIXED]` `[core]` - Bean scope error message fix #1166
+* `[FIXED]` `[core]` - Java Compat nullable API fix #1175
+* `[FIXED]` `[core]` - String quotes fix #1199
+* `[FIXED]` `[android]` - Koin Graph ViewModel added parameters API #1202
+* `[FIXED]` `[core]` - Dynamic feature module loading #1095
+* `[FIXED]` `[kmm]` - Apple Silicon Support #1192
+* `[FIXED]` `[core]` - backport getSource scope API as deprecated fix #1211
+* `[FIXED]` `[test]` - CheckKoinModules & CheckModules API cleaned up & fixed with right parameters #1197 #1194
+* `[FIXED]` `[android]` - stateViewModel API rolledback #1214
+
+
 ## [3.1.3]()
 
 * `[UPDATED]` `[core]` - Update to Kotlin 1.5.30

@@ -1,4 +1,0 @@
-include 'koin-annotations'
-include 'koin-ksp-compiler'
-
-enableFeaturePreview('GRADLE_METADATA')

@@ -6,8 +6,7 @@ title: Checking your modules or application graph
 Koin allows you to verify your configuration modules, avoiding to discover dependency injection issues at runtime.
 :::
 
-To verify your modules, you just need to the `checkKoinModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
-
+To verify your modules, you just need to the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
 
 
 ```kotlin
@@ -16,14 +15,30 @@ class CheckModulesTest : KoinTest {
     @Test
     fun verifyKoinApp() {
         
-        checkKoinModules(module1,module2)
+        koinApplication {
+            modules(module1,module2)
+            checkModules()
+        }
     }
 }
 ```
 
-#### CheckKoinModules DSL
+also possible to use `checkKoinModules`:
 
-For any definition that is using injected parameters, properties or dynamic instances, the `checkKoinModules` DSL allow to specify how to work with the following case:
+```kotlin
+class CheckModulesTest : KoinTest {
+
+    @Test
+    fun verifyKoinApp() {
+        
+        checkKoinModules(listOf(module1,module2))
+    }
+}
+```
+
+#### CheckModule DSL
+
+For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allow to specify how to wotk with the following case:
 
 * `withInstance(value)` - will add `value` instance to Koin graph (can be used in dependency or parameter)
 
@@ -31,12 +46,14 @@ For any definition that is using injected parameters, properties or dynamic inst
 
 * `withParameter<Type>(qualifier){ qualifier -> value }` - will add `value` instance to be injected as parameter
 
+* `withParameter<Type>(qualifier){ qualifier -> parametersOf(...) }` - will add `value` instance to be injected as parameter
+
 * `withProperty(key,value)` - add property to Koin
 
 
 #### Allow mocking with a Junit rule
 
-To use mocks with `checkKoinModules`, you need to provide a `MockProviderRule`
+To use mocks with `checkModules`, you need to provide a `MockProviderRule`
 
 ```kotlin
 @get:Rule
@@ -45,7 +62,7 @@ val mockProvider = MockProviderRule.create { clazz ->
 }
 ```
 
-#### Verifying modules with dynamic behavior (since 3.1.3)
+#### Verifying modules with dynamic behavior (3.1.3+)
 
 To verify a dynamic behavior like following, let's use the CheckKoinModules DSL to provide the missing instance data to our test:
 
@@ -63,9 +80,12 @@ class CheckModulesTest : KoinTest {
     @Test
     fun verifyKoinApp() {
         
-        checkKoinModules(myModule){
-            // value to add to Koin, used by definition
-            withInstance("_my_id_value")
+        koinApplication {
+            modules(myModule)
+            checkModules(){
+                // value to add to Koin, used by definition
+                withInstance("_my_id_value")
+            }
         }
     }
 }
@@ -97,15 +117,18 @@ class CheckModulesTest : KoinTest {
     @Test
     fun verifyKoinApp() {
         
-        checkKoinModules(myModule1){
-            // add a mock of ComponentA to Koin 
-            withInstance<ComponentA>()
+        koinApplication {
+            modules(myModule1)
+            checkModules(){
+                // add a mock of ComponentA to Koin 
+                withInstance<ComponentA>()
+            }
         }
     }
 }
 ```
 
-#### CheckKoinModules for Android
+#### Checking Modules for Android (3.1.3)
 
 Here below is how you can test your graph for a typical Android app:
 
@@ -122,7 +145,35 @@ class CheckModulesTest {
 
     @Test
     fun `test DI modules`(){
-        checkKoinModules(allTestModules){
+        koinApplication {
+            modules(allModules)
+            checkModules(){
+                withInstance<Context>()
+                withInstance<Application>()
+                withInstance<SavedStateHandle>()
+                withInstance<WorkerParameters>()
+            }
+        }
+    }
+}
+```
+
+also possible to use `checkKoinModules`:
+
+```kotlin
+class CheckModulesTest {
+
+    @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mockProvider = MockProviderRule.create { clazz ->
+        Mockito.mock(clazz.java)
+    }
+
+    @Test
+    fun `test DI modules`(){
+        checkKoinModules(allModules) {
             withInstance<Context>()
             withInstance<Application>()
             withInstance<SavedStateHandle>()
@@ -132,20 +183,21 @@ class CheckModulesTest {
 }
 ```
 
-#### Default values (deprecated)
+#### Providing Default Values (3.1.4)
 
 If you need, you can set a default value for all type in the checked modules. For example, We can override all injected string values:
 
-Let's use the `defaultValues()` function, to define a default value for all definitions:
+Let's use the `withInstance()` function in `checkModules` block, to define a default value for all definitions:
 
 ```kotlin
 @Test
-fun checkAllModules() = checkModules(
-    parameters = {
-        defaultValues<String>("_ID_")
-    }   
-){
-    modules(myModules)
+fun `test DI modules`(){
+    koinApplication {
+        modules(allModules)
+        checkModules(){
+            withInstance("_ID_")
+        }
+    }
 }
 ```
 
@@ -158,19 +210,19 @@ module {
 }
 ```
 
-#### Parameter creator (deprecated)
+#### Providing ParametersOf values (3.1.4)
 
-You can define default value to be injected for one specific definition, with `create` function:
+You can define default value to be injected for one specific definition, with `withParameter` or `withParameters` functions:
 
 ```kotlin
 @Test
-fun checkAllModules() = checkModules(
-    parameters = {
-        create<FactoryPresenter> { parametersOf("_FactoryId_") }
-        // or
-        create(FactoryPresenter::class) { parametersOf("_FactoryId_") }
-    }   
-){
-    modules(myModules)
+fun `test DI modules`(){
+    koinApplication {
+        modules(allModules)
+        checkModules(){
+            withParameter<FactoryPresenter> { "_FactoryId_" }
+            withParameters<FactoryPresenter> { parametersOf("_FactoryId_",...) }
+        }
+    }
 }
 ```

@@ -64,6 +64,27 @@ fun App() {
 }
 ```
 
+You can specify the `owner` & `scope`: 
 
+```kotlin
+inline fun <reified T : ViewModel> getViewModel(
+    qualifier: Qualifier? = null,
+    owner: ViewModelOwner = getComposeViewModelOwner(),
+    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
+    noinline parameters: ParametersDefinition? = null,
+)
+```
+
+Where ViewModelOwner can be used to pass a StoreOwner (like navigation):
+
+```kotlin
+@Composable
+fun getComposeViewModelOwner(): ViewModelOwner {
+    return ViewModelOwner.from(
+        LocalViewModelStoreOwner.current!!,
+        LocalSavedStateRegistryOwner.current
+    )
+}
+```
 
 

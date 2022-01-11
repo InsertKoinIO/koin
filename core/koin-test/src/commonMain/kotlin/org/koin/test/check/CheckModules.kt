@@ -39,28 +39,57 @@ import org.koin.test.parameter.MockParameter
  */
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
-@Deprecated("use checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null)")
+/**
+ * Verify Modules by running each definition
+ *
+ * @param level - Log level
+ * @param parameters - parameter setup
+ * @param appDeclaration - koin Application
+ */
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
 }
 
-fun checkKoinModules(modules : List<Module>, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
-    val koinApp = koinApplication(null)
-        .logger(KoinPlatformTools.defaultLogger(logLevel))
+/**
+ * Check given modules directly
+ *
+ * @param modules - list of modules
+ * @param appDeclaration - Koin app config if needed
+ * @param parameters - Check parameters DSL
+ */
+fun checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
+    startKoin(appDeclaration)
         .modules(modules)
-
-    KoinPlatformTools.defaultContext().startKoin(koinApp)
-
-    koinApp
         .checkModules(parameters)
-
     stopKoin()
 }
 
-fun checkKoinModules(vararg modules : Module, logLevel: Level = Level.INFO, parameters: CheckParameters? = null) {
-    checkKoinModules(modules.toList(),logLevel, parameters)
+/**
+ * @see checkModules
+ *
+ * Deprecated
+ */
+@Deprecated("use instead checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null)")
+fun checkKoinModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
+    startKoin(appDeclaration)
+        .logger(KoinPlatformTools.defaultLogger(level))
+        .checkModules(parameters)
+    stopKoin()
+}
+
+/**
+ * @see checkKoinModules
+ *
+ * Deprecated
+ */
+@Deprecated("use instead checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null)")
+fun checkKoinModules(vararg modules : Module, level: Level = Level.INFO, parameters: CheckParameters? = null) {
+    startKoin({})
+        .logger(KoinPlatformTools.defaultLogger(level))
+        .checkModules(parameters)
+    stopKoin()
 }
 
 /**

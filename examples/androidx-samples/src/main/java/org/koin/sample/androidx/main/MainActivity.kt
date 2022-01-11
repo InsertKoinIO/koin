@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     // Inject by Interface - default definition
     val service: SimpleService by inject()
 
-    val simplePresenter : SimplePresenter by inject()
+//    val simplePresenter : SimplePresenter by inject()
 
     // Inject by Interface - qualified definition with a String name
     val dumbService: SimpleService by inject(named("dumb"))
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         assert(get<RandomId>().id != randomId.id)
         assert(APP_TITLE == propertyTitle?.replace("\"", ""))
 
-        assert(simplePresenter.activity == this)
+//        assert(simplePresenter.activity == this)
 
         setContentView(R.layout.main_activity)
         title = "Android First Samples"

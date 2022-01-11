@@ -27,7 +27,7 @@ val appModule = module {
 
     single<SimpleServiceImpl>() bind SimpleService::class
     single<DumbServiceImpl>(named("dumb")) bind SimpleService::class
-    factory { p -> SimplePresenter(p.get())}
+//    factory { p -> SimplePresenter(p.get())}
     factory { RandomId() }
 }
 
@@ -47,11 +47,9 @@ val mvvmModule = module {
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
     viewModel { params -> SavedStateViewModel(get(), params.get(), get()) }// injected params
+    viewModel { SavedStateBundleViewModel(get(), get()) }// injected params
 
     scope<MVVMActivity> {
-
-        viewModel { OneViewModel() }
-        scoped { UseOneViewModel(get())}
 
         scoped { Session() }
         fragment<MVVMFragment>()

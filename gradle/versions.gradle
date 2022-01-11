@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '3.1.4-alpha-1'
+    koin_version = '3.1.5'
     // TODO pass it to true to make release
     is_snaptshot = true
 
@@ -23,11 +23,4 @@ ext {
     // Doc
     // asciidoctor_version = "1.5.3"
     // asciidoctor_pdf_version = "1.5.0-alpha.15"
-
-    // Publish
-    // android_maven_publish = "3.6.3"
-
-    // Ksp
-    koin_ksp_version = "1.0.0-alpha-1"
-    ksp_version = "1.5.31-1.0.0" 
 }

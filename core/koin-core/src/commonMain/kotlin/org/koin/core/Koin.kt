@@ -152,7 +152,7 @@ class Koin {
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
-     * @param override Allows to override a previous declaration of the same type (default to false).
+     * @param allowOverride Allows to override a previous declaration of the same type (default to true).
      */
     inline fun <reified T> declare(
             instance: T,
@@ -326,7 +326,6 @@ class Koin {
     fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
         instanceRegistry.loadModules(modules, allowOverride)
         scopeRegistry.loadScopes(modules)
-        createEagerInstances()
     }
 
 
@@ -338,8 +337,8 @@ class Koin {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances(){
+        logger.info("create eager instances ...")
         if (logger.isAt(Level.DEBUG)) {
-            logger.debug("create eager instances ...")
             val duration = measureDuration {
                 instanceRegistry.createAllEagerInstances()
             }
