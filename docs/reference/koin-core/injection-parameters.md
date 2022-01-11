@@ -6,7 +6,7 @@ In any definition, you can use injection parameters: parameters that will be inj
 
 ## Passing values to inject
 
-Given a definition, you can pass paramaters to that definition:
+Given a definition, you can pass parameters to that definition:
 
 ```kotlin
 class Presenter(val a : A, val b : B)
@@ -16,7 +16,7 @@ val myModule = module {
 }
 ```
 
-Parameters are sent to your definition with the `parametersOf()` function (each value seperated by comma): 
+Parameters are sent to your definition with the `parametersOf()` function (each value separated by comma):
 
 ```kotlin
 class MyComponent : View, KoinComponent {
