@@ -38,7 +38,7 @@ class CheckModulesTest : KoinTest {
 
 #### CheckModule DSL
 
-For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allow to specify how to wotk with the following case:
+For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allow to specify how to work with the following case:
 
 * `withInstance(value)` - will add `value` instance to Koin graph (can be used in dependency or parameter)
 
