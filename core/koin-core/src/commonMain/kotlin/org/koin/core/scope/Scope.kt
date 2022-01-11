@@ -30,7 +30,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
-import org.koin.mp.SyncCapable
+import org.koin.mp.Lockable
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
@@ -40,7 +40,7 @@ data class Scope(
     val isRoot: Boolean = false,
     @PublishedApi
     internal val _koin: Koin
-) : SyncCapable() {
+) : Lockable() {
     private val linkedScopes: ArrayList<Scope> = arrayListOf()
 
     @KoinInternalApi

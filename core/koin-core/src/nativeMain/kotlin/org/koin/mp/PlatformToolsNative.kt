@@ -26,7 +26,7 @@ actual object KoinPlatformTools {
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = defaultContext
     @OptIn(ExperimentalStdlibApi::class)
-    actual fun <R> synchronized(lock: SyncCapable, block: () -> R): R = if(isExperimentalMM()){
+    actual fun <R> synchronized(lock: Lockable, block: () -> R): R = if(isExperimentalMM()){
         lock.lock.withLock { block() }
     } else {
         assertMainThread()
@@ -36,6 +36,6 @@ actual object KoinPlatformTools {
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = HashMap()
 }
 
-actual open class SyncCapable {
+actual open class Lockable {
     internal val lock = Lock()
 }

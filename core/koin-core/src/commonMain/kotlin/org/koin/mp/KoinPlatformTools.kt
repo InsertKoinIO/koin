@@ -12,8 +12,8 @@ expect object KoinPlatformTools {
     fun defaultLazyMode(): LazyThreadSafetyMode
     fun defaultLogger(level: Level = Level.INFO): Logger
     fun defaultContext(): KoinContext
-    fun <R> synchronized(lock: SyncCapable, block: () -> R): R
+    fun <R> synchronized(lock: Lockable, block: () -> R): R
     fun <K, V> safeHashMap(): MutableMap<K, V>
 }
 
-expect open class SyncCapable()
+expect open class Lockable()
