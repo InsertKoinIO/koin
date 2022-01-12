@@ -7,14 +7,14 @@ ext {
     is_snaptshot = true
 
     // Kotlin
-    kotlin_version = '1.5.31'
-    coroutines_version = "1.5.2-native-mt"
+    kotlin_version = '1.6.10'
+    coroutines_version = "1.6.0"
 
     // Dokka
     dokka_version = '1.4.32'
 
     // Ktor
-    ktor_version = '1.6.4'
+    ktor_version = '1.6.7'
 
     // Test
     junit_version = "4.13.2"

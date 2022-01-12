@@ -15,23 +15,26 @@
  */
 package org.koin.core.context
 
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.mp.KoinPlatformTools
 import org.koin.mp.native.MainThreadValue
 
-/**
- * Global context - current Koin Application available globally
- *
- * Support to help inject automatically instances once KoinApp has been started
- *
- * @author Arnaud Giuliani
- */
-object GlobalContext : KoinContext {
+@OptIn(ExperimentalStdlibApi::class)
+internal fun globalContextByMemoryModel(): KoinContext = if (isExperimentalMM()) {
+    MutableGlobalContext()
+} else {
+    StrictGlobalContext()
+}
 
+/**
+ * Main thread only global context for the strict memory model
+ */
+internal class StrictGlobalContext: KoinContext {
     data class KoinInstanceHolder(var koin: Koin? = null)
 
     private val contextHolder = MainThreadValue(KoinInstanceHolder(null))
@@ -46,38 +49,94 @@ object GlobalContext : KoinContext {
         contextHolder.get().koin = koinApplication.koin
     }
 
-    override fun stopKoin() = KoinPlatformTools.synchronized(this) {
+    override fun stopKoin() {
         contextHolder.get().koin?.close()
         contextHolder.get().koin = null
     }
 
-
-    override fun startKoin(koinApplication: KoinApplication): KoinApplication = KoinPlatformTools.synchronized(this) {
+    override fun startKoin(koinApplication: KoinApplication): KoinApplication {
         register(koinApplication)
-        koinApplication
+        return koinApplication
     }
 
-    override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = KoinPlatformTools.synchronized(this) {
+    override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
         val koinApplication = KoinApplication.init()
         register(koinApplication)
         appDeclaration(koinApplication)
-        koinApplication
+        return koinApplication
     }
 
-
-    override fun loadKoinModules(module: Module) = KoinPlatformTools.synchronized(this) {
+    override fun loadKoinModules(module: Module) {
         get().loadModules(listOf(module))
     }
 
-    override fun loadKoinModules(modules: List<Module>) = KoinPlatformTools.synchronized(this) {
+    override fun loadKoinModules(modules: List<Module>) {
         get().loadModules(modules)
     }
 
-    override fun unloadKoinModules(module: Module) = KoinPlatformTools.synchronized(this) {
+    override fun unloadKoinModules(module: Module) {
         get().unloadModules(listOf(module))
     }
 
-    override fun unloadKoinModules(modules: List<Module>) = KoinPlatformTools.synchronized(this) {
+    override fun unloadKoinModules(modules: List<Module>) {
+        get().unloadModules(modules)
+    }
+}
+
+/**
+ * Mutable global context for the new memory model. Very similar to how the JVM global context works.
+ */
+internal class MutableGlobalContext:KoinContext {
+    private val lock = Lock()
+    private var _koin: Koin? = null
+    private var _koinApplication: KoinApplication? = null
+
+    override fun get(): Koin = _koin ?: error("KoinApplication has not been started")
+
+    override fun getOrNull(): Koin? = _koin
+
+    fun getKoinApplicationOrNull(): KoinApplication? = _koinApplication
+
+    private fun register(koinApplication: KoinApplication) {
+        if (_koin != null) {
+            throw KoinAppAlreadyStartedException("A Koin Application has already been started")
+        }
+        _koinApplication = koinApplication
+        _koin = koinApplication.koin
+    }
+
+    override fun stopKoin() = lock.withLock {
+        _koin?.close()
+        _koin = null
+    }
+
+    override fun startKoin(koinApplication: KoinApplication): KoinApplication = lock.withLock {
+        register(koinApplication)
+        koinApplication.createEagerInstances()
+        return koinApplication
+    }
+
+    override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = lock.withLock {
+        val koinApplication = KoinApplication.init()
+        register(koinApplication)
+        appDeclaration(koinApplication)
+        koinApplication.createEagerInstances()
+        return koinApplication
+    }
+
+    override fun loadKoinModules(module: Module) = lock.withLock {
+        get().loadModules(listOf(module))
+    }
+
+    override fun loadKoinModules(modules: List<Module>) = lock.withLock {
+        get().loadModules(modules)
+    }
+
+    override fun unloadKoinModules(module: Module) = lock.withLock {
+        get().unloadModules(listOf(module))
+    }
+
+    override fun unloadKoinModules(modules: List<Module>) = lock.withLock {
         get().unloadModules(modules)
     }
 }

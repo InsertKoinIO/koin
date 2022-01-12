@@ -1,7 +1,9 @@
 package org.koin.mp
 
-import org.koin.core.context.GlobalContext
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
 import org.koin.core.context.KoinContext
+import org.koin.core.context.globalContextByMemoryModel
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
@@ -9,30 +11,12 @@ import org.koin.mp.native.assertMainThread
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
-//actual object PlatformTools {
-//    actual fun getClassName(kClass: KClass<*>): String {
-//        return kClass.qualifiedName ?: "KClass@${hashCode()}"
-//    }
-//
-//    actual fun printStackTrace(throwable: Throwable) {
-//        throwable.printStackTrace()
-//    }
-//
-//    actual fun stackTrace(): List<String> = Exception().getStackTrace().toList()
-//
-//    actual fun printLog(level: Level, msg: MESSAGE) {
-//        println("[$level] $KOIN_TAG $msg")
-//    }
-//}
-//
-//internal actual fun Any.ensureNeverFrozen() = ensureNeverFrozen()
-//
-//internal actual fun <R> mpsynchronized(lock: Any, block: () -> R): R {
-//    assertMainThread()
-//    return block()
-//}
-
 actual object KoinPlatformTools {
+
+    private val defaultContext: KoinContext by lazy {
+        globalContextByMemoryModel()
+    }
+
     actual fun getStackTrace(e: Exception): String = e.toString() + Exception().toString().split("\n")
     actual fun getClassName(kClass: KClass<*>): String = kClass.qualifiedName ?: "KClass@${kClass.hashCode()}"
 
@@ -40,11 +24,18 @@ actual object KoinPlatformTools {
     actual fun generateId(): String = Random.nextDouble().hashCode().toString()
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.PUBLICATION
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
-    actual fun defaultContext(): KoinContext = GlobalContext
-    actual fun <R> synchronized(lock: Any, block: () -> R): R {
+    actual fun defaultContext(): KoinContext = defaultContext
+    @OptIn(ExperimentalStdlibApi::class)
+    actual fun <R> synchronized(lock: Lockable, block: () -> R): R = if(isExperimentalMM()){
+        lock.lock.withLock { block() }
+    } else {
         assertMainThread()
-        return block()
+        block()
     }
 
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = HashMap()
+}
+
+actual open class Lockable {
+    internal val lock = Lock()
 }
