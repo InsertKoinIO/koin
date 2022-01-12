@@ -29,7 +29,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
+        // useIR = true
     }
 
     buildFeatures {
@@ -59,7 +59,7 @@ dependencies {
     /* Compose */
     api "androidx.compose.runtime:runtime:$androidx_compose_version"
     api "androidx.compose.ui:ui:$androidx_compose_version"
-    api "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
 }

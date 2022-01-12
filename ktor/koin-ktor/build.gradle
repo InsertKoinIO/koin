@@ -7,11 +7,11 @@ repositories {
 }
 
 dependencies {
-    compile "io.insert-koin:koin-core:$koin_version"
+    api "io.insert-koin:koin-core:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     // Ktor
-    compile "io.ktor:ktor-server-core:$ktor_version"
+    api "io.ktor:ktor-server-core:$ktor_version"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }
 

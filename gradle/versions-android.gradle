@@ -14,9 +14,9 @@ ext {
     androidx_nav = '2.3.5'
 
     // when using in AS
-    // androidx_compose_gradle_version = "7.0.3"
+     androidx_compose_gradle_version = "7.0.3"
     // for global build
-    androidx_compose_gradle_version = "4.2.0-beta03"
+//    androidx_compose_gradle_version = "4.2.0-beta03"
 
     androidx_compose_version = "1.0.5"
 

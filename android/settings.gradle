@@ -4,5 +4,3 @@ include 'koin-android'
 include 'koin-android-compat'
 include 'koin-androidx-workmanager'
 include 'koin-androidx-navigation'
-
-enableFeaturePreview('GRADLE_METADATA')

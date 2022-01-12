@@ -2,7 +2,7 @@ ext {
     // Koin
     koin_version = '3.2.0-beta-1'
 
-    // TODO pass it to true to make release
+    // pass it to true to make release
     is_snaptshot = true
 
     // Kotlin

@@ -1,8 +1,10 @@
 buildscript {
     apply from: "../gradle/versions.gradle"
-    apply from: "../gradle/versions-android.gradle"
+//    apply from: "../gradle/versions-android.gradle"
 
     repositories {
+        mavenLocal()
+        mavenCentral()
         google()
         jcenter()
     }
@@ -11,8 +13,8 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // Dokka
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
-        // Android
-        classpath "com.android.tools.build:gradle:$android_gradle_version"
+//        // Android
+//        classpath "com.android.tools.build:gradle:$android_gradle_version"
     }
 }
 
@@ -23,6 +25,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        mavenCentral()
         google()
         jcenter()
     }

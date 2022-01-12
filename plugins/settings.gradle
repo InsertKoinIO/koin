@@ -2,5 +2,3 @@
 // Ktor
 include 'koin-gradle-plugin'
 
-enableFeaturePreview('GRADLE_METADATA')
-
