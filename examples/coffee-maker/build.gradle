@@ -5,12 +5,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
+//        classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
     }
 }
 
 apply plugin: 'kotlin'
-apply plugin: 'koin'
+//apply plugin: 'koin'
 
 archivesBaseName = 'example-coffee-maker'
 
