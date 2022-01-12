@@ -153,6 +153,7 @@ class KoinFeatureTest {
                         newInstance<Bar2>(emptyParametersHolder())
                     }
                 })
+                createEagerInstances()
             }
 
             assertEquals("one", s)
