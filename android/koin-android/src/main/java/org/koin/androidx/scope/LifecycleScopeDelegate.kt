@@ -1,9 +1,8 @@
 package org.koin.androidx.scope
 
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import org.koin.core.Koin
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
@@ -32,14 +31,12 @@ class LifecycleScopeDelegate<T>(
         val logger = koin.logger
 
         logger.debug("setup scope: $_scope for $lifecycleOwner")
-        lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-            fun onCreate(owner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onCreate(owner: LifecycleOwner) {
                 createScope()
             }
 
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy(owner: LifecycleOwner) {
+            override fun onDestroy(owner: LifecycleOwner) {
                 logger.debug("Closing scope: $_scope for $lifecycleOwner")
                 if (_scope?.closed == false) {
                     _scope?.close()
