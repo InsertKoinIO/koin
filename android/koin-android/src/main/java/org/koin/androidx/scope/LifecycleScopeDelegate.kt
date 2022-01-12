@@ -6,9 +6,6 @@ import androidx.lifecycle.LifecycleOwner
 import org.koin.core.Koin
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
-import org.koin.core.context.GlobalContext
-import org.koin.core.context.KoinContext
-import org.koin.core.logger.Logger
 import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
