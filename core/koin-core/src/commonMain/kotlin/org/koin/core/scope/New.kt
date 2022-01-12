@@ -25,6 +25,8 @@ package org.koin.core.scope
  *   viewModel { new(::MyViewModel) }
  * }
  * ```
+ *
+ * @author Marcello Galhardo
  */
 inline fun <reified R> Scope.new(
     constructor: () -> R,
