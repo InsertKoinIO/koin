@@ -1,4 +1,6 @@
 package org.koin.sample.androidx.components.main
 
-class DumbServiceImpl(override val id: String = DUMB_SERVICE) : SimpleService
+class DumbServiceImpl : SimpleService{
+    override val id: String = DUMB_SERVICE
+}
 const val DUMB_SERVICE = "Dumb SimpleService"

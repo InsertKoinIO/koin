@@ -4,7 +4,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.sample.androidx.navigation.NavViewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.worker
+import org.koin.core.module.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.*
 import org.koin.sample.androidx.components.Counter
@@ -25,8 +27,8 @@ import org.koin.sample.androidx.workmanager.SimpleWorkerService
 
 val appModule = module {
 
-    single<SimpleServiceImpl>() bind SimpleService::class
-    single<DumbServiceImpl>(named("dumb")) bind SimpleService::class
+    singleOf(::SimpleServiceImpl) bind SimpleService::class
+    singleOf(named("dumb"),::DumbServiceImpl) bind SimpleService::class
 //    factory { p -> SimplePresenter(p.get())}
     factory { RandomId() }
 }
@@ -35,33 +37,34 @@ val mvpModule = module {
     factory { (id: String) -> FactoryPresenter(id, get()) }
 
     scope<MVPActivity> {
-        scoped { (id: String) -> ScopedPresenter(id, get()) }
+        scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
     }
 }
 
 val mvvmModule = module {
 
-    viewModel { (id: String) -> SimpleViewModel(id, get()) }
+    viewModelOf(::SimpleViewModel)// { (id: String) -> (id, get()) }
 
-    viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
+    viewModelOf(named("vm1"),::SimpleViewModel) //{ (id: String) -> SimpleViewModel(id, get()) }
+//    viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
-    viewModel { params -> SavedStateViewModel(get(), params.get(), get()) }// injected params
-    viewModel { SavedStateBundleViewModel(get(), get()) }// injected params
+    viewModelOf(::SavedStateViewModel)// { params -> SavedStateViewModel(get(), params.get(), get()) }// injected params
+    viewModelOf(::SavedStateBundleViewModel)// { SavedStateBundleViewModel(get(), get()) }// injected params
 
     scope<MVVMActivity> {
 
         scoped { Session() }
-        fragment<MVVMFragment>()
-        viewModel<ExtSimpleViewModel>()
-        viewModel<ExtSimpleViewModel>(named("ext"))
-        viewModel<SavedStateViewModel>(named("vm2")) // graph injected usage + builder API
+        fragment { MVVMFragment(get()) }
+        viewModelOf(::ExtSimpleViewModel)
+        viewModelOf(named("ext"),::ExtSimpleViewModel)
+        viewModelOf(named("vm2"),::SavedStateViewModel) // graph injected usage + builder API
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
-        scoped<Session>()
-        viewModel<ExtSimpleViewModel>()
-        viewModel(named("ext")) { ExtSimpleViewModel(get()) }
+        scopedOf(::Session)
+        viewModelOf(::ExtSimpleViewModel)
+        viewModelOf(named("ext"),::ExtSimpleViewModel)
     }
 }
 
@@ -78,13 +81,13 @@ val scopeModule = module {
 
 val scopeModuleActivityA = module {
     scope<ScopedActivityA> {
-        scoped<Session>()
+        scopedOf(::Session)
         scoped { SessionActivity(get()) }
     }
 }
 
 val workerServiceModule = module {
-    single<SimpleWorkerService>()
+    singleOf(::SimpleWorkerService)
 }
 
 val workerScopedModule = module {
@@ -92,7 +95,7 @@ val workerScopedModule = module {
 }
 
 val navModule = module {
-    viewModel<NavViewModel>()
+    viewModelOf(::NavViewModel)
 }
 
 // workerScopedModule can't be runned in unit test
