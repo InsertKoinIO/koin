@@ -12,7 +12,7 @@ ext {
     dokka_version = '1.4.32'
 
     // Ktor
-    ktor_version = '1.6.4'
+    ktor_version = '1.6.7'
 
     // Test
     junit_version = "4.13.2"
