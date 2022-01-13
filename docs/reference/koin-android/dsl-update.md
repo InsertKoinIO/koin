@@ -4,7 +4,7 @@ title: Android Reflection DSL
 
 ## Compact Definition
 
-Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters or special scope Id), we can go with more compact writing style thanks to API below.
+Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection parameters or special scope Id), we can go with more compact writing style thanks to API below.
 
 All injected parameters are also resolved directly with this compact form of writing.
 
@@ -39,7 +39,7 @@ val appModule = module {
 }
 
 val mvpModule = module {
-    // Simple Presenter with injected parameyers
+    // Simple Presenter with injected parameters
     factory { (id: String) -> FactoryPresenter(id, get()) }
     // also declared like this
     factory<FactoryPresenter>()
