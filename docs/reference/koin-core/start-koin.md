@@ -83,7 +83,7 @@ val myApp = koinApplication {
 }
 ```
 
-You will have to keep your `myApp` instance avilable in your library and pass it to your custom KoinComponent implementation:
+You will have to keep your `myApp` instance available in your library and pass it to your custom KoinComponent implementation:
 
 ```kotlin
 // Get a Context for your Koin instance
@@ -97,7 +97,7 @@ MyKoinContext.koinApp = KoinApp
 
 ```kotlin
 abstract class CustomKoinComponent : KoinComponent {
-    // Override default Koin instance, intially target on GlobalContext to yours
+    // Override default Koin instance, initially target on GlobalContext to yours
     override fun getKoin(): Koin = MyKoinContext?.koinApp.koin
 }
 ```
