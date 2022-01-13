@@ -200,7 +200,7 @@ module {
 }
 ```
 
-With scope linking API, we can allow to resolve B's scope instance C, directly from A'scope. For this we use `linkTo()` on scope instance:
+With scope linking API, we can allow to resolve B's scope instance C, directly from A's scope. For this we use `linkTo()` on scope instance:
 
 ```kotlin
 val a = koin.get<A>()
