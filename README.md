@@ -1,4 +1,4 @@
-![logo](./docs/img/koin_2.0.jpg)
+![logo](./docs/img/koin_main_logo.png)
 
 # What is KOIN? - [https://insert-koin.io](https://insert-koin.io)
  
