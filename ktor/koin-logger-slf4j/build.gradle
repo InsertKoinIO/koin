@@ -7,7 +7,7 @@ dependencies {
     // Koin
     api "io.insert-koin:koin-core:$koin_version"
     // SLF4J
-    api "org.slf4j:slf4j-api:1.7.25"
+    api "org.slf4j:slf4j-api:1.7.33"
 }
 
 apply from: '../../gradle/publish-to-central.gradle'
