@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-apply from: '../../gradle/versions-examples.gradle'
-
 android {
     compileSdkVersion android_target_version
     buildToolsVersion android_build_tools_version
@@ -26,15 +24,6 @@ android {
 dependencies {
     // Koin
     implementation "io.insert-koin:koin-core:$koin_version"
-
-    implementation "junit:junit:$junit_version"
-    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "androidx.appcompat:appcompat:1.4.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-
-    testImplementation "io.insert-koin:koin-test:$koin_version"
-    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
-    testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    testImplementation "junit:junit:$junit_version"
-
 }

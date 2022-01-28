@@ -8,10 +8,6 @@ cd ./android
 ./release.sh
 cd ..
 
-cd ./android-compose
-./release.sh
-cd ..
-
 cd ./ktor
 ./release.sh
 cd ..
