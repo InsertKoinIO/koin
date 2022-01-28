@@ -22,16 +22,17 @@ android {
 
 dependencies {
     api "io.insert-koin:koin-core:$koin_version"
-    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-    api "androidx.activity:activity-ktx:$androidx_activity_version"
-    api("androidx.lifecycle:lifecycle-extensions:$androidx_arch_version") {
+
+    implementation "androidx.appcompat:appcompat:1.4.1"
+    api "androidx.activity:activity-ktx:1.4.0"
+    api("androidx.lifecycle:lifecycle-extensions:2.2.0") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"
         exclude module: "lifecycle-process"
         exclude module: "runtime"
         exclude group: "androidx.legacy"
     }
-    api("androidx.lifecycle:lifecycle-common-java8:2.3.1")
+    api("androidx.lifecycle:lifecycle-common-java8:2.4.0")
 
     // tests
     testImplementation "io.insert-koin:koin-test:$koin_version"

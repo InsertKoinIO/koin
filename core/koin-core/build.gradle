@@ -43,7 +43,6 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-//                implementation "co.touchlab:testhelp:$testhelp_version"
             }
         }
 
