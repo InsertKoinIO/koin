@@ -1,7 +1,7 @@
 apply from: "../../gradle/versions.gradle"
 apply plugin: 'kotlin'
 apply plugin: 'groovy'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 archivesBaseName = 'koin-gradle-plugin'
 description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseName
@@ -9,9 +9,9 @@ description = 'Koin - simple dependency injection for Kotlin - ' + archivesBaseN
 
 dependencies {
     // Kt
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "io.insert-koin:koin-test:$koin_version"
-    compile gradleApi()
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "io.insert-koin:koin-test:$koin_version"
+    implementation gradleApi()
 }
 
 repositories {

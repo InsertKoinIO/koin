@@ -3,7 +3,6 @@ package org.koin.sample.androidx.components.sdk
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import org.jetbrains.anko.find
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.GlobalContext
 import org.koin.sample.android.R

@@ -1,6 +1,7 @@
 apply plugin: 'kotlin'
 
 dependencies {
+    api(project(":multimodule-ktor:common"))
     api(project(":multimodule-ktor:module-a"))
     api(project(":multimodule-ktor:module-b"))
 
@@ -9,8 +10,9 @@ dependencies {
 
     implementation "io.ktor:ktor-server-netty:$ktor_version"
 
+    testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
-    testImplementation "junit:junit:$junit_version"
+    testImplementation "junit:junit:4.13.2"
 
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }

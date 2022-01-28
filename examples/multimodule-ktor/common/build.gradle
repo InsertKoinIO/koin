@@ -10,9 +10,9 @@ dependencies {
 
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
-    testImplementation "junit:junit:$junit_version"
+    testImplementation "junit:junit:4.13.2"
 
     // Ktor
-    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
+    testImplementation "io.ktor:ktor-server-test-host:1.6.7"
 
 }
