@@ -6,6 +6,9 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
+import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkKoinModules
@@ -502,6 +505,71 @@ class CheckModulesTest {
                 withProperty("aValue", "value")
                 withInstance<Simple.ComponentA>()
             }
+        }
+    }
+
+    @Test
+    fun `check a module with secondary type`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { "the_string" }.bind<CharSequence>()
+                    single { 42 } bind Number::class
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with secondary types array`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { "the_string" } binds arrayOf(
+                        String::class,
+                        CharSequence::class,
+                    )
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with wrong secondary type - error`() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                    module {
+                        single { "the_string" }.bind<Int>()
+                    }
+                )
+            }.checkModules()
+            fail("should not pass with broken definitions")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `check a module with wrong secondary types array - error`() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                    module {
+                        single { "the_string" } binds arrayOf(
+                            CharSequence::class,
+                            Int::class,
+                        )
+                    }
+                )
+            }.checkModules()
+            fail("should not pass with broken definitions")
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
