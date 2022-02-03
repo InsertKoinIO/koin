@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
 inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
@@ -47,7 +47,7 @@ inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
 fun <T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+    owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
@@ -59,7 +59,7 @@ fun <T : ViewModel> Fragment.sharedStateViewModel(
 inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
     noinline parameters: ParametersDefinition? = null,
 ): T {
     return getStateViewModel(qualifier, state, owner, T::class, parameters)
@@ -69,7 +69,7 @@ inline fun <reified T : ViewModel> Fragment.getStateViewModel(
 fun <T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
+    owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
