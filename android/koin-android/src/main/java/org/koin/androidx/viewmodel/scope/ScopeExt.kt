@@ -57,7 +57,8 @@ fun <T : ViewModel> Scope.getViewModel(
                     state,
                     parameters,
                     ownerDef.store,
-                    ownerDef.stateRegistry
+                    ownerDef.stateRegistry,
+                    ownerDef.defaultArgs
             )
     )
 }

@@ -13,6 +13,11 @@ class StateViewModelFactory<T : ViewModel>(
     parameters.state?.invoke()
 ) {
     override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+        parameters.defaultArgs?.let { args ->
+            args.keySet().forEach {
+                handle[it] = args.get(it)
+            }
+        }
         val params: ParametersDefinition = addHandle(handle)
         return scope.get(
             parameters.clazz,

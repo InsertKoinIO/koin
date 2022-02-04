@@ -1,5 +1,6 @@
 package org.koin.androidx.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModelStore
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.androidx.viewmodel.scope.BundleDefinition
@@ -13,5 +14,6 @@ class ViewModelParameter<T : Any>(
     val state: BundleDefinition? = null,
     val parameters: ParametersDefinition? = null,
     val viewModelStore: ViewModelStore,
-    val registryOwner: SavedStateRegistryOwner? = null
+    val registryOwner: SavedStateRegistryOwner? = null,
+    val defaultArgs: Bundle? = null
 )
