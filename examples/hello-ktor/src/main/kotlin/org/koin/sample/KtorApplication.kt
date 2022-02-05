@@ -13,6 +13,9 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.createdAtStart
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.logger.slf4jLogger
 import org.koin.dsl.module
@@ -56,9 +59,13 @@ private fun Routing.declareRoutes() {
 }
 
 val helloAppModule = module {
-    single<HelloServiceImpl>(createOnStart = true) bind HelloService::class
-    // also singleBy<HelloService, HelloServiceImpl>()
-    single<HelloRepository>(createOnStart = true)
+    singleOf(::HelloServiceImpl){
+        createdAtStart()
+        bind<HelloService>()
+    }
+    singleOf(::HelloRepository){
+        createdAtStart()
+    }
 }
 
 fun main(args: Array<String>) {

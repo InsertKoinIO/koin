@@ -15,18 +15,17 @@
  */
 package org.koin.dsl
 
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definition
-import org.koin.core.definition.Kind
-import org.koin.core.definition.createDefinition
-import org.koin.core.definition.indexKey
-import org.koin.core.instance.InstanceFactory
-import org.koin.core.instance.ScopedInstanceFactory
+import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
+import org.koin.core.module._scopedInstanceFactory
 import org.koin.core.qualifier.Qualifier
 
 /**
  * DSL Scope Definition
  */
+@OptIn(KoinInternalApi::class)
 @Suppress("UNUSED_PARAMETER")
 class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
 
@@ -34,25 +33,23 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
     inline fun <reified T> single(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>
-    ): Pair<Module, InstanceFactory<T>> {
+    ): KoinDefinition<T> {
         error("Scoped definition is deprecated and has been replaced with Single scope definitions")
     }
 
     inline fun <reified T> scoped(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>
-    ): Pair<Module, InstanceFactory<T>> {
-        val def = createDefinition(Kind.Scoped, qualifier, definition, scopeQualifier = scopeQualifier)
-        val mapping = indexKey(def.primaryType, qualifier, scopeQualifier)
-        val instanceFactory = ScopedInstanceFactory(def)
-        module.saveMapping(mapping, instanceFactory)
-        return Pair(module, instanceFactory)
+    ): KoinDefinition<T> {
+        val def = _scopedInstanceFactory(qualifier, definition, scopeQualifier)
+        module.indexPrimaryType(def)
+        return Pair(module, def)
     }
 
     inline fun <reified T> factory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>
-    ): Pair<Module, InstanceFactory<T>> {
+    ): KoinDefinition<T> {
         return module.factory(qualifier, definition, scopeQualifier)
     }
 }

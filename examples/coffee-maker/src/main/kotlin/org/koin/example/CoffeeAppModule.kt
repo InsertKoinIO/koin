@@ -1,9 +1,8 @@
 package org.koin.example
 
-import org.koin.core.module.singleOf
-import org.koin.dsl.bind
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import org.koin.dsl.single
 
 //val coffeeAppModule = module {
 //    single { CoffeeMaker(get(), get()) }
@@ -11,8 +10,8 @@ import org.koin.dsl.single
 //    single<Heater> { ElectricHeater() }
 //}
 
- val coffeeAppModule = module {
-     singleOf(::CoffeeMaker)
-     singleOf(::Thermosiphon) bind Pump::class
-     singleOf(::ElectricHeater) bind Heater::class
- }
+val coffeeAppModule = module {
+    singleOf(::CoffeeMaker)
+    singleOf(::Thermosiphon) { bind<Pump>() }
+    singleOf(::ElectricHeater) { bind<Heater>() }
+}

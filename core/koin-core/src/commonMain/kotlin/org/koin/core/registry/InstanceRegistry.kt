@@ -19,7 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
-import org.koin.core.definition.createDefinition
+import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.InstanceFactory
@@ -118,7 +118,7 @@ class InstanceRegistry(val _koin: Koin) {
         allowOverride: Boolean = true,
         scopeQualifier: Qualifier
     ) {
-        val def = createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
+        val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
         val factory = ScopedInstanceFactory(def)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         saveMapping(allowOverride, indexKey, factory)

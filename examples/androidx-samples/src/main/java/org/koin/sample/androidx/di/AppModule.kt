@@ -6,7 +6,7 @@ import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.worker
-import org.koin.core.module.singleOf
+import org.koin.core.module.dsl.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.*
 import org.koin.sample.androidx.components.Counter
@@ -27,8 +27,11 @@ import org.koin.sample.androidx.workmanager.SimpleWorkerService
 
 val appModule = module {
 
-    singleOf(::SimpleServiceImpl) bind SimpleService::class
-    singleOf(named("dumb"),::DumbServiceImpl) bind SimpleService::class
+    singleOf(::SimpleServiceImpl) { bind<SimpleService>() }
+    singleOf(::DumbServiceImpl){
+        named("dumb")
+        bind<SimpleService>()
+    }
 //    factory { p -> SimplePresenter(p.get())}
     factory { RandomId() }
 }
@@ -70,19 +73,21 @@ val mvvmModule = module {
 
 val scopeModule = module {
     scope(named(SCOPE_ID)) {
-        scoped(named(SCOPE_SESSION)) { Session() } onClose {
-            // onRelease, count it
-            Counter.released++
-            println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
+        scopedOf(::Session){
+            named(SCOPE_SESSION)
+            onClose {
+                // onRelease, count it
+                Counter.released++
+                println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
+            }
         }
     }
-
 }
 
 val scopeModuleActivityA = module {
     scope<ScopedActivityA> {
         scopedOf(::Session)
-        scoped { SessionActivity(get()) }
+        scopedOf(::SessionActivity)
     }
 }
 

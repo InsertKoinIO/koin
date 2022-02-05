@@ -19,6 +19,8 @@ import org.koin.core.definition.Callbacks
 import org.koin.core.definition.OnCloseCallback
 import org.koin.core.definition.indexKey
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
@@ -32,8 +34,10 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun <S : Any, P : S> Pair<Module, InstanceFactory<P>>.bind(clazz: KClass<S>): Pair<Module, InstanceFactory<P>> {
-    binds(arrayOf(clazz))
+infix fun KoinDefinition<*>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<*>> {
+    second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
+    val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
+    first.saveMapping(mapping,second,allowOverride = true)
     return this
 }
 
@@ -42,7 +46,7 @@ infix fun <S : Any, P : S> Pair<Module, InstanceFactory<P>>.bind(clazz: KClass<S
  *
  * Type-safety may be checked by "checkModules" from "koin-test" module.
  */
-inline fun <reified T> Pair<Module, InstanceFactory<*>>.bind(): Pair<Module, InstanceFactory<*>> {
+inline fun <reified T> KoinDefinition<*>.bind(): Pair<Module, InstanceFactory<*>> {
     binds(arrayOf(T::class))
     return this
 }
@@ -54,7 +58,7 @@ inline fun <reified T> Pair<Module, InstanceFactory<*>>.bind(): Pair<Module, Ins
  *
  * @param classes
  */
-infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pair<Module, InstanceFactory<*>> {
+infix fun KoinDefinition<*>.binds(classes: Array<KClass<*>>): Pair<Module, InstanceFactory<*>> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + classes
     classes.forEach { clazz ->
         val mapping = indexKey(clazz, second.beanDefinition.qualifier, second.beanDefinition.scopeQualifier)
@@ -66,7 +70,7 @@ infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pai
 /**
  * Callback when closing instance
  */
-infix fun <T> Pair<Module, InstanceFactory<T>>.onClose(onClose: OnCloseCallback<T>): Pair<Module, InstanceFactory<T>> {
+infix fun <T> KoinDefinition<T>.onClose(onClose: OnCloseCallback<T>): Pair<Module, InstanceFactory<T>> {
     second.beanDefinition.callbacks = Callbacks(onClose)
     return this
 }

@@ -15,10 +15,12 @@
  */
 package org.koin.core.module
 
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
@@ -31,7 +33,11 @@ import org.koin.dsl.ScopeDSL
  *
  * @author Arnaud Giuliani
  */
-class Module(val createdAtStart: Boolean = false) {
+@OptIn(KoinInternalApi::class)
+class Module(
+    @PublishedApi
+    internal val _createdAtStart: Boolean = false
+) {
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
@@ -72,15 +78,37 @@ class Module(val createdAtStart: Boolean = false) {
         qualifier: Qualifier? = null,
         createdAtStart: Boolean = false,
         noinline definition: Definition<T>
-    ): Pair<Module, InstanceFactory<T>> {
-        val def = createDefinition(Kind.Singleton, qualifier, definition, scopeQualifier = rootScopeQualifier)
-        val mapping = indexKey(def.primaryType, qualifier, rootScopeQualifier)
-        val instanceFactory = SingleInstanceFactory(def)
-        saveMapping(mapping, instanceFactory)
-        if (createdAtStart || this.createdAtStart) {
-            eagerInstances.add(instanceFactory)
+    ): KoinDefinition<T> {
+        val factory = _singleInstanceFactory(qualifier,definition)
+        indexPrimaryType(factory)
+        if (createdAtStart || this._createdAtStart) {
+            prepareForCreationAtStart(factory)
         }
-        return Pair(this, instanceFactory)
+        return Pair(this, factory)
+    }
+
+    @KoinInternalApi
+    @PublishedApi
+    internal fun indexPrimaryType(instanceFactory: InstanceFactory<*>){
+        val def = instanceFactory.beanDefinition
+        val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
+        saveMapping(mapping, instanceFactory)
+    }
+
+    @KoinInternalApi
+    @PublishedApi
+    internal fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>){
+        val def = instanceFactory.beanDefinition
+        def.secondaryTypes.forEach { clazz ->
+            val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
+            saveMapping(mapping, instanceFactory)
+        }
+    }
+
+    @KoinInternalApi
+    @PublishedApi
+    internal fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>){
+        eagerInstances.add(instanceFactory)
     }
 
     @PublishedApi
@@ -99,7 +127,7 @@ class Module(val createdAtStart: Boolean = false) {
     inline fun <reified T> factory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>
-    ): Pair<Module, InstanceFactory<T>> {
+    ): KoinDefinition<T> {
         return factory(qualifier, definition, rootScopeQualifier)
     }
 
@@ -108,12 +136,10 @@ class Module(val createdAtStart: Boolean = false) {
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
         scopeQualifier: Qualifier
-    ): Pair<Module, InstanceFactory<T>> {
-        val def = createDefinition(Kind.Factory, qualifier, definition, scopeQualifier = scopeQualifier)
-        val mapping = indexKey(def.primaryType, qualifier, scopeQualifier)
-        val instanceFactory = FactoryInstanceFactory(def)
-        saveMapping(mapping, instanceFactory)
-        return Pair(this, instanceFactory)
+    ): KoinDefinition<T> {
+        val factory = _factoryInstanceFactory(qualifier, definition, scopeQualifier)
+        indexPrimaryType(factory)
+        return Pair(this, factory)
     }
 
     /**
@@ -135,18 +161,43 @@ internal fun overrideError(
     throw DefinitionOverrideException("Already existing definition for ${factory.beanDefinition} at $mapping")
 }
 
-//fun HashSet<BeanDefinition<*>>.addDefinition(bean : BeanDefinition<*>){
-//    val added = add(bean)
-//    if (!added && !bean.options.override){
-//        throw DefinitionOverrideException(
-//            "Definition '$bean' try to override existing definition. Please use override option to fix it")
-//    } else if(!added && bean.options.override) {
-//        remove(bean)
-//        add(bean)
-//    }
-//}
+
+@KoinInternalApi
+@PublishedApi
+internal inline fun <reified T> _singleInstanceFactory(
+    qualifier: Qualifier? = null,
+    noinline definition: Definition<T>,
+    scopeQualifier: Qualifier = rootScopeQualifier
+): SingleInstanceFactory<T>{
+    val def = _createDefinition(Kind.Singleton, qualifier, definition, scopeQualifier = scopeQualifier)
+    return SingleInstanceFactory(def)
+}
+
+@KoinInternalApi
+@PublishedApi
+internal inline fun <reified T> _factoryInstanceFactory(
+    qualifier: Qualifier? = null,
+    noinline definition: Definition<T>,
+    scopeQualifier: Qualifier = rootScopeQualifier
+): FactoryInstanceFactory<T>{
+    val def = _createDefinition(Kind.Factory, qualifier, definition, scopeQualifier = scopeQualifier)
+    return FactoryInstanceFactory(def)
+}
+
+@KoinInternalApi
+@PublishedApi
+internal inline fun <reified T> _scopedInstanceFactory(
+    qualifier: Qualifier? = null,
+    noinline definition: Definition<T>,
+    scopeQualifier: Qualifier
+): ScopedInstanceFactory<T>{
+    val def = _createDefinition(Kind.Scoped, qualifier, definition, scopeQualifier = scopeQualifier)
+    return ScopedInstanceFactory(def)
+}
 
 /**
  * Help write list of Modules
  */
 operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
+
+typealias KoinDefinition<R> = Pair<Module, InstanceFactory<R>>
