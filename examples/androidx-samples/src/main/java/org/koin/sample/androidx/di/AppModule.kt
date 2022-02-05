@@ -32,7 +32,6 @@ val appModule = module {
         named("dumb")
         bind<SimpleService>()
     }
-//    factory { p -> SimplePresenter(p.get())}
     factory { RandomId() }
 }
 
@@ -48,8 +47,7 @@ val mvvmModule = module {
 
     viewModelOf(::SimpleViewModel)// { (id: String) -> (id, get()) }
 
-    viewModelOf(named("vm1"),::SimpleViewModel) //{ (id: String) -> SimpleViewModel(id, get()) }
-//    viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
+    viewModelOf(::SimpleViewModel){ named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
     viewModelOf(::SavedStateViewModel)// { params -> SavedStateViewModel(get(), params.get(), get()) }// injected params
@@ -60,14 +58,14 @@ val mvvmModule = module {
         scoped { Session() }
         fragment { MVVMFragment(get()) }
         viewModelOf(::ExtSimpleViewModel)
-        viewModelOf(named("ext"),::ExtSimpleViewModel)
-        viewModelOf(named("vm2"),::SavedStateViewModel) // graph injected usage + builder API
+        viewModelOf(::ExtSimpleViewModel){ named("ext")}
+        viewModelOf(::SavedStateViewModel){ named("vm2")}
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
         scopedOf(::Session)
         viewModelOf(::ExtSimpleViewModel)
-        viewModelOf(named("ext"),::ExtSimpleViewModel)
+        viewModelOf(::ExtSimpleViewModel){ named("ext")}
     }
 }
 

@@ -39,8 +39,7 @@ infix fun <T> KoinDefinition<T>.withOptions(
 }
 
 @KoinInternalApi
-@PublishedApi
-internal inline fun <reified R> Module.setupInstance(
+inline fun <reified R> Module.setupInstance(
     factory: InstanceFactory<R>,
     options: BeanDefinition<R>.() -> Unit
 ): KoinDefinition<R> {

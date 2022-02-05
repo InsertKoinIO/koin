@@ -163,8 +163,7 @@ internal fun overrideError(
 
 
 @KoinInternalApi
-@PublishedApi
-internal inline fun <reified T> _singleInstanceFactory(
+inline fun <reified T> _singleInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     scopeQualifier: Qualifier = rootScopeQualifier
@@ -174,8 +173,7 @@ internal inline fun <reified T> _singleInstanceFactory(
 }
 
 @KoinInternalApi
-@PublishedApi
-internal inline fun <reified T> _factoryInstanceFactory(
+inline fun <reified T> _factoryInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     scopeQualifier: Qualifier = rootScopeQualifier
@@ -185,8 +183,7 @@ internal inline fun <reified T> _factoryInstanceFactory(
 }
 
 @KoinInternalApi
-@PublishedApi
-internal inline fun <reified T> _scopedInstanceFactory(
+inline fun <reified T> _scopedInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     scopeQualifier: Qualifier
