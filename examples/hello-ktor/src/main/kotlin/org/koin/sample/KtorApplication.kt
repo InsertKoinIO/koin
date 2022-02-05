@@ -60,12 +60,10 @@ private fun Routing.declareRoutes() {
 
 val helloAppModule = module {
     singleOf(::HelloServiceImpl){
-        createdAtStart()
         bind<HelloService>()
-    }
-    singleOf(::HelloRepository){
         createdAtStart()
     }
+    singleOf(::HelloRepository)
 }
 
 fun main(args: Array<String>) {
