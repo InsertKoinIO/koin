@@ -102,7 +102,7 @@ The `MyJavaPresenter` component will be created with `HelloRepository` instance.
 
 ```java
 // import inject
-import static org.koin.java.standalone.KoinJavaComponent.inject;
+import static org.koin.java.KoinJavaComponent.inject;
 
 public class JavaActivity extends AppCompatActivity {
 
