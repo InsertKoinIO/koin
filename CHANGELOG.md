@@ -2,6 +2,7 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+* `[FIXED]` `[android]` - Require ComponentActivity instead of AppCompatActivity in LifecycleViewModelScopeDelegate for FragmentScenario support
 
 ## [3.1.5]()
 * `[FIXED]` `[android]` - #1240 - ViewModel scope instance creation fixed
