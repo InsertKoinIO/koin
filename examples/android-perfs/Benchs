@@ -26,6 +26,29 @@
 Avg start time: 11.518046899999998
 Avg execution time: 0.1779948
 
+[1] started in 61.673177 ms
+[1] measured executed in 0.601198 ms
+[2] started in 7.322969 ms
+[2] measured executed in 0.129375 ms
+[3] started in 6.264843 ms
+[3] measured executed in 0.115885 ms
+[4] started in 5.196406 ms
+[4] measured executed in 0.11 ms
+[5] started in 4.516198 ms
+[5] measured executed in 0.100208 ms
+[6] started in 3.646562 ms
+[6] measured executed in 0.075885 ms
+[7] started in 3.337343 ms
+[7] measured executed in 0.076875 ms
+[8] started in 3.050937 ms
+[8] measured executed in 0.068386 ms
+[9] started in 2.952188 ms
+[9] measured executed in 0.085834 ms
+[10] started in 2.565833 ms
+[10] measured executed in 0.072448 ms
+Avg start time: 10.052645600000002
+Avg execution time: 0.14360940000000003
+
 - Nokia 7p (Android 9) - 2.0.1
 --
 [1] started in 235.78224 ms
