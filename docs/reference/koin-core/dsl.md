@@ -86,3 +86,24 @@ val myModule = module {
 
 In this module, you can declare components as decribed below.
 
+### withOptions - DSL Options
+
+Like for new [Constructor DSL](./dsl-update.md) definitions, you can specify definition options on "regular" definitions with
+the `withOptions` operator:
+
+```kotlin
+module {
+    single { ClassA(get()) } withOptions { 
+        named("qualifier")
+        createdAtStart()
+    }
+}
+```
+
+Within this option lambda, you can specify the following options:
+
+* `named("a_qualifier")` - give a String qualifier to the definition
+* `named<MyType>()` - give a Type qualifier to the definition
+* `bind<MyInterface>()` - add type to bind for given bean definition
+* `binds(arrayOf(...))` - add types array for given bean definition
+* `createdAtStart()` - create single instance at Koin start
