@@ -40,6 +40,7 @@ inline fun <reified T : ListenableWorker> ScopeDSL.worker(
 }
 
 @KoinReflectAPI
+@Deprecated("API is deprecated in favor of workerOf DSL")
 inline fun <reified T : ListenableWorker> ScopeDSL.worker(
     qualifier: Qualifier = named<T>()
 ): Pair<Module, InstanceFactory<*>> {

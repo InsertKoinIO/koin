@@ -3,9 +3,11 @@ package org.koin.sample.androidx.di
 import org.koin.android.ext.koin.androidContext
 import org.koin.sample.androidx.navigation.NavViewModel
 import org.koin.androidx.fragment.dsl.fragment
+import org.koin.androidx.fragment.dsl.fragmentOf
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.worker
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.*
@@ -36,7 +38,8 @@ val appModule = module {
 }
 
 val mvpModule = module {
-    factory { (id: String) -> FactoryPresenter(id, get()) }
+    //factory { (id: String) -> FactoryPresenter(id, get()) }
+    factoryOf(::FactoryPresenter)
 
     scope<MVPActivity> {
         scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
@@ -56,7 +59,7 @@ val mvvmModule = module {
     scope<MVVMActivity> {
 
         scoped { Session() }
-        fragment { MVVMFragment(get()) }
+        fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
         viewModelOf(::ExtSimpleViewModel)
         viewModelOf(::ExtSimpleViewModel){ named("ext")}
         viewModelOf(::SavedStateViewModel){ named("vm2")}
@@ -94,7 +97,7 @@ val workerServiceModule = module {
 }
 
 val workerScopedModule = module {
-    worker { SimpleWorker(get(), androidContext(), it.get()) }
+    workerOf(::SimpleWorker)// { SimpleWorker(get(), androidContext(), it.get()) }
 }
 
 val navModule = module {
