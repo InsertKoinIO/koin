@@ -50,6 +50,24 @@ class Module(
     @PublishedApi
     internal val scopes = hashSetOf<Qualifier>()
 
+    internal val includedModules = mutableSetOf<Module>()
+
+    /**
+     * A collection of [Module] from which the current [Module] is compose.
+     * Duplicated modules are ignored.
+     */
+    fun includes(vararg module: Module) {
+        includedModules += module
+    }
+
+    /**
+     * A collection of [Module] from which the current [Module] is compose.
+     * Duplicated modules are ignored.
+     */
+    fun includes(module: List<Module>) {
+        includedModules += module
+    }
+
     /**
      * Declare a group a scoped definition with a given scope qualifier
      * @param qualifier
