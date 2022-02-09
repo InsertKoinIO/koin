@@ -537,23 +537,6 @@ class CheckModulesTest {
     }
 
     @Test
-    fun `check a module with wrong secondary type - error`() {
-        try {
-            koinApplication {
-                printLogger(Level.DEBUG)
-                modules(
-                    module {
-                        single { "the_string" }.bind<Int>()
-                    }
-                )
-            }.checkModules()
-            fail("should not pass with broken definitions")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    @Test
     fun `check a module with wrong secondary types array - error`() {
         try {
             koinApplication {

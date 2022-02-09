@@ -62,7 +62,7 @@ inline fun <reified T> BeanDefinition<*>.named() {
     qualifier = TypeQualifier(T::class)
 }
 
-inline fun <reified T, S:T> BeanDefinition<S>.bind() {
+inline fun <reified T> BeanDefinition<out T>.bind() {
     secondaryTypes += T::class
 }
 

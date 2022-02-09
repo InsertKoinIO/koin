@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun <S : Any, P : S> KoinDefinition<P>.bind(clazz: KClass<S>): KoinDefinition<P> {
+infix fun <S : Any> KoinDefinition<out S>.bind(clazz: KClass<S>): KoinDefinition<out S> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
     val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
     first.saveMapping(mapping,second,allowOverride = true)
@@ -46,7 +46,7 @@ infix fun <S : Any, P : S> KoinDefinition<P>.bind(clazz: KClass<S>): KoinDefinit
  *
  * Type-safety may be checked by "checkModules" from "koin-test" module.
  */
-inline fun <reified S : Any, P : S> KoinDefinition<P>.bind(): Pair<Module, InstanceFactory<P>> {
+inline fun <reified S : Any> KoinDefinition<out S>.bind(): KoinDefinition<out S> {
     bind(clazz = S::class)
     return this
 }
@@ -58,9 +58,11 @@ inline fun <reified S : Any, P : S> KoinDefinition<P>.bind(): Pair<Module, Insta
  *
  * @param classes
  */
-infix fun <T> KoinDefinition<T>.binds(classes: Array<KClass<*>>): Pair<Module, InstanceFactory<T>> {
+infix fun KoinDefinition<*>.binds(classes: Array<KClass<*>>): KoinDefinition<*> {
+    second.beanDefinition.secondaryTypes += classes
     classes.forEach { clazz ->
-        bind(clazz = clazz)
+        val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
+        first.saveMapping(mapping,second,allowOverride = true)
     }
     return this
 }
