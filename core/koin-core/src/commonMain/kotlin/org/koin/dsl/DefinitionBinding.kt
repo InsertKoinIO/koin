@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun KoinDefinition<*>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<*>> {
+infix fun <S : Any, P : S> KoinDefinition<P>.bind(clazz: KClass<S>): KoinDefinition<P> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
     val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
     first.saveMapping(mapping,second,allowOverride = true)
@@ -46,8 +46,8 @@ infix fun KoinDefinition<*>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<
  *
  * Type-safety may be checked by "checkModules" from "koin-test" module.
  */
-inline fun <reified T> KoinDefinition<*>.bind(): Pair<Module, InstanceFactory<*>> {
-    binds(arrayOf(T::class))
+inline fun <reified S : Any, P : S> KoinDefinition<P>.bind(): Pair<Module, InstanceFactory<P>> {
+    bind(clazz = S::class)
     return this
 }
 
@@ -58,11 +58,9 @@ inline fun <reified T> KoinDefinition<*>.bind(): Pair<Module, InstanceFactory<*>
  *
  * @param classes
  */
-infix fun KoinDefinition<*>.binds(classes: Array<KClass<*>>): Pair<Module, InstanceFactory<*>> {
-    second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + classes
+infix fun <T> KoinDefinition<T>.binds(classes: Array<KClass<*>>): Pair<Module, InstanceFactory<T>> {
     classes.forEach { clazz ->
-        val mapping = indexKey(clazz, second.beanDefinition.qualifier, second.beanDefinition.scopeQualifier)
-        first.saveMapping(mapping, second, allowOverride = true)
+        bind(clazz = clazz)
     }
     return this
 }
