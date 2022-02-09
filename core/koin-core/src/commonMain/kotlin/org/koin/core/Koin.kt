@@ -341,11 +341,12 @@ class Koin {
     private fun List<Module>.flatten(): List<Module> {
         val deque = ArrayDeque(elements = this)
 
-        val allModules = mutableListOf<Module>()
+        val allModules = mutableSetOf<Module>()
         while (deque.isNotEmpty()) {
             val module = deque.removeFirstOrNull()
 
-            // We want to ensure duplicated modules aren't visited more than once.
+            // We want to ensure `includedModules` are not added to the `deque` to be processed
+            // if their parent `Module` has already been visited.
             if (module != null && !allModules.contains(module)) {
                 allModules += module
                 deque += module.includedModules
