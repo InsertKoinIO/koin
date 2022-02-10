@@ -31,6 +31,14 @@ Not need to specify dependencies in constructor anymore with `get()` function! ð
  Be sure to use `::` before your class name, to target your class constructor 
 :::
 
+:::note
+ Your constructor is filled automatically with all `get()`. Avoid using any default value as Koin will try to find it in the current graph.
+:::
+
+:::note
+ If you need to retrieve a "named" definition, you need to use the standard DSL with lambda and `get()` to specify the qualifier 
+:::
+
 ### Available Keywords
 
 The following keywords are available to build your definition from constructor: 

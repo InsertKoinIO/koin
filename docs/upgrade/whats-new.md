@@ -17,6 +17,9 @@ New Koin DSL:
 * [Koin Constructor DSL](../reference/koin-core/dsl-update.md)
 * [Android Constructor DSL](../reference/koin-android/dsl-update.md)
 
+Better Module Management:
+* [Includes Modules](../reference/koin-core/dsl.md#module-includes-since-32)
+
 Kotlin Native Memory Model
 
 Ktor, Android lib updates 

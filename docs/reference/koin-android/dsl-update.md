@@ -57,7 +57,7 @@ module {
         scopedOf(::Session) 
     }
 
-    workerOf<SimpleWorker>()
+    workerOf(::SimpleWorker)
 }
 ```
 

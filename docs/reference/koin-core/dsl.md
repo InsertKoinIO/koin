@@ -86,7 +86,7 @@ val myModule = module {
 
 In this module, you can declare components as decribed below.
 
-### withOptions - DSL Options
+### withOptions - DSL Options (since 3.2)
 
 Like for new [Constructor DSL](./dsl-update.md) definitions, you can specify definition options on "regular" definitions with
 the `withOptions` operator:
@@ -107,3 +107,64 @@ Within this option lambda, you can specify the following options:
 * `bind<MyInterface>()` - add type to bind for given bean definition
 * `binds(arrayOf(...))` - add types array for given bean definition
 * `createdAtStart()` - create single instance at Koin start
+
+### Module Includes (since 3.2)
+
+A new function `includes()` is available in Modules, to let you incldues otehr module for your module and then compose module graph in a better way.
+
+How does it work? Let's take some modules, and we include modules in `parentModule`:
+
+```kotlin
+val childModule1 = module {
+    // other definitions here
+}
+val childModule2 = module {
+    // other definitions here
+}
+
+val parentModule = module {
+    includes(childModule1,childModule2)
+
+    // other definitions here
+}
+```
+
+When using the module `parentModule` it will include all definitions from `childModule1` and `childModule2` modules.
+
+When loading `parentModule` in Koin, it will load all modules behind:
+
+```kotlin
+startKoin {
+    // will load parentModule, childModule1 & childModule2
+    modules(parentModule)
+}
+```
+
+:::info
+ Module loading is now optimize to flatten all your module graph and avoid any doubled definitions
+:::
+
+You can use multiple modules inclusion like this, and Koin will flatten all your module graph:
+
+```kotlin
+val dataModule = module {
+    // other definitions here
+}
+val featureModule1 = module {
+    includes(dataModule)
+    // other definitions here
+}
+val featureModule2 = module {
+    includes(dataModule)
+    // other definitions here
+}
+```
+
+Koin will load:
+
+```kotlin
+startKoin {
+    // will load featureModule1, dataModule & featureModule2
+    modules(featureModule1,featureModule2)
+}
+``` 
