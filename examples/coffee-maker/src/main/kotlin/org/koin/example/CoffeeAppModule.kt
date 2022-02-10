@@ -9,9 +9,13 @@ import org.koin.dsl.module
 //    single<Pump> { Thermosiphon(get()) }
 //    single<Heater> { ElectricHeater() }
 //}
-
-val coffeeAppModule = module {
+val coffeeParts = module {
     singleOf(::CoffeeMaker)
     singleOf(::Thermosiphon) { bind<Pump>() }
+}
+
+val coffeeAppModule = module {
+    includes(coffeeParts)
+
     singleOf(::ElectricHeater) { bind<Heater>() }
 }

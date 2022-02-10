@@ -16,22 +16,23 @@
 package org.koin.core
 
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.getScopeId
+import org.koin.core.component.getScopeName
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
+import org.koin.core.module.flatten
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.registry.InstanceRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.component.getScopeId
-import org.koin.core.component.getScopeName
-import org.koin.core.registry.InstanceRegistry
 import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
@@ -71,9 +72,9 @@ class Koin {
      * @return Lazy instance of type T
      */
     inline fun <reified T : Any> inject(
-            qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
 
     /**
@@ -85,9 +86,9 @@ class Koin {
      * @return Lazy instance of type T or null
      */
     inline fun <reified T : Any> injectOrNull(
-            qualifier: Qualifier? = null,
-            mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+        noinline parameters: ParametersDefinition? = null
     ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
 
     /**
@@ -97,8 +98,8 @@ class Koin {
      * @param parameters
      */
     inline fun <reified T : Any> get(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T = scopeRegistry.rootScope.get(qualifier, parameters)
 
     /**
@@ -110,8 +111,8 @@ class Koin {
      * @return instance of type T or null
      */
     inline fun <reified T : Any> getOrNull(
-            qualifier: Qualifier? = null,
-            noinline parameters: ParametersDefinition? = null
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
     ): T? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
     /**
@@ -124,9 +125,9 @@ class Koin {
      * @return instance of type T
      */
     fun <T> get(
-            clazz: KClass<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T = scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
     /**
@@ -139,9 +140,9 @@ class Koin {
      * @return instance of type T or null
      */
     fun <T> getOrNull(
-            clazz: KClass<*>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T? = scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
 
 
@@ -155,10 +156,10 @@ class Koin {
      * @param allowOverride Allows to override a previous declaration of the same type (default to true).
      */
     inline fun <reified T> declare(
-            instance: T,
-            qualifier: Qualifier? = null,
-            secondaryTypes: List<KClass<*>> = emptyList(),
-            allowOverride: Boolean = true
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>> = emptyList(),
+        allowOverride: Boolean = true
     ) {
         val firstType = listOf(T::class)
         scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, allowOverride)
@@ -208,7 +209,7 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null): Scope {
         val qualifier = TypeQualifier(T::class)
-        logger.log(Level.DEBUG) {"|- create scope - id:'$scopeId' q:$qualifier"}
+        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, source)
     }
 
@@ -218,7 +219,7 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID = KoinPlatformTools.generateId()): Scope {
         val qualifier = TypeQualifier(T::class)
-        logger.log(Level.DEBUG) {"|- create scope - id:'$scopeId' q:$qualifier" }
+        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, null)
     }
 
@@ -229,7 +230,7 @@ class Koin {
     fun <T : KoinScopeComponent> createScope(t: T): Scope {
         val scopeId = t.getScopeId()
         val qualifier = t.getScopeName()
-        logger.log(Level.DEBUG) {"|- create scope - id:'$scopeId' q:$qualifier" }
+        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, null)
     }
 
@@ -259,7 +260,7 @@ class Koin {
      */
     fun getScope(scopeId: ScopeID): Scope {
         return scopeRegistry.getScopeOrNull(scopeId)
-                ?: throw ScopeNotCreatedException("No scope found for id '$scopeId'")
+            ?: throw ScopeNotCreatedException("No scope found for id '$scopeId'")
     }
 
     /**
@@ -323,42 +324,21 @@ class Koin {
     /**
      * Load module & create eager instances
      */
-    fun loadModules(modules: List<Module>, allowOverride : Boolean = true) {
-        val flattedModules = modules.flatten()
+    fun loadModules(modules: List<Module>, allowOverride: Boolean = true) {
+        val flattedModules = flatten(modules)
         instanceRegistry.loadModules(flattedModules, allowOverride)
         scopeRegistry.loadScopes(flattedModules)
     }
 
     fun unloadModules(modules: List<Module>) {
-        val flattedModules = modules.flatten()
+        val flattedModules = flatten(modules)
         instanceRegistry.unloadModules(flattedModules)
-    }
-
-    /**
-     * Returns a single list of all [Module] with their [includedModules] in the given list.
-     * Duplicated modules are ignored.
-     */
-    private fun List<Module>.flatten(): List<Module> {
-        val deque = ArrayDeque(elements = this)
-
-        val allModules = mutableListOf<Module>()
-        while (deque.isNotEmpty()) {
-            val module = deque.removeFirstOrNull()
-
-            // We want to ensure duplicated modules aren't visited more than once.
-            if (module != null && !allModules.contains(module)) {
-                allModules += module
-                deque += module.includedModules
-            }
-        }
-
-        return allModules
     }
 
     /**
      * Create Single instances Definitions marked as createdAtStart
      */
-    fun createEagerInstances(){
+    fun createEagerInstances() {
         logger.info("create eager instances ...")
         if (logger.isAt(Level.DEBUG)) {
             val duration = measureDuration {

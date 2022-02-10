@@ -91,7 +91,7 @@ class ScopeRegistry(private val _koin: Koin) {
         }
     }
 
-    fun loadScopes(modules: List<Module>) {
+    fun loadScopes(modules: Set<Module>) {
         modules.forEach {
             loadModule(it)
         }

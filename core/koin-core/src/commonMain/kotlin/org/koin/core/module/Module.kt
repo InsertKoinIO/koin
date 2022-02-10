@@ -26,6 +26,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.dsl.ScopeDSL
+import org.koin.mp.KoinPlatformTools
 
 /**
  * Koin Module
@@ -38,6 +39,8 @@ class Module(
     @PublishedApi
     internal val _createdAtStart: Boolean = false
 ) {
+    val id = KoinPlatformTools.generateId()
+
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
@@ -50,7 +53,7 @@ class Module(
     @PublishedApi
     internal val scopes = hashSetOf<Qualifier>()
 
-    internal val includedModules = mutableSetOf<Module>()
+    internal val includedModules = mutableListOf<Module>()
 
     /**
      * A collection of [Module] from which the current [Module] is compose.
@@ -97,7 +100,7 @@ class Module(
         createdAtStart: Boolean = false,
         noinline definition: Definition<T>
     ): KoinDefinition<T> {
-        val factory = _singleInstanceFactory(qualifier,definition)
+        val factory = _singleInstanceFactory(qualifier, definition)
         indexPrimaryType(factory)
         if (createdAtStart || this._createdAtStart) {
             prepareForCreationAtStart(factory)
@@ -107,7 +110,7 @@ class Module(
 
     @KoinInternalApi
     @PublishedApi
-    internal fun indexPrimaryType(instanceFactory: InstanceFactory<*>){
+    internal fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         saveMapping(mapping, instanceFactory)
@@ -115,7 +118,7 @@ class Module(
 
     @KoinInternalApi
     @PublishedApi
-    internal fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>){
+    internal fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         def.secondaryTypes.forEach { clazz ->
             val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
@@ -125,12 +128,12 @@ class Module(
 
     @KoinInternalApi
     @PublishedApi
-    internal fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>){
+    internal fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
         eagerInstances.add(instanceFactory)
     }
 
     @PublishedApi
-    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>, allowOverride : Boolean = false) {
+    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>, allowOverride: Boolean = false) {
         if (!allowOverride && mappings.contains(mapping)) {
             overrideError(factory, mapping)
         }
@@ -169,6 +172,21 @@ class Module(
      * Help write list of Modules
      */
     operator fun plus(modules: List<Module>) = listOf(this) + modules
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as Module
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
 
 @PublishedApi
@@ -185,7 +203,7 @@ inline fun <reified T> _singleInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     scopeQualifier: Qualifier = rootScopeQualifier
-): SingleInstanceFactory<T>{
+): SingleInstanceFactory<T> {
     val def = _createDefinition(Kind.Singleton, qualifier, definition, scopeQualifier = scopeQualifier)
     return SingleInstanceFactory(def)
 }
@@ -195,7 +213,7 @@ inline fun <reified T> _factoryInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     scopeQualifier: Qualifier = rootScopeQualifier
-): FactoryInstanceFactory<T>{
+): FactoryInstanceFactory<T> {
     val def = _createDefinition(Kind.Factory, qualifier, definition, scopeQualifier = scopeQualifier)
     return FactoryInstanceFactory(def)
 }
@@ -205,7 +223,7 @@ inline fun <reified T> _scopedInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     scopeQualifier: Qualifier
-): ScopedInstanceFactory<T>{
+): ScopedInstanceFactory<T> {
     val def = _createDefinition(Kind.Scoped, qualifier, definition, scopeQualifier = scopeQualifier)
     return ScopedInstanceFactory(def)
 }
@@ -216,3 +234,20 @@ inline fun <reified T> _scopedInstanceFactory(
 operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
 
 typealias KoinDefinition<R> = Pair<Module, InstanceFactory<R>>
+
+/**
+ * Run through the module list to flatten all modules & submodules
+ */
+internal tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
+    return if (modules.isEmpty()) {
+        newModules
+    } else {
+        val head = modules.first()
+        val tail = modules.subList(1, modules.size)
+        if (head.includedModules.isEmpty()) {
+            flatten(tail, newModules + head)
+        } else {
+            flatten(head.includedModules + tail, newModules + head)
+        }
+    }
+}

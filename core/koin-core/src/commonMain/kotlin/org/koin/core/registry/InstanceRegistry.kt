@@ -42,7 +42,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     private val eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
 
-    internal fun loadModules(modules: List<Module>, allowOverride: Boolean) {
+    internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
             loadModule(module, allowOverride)
             eagerInstances.addAll(module.eagerInstances)
@@ -153,7 +153,7 @@ class InstanceRegistry(val _koin: Koin) {
             .map { it.get(instanceContext) as T }
     }
 
-    internal fun unloadModules(modules: List<Module>) {
+    internal fun unloadModules(modules: Set<Module>) {
         modules.forEach { unloadModule(it) }
     }
 
