@@ -2,6 +2,11 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+# [3.2]()
+
+## [3.2.0-beta-1]()
+
+# [3.1]()
 
 ## [3.1.5]()
 * `[FIXED]` `[android]` - #1240 - ViewModel scope instance creation fixed
