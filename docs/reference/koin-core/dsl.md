@@ -110,61 +110,43 @@ Within this option lambda, you can specify the following options:
 
 ### Module Includes (since 3.2)
 
-A new function `includes()` is available in Modules, to let you incldues otehr module for your module and then compose module graph in a better way.
+A new function `includes()` is available in the `Module` class, which lets you compose a module by including other modules in an organized and structured way.
+
+The two prominent use cases of the new feature are:
+- Split large modules into smaller and more focused ones.
+- In modularized projects, it allows you more fine control over a module visibility (see examples below).
 
 How does it work? Let's take some modules, and we include modules in `parentModule`:
 
 ```kotlin
-val childModule1 = module {
-    // other definitions here
-}
-val childModule2 = module {
-    // other definitions here
-}
+// `:feature` module
+internal val childModule1 = module { /* Other definitions here. */ }
+internal val childModule2 = module { /* Other definitions here. */ }
+public val parentModule = module { includes(childModule1,childModule2) }
 
-val parentModule = module {
-    includes(childModule1,childModule2)
-
-    // other definitions here
-}
+// `:app` module
+startKoin { modules(parentModule) }
 ```
 
-When using the module `parentModule` it will include all definitions from `childModule1` and `childModule2` modules.
+Notice we do not need to set up all modules explicitly: by including `parentModule`, all the modules declared in the `includes` will be automatically loaded (`childModule1` and `childModule2`).  In other words, Koin is effectively loading: `parentModule`, `childModule1` and `childModule2`.
 
-When loading `parentModule` in Koin, it will load all modules behind:
-
-```kotlin
-startKoin {
-    // will load parentModule, childModule1 & childModule2
-    modules(parentModule)
-}
-```
+An important detail to observe is that you can use `includes` to add `internal` and `private` modules too - that gives you flexibility over what to expose in a modularized project.
 
 :::info
- Module loading is now optimize to flatten all your module graph and avoid any doubled definitions
+Module loading is now optimized to flatten all your module graphs and avoid duplicated definitions of modules.
 :::
 
-You can use multiple modules inclusion like this, and Koin will flatten all your module graph:
+Finally, you can include multiple nested or duplicates modules, and Koin will flatten all the included modules removing duplicates:
 
 ```kotlin
-val dataModule = module {
-    // other definitions here
-}
-val featureModule1 = module {
-    includes(dataModule)
-    // other definitions here
-}
-val featureModule2 = module {
-    includes(dataModule)
-    // other definitions here
-}
+// :feature module
+internal val dataModule = module { /* Other definitions here. */ }
+internal val domainModule = module { /* Other definitions here. */ }
+public val featureModule1 = module { includes(domainModule, dataModule) }
+public val featureModule2 = module { includes(domainModule, dataModule) }
+
+// `:app` module
+startKoin { modules(featureModule1, featureModule2) }
 ```
 
-Koin will load:
-
-```kotlin
-startKoin {
-    // will load featureModule1, dataModule & featureModule2
-    modules(featureModule1,featureModule2)
-}
-``` 
+Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
