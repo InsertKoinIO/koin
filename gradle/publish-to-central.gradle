@@ -19,7 +19,7 @@ if (!project.tasks.findByName('sourcesJar')) {
         if (pluginManager.hasPlugin('com.android.library')) {
             from android.sourceSets.main.java.srcDirs
         } else {
-            from sourceSets.main.java.srcDirs
+            from sourceSets.main.allSource.srcDirs
         }
     }
 }
