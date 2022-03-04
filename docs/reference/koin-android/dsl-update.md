@@ -61,7 +61,7 @@ module {
 }
 ```
 
-## Anxdroid Reflection DSL (Deprecated since 3.2)
+## Android Reflection DSL (Deprecated since 3.2)
 
 :::caution
  Koin Reflection DSL is now deprecated. Please Use Koin Constructor DSL above 
