@@ -110,7 +110,7 @@ Within this option lambda, you can specify the following options:
 
 ### Module Includes (since 3.2)
 
-A new function `includes()` is available in Modules, to let you incldues otehr module for your module and then compose module graph in a better way.
+A new function `includes()` is available in Modules, to let you include other modules in your module and then compose module graph in a better way.
 
 How does it work? Let's take some modules, and we include modules in `parentModule`:
 
