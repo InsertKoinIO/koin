@@ -120,9 +120,15 @@ How does it work? Let's take some modules, and we include modules in `parentModu
 
 ```kotlin
 // `:feature` module
-internal val childModule1 = module { /* Other definitions here. */ }
-internal val childModule2 = module { /* Other definitions here. */ }
-public val parentModule = module { includes(childModule1,childModule2) }
+val childModule1 = module {
+    /* Other definitions here. */
+}
+val childModule2 = module {
+    /* Other definitions here. */
+}
+val parentModule = module {
+    includes(childModule1, childModule2)
+}
 
 // `:app` module
 startKoin { modules(parentModule) }
@@ -140,10 +146,18 @@ Finally, you can include multiple nested or duplicates modules, and Koin will fl
 
 ```kotlin
 // :feature module
-internal val dataModule = module { /* Other definitions here. */ }
-internal val domainModule = module { /* Other definitions here. */ }
-public val featureModule1 = module { includes(domainModule, dataModule) }
-public val featureModule2 = module { includes(domainModule, dataModule) }
+val dataModule = module {
+    /* Other definitions here. */
+}
+val domainModule = module {
+    /* Other definitions here. */
+}
+val featureModule1 = module {
+    includes(domainModule, dataModule)
+}
+val featureModule2 = module {
+    includes(domainModule, dataModule)
+}
 
 // `:app` module
 startKoin { modules(featureModule1, featureModule2) }
