@@ -24,6 +24,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.dsl.ScopeDSL
+import kotlin.reflect.KClass
 
 /**
  * Koin Module
@@ -68,12 +69,28 @@ class Module(val createdAtStart: Boolean = false) {
      * @param createdAtStart
      * @param definition - definition function
      */
-    inline fun <reified T> single(
+    inline fun <reified T : Any> single(
         qualifier: Qualifier? = null,
         createdAtStart: Boolean = false,
         noinline definition: Definition<T>
     ): Pair<Module, InstanceFactory<T>> {
-        val def = createDefinition(Kind.Singleton, qualifier, definition, scopeQualifier = rootScopeQualifier)
+        return single(qualifier, T::class, createdAtStart, definition)
+    }
+
+    /**
+     * Declare a Single definition
+     * @param qualifier
+     * @param type
+     * @param createdAtStart
+     * @param definition - definition function
+     */
+    fun <T: Any> single(
+        qualifier: Qualifier? = null,
+        type: KClass<T>,
+        createdAtStart: Boolean = false,
+        definition: Definition<T>
+    ): Pair<Module, InstanceFactory<T>> {
+        val def = BeanDefinition(rootScopeQualifier, type, qualifier, definition, Kind.Singleton)
         val mapping = indexKey(def.primaryType, qualifier, rootScopeQualifier)
         val instanceFactory = SingleInstanceFactory(def)
         saveMapping(mapping, instanceFactory)
@@ -96,14 +113,34 @@ class Module(val createdAtStart: Boolean = false) {
      * @param qualifier
      * @param definition - definition function
      */
-    inline fun <reified T> factory(
+    inline fun <reified T : Any> factory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>
     ): Pair<Module, InstanceFactory<T>> {
-        return factory(qualifier, definition, rootScopeQualifier)
+        return factory(qualifier, T::class, definition)
+    }
+
+    /**
+     * Declare a Factory definition
+     * @param qualifier
+     * @param type
+     * @param definition - definition function
+     */
+    fun <T : Any> factory(
+        qualifier: Qualifier? = null,
+        type: KClass<T>,
+        definition: Definition<T>,
+    ): Pair<Module, InstanceFactory<T>> {
+        val scopeQualifier = rootScopeQualifier
+        val def = BeanDefinition(scopeQualifier, type, qualifier, definition, Kind.Factory)
+        val mapping = indexKey(def.primaryType, qualifier, scopeQualifier)
+        val instanceFactory = FactoryInstanceFactory(def)
+        saveMapping(mapping, instanceFactory)
+        return Pair(this, instanceFactory)
     }
 
     @PublishedApi
+    @Deprecated(message = "For backward binary compatibility.", level = DeprecationLevel.HIDDEN)
     internal inline fun <reified T> factory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
