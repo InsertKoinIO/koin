@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.androidx.viewmodel.scope.getViewModel
