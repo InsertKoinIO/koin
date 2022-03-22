@@ -1,7 +1,7 @@
 package org.koin.androidx.scope
 
+import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import org.koin.core.Koin
@@ -21,7 +21,7 @@ class LifecycleViewModelScopeDelegate(
     private val scopeId = lifecycleOwner.getScopeName().value
 
     init {
-        assert(lifecycleOwner is AppCompatActivity){ "$lifecycleOwner should be an AppCompatActivity" }
+        assert(lifecycleOwner is ComponentActivity){ "$lifecycleOwner should be a ComponentActivity" }
 
         val logger = koin.logger
 
@@ -32,7 +32,7 @@ class LifecycleViewModelScopeDelegate(
         lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
                 logger.debug("Attach ViewModel scope: $_scope to $lifecycleOwner")
-                val scopeViewModel : ScopeHandlerViewModel = (lifecycleOwner as AppCompatActivity).viewModels<ScopeHandlerViewModel>().value
+                val scopeViewModel : ScopeHandlerViewModel = (lifecycleOwner as ComponentActivity).viewModels<ScopeHandlerViewModel>().value
                 if (scopeViewModel.scope == null) {
                     scopeViewModel.scope = _scope
                 }
