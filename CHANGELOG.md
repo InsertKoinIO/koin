@@ -2,6 +2,8 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+## [3.1.6]()
+* `[FIXED]` `[android]` - fix #1146 duplicate bindings with getAll()
 * `[FIXED]` `[android]` - Require ComponentActivity instead of AppCompatActivity in LifecycleViewModelScopeDelegate for FragmentScenario support
 
 ## [3.1.5]()
