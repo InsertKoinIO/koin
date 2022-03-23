@@ -150,6 +150,7 @@ class InstanceRegistry(val _koin: Koin) {
                     clazz
                 )
             }
+            .distinct()
             .map { it.get(instanceContext) as T }
     }
 
