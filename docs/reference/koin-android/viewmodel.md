@@ -179,14 +179,21 @@ class NavFragment : Fragment() {
 
 ## ViewModel API - Java Compat 
 
-In a similar way, in Java you can inject the ViewModel instance, but using `viewModel()` or `getViewModel` static functions from `ViewModelCompat`:
+Java compatibility must be added to your dependencies:
+
+```groovy
+// Java Compatibility
+implementation "io.insert-koin:koin-android-compat:$koin_version"
+```
+
+You can inject the ViewModel instance to your Java codebase by using `viewModel()` or `getViewModel` static functions from `ViewModelCompat`:
 
 ```java
 // import viewModel
-import static org.koin.android.viewmodel.compat.ViewModelCompat.viewModel;
+import static org.koin.android.compat.ViewModelCompat.viewModel;
 
-// import getViewModel
-import static org.koin.android.viewmodel.compat.ViewModelCompat.getViewModel;
+// import getViewModel  
+import static org.koin.android.compat.ViewModelCompat.getViewModel;
 
 public class JavaActivity extends AppCompatActivity {
 
@@ -218,7 +225,7 @@ For your Java Fragment, must be used `sharedViewModel` or `getSharedViewModel` f
 
 ```java
 // import sharedViewModel static function
-import static org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel;
+import org.koin.android.compat.SharedViewModelCompat;
 
 public class JavaFragment extends Fragment {
 
