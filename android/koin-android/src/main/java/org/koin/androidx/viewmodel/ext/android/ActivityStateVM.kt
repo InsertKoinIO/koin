@@ -15,14 +15,15 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import androidx.fragment.app.Fragment
+import BundleDefinition
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
+import androidx.lifecycle.ViewModelStoreOwner
+import emptyState
 import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
-import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
-import org.koin.androidx.viewmodel.scope.BundleDefinition
-import org.koin.androidx.viewmodel.scope.emptyState
-import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -33,45 +34,47 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
+@OptIn(KoinInternalApi::class)
+inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getStateViewModel(qualifier, state, owner, parameters)
+    val scope = getKoinScope()
+    return viewModels {
+        val owner = { from(this as ViewModelStoreOwner, this) }
+        getViewModelFactory<T>(owner, qualifier, parameters, state = state, scope = scope)
     }
-}
-
-fun <T : ViewModel> Fragment.sharedStateViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition = emptyState(),
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null,
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getStateViewModel(qualifier, state, owner, clazz, parameters)
-    }
-}
-
-inline fun <reified T : ViewModel> Fragment.getStateViewModel(
-    qualifier: Qualifier? = null,
-    noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
-    noinline parameters: ParametersDefinition? = null,
-): T {
-    return getStateViewModel(qualifier, state, owner, T::class, parameters)
 }
 
 @OptIn(KoinInternalApi::class)
-fun <T : ViewModel> Fragment.getStateViewModel(
+fun <T : ViewModel> ComponentActivity.stateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), this) },
+    clazz: KClass<T>,
+    parameters: ParametersDefinition? = null,
+): Lazy<T> {
+    val scope = getKoinScope()
+    return ViewModelLazy(clazz, { viewModelStore }){
+        val owner = { from(this as ViewModelStoreOwner, this) }
+        getViewModelFactory(owner, clazz, qualifier, parameters, state = state, scope = scope)
+    }
+}
+
+inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition = emptyState(),
+    noinline parameters: ParametersDefinition? = null,
+): T {
+    return stateViewModel<T>(qualifier, state, parameters).value
+}
+
+@OptIn(KoinInternalApi::class)
+fun <T : ViewModel> ComponentActivity.getStateViewModel(
+    qualifier: Qualifier? = null,
+    state: BundleDefinition = emptyState(),
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return getKoinScope().getViewModel(qualifier, owner, clazz, state, parameters)
+    return stateViewModel(qualifier, state,clazz, parameters).value
 }

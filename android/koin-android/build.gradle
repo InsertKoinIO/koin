@@ -36,6 +36,7 @@ dependencies {
     }
 
     implementation "androidx.activity:activity-ktx:$androidx_activity_version"
+    implementation "androidx.fragment:fragment-ktx:$androidx_activity_version"
 
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"

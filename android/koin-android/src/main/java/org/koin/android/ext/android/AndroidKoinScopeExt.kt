@@ -10,8 +10,7 @@ import org.koin.core.scope.Scope
 
 
 @KoinInternalApi
-@PublishedApi
-internal fun ComponentCallbacks.getKoinScope(): Scope {
+fun ComponentCallbacks.getKoinScope(): Scope {
     return when (this) {
         is AndroidScopeComponent -> scope
         is KoinScopeComponent -> scope
