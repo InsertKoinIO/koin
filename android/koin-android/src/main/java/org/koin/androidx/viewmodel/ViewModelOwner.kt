@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 
+//TODO Deprecate in 3.2
+
 typealias ViewModelOwnerDefinition = () -> ViewModelOwner
 
 class ViewModelOwner(

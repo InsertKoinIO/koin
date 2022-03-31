@@ -15,15 +15,15 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import BundleDefinition
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
-import emptyState
 import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.scope.BundleDefinition
+import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier

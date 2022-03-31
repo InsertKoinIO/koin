@@ -1,8 +1,8 @@
 package org.koin.androidx.viewmodel
 
-import BundleDefinition
 import androidx.lifecycle.ViewModelStore
 import androidx.savedstate.SavedStateRegistryOwner
+import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass

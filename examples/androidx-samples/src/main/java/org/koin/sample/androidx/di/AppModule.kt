@@ -41,7 +41,7 @@ val mvpModule = module {
 
 val mvvmModule = module {
 
-    viewModel { (id: String) -> SimpleViewModel(id, get()) }
+    viewModel { SimpleViewModel("id", get()) }
 
     viewModel(named("vm1")) { (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }

@@ -1,11 +1,11 @@
 package org.koin.androidx.viewmodel.ext.android
 
-import BundleDefinition
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.pickFactory
+import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier

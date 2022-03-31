@@ -1,5 +1,3 @@
-import android.os.Bundle
-
 ///*
 // * Copyright 2017-2021 the original author or authors.
 // *
@@ -15,6 +13,11 @@ import android.os.Bundle
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
+
+package org.koin.androidx.viewmodel.scope
+
+import android.os.Bundle
+
 
 /**
  * Scope extensions to help for ViewModel

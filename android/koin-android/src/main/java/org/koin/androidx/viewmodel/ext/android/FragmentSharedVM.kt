@@ -17,6 +17,7 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.core.parameter.ParametersDefinition
@@ -40,5 +41,5 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(qualifier, owner, parameters)
+    return sharedViewModel<T>(qualifier, owner, parameters).value
 }
