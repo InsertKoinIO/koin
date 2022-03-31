@@ -38,6 +38,7 @@ import org.koin.core.qualifier.Qualifier
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> ComponentActivity.viewModel(
         qualifier: Qualifier? = null,
+        //TODO Not needed - just internal
         noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
@@ -49,6 +50,7 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModel(
 
 inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
         qualifier: Qualifier? = null,
+        //TODO Not needed - just internal
         noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
         noinline parameters: ParametersDefinition? = null,
 ): T {

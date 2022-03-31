@@ -26,7 +26,7 @@ inline fun <reified T : ViewModel> getViewModelFactory(
         qualifier = qualifier,
         parameters = parameters,
         state = state,
-        viewModelStore = ownerValue.store,
+        viewModelStoreOwner = ownerValue.storeOwner,
         registryOwner = ownerValue.stateRegistry
     )
     return scope.pickFactory(viewModelParameters)
@@ -47,7 +47,7 @@ internal fun <T : ViewModel> getViewModelFactory(
         qualifier = qualifier,
         parameters = parameters,
         state = state,
-        viewModelStore = ownerValue.store,
+        viewModelStoreOwner = ownerValue.storeOwner,
         registryOwner = ownerValue.stateRegistry
     )
     return scope.pickFactory(viewModelParameters)

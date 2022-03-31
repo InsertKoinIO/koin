@@ -58,7 +58,7 @@ object ViewModelCompat {
                 clazz = viewModelClass,
                 qualifier = qualifier,
                 parameters = parameters,
-                viewModelStore = owner.viewModelStore,
+                viewModelStoreOwner = owner,
             )
             scope.pickFactory(viewModelParameters)
         }

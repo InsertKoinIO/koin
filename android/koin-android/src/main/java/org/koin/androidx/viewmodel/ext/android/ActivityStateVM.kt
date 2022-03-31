@@ -42,6 +42,7 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
 ): Lazy<T> {
     val scope = getKoinScope()
     return viewModels {
+        //TODO Not needed - just internal
         val owner = { from(this as ViewModelStoreOwner, this) }
         getViewModelFactory<T>(owner, qualifier, parameters, state = state, scope = scope)
     }
@@ -56,6 +57,7 @@ fun <T : ViewModel> ComponentActivity.stateViewModel(
 ): Lazy<T> {
     val scope = getKoinScope()
     return ViewModelLazy(clazz, { viewModelStore }){
+        //TODO Not needed - just internal
         val owner = { from(this as ViewModelStoreOwner, this) }
         getViewModelFactory(owner, clazz, qualifier, parameters, state = state, scope = scope)
     }

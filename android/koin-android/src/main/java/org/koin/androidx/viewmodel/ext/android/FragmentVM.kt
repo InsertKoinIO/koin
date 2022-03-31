@@ -38,11 +38,12 @@ import org.koin.core.qualifier.Qualifier
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> Fragment.viewModel(
         qualifier: Qualifier? = null,
+        //TODO Clean up
         noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
         val scope = getKoinScope()
-        return viewModels(ownerProducer = {owner().store}) {
+        return viewModels(ownerProducer = { owner().storeOwner}) {
                 getViewModelFactory<T>(owner, qualifier, parameters, scope = scope)
         }
 }

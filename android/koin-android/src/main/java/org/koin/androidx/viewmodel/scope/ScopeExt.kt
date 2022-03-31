@@ -24,6 +24,7 @@ import android.os.Bundle
  *
  * @author Arnaud Giuliani
  */
+//TODO Deprecate for extrasProducer
 fun emptyState(): BundleDefinition = { Bundle() }
 typealias BundleDefinition = () -> Bundle
 

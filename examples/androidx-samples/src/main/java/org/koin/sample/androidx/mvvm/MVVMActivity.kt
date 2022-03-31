@@ -34,17 +34,17 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
     val simpleViewModel: SimpleViewModel by viewModel()
 
-//    val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
+    val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
 ////    val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
-//
-//    val scopeVm: ExtSimpleViewModel by viewModel()
-//    val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
-//
-//    val savedVm: SavedStateViewModel by viewModel { parametersOf("vm1") }
-////    val scopedSavedVm: SavedStateViewModel by viewModel(named("vm2")){ parametersOf("vm2") }
-//
-//    val state = Bundle().apply { putString("id","vm1") }
-//    val stateVM: SavedStateBundleViewModel by stateViewModel(state = {state})
+
+    val scopeVm: ExtSimpleViewModel by viewModel()
+    val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
+
+    val savedVm: SavedStateViewModel by viewModel { parametersOf("vm1") }
+//    val scopedSavedVm: SavedStateViewModel by viewModel(named("vm2")){ parametersOf("vm2") }
+
+    val state = Bundle().apply { putString("id","vm1") }
+    val stateVM: SavedStateBundleViewModel by stateViewModel(state = {state})
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
@@ -78,37 +78,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 //        assert(savedVm.id != scopedSavedVm.id)
 ////        assert("value to stateViewModel" == savedVm.handle.get("vm1"))
 //        assert("value to scope.stateViewModel" == scopedSavedVm.handle.get("vm3"))
-//        assert(scopeVm.session.id == extScopeVm.session.id)
-//        assert(stateVM.result == "vm1")
-    }
-}
-
-@OptIn(KoinInternalApi::class)
-inline fun <reified T : ViewModel> ComponentActivity.koinViewModel(): Lazy<T> {
-    val scope = getKoinScope()
-    return viewModels {
-        val viewModelParameters = ViewModelParameter(
-            clazz = T::class,
-            viewModelStore = viewModelStore,
-            registryOwner = this as? SavedStateRegistryOwner
-        )
-        val factory = scope.pickFactory(viewModelParameters)
-        factory
-    }
-}
-
-@OptIn(KoinInternalApi::class)
-inline fun <reified T : ViewModel> Fragment.koinViewModel(): Lazy<T> {
-    val scope = getKoinScope()
-    return viewModels(
-        ownerProducer = {requireActivity()}
-    ) {
-        val viewModelParameters = ViewModelParameter(
-            clazz = T::class,
-            viewModelStore = requireActivity().viewModelStore,
-            registryOwner = this as? SavedStateRegistryOwner
-        )
-        val factory = scope.pickFactory(viewModelParameters)
-        factory
+        assert(scopeVm.session.id == extScopeVm.session.id)
+        assert(stateVM.result == "vm1")
     }
 }
