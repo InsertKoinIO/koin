@@ -9,6 +9,8 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.sample.androidx.components.main.SimpleService
 import org.koin.sample.androidx.components.main.SimpleServiceImpl
+import org.koin.sample.androidx.components.scope.Session
+import org.koin.sample.androidx.sdk.HostActivity
 
 // Custom Koin instance Holder
 object CustomSDK {
@@ -22,6 +24,9 @@ val sdkModule = module {
     single<SimpleService> { SimpleServiceImpl() }
     single { SDKService() }
     viewModel { SDKVIewModel(get()) }
+    scope<HostActivity>{
+        Session()
+    }
 }
 
 // Custom KoinComponent
