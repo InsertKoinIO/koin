@@ -19,13 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.ext.android.getStateViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModelFactory
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
-import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
@@ -48,10 +48,7 @@ inline fun <reified T : ViewModel> getViewModel(
     scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val storeOwner = owner?.let { ViewModelOwner.from(it) } ?: getComposeViewModelOwner()
-    return remember(qualifier, parameters) {
-        scope.getViewModel(qualifier, { storeOwner }, parameters)
-    }
+    return viewModel<T>(qualifier, owner, scope, parameters).value
 }
 
 /**
@@ -77,12 +74,8 @@ inline fun <reified T : ViewModel> viewModel(
 ): Lazy<T> {
     val storeOwner = owner?.let { ViewModelOwner.from(it) } ?: getComposeViewModelOwner()
     return remember(qualifier, parameters) {
-        lazy(LazyThreadSafetyMode.NONE) {
-            scope.getViewModel(
-                qualifier,
-                { storeOwner },
-                parameters
-            )
+        ViewModelLazy(T::class, { storeOwner.storeOwner.viewModelStore }){
+            getViewModelFactory<T>({storeOwner},qualifier,parameters, scope = scope)
         }
     }
 }
@@ -95,16 +88,20 @@ inline fun <reified T : ViewModel> viewModel(
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 @Deprecated("getStateViewModel will be merged to sharedViewModel - no need anymore of state parameter")
 inline fun <reified T : ViewModel> getStateViewModel(
     qualifier: Qualifier? = null,
     owner: ViewModelStoreOwner? = null,
     noinline state: BundleDefinition = emptyState(),
+    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
     noinline parameters: ParametersDefinition? = null,
 ): T {
     val storeOwner = owner?.let { ViewModelOwner.from(it) } ?: getComposeViewModelOwner()
     return remember(qualifier, parameters) {
-        storeOwner.stateRegistry!!.getStateViewModel(qualifier, state, parameters)
+        ViewModelLazy(T::class, { storeOwner.storeOwner.viewModelStore }){
+            getViewModelFactory<T>({storeOwner},qualifier,parameters, state,scope)
+        }.value
     }
 }

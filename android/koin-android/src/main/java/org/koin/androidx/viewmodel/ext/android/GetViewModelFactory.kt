@@ -33,7 +33,7 @@ inline fun <reified T : ViewModel> getViewModelFactory(
 }
 
 @KoinInternalApi
-internal fun <T : ViewModel> getViewModelFactory(
+fun <T : ViewModel> getViewModelFactory(
     owner: ViewModelOwnerDefinition,
     clazz: KClass<T>,
     qualifier: Qualifier?,
