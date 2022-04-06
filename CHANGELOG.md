@@ -6,6 +6,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[android]` - fix #1146 duplicate bindings with getAll()
 * `[FIXED]` `[android]` - Require ComponentActivity instead of AppCompatActivity in LifecycleViewModelScopeDelegate for FragmentScenario support
 * `[FIXED]` `[ktor]` - Fix #1263 Ktor scope closing with ApplicationStopped event listening
+* `[FIXED]` `[android]` - fix #1207 #1308 - Realign ViewModel API with Google viewModels() API
 
 
 ## [3.1.5]()

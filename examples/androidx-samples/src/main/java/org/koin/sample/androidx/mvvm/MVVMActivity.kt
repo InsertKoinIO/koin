@@ -81,4 +81,9 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         assert(scopeVm.session.id == extScopeVm.session.id)
         assert(stateVM.result == "vm1")
     }
+
+    override fun onStop() {
+        super.onStop()
+        println("simpleViewModel:${simpleViewModel.service}")
+    }
 }
