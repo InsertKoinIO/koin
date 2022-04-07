@@ -24,8 +24,9 @@ val sdkModule = module {
     single<SimpleService> { SimpleServiceImpl() }
     single { SDKService() }
     viewModel { SDKVIewModel(get()) }
+
     scope<HostActivity>{
-        Session()
+        scoped { Session() }
     }
 }
 
