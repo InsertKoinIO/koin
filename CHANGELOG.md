@@ -3,10 +3,10 @@
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
 ## [3.1.6]()
-* `[FIXED]` `[android]` - fix #1146 duplicate bindings with getAll()
+* `[FIXED]` `[core]` - fix #1146 duplicate bindings with getAll()
 * `[FIXED]` `[android]` - Require ComponentActivity instead of AppCompatActivity in LifecycleViewModelScopeDelegate for FragmentScenario support
 * `[FIXED]` `[ktor]` - Fix #1263 Ktor scope closing with ApplicationStopped event listening
-* `[FIXED]` `[android]` - fix #1207 #1308 - Realign ViewModel API with Google viewModels() API
+* `[FIXED]` `[android]` - fix #1207 #1308 - Realign ViewModel API with Google viewModels() API to better register on factories
 * `[FIXED]` `[ktor]` - downgrade to Ktor 1.6.5 due to link to Kotlin 1.6.x (further versions will follow 3.2.x branch with independant koin-ktor module project)
 
 ## [3.1.5]()
