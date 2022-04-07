@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.host_activity.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.scope.activityScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinScopeComponent
@@ -18,9 +19,8 @@ import org.koin.sample.androidx.components.sdk.CustomService
 import org.koin.sample.androidx.components.sdk.SDKActivity
 import org.koin.sample.androidx.utils.navigateTo
 
-class HostActivity : AppCompatActivity(), CustomKoinComponent, KoinScopeComponent {
-
-    override val scope : Scope by activityScope()
+// AppCompatActivity(), CustomKoinComponent, KoinScopeComponent
+class HostActivity : ScopeActivity(), CustomKoinComponent {
 
     // Inject by Interface - default definition
     val sdkService: SimpleService by inject()
