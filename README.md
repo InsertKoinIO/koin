@@ -8,19 +8,17 @@ A pragmatic lightweight dependency injection framework for Kotlin developers. `K
 
 You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.1)
 
-# Where to find resources? 🌐
+## Latest News
+- On our Blog: [The Kotzilla Blog](https://blog.kotzilla.io/)
+- On Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
 
-Latest News
-- Follow us on Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
-- Latest Koin News: [The Kotzilla Blog](https://blog.kotzilla.io/)
-
-Any question about Koin usage? 
+## Community 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
 - Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
 
 Found a bug or a problem on a specific feature? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
-# Contributing 🛠
+## Contributing 🛠
 
 Want to help or share a proposal about Koin? problem on a specific feature? 
 
