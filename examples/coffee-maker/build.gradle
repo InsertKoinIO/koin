@@ -12,6 +12,10 @@ buildscript {
 apply plugin: 'kotlin'
 //apply plugin: 'koin'
 
+compileKotlin {
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.time.ExperimentalTime"
+}
+
 archivesBaseName = 'example-coffee-maker'
 
 dependencies {

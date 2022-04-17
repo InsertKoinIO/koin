@@ -6,14 +6,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import org.koin.perfs.Perfs
 import org.koin.perfs.perfModule400
 //import org.koin.perfs.perfModule400
-import org.koin.perfs.perfModule400Ext
 //import org.koin.perfs.perfModule400Ext
 import org.koin.sample.android.R
+import kotlin.time.DurationUnit
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,23 +39,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun runPerf(count: Int): Pair<Double, Double> {
-        val (app, duration) = measureDurationForResult {
+        val (app, duration) = measureTimedValue {
             koinApplication {
                 modules(perfModule400())
             }
         }
-        println("[$count] started in $duration ms")
+
+        val durationInMillis = duration.toDouble(DurationUnit.MILLISECONDS)
+        println("[$count] started in $durationInMillis ms")
 
         val koin = app.koin
 
-        val (_, executionDuration) = measureDurationForResult {
+        val executionDuration = measureTime {
             koin.get<Perfs.A27>()
             koin.get<Perfs.A31>()
             koin.get<Perfs.A12>()
             koin.get<Perfs.A42>()
         }
-        println("[$count] measured executed in $executionDuration ms")
+        val executionDurationInMillis = executionDuration.toDouble(DurationUnit.MILLISECONDS)
+
+        println("[$count] measured executed in $executionDurationInMillis ms")
         app.close()
-        return Pair(duration, executionDuration)
+        return Pair(durationInMillis, executionDurationInMillis)
     }
 }

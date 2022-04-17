@@ -4,7 +4,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.core.time.measureDuration
+import kotlin.time.DurationUnit
+import kotlin.time.measureTime
 
 class CoffeeApp : KoinComponent {
     val maker: CoffeeMaker by inject()
@@ -22,8 +23,9 @@ fun main() {
     }
 }
 
-fun measureDuration(msg : String, code: () -> Unit): Double {
-    val duration = measureDuration(code)
-    println("$msg in $duration ms")
-    return duration
+fun measureDuration(msg : String, code: () -> Unit) {
+    val duration = measureTime(code)
+    val durationInMillis = duration.toDouble(DurationUnit.MILLISECONDS)
+
+    println("$msg in $durationInMillis ms")
 }

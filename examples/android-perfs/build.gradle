@@ -21,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.time.ExperimentalTime"
+    }
 }
 
 dependencies {
