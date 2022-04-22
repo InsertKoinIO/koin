@@ -15,14 +15,10 @@
  */
 package org.koin.core.time
 
-import kotlin.time.measureTime
-import kotlin.time.measureTimedValue
-
 /**
  * Executes the [code] and returns the duration of execution in milliseconds.
- *
- * TODO: Use [measureTime] when it becomes stable.
  */
+// TODO: Use kotlin.time API when it becomes stable
 internal fun measureDuration(code: () -> Unit): Double {
     val timeSource = getTimeSource()
 
@@ -36,9 +32,8 @@ internal fun measureDuration(code: () -> Unit): Double {
 /**
  * Executes the [code] and returns a pair of values - the result of the function execution
  * and the duration of execution in milliseconds.
- *
- * TODO: Use [measureTimedValue] when it becomes stable.
  */
+// TODO: Use kotlin.time API when it becomes stable
 internal fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
     val timeSource = getTimeSource()
 
