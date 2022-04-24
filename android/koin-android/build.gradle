@@ -35,6 +35,9 @@ dependencies {
     api("androidx.lifecycle:lifecycle-common-java8:2.4.0")
 
     // tests
+    implementation "androidx.activity:activity-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
+
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"

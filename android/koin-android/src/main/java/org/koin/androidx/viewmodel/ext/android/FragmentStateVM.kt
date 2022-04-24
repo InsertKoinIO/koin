@@ -15,15 +15,19 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.content.ComponentCallbacks
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.createViewModelLazy
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.ViewModelOwner
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
-import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -34,41 +38,51 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
+@OptIn(KoinInternalApi::class)
+inline fun <reified T : ViewModel> Fragment.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
+    //TODO Clean up
+    noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getStateViewModel(qualifier, state, parameters)
+    val scope = getKoinScope()
+    return viewModels(ownerProducer = {owner().storeOwner}) {
+        getViewModelFactory<T>(owner, qualifier, parameters, state = state, scope = scope)
     }
 }
 
-fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
+@OptIn(KoinInternalApi::class)
+fun <T : ViewModel> Fragment.stateViewModel(
     qualifier: Qualifier? = null,
-    state: BundleDefinition = emptyState(),
     clazz: KClass<T>,
+    state: BundleDefinition = emptyState(),
+    //TODO Clean up
+    owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, clazz, parameters) }
+    val scope = getKoinScope()
+    return createViewModelLazy(clazz, { viewModelStore }){
+        getViewModelFactory(owner, clazz, qualifier, parameters, state = state, scope = scope)
+    }
 }
 
-inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
+inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
+    noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getStateViewModel(qualifier, state, T::class, parameters)
+    return stateViewModel<T>(qualifier, state, owner,parameters).value
 }
 
 @OptIn(KoinInternalApi::class)
-fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
+fun <T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
-    state: BundleDefinition = emptyState(),
     clazz: KClass<T>,
+    state: BundleDefinition = emptyState(),
+    owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
     parameters: ParametersDefinition? = null,
 ): T {
-    val owner = { from(this as ViewModelStoreOwner, this) }
-    val scope = (this as ComponentCallbacks).getKoinScope()
-    return scope.getViewModel(qualifier, owner, clazz, state, parameters)
+    return stateViewModel(qualifier,  clazz, state, owner,parameters).value
 }

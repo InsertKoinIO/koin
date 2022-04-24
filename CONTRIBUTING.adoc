@@ -25,7 +25,7 @@ problem.
 None of these is essential for a pull request, but they will all help.  They can also be
 added after the original pull request but before a merge.
 
-* We use the Kotlin standard formating convention
+* We use the Kotlin standard formatting convention
 * Make sure all new `.kt` files to have a simple Javadoc class comment with at least an
   `@author` tag identifying you, and preferably at least a paragraph on what the class is
   for.
@@ -68,7 +68,7 @@ NOTE: you can use the `test.sh` and `install.sh` scripts to test all modules and
 
 the `koin-test` module gather all test against `koin-core`. Here you'll found most of usecase tests.
 
-The following command scrtip launch all tests from projects:
+The following command script launch all tests from projects:
 
 [indent=0]
 ----

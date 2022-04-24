@@ -16,9 +16,11 @@
 package org.koin.android.compat
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
-import org.koin.androidx.viewmodel.scope.getViewModel
+import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.androidx.viewmodel.pickFactory
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -30,6 +32,8 @@ import org.koin.core.scope.Scope
  */
 object ScopeCompat {
 
+    //TODO Deprecate and add new
+
     /**
      * Lazy get a viewModel instance
      *
@@ -38,6 +42,7 @@ object ScopeCompat {
      * @param parameters - parameters to pass to the BeanDefinition
      * @param clazz
      */
+    @OptIn(KoinInternalApi::class)
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
@@ -45,10 +50,18 @@ object ScopeCompat {
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = lazy(mode) {
-        scope.getViewModel(qualifier, { from(owner) }, clazz.kotlin, parameters = parameters)
+    ): ViewModelLazy<T> {
+        val viewModelClass = clazz.kotlin
+        return ViewModelLazy(viewModelClass, { owner.viewModelStore }){
+            val viewModelParameters = ViewModelParameter(
+                clazz = viewModelClass,
+                qualifier = qualifier,
+                parameters = parameters,
+                viewModelStoreOwner = owner,
+            )
+            scope.pickFactory(viewModelParameters)
+        }
     }
 
 
@@ -68,6 +81,6 @@ object ScopeCompat {
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): T {
-        return scope.getViewModel(qualifier, { from(owner) }, clazz.kotlin, parameters = parameters)
+        return viewModel(scope, owner, clazz, qualifier,parameters).value
     }
 }

@@ -91,7 +91,7 @@ class KoinApplication private constructor() {
      * Load properties from Map
      * @param values
      */
-    fun properties(values: Map<String, String>): KoinApplication {
+    fun properties(values: Map<String, Any>): KoinApplication {
         koin.propertyRegistry.saveProperties(values)
         return this
     }

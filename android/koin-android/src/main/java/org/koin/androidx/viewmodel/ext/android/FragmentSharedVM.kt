@@ -17,14 +17,11 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.koin.android.ext.android.getKoinScope
+import androidx.lifecycle.ViewModelLazy
 import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
-import org.koin.androidx.viewmodel.scope.getViewModel
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import kotlin.reflect.KClass
 
 /**
  * Fragment extension to help for Viewmodel
@@ -36,9 +33,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) {
-        getSharedViewModel(qualifier, owner, parameters)
-    }
+    return viewModel(qualifier, owner, parameters)
 }
 
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
@@ -46,15 +41,5 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     noinline owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getSharedViewModel(qualifier, T::class, owner, parameters = parameters)
-}
-
-@OptIn(KoinInternalApi::class)
-fun <T : ViewModel> Fragment.getSharedViewModel(
-    qualifier: Qualifier? = null,
-    clazz: KClass<T>,
-    owner: ViewModelOwnerDefinition = { from(requireActivity(), requireActivity()) },
-    parameters: ParametersDefinition? = null,
-): T {
-    return getKoinScope().getViewModel(qualifier, owner, clazz, parameters = parameters)
+    return sharedViewModel<T>(qualifier, owner, parameters).value
 }

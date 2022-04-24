@@ -183,7 +183,8 @@ class AdditionalTypeBindingTest {
                     })
         }.koin
 
-        assertTrue(koin.get<List<Simple.ComponentInterface1>>().size == 2)
+        val result = koin.get<List<Simple.ComponentInterface1>>()
+        assertEquals(1,result.size)
     }
 
     @Test

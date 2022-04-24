@@ -23,11 +23,10 @@ import org.koin.sample.androidx.components.scope.Session
 class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.layout.mvvm_fragment) {
 
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
-
     val scopeVm: ExtSimpleViewModel by viewModel()
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
-    val shared: SimpleViewModel by sharedViewModel { parametersOf(ID) }
+    val shared: SimpleViewModel by sharedViewModel()// sharedViewModel { parametersOf(ID) }
 
     val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
     val saved by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
@@ -36,20 +35,19 @@ class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.lay
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
 
         assert(shared != simpleViewModel)
+        assert((requireActivity() as MVVMActivity).simpleViewModel == shared)
+
         assert((requireActivity() as MVVMActivity).savedVm != saved)
         assert((requireActivity() as MVVMActivity).savedVm != saved2)
-
         assert(scopeVm.session.id == extScopeVm.session.id)
-
-        assert((requireActivity() as MVVMActivity).simpleViewModel == shared)
         assert((requireActivity() as MVVMActivity).savedVm == sharedSaved)
 
-        val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
-        val shared3 = getSharedViewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
+////        val shared3 = getSharedViewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
         assert(shared == shared2)
-        assert(shared2 == shared3)
+//        assert(shared2 == shared3)
 
         assert(saved == saved2)
 

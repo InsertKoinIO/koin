@@ -84,7 +84,7 @@ val myModule = module {
 }
 ```
 
-In this module, you can declare components as decribed below.
+In this module, you can declare components as described below.
 
 ### withOptions - DSL Options (since 3.2)
 

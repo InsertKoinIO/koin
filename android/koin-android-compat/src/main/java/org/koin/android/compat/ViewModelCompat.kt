@@ -16,9 +16,11 @@
 package org.koin.android.compat
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.androidx.viewmodel.pickFactory
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -30,6 +32,8 @@ import org.koin.core.qualifier.Qualifier
  */
 object ViewModelCompat {
 
+    //TODO Deprecate and add new API against Activity/Fragment
+
     /**
      * Lazy get a viewModel instance
      *
@@ -38,6 +42,7 @@ object ViewModelCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
+    @OptIn(KoinInternalApi::class)
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
@@ -45,7 +50,19 @@ object ViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T> = lazy { getViewModel(owner, clazz, qualifier, parameters) }
+    ): Lazy<T>{
+        val scope = GlobalContext.get().scopeRegistry.rootScope
+        val viewModelClass = clazz.kotlin
+        return ViewModelLazy(viewModelClass, { owner.viewModelStore }){
+            val viewModelParameters = ViewModelParameter(
+                clazz = viewModelClass,
+                qualifier = qualifier,
+                parameters = parameters,
+                viewModelStoreOwner = owner,
+            )
+            scope.pickFactory(viewModelParameters)
+        }
+    }
 
 
     /**
@@ -63,5 +80,5 @@ object ViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T = GlobalContext.get().getViewModel(qualifier, { ViewModelOwner.from(owner) }, clazz.kotlin, parameters)
+    ): T = viewModel(owner, clazz, qualifier, parameters).value
 }

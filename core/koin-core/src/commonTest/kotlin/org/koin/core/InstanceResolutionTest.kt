@@ -44,7 +44,8 @@ class InstanceResolutionTest {
 
         val instances = koin.getAll<Simple.ComponentInterface1>()
 
-        assertTrue(instances.size == 3 && instances.contains(a1) && instances.contains(a2))
+        assertEquals(2,instances.size)
+        assertTrue(instances.contains(a1) && instances.contains(a2))
     }
 
     @Test
@@ -167,5 +168,25 @@ class InstanceResolutionTest {
 
         assertTrue(component is Simple.Component1)
         assertTrue(koin.get<Simple.ComponentInterface1>(named("2")) is Simple.Component2)
+    }
+
+    interface A
+    class B : A
+    class C : A
+
+    @Test
+    fun `should getAll - no duplicates`() {
+
+        val koinModule = module {
+            factory<B>{ B() } bind A::class
+            factory<C>{ C() } bind A::class
+        }
+
+        val koin = koinApplication {
+            modules(koinModule)
+        }.koin
+
+        val list  = koin.getAll<A>()
+        assert(list.size == 2)
     }
 }

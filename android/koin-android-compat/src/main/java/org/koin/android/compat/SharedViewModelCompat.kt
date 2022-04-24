@@ -29,6 +29,8 @@ import org.koin.core.qualifier.Qualifier
  */
 object SharedViewModelCompat {
 
+    //TODO Deprecate and add new
+
     /**
      * Lazy getByClass a viewModel instance shared with Activity
      *
@@ -45,7 +47,7 @@ object SharedViewModelCompat {
             clazz: Class<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null,
-    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(fragment, clazz, qualifier, parameters) }
+    ): Lazy<T> = ViewModelCompat.viewModel(fragment.requireActivity(),clazz,qualifier, parameters)
 
     /**
      * Get a shared viewModel instance from underlying Activity
@@ -64,6 +66,6 @@ object SharedViewModelCompat {
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null,
     ): T {
-        return fragment.getSharedViewModel(qualifier, clazz.kotlin, parameters = parameters)
+        return sharedViewModel(fragment, clazz, qualifier, parameters).value
     }
 }
