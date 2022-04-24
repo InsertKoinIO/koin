@@ -20,7 +20,7 @@ dependencies {
     // Koin
     api project(":koin-android")
 
-    api("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_arch_version")
+    api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
 }
 
 apply from: '../../gradle/publish-to-central.gradle'

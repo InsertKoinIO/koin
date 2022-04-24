@@ -1,12 +1,13 @@
 ext {
     // Koin
-    koin_version = '3.2.0-beta-1'
+    koin_version = '3.2.0-beta-2'
 
     // pass it to true to make release
     is_snaptshot = true
 
     // Kotlin
-    kotlin_version = '1.6.10'
+    kotlin_version = '1.6.21'
+    
     coroutines_version = "1.6.0"
 
     // Dokka

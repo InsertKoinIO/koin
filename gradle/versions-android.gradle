@@ -3,5 +3,5 @@ ext {
     android_min_version = 14
     android_target_version = 31
     android_build_tools_version = '30.0.3'
-    android_gradle_version = '7.0.4'
+    android_gradle_version = '7.0.4' // 7.1.1 -> Gradle 7.2
 }

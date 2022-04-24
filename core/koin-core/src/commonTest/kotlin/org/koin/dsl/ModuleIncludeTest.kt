@@ -1,6 +1,7 @@
 package org.koin.dsl
 
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -51,5 +52,23 @@ class ModuleIncludeTest {
 
         val koin = koinApplication { modules(m1) }.koin
         assertNotNull(koin.getOrNull<ClassA>())
+    }
+
+    val q1 = named("1")
+    val q2 = named("2")
+    data class Person(val parent : Person? = null)
+    val m2 = module {
+        factory(q2) { Person(get(q1)) }
+    }
+    val m1 = module {
+        factory(q1) { Person() }
+        includes(m2)
+    }
+
+    @Test
+    fun should_include_all(){
+        val koin = koinApplication { modules(m1) }.koin
+        assertNotNull(koin.getOrNull<Person>(q1))
+        assertNotNull(koin.getOrNull<Person>(q2))
     }
 }
