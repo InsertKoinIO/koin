@@ -45,7 +45,7 @@ val mvpModule = module {
 
 val mvvmModule = module {
 
-    viewModel { (id: String) -> SimpleViewModel(id, get()) }
+    viewModelOf(::SimpleViewModel)// { (id: String) -> SimpleViewModel(id, get()) }
 
     viewModelOf(::SimpleViewModel){ named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
