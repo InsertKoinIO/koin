@@ -6,7 +6,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers. `K
 
 ## Latest Version - [3.2.0]
 
-You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.1)
+You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.2)
 
 ## Latest News
 - On our Blog: [The Kotzilla Blog](https://blog.kotzilla.io/)
