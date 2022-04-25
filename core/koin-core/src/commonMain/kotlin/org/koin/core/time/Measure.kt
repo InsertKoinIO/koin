@@ -15,10 +15,8 @@
  */
 package org.koin.core.time
 
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
-import kotlin.time.measureTimedValue
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.mp.KoinPlatformTimeTools
 
 
 /**
@@ -26,17 +24,29 @@ import kotlin.time.measureTimedValue
  *
  * @author Arnaud Giuliani
  */
-
-@OptIn(ExperimentalTime::class)
+@OptIn(KoinInternalApi::class)
 fun measureDuration(code: () -> Unit): Double {
-    return measureTime(code).toDouble(DurationUnit.MILLISECONDS)
+    return measureTime(code)
 }
 
 /**
  * Measure code execution and get result
  */
-@OptIn(ExperimentalTime::class)
+@OptIn(KoinInternalApi::class)
 fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
-    val result = measureTimedValue(code)
-    return Pair(result.value, result.duration.toDouble(DurationUnit.MILLISECONDS))
+    val (value,duration) = measureTimedValue(code)
+    return Pair(value, duration)
+}
+
+@KoinInternalApi
+fun measureTime(code: () -> Unit): Double{
+    return measureTimedValue(code).second
+}
+
+@KoinInternalApi
+fun <T> measureTimedValue(code: () -> T): Pair<T,Double>{
+    val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
+    val value = code()
+    val end = KoinPlatformTimeTools.getTimeInNanoSeconds()
+    return Pair(value,(end-start) / 1_000_000.0)
 }
