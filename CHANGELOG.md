@@ -4,7 +4,28 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.2]()
 
+
+## [3.2.0-beta-2]()
+
+* `[UPDATED]` `[core, android, ktor]` - merge from Koin 3.1.6
+* `[FIXED]` `[core]` - fix Time API (do not depend anymore on unstable API)
+* `[FIXED]` `[android]` - fix ViewModel Compat to provide Store owner as Lazy value
+* `[UPDATED]` `[core]` - Kotlin 1.6.21
+* `[UPDATED]` `[android]` - android lib - androidx.appcompat:appcompat:1.4.1
+* `[UPDATED]` `[android]` - android lib - androidx.activity:activity-ktx:1.4.0
+* `[UPDATED]` `[android]` - android lib - androidx.lifecycle:lifecycle-extensions:2.2.0
+* `[UPDATED]` `[android]` - android lib - androidx.appcompat:appcompat:1.4.1
+* `[UPDATED]` `[android]` - android lib - androidx.lifecycle:lifecycle-common-java8:2.4.1
+* `[UPDATED]` `[android]` - android lib - androidx.activity:activity-ktx:1.4.0
+* `[UPDATED]` `[android]` - android lib - androidx.fragment:fragment-ktx:1.4.1
+* `[UPDATED]` `[android]` - android lib - androidx.navigation:navigation-fragment-ktx:2.4.2
+
+
 ## [3.2.0-beta-1]()
+
+* `[ADDED]` `[core]` - Constructor DSL (singeOf, factoryOf ...)
+* `[ADDED]` `[core]` - Module includes()
+* `[UPDATED]` `[core]` - Kotlin 1.6.10
 
 # [3.1]()
 
