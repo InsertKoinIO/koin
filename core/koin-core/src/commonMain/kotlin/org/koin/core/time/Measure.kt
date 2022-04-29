@@ -15,38 +15,34 @@
  */
 package org.koin.core.time
 
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformTimeTools
 
-
 /**
- * Measure functions
+ * Time Measure functions
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternalApi::class)
-fun measureDuration(code: () -> Unit): Double {
-    return measureTime(code)
-}
 
 /**
- * Measure code execution and get result
+ * Measure time in milliseconds for given code
  */
-@OptIn(KoinInternalApi::class)
-fun <T> measureDurationForResult(code: () -> T): Pair<T, Double> {
-    val (value,duration) = measureTimedValue(code)
-    return Pair(value, duration)
-}
-
-@KoinInternalApi
-fun measureTime(code: () -> Unit): Double{
+fun measureDuration(code: () -> Unit): TimeInMillis {
     return measureTimedValue(code).second
 }
 
-@KoinInternalApi
-fun <T> measureTimedValue(code: () -> T): Pair<T,Double>{
+/**
+ * Measure time in milliseconds and get result
+ */
+fun <T> measureDurationForResult(code: () -> T): Pair<T, TimeInMillis> {
+    val (value, duration) = measureTimedValue(code)
+    return Pair(value, duration)
+}
+
+private fun <T> measureTimedValue(code: () -> T): Pair<T, Double> {
     val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
     val value = code()
     val end = KoinPlatformTimeTools.getTimeInNanoSeconds()
-    return Pair(value,(end-start) / 1_000_000.0)
+    return Pair(value, (end - start) / 1_000_000.0)
 }
+
+typealias TimeInMillis = Double
