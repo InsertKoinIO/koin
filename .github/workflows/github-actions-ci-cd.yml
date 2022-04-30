@@ -23,8 +23,5 @@ jobs:
       - name: Run Android tests
         run: cd android && ./test.sh
 
-      - name: Run Ktor tests
-        run: cd ktor && ./test.sh
-
       - name: Run Plugins tests
         run: cd plugins && ./test.sh
