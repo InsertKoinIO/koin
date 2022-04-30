@@ -27,12 +27,6 @@ class CheckModulesTest {
             single { p -> Simple.ComponentB(p.get()) }
             single(named("param")) { p -> Simple.MyString(p.get()) }
             single { Simple.MyString(getProperty("aValue")) }
-            scope(named("scope1")) {
-                scoped { Simple.ComponentD() }
-            }
-            scope(named("scope2")) {
-                scoped { Simple.ComponentE(get()) }
-            }
         }
 
         koinApplication {
@@ -42,7 +36,6 @@ class CheckModulesTest {
                 //            withInstance<String>("a_parameter")
                 withParameter<String> { "a_parameter" }
                 withProperty("aValue", "string_value")
-                withScopeLink(named("scope2"), named("scope1"))
             }
         }
     }
@@ -53,19 +46,12 @@ class CheckModulesTest {
             single { p -> Simple.ComponentB(p.get()) }
             single(named("param")) { p -> Simple.MyString(p.get()) }
             single { Simple.MyString(getProperty("aValue")) }
-            scope(named("scope1")) {
-                scoped { Simple.ComponentD() }
-            }
-            scope(named("scope2")) {
-                scoped { Simple.ComponentE(get()) }
-            }
         }
 
         checkKoinModules(listOf(modules)) {
             withInstance<Simple.ComponentA>()
             withParameter<String> { "a_parameter" }
             withProperty("aValue", "string_value")
-            withScopeLink(named("scope2"), named("scope1"))
         }
     }
 
@@ -290,7 +276,7 @@ class CheckModulesTest {
                     }
                 )
             }.checkModules()
-            fail("should not pass with broken definitions")
+            fail("should not pass with borken definitions")
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -516,26 +502,6 @@ class CheckModulesTest {
                 withProperty("aValue", "value")
                 withInstance<Simple.ComponentA>()
             }
-        }
-    }
-
-    @Test
-    fun `check a module with linked scopes`() {
-        koinApplication {
-            printLogger(Level.DEBUG)
-            properties(hashMapOf("aValue" to "value"))
-            modules(
-                module {
-                    scope<Simple.ComponentA> {
-                        scoped { Simple.ComponentD() }
-                    }
-                    scope<Simple.ComponentB> {
-                        scoped { Simple.ComponentE(get()) }
-                    }
-                }
-            )
-        }.checkModules {
-            withScopeLink<Simple.ComponentB, Simple.ComponentA>()
         }
     }
 }

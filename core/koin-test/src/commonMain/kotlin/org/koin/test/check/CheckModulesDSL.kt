@@ -19,7 +19,6 @@ import org.koin.core.Koin
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.qualifier
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import kotlin.reflect.KClass
@@ -30,7 +29,6 @@ class ParametersBinding(val koin: Koin) {
 
     val parametersCreators = mutableMapOf<CheckedComponent, ParametersCreator>()
     val defaultValues = mutableMapOf<String, Any>()
-    val scopeLinks = mutableMapOf<Qualifier, Qualifier>()
 
     @Deprecated("use withParameter() instead", ReplaceWith("withParameters(qualifier,creator)"))
     inline fun <reified T> create(qualifier: Qualifier? = null, noinline creator: ParametersCreator) =
@@ -64,9 +62,6 @@ class ParametersBinding(val koin: Koin) {
         defaultValues.put(KoinPlatformTools.getClassName(T::class), MockProvider.makeMock<T>())
 
     fun withProperty(key: String, value: Any) = koin.setProperty(key, value)
-    inline fun <reified T : Any, reified U : Any> withScopeLink() = withScopeLink(qualifier<T>(), qualifier<U>())
-    inline fun withScopeLink(scopeQualifier: Qualifier, targetScopeQualifier: Qualifier) =
-            scopeLinks.put(scopeQualifier, targetScopeQualifier)
 }
 
 typealias ParametersCreator = (Qualifier?) -> ParametersHolder

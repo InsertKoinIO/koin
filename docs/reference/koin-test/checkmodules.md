@@ -226,30 +226,3 @@ fun `test DI modules`(){
     }
 }
 ```
-
-#### Providing Scope Links
-
-You can link scopes by using `withScopeLink` function in`checkModules` block to inject instances from another scope's definitions:
-
-```kotlin
-val myModule = module {
-    scope(named("scope1")) {
-        scoped { ComponentA() }
-    }
-    scope(named("scope2")) {
-        scoped { ComponentB(get()) }
-    }
-}
-```
-
-```kotlin
-@Test
-fun `test DI modules`(){
-    koinApplication {
-        modules(myModule)
-        checkModules(){
-            withScopeLink(named("scope2"), named("scope1"))
-        }
-    }
-}
-```
