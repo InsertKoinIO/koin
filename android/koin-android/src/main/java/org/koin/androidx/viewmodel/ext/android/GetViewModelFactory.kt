@@ -33,6 +33,13 @@ inline fun <reified T : ViewModel> getViewModelFactory(
 }
 
 @KoinInternalApi
+inline fun <reified T : ViewModel> Scope.getViewModelFactory(
+    parameters: ViewModelParameter<T>
+): ViewModelProvider.Factory {
+    return pickFactory(parameters)
+}
+
+@KoinInternalApi
 fun <T : ViewModel> getViewModelFactory(
     owner: ViewModelOwnerDefinition,
     clazz: KClass<T>,
