@@ -20,6 +20,6 @@ internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParamete
 fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>,
 ): ViewModelProvider.Factory {
-    return if (viewModelParameters.registryOwner != null) StateViewModelFactory(this, viewModelParameters)
+    return if (viewModelParameters.registryOwner != null && viewModelParameters.state != null) StateViewModelFactory(this, viewModelParameters)
             else DefaultViewModelFactory(this,viewModelParameters)
 }

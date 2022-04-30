@@ -23,6 +23,7 @@ and use the `get()` function to inject dependencies.
 - The `viewModel` keyword can also let you use the injection parameters.
 :::
 
+
 ## Injecting your ViewModel
 
 To inject a ViewModel in an `Activity`, `Fragment` or `Service` use:
@@ -132,7 +133,7 @@ Add a new property typed `SavedStateHandle` to your constructor to handle your V
 class MyStateVM(val handle: SavedStateHandle, val myService : MyService) : ViewModel()
 ```
 
-In Koin module, just resolve it with `get()` or by parameters:
+In Koin module, just resolve it with `get()` or with parameters:
 
 ```kotlin
 viewModel { MyStateVM(get(), get()) }
@@ -140,13 +141,17 @@ viewModel { MyStateVM(get(), get()) }
 viewModel { params -> MyStateVM(params.get(), get()) }
 ```
 
-Just call your ViewModel:
+To inject a *state* ViewModel in a `Activity`,`Fragment` use:
 
-```kotlin
-val myStateVM: MyStateVM by viewModel()
-```
+* `by stateViewModel()` - lazy delegate property to inject state ViewModel instance into a property
+* `getStateViewModel()` - directly get the state ViewModel instance
 
-## Bundle Injection
+To inject a *shared* *state* ViewModel in a `Fragment` use:
+
+* `by sharedStateViewModel()` - lazy delegate property to inject state ViewModel instance into a property
+* `getSharedStateViewModel()` - directly get the state ViewModel instance
+
+### Bundle Injection
 
 Passing `SavedStateHandle` to your ViewModel can also help you pass Bundle arguments. Just declare your ViewModel:
 
