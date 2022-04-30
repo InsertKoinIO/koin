@@ -25,6 +25,8 @@ import org.koin.mp.KoinPlatformTimeTools
 
 /**
  * Measure time in milliseconds for given code
+ * @param code - code to execute
+ * @return Time in milliseconds
  */
 fun measureDuration(code: () -> Unit): TimeInMillis {
     return measureTimedValue(code).second
@@ -32,6 +34,8 @@ fun measureDuration(code: () -> Unit): TimeInMillis {
 
 /**
  * Measure time in milliseconds and get result
+ * @param code - code to execute
+ * @return Pair Value & Time in milliseconds
  */
 fun <T> measureDurationForResult(code: () -> T): Pair<T, TimeInMillis> {
     val (value, duration) = measureTimedValue(code)
