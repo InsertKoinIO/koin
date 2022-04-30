@@ -111,19 +111,23 @@ private fun Koin.declareParameterCreators(parametersDefinition: CheckParameters?
 
 @OptIn(KoinInternalApi::class)
 private fun Koin.checkAllDefinitions(allParameters: ParametersBinding) {
+    val scopes: List<Scope> = instantiateAllScopes(allParameters)
+    allParameters.scopeLinks.forEach { scopeLink ->
+        val linkTargets = scopes.filter { it.scopeQualifier == scopeLink.value }
+        scopes.filter { it.scopeQualifier == scopeLink.key }
+                .forEach { scope -> linkTargets.forEach { linkTarget -> scope.linkTo(linkTarget) } }
+    }
     instanceRegistry.instances.values.toSet().forEach { factory ->
-        check(factory,allParameters)
+        checkDefinition(allParameters, factory.beanDefinition, scopes.first { it.scopeQualifier == factory.beanDefinition.scopeQualifier })
     }
 }
 
-private fun Koin.check(
-    factory: InstanceFactory<*>,
-    allParameters: ParametersBinding
-) {
-    val qualifier = factory.beanDefinition.scopeQualifier
-    val sourceScopeValue = mockSourceValue(qualifier)
-    val scope = getOrCreateScope(qualifier.value, qualifier, sourceScopeValue)
-    checkDefinition(allParameters,factory.beanDefinition,scope)
+@OptIn(KoinInternalApi::class)
+private fun Koin.instantiateAllScopes(allParameters: ParametersBinding): List<Scope> {
+    return scopeRegistry.scopeDefinitions.map { qualifier ->
+        val sourceScopeValue = mockSourceValue(qualifier)
+        getOrCreateScope(qualifier.value, qualifier, sourceScopeValue)
+    }
 }
 
 private fun mockSourceValue(qualifier: Qualifier): Any? {
