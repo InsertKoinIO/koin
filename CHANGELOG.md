@@ -11,6 +11,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[core]` - fix Time API (do not depend anymore on unstable API)
 * `[FIXED]` `[android]` - fix ViewModel Compat to provide Store owner as Lazy value
 * `[FIXED]` `[android]` - fix ViewModel API to use default Facctory or state Factory only if needed (state argument passed)
+* `[DEPRECATED]` `[android]` - Realign current & deprecate `ViewModelOwnerDefinition` & `ViewModelOwner` for replacing with `ViewModelStoreOwner` (introduce `ViewModelStoreOwnerProducer` to have `() -> ViewModelStoreOwner`). If you have any conflict with `ViewModelOwner`, just use directly `ViewModelStoreOwner`
 * `[UPDATED]` `[core]` - Kotlin 1.6.21
 * `[UPDATED]` `[android]` - android lib - androidx.appcompat:appcompat:1.4.1
 * `[UPDATED]` `[android]` - android lib - androidx.activity:activity-ktx:1.4.0

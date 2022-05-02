@@ -19,9 +19,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
-import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.annotation.KoinInternalApi
@@ -42,9 +40,7 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
 ): Lazy<T> {
     val scope = getKoinScope()
     return viewModels {
-        //TODO Not needed - just internal
-        val owner = { from(this as ViewModelStoreOwner, this) }
-        getViewModelFactory<T>(owner, qualifier, parameters, state = state, scope = scope)
+        getViewModelFactory<T>(this, qualifier, parameters, state = state, scope = scope)
     }
 }
 
@@ -57,9 +53,7 @@ fun <T : ViewModel> ComponentActivity.stateViewModel(
 ): Lazy<T> {
     val scope = getKoinScope()
     return ViewModelLazy(clazz, { viewModelStore }){
-        //TODO Not needed - just internal
-        val owner = { from(this as ViewModelStoreOwner, this) }
-        getViewModelFactory(owner, clazz, qualifier, parameters, state = state, scope = scope)
+        getViewModelFactory(this, clazz, qualifier, parameters, state = state, scope = scope)
     }
 }
 
