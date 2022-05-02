@@ -161,8 +161,7 @@ class Koin {
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true
     ) {
-        val firstType = listOf(T::class)
-        scopeRegistry.rootScope.declare(instance, qualifier, firstType + secondaryTypes, allowOverride)
+        instanceRegistry.declareRootInstance(instance, qualifier, secondaryTypes, allowOverride)
     }
 
     /**

@@ -323,7 +323,7 @@ data class Scope(
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true
     ) = KoinPlatformTools.synchronized(this) {
-        _koin.instanceRegistry.declareInstance(instance, qualifier, secondaryTypes, allowOverride, scopeQualifier)
+        _koin.instanceRegistry.declareScopedInstance(instance, qualifier, secondaryTypes, allowOverride,  scopeQualifier, id)
     }
 
     /**
