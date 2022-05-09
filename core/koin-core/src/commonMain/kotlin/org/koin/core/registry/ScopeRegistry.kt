@@ -91,7 +91,7 @@ class ScopeRegistry(private val _koin: Koin) {
         }
     }
 
-    fun loadScopes(modules: List<Module>) {
+    fun loadScopes(modules: Set<Module>) {
         modules.forEach {
             loadModule(it)
         }
@@ -102,7 +102,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     companion object {
-        private const val ROOT_SCOPE_ID = "_"
+        private const val ROOT_SCOPE_ID = "_root_"
         @PublishedApi
         internal val rootScopeQualifier = _q(ROOT_SCOPE_ID)
     }

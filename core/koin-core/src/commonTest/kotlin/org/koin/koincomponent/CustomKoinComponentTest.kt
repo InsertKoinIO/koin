@@ -7,6 +7,7 @@ import org.koin.core.component.inject
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertHasNoStandaloneInstance
+import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,6 +15,7 @@ abstract class CustomKoinComponent : KoinComponent {
 
     override fun getKoin(): Koin = customKoin
 
+    @ThreadLocal
     companion object {
         val customKoin = koinApplication {
             modules(module {

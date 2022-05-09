@@ -4,5 +4,4 @@ include 'koin-test'
 include 'koin-test-junit4'
 include 'koin-test-junit5'
 
-enableFeaturePreview('GRADLE_METADATA')
 

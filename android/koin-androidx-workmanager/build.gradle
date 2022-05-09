@@ -31,17 +31,11 @@ dependencies {
     api project(":koin-android")
 
     // Android
-    api "androidx.work:work-runtime-ktx:$androidx_workmanager"
+    api "androidx.work:work-runtime-ktx:2.7.1"
 
     // Test
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
-//    testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
-
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2' //+ androidxTestJUnitVersion
-    androidTestImplementation "androidx.work:work-testing:$androidx_workmanager"
-
 }
 
 apply from: '../../gradle/publish-to-central.gradle'

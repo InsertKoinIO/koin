@@ -29,6 +29,7 @@ import org.koin.core.qualifier.Qualifier
  *
  */
 @KoinReflectAPI
+@Deprecated("API is deprecated in favor of singleOf DSL")
 inline fun <reified T : Any> Module.single(
     qualifier: Qualifier? = null,
     createOnStart: Boolean = false,
@@ -43,6 +44,7 @@ inline fun <reified T : Any> Module.single(
  * @param override - allow definition override
  */
 @KoinReflectAPI
+@Deprecated("API is deprecated in favor of factoryOf DSL")
 inline fun <reified T : Any> Module.factory(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> {

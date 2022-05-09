@@ -12,7 +12,6 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: '../../gradle/versions-examples.gradle'
 
 android {
     compileSdkVersion android_target_version
@@ -64,28 +63,18 @@ dependencies {
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
     implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
-//    implementation "junit:junit:$junit_version"
-
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    implementation "org.jetbrains.anko:anko-commons:0.10.4"
+
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    testImplementation "junit:junit:$junit_version"
-
-    testImplementation "androidx.test:core:1.2.0"
-    testImplementation "androidx.test.ext:junit:1.1.1"
-    testImplementation "org.robolectric:robolectric:4.2.1"
-    testImplementation "org.mockito:mockito-inline:$mockito_version"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
-    implementation "androidx.appcompat:appcompat:$androidx_lib_version"
-//    implementation "androidx.lifecycle:lifecycle-extensions:$android_arch_version"
-//    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidx_savedstate"
-//    implementation "androidx.navigation:navigation-fragment-ktx:$androidx_nav"
-    implementation("androidx.work:work-runtime-ktx:$androidx_workmanager")
-
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "androidx.test:core:1.4.0"
+    testImplementation "androidx.test.ext:junit:1.1.3"
+    testImplementation "org.mockito:mockito-inline:4.2.0"
 
 }

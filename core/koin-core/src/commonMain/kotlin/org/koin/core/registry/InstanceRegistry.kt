@@ -19,7 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
-import org.koin.core.definition.createDefinition
+import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
 import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.InstanceFactory
@@ -30,6 +30,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.overrideError
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
 import kotlin.reflect.KClass
 
@@ -42,7 +43,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     private val eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
 
-    internal fun loadModules(modules: List<Module>, allowOverride: Boolean) {
+    internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
             loadModule(module, allowOverride)
             eagerInstances.addAll(module.eagerInstances)
@@ -111,15 +112,40 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     @PublishedApi
-    internal inline fun <reified T> declareInstance(
+    internal inline fun <reified T> declareScopedInstance(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true,
-        scopeQualifier: Qualifier
+        scopeQualifier: Qualifier,
+        scopeID: ScopeID
     ) {
-        val def = createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
-        val factory = ScopedInstanceFactory(def)
+        val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
+        val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
+        val existingFactory = instances[indexKey] as? ScopedInstanceFactory
+        if (existingFactory != null){
+            existingFactory.refreshInstance(scopeID,instance as Any)
+        } else {
+            val factory = ScopedInstanceFactory(def)
+            saveMapping(allowOverride, indexKey, factory)
+            def.secondaryTypes.forEach { clazz ->
+                val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
+                saveMapping(allowOverride, index, factory)
+            }
+        }
+
+    }
+
+    @PublishedApi
+    internal inline fun <reified T> declareRootInstance(
+        instance: T,
+        qualifier: Qualifier? = null,
+        secondaryTypes: List<KClass<*>> = emptyList(),
+        allowOverride: Boolean = true
+    ) {
+        val rootQualifier = _koin.scopeRegistry.rootScope.scopeQualifier
+        val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, rootQualifier)
+        val factory = SingleInstanceFactory(def)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         saveMapping(allowOverride, indexKey, factory)
         def.secondaryTypes.forEach { clazz ->
@@ -154,7 +180,7 @@ class InstanceRegistry(val _koin: Koin) {
             .map { it.get(instanceContext) as T }
     }
 
-    internal fun unloadModules(modules: List<Module>) {
+    internal fun unloadModules(modules: Set<Module>) {
         modules.forEach { unloadModule(it) }
     }
 

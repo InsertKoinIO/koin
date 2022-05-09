@@ -39,6 +39,7 @@ inline fun <reified T : Fragment> Module.fragment(
 ): Pair<Module, InstanceFactory<T>> = factory(qualifier, definition)
 
 @KoinReflectAPI
+@Deprecated("API is deprecated in favor of fragmentOf DSL")
 inline fun <reified T : Fragment> Module.fragment(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<T>> = factory(qualifier) { newInstance(it) }

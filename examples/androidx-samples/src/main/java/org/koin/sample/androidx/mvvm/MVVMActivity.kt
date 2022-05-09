@@ -32,7 +32,7 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
-    val simpleViewModel: SimpleViewModel by viewModel()
+    val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
 ////    val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
@@ -40,7 +40,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val scopeVm: ExtSimpleViewModel by viewModel()
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
-    val savedVm: SavedStateViewModel by viewModel { parametersOf("vm1") }
+    val savedVm: SavedStateViewModel by stateViewModel { parametersOf("vm1") }
 //    val scopedSavedVm: SavedStateViewModel by viewModel(named("vm2")){ parametersOf("vm2") }
 
     val state = Bundle().apply { putString("id","vm1") }
@@ -59,10 +59,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 //
 //        assert(getViewModel<SimpleViewModel> { parametersOf(ID) } == simpleViewModel)
 
-
         title = "Android MVVM"
-
-
 
         supportFragmentManager.beginTransaction()
             .replace<MVVMFragment>(R.id.mvvm_frame)

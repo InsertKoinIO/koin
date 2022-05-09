@@ -18,11 +18,8 @@ package org.koin.androidx.viewmodel.ext.android
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
+import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -37,21 +34,20 @@ import org.koin.core.qualifier.Qualifier
 
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> Fragment.viewModel(
-        qualifier: Qualifier? = null,
-        //TODO Clean up
-        noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline owner: ViewModelStoreOwnerProducer = { this },
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-        val scope = getKoinScope()
-        return viewModels(ownerProducer = { owner().storeOwner}) {
-                getViewModelFactory<T>(owner, qualifier, parameters, scope = scope)
-        }
+    val scope = getKoinScope()
+    return viewModels(ownerProducer = owner) {
+        getViewModelFactory<T>(owner(), qualifier, parameters, scope = scope)
+    }
 }
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(
-        qualifier: Qualifier? = null,
-        noinline owner : ViewModelOwnerDefinition = { ViewModelOwner.from(this as ViewModelStoreOwner, this as? SavedStateRegistryOwner) },
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    noinline owner: ViewModelStoreOwnerProducer = { this },
+    noinline parameters: ParametersDefinition? = null,
 ): T {
-        return viewModel<T>(qualifier, owner, parameters).value
+    return viewModel<T>(qualifier, owner, parameters).value
 }

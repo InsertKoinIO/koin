@@ -6,6 +6,9 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
+import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkKoinModules
@@ -27,6 +30,12 @@ class CheckModulesTest {
             single { p -> Simple.ComponentB(p.get()) }
             single(named("param")) { p -> Simple.MyString(p.get()) }
             single { Simple.MyString(getProperty("aValue")) }
+            scope(named("scope1")) {
+                scoped { Simple.ComponentD() }
+            }
+            scope(named("scope2")) {
+                scoped { Simple.ComponentE(get()) }
+            }
         }
 
         koinApplication {
@@ -36,6 +45,7 @@ class CheckModulesTest {
                 //            withInstance<String>("a_parameter")
                 withParameter<String> { "a_parameter" }
                 withProperty("aValue", "string_value")
+                withScopeLink(named("scope2"), named("scope1"))
             }
         }
     }
@@ -46,12 +56,19 @@ class CheckModulesTest {
             single { p -> Simple.ComponentB(p.get()) }
             single(named("param")) { p -> Simple.MyString(p.get()) }
             single { Simple.MyString(getProperty("aValue")) }
+            scope(named("scope1")) {
+                scoped { Simple.ComponentD() }
+            }
+            scope(named("scope2")) {
+                scoped { Simple.ComponentE(get()) }
+            }
         }
 
         checkKoinModules(listOf(modules)) {
             withInstance<Simple.ComponentA>()
             withParameter<String> { "a_parameter" }
             withProperty("aValue", "string_value")
+            withScopeLink(named("scope2"), named("scope1"))
         }
     }
 
@@ -276,7 +293,7 @@ class CheckModulesTest {
                     }
                 )
             }.checkModules()
-            fail("should not pass with borken definitions")
+            fail("should not pass with broken definitions")
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -502,6 +519,75 @@ class CheckModulesTest {
                 withProperty("aValue", "value")
                 withInstance<Simple.ComponentA>()
             }
+        }
+    }
+
+
+    @Test
+    fun `check a module with linked scopes`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            properties(hashMapOf("aValue" to "value"))
+            modules(
+                module {
+                    scope<Simple.ComponentA> {
+                        scoped { Simple.ComponentD() }
+                    }
+                    scope<Simple.ComponentB> {
+                        scoped { Simple.ComponentE(get()) }
+                    }
+                }
+            )
+        }.checkModules {
+            withScopeLink<Simple.ComponentB, Simple.ComponentA>()
+        }
+    }
+
+    @Test
+    fun `check a module with secondary type`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { "the_string" }.bind<CharSequence>()
+                    single { 42 } bind Number::class
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with secondary types array`() {
+        koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { "the_string" } binds arrayOf(
+                        String::class,
+                        CharSequence::class,
+                    )
+                }
+            )
+        }.checkModules()
+    }
+
+    @Test
+    fun `check a module with wrong secondary types array - error`() {
+        try {
+            koinApplication {
+                printLogger(Level.DEBUG)
+                modules(
+                    module {
+                        single { "the_string" } binds arrayOf(
+                            CharSequence::class,
+                            Int::class,
+                        )
+                    }
+                )
+            }.checkModules()
+            fail("should not pass with broken definitions")
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

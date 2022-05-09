@@ -1,12 +1,14 @@
-![logo](./docs/img/koin_2.0.jpg)
+![logo](./docs/img/koin_main_logo.png)
 
 # What is KOIN? - [https://insert-koin.io](https://insert-koin.io)
  
 A pragmatic lightweight dependency injection framework for Kotlin developers. `Koin is a DSL, a light container and a pragmatic API`
 
-## Latest Version - [3.1.6]
+## Latest Version
 
-You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.1)
+- current stable version: `koin_version = 3.2.0`
+
+You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.2)
 
 ## Latest News
 - On our Blog: [The Kotzilla Blog](https://blog.kotzilla.io/)

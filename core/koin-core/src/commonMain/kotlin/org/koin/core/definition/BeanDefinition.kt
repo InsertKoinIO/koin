@@ -31,12 +31,15 @@ import kotlin.reflect.KClass
 data class BeanDefinition<T>(
     val scopeQualifier: Qualifier,
     val primaryType: KClass<*>,
-    val qualifier: Qualifier? = null,
+    var qualifier: Qualifier? = null,
     val definition: Definition<T>,
     val kind: Kind,
     var secondaryTypes: List<KClass<*>> = listOf(),
 ) {
     var callbacks: Callbacks<T> = Callbacks()
+
+    @PublishedApi
+    internal var _createdAtStart = false
 
     override fun toString(): String {
         val defKind = kind.toString()
@@ -96,7 +99,7 @@ enum class Kind {
 typealias IndexKey = String
 typealias Definition<T> = Scope.(ParametersHolder) -> T
 
-inline fun <reified T> createDefinition(
+inline fun <reified T> _createDefinition(
     kind: Kind = Kind.Singleton,
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,

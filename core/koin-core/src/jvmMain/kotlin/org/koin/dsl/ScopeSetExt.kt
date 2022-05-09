@@ -28,6 +28,7 @@ import org.koin.core.qualifier.Qualifier
  * @param override - allow definition override
  */
 @KoinReflectAPI
+@Deprecated("API is deprecated in favor of scopedOf DSL")
 inline fun <reified R : Any> ScopeDSL.scoped(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<R>> {
@@ -41,6 +42,7 @@ inline fun <reified R : Any> ScopeDSL.scoped(
  * @param override - allow definition override
  */
 @KoinReflectAPI
+@Deprecated("API is deprecated in favor of factoryOf DSL")
 inline fun <reified R : Any> ScopeDSL.factory(
     qualifier: Qualifier? = null
 ): Pair<Module, InstanceFactory<R>> {
