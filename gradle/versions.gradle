@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_version = '3.2.0-beta-2'
+    koin_version = '3.2.0'
 
     // pass it to true to make release
     is_snaptshot = true
