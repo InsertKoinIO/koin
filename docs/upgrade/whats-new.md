@@ -22,4 +22,4 @@ Better Module Management:
 
 Kotlin Native Memory Model
 
-Ktor, Android lib updates 
+Android ViewModel Realign API
