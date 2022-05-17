@@ -2,17 +2,17 @@
 title: Kotlin
 ---
 
-> This tutorial lets you write a Kotlin application and use Koin inject and retrieve your components.
+> This tutorial lets you write a Kotlin application and use Koin to inject and retrieve your components.
 
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin/tree/master/quickstart/getting-started-koin-core)
+[The source code is available on Github](https://github.com/InsertKoinIO/koin/tree/master/quickstart/getting-started-koin-core)
 :::
 
 ## Setup
 
-First, check that the `koin-core` dependency is added like below:
+Starting with a blank project, add the `koin-core` dependency to the project's `build.gradle` file as shown:
 
 ```groovy
 // Add Maven Central to your repositories if needed
@@ -27,15 +27,16 @@ dependencies {
 }
 ```
 
-## The application
+## The sample application
 
-In our small app we need to have 2 components:
+The sample application has four Kotlin files:
 
-* HelloMessageData - hold data
-* HelloService - use and display data from HelloMessageData
-* HelloApplication - retrieve and use HelloService
+* HelloMessageData - Data container
+* HelloService - Extracts and manipulates data from HelloMessageData for display
+* HelloApplication - Utilize the injected HelloService instance and print data to the console
+* HelloModule - Configures injectables
 
-### Data holder
+### Data container
 
 Let's create a `HelloMessageData` data class to hold our data:
 
@@ -48,7 +49,7 @@ data class HelloMessageData(val message : String = "Hello Koin!")
 
 ### Service
 
-Let's create a service to display our data from `HelloMessageData`. Let's write `HelloServiceImpl` class and its interface `HelloService`:
+Let's create a service interface and implementation, `HelloService` and `HelloServiceImpl`, to display our data from `HelloMessageData`.:
 
 ```kotlin
 /**
@@ -72,12 +73,12 @@ class HelloServiceImpl(private val helloMessageData: HelloMessageData) : HelloSe
 
 ## The application class
 
-To run our `HelloService` component, we need to create a runtime component. Let's write a `HelloApplication` class and tag it with `KoinComponent` interface. This will later allows us to use the `by inject()` functions to retrieve our component:
+To run our application, we need to create a runtime component. Let's write a `HelloApplication` class and tag it with the `KoinComponent` interface. This will enable the `by inject()` functions to retrieve our `HelloService` component:
 
 ```kotlin
 /**
  * HelloApplication - Application Class
- * use HelloService
+ * that uses HelloService
  */
 class HelloApplication : KoinComponent {
 
@@ -102,14 +103,14 @@ val helloModule = module {
 }
 ```
 
-We declare each component as `single`, as singleton instances.
+We declare each component as `single` which creates a singleton instance of each.
 
-* `single { HelloMessageData() }` : declare a singleton of `HelloMessageData` instance
+* `single { HelloMessageData() }` : declare a singleton instance of `HelloMessageData`
 * `single { HelloServiceImpl(get()) as HelloService }` : Build `HelloServiceImpl` with injected instance of `HelloMessageData`,  declared a singleton of `HelloService`.
 
 ## That's it!
 
-Just start our app from a `main` function:
+Now pull it all together in our `main` function:
 
 ```kotlin
 fun main(vararg args: String) {
