@@ -85,3 +85,82 @@ val myModule = module {
 ```
 
 In this module, you can declare components as described below.
+
+### withOptions - DSL Options (since 3.2)
+
+Like for new [Constructor DSL](./dsl-update.md) definitions, you can specify definition options on "regular" definitions with
+the `withOptions` operator:
+
+```kotlin
+module {
+    single { ClassA(get()) } withOptions { 
+        named("qualifier")
+        createdAtStart()
+    }
+}
+```
+
+Within this option lambda, you can specify the following options:
+
+* `named("a_qualifier")` - give a String qualifier to the definition
+* `named<MyType>()` - give a Type qualifier to the definition
+* `bind<MyInterface>()` - add type to bind for given bean definition
+* `binds(arrayOf(...))` - add types array for given bean definition
+* `createdAtStart()` - create single instance at Koin start
+
+### Module Includes (since 3.2)
+
+A new function `includes()` is available in the `Module` class, which lets you compose a module by including other modules in an organized and structured way.
+
+The two prominent use cases of the new feature are:
+- Split large modules into smaller and more focused ones.
+- In modularized projects, it allows you more fine control over a module visibility (see examples below).
+
+How does it work? Let's take some modules, and we include modules in `parentModule`:
+
+```kotlin
+// `:feature` module
+val childModule1 = module {
+    /* Other definitions here. */
+}
+val childModule2 = module {
+    /* Other definitions here. */
+}
+val parentModule = module {
+    includes(childModule1, childModule2)
+}
+
+// `:app` module
+startKoin { modules(parentModule) }
+```
+
+Notice we do not need to set up all modules explicitly: by including `parentModule`, all the modules declared in the `includes` will be automatically loaded (`childModule1` and `childModule2`).  In other words, Koin is effectively loading: `parentModule`, `childModule1` and `childModule2`.
+
+An important detail to observe is that you can use `includes` to add `internal` and `private` modules too - that gives you flexibility over what to expose in a modularized project.
+
+:::info
+Module loading is now optimized to flatten all your module graphs and avoid duplicated definitions of modules.
+:::
+
+Finally, you can include multiple nested or duplicates modules, and Koin will flatten all the included modules removing duplicates:
+
+```kotlin
+// :feature module
+val dataModule = module {
+    /* Other definitions here. */
+}
+val domainModule = module {
+    /* Other definitions here. */
+}
+val featureModule1 = module {
+    includes(domainModule, dataModule)
+}
+val featureModule2 = module {
+    includes(domainModule, dataModule)
+}
+
+// `:app` module
+startKoin { modules(featureModule1, featureModule2) }
+```
+
+Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.

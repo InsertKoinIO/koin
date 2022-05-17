@@ -46,19 +46,19 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
-        owner: ViewModelStoreOwner,
+        owner: Lazy<ViewModelStoreOwner>,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): Lazy<T>{
         val scope = GlobalContext.get().scopeRegistry.rootScope
         val viewModelClass = clazz.kotlin
-        return ViewModelLazy(viewModelClass, { owner.viewModelStore }){
+        return ViewModelLazy(viewModelClass, { owner.value.viewModelStore }){
             val viewModelParameters = ViewModelParameter(
                 clazz = viewModelClass,
                 qualifier = qualifier,
                 parameters = parameters,
-                viewModelStoreOwner = owner,
+                viewModelStoreOwner = owner.value,
             )
             scope.pickFactory(viewModelParameters)
         }
@@ -76,7 +76,7 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getViewModel(
-        owner: ViewModelStoreOwner,
+        owner: Lazy<ViewModelStoreOwner>,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null

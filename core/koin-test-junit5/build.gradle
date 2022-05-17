@@ -4,10 +4,10 @@ archivesBaseName = 'koin-test-junit5'
 
 dependencies {
     // Koin
-    compile project(":koin-core")
-    compile project(":koin-test")
-    compile "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
-    testCompile "org.mockito:mockito-inline:$mockito_version"
+    implementation project(":koin-core")
+    implementation project(":koin-test")
+    implementation "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
 apply from: '../../gradle/publish-to-central.gradle'

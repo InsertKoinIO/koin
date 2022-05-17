@@ -31,7 +31,7 @@ dependencies {
     api project(":koin-android")
 
     // Android
-    api "androidx.navigation:navigation-fragment-ktx:$androidx_nav"
+    api "androidx.navigation:navigation-fragment-ktx:2.4.2"
 }
 
 apply from: '../../gradle/publish-to-central.gradle'

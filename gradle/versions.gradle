@@ -1,24 +1,26 @@
 ext {
     // Koin
-    koin_version = '3.1.6'
-    // TODO pass it to true to make release
+    koin_version = '3.2.0'
+
+    // pass it to true to make release
     is_snaptshot = true
 
     // Kotlin
-    kotlin_version = '1.5.31'
-    coroutines_version = "1.5.2-native-mt"
+    kotlin_version = '1.6.21'
+    
+    coroutines_version = "1.6.0"
 
     // Dokka
     dokka_version = '1.4.32'
 
     // Ktor
-    ktor_version = '1.6.5'
+    ktor_version = '1.6.7'
 
     // Test
     junit_version = "4.13.2"
-    junit5_version = "5.6.2"
-    mockito_version = "3.5.9"
-    mockk_version = "1.10.0"
+    junit5_version = "5.8.2"
+    mockito_version = "4.2.0"
+    mockk_version = "1.12.2"
 
     // Doc
     // asciidoctor_version = "1.5.3"

@@ -2,7 +2,8 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.koin.androidx.viewmodel.ViewModelOwnerDefinition
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.pickFactory
 import org.koin.androidx.viewmodel.scope.BundleDefinition
@@ -14,41 +15,39 @@ import kotlin.reflect.KClass
 
 @KoinInternalApi
 inline fun <reified T : ViewModel> getViewModelFactory(
-    owner: ViewModelOwnerDefinition,
+    owner: ViewModelStoreOwner,
     qualifier: Qualifier?,
     noinline parameters: ParametersDefinition?,
     noinline state: BundleDefinition? = null,
     scope: Scope
 ): ViewModelProvider.Factory {
-    val ownerValue = owner()
-    val viewModelParameters = ViewModelParameter(
-        clazz = T::class,
-        qualifier = qualifier,
-        parameters = parameters,
-        state = state,
-        viewModelStoreOwner = ownerValue.storeOwner,
-        registryOwner = ownerValue.stateRegistry
-    )
-    return scope.pickFactory(viewModelParameters)
+    return getViewModelFactory(owner, T::class, qualifier, parameters, state, scope)
+}
+
+@KoinInternalApi
+fun <T : ViewModel> Scope.getViewModelFactory(
+    parameters: ViewModelParameter<T>
+): ViewModelProvider.Factory {
+    return pickFactory(parameters)
 }
 
 @KoinInternalApi
 fun <T : ViewModel> getViewModelFactory(
-    owner: ViewModelOwnerDefinition,
+    owner: ViewModelStoreOwner,
     clazz: KClass<T>,
     qualifier: Qualifier?,
     parameters: ParametersDefinition?,
     state: BundleDefinition? = null,
     scope: Scope
 ): ViewModelProvider.Factory {
-    val ownerValue = owner()
+    val hasState = (state != null)
     val viewModelParameters = ViewModelParameter(
         clazz = clazz,
         qualifier = qualifier,
         parameters = parameters,
         state = state,
-        viewModelStoreOwner = ownerValue.storeOwner,
-        registryOwner = ownerValue.stateRegistry
+        viewModelStoreOwner = owner,
+        registryOwner = if (hasState) owner as? SavedStateRegistryOwner else null
     )
     return scope.pickFactory(viewModelParameters)
 }

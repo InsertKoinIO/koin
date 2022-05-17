@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.factory.DefaultViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
 internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewModelParameter<T>): T {
@@ -21,6 +20,6 @@ internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParamete
 fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>,
 ): ViewModelProvider.Factory {
-    return if (viewModelParameters.registryOwner != null) StateViewModelFactory(this, viewModelParameters)
+    return if (viewModelParameters.registryOwner != null && viewModelParameters.state != null) StateViewModelFactory(this, viewModelParameters)
             else DefaultViewModelFactory(this,viewModelParameters)
 }

@@ -15,12 +15,12 @@
  */
 package org.koin.dsl
 
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Callbacks
 import org.koin.core.definition.OnCloseCallback
 import org.koin.core.definition.indexKey
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 
@@ -34,7 +34,7 @@ import kotlin.reflect.KClass
  * Add a compatible type to match for definition
  * @param clazz
  */
-infix fun Pair<Module,InstanceFactory<*>>.bind(clazz: KClass<*>): Pair<Module,InstanceFactory<*>> {
+infix fun <S : Any> KoinDefinition<out S>.bind(clazz: KClass<S>): KoinDefinition<out S> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
     val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
     first.saveMapping(mapping,second,allowOverride = true)
@@ -43,20 +43,26 @@ infix fun Pair<Module,InstanceFactory<*>>.bind(clazz: KClass<*>): Pair<Module,In
 
 /**
  * Add a compatible type to match for definition
+ *
+ * Type-safety may be checked by "checkModules" from "koin-test" module.
  */
-inline fun <reified T> Pair<Module,InstanceFactory<*>>.bind(): Pair<Module,InstanceFactory<*>> {
-    return bind(T::class)
+inline fun <reified S : Any> KoinDefinition<out S>.bind(): KoinDefinition<out S> {
+    bind(clazz = S::class)
+    return this
 }
 
 /**
  * Add compatible types to match for definition
+ *
+ * Type-safety may be checked by "checkModules" from "koin-test" module.
+ *
  * @param classes
  */
-infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pair<Module,InstanceFactory<*>> {
-    second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + classes
+infix fun KoinDefinition<*>.binds(classes: Array<KClass<*>>): KoinDefinition<*> {
+    second.beanDefinition.secondaryTypes += classes
     classes.forEach { clazz ->
         val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-        first.saveMapping(mapping,second, allowOverride = true)
+        first.saveMapping(mapping,second,allowOverride = true)
     }
     return this
 }
@@ -64,7 +70,7 @@ infix fun Pair<Module, InstanceFactory<*>>.binds(classes: Array<KClass<*>>): Pai
 /**
  * Callback when closing instance
  */
-infix fun <T> Pair<Module, InstanceFactory<T>>.onClose(onClose: OnCloseCallback<T>): Pair<Module, InstanceFactory<T>> {
+infix fun <T> KoinDefinition<T>.onClose(onClose: OnCloseCallback<T>): Pair<Module, InstanceFactory<T>> {
     second.beanDefinition.callbacks = Callbacks(onClose)
     return this
 }

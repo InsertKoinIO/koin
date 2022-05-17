@@ -1,86 +1,78 @@
 ---
-title: Android Reflection DSL
+title: Android Extended DSL (3.2)
 ---
 
-## Compact Definition
+## New Constructor DSL (Since 3.2)
 
-Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection parameters or special scope Id), we can go with more compact writing style thanks to API below.
+Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to to have type your definition within a lambda expression.
 
-All injected parameters are also resolved directly with this compact form of writing.
+Check the new [Constructor DSL](../koin-core/dsl-update.md#constructor-dsl-since-32) section for more details.
 
-You can freely write `viewModel()`, `fragment()` or even `worker<>()`. All parameters will be passed to your constructor.
+For Android, this implies the following new constructore DSL Keyword:
 
-given the following classes:
+* `viewModelOf()` - equivalent of `viewModel { }`
+* `fragmentOf()` - equivalent of `fragment { }`
+* `workerOf()` - equivalent of `worker { }`
+
+:::info
+Be sure to use `::` before your class name, to target your class constructor
+:::
+
+### An Android example
+
+Given an Android application with the following components:
 
 ```kotlin
-class SimpleServiceImpl(override val id: String = SERVICE_IMPL) : SimpleService
+// A simple service
+class SimpleServiceImpl() : SimpleService
 
+// a Presenter, using SimpleService and can receive "id" injected param
 class FactoryPresenter(val id: String, val service: SimpleService)
-class ScopedPresenter(val id: String, val service: SimpleService)
 
-class SimpleViewModel(val id: String, val service: SimpleService) : ViewModel()
-class SavedStateViewModel(val handle: SavedStateHandle, val id: String, val service: SimpleService) : ViewModel()
+// a ViewModel that can receive "id" injected param, use SimpleService and get SavedStateHandle
+class SimpleViewModel(val id: String, val service: SimpleService, val handle: SavedStateHandle) : ViewModel()
 
-class MVVMFragment(val session: Session) : ScopeFragment(contentLayoutId = R.layout.mvvm_fragment)
+// a scoped Session, that can received link to the MyActivity (from scope)
+class Session(val activity: MyActivity)
 
+// a Worker, using SimpleService and getting Context & WorkerParameters
 class SimpleWorker(
-    private val simpleWorkerService: SimpleWorkerService,
+    private val simpleService: SimpleService,
     appContext: Context,
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params)
 ```
 
-Here are the module declaration:
+we can declare them like this:
 
 ```kotlin
-val appModule = module {
-    // Declare a singleton SimpleServiceImpl, binding SimpleService
-    single<SimpleServiceImpl>() bind SimpleService::class
-}
+module {
+    singleOf(::SimpleServiceImpl){ bind<SimpleService>() }
 
-val mvpModule = module {
-    // Simple Presenter with injected parameters
-    factory { (id: String) -> FactoryPresenter(id, get()) }
-    // also declared like this
-    factory<FactoryPresenter>()
+    factoryOf(::FactoryPresenter)
 
-    scope<MVPActivity> {
-        // presenter scoped to MVPActivity
-        scoped { (id: String) -> ScopedPresenter(id, get()) }
-        // also declared like this
-        scoped<ScopedPresenter>()
+    viewModelOf(::SimpleViewModel)
+
+    scope<MyActivity>(){
+        scopedOf(::Session) 
     }
-}
 
-val mvvmModule = module {
-
-    // ViewModel with parameter injection
-    viewModel { (id: String) -> SimpleViewModel(id, get()) }
-    // also declared like this
-    viewModel<SimpleViewModel>()
-
-    // Get SaveStateHandle from parameters
-    viewModel { params -> SavedStateViewModel(params.get(), params.get(), get()) }
-    // also declared like this
-    viewModel<SavedStateViewModel>()
-
-    scope<MVVMActivity> {
-        scoped { Session() }
-        // fragment scoped in MVVMActivity, will have access to Session
-        fragment<MVVMFragment>()
-    }
-}
-
-val workerScopedModule = module {
-    single<SimpleWorkerService>()
-    worker { params -> SimpleWorker(get(), get(), params.get()) }
+    workerOf(::SimpleWorker)
 }
 ```
 
-:::note
- Using reflection is not costless, even if here it's really minimal. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on performances constraints platform (Android for example)
+## Android Reflection DSL (Deprecated since 3.2)
+
+:::caution
+Koin Reflection DSL is now deprecated. Please Use Koin Constructor DSL above
 :::
 
-:::info
- You must declare class constructors in your proguard file
+Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters or special scope Id), we can go with more compact writing style thanks to API below.
+
+All injected parameters are also resolved directly with this compact form of writing.
+
+You can freely write `viewModel()`, `fragment()` or even `worker<>()`. All parameters will be passed to your constructor.
+
+:::note
+Using reflection is not costless, even if here it's really minimal. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on performances constraints platform (Android for example)
 :::
