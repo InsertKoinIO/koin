@@ -1,15 +1,12 @@
 ---
-title: Kotlin Multiplatform
+title: Multiplatform Injection
 ---
 
-## Multiplatform Demo Project
-
+## Source Project
 
 :::info
  You can find the Kotlin Multiplatform project here: https://github.com/InsertKoinIO/hello-kmp
 :::
-
-
 
 ## Gradle Dependencies
 
@@ -36,7 +33,7 @@ object Deps {
 }
 ```
 
-## Shared Kotlin Project
+## Shared Koin Module
 
 Platform specific components can be declared here, and be used later in Android or iOS (declared directly with actual classes or even actual module)
 
@@ -82,7 +79,7 @@ The code foor the Android app can be found here: https://github.com/InsertKoinIO
 
 The code for the iOS App can be found here: https://github.com/InsertKoinIO/hello-kmp/tree/main/iosApp
 
-### Starter function / Call Koin
+### Calling Koin
 
 Let’s prepare a wrapper to our Koin function (in our shared code):
 
@@ -102,20 +99,20 @@ We can init it in our Main app entry:
 @main
 struct iOSApp: App {
     
-		// KMM - Koin Call
+        // KMM - Koin Call
     init() {
         HelperKt.doInitKoin()
     }
     
-	var body: some Scene {
-		WindowGroup {
-			ContentView()
-		}
-	}
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
 }
 ```
 
-### Call Injected Classes
+### Injected Classes
 
 Let’s call a Kotlin class instance from swift.
 
@@ -133,12 +130,12 @@ In our swift app:
 
 ```kotlin
 struct ContentView: View {
-		// Create helper instance
+        // Create helper instance
     let greet = GreetingHelper().greet()
 
-	var body: some View {
-		Text(greet)
-	}
+    var body: some View {
+        Text(greet)
+    }
 }
 ```
 
