@@ -39,7 +39,7 @@ class Module(
     @PublishedApi
     internal val _createdAtStart: Boolean = false
 ) {
-    val id = KoinPlatformTools.generateId()
+    val generateId = KoinPlatformTools.generateId()
 
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
@@ -179,13 +179,13 @@ class Module(
 
         other as Module
 
-        if (id != other.id) return false
+        if (generateId != other.generateId) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return id.hashCode()
+        return generateId.hashCode()
     }
 }
 
