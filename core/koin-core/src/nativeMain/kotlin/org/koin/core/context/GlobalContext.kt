@@ -56,6 +56,7 @@ internal class StrictGlobalContext: KoinContext {
 
     override fun startKoin(koinApplication: KoinApplication): KoinApplication {
         register(koinApplication)
+        koinApplication.createEagerInstances()
         return koinApplication
     }
 
@@ -63,6 +64,7 @@ internal class StrictGlobalContext: KoinContext {
         val koinApplication = KoinApplication.init()
         register(koinApplication)
         appDeclaration(koinApplication)
+        koinApplication.createEagerInstances()
         return koinApplication
     }
 
