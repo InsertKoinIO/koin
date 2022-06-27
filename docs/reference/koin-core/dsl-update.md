@@ -5,9 +5,9 @@ title: Koin Extended DSL (3.2)
 
 ## Constructor DSL (Since 3.2)
 
-Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to to have type your definition within a lambda expression.
+Koin now offers a new kind of DSL keyword that allow you to target a class constructor directly, and avoid having to type your definition within a lambda expression.
 
-For a given class `ClassA` with following dependencies:
+For a given class `ClassA` with the following dependencies:
 
 ```kotlin
 class ClassA(val b : ClassB, val c : ClassC)
@@ -15,7 +15,7 @@ class ClassB()
 class ClassC()
 ```
 
-you can now declare those components, directly targeting the `class constructor`:
+You can now declare those components directly targeting the `class constructor`:
 
 ```kotlin
 module {
@@ -25,7 +25,7 @@ module {
 }
 ```
 
-Not need to specify dependencies in constructor anymore with `get()` function! 🎉
+No need to specify dependencies in constructor anymore with `get()` function! 🎉
 
 :::info
 Be sure to use `::` before your class name, to target your class constructor
@@ -110,7 +110,7 @@ val factory = koin.get<MyFactory> { parametersOf(id)}
 ## Reflection Based DSL (Deprecated since 3.2)
 
 :::caution
-Koin Reflection DSL is now deprecated. Please Use Koin Constructor DSL above
+Koin Reflection DSL is now deprecated. Please use Koin Constructor DSL above
 :::
 
 Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters or special scope Id), we can go with more compact writing style thanks to API below.
