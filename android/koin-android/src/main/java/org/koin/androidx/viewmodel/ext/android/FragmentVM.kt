@@ -16,9 +16,9 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.KoinViewModelLazy
 import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
@@ -35,19 +35,21 @@ import org.koin.core.qualifier.Qualifier
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline owner: ViewModelStoreOwnerProducer = { this },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     val scope = getKoinScope()
-    return viewModels(ownerProducer = owner) {
+    return KoinViewModelLazy(T::class, key, { owner().viewModelStore }) {
         getViewModelFactory<T>(owner(), qualifier, parameters, scope = scope)
     }
 }
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline owner: ViewModelStoreOwnerProducer = { this },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return viewModel<T>(qualifier, owner, parameters).value
+    return viewModel<T>(qualifier, key, owner, parameters).value
 }

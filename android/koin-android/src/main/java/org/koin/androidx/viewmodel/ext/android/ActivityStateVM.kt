@@ -16,10 +16,9 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.KoinViewModelLazy
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.annotation.KoinInternalApi
@@ -35,11 +34,12 @@ import kotlin.reflect.KClass
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val scope = getKoinScope()
-    return viewModels {
+    return KoinViewModelLazy(T::class, key, { viewModelStore }){
         getViewModelFactory<T>(this, qualifier, parameters, state = state, scope = scope)
     }
 }
@@ -47,30 +47,33 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> ComponentActivity.stateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     state: BundleDefinition = emptyState(),
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val scope = getKoinScope()
-    return ViewModelLazy(clazz, { viewModelStore }){
+    return KoinViewModelLazy(clazz, key, { viewModelStore }){
         getViewModelFactory(this, clazz, qualifier, parameters, state = state, scope = scope)
     }
 }
 
 inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return stateViewModel<T>(qualifier, state, parameters).value
+    return stateViewModel<T>(qualifier, key, state, parameters).value
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> ComponentActivity.getStateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     state: BundleDefinition = emptyState(),
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return stateViewModel(qualifier, state,clazz, parameters).value
+    return stateViewModel(qualifier, key, state, clazz, parameters).value
 }

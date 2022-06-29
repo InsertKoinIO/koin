@@ -28,16 +28,18 @@ import org.koin.core.qualifier.Qualifier
  */
 inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline owner: ViewModelStoreOwnerProducer = { requireActivity() },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return viewModel(qualifier, owner, parameters)
+    return viewModel(qualifier, key, owner, parameters)
 }
 
 inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline owner: ViewModelStoreOwnerProducer = { requireActivity() },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return sharedViewModel<T>(qualifier, owner, parameters).value
+    return sharedViewModel<T>(qualifier, key, owner, parameters).value
 }

@@ -16,10 +16,9 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.createViewModelLazy
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.KoinViewModelLazy
 import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
@@ -36,12 +35,13 @@ import kotlin.reflect.KClass
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> Fragment.stateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline owner: ViewModelStoreOwnerProducer = { this },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val scope = getKoinScope()
-    return viewModels(ownerProducer = owner) {
+    return KoinViewModelLazy(T::class, key, { owner().viewModelStore }) {
         getViewModelFactory<T>(owner(), qualifier, parameters, state = state, scope = scope)
     }
 }
@@ -49,33 +49,36 @@ inline fun <reified T : ViewModel> Fragment.stateViewModel(
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.stateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     clazz: KClass<T>,
     state: BundleDefinition = emptyState(),
     owner: ViewModelStoreOwnerProducer = { this },
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val scope = getKoinScope()
-    return createViewModelLazy(clazz, { viewModelStore }) {
+    return KoinViewModelLazy(clazz, key, { viewModelStore }) {
         getViewModelFactory(owner(), clazz, qualifier, parameters, state = state, scope = scope)
     }
 }
 
 inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline owner: ViewModelStoreOwnerProducer = { this },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return stateViewModel<T>(qualifier, state, owner, parameters).value
+    return stateViewModel<T>(qualifier, key, state, owner, parameters).value
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     clazz: KClass<T>,
     state: BundleDefinition = emptyState(),
     owner: ViewModelStoreOwnerProducer = { this },
     parameters: ParametersDefinition? = null,
 ): T {
-    return stateViewModel(qualifier, clazz, state, owner, parameters).value
+    return stateViewModel(qualifier, key, clazz, state, owner, parameters).value
 }

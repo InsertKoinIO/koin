@@ -16,8 +16,8 @@
 package org.koin.android.compat
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
+import org.koin.androidx.viewmodel.KoinViewModelLazy
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.pickFactory
 import org.koin.core.annotation.KoinInternalApi
@@ -48,12 +48,14 @@ object ViewModelCompat {
     fun <T : ViewModel> viewModel(
         owner: Lazy<ViewModelStoreOwner>,
         clazz: Class<T>,
+        key: String? = null,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): Lazy<T>{
         val scope = GlobalContext.get().scopeRegistry.rootScope
         val viewModelClass = clazz.kotlin
-        return ViewModelLazy(viewModelClass, { owner.value.viewModelStore }){
+
+        return KoinViewModelLazy(viewModelClass, key, { owner.value.viewModelStore }){
             val viewModelParameters = ViewModelParameter(
                 clazz = viewModelClass,
                 qualifier = qualifier,
@@ -78,7 +80,8 @@ object ViewModelCompat {
     fun <T : ViewModel> getViewModel(
         owner: Lazy<ViewModelStoreOwner>,
         clazz: Class<T>,
+        key: String? = null,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T = viewModel(owner, clazz, qualifier, parameters).value
+    ): T = viewModel(owner, clazz, key, qualifier, parameters).value
 }

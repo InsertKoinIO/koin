@@ -16,10 +16,10 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.KoinViewModelLazy
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -35,19 +35,21 @@ import org.koin.core.qualifier.Qualifier
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> ComponentActivity.viewModel(
         qualifier: Qualifier? = null,
-        owner : ViewModelStoreOwner = this,
+        key: String? = null,
+        owner: ViewModelStoreOwner = this,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
         val scope = getKoinScope()
-        return viewModels {
+        return KoinViewModelLazy(T::class, key, { viewModelStore }) {
                 getViewModelFactory<T>(owner, qualifier, parameters, scope = scope)
         }
 }
 
 inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
         qualifier: Qualifier? = null,
-        owner : ViewModelStoreOwner = this,
+        key: String? = null,
+        owner: ViewModelStoreOwner = this,
         noinline parameters: ParametersDefinition? = null,
 ): T {
-        return viewModel<T>(qualifier, owner, parameters).value
+        return viewModel<T>(qualifier, key, owner, parameters).value
 }
