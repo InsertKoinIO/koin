@@ -24,6 +24,9 @@ But if we want to use an isolated Koin instance, you can just declare it like fo
 val myApp = koinApplication {
     // declare used modules
     modules(coffeeAppModule)
+    
+    // call this to start singletons with `createdAtStart = true`
+    createEagerInstances()
 }
 ```
 
