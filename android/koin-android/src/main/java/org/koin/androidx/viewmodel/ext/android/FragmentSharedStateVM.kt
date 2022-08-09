@@ -56,7 +56,7 @@ fun <T : ViewModel> Fragment.sharedStateViewModel(
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val scope = getKoinScope()
-    return ViewModelLazy(clazz, { viewModelStore }) {
+    return ViewModelLazy(clazz, { owner().viewModelStore }) {
         getViewModelFactory(owner(), clazz, qualifier, parameters, state = state, scope = scope)
     }
 }
