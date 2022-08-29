@@ -206,24 +206,6 @@ data class Scope(
         }
     }
 
-    /**
-     * Refresh instance value of given ScopedInstanceFactory
-     */
-    fun <T : Any> refreshScopeInstance(
-        clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        instance: T
-    ) {
-        if (_closed) {
-            throw ClosedScopeException("Scope '$id' is closed")
-        }
-        val definition = _koin.instanceRegistry.resolveDefinition(clazz, qualifier, scopeQualifier)
-        (definition as? ScopedInstanceFactory)?.apply {
-            _koin.logger.debug("|- '${clazz.getFullName()}' refresh with $instance")
-            refreshInstance(id, instance)
-        }
-    }
-
     @Suppress("UNCHECKED_CAST")
     private fun <T> resolveInstance(
         qualifier: Qualifier?,

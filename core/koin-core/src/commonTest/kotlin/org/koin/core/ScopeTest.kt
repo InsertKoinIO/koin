@@ -2,6 +2,7 @@ package org.koin.core
 
 import org.koin.Simple
 import org.koin.core.error.ClosedScopeException
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -135,6 +136,27 @@ class ScopeTest {
 
         val scope = koin.createScope(scopeId, scopeKey)
         scope.get<Simple.ComponentB>()
+        scope.close()
+    }
+
+    @Test
+    fun scope_param() {
+        val scopeId = "user_scope"
+        val scopeKey = named("KEY")
+        val koin = koinApplication {
+            modules(
+                module {
+                    scope(scopeKey) {
+                        scoped { (id : Int) -> Simple.MySingle(id) }
+                    }
+                }
+            )
+        }.koin
+
+        val scope = koin.createScope(scopeId, scopeKey)
+        val id = 42
+        val single by scope.inject<Simple.MySingle> { parametersOf(id) }
+        assertEquals(id, single.id)
         scope.close()
     }
 }
