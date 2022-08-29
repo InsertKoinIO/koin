@@ -82,10 +82,10 @@ module {
 
 ### Use an Android scope
 
-Koin offers `ActivityScope` and `FragmentScope` classes, to let you use directly a declared scope for Activity or Fragment:
+Koin offers `ScopeActivity` and `ScopeFragment` classes, to let you use directly a declared scope for Activity or Fragment:
 
 ```kotlin
-class MyActivity : ActivityScope() {
+class MyActivity : ScopeActivity() {
     
     // MyPresenter is resolved from MyActivity's scope 
     val presenter : MyPresenter by inject()
@@ -100,7 +100,7 @@ This `scope` property can be used with the following property delegates, regardi
 - `serviceScope()` - Follow Service lifecycle
 
 :::note
-`ActivityScope` class will use a `activityScope()` and `FragmentScope` class will use `fragmentScope()` by default.
+`ScopeActivity` class will use a `activityScope()` and `ScopeFragment` class will use `fragmentScope()` by default.
 :::
 
 ```kotlin
