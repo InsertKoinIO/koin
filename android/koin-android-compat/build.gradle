@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+version = "$koin_android_version"
+
 ext {
     android_sourceSet = true
     pom_name = "koin-android-compat"
