@@ -77,7 +77,7 @@ kotlin {
         nativeMain {
             dependsOn commonMain
             dependencies {
-                implementation "co.touchlab:stately-concurrency:1.2.0"
+                implementation "co.touchlab:stately-concurrency:1.2.2"
             }
         }
 
