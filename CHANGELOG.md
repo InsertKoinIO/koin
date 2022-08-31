@@ -15,7 +15,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[test]` - `koin-test` gradle metadata
 * `[FIXED]` `[android]` - `koin-android` gradle metadata
 * `[MERGE]` - #1382 - CreateEagerInstances() available for `koinApplication` function
-
+* `[FIXED]` `[androidx-navigation]` - add `qualifier` to `koinNavGraphViewModel` function - Port of #1397
 
 ## [3.2.0-beta-2]()
 
