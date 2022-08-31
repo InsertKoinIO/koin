@@ -12,6 +12,8 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` `[android]` - lib update - androidx.appcompat:appcompat:1.4.2
 * `[MERGE]` - #1409 - Android Test Instrumentation Contribution
 * `[MERGE]` - #1394 - Scope Documentation Fix
+* `[FIXED]` `[test]` - koin-test gradle metadata
+* `[FIXED]` `[android]` - koin-android gradle metadata
 
 
 ## [3.2.0-beta-2]()

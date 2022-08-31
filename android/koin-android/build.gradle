@@ -25,9 +25,9 @@ android {
 dependencies {
     api "io.insert-koin:koin-core:$koin_version"
 
-    implementation "androidx.appcompat:appcompat:1.4.2"
+    api "androidx.appcompat:appcompat:1.4.2"
     api "androidx.activity:activity-ktx:1.4.0"
-    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    api "androidx.fragment:fragment-ktx:1.4.1"
     api("androidx.lifecycle:lifecycle-extensions:2.2.0") {
         exclude module: "lifecycle-livedata"
         exclude module: "lifecycle-service"

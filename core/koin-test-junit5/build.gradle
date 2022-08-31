@@ -4,9 +4,9 @@ archivesBaseName = 'koin-test-junit5'
 
 dependencies {
     // Koin
-    implementation project(":koin-core")
-    implementation project(":koin-test")
-    implementation "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    api project(":koin-core")
+    api project(":koin-test")
+    api "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
 }
 
