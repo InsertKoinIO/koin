@@ -8,12 +8,13 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 ## [3.2.1]()
 
 * `[NEW]` - Version split for Koin core & Android, to allow sperate track on core & android topics
-* `[UPDATED]` `[core]` - lib update - co.touchlab:stately-concurrency:1.2.2
-* `[UPDATED]` `[android]` - lib update - androidx.appcompat:appcompat:1.4.2
+* `[UPDATED]` `[core]` - lib update - `co.touchlab:stately-concurrency:1.2.2`
+* `[UPDATED]` `[android]` - lib update - `androidx.appcompat:appcompat:1.4.2`
 * `[MERGE]` - #1409 - Android Test Instrumentation Contribution
 * `[MERGE]` - #1394 - Scope Documentation Fix
-* `[FIXED]` `[test]` - koin-test gradle metadata
-* `[FIXED]` `[android]` - koin-android gradle metadata
+* `[FIXED]` `[test]` - `koin-test` gradle metadata
+* `[FIXED]` `[android]` - `koin-android` gradle metadata
+* `[MERGE]` - #1382 - CreateEagerInstances() available for `koinApplication` function
 
 
 ## [3.2.0-beta-2]()
