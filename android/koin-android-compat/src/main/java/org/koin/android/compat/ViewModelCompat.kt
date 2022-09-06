@@ -53,7 +53,7 @@ object ViewModelCompat {
     ): Lazy<T>{
         val scope = GlobalContext.get().scopeRegistry.rootScope
         val viewModelClass = clazz.kotlin
-        return ViewModelLazy(viewModelClass, { owner.value.viewModelStore }){
+        return ViewModelLazy(viewModelClass, { owner.value.viewModelStore },{
             val viewModelParameters = ViewModelParameter(
                 clazz = viewModelClass,
                 qualifier = qualifier,
@@ -61,7 +61,7 @@ object ViewModelCompat {
                 viewModelStoreOwner = owner.value,
             )
             scope.pickFactory(viewModelParameters)
-        }
+        })
     }
 
 

@@ -53,7 +53,7 @@ object ScopeCompat {
         parameters: ParametersDefinition? = null
     ): ViewModelLazy<T> {
         val viewModelClass = clazz.kotlin
-        return ViewModelLazy(viewModelClass, { owner.viewModelStore }){
+        return ViewModelLazy(viewModelClass, { owner.viewModelStore },{
             val viewModelParameters = ViewModelParameter(
                 clazz = viewModelClass,
                 qualifier = qualifier,
@@ -61,7 +61,7 @@ object ScopeCompat {
                 viewModelStoreOwner = owner,
             )
             scope.pickFactory(viewModelParameters)
-        }
+        })
     }
 
 

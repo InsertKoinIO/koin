@@ -6,7 +6,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
+//        jcenter()
     }
     dependencies {
         // Kotlin
@@ -27,11 +27,11 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
+//        jcenter()
     }
 
     group = 'io.insert-koin'
-    version = "$koin_version"
+    version = "$koin_android_version"
 
     // Dokka
     apply plugin: 'org.jetbrains.dokka'

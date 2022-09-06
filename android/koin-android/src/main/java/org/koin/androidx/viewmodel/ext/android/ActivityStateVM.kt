@@ -52,9 +52,9 @@ fun <T : ViewModel> ComponentActivity.stateViewModel(
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val scope = getKoinScope()
-    return ViewModelLazy(clazz, { viewModelStore }){
+    return ViewModelLazy(clazz, { viewModelStore }, {
         getViewModelFactory(this, clazz, qualifier, parameters, state = state, scope = scope)
-    }
+    })
 }
 
 inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
