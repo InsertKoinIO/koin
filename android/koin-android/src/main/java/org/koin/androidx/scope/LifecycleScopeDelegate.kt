@@ -1,7 +1,5 @@
 package org.koin.androidx.scope
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.core.Koin
 import org.koin.core.component.getScopeId
@@ -10,6 +8,7 @@ import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+@Deprecated("Use ComponentActivity.createActivityScope() or Fragment.createFragmentScope() with AndroidScopeComponent. Check Also ScopeActivity or ScopeFragment")
 class LifecycleScopeDelegate<T>(
     val lifecycleOwner: LifecycleOwner,
     private val koin: Koin,
@@ -25,44 +24,16 @@ class LifecycleScopeDelegate<T>(
     private var _scope: Scope? = null
 
     init {
-        val logger = koin.logger
-
-        logger.debug("setup scope: $_scope for $lifecycleOwner")
-        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onCreate(owner: LifecycleOwner) {
-                createScope()
-            }
-
-            override fun onDestroy(owner: LifecycleOwner) {
-                logger.debug("Closing scope: $_scope for $lifecycleOwner")
-                if (_scope?.closed == false) {
-                    _scope?.close()
-                }
-                _scope = null
-            }
-        })
-    }
-
-    private fun createScope() {
-        if (_scope == null) {
-            koin.logger.debug("Create scope: $_scope for $lifecycleOwner")
-            val scopeId = lifecycleOwner.getScopeId()
-            _scope = koin.getScopeOrNull(scopeId) ?: createScope(koin)
-        }
+        _scope = createScope(koin)
+        lifecycleOwner.registerScopeForLifecycle(_scope!!)
     }
 
     override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): Scope {
         return if (_scope == null) {
-            createScope()
+            _scope = createScope(koin)
             return _scope ?: error("can't get Scope for $lifecycleOwner")
-        }
-        else {
+        } else {
             _scope ?: error("can't get Scope for $lifecycleOwner")
         }
     }
-}
-
-internal fun LifecycleOwner.isActive(): Boolean {
-    val ownerState = lifecycle.currentState
-    return ownerState.isAtLeast(Lifecycle.State.CREATED)
 }

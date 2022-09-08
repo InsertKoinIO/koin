@@ -26,25 +26,19 @@ import org.koin.core.scope.Scope
  *
  * @author Arnaud Giuliani
  */
-abstract class ScopeService(
-        private val initialiseScope: Boolean = true,
-) : Service(), AndroidScopeComponent {
+abstract class ScopeService : Service(), AndroidScopeComponent {
 
-    override val scope: Scope by serviceScope()
+    override var scope: Scope? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        if (initialiseScope) {
-            scope.logger.debug("Open Service Scope: $scope")
-        }
+        createServiceScope()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        scope.logger.debug("Close service scope: $scope")
-        if (!scope.closed)
-            scope.close()
+        destroyServiceScope()
     }
 }

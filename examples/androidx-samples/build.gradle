@@ -60,14 +60,13 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // Koin
-    implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
-    implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
-    testImplementation "io.insert-koin:koin-test:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_android_version"
+    implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+//    implementation "androidx.appcompat:appcompat:1.4.1"
     implementation "androidx.work:work-runtime-ktx:2.7.1"
     implementation "org.jetbrains.anko:anko-commons:0.10.4"
 

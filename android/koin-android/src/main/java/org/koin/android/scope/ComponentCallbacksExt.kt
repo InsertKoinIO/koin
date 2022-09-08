@@ -15,5 +15,8 @@ fun <T : ComponentCallbacks> T.getScopeOrNull(): Scope? {
     return getKoin().getScopeOrNull(getScopeId())
 }
 
+@Deprecated("Internal function not used anymore")
 fun <T : ComponentCallbacks> T.newScope() = lazy { createScope() }
+
+@Deprecated("Internal function not used anymore")
 fun <T : ComponentCallbacks> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }

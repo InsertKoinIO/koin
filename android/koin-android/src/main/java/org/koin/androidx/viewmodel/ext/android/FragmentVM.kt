@@ -38,9 +38,8 @@ inline fun <reified T : ViewModel> Fragment.viewModel(
     noinline owner: ViewModelStoreOwnerProducer = { this },
     noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    val scope = getKoinScope()
     return viewModels(ownerProducer = owner) {
-        getViewModelFactory<T>(owner(), qualifier, parameters, scope = scope)
+        getViewModelFactory<T>(owner(), qualifier, parameters, scope = getKoinScope())
     }
 }
 

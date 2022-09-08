@@ -38,9 +38,8 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModel(
         owner : ViewModelStoreOwner = this,
         noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-        val scope = getKoinScope()
         return viewModels {
-                getViewModelFactory<T>(owner, qualifier, parameters, scope = scope)
+                getViewModelFactory<T>(owner, qualifier, parameters, scope = getKoinScope())
         }
 }
 

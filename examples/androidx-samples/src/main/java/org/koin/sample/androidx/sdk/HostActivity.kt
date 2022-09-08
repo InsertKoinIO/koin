@@ -42,7 +42,7 @@ class HostActivity : ScopeActivity(), CustomKoinComponent {
         val defaultKoin = GlobalContext.get()
 
         assert(scope != koinSDKRootScope)
-        val sdkSession2 = scope.get<Session>()
+        val sdkSession2 = requireScope().get<Session>()
         assert(sdkSession == sdkSession2)
 
         val globalService = defaultKoin.get<SimpleService>()//CustomSDK.koinApp.koin.get<SimpleService>()

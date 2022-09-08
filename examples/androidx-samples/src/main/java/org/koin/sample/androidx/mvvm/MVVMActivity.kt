@@ -49,9 +49,8 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
         // using MVVMActivity with scope in mvvmModule (AppModule)
-        setupKoinFragmentFactory(scope)
-
         super.onCreate(savedInstanceState)
+        setupKoinFragmentFactory(scope)
 
         assert(simpleViewModel != null)
 
@@ -65,7 +64,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
             .replace<MVVMFragment>(R.id.mvvm_frame)
             .commit()
 
-        getKoin().setProperty("session_id", scope.get<Session>().id)
+        getKoin().setProperty("session_id", requireScope().get<Session>().id)
 
         mvvm_button.setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)

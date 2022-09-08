@@ -38,9 +38,8 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    val scope = getKoinScope()
     return viewModels {
-        getViewModelFactory<T>(this, qualifier, parameters, state = state, scope = scope)
+        getViewModelFactory<T>(this, qualifier, parameters, state = state, scope = getKoinScope())
     }
 }
 
@@ -51,9 +50,8 @@ fun <T : ViewModel> ComponentActivity.stateViewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    val scope = getKoinScope()
     return ViewModelLazy(clazz, { viewModelStore }, {
-        getViewModelFactory(this, clazz, qualifier, parameters, state = state, scope = scope)
+        getViewModelFactory(this, clazz, qualifier, parameters, state = state, scope = getKoinScope())
     })
 }
 

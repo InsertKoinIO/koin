@@ -3,6 +3,7 @@ package org.koin.androidx.scope
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.core.Koin
 import org.koin.core.component.getScopeName
@@ -10,6 +11,7 @@ import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+@Deprecated("Use ComponentActivity.createActivityRetainedScope() with ScopeActivity or AndroidScopeComponent")
 class LifecycleViewModelScopeDelegate(
         val lifecycleOwner: LifecycleOwner,
         private val koin : Koin,
@@ -51,5 +53,10 @@ class LifecycleViewModelScopeDelegate(
                 _scope!!
             }
         }
+    }
+
+    private fun LifecycleOwner.isActive(): Boolean {
+        val ownerState = lifecycle.currentState
+        return ownerState.isAtLeast(Lifecycle.State.CREATED)
     }
 }
