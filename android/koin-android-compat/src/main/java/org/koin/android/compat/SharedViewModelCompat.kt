@@ -17,6 +17,8 @@ package org.koin.android.compat
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import org.koin.android.compat.SharedViewModelCompat.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -45,8 +47,7 @@ object SharedViewModelCompat {
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null,
-    ): Lazy<T> =
-        ViewModelCompat.viewModel(lazy(LazyThreadSafetyMode.NONE) { fragment.requireActivity() }, clazz, qualifier, parameters)
+    ): Lazy<T> = fragment.viewModelForClass(clazz.kotlin,qualifier,parameters = parameters)
 
     /**
      * Get a shared viewModel instance from underlying Activity
@@ -58,7 +59,6 @@ object SharedViewModelCompat {
      * @param clazz
      */
     @JvmOverloads
-    @JvmStatic
     fun <T : ViewModel> getSharedViewModel(
         fragment: Fragment,
         clazz: Class<T>,
