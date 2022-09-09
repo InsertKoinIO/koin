@@ -43,32 +43,10 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     }
 }
 
-@OptIn(KoinInternalApi::class)
-fun <T : ViewModel> ComponentActivity.stateViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition = emptyState(),
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null,
-): Lazy<T> {
-    return ViewModelLazy(clazz, { viewModelStore }, {
-        getViewModelFactory(this, clazz, qualifier, parameters, state = state, scope = getKoinScope())
-    })
-}
-
 inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
     return stateViewModel<T>(qualifier, state, parameters).value
-}
-
-@OptIn(KoinInternalApi::class)
-fun <T : ViewModel> ComponentActivity.getStateViewModel(
-    qualifier: Qualifier? = null,
-    state: BundleDefinition = emptyState(),
-    clazz: KClass<T>,
-    parameters: ParametersDefinition? = null,
-): T {
-    return stateViewModel(qualifier, state,clazz, parameters).value
 }

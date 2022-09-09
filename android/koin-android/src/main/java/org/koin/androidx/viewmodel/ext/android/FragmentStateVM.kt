@@ -45,19 +45,6 @@ inline fun <reified T : ViewModel> Fragment.stateViewModel(
     }
 }
 
-@OptIn(KoinInternalApi::class)
-fun <T : ViewModel> Fragment.stateViewModel(
-    qualifier: Qualifier? = null,
-    clazz: KClass<T>,
-    state: BundleDefinition = emptyState(),
-    owner: ViewModelStoreOwnerProducer = { this },
-    parameters: ParametersDefinition? = null,
-): Lazy<T> {
-    return createViewModelLazy(clazz, { viewModelStore }) {
-        getViewModelFactory(owner(), clazz, qualifier, parameters, state = state, scope = getKoinScope())
-    }
-}
-
 inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -65,15 +52,4 @@ inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): T {
     return stateViewModel<T>(qualifier, state, owner, parameters).value
-}
-
-@OptIn(KoinInternalApi::class)
-fun <T : ViewModel> Fragment.getStateViewModel(
-    qualifier: Qualifier? = null,
-    clazz: KClass<T>,
-    state: BundleDefinition = emptyState(),
-    owner: ViewModelStoreOwnerProducer = { this },
-    parameters: ParametersDefinition? = null,
-): T {
-    return stateViewModel(qualifier, clazz, state, owner, parameters).value
 }
