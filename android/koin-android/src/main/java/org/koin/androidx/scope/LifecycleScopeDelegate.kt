@@ -10,10 +10,10 @@ import kotlin.reflect.KProperty
 
 @Deprecated("Use ComponentActivity.createActivityScope() or Fragment.createFragmentScope() with AndroidScopeComponent. Check Also ScopeActivity or ScopeFragment")
 class LifecycleScopeDelegate<T>(
-    val lifecycleOwner: LifecycleOwner,
+    private val lifecycleOwner: LifecycleOwner,
     private val koin: Koin,
-    private val createScope: (Koin) -> Scope = { koin: Koin ->
-        koin.createScope(
+    @Suppress("UNCHECKED_CAST") private val createScope: (Koin) -> Scope = { k: Koin ->
+        k.createScope(
             lifecycleOwner.getScopeId(),
             lifecycleOwner.getScopeName(),
             lifecycleOwner as T

@@ -1,5 +1,5 @@
 ---
-title: Managing Android Scopes
+title: Managing Android Scopes (3.2.1)
 ---
 
 
@@ -60,11 +60,11 @@ val androidModule = module {
 on it and can't totally drop it via garbage collection.
 :::
 
-## Scope for Android Components
+## Scope for Android Components (3.2.1 update)
 
-### Declare a scope
+### Declare an Android Scope
 
-To use a scoped Android component, you have to declare a scope for your component with the `scope` block like follow:
+To scope dependencies on an Android component, you have to declare a scope section with the `scope` block like follow:
 
 ```kotlin
 class MyPresenter()
@@ -80,9 +80,9 @@ module {
 }
 ```
 
-### Use an Android scope
+### Android Scope Classes
 
-Koin offers `ScopeActivity` and `ScopeFragment` classes, to let you use directly a declared scope for Activity or Fragment:
+Koin offers `ScopeActivity`, `RetainedScopeActivity` and `ScopeFragment` classes to let you use directly a declared scope for Activity or Fragment:
 
 ```kotlin
 class MyActivity : ScopeActivity() {
@@ -92,38 +92,72 @@ class MyActivity : ScopeActivity() {
 }
 ```
 
-If you can't use such classes, we need to use the `AndroidScopeComponent` interface and implement the `scope` property. This will setup the default scope used by your class.
-This `scope` property can be used with the following property delegates, regarding your component:
-- `activityScope()` - Follow Activity lifecycle
-- `activityRetainedScope()` - Follow Activity's ViewModel lifecycle 
-- `fragmentScope()` - Follow Fragment lifecycle, and is linked to parent's scope
-- `serviceScope()` - Follow Service lifecycle
+Under the hood, Android scopes needs to be used with `AndroidScopeComponent` interface to implement `scope` field like this:
+
+```kotlin
+abstract class ScopeActivity(
+    @LayoutRes contentLayoutId: Int = 0,
+) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+
+    override var scope: Scope? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        createActivityScope()
+    }
+}
+```
+
+We need to use the `AndroidScopeComponent` interface and implement the `scope` property. This will setup the default scope used by your class.
+
+### Android Scope API
+
+To create a Koin scope bound to an Android component, just use the following functions:
+- `createActivityScope()` - Create Scope for current Activity (scope section must be declared)
+- `createActivityRetainedScope()` - Create a retained Scope (backed by ViewModel lifecycle) for current Activity (scope section must be declared)
+- `createFragmentScope()` - Create Scope for current Fragment and link to parent Activity scope
+
+```kotlin
+class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+
+    override var scope: Scope? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        createActivityScope()
+    }
+}
+```
+
+We can also setup a retained scope (backed by a ViewModel lifecycle) with the following:
+
+```kotlin
+class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+
+    override var scope: Scope? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        createActivityRetainedScope()
+    }
+}
+```
 
 :::note
-`ScopeActivity` class will use a `activityScope()` and `ScopeFragment` class will use `fragmentScope()` by default.
+If you don't want to use Android Scope classes, you can work with your own and use `AndroidScopeComponent` with the Scope creation API
+::: 
+
+:::warning
+The previous lazy delegate API is deprecated since 3.2.1: `activityScope()`, `activityRetainedScope()`, `fragmentScope()`,`serviceScope()`
+This has been replaced with more explicit API 
 :::
 
-```kotlin
-class MyActivity : AppCompatActivity, AndroidScopeComponent {
-    // get current Activity's scope
-    override val scope : Scope by activityScope()
-    // MyPresenter is resolved from MyActivity's scope 
-    val presenter : MyPresenter by inject()
-}
-```
+## Scope Links
 
-We can also setup a scope, tied to a ViewModel with the following:
-
-```kotlin
-class MyActivity : AppCompatActivity, AndroidScopeComponent {
-    // use Activity Retained Scope
-    override val scope : Scope by activityRetainedScope()
-    val presenter : MyPresenter by inject()
-}
-```
-
-
-## Sharing instances between components with custom scopes & Scope Links
+Scope links allow to share instances between components with custom scopes.
 
 In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
 

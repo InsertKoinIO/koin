@@ -13,31 +13,22 @@ import kotlin.reflect.KProperty
 
 @Deprecated("Use ComponentActivity.createActivityRetainedScope() with ScopeActivity or AndroidScopeComponent")
 class LifecycleViewModelScopeDelegate(
-        val lifecycleOwner: LifecycleOwner,
+        private val lifecycleOwner: ComponentActivity,
         private val koin : Koin,
-        private val createScope: (Koin) -> Scope = { koin: Koin -> koin.createScope(lifecycleOwner.getScopeName().value, lifecycleOwner.getScopeName()) },
+        private val createScope: (Koin) -> Scope = { k: Koin -> k.createScope(lifecycleOwner.getScopeName().value, lifecycleOwner.getScopeName()) },
 ) : ReadOnlyProperty<LifecycleOwner, Scope> {
 
     private var _scope: Scope? = null
 
-    private val scopeId = lifecycleOwner.getScopeName().value
-
     init {
-        assert(lifecycleOwner is ComponentActivity){ "$lifecycleOwner should be a ComponentActivity" }
-
-        val logger = koin.logger
-
-        logger.debug("setup scope: $_scope for $lifecycleOwner")
-        _scope = koin.getScopeOrNull(scopeId) ?: createScope(koin)
-        logger.debug("got scope: $_scope for $lifecycleOwner")
+        val scopeViewModel = lifecycleOwner.viewModels<ScopeHandlerViewModel>().value
 
         lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
-                logger.debug("Attach ViewModel scope: $_scope to $lifecycleOwner")
-                val scopeViewModel : ScopeHandlerViewModel = (lifecycleOwner as ComponentActivity).viewModels<ScopeHandlerViewModel>().value
                 if (scopeViewModel.scope == null) {
-                    scopeViewModel.scope = _scope
+                    scopeViewModel.scope = createScope(koin)
                 }
+                _scope = scopeViewModel.scope
             }
         })
     }

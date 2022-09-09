@@ -23,6 +23,11 @@ import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 
+/**
+ * Create Scope for Fragment, given it's extending AndroidScopeComponent.
+ * Link parent Activity's Scope
+ * Also register it in AndroidScopeComponent.scope
+ */
 fun Fragment.createFragmentScope() {
     if (this !is AndroidScopeComponent){
         error("Fragment should implement AndroidScopeComponent")
@@ -43,7 +48,7 @@ fun Fragment.createFragmentScope() {
 /**
  * Provide scope tied to Fragment
  */
-@Deprecated("")
+@Deprecated("Delegate Lazy API is deprecatede. Please use Fragment.createFragmentScope()")
 fun Fragment.fragmentScope() = LifecycleScopeDelegate<Fragment>(this,this.getKoin()){ koin: Koin ->
     val scope = koin.createScope(getScopeId(), getScopeName())
     val activityScope = activity?.getScopeOrNull()
@@ -51,8 +56,8 @@ fun Fragment.fragmentScope() = LifecycleScopeDelegate<Fragment>(this,this.getKoi
     scope
 }
 
-@Deprecated("")
-fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
+@Deprecated("Unused Internal API")
+internal fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
 
 fun Fragment.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 val Fragment.scopeActivity: ScopeActivity? get() = activity as? ScopeActivity

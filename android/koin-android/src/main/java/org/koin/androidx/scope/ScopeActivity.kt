@@ -15,18 +15,10 @@
  */
 package org.koin.androidx.scope
 
-import android.content.ComponentCallbacks
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
-import org.koin.core.component.getScopeId
-import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 
 /**
@@ -39,6 +31,7 @@ import org.koin.core.scope.Scope
 abstract class ScopeActivity(
     @LayoutRes contentLayoutId: Int = 0,
 ) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+
 
     override var scope: Scope? = null
 
