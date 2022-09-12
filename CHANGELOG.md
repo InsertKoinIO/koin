@@ -5,7 +5,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 # [3.2]()
 
 
-## [3.2.1]()
+## [3.2.1](https://github.com/InsertKoinIO/koin/milestone/36?closed=1)
 
 * `[NEW]` - Version split for Koin core & Android, to allow sperate track on core & android topics
 * `[UPDATED]` `[core]` - lib update - `co.touchlab:stately-concurrency:1.2.2`
@@ -16,6 +16,10 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[android]` - `koin-android` gradle metadata
 * `[MERGE]` - #1382 - CreateEagerInstances() available for `koinApplication` function
 * `[FIXED]` `[androidx-navigation]` - add `qualifier` to `koinNavGraphViewModel` function - Port of #1397
+* `[FIXED]` `[android]` - Open ViewModel with KClass access for generic uses - #1402, #1384
+* `[UPDATED]` `[android]` - New Android Scope API - https://insert-koin.io/docs/reference/koin-android/scope - #1399, #1356, #1328, #1385, #1414
+* `[BREAKING]` `[android]` - Deprecate Android Scope API to avoid use lazy delegate API 
+
 
 ## [3.2.0-beta-2]()
 
