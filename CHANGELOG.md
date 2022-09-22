@@ -5,7 +5,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 # [3.2]()
 
 
-## [3.2.1](https://github.com/InsertKoinIO/koin/milestone/36?closed=1)
+## [3.2.1](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - (2022-09-12)
 
 * `[NEW]` - Version split for Koin core & Android, to allow sperate track on core & android topics
 * `[UPDATED]` `[core]` - lib update - `co.touchlab:stately-concurrency:1.2.2`
