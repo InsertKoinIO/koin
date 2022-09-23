@@ -4,6 +4,11 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.2]()
 
+## [3.2.2](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - (2022-09-23)
+
+* `[FIXED]` `[core]` - Java 8 Compat fix
+* `[MERGE]` `[test]` - Java 8 Compat fix #1437
+
 
 ## [3.2.1](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - (2022-09-12)
 

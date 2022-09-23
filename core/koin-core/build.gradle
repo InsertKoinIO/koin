@@ -2,6 +2,12 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 archivesBaseName = 'koin-core'
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 kotlin {
     jvm {
         withJava()
@@ -128,5 +134,6 @@ kotlin {
         }
     }
 }
+
 
 apply from: '../../gradle/publish-to-central.gradle'

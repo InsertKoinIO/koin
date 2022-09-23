@@ -4,6 +4,12 @@ archivesBaseName = 'koin-test'
 
 def ideaActive = System.getProperty('idea.active') == 'true'
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 kotlin {
     jvm()
     js(BOTH) {

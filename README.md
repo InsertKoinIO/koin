@@ -6,7 +6,7 @@ A pragmatic lightweight dependency injection framework for Kotlin developers. `K
 
 ## Latest Version
 
-- current stable version: `koin_version = 3.2.1`
+- current stable version: `koin_version = 3.2.2`
 
 You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.2)
 
