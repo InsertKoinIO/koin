@@ -15,3 +15,9 @@ apply from: '../../gradle/publish-to-central.gradle'
 test {
     useJUnitPlatform()
 }
+
+// Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata.
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
