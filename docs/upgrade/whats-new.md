@@ -2,24 +2,10 @@
 title: What's new?
 ---
 
-## Github Changelog
 
-You can access all changelog with the following link: [Github Changelog](https://github.com/InsertKoinIO/koin/blob/main/CHANGELOG.md)
-You can follow from here all library update from this file.
+You can access all changelog with the following links per project: 
 
-## New Features
-
-### 3.2
-
-Kotlin 1.6.10+
-
-New Koin DSL:
-* [Koin Constructor DSL](../reference/koin-core/dsl-update.md)
-* [Android Constructor DSL](../reference/koin-android/dsl-update.md)
-
-Better Module Management:
-* [Includes Modules](../reference/koin-core/dsl.md#module-includes-since-32)
-
-Kotlin Native Memory Model
-
-Android ViewModel Realign API
+- [Koin](https://github.com/InsertKoinIO/koin/blob/main/CHANGELOG.md)
+- [Koin for Ktor](https://github.com/InsertKoinIO/koin-ktor/blob/main/CHANGELOG.md)
+- [Koin for Compose](https://github.com/InsertKoinIO/koin-compose/blob/main/CHANGELOG.md)
+- [Koin Annotations](https://github.com/InsertKoinIO/koin-annotations/blob/main/CHANGELOG.md)

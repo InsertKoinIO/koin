@@ -1,5 +1,5 @@
 ---
-title: Android Extended DSL (3.2)
+title: Constructor DSL for Android
 ---
 
 ## New Constructor DSL (Since 3.2)
@@ -65,14 +65,4 @@ module {
 
 :::caution
 Koin Reflection DSL is now deprecated. Please Use Koin Constructor DSL above
-:::
-
-Koin DSL can be seen as "manual", while you must fill constructors with "get()" function to resolve needed instances. When your definition don't need any special constructor integration (injection paarameters or special scope Id), we can go with more compact writing style thanks to API below.
-
-All injected parameters are also resolved directly with this compact form of writing.
-
-You can freely write `viewModel()`, `fragment()` or even `worker<>()`. All parameters will be passed to your constructor.
-
-:::note
-Using reflection is not costless, even if here it's really minimal. it replaces what you don"t want to write with reflection code (finding primary constructors, injecting parameters...). Mind it before using it, if you are on performances constraints platform (Android for example)
 :::

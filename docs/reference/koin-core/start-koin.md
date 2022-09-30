@@ -57,64 +57,89 @@ unloadKoinModules(module1,module2 ...)
 ```
 
 
-### Koin context isolation
-
-For SDK Makers, you can also work with Koin in a non global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
-
-In a standard way, we can start Koin like that:
-
-```kotlin
-// start a KoinApplication and register it in Global context
-startKoin {
-    // declare used modules
-    modules(coffeeAppModule)
-}
-```
-
-From this, we can use the `KoinComponent` as it: it will use the `GlobalContext` Koin instance.
-
-But if we want to use an isolated Koin instance, you can just declare it like follow:
-
-```kotlin
-// create a KoinApplication
-val myApp = koinApplication {
-    // declare used modules
-    modules(coffeeAppModule)
-}
-```
-
-You will have to keep your `myApp` instance available in your library and pass it to your custom KoinComponent implementation:
-
-```kotlin
-// Get a Context for your Koin instance
-object MyKoinContext {
-    var koinApp : KoinApplication? = null
-}
-
-// Register the Koin context
-MyKoinContext.koinApp = KoinApp
-```
-
-```kotlin
-abstract class CustomKoinComponent : KoinComponent {
-    // Override default Koin instance, initially target on GlobalContext to yours
-    override fun getKoin(): Koin = MyKoinContext?.koinApp.koin
-}
-```
-
-And now, you register your context and run your own isolated Koin components:
-
-```kotlin
-// Register the Koin context
-MyKoinContext.koinApp = myApp
-
-class ACustomKoinComponent : CustomKoinComponent(){
-    // inject & get will target MyKoinContext
-}
-```
-
 ### Stop Koin - closing all resources
 
 You can close all the Koin resources and drop instances & definitions. For this you can use the `stopKoin()` function from anywhere, to stop the Koin `GlobalContext`.
 Else on a `KoinApplication` instance, just call `close()`
 
+
+## Logging
+
+Koin has a simple logging API to log any Koin activity (allocation, lookup ...). The logging API is represented by the class below:
+
+Koin Logger
+
+```kotlin
+abstract class Logger(var level: Level = Level.INFO) {
+
+    abstract fun log(level: Level, msg: MESSAGE)
+
+    fun debug(msg: MESSAGE) {
+        log(Level.DEBUG, msg)
+    }
+
+    fun info(msg: MESSAGE) {
+        log(Level.INFO, msg)
+    }
+
+    fun error(msg: MESSAGE) {
+        log(Level.ERROR, msg)
+    }
+}
+```
+
+Koin proposes some implementation of logging, in function of the target platform:
+
+* `PrintLogger` - directly log into console (included in `koin-core`)
+* `EmptyLogger` - log nothing (included in `koin-core`)
+* `SLF4JLogger` - Log with SLF4J. Used by ktor and spark (`koin-logger-slf4j` project)
+* `AndroidLogger` - log into Android Logger (included in `koin-android`)
+
+### Set logging at start
+
+By default, By default Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
+
+```kotlin
+startKoin{
+    logger(LEVEL.INFO)
+}
+```
+
+
+## Loading properties
+
+You can load several type of properties at start:
+
+* environment properties - load *system* properties
+* koin.properties file - load properties from `/src/main/resources/koin.properties` file
+* "extra" start properties - map of values passed at `startKoin` function
+
+### Read property from a module
+
+Be sure to load properties at Koin start:
+
+```kotlin
+startKoin {
+    // Load properties from the default location
+    // (i.e. `/src/main/resources/koin.properties`)
+    fileProperties()
+}
+```
+
+In a Koin module, you can get a property by its key:
+
+in /src/main/resources/koin.properties file
+```java
+// Key - value
+server_url=http://service_url
+```
+
+Just load it with `getProperty` function:
+
+```kotlin
+val myModule = module {
+
+    // use the "server_url" key to retrieve its value
+    single { MyService(getProperty("server_url")) }
+}
+```

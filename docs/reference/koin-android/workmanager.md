@@ -1,5 +1,5 @@
 ---
-title: Work Manager
+title: WorkManager
 ---
 
 The `koin-androidx-workmanager` project is dedicated to bring Android WorkManager features.

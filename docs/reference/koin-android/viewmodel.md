@@ -1,5 +1,5 @@
 ---
-title: Injecting Android ViewModel
+title: Android ViewModel & Navigation
 ---
 
 The `koin-android` Gradle module introduces a new `viewModel` DSL keyword that comes in complement of `single` and `factory`, to help declare a ViewModel

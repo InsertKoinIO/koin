@@ -1,5 +1,5 @@
 ---
-title: Jetpack Compose
+title: Injecting in Jetpack Compose
 ---
 
 This page describe how you can inject your dependencies for your Jetpack Compose app - https://developer.android.com/jetpack/compose
@@ -26,7 +26,6 @@ We can get your instance like that:
 @Composable
 fun App() {
     val myService = get<MyService>()
-    // or val myService by inject<MyService>()
 }
 ```
 
@@ -44,7 +43,7 @@ fun App(myService: MyService = get()) {
 
 The same way you have access to classical single/factory instances, you gain access to the following Koin ViewModel API:
 
-* `getViewModel()` - fetch instance
+* `getViewModel()` or `koinViewModel()` - fetch instance
 
 For a module that declares a 'MyViewModel' component:
 
@@ -60,7 +59,6 @@ We can get your instance like that:
 @Composable
 fun App() {
     val vm = getViewModel<MyViewModel>()
-    // or val vm by viewModel<MyViewModel>()
 }
 ```
 
@@ -87,4 +85,6 @@ fun getComposeViewModelOwner(): ViewModelOwner {
 }
 ```
 
-
+:::warning
+Lazy API is not supported with updates of jetpack Compose 1.1+
+:::

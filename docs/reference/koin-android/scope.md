@@ -1,9 +1,9 @@
 ---
-title: Managing Android Scopes (3.2.1)
+title: Managing Android Scopes
 ---
 
 
-## Taming the Android lifecycle
+## Working with the Android lifecycle
 
 Android components are mainly managed by their lifecycle: we can't directly instantiate an Activity nor a Fragment. The system
 make all creation and management for us, and make callbacks on methods: onCreate, onStart...
