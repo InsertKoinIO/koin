@@ -12,7 +12,7 @@ title: Kotlin Multiplatform Dependency Injection
 
 Koin is a pure Kotlin library and can be used in your shared Kotlin project. Just add the core dependency:
 
-Add `koin-core` in common project, declare your dependency: https://github.com/InsertKoinIO/hello-kmp/tree/main/buildSrc
+Add `koin-core` in common project, declare your dependency: [https://github.com/InsertKoinIO/hello-kmp/tree/main/buildSrc](https://github.com/InsertKoinIO/hello-kmp/blob/main/buildSrc/src/main/java/Dependencies.kt)
 
 
 ```kotlin
