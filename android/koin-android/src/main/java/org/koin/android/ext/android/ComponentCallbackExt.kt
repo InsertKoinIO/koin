@@ -45,8 +45,7 @@ inline fun <reified T : Any> ComponentCallbacks.inject(
 
 /**
  * get given dependency for Android koincomponent
- * @param name - bean name
- * @param scope
+ * @param qualifier - bean qualifier / optional
  * @param parameters - injection parameters
  */
 @OptIn(KoinInternalApi::class)
