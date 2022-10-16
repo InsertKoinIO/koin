@@ -25,8 +25,9 @@ class ComponentCallbackExtTest : KoinTest {
 
     @Before
     fun before() {
-        app = KoinApplication.init().modules(Helper.module)
+        app = KoinApplication.init()
         startKoin(app)
+        app.modules(Helper.module)
     }
 
     @After
