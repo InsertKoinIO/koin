@@ -33,6 +33,7 @@ dependencies {
     testImplementation "io.insert-koin:koin-test:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "io.mockk:mockk:1.13.2"
 
 }
 
