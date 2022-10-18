@@ -1,8 +1,8 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-def isReleaseBuild() {
-    return !is_snaptshot
+static def isReleaseBuild() {
+    return System.getenv('IS_RELEASE') == "true" ?: false
 }
 
 def getRepositoryUsername() {

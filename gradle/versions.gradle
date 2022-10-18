@@ -2,10 +2,7 @@ ext {
     // Koin Versions
     koin_version = '3.2.2'
     koin_android_version = '3.2.3'
-
-    // pass it to true to make release
-    is_snaptshot = true
-
+    
     // Kotlin
     kotlin_version = '1.6.21'
     
