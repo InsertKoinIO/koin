@@ -11,6 +11,7 @@ import org.koin.androidx.viewmodel.ext.android.getViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 
 /**
  * Request a ViewModel instance, scoped to Navigation graph
@@ -26,7 +27,7 @@ inline fun <reified VM : ViewModel> Fragment.koinNavGraphViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<VM> {
     val backStackEntry: NavBackStackEntry by lazy { findNavController().getBackStackEntry(navGraphId) }
-    val scope = getKoinScope()
+    val scope: Scope by lazy { getKoinScope() }
     return viewModels(ownerProducer = { backStackEntry }) {
         getViewModelFactory<VM>(
             owner = backStackEntry,
