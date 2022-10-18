@@ -27,6 +27,8 @@ class MainApplication : Application() {
             modules(allModules)
         }
 
+        //TODO Load/Unload Koin modules scenario cases
+
         cancelPendingWorkManager(this)
     }
 }
