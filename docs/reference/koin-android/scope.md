@@ -99,12 +99,12 @@ abstract class ScopeActivity(
     @LayoutRes contentLayoutId: Int = 0,
 ) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
-    override var scope: Scope? = null
+    override val scope: Scope by activityScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createActivityScope()
+        checkNotNull(scope)
     }
 }
 ```
@@ -118,16 +118,17 @@ To create a Koin scope bound to an Android component, just use the following fun
 - `createActivityRetainedScope()` - Create a retained Scope (backed by ViewModel lifecycle) for current Activity (scope section must be declared)
 - `createFragmentScope()` - Create Scope for current Fragment and link to parent Activity scope
 
+Those functions are available as delegate, to implement different kind of scope:
+
+- `activityScope()` - Create Scope for current Activity (scope section must be declared)
+- `activityRetainedScope()` - Create a retained Scope (backed by ViewModel lifecycle) for current Activity (scope section must be declared)
+- `fragmentScope()` - Create Scope for current Fragment and link to parent Activity scope
+
 ```kotlin
 class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
-    override var scope: Scope? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        createActivityScope()
-    }
+    override val scope: Scope by activityScope()
+    
 }
 ```
 
@@ -136,23 +137,12 @@ We can also setup a retained scope (backed by a ViewModel lifecycle) with the fo
 ```kotlin
 class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
-    override var scope: Scope? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        createActivityRetainedScope()
-    }
+    override val scope: Scope by activityRetainedScope()
 }
 ```
 
 :::note
 If you don't want to use Android Scope classes, you can work with your own and use `AndroidScopeComponent` with the Scope creation API
-::: 
-
-:::warning
-The previous lazy delegate API is deprecated since 3.2.1: `activityScope()`, `activityRetainedScope()`, `fragmentScope()`,`serviceScope()`
-This has been replaced with more explicit API 
 :::
 
 ## Scope Links

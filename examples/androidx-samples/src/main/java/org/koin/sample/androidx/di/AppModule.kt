@@ -55,7 +55,7 @@ val mvvmModule = module {
 
     scope<MVVMActivity> {
 
-        scoped { Session() }
+        scopedOf(::Session)
         fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
         viewModelOf(::ExtSimpleViewModel)
         viewModelOf(::ExtSimpleViewModel){ named("ext")}
@@ -63,7 +63,7 @@ val mvvmModule = module {
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
-        scopedOf(::Session)
+//        scopedOf(::Session)
         viewModelOf(::ExtSimpleViewModel)
         viewModelOf(::ExtSimpleViewModel){ named("ext")}
     }
@@ -102,6 +102,6 @@ val navModule = module {
 }
 
 // workerScopedModule can't be runned in unit test
-val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule
+val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule + scopeModuleActivityA
 
 val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule + scopeModuleActivityA

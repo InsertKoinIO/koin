@@ -26,13 +26,12 @@ inline fun <reified VM : ViewModel> Fragment.koinNavGraphViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<VM> {
     val backStackEntry: NavBackStackEntry by lazy { findNavController().getBackStackEntry(navGraphId) }
-    val scope = getKoinScope()
     return viewModels(ownerProducer = { backStackEntry }) {
         getViewModelFactory<VM>(
             owner = backStackEntry,
             qualifier = qualifier,
             parameters = parameters,
-            scope = scope
+            scope = getKoinScope()
         )
     }
 }

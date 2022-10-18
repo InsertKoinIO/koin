@@ -8,7 +8,7 @@ import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-@Deprecated("Use ComponentActivity.createActivityScope() or Fragment.createFragmentScope() with AndroidScopeComponent. Check Also ScopeActivity or ScopeFragment")
+//TODO Deprecate
 class LifecycleScopeDelegate<T>(
     private val lifecycleOwner: LifecycleOwner,
     private val koin: Koin,

@@ -7,6 +7,9 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.ScopeActivity
+import org.koin.androidx.scope.activityRetainedScope
+import org.koin.androidx.scope.activityScope
 import org.koin.androidx.scope.createActivityRetainedScope
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
@@ -19,7 +22,7 @@ import org.koin.sample.androidx.utils.navigateTo
 
 class MVPActivity : AppCompatActivity(R.layout.mvp_activity), AndroidScopeComponent {
 
-    override var scope: Scope? = null
+    override val scope: Scope by activityScope()
 
     // Inject presenter as Factory
     val factoryPresenter: FactoryPresenter by inject { parametersOf(ID) }
@@ -30,13 +33,11 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), AndroidScopeCompon
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createActivityRetainedScope()
-
         assert(factoryPresenter.id == scopedPresenter.id)
         assert(factoryPresenter.service == scopedPresenter.service)
 
         assert(get<FactoryPresenter> { parametersOf(ID) } != factoryPresenter)
-        assert(requireScope().get<ScopedPresenter>() == scopedPresenter)
+        assert(scope.get<ScopedPresenter>() == scopedPresenter)
 
         title = "Android MVP"
 

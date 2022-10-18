@@ -4,15 +4,21 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.2]()
 
-## [3.2.2](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - (2022-09-23)
+## [android-3.2.3](https://github.com/InsertKoinIO/koin/milestone/38) - 2022-10-18
+
+* `[FIXED]` - Fix Broken Scope API and revert back `AndroidScopeComponent` with related API in `Activity` & `Fragment`. Reworked `activityScope()`, `activityRetainedScope()` and `fragmentScope()`. Removed Deprecations. #1443 #1448
+* `[FIXED]` - Fix NavGraph scope resolution #1446
+
+
+## [3.2.2](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - 2022-09-23
 
 * `[FIXED]` `[core]` - Java 8 Compat fix
 * `[MERGE]` `[test]` - Java 8 Compat fix #1437
 
 
-## [3.2.1](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - (2022-09-12)
+## [3.2.1](https://github.com/InsertKoinIO/koin/milestone/36?closed=1) - 2022-09-12
 
-* `[NEW]` - Version split for Koin core & Android, to allow sperate track on core & android topics
+* `[NEW]` - Version split for Koin core & Android, to allow sperate track on core & android topics (dedicated Github milestones & Git branches/tag)
 * `[UPDATED]` `[core]` - lib update - `co.touchlab:stately-concurrency:1.2.2`
 * `[UPDATED]` `[android]` - lib update - `androidx.appcompat:appcompat:1.4.2`
 * `[MERGE]` - #1409 - Android Test Instrumentation Contribution
@@ -24,6 +30,16 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` `[android]` - Open ViewModel with KClass access for generic uses - #1402, #1384
 * `[UPDATED]` `[android]` - New Android Scope API - https://insert-koin.io/docs/reference/koin-android/scope - #1399, #1356, #1328, #1385, #1414
 * `[BREAKING]` `[android]` - Deprecate Android Scope API to avoid use lazy delegate API 
+
+
+## [3.2.0]() 
+
+The repository has been splitted for the following sub projects. 
+
+- `koin-ktor` - https://github.com/InsertKoinIO/koin-ktor
+- `koin-androidx-compose` - https://github.com/InsertKoinIO/koin-compose
+
+This allow independant version tracking and updates.
 
 
 ## [3.2.0-beta-2]()
