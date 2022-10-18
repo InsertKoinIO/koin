@@ -23,11 +23,11 @@ android {
 dependencies {
     api "io.insert-koin:koin-core:$koin_version"
 
-    api "androidx.appcompat:appcompat:1.4.2"
-    api "androidx.activity:activity-ktx:1.4.0"
-    api "androidx.fragment:fragment-ktx:1.4.1"
-    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
-    api("androidx.lifecycle:lifecycle-common-java8:2.4.1")
+    api "androidx.appcompat:appcompat:1.5.1"
+    api "androidx.activity:activity-ktx:1.6.0"
+    api "androidx.fragment:fragment-ktx:1.5.3"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    api("androidx.lifecycle:lifecycle-common-java8:2.5.1")
 
     // tests
     testImplementation "io.insert-koin:koin-test:$koin_version"

@@ -17,38 +17,44 @@ import kotlin.reflect.KClass
 fun <T : ViewModel> ComponentActivity.viewModelForClass(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
-    owner : ViewModelStoreOwner = this,
+    owner: ViewModelStoreOwner = this,
     state: BundleDefinition? = null,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return ViewModelLazy(clazz, { owner.viewModelStore }) {
-        getViewModelFactory(owner, clazz ,qualifier, parameters, state, getKoinScope())
-    }
+    return ViewModelLazy(
+            viewModelClass = clazz,
+            storeProducer = { owner.viewModelStore },
+            factoryProducer = { getViewModelFactory(owner, clazz, qualifier, parameters, state, getKoinScope()) }
+        )
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.viewModelForClass(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
-    owner : ViewModelStoreOwner = this,
+    owner: ViewModelStoreOwner = this,
     state: BundleDefinition? = null,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return ViewModelLazy(clazz, { owner.viewModelStore }) {
-        getViewModelFactory(owner, clazz ,qualifier, parameters, state, getKoinScope())
-    }
+    return ViewModelLazy(
+        viewModelClass = clazz,
+        storeProducer = { owner.viewModelStore },
+        factoryProducer = { getViewModelFactory(owner, clazz, qualifier, parameters, state, getKoinScope()) }
+    )
 }
 
 @OptIn(KoinInternalApi::class)
 fun <T : ViewModel> getLazyViewModelForClass(
     clazz: KClass<T>,
-    owner : ViewModelStoreOwner,
-    scope : Scope,
+    owner: ViewModelStoreOwner,
+    scope: Scope,
     qualifier: Qualifier? = null,
     state: BundleDefinition? = null,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return ViewModelLazy(clazz, { owner.viewModelStore }) {
-        getViewModelFactory(owner, clazz ,qualifier, parameters, state, scope)
-    }
+    return ViewModelLazy(
+        viewModelClass = clazz,
+        storeProducer = { owner.viewModelStore },
+        factoryProducer = { getViewModelFactory(owner, clazz, qualifier, parameters, state, scope) }
+    )
 }
