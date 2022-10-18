@@ -68,7 +68,6 @@ inline fun <reified T : ViewModel> Fragment.getSharedStateViewModel(
     return sharedStateViewModel<T>(qualifier, state, owner, parameters).value
 }
 
-@OptIn(KoinInternalApi::class)
 fun <T : ViewModel> Fragment.getSharedStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),

@@ -32,12 +32,11 @@ abstract class ScopeActivity(
     @LayoutRes contentLayoutId: Int = 0,
 ) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
-
-    override var scope: Scope? = null
+    override val scope: Scope by activityScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createActivityScope()
+        checkNotNull(scope)
     }
 }
