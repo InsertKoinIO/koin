@@ -27,11 +27,18 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 
 /**
- * ViewModelStoreOwner extensions to help for ViewModel
+ * ViewModel instance shared with parent Activity
  *
  * @author Arnaud Giuliani
  */
 
+/**
+ * Retrieve Lazy ViewModel instance shared with parent Activity
+ * @param qualifier
+ * @param ownerProducer
+ * @param extrasProducer
+ * @param parameters
+ */
 @MainThread
 inline fun <reified T : ViewModel> Fragment.activityViewModel(
     qualifier: Qualifier? = null,
@@ -44,6 +51,13 @@ inline fun <reified T : ViewModel> Fragment.activityViewModel(
     }
 }
 
+/**
+ * Retrieve ViewModel instance shared with parent Activity
+ * @param qualifier
+ * @param ownerProducer
+ * @param extrasProducer
+ * @param parameters
+ */
 @OptIn(KoinInternalApi::class)
 @MainThread
 inline fun <reified T : ViewModel> Fragment.getActivityViewModel(

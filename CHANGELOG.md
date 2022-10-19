@@ -2,6 +2,33 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+# [3.3]()
+
+## [android-3.3.0]() - 
+
+`[koin-android]`
+* `[UPDATED]` - lib update - `androidx.appcompat:appcompat:1.5.1`
+* `[UPDATED]` - lib update - `androidx.activity:activity-ktx:1.5.1`
+* `[UPDATED]` - lib update - `androidx.fragment:fragment-ktx:1.5.3`
+* `[UPDATED]` - lib update - `androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1`
+* `[UPDATED]` - lib update - `androidx.lifecycle:lifecycle-common-java8:2.5.1`
+* `[UPDATED]` - All Koin ViewModel API to use latest `ViewModelProvider` extras API [ViewModel 2.5.2](https://developer.android.com/jetpack/androidx/releases/lifecycle#2.5.1) . API Signature have been changed to keep the existing API. Such API propagates all extras directly to `SavedStateHandle`. Added `ownerProducer: () -> ViewModelStoreOwner`, and `extrasProducer: (() -> CreationExtras)?` parameters to main function.
+* `[FIXED]` - Fix `SavedStateHandle` injection and lifecycle follow up with new `KoinViewModelFactory`
+* `[UPDATED]` - Sandbox app updated to check new API
+* `[DEPRECATED]` - all `stateViewModel()` API functions + all related internals
+* `[DEPRECATED]` - any use of `state: BundleDefinition` property in favor of `extrasProducer: (() -> CreationExtras)`. Functions still works, but a conversion from bundle to extras is needed
+* `[NEW]` - `activityViewModel()` and `getActivityViewModel()` added to replace the `sharedViewModel` functions
+* `[DEPRECATED]` - all `sharedViewModel()` fucntions in favor of `activityViewModel()` functions
+* `[UPDATED]` - Compile SDK level to 32
+* `[UPDATED]` - Updated generic API `viewModelForClass` functions to allow usage of `key`. `state` parameters kept, but need conversi onto extras
+
+`[koin-android-compat]`
+* `[UPDATED]` - Updated with new ViewModel API internals 
+
+`[koin-androidx-navigation]`
+* `[UPDATED]` - Updated with new ViewModel API internals. Added `ownerProducer: () -> ViewModelStoreOwner`, and `extrasProducer: (() -> CreationExtras)?` parameters
+
+
 # [3.2]()
 
 ## [android-3.2.3](https://github.com/InsertKoinIO/koin/milestone/38) - 2022-10-18

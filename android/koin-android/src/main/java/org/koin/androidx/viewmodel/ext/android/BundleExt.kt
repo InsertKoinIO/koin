@@ -10,6 +10,10 @@ import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.core.annotation.KoinInternalApi
 
+/**
+ * Convert current Bundle to CreationExtras
+ * @param viewModelStoreOwner
+ */
 @KoinInternalApi
 fun Bundle.toExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras? {
     return if (keySet().isEmpty()) null

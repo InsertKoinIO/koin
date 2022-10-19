@@ -13,6 +13,17 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
+/**
+ * Resolve a ViewModel instance
+ *
+ * @param vmClass
+ * @param viewModelStore
+ * @param key
+ * @param extras - @see CreationExtras
+ * @param qualifier
+ * @param scope
+ * @param parameters - for instance building injection
+ */
 @KoinInternalApi
 fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
@@ -33,6 +44,18 @@ fun <T : ViewModel> resolveViewModel(
     }
 }
 
+/**
+ * Resolve a Lazy ViewModel instance
+ * used in Main Thread
+ *
+ * @param vmClass
+ * @param viewModelStore
+ * @param key
+ * @param extras - @see CreationExtras
+ * @param qualifier
+ * @param scope
+ * @param parameters - for instance building injection
+ */
 @KoinInternalApi
 @MainThread
 fun <T : ViewModel> lazyResolveViewModel(

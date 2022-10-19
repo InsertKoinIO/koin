@@ -13,6 +13,10 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
+/**
+ * ViewModelProvider.Factory for Koin instances resolution
+ * @see ViewModelProvider.Factory
+ */
 class KoinViewModelFactory(
     private val kClass: KClass<out ViewModel>,
     private val scope: Scope,
