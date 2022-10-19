@@ -23,7 +23,6 @@ import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
-import org.koin.androidx.viewmodel.scope.toExtras
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier

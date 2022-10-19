@@ -1,5 +1,6 @@
 package org.koin.androidx.viewmodel
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -7,20 +8,21 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
 @KoinInternalApi
-inline fun <T : ViewModel> resolveViewModel(
+fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
     viewModelStore: ViewModelStore,
     key: String? = null,
     extras: CreationExtras,
     qualifier: Qualifier? = null,
     scope: Scope,
-    noinline parameters: ParametersDefinition? = null,
+    parameters: ParametersDefinition? = null,
 ): T {
     val modelClass: Class<T> = vmClass.java
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters, modelClass.needSavedStateHandle())
@@ -30,6 +32,20 @@ inline fun <T : ViewModel> resolveViewModel(
     } else {
         provider[modelClass]
     }
+}
+
+@KoinInternalApi
+@MainThread
+fun <T : ViewModel> lazyResolveViewModel(
+    vmClass: KClass<T>,
+    viewModelStore: () -> ViewModelStore,
+    key: String? = null,
+    extras: () -> CreationExtras,
+    qualifier: Qualifier? = null,
+    scope: Scope,
+    parameters: (() -> ParametersHolder)? = null,
+): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) { resolveViewModel(vmClass, viewModelStore(), key, extras(), qualifier, scope, parameters) }
 }
 
 @KoinInternalApi

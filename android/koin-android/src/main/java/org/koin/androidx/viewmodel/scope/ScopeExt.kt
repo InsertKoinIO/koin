@@ -17,9 +17,6 @@
 package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.MutableCreationExtras
-import org.koin.core.annotation.KoinInternalApi
 
 
 /**
@@ -32,19 +29,3 @@ fun emptyState(): BundleDefinition = { Bundle() }
 
 @Deprecated("Replaced by CreationExtras API")
 typealias BundleDefinition = () -> Bundle
-
-@KoinInternalApi
-@PublishedApi
-internal fun Bundle.toExtras(): CreationExtras? {
-    return if (keySet().isEmpty()) null
-    else {
-        val keys = keySet()
-        runCatching {
-            MutableCreationExtras().also { extras ->
-                keys.forEach { key ->
-                    extras[key as CreationExtras.Key<String>] = get(key).toString()
-                }
-            }
-        }.getOrNull()
-    }
-}
