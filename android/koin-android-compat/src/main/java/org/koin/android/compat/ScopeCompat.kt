@@ -15,11 +15,10 @@
  */
 package org.koin.android.compat
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelParameter
-import org.koin.androidx.viewmodel.pickFactory
+import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -42,26 +41,17 @@ object ScopeCompat {
      * @param parameters - parameters to pass to the BeanDefinition
      * @param clazz
      */
-    @OptIn(KoinInternalApi::class)
     @JvmOverloads
     @JvmStatic
+    @MainThread
     fun <T : ViewModel> viewModel(
         scope: Scope,
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): ViewModelLazy<T> {
-        val viewModelClass = clazz.kotlin
-        return ViewModelLazy(viewModelClass, { owner.viewModelStore },{
-            val viewModelParameters = ViewModelParameter(
-                clazz = viewModelClass,
-                qualifier = qualifier,
-                parameters = parameters,
-                viewModelStoreOwner = owner,
-            )
-            scope.pickFactory(viewModelParameters)
-        })
+    ): Lazy<T> {
+        return lazy(LazyThreadSafetyMode.NONE) { getViewModel(scope, owner, clazz, qualifier, parameters) }
     }
 
 
@@ -72,8 +62,10 @@ object ScopeCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
+    @OptIn(KoinInternalApi::class)
     @JvmOverloads
     @JvmStatic
+    @MainThread
     fun <T : ViewModel> getViewModel(
         scope: Scope,
         owner: ViewModelStoreOwner,
@@ -81,6 +73,13 @@ object ScopeCompat {
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): T {
-        return viewModel(scope, owner, clazz, qualifier,parameters).value
+        return resolveViewModelCompat(
+            clazz,
+            owner.viewModelStore,
+            extras = CreationExtras.Empty,
+            qualifier = qualifier,
+            parameters = parameters,
+            scope = scope
+        )
     }
 }
