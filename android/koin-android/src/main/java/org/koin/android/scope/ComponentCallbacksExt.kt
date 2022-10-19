@@ -16,7 +16,7 @@ fun <T : ComponentCallbacks> T.getScopeOrNull(): Scope? {
 }
 
 @Deprecated("Internal function not used anymore")
-fun <T : ComponentCallbacks> T.newScope() = lazy { createScope() }
+fun <T : ComponentCallbacks> T.newScope(): Lazy<Scope> = lazy { createScope() }
 
 @Deprecated("Internal function not used anymore")
-fun <T : ComponentCallbacks> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
+fun <T : ComponentCallbacks> T.getOrCreateScope(): Lazy<Scope> = lazy { getScopeOrNull() ?: createScope() }
