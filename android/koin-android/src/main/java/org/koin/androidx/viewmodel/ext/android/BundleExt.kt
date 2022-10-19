@@ -11,8 +11,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.core.annotation.KoinInternalApi
 
 @KoinInternalApi
-@PublishedApi
-internal fun Bundle.toExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras? {
+fun Bundle.toExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras? {
     return if (keySet().isEmpty()) null
     else {
         runCatching {
