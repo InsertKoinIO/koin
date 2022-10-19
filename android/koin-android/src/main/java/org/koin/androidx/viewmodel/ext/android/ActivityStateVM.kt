@@ -19,6 +19,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.androidx.viewmodel.scope.toExtras

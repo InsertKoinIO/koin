@@ -16,14 +16,12 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
+import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 

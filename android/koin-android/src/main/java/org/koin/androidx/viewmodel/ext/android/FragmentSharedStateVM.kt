@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.androidx.viewmodel.scope.toExtras
