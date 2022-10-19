@@ -3,7 +3,6 @@ package org.koin.androidx.viewmodel.ext.android
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
@@ -12,10 +11,10 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
-@KoinInternalApi
+@OptIn(KoinInternalApi::class)
 @PublishedApi
-internal inline fun <T: ViewModel> getViewModel(
-    vmClass : KClass<T>,
+internal inline fun <T : ViewModel> getViewModel(
+    vmClass: KClass<T>,
     viewModelStore: ViewModelStore,
     key: String? = null,
     extras: CreationExtras,
@@ -35,6 +34,6 @@ internal inline fun <T: ViewModel> getViewModel(
 
 @KoinInternalApi
 @PublishedApi
-internal fun <T:ViewModel> Class<T>.needSavedStateHandle() : Boolean {
+internal fun <T : ViewModel> Class<T>.needSavedStateHandle(): Boolean {
     return constructors[0].parameterTypes.any { p -> p.simpleName == "SavedStateHandle" }
 }

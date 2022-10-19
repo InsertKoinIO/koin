@@ -42,6 +42,7 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModel(
         getViewModel(qualifier, extrasProducer, parameters)
     }
 }
+
 @OptIn(KoinInternalApi::class)
 @MainThread
 inline fun <reified T : ViewModel> ComponentActivity.getViewModel(

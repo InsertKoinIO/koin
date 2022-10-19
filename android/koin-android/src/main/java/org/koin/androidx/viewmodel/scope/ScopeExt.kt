@@ -17,6 +17,8 @@
 package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
+import androidx.lifecycle.viewmodel.CreationExtras
+import org.koin.core.annotation.KoinInternalApi
 
 
 /**
@@ -29,6 +31,12 @@ fun emptyState(): BundleDefinition = { Bundle() }
 
 @Deprecated("Replaced by CreationExtras API")
 typealias BundleDefinition = () -> Bundle
+
+@KoinInternalApi
+@PublishedApi
+internal fun Bundle.toExtras(): CreationExtras? {
+
+}
 
 //inline fun <reified T : ViewModel> Scope.getViewModel(
 //        qualifier: Qualifier? = null,
