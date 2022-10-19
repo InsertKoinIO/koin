@@ -28,7 +28,7 @@ class KoinViewModelFactory(
         return scope.get(kClass, qualifier, parameters)
     }
 
-    //TODO Avoid such insertion
+    //TODO Avoid such insertion - need to see with internal core resolution
     private fun ParametersDefinition.addSSH(ssh: SavedStateHandle): ParametersDefinition {
         return { invoke().add(ssh) }
     }

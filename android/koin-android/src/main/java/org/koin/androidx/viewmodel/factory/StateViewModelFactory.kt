@@ -1,10 +1,13 @@
 package androidx.lifecycle
 
 import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 
+@KoinInternalApi
+@Deprecated("use KoinViewModelFactory")
 class StateViewModelFactory<T : ViewModel>(
     val scope: Scope,
     val parameters: ViewModelParameter<T>,

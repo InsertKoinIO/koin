@@ -17,14 +17,11 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 
@@ -35,28 +32,26 @@ import org.koin.core.qualifier.Qualifier
  */
 
 @MainThread
-inline fun <reified T : ViewModel> Fragment.viewModel(
+inline fun <reified T : ViewModel> Fragment.activityViewModel(
     qualifier: Qualifier? = null,
-    noinline ownerProducer: () -> ViewModelStoreOwner = { this },
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): Lazy<T> {
     return lazy {
-        getViewModel(qualifier, ownerProducer, extrasProducer, parameters)
+        getActivityViewModel(qualifier, extrasProducer, parameters)
     }
 }
 
 @OptIn(KoinInternalApi::class)
 @MainThread
-inline fun <reified T : ViewModel> Fragment.getViewModel(
+inline fun <reified T : ViewModel> Fragment.getActivityViewModel(
     qualifier: Qualifier? = null,
-    noinline ownerProducer: () -> ViewModelStoreOwner = { this },
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): T {
     return getViewModel(
         T::class,
-        ownerProducer().viewModelStore,
+        requireActivity().viewModelStore,
         extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,
         qualifier = qualifier,
         parameters = parameters,

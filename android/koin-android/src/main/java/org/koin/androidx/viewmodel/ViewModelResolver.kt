@@ -7,7 +7,9 @@ import org.koin.androidx.viewmodel.factory.DefaultViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
 
-//TODO Deprecate for ViewModel API 2.5 + initializers
+
+@Deprecated("Deprecated API in favor of KoinViewModelFactory")
+@KoinInternalApi
 internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewModelParameter<T>): T {
     val javaClass = viewModelParameters.clazz.java
     return if (viewModelParameters.qualifier != null) {
@@ -17,6 +19,7 @@ internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParamete
     }
 }
 
+@Deprecated("Deprecated API in favor of KoinViewModelFactory")
 @KoinInternalApi
 fun <T : ViewModel> Scope.pickFactory(
     viewModelParameters: ViewModelParameter<T>,

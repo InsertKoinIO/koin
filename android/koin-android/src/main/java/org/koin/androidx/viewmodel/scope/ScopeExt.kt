@@ -24,8 +24,10 @@ import android.os.Bundle
  *
  * @author Arnaud Giuliani
  */
-//TODO Deprecate for extrasProducer
+@Deprecated("Replaced by CreationExtras API")
 fun emptyState(): BundleDefinition = { Bundle() }
+
+@Deprecated("Replaced by CreationExtras API")
 typealias BundleDefinition = () -> Bundle
 
 //inline fun <reified T : ViewModel> Scope.getViewModel(
