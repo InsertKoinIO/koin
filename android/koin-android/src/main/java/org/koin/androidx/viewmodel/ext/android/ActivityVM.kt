@@ -50,7 +50,7 @@ inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): T {
-    return getViewModel(
+    return resolveViewModel(
         T::class,
         viewModelStore,
         extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,

@@ -70,7 +70,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedStateViewModel(
     noinline owner: () -> ViewModelStoreOwner = { requireActivity() },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(
+    return resolveViewModel(
         T::class,
         owner().viewModelStore,
         extras = state().toExtras() ?: this.defaultViewModelCreationExtras,
@@ -90,7 +90,7 @@ fun <T : ViewModel> Fragment.getSharedStateViewModel(
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(
+    return resolveViewModel(
         clazz,
         owner().viewModelStore,
         extras = state().toExtras() ?: this.defaultViewModelCreationExtras,

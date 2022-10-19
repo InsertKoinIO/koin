@@ -50,7 +50,7 @@ inline fun <reified T : ViewModel> Fragment.getSharedViewModel(
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(
+    return resolveViewModel(
         T::class,
         owner().viewModelStore,
         extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,

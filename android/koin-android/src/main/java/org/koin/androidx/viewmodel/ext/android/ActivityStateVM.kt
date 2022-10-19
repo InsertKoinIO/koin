@@ -51,7 +51,7 @@ inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(
+    return resolveViewModel(
         T::class,
         viewModelStore,
         extras = state().toExtras() ?: this.defaultViewModelCreationExtras,

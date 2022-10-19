@@ -12,8 +12,8 @@ import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
-@PublishedApi
-internal inline fun <T : ViewModel> getViewModel(
+@KoinInternalApi
+inline fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
     viewModelStore: ViewModelStore,
     key: String? = null,

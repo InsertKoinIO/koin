@@ -52,7 +52,7 @@ inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     noinline owner: () -> ViewModelStoreOwner = { this },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return getViewModel(
+    return resolveViewModel(
         T::class,
         owner().viewModelStore,
         extras = state().toExtras() ?: this.defaultViewModelCreationExtras,
