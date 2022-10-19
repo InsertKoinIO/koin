@@ -54,7 +54,7 @@ inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
     return resolveViewModel(
         T::class,
         viewModelStore,
-        extras = state().toExtras() ?: this.defaultViewModelCreationExtras,
+        extras = state().toExtras(this) ?: this.defaultViewModelCreationExtras,
         qualifier = qualifier,
         parameters = parameters,
         scope = getKoinScope()

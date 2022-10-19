@@ -55,7 +55,7 @@ inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     return resolveViewModel(
         T::class,
         owner().viewModelStore,
-        extras = state().toExtras() ?: this.defaultViewModelCreationExtras,
+        extras = state().toExtras(this) ?: this.defaultViewModelCreationExtras,
         qualifier = qualifier,
         parameters = parameters,
         scope = getKoinScope()
