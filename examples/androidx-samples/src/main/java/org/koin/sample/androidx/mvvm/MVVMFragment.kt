@@ -6,14 +6,12 @@ import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.scope.fragmentScope
 import org.koin.androidx.scope.requireScopeActivity
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.getActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.androidx.viewmodel.scope.emptyState
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -29,19 +27,21 @@ class MVVMFragment(private val session: Session) : Fragment(R.layout.mvvm_fragme
     override val scope: Scope by fragmentScope()
 
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
-    val scopeVm: ExtSimpleViewModel by viewModel()
+
+    // Generic KClass Access
+    val scopeVm: ExtSimpleViewModel by viewModelForClass(ExtSimpleViewModel::class)
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
-    val shared: SimpleViewModel by sharedViewModel()// sharedViewModel { parametersOf(ID) }
+    val shared: SimpleViewModel by activityViewModel()// sharedViewModel { parametersOf(ID) }
 
-    val sharedSaved: SavedStateViewModel by sharedViewModel { parametersOf(ID) }
-    val saved by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
-    val saved2 by stateViewModel<SavedStateViewModel>(state = emptyState()) { parametersOf(ID) }
+    val sharedSaved: SavedStateViewModel by activityViewModel { parametersOf(ID) }
+    val saved by viewModel<SavedStateViewModel> { parametersOf(ID) }
+    val saved2 by viewModel<SavedStateViewModel> { parametersOf(ID) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
+        val shared2 = getActivityViewModel<SimpleViewModel> { parametersOf(ID) }
 
         checkNotNull(session)
 

@@ -6,7 +6,6 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.ScopeActivity
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -29,16 +28,19 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val scopeVm: ExtSimpleViewModel by viewModel()
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
-    val savedVm: SavedStateViewModel by stateViewModel { parametersOf("vm1") }
+    //    val savedVm: SavedStateViewModel by stateViewModel { parametersOf("vm1") }
+    val savedVm: SavedStateViewModel by viewModel { parametersOf("vm1") }
 
-    val state = Bundle().apply { putString("id", "vm1") }
-    val stateVM: SavedStateBundleViewModel by stateViewModel(state = { state })
+    //    val state = Bundle().apply { putString("id", "vm1") }
+//    val stateVM: SavedStateBundleViewModel by stateViewModel(state = { state })
+    val stateVM: SavedStateBundleViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
         // using MVVMActivity with scope in mvvmModule (AppModule)
         setupKoinFragmentFactory(scope)
         super.onCreate(savedInstanceState)
+
 
         checkNotNull(vm1)
         checkNotNull(simpleViewModel)
