@@ -38,7 +38,7 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy {
+    return lazy(LazyThreadSafetyMode.NONE) {
         getStateViewModel(qualifier, state, parameters)
     }
 }

@@ -15,14 +15,14 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
+import org.koin.androidx.viewmodel.scope.toExtras
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -33,47 +33,69 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternalApi::class)
+
+@Deprecated("Use Fragment.activityViewModel() with extras: CreationExtras")
+@MainThread
 inline fun <reified T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelStoreOwnerProducer = { requireActivity() },
+    noinline owner: () -> ViewModelStoreOwner = { requireActivity() },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return viewModels(ownerProducer = owner) {
-        getViewModelFactory<T>(owner(), qualifier, parameters, state = state, scope = getKoinScope())
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getSharedStateViewModel(qualifier, state, owner, parameters)
     }
 }
 
-@OptIn(KoinInternalApi::class)
+@Deprecated("Use Fragment.activityViewModel() with extras: CreationExtras")
+@MainThread
 fun <T : ViewModel> Fragment.sharedStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
-    //TODO Clean up
-    owner: ViewModelStoreOwnerProducer = { requireActivity() },
+    owner: () -> ViewModelStoreOwner = { requireActivity() },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return ViewModelLazy(clazz, { owner().viewModelStore },{
-        getViewModelFactory(owner(), clazz, qualifier, parameters, state = state, scope = getKoinScope())
-    })
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getSharedStateViewModel(qualifier, state, owner, clazz, parameters)
+    }
 }
 
+@Deprecated("Use Fragment.getActivityViewModel() with extras: CreationExtras")
+@OptIn(KoinInternalApi::class)
+@MainThread
 inline fun <reified T : ViewModel> Fragment.getSharedStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelStoreOwnerProducer = { requireActivity() },
+    noinline owner: () -> ViewModelStoreOwner = { requireActivity() },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return sharedStateViewModel<T>(qualifier, state, owner, parameters).value
+    return getViewModel(
+        T::class,
+        owner().viewModelStore,
+        extras = state().toExtras() ?: this.defaultViewModelCreationExtras,
+        qualifier = qualifier,
+        parameters = parameters,
+        scope = getKoinScope()
+    )
 }
 
+@Deprecated("Use Fragment.getActivityViewModel() with extras: CreationExtras")
+@OptIn(KoinInternalApi::class)
+@MainThread
 fun <T : ViewModel> Fragment.getSharedStateViewModel(
     qualifier: Qualifier? = null,
     state: BundleDefinition = emptyState(),
-    owner: ViewModelStoreOwnerProducer = { requireActivity() },
+    owner: () -> ViewModelStoreOwner = { requireActivity() },
     clazz: KClass<T>,
     parameters: ParametersDefinition? = null,
 ): T {
-    return sharedStateViewModel(qualifier, state, owner, clazz, parameters).value
+    return getViewModel(
+        clazz,
+        owner().viewModelStore,
+        extras = state().toExtras() ?: this.defaultViewModelCreationExtras,
+        qualifier = qualifier,
+        parameters = parameters,
+        scope = getKoinScope()
+    )
 }

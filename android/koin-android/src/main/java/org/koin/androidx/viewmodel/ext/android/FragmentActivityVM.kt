@@ -34,11 +34,12 @@ import org.koin.core.qualifier.Qualifier
 @MainThread
 inline fun <reified T : ViewModel> Fragment.activityViewModel(
     qualifier: Qualifier? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { requireActivity() },
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): Lazy<T> {
-    return lazy {
-        getActivityViewModel(qualifier, extrasProducer, parameters)
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getActivityViewModel(qualifier,ownerProducer, extrasProducer, parameters)
     }
 }
 
@@ -46,12 +47,13 @@ inline fun <reified T : ViewModel> Fragment.activityViewModel(
 @MainThread
 inline fun <reified T : ViewModel> Fragment.getActivityViewModel(
     qualifier: Qualifier? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { requireActivity() },
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): T {
     return getViewModel(
         T::class,
-        requireActivity().viewModelStore,
+        ownerProducer().viewModelStore,
         extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,
         qualifier = qualifier,
         parameters = parameters,

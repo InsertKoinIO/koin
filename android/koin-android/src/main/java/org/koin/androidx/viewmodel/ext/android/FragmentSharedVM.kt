@@ -38,7 +38,7 @@ inline fun <reified T : ViewModel> Fragment.sharedViewModel(
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy { getSharedViewModel(qualifier, owner, extrasProducer, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(qualifier, owner, extrasProducer, parameters) }
 }
 
 @Deprecated("Use Fragment.getActivityViewModel() with extras: CreationExtras")

@@ -40,7 +40,7 @@ inline fun <reified T : ViewModel> Fragment.stateViewModel(
     noinline owner: () -> ViewModelStoreOwner = { this },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return lazy { getStateViewModel(qualifier, state, owner, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, owner, parameters) }
 }
 
 @Deprecated("Use Fragment.getViewModel() with extras: CreationExtras")

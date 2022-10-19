@@ -38,7 +38,7 @@ inline fun <reified T : ViewModel> ComponentActivity.viewModel(
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): Lazy<T> {
-    return lazy {
+    return lazy(LazyThreadSafetyMode.NONE) {
         getViewModel(qualifier, extrasProducer, parameters)
     }
 }
