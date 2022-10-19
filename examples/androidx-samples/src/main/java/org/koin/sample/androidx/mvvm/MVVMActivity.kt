@@ -25,13 +25,11 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
-////    val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
     val scopeVm: ExtSimpleViewModel by viewModel()
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
 
     val savedVm: SavedStateViewModel by stateViewModel { parametersOf("vm1") }
-//    val scopedSavedVm: SavedStateViewModel by viewModel(named("vm2")){ parametersOf("vm2") }
 
     val state = Bundle().apply { putString("id", "vm1") }
     val stateVM: SavedStateBundleViewModel by stateViewModel(state = { state })
@@ -42,7 +40,8 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         setupKoinFragmentFactory(scope)
         super.onCreate(savedInstanceState)
 
-        assert(simpleViewModel != null)
+        checkNotNull(vm1)
+        checkNotNull(simpleViewModel)
 
         title = "Android MVVM"
 

@@ -24,7 +24,7 @@ import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
 
-class MVVMFragment(val session: Session) : Fragment(R.layout.mvvm_fragment), AndroidScopeComponent {
+class MVVMFragment(private val session: Session) : Fragment(R.layout.mvvm_fragment), AndroidScopeComponent {
 
     override val scope: Scope by fragmentScope()
 
@@ -43,6 +43,8 @@ class MVVMFragment(val session: Session) : Fragment(R.layout.mvvm_fragment), And
 
         val shared2 = getSharedViewModel<SimpleViewModel> { parametersOf(ID) }
 
+        checkNotNull(session)
+
         assert(shared != simpleViewModel)
         assert((requireActivity() as MVVMActivity).simpleViewModel == shared)
 
@@ -51,9 +53,7 @@ class MVVMFragment(val session: Session) : Fragment(R.layout.mvvm_fragment), And
         assert(scopeVm.session.id == extScopeVm.session.id)
         assert((requireActivity() as MVVMActivity).savedVm == sharedSaved)
 
-////        val shared3 = getSharedViewModel(clazz = SimpleViewModel::class) { parametersOf(ID) }
         assert(shared == shared2)
-//        assert(shared2 == shared3)
 
         assert(saved == saved2)
 
