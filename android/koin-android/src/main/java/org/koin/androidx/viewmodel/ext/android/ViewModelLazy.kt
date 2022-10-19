@@ -14,6 +14,7 @@ import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
+@Deprecated("")
 fun <T : ViewModel> ComponentActivity.viewModelForClass(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
@@ -29,6 +30,7 @@ fun <T : ViewModel> ComponentActivity.viewModelForClass(
 }
 
 @OptIn(KoinInternalApi::class)
+@Deprecated("")
 fun <T : ViewModel> Fragment.viewModelForClass(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
@@ -44,6 +46,7 @@ fun <T : ViewModel> Fragment.viewModelForClass(
 }
 
 @OptIn(KoinInternalApi::class)
+@Deprecated("")
 fun <T : ViewModel> getLazyViewModelForClass(
     clazz: KClass<T>,
     owner: ViewModelStoreOwner,

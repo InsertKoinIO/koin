@@ -2,6 +2,7 @@ package org.koin.androidx.viewmodel.ext.android
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
@@ -13,32 +14,27 @@ import kotlin.reflect.KClass
 
 @KoinInternalApi
 @PublishedApi
-internal inline fun <reified T : ViewModel> ViewModelStoreOwner.getKoinInstance(
-    key: String? = null,
-    extras: CreationExtras,
-    qualifier: Qualifier? = null,
-    scope: Scope,
-    noinline parameters: ParametersDefinition? = null,
-): T = getViewModelInstance(T::class,this,key, extras, qualifier, scope, parameters)
-
-@KoinInternalApi
-@PublishedApi
-internal inline fun <T: ViewModel> getViewModelInstance(
+internal inline fun <T: ViewModel> getViewModel(
     vmClass : KClass<T>,
-    owner : ViewModelStoreOwner,
+    viewModelStore: ViewModelStore,
     key: String? = null,
     extras: CreationExtras,
     qualifier: Qualifier? = null,
     scope: Scope,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val modelClass = vmClass.java
-    val hasSSH = modelClass.constructors[0].parameterTypes.any { p -> p.simpleName == "SavedStateHandle" }
-    val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters, hasSSH)
-    val provider = ViewModelProvider(owner.viewModelStore, factory, extras)
+    val modelClass: Class<T> = vmClass.java
+    val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters, modelClass.needSavedStateHandle())
+    val provider = ViewModelProvider(viewModelStore, factory, extras)
     return if (key != null) {
         provider[key, modelClass]
     } else {
         provider[modelClass]
     }
+}
+
+@KoinInternalApi
+@PublishedApi
+internal fun <T:ViewModel> Class<T>.needSavedStateHandle() : Boolean {
+    return constructors[0].parameterTypes.any { p -> p.simpleName == "SavedStateHandle" }
 }

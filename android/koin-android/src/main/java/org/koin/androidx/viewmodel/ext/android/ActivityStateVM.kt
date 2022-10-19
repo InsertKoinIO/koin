@@ -33,6 +33,7 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
+@Deprecated("Use ComponentActivity.viewModel() with extras: CreationExtras")
 inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
@@ -43,6 +44,7 @@ inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     }
 }
 
+@Deprecated("Use ComponentActivity.getViewModel() with extras: CreationExtras")
 inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),

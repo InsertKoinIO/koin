@@ -14,6 +14,7 @@ import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 @KoinInternalApi
+@Deprecated("")
 inline fun <reified T : ViewModel> getViewModelFactory(
     owner: ViewModelStoreOwner,
     qualifier: Qualifier?,
@@ -25,6 +26,7 @@ inline fun <reified T : ViewModel> getViewModelFactory(
 }
 
 @KoinInternalApi
+@Deprecated("")
 fun <T : ViewModel> Scope.getViewModelFactory(
     parameters: ViewModelParameter<T>
 ): ViewModelProvider.Factory {
@@ -32,6 +34,7 @@ fun <T : ViewModel> Scope.getViewModelFactory(
 }
 
 @KoinInternalApi
+@Deprecated("")
 fun <T : ViewModel> getViewModelFactory(
     owner: ViewModelStoreOwner,
     clazz: KClass<T>,
