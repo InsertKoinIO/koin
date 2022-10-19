@@ -18,6 +18,7 @@ package org.koin.androidx.viewmodel.scope
 
 import android.os.Bundle
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import org.koin.core.annotation.KoinInternalApi
 
 
@@ -35,38 +36,15 @@ typealias BundleDefinition = () -> Bundle
 @KoinInternalApi
 @PublishedApi
 internal fun Bundle.toExtras(): CreationExtras? {
-
+    return if (keySet().isEmpty()) null
+    else {
+        val keys = keySet()
+        runCatching {
+            MutableCreationExtras().also { extras ->
+                keys.forEach { key ->
+                    extras[key as CreationExtras.Key<String>] = get(key).toString()
+                }
+            }
+        }.getOrNull()
+    }
 }
-
-//inline fun <reified T : ViewModel> Scope.getViewModel(
-//        qualifier: Qualifier? = null,
-//        noinline owner: ViewModelOwnerDefinition,
-//        noinline parameters: ParametersDefinition? = null,
-//): T {
-//    return getViewModel(qualifier, owner, T::class, parameters = parameters)
-//}
-//
-//fun <T : ViewModel> Scope.getViewModel(
-//        qualifier: Qualifier? = null,
-//        owner: ViewModelOwnerDefinition,
-//        clazz: KClass<T>,
-//        state: BundleDefinition? = null,
-//        parameters: ParametersDefinition? = null,
-//): T {
-//    val ownerDef = owner()
-//    return getViewModel(
-//            ViewModelParameter(
-//                    clazz,
-//                    qualifier,
-//                    state,
-//                    parameters,
-//                    ownerDef.store,
-//                    ownerDef.stateRegistry
-//            )
-//    )
-//}
-//
-//internal fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-//    val viewModelProvider = ViewModelProvider(viewModelParameters.viewModelStore, pickFactory(viewModelParameters))
-//    return viewModelProvider.resolveInstance(viewModelParameters)
-//}

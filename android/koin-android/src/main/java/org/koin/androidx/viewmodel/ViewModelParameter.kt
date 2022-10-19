@@ -13,10 +13,8 @@ import kotlin.reflect.KClass
 class ViewModelParameter<T : Any>(
     val clazz: KClass<T>,
     val qualifier: Qualifier? = null,
-    //TODO Clean for noinline extrasProducer: (() -> CreationExtras)? = null,
     val state: BundleDefinition? = null,
     val parameters: ParametersDefinition? = null,
-    //TODO Clean up - only for factory pick
     val viewModelStoreOwner: ViewModelStoreOwner,
     val registryOwner: SavedStateRegistryOwner? = null
 )
