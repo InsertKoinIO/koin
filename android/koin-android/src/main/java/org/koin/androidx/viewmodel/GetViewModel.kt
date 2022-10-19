@@ -13,7 +13,6 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
-@OptIn(KoinInternalApi::class)
 @KoinInternalApi
 fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
@@ -25,7 +24,7 @@ fun <T : ViewModel> resolveViewModel(
     parameters: ParametersDefinition? = null,
 ): T {
     val modelClass: Class<T> = vmClass.java
-    val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters, modelClass.needSavedStateHandle())
+    val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
     return if (key != null) {
         provider[key, modelClass]
