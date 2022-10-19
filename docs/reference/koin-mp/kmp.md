@@ -141,4 +141,4 @@ struct ContentView: View {
 
 ### New Native Memory Management
 
-Activate experiemental with root [gradle.properties](http://gradle.properties) properrties:
+Activate experiemental with root [gradle.properties](http://gradle.properties) properties:
