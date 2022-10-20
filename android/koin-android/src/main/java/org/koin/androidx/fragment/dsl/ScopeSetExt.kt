@@ -17,7 +17,6 @@ package org.koin.androidx.fragment.dsl
 
 import androidx.fragment.app.Fragment
 import org.koin.core.annotation.KoinReflectAPI
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
@@ -32,7 +31,7 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier
- * @param override - allow definition override
+ * @param definition - allow definition override
  */
 inline fun <reified T : Fragment> ScopeDSL.fragment(
     qualifier: Qualifier? = null,
