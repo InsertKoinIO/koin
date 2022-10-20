@@ -1,17 +1,10 @@
 ---
-title: Koin 3.2
+title: Koin 3.3
 ---
 
  Setup Koin for your project 
 
 ## Version
-
-```groovy
-koin_version= "3.2.2"
-koin_android_version= "3.2.3"
-koin_android_compose_version= "3.2.2"
-koin_ktor= "3.2.2"
-```
 
 You can find all [Koin packages on maven central](https://search.maven.org/search?q=io.insert-koin).
 
@@ -26,18 +19,18 @@ repositories {
 }
 ```
 
-### **Kotlin**
+### **Core**
+
+```groovy
+koin_version= "3.2.2"
+```
 
 ```groovy
 // Koin Core features
 implementation "io.insert-koin:koin-core:$koin_version"
 // Koin Test features
 testImplementation "io.insert-koin:koin-test:$koin_version"
-```
 
-### **JUnit**
-
-```groovy
 // Koin for JUnit 4
 testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 // Koin for JUnit 5
@@ -47,10 +40,12 @@ testImplementation "io.insert-koin:koin-test-junit5:$koin_version"
 ### **Android**
 
 ```groovy
+koin_android_version= "3.3.0"
+```
+
+```groovy
 // Koin main features for Android
 implementation "io.insert-koin:koin-android:$koin_android_version"
-// No more koin-android-viewmodel, koin-android-scope, koin-android-fragment
-
 // Java Compatibility
 implementation "io.insert-koin:koin-android-compat:$koin_android_version"
 // Jetpack WorkManager
@@ -59,7 +54,11 @@ implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
 implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
 ```
 
-### **Android Compose**
+### **Android Jetpack Compose**
+
+```groovy
+koin_android_compose_version= "3.3.0"
+```
 
 ```groovy
 // Jetpack Compose
@@ -68,6 +67,10 @@ implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_versi
 
 
 ### **Ktor**
+
+```groovy
+koin_ktor= "3.2.2"
+```
 
 ```groovy
 // Koin for Ktor 

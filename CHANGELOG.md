@@ -12,7 +12,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - lib update - `androidx.fragment:fragment-ktx:1.5.3`
 * `[UPDATED]` - lib update - `androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1`
 * `[UPDATED]` - lib update - `androidx.lifecycle:lifecycle-common-java8:2.5.1`
-* `[UPDATED]` - All Koin ViewModel API to use latest `ViewModelProvider` extras API [ViewModel 2.5.2](https://developer.android.com/jetpack/androidx/releases/lifecycle#2.5.1) . API Signature have been changed to keep the existing API. Such API propagates all extras directly to `SavedStateHandle`. Added `ownerProducer: () -> ViewModelStoreOwner`, and `extrasProducer: (() -> CreationExtras)?` parameters to main function.
+* `[UPDATED]` - All Koin ViewModel API to use latest `ViewModelProvider` extras API [ViewModel 2.5.1](https://developer.android.com/jetpack/androidx/releases/lifecycle#2.5.1) . API Signature have been changed to keep the existing API. Such API propagates all extras directly to `SavedStateHandle`. Added `ownerProducer: () -> ViewModelStoreOwner`, and `extrasProducer: (() -> CreationExtras)?` parameters to main function.
 * `[FIXED]` - Fix `SavedStateHandle` injection and lifecycle follow up with new `KoinViewModelFactory`
 * `[UPDATED]` - Sandbox app updated to check new API
 * `[DEPRECATED]` - all `stateViewModel()` API functions + all related internals
