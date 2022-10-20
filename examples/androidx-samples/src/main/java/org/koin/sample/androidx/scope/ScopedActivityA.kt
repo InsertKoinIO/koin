@@ -7,6 +7,8 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.RetainedScopeActivity
+import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.scope.createActivityRetainedScope
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
@@ -19,29 +21,20 @@ import org.koin.sample.androidx.components.scope.SessionActivity
 import org.koin.sample.androidx.di.scopeModuleActivityA
 import org.koin.sample.androidx.utils.navigateTo
 
-class ScopedActivityA : AppCompatActivity(R.layout.scoped_activity_a), AndroidScopeComponent {
+class ScopedActivityA : RetainedScopeActivity(R.layout.scoped_activity_a) {
 
     // Inject from current scope
     val currentSession by inject<Session>()
-    val currentActivitySession by inject<SessionActivity>()
-
-    // Don't mix Activity Android Scopes
-    val longSession by inject<Session>()
-
-    override var scope: Scope? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadKoinModules(scopeModuleActivityA)
-        createActivityRetainedScope()
-
         assert(currentSession == get<Session>())
         if (SESSION_ID_VAR.isEmpty()) {
-            println("Create ID from session: $SESSION_ID_VAR")
-            SESSION_ID_VAR = longSession.id
+            println("Create ID for session: $SESSION_ID_VAR")
+            SESSION_ID_VAR = currentSession.id
         }
-        assert(SESSION_ID_VAR == longSession.id)
+        assert(SESSION_ID_VAR == currentSession.id)
 
         // Conpare different scope instances
         val scopeSession1 = getKoin().createScope(SESSION_1, named(SCOPE_ID))
@@ -68,11 +61,6 @@ class ScopedActivityA : AppCompatActivity(R.layout.scoped_activity_a), AndroidSc
 
         scopeSession1.close()
         scopeSession2.close()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unloadKoinModules(scopeModuleActivityA)
     }
 
     companion object {

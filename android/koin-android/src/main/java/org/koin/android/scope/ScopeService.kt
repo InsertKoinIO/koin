@@ -28,17 +28,18 @@ import org.koin.core.scope.Scope
  */
 abstract class ScopeService : Service(), AndroidScopeComponent {
 
-    override var scope: Scope? = null
+    override val scope: Scope by serviceScope()
 
     override fun onCreate() {
         super.onCreate()
-
-        createServiceScope()
+        checkNotNull(scope)
+        //TODO replace with createServiceScope
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         destroyServiceScope()
+        //TODO be sure to close scope
     }
 }

@@ -32,11 +32,11 @@ abstract class RetainedScopeActivity(
     @LayoutRes contentLayoutId: Int = 0,
 ) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
-    override var scope: Scope? = null
+    override val scope: Scope by activityRetainedScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createActivityRetainedScope()
+        checkNotNull(scope)
     }
 }

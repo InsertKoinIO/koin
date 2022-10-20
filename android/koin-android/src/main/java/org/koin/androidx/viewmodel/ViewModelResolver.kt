@@ -7,7 +7,7 @@ import org.koin.androidx.viewmodel.factory.DefaultViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
 
-//TODO Use instance resolution & key
+//TODO Deprecate for ViewModel API 2.5 + initializers
 internal fun <T : ViewModel> ViewModelProvider.resolveInstance(viewModelParameters: ViewModelParameter<T>): T {
     val javaClass = viewModelParameters.clazz.java
     return if (viewModelParameters.qualifier != null) {

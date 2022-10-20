@@ -18,15 +18,11 @@ package org.koin.androidx.viewmodel.ext.android
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.scope.BundleDefinition
-import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import kotlin.reflect.KClass
 
 //TODO Clean up ViewModelOwnerDefinition in 3.2
 
@@ -38,20 +34,20 @@ import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : ViewModel> ComponentActivity.viewModel(
-        qualifier: Qualifier? = null,
-        owner : ViewModelStoreOwner = this,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    owner: ViewModelStoreOwner = this,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-        return viewModels {
-                getViewModelFactory<T>(owner, qualifier, parameters, scope = getKoinScope())
-        }
+    return viewModels {
+        getViewModelFactory<T>(owner, qualifier, parameters, scope = getKoinScope())
+    }
 }
 
 inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
-        qualifier: Qualifier? = null,
-        owner : ViewModelStoreOwner = this,
-        noinline parameters: ParametersDefinition? = null,
+    qualifier: Qualifier? = null,
+    owner: ViewModelStoreOwner = this,
+    noinline parameters: ParametersDefinition? = null,
 ): T {
-        return viewModel<T>(qualifier, owner, parameters).value
+    return viewModel<T>(qualifier, owner, parameters).value
 }
 

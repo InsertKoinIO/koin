@@ -15,15 +15,14 @@
  */
 package org.koin.androidx.scope
 
-import android.app.Activity
 import android.content.ComponentCallbacks
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
@@ -31,27 +30,27 @@ import org.koin.core.scope.Scope
 /**
  * Provide Koin Scope tied to ComponentActivity
  */
-@Deprecated("Delegate Lazy API is deprecatede. Please use AppCompatActivity.createActivityScope()")
-fun ComponentActivity.activityScope() = LifecycleScopeDelegate<Activity>(this, this.getKoin())
-@Deprecated("Delegate Lazy API is deprecatede. Please use AppCompatActivity.createActivityRetainedScope()")
-fun ComponentActivity.activityRetainedScope() = LifecycleViewModelScopeDelegate(this, this.getKoin())
-@Deprecated("Internal API not used anymore")
-internal fun ComponentActivity.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
+
+fun ComponentActivity.activityScope() = lazy { createActivityScope() }
+fun ComponentActivity.activityRetainedScope() = lazy { createActivityRetainedScope() }
+
+@KoinInternalApi
+fun ComponentActivity.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
+
 fun ComponentActivity.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 
 /**
  * Create Scope for AppCompatActivity, given it's extending AndroidScopeComponent.
  * Also register it in AndroidScopeComponent.scope
  */
-fun AppCompatActivity.createActivityScope() {
+fun ComponentActivity.createActivityScope(): Scope {
     if (this !is AndroidScopeComponent) {
         error("Activity should implement AndroidScopeComponent")
     }
-    if (this.scope != null) {
-        error("Activity Scope is already created")
-    }
-    val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
-    this.scope = scope
+//    if (this.scope != null) {
+//        error("Activity Scope is already created")
+//    }
+    return getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
 }
 
 internal fun ComponentCallbacks.createScopeForCurrentLifecycle(owner: LifecycleOwner): Scope {
@@ -77,17 +76,17 @@ internal fun LifecycleOwner.registerScopeForLifecycle(
  * Create Retained Scope for AppCompatActivity, given it's extending AndroidScopeComponent.
  * Also register it in AndroidScopeComponent.scope
  */
-fun ComponentActivity.createActivityRetainedScope() {
+fun ComponentActivity.createActivityRetainedScope(): Scope {
     if (this !is AndroidScopeComponent) {
         error("Activity should implement AndroidScopeComponent")
     }
-    if (this.scope != null) {
-        error("Activity Scope is already created")
-    }
+//    if (this.scope != null) {
+//        error("Activity Scope is already created")
+//    }
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null) {
         val scope = getKoin().createScope(getScopeId(), getScopeName())
         scopeViewModel.scope = scope
     }
-    this.scope = scopeViewModel.scope
+    return scopeViewModel.scope!!
 }

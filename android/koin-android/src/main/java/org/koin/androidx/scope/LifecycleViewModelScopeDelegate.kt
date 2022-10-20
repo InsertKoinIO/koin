@@ -11,7 +11,7 @@ import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-@Deprecated("Use ComponentActivity.createActivityRetainedScope() with ScopeActivity or AndroidScopeComponent")
+//TODO Deprecate
 class LifecycleViewModelScopeDelegate(
         private val lifecycleOwner: ComponentActivity,
         private val koin : Koin,
