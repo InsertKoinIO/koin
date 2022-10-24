@@ -8,6 +8,15 @@ A pragmatic lightweight dependency injection framework for Kotlin developers. `K
 
 You can find the following page to help setup your project: [Koin Gradle Setup](https://insert-koin.io/docs/setup/v3.2)
 
+Here are the current available versions:
+
+```groovy
+koin_version= "3.2.2"
+koin_android_version= "3.2.3"
+koin_android_compose_version= "3.2.2"
+koin_ktor= "3.2.2"
+```
+
 ## Latest News
 - On our Blog: [The Kotzilla Blog](https://blog.kotzilla.io/)
 - On Twitter for latest news: [@insertkoin_io](https://twitter.com/insertkoin_io)
