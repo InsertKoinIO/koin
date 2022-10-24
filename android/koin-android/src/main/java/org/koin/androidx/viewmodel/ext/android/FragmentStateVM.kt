@@ -15,11 +15,12 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
+import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.annotation.KoinInternalApi
@@ -31,23 +32,32 @@ import org.koin.core.qualifier.Qualifier
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternalApi::class)
+@Deprecated("Use Fragment.viewModel() with extras: CreationExtras")
+@MainThread
 inline fun <reified T : ViewModel> Fragment.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelStoreOwnerProducer = { this },
+    noinline owner: () -> ViewModelStoreOwner = { this },
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return viewModels(ownerProducer = owner) {
-        getViewModelFactory<T>(owner(), qualifier, parameters, state = state, scope = getKoinScope())
-    }
+    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(qualifier, state, owner, parameters) }
 }
 
+@Deprecated("Use Fragment.getViewModel() with extras: CreationExtras")
+@OptIn(KoinInternalApi::class)
+@MainThread
 inline fun <reified T : ViewModel> Fragment.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
-    noinline owner: ViewModelStoreOwnerProducer = { this },
+    noinline owner: () -> ViewModelStoreOwner = { this },
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return stateViewModel<T>(qualifier, state, owner, parameters).value
+    return resolveViewModel(
+        T::class,
+        owner().viewModelStore,
+        extras = state().toExtras(this) ?: this.defaultViewModelCreationExtras,
+        qualifier = qualifier,
+        parameters = parameters,
+        scope = getKoinScope()
+    )
 }

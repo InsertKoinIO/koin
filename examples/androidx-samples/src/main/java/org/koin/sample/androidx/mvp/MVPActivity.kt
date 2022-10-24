@@ -44,7 +44,8 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), AndroidScopeCompon
         mvp_button.setOnClickListener {
             navigateTo<MVVMActivity>(isRoot = true, extras =
                 mapOf(
-                    "vm1" to "value to stateViewModel"
+                    "vm1" to "value to stateViewModel",
+                    "id" to "vm1"
                 )
             )
         }

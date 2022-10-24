@@ -1,0 +1,72 @@
+name: Build & Test
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:    
+      - '*'
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+    
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build Core
+        run: cd core && ./test.sh
+
+      - name: Install Core
+        run: cd core && ./install.sh
+      
+      - name: Build Android
+        run: cd android && ./test.sh
+
+  build-macos:
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+    
+      - name: Cache build tooling
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.konan
+          key: ${{ runner.os }}-v1-${{ hashFiles('*.gradle.kts') }}
+
+      - name: Run Core
+        run: cd core && ../gradlew macosX64Test --no-daemon --stacktrace

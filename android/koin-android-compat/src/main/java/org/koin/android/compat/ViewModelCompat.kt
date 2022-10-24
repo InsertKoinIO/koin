@@ -15,11 +15,10 @@
  */
 package org.koin.android.compat
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
 import androidx.lifecycle.ViewModelStoreOwner
-import org.koin.androidx.viewmodel.ViewModelParameter
-import org.koin.androidx.viewmodel.pickFactory
+import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
@@ -42,26 +41,18 @@ object ViewModelCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
-    @OptIn(KoinInternalApi::class)
     @JvmOverloads
     @JvmStatic
+    @MainThread
     fun <T : ViewModel> viewModel(
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): Lazy<T>{
-        val scope = GlobalContext.get().scopeRegistry.rootScope
-        val viewModelClass = clazz.kotlin
-        return ViewModelLazy(viewModelClass, { owner.viewModelStore },{
-            val viewModelParameters = ViewModelParameter(
-                clazz = viewModelClass,
-                qualifier = qualifier,
-                parameters = parameters,
-                viewModelStoreOwner = owner,
-            )
-            scope.pickFactory(viewModelParameters)
-        })
+    ): Lazy<T> {
+        return lazy(LazyThreadSafetyMode.NONE) {
+            getViewModel(owner, clazz, qualifier, parameters)
+        }
     }
 
 
@@ -73,12 +64,21 @@ object ViewModelCompat {
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
      */
+    @OptIn(KoinInternalApi::class)
     @JvmOverloads
     @JvmStatic
+    @MainThread
     fun <T : ViewModel> getViewModel(
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
-    ): T = viewModel(owner, clazz, qualifier, parameters).value
+    ): T = resolveViewModelCompat(
+        clazz,
+        owner.viewModelStore,
+        extras = CreationExtras.Empty,
+        qualifier = qualifier,
+        parameters = parameters,
+        scope = GlobalContext.get().scopeRegistry.rootScope
+    )
 }
