@@ -15,38 +15,63 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.ViewModelStoreOwnerProducer
+import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 
-//TODO Clean up ViewModelOwnerDefinition
-
 /**
- * ViewModelStoreOwner extensions to help for ViewModel
+ * ViewModel API from Fragment
  *
  * @author Arnaud Giuliani
  */
 
-@OptIn(KoinInternalApi::class)
+/**
+ * Retrieve Lazy ViewModel instance for Fragment
+ * @param qualifier
+ * @param ownerProducer
+ * @param extrasProducer
+ * @param parameters
+ */
+@MainThread
 inline fun <reified T : ViewModel> Fragment.viewModel(
     qualifier: Qualifier? = null,
-    noinline owner: ViewModelStoreOwnerProducer = { this },
-    noinline parameters: ParametersDefinition? = null
+    noinline ownerProducer: () -> ViewModelStoreOwner = { this },
+    noinline extrasProducer: (() -> CreationExtras)? = null,
+    noinline parameters: (() -> ParametersHolder)? = null,
 ): Lazy<T> {
-    return viewModels(ownerProducer = owner) {
-        getViewModelFactory<T>(owner(), qualifier, parameters, scope = getKoinScope())
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getViewModel(qualifier, ownerProducer, extrasProducer, parameters)
     }
 }
 
+/**
+ * Retrieve ViewModel instance for Fragment
+ * @param qualifier
+ * @param ownerProducer
+ * @param extrasProducer
+ * @param parameters
+ */
+@OptIn(KoinInternalApi::class)
+@MainThread
 inline fun <reified T : ViewModel> Fragment.getViewModel(
     qualifier: Qualifier? = null,
-    noinline owner: ViewModelStoreOwnerProducer = { this },
-    noinline parameters: ParametersDefinition? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { this },
+    noinline extrasProducer: (() -> CreationExtras)? = null,
+    noinline parameters: (() -> ParametersHolder)? = null,
 ): T {
-    return viewModel<T>(qualifier, owner, parameters).value
+    return resolveViewModel(
+        T::class,
+        ownerProducer().viewModelStore,
+        extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,
+        qualifier = qualifier,
+        parameters = parameters,
+        scope = getKoinScope()
+    )
 }

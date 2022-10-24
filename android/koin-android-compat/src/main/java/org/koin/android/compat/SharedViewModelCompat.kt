@@ -15,10 +15,12 @@
  */
 package org.koin.android.compat
 
+import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.koin.android.compat.SharedViewModelCompat.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModelForClass
+import androidx.lifecycle.viewmodel.CreationExtras
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
@@ -28,8 +30,6 @@ import org.koin.core.qualifier.Qualifier
  * @author Jeziel Lago
  */
 object SharedViewModelCompat {
-
-    //TODO Deprecate and add new
 
     /**
      * Lazy getByClass a viewModel instance shared with Activity
@@ -42,12 +42,13 @@ object SharedViewModelCompat {
      */
     @JvmOverloads
     @JvmStatic
+    @MainThread
     fun <T : ViewModel> sharedViewModel(
         fragment: Fragment,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null,
-    ): Lazy<T> = fragment.viewModelForClass(clazz.kotlin,qualifier,parameters = parameters)
+    ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(fragment, clazz, qualifier, parameters) }
 
     /**
      * Get a shared viewModel instance from underlying Activity
@@ -58,13 +59,22 @@ object SharedViewModelCompat {
      * @param parameters - parameters to pass to the BeanDefinition
      * @param clazz
      */
+    @OptIn(KoinInternalApi::class)
     @JvmOverloads
+    @MainThread
     fun <T : ViewModel> getSharedViewModel(
         fragment: Fragment,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null,
     ): T {
-        return sharedViewModel(fragment, clazz, qualifier, parameters).value
+        return resolveViewModelCompat(
+            clazz,
+            fragment.viewModelStore,
+            extras = CreationExtras.Empty,
+            qualifier = qualifier,
+            parameters = parameters,
+            scope = GlobalContext.get().scopeRegistry.rootScope
+        )
     }
 }

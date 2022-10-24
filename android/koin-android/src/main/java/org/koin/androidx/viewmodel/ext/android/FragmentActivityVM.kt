@@ -15,9 +15,10 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.android.ext.android.getKoinScope
 import org.koin.androidx.viewmodel.resolveViewModel
@@ -26,48 +27,51 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 
 /**
- * ViewModel API from ComponentActivity
+ * ViewModel instance shared with parent Activity
  *
  * @author Arnaud Giuliani
  */
 
 /**
- * Retrieve Lazy ViewModel instance for ComponentActivity
+ * Retrieve Lazy ViewModel instance shared with parent Activity
  * @param qualifier
+ * @param ownerProducer
  * @param extrasProducer
  * @param parameters
  */
 @MainThread
-inline fun <reified T : ViewModel> ComponentActivity.viewModel(
+inline fun <reified T : ViewModel> Fragment.activityViewModel(
     qualifier: Qualifier? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { requireActivity() },
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) {
-        getViewModel(qualifier, extrasProducer, parameters)
+        getActivityViewModel(qualifier,ownerProducer, extrasProducer, parameters)
     }
 }
 
 /**
- * Retrieve ViewModel instance for ComponentActivity
+ * Retrieve ViewModel instance shared with parent Activity
  * @param qualifier
+ * @param ownerProducer
  * @param extrasProducer
  * @param parameters
  */
 @OptIn(KoinInternalApi::class)
 @MainThread
-inline fun <reified T : ViewModel> ComponentActivity.getViewModel(
+inline fun <reified T : ViewModel> Fragment.getActivityViewModel(
     qualifier: Qualifier? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { requireActivity() },
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): T {
     return resolveViewModel(
         T::class,
-        viewModelStore,
+        ownerProducer().viewModelStore,
         extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,
         qualifier = qualifier,
         parameters = parameters,
         scope = getKoinScope()
     )
 }
-

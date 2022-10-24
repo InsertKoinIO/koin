@@ -24,39 +24,8 @@ import android.os.Bundle
  *
  * @author Arnaud Giuliani
  */
-//TODO Deprecate for extrasProducer
+@Deprecated("Replaced by CreationExtras API")
 fun emptyState(): BundleDefinition = { Bundle() }
-typealias BundleDefinition = () -> Bundle
 
-//inline fun <reified T : ViewModel> Scope.getViewModel(
-//        qualifier: Qualifier? = null,
-//        noinline owner: ViewModelOwnerDefinition,
-//        noinline parameters: ParametersDefinition? = null,
-//): T {
-//    return getViewModel(qualifier, owner, T::class, parameters = parameters)
-//}
-//
-//fun <T : ViewModel> Scope.getViewModel(
-//        qualifier: Qualifier? = null,
-//        owner: ViewModelOwnerDefinition,
-//        clazz: KClass<T>,
-//        state: BundleDefinition? = null,
-//        parameters: ParametersDefinition? = null,
-//): T {
-//    val ownerDef = owner()
-//    return getViewModel(
-//            ViewModelParameter(
-//                    clazz,
-//                    qualifier,
-//                    state,
-//                    parameters,
-//                    ownerDef.store,
-//                    ownerDef.stateRegistry
-//            )
-//    )
-//}
-//
-//internal fun <T : ViewModel> Scope.getViewModel(viewModelParameters: ViewModelParameter<T>): T {
-//    val viewModelProvider = ViewModelProvider(viewModelParameters.viewModelStore, pickFactory(viewModelParameters))
-//    return viewModelProvider.resolveInstance(viewModelParameters)
-//}
+@Deprecated("Replaced by CreationExtras API")
+typealias BundleDefinition = () -> Bundle
