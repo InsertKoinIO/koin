@@ -8,7 +8,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
@@ -24,16 +24,14 @@ jobs:
           distribution: 'zulu'
           java-version: 11
     
-      - name: Cache build tooling
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.konan
-          key: ${{ runner.os }}-v1-${{ hashFiles('*.gradle.kts') }}
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
-      - name: Run Core
-        run: cd core && ./test.sh && ./install.sh
+      - name: Build Core
+        run: cd core && ./test.sh
+
+      - name: Install Core
+        run: cd core && ./install.sh
       
-      - name: Run Android
+      - name: Build Android
         run: cd android && ./test.sh
