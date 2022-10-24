@@ -14,7 +14,7 @@ env:
   SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
 
 jobs:
-  build:
+  release:
     runs-on: macos-latest
 
     steps:
