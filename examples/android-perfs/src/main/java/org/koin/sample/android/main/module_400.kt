@@ -1,406 +1,406 @@
-package org.koin.perfs
+package org.koin.sample.android.main
 
 import org.koin.dsl.module
 
 fun perfModule400() = module {
-   single { Perfs.A1() }
-   single { Perfs.B1(get()) }
-   single { Perfs.C1(get(), get()) }
-   single { Perfs.D1(get(), get(), get()) }
-   single { Perfs.A2() }
-   single { Perfs.B2(get()) }
-   single { Perfs.C2(get(), get()) }
-   single { Perfs.D2(get(), get(), get()) }
-   single { Perfs.A3() }
-   single { Perfs.B3(get()) }
-   single { Perfs.C3(get(), get()) }
-   single { Perfs.D3(get(), get(), get()) }
-   single { Perfs.A4() }
-   single { Perfs.B4(get()) }
-   single { Perfs.C4(get(), get()) }
-   single { Perfs.D4(get(), get(), get()) }
-   single { Perfs.A5() }
-   single { Perfs.B5(get()) }
-   single { Perfs.C5(get(), get()) }
-   single { Perfs.D5(get(), get(), get()) }
-   single { Perfs.A6() }
-   single { Perfs.B6(get()) }
-   single { Perfs.C6(get(), get()) }
-   single { Perfs.D6(get(), get(), get()) }
-   single { Perfs.A7() }
-   single { Perfs.B7(get()) }
-   single { Perfs.C7(get(), get()) }
-   single { Perfs.D7(get(), get(), get()) }
-   single { Perfs.A8() }
-   single { Perfs.B8(get()) }
-   single { Perfs.C8(get(), get()) }
-   single { Perfs.D8(get(), get(), get()) }
-   single { Perfs.A9() }
-   single { Perfs.B9(get()) }
-   single { Perfs.C9(get(), get()) }
-   single { Perfs.D9(get(), get(), get()) }
-   single { Perfs.A10() }
-   single { Perfs.B10(get()) }
-   single { Perfs.C10(get(), get()) }
-   single { Perfs.D10(get(), get(), get()) }
-   single { Perfs.A11() }
-   single { Perfs.B11(get()) }
-   single { Perfs.C11(get(), get()) }
-   single { Perfs.D11(get(), get(), get()) }
-   single { Perfs.A12() }
-   single { Perfs.B12(get()) }
-   single { Perfs.C12(get(), get()) }
-   single { Perfs.D12(get(), get(), get()) }
-   single { Perfs.A13() }
-   single { Perfs.B13(get()) }
-   single { Perfs.C13(get(), get()) }
-   single { Perfs.D13(get(), get(), get()) }
-   single { Perfs.A14() }
-   single { Perfs.B14(get()) }
-   single { Perfs.C14(get(), get()) }
-   single { Perfs.D14(get(), get(), get()) }
-   single { Perfs.A15() }
-   single { Perfs.B15(get()) }
-   single { Perfs.C15(get(), get()) }
-   single { Perfs.D15(get(), get(), get()) }
-   single { Perfs.A16() }
-   single { Perfs.B16(get()) }
-   single { Perfs.C16(get(), get()) }
-   single { Perfs.D16(get(), get(), get()) }
-   single { Perfs.A17() }
-   single { Perfs.B17(get()) }
-   single { Perfs.C17(get(), get()) }
-   single { Perfs.D17(get(), get(), get()) }
-   single { Perfs.A18() }
-   single { Perfs.B18(get()) }
-   single { Perfs.C18(get(), get()) }
-   single { Perfs.D18(get(), get(), get()) }
-   single { Perfs.A19() }
-   single { Perfs.B19(get()) }
-   single { Perfs.C19(get(), get()) }
-   single { Perfs.D19(get(), get(), get()) }
-   single { Perfs.A20() }
-   single { Perfs.B20(get()) }
-   single { Perfs.C20(get(), get()) }
-   single { Perfs.D20(get(), get(), get()) }
-   single { Perfs.A21() }
-   single { Perfs.B21(get()) }
-   single { Perfs.C21(get(), get()) }
-   single { Perfs.D21(get(), get(), get()) }
-   single { Perfs.A22() }
-   single { Perfs.B22(get()) }
-   single { Perfs.C22(get(), get()) }
-   single { Perfs.D22(get(), get(), get()) }
-   single { Perfs.A23() }
-   single { Perfs.B23(get()) }
-   single { Perfs.C23(get(), get()) }
-   single { Perfs.D23(get(), get(), get()) }
-   single { Perfs.A24() }
-   single { Perfs.B24(get()) }
-   single { Perfs.C24(get(), get()) }
-   single { Perfs.D24(get(), get(), get()) }
-   single { Perfs.A25() }
-   single { Perfs.B25(get()) }
-   single { Perfs.C25(get(), get()) }
-   single { Perfs.D25(get(), get(), get()) }
-   single { Perfs.A26() }
-   single { Perfs.B26(get()) }
-   single { Perfs.C26(get(), get()) }
-   single { Perfs.D26(get(), get(), get()) }
-   single { Perfs.A27() }
-   single { Perfs.B27(get()) }
-   single { Perfs.C27(get(), get()) }
-   single { Perfs.D27(get(), get(), get()) }
-   single { Perfs.A28() }
-   single { Perfs.B28(get()) }
-   single { Perfs.C28(get(), get()) }
-   single { Perfs.D28(get(), get(), get()) }
-   single { Perfs.A29() }
-   single { Perfs.B29(get()) }
-   single { Perfs.C29(get(), get()) }
-   single { Perfs.D29(get(), get(), get()) }
-   single { Perfs.A30() }
-   single { Perfs.B30(get()) }
-   single { Perfs.C30(get(), get()) }
-   single { Perfs.D30(get(), get(), get()) }
-   single { Perfs.A31() }
-   single { Perfs.B31(get()) }
-   single { Perfs.C31(get(), get()) }
-   single { Perfs.D31(get(), get(), get()) }
-   single { Perfs.A32() }
-   single { Perfs.B32(get()) }
-   single { Perfs.C32(get(), get()) }
-   single { Perfs.D32(get(), get(), get()) }
-   single { Perfs.A33() }
-   single { Perfs.B33(get()) }
-   single { Perfs.C33(get(), get()) }
-   single { Perfs.D33(get(), get(), get()) }
-   single { Perfs.A34() }
-   single { Perfs.B34(get()) }
-   single { Perfs.C34(get(), get()) }
-   single { Perfs.D34(get(), get(), get()) }
-   single { Perfs.A35() }
-   single { Perfs.B35(get()) }
-   single { Perfs.C35(get(), get()) }
-   single { Perfs.D35(get(), get(), get()) }
-   single { Perfs.A36() }
-   single { Perfs.B36(get()) }
-   single { Perfs.C36(get(), get()) }
-   single { Perfs.D36(get(), get(), get()) }
-   single { Perfs.A37() }
-   single { Perfs.B37(get()) }
-   single { Perfs.C37(get(), get()) }
-   single { Perfs.D37(get(), get(), get()) }
-   single { Perfs.A38() }
-   single { Perfs.B38(get()) }
-   single { Perfs.C38(get(), get()) }
-   single { Perfs.D38(get(), get(), get()) }
-   single { Perfs.A39() }
-   single { Perfs.B39(get()) }
-   single { Perfs.C39(get(), get()) }
-   single { Perfs.D39(get(), get(), get()) }
-   single { Perfs.A40() }
-   single { Perfs.B40(get()) }
-   single { Perfs.C40(get(), get()) }
-   single { Perfs.D40(get(), get(), get()) }
-   single { Perfs.A41() }
-   single { Perfs.B41(get()) }
-   single { Perfs.C41(get(), get()) }
-   single { Perfs.D41(get(), get(), get()) }
-   single { Perfs.A42() }
-   single { Perfs.B42(get()) }
-   single { Perfs.C42(get(), get()) }
-   single { Perfs.D42(get(), get(), get()) }
-   single { Perfs.A43() }
-   single { Perfs.B43(get()) }
-   single { Perfs.C43(get(), get()) }
-   single { Perfs.D43(get(), get(), get()) }
-   single { Perfs.A44() }
-   single { Perfs.B44(get()) }
-   single { Perfs.C44(get(), get()) }
-   single { Perfs.D44(get(), get(), get()) }
-   single { Perfs.A45() }
-   single { Perfs.B45(get()) }
-   single { Perfs.C45(get(), get()) }
-   single { Perfs.D45(get(), get(), get()) }
-   single { Perfs.A46() }
-   single { Perfs.B46(get()) }
-   single { Perfs.C46(get(), get()) }
-   single { Perfs.D46(get(), get(), get()) }
-   single { Perfs.A47() }
-   single { Perfs.B47(get()) }
-   single { Perfs.C47(get(), get()) }
-   single { Perfs.D47(get(), get(), get()) }
-   single { Perfs.A48() }
-   single { Perfs.B48(get()) }
-   single { Perfs.C48(get(), get()) }
-   single { Perfs.D48(get(), get(), get()) }
-   single { Perfs.A49() }
-   single { Perfs.B49(get()) }
-   single { Perfs.C49(get(), get()) }
-   single { Perfs.D49(get(), get(), get()) }
-   single { Perfs.A50() }
-   single { Perfs.B50(get()) }
-   single { Perfs.C50(get(), get()) }
-   single { Perfs.D50(get(), get(), get()) }
-   single { Perfs.A51() }
-   single { Perfs.B51(get()) }
-   single { Perfs.C51(get(), get()) }
-   single { Perfs.D51(get(), get(), get()) }
-   single { Perfs.A52() }
-   single { Perfs.B52(get()) }
-   single { Perfs.C52(get(), get()) }
-   single { Perfs.D52(get(), get(), get()) }
-   single { Perfs.A53() }
-   single { Perfs.B53(get()) }
-   single { Perfs.C53(get(), get()) }
-   single { Perfs.D53(get(), get(), get()) }
-   single { Perfs.A54() }
-   single { Perfs.B54(get()) }
-   single { Perfs.C54(get(), get()) }
-   single { Perfs.D54(get(), get(), get()) }
-   single { Perfs.A55() }
-   single { Perfs.B55(get()) }
-   single { Perfs.C55(get(), get()) }
-   single { Perfs.D55(get(), get(), get()) }
-   single { Perfs.A56() }
-   single { Perfs.B56(get()) }
-   single { Perfs.C56(get(), get()) }
-   single { Perfs.D56(get(), get(), get()) }
-   single { Perfs.A57() }
-   single { Perfs.B57(get()) }
-   single { Perfs.C57(get(), get()) }
-   single { Perfs.D57(get(), get(), get()) }
-   single { Perfs.A58() }
-   single { Perfs.B58(get()) }
-   single { Perfs.C58(get(), get()) }
-   single { Perfs.D58(get(), get(), get()) }
-   single { Perfs.A59() }
-   single { Perfs.B59(get()) }
-   single { Perfs.C59(get(), get()) }
-   single { Perfs.D59(get(), get(), get()) }
-   single { Perfs.A60() }
-   single { Perfs.B60(get()) }
-   single { Perfs.C60(get(), get()) }
-   single { Perfs.D60(get(), get(), get()) }
-   single { Perfs.A61() }
-   single { Perfs.B61(get()) }
-   single { Perfs.C61(get(), get()) }
-   single { Perfs.D61(get(), get(), get()) }
-   single { Perfs.A62() }
-   single { Perfs.B62(get()) }
-   single { Perfs.C62(get(), get()) }
-   single { Perfs.D62(get(), get(), get()) }
-   single { Perfs.A63() }
-   single { Perfs.B63(get()) }
-   single { Perfs.C63(get(), get()) }
-   single { Perfs.D63(get(), get(), get()) }
-   single { Perfs.A64() }
-   single { Perfs.B64(get()) }
-   single { Perfs.C64(get(), get()) }
-   single { Perfs.D64(get(), get(), get()) }
-   single { Perfs.A65() }
-   single { Perfs.B65(get()) }
-   single { Perfs.C65(get(), get()) }
-   single { Perfs.D65(get(), get(), get()) }
-   single { Perfs.A66() }
-   single { Perfs.B66(get()) }
-   single { Perfs.C66(get(), get()) }
-   single { Perfs.D66(get(), get(), get()) }
-   single { Perfs.A67() }
-   single { Perfs.B67(get()) }
-   single { Perfs.C67(get(), get()) }
-   single { Perfs.D67(get(), get(), get()) }
-   single { Perfs.A68() }
-   single { Perfs.B68(get()) }
-   single { Perfs.C68(get(), get()) }
-   single { Perfs.D68(get(), get(), get()) }
-   single { Perfs.A69() }
-   single { Perfs.B69(get()) }
-   single { Perfs.C69(get(), get()) }
-   single { Perfs.D69(get(), get(), get()) }
-   single { Perfs.A70() }
-   single { Perfs.B70(get()) }
-   single { Perfs.C70(get(), get()) }
-   single { Perfs.D70(get(), get(), get()) }
-   single { Perfs.A71() }
-   single { Perfs.B71(get()) }
-   single { Perfs.C71(get(), get()) }
-   single { Perfs.D71(get(), get(), get()) }
-   single { Perfs.A72() }
-   single { Perfs.B72(get()) }
-   single { Perfs.C72(get(), get()) }
-   single { Perfs.D72(get(), get(), get()) }
-   single { Perfs.A73() }
-   single { Perfs.B73(get()) }
-   single { Perfs.C73(get(), get()) }
-   single { Perfs.D73(get(), get(), get()) }
-   single { Perfs.A74() }
-   single { Perfs.B74(get()) }
-   single { Perfs.C74(get(), get()) }
-   single { Perfs.D74(get(), get(), get()) }
-   single { Perfs.A75() }
-   single { Perfs.B75(get()) }
-   single { Perfs.C75(get(), get()) }
-   single { Perfs.D75(get(), get(), get()) }
-   single { Perfs.A76() }
-   single { Perfs.B76(get()) }
-   single { Perfs.C76(get(), get()) }
-   single { Perfs.D76(get(), get(), get()) }
-   single { Perfs.A77() }
-   single { Perfs.B77(get()) }
-   single { Perfs.C77(get(), get()) }
-   single { Perfs.D77(get(), get(), get()) }
-   single { Perfs.A78() }
-   single { Perfs.B78(get()) }
-   single { Perfs.C78(get(), get()) }
-   single { Perfs.D78(get(), get(), get()) }
-   single { Perfs.A79() }
-   single { Perfs.B79(get()) }
-   single { Perfs.C79(get(), get()) }
-   single { Perfs.D79(get(), get(), get()) }
-   single { Perfs.A80() }
-   single { Perfs.B80(get()) }
-   single { Perfs.C80(get(), get()) }
-   single { Perfs.D80(get(), get(), get()) }
-   single { Perfs.A81() }
-   single { Perfs.B81(get()) }
-   single { Perfs.C81(get(), get()) }
-   single { Perfs.D81(get(), get(), get()) }
-   single { Perfs.A82() }
-   single { Perfs.B82(get()) }
-   single { Perfs.C82(get(), get()) }
-   single { Perfs.D82(get(), get(), get()) }
-   single { Perfs.A83() }
-   single { Perfs.B83(get()) }
-   single { Perfs.C83(get(), get()) }
-   single { Perfs.D83(get(), get(), get()) }
-   single { Perfs.A84() }
-   single { Perfs.B84(get()) }
-   single { Perfs.C84(get(), get()) }
-   single { Perfs.D84(get(), get(), get()) }
-   single { Perfs.A85() }
-   single { Perfs.B85(get()) }
-   single { Perfs.C85(get(), get()) }
-   single { Perfs.D85(get(), get(), get()) }
-   single { Perfs.A86() }
-   single { Perfs.B86(get()) }
-   single { Perfs.C86(get(), get()) }
-   single { Perfs.D86(get(), get(), get()) }
-   single { Perfs.A87() }
-   single { Perfs.B87(get()) }
-   single { Perfs.C87(get(), get()) }
-   single { Perfs.D87(get(), get(), get()) }
-   single { Perfs.A88() }
-   single { Perfs.B88(get()) }
-   single { Perfs.C88(get(), get()) }
-   single { Perfs.D88(get(), get(), get()) }
-   single { Perfs.A89() }
-   single { Perfs.B89(get()) }
-   single { Perfs.C89(get(), get()) }
-   single { Perfs.D89(get(), get(), get()) }
-   single { Perfs.A90() }
-   single { Perfs.B90(get()) }
-   single { Perfs.C90(get(), get()) }
-   single { Perfs.D90(get(), get(), get()) }
-   single { Perfs.A91() }
-   single { Perfs.B91(get()) }
-   single { Perfs.C91(get(), get()) }
-   single { Perfs.D91(get(), get(), get()) }
-   single { Perfs.A92() }
-   single { Perfs.B92(get()) }
-   single { Perfs.C92(get(), get()) }
-   single { Perfs.D92(get(), get(), get()) }
-   single { Perfs.A93() }
-   single { Perfs.B93(get()) }
-   single { Perfs.C93(get(), get()) }
-   single { Perfs.D93(get(), get(), get()) }
-   single { Perfs.A94() }
-   single { Perfs.B94(get()) }
-   single { Perfs.C94(get(), get()) }
-   single { Perfs.D94(get(), get(), get()) }
-   single { Perfs.A95() }
-   single { Perfs.B95(get()) }
-   single { Perfs.C95(get(), get()) }
-   single { Perfs.D95(get(), get(), get()) }
-   single { Perfs.A96() }
-   single { Perfs.B96(get()) }
-   single { Perfs.C96(get(), get()) }
-   single { Perfs.D96(get(), get(), get()) }
-   single { Perfs.A97() }
-   single { Perfs.B97(get()) }
-   single { Perfs.C97(get(), get()) }
-   single { Perfs.D97(get(), get(), get()) }
-   single { Perfs.A98() }
-   single { Perfs.B98(get()) }
-   single { Perfs.C98(get(), get()) }
-   single { Perfs.D98(get(), get(), get()) }
-   single { Perfs.A99() }
-   single { Perfs.B99(get()) }
-   single { Perfs.C99(get(), get()) }
-   single { Perfs.D99(get(), get(), get()) }
-   single { Perfs.A100() }
-   single { Perfs.B100(get()) }
-   single { Perfs.C100(get(), get()) }
-   single { Perfs.D100(get(), get(), get()) }
+   single { A1() }
+   single { B1(get()) }
+   single { C1(get(), get()) }
+   single { D1(get(), get(), get()) }
+   single { A2() }
+   single { B2(get()) }
+   single { C2(get(), get()) }
+   single { D2(get(), get(), get()) }
+   single { A3() }
+   single { B3(get()) }
+   single { C3(get(), get()) }
+   single { D3(get(), get(), get()) }
+   single { A4() }
+   single { B4(get()) }
+   single { C4(get(), get()) }
+   single { D4(get(), get(), get()) }
+   single { A5() }
+   single { B5(get()) }
+   single { C5(get(), get()) }
+   single { D5(get(), get(), get()) }
+   single { A6() }
+   single { B6(get()) }
+   single { C6(get(), get()) }
+   single { D6(get(), get(), get()) }
+   single { A7() }
+   single { B7(get()) }
+   single { C7(get(), get()) }
+   single { D7(get(), get(), get()) }
+   single { A8() }
+   single { B8(get()) }
+   single { C8(get(), get()) }
+   single { D8(get(), get(), get()) }
+   single { A9() }
+   single { B9(get()) }
+   single { C9(get(), get()) }
+   single { D9(get(), get(), get()) }
+   single { A10() }
+   single { B10(get()) }
+   single { C10(get(), get()) }
+   single { D10(get(), get(), get()) }
+   single { A11() }
+   single { B11(get()) }
+   single { C11(get(), get()) }
+   single { D11(get(), get(), get()) }
+   single { A12() }
+   single { B12(get()) }
+   single { C12(get(), get()) }
+   single { D12(get(), get(), get()) }
+   single { A13() }
+   single { B13(get()) }
+   single { C13(get(), get()) }
+   single { D13(get(), get(), get()) }
+   single { A14() }
+   single { B14(get()) }
+   single { C14(get(), get()) }
+   single { D14(get(), get(), get()) }
+   single { A15() }
+   single { B15(get()) }
+   single { C15(get(), get()) }
+   single { D15(get(), get(), get()) }
+   single { A16() }
+   single { B16(get()) }
+   single { C16(get(), get()) }
+   single { D16(get(), get(), get()) }
+   single { A17() }
+   single { B17(get()) }
+   single { C17(get(), get()) }
+   single { D17(get(), get(), get()) }
+   single { A18() }
+   single { B18(get()) }
+   single { C18(get(), get()) }
+   single { D18(get(), get(), get()) }
+   single { A19() }
+   single { B19(get()) }
+   single { C19(get(), get()) }
+   single { D19(get(), get(), get()) }
+   single { A20() }
+   single { B20(get()) }
+   single { C20(get(), get()) }
+   single { D20(get(), get(), get()) }
+   single { A21() }
+   single { B21(get()) }
+   single { C21(get(), get()) }
+   single { D21(get(), get(), get()) }
+   single { A22() }
+   single { B22(get()) }
+   single { C22(get(), get()) }
+   single { D22(get(), get(), get()) }
+   single { A23() }
+   single { B23(get()) }
+   single { C23(get(), get()) }
+   single { D23(get(), get(), get()) }
+   single { A24() }
+   single { B24(get()) }
+   single { C24(get(), get()) }
+   single { D24(get(), get(), get()) }
+   single { A25() }
+   single { B25(get()) }
+   single { C25(get(), get()) }
+   single { D25(get(), get(), get()) }
+   single { A26() }
+   single { B26(get()) }
+   single { C26(get(), get()) }
+   single { D26(get(), get(), get()) }
+   single { A27() }
+   single { B27(get()) }
+   single { C27(get(), get()) }
+   single { D27(get(), get(), get()) }
+   single { A28() }
+   single { B28(get()) }
+   single { C28(get(), get()) }
+   single { D28(get(), get(), get()) }
+   single { A29() }
+   single { B29(get()) }
+   single { C29(get(), get()) }
+   single { D29(get(), get(), get()) }
+   single { A30() }
+   single { B30(get()) }
+   single { C30(get(), get()) }
+   single { D30(get(), get(), get()) }
+   single { A31() }
+   single { B31(get()) }
+   single { C31(get(), get()) }
+   single { D31(get(), get(), get()) }
+   single { A32() }
+   single { B32(get()) }
+   single { C32(get(), get()) }
+   single { D32(get(), get(), get()) }
+   single { A33() }
+   single { B33(get()) }
+   single { C33(get(), get()) }
+   single { D33(get(), get(), get()) }
+   single { A34() }
+   single { B34(get()) }
+   single { C34(get(), get()) }
+   single { D34(get(), get(), get()) }
+   single { A35() }
+   single { B35(get()) }
+   single { C35(get(), get()) }
+   single { D35(get(), get(), get()) }
+   single { A36() }
+   single { B36(get()) }
+   single { C36(get(), get()) }
+   single { D36(get(), get(), get()) }
+   single { A37() }
+   single { B37(get()) }
+   single { C37(get(), get()) }
+   single { D37(get(), get(), get()) }
+   single { A38() }
+   single { B38(get()) }
+   single { C38(get(), get()) }
+   single { D38(get(), get(), get()) }
+   single { A39() }
+   single { B39(get()) }
+   single { C39(get(), get()) }
+   single { D39(get(), get(), get()) }
+   single { A40() }
+   single { B40(get()) }
+   single { C40(get(), get()) }
+   single { D40(get(), get(), get()) }
+   single { A41() }
+   single { B41(get()) }
+   single { C41(get(), get()) }
+   single { D41(get(), get(), get()) }
+   single { A42() }
+   single { B42(get()) }
+   single { C42(get(), get()) }
+   single { D42(get(), get(), get()) }
+   single { A43() }
+   single { B43(get()) }
+   single { C43(get(), get()) }
+   single { D43(get(), get(), get()) }
+   single { A44() }
+   single { B44(get()) }
+   single { C44(get(), get()) }
+   single { D44(get(), get(), get()) }
+   single { A45() }
+   single { B45(get()) }
+   single { C45(get(), get()) }
+   single { D45(get(), get(), get()) }
+   single { A46() }
+   single { B46(get()) }
+   single { C46(get(), get()) }
+   single { D46(get(), get(), get()) }
+   single { A47() }
+   single { B47(get()) }
+   single { C47(get(), get()) }
+   single { D47(get(), get(), get()) }
+   single { A48() }
+   single { B48(get()) }
+   single { C48(get(), get()) }
+   single { D48(get(), get(), get()) }
+   single { A49() }
+   single { B49(get()) }
+   single { C49(get(), get()) }
+   single { D49(get(), get(), get()) }
+   single { A50() }
+   single { B50(get()) }
+   single { C50(get(), get()) }
+   single { D50(get(), get(), get()) }
+   single { A51() }
+   single { B51(get()) }
+   single { C51(get(), get()) }
+   single { D51(get(), get(), get()) }
+   single { A52() }
+   single { B52(get()) }
+   single { C52(get(), get()) }
+   single { D52(get(), get(), get()) }
+   single { A53() }
+   single { B53(get()) }
+   single { C53(get(), get()) }
+   single { D53(get(), get(), get()) }
+   single { A54() }
+   single { B54(get()) }
+   single { C54(get(), get()) }
+   single { D54(get(), get(), get()) }
+   single { A55() }
+   single { B55(get()) }
+   single { C55(get(), get()) }
+   single { D55(get(), get(), get()) }
+   single { A56() }
+   single { B56(get()) }
+   single { C56(get(), get()) }
+   single { D56(get(), get(), get()) }
+   single { A57() }
+   single { B57(get()) }
+   single { C57(get(), get()) }
+   single { D57(get(), get(), get()) }
+   single { A58() }
+   single { B58(get()) }
+   single { C58(get(), get()) }
+   single { D58(get(), get(), get()) }
+   single { A59() }
+   single { B59(get()) }
+   single { C59(get(), get()) }
+   single { D59(get(), get(), get()) }
+   single { A60() }
+   single { B60(get()) }
+   single { C60(get(), get()) }
+   single { D60(get(), get(), get()) }
+   single { A61() }
+   single { B61(get()) }
+   single { C61(get(), get()) }
+   single { D61(get(), get(), get()) }
+   single { A62() }
+   single { B62(get()) }
+   single { C62(get(), get()) }
+   single { D62(get(), get(), get()) }
+   single { A63() }
+   single { B63(get()) }
+   single { C63(get(), get()) }
+   single { D63(get(), get(), get()) }
+   single { A64() }
+   single { B64(get()) }
+   single { C64(get(), get()) }
+   single { D64(get(), get(), get()) }
+   single { A65() }
+   single { B65(get()) }
+   single { C65(get(), get()) }
+   single { D65(get(), get(), get()) }
+   single { A66() }
+   single { B66(get()) }
+   single { C66(get(), get()) }
+   single { D66(get(), get(), get()) }
+   single { A67() }
+   single { B67(get()) }
+   single { C67(get(), get()) }
+   single { D67(get(), get(), get()) }
+   single { A68() }
+   single { B68(get()) }
+   single { C68(get(), get()) }
+   single { D68(get(), get(), get()) }
+   single { A69() }
+   single { B69(get()) }
+   single { C69(get(), get()) }
+   single { D69(get(), get(), get()) }
+   single { A70() }
+   single { B70(get()) }
+   single { C70(get(), get()) }
+   single { D70(get(), get(), get()) }
+   single { A71() }
+   single { B71(get()) }
+   single { C71(get(), get()) }
+   single { D71(get(), get(), get()) }
+   single { A72() }
+   single { B72(get()) }
+   single { C72(get(), get()) }
+   single { D72(get(), get(), get()) }
+   single { A73() }
+   single { B73(get()) }
+   single { C73(get(), get()) }
+   single { D73(get(), get(), get()) }
+   single { A74() }
+   single { B74(get()) }
+   single { C74(get(), get()) }
+   single { D74(get(), get(), get()) }
+   single { A75() }
+   single { B75(get()) }
+   single { C75(get(), get()) }
+   single { D75(get(), get(), get()) }
+   single { A76() }
+   single { B76(get()) }
+   single { C76(get(), get()) }
+   single { D76(get(), get(), get()) }
+   single { A77() }
+   single { B77(get()) }
+   single { C77(get(), get()) }
+   single { D77(get(), get(), get()) }
+   single { A78() }
+   single { B78(get()) }
+   single { C78(get(), get()) }
+   single { D78(get(), get(), get()) }
+   single { A79() }
+   single { B79(get()) }
+   single { C79(get(), get()) }
+   single { D79(get(), get(), get()) }
+   single { A80() }
+   single { B80(get()) }
+   single { C80(get(), get()) }
+   single { D80(get(), get(), get()) }
+   single { A81() }
+   single { B81(get()) }
+   single { C81(get(), get()) }
+   single { D81(get(), get(), get()) }
+   single { A82() }
+   single { B82(get()) }
+   single { C82(get(), get()) }
+   single { D82(get(), get(), get()) }
+   single { A83() }
+   single { B83(get()) }
+   single { C83(get(), get()) }
+   single { D83(get(), get(), get()) }
+   single { A84() }
+   single { B84(get()) }
+   single { C84(get(), get()) }
+   single { D84(get(), get(), get()) }
+   single { A85() }
+   single { B85(get()) }
+   single { C85(get(), get()) }
+   single { D85(get(), get(), get()) }
+   single { A86() }
+   single { B86(get()) }
+   single { C86(get(), get()) }
+   single { D86(get(), get(), get()) }
+   single { A87() }
+   single { B87(get()) }
+   single { C87(get(), get()) }
+   single { D87(get(), get(), get()) }
+   single { A88() }
+   single { B88(get()) }
+   single { C88(get(), get()) }
+   single { D88(get(), get(), get()) }
+   single { A89() }
+   single { B89(get()) }
+   single { C89(get(), get()) }
+   single { D89(get(), get(), get()) }
+   single { A90() }
+   single { B90(get()) }
+   single { C90(get(), get()) }
+   single { D90(get(), get(), get()) }
+   single { A91() }
+   single { B91(get()) }
+   single { C91(get(), get()) }
+   single { D91(get(), get(), get()) }
+   single { A92() }
+   single { B92(get()) }
+   single { C92(get(), get()) }
+   single { D92(get(), get(), get()) }
+   single { A93() }
+   single { B93(get()) }
+   single { C93(get(), get()) }
+   single { D93(get(), get(), get()) }
+   single { A94() }
+   single { B94(get()) }
+   single { C94(get(), get()) }
+   single { D94(get(), get(), get()) }
+   single { A95() }
+   single { B95(get()) }
+   single { C95(get(), get()) }
+   single { D95(get(), get(), get()) }
+   single { A96() }
+   single { B96(get()) }
+   single { C96(get(), get()) }
+   single { D96(get(), get(), get()) }
+   single { A97() }
+   single { B97(get()) }
+   single { C97(get(), get()) }
+   single { D97(get(), get(), get()) }
+   single { A98() }
+   single { B98(get()) }
+   single { C98(get(), get()) }
+   single { D98(get(), get(), get()) }
+   single { A99() }
+   single { B99(get()) }
+   single { C99(get(), get()) }
+   single { D99(get(), get(), get()) }
+   single { A100() }
+   single { B100(get()) }
+   single { C100(get(), get()) }
+   single { D100(get(), get(), get()) }
 }

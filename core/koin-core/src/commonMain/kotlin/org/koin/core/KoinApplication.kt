@@ -56,11 +56,9 @@ class KoinApplication private constructor() {
      */
     fun modules(modules: List<Module>): KoinApplication {
         if (koin.logger.isAt(Level.INFO)) {
-            val duration = measureDuration {
-                loadModules(modules)
-            }
+            val duration = measureDuration { loadModules(modules) }
             val count = koin.instanceRegistry.size()
-            koin.logger.info("loaded $count definitions - $duration ms")
+            koin.logger.display(Level.INFO, "loaded $count definitions in $duration ms")
         } else {
             loadModules(modules)
         }
@@ -70,7 +68,7 @@ class KoinApplication private constructor() {
     /**
      * Create eager instances (single with createdAtStart)
      */
-    fun createEagerInstances(){
+    fun createEagerInstances() {
         koin.createEagerInstances()
     }
 
@@ -79,7 +77,7 @@ class KoinApplication private constructor() {
      *
      * @param override
      */
-    public fun allowOverride(override : Boolean){
+    public fun allowOverride(override: Boolean) {
         allowOverride = override
     }
 
@@ -121,7 +119,7 @@ class KoinApplication private constructor() {
         koin.unloadModules(modules)
     }
 
-    fun unloadModules(module : Module) {
+    fun unloadModules(module: Module) {
         koin.unloadModules(listOf(module))
     }
 

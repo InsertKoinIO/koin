@@ -11,7 +11,7 @@ import java.util.*
  *Save properties values into PropertyRegister
  */
 fun PropertyRegistry.saveProperties(properties: Properties) {
-    _koin.logger.log(Level.DEBUG){"load ${properties.size} properties"}
+    _koin.logger.debug("load ${properties.size} properties")
 
     val propertiesMapValues = properties.toMap() as Map<String, String>
     propertiesMapValues.forEach { (k: String, v: String) ->
@@ -24,11 +24,11 @@ fun PropertyRegistry.saveProperties(properties: Properties) {
  * @param fileName
  */
 fun PropertyRegistry.loadPropertiesFromFile(fileName: String) {
-    _koin.logger.log(Level.DEBUG){"load properties from $fileName"}
+    _koin.logger.debug("load properties from $fileName")
 
     val content = Koin::class.java.getResource(fileName)?.readText()
     if (content != null) {
-        _koin.logger.log(Level.INFO){"loaded properties from file:'$fileName'" }
+        _koin.logger.info("loaded properties from file:'$fileName'" )
         val properties = readDataFromFile(content)
         saveProperties(properties)
     } else {
@@ -46,7 +46,7 @@ private fun readDataFromFile(content: String): Properties {
  * Load properties from environment
  */
 fun PropertyRegistry.loadEnvironmentProperties() {
-    _koin.logger.log(Level.DEBUG){"load properties from environment"}
+    _koin.logger.debug("load properties from environment")
 
     val sysProperties = System.getProperties()
     saveProperties(sysProperties)

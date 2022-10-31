@@ -1,62 +1,51 @@
 package org.koin.perfs
 
 import kotlin.test.Test
-import org.koin.core.A
-import org.koin.core.time.measureDurationForResult
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.logger.*
+import org.koin.core.time.Timer
 import org.koin.dsl.koinApplication
-import org.koin.dsl.module
+import org.koin.mp.KoinPlatformTools
 import org.koin.test.assertDefinitionsCount
 
+@OptIn(KoinInternalApi::class)
 class PerfsTest {
 
     @Test
-    fun `empty module perfs`() {
-        val app = measureDurationForResult("empty - start ") {
-            koinApplication()
-        }
+    fun empty_module_perfs() {
+        val timerStart = Timer.start()
+        val app = koinApplication()
+        timerStart.stop()
+        println("empty start in ${timerStart.getTimeInMillis()} ms")
 
         app.assertDefinitionsCount(0)
         app.close()
     }
 
-    private fun useDSL() {
-        measureDurationForResult("dsl ") {
-            val app = koinApplication {
-                modules(module {
-                    single { A() }
-                })
-            }
-            app.close()
-        }
-    }
 
     @Test
-    fun `perfModule400 module perfs`() {
-        runPerfs()
+    fun perfModule400_module_perfs() {
         runPerfs()
     }
 
-    private fun runPerfs() {
-        val app = measureDurationForResult("perf400 - start ") {
-            koinApplication {
-                modules(perfModule400())
-            }
+    private fun runPerfs(log: Logger = EmptyLogger()) {
+        val timerStart = Timer.start()
+        val app = koinApplication {
+            modules(perfModule400())
         }
+        timerStart.stop()
+        println("perf400 - start in ${timerStart.getTimeInMillis()}")
+
         val koin = app.koin
 
-        measureDurationForResult("perf400 - executed") {
-            koin.get<Perfs.A27>()
-            koin.get<Perfs.B31>()
-            koin.get<Perfs.C12>()
-            koin.get<Perfs.D42>()
-        }
+        val timerRun = Timer.start()
+        koin.get<Perfs.A27>()
+        koin.get<Perfs.B31>()
+        koin.get<Perfs.C12>()
+        koin.get<Perfs.D42>()
+        timerRun.stop()
+        println("perf400 - executed in ${timerRun.getTimeInMillis()}")
 
         app.close()
     }
-}
-
-fun <T> measureDurationForResult(msg: String, code: () -> T): T {
-    val result = measureDurationForResult(code)
-    println("$msg in ${result.second} ms")
-    return result.first
 }

@@ -27,8 +27,10 @@ import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.time.Timer
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
+import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import kotlin.reflect.KClass
@@ -172,10 +174,10 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: ClosedScopeException) {
-            _koin.logger.debug("|- Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.error("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin.logger.debug("|- No instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.error("* No instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
@@ -193,14 +195,17 @@ data class Scope(
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null
     ): T {
-        return if (_koin.logger.isAt(Level.DEBUG)) {
+        return if (_koin.logger.isAt(Level.DEBUG)){
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin.logger.debug("+- '${clazz.getFullName()}'$qualifierString")
-            val (instance: T, duration: Double) = measureDurationForResult {
-                resolveInstance<T>(qualifier, clazz, parameters)
-            }
-            _koin.logger.debug("|- '${clazz.getFullName()}' in $duration ms")
-            return instance
+            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString ...")
+
+            val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
+            val instance = resolveInstance<T>(qualifier, clazz, parameters)
+            val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
+            val duration = (stop -start)/Timer.NANO_TO_MILLI
+
+            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
+            instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
         }
@@ -217,13 +222,13 @@ data class Scope(
         }
         val parameters = parameterDef?.invoke()
         if (parameters != null) {
-            _koin.logger.log(Level.DEBUG) { "| put parameters on stack $parameters " }
+            _koin.logger.log(Level.DEBUG){ "| >> parameters $parameters " }
             _parameterStack.addFirst(parameters)
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
         if (parameters != null) {
-            _koin.logger.log(Level.DEBUG) { "| remove parameters from stack" }
+            _koin.logger.debug("| << parameters")
             _parameterStack.removeFirstOrNull()
         }
         return value
@@ -236,11 +241,11 @@ data class Scope(
         parameterDef: ParametersDefinition?
     ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters" }
+            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
             _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" }
+            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
             _source?.let {
                 if (clazz.isInstance(it)) {
                     _source as? T
@@ -248,12 +253,12 @@ data class Scope(
             }
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" }
+            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
             _parameterStack.clear()
-            _koin.logger.log(Level.DEBUG) { "| clear parameter stack" }
+            _koin.logger.debug("|- << parameters" )
             throwDefinitionNotFound(qualifier, clazz)
         })
 
@@ -285,7 +290,7 @@ data class Scope(
     ): Nothing {
         val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
         throw NoBeanDefFoundException(
-            "|- No definition found for class:'${clazz.getFullName()}'$qualifierString. Check your definitions!"
+            "No definition found for class:'${clazz.getFullName()}' q:'$qualifierString'. Check your definitions!"
         )
     }
 
@@ -305,7 +310,14 @@ data class Scope(
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true
     ) = KoinPlatformTools.synchronized(this) {
-        _koin.instanceRegistry.declareScopedInstance(instance, qualifier, secondaryTypes, allowOverride,  scopeQualifier, id)
+        _koin.instanceRegistry.declareScopedInstance(
+            instance,
+            qualifier,
+            secondaryTypes,
+            allowOverride,
+            scopeQualifier,
+            id
+        )
     }
 
     /**
@@ -344,34 +356,6 @@ data class Scope(
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
-//    /**
-//     * Get instance of primary type P and secondary type S
-//     * (not for scoped instances)
-//     *
-//     * @return instance of type S
-//     */
-//    inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S {
-//        val secondaryType = S::class
-//        val primaryType = P::class
-//        return bind(primaryType, secondaryType, parameters)
-//    }
-//    /**
-//     * Get instance of primary type P and secondary type S
-//     * (not for scoped instances)
-//     *
-//     * @return instance of type S
-//     */
-//    fun <S> bind(
-//        primaryType: KClass<*>,
-//        secondaryType: KClass<*>,
-//        parameters: ParametersDefinition?
-//    ): S {
-//        return _koin.instanceRegistry.bind(primaryType, secondaryType, parameters)
-//            ?: throw NoBeanDefFoundException(
-//                "No definition found to bind class:'${primaryType.getFullName()}' & secondary type:'${secondaryType.getFullName()}'. Check your definitions!"
-//            )
-//    }
-
     /**
      * Retrieve a property
      * @param key
@@ -403,9 +387,7 @@ data class Scope(
 
     private fun clearData() {
         _source = null
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.info("closing scope:'$id'")
-        }
+        _koin.logger.debug("|- (-) Scope - id:'$id'")
         // call on close from callbacks
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()

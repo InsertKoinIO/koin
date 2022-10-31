@@ -198,7 +198,6 @@ class Koin {
      * @param scopeDefinitionName
      */
     fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
-        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, source)
     }
 
@@ -208,7 +207,6 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null): Scope {
         val qualifier = TypeQualifier(T::class)
-        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, source)
     }
 
@@ -218,7 +216,6 @@ class Koin {
      */
     inline fun <reified T : Any> createScope(scopeId: ScopeID = KoinPlatformTools.generateId()): Scope {
         val qualifier = TypeQualifier(T::class)
-        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, null)
     }
 
@@ -229,7 +226,6 @@ class Koin {
     fun <T : KoinScopeComponent> createScope(t: T): Scope {
         val scopeId = t.getScopeId()
         val qualifier = t.getScopeName()
-        logger.log(Level.DEBUG) { "|- create scope - id:'$scopeId' q:$qualifier" }
         return scopeRegistry.createScope(scopeId, qualifier, null)
     }
 
@@ -338,14 +334,10 @@ class Koin {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances() {
-        logger.info("create eager instances ...")
-        if (logger.isAt(Level.DEBUG)) {
-            val duration = measureDuration {
-                instanceRegistry.createAllEagerInstances()
-            }
-            logger.debug("eager instances created in $duration ms")
-        } else {
+        logger.debug("Eager instances ...")
+        val duration = measureDuration {
             instanceRegistry.createAllEagerInstances()
         }
+        logger.debug("Eager instances created in $duration ms")
     }
 }
