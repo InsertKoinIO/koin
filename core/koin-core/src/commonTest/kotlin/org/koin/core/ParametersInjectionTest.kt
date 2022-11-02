@@ -1,13 +1,18 @@
 package org.koin.core
 
-import kotlin.test.assertEquals
-import kotlin.test.Test
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.test.runTest
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class ParametersInjectionTest {
@@ -44,7 +49,7 @@ class ParametersInjectionTest {
         assertNull(a.id)
     }
 
-    internal class MyOptionalSingle(val i : Int, val o : String? = null)
+    internal class MyOptionalSingle(val i: Int, val o: String? = null)
 
     @Test
     fun nullable_injection_param_in_graph() {
@@ -53,15 +58,15 @@ class ParametersInjectionTest {
             printLogger(Level.DEBUG)
             modules(
                 module {
-                    single { p -> MyOptionalSingle(p.get(),getOrNull()) }
+                    single { p -> MyOptionalSingle(p.get(), getOrNull()) }
                 })
         }
 
         val koin = app.koin
         val value = 42
-        val a: MyOptionalSingle = koin.get { parametersOf(value)}
+        val a: MyOptionalSingle = koin.get { parametersOf(value) }
 
-        assertEquals(value,a.i)
+        assertEquals(value, a.i)
         assertNull(a.o)
     }
 
@@ -118,9 +123,9 @@ class ParametersInjectionTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { (i: Int?) -> Simple.MySingleWithNull(i) }
-                    })
+                module {
+                    single { (i: Int?) -> Simple.MySingleWithNull(i) }
+                })
         }
 
         val koin = app.koin
@@ -226,5 +231,29 @@ class ParametersInjectionTest {
 
         assertEquals(42, f.ints.id)
         assertEquals("42", f.strings.s)
+    }
+
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `inject across multiple threads`() = runTest {
+        val app = koinApplication {
+            modules(
+                module {
+                    factory { (i: Int) -> Simple.MyIntFactory(i) }
+                })
+        }
+
+        val koin = app.koin
+
+        for (i in 0..1000) {
+            val range = (0 until 1000)
+            val deferreds = range.map {
+                async(Dispatchers.Default) {
+                    koin.get<Simple.MyIntFactory> { parametersOf(it) }
+                }
+            }
+            val values = awaitAll(*deferreds.toTypedArray())
+            assertEquals(range.map { it }, values.map { it.id })
+        }
     }
 }
