@@ -245,7 +245,7 @@ class ParametersInjectionTest {
 
         val koin = app.koin
 
-        for (i in 0..1000) {
+        repeat(1000) {
             val range = (0 until 1000)
             val deferreds = range.map {
                 async(Dispatchers.Default) {
