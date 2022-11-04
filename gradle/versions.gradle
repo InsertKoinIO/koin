@@ -4,12 +4,12 @@ ext {
     koin_android_version = '3.3.0'
     
     // Kotlin
-    kotlin_version = '1.6.21'
+    kotlin_version = '1.7.20'
     
-    coroutines_version = "1.6.0"
+    coroutines_version = "1.6.4"
 
     // Dokka
-    dokka_version = '1.4.32'
+    dokka_version = '1.7.20'
 
     // Test
     junit_version = "4.13.2"
