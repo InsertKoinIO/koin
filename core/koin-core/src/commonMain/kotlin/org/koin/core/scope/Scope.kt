@@ -21,14 +21,12 @@ import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
-import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.time.Timer
-import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
@@ -223,13 +221,17 @@ data class Scope(
         val parameters = parameterDef?.invoke()
         if (parameters != null) {
             _koin.logger.log(Level.DEBUG){ "| >> parameters $parameters " }
-            _parameterStack.addFirst(parameters)
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.addFirst(parameters)
+            }
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
         if (parameters != null) {
             _koin.logger.debug("| << parameters")
-            _parameterStack.removeFirstOrNull()
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.removeFirstOrNull()
+            }
         }
         return value
     }
@@ -257,7 +259,9 @@ data class Scope(
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            _parameterStack.clear()
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.clear()
+            }
             _koin.logger.debug("|- << parameters" )
             throwDefinitionNotFound(qualifier, clazz)
         })
