@@ -218,13 +218,17 @@ data class Scope(
         val parameters = parameterDef?.invoke()
         if (parameters != null) {
             _koin.logger.log(Level.DEBUG) { "| put parameters on stack $parameters " }
-            _parameterStack.addFirst(parameters)
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.addFirst(parameters)
+            }
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
         if (parameters != null) {
             _koin.logger.log(Level.DEBUG) { "| remove parameters from stack" }
-            _parameterStack.removeFirstOrNull()
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.removeFirstOrNull()
+            }
         }
         return value
     }
@@ -252,7 +256,9 @@ data class Scope(
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            _parameterStack.clear()
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.clear()
+            }
             _koin.logger.log(Level.DEBUG) { "| clear parameter stack" }
             throwDefinitionNotFound(qualifier, clazz)
         })
