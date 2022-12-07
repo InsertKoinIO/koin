@@ -27,7 +27,7 @@ You can find all [Koin packages on maven central](https://search.maven.org/searc
 
 ## KSP Plugin
 
-We need KSP Plugin to work (https://github.com/google/ksp). Jst add the gradle plugin:
+We need KSP Plugin to work (https://github.com/google/ksp). Just add the gradle plugin:
 
 ```groovy
 ksp_version = "1.6.21-1.0.6"
