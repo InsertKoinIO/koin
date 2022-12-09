@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:OptIn(KoinInternalApi::class)
 
 package org.koin.core.time
 
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformTimeTools
 
 /**
@@ -25,6 +23,7 @@ import org.koin.mp.KoinPlatformTimeTools
  *
  * @author Arnaud Giuliani
  */
+
 
 /**
  * Measure time in milliseconds for given code
@@ -51,3 +50,5 @@ inline fun <T> measureTimedValue(code: () -> T): Pair<T, TimeInMillis> {
     val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
     return Pair(value, (stop - start) / Timer.NANO_TO_MILLI)
 }
+
+typealias TimeInMillis = Double

@@ -200,7 +200,7 @@ data class Scope(
             val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
             val instance = resolveInstance<T>(qualifier, clazz, parameters)
             val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
-            val duration = (stop -start)/Timer.NANO_TO_MILLI
+            val duration = (stop-start)/Timer.NANO_TO_MILLI
 
             _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
             instance

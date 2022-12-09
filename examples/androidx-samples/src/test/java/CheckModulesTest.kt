@@ -12,7 +12,7 @@ class CheckModulesTest {
     fun `Verify Configuration`() {
         allModules.verify(
             extraTypes = listOf(
-                String::class, // Injected Id
+                String::class, // for Injected Id
                 Context::class,
                 Activity::class,
                 SavedStateHandle::class,

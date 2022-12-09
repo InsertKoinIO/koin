@@ -1,13 +1,11 @@
 package org.koin.core.time
 
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformTimeTools
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-@KoinInternalApi
 class Timer {
 
     val start : Duration = KoinPlatformTimeTools.getTimeInNanoSeconds().toDuration(DurationUnit.NANOSECONDS)
@@ -27,9 +25,7 @@ class Timer {
     fun getTimeInNanos() = time.toDouble(DurationUnit.NANOSECONDS)
 
     companion object {
-        const val NANO_TO_NS = 1_000_000.0
-        const val DEFAULT_TIME = -1L
-
+        const val NANO_TO_MILLI = 1_000_000.0
         fun start() : Timer = Timer()
     }
 }
