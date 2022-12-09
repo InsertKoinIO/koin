@@ -59,7 +59,9 @@ kotlin {
 
         jvmMain {
             dependencies {
+                api project(":koin-core")
                 api kotlin("stdlib-jdk8")
+                api kotlin("reflect")
                 api kotlin("test-junit")
             }
         }
