@@ -44,8 +44,8 @@ class Module(
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
-    @PublishedApi
-    internal val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
+    @KoinInternalApi
+    val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
 
     val isLoaded: Boolean
         get() = mappings.size > 0
@@ -53,7 +53,8 @@ class Module(
     @PublishedApi
     internal val scopes = hashSetOf<Qualifier>()
 
-    internal val includedModules = mutableListOf<Module>()
+    @KoinInternalApi
+    val includedModules = mutableListOf<Module>()
 
     /**
      * A collection of [Module] from which the current [Module] is compose.
@@ -238,7 +239,8 @@ typealias KoinDefinition<R> = Pair<Module, InstanceFactory<R>>
 /**
  * Run through the module list to flatten all modules & submodules
  */
-internal tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
+@OptIn(KoinInternalApi::class)
+tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
     return if (modules.isEmpty()) {
         newModules
     } else {
