@@ -238,7 +238,8 @@ typealias KoinDefinition<R> = Pair<Module, InstanceFactory<R>>
 /**
  * Run through the module list to flatten all modules & submodules
  */
-internal tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
+@OptIn(KoinInternalApi::class)
+tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
     return if (modules.isEmpty()) {
         newModules
     } else {
