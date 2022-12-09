@@ -1,6 +1,7 @@
 package org.koin.androidx.viewmodel
 
 import androidx.annotation.MainThread
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -73,5 +74,5 @@ fun <T : ViewModel> lazyResolveViewModel(
 @KoinInternalApi
 @PublishedApi
 internal fun <T : ViewModel> Class<T>.needSavedStateHandle(): Boolean {
-    return constructors[0].parameterTypes.any { p -> p.simpleName == "SavedStateHandle" }
+    return constructors[0].parameterTypes.any { p -> p == SavedStateHandle::class.java }
 }
