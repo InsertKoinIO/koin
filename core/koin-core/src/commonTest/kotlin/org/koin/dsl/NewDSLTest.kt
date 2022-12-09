@@ -1,5 +1,8 @@
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.dsl
 
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory

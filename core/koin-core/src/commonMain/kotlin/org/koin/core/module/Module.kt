@@ -44,8 +44,8 @@ class Module(
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
-    @PublishedApi
-    internal val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
+    @KoinInternalApi
+    val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
 
     val isLoaded: Boolean
         get() = mappings.size > 0
@@ -53,7 +53,8 @@ class Module(
     @PublishedApi
     internal val scopes = hashSetOf<Qualifier>()
 
-    internal val includedModules = mutableListOf<Module>()
+    @KoinInternalApi
+    val includedModules = mutableListOf<Module>()
 
     /**
      * A collection of [Module] from which the current [Module] is compose.

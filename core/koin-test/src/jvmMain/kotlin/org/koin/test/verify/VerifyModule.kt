@@ -74,6 +74,11 @@ private fun verifyConstructor(
     }
 }
 
+/**
+ * Verify a list of Modules
+ *
+ * @see Module.verify
+ */
 fun List<Module>.verifyAll(extraTypes : List<KClass<*>> = listOf()){
     forEach { module -> module.verify(extraTypes) }
 }

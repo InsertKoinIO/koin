@@ -9,7 +9,7 @@ import org.koin.test.verify.verify
 class CheckModulesTest {
 
     @Test
-    fun `test DI modules`() {
+    fun `Verify Configuration`() {
         allModules.verify(
             extraTypes = listOf(
                 String::class, // Injected Id
