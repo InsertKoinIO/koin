@@ -1,7 +1,7 @@
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
-import org.koin.test.verify.MissingDefinitionException
+import org.koin.test.verify.MissingKoinDefinitionException
 import org.koin.test.verify.verify
 import kotlin.test.Test
 import kotlin.test.fail
@@ -17,7 +17,7 @@ class VerifyModulesTest {
 
         try {
             module.verify()
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             fail("Should not fail to verify module - $e")
         }
     }
@@ -31,7 +31,7 @@ class VerifyModulesTest {
         try {
             module.verify()
             fail("Should fail to verify module")
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             System.err.println("$e")
         }
     }
@@ -45,7 +45,7 @@ class VerifyModulesTest {
 
         try {
             module.verify()
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             fail("Should not fail to verify module - $e")
         }
     }
@@ -60,7 +60,7 @@ class VerifyModulesTest {
 
         try {
             module.verify()
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             fail("Should not fail to verify module - $e")
         }
     }
@@ -76,7 +76,7 @@ class VerifyModulesTest {
         try {
             module.verify()
             fail("Should not fail to verify module")
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             System.err.println("$e")
         }
     }
@@ -92,7 +92,7 @@ class VerifyModulesTest {
 
         try {
             module.verify()
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             fail("Should not fail to verify module - $e")
         }
     }
@@ -105,7 +105,7 @@ class VerifyModulesTest {
 
         try {
             module.verify(extraTypes = listOf(Simple.ComponentA::class))
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             fail("Should not fail to verify module - $e")
         }
     }
@@ -119,7 +119,7 @@ class VerifyModulesTest {
         try {
             module.verify()
             fail("Should not fail to verify module")
-        } catch (e: MissingDefinitionException) {
+        } catch (e: MissingKoinDefinitionException) {
             System.err.println("$e")
         }
     }
