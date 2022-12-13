@@ -14,13 +14,15 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.TypeQualifier
 import kotlin.reflect.KClass
 
+typealias DefinitionOptions<T> = BeanDefinition<T>.() -> Unit
+
 /**
  * Koin DSL Options
  *
  * @author Arnaud Giuliani
  */
 inline infix fun <T> KoinDefinition<T>.withOptions(
-    options: BeanDefinition<T>.() -> Unit
+    options: DefinitionOptions<T>
 ): KoinDefinition<T> {
     val factory = second
     val module = first
@@ -30,9 +32,20 @@ inline infix fun <T> KoinDefinition<T>.withOptions(
     if (def.qualifier != primary) {
         module.indexPrimaryType(factory)
     }
-    module.indexSecondaryTypes(factory)
+    if (def.secondaryTypes.isNotEmpty()) {
+        module.indexSecondaryTypes(factory)
+    }
     if (def._createdAtStart && factory is SingleInstanceFactory<*>) {
         module.prepareForCreationAtStart(factory)
+    }
+    return this
+}
+
+fun <T> KoinDefinition<T>.onOptions(
+    options: DefinitionOptions<T>? = null
+): KoinDefinition<T> {
+    if (options != null) {
+        withOptions(options)
     }
     return this
 }
@@ -40,7 +53,7 @@ inline infix fun <T> KoinDefinition<T>.withOptions(
 @KoinInternalApi
 inline fun <reified R> Module.setupInstance(
     factory: InstanceFactory<R>,
-    options: BeanDefinition<R>.() -> Unit
+    options: DefinitionOptions<R>
 ): KoinDefinition<R> {
     val def = factory.beanDefinition
     val koinDef = Pair(this, factory)

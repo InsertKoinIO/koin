@@ -21,18 +21,17 @@ import androidx.work.ListenableWorker
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.module.KoinDefinition
-import org.koin.core.module._factoryInstanceFactory
 import org.koin.core.module.dsl.new
-import org.koin.core.module.dsl.setupInstance
+import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.ScopeDSL
 
 /**
- * 
+ *
  */
 inline fun <reified R : ListenableWorker> ScopeDSL.workerOf(
     crossinline constructor: () -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -47,7 +46,7 @@ inline fun <reified R : ListenableWorker> ScopeDSL.workerOf(
 inline fun <reified R : ListenableWorker, reified T1> ScopeDSL.workerOf(
     crossinline constructor: (T1) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -62,7 +61,7 @@ inline fun <reified R : ListenableWorker, reified T1> ScopeDSL.workerOf(
 inline fun <reified R : ListenableWorker, reified T1, reified T2> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -77,7 +76,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2> ScopeDSL.worke
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -92,7 +91,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3> Sc
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -107,7 +106,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, re
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4, reified T5> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4, T5) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -122,7 +121,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, re
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -137,7 +136,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, re
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -152,7 +151,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, re
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -167,7 +166,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, re
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
@@ -182,7 +181,7 @@ inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, re
 inline fun <reified R : ListenableWorker, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> ScopeDSL.workerOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> R,
     options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = module.setupInstance(_factoryInstanceFactory(definition = { new(constructor) }, scopeQualifier = scopeQualifier), options)
+): KoinDefinition<R> = worker { new(constructor) }.withOptions(options)
 
 /**
  * @see workerOf
