@@ -21,6 +21,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
+import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeDSL
@@ -37,10 +38,10 @@ import org.koin.dsl.ScopeDSL
 inline fun <reified T : Fragment> ScopeDSL.fragment(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
-): Pair<Module, InstanceFactory<T>> = factory(qualifier, definition)
+): KoinDefinition<T> = factory(qualifier, definition)
 
 @KoinReflectAPI
 @Deprecated("API is deprecated in favor of fragmentOf DSL")
 inline fun <reified T : Fragment> ScopeDSL.fragment(
     qualifier: Qualifier? = null
-): Pair<Module, InstanceFactory<T>> = factory(qualifier) { newInstance(it) }
+): KoinDefinition<T> = factory(qualifier) { newInstance(it) }

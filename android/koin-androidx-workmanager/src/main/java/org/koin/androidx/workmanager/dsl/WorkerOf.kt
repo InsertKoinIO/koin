@@ -17,17 +17,12 @@
 
 package org.koin.androidx.workmanager.dsl
 
-import androidx.lifecycle.ViewModel
 import androidx.work.ListenableWorker
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
-import org.koin.core.module._factoryInstanceFactory
 import org.koin.core.module.dsl.new
-import org.koin.core.module.dsl.setupInstance
 import org.koin.core.module.dsl.withOptions
 
 /**

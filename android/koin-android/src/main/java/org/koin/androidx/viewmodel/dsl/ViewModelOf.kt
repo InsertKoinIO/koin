@@ -22,10 +22,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
-import org.koin.core.module._factoryInstanceFactory
 import org.koin.core.module.dsl.new
-import org.koin.core.module.dsl.setupInstance
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
 
 /**

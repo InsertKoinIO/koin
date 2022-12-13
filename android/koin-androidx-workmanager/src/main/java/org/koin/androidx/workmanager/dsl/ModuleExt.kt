@@ -17,10 +17,9 @@ package org.koin.androidx.workmanager.dsl
 
 import androidx.work.ListenableWorker
 import org.koin.core.annotation.KoinReflectAPI
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
+import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
@@ -35,14 +34,18 @@ import org.koin.dsl.bind
 inline fun <reified T : ListenableWorker> Module.worker(
     qualifier: Qualifier = named<T>(),
     noinline definition: Definition<T>
-): Pair<Module, InstanceFactory<*>> {
-    return factory(qualifier, definition).bind(ListenableWorker::class)
+): KoinDefinition<T> {
+    val factory = factory(qualifier, definition)
+    factory.bind(ListenableWorker::class)
+    return factory
 }
 
 @KoinReflectAPI
 @Deprecated("API is deprecated in favor of workerOf DSL")
 inline fun <reified T : ListenableWorker> Module.worker(
     qualifier: Qualifier = named<T>()
-): Pair<Module, InstanceFactory<*>> {
-    return factory(qualifier) { newInstance<T>(it) }.bind(ListenableWorker::class)
+): KoinDefinition<T> {
+    val factory = factory(qualifier) { newInstance<T>(it) }
+    factory.bind(ListenableWorker::class)
+    return factory
 }
