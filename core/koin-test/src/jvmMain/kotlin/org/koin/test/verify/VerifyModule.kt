@@ -1,5 +1,6 @@
 package org.koin.test.verify
 
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.instance.InstanceFactory
@@ -18,6 +19,8 @@ import kotlin.reflect.KVisibility
  * @param extraTypes - allow to declare extra type, to be bound above the existing definitions
  * @throws MissingKoinDefinitionException
  */
+//TODO Scope level verification
+@KoinExperimentalAPI
 @OptIn(KoinInternalApi::class)
 fun Module.verify(extraTypes : List<KClass<*>> = listOf()){
     val timer = Timer.start()
@@ -79,6 +82,7 @@ private fun verifyConstructor(
  *
  * @see Module.verify
  */
+@KoinExperimentalAPI
 fun List<Module>.verifyAll(extraTypes : List<KClass<*>> = listOf()){
     forEach { module -> module.verify(extraTypes) }
 }

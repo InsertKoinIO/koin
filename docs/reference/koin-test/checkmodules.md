@@ -6,7 +6,62 @@ title: Checking your modules or application graph
 Koin allows you to verify your configuration modules, avoiding to discover dependency injection issues at runtime.
 :::
 
-To verify your modules, you just need to invoke the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
+
+### Koin Configuration check - Verify() - JVM Only [3.3]
+
+Use the verify() extension function on a Koin Module. That's it! Under the hood, This will verify all constructor classes and crosscheck with the Koin configuration to know if there is a component declared for this dependency. In case of failure, the function will throw a MissingKoinDefinitionException.
+
+```kotlin
+val niaAppModule = module {
+    includes(
+        jankStatsKoinModule,
+        dataKoinModule,
+        syncWorkerKoinModule,
+        topicKoinModule,
+        authorKoinModule,
+        interestsKoinModule,
+        settingsKoinModule,
+        bookMarksKoinModule,
+        forYouKoinModule
+    )
+    viewModelOf(::MainActivityViewModel)
+}
+```
+
+
+```kotlin
+class NiaAppModuleCheck {
+
+    @Test
+    fun checkKoinModule() {
+
+        // Verify Koin configuration
+        niaAppModule.verify(
+            // List types used in definitions but not declared directly (like parameters injection)
+            extraTypes = listOf(
+                Context::class,
+                SavedStateHandle::class,
+                WorkerParameters::class
+            )
+        )
+    }
+}
+```
+
+
+Launch the JUnit test and you're done! ✅
+
+
+As you may see, we use the extraTypesparameter to list types used in the Koin configuration but not declared directly. This is the case for SavedStateHandle and WorkerParameters types, that are used as injected parameters. The Context is declared by androidContext() function at start.
+
+
+The verify() API is ultra light to run and doesn't require any kind of mock/stubb to run on your configuration.
+
+
+### Koin Dynamic Check - CheckModules()  
+
+
+Invoke the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
 
 
 ```kotlin
