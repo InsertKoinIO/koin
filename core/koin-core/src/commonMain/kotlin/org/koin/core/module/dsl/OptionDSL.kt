@@ -19,8 +19,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
-
-infix fun <T> KoinDefinition<T>.withOptions(
+inline infix fun <T> KoinDefinition<T>.withOptions(
     options: BeanDefinition<T>.() -> Unit
 ): KoinDefinition<T> {
     val factory = second
@@ -28,7 +27,7 @@ infix fun <T> KoinDefinition<T>.withOptions(
     val def = second.beanDefinition
     val primary = def.qualifier
     def.also(options)
-    if (def.qualifier != primary){
+    if (def.qualifier != primary) {
         module.indexPrimaryType(factory)
     }
     module.indexSecondaryTypes(factory)

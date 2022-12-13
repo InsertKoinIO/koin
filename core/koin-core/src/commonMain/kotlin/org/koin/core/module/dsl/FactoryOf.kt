@@ -19,12 +19,8 @@ package org.koin.core.module.dsl
 
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.module.KoinDefinition
 import org.koin.core.module.Module
-import org.koin.core.module._factoryInstanceFactory
-import org.koin.core.module._singleInstanceFactory
-import org.koin.core.qualifier.Qualifier
 
 /**
  * Declare a [Module.factory] definition by resolving a constructor reference for the dependency.
@@ -45,162 +41,182 @@ import org.koin.core.qualifier.Qualifier
  */
 inline fun <reified R> Module.factoryOf(
     crossinline constructor: () -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R> Module.factoryOf(
-    crossinline constructor: () -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1> Module.factoryOf(
     crossinline constructor: (T1) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1> Module.factoryOf(
-    crossinline constructor: (T1) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2> Module.factoryOf(
     crossinline constructor: (T1, T2) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2> Module.factoryOf(
-    crossinline constructor: (T1, T2) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3> Module.factoryOf(
     crossinline constructor: (T1, T2, T3) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4, T5) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4, T5) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4, T5, T6) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
-
-/**
- * @see factoryOf
- */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
 inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> Module.factoryOf(
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> R,
-    options: BeanDefinition<R>.() -> Unit
-): KoinDefinition<R> = setupInstance(_factoryInstanceFactory(definition = { new(constructor) }), options)
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
 
 /**
  * @see factoryOf
  */
-inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10> Module.factoryOf(
-    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> R,
-): Pair<Module, InstanceFactory<R>> = factory { new(constructor) }
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16, reified T17> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16, reified T17, reified T18> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16, reified T17, reified T18, reified T19> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16, reified T17, reified T18, reified T19, reified T20> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16, reified T17, reified T18, reified T19, reified T20, reified T21> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
+
+/**
+ * @see factoryOf
+ */
+inline fun <reified R, reified T1, reified T2, reified T3, reified T4, reified T5, reified T6, reified T7, reified T8, reified T9, reified T10, reified T11, reified T12, reified T13, reified T14, reified T15, reified T16, reified T17, reified T18, reified T19, reified T20, reified T21, reified T22> Module.factoryOf(
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22) -> R,
+    crossinline options: BeanDefinition<R>.() -> Unit = {},
+): KoinDefinition<R> = factory { new(constructor) }.withOptions(options)
