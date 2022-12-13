@@ -6,7 +6,7 @@ title: Checking your modules or application graph
 Koin allows you to verify your configuration modules, avoiding to discover dependency injection issues at runtime.
 :::
 
-To verify your modules, you just need to the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
+To verify your modules, you just need to invoke the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
 
 
 ```kotlin
@@ -38,7 +38,7 @@ class CheckModulesTest : KoinTest {
 
 #### CheckModule DSL
 
-For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allow to specify how to work with the following case:
+For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allows to specify how to work with the following case:
 
 * `withInstance(value)` - will add `value` instance to Koin graph (can be used in dependency or parameter)
 
@@ -185,7 +185,7 @@ class CheckModulesTest {
 
 #### Providing Default Values (3.1.4)
 
-If you need, you can set a default value for all type in the checked modules. For example, We can override all injected string values:
+If you need, you can set a default value for all type in the checked modules. For example, we can override all injected string values:
 
 Let's use the `withInstance()` function in `checkModules` block, to define a default value for all definitions:
 
@@ -212,7 +212,7 @@ module {
 
 #### Providing ParametersOf values (3.1.4)
 
-You can define default value to be injected for one specific definition, with `withParameter` or `withParameters` functions:
+You can define a default value to be injected for one specific definition, with `withParameter` or `withParameters` functions:
 
 ```kotlin
 @Test
