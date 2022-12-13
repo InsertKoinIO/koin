@@ -37,7 +37,7 @@ import kotlin.reflect.KClass
 infix fun <S : Any> KoinDefinition<out S>.bind(clazz: KClass<S>): KoinDefinition<out S> {
     second.beanDefinition.secondaryTypes = second.beanDefinition.secondaryTypes + clazz
     val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-    first.saveMapping(mapping,second,allowOverride = true)
+    first.saveMapping(mapping,second)
     return this
 }
 
@@ -62,7 +62,7 @@ infix fun KoinDefinition<*>.binds(classes: Array<KClass<*>>): KoinDefinition<*> 
     second.beanDefinition.secondaryTypes += classes
     classes.forEach { clazz ->
         val mapping = indexKey(clazz,second.beanDefinition.qualifier,second.beanDefinition.scopeQualifier)
-        first.saveMapping(mapping,second,allowOverride = true)
+        first.saveMapping(mapping,second)
     }
     return this
 }
