@@ -50,6 +50,8 @@ For a module that declares a 'MyViewModel' component:
 ```kotlin
 module {
     viewModel { MyViewModel() }
+    // or constructor DSL
+    viewModelOf(::MyViewModel)
 }
 ```
 
@@ -58,30 +60,16 @@ We can get your instance like that:
 ```kotlin
 @Composable
 fun App() {
-    val vm = getViewModel<MyViewModel>()
+    val vm = koinViewModel<MyViewModel>()
 }
 ```
 
-You can specify the `owner` & `scope`: 
-
-```kotlin
-inline fun <reified T : ViewModel> getViewModel(
-    qualifier: Qualifier? = null,
-    owner: ViewModelOwner = getComposeViewModelOwner(),
-    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
-    noinline parameters: ParametersDefinition? = null,
-)
-```
-
-Where ViewModelOwner can be used to pass a StoreOwner (like navigation):
+We can get your instance in function parameters:
 
 ```kotlin
 @Composable
-fun getComposeViewModelOwner(): ViewModelOwner {
-    return ViewModelOwner.from(
-        LocalViewModelStoreOwner.current!!,
-        LocalSavedStateRegistryOwner.current
-    )
+fun App(vm : MyViewModel = koinViewModel()) {
+
 }
 ```
 
