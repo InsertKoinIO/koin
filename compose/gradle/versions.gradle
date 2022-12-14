@@ -1,0 +1,18 @@
+ext {
+
+    // Koin
+    koin_version = '3.2.2'
+    koin_android_version = '3.3.0'
+    // koin project versions
+    koin_androidx_compose_version = '3.3.0'
+
+    // androix-compose
+    compose_compiler = "1.2.0"
+    androidx_compose_version = "1.2.1"
+
+    // Kotlin
+    kotlin_version = '1.7.0'
+
+    // Dokka
+    dokka_version = '1.4.32'
+}

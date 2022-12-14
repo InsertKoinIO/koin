@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+apply from: "../gradle/versions.gradle"
+
+android {
+    compileSdkVersion 33
+    buildToolsVersion '30.0.3'
+
+    defaultConfig {
+        applicationId "org.koin.sample.androidx.compose"
+        minSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler
+    }
+}
+
+dependencies {
+
+    // Koin
+    implementation project(":koin-androidx-compose")
+
+    // Compose
+    implementation "androidx.compose.runtime:runtime:$androidx_compose_version"
+    implementation "androidx.compose.ui:ui:$androidx_compose_version"
+    implementation "androidx.compose.foundation:foundation-layout:$androidx_compose_version"
+    implementation "androidx.compose.material:material:$androidx_compose_version"
+//    implementation "androidx.compose.foundation:foundation:$androidx_compose_version"
+
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+//    implementation 'androidx.activity:activity-ktx:1.4.0'
+//    implementation "androidx.activity:activity-compose:1.4.0"
+//    implementation 'androidx.core:core-ktx:1.5.0-alpha02'
+
+    testImplementation 'junit:junit:4.13.2'
+}

@@ -1,0 +1,28 @@
+buildscript {
+    apply from: "../gradle/versions.gradle"
+    apply from: "../gradle/versions-android.gradle"
+
+    repositories {
+        google()
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.android.tools.build:gradle:$androidx_compose_gradle_version"
+    }
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+allprojects {
+
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+    }
+}

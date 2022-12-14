@@ -1,0 +1,51 @@
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+apply from: "../gradle/versions.gradle"
+
+version = "$koin_androidx_compose_version"
+
+ext {
+    android_sourceSet = true
+    pom_name = "koin-androidx-compose"
+    pom_description = "Koin project - koin-androidx-compose"
+}
+
+android {
+    compileSdkVersion 32
+    buildToolsVersion '30.0.3'
+
+    defaultConfig {
+        minSdkVersion 21
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler
+    }
+}
+
+dependencies {
+
+    // Koin
+    api "io.insert-koin:koin-android:$koin_android_version"
+
+    // Compose
+    api "androidx.compose.runtime:runtime:$androidx_compose_version"
+    api "androidx.compose.ui:ui:$androidx_compose_version"
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    api "androidx.navigation:navigation-compose:2.5.2"
+}
+
+apply from: '../gradle/publish-to-central.gradle'

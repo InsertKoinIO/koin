@@ -1,0 +1,76 @@
+= Contributing to Koin
+
+Koin is released under the Apache 2.0 license. If you would like to contribute
+something, or simply want to hack on the code this document should help you get started.
+
+
+== Code of Conduct
+This project adheres to the Contributor Covenant link:CODE_OF_CONDUCT.md[code of
+conduct]. By participating, you are expected to uphold this code. Please report
+unacceptable behavior to team@insert-koin.io.
+
+
+== Using GitHub issues
+We use GitHub issues to track bugs and enhancements. If you have a general usage question
+ask it with an issue with the `Question` tag or on https://stackoverflow.com[Stack Overflow]. The Koin team and the
+broader community monitor the https://stackoverflow.com/tags/koin[`koin`]
+tag.
+
+If you are reporting a bug, please help to speed up problem diagnosis by providing as much
+information as possible. Ideally, that would include a small samples project (or gist) that reproduces the
+problem.
+
+
+== Code Conventions and Housekeeping
+None of these is essential for a pull request, but they will all help.  They can also be
+added after the original pull request but before a merge.
+
+* We use the Kotlin standard formating convention
+* Make sure all new `.kt` files to have a simple Javadoc class comment with at least an
+  `@author` tag identifying you, and preferably at least a paragraph on what the class is
+  for.
+* Add yourself as an `@author` to the `.kt` files that you modify substantially (more
+  than cosmetic changes).
+* Add some Javadocs.
+* A few unit tests would help a lot as well -- someone has to do it.
+* If no-one else is using your branch, please rebase it against the current master (or
+  other target branch in the main project).
+* When writing a commit message please follow http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html[these conventions],
+  if you are fixing an existing issue please add `Fixes gh-XXXX` at the end of the commit
+  message (where `XXXX` is the issue number).
+
+
+== Working with the code
+If you don't have an IDE preference we would recommend that you use
+https://www.jetbrains.com/idea/[IntelliJ] or
+https://developer.android.com/studio/[AndroidStudio]
+
+
+=== Building from source
+To build the source you will need to install
+https://gradle.org/[Gradle] v4.7 or more.
+
+We use Gradlew in the build scripts
+
+
+==== Default build
+The project can be built from the root directory using the script:
+
+[indent=0]
+----
+	$ ./install.sh
+----
+
+NOTE: you can use the `test.sh` and `install.sh` scripts to test all modules and make local install
+
+
+== Integration tests
+
+the `koin-test` module gather all test against `koin-core`. Here you'll found most of usecase tests.
+
+The following command scrtip launch all tests from projects:
+
+[indent=0]
+----
+	$ ./test.sh
+----
