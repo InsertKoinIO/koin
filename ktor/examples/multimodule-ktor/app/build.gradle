@@ -1,0 +1,18 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    api(project(":examples:multimodule-ktor:common"))
+    api(project(":examples:multimodule-ktor:module-a"))
+    api(project(":examples:multimodule-ktor:module-b"))
+
+    implementation "io.insert-koin:koin-ktor:$koin_version"
+    implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
+
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
+    testImplementation "junit:junit:4.13.2"
+
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
+}

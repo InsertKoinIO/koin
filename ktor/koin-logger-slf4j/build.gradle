@@ -1,0 +1,20 @@
+apply plugin: 'kotlin'
+
+archivesBaseName = 'koin-logger-slf4j'
+
+dependencies {
+
+    // Koin
+    api "io.insert-koin:koin-core:$koin_version"
+    // SLF4J
+    api "org.slf4j:slf4j-api:1.7.36"
+}
+
+// Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata.
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+
+apply from: '../gradle/publish-to-central.gradle'
