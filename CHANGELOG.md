@@ -19,6 +19,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 `[koin-android]`
 * `[FIXED]` - `SavedStateHandle` injection is now fixed to allow R8/Proguard obfuscation
 * `[FIXED]` - #1406 - better use `verify()` fucntion `Module` to verify all Koin configuration
+* `[UPDATED]` - Use of KoinDsl marker to protect the Koin DSL
 
 ## [core-3.3.0]() - 2022-12-14
 
@@ -32,6 +33,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - Documentation update - #1469 #1438
 * `[UPDATED]` - Logger API inlined and cleand out - #1271
 * `[FIXED]` - Engine resolution race condition #1465
+* `[UPDATED]` - Use of KoinDsl marker to protect the Koin DSL
 
 `[koin-test]`
 * `[NEW]` - `verify()` on a `Module` to verify all constructors injection with current Koin configuration (static verification). This comes as a replacement proposal for `checkModules`, as a more convenient way to verify a configuration with static verification, more than sandbox running with mocks
