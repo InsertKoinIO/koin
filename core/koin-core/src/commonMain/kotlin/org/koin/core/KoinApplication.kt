@@ -125,6 +125,14 @@ class KoinApplication private constructor() {
         koin.close()
     }
 
+    internal fun unloadModules(modules: List<Module>) {
+        koin.unloadModules(modules)
+    }
+
+    internal fun unloadModules(module: Module) {
+        koin.unloadModules(listOf(module))
+    }
+
     companion object {
 
         /**

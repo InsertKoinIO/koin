@@ -121,7 +121,7 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
-    fun `should not conflict name & default type`() {
+    fun `should not conflict name and default type`() {
         val app = koinApplication {
             printLogger()
             modules(
