@@ -110,16 +110,14 @@ class Module(
     }
 
     @KoinInternalApi
-    @PublishedApi
-    internal fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
+    fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         saveMapping(mapping, instanceFactory)
     }
 
     @KoinInternalApi
-    @PublishedApi
-    internal fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
+    fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         def.secondaryTypes.forEach { clazz ->
             val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
@@ -128,8 +126,7 @@ class Module(
     }
 
     @KoinInternalApi
-    @PublishedApi
-    internal fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
+    fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
         eagerInstances.add(instanceFactory)
     }
 
