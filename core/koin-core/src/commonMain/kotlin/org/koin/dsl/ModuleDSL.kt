@@ -15,6 +15,7 @@
  */
 package org.koin.dsl
 
+import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 
 typealias ModuleDeclaration = Module.() -> Unit
@@ -26,12 +27,14 @@ typealias ModuleDeclaration = Module.() -> Unit
  * @author Arnaud Giuliani
  */
 @Deprecated("'override' parameter is not used anymore. See 'allowOverride' in KoinApplication")
+@KoinDslMarker
 fun module(createdAtStart: Boolean = false, override: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
     val module = Module(createdAtStart)
     moduleDeclaration(module)
     return module
 }
 
+@KoinDslMarker
 fun module(createdAtStart: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
     val module = Module(createdAtStart)
     moduleDeclaration(module)

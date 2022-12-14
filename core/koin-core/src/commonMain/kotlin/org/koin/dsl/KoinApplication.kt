@@ -16,6 +16,7 @@
 package org.koin.dsl
 
 import org.koin.core.KoinApplication
+import org.koin.core.module.KoinApplicationDslMarker
 
 typealias KoinAppDeclaration = KoinApplication.() -> Unit
 
@@ -23,6 +24,7 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
  * Create a KoinApplication instance and help configure it
  * @author Arnaud Giuliani
  */
+@KoinApplicationDslMarker
 fun koinApplication(appDeclaration: KoinAppDeclaration? = null): KoinApplication {
     val koinApplication = KoinApplication.init()
     appDeclaration?.invoke(koinApplication)

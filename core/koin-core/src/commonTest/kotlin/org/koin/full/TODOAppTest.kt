@@ -26,7 +26,7 @@ class TODOAppTest {
     class TasksRepository(val dataSource: TasksDataSource)
 
     @Test
-    fun `default module`() {
+    fun default_module() {
         val koinApp = koinApplication {
             printLogger(Level.DEBUG)
             modules(defaultModule)
@@ -38,7 +38,7 @@ class TODOAppTest {
     }
 
     @Test
-    fun `overloaded module`() {
+    fun overloaded_module() {
         val koinApp = koinApplication {
             printLogger(Level.DEBUG)
             modules(defaultModule + overrideModule)
@@ -50,7 +50,7 @@ class TODOAppTest {
     }
 
     @Test
-    fun `overloaded definition`() {
+    fun overloaded_definition() {
         val koinApp = koinApplication {
             printLogger(Level.DEBUG)
             modules(defaultModule + overrideDef)

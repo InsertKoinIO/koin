@@ -17,11 +17,10 @@ package org.koin.androidx.fragment.dsl
 
 import androidx.fragment.app.Fragment
 import org.koin.core.annotation.KoinReflectAPI
-import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
-import org.koin.core.instance.InstanceFactory
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.instance.newInstance
-import org.koin.core.module.KoinDefinition
+import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 
@@ -34,6 +33,7 @@ import org.koin.core.qualifier.Qualifier
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
+@KoinDslMarker
 inline fun <reified T : Fragment> Module.fragment(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>

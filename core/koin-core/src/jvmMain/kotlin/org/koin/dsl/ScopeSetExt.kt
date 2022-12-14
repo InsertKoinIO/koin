@@ -17,9 +17,8 @@
 package org.koin.dsl
 
 import org.koin.core.annotation.KoinReflectAPI
-import org.koin.core.instance.InstanceFactory
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.instance.newInstance
-import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 
 /**
@@ -31,7 +30,7 @@ import org.koin.core.qualifier.Qualifier
 @Deprecated("API is deprecated in favor of scopedOf DSL")
 inline fun <reified R : Any> ScopeDSL.scoped(
     qualifier: Qualifier? = null
-): Pair<Module, InstanceFactory<R>> {
+): KoinDefinition<R> {
     return scoped(qualifier) { params -> newInstance(R::class, params) }
 }
 
@@ -45,6 +44,6 @@ inline fun <reified R : Any> ScopeDSL.scoped(
 @Deprecated("API is deprecated in favor of factoryOf DSL")
 inline fun <reified R : Any> ScopeDSL.factory(
     qualifier: Qualifier? = null
-): Pair<Module, InstanceFactory<R>> {
+): KoinDefinition<R> {
     return factory(qualifier) { params -> newInstance(R::class, params) }
 }

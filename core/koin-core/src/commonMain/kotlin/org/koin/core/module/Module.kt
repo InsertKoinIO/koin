@@ -35,7 +35,9 @@ import org.koin.mp.KoinPlatformTools
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
+@KoinDslMarker
 class Module(
+
     @PublishedApi
     internal val _createdAtStart: Boolean = false
 ) {
@@ -76,6 +78,7 @@ class Module(
      * Declare a group a scoped definition with a given scope qualifier
      * @param qualifier
      */
+    @KoinDslMarker
     fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
         ScopeDSL(qualifier, this).apply(scopeSet)
         scopes.add(qualifier)
@@ -84,6 +87,7 @@ class Module(
     /**
      * Class Typed Scope
      */
+    @KoinDslMarker
     inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
         val qualifier = TypeQualifier(T::class)
         ScopeDSL(qualifier, this).apply(scopeSet)
@@ -96,6 +100,7 @@ class Module(
      * @param createdAtStart
      * @param definition - definition function
      */
+    @KoinDslMarker
     inline fun <reified T> single(
         qualifier: Qualifier? = null,
         createdAtStart: Boolean = false,
@@ -106,7 +111,7 @@ class Module(
         if (createdAtStart || this._createdAtStart) {
             prepareForCreationAtStart(factory)
         }
-        return Pair(this, factory)
+        return KoinDefinition(this, factory)
     }
 
     @KoinInternalApi
@@ -140,6 +145,7 @@ class Module(
      * @param qualifier
      * @param definition - definition function
      */
+    @KoinDslMarker
     inline fun <reified T> factory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>
@@ -155,7 +161,7 @@ class Module(
     ): KoinDefinition<T> {
         val factory = _factoryInstanceFactory(qualifier, definition, scopeQualifier)
         indexPrimaryType(factory)
-        return Pair(this, factory)
+        return KoinDefinition(this, factory)
     }
 
     /**
@@ -227,8 +233,6 @@ inline fun <reified T> _scopedInstanceFactory(
  * Help write list of Modules
  */
 operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
-
-typealias KoinDefinition<R> = Pair<Module, InstanceFactory<R>>
 
 /**
  * Run through the module list to flatten all modules & submodules

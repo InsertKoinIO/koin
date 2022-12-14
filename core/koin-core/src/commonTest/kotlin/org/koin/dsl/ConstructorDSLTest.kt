@@ -43,11 +43,12 @@ class ConstructorDSLTest {
         val name = named("SCOPE_NAME")
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                scope(name) {
-                    factoryOf(::ClassA2) bind IClassA::class
-                    factoryOf(::ClassB)
-                }
+            modules(
+                module {
+                    scope(name) {
+                        factoryOf(::ClassA2) bind IClassA::class
+                        factoryOf(::ClassB)
+                    }
             })
         }.koin
         val scopeA = koin.createScope("ID", name)

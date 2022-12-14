@@ -5,11 +5,10 @@ package org.koin.core.module.dsl
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Callbacks
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.definition.OnCloseCallback
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
-import org.koin.core.module.KoinDefinition
-import org.koin.core.module.Module
+import org.koin.core.module.OptionDslMarker
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.TypeQualifier
 import kotlin.reflect.KClass
@@ -21,12 +20,11 @@ typealias DefinitionOptions<T> = BeanDefinition<T>.() -> Unit
  *
  * @author Arnaud Giuliani
  */
+@OptionDslMarker
 inline infix fun <T> KoinDefinition<T>.withOptions(
     options: DefinitionOptions<T>
 ): KoinDefinition<T> {
-    val factory = second
-    val module = first
-    val def = second.beanDefinition
+    val def = factory.beanDefinition
     val primary = def.qualifier
     def.also(options)
     if (def.qualifier != primary) {
@@ -50,42 +48,32 @@ fun <T> KoinDefinition<T>.onOptions(
     return this
 }
 
-@KoinInternalApi
-inline fun <reified R> Module.setupInstance(
-    factory: InstanceFactory<R>,
-    options: DefinitionOptions<R>
-): KoinDefinition<R> {
-    val def = factory.beanDefinition
-    val koinDef = Pair(this, factory)
-    def.also(options)
-    indexPrimaryType(factory)
-    indexSecondaryTypes(factory)
-    if (def._createdAtStart && factory is SingleInstanceFactory<*>) {
-        prepareForCreationAtStart(factory)
-    }
-    return koinDef
-}
-
+@OptionDslMarker
 fun BeanDefinition<*>.named(name: String) {
     qualifier = StringQualifier(name)
 }
 
+@OptionDslMarker
 inline fun <reified T> BeanDefinition<*>.named() {
     qualifier = TypeQualifier(T::class)
 }
 
+@OptionDslMarker
 inline fun <reified T> BeanDefinition<out T>.bind() {
     secondaryTypes += T::class
 }
 
+@OptionDslMarker
 fun BeanDefinition<*>.binds(classes: List<KClass<*>>) {
     secondaryTypes += classes
 }
 
+@OptionDslMarker
 fun BeanDefinition<*>.createdAtStart() {
     _createdAtStart = true
 }
 
+@OptionDslMarker
 fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>) {
     callbacks = Callbacks(onClose)
 }

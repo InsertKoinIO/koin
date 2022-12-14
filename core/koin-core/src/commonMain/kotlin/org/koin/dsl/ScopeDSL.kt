@@ -17,9 +17,8 @@ package org.koin.dsl
 
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definition
-import org.koin.core.module.KoinDefinition
-import org.koin.core.module.Module
-import org.koin.core.module._scopedInstanceFactory
+import org.koin.core.definition.KoinDefinition
+import org.koin.core.module.*
 import org.koin.core.qualifier.Qualifier
 
 /**
@@ -27,6 +26,7 @@ import org.koin.core.qualifier.Qualifier
  */
 @OptIn(KoinInternalApi::class)
 @Suppress("UNUSED_PARAMETER")
+@KoinDslMarker
 class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
 
     @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)
@@ -43,7 +43,7 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
     ): KoinDefinition<T> {
         val def = _scopedInstanceFactory(qualifier, definition, scopeQualifier)
         module.indexPrimaryType(def)
-        return Pair(module, def)
+        return KoinDefinition(module, def)
     }
 
     inline fun <reified T> factory(
