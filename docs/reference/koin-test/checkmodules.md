@@ -1,5 +1,5 @@
 ---
-title: Checking your modules or application graph
+title: Verifying your Koin configuration
 ---
 
 :::note 

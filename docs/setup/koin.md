@@ -22,7 +22,7 @@ repositories {
 ### **Core**
 
 ```groovy
-koin_version= "3.2.2"
+koin_version= "3.3.0"
 ```
 
 ```groovy
@@ -40,7 +40,7 @@ testImplementation "io.insert-koin:koin-test-junit5:$koin_version"
 ### **Android**
 
 ```groovy
-koin_android_version= "3.3.0"
+koin_android_version= "3.3.1"
 ```
 
 ```groovy
@@ -57,7 +57,7 @@ implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
 ### **Android Jetpack Compose**
 
 ```groovy
-koin_android_compose_version= "3.3.0"
+koin_android_compose_version= "3.4.0"
 ```
 
 ```groovy
