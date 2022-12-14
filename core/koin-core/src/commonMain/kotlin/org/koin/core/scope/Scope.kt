@@ -23,6 +23,7 @@ import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
+import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
@@ -34,6 +35,7 @@ import org.koin.mp.Lockable
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
+@KoinDslMarker
 data class Scope(
     val scopeQualifier: Qualifier,
     val id: ScopeID,

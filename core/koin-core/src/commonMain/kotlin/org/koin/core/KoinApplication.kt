@@ -40,7 +40,6 @@ class KoinApplication private constructor() {
      * Load definitions from modules
      * @param modules
      */
-    @KoinApplicationDslMarker
     fun modules(modules: Module): KoinApplication {
         return modules(listOf(modules))
     }
@@ -49,7 +48,6 @@ class KoinApplication private constructor() {
      * Load definitions from modules
      * @param modules
      */
-    @KoinApplicationDslMarker
     fun modules(vararg modules: Module): KoinApplication {
         return modules(modules.toList())
     }
@@ -58,7 +56,6 @@ class KoinApplication private constructor() {
      * Load definitions from modules
      * @param modules
      */
-    @KoinApplicationDslMarker
     fun modules(modules: List<Module>): KoinApplication {
         if (koin.logger.isAt(Level.INFO)) {
             val duration = measureDuration { loadModules(modules) }
@@ -73,7 +70,6 @@ class KoinApplication private constructor() {
     /**
      * Create eager instances (single with createdAtStart)
      */
-    @KoinApplicationDslMarker
     fun createEagerInstances() {
         koin.createEagerInstances()
     }
@@ -83,7 +79,6 @@ class KoinApplication private constructor() {
      *
      * @param override
      */
-    @KoinApplicationDslMarker
     public fun allowOverride(override: Boolean) {
         allowOverride = override
     }
@@ -96,7 +91,6 @@ class KoinApplication private constructor() {
      * Load properties from Map
      * @param values
      */
-    @KoinApplicationDslMarker
     fun properties(values: Map<String, Any>): KoinApplication {
         koin.propertyRegistry.saveProperties(values)
         return this
@@ -106,7 +100,6 @@ class KoinApplication private constructor() {
      * Set Koin Logger
      * @param logger - logger
      */
-    @KoinApplicationDslMarker
     fun logger(logger: Logger): KoinApplication {
         koin.setupLogger(logger)
         return this
@@ -115,7 +108,6 @@ class KoinApplication private constructor() {
     /**
      * Set Koin to use [PrintLogger], by default at [Level.INFO]
      */
-    @KoinApplicationDslMarker
     fun printLogger(level: Level = Level.INFO): KoinApplication {
         koin.setupLogger(KoinPlatformTools.defaultLogger(level))
         return this

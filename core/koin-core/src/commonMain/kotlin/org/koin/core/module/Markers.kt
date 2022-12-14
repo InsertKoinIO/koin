@@ -8,6 +8,3 @@ annotation class KoinDslMarker
 
 @DslMarker
 annotation class OptionDslMarker
-
-@DslMarker
-annotation class ScopeDslMarker

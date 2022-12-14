@@ -15,6 +15,8 @@
  */
 package org.koin.core.definition
 
+import org.koin.core.module.KoinDslMarker
+import org.koin.core.module.OptionDslMarker
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
@@ -28,6 +30,7 @@ import kotlin.reflect.KClass
  *
  * @author Arnaud Giuliani
  */
+@KoinDslMarker
 data class BeanDefinition<T>(
     val scopeQualifier: Qualifier,
     val primaryType: KClass<*>,

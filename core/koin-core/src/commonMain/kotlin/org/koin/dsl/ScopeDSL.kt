@@ -29,14 +29,6 @@ import org.koin.core.qualifier.Qualifier
 @KoinDslMarker
 class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
 
-    @Deprecated("Can't use Single in a scope. Use Scoped instead", level = DeprecationLevel.ERROR)
-    inline fun <reified T> single(
-        qualifier: Qualifier? = null,
-        noinline definition: Definition<T>
-    ): KoinDefinition<T> {
-        error("Scoped definition is deprecated and has been replaced with Single scope definitions")
-    }
-
     inline fun <reified T> scoped(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>

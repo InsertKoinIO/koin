@@ -28,7 +28,7 @@ private val fragmentFactoryModule = module {
 /**
  * Setup the KoinFragmentFactory instance
  */
-@KoinApplicationDslMarker
+
 fun KoinApplication.fragmentFactory() {
     koin.loadModules(listOf(fragmentFactoryModule))
 }

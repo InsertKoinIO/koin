@@ -20,7 +20,6 @@ import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.instance.newInstance
-import org.koin.core.module.ScopeDslMarker
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeDSL
 
@@ -33,7 +32,6 @@ import org.koin.dsl.ScopeDSL
  * @param qualifier - definition qualifier
  * @param override - allow definition override
  */
-@ScopeDslMarker
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>

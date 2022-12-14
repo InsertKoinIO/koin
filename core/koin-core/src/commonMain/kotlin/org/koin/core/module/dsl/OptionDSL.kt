@@ -48,32 +48,26 @@ fun <T> KoinDefinition<T>.onOptions(
     return this
 }
 
-@OptionDslMarker
 fun BeanDefinition<*>.named(name: String) {
     qualifier = StringQualifier(name)
 }
 
-@OptionDslMarker
 inline fun <reified T> BeanDefinition<*>.named() {
     qualifier = TypeQualifier(T::class)
 }
 
-@OptionDslMarker
 inline fun <reified T> BeanDefinition<out T>.bind() {
     secondaryTypes += T::class
 }
 
-@OptionDslMarker
 fun BeanDefinition<*>.binds(classes: List<KClass<*>>) {
     secondaryTypes += classes
 }
 
-@OptionDslMarker
 fun BeanDefinition<*>.createdAtStart() {
     _createdAtStart = true
 }
 
-@OptionDslMarker
 fun <T> BeanDefinition<T>.onClose(onClose: OnCloseCallback<T>) {
     callbacks = Callbacks(onClose)
 }

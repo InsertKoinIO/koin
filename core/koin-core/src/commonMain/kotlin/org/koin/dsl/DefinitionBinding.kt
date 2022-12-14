@@ -19,7 +19,6 @@ import org.koin.core.definition.Callbacks
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.definition.OnCloseCallback
 import org.koin.core.definition.indexKey
-import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.OptionDslMarker
 import kotlin.reflect.KClass
 

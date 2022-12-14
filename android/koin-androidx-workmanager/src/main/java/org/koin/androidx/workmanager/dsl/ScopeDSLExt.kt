@@ -20,7 +20,6 @@ import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.instance.newInstance
-import org.koin.core.module.ScopeDslMarker
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.ScopeDSL
@@ -31,7 +30,6 @@ import org.koin.dsl.bind
  *
  * @author Arnaud Giuliani
  **/
-@ScopeDslMarker
 inline fun <reified T : ListenableWorker> ScopeDSL.worker(
     qualifier: Qualifier = named<T>(),
     noinline definition: Definition<T>
