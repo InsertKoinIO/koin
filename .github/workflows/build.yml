@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
 
-  build:
+  build-core:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -37,13 +37,33 @@ jobs:
       - name: Build Core
         run: cd core && ./test.sh
 
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+    
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Install Core
         run: cd core && ./install.sh
       
       - name: Build Android
         run: cd android && ./test.sh
 
-  build-macos:
+  build-core-macos:
     runs-on: macos-latest
     timeout-minutes: 30
 
