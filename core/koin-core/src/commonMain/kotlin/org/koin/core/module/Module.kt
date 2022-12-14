@@ -62,6 +62,7 @@ class Module(
      * A collection of [Module] from which the current [Module] is compose.
      * Duplicated modules are ignored.
      */
+    @KoinDslMarker
     fun includes(vararg module: Module) {
         includedModules += module
     }
@@ -70,6 +71,7 @@ class Module(
      * A collection of [Module] from which the current [Module] is compose.
      * Duplicated modules are ignored.
      */
+    @KoinDslMarker
     fun includes(module: List<Module>) {
         includedModules += module
     }
