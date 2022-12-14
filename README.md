@@ -14,7 +14,7 @@ Here are the current available versions:
 koin_version= "3.3.0"
 koin_android_version= "3.3.1"
 koin_android_compose_version= "3.4.0"
-koin_ktor= "3.3.0"
+koin_ktor= "3.2.2"
 ```
 
 ## Latest News
