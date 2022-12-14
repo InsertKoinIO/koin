@@ -21,6 +21,12 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.mp.KoinPlatformTools
 
 /**
+ * Starter function to help start Koin context with default context parameters
+ *
+ * @author Arnaud Giuliani
+ */
+
+/**
  * Start a Koin Application as StandAlone
  */
 fun startKoin(koinApplication: KoinApplication): KoinApplication = KoinPlatformTools.defaultContext().startKoin(koinApplication)
