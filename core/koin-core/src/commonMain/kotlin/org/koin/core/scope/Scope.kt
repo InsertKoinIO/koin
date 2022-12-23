@@ -15,6 +15,7 @@
  */
 package org.koin.core.scope
 
+import kotlin.reflect.KClass
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
@@ -32,7 +33,6 @@ import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
-import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
 @KoinDslMarker
@@ -123,7 +123,6 @@ data class Scope(
     /**
      * Get a Koin instance
      * @param qualifier
-     * @param scope
      * @param parameters
      */
     inline fun <reified T : Any> get(
@@ -146,7 +145,6 @@ data class Scope(
     /**
      * Get a Koin instance if available
      * @param qualifier
-     * @param scope
      * @param parameters
      *
      * @return instance of type T or null
@@ -160,8 +158,8 @@ data class Scope(
 
     /**
      * Get a Koin instance if available
+     * @param clazz
      * @param qualifier
-     * @param scope
      * @param parameters
      *
      * @return instance of type T or null
@@ -228,7 +226,7 @@ data class Scope(
             }
         }
         val instanceContext = InstanceContext(_koin, this, parameters)
-        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
+        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameters)
         if (parameters != null) {
             _koin.logger.debug("| << parameters")
             KoinPlatformTools.synchronized(this@Scope) {
@@ -242,23 +240,19 @@ data class Scope(
         qualifier: Qualifier?,
         clazz: KClass<*>,
         instanceContext: InstanceContext,
-        parameterDef: ParametersDefinition?
-    ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
+        parameters: ParametersHolder?
+    ) : T = _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
             _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
-            _source?.let {
-                if (clazz.isInstance(it)) {
-                    _source as? T
-                } else null
-            }
+            getFromSource<T>(clazz)
         }
         ?: run {
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
-            findInOtherScope<T>(clazz, qualifier, parameterDef)
+            findInOtherScope<T>(clazz, qualifier, parameters)
         }
         ?: run {
             KoinPlatformTools.synchronized(this@Scope) {
@@ -266,28 +260,73 @@ data class Scope(
             }
             _koin.logger.debug("|- << parameters" )
             throwDefinitionNotFound(qualifier, clazz)
-        })
+        }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getFromSource(clazz: KClass<*>): T? {
-        return if (clazz.isInstance(_source)) _source as? T else null
+    private fun <T> getFromSource(clazz: KClass<*>): T? =
+        _source?.let { if (clazz.isInstance(it)) { _source as? T } else null }
+
+    /**
+     * Optimized version of [resolveValue] for searching in linked scopes.
+     * The idea is to return null and not throw exceptions as this can lead to performance issues.
+     * Also removed parameterStack search, since it is enough to check it once only for the parent scope.
+     */
+    private fun <T> resolveScopeInstanceOrNull(
+        qualifier: Qualifier?,
+        clazz: KClass<*>,
+        parameters: ParametersHolder?
+    ): T? {
+        if (_closed) return null
+
+        if (parameters != null) {
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.addFirst(parameters)
+            }
+        }
+
+        val instanceContext = InstanceContext(_koin, this, parameters)
+        val value = _koin.instanceRegistry.resolveInstance<T>(qualifier, clazz, scopeQualifier, instanceContext)
+            ?: getFromSource<T>(clazz)
+
+        if (parameters != null) {
+            KoinPlatformTools.synchronized(this@Scope) {
+                _parameterStack.removeFirstOrNull()
+            }
+        }
+
+        return value
     }
 
+    /**
+     * The definition search algorithm uses a breadth-first search traversal.
+     * In most cases, it will be faster than DFS, since the required definition
+     * is more likely to be in the nearest scopes than in the more outlying scopes.
+     *
+     * Set 'visitedScopes' are used to prevent multiple searches in the same scope.
+     */
     private fun <T> findInOtherScope(
         clazz: KClass<*>,
         qualifier: Qualifier?,
-        parameters: ParametersDefinition?
+        parameters: ParametersHolder?
     ): T? {
-        var instance: T? = null
-        for (scope in linkedScopes) {
-            instance = scope.getOrNull<T>(
-                clazz,
-                qualifier,
-                parameters
-            )
-            if (instance != null) break
+        val visitedScopes = mutableSetOf<ScopeID>()
+        val queue = ArrayDeque(linkedScopes)
+
+        while (queue.isNotEmpty()) {
+            val currentScope = queue.removeFirst()
+            val currentValue = currentScope.resolveScopeInstanceOrNull<T>(qualifier, clazz, parameters)
+            if (currentValue != null) {
+                return currentValue
+            } else {
+                currentScope.linkedScopes.forEach { scope ->
+                    if (visitedScopes.add(scope.id)) {
+                        queue.addLast(scope)
+                    }
+                }
+            }
         }
-        return instance
+
+        return null
     }
 
     private fun throwDefinitionNotFound(
@@ -308,7 +347,7 @@ data class Scope(
      * @param instance The instance you're declaring.
      * @param qualifier Qualifier for this declaration
      * @param secondaryTypes List of secondary bound types
-     * @param override Allows to override a previous declaration of the same type (default to false).
+     * @param allowOverride Allows to override a previous declaration of the same type (default to false).
      */
     inline fun <reified T> declare(
         instance: T,
@@ -358,8 +397,25 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
-        val context = InstanceContext(_koin, this)
-        return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
+        val accumulator = mutableListOf<T>()
+        val visitedScopes = mutableSetOf<ScopeID>()
+        val queue = ArrayDeque<Scope>()
+        queue.addLast(this)
+
+        while (queue.isNotEmpty()) {
+            val currentScope = queue.removeFirst()
+            val context = InstanceContext(_koin, currentScope)
+
+            accumulator.addAll(_koin.instanceRegistry.getAll(clazz, context))
+
+            currentScope.linkedScopes.forEach { scope ->
+                if (visitedScopes.add(scope.id)) {
+                    queue.addLast(scope)
+                }
+            }
+        }
+
+        return accumulator.toList()
     }
 
     /**
