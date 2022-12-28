@@ -30,13 +30,7 @@ class SLF4JLogger(level: Level = Level.INFO) : Logger(level) {
 
     private val logger = LoggerFactory.getLogger(KOIN_TAG)
 
-    override fun log(level: Level, msg: MESSAGE) {
-        if (this.level <= level) {
-            logOnLevel(msg)
-        }
-    }
-
-    private fun logOnLevel(msg: MESSAGE) {
+    override fun display(level: Level, msg: MESSAGE) {
         when (this.level) {
             Level.DEBUG -> logger.debug(msg)
             Level.INFO -> logger.info(msg)
