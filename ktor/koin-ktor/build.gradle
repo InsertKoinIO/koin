@@ -22,4 +22,4 @@ compileJava {
 }
 
 
-apply from: '../gradle/publish-to-central.gradle'
+apply from: '../../gradle/publish-to-central.gradle'

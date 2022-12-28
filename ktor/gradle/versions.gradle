@@ -11,11 +11,5 @@ ext {
     // coroutines_version = "1.6.0"
 
     // Dokka
-    dokka_version = '1.4.32'
-    // Test
-    junit_version = "4.13.2"
-    junit5_version = "5.8.2"
-    mockito_version = "4.2.0"
-    mockk_version = "1.12.2"
-
+    dokka_version = '1.7.20'
 }
