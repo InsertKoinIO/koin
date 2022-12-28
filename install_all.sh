@@ -8,6 +8,14 @@ cd ./android
 ./install.sh
 cd ..
 
+cd ./compose
+./install.sh
+cd ..
+
+cd ./ktor
+./install.sh
+cd ..
+
 cd ./plugins
 ./install.sh
 cd ..
