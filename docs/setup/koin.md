@@ -8,22 +8,16 @@ title: Koin 3.3
 
 You can find all [Koin packages on maven central](https://search.maven.org/search?q=io.insert-koin).
 
-## Gradle dependencies
-
-Add the following Gradle dependencies to add Koin to your project:
+Here are the current available versions:
 
 ```groovy
-// Add Maven Central to your repositories if needed
-repositories {
-    mavenCentral()
-}
+koin_version= "3.3.2"
+koin_android_version= "3.3.2"
+koin_android_compose_version= "3.4.1"
+koin_ktor= "3.3.0"
 ```
 
 ### **Core**
-
-```groovy
-koin_version= "3.3.0"
-```
 
 ```groovy
 // Koin Core features
@@ -40,10 +34,6 @@ testImplementation "io.insert-koin:koin-test-junit5:$koin_version"
 ### **Android**
 
 ```groovy
-koin_android_version= "3.3.1"
-```
-
-```groovy
 // Koin main features for Android
 implementation "io.insert-koin:koin-android:$koin_android_version"
 // Java Compatibility
@@ -57,20 +47,12 @@ implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
 ### **Android Jetpack Compose**
 
 ```groovy
-koin_android_compose_version= "3.4.0"
-```
-
-```groovy
 // Jetpack Compose
 implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
 ```
 
 
 ### **Ktor**
-
-```groovy
-koin_ktor= "3.2.2"
-```
 
 ```groovy
 // Koin for Ktor 

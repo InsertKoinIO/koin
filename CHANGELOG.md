@@ -2,7 +2,12 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+
 # [3.4]()
+
+## [android-3.4.1]() - 2022-12-28
+* `[UPDATED]` - `koin-android` 3.3.2
+* `[UPDATED]` - `koin-core` 3.3.2
 
 ## [android-3.4.0]() - 2022-12-14
 
@@ -12,7 +17,18 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - compose compiler 1.3.2
 * `[UPDATED]` - compose runtime 1.3.2
 
+
 # [3.3]()
+
+## [ktor-3.3.0]() - 2022-12-28
+* `[UPDATED]` - `io.ktor:ktor-server-core` 2.2.1
+* `[UPDATED]` - `koin-core` 3.3.2
+
+## [android-3.3.2]() - 2022-12-28
+* `[UPDATED]` - `koin-core` 3.3.2
+
+## [core-3.3.2]() - 2022-12-28
+* `[UPDATED]` - technical update version to 3.3.2
 
 ## [android-3.3.1]() - 2022-12-14
 
