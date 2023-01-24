@@ -4,4 +4,8 @@ import java.util.UUID
 
 class MySingle() {
     val id = UUID.randomUUID().toString()
+
+    init {
+        println("$this created '$id'")
+    }
 }

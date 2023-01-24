@@ -16,4 +16,8 @@ class SSHViewModel(val id: String, private val savedStateHandle: SavedStateHandl
     fun saveId(){
         lastIds = lastIds + id
     }
+
+    init {
+        println("$this created '$id'")
+    }
 }
