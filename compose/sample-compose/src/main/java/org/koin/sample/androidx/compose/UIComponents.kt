@@ -1,5 +1,7 @@
 package org.koin.sample.androidx.compose
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -9,7 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.koin.sample.androidx.compose.data.User
+import java.time.Instant
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun now(): String = Instant.now().toString()
 
 @Composable
 fun ButtonForCreate(label: String, onClick: () -> Unit) {

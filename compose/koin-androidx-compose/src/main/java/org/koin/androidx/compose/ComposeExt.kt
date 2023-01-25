@@ -34,27 +34,19 @@ import org.koin.core.scope.Scope
  * @author Arnaud Giuliani
  * @author Henrique Horbovyi
  */
-//@OptIn(KoinInternalApi::class)
-//@Composable
-//inline fun <reified T> get(
-//    qualifier: Qualifier? = null,
-//    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
-//    noinline parameters: ParametersDefinition? = null,
-//): T = remember(qualifier, parameters, scope) {
-//    scope.get(qualifier, parameters)
-//}
+@OptIn(KoinInternalApi::class)
+@Composable
+@Deprecated("use koinInject() instead")
+inline fun <reified T> get(
+    qualifier: Qualifier? = null,
+    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
+    noinline parameters: ParametersDefinition? = null,
+): T = remember(qualifier, parameters, scope) {
+    scope.get(qualifier, parameters)
+}
 
-// Removed
-//@OptIn(KoinInternalApi::class)
-//@Composable
-//@Deprecated("Lazy API is deprecated. Please use non Lazy API: get(qualifier,scope,parameters)",level = DeprecationLevel.ERROR)
-//inline fun <reified T> inject(
-//    qualifier: Qualifier? = null,
-//    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
-//    noinline parameters: ParametersDefinition? = null,
-//): Lazy<T> = error("Lazy API is deprecated with Compose 1.1+")
-
-//@Composable
-//fun getKoin(): Koin = remember {
-//    GlobalContext.get()
-//}
+@Composable
+@Deprecated("use org.koin.compose.getKoin() instead")
+fun getKoin(): Koin = remember {
+    GlobalContext.get()
+}

@@ -3,11 +3,10 @@ package org.koin.sample.androidx.compose.di
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.sample.androidx.compose.data.MyFactory
-import org.koin.sample.androidx.compose.data.MyInnerFactory
-import org.koin.sample.androidx.compose.data.MySingle
-import org.koin.sample.androidx.compose.data.UserRepository
+import org.koin.sample.androidx.compose.MainActivity
+import org.koin.sample.androidx.compose.data.*
 import org.koin.sample.androidx.compose.viewmodel.SSHViewModel
 import org.koin.sample.androidx.compose.viewmodel.UserViewModel
 
@@ -19,6 +18,10 @@ val appModule = module {
     viewModelOf(::SSHViewModel)
 }
 
+val WALLET_SCOPE = named("wallet")
 val secondModule = module {
-    factoryOf(::MyInnerFactory)
+    scope<MainActivity> {
+        factoryOf(::MyInnerFactory)
+        scoped { MyScoped() }
+    }
 }

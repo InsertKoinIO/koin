@@ -7,8 +7,7 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
-@PublishedApi
-internal val KoinApplication = compositionLocalOf { GlobalContext.get() }
+val LocalKoinApplication = compositionLocalOf { GlobalContext.get() }
 
 @Composable
 fun KoinApplication(
@@ -17,7 +16,7 @@ fun KoinApplication(
 ) {
     val koinApplication = startKoin(koinApp)
     CompositionLocalProvider(
-        KoinApplication provides koinApplication.koin,
+        LocalKoinApplication provides koinApplication.koin,
     ) {
         content()
     }
