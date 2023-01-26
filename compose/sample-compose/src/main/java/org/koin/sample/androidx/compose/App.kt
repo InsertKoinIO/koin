@@ -7,13 +7,18 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.scope.KoinActivityScope
+import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.rememberKoinInject
 import org.koin.compose.rememberKoinModules
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.parameter.parametersOf
+import org.koin.dsl.module
 import org.koin.sample.androidx.compose.data.MyFactory
 import org.koin.sample.androidx.compose.data.MyInnerFactory
 import org.koin.sample.androidx.compose.data.MyScoped
@@ -27,13 +32,16 @@ import org.koin.sample.androidx.compose.viewmodel.UserViewModel
 fun App(userViewModel: UserViewModel = koinViewModel()) {
     var created by remember { mutableStateOf(true) }
 
+    val users = userViewModel.getUsers()
+    println("Loaded users:${users.count()}")
+
     if (created) {
         LazyColumn(modifier = Modifier.padding(8.dp)) {
             item {
                 clickComponent("Main", "", "") { updatedTime ->
-                    singleComposable(parentStatus = updatedTime)
-                    factoryComposable(parentStatus = updatedTime)
-                    viewModelComposable(parentStatus = updatedTime)
+                    SingleComposable(parentStatus = updatedTime)
+                    FactoryComposable(parentStatus = updatedTime)
+                    ViewModelComposable(parentStatus = updatedTime)
                 }
             }
 
@@ -50,9 +58,8 @@ fun App(userViewModel: UserViewModel = koinViewModel()) {
 }
 
 @Composable
-fun viewModelComposable(
-    parentStatus: String,
-    modifier: Modifier = Modifier,
+fun ViewModelComposable(
+    parentStatus: String = "- status -",
     myViewModel: SSHViewModel = koinViewModel(parameters = { parametersOf(parentStatus) })
 ) {
     var created by remember { mutableStateOf(false) }
@@ -68,8 +75,26 @@ fun viewModelComposable(
     }
 }
 
+// Preview
+
+//val fakeKoin = module {
+//    singleOf(::MySingle)
+//    factoryOf(::MyInnerFactory)
+//}
+//
+//@Preview
+//@Composable
+//fun PreviewViewModelComposable() {
+//    KoinApplication(moduleList = { listOf(fakeKoin) }) {
+//        SingleComposable()
+//    }
+//}
+
 @Composable
-fun singleComposable(parentStatus: String, modifier: Modifier = Modifier, mySingle: MySingle = rememberKoinInject()) {
+fun SingleComposable(
+    parentStatus: String = "- status -",
+    mySingle: MySingle = rememberKoinInject()
+) {
     var created by remember { mutableStateOf(false) }
 
     if (created) {
@@ -82,9 +107,8 @@ fun singleComposable(parentStatus: String, modifier: Modifier = Modifier, mySing
 }
 
 @Composable
-fun factoryComposable(
-    parentStatus: String,
-    modifier: Modifier = Modifier,
+fun FactoryComposable(
+    parentStatus: String = "- status -",
     myFactory: MyFactory = rememberKoinInject { parametersOf("stable_status") }
 ) {
     var created by remember { mutableStateOf(false) }
@@ -94,12 +118,12 @@ fun factoryComposable(
         clickComponent("Factory", myFactory.id, parentStatus) {
 
             KoinActivityScope {
-                innerFactoryComposable(parentStatus)
-                innerScopeComposable("SC_1",parentStatus)
-                innerScopeComposable("SC_2",parentStatus)
+                InnerFactoryComposable(parentStatus)
+                ScopeComposable("SC_1", parentStatus)
+                ScopeComposable("SC_2", parentStatus)
             }
             KoinActivityScope {
-                innerScopeComposable("SC_3",parentStatus)
+                ScopeComposable("SC_3", parentStatus)
             }
             ButtonForCreate("-X- Factory") { created = !created }
         }
@@ -110,9 +134,8 @@ fun factoryComposable(
 
 @Composable
 //TODO Hold instance until recreate Composable
-fun innerFactoryComposable(
+fun InnerFactoryComposable(
     parentStatus: String,
-    modifier: Modifier = Modifier,
     myFactory: MyInnerFactory = koinInject { parametersOf("_stable_") }
 ) {
     var created by remember { mutableStateOf(false) }
@@ -128,10 +151,9 @@ fun innerFactoryComposable(
 }
 
 @Composable
-fun innerScopeComposable(
-    label : String,
-    parentStatus: String,
-    modifier: Modifier = Modifier,
+fun ScopeComposable(
+    label: String = "- status -",
+    parentStatus: String = "- parent status -",
     scopedInstance: MyScoped = koinInject()
 ) {
     var created by remember { mutableStateOf(false) }

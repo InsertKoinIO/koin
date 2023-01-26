@@ -5,8 +5,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.compose.LocalKoinScope
-import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.scope.Scope
 
 
 @Composable
@@ -34,11 +32,3 @@ fun KoinFragmentScope(
         content()
     }
 }
-
-val koinAndroidScope: Scope
-    @Composable
-    get() {
-        val context = LocalContext.current as? AndroidScopeComponent
-            ?: error("LocalContext.current ${LocalContext.current} is not a KoinScopeComponent. Please use KoinScopeComponent interface on your Activity or Fragment.")
-        return context.scope
-    }
