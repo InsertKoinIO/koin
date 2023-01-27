@@ -48,7 +48,7 @@ You can find here tutorials to help you learn and get started with Koin framewor
 ## Community 💬
 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
-- Post your question on [Stackoverflow - #koin tag](https://stackoverflow.com/questions/tagged/koin)
+- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
 - Found a bug or a problem? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 
 ## Contributing 🛠
