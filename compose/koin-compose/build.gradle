@@ -1,0 +1,36 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.compose'
+
+archivesBaseName = 'koin-compose'
+version = "$koin_compose_version"
+
+kotlin {
+    jvm {
+        withJava()
+    }
+
+    js(IR) {
+        browser()
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api kotlin("stdlib-common")
+                api "org.jetbrains.compose.runtime:runtime:$jb_compose_version"
+                api "io.insert-koin:koin-core:$koin_android_version"
+            }
+        }
+
+        commonTest {
+            dependencies {
+//                implementation kotlin("test-common")
+//                implementation kotlin("test-annotations-common")
+//                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+            }
+        }
+    }
+}
+
+
+apply from: '../../gradle/publish-to-central.gradle'

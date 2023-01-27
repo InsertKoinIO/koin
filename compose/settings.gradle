@@ -1,4 +1,4 @@
-
+include 'koin-compose'
 include 'koin-androidx-compose'
 include 'sample-compose'
 

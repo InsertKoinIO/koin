@@ -4,11 +4,14 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        mavenLocal()
+//        jcenter()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven" }
     }
     dependencies {
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.compose:compose-gradle-plugin:$jb_compose_version"
         // Dokka
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         // Android
@@ -25,7 +28,9 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        jcenter()
+//        jcenter()
+        // Needed for dokka
+        maven { url "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven" }
     }
 
     group = 'io.insert-koin'

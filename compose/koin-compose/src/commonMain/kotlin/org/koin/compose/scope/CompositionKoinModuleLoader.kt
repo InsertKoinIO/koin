@@ -1,4 +1,4 @@
-package org.koin.compose
+package org.koin.compose.scope
 
 import androidx.compose.runtime.RememberObserver
 import org.koin.core.Koin

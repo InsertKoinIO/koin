@@ -1,7 +1,9 @@
-package org.koin.compose
+package org.koin.compose.scope
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import org.koin.compose.LocalKoinScope
+import org.koin.compose.getKoin
 import org.koin.core.Koin
 import org.koin.core.component.getScopeId
 import org.koin.core.qualifier.Qualifier
