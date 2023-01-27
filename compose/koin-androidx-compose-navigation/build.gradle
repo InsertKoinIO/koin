@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
@@ -10,8 +9,8 @@ version = "$koin_androidx_compose_version"
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-androidx-compose"
-    pom_description = "Koin project - koin-androidx-compose"
+    pom_name = "koin-androidx-compose-navigation"
+    pom_description = "Koin project - koin-androidx-compose-navigation"
 }
 
 android {
@@ -37,13 +36,10 @@ android {
 }
 
 dependencies {
-
     // Koin
-    api "io.insert-koin:koin-android:$koin_android_version"
-    api project(":koin-compose")
-    // Compose
-    api "androidx.compose.runtime:runtime:$androidx_compose_version"
-    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    api project(":koin-androidx-compose")
+    // Navigation
+    api "androidx.navigation:navigation-compose:2.5.3"
 }
 
 apply from: '../gradle/publish-to-central.gradle'

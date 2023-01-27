@@ -15,14 +15,12 @@
  */
 @file:Suppress("DeprecatedCallableAddReplaceWith")
 
-package org.koin.androidx.compose
+package org.koin.androidx.compose.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.navigation.NavBackStackEntry
-import org.koin.androidx.viewmodel.ext.android.toExtras
 import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.compose.LocalKoinScope
 import org.koin.core.annotation.KoinInternalApi
@@ -31,42 +29,26 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
 /**
- * Resolve ViewModel instance
+ * Resolve ViewModel instance with Navigation NavBackStackEntry as extras parameters
  *
  * @param qualifier
  * @param parameters
  *
  * @author Arnaud Giuliani
  */
-
-@Composable
-inline fun <reified T : ViewModel> getViewModel(
-    qualifier: Qualifier? = null,
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    },
-    key: String? = null,
-    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
-    scope: Scope = LocalKoinScope.current,
-    noinline parameters: ParametersDefinition? = null,
-): T {
-    return koinViewModel(qualifier, viewModelStoreOwner, key, extras, scope, parameters)
-}
-
 @OptIn(KoinInternalApi::class)
 @Composable
-inline fun <reified T : ViewModel> koinViewModel(
+inline fun <reified T : ViewModel> koinNavViewModel(
     qualifier: Qualifier? = null,
     viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
     },
     key: String? = null,
-    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
+    extras: CreationExtras = defaultNavExtras(viewModelStoreOwner),
     scope: Scope = LocalKoinScope.current,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val currentBundle = (viewModelStoreOwner as? NavBackStackEntry)?.arguments?.toExtras(viewModelStoreOwner)
     return resolveViewModel(
-        T::class, viewModelStoreOwner.viewModelStore, key, currentBundle ?: extras, qualifier, scope, parameters
+        T::class, viewModelStoreOwner.viewModelStore, key, extras, qualifier, scope, parameters
     )
 }

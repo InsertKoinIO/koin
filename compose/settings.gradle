@@ -1,4 +1,6 @@
 include 'koin-compose'
 include 'koin-androidx-compose'
-include 'sample-compose'
+include 'koin-androidx-compose-navigation'
+include 'sample-android-compose'
+include 'sample-desktop-compose'
 
