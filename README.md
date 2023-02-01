@@ -69,6 +69,6 @@ Thank you all for your work! ❤️
   <img src="https://contrib.rocks/image?repo=InsertKoinIO/koin" />
 </a>
 
-## Sponsorship ❤️
+## OpenCollective - Sponsorship ❤️
 
-Support this project by becoming a sponsor and be displayed on the offcial website. [[Become a sponsor](https://opencollective.com/koin#sponsor)]
+Support this project by becoming a sponsor and be displayed on the offcial website. [[Help us and Become a sponsor!](https://opencollective.com/koin#sponsor)]
