@@ -61,6 +61,10 @@ Want to help or share a proposal about Koin? problem on a specific feature?
 
 Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob/master/CONTRIBUTING.adoc
 
+### Contributors
+
+Thank you all for your work! ❤️
+
 <a href="https://github.com/InsertKoinIO/koin/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=InsertKoinIO/koin" />
 </a>
