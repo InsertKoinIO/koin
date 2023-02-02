@@ -45,7 +45,7 @@ We just have to declare list of used modules when we start our Koin container:
 
 ```kotlin
 // Start Koin with moduleA & moduleB
-startKoin{
+startKoin {
     modules(moduleA,moduleB)
 }
 ```
