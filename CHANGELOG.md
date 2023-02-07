@@ -5,6 +5,9 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.4]()
 
+## [android-3.4.2]() - 2022-02-07
+* `[UPDATED]` - `koin-android` 3.3.3
+
 ## [android-3.4.1]() - 2022-12-28
 * `[UPDATED]` - `koin-android` 3.3.2
 * `[UPDATED]` - `koin-core` 3.3.2
@@ -19,6 +22,12 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 
 # [3.3]()
+
+## [android-3.3.2]() - 2022-02-07
+* `[UPDATED]` - `koin-android` 3.3.3
+* `[FIXED]` - #1500 Fix ViewModel Factory to resolve against qualifier
+* `[FIXED]` - #1445 ShareViewModelCompat owner fix
+* `[FIXED]` - #1494 viewModelOf arguments until 22
 
 ## [ktor-3.3.0]() - 2022-12-28
 * `[UPDATED]` - `io.ktor:ktor-server-core` 2.2.1

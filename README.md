@@ -20,8 +20,8 @@ Here are the current available Koin projects versions:
 
 ```groovy
 koin_version= "3.3.2"
-koin_android_version= "3.3.2"
-koin_android_compose_version= "3.4.1"
+koin_android_version= "3.3.3"
+koin_android_compose_version= "3.4.2"
 koin_ktor= "3.3.0"
 ```
 
