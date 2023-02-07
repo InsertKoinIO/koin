@@ -1,4 +1,5 @@
 buildscript {
+    apply from: "../core/gradle/versions.gradle"
     apply from: "./gradle/versions.gradle"
 
     repositories {

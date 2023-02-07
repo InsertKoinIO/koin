@@ -7,6 +7,7 @@ dependencies {
     // Koin
     api "io.insert-koin:koin-core:$koin_version"
     // SLF4J
+    //TODO Update 2.0.x
     api "org.slf4j:slf4j-api:1.7.36"
 }
 
