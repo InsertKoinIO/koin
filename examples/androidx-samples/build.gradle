@@ -68,7 +68,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 //    implementation "androidx.appcompat:appcompat:1.4.1"
     implementation "androidx.work:work-runtime-ktx:2.7.1"
-    implementation "org.jetbrains.anko:anko-commons:0.10.4"
+//    implementation "org.jetbrains.anko:anko-commons:0.10.4"
 
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation "junit:junit:4.13.2"

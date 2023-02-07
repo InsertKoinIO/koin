@@ -1,9 +1,6 @@
 ext {
 
     koin_androidx_compose_version = '3.4.2'
-    // Koin
-    koin_version = '3.3.2'
-    koin_android_version = '3.3.3'
 
     // androix-compose
     compose_compiler = "1.3.2"
@@ -11,7 +8,4 @@ ext {
 
     // Kotlin
     kotlin_version = '1.7.20'
-
-    // Dokka
-    dokka_version = '1.4.32'
 }

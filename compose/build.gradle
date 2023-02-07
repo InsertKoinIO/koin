@@ -1,10 +1,12 @@
 buildscript {
+    apply from: "../gradle/versions.gradle"
+    apply from: "../android/gradle/versions.gradle"
     apply from: "./gradle/versions.gradle"
 
     repositories {
         google()
         mavenCentral()
-        jcenter()
+//        jcenter()
     }
     dependencies {
         // Kotlin
@@ -25,7 +27,7 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        jcenter()
+//        jcenter()
     }
 
     group = 'io.insert-koin'

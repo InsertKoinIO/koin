@@ -1,11 +1,11 @@
 buildscript {
     apply from: "../gradle/versions.gradle"
-    apply from: "../gradle/versions-android.gradle"
+    apply from: "../android/gradle/versions.gradle"
 
     repositories {
         google()
         mavenCentral()
-        jcenter()
+//        jcenter()
     }
     dependencies {
         // Kotlin
@@ -24,6 +24,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
+//        jcenter()
     }
 }
