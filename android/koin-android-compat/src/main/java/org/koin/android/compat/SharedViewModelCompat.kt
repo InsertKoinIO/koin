@@ -51,7 +51,7 @@ object SharedViewModelCompat {
     ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) { getSharedViewModel(fragment, clazz, qualifier, parameters) }
 
     /**
-     * Get a shared viewModel instance from underlying Activity
+     * Get a shared viewModel instance from underlying Fragment parent Activity
      *
      * @param fragment - Fragment
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
@@ -70,7 +70,7 @@ object SharedViewModelCompat {
     ): T {
         return resolveViewModelCompat(
             clazz,
-            fragment.viewModelStore,
+            fragment.requireActivity().viewModelStore,
             extras = CreationExtras.Empty,
             qualifier = qualifier,
             parameters = parameters,
