@@ -1,7 +1,6 @@
 ![logo](./docs/img/koin_main_logo.png)
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.7.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
-[![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
 ![Github Actions](https://github.com/InsertKoinIO/koin/actions/workflows/build.yml/badge.svg)
 [![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/InsertKoinIO/koin/blob/main/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-orange.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/koin/)
@@ -18,12 +17,10 @@ Koin is a pragmatic lightweight dependency injection framework for Kotlin develo
 
 Here are the current available Koin projects versions:
 
-```groovy
-koin_version= "3.3.2"
-koin_android_version= "3.3.2"
-koin_android_compose_version= "3.4.1"
-koin_ktor= "3.3.0"
-```
+- koin_version - [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
+- koin_android_version - [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-android)](https://mvnrepository.com/artifact/io.insert-koin/koin-android)
+- koin_android_compose_version - [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose)
+- koin_ktor - [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-ktor)](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor)
 
 Follow the [Koin setup page](https://insert-koin.io/docs/setup/v3.2) for more details
 
