@@ -1,5 +1,6 @@
 package org.koin.sample.test
 
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.koin.sample.android.main.PerfLimit
@@ -16,8 +17,8 @@ class TestPerfRunner {
         val results = PerfRunner.runAll(this)
         results.applyLimits(limits)
 
-        assert(results.isStartOk) { "Should start under ${results.worstMaxStartTime} ms" }
-        assert(results.isExecOk) { "Should exec under ${results.worstExecTime} ms" }
+        assertTrue("Should start under ${results.worstMaxStartTime} ms", results.isStartOk)
+        assertTrue("Should exec under ${results.worstExecTime} ms", results.isExecOk)
     }
 
 }

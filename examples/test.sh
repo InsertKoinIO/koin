@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./gradlew cleanTest test --parallel --info
+./gradlew cleanTest test

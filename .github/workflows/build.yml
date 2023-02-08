@@ -120,8 +120,16 @@ jobs:
       - name: Install Android
         run: cd android && ./install.sh
 
-      - name: Build AndroidX Compose
+      - name: Test Examples
         run: cd examples && ./test.sh
+
+      - name: Upload test reports
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: |
+            '**/*/build/reports/tests/'
 
   build-core-macos:
     runs-on: macos-latest
