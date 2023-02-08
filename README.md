@@ -8,7 +8,7 @@
 
 # What is KOIN?
  
-Koin is a pragmatic lightweight dependency injection framework for Kotlin developers, developed by [Kotzilla](https://kotzilla.io) and open-source contributors.
+Koin is a pragmatic lightweight dependency injection framework for Kotlin developers, developed by [Kotzilla](https://kotzilla.io) and open-source [contributors](https://github.com/InsertKoinIO/koin/graphs/contributors).
 
 `Koin is a DSL, a light container and a pragmatic API`
 
