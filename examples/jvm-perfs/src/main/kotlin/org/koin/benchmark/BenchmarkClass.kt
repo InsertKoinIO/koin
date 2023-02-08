@@ -10,11 +10,24 @@ import java.util.concurrent.TimeUnit
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(value = 2, warmups = 0)
 @Measurement(iterations = 5, time = 2)
-@Warmup(iterations = 0)
+@Warmup(iterations = 1)
 open class BenchmarkClass {
 
     @Benchmark
-    fun startKoinAndInject() {
+    fun emptyStart() {
+        koinApplication {
+        }
+    }
+
+    @Benchmark
+    fun start400() {
+        koinApplication {
+            modules(perfModule400())
+        }.koin
+    }
+
+    @Benchmark
+    fun start400AndInject() {
         val koin = koinApplication {
             modules(perfModule400())
         }.koin

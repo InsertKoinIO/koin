@@ -2,7 +2,6 @@ package org.koin.benchmark
 
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
-import org.junit.Ignore
 import org.junit.Test
 
 class TestPerfRunner {
@@ -12,8 +11,7 @@ class TestPerfRunner {
      * Avg execution time: 0.158
      */
     @Test
-    @Ignore("Benchmark test")
-    fun runTestScenario() = runBlocking {
+    fun main() = runBlocking {
         val limits = PerfLimit(17.0, 0.175)
 
         println("Perf Tolerance: $limits")
