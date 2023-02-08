@@ -129,7 +129,7 @@ jobs:
         with:
           name: test-reports
           path: |
-            'examples/android-perfs/**/*/build/reports/tests/'
+            '**/*/examples/android-perfs/build/reports/tests/testDebugUnitTest/'
 
   build-core-macos:
     runs-on: macos-latest
