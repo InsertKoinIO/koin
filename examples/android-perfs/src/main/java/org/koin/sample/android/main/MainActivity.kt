@@ -6,11 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
 import org.koin.sample.android.R
 import org.koin.sample.android.main.PerfRunner.runAll
-import java.lang.Double
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.round
-import kotlin.math.roundToInt
-import kotlin.math.truncate
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
 
@@ -36,11 +32,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
                 Exec time: $execTime - max ${results.worstExecTime} ms
             """.trimIndent()
 
-            if (results.hasFail) textReport += "\nTest Failed!"
+            if (!results.isOk) textReport += "\nTest Failed!"
 
             textWidget.text = textReport
 
-            val color = if (results.hasFail) {
+            val color = if (!results.isOk) {
                 android.R.color.holo_red_dark
             } else android.R.color.holo_green_dark
 

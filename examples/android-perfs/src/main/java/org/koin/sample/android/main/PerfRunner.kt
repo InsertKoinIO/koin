@@ -51,16 +51,16 @@ data class PerfLimit(val startTime : Double, val execTime : Double)
 data class PerfResult(val startTime : Double, val execTime : Double) {
     var worstMaxStartTime = 0.0
     var worstExecTime = 0.0
-    var isStartOk = startTime <= worstMaxStartTime
-    var isExecOk = execTime <= worstExecTime
-    var hasFail = false
+    var isStartOk = false
+    var isExecOk = false
+    var isOk = true
 
     fun applyLimits(limits: PerfLimit) {
         worstMaxStartTime = limits.startTime
         worstExecTime = limits.execTime
 
-        isStartOk = startTime < worstMaxStartTime
-        isExecOk = execTime < worstExecTime
-        hasFail = !isStartOk || !isExecOk
+        isStartOk = startTime <= worstMaxStartTime
+        isExecOk = execTime <= worstExecTime
+        isOk = isStartOk && isExecOk
     }
 }
