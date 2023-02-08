@@ -1,4 +1,4 @@
-# Change Log
+# Latests Changes
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
