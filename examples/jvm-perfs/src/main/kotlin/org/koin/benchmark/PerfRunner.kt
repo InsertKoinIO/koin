@@ -1,4 +1,4 @@
-package org.koin.sample.android.main
+package org.koin.benchmark
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
@@ -14,12 +14,12 @@ object PerfRunner {
         val avgStart = (results.sumOf { it.first } / results.size).round(100)
         val avgExec = (results.sumOf { it.second } / results.size).round(1000)
 
-        println("Avg start time: $avgStart")
-        println("Avg execution time: $avgExec")
+        println("Avg start: $avgStart ms")
+        println("Avg execution: $avgExec ms")
         return PerfResult(avgStart,avgExec)
     }
 
-    private fun runScenario(index: Int): Pair<Double, Double> {
+    fun runScenario(index: Int): Pair<Double, Double> {
         val (app, duration) = measureDurationForResult {
             koinApplication {
                 modules(perfModule400())
@@ -36,7 +36,7 @@ object PerfRunner {
         return Pair(duration, executionDuration)
     }
 
-    private fun koinScenario(koin: Koin){
+    fun koinScenario(koin: Koin){
         koin.get<A27>()
         koin.get<A31>()
         koin.get<A12>()

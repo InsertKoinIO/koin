@@ -1,4 +1,4 @@
-package org.koin.sample.android.main
+package org.koin.benchmark
 
 import org.koin.dsl.module
 

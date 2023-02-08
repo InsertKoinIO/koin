@@ -1,4 +1,4 @@
-package org.koin.sample.android.main
+package org.koin.benchmark
 
 class A1
 class B1(val a: A1)
