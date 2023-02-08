@@ -36,7 +36,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - Ktor 2.2.3
 
 ## [core-3.3.3]() - 2022-02-07
-* `[FIXED]` - 
+* `[FIXED]` - fix #1479 with new eager instances index
 
 --
 
