@@ -22,7 +22,9 @@ Here are the current available Koin projects versions:
 - koin_android_compose_version - [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose)
 - koin_ktor - [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-ktor)](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor)
 
-Follow the [Koin setup page](https://insert-koin.io/docs/setup/v3.2) for more details
+🔎 Check the [latest changes](https://github.com/InsertKoinIO/koin/blob/main/CHANGELOG.md) to update your Koin project.
+
+🛠 Follow the [setup page](https://insert-koin.io/docs/setup/v3.2) for more details
 
 
 ## Get started with Koin Tutorials 🚀
