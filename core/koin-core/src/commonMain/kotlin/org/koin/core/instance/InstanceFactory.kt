@@ -72,6 +72,15 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
 
     abstract fun dropAll()
 
+    override fun equals(other: Any?): Boolean {
+        val other = (other as? InstanceFactory<*>)?.beanDefinition
+        return beanDefinition == other
+    }
+
+    override fun hashCode(): Int {
+        return beanDefinition.hashCode()
+    }
+
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }

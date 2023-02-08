@@ -1,2 +1,0 @@
-package org.koin
-
