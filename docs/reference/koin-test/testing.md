@@ -167,7 +167,7 @@ JUnit 5 support provides [Extensions]([url](https://junit.org/junit5/docs/curren
 For testing with JUnit5 you need to use `koin-junit5` dependency.
 
 ### Writing tests
-You need to Register the KoinTestExtension and provide your module configuration. After this is done
+You need to Register the `KoinTestExtension` and provide your module configuration. After this is done
  you can either get or inject your components to the test. Remember to use `@JvmField` with the `@RegisterExtension`.
 
 ```kotlin
