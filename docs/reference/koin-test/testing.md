@@ -164,7 +164,7 @@ Take attention to stop your koin instance (if you use `startKoin` in your tests)
 JUnit 5 support provides [Extensions]([url](https://junit.org/junit5/docs/current/user-guide/#extensions)) that will handle the starting and stopping of Koin context. This means that if you are using the extension you don't need to use the `AutoCloseKoinTest`.
 
 ### Dependency
-For testing with JUnit5 you need to use koin-junit5 dependency.
+For testing with JUnit5 you need to use `koin-junit5` dependency.
 
 ### Writing tests
 You need to Register the KoinTestExtension and provide your module configuration. After this is done
