@@ -6,13 +6,13 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 # [3.4]()
 
 
-## [android-3.4.2]() - 2022-02-07
+## [androidx-compose-3.4.2]() - 2022-02-07
 * `[UPDATED]` - `koin-android` 3.3.3
 
-## [android-3.4.1]() - 2022-12-28
+## [androidx-compose-3.4.1]() - 2022-12-28
 * `[UPDATED]` - `koin-android` 3.3.2
 
-## [android-3.4.0]() - 2022-12-14
+## [androidx-compose-3.4.0]() - 2022-12-14
 
 `[koin-androidx-compose]`
 * `[UPDATED]` - lib update - Kotlin `1.7.20`
