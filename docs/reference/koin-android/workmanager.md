@@ -27,7 +27,7 @@ class MainApplication : Application(), KoinComponent {
 ```
 
 It's also important that you edit your AndroidManifest.xml to prevent
-Android initializing its default WorkManagerFactory, as shown in https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration
+Android initializing its default WorkManagerFactory, as shown in https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration#remove-default
 . Failing to do so will make the app crash.
 
 
