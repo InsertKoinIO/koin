@@ -29,7 +29,7 @@ Here are the current available Koin projects versions:
 
 🔎 Check the [latest changes](https://github.com/InsertKoinIO/koin/blob/main/CHANGELOG.md) to update your Koin project.
 
-🛠 Follow the [setup page](https://insert-koin.io/docs/setup/v3.2) for more details
+🛠 Follow the [setup page](https://insert-koin.io/docs/setup/koin) for more details
 
 
 ## Get started with Koin Tutorials 🚀
