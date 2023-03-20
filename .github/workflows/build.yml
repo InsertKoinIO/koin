@@ -65,7 +65,7 @@ jobs:
       - name: Build Android
         run: cd android && ./test.sh
 
-  build-androidx-compose:
+  build-compose:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
