@@ -12,6 +12,7 @@ class Simple {
     class UserComponent(val c1: ComponentInterface1)
 
     class MySingle(val id: Int)
+    class MyTwinSingle(val i1: Int,val i2: Int)
     class MySingleWithNull(val id: Int?)
     class MyIntFactory(val id: Int)
     class MyStringFactory(val s: String)

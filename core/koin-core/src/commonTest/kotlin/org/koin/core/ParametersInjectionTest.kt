@@ -34,6 +34,22 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `can create a single with parameters in order`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    single { p -> Simple.MyTwinSingle(p[0],p[1]) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MyTwinSingle = koin.get { parametersOf(42,24) }
+
+        assertEquals(42, a.i1)
+        assertEquals(24, a.i2)
+    }
+
+    @Test
     fun nullable_injection_param() {
 
         val app = koinApplication {
