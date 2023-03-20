@@ -98,7 +98,7 @@ class KoinApplication private constructor() {
 
     /**
      * Set Koin Logger
-     * @param logger - logger
+     * @param logger Koin Logger
      */
     fun logger(logger: Logger): KoinApplication {
         koin.setupLogger(logger)
