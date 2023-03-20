@@ -2,9 +2,10 @@ package org.koin.sample.androidx.workmanager
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
-import kotlinx.android.synthetic.main.workmanager_activity.*
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.sample.android.R
@@ -28,11 +29,13 @@ class WorkManagerActivity : AppCompatActivity() {
         // pre-setup: preparing UI
         setContentView(R.layout.workmanager_activity)
         title = "Android Work Manager"
-        workmanager_message.text = "Work Manager is starting."
-        workmanager_button.setOnClickListener {
-            navigateTo<HostActivity>(isRoot = true)
+        findViewById<TextView>(R.id.workmanager_message).text = "Work Manager is starting."
+        findViewById<Button>(R.id.workmanager_button).apply {
+            setOnClickListener {
+                navigateTo<HostActivity>(isRoot = true)
+            }
+            isEnabled = false
         }
-        workmanager_button.isEnabled = false
 
         runWorkers()
     }
@@ -77,8 +80,8 @@ class WorkManagerActivity : AppCompatActivity() {
         }
 
         withContext(Dispatchers.Main) {
-            workmanager_message.text = "Work Manager completed!"
-            workmanager_button.isEnabled = true
+            findViewById<TextView>(R.id.workmanager_message).text = "Work Manager completed!"
+            findViewById<Button>(R.id.workmanager_button).isEnabled = true
         }
     }
 
@@ -98,7 +101,8 @@ class WorkManagerActivity : AppCompatActivity() {
      */
     private inline fun <reified T : ListenableWorker> enqueueWork(data: Data): OneTimeWorkRequest {
 
-        val workName = SimpleWorker::class.simpleName + data.keyValueMap.getValue(SimpleWorker.KEY_ANSWER)
+        val workName =
+            SimpleWorker::class.simpleName + data.keyValueMap.getValue(SimpleWorker.KEY_ANSWER)
 
         return OneTimeWorkRequestBuilder<T>()
             .setInputData(data)

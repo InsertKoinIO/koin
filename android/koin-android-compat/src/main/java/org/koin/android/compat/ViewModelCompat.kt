@@ -36,7 +36,7 @@ object ViewModelCompat {
     /**
      * Lazy get a viewModel instance
      *
-     * @param owner - LifecycleOwner
+     * @param owner - ViewModelStoreOwner
      * @param clazz - viewModel class dependency
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition
@@ -59,7 +59,7 @@ object ViewModelCompat {
     /**
      * Get a viewModel instance
      *
-     * @param owner - LifecycleOwner
+     * @param owner - ViewModelStoreOwner
      * @param clazz - Class of the BeanDefinition to retrieve
      * @param qualifier - Koin BeanDefinition qualifier (if have several ViewModel beanDefinition of the same type)
      * @param parameters - parameters to pass to the BeanDefinition

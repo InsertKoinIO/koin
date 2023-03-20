@@ -87,8 +87,8 @@ That's something that checkModules could help: if any class in the project imple
 ```kotlin
 
 val workerFactoryModule = module {
-   factory<WorkFactory> { WorkFactory1() }
-   factory<WorkFactory> { WorkFactory2() }
+   factory<WorkerFactory> { WorkerFactory1() }
+   factory<WorkerFactory> { WorkerFactory2() }
 }
 ```
 

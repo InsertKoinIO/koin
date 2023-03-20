@@ -38,10 +38,10 @@ fun <T : ViewModel> resolveViewModel(
     val modelClass: Class<T> = vmClass.java
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
-    return if (key != null) {
-        provider[key, modelClass]
-    } else {
-        provider[modelClass]
+    return when {
+        qualifier != null -> provider[qualifier.value, modelClass]
+        key != null -> provider[key, modelClass]
+        else -> provider[modelClass]
     }
 }
 

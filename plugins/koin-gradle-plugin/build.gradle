@@ -1,4 +1,4 @@
-apply from: "../../gradle/versions.gradle"
+apply from: "../../core/gradle/versions.gradle"
 apply plugin: 'kotlin'
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'

@@ -1,15 +1,11 @@
 package org.koin.sample.androidx.sdk
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.host_activity.*
+import android.widget.Button
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeActivity
-import org.koin.androidx.scope.activityScope
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.context.GlobalContext
-import org.koin.core.scope.Scope
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.main.SimpleService
 import org.koin.sample.androidx.components.scope.Session
@@ -24,7 +20,7 @@ class HostActivity : ScopeActivity(), CustomKoinComponent {
 
     // Inject by Interface - default definition
     val sdkService: SimpleService by inject()
-    val sdkSession : Session by inject()
+    val sdkSession: Session by inject()
 
     @OptIn(KoinInternalApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +28,7 @@ class HostActivity : ScopeActivity(), CustomKoinComponent {
         title = "Host Activity with SDK"
         setContentView(R.layout.host_activity)
 
-        host_button.setOnClickListener {
+        findViewById<Button>(R.id.host_button).setOnClickListener {
             navigateTo<SDKActivity>(isRoot = true)
         }
 
@@ -45,7 +41,8 @@ class HostActivity : ScopeActivity(), CustomKoinComponent {
         val sdkSession2 = scope.get<Session>()
         assert(sdkSession == sdkSession2)
 
-        val globalService = defaultKoin.get<SimpleService>()//CustomSDK.koinApp.koin.get<SimpleService>()
+        val globalService =
+            defaultKoin.get<SimpleService>()//CustomSDK.koinApp.koin.get<SimpleService>()
         assert(sdkService != globalService)
         assert(CustomService().service == sdkService)
     }

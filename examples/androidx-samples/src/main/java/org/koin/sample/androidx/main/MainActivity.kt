@@ -1,8 +1,8 @@
 package org.koin.sample.androidx.main
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.main_activity.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         title = "Android First Samples"
 
-        main_button.setOnClickListener {
+        findViewById<Button>(R.id.main_button).setOnClickListener {
             navigateTo<MVPActivity>(isRoot = true)
         }
     }

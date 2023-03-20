@@ -31,7 +31,7 @@ dependencies {
     api project(":koin-android")
 
     // Android
-    api "androidx.work:work-runtime-ktx:2.7.1"
+    api "androidx.work:work-runtime-ktx:2.8.0"
 
     // Test
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"

@@ -1,16 +1,13 @@
 package org.koin.sample.androidx.mvp
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.mvp_activity.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.ScopeActivity
-import org.koin.androidx.scope.activityRetainedScope
 import org.koin.androidx.scope.activityScope
-import org.koin.androidx.scope.createActivityRetainedScope
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.sample.android.R
@@ -41,8 +38,9 @@ class MVPActivity : AppCompatActivity(R.layout.mvp_activity), AndroidScopeCompon
 
         title = "Android MVP"
 
-        mvp_button.setOnClickListener {
-            navigateTo<MVVMActivity>(isRoot = true, extras =
+        findViewById<Button>(R.id.mvp_button).setOnClickListener {
+            navigateTo<MVVMActivity>(
+                isRoot = true, extras =
                 mapOf(
                     "vm1" to "value to stateViewModel",
                     "id" to "vm1"

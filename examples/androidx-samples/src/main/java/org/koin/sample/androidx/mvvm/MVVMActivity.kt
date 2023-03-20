@@ -1,7 +1,7 @@
 package org.koin.sample.androidx.mvvm
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.mvvm_activity.*
+import android.widget.Button
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -24,6 +24,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
+    val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
 
     val scopeVm: ExtSimpleViewModel by viewModel()
     val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
@@ -41,10 +42,6 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         setupKoinFragmentFactory(scope)
         super.onCreate(savedInstanceState)
 
-
-        checkNotNull(vm1)
-        checkNotNull(simpleViewModel)
-
         title = "Android MVVM"
 
         supportFragmentManager.beginTransaction()
@@ -53,16 +50,16 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
         getKoin().setProperty("session_id", scope.get<Session>().id)
 
-        mvvm_button.setOnClickListener {
+        findViewById<Button>(R.id.mvvm_button).setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)
         }
 
-        assert(scopeVm.session.id == extScopeVm.session.id)
-        assert(stateVM.result == "vm1")
+        checks()
     }
 
-    override fun onStop() {
-        super.onStop()
-        println("simpleViewModel:${simpleViewModel.service}")
+    private fun checks() {
+        assert(scopeVm.session.id == extScopeVm.session.id)
+        assert(stateVM.result == "vm1")
+        assert(vm1.id != vm2.id)
     }
 }

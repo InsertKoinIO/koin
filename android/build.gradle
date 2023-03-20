@@ -1,6 +1,6 @@
 buildscript {
-    apply from: "../gradle/versions.gradle"
-    apply from: "../gradle/versions-android.gradle"
+    apply from: "../core/gradle/versions.gradle"
+    apply from: "./gradle/versions.gradle"
 
     repositories {
         mavenLocal()

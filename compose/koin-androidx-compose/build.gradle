@@ -43,7 +43,7 @@ dependencies {
     api project(":koin-compose")
     // Compose
     api "androidx.compose.runtime:runtime:$androidx_compose_version"
-    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0"
 }
 
-apply from: '../gradle/publish-to-central.gradle'
+apply from: '../../gradle/publish-to-central.gradle'

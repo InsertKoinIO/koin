@@ -10,7 +10,7 @@ import androidx.compose.ui.window.application
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.dsl.module
-import java.util.UUID
+import java.util.*
 
 class Myfactory {
     val id = UUID.randomUUID().toString()
@@ -24,17 +24,17 @@ val mod = module {
 @Preview
 fun App() {
     KoinApplication(application = {
-       modules(mod)
-    }){
-    var text by remember { mutableStateOf("Hello, World!") }
-    val factory = koinInject<Myfactory>()
-    MaterialTheme {
-        Button(onClick = {
-            text = "Hello, Koin! ${factory.id}"
-        }) {
-            Text(text)
+        modules(mod)
+    }) {
+        var text by remember { mutableStateOf("Hello, World!") }
+        val factory = koinInject<Myfactory>()
+        MaterialTheme {
+            Button(onClick = {
+                text = "Hello, Koin! ${factory.id}"
+            }) {
+                Text(text)
+            }
         }
-    }
     }
 }
 

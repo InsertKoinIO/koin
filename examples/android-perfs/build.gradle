@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion android_target_version
@@ -24,6 +23,12 @@ android {
 dependencies {
     // Koin
     implementation "io.insert-koin:koin-core:$koin_version"
-    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation project(":jvm-perfs")
+
+    testImplementation "junit:junit:4.13.2"
+    // bench
+    testImplementation "org.openjdk.jmh:jmh-core:1.36"
+    testImplementation "org.openjdk.jmh:jmh-generator-annprocess:1.36"
 }

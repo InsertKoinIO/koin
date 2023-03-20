@@ -1,20 +1,18 @@
 ext {
     // Koin Versions
-    koin_version = '3.3.2'
-    koin_android_version = '3.3.2'
+    koin_version = '3.4.0'
     
     // Kotlin
-    kotlin_version = '1.7.21'
+    kotlin_version = '1.8.10'
     
     coroutines_version = "1.6.4"
 
     // Dokka
-    dokka_version = '1.7.20'
+    dokka_version = '1.8.10'
 
     // Test
     junit_version = "4.13.2"
     junit5_version = "5.8.2"
     mockito_version = "4.7.0"
     mockk_version = "1.12.2"
-
 }
