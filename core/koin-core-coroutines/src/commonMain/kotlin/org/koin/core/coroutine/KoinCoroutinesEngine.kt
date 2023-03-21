@@ -19,7 +19,6 @@ import kotlinx.coroutines.*
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.extension.KoinExtension
 import org.koin.mp.KoinPlatformCoroutinesTools
-import org.koin.mp.KoinPlatformTools
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -40,6 +39,8 @@ class KoinCoroutinesEngine : CoroutineScope, KoinExtension {
     fun <T> launchStartJob(block: suspend CoroutineScope.() -> T){
         startJobs.add(async { block() })
     }
+
+    suspend fun awaitAllStartJobs() = startJobs.map { it.await() }
 
     override fun onClose() {
         cancel("KoinCoroutinesEngine shutdown")

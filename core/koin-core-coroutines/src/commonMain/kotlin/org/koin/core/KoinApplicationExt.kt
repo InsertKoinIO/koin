@@ -48,7 +48,7 @@ fun KoinApplication.asyncModules(vararg modules: Module) {
 }
 
 /**
- * Load asynchronously in background, a list of Lazy<Module>
+ * Load asynchronously in background, a list of Lazy Module
  * uses background coroutine to load modules
  *
  * Lazy<Module> are not resolved directly, and help warmup time
@@ -62,7 +62,7 @@ fun KoinApplication.lazyModules(vararg list: Lazy<Module>) {
 }
 
 /**
- * Load asynchronously in background, a list of Lazy<Module>
+ * Load asynchronously in background, a list of Lazy Module
  * uses background coroutine to load modules
  *
  * Lazy<Module> are not resolved directly, and help warmup time
