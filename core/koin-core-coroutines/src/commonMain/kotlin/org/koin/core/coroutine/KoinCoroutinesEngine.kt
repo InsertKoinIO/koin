@@ -16,7 +16,9 @@
 package org.koin.core.coroutine
 
 import kotlinx.coroutines.*
+import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.extension.KoinExtension
 import org.koin.mp.KoinPlatformCoroutinesTools
 import kotlin.coroutines.CoroutineContext
@@ -34,15 +36,23 @@ class KoinCoroutinesEngine : CoroutineScope, KoinExtension {
     private val supervisorJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = supervisorJob + dispatcher
 
-    private val startJobs = arrayListOf<Deferred<*>>()
+    internal val startJobs = arrayListOf<Deferred<*>>()
+
+    override lateinit var koin: Koin
 
     fun <T> launchStartJob(block: suspend CoroutineScope.() -> T){
         startJobs.add(async { block() })
     }
 
-    suspend fun awaitAllStartJobs() = startJobs.map { it.await() }
+    suspend fun awaitAllStartJobs(){
+        koin.logger.debug("await All Start Jobs ...")
+        startJobs.map { it.await() }
+        startJobs.clear()
+    }
+
 
     override fun onClose() {
+        koin.logger.debug("onClose $this")
         cancel("KoinCoroutinesEngine shutdown")
     }
 

@@ -26,6 +26,8 @@ import org.koin.core.module.Module
 /**
  * Load asynchronously in background, a list of Module
  * uses background coroutine to load modules
+ *
+ * run coroutinesEngine() to setup if needed
  */
 @KoinExperimentalAPI
 fun KoinApplication.asyncModules(list: List<Module>) {
@@ -38,6 +40,8 @@ fun KoinApplication.asyncModules(list: List<Module>) {
 /**
  * Load asynchronously in background, a list of Module
  * uses background coroutine to load modules
+ *
+ * run coroutinesEngine() to setup if needed
  */
 @KoinExperimentalAPI
 fun KoinApplication.asyncModules(vararg modules: Module) {
@@ -52,6 +56,8 @@ fun KoinApplication.asyncModules(vararg modules: Module) {
  * uses background coroutine to load modules
  *
  * Lazy<Module> are not resolved directly, and help warmup time
+ *
+ * run coroutinesEngine() to setup if needed
  */
 @KoinExperimentalAPI
 fun KoinApplication.lazyModules(vararg list: Lazy<Module>) {
@@ -66,6 +72,8 @@ fun KoinApplication.lazyModules(vararg list: Lazy<Module>) {
  * uses background coroutine to load modules
  *
  * Lazy<Module> are not resolved directly, and help warmup time
+ *
+ * run coroutinesEngine() to setup if needed
  */
 @KoinExperimentalAPI
 fun KoinApplication.lazyModules(list: List<Lazy<Module>>) {

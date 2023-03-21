@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.extension
+package org.koin.core
 
-import org.koin.core.Koin
+import kotlinx.coroutines.runBlocking
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.extension.coroutinesEngine
 
 /**
- * Koin Extension - Allow to extend Koin features with additional extensions
- *
  * @author Arnaud Giuliani
  */
-interface KoinExtension {
 
-    /**
-     * Current Koin instance
-     */
-    var koin : Koin
-
-    /**
-     * Called when closing Koin
-     */
-    fun onClose()
+/**
+ * Wait for Starting coroutines jobs to finish using runBlocking
+ */
+@KoinExperimentalAPI
+fun Koin.waitAllStartJobs(){
+    runBlocking {
+        coroutinesEngine.awaitAllStartJobs()
+    }
 }
