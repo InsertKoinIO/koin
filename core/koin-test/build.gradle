@@ -33,18 +33,19 @@ kotlin {
     tvosX64()
 
     mingwX64()
-    mingwX86()
     linuxX64()
-    linuxArm32Hfp()
-    linuxMips32()
+//    mingwX86()
+//    linuxArm32Hfp()
+//    linuxMips32()
 
     sourceSets {
         commonMain {
             dependencies {
                 api kotlin("stdlib-common")
-                api project(":koin-core")
                 api kotlin("test-common")
                 api kotlin("test-annotations-common")
+
+                api project(":koin-core")
             }
         }
 
@@ -59,10 +60,11 @@ kotlin {
 
         jvmMain {
             dependencies {
-                api project(":koin-core")
                 api kotlin("stdlib-jdk8")
                 api kotlin("reflect")
                 api kotlin("test-junit")
+
+                api project(":koin-core")
             }
         }
 
@@ -112,10 +114,10 @@ kotlin {
                 targets.iosArm32,
                 targets.iosArm64,
                 targets.linuxX64,
-                targets.linuxArm32Hfp,
-                targets.linuxMips32,
                 targets.mingwX64,
-                targets.mingwX86
+//                targets.linuxArm32Hfp,
+//                targets.linuxMips32,
+//                targets.mingwX86
         ]) {
             compilations.main.source(sourceSets.nativeMain)
             compilations.test.source(sourceSets.nativeTest)

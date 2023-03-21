@@ -33,10 +33,10 @@ kotlin {
     tvosX64()
 
     mingwX64()
-    mingwX86()
     linuxX64()
-    linuxArm32Hfp()
-    linuxMips32()
+//    mingwX86()
+//    linuxArm32Hfp()
+//    linuxMips32()
 
     sourceSets {
         commonMain {
@@ -125,10 +125,10 @@ kotlin {
         }
         configure([
                 targets.linuxX64,
-                targets.linuxArm32Hfp,
-                targets.linuxMips32,
                 targets.mingwX64,
-                targets.mingwX86
+//                targets.linuxArm32Hfp,
+//                targets.linuxMips32,
+//                targets.mingwX86
         ]) {
             compilations.main.source(sourceSets.otherMain)
             compilations.test.source(sourceSets.nativeTest)
