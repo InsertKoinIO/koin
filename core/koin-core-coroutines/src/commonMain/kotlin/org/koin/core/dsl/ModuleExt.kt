@@ -13,34 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.dsl
+package org.koin.core.dsl
 
 import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
+import org.koin.dsl.ModuleDeclaration
+import org.koin.dsl.module
 
-typealias ModuleDeclaration = Module.() -> Unit
-
-/**
- * Authors
- * @author Arnaud Giuliani
- */
 
 /**
- * Define a Module
- * @param createdAtStart
+ * Define a Koin module as Lazy way, to not resolved resources before loading it
  *
+ * @See lazyModules() function, to load Lazy module in background
  */
-@Deprecated("'override' parameter is not used anymore. See 'allowOverride' in KoinApplication")
 @KoinDslMarker
-fun module(createdAtStart: Boolean = false, override: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
-    val module = Module(createdAtStart)
-    moduleDeclaration(module)
-    return module
-}
-
-@KoinDslMarker
-fun module(createdAtStart: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
-    val module = Module(createdAtStart)
-    moduleDeclaration(module)
-    return module
-}
+fun lazyModule(moduleDefinition : ModuleDeclaration) : Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }
