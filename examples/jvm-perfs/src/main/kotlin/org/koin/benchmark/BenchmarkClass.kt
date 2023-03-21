@@ -22,14 +22,14 @@ open class BenchmarkClass {
     @Benchmark
     fun start400() {
         koinApplication {
-            modules(perfModule400())
+            modules(perfModule400().value)
         }.koin
     }
 
     @Benchmark
     fun start400AndInject() {
         val koin = koinApplication {
-            modules(perfModule400())
+            modules(perfModule400().value)
         }.koin
         koinScenario(koin)
     }

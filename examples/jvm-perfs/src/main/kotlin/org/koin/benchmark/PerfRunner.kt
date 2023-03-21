@@ -1,8 +1,11 @@
 package org.koin.benchmark
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.coroutine.KoinCoroutineScheduler
 import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import kotlin.math.roundToInt
@@ -19,15 +22,25 @@ object PerfRunner {
         return PerfResult(avgStart,avgExec)
     }
 
+    @OptIn(KoinInternalApi::class)
     fun runScenario(index: Int): Pair<Double, Double> {
         val (app, duration) = measureDurationForResult {
             koinApplication {
-                modules(perfModule400())
+                coroutineEngine()
+                asyncLazyModules(
+                    perfModule400()
+                )
+//                modules(perfModule400)
             }
         }
         println("Perf[$index] start in $duration ms")
 
-        val koin = app.koin
+        val koin: Koin = app.koin
+
+        runBlocking {
+            koin.getExtension<KoinCoroutineScheduler>("scheduler").jobs.map { it.await() }
+        }
+
         val (_, executionDuration) = measureDurationForResult {
             koinScenario(koin)
         }

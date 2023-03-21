@@ -15,15 +15,12 @@
  */
 package org.koin.core
 
-import kotlinx.coroutines.Deferred
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
-import org.koin.core.coroutine.KoinCoroutineScheduler
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.extension.ExtensionManager
-import org.koin.core.extension.KoinExtension
 import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
@@ -36,7 +33,6 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.time.Timer
 import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
