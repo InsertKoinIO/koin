@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package org.koin.core
 
+import kotlinx.coroutines.Deferred
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
+import org.koin.core.coroutine.KoinCoroutineScheduler
 import org.koin.core.error.ScopeNotCreatedException
+import org.koin.core.extension.ExtensionManager
+import org.koin.core.extension.KoinExtension
 import org.koin.core.logger.EmptyLogger
-import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
 import org.koin.core.module.flatten
@@ -33,6 +36,7 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import org.koin.core.time.Timer
 import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
@@ -46,6 +50,7 @@ import kotlin.reflect.KClass
  */
 @OptIn(KoinInternalApi::class)
 class Koin {
+
     @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)
 
@@ -54,6 +59,9 @@ class Koin {
 
     @KoinInternalApi
     val propertyRegistry = PropertyRegistry(this)
+
+    @KoinInternalApi
+    val extensionManager = ExtensionManager(this)
 
     var logger: Logger = EmptyLogger()
         private set
@@ -314,6 +322,7 @@ class Koin {
         scopeRegistry.close()
         instanceRegistry.close()
         propertyRegistry.close()
+        extensionManager.close()
     }
 
     /**

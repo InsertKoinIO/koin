@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,14 @@ import org.koin.core.module.Module
 typealias ModuleDeclaration = Module.() -> Unit
 
 /**
+ * Authors
+ * @author Arnaud Giuliani
+ */
+
+/**
  * Define a Module
  * @param createdAtStart
  *
- * @author Arnaud Giuliani
  */
 @Deprecated("'override' parameter is not used anymore. See 'allowOverride' in KoinApplication")
 @KoinDslMarker
@@ -40,3 +44,9 @@ fun module(createdAtStart: Boolean = false, moduleDeclaration: ModuleDeclaration
     moduleDeclaration(module)
     return module
 }
+
+/**
+ * Define a Koin module as Lazy<Module>, not resolved
+ */
+@KoinDslMarker
+fun lazyModule(moduleDefinition : ModuleDeclaration) : Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }
