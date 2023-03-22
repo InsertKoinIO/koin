@@ -91,7 +91,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun createEagerInstances(eagerInstances: Collection<SingleInstanceFactory<*>>) {
         if (eagerInstances.isNotEmpty()) {
-            val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
+            val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
             eagerInstances.forEach { factory ->
                 factory.get(defaultContext)
             }

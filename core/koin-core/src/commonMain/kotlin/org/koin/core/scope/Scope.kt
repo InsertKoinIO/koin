@@ -227,7 +227,7 @@ data class Scope(
                 _parameterStack.addFirst(parameters)
             }
         }
-        val instanceContext = InstanceContext(_koin, this, parameters)
+        val instanceContext = InstanceContext(_koin.logger, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
         if (parameters != null) {
             _koin.logger.debug("| << parameters")
@@ -358,7 +358,7 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
-        val context = InstanceContext(_koin, this)
+        val context = InstanceContext(_koin.logger, this)
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 

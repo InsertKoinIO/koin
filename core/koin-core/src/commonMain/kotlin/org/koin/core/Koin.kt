@@ -175,27 +175,6 @@ class Koin {
      */
     inline fun <reified T> getAll(): List<T> = scopeRegistry.rootScope.getAll()
 
-//    /**
-//     * Get instance of primary type P and secondary type S
-//     * (not for scoped instances)
-//     *
-//     * @return instance of type S
-//     */
-//    inline fun <reified S, reified P> bind(noinline parameters: ParametersDefinition? = null): S =
-//            scopeRegistry.rootScope.bind<S, P>(parameters)
-//
-//    /**
-//     * Get instance of primary type P and secondary type S
-//     * (not for scoped instances)
-//     *
-//     * @return instance of type S
-//     */
-//    fun <S> bind(
-//            primaryType: KClass<*>,
-//            secondaryType: KClass<*>,
-//            parameters: ParametersDefinition? = null
-//    ): S = scopeRegistry.rootScope.bind(primaryType, secondaryType, parameters)
-
     /**
      * Create a Scope instance
      * @param scopeId

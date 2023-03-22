@@ -45,8 +45,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
      * @return T
      */
     open fun create(context: InstanceContext): T {
-        val koin = context.koin
-        koin.logger.debug( "| (+) '$beanDefinition'")
+        context.logger.debug( "| (+) '$beanDefinition'")
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
             return beanDefinition.definition.invoke(
@@ -55,7 +54,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
             )
         } catch (e: Exception) {
             val stack = KoinPlatformTools.getStackTrace(e)
-            koin.logger.error("* Instance creation error : could not create instance for '$beanDefinition': $stack")
+            context.logger.error("* Instance creation error : could not create instance for '$beanDefinition': $stack")
             throw InstanceCreationException("Could not create instance for '$beanDefinition'", e)
         }
     }
