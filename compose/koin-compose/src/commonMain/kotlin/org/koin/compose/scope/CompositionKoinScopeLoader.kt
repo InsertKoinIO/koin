@@ -18,33 +18,28 @@ package org.koin.compose.scope
 import androidx.compose.runtime.RememberObserver
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.module.Module
+import org.koin.core.scope.Scope
 
 @KoinInternalApi
-class CompositionKoinModuleLoader(
-    val modules : List<Module>,
+class CompositionKoinScopeLoader(
+    val scope: Scope,
     val koin : Koin
 ) : RememberObserver {
-
-    init {
-        koin.logger.debug("$this -> load modules")
-        koin.loadModules(modules)
-    }
 
     override fun onRemembered() {
         // Nothing to do
     }
 
     override fun onForgotten() {
-        unloadModules()
+        close()
     }
 
     override fun onAbandoned() {
-        unloadModules()
+        close()
     }
 
-    private fun unloadModules() {
-        koin.logger.debug("$this -> unload modules")
-        koin.unloadModules(modules)
+    private fun close() {
+        koin.logger.debug("$this -> close scope id: '${scope.id}'")
+        scope.close()
     }
 }

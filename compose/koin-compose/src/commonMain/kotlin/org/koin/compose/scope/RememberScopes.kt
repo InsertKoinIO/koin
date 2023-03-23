@@ -20,7 +20,6 @@ package org.koin.compose.scope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import org.koin.compose.getKoin
-import org.koin.compose.module.CompositionKoinScopeLoader
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
 
