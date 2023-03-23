@@ -2,6 +2,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
 import org.koin.test.verify.MissingKoinDefinitionException
+import org.koin.test.verify.Verify
 import org.koin.test.verify.verify
 import kotlin.test.Test
 import kotlin.test.fail
@@ -108,6 +109,24 @@ class VerifyModulesTest {
         } catch (e: MissingKoinDefinitionException) {
             fail("Should not fail to verify module - $e")
         }
+    }
+
+    @Test
+    fun verify_one_simple_module_w_verify_extra() {
+        Verify.addExtraTypes(Simple.ComponentA::class)
+
+        val module = module {
+            single { (a : Simple.ComponentA) -> Simple.ComponentB(a) }
+        }
+
+        try {
+            module.verify()
+        } catch (e: MissingKoinDefinitionException) {
+            fail("Should not fail to verify module - $e")
+        }
+
+        Verify.whiteList.clear()
+        Verify.addExtraTypes(Verify.primitiveTypes)
     }
 
     @Test

@@ -66,8 +66,9 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.work:work-runtime-ktx:2.8.0"
-    implementation "org.jetbrains.anko:anko-commons:0.10.4"
+    // implementation "org.jetbrains.anko:anko-commons:0.10.4"
 
+    testImplementation "io.insert-koin:koin-android-test:$koin_android_version"
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation "junit:junit:4.13.2"
 
