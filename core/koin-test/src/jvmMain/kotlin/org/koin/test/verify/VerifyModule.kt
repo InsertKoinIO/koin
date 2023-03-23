@@ -29,7 +29,7 @@ fun Module.verify(extraTypes : List<KClass<*>> = listOf()){
     val extraKeys = extraTypes.map { it.getFullName() }
     val keys = allModules.flatMap { it.mappings.keys.toList() } + extraKeys
     println("Verifying Module '$this' ...")
-    println("- index: $keys")
+    println("- index keys: ${keys.size}")
     val verified = arrayListOf<InstanceFactory<*>>()
     factories.forEach { factory ->
         if (factory !in verified){
@@ -44,7 +44,7 @@ fun Module.verify(extraTypes : List<KClass<*>> = listOf()){
 
 private fun verifyFactory(factory: InstanceFactory<*>, keys: List<String>) {
     val beanDefinition = factory.beanDefinition
-    println("|- $beanDefinition")
+    println("|-> $beanDefinition")
     val allTypes = listOf(beanDefinition.primaryType) + beanDefinition.secondaryTypes
     println("| bound types : $allTypes")
     allTypes.forEach { boundType ->
@@ -72,7 +72,7 @@ private fun verifyConstructor(
             throw MissingKoinDefinitionException("Missing type '${kc.qualifiedName}' for class '${boundType.qualifiedName}' in definition '$beanDefinition'")
         }
         else {
-            println("|-> '$kc'")
+            println("|- '$kc'")
         }
     }
 }
