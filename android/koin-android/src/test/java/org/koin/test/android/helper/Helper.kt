@@ -14,7 +14,7 @@ object Helper {
 
     val androidScopeComponent: AndroidScopeComponent =
         object : ComponentCallbacks, AndroidScopeComponent {
-            override var scope: Scope? = createScope("AndroidScopeComponent")
+            override var scope: Scope = createScope("AndroidScopeComponent")
             override fun onConfigurationChanged(newConfig: Configuration) = Unit
             override fun onLowMemory() = Unit
         }

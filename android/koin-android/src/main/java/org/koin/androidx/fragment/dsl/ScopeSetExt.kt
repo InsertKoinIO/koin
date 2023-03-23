@@ -41,4 +41,4 @@ inline fun <reified T : Fragment> ScopeDSL.fragment(
 @Deprecated("API is deprecated in favor of fragmentOf DSL")
 inline fun <reified T : Fragment> ScopeDSL.fragment(
     qualifier: Qualifier? = null
-KoinDefinition<T> = factory(qualifier) { newInstance(it) }
+): KoinDefinition<T> = factory(qualifier) { newInstance(it) }

@@ -58,7 +58,7 @@ class KoinExtTest {
     fun `GIVEN KoinApplication and Application WHEN setup androidContext() THEN result as expected`() {
         // GIVEN
         val customLogger = object : Logger(Level.INFO) {
-            override fun log(level: Level, msg: MESSAGE) {
+            override fun display(level: Level, msg: MESSAGE) {
                 Assert.assertTrue(Level.INFO == level)
                 Assert.assertEquals("[init] declare Android Context", msg)
 
@@ -93,7 +93,7 @@ class KoinExtTest {
     fun `GIVEN KoinApplication and Context WHEN setup androidContext() THEN result as expected`() {
         // GIVEN
         val customLogger = object : Logger(Level.INFO) {
-            override fun log(level: Level, msg: MESSAGE) {
+            override fun display(level: Level, msg: MESSAGE) {
                 Assert.assertTrue(Level.INFO == level)
                 Assert.assertEquals("[init] declare Android Context", msg)
 
@@ -124,7 +124,7 @@ class KoinExtTest {
         val koinApplication = KoinApplication.init()
         val exception = Exception("exception")
         val customLogger = object : Logger(Level.INFO) {
-            override fun log(level: Level, msg: MESSAGE) {
+            override fun display(level: Level, msg: MESSAGE) {
                 // THEN
                 when {
                     msg.contains("[init]") -> {
