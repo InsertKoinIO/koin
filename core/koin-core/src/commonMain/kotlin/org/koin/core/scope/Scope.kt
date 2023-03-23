@@ -174,10 +174,10 @@ data class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: ClosedScopeException) {
-            _koin.logger.error("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin.logger.error("* No instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("* No instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         }
     }
