@@ -251,7 +251,7 @@ data class Scope(
         ?: run {
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
             _source?.let {
-                if (clazz.isInstance(it)) {
+                if (it::class == clazz && qualifier == null) {
                     _source as? T
                 } else null
             }
