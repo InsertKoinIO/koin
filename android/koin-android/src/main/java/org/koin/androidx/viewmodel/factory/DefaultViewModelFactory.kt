@@ -3,8 +3,11 @@ package org.koin.androidx.viewmodel.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
 
+@KoinInternalApi
+@Deprecated("use KoinViewModelFactory")
 class DefaultViewModelFactory<T : ViewModel>(
     val scope: Scope,
     val parameters: ViewModelParameter<T>

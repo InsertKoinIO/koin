@@ -121,7 +121,7 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
-    fun `should not conflict name & default type`() {
+    fun `should not conflict name and default type`() {
         val app = koinApplication {
             printLogger()
             modules(
@@ -156,7 +156,6 @@ class AdditionalTypeBindingTest {
 //    }
 
     @Test
-    @Ignore
     fun `additional type conflict`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
@@ -167,8 +166,8 @@ class AdditionalTypeBindingTest {
                     })
         }.koin
 
-        assertTrue(koin.getAll<Simple.ComponentInterface1>().size == 2)
-        assertTrue(koin.get<Simple.ComponentInterface1>() is Simple.Component1)
+        assertTrue(koin.getAll<Simple.ComponentInterface1>().size == 1)
+        assertTrue(koin.get<Simple.ComponentInterface1>() is Simple.Component2)
     }
 
     @Test
@@ -188,7 +187,6 @@ class AdditionalTypeBindingTest {
     }
 
     @Test
-    @Ignore
     fun `additional types`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)

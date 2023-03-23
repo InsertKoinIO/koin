@@ -35,7 +35,7 @@ class ObjectScopeTest {
     }
 
     @Test
-    fun `typed scope & source`() {
+    fun `typed scope and source`() {
         val koin = startKoin {
             printLogger(Level.DEBUG)
             modules(module {
@@ -58,7 +58,7 @@ class ObjectScopeTest {
     }
 
     @Test
-    fun `typed scope & source with get`() {
+    fun `typed scope and source with get`() {
         val koin = startKoin {
             printLogger(Level.DEBUG)
             modules(module {

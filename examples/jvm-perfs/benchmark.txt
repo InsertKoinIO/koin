@@ -1,0 +1,4 @@
+Benchmark                         Mode  Cnt   Score    Error  Units
+BenchmarkClass.emptyStart         avgt   10  ≈ 10⁻³           ms/op
+BenchmarkClass.start400           avgt   10   0,272 ±  0,045  ms/op
+BenchmarkClass.start400AndInject  avgt   10   0,265 ±  0,022  ms/op

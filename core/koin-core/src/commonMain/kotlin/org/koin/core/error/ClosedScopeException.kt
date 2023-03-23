@@ -15,4 +15,9 @@
  */
 package org.koin.core.error
 
+/**
+ * Scope is Closed - Exception
+ *
+ * @author Arnaud Giuliani
+ */
 class ClosedScopeException(msg : String) : Exception(msg)

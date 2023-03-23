@@ -1,0 +1,27 @@
+buildscript {
+    apply from: "../gradle/versions.gradle"
+
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+//wrapper {
+//    distributionType = Wrapper.DistributionType.ALL
+//}
+
+allprojects {
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+    }
+}

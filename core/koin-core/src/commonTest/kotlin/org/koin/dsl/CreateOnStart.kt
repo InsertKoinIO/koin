@@ -17,7 +17,7 @@ class CreateOnStart {
     }
 
     @Test
-    fun `works with koin 2_2_3 and koin 3_0_2, breaks with koin 3_1_4`() {
+    fun `works with koin 2_2_3 and koin 3_0_2 breaks with koin 3_1_4`() {
         startKoin {
             modules(module {
                 single(createdAtStart = true) { InjectionTarget() }

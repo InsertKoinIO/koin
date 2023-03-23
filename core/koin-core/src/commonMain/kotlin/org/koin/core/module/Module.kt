@@ -35,7 +35,9 @@ import org.koin.mp.KoinPlatformTools
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
+@KoinDslMarker
 class Module(
+
     @PublishedApi
     internal val _createdAtStart: Boolean = false
 ) {
@@ -44,8 +46,8 @@ class Module(
     var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
         internal set
 
-    @PublishedApi
-    internal val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
+    @KoinInternalApi
+    val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
 
     val isLoaded: Boolean
         get() = mappings.size > 0
@@ -53,7 +55,8 @@ class Module(
     @PublishedApi
     internal val scopes = hashSetOf<Qualifier>()
 
-    internal val includedModules = mutableListOf<Module>()
+    @KoinInternalApi
+    val includedModules = mutableListOf<Module>()
 
     /**
      * A collection of [Module] from which the current [Module] is compose.
@@ -75,6 +78,7 @@ class Module(
      * Declare a group a scoped definition with a given scope qualifier
      * @param qualifier
      */
+    @KoinDslMarker
     fun scope(qualifier: Qualifier, scopeSet: ScopeDSL.() -> Unit) {
         ScopeDSL(qualifier, this).apply(scopeSet)
         scopes.add(qualifier)
@@ -83,6 +87,7 @@ class Module(
     /**
      * Class Typed Scope
      */
+    @KoinDslMarker
     inline fun <reified T> scope(scopeSet: ScopeDSL.() -> Unit) {
         val qualifier = TypeQualifier(T::class)
         ScopeDSL(qualifier, this).apply(scopeSet)
@@ -105,20 +110,18 @@ class Module(
         if (createdAtStart || this._createdAtStart) {
             prepareForCreationAtStart(factory)
         }
-        return Pair(this, factory)
+        return KoinDefinition(this, factory)
     }
 
     @KoinInternalApi
-    @PublishedApi
-    internal fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
+    fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         saveMapping(mapping, instanceFactory)
     }
 
     @KoinInternalApi
-    @PublishedApi
-    internal fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
+    fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         def.secondaryTypes.forEach { clazz ->
             val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
@@ -127,16 +130,12 @@ class Module(
     }
 
     @KoinInternalApi
-    @PublishedApi
-    internal fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
+    fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
         eagerInstances.add(instanceFactory)
     }
 
     @PublishedApi
-    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>, allowOverride: Boolean = false) {
-        if (!allowOverride && mappings.contains(mapping)) {
-            overrideError(factory, mapping)
-        }
+    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>) {
         mappings[mapping] = factory
     }
 
@@ -160,7 +159,7 @@ class Module(
     ): KoinDefinition<T> {
         val factory = _factoryInstanceFactory(qualifier, definition, scopeQualifier)
         indexPrimaryType(factory)
-        return Pair(this, factory)
+        return KoinDefinition(this, factory)
     }
 
     /**
@@ -233,12 +232,11 @@ inline fun <reified T> _scopedInstanceFactory(
  */
 operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
 
-typealias KoinDefinition<R> = Pair<Module, InstanceFactory<R>>
-
 /**
  * Run through the module list to flatten all modules & submodules
  */
-internal tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
+@OptIn(KoinInternalApi::class)
+tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
     return if (modules.isEmpty()) {
         newModules
     } else {

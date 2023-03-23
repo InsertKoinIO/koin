@@ -16,6 +16,7 @@
 package org.koin.dsl
 
 import org.koin.core.annotation.KoinReflectAPI
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
@@ -33,7 +34,7 @@ import org.koin.core.qualifier.Qualifier
 inline fun <reified T : Any> Module.single(
     qualifier: Qualifier? = null,
     createOnStart: Boolean = false,
-): Pair<Module, InstanceFactory<T>> {
+): KoinDefinition<T> {
     return single(qualifier, createOnStart) { params -> newInstance(T::class, params) }
 }
 
@@ -47,6 +48,6 @@ inline fun <reified T : Any> Module.single(
 @Deprecated("API is deprecated in favor of factoryOf DSL")
 inline fun <reified T : Any> Module.factory(
     qualifier: Qualifier? = null
-): Pair<Module, InstanceFactory<T>> {
+): KoinDefinition<T> {
     return factory(qualifier) { params -> newInstance(T::class, params) }
 }

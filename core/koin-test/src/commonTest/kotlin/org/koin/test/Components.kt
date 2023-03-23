@@ -5,9 +5,11 @@ import org.koin.mp.KoinPlatformTools
 
 @Suppress("unused")
 class Simple {
-    class ComponentA
-    class ComponentB(val a: ComponentA)
-    class ComponentC(val b: ComponentB)
+    class ComponentA : MyComponentA
+    class ComponentB(val a: ComponentA) : MyComponentB
+    interface MyComponentA
+    interface MyComponentB
+    class ComponentC(val b: MyComponentB)
     class MyString(val s: String)
 
     class UUIDComponent {

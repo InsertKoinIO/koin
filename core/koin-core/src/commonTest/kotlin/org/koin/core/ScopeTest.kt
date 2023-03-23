@@ -155,7 +155,7 @@ class ScopeTest {
 
         val scope = koin.createScope(scopeId, scopeKey)
         val id = 42
-        val single by scope.inject<Simple.MySingle> { parametersOf(id) }
+        val single = scope.get<Simple.MySingle> { parametersOf(id) }
         assertEquals(id, single.id)
         scope.close()
     }

@@ -22,42 +22,39 @@ package org.koin.core.logger
  */
 abstract class Logger(var level: Level = Level.INFO) {
 
-    abstract fun log(level: Level, msg: MESSAGE)
+    abstract fun display(level: Level, msg: MESSAGE)
 
-    private fun canLog(level: Level): Boolean = this.level <= level
-
-    private fun doLog(level: Level, msg: MESSAGE) {
-        if (canLog(level)) {
-            log(level, msg)
-        }
+    inline fun debug(msg: MESSAGE) {
+        log(Level.DEBUG, msg)
     }
 
-    fun debug(msg: MESSAGE) {
-        doLog(Level.DEBUG, msg)
+    inline fun info(msg: MESSAGE) {
+        log(Level.INFO, msg)
     }
 
-    fun info(msg: MESSAGE) {
-        doLog(Level.INFO, msg)
+    inline fun warn(msg: MESSAGE) {
+        log(Level.WARNING, msg)
     }
 
-    fun error(msg: MESSAGE) {
-        doLog(Level.ERROR, msg)
+    inline fun error(msg: MESSAGE) {
+        log(Level.ERROR, msg)
     }
 
     fun isAt(lvl: Level): Boolean = this.level <= lvl
 
-    fun log(lvl: Level, msg : () -> String){
-        if (isAt(lvl)) doLog(lvl,msg())
+    inline fun log(lvl: Level, msg : String){
+        if (isAt(lvl)) display(lvl,msg)
+    }
+
+    inline fun log(lvl: Level, msg : () -> String){
+        if (isAt(lvl)) display(lvl,msg())
     }
 }
 
 const val KOIN_TAG = "[Koin]"
 
-/**
- * Log Level
- */
 enum class Level {
-    DEBUG, INFO, ERROR, NONE
+    DEBUG, INFO, WARNING, ERROR, NONE
 }
 
 typealias MESSAGE = String

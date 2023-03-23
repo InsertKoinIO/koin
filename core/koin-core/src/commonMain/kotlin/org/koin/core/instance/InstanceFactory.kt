@@ -46,9 +46,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
      */
     open fun create(context: InstanceContext): T {
         val koin = context.koin
-        if (koin.logger.isAt(Level.DEBUG)){
-            koin.logger.debug("| create instance for $beanDefinition")
-        }
+        koin.logger.debug( "| (+) '$beanDefinition'")
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
             return beanDefinition.definition.invoke(
@@ -57,8 +55,8 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
             )
         } catch (e: Exception) {
             val stack = KoinPlatformTools.getStackTrace(e)
-            koin.logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
-            throw InstanceCreationException("Could not create instance for $beanDefinition", e)
+            koin.logger.error("* Instance creation error : could not create instance for '$beanDefinition': $stack")
+            throw InstanceCreationException("Could not create instance for '$beanDefinition'", e)
         }
     }
 
@@ -73,6 +71,15 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
     abstract fun drop(scope: Scope? = null)
 
     abstract fun dropAll()
+
+    override fun equals(other: Any?): Boolean {
+        val other = (other as? InstanceFactory<*>)?.beanDefinition
+        return beanDefinition == other
+    }
+
+    override fun hashCode(): Int {
+        return beanDefinition.hashCode()
+    }
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"

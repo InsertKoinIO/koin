@@ -41,17 +41,27 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
-    private val eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
+    private val eagerInstances = hashMapOf<Int,SingleInstanceFactory<*>>()
 
     internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
             loadModule(module, allowOverride)
-            eagerInstances.addAll(module.eagerInstances)
+            addAllEagerInstances(module)
+        }
+    }
+
+    private fun addAllEagerInstances(module: Module) {
+        module.eagerInstances.forEach { factory ->
+//            if (eagerInstances.contains(factory)){
+//                eagerInstances.remove(factory)
+//            }
+//            eagerInstances.add(factory)
+            eagerInstances[factory.hashCode()] = factory
         }
     }
 
     internal fun createAllEagerInstances() {
-        createEagerInstances(eagerInstances)
+        createEagerInstances(eagerInstances.values)
         eagerInstances.clear()
     }
 
@@ -72,20 +82,15 @@ class InstanceRegistry(val _koin: Koin) {
             if (!allowOverride) {
                 overrideError(factory, mapping)
             } else {
-                if (logWarning) _koin.logger.info("Override Mapping '$mapping' with ${factory.beanDefinition}")
+                if (logWarning) _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
             }
         }
-        if (_koin.logger.isAt(Level.DEBUG) && logWarning) {
-            _koin.logger.debug("add mapping '$mapping' for ${factory.beanDefinition}")
-        }
+        _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
         _instances[mapping] = factory
     }
 
-    private fun createEagerInstances(eagerInstances: HashSet<SingleInstanceFactory<*>>) {
+    private fun createEagerInstances(eagerInstances: Collection<SingleInstanceFactory<*>>) {
         if (eagerInstances.isNotEmpty()) {
-            if (_koin.logger.isAt(Level.DEBUG)) {
-                _koin.logger.debug("Creating eager instances ...")
-            }
             val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
             eagerInstances.forEach { factory ->
                 factory.get(defaultContext)
@@ -123,8 +128,8 @@ class InstanceRegistry(val _koin: Koin) {
         val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         val existingFactory = instances[indexKey] as? ScopedInstanceFactory
-        if (existingFactory != null){
-            existingFactory.refreshInstance(scopeID,instance as Any)
+        if (existingFactory != null) {
+            existingFactory.refreshInstance(scopeID, instance as Any)
         } else {
             val factory = ScopedInstanceFactory(def)
             saveMapping(allowOverride, indexKey, factory)

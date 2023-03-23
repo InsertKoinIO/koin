@@ -16,37 +16,47 @@
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
+import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
 import org.koin.android.ext.android.getKoinScope
+import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.androidx.viewmodel.scope.emptyState
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import kotlin.reflect.KClass
 
 /**
  * ComponentActivity extensions to help for ViewModel
  *
  * @author Arnaud Giuliani
  */
-@OptIn(KoinInternalApi::class)
+@Deprecated("Use ComponentActivity.viewModel() with extras: CreationExtras")
+@MainThread
 inline fun <reified T : ViewModel> ComponentActivity.stateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
-    return viewModels {
-        getViewModelFactory<T>(this, qualifier, parameters, state = state, scope = getKoinScope())
+    return lazy(LazyThreadSafetyMode.NONE) {
+        getStateViewModel(qualifier, state, parameters)
     }
 }
 
+@Deprecated("Use ComponentActivity.getViewModel() with extras: CreationExtras")
+@OptIn(KoinInternalApi::class)
+@MainThread
 inline fun <reified T : ViewModel> ComponentActivity.getStateViewModel(
     qualifier: Qualifier? = null,
     noinline state: BundleDefinition = emptyState(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    return stateViewModel<T>(qualifier, state, parameters).value
+    return resolveViewModel(
+        T::class,
+        viewModelStore,
+        extras = state().toExtras(this) ?: this.defaultViewModelCreationExtras,
+        qualifier = qualifier,
+        parameters = parameters,
+        scope = getKoinScope()
+    )
 }

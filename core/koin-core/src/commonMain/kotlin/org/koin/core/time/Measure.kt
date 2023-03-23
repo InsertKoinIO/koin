@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.koin.core.time
 
 import org.koin.mp.KoinPlatformTimeTools
@@ -23,12 +24,13 @@ import org.koin.mp.KoinPlatformTimeTools
  * @author Arnaud Giuliani
  */
 
+
 /**
  * Measure time in milliseconds for given code
  * @param code - code to execute
  * @return Time in milliseconds
  */
-fun measureDuration(code: () -> Unit): TimeInMillis {
+inline fun measureDuration(code: () -> Unit): TimeInMillis {
     return measureTimedValue(code).second
 }
 
@@ -37,16 +39,16 @@ fun measureDuration(code: () -> Unit): TimeInMillis {
  * @param code - code to execute
  * @return Pair Value & Time in milliseconds
  */
-fun <T> measureDurationForResult(code: () -> T): Pair<T, TimeInMillis> {
+inline fun <T> measureDurationForResult(code: () -> T): Pair<T, TimeInMillis> {
     val (value, duration) = measureTimedValue(code)
     return Pair(value, duration)
 }
 
-private fun <T> measureTimedValue(code: () -> T): Pair<T, Double> {
+inline fun <T> measureTimedValue(code: () -> T): Pair<T, TimeInMillis> {
     val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
     val value = code()
-    val end = KoinPlatformTimeTools.getTimeInNanoSeconds()
-    return Pair(value, (end - start) / 1_000_000.0)
+    val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
+    return Pair(value, (stop - start) / Timer.NANO_TO_MILLI)
 }
 
 typealias TimeInMillis = Double

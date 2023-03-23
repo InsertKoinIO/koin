@@ -1,8 +1,130 @@
-# Change Log
+# Latests Changes
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
 
+
+# [3.4]()
+
+
+## [androidx-compose-3.4.2]() - 2022-02-07
+* `[UPDATED]` - `koin-android` 3.3.3
+
+## [androidx-compose-3.4.1]() - 2022-12-28
+* `[UPDATED]` - `koin-android` 3.3.2
+
+## [androidx-compose-3.4.0]() - 2022-12-14
+
+`[koin-androidx-compose]`
+* `[UPDATED]` - lib update - Kotlin `1.7.20`
+* `[UPDATED]` - `koin-android` 3.3.1
+* `[UPDATED]` - compose compiler 1.3.2
+* `[UPDATED]` - compose runtime 1.3.2
+
+
+# [3.3]()
+
+## [android-3.3.3]() - 2022-02-07
+* `[UPDATED]` - `koin-core` 3.3.3
+* `[FIXED]` - #1500 Fix ViewModel Factory to resolve against qualifier
+* `[FIXED]` - #1445 ShareViewModelCompat owner fix
+* `[FIXED]` - #1494 viewModelOf arguments until 22
+* `[UPDATED]`- androidx.fragment:fragment-ktx to 1.5.5
+* `[UPDATED]`- androidx.navigation:navigation-fragment-ktx to 2.5.3
+
+## [ktor-3.3.1]() - 2022-02-07
+* `[UPDATED]` - `koin-core` 3.3.3
+* `[UPDATED]` - Ktor 2.2.3
+
+## [core-3.3.3]() - 2022-02-07
+* `[FIXED]` - fix #1479 with new eager instances index
+
+--
+
+## [ktor-3.3.0]() - 2022-12-28
+* `[UPDATED]` - `io.ktor:ktor-server-core` 2.2.1
+* `[UPDATED]` - `koin-core` 3.3.2
+
+## [android-3.3.2]() - 2022-12-28
+* `[UPDATED]` - `koin-core` 3.3.2
+
+## [core-3.3.2]() - 2022-12-28
+* `[UPDATED]` - technical update version to 3.3.2
+
+## [android-3.3.1]() - 2022-12-14
+
+`[koin-android]`
+* `[FIXED]` - `SavedStateHandle` injection is now fixed to allow R8/Proguard obfuscation
+* `[FIXED]` - #1406 - better use `verify()` fucntion `Module` to verify all Koin configuration
+* `[UPDATED]` - Use of KoinDsl marker to protect the Koin DSL
+
+## [core-3.3.0]() - 2022-12-14
+
+`[koin-core]`
+* `[UPDATED]` - lib update - Kotlin `1.7.21`
+* `[FIXED]` - #1306 #1016 - Add native Module extensions to allow add defintions without inlined type
+* `[FIXED]` - #834 - ensure `onClose` is called when unloading module or closing Koin
+* `[FIXED]` - #1353 - parameters stack is now secured with call synchronization
+* `[UPDATED]` - #1359 - constructor DSL udpate to take until 22 parameters into account
+* `[FIXED]` - #1463 - Fix to allow binding of same type in the current module
+* `[UPDATED]` - Documentation update - #1469 #1438
+* `[UPDATED]` - Logger API inlined and cleand out - #1271
+* `[FIXED]` - Engine resolution race condition #1465
+* `[UPDATED]` - Use of KoinDsl marker to protect the Koin DSL
+
+`[koin-test]`
+* `[NEW]` - `verify()` on a `Module` to verify all constructors injection with current Koin configuration (static verification). This comes as a replacement proposal for `checkModules`, as a more convenient way to verify a configuration with static verification, more than sandbox running with mocks
+
+## [android-3.3.0]() - 2022-10-19
+
+`[koin-android]`
+* `[UPDATED]` - lib update - `androidx.appcompat:appcompat:1.5.1`
+* `[UPDATED]` - lib update - `androidx.activity:activity-ktx:1.5.1`
+* `[UPDATED]` - lib update - `androidx.fragment:fragment-ktx:1.5.3`
+* `[UPDATED]` - lib update - `androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1`
+* `[UPDATED]` - lib update - `androidx.lifecycle:lifecycle-common-java8:2.5.1`
+* `[UPDATED]` - All Koin ViewModel API to use latest `ViewModelProvider` extras API [ViewModel 2.5.1](https://developer.android.com/jetpack/androidx/releases/lifecycle#2.5.1) . API Signature have been changed to keep the existing API. Such API propagates all extras directly to `SavedStateHandle`. Added `ownerProducer: () -> ViewModelStoreOwner`, and `extrasProducer: (() -> CreationExtras)?` parameters to main function.
+* `[FIXED]` - Fix `SavedStateHandle` injection and lifecycle follow up with new `KoinViewModelFactory`
+* `[UPDATED]` - Sandbox app updated to check new API
+* `[DEPRECATED]` - all `stateViewModel()` API functions + all related internals
+* `[DEPRECATED]` - any use of `state: BundleDefinition` property in favor of `extrasProducer: (() -> CreationExtras)`. Functions still works, but a conversion from bundle to extras is needed
+* `[NEW]` - `activityViewModel()` and `getActivityViewModel()` added to replace the `sharedViewModel` functions
+* `[DEPRECATED]` - all `sharedViewModel()` fucntions in favor of `activityViewModel()` functions
+* `[UPDATED]` - Compile SDK level to 32
+* `[UPDATED]` - Updated generic API `viewModelForClass` functions to allow usage of `key`. `state` parameters kept, but need conversi onto extras
+
+`[koin-android-compat]`
+* `[UPDATED]` - Updated with new ViewModel API internals 
+
+`[koin-androidx-navigation]`
+* `[UPDATED]` - Updated with new ViewModel API internals. Added `ownerProducer: () -> ViewModelStoreOwner`, and `extrasProducer: (() -> CreationExtras)?` parameters
+
+`[koin-androidx-compose]`
+* `[UPDATED]` - library update `androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1`
+* `[UPDATED]` - library update `androidx.navigation:navigation-compose:2.5.2`
+* `[UPDATED]` - Compile SDK level to 32
+* `[UPDATED]` - Update with `koin-android:3.3.0` to realign internal APIs with [ViewModel 2.5.1](https://developer.android.com/jetpack/androidx/releases/lifecycle#2.5.1)
+* `[UPDATED]` - Updated `koinViewModel()` and `getViewModel()` functions to present all needed parameters. Added `key: String` and `extras: CreationExtras`parameters.
+* `[DEPRECATED]` - `getStateViewModel()` function is now deprecated. `SavedStateHandle` can be injected directly with `koinViewModel()` and `getViewModel()` functions
+* `[UPDATED]` Compose compiler is at "1.2.0"
+* `[UPDATED]` Compose libraries at "1.2.1"
+
 # [3.2]()
+
+## [ktor-3.2.2]() - 2022-09-23
+
+* `[UPDATED]` - update with Koin 3.2.2 + Fix back compat with Java 8 compilation
+
+## [ktor-3.2.1]() - 2022-09-12
+
+* `[UPDATED]` - ktor update - 2.0.3
+
+## [ktor-3.2.0]()
+
+* `[NEW]` - Koin Ktor extracted project 
+* `[UPDATED]` - slf4j update - org.slf4j:slf4j-api:1.7.36
+* `[UPDATED]` - ktor update - 2.0.1
+* `[BREAKING]` - moved Koin ktor plugin to org.koin.ktor.plugin
+
 
 ## [android-3.2.3](https://github.com/InsertKoinIO/koin/milestone/38) - 2022-10-18
 

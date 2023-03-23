@@ -3,10 +3,10 @@ package org.koin.androidx.viewmodel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 
-
+@Deprecated("Replaced by ViewModelStoreOwner")
 typealias ViewModelStoreOwnerProducer = () -> ViewModelStoreOwner
 
-@Deprecated("Replaced by ViewModelStoreOwnerProducer")
+@Deprecated("Replaced by ViewModelStoreOwner")
 typealias ViewModelOwnerDefinition = () -> ViewModelOwner
 
 @Deprecated("Replaced by ViewModelStoreOwner")

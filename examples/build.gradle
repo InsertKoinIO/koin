@@ -1,17 +1,22 @@
 buildscript {
-    apply from: "../gradle/versions.gradle"
-    apply from: "../gradle/versions-android.gradle"
+    apply from: "../core/gradle/versions.gradle"
+    apply from: "../android/gradle/versions.gradle"
 
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+//        jcenter()
     }
     dependencies {
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
+
+        classpath "me.champeau.gradle:jmh-gradle-plugin:0.5.3"
     }
 }
 

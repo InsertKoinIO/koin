@@ -16,7 +16,9 @@
 package org.koin.core.definition
 
 /**
- * Definition callbacks
+ * Definition callbacks - Functions to call on definition lifecycle
+ *
+ * @author Arnaud Giuliani
  */
 data class Callbacks<T>(val onClose: OnCloseCallback<T>? = null)
 

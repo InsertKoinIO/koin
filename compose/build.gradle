@@ -1,0 +1,43 @@
+buildscript {
+    apply from: "../core/gradle/versions.gradle"
+    apply from: "../android/gradle/versions.gradle"
+    apply from: "./gradle/versions.gradle"
+
+    repositories {
+        google()
+        mavenCentral()
+//        jcenter()
+    }
+    dependencies {
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Dokka
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+        // Android
+        classpath "com.android.tools.build:gradle:7.3.1"
+    }
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+allprojects {
+
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+//        jcenter()
+    }
+
+    group = 'io.insert-koin'
+
+    // Dokka
+    apply plugin: 'org.jetbrains.dokka'
+    dokkaJavadoc {
+    }
+    task dokkaJar(type: Jar) {
+        classifier = 'javadoc'
+        from dokkaJavadoc
+    }
+}

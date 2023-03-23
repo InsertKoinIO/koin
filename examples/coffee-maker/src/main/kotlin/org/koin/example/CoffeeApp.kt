@@ -17,13 +17,8 @@ fun main() {
     }
 
     val coffeeShop = CoffeeApp()
-    measureDuration("Got Coffee") {
+    val duration = measureDuration {
         coffeeShop.maker.brew()
     }
-}
-
-fun measureDuration(msg : String, code: () -> Unit): Double {
-    val duration = measureDuration(code)
-    println("$msg in $duration ms")
-    return duration
+    println("Got Coffee in $duration ms")
 }

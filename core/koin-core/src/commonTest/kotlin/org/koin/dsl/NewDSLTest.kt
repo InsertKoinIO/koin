@@ -1,8 +1,12 @@
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.dsl
 
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.logger.Level
 import org.koin.core.module.dsl.*
 import org.koin.core.qualifier.named
 import kotlin.test.Test
@@ -26,7 +30,7 @@ class NewDSLTest {
                 bind<IClassA>()
             }
         }
-        assertEquals(2,module.mappings.size)
+        assertEquals(3,module.mappings.size)
         val factory = module.mappings.values.iterator().next()
         assertTrue {
             factory is SingleInstanceFactory<*> && factory.beanDefinition._createdAtStart
@@ -43,7 +47,7 @@ class NewDSLTest {
                 bind<IClassA>()
             }
         }
-        assertEquals(2,module.mappings.size)
+        assertEquals(3,module.mappings.size)
         val factory = module.mappings.values.iterator().next()
         assertTrue {
             factory is FactoryInstanceFactory<*> && !factory.beanDefinition._createdAtStart
@@ -110,6 +114,6 @@ class NewDSLTest {
         }
 
         assertEquals(1,module.eagerInstances.size)
-        assertEquals(3,module.mappings.size)
+        assertEquals(4,module.mappings.size)
     }
 }

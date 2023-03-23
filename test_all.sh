@@ -8,6 +8,14 @@ cd ./android
 ./test.sh
 cd ..
 
+cd ./compose
+./test.sh
+cd ..
+
+cd ./ktor
+./test.sh
+cd ..
+
 cd ./plugins
 ./test.sh
 cd ..

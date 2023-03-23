@@ -1,0 +1,6 @@
+ext {
+    // Koin
+    koin_ktor_version = '3.3.1'
+    // Ktor
+    ktor_version = '2.2.3'
+}

@@ -1,12 +1,67 @@
 ---
-title: Checking your modules or application graph
+title: Verifying your Koin configuration
 ---
 
 :::note 
 Koin allows you to verify your configuration modules, avoiding to discover dependency injection issues at runtime.
 :::
 
-To verify your modules, you just need to the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
+
+### Koin Configuration check - Verify() - JVM Only [3.3]
+
+Use the verify() extension function on a Koin Module. That's it! Under the hood, This will verify all constructor classes and crosscheck with the Koin configuration to know if there is a component declared for this dependency. In case of failure, the function will throw a MissingKoinDefinitionException.
+
+```kotlin
+val niaAppModule = module {
+    includes(
+        jankStatsKoinModule,
+        dataKoinModule,
+        syncWorkerKoinModule,
+        topicKoinModule,
+        authorKoinModule,
+        interestsKoinModule,
+        settingsKoinModule,
+        bookMarksKoinModule,
+        forYouKoinModule
+    )
+    viewModelOf(::MainActivityViewModel)
+}
+```
+
+
+```kotlin
+class NiaAppModuleCheck {
+
+    @Test
+    fun checkKoinModule() {
+
+        // Verify Koin configuration
+        niaAppModule.verify(
+            // List types used in definitions but not declared directly (like parameters injection)
+            extraTypes = listOf(
+                Context::class,
+                SavedStateHandle::class,
+                WorkerParameters::class
+            )
+        )
+    }
+}
+```
+
+
+Launch the JUnit test and you're done! ✅
+
+
+As you may see, we use the extraTypesparameter to list types used in the Koin configuration but not declared directly. This is the case for SavedStateHandle and WorkerParameters types, that are used as injected parameters. The Context is declared by androidContext() function at start.
+
+
+The verify() API is ultra light to run and doesn't require any kind of mock/stubb to run on your configuration.
+
+
+### Koin Dynamic Check - CheckModules()  
+
+
+Invoke the `checkModules()` function within a simple JUnit test. This will launch your modules and try to run each possible definition for you. 
 
 
 ```kotlin
@@ -38,7 +93,7 @@ class CheckModulesTest : KoinTest {
 
 #### CheckModule DSL
 
-For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allow to specify how to work with the following case:
+For any definition that is using injected parameters, properties or dynamic instances, the `checkModules` DSL allows to specify how to work with the following case:
 
 * `withInstance(value)` - will add `value` instance to Koin graph (can be used in dependency or parameter)
 
@@ -185,7 +240,7 @@ class CheckModulesTest {
 
 #### Providing Default Values (3.1.4)
 
-If you need, you can set a default value for all type in the checked modules. For example, We can override all injected string values:
+If you need, you can set a default value for all type in the checked modules. For example, we can override all injected string values:
 
 Let's use the `withInstance()` function in `checkModules` block, to define a default value for all definitions:
 
@@ -212,7 +267,7 @@ module {
 
 #### Providing ParametersOf values (3.1.4)
 
-You can define default value to be injected for one specific definition, with `withParameter` or `withParameters` functions:
+You can define a default value to be injected for one specific definition, with `withParameter` or `withParameters` functions:
 
 ```kotlin
 @Test

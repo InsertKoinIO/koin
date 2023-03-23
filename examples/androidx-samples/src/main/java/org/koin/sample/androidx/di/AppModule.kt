@@ -101,7 +101,6 @@ val navModule = module {
     viewModelOf(::NavViewModel)
 }
 
-// workerScopedModule can't be runned in unit test
-val allModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule + scopeModuleActivityA
-
-val allTestModules = appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + navModule + scopeModuleActivityA
+val allModules = module {
+    includes(appModule + mvpModule + mvvmModule + scopeModule + workerServiceModule + workerScopedModule + navModule + scopeModuleActivityA)
+}

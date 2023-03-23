@@ -2,6 +2,10 @@ package org.koin.full
 
 import kotlin.test.*
 import org.koin.core.logger.Level
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.named
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -26,7 +30,7 @@ class TODOAppTest {
     class TasksRepository(val dataSource: TasksDataSource)
 
     @Test
-    fun `default module`() {
+    fun default_module() {
         val koinApp = koinApplication {
             printLogger(Level.DEBUG)
             modules(defaultModule)
@@ -38,7 +42,7 @@ class TODOAppTest {
     }
 
     @Test
-    fun `overloaded module`() {
+    fun overloaded_module() {
         val koinApp = koinApplication {
             printLogger(Level.DEBUG)
             modules(defaultModule + overrideModule)
@@ -50,7 +54,7 @@ class TODOAppTest {
     }
 
     @Test
-    fun `overloaded definition`() {
+    fun overloaded_definition() {
         val koinApp = koinApplication {
             printLogger(Level.DEBUG)
             modules(defaultModule + overrideDef)

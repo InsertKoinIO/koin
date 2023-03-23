@@ -22,6 +22,8 @@ import org.koin.dsl.KoinAppDeclaration
 
 /**
  * Hold Current Koin context
+ *
+ * @author Arnaud Giuliani
  */
 interface KoinContext {
 

@@ -22,7 +22,7 @@ module {
 }
 ```
 
-Not need to specify dependencies in constructor anymore with `get()` function! 🎉
+No need to specify dependencies in constructor anymore with `get()` function! 🎉
 
 :::info
 Be sure to use `::` before your class name, to target your class constructor

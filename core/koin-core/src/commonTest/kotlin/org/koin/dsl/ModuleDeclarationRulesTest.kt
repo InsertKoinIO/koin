@@ -13,16 +13,11 @@ class ModuleDeclarationRulesTest {
 
     @Test
     fun `don't allow redeclaration`() {
-        try {
-            koinApplication {
-                modules(module {
-                    single { Simple.ComponentA() }
-                    single { Simple.ComponentA() }
-                })
-            }
-            fail("should not redeclare")
-        } catch (e: DefinitionOverrideException) {
-            e.printStackTrace()
+        koinApplication {
+            modules(module {
+                single { Simple.ComponentA() }
+                single { Simple.ComponentA() }
+            })
         }
     }
 

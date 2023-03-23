@@ -54,7 +54,7 @@ class KoinApplicationIsolationTest {
     }
 
     @Test
-    fun `can isolate koin apps & standalone`() {
+    fun `can isolate koin apps and standalone`() {
         startKoin {
             modules(
                 module {

@@ -1,57 +1,54 @@
 package org.koin.sample.android.main
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import org.koin.core.time.measureDurationForResult
-import org.koin.dsl.koinApplication
-import org.koin.perfs.Perfs
-import org.koin.perfs.perfModule400
+import kotlinx.coroutines.*
+import org.koin.benchmark.PerfLimit
+import org.koin.benchmark.PerfRunner.runAll
 import org.koin.sample.android.R
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        runBlocking(Dispatchers.Default) {
-
-            val launchs = (1..10).map { i ->
-                GlobalScope.async {
-                    runPerf(i)
-                }.await()
-            }
-            val avgStart = launchs.map { it.first }.sum() / launchs.size
-            val avgExec = launchs.map { it.second }.sum() / launchs.size
-            println("Avg start time: $avgStart")
-            println("Avg execution time: $avgExec")
-        }
-
         setContentView(R.layout.main_activity)
         title = "Android First Perfs"
+
+        runBlocking {
+            val limits = PerfLimit(10.8, 0.185)
+
+            println("Perf Tolerance: $limits")
+
+            val results = runAll(this)
+            results.applyLimits(limits)
+            val (startTime,execTime) = results
+
+            val textWidget = findViewById<TextView>(R.id.text)
+            var textReport = """
+                Start time: $startTime - max ${results.worstMaxStartTime} ms
+                Exec time: $execTime - max ${results.worstExecTime} ms
+            """.trimIndent()
+
+            if (!results.isOk) textReport += "\nTest Failed!"
+
+            textWidget.text = textReport
+
+            val color = if (!results.isOk) {
+                android.R.color.holo_red_dark
+            } else android.R.color.holo_green_dark
+
+            textWidget.setTextColor(resources.getColor(color))
+        }
+
+
     }
 
-    fun runPerf(count: Int): Pair<Double, Double> {
-        val (app, duration) = measureDurationForResult {
-            koinApplication {
-                modules(perfModule400())
-            }
-        }
-        println("[$count] started in $duration ms")
-
-        val koin = app.koin
-
-        val (_, executionDuration) = measureDurationForResult {
-            koin.get<Perfs.A27>()
-            koin.get<Perfs.A31>()
-            koin.get<Perfs.A12>()
-            koin.get<Perfs.A42>()
-        }
-        println("[$count] measured executed in $executionDuration ms")
-        app.close()
-        return Pair(duration, executionDuration)
+    override fun onDestroy() {
+        super.onDestroy()
+        cancel()
     }
 }

@@ -1,0 +1,40 @@
+buildscript {
+    apply from: "../core/gradle/versions.gradle"
+    apply from: "./gradle/versions.gradle"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Dokka
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+    }
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+allprojects {
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+
+    group = 'io.insert-koin'
+    version = "$koin_ktor_version"
+
+    // Dokka
+    apply plugin: 'org.jetbrains.dokka'
+    dokkaJavadoc {
+    }
+    task dokkaJar(type: Jar) {
+        classifier = 'javadoc'
+        from dokkaJavadoc
+    }
+}

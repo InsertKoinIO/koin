@@ -23,6 +23,8 @@ import org.koin.ext.getFullName
  * Koin Scope Component
  *
  * Help bring Scope API = Create/Destroy Scope for the given object
+ *
+ * @author Arnaud Giuliani
  */
 interface KoinScopeComponent : KoinComponent {
 

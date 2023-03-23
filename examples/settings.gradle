@@ -1,5 +1,6 @@
-// Main
+// Samples
 include 'coffee-maker'
-include 'android-perfs'
-// Android Samples
 include 'androidx-samples'
+// bench
+include 'jvm-perfs'
+include 'android-perfs'

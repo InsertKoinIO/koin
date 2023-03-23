@@ -18,7 +18,7 @@ package org.koin.androidx.viewmodel.dsl
 import androidx.lifecycle.ViewModel
 import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
-import org.koin.core.instance.InstanceFactory
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
@@ -35,13 +35,13 @@ import org.koin.core.qualifier.Qualifier
 inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
-): Pair<Module, InstanceFactory<T>> {
+): KoinDefinition<T> {
     return factory(qualifier, definition)
 }
 
 @KoinReflectAPI
 inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null
-): Pair<Module, InstanceFactory<T>> {
+): KoinDefinition<T> {
     return factory(qualifier) { newInstance(it) }
 }

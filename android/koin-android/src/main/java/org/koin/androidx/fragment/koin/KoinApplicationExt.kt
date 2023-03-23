@@ -18,6 +18,7 @@ package org.koin.androidx.fragment.koin
 import androidx.fragment.app.FragmentFactory
 import org.koin.androidx.fragment.android.KoinFragmentFactory
 import org.koin.core.KoinApplication
+import org.koin.core.module.KoinApplicationDslMarker
 import org.koin.dsl.module
 
 private val fragmentFactoryModule = module {
@@ -27,6 +28,7 @@ private val fragmentFactoryModule = module {
 /**
  * Setup the KoinFragmentFactory instance
  */
+
 fun KoinApplication.fragmentFactory() {
     koin.loadModules(listOf(fragmentFactoryModule))
 }

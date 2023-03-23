@@ -1,0 +1,11 @@
+ext {
+
+    koin_androidx_compose_version = '3.4.2'
+
+    // androix-compose
+    compose_compiler = "1.3.2"
+    androidx_compose_version = "1.3.3"
+
+    // Kotlin
+    kotlin_version = '1.7.20'
+}

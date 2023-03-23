@@ -17,6 +17,7 @@ package org.koin.core.parameter
 
 import org.koin.core.error.DefinitionParameterException
 import org.koin.core.error.NoParameterFoundException
+import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -28,6 +29,7 @@ import kotlin.reflect.KClass
  * @author - Arnaud GIULIANI
  */
 @Suppress("UNCHECKED_CAST")
+@KoinDslMarker
 open class ParametersHolder(
     @PublishedApi
     internal val _values: MutableList<Any?> = mutableListOf()
