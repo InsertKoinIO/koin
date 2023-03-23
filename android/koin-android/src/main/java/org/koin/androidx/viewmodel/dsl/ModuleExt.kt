@@ -30,7 +30,7 @@ import org.koin.core.qualifier.Qualifier
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier
- * @param override - allow definition override
+ * @param definition - allow definition override
  */
 inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null,

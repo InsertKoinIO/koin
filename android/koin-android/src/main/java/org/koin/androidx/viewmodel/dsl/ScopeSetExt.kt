@@ -30,7 +30,7 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier
- * @param override - allow definition override
+ * @param definition - allow definition override
  */
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
