@@ -22,8 +22,8 @@ android {
 
 dependencies {
     // Koin
-    api "io.insert-koin:koin-android:$koin_version"
-    api "io.insert-koin:koin-androidx-workmanager:$koin_version"
+    api project(":koin-android")
+    api project(":koin-androidx-workmanager")
     api "io.insert-koin:koin-test:$koin_version"
 
     // tests
