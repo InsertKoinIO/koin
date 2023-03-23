@@ -13,10 +13,7 @@ import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
 import org.koin.sample.androidx.components.mvp.FactoryPresenter
-import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
-import org.koin.sample.androidx.components.mvvm.SavedStateBundleViewModel
-import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
-import org.koin.sample.androidx.components.mvvm.SimpleViewModel
+import org.koin.sample.androidx.components.mvvm.*
 import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.scope.ScopedActivityA
 import org.koin.sample.androidx.utils.navigateTo
@@ -37,6 +34,8 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     //    val state = Bundle().apply { putString("id", "vm1") }
 //    val stateVM: SavedStateBundleViewModel by stateViewModel(state = { state })
     val stateVM: SavedStateBundleViewModel by viewModel()
+
+    val abstractVM : AbstractViewModel by viewModel()
 
     val presenter : FactoryPresenter by inject { parametersOf("_MVVMActivity_id_") }
 
@@ -72,6 +71,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
     }
 
     private fun checks() {
+        assert(abstractVM is ViewModelImpl)
         assert(scopeVm.session.id == extScopeVm.session.id)
         assert(stateVM.result == "vm1")
         assert(vm1.id != vm2.id)

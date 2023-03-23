@@ -70,9 +70,3 @@ fun <T : ViewModel> lazyResolveViewModel(
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { resolveViewModel(vmClass, viewModelStore(), key, extras(), qualifier, scope, parameters) }
 }
-
-@KoinInternalApi
-@PublishedApi
-internal fun <T : ViewModel> Class<T>.needSavedStateHandle(): Boolean {
-    return constructors[0].parameterTypes.any { p -> p == SavedStateHandle::class.java }
-}
