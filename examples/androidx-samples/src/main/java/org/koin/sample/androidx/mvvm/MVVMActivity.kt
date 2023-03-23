@@ -3,6 +3,7 @@ package org.koin.sample.androidx.mvvm
 import android.os.Bundle
 import android.widget.Button
 import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.ScopeActivity
@@ -11,6 +12,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.androidx.components.ID
+import org.koin.sample.androidx.components.mvp.FactoryPresenter
 import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SavedStateBundleViewModel
 import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
@@ -36,6 +38,8 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 //    val stateVM: SavedStateBundleViewModel by stateViewModel(state = { state })
     val stateVM: SavedStateBundleViewModel by viewModel()
 
+    val presenter : FactoryPresenter by inject { parametersOf("_MVVMActivity_id_") }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
         // using MVVMActivity with scope in mvvmModule (AppModule)
@@ -55,6 +59,16 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         }
 
         checks()
+    }
+
+    override fun onCloseScope() {
+        println("closing scope & displaying presenter: ${presenter.id}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("$this destroyed - scope closed? ${scope.closed}")
+        assert(scope.closed)
     }
 
     private fun checks() {

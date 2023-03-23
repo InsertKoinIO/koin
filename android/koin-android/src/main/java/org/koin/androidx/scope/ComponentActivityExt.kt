@@ -20,12 +20,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeCallback
 
 /**
  * Provide Koin Scope tied to ComponentActivity
@@ -47,14 +49,16 @@ fun ComponentActivity.createActivityScope(): Scope {
     if (this !is AndroidScopeComponent) {
         error("Activity should implement AndroidScopeComponent")
     }
-//    if (this.scope != null) {
-//        error("Activity Scope is already created")
-//    }
     return getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
 }
 
 internal fun ComponentCallbacks.createScopeForCurrentLifecycle(owner: LifecycleOwner): Scope {
     val scope = getKoin().createScope(getScopeId(), getScopeName(), this)
+    scope.registerCallback(object : ScopeCallback{
+        override fun onScopeClose(scope: Scope) {
+            (owner as AndroidScopeComponent).onCloseScope()
+        }
+    })
     owner.registerScopeForLifecycle(scope)
     return scope
 }

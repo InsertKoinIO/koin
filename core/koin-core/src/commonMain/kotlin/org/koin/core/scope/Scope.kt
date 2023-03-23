@@ -386,17 +386,12 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = KoinPlatformTools.synchronized(this) {
-        _closed = true
-        clearData()
-        _koin.scopeRegistry.deleteScope(this)
-    }
-
-    private fun clearData() {
-        _source = null
         _koin.logger.debug("|- (-) Scope - id:'$id'")
-        // call on close from callbacks
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
+        _source = null
+        _closed = true
+        _koin.scopeRegistry.deleteScope(this)
     }
 
     override fun toString(): String {

@@ -30,6 +30,7 @@ interface KoinScopeComponent : KoinComponent {
 
     val scope: Scope
 
+    @Deprecated("not used internaly anymore")
     fun closeScope() {
         if (scope.isNotClosed()) {
             scope.close()
