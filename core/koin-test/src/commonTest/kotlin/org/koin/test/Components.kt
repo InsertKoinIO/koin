@@ -15,6 +15,9 @@ class Simple {
     class UUIDComponent {
         fun getUUID() = KoinPlatformTools.generateId()
     }
+
+    class CycleAB(val b: CycleBA)
+    class CycleBA(val a: CycleAB)
 }
 
 object UpperCase : Qualifier {

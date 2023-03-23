@@ -1,6 +1,8 @@
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
+import org.koin.test.verify.CircularInjectionException
 import org.koin.test.verify.MissingKoinDefinitionException
 import org.koin.test.verify.Verify
 import org.koin.test.verify.verify
@@ -139,6 +141,21 @@ class VerifyModulesTest {
             module.verify()
             fail("Should not fail to verify module")
         } catch (e: MissingKoinDefinitionException) {
+            System.err.println("$e")
+        }
+    }
+
+    @Test
+    fun verify_cycle_deps() {
+        val module = module {
+            singleOf(Simple::CycleAB)
+            singleOf(Simple::CycleBA)
+        }
+
+        try {
+            module.verify()
+            fail("Should not fail to verify module")
+        } catch (e: CircularInjectionException) {
             System.err.println("$e")
         }
     }
