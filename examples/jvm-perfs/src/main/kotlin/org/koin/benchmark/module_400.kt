@@ -1,6 +1,6 @@
 package org.koin.benchmark
 
-import org.koin.core.dsl.lazyModule
+import org.koin.dsl.lazyModule
 
 fun perfModule400() = lazyModule {
    single { A1() }
