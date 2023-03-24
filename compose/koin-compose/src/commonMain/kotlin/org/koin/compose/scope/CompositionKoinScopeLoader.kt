@@ -17,9 +17,11 @@ package org.koin.compose.scope
 
 import androidx.compose.runtime.RememberObserver
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
 
+@KoinExperimentalAPI
 @KoinInternalApi
 class CompositionKoinScopeLoader(
     val scope: Scope,

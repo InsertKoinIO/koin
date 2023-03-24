@@ -20,6 +20,7 @@ package org.koin.compose.scope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import org.koin.compose.getKoin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
 
@@ -28,6 +29,7 @@ import org.koin.core.scope.Scope
  *
  * @author Arnaud Giuliani
  */
+@KoinExperimentalAPI
 @Composable
 inline fun rememberKoinScope(scope: Scope): Scope {
     val koin = getKoin()

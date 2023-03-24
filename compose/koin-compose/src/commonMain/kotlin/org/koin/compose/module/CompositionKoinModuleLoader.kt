@@ -17,13 +17,17 @@ package org.koin.compose.module
 
 import androidx.compose.runtime.RememberObserver
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
 
+@KoinExperimentalAPI
 @KoinInternalApi
 class CompositionKoinModuleLoader(
-    val modules : List<Module>,
-    val koin : Koin
+    val modules: List<Module>,
+    val koin: Koin,
+    val unloadOnForgotten : Boolean,
+    val unloadOnAbandoned : Boolean,
 ) : RememberObserver {
 
     init {
@@ -36,11 +40,15 @@ class CompositionKoinModuleLoader(
     }
 
     override fun onForgotten() {
-        unloadModules()
+        if (unloadOnForgotten){
+            unloadModules()
+        }
     }
 
     override fun onAbandoned() {
-        unloadModules()
+        if (unloadOnAbandoned){
+            unloadModules()
+        }
     }
 
     private fun unloadModules() {

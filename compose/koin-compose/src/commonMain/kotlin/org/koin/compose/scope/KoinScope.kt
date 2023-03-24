@@ -20,6 +20,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import org.koin.compose.LocalKoinScope
 import org.koin.compose.getKoin
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.component.getScopeId
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -34,6 +35,7 @@ import org.koin.core.scope.ScopeID
  *
  * @author Arnaud Giuliani
  */
+@KoinExperimentalAPI
 @Composable
 fun KoinScope(
     scopeDefinition: Koin.() -> Scope,
@@ -52,6 +54,7 @@ fun KoinScope(
  *
  * @author Arnaud Giuliani
  */
+@KoinExperimentalAPI
 @Composable
 inline fun <reified T : Any> KoinScope(
     scopeID: ScopeID,
@@ -61,6 +64,7 @@ inline fun <reified T : Any> KoinScope(
     RememberScope(scope, content)
 }
 
+@KoinExperimentalAPI
 @Composable
 @PublishedApi
 internal fun RememberScope(scope: Scope, content: @Composable () -> Unit) {
@@ -81,6 +85,7 @@ internal fun RememberScope(scope: Scope, content: @Composable () -> Unit) {
  *
  * @author Arnaud Giuliani
  */
+@KoinExperimentalAPI
 @Composable
 inline fun <reified T : Any> KoinScope(
     context : Any,
@@ -100,6 +105,7 @@ inline fun <reified T : Any> KoinScope(
  *
  * @author Arnaud Giuliani
  */
+@KoinExperimentalAPI
 @Composable
 inline fun KoinScope(
     scopeID: ScopeID,

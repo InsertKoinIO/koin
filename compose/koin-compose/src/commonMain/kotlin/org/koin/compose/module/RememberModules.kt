@@ -21,15 +21,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.remember
 import org.koin.compose.getKoin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
 
+/**
+ * Load and remember Modules & run CompositionKoinModuleLoader to handle scope closure
+ *
+ * @param unloadOnForgotten : unload loaded modules on onForgotten event
+ * @param unloadOnAbandoned : unload loaded modules on onAbandoned event
+ * @param unloadModules : unload loaded modules on onForgotten or onAbandoned event
+ * @author Arnaud Giuliani
+ */
+@KoinExperimentalAPI
 @Composable
 inline fun rememberKoinModules(
+    unloadOnForgotten : Boolean? = null,
+    unloadOnAbandoned : Boolean? = null,
+    unloadModules : Boolean = false,
     crossinline modules: @DisallowComposableCalls () -> List<Module> = { emptyList() }
 ) {
     val koin = getKoin()
     remember {
-        CompositionKoinModuleLoader(modules(), koin)
+        CompositionKoinModuleLoader(modules(), koin, unloadOnForgotten?: unloadModules, unloadOnAbandoned?: unloadModules)
     }
 }
