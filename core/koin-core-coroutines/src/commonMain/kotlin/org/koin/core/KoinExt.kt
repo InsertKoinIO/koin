@@ -33,6 +33,17 @@ suspend fun Koin.awaitAllStartJobs(){
 }
 
 /**
+ * Wait for Starting coroutines jobs to run block code
+ *
+ * @param block
+ */
+@KoinExperimentalAPI
+suspend fun Koin.onKoinStarted(block : suspend (Koin) -> Unit){
+    awaitAllStartJobs()
+    block(this)
+}
+
+/**
  * Indicates if all start jobs have been done
  */
 @OptIn(KoinInternalApi::class)

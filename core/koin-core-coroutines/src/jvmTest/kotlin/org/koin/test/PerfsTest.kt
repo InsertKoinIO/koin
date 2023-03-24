@@ -1,14 +1,13 @@
 package org.koin.test
 
+import kotlinx.coroutines.runBlocking
+import org.koin.core.*
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.context.waitKoinStart
-import org.koin.core.isAllStartedJobsDone
-import org.koin.core.lazyModules
 import kotlin.test.Test
 import org.koin.core.logger.*
 import org.koin.core.time.Timer
-import org.koin.core.waitAllStartJobs
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
@@ -66,5 +65,35 @@ class PerfsTest {
         koin.get<Perfs.A27>()
 
         stopKoin()
+    }
+
+    @Test
+    fun run_after_start_coroutine(){
+        startKoin {
+            printLogger(Level.DEBUG)
+            lazyModules(perfModule400())
+        }
+        runBlocking {
+            KoinPlatform.getKoin().onKoinStarted { koin ->
+                assert(koin.isAllStartedJobsDone())
+                koin.get<Perfs.A27>()
+            }
+        }
+        stopKoin()
+
+    }
+
+    @Test
+    fun run_after_start(){
+        startKoin {
+            printLogger(Level.DEBUG)
+            lazyModules(perfModule400())
+        }
+        KoinPlatform.getKoin().runOnKoinStarted { koin ->
+            assert(koin.isAllStartedJobsDone())
+            koin.get<Perfs.A27>()
+        }
+        stopKoin()
+
     }
 }

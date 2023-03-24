@@ -27,10 +27,21 @@ import org.koin.core.extension.coroutinesEngine
 /**
  * Wait for Starting coroutines jobs to finish using runBlocking
  */
-@OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 fun Koin.waitAllStartJobs(){
     runBlocking {
-        coroutinesEngine.awaitAllStartJobs()
+        awaitAllStartJobs()
+    }
+}
+
+/**
+ * Wait for Starting coroutines jobs to run block code
+ *
+ * @param block
+ */
+@KoinExperimentalAPI
+fun Koin.runOnKoinStarted(block : suspend (Koin) -> Unit){
+    runBlocking {
+        onKoinStarted(block)
     }
 }
