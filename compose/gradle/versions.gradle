@@ -6,7 +6,6 @@ ext {
 
     // Compose
     compose_compiler = "1.4.2"
-    androidx_compose_version = "1.3.3"
     // JB Compose
     jb_compose_version = "1.3.1"
     
