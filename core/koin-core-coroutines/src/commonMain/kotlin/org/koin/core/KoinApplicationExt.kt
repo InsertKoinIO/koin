@@ -27,34 +27,6 @@ import org.koin.core.module.Module
  */
 
 /**
- * Load asynchronously in background, a list of Module
- * uses background coroutine to load modules
- *
- * run coroutinesEngine() to setup if needed
- */
-@KoinExperimentalAPI
-fun KoinApplication.asyncModules(list: List<Module>) {
-    coroutinesEngine()
-    koin.coroutinesEngine.launchStartJob {
-        modules(list)
-    }
-}
-
-/**
- * Load asynchronously in background, a list of Module
- * uses background coroutine to load modules
- *
- * run coroutinesEngine() to setup if needed
- */
-@KoinExperimentalAPI
-fun KoinApplication.asyncModules(vararg modules: Module) {
-    coroutinesEngine()
-    koin.coroutinesEngine.launchStartJob {
-        modules(modules.toList())
-    }
-}
-
-/**
  * Load asynchronously in background, a list of Lazy Module
  * uses background coroutine to load modules
  *

@@ -49,7 +49,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 ## [core-coroutines-3.4.0]() - 2023-03-24
 * `[NEW]` - Koin Coroutines Engine Extension
 * `[NEW]` - uses `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4`
-* `[NEW][Experimental]` - Background module loading thanks to Kotlin coroutines with `lazyModules()`, `asyncModules()` KoinApplication DSL functions. `awaitKoinStart()` suspend function to wait background completetion. JVM `waitKoinStart()` function is using runBlocking to wait for completion.
+* `[NEW][Experimental]` - Background module loading thanks to Kotlin coroutines with `lazyModules()` KoinApplication DSL functions. `awaitKoinStart()` suspend function to wait background completetion. JVM `waitKoinStart()` function is using runBlocking to wait for completion.
 * `[NEW][Experimental]` - Koin Lazy Module, as a Module that don't not trigger any resources preparation. The `lazyModule { }` function help declare such `Lazy<Module>`
 * `[NEW][Experimental]` - API functions to run Koin function after start: `runOnKoinStarted` and `onKoinStarted`
 

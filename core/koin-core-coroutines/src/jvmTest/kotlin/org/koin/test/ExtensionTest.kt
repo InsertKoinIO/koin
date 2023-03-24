@@ -6,7 +6,6 @@ import org.junit.Test
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.awaitAllStartJobs
 import org.koin.core.coroutine.KoinCoroutinesEngine
-import org.koin.core.dsl.lazyModule
 import org.koin.core.extension.coroutinesEngine
 import org.koin.core.lazyModules
 import org.koin.dsl.koinApplication
@@ -27,9 +26,7 @@ class ExtensionTest {
     @Test
     fun lazy_load() {
         val koin = koinApplication {
-            lazyModules(
-                lazyModule { }
-            )
+            lazyModules()
         }.koin
 
         val coroutinesEngine =
@@ -40,9 +37,7 @@ class ExtensionTest {
     @Test
     fun wait_jobs() = runBlocking<Unit> {
         val koin = koinApplication {
-            lazyModules(
-                lazyModule { }
-            )
+            lazyModules()
         }.koin
 
         val coroutinesEngine = koin.extensionManager.getExtension<KoinCoroutinesEngine>(KoinCoroutinesEngine.EXTENSION_NAME)

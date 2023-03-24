@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.dsl
+package org.koin.core.context
 
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
-import org.koin.dsl.ModuleDeclaration
-import org.koin.dsl.module
-
+import org.koin.mp.KoinPlatformTools
 
 /**
- * Define a Koin module as Lazy way, to not resolved resources before loading it
+ * Starter function to help start Koin context with default context parameters
  *
- * @See lazyModules() function, to load Lazy module in background
+ * @author Arnaud Giuliani
  */
-@KoinExperimentalAPI
-@KoinDslMarker
-fun lazyModule(moduleDefinition : ModuleDeclaration) : Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }
+
+/**
+ * load Koin module in global Koin context
+ */
+fun loadKoinModules(module: Lazy<Module>) = KoinPlatformTools.defaultContext().loadKoinModules(module.value)

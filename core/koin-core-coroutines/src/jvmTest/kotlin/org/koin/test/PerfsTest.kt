@@ -2,15 +2,14 @@ package org.koin.test
 
 import kotlinx.coroutines.runBlocking
 import org.koin.core.*
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.core.context.waitKoinStart
 import kotlin.test.Test
 import org.koin.core.logger.*
 import org.koin.core.time.Timer
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
-import org.koin.mp.KoinPlatformTools
 
 class PerfsTest {
 

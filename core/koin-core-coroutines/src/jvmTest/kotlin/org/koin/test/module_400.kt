@@ -1,9 +1,9 @@
 package org.koin.test
 
-import org.koin.core.dsl.lazyModule
-import org.koin.dsl.module
+import org.koin.dsl.lazyModule
 
- fun perfModule400() = lazyModule {
+
+fun perfModule400() = lazyModule {
     single { Perfs.A1() }
     single { Perfs.B1(get()) }
     single { Perfs.C1(get(), get()) }

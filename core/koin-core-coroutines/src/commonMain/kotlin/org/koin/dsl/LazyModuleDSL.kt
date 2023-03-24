@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.context
+package org.koin.dsl
 
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.awaitAllStartJobs
-import org.koin.mp.KoinPlatformTools
+import org.koin.core.module.KoinDslMarker
+import org.koin.core.module.Module
 
 /**
- * Starter function to help start Koin context with default context parameters
- *
+ * Authors
  * @author Arnaud Giuliani
  */
 
 /**
- * Wait for Koin start jobs to complete
+ * Define a Koin module as Lazy way, to not resolved resources before loading it
+ *
+ * @See lazyModules() function, to load Lazy module in background
  */
 @KoinExperimentalAPI
-suspend fun awaitKoinStart() = KoinPlatformTools.defaultContext().get().awaitAllStartJobs()
+@KoinDslMarker
+fun lazyModule(moduleDefinition : ModuleDeclaration) : Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }
