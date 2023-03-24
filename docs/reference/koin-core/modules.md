@@ -252,3 +252,43 @@ startKoin { modules(featureModule1, featureModule2) }
 
 Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
 
+
+## Lazy modules & background modules loading with Kotlin coroutines [Experimental]
+
+You can now declared "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start.
+
+- `lazyModule` - declare a Lazy Kotlin version of Koin Module
+- `Module.includes` - allow to include lazy Modules
+- `KoinApplication.lazyModules` - load lazy modules in background with coroutines, regarding platform default Dispatchers
+- `Koin.waitAllStartJobs` - wait for start jobs to complete
+- `Koin.runOnKoinStarted` - run block code after start completion
+
+A good example is always betetr to udnerstand:
+
+```kotlin
+// Some lazy modules
+val m2 = lazyModule {
+    singleOf(::ClassB)
+}
+
+// include m2 lazy module
+val m1 = lazyModule {
+    includes(m2)
+    singleOf(::ClassA) { bind<IClassA>() }
+}
+
+startKoin {
+    // load lazy Modules in background
+    lazyModules(m1)
+}
+
+val koin = KoinPlatform.getKoin()
+
+// wait for loading jobs to finish
+koin.waitAllStartJobs()
+
+// or run code after loading is done
+koin.runOnKoinStarted { koin ->
+    // run after background load complete
+}
+```

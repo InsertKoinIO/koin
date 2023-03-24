@@ -145,6 +145,25 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 If you don't want to use Android Scope classes, you can work with your own and use `AndroidScopeComponent` with the Scope creation API
 :::
 
+### AndroidScopeComponent and Scope closing handling
+
+You can run some code before Koin Scope is being destroyed, by overriding `onCloseScope` function from `AndroidScopeComponent`:
+
+```kotlin
+class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+
+    override val scope: Scope by activityScope()
+
+    override fun onCloseScope() {
+        // Called before closing the Scope
+    }
+}
+```
+
+:::note
+If you try to access Scope from `onDestroy()` function, scope will be already closed.
+:::
+
 ## Scope Links
 
 Scope links allow to share instances between components with custom scopes.

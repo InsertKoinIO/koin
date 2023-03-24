@@ -55,7 +55,20 @@ val myModule = module {
  Even if the "destructured" declaration is more convenient and readable, it's not type safe. Kotlin won't detect that passed type are in good orders if you have several values
 :::
 
-## Resolving injected parameters
+## Resolving injected parameters in order
+
+Instead of using `get()` to resovle a parameter, if you have several parameters of the same type you can use the index as follow `get(index)` (also same as `[ ]` operator):
+
+```kotlin
+class Presenter(val view : View)
+
+val myModule = module {
+    
+    single { p -> Presenter(p[0],p[1]) }
+}
+```
+
+## Resolving injected parameters from graph
 
 Koin graph resolution (main tree of resolution of all definitions) also let you find your injected parameter. Just use the usual `get()` function:
 

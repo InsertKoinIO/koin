@@ -7,7 +7,7 @@ Koin allows you to verify your configuration modules, avoiding to discover depen
 :::
 
 
-### Koin Configuration check - Verify() - JVM Only [3.3]
+### Koin Configuration check with Verify() - JVM Only [3.3]
 
 Use the verify() extension function on a Koin Module. That's it! Under the hood, This will verify all constructor classes and crosscheck with the Koin configuration to know if there is a component declared for this dependency. In case of failure, the function will throw a MissingKoinDefinitionException.
 
@@ -38,11 +38,7 @@ class NiaAppModuleCheck {
         // Verify Koin configuration
         niaAppModule.verify(
             // List types used in definitions but not declared directly (like parameters injection)
-            extraTypes = listOf(
-                Context::class,
-                SavedStateHandle::class,
-                WorkerParameters::class
-            )
+            extraTypes = listOf(...)
         )
     }
 }

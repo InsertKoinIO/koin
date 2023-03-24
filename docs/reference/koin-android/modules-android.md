@@ -121,3 +121,44 @@ class MainApplication : Application() {
 
 Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
 
+
+## Reducing Startup time with background module loading
+
+You can now declared "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start. This can help avoid to block Android starting process, by passing lazy modules to be laoded in background.
+
+- `lazyModule` - declare a Lazy Kotlin version of Koin Module
+- `Module.includes` - allow to include lazy Modules
+- `KoinApplication.lazyModules` - load lazy modules in background with coroutines, regarding platform default Dispatchers
+- `Koin.waitAllStartJobs` - wait for start jobs to complete
+- `Koin.runOnKoinStarted` - run block code after start completion
+
+A good example is always betetr to udnerstand:
+
+```kotlin
+
+// Lazy loaded module
+val m2 = lazyModule {
+    singleOf(::ClassB)
+}
+
+val m1 = module {
+    singleOf(::ClassA) { bind<IClassA>() }
+}
+
+startKoin {
+    // sync module loading
+    modules(m1)
+    // load lazy Modules in background
+    lazyModules(m2)
+}
+
+val koin = KoinPlatform.getKoin()
+
+// wait for start completetion
+koin.waitAllStartJobs()
+
+// or run code after start
+koin.runOnKoinStarted { koin ->
+    // run after background load complete
+}
+```
