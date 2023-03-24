@@ -1,10 +1,71 @@
 # Latests Changes
 
-Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`
-
+Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`, `[Experimental]`
 
 # [3.4]()
 
+## [ktor-3.4.0]() -2023-03-24
+* `[UPDATED]` - `koin-core` 3.4.0
+* `[UPDATED]` - updated to Ktor 2.2.4
+
+## [compose-1.0.0]() - 2023-03-24
+* `[NEW]` - Koin Jetbrains Compose project
+* `[NEW]` - based on `org.jetbrains.compose` in `1.3.1`
+* `[NEW]` - Compose API - `koinInject` to inject Koin dependency into a Composable
+* `[NEW]` - Compose API - `KoinApplication` to create Koin application as a Composable
+* `[NEW][Experimental]` - Compose API - `rememberKoinScope` and `KoinScope` to handle Koin Scope in a Composable, follow up current to close scope once Composable is ended
+* `[NEW][Experimental]` - Compose API - `rememberKoinModules` load Koin modules and remember on current Composable
+
+## [androidx-compose-navigation-3.4.3]() - 2023-03-24
+* `[NEW]` - Koin Jetpack Compose Navigation project
+* `[NEW]` - handle ViewModel and Navigation with `koinNavViewModel()` function 
+
+## [androidx-compose-3.4.3]() - 2023-03-24
+* `[UPDATED]` - `koin-android` 3.4.0
+* `[UPDATED]` - Compose compiler `1.4.2`
+* `[UPDATED]` - lib update `androidx.compose.runtime:runtime:1.3.3`
+* `[UPDATED]` - lib update `androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0`
+* `[ADDED]` - `koin-androidx-compose-navigation` to handle `koinNavViewModel()` function 
+* `[ADDED]` - `koin-compose` 1.0 as base project for fundamental feature
+
+## [android-test-3.4.0]() - 2023-03-24
+* `[NEW]` - Koin Android Test project
+* `[NEW][Experimental]` - Verify() API with default Android types - with `Module.verify` or `Module.androidVerify`
+
+## [androidx-workmanager-3.4.0]() - 2023-03-24
+* `[UPDATED]` - lib update `androidx.work:work-runtime-ktx:2.8.0`
+
+## [android-3.4.0]() - 2023-03-24
+* `[UPDATED]` - `koin-core` 3.4.0
+* `[UPDATED]` - lib update `androidx.appcompat:appcompat:1.6.1`
+* `[UPDATED]` - lib update `androidx.activity:activity-ktx:1.6.1`
+* `[UPDATED]` - lib update `androidx.fragment:fragment-ktx:1.5.5`
+* `[UPDATED]` - lib update `androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0`
+* `[UPDATED]` - lib update `androidx.lifecycle:lifecycle-common-java8:2.6.0`
+* `[FIXED]`- Merged PR to add android test coverage #1457 - Thanks @pedrofsn
+* `[FIXED]`- `SavedStateHandle` injection with #1480
+* `[FIXED]`- `AndroidScopeComponent` fixed with `onCloseScope()` function, to be override to handle content before scope is destroyed #1518
+
+## [core-coroutines-3.4.0]() - 2023-03-24
+* `[NEW]` - Koin Coroutines Engine Extension
+* `[NEW]` - uses `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4`
+* `[NEW][Experimental]` - Background module loading thanks to Kotlin coroutines with `lazyModules()`, `asyncModules()` KoinApplication DSL functions. `awaitKoinStart()` suspend function to wait background completetion. JVM `waitKoinStart()` function is using runBlocking to wait for completion.
+* `[NEW][Experimental]` - Koin Lazy Module, as a Module that don't not trigger any resources preparation. The `lazyModule { }` function help declare such `Lazy<Module>`
+
+## [test-3.4.0]() - 2023-03-24
+* `[UPDATED]`- update core-3.4.0
+* `[UPDATED]`- verify() now handle centralized types declaration and default types, toavoid having to redeclare `extraTypes` each time.
+* `[UPDATED]`- verify() now detect circular dependencies
+
+## [core-3.4.0]() - 2023-03-24
+* `[UPDATED]`- update Kotlin 1.8.10
+* `[UPDATED]`- Koin DSL Detetction (DSL Compilation check in IDE)
+* `[NEW]` - Koin Extension manager to allow extend Koin features
+* `[FIXED]`- Merged PR to fix scope source resolution #1503 - Thanks @fesc7420
+* `[FIXED]`- Fix resolution log to debug #1520
+* `[NEW]` - `KoinPlatform` Infrastructure API to help use default context and Koin instance API in a more simple way for Multiplatform. `KoinPlatform.getKoin()` returns the current Koin instance.`KoinPlatform.startKoin(modules,loggerLevl)` allow to start Koin directly.
+
+---
 
 ## [androidx-compose-3.4.2]() - 2022-02-07
 * `[UPDATED]` - `koin-android` 3.3.3
