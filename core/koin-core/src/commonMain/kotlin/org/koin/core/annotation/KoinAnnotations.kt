@@ -26,7 +26,7 @@ package org.koin.core.annotation
 annotation class KoinInternalApi
 
 /**
- * API marked with this annotation is experimental and is not guaranteed to be stable.
+ * API marked with this annotation is "experimental", as it can still change a bit and is not guaranteed to be completely stable.
  *
  * @author Arnaud Giuliani
  * @author Victor Alenkov
@@ -57,4 +57,5 @@ annotation class KoinExperimentalAPI
     AnnotationTarget.FIELD,
     AnnotationTarget.CONSTRUCTOR
 )
+@Deprecated("Koin Reflection API is deprecated")
 annotation class KoinReflectAPI

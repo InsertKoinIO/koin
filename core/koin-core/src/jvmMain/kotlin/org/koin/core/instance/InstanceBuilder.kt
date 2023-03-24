@@ -12,6 +12,7 @@ import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
 @KoinReflectAPI
+@Deprecated("Koin Reflection API is deprecated")
 inline fun <reified T : Any> Scope.newInstance(defParams: ParametersHolder = emptyParametersHolder()): T {
     return newInstance(T::class, defParams)
 }
@@ -20,6 +21,7 @@ inline fun <reified T : Any> Scope.newInstance(defParams: ParametersHolder = emp
  * Create instance for type T and inject dependencies into 1st constructor
  */
 @KoinReflectAPI
+@Deprecated("Koin Reflection API is deprecated")
 fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T {
     val instance: Any
 
