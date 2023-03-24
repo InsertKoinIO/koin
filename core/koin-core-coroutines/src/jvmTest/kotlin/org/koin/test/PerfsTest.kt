@@ -1,11 +1,17 @@
 package org.koin.test
 
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.context.waitKoinStart
+import org.koin.core.isAllStartedJobsDone
 import org.koin.core.lazyModules
 import kotlin.test.Test
 import org.koin.core.logger.*
 import org.koin.core.time.Timer
 import org.koin.core.waitAllStartJobs
 import org.koin.dsl.koinApplication
+import org.koin.mp.KoinPlatform
+import org.koin.mp.KoinPlatformTools
 
 class PerfsTest {
 
@@ -46,5 +52,19 @@ class PerfsTest {
         println("perf400 - executed in ${timerRun.getTimeInMillis()}")
 
         app.close()
+    }
+
+    @Test
+    fun start_and_wait(){
+        startKoin {
+            lazyModules(perfModule400())
+        }
+        waitKoinStart()
+
+        val koin = KoinPlatform.getKoin()
+        assert(koin.isAllStartedJobsDone())
+        koin.get<Perfs.A27>()
+
+        stopKoin()
     }
 }

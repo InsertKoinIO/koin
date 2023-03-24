@@ -17,6 +17,7 @@ package org.koin.core
 
 import kotlinx.coroutines.runBlocking
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.extension.coroutinesEngine
 
 /**
@@ -26,6 +27,7 @@ import org.koin.core.extension.coroutinesEngine
 /**
  * Wait for Starting coroutines jobs to finish using runBlocking
  */
+@OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 fun Koin.waitAllStartJobs(){
     runBlocking {

@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.core
 
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.extension.coroutinesEngine
 import org.koin.core.module.Module
 

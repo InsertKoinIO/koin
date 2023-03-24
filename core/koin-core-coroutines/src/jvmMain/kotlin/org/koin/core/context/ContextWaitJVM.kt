@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.mp
+package org.koin.core.context
 
-import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.waitAllStartJobs
+import org.koin.mp.KoinPlatformTools
 
+/**
+ * Starter function to help start Koin context with default context parameters
+ *
+ * @author Arnaud Giuliani
+ */
+
+/**
+ * Wait for Koin start jobs to complete
+ */
 @KoinExperimentalAPI
-expect object KoinPlatformCoroutinesTools {
-    fun defaultCoroutineDispatcher() : CoroutineDispatcher
-}
+fun waitKoinStart() = KoinPlatformTools.defaultContext().get().waitAllStartJobs()

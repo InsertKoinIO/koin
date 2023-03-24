@@ -31,6 +31,7 @@ import kotlin.coroutines.CoroutineContext
  * @author Arnaud Giulani
  */
 @KoinExperimentalAPI
+@KoinInternalApi
 class KoinCoroutinesEngine : CoroutineScope, KoinExtension {
     private val dispatcher: CoroutineDispatcher = KoinPlatformCoroutinesTools.defaultCoroutineDispatcher()
     private val supervisorJob = SupervisorJob()
