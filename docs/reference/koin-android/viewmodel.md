@@ -51,7 +51,7 @@ To inject a *shared* ViewModel in a `Fragment` use:
 * `getActivityViewModel()` - directly get the shared ViewModel instance
 
 :::note
-The `sharedViewModel` is deprecated in faor of `activityViewModel()` functions. The naming of this last one is more explicit.
+The `sharedViewModel` is deprecated in favor of `activityViewModel()` functions. The naming of this last one is more explicit.
 :::
 
 Just declare the ViewModel only once:
