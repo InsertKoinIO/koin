@@ -1,6 +1,6 @@
 import org.junit.Test
 import org.koin.android.test.verify.verify
-import org.koin.sample.androidx.di.allModules
+import org.koin.sample.sandbox.di.allModules
 
 class CheckModulesTest {
 
