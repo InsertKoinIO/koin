@@ -1,5 +1,4 @@
 #!/bin/sh
 
-../gradlew publishAllPublicationsToStagingRepository --info
-
+../gradlew publishAllPublicationsToStagingRepository --no-parallel
 

@@ -1,13 +1,13 @@
 ext {
 
     // Koin Versions
-    koin_androidx_compose_version = '3.4.3'
-    koin_compose_version = "1.0.0"
+    koin_androidx_compose_version = '3.4.4'
+    koin_compose_version = "1.0.1"
 
     // Compose
     compose_compiler = "1.4.2"
     // JB Compose
-    jb_compose_version = "1.3.1"
+    jb_compose_version = "1.4.0"
     
 //    // Kotlin
 //    kotlin_version = '1.8.10'
