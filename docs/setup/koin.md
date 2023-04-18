@@ -1,5 +1,5 @@
 ---
-title: Koin 3.3
+title: Koin 3.4
 ---
 
  Setup Koin for your project 
@@ -11,10 +11,10 @@ You can find all [Koin packages on maven central](https://search.maven.org/searc
 Here are the current available versions:
 
 ```groovy
-koin_version= "3.3.2"
-koin_android_version= "3.3.2"
-koin_android_compose_version= "3.4.1"
-koin_ktor= "3.3.0"
+koin_version= "3.4.0"
+koin_android_version= "3.4.0"
+koin_android_compose_version= "1.0.0"
+koin_ktor= "3.4.0"
 ```
 
 ### **Core**
