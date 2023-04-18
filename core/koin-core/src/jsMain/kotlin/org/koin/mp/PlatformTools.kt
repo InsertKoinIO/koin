@@ -1,5 +1,6 @@
 package org.koin.mp
 
+import co.touchlab.stately.concurrency.ThreadLocalRef
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.KoinContext
 import org.koin.core.logger.*
@@ -37,3 +38,5 @@ actual object KoinPlatformTools {
 }
 
 actual typealias Lockable = Any
+
+actual typealias ThreadLocal<T> = ThreadLocalRef<T>

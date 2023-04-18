@@ -28,6 +28,6 @@ class ParameterStackTest {
             koin.get<Simple.MyStringFactory> { parametersOf(KoinPlatformTools.generateId()) }
         }
 
-        assertTrue(koin.scopeRegistry.rootScope._parameterStack.isEmpty())
+        assertTrue(koin.scopeRegistry.rootScope._parameterStackLocal.get()!!.isEmpty())
     }
 }
