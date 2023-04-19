@@ -4,6 +4,8 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.4]()
 
+-- 
+
 ## [androidx-compose-3.4.4]() - 2023-03-24
 * `[UPDATED]` - `koin-compose` 1.0.1
 * `[UPDATED]` - updated libraries - androidx.compose.runtime:runtime:1.4.1, androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1
@@ -12,6 +14,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[FIXED]` - Fixed native target for Compose
 * `[UPDATED]` - Compose Compiler to `1.4.0`
 
+--
 
 ## [ktor-3.4.0]() -2023-03-24
 * `[UPDATED]` - `koin-core` 3.4.0
