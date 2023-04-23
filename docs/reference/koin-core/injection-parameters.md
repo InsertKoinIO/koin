@@ -31,7 +31,7 @@ class MyComponent : View, KoinComponent {
 
 ## Defining an "injected parameter"
 
-Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class. We use the `params` function argument  to help retrieve our injected parameters:
+Below is an example of injection parameters. We established that we need a `view` parameter to create an instance of the `Presenter` class. We use the `params` function argument  to help retrieve our injected parameters:
 
 ```kotlin
 class Presenter(val view : View)

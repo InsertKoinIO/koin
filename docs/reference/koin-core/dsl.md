@@ -2,7 +2,7 @@
 title: Koin DSL
 ---
 
-Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to achieve to prepare your dependency injection.
+Thanks to the power of the Kotlin language, Koin provides a DSL to help your describe your app instead of needing to annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to prepare your dependency injection.
 
 ## Application & Module DSL
 
@@ -13,7 +13,7 @@ Koin offers several keywords to let you describe the elements of a Koin Applicat
 
 ## Application DSL
 
-A `KoinApplication` instance is a Koin container instance configuration. This will let your configure logging, properties loading and modules.
+A `KoinApplication` instance is a Koin container instance configuration. This will let you configure logging, properties loading and modules.
 
 To build a new `KoinApplication`, use the following functions:
 
@@ -36,21 +36,21 @@ As you can see above, we can describe a Koin container configuration in 2 ways: 
 - `koinApplication` describe a Koin container instance
 - `startKoin` describe a Koin container instance and register it in Koin `GlobalContext`
 
-By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default we use the one from `GlobalContext`.
+By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default, we use the one from `GlobalContext`.
 
 Check chapters about Custom Koin instance for more information.
 
 ## Starting Koin
 
-Starting Koin means run a `KoinApplication` instance into the `GlobalContext`.
+Starting Koin means run a `KoinApplication` instance using the `GlobalContext`.
 
-To start Koin container with modules, we can just use the `startKoin` function like that:
+To start Koin container with modules, we can just use the `startKoin` function like this:
 
 ```kotlin
 // start a KoinApplication in Global context
 startKoin {
     // declare used logger
-    logger()
+    logger(...)
     // declare used modules
     modules(coffeeAppModule)
 }
@@ -58,7 +58,7 @@ startKoin {
 
 ## Module DSL
 
-A Koin module gather definitions that you will inject/combine for your application. To create a new module, just use the following function:
+A Koin module gathers definitions that you will inject/combine for your application. To create a new module, just use the following function:
 
 * `module { // module content }` - create a Koin Module
 
@@ -70,9 +70,9 @@ To describe your content in a module, you can use the following functions:
 * `bind()` - add type to bind for given bean definition
 * `binds()` - add types array for given bean definition
 * `scope { // scope group }` - define a logical group for `scoped` definition 
-* `scoped { //definition }`- provide a bean definition that will exists only in a scope
+* `scoped { //definition }`- provide a bean definition that will exist only in a scope
 
-Note: the `named()` function allow you to give a qualifier either by a string, an enum or a type. It is used to name your definitions.
+Note: the `named()` function allows you to give a qualifier either by a string, an enum or a type. It is used to name your definitions.
 
 ### Writing a module
 

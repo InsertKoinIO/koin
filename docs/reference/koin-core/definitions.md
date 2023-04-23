@@ -2,7 +2,7 @@
 title: Definitions
 ---
 
-By using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
+When using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
 
 ## Writing a module
 
@@ -18,7 +18,7 @@ In this module, you can declare components as described below.
 
 ## Defining a singleton
 
-Declaring a singleton component means that Koin container will keep a *unique instance* of your declared component. Use the `single` function in a module to declare a singleton:
+Declaring a singleton component means that the Koin container will keep a *unique instance* of your declared component. Use the `single` function in a module to declare a singleton:
 
 ```kotlin
 class MyService()
@@ -32,7 +32,7 @@ val myModule = module {
 
 ## Defining your component within a lambda
 
-`single`, `factory` & `scoped` keywords help you declare your components through a lambda expression. this lambda describe
+`single`, `factory` & `scoped` keywords help you declare your components through a lambda expression. This lambda describes
 the way that you build your component. Usually we instantiate components via their constructors, but you can also use any expression.
 
 `single { Class constructor // Kotlin expression }`
@@ -54,19 +54,19 @@ val myModule = module {
 ```
 
 :::info
- Koin container doesn't retain factory instances as it will give a new instance each time the definition is asked.
+ Koin container doesn't retain factory instances as it will give a new instance each time the definition is requested.
 :::
 
 ## Resolving & injecting dependencies
 
-Now that we can declare components definitions, we want to link instances with dependency injection. To *resolve an instance* in a Koin module, just use the `get()`
-function to the requested needed component instance. This `get()` function is usually used into constructor, to inject constructor values.
+Now that we can declare component definitions, we want to link instances with dependency injection. To *resolve an instance* in a Koin module, just use the `get()`
+function to request the needed component instance. This `get()` function is usually used in a constructor, to inject constructor values.
 
 :::info
  To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve dependencies in class constructors. This way, your instance will be created with injected instances from Koin.
 :::
 
-Let's take an example with several classes:
+Let's look at an example with several classes:
 
 ```kotlin
 // Presenter <- Service
@@ -84,10 +84,13 @@ val myModule = module {
 
 ## Definition: binding an interface
 
-A `single` or a `factory` definition use the type from the their given lambda definition: i.e  `single { T }`
-The matched type of the definition is the only matched type from this expression.
+A component has a single class, but may have a chain of super classes and any number of implemented interfaces.
+When you declare a component the *binding* defines which of these type can be used to request the component.
 
-Let's take an example with a class and implemented interface:
+A `single` or a `factory` definition use the type of their given lambda definition: i.e.  `single { T }`
+The type of the definition is the only matched type from this expression.
+
+Let's look at an example with a class that implements an interface:
 
 ```kotlin
 // Service interface
@@ -103,7 +106,7 @@ class ServiceImp() : Service {
 }
 ```
 
-In a Koin module we can use the `as` cast Kotlin operator as follow:
+In a Koin module we can use the `as` cast Kotlin operator as follows:
 
 ```kotlin
 val myModule = module {
@@ -139,7 +142,7 @@ val myModule = module {
 
 In some cases, we want to match several types from just one definition.
 
-Let's take an example with a class and interface:
+Let's again look at example with a class and an interface:
 
 ```kotlin
 // Service interface
@@ -169,7 +172,7 @@ Note here, that we would resolve the `Service` type directly with `get()`. But i
 
 ## Definition: naming & default bindings
 
-You can specify a name to your definition, to help you distinguish two definitions about the same type:
+You can specify a name for your definition, to help Koin distinguish two definitions of the same type:
 
 Just request your definition with its name:
 
@@ -184,7 +187,7 @@ val service : Service by inject(qualifier = named("default"))
 
 `get()` and `by inject()` functions let you specify a definition name if needed. This name is a `qualifier` produced by the `named()` function.
 
-By default Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
+By default, Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
 
 ```kotlin
 val myModule = module {
@@ -212,7 +215,7 @@ val myModule = module {
 ```
 
 In contrary to resolved dependencies (resolved with `get()`), injection parameters are *parameters passed through the resolution API*.
-This means that those parameters are values passed with `get()` and `by inject()`, with the `parametersOf` function:
+This means that you need to pass these parameters to `get()` and `by inject()`, with the help of the `parametersOf` function:
 
 
 ```kotlin
@@ -224,12 +227,14 @@ Further reading in the [Injection Parameters Section](/docs/reference/koin-core/
 
 ## Using definition flags
 
-Koin DSL also proposes some flags.
+Koin DSL also supports some flags.
 
 ### Create instances at start
 
-A definition or a module can be flagged as `CreatedAtStart`, to be created at start (or when you want). First set the `createdAtStart` flag on your module
-or on your definition.
+By default, Koin creates an instance of a component only when it is requested.
+
+However, a definition or a module can be flagged as `CreatedAtStart`, to be created at start (or when you want).
+First set the `createdAtStart` flag on your module or on your definition.
 
 
 CreatedAtStart flag on a definition
@@ -261,23 +266,26 @@ val myModuleB = module(createdAtStart=true) {
 }
 ```
 
-The `startKoin` function will automatically create definitions instances flagged with `createdAtStart`.
+The `startKoin` function will automatically create instances for definitions flagged with `createdAtStart`.
 
 ```kotlin
 // Start Koin modules
 startKoin {
-    modules(myModuleA,myModuleB)
+    modules(myModuleA, myModuleB)
 }
 ```
 
 :::info
-if you need to load some definition at a special time (in a background thread instead of UI for example), just get/inject the desired components.
+If you need to load some definition at a special time (in a background thread instead of UI for example), then do not
+use `createdAtStart` (or explicitly set it to `false`for clarity) and just get/inject the desired components only when
+you want the component instance to be created.
 :::
 
 
 ### Dealing with generics
 
-Koin definitions doesn't take in accounts generics type argument. For example, the module below tries to define 2 definitions of List:
+Koin definitions don't take any generic type arguments into account.
+For example, the module below tries to define 2 definitions of List:
 
 ```kotlin
 module {
@@ -286,9 +294,10 @@ module {
 }
 ```
 
-Koin won't start with such definitions, understanding that you want to override one definition for the other.
+Koin won't start with such definitions, understanding that you want to override one definition by the other.
 
-To allow you, use the 2 definitions you will have to differentiate them via their name, or location (module). For example:
+To allow you to use the 2 definitions, you will have to differentiate them via their names, or locations (module).
+For example:
 
 ```kotlin
 module {

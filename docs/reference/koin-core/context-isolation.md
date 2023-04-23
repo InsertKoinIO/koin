@@ -3,7 +3,7 @@ title: Context Isolation
 ---
 
 
-For SDK Makers, you can also work with Koin in a non global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
+For SDK Makers, you can also work with Koin in a non-global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
 
 In a standard way, we can start Koin like that:
 
@@ -15,9 +15,9 @@ startKoin {
 }
 ```
 
-From this, we can use the `KoinComponent` as it: it will use the `GlobalContext` Koin instance.
+From this, we can use `KoinComponent` as it is: it will automatically use the `GlobalContext` Koin instance.
 
-But if we want to use an isolated Koin instance, you can just declare it like follow:
+But if we want to use an isolated Koin instance, you can just declare it as follows:
 
 ```kotlin
 // create a KoinApplication
@@ -41,7 +41,7 @@ MyKoinContext.koinApp = KoinApp
 
 ```kotlin
 abstract class CustomKoinComponent : KoinComponent {
-    // Override default Koin instance, initially target on GlobalContext to yours
+    // Override default Koin instance, initially targeted on GlobalContext to yours
     override fun getKoin(): Koin = MyKoinContext.koinApp?.koin
 }
 ```

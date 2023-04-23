@@ -16,8 +16,8 @@ val myModule = module {
 
 ## Using several modules
 
-Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
-module. Definitions are lazy, and then are resolved only when a a component is requesting it.
+Components don't necessarily have to be in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
+modules. Definitions are lazy, and they are resolved only when a component is requesting it.
 
 Let's take an example, with linked components in separate modules:
 
@@ -38,15 +38,16 @@ val moduleB = module {
 ```
 
 :::info 
-Koin doesn't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done.
+Koin doesn't have any import concept. Koin definitions are lazy by default: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done
+(unless the component declaration has set the `createdAtStart`flag - see [Definitions](./definitions.md))
 :::
 
-We just have to declare list of used modules when we start our Koin container:
+We just have to declare the list of used modules when we start our Koin container:
 
 ```kotlin
 // Start Koin with moduleA & moduleB
 startKoin{
-    modules(moduleA,moduleB)
+    modules(moduleA, moduleB)
 }
 ```
 
@@ -68,13 +69,13 @@ val myModuleB = module {
 
 startKoin {
     // TestServiceImp will override ServiceImp definition
-    modules(myModuleA,myModuleB)
+    modules(myModuleA, myModuleB)
 }
 ```
 
-You can check in Koin logs, about definition mapping override.
+You can check in Koin logs for definition mapping overrides.
 
-You can specify to not allow overriding in your Koin application configuration with `allowOverride(false)`:
+You can specify not to allow overriding in your Koin application configuration with `allowOverride(false)`:
 
 ```kotlin
 startKoin {
@@ -83,7 +84,7 @@ startKoin {
 }
 ```
 
-In the case of disabling override, Koin will throw an `DefinitionOverrideException` exception on any attempt of override.
+In the case of disabled override, Koin will throw an `DefinitionOverrideException` exception on any attempt of override.
 
 ## Sharing Modules
 
@@ -99,7 +100,7 @@ This way, your share the definitions and avoid preallocate factories in a value.
 
 ## Overriding definition or module (before 3.1.0)
 
-Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an an error if you try this:
+Koin won't allow you to redefine an already existing definition (type,name,path ...). You will get an error if you try this:
 
 ```kotlin
 val myModuleA = module {
@@ -155,7 +156,7 @@ val myModuleB = module(override=true) {
 
 *As definitions between modules are lazy*, we can use modules to implement different strategy implementation: declare an implementation per module.
 
-Let's take an example, of a Repository and Datasource. A repository need a Datasource, and a Datasource can be implemented in 2 ways: Local or Remote.
+Let's look at an example of a Repository and Datasource. A repository need a Datasource, and a Datasource can be implemented in 2 ways: Local or Remote.
 
 ```kotlin
 class Repository(val datasource : Datasource)
@@ -201,9 +202,9 @@ A new function `includes()` is available in the `Module` class, which lets you c
 
 The two prominent use cases of the new feature are:
 - Split large modules into smaller and more focused ones.
-- In modularized projects, it allows you more fine control over a module visibility (see examples below).
+- In modularized projects, it allows you finer control over a module's visibility (see examples below).
 
-How does it work? Let's take some modules, and we include modules in `parentModule`:
+How does it work? Let's take some modules and include modules of `parentModule`:
 
 ```kotlin
 // `:feature` module
@@ -255,7 +256,7 @@ Notice that all modules will be included only once: `dataModule`, `domainModule`
 
 ## Lazy modules & background modules loading with Kotlin coroutines [Experimental]
 
-You can now declared "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start.
+You can now declare a Koin module "lazy", to avoid triggering any pre-allocation of resources and load them in background with Koin start.
 
 - `lazyModule` - declare a Lazy Kotlin version of Koin Module
 - `Module.includes` - allow to include lazy Modules
@@ -263,7 +264,7 @@ You can now declared "lazy" Koin module, to avoid trigger any pre allocation of 
 - `Koin.waitAllStartJobs` - wait for start jobs to complete
 - `Koin.runOnKoinStarted` - run block code after start completion
 
-A good example is always betetr to udnerstand:
+A good example is always better for understanding:
 
 ```kotlin
 // Some lazy modules

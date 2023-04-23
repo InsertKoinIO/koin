@@ -2,11 +2,11 @@
 title: Extension Manager
 ---
 
-Here is a brief description of `KoinExtension` manager, deidcated to add new features inside Koin framework.
+Here is a brief description of `KoinExtension` manager, dedicated to adding new features inside the Koin framework.
 
 ## Defining an extension
 
-A Koin extension consist in having a class inhereting from `KoinExtension` interface:
+A Koin extension consists of having a class inherit from the `KoinExtension` interface:
 
 ```kotlin
 interface KoinExtension {
@@ -17,13 +17,13 @@ interface KoinExtension {
 }
 ```
 
-this interface allow to ensure you get passed a `Koin` instance, and the extension is called when Koin is closing.
+this interface ensures that you get passed a `Koin` instance, and the extension is called when Koin is closing.
 
 ## Starting an extension
 
 To start an extension, just extend the right place of the system, and register it with `Koin.extensionManager`.
 
-Below here is how we define the `coroutinesEngine` extension:
+Below is how we define the `coroutinesEngine` extension:
 
 ```kotlin
 fun KoinApplication.coroutinesEngine() {
@@ -35,7 +35,7 @@ fun KoinApplication.coroutinesEngine() {
 }
 ```
 
-Below here is how we call the `coroutinesEngine` extension:
+Below is how we call the `coroutinesEngine` extension:
 
 ```kotlin
 val Koin.coroutinesEngine: KoinCoroutinesEngine get() = extensionManager.getExtension(EXTENSION_NAME)

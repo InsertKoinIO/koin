@@ -2,7 +2,7 @@
 title: Constructor DSL
 ---
 
-Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to to have type your definition within a lambda expression.
+Koin now offers a new kind of DSL keyword that allows you to target a class constructor directly, and avoids having to type your definition within a lambda expression.
 
 For a given class `ClassA` with following dependencies:
 
@@ -50,7 +50,7 @@ Be sure to not use any default value in your constructor, as Koin will try to fi
 
 ## DSL Options
 
-Any Constructor DSL Definition, can also open some option within a lambda:
+In any Constructor DSL Definition, can also supply some options within a lambda:
 
 ```kotlin
 module {
@@ -81,7 +81,7 @@ module {
 
 ## Injected Parameters
 
-With such kind of declaration, you can still use injected parameters. Koin will look in injected parameters and current dependencies to try inject your constructor.
+With such kind of declaration, you can still use injected parameters. Koin will look in injected parameters and current dependencies to try to inject into your constructor.
 
 Like following:
 
@@ -108,5 +108,5 @@ val factory = koin.get<MyFactory> { parametersOf(id)}
 ## Reflection Based DSL (Deprecated since 3.2)
 
 :::caution
-Koin Reflection DSL is now deprecated. Please Use Koin Constructor DSL above
+Koin Reflection DSL is now deprecated. Please use the Koin Constructor DSL described above.
 :::

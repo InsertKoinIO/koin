@@ -3,11 +3,11 @@ title: Start Koin
 ---
 
 
-Koin is a DSL, a lightweight container and a pragmatic API. Once you have declared your definitions within Koin modules, your are ready to start the Koin container.
+Koin is a DSL, a lightweight container and a pragmatic API. Once you have declared your definitions within Koin modules, you are ready to start the Koin container.
 
 ### The startKoin function
 
-The `startKoin` function is the main entry point to launch Koin container. It need a *list of Koin modules* to run.
+The `startKoin` function is the main entry point to launch the Koin container. It needs a *list of Koin modules* to run.
 Modules are loaded and definitions are ready to be resolved by the Koin container.
 
 .Starting Koin
@@ -33,27 +33,27 @@ Your Koin container can have several options:
 
 ### Behind the start - Koin instance under the hood
 
-When we start Koin, we create a `KoinApplication` instance that represents the Koin container configuration instance. Once launched, it will produce a `Koin` instance resulting of your modules and options.
-This `Koin` instance is then hold by the `GlobalContext`, to be used by any `KoinComponent` class.
+When we start Koin, we create a `KoinApplication` instance that represents the Koin container configuration instance. Once launched, it will produce a `Koin` instance consisting of your modules and options.
+This `Koin` instance is then held by the `GlobalContext`, to be used by any `KoinComponent` class.
 
 The `GlobalContext` is a default JVM context strategy for Koin. It's called by `startKoin` and register to `GlobalContext`. This will allow us to register a different kind of context, in the perspective of Koin Multiplatform.
 
 ### Loading modules after startKoin
 
-You can't call the `startKoin` function more than once. But you can use directly the `loadKoinModules()` functions.
+You can't call the `startKoin` function more than once. But you can directly use the `loadKoinModules()` function.
 
-This function is interesting for SDK makers who want to use Koin, because they don't need to use the `starKoin()` function and just use the `loadKoinModules` at the start of their library.
+This function is interesting for SDK makers who want to use Koin, because they don't need to use the `startKoin()` function and can just use the `loadKoinModules` at the start of their library.
 
 ```kotlin
-loadKoinModules(module1,module2 ...)
+loadKoinModules(module1, module2 ...)
 ```
 
 ### Unloading modules
 
-it's possible also to unload a bunch of definition, and then release theirs instance with the given function:
+It's also possible to unload a bunch of definitions, and then release their instances with the given function:
 
 ```kotlin
-unloadKoinModules(module1,module2 ...)
+unloadKoinModules(module1, module2 ...)
 ```
 
 
@@ -72,18 +72,32 @@ Koin Logger
 ```kotlin
 abstract class Logger(var level: Level = Level.INFO) {
 
-    abstract fun log(level: Level, msg: MESSAGE)
+    abstract fun display(level: Level, msg: MESSAGE)
 
-    fun debug(msg: MESSAGE) {
+    inline fun debug(msg: MESSAGE) {
         log(Level.DEBUG, msg)
     }
 
-    fun info(msg: MESSAGE) {
+    inline fun info(msg: MESSAGE) {
         log(Level.INFO, msg)
     }
 
-    fun error(msg: MESSAGE) {
+    inline fun warn(msg: MESSAGE) {
+        log(Level.WARNING, msg)
+    }
+
+    inline fun error(msg: MESSAGE) {
         log(Level.ERROR, msg)
+    }
+
+    fun isAt(lvl: Level): Boolean = this.level <= lvl
+
+    inline fun log(lvl: Level, msg : String){
+        if (isAt(lvl)) display(lvl,msg)
+    }
+
+    inline fun log(lvl: Level, msg : () -> String){
+        if (isAt(lvl)) display(lvl,msg())
     }
 }
 ```
@@ -97,11 +111,11 @@ Koin proposes some implementation of logging, in function of the target platform
 
 ### Set logging at start
 
-By default, By default Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
+By default, Koin uses the `EmptyLogger`. You can directly use the `PrintLogger` as following:
 
 ```kotlin
 startKoin{
-    logger(LEVEL.INFO)
+    printLogger(LEVEL.INFO)
 }
 ```
 

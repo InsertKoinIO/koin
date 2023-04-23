@@ -6,12 +6,12 @@ Koin is a DSL to help describe your modules & definitions, a container to make d
 an API to retrieve our instances outside of the container. That's the goal of Koin components.
 
 :::info
- The `KoinComponent` interface is here to help you retrieve instances directly from Koin. Be careful, this links your class to the Koin container API. Avoid to use it on classes that you can declare in `modules`, and prefer constructor injection
+ The `KoinComponent` interface is here to help you retrieve instances directly from Koin. Be careful, this links your class to the Koin container API. Avoid to use it on classes that you can declare in `modules`, and prefer constructor injection!
 :::
 
 ## Create a Koin Component
 
-To give a class the capacity to use Koin features, we need to *tag it* with `KoinComponent` interface. Let's take an example.
+To give a class the capacity to use Koin features, we need to *tag it* with `KoinComponent` interface. Let's see an example.
 
 A module to define MyService instance
 ```kotlin
@@ -75,7 +75,7 @@ Koin offers two ways of retrieving instances from the Koin container:
 // is lazy evaluated
 val myService : MyService by inject()
 
-// retrieve directly the instance
+// directly retrieve the instance
 val myService : MyService = get()
 ```
 
@@ -87,7 +87,7 @@ val myService : MyService = get()
 
 If you need you can specify the following parameter with `get()` or `by inject()`
 
-* `qualifier` - name of the definition (when specified name parameter in your definition)
+* `qualifier` - name of the definition (when you specified the named parameter in your definition)
 
 Example of module using definitions names:
 

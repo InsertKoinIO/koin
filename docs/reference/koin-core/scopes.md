@@ -2,11 +2,11 @@
 title: Scopes
 ---
 
-Koin brings a simple API to let you define instances that are tied to a limit lifetime.
+Koin brings a simple API to let you define instances that have limited lifespan.
 
 ## What is a scope?
 
-Scope is a fixed duration of time or method calls in which an object exists.
+A scope is a fixed duration of time or method calls in which an object exists.
 Another way to look at this is to think of scope as the amount of time an object’s state persists.
 When the scope context ends, any objects bound under that scope cannot be injected again (they are dropped from the container).
 
@@ -14,13 +14,13 @@ When the scope context ends, any objects bound under that scope cannot be inject
 
 By default in Koin, we have 3 kind of scopes:
 
-- `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
-- `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).
-- `scoped` definition, create an object that persistent tied to the associated scope lifetime.
+- `single` definition, create an object that is persistent throughout the entire container lifetime (can't be dropped).
+- `factory` definition, create a new object each time. Short-lived. No persistence in the container (can't be shared).
+- `scoped` definition, create an object that is persistent tied for the associated scope's lifetime.
 
-To declare a scoped definition, use the `scoped` function like follow. A scope gathers scoped definitions as a logical unit of time.
+To declare a scoped definition, use the `scoped` function as follows. A scope gathers scoped definitions as a logical unit of time.
 
-Declaring a scope for a given type, we need to use the `scope` keyword:
+When declaring a scope for a given type, we need to use the `scope` keyword:
 
 ```kotlin
 module {
@@ -99,7 +99,7 @@ class A : KoinScopeComponent {
 
 To resolve a dependency using the scope's `get` & `inject` functions:  `val presenter = scope.get<Presenter>()` 
 
-The interest of a scope is to define a common logical unit of time for scoped definitions. It's allow also to resolve definitions from within the given scope
+The intent of a scope is to define a common logical unit of time for scoped definitions. It also allows to resolve definitions from within the given scope.
 
 ```kotlin
 // given the classes
@@ -129,7 +129,7 @@ val componentB = myScope.get<ComponentB>()
 ```
 
 :::info
- By default, all scope fallback to resolve in main scope if no definition is found in the current scope
+ By default, all scopes fall back to resolve in main scope if no definition is found in the current scope.
 :::
 
 ### Close a scope
@@ -152,7 +152,7 @@ scope.close()
 
 ### Getting scope's source value
 
-Koin Scope API in 2.1.4 allow you to pass the original source of a scope, in a definition. Let's take an example below.
+Koin Scope API in 2.1.4 allow you to pass the original source of a scope, in a definition. Let's see an example below.
 Let's have a singleton instance `A`:
 
 ```kotlin
@@ -180,13 +180,13 @@ assertTrue(b.a == a)
 
 :::note
  Difference between `getSource()` and `get()`: getSource will directly get the source value. Get will try to resolve any definition, and fallback to source
-value if possible. `getSource()` is then more efficient in terms of performances.
+value if possible. `getSource()` is then more efficient in terms of performance.
 :::
 
 ### Scope Linking
 
-Koin Scope API in 2.1 allow you to link a scope to another, and then allow to resolve joined definition space. Let's take an example.
-Here we are defining, 2 scopes spaces: a scope for A and a scope for B. In A's scope, we don't have access to C (defined in B's scope).
+Koin Scope API in 2.1 allows you to link a scope to another, and then allows to resolve joined definition space. Let's see an example.
+Here we are defining 2 scopes spaces: a scope for A and a scope for B. In A's scope, we don't have access to C (defined in B's scope).
 
 ```kotlin
 module {
