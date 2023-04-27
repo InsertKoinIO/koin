@@ -21,7 +21,6 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.definition.BeanDefinition
-import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersHolder
@@ -29,7 +28,6 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import org.koin.test.parameter.MockParameter
@@ -141,7 +139,7 @@ private fun Koin.checkDefinition(
     definition: BeanDefinition<*>,
     scope: Scope
 ) {
-    val parameters : ParametersHolder = allParameters.parametersCreators[CheckedComponent(
+    val parameters: ParametersHolder = allParameters.parametersCreators[CheckedComponent(
         definition.qualifier,
         definition.primaryType
     )]?.invoke(
@@ -152,6 +150,8 @@ private fun Koin.checkDefinition(
 
     for (secondaryType in definition.secondaryTypes) {
         val valueAsSecondary = scope.get<Any>(secondaryType, definition.qualifier) { parameters }
-        require(secondaryType.isInstance(valueAsSecondary))
+        require(secondaryType.isInstance(valueAsSecondary)) {
+            "instance of ${valueAsSecondary::class} is not inheritable from $secondaryType"
+        }
     }
 }
