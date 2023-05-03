@@ -22,7 +22,7 @@ Here are the current available Koin projects versions:
 
 ## KSP Plugin
 
-We need KSP Plugin to work (https://github.com/google/ksp). Jst add the gradle plugin:
+We need KSP Plugin to work (https://github.com/google/ksp). Just add the Gradle plugin:
 
 ```groovy
 ksp_version = "1.7.21-1.0.8""
@@ -38,7 +38,7 @@ plugins {
 
 ## Kotlin App Setup
 
-Here below how you can configure a kotlin (even a ktor) app:
+Here below how you can configure a Kotlin (even a Ktor) app:
 
 ```groovy
 // Use KSP Plugin
