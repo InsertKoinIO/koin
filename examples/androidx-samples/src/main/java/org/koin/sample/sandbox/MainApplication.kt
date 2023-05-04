@@ -3,14 +3,10 @@ package org.koin.sample.sandbox
 import android.app.Application
 import androidx.work.WorkManager
 import androidx.work.await
-import io.kotzilla.sdk.KotzillaSDK
-import io.kotzilla.sdk.analytics.koin.analyticsLogger
-import io.kotzilla.sdk.config.Environment
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
-import org.koin.android.logger.AndroidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
