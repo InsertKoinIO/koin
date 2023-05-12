@@ -83,6 +83,24 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `allow parameters injection in ctor dsl`() {
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                    singleOf(Simple::MyTwinSingleMix)
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MyTwinSingleMix = koin.get { parametersOf(1,2) }
+
+        assertEquals(1, a.i1)
+        assertEquals(2, a.i2)
+    }
+
+    @Test
     fun nullable_injection_param() {
 
         val app = koinApplication {

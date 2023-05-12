@@ -13,6 +13,7 @@ class Simple {
 
     class MySingle(val id: Int)
     class MyTwinSingle(val i1: Int,val i2: Int)
+    class MyTwinSingleMix(val i1: Int,val i2: Int, val a : ComponentA)
     class MySingleWithNull(val id: Int?)
     class MyIntFactory(val id: Int)
     class MyStringFactory(val s: String)
