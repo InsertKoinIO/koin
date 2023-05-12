@@ -18,6 +18,7 @@ class Simple {
     class MyIntFactory(val id: Int)
     class MyStringFactory(val s: String)
     class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)
+    class AllFactory2(val strings: MyStringFactory,val ints: MyIntFactory)
 }
 
 @Suppress("unused")
