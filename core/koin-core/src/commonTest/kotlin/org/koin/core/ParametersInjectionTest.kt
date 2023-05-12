@@ -7,6 +7,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.runTest
 import org.koin.Simple
 import org.koin.core.logger.Level
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -47,6 +48,38 @@ class ParametersInjectionTest {
 
         assertEquals(42, a.i1)
         assertEquals(24, a.i2)
+    }
+
+    @Test
+    fun `can create a single with parameters in order - destruct`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    single { (a : Int,b : Int) -> Simple.MyTwinSingle(a,b) }
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MyTwinSingle = koin.get { parametersOf(42,24) }
+
+        assertEquals(42, a.i1)
+        assertEquals(24, a.i2)
+    }
+
+    @Test
+    fun `can create a single with parameters in order - dsl ctor`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    singleOf(Simple::MyTwinSingle)
+                })
+        }
+
+        val koin = app.koin
+        val a: Simple.MyTwinSingle = koin.get { parametersOf(1,2) }
+
+        assertEquals(1, a.i1)
+        assertEquals(2, a.i2)
     }
 
     @Test

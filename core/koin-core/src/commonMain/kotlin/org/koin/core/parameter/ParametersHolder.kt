@@ -18,7 +18,6 @@ package org.koin.core.parameter
 import org.koin.core.error.DefinitionParameterException
 import org.koin.core.error.NoParameterFoundException
 import org.koin.core.module.KoinDslMarker
-import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -35,11 +34,12 @@ open class ParametersHolder(
     internal val _values: MutableList<Any?> = mutableListOf()
 ) {
 
-    val values : List<Any?> get() = _values
+    val values: List<Any?> get() = _values
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
-            if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
-                    "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
+        if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
+            "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'"
+        )
 
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
     inline operator fun <reified T> component2(): T = elementAt(1, T::class)
@@ -73,7 +73,7 @@ open class ParametersHolder(
     fun isNotEmpty() = !isEmpty()
 
     fun insert(index: Int, value: Any): ParametersHolder {
-        _values.add(index,value)
+        _values.add(index, value)
         return this
     }
 
@@ -86,14 +86,30 @@ open class ParametersHolder(
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T : Any> get(): T = getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
+    inline fun <reified T : Any> get(): T =
+        getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
+
+    var index: Int? = null
 
     /**
      * Get first element of given type T
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return _values.firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
+        updateIndex()
+        return if (_values.isEmpty()) null
+        else _values[index!!]?.let { value -> if (clazz.isInstance(value)) value as? T? else null }
+    }
+
+    @PublishedApi
+    internal fun updateIndex() {
+        index = if (index == null) {
+            0
+        } else if (index!! < _values.lastIndex) {
+            index!!+1
+        } else {
+            _values.lastIndex
+        }
     }
 
     /**
@@ -101,7 +117,9 @@ open class ParametersHolder(
      * return T
      */
     inline fun <reified T> getOrNull(): T? {
-        return _values.firstNotNullOfOrNull { value -> if (value is T) value else null }
+        updateIndex()
+        return if (_values.isEmpty()) null
+        else _values[index!!]?.let { value -> if (value is T) value else null }
     }
 
     companion object {
