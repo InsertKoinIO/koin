@@ -60,6 +60,7 @@ dependencies {
 
     // Koin
     implementation "io.insert-koin:koin-android:$koin_android_version"
+    implementation "io.insert-koin:koin-core-coroutines:$koin_version"
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
     implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
