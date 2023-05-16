@@ -9,6 +9,7 @@ ext {
     // JB Compose
     jb_compose_version = "1.4.0"
     
-//    // Kotlin
-//    kotlin_version = '1.8.10'
+    // TODO Forced Version to keep compat
+    kotlin_version = '1.8.10'
+    koin_version = '3.4.0'
 }
