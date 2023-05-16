@@ -27,27 +27,28 @@ import org.koin.core.scope.Scope
  * Link parent Activity's Scope
  * Also register it in AndroidScopeComponent.scope
  */
-fun Fragment.createFragmentScope(): Scope {
+fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope {
     if (this !is AndroidScopeComponent) {
         error("Fragment should implement AndroidScopeComponent")
     }
-//    if (this.scope != null) {
-//        error("Fragment Scope is already created")
-//    }
     val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
-    val activityScope = requireActivity().getScopeOrNull()
-    if (activityScope != null) {
-        scope.linkTo(activityScope)
-    } else {
-        scope.logger.debug("Fragment '$this' can't be linked to parent activity scope")
+    if (useParentActivityScope){
+        val activityScope = requireActivity().getScopeOrNull()
+        if (activityScope != null) {
+            scope.linkTo(activityScope)
+        } else {
+            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope")
+        }
     }
     return scope
 }
 
 /**
  * Provide scope tied to Fragment
+ *
+ * @param useParentActivityScope - check parent Activity scope to link it to current Fragment's scope
  */
-fun Fragment.fragmentScope() = lazy { createFragmentScope() }
+fun Fragment.fragmentScope(useParentActivityScope : Boolean = true) = lazy { createFragmentScope(useParentActivityScope) }
 
 @Deprecated("Unused Internal API")
 internal fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
