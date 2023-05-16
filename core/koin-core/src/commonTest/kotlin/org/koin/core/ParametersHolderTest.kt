@@ -2,7 +2,6 @@ package org.koin.core
 
 import org.koin.Simple
 import org.koin.core.parameter.ParametersHolder
-import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.core.parameter.parametersOf
 import kotlin.test.*
 

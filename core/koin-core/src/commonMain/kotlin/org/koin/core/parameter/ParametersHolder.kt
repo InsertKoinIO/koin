@@ -47,6 +47,8 @@ open class ParametersHolder(
     inline operator fun <reified T> component4(): T = elementAt(3, T::class)
     inline operator fun <reified T> component5(): T = elementAt(4, T::class)
 
+    var index: Int? = null
+
     /**
      * get element at given index
      * return T
@@ -89,42 +91,51 @@ open class ParametersHolder(
     inline fun <reified T : Any> get(): T =
         getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
 
-    var index: Int? = null
-
     /**
      * Get first element of given type T
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        updateIndex()
         return if (_values.isEmpty()) null
-        else _values[index!!]?.let { value -> if (clazz.isInstance(value)) value as? T? else null }
+        else {
+            increaseIndex()
+            val currentValue : T? = _values[index!!]?.let { if (clazz.isInstance(it)) it as? T? else null }
+            if (currentValue == null){
+                restoreIndex()
+            }
+            currentValue
+        }
     }
 
     @PublishedApi
-    internal fun updateIndex() {
-        index = if (index == null) {
-            0
-        } else if (index!! < _values.lastIndex) {
-            index!!+1
-        } else {
-            _values.lastIndex
+    internal fun increaseIndex() {
+        val newIndex = index.let { index ->
+            when {
+                index == null -> 0
+                index < _values.lastIndex -> index + 1
+                else -> _values.lastIndex
+            }
         }
+        index = newIndex
+    }
+
+    @PublishedApi
+    internal fun restoreIndex() {
+        val newIndex = index?.let { index ->
+            when {
+                index == 0 -> null
+                index > 0 -> index - 1
+                else -> 0
+            }
+        }
+        index = newIndex
     }
 
     /**
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T> getOrNull(): T? {
-        updateIndex()
-        return if (_values.isEmpty()) null
-        else _values[index!!]?.let { value -> if (value is T) value else null }
-    }
-
-    companion object {
-        const val MAX_PARAMS = 5
-    }
+    inline fun <reified T> getOrNull(): T? = getOrNull(T::class)
 
     override fun toString(): String = "DefinitionParameters${_values.toList()}"
 }

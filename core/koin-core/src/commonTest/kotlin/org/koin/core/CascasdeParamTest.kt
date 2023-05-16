@@ -7,8 +7,23 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class CascasdeParamTest {
+
+    @Test
+    fun consume_bad_value() {
+
+        val intParam : Int = 42
+        val stringParam = "_string_"
+        val p = parametersOf(intParam, stringParam)
+
+        assertNull(p.index)
+        assertNull(p.getOrNull<String>())
+        assertNull(p.index)
+        assertEquals(intParam,p.getOrNull<Int>())
+        assertEquals(stringParam,p.getOrNull<String>())
+    }
 
     @Test
     fun can_cascade_param_full_ctor_dsl() {
