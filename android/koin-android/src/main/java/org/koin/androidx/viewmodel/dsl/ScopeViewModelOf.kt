@@ -34,7 +34,7 @@ import org.koin.dsl.ScopeDSL
  * class MyViewModel : ViewModel()
  *
  * val myModule = module {
- *   viewModel(::MyViewModel)
+ *   viewModelOf(::MyViewModel)
  * }
  * ```
  *

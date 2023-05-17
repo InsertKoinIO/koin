@@ -30,7 +30,7 @@ import org.koin.dsl.ScopeDSL
  * class Model
  *
  * val myModule = module {
- *   factory(::Model)
+ *   factoryOf(::Model)
  * }
  * ```
  *
