@@ -19,10 +19,14 @@ package org.koin.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.currentComposer
+import androidx.compose.runtime.remember
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
+import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatformTools
@@ -30,17 +34,51 @@ import org.koin.mp.KoinPlatformTools
 /**
  * Current Koin Application context
  */
-val LocalKoinApplication = compositionLocalOf { getKoinContext() }
+val LocalKoinApplication = compositionLocalOf<Koin> { throw UnknownKoinContext() }
 
 /**
  * Current Koin Scope
  */
-@OptIn(KoinInternalApi::class)
-val LocalKoinScope = compositionLocalOf { getKoinContext().scopeRegistry.rootScope }
+val LocalKoinScope = compositionLocalOf<Scope> { throw UnknownKoinContext() }
+
+/**
+ * Marker exception indicating that no Koin context is present in the composition
+ *
+ * @author Jan-Jelle Kester
+ */
+internal class UnknownKoinContext : RuntimeException("No Koin context has been provided")
+
 private fun getKoinContext() = KoinPlatformTools.defaultContext().get()
 
+/**
+ * Retrieve the current Koin application from the composition.
+ */
+@OptIn(InternalComposeApi::class)
 @Composable
-fun getKoin(): Koin = LocalKoinApplication.current
+fun getKoin(): Koin = currentComposer.run {
+    remember {
+        try {
+            consume(LocalKoinApplication)
+        } catch (_: UnknownKoinContext) {
+            getKoinContext()
+        }
+    }
+}
+
+/**
+ * Retrieve the current Koin scope from the composition
+ */
+@OptIn(InternalComposeApi::class)
+@Composable
+fun getKoinScope(): Scope = currentComposer.run {
+    remember {
+        try {
+            consume(LocalKoinScope)
+        } catch (_: UnknownKoinContext) {
+            getKoinContext().scopeRegistry.rootScope
+        }
+    }
+}
 
 /**
  * Start Koin Application from Compose
