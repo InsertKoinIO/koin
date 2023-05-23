@@ -16,9 +16,11 @@
 package org.koin.ktor.ext
 
 import io.ktor.server.routing.*
+import org.koin.core.Koin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.ktor.plugin.koinKey
 
 /**
  * Ktor Koin extensions for Routing class
@@ -70,4 +72,4 @@ fun Route.getProperty(key: String, defaultValue: String) =
 /**
  * Help work on ModuleDefinition
  */
-fun Route.getKoin() = GlobalContext.get()
+fun Route.getKoin(): Koin = application.attributes.get(koinKey).koin

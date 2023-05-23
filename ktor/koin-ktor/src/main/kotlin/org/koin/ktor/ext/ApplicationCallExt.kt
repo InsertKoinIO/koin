@@ -16,9 +16,10 @@
 package org.koin.ktor.ext
 
 import io.ktor.server.application.*
-import org.koin.core.context.GlobalContext
+import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.ktor.plugin.koinKey
 
 /**
  * Ktor Koin extensions for ApplicationCall class
@@ -69,4 +70,4 @@ fun ApplicationCall.getProperty(key: String, defaultValue: String) =
 /**
  * Help work on ModuleDefinition
  */
-fun ApplicationCall.getKoin() = GlobalContext.get()
+fun ApplicationCall.getKoin(): Koin = application.attributes.get(koinKey).koin

@@ -16,34 +16,38 @@
 package org.koin.ktor.plugin
 
 import io.ktor.server.application.*
+import io.ktor.util.*
 import org.koin.core.KoinApplication
-import org.koin.core.context.GlobalContext
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.koinApplication
 
 /**
  * @author Arnaud Giuliani
  * @author Vinicius Carvalho
  * @author Victor Alenkov
+ * @author Zak Henry
  *
  * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
  *
  */
 
 // Plugin
-val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
+val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinApplication) {
+    val koinApplication = pluginConfig
+    application.attributes.put(koinKey, koinApplication)
+
     val monitor = environment?.monitor
-    val koinApplication = startKoin(pluginConfig)
     monitor?.raise(KoinApplicationStarted, koinApplication)
 
     monitor?.subscribe(ApplicationStopping) {
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
-        stopKoin()
+        koinApplication.koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
     }
 }
 
 fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
-    GlobalContext.getKoinApplicationOrNull()?.apply(configuration)
+    attributes.getOrNull(koinKey)?.apply(configuration)
 } ?: install(Koin, configuration)
+
+val koinKey = AttributeKey<KoinApplication>("KoinKey")
