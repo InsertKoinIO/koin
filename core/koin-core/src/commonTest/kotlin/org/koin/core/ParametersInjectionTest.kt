@@ -6,7 +6,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.runTest
 import org.koin.Simple
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -15,6 +17,7 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ParametersInjectionTest {
 
@@ -32,6 +35,42 @@ class ParametersInjectionTest {
         val a: Simple.MySingle = koin.get { parametersOf(42) }
 
         assertEquals(42, a.id)
+    }
+
+    @OptIn(KoinInternalApi::class)
+    @Test
+    fun inject_param_get_or_null() {
+
+        ensureCanInjectParam(module {
+            singleOf(Simple::MySingle)
+            single { Simple.MySingleAndNull(getOrNull(), get()) }
+        })
+
+        ensureCanInjectParam(module {
+            singleOf(Simple::MySingle)
+            single { (i :Int) -> Simple.MySingleAndNull(getOrNull(), get { parametersOf(i) }) }
+        })
+
+        ensureCanInjectParam(module {
+            singleOf(Simple::MySingle)
+            single { (i :Int) -> Simple.MySingleAndNull(getOrNull{ parametersOf(i) }, get { parametersOf(i) }) }
+        })
+    }
+
+    @OptIn(KoinInternalApi::class)
+    private fun ensureCanInjectParam(module1: Module) {
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module1
+            )
+        }
+
+        val koin = app.koin
+        val a: Simple.MySingleAndNull = koin.get { parametersOf(42) }
+
+        assertEquals(42, a.ms.id)
+        assertTrue { koin.scopeRegistry.rootScope._parameterStack.isEmpty() }
     }
 
     @Test
