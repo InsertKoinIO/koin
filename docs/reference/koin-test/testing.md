@@ -161,16 +161,14 @@ Koin offers a way to test if you Koin modules are good: `checkModules` - walk th
 Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
 
 ## Testing with JUnit5
-JUnit 5 support provides Extensions that will handle the starting and stopping of Koin context.
-This means that if you are using the extension you don't need to use the AutoCloseKoinTest.
+JUnit 5 support provides [Extensions]([url](https://junit.org/junit5/docs/current/user-guide/#extensions)) that will handle the starting and stopping of Koin context. This means that if you are using the extension you don't need to use the `AutoCloseKoinTest`.
 
 ### Dependency
-For testing with JUnit5 you need to use koin-junit5 dependency.
+For testing with JUnit5 you need to use `koin-junit5` dependency.
 
 ### Writing tests
-You need to Register the KoinTestExtension and provide your module configuration. After this is done
- you can either get or inject your components to the test. Remember to use @JvmField with the
-  @RegisterExtension.
+You need to Register the `KoinTestExtension` and provide your module configuration. After this is done
+ you can either get or inject your components to the test. Remember to use `@JvmField` with the `@RegisterExtension`.
 
 ```kotlin
 class ExtensionTests: KoinTest {
@@ -197,7 +195,7 @@ class ExtensionTests: KoinTest {
 ```
 
 ### Mocking with JUnit5
-This works the same way as in JUnit4 except you need to use @RegisterExtension.
+This works the same way as in JUnit4 except you need to use `@RegisterExtension`.
 
 ```kotlin
 class MockExtensionTests: KoinTest {
