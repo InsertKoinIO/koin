@@ -23,7 +23,7 @@ class MyTest : KoinTest {
 
     @Test
     fun `should inject my components`() {
-        startKoin{
+        startKoin {
             modules(
                 module {
                     single { ComponentA() }
