@@ -38,16 +38,16 @@ interface KoinScopeComponent : KoinComponent {
     }
 }
 
-fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + this.hashCode()
-fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
+inline fun <reified T : Any> T.getScopeId() = T::class.getFullName() + "@" + this.hashCode()
+inline fun <reified T : Any>T.getScopeName() = TypeQualifier(T::class)
 
-fun <T : KoinScopeComponent> T.createScope(source: Any? = null): Scope {
+inline fun <reified T : KoinScopeComponent> T.createScope(source: Any? = null): Scope {
     return getKoin().createScope(getScopeId(), getScopeName(), source)
 }
 
-fun <T : KoinScopeComponent> T.getScopeOrNull(): Scope? {
+inline fun <reified T : KoinScopeComponent> T.getScopeOrNull(): Scope? {
     return getKoin().getScopeOrNull(getScopeId())
 }
 
-fun <T : KoinScopeComponent> T.newScope() = lazy { createScope() }
-fun <T : KoinScopeComponent> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
+inline fun <reified T: KoinScopeComponent> T.newScope() = lazy { createScope() }
+inline fun <reified T : KoinScopeComponent> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
