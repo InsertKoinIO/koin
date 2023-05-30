@@ -58,7 +58,7 @@ The project can be built from the root directory using the script:
 
 [indent=0]
 ----
-	$ ./install.sh
+	$ ./install_all.sh
 ----
 
 NOTE: you can use the `test.sh` and `install.sh` scripts to test all modules and make local install
@@ -72,5 +72,5 @@ The following command script launch all tests from projects:
 
 [indent=0]
 ----
-	$ ./test.sh
+	$ ./test_all.sh
 ----
