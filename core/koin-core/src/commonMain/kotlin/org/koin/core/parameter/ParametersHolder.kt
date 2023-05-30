@@ -18,7 +18,6 @@ package org.koin.core.parameter
 import org.koin.core.error.DefinitionParameterException
 import org.koin.core.error.NoParameterFoundException
 import org.koin.core.module.KoinDslMarker
-import org.koin.core.parameter.ParametersHolder.Companion.MAX_PARAMS
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 
@@ -35,17 +34,20 @@ open class ParametersHolder(
     internal val _values: MutableList<Any?> = mutableListOf()
 ) {
 
-    val values : List<Any?> get() = _values
+    val values: List<Any?> get() = _values
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
-            if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
-                    "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'")
+        if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
+            "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'"
+        )
 
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
     inline operator fun <reified T> component2(): T = elementAt(1, T::class)
     inline operator fun <reified T> component3(): T = elementAt(2, T::class)
     inline operator fun <reified T> component4(): T = elementAt(3, T::class)
     inline operator fun <reified T> component5(): T = elementAt(4, T::class)
+
+    var index: Int? = null
 
     /**
      * get element at given index
@@ -73,7 +75,7 @@ open class ParametersHolder(
     fun isNotEmpty() = !isEmpty()
 
     fun insert(index: Int, value: Any): ParametersHolder {
-        _values.add(index,value)
+        _values.add(index, value)
         return this
     }
 
@@ -86,27 +88,54 @@ open class ParametersHolder(
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T : Any> get(): T = getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
+    inline fun <reified T : Any> get(): T =
+        getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
 
     /**
      * Get first element of given type T
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return _values.firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
+        return if (_values.isEmpty()) null
+        else {
+            increaseIndex()
+            val currentValue : T? = _values[index!!]?.let { if (clazz.isInstance(it)) it as? T? else null }
+            if (currentValue == null){
+                restoreIndex()
+            }
+            currentValue
+        }
+    }
+
+    @PublishedApi
+    internal fun increaseIndex() {
+        val newIndex = index.let { index ->
+            when {
+                index == null -> 0
+                index < _values.lastIndex -> index + 1
+                else -> _values.lastIndex
+            }
+        }
+        index = newIndex
+    }
+
+    @PublishedApi
+    internal fun restoreIndex() {
+        val newIndex = index?.let { index ->
+            when {
+                index == 0 -> null
+                index > 0 -> index - 1
+                else -> 0
+            }
+        }
+        index = newIndex
     }
 
     /**
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T> getOrNull(): T? {
-        return _values.firstNotNullOfOrNull { value -> if (value is T) value else null }
-    }
-
-    companion object {
-        const val MAX_PARAMS = 5
-    }
+    inline fun <reified T> getOrNull(): T? = getOrNull(T::class)
 
     override fun toString(): String = "DefinitionParameters${_values.toList()}"
 }

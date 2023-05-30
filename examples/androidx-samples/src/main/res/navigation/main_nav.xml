@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/fragmentA"
-        android:name="org.koin.sample.androidx.navigation.NavFragmentA"
+        android:name="org.koin.sample.sandbox.navigation.NavFragmentA"
         android:label="FragmentA" >
         <action
             android:id="@+id/action_fragmentA_to_fragmentB"
@@ -15,6 +15,6 @@
 
     <fragment
         android:id="@+id/fragmentB"
-        android:name="org.koin.sample.androidx.navigation.NavFragmentB"
+        android:name="org.koin.sample.sandbox.navigation.NavFragmentB"
         android:label="FragmentB" />
 </navigation>

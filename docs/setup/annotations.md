@@ -1,36 +1,31 @@
 ---
-title: Koin Annotations 1.0
+title: Koin Annotations
 ---
 
 Setup Koin Annotations for your project 
 
 ## Version
 
-```groovy
-koin_ksp_version= "1.0.3"
-```
+You can find all Koin packages on [maven central](https://search.maven.org/search?q=io.insert-koin).
 
-Everything is hosted on maven central:
+Here are the current available versions:
 
-```groovy
-// Add Maven Central to your repositories if needed
-repositories {
-	mavenCentral()    
-}
-```
+## Setup & Current Version
 
-You can find all [Koin packages on maven central](https://search.maven.org/search?q=io.insert-koin).
+Here are the current available Koin projects versions:
 
-:::info
- Koin 3.2 or newer is required
-:::
+| Project   |      Version      |
+|----------|:-------------:|
+| koin-annotations |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-annotations)](https://mvnrepository.com/artifact/io.insert-koin/koin-annotations) |
+| koin-ksp-compiler |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-ksp-compiler)](https://mvnrepository.com/artifact/io.insert-koin/koin-ksp-compiler) |
+
 
 ## KSP Plugin
 
-We need KSP Plugin to work (https://github.com/google/ksp). Jst add the gradle plugin:
+We need KSP Plugin to work (https://github.com/google/ksp). Just add the Gradle plugin:
 
 ```groovy
-ksp_version = "1.6.21-1.0.6""
+ksp_version = "1.7.21-1.0.8""
 ```
 
 ```groovy
@@ -43,7 +38,7 @@ plugins {
 
 ## Kotlin App Setup
 
-Here below how you can configure a kotlin (even a ktor) app:
+Here below how you can configure a Kotlin (even a Ktor) app:
 
 ```groovy
 // Use KSP Plugin

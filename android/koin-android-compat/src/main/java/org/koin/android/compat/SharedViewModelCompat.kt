@@ -61,6 +61,7 @@ object SharedViewModelCompat {
      */
     @OptIn(KoinInternalApi::class)
     @JvmOverloads
+    @JvmStatic
     @MainThread
     fun <T : ViewModel> getSharedViewModel(
         fragment: Fragment,

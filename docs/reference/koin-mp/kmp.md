@@ -73,7 +73,7 @@ fun appModule() = listOf(commonModule, platformModule)
 
 You can keep using `koin-android` features and reuse the common modules/classes.
 
-The code foor the Android app can be found here: https://github.com/InsertKoinIO/hello-kmp/tree/main/androidApp
+The code for the Android app can be found here: https://github.com/InsertKoinIO/hello-kmp/tree/main/androidApp
 
 ## iOS App
 

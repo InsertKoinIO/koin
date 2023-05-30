@@ -245,10 +245,12 @@ data class Scope(
         parameterDef: ParametersDefinition?
     ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
+            //try resolve in injected param
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
             _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
+            //try resolve in scope source
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
             _source?.let { source ->
                 if (source::class == clazz && qualifier == null) {
@@ -257,14 +259,18 @@ data class Scope(
             }
         }
         ?: run {
+            //try resolve in other scopes
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            KoinPlatformTools.synchronized(this@Scope) {
-                _parameterStack.clear()
+            // in case of error
+            if (parameterDef != null){
+                KoinPlatformTools.synchronized(this@Scope) {
+                    _parameterStack.removeFirstOrNull()
+                }
+                _koin.logger.debug("|- << parameters" )
             }
-            _koin.logger.debug("|- << parameters" )
             throwDefinitionNotFound(qualifier, clazz)
         })
 

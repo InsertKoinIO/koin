@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.koin.sample.android">
+    package="org.koin.sample.sandbox">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    
     <application
-        android:name="org.koin.sample.androidx.MainApplication"
+        android:name="org.koin.sample.sandbox.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,22 +15,22 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="org.koin.sample.androidx.main.MainActivity" android:exported="true">
+        <activity android:name="org.koin.sample.sandbox.main.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="org.koin.sample.androidx.mvp.MVPActivity" />
-        <activity android:name="org.koin.sample.androidx.mvvm.MVVMActivity" />
-        <activity android:name="org.koin.sample.androidx.scope.ScopedActivityA" />
-        <activity android:name="org.koin.sample.androidx.scope.ScopedActivityB" />
-        <activity android:name="org.koin.sample.androidx.sdk.HostActivity" />
-        <activity android:name="org.koin.sample.androidx.workmanager.WorkManagerActivity" />
+        <activity android:name="org.koin.sample.sandbox.mvp.MVPActivity" />
+        <activity android:name="org.koin.sample.sandbox.mvvm.MVVMActivity" />
+        <activity android:name="org.koin.sample.sandbox.scope.ScopedActivityA" />
+        <activity android:name="org.koin.sample.sandbox.scope.ScopedActivityB" />
+        <activity android:name="org.koin.sample.sandbox.sdk.HostActivity" />
+        <activity android:name="org.koin.sample.sandbox.workmanager.WorkManagerActivity" />
 
-        <activity android:name="org.koin.sample.androidx.components.sdk.SDKActivity" />
-        <activity android:name="org.koin.sample.androidx.navigation.NavActivity" />
+        <activity android:name="org.koin.sample.sandbox.components.sdk.SDKActivity" />
+        <activity android:name="org.koin.sample.sandbox.navigation.NavActivity" />
 
         <provider
                 android:name="androidx.startup.InitializationProvider"

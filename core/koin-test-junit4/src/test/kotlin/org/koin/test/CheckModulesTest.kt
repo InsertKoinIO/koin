@@ -6,7 +6,6 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
@@ -16,6 +15,8 @@ import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
 import java.util.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class CheckModulesTest {
 
@@ -573,7 +574,7 @@ class CheckModulesTest {
 
     @Test
     fun `check a module with wrong secondary types array - error`() {
-        try {
+        val exception = assertFailsWith<IllegalArgumentException> {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
@@ -585,9 +586,11 @@ class CheckModulesTest {
                     }
                 )
             }.checkModules()
-            fail("should not pass with broken definitions")
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+
+        assertEquals(
+            expected = "instance of class kotlin.String is not inheritable from class kotlin.Int",
+            actual = exception.message,
+        )
     }
 }

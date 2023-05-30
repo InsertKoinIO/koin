@@ -17,9 +17,9 @@ android {
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion android_target_version
-        applicationId "org.koin.sample.androidx"
+        applicationId "org.koin.sample.sandbox"
         versionCode 1
         versionName "1.0"
 
@@ -56,20 +56,20 @@ android {
 
 dependencies {
     // Leak
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    implementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // Koin
     implementation "io.insert-koin:koin-android:$koin_android_version"
+    implementation "io.insert-koin:koin-core-coroutines:$koin_version"
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
     implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.work:work-runtime-ktx:2.8.0"
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
     // implementation "org.jetbrains.anko:anko-commons:0.10.4"
 
     testImplementation "io.insert-koin:koin-android-test:$koin_android_version"
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation "junit:junit:4.13.2"
-
 }
