@@ -34,7 +34,7 @@ import org.koin.core.module.dsl.onOptions
  * class MyViewModel : ViewModel()
  *
  * val myModule = module {
- *   viewModel(::MyViewModel)
+ *   viewModelOf(::MyViewModel)
  * }
  * ```
  *

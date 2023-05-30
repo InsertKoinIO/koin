@@ -31,7 +31,7 @@ import org.koin.core.module.Module
  * class Model
  *
  * val myModule = module {
- *   factory(::Model)
+ *   factoryOf(::Model)
  * }
  * ```
  *
