@@ -1,4 +1,3 @@
 #!/bin/sh
 
-../gradlew publishAllPublicationsToStagingRepository --no-parallel
-
+../gradlew publishAllPublicationsToStagingRepository --max-workers 1
