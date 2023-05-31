@@ -4,6 +4,14 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.4]()
 
+
+
+## [compose-1.0.3]() - 2023-05-16
+* `[UPDATED]` - `koin-compose` 1.0.3
+* `[UPDATED]` - `koin-androidx-compose` 3.4.5
+* `[UPDATED]` - lib update `androidx.compose.runtime:runtime:1.4.3`
+* `[FIXED]` - Redeploy all native targets for Compose Multiplatform
+
 -- 
 
 ## [androidx-compose-3.4.4]() - 2023-03-24

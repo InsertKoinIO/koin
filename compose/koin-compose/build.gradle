@@ -24,7 +24,7 @@ kotlin {
             dependencies {
                 api kotlin("stdlib-common")
                 api "org.jetbrains.compose.runtime:runtime:$jb_compose_version"
-                api "io.insert-koin:koin-core:$koin_android_version"
+                api "io.insert-koin:koin-core:$koin_version"
             }
         }
 
