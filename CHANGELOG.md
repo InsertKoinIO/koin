@@ -26,7 +26,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 
 ## [core-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1) - 2023-05-31
-* `[UPDATED]` - PR for Documnetation updates - #1558 #1587 #1591 #1575 #1555 #1553 #1528 #1520 #1514 #1524 - Thanks to @Pitel @GrzegorzBobryk @lammertw @zsmb13 @christxph @sezikim @enzosego @igorwojda @lalnuo @mecoFarid 
+* `[UPDATED]` - PR for Documentation updates - #1558 #1587 #1591 #1575 #1555 #1553 #1528 #1520 #1514 #1524 - Thanks to @Pitel @GrzegorzBobryk @lammertw @zsmb13 @christxph @sezikim @enzosego @igorwojda @lalnuo @mecoFarid 
 * `[FIXED]`  - Allow `getScopeId` &  `getScopeName` to use reified type - Fix for #1536
 * `[UPDATED]` - Better error message for `checkModules` - PR #1569 - Thanks @mreichelt
 * `[UPDATED]` - Injected parameters are now consumed in order and Ctor DSL can now handle cascade parameetr injection - f92a4c43779280f7a6ca6ca04856468d1484da49 45c3b1229bd1c35d2b1af9e735db41a6b10f2403
