@@ -83,7 +83,6 @@ class ObjectScopeTest {
     @Test
     fun `scope from instance object`() {
         val koin = startKoin {
-            printLogger(Level.DEBUG)
             modules(module {
                 single { A() }
                 scope<A> {

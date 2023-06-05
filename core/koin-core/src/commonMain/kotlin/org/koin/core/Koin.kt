@@ -206,7 +206,7 @@ class Koin {
      * Create a Scope instance
      * @param scopeDefinitionName
      */
-    inline fun <reified T : KoinScopeComponent> createScope(t: T): Scope {
+    fun <T : KoinScopeComponent> createScope(t: T): Scope {
         val scopeId = t.getScopeId()
         val qualifier = t.getScopeName()
         return scopeRegistry.createScope(scopeId, qualifier, null)
