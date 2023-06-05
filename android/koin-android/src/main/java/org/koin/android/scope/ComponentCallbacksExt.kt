@@ -22,13 +22,13 @@ import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 
 
-inline fun <reified T : ComponentCallbacks> T.createScope(source: Any? = null): Scope {
+fun <T : ComponentCallbacks> T.createScope(source: Any? = null): Scope {
     return getKoin().createScope(getScopeId(), getScopeName(), source)
 }
 
-inline fun <reified T : ComponentCallbacks> T.getScopeOrNull(): Scope? {
+fun <T : ComponentCallbacks> T.getScopeOrNull(): Scope? {
     return getKoin().getScopeOrNull(getScopeId())
 }
 
-inline fun <reified T : ComponentCallbacks> T.newScope() = lazy { createScope() }
-inline fun <reified T: ComponentCallbacks> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
+fun <T : ComponentCallbacks> T.newScope() = lazy { createScope() }
+fun <T : ComponentCallbacks> T.getOrCreateScope() = lazy { getScopeOrNull() ?: createScope() }
