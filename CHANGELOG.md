@@ -4,10 +4,18 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.4]()
 
-## [ktor-3.4.1]() -2023-05-31
-* `[UPDATED]` - `koin-core` 3.4.1
+## [core-3.4.2]() -2023-06-05
+* `[UPDATED]` - `koin-core` 3.4.2
+* `[FIXED]` - Revert scope Id/name reified update - #1600
+
+## [android-3.4.2]() -2023-06-05
+* `[UPDATED]` - `koin-core` 3.4.2
+
+## [ktor-3.4.2]() -2023-06-05
+* `[UPDATED]` - `koin-core` 3.4.2
 * `[UPDATED]` - updated to Ktor `2.3.0`
 
+--
 
 ## [android-3.4.1](https://github.com/InsertKoinIO/koin/milestone/50?closed=1) - 2023-05-31
 * `[FIXED]` - Fix broken API `workerOf` and `worker` - #1582 #1554
