@@ -2,6 +2,8 @@ package org.koin.core
 
 import org.koin.Simple
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.parameter.parameterArrayOf
+import org.koin.core.parameter.parameterSetOf
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -9,20 +11,45 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class CascasdeParamTest {
+class CascadeParamTest {
 
     @Test
     fun consume_bad_value() {
-
         val intParam : Int = 42
         val stringParam = "_string_"
         val p = parametersOf(intParam, stringParam)
 
-        assertNull(p.index)
-        assertNull(p.getOrNull<String>())
-        assertNull(p.index)
+        assertEquals(0,p.index)
+        assertEquals(stringParam,p.getOrNull<String>())
+        assertEquals(0,p.index)
         assertEquals(intParam,p.getOrNull<Int>())
         assertEquals(stringParam,p.getOrNull<String>())
+    }
+
+    @Test
+    fun parameter_array() {
+        val intParam : Int = 42
+        val stringParam = "_string_"
+        val p = parameterArrayOf(intParam, stringParam)
+
+        assertEquals(0,p.index)
+        assertNull(p.getOrNull<String>())
+        assertEquals(intParam,p.get<Int>())
+        assertEquals(stringParam,p.get<String>())
+        assertEquals(1,p.index)
+    }
+
+    @Test
+    fun parameter_set() {
+        val intParam : Int = 42
+        val stringParam = "_string_"
+        val p = parameterSetOf(intParam, stringParam)
+
+        assertEquals(0,p.index)
+        assertEquals(stringParam,p.getOrNull<String>())
+        assertEquals(intParam,p.getOrNull<Int>())
+        assertEquals(stringParam,p.getOrNull<String>())
+        assertEquals(0,p.index)
     }
 
     @Test
@@ -38,7 +65,7 @@ class CascasdeParamTest {
 
         val intParam = 42
         val stringParam = "_string_"
-        val allFactory = koin.get<Simple.AllFactory> { parametersOf(intParam, stringParam) }
+        val allFactory = koin.get<Simple.AllFactory> { parameterArrayOf(intParam, stringParam) }
         assertEquals(intParam, allFactory.ints.id)
         assertEquals(stringParam, allFactory.strings.s)
     }
@@ -56,7 +83,7 @@ class CascasdeParamTest {
 
         val intParam = 42
         val stringParam = "_string_"
-        val allFactory = koin.get<Simple.AllFactory2> { parametersOf(stringParam, intParam) }
+        val allFactory = koin.get<Simple.AllFactory2> { parameterArrayOf(stringParam, intParam) }
         assertEquals(intParam, allFactory.ints.id)
         assertEquals(stringParam, allFactory.strings.s)
     }

@@ -31,7 +31,9 @@ import kotlin.reflect.KClass
 @KoinDslMarker
 open class ParametersHolder(
     @PublishedApi
-    internal val _values: MutableList<Any?> = mutableListOf()
+    internal val _values: MutableList<Any?> = mutableListOf(),
+    //TODO by default useIndexedValues to null, to keep compatibility with both indexed params & set params
+    val useIndexedValues: Boolean? = null
 ) {
 
     val values: List<Any?> get() = _values
@@ -47,7 +49,7 @@ open class ParametersHolder(
     inline operator fun <reified T> component4(): T = elementAt(3, T::class)
     inline operator fun <reified T> component5(): T = elementAt(4, T::class)
 
-    var index: Int? = null
+    var index: Int = 0
 
     /**
      * get element at given index
@@ -95,47 +97,42 @@ open class ParametersHolder(
      * Get first element of given type T
      * return T
      */
-    open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return if (_values.isEmpty()) null
-        else {
-            increaseIndex()
-            val currentValue : T? = _values[index!!]?.let { if (clazz.isInstance(it)) it as? T? else null }
-            if (currentValue == null){
-                restoreIndex()
-            }
-            currentValue
-        }
-    }
-
-    @PublishedApi
-    internal fun increaseIndex() {
-        val newIndex = index.let { index ->
-            when {
-                index == null -> 0
-                index < _values.lastIndex -> index + 1
-                else -> _values.lastIndex
-            }
-        }
-        index = newIndex
-    }
-
-    @PublishedApi
-    internal fun restoreIndex() {
-        val newIndex = index?.let { index ->
-            when {
-                index == 0 -> null
-                index > 0 -> index - 1
-                else -> 0
-            }
-        }
-        index = newIndex
-    }
+    inline fun <reified T : Any> getOrNull(): T? = getOrNull(T::class)
 
     /**
      * Get first element of given type T
      * return T
      */
-    inline fun <reified T> getOrNull(): T? = getOrNull(T::class)
+    open fun <T> getOrNull(clazz: KClass<*>): T? {
+        return if (_values.isEmpty()) null
+        else {
+            when (useIndexedValues) {
+                null -> getIndexedValue<T>(clazz) ?: getFirstValue<T>(clazz)
+                true -> getIndexedValue<T>(clazz)
+                else -> getFirstValue<T>(clazz)
+            }
+        }
+    }
+
+    private fun <T> getFirstValue(clazz: KClass<*>): T? {
+        return _values.firstOrNull { clazz.isInstance(it) }
+            ?.let { it as T } //firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
+    }
+
+    private fun <T> getIndexedValue(clazz: KClass<*>): T? {
+        val currentValue: T? = _values[index].takeIf { clazz.isInstance(it) }?.let { it as T }
+        if (currentValue != null) {
+            increaseIndex()
+        }
+        return currentValue
+    }
+
+    @PublishedApi
+    internal fun increaseIndex() {
+        if (index < _values.lastIndex) {
+            index += 1
+        }
+    }
 
     override fun toString(): String = "DefinitionParameters${_values.toList()}"
 }
@@ -143,10 +140,32 @@ open class ParametersHolder(
 /**
  * Build a DefinitionParameters
  *
+ * Use indexed value or fallback to first value of given type if needed
+ *
  * @see parameters
  * return ParameterList
  */
 fun parametersOf(vararg parameters: Any?) = ParametersHolder(parameters.toMutableList())
+
+/**
+ * DefinitionParameters with array of values, dedicated to be consumed one by one
+ *
+ * Ideally used for cascading parameter, or if you have several parameters of same type
+ *
+ * @see parameters
+ * return ParameterList
+ */
+fun parameterArrayOf(vararg parameters: Any?) = ParametersHolder(parameters.toMutableList(), useIndexedValues = true)
+
+/**
+ * DefinitionParameters with set of values
+ *
+ * Used to pass different types of values
+ *
+ * @see parameters
+ * return ParameterList
+ */
+fun parameterSetOf(vararg parameters: Any?) = ParametersHolder(parameters.toMutableList(), useIndexedValues = false)
 
 /**
  *

@@ -4,18 +4,47 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.4]()
 
-## [core-3.4.2]() -2023-06-05
+## 3.4.3 - 2023-07-26
+
+## [core-3.4.3]() 
+* `[UPDATED]` - `koin-core` 3.4.3
+* `[FIXED]` - Revert scope Id/name reified update - #1600
+* `[FIXED]` - parametersOf is using indexed values + fallback on value for type - 
+
+## [android-3.4.3]()
+* `[UPDATED]` - `koin-core` 3.4.3
+
+## [ktor-3.4.3]()
+* `[UPDATED]` - `koin-core` 3.4.3
+* `[UPDATED]` - updated to Ktor `2.3.2`
+
+## [androidx-compose-3.4.4]()
+* `[UPDATED]` - `koin-compose` 1.0.4
+* `[UPDATED]` - updated libraries - androidx.compose.runtime:runtime:1.4.1, androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1
+
+## [compose-1.0.4]()
+* `[FIXED]` - Fixed native target for Compose
+* `[UPDATED]` - Compose Compiler to `1.4.8`
+* `[UPDATED]` - `koin-core` 3.4.3
+* `[UPDATED]` - `koin-android` 3.4.3
+
+
+## 3.4.2 - 2023-06-05
+
+## [core-3.4.2]() 
 * `[UPDATED]` - `koin-core` 3.4.2
 * `[FIXED]` - Revert scope Id/name reified update - #1600
 
-## [android-3.4.2]() -2023-06-05
+## [android-3.4.2]()
 * `[UPDATED]` - `koin-core` 3.4.2
 
-## [ktor-3.4.2]() -2023-06-05
+## [ktor-3.4.2]()
 * `[UPDATED]` - `koin-core` 3.4.2
 * `[UPDATED]` - updated to Ktor `2.3.0`
 
 --
+
+## 3.4.1
 
 ## [android-3.4.1](https://github.com/InsertKoinIO/koin/milestone/50?closed=1) - 2023-05-31
 * `[FIXED]` - Fix broken API `workerOf` and `worker` - #1582 #1554
