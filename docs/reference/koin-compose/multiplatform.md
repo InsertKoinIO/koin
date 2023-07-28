@@ -39,9 +39,60 @@ fun App(myService: MyService = koinInject()) {
 }
 ```
 
-## Koin Features for your @Composable (WIP)
+## Starting a Koin instance from Compose
 
-- `koinInject` to inject Koin dependency into a Composable
-- `KoinApplication` to create Koin application as a Composable
-- `rememberKoinScope` and `KoinScope` to handle Koin Scope in a Composable, follow up current to close scope once Composable is ended
-- `rememberKoinModules` load Koin modules and remember on current Composable
+The function `KoinApplication` helps to create Koin application instance, as a Composable. This is a replacement of the classic `startKoin` application function.
+
+```kotlin
+@Composable
+fun App() {
+    KoinApplication(application = {
+        // Koin configuration here
+    }) {
+        
+    }
+}
+```
+
+This can be also used to helo with Compose preview:
+
+```kotlin
+@Composable
+@Preview
+fun App() {
+    KoinApplication(application = {
+        // your preview config here
+        modules(previewModule)
+    }) {
+        // Compose to preview with Koin
+    }
+}
+```
+
+
+## Module loading & unloading tied to Composable
+
+Koin offers you a way to load specific modules for a given Composable function. The `rememberKoinModules` function load Koin modules and remember on current Composable:
+
+```kotlin
+@Composable
+@Preview
+fun MyComponentComposable() {
+    // load module at first call of this component
+    rememberKoinModules(myModule)
+}
+```
+
+You can use one of the abandon function, to unload module on 2 aspects:
+- onForgotten - after a composition is dropped out
+- onAbandoned - composition has failed
+
+For this use `unloadOnForgotten` or `unloadOnAbandoned` argument for `rememberKoinModules`.
+
+## Creating Koin Scope with Composable
+
+The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow up current to close scope once Composable is ended.
+
+:::info
+this API is still unstable for now
+:::
