@@ -18,9 +18,9 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - `koin-core` 3.4.3
 * `[UPDATED]` - updated to Ktor `2.3.2`
 
-## [androidx-compose-3.4.4]()
+## [androidx-compose-3.4.6]()
 * `[UPDATED]` - `koin-compose` 1.0.4
-* `[UPDATED]` - updated libraries - androidx.compose.runtime:runtime:1.4.1, androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1
+* `[UPDATED]` - updated libraries - androidx.compose.runtime:runtime:1.4.3, androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1
 
 ## [compose-1.0.4]()
 * `[FIXED]` - Fixed native target for Compose
