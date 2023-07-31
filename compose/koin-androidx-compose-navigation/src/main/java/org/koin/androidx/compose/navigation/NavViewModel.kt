@@ -18,11 +18,12 @@
 package org.koin.androidx.compose.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.androidx.viewmodel.resolveViewModel
-import org.koin.compose.LocalKoinScope
+import org.koin.compose.getKoinScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -45,7 +46,7 @@ inline fun <reified T : ViewModel> koinNavViewModel(
     },
     key: String? = null,
     extras: CreationExtras = defaultNavExtras(viewModelStoreOwner),
-    scope: Scope = LocalKoinScope.current,
+    scope: Scope = getKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
     return resolveViewModel(
