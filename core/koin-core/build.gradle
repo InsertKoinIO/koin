@@ -12,21 +12,25 @@ kotlin {
     jvm {
         withJava()
     }
-    js(BOTH) {
+//    js(BOTH) {
+//    }
+    js(IR) { // or: LEGACY, BOTH
+        // ...
         nodejs()
         browser()
+        binaries.executable() // not applicable to BOTH, see details below
     }
 
     macosX64()
     macosArm64()
     iosX64()
     iosArm64()
-    iosArm32()
+//    iosArm32()
     iosSimulatorArm64()
-    watchosArm32()
+//    watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
-    watchosX86()
+//    watchosX86()
     watchosX64()
     tvosArm64()
     tvosSimulatorArm64()
@@ -107,9 +111,9 @@ kotlin {
         configure([
                 targets.macosX64,
                 targets.macosArm64,
-                targets.watchosArm32,
+//                targets.watchosArm32,
                 targets.watchosArm64,
-                targets.watchosX86,
+//                targets.watchosX86,
                 targets.watchosX64,
                 targets.watchosSimulatorArm64,
                 targets.tvosArm64,
@@ -117,7 +121,7 @@ kotlin {
                 targets.tvosSimulatorArm64,
                 targets.iosX64,
                 targets.iosSimulatorArm64,
-                targets.iosArm32,
+//                targets.iosArm32,
                 targets.iosArm64
         ]) {
             compilations.main.source(sourceSets.darwinMain)
