@@ -4,20 +4,20 @@ import org.koin.core.qualifier.named
 import org.koin.core.runBackground
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertNull
 
 class PlatformThreadingTest {
     val scopeKey = named("KEY")
     val koin = koinApplication {
         modules(
-                module {
-                    scope(scopeKey) {
-                    }
+            module {
+                scope(scopeKey) {
                 }
+            }
         )
     }.koin
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Test
     fun scopeInBackgroundFails() {
         val theException = runBackground {
@@ -32,10 +32,6 @@ class PlatformThreadingTest {
         }
 
         theException?.printStackTrace()
-        if (isExperimentalMM()) {
-            assertNull(theException)
-        } else {
-            assertNotNull(theException)
-        }
+        assertNull(theException)
     }
 }

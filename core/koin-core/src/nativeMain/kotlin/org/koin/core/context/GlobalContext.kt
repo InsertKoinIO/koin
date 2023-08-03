@@ -22,68 +22,8 @@ import org.koin.core.KoinApplication
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.mp.native.MainThreadValue
 
-@OptIn(ExperimentalStdlibApi::class)
-internal fun globalContextByMemoryModel(): KoinContext = if (isExperimentalMM()) {
-    MutableGlobalContext()
-} else {
-    StrictGlobalContext()
-}
-
-/**
- * Main thread only global context for the strict memory model
- */
-internal class StrictGlobalContext: KoinContext {
-    data class KoinInstanceHolder(var koin: Koin? = null)
-
-    private val contextHolder = MainThreadValue(KoinInstanceHolder(null))
-
-    override fun getOrNull(): Koin? = contextHolder.get().koin
-    override fun get(): Koin = getOrNull() ?: error("KoinApplication has not been started")
-
-    private fun register(koinApplication: KoinApplication) {
-        if (getOrNull() != null) {
-            throw KoinAppAlreadyStartedException("A Koin Application has already been started")
-        }
-        contextHolder.get().koin = koinApplication.koin
-    }
-
-    override fun stopKoin() {
-        contextHolder.get().koin?.close()
-        contextHolder.get().koin = null
-    }
-
-    override fun startKoin(koinApplication: KoinApplication): KoinApplication {
-        register(koinApplication)
-        koinApplication.createEagerInstances()
-        return koinApplication
-    }
-
-    override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication {
-        val koinApplication = KoinApplication.init()
-        register(koinApplication)
-        appDeclaration(koinApplication)
-        koinApplication.createEagerInstances()
-        return koinApplication
-    }
-
-    override fun loadKoinModules(module: Module) {
-        get().loadModules(listOf(module))
-    }
-
-    override fun loadKoinModules(modules: List<Module>) {
-        get().loadModules(modules)
-    }
-
-    override fun unloadKoinModules(module: Module) {
-        get().unloadModules(listOf(module))
-    }
-
-    override fun unloadKoinModules(modules: List<Module>) {
-        get().unloadModules(modules)
-    }
-}
+internal fun globalContextByMemoryModel(): KoinContext = MutableGlobalContext()
 
 /**
  * Mutable global context for the new memory model. Very similar to how the JVM global context works.
