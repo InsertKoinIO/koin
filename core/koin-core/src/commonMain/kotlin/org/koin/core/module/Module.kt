@@ -236,16 +236,17 @@ operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(mod
  * Run through the module list to flatten all modules & submodules
  */
 @OptIn(KoinInternalApi::class)
-tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet()): Set<Module> {
-    return if (modules.isEmpty()) {
-        newModules
-    } else {
-        val head = modules.first() ?: error("Flatten - No head element in list")
+tailrec fun flatten(modules: List<Module>, newModules: MutableSet<Module> = mutableSetOf()): Set<Module> {
+    if (modules.isNotEmpty()) {
+        val head = modules.first()
         val tail = modules.subList(1, modules.size)
-        if (head.includedModules.isEmpty()) {
-            flatten(tail, newModules + head)
+        newModules.add(head)
+        if (head.importedModules.isEmpty()) {
+            return flatten(tail, newModules)
         } else {
-            flatten(head.includedModules + tail, newModules + head)
+            return flatten(head.importedModules + tail, newModules)
         }
+    } else {
+        return newModules
     }
 }
