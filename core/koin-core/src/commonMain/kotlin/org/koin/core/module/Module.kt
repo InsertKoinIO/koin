@@ -237,16 +237,16 @@ operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(mod
  */
 @OptIn(KoinInternalApi::class)
 tailrec fun flatten(modules: List<Module>, newModules: MutableSet<Module> = mutableSetOf()): Set<Module> {
-    if (modules.isNotEmpty()) {
+    return if (modules.isNotEmpty()) {
         val head = modules.first()
         val tail = modules.subList(1, modules.size)
         newModules.add(head)
-        if (head.importedModules.isEmpty()) {
-            return flatten(tail, newModules)
+        if (head.includedModules.isEmpty()) {
+            flatten(tail, newModules)
         } else {
-            return flatten(head.importedModules + tail, newModules)
+            flatten(head.includedModules + tail, newModules)
         }
     } else {
-        return newModules
+        newModules
     }
 }
