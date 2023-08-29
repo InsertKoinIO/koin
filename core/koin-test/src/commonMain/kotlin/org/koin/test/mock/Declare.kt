@@ -7,7 +7,7 @@ import org.koin.test.get
 
 inline fun <reified T : Any> KoinTest.declare(
     qualifier: Qualifier? = null,
-    noinline instance: () -> T
+    noinline instance: () -> T,
 ): T {
     val koin = KoinPlatformTools.defaultContext().get()
     koin.declare(instance(), qualifier, allowOverride = true)

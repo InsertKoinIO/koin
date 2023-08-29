@@ -19,7 +19,6 @@ package org.koin.core.module.dsl
 
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 
 /**
@@ -59,7 +58,6 @@ inline fun <reified R, reified T1, reified T2> Module.factoryOf(
     crossinline constructor: (T1, T2) -> R,
     noinline options: DefinitionOptions<R>? = null,
 ): KoinDefinition<R> = factory { new(constructor) }.onOptions(options)
-
 
 /**
  * @see factoryOf

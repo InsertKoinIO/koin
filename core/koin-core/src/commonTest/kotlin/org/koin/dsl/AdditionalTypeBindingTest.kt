@@ -1,11 +1,11 @@
 package org.koin.dsl
 
-import kotlin.test.*
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.*
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 // TODO - Check flaky tests
@@ -54,9 +54,10 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                },
+            )
         }
 
         app.assertDefinitionsCount(2)
@@ -92,10 +93,11 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                },
+            )
         }
 
         app.assertDefinitionsCount(3)
@@ -110,10 +112,11 @@ class AdditionalTypeBindingTest {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
-                        module {
-                            single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                            single<Simple.ComponentInterface1> { Simple.Component1() }
-                        })
+                    module {
+                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                        single<Simple.ComponentInterface1> { Simple.Component1() }
+                    },
+                )
             }
 //            fail("confilcting definitions")
         } catch (e: Exception) {
@@ -125,10 +128,11 @@ class AdditionalTypeBindingTest {
         val app = koinApplication {
             printLogger()
             modules(
-                    module {
-                        single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                    })
+                module {
+                    single<Simple.ComponentInterface1>(named("default")) { Simple.Component2() }
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                },
+            )
         }
         val koin = app.koin
         koin.get<Simple.ComponentInterface1>(named("default"))
@@ -160,10 +164,11 @@ class AdditionalTypeBindingTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                },
+            )
         }.koin
 
         assertTrue(koin.getAll<Simple.ComponentInterface1>().size == 1)
@@ -175,15 +180,16 @@ class AdditionalTypeBindingTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                        single { getAll<Simple.ComponentInterface1>() }
-                    })
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                    single { getAll<Simple.ComponentInterface1>() }
+                },
+            )
         }.koin
 
         val result = koin.get<List<Simple.ComponentInterface1>>()
-        assertEquals(1,result.size)
+        assertEquals(1, result.size)
     }
 
     @Test
@@ -191,13 +197,14 @@ class AdditionalTypeBindingTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component2() }
-                        single { Simple.Component1() } binds arrayOf(
-                                Simple.ComponentInterface1::class,
-                                Simple.ComponentInterface2::class
-                        )
-                    })
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component2() }
+                    single { Simple.Component1() } binds arrayOf(
+                        Simple.ComponentInterface1::class,
+                        Simple.ComponentInterface2::class,
+                    )
+                },
+            )
         }.koin
     }
 
@@ -206,10 +213,11 @@ class AdditionalTypeBindingTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component2() }
-                        single { getAll<Simple.ComponentInterface1>() }
-                    })
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component2() }
+                    single { getAll<Simple.ComponentInterface1>() }
+                },
+            )
         }.koin
         assertTrue(koin.getAll<Simple.ComponentInterface1>().size == 1)
         assertTrue(koin.get<List<Simple.ComponentInterface1>>().size == 1)

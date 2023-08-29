@@ -1,6 +1,6 @@
-//package org.koin.mp.native
+// package org.koin.mp.native
 //
-//actual val isMainThread: Boolean
+// actual val isMainThread: Boolean
 //    get() {
 //        return try {
 //            //Trying to access a global val on a background thread will throw an exception
@@ -11,6 +11,6 @@
 //        }
 //    }
 //
-//private data class DummyData(val s: String)
+// private data class DummyData(val s: String)
 //
-//private val dummyData = DummyData("arst")
+// private val dummyData = DummyData("arst")

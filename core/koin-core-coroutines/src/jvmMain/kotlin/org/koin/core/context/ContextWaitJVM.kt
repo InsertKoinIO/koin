@@ -18,7 +18,6 @@ package org.koin.core.context
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.waitAllStartJobs
 import org.koin.mp.KoinPlatform
-import org.koin.mp.KoinPlatformTools
 
 /**
  * Starter function to help start Koin context with default context parameters

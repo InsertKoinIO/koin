@@ -1,10 +1,10 @@
 package org.koin.dsl
 
-import kotlin.test.assertEquals
-import kotlin.test.fail
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class ModuleAndPropertiesTest {
 
@@ -16,9 +16,11 @@ class ModuleAndPropertiesTest {
 
         val koin = koinApplication {
             properties(values)
-            modules(module {
-                single { Simple.MyStringFactory(getProperty(key)) }
-            })
+            modules(
+                module {
+                    single { Simple.MyStringFactory(getProperty(key)) }
+                },
+            )
         }.koin
 
         val fact = koin.get<Simple.MyStringFactory>()
@@ -31,9 +33,11 @@ class ModuleAndPropertiesTest {
             val key = "KEY"
 
             val koin = koinApplication {
-                modules(module {
-                    single { Simple.MyStringFactory(getProperty(key)) }
-                })
+                modules(
+                    module {
+                        single { Simple.MyStringFactory(getProperty(key)) }
+                    },
+                )
             }.koin
 
             koin.get<Simple.MyStringFactory>()

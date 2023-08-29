@@ -20,6 +20,7 @@ class ScopeTest {
 
     private class A
     private class B
+
     @Test
     fun scope_component() {
         abstract class SuperClass : KoinScopeComponent {
@@ -39,7 +40,7 @@ class ScopeTest {
                     scope<SubClass> {
                         scopedOf(::B)
                     }
-                }
+                },
             )
         }
 
@@ -54,11 +55,11 @@ class ScopeTest {
         val koin = koinApplication {
             printLogger()
             modules(
-                    module {
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -83,18 +84,18 @@ class ScopeTest {
         val koin = koinApplication {
             printLogger()
             modules(
-                    module {
-                        factory {
-                            factoryCallCounter++
-                            Simple.ComponentA()
-                        }
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { B() }
-                        }
+                module {
+                    factory {
+                        factoryCallCounter++
+                        Simple.ComponentA()
                     }
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { B() }
+                    }
+                },
             )
         }
-                .koin
+            .koin
 
         val scope = koin.createScope("scope1", named<ClosedScopeAPI.ScopeType>())
         scope.get<Simple.ComponentA>()
@@ -112,11 +113,11 @@ class ScopeTest {
 
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeKey) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(scopeKey) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -142,10 +143,10 @@ class ScopeTest {
 
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeKey) {
-                        }
+                module {
+                    scope(scopeKey) {
                     }
+                },
             )
         }.koin
 
@@ -162,14 +163,14 @@ class ScopeTest {
 
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeKey) {
-                            scoped { Simple.ComponentA() }
-                        }
-                        scope(scopeKey) {
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(scopeKey) {
+                        scoped { Simple.ComponentA() }
                     }
+                    scope(scopeKey) {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                },
             )
         }.koin
 
@@ -186,9 +187,9 @@ class ScopeTest {
             modules(
                 module {
                     scope(scopeKey) {
-                        scoped { (id : Int) -> Simple.MySingle(id) }
+                        scoped { (id: Int) -> Simple.MySingle(id) }
                     }
-                }
+                },
             )
         }.koin
 

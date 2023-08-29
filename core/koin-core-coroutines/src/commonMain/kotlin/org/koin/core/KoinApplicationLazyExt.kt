@@ -57,4 +57,3 @@ fun KoinApplication.lazyModules(list: List<Lazy<Module>>) {
         modules(list.map { it.value })
     }
 }
-

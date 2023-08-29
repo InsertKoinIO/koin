@@ -24,7 +24,7 @@ class ScopedMVPArchitectureTest {
     }
 
     @After
-    fun after(){
+    fun after() {
         stopKoin()
     }
 

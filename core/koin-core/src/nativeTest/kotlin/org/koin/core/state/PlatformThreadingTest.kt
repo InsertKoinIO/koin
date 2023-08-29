@@ -14,7 +14,7 @@ class PlatformThreadingTest {
             module {
                 scope(scopeKey) {
                 }
-            }
+            },
         )
     }.koin
 

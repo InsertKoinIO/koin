@@ -1,14 +1,14 @@
-//package org.koin.core
+// package org.koin.core
 //
-//import org.koin.Simple
-//import org.koin.core.context.startKoin
-//import org.koin.core.context.stopKoin
-//import org.koin.dsl.module
-//import org.koin.test.getInstanceFactory
-//import kotlin.random.Random
-//import kotlin.test.Test
+// import org.koin.Simple
+// import org.koin.core.context.startKoin
+// import org.koin.core.context.stopKoin
+// import org.koin.dsl.module
+// import org.koin.test.getInstanceFactory
+// import kotlin.random.Random
+// import kotlin.test.Test
 //
-//class CoroutinesTest {
+// class CoroutinesTest {
 //
 //    @Test
 //    fun `KoinApp with coroutines gets`() = runBlocking {
@@ -53,4 +53,4 @@
 //        println("thread sleep  $timer")
 //        delay(timer)
 //    }
-//}
+// }

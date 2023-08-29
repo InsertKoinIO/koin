@@ -19,7 +19,6 @@ package org.koin.core.module.dsl
 
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 
 /**

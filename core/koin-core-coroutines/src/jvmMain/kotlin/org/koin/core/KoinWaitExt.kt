@@ -17,8 +17,6 @@ package org.koin.core
 
 import kotlinx.coroutines.runBlocking
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.extension.coroutinesEngine
 
 /**
  * @author Arnaud Giuliani
@@ -28,7 +26,7 @@ import org.koin.core.extension.coroutinesEngine
  * Wait for Starting coroutines jobs to finish using runBlocking
  */
 @KoinExperimentalAPI
-fun Koin.waitAllStartJobs(){
+fun Koin.waitAllStartJobs() {
     runBlocking {
         awaitAllStartJobs()
     }
@@ -40,7 +38,7 @@ fun Koin.waitAllStartJobs(){
  * @param block
  */
 @KoinExperimentalAPI
-fun Koin.runOnKoinStarted(block : suspend (Koin) -> Unit){
+fun Koin.runOnKoinStarted(block: suspend (Koin) -> Unit) {
     runBlocking {
         onKoinStarted(block)
     }

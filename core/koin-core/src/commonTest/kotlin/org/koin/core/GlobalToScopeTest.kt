@@ -1,14 +1,14 @@
 package org.koin.core
 
-import kotlin.test.assertEquals
-import kotlin.test.fail
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class GlobalToScopeTest {
 
@@ -17,11 +17,11 @@ class GlobalToScopeTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -38,13 +38,13 @@ class GlobalToScopeTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentB(get()) }
+                module {
+                    single { Simple.ComponentB(get()) }
 
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -58,19 +58,18 @@ class GlobalToScopeTest {
 
     @Test
     fun `get scoped dependency without scope from single`() {
-
         val scopeId = "MY_SCOPE_ID"
 
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentB(getScope(scopeId).get()) }
+                module {
+                    single { Simple.ComponentB(getScope(scopeId).get()) }
 
-                        scope(named<ClosedScopeAPI.ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                    scope(named<ClosedScopeAPI.ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 

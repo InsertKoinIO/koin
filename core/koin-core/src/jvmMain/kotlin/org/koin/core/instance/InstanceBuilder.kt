@@ -67,8 +67,9 @@ private fun createInstance(args: Array<Any>, constructor: Constructor<out Any>):
  */
 private fun getArguments(constructor: Constructor<*>, scope: Scope, parameters: ParametersHolder): Array<Any> {
     val length = constructor.parameterTypes.size
-    return if (length == 0) emptyArray()
-    else {
+    return if (length == 0) {
+        emptyArray()
+    } else {
         val result = Array<Any>(length) {}
         for (i in 0 until length) {
             val p = constructor.parameterTypes[i]

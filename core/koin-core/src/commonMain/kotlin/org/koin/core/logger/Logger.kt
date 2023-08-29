@@ -42,12 +42,12 @@ abstract class Logger(var level: Level = Level.INFO) {
 
     fun isAt(lvl: Level): Boolean = this.level <= lvl
 
-    inline fun log(lvl: Level, msg : String){
-        if (isAt(lvl)) display(lvl,msg)
+    inline fun log(lvl: Level, msg: String) {
+        if (isAt(lvl)) display(lvl, msg)
     }
 
-    inline fun log(lvl: Level, msg : () -> String){
-        if (isAt(lvl)) display(lvl,msg())
+    inline fun log(lvl: Level, msg: () -> String) {
+        if (isAt(lvl)) display(lvl, msg())
     }
 }
 

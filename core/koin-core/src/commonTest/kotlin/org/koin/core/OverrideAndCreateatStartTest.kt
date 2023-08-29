@@ -41,15 +41,15 @@ class OverrideAndCreateatStartTest {
     }
 
     @AfterTest
-    fun after(){
+    fun after() {
         stopKoin()
     }
 
     @Test
-    fun testMe(){
+    fun testMe() {
         startKoin {
             printLogger(Level.DEBUG)
-            modules(moduleA+moduleB)
+            modules(moduleA + moduleB)
         }
 
         assertTrue(count == 1)

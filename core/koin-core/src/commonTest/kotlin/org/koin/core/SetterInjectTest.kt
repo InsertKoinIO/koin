@@ -11,8 +11,6 @@ import org.koin.core.time.measureDuration
 import org.koin.dsl.module
 import org.koin.ext.inject
 import kotlin.test.Test
-import kotlin.time.DurationUnit
-import kotlin.time.measureTime
 
 class B : KoinScopeComponent {
     override val scope: Scope by lazy { createScope(this) }
@@ -43,12 +41,13 @@ class PlayTest {
     @Test
     fun setter_injection() {
         val koin = startKoin {
-            modules(module {
-                single { B() }
-                single { C() }
-            })
+            modules(
+                module {
+                    single { B() }
+                    single { C() }
+                },
+            )
         }.koin
-
 
         measureDuration("by inject") {
             val ai = A_inj()
@@ -72,7 +71,7 @@ class PlayTest {
     }
 }
 
-fun measureDuration(msg : String, code: () -> Unit): Double {
+fun measureDuration(msg: String, code: () -> Unit): Double {
     val duration = measureDuration(code)
     println("$msg in $duration ms")
     return duration

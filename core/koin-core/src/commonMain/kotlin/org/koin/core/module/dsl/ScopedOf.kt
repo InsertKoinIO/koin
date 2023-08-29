@@ -61,6 +61,7 @@ inline fun <reified R, reified T1, reified T2> ScopeDSL.scopedOf(
     crossinline constructor: (T1, T2) -> R,
     noinline options: DefinitionOptions<R>? = null,
 ): KoinDefinition<R> = scoped { new(constructor) }.onOptions(options)
+
 /**
  * @see scopedOf
  */

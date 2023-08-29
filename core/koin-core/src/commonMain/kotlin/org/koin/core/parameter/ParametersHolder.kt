@@ -32,16 +32,20 @@ import kotlin.reflect.KClass
 open class ParametersHolder(
     @PublishedApi
     internal val _values: MutableList<Any?> = mutableListOf(),
-    //TODO by default useIndexedValues to null, to keep compatibility with both indexed params & set params
-    val useIndexedValues: Boolean? = null
+    // TODO by default useIndexedValues to null, to keep compatibility with both indexed params & set params
+    val useIndexedValues: Boolean? = null,
 ) {
 
     val values: List<Any?> get() = _values
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
-        if (_values.size > i) _values[i] as T else throw NoParameterFoundException(
-            "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'"
-        )
+        if (_values.size > i) {
+            _values[i] as T
+        } else {
+            throw NoParameterFoundException(
+                "Can't get injected parameter #$i from $this for type '${clazz.getFullName()}'",
+            )
+        }
 
     inline operator fun <reified T> component1(): T = elementAt(0, T::class)
     inline operator fun <reified T> component2(): T = elementAt(1, T::class)
@@ -104,8 +108,9 @@ open class ParametersHolder(
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return if (_values.isEmpty()) null
-        else {
+        return if (_values.isEmpty()) {
+            null
+        } else {
             when (useIndexedValues) {
                 null -> getIndexedValue<T>(clazz) ?: getFirstValue<T>(clazz)
                 true -> getIndexedValue<T>(clazz)
@@ -116,7 +121,7 @@ open class ParametersHolder(
 
     private fun <T> getFirstValue(clazz: KClass<*>): T? {
         return _values.firstOrNull { clazz.isInstance(it) }
-            ?.let { it as T } //firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
+            ?.let { it as T } // firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
     }
 
     private fun <T> getIndexedValue(clazz: KClass<*>): T? {

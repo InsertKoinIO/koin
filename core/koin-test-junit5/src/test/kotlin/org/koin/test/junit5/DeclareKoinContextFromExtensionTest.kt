@@ -18,14 +18,16 @@ class DeclareKoinContextFromExtensionTest : KoinTest {
     @RegisterExtension
     val koinTestExtension = KoinTestExtension.create {
         printLogger(Level.DEBUG)
-        modules(module {
-            single {
-                Simple.ComponentA()
-            }
-            single {
-                Simple.MyString("simple test")
-            }
-        })
+        modules(
+            module {
+                single {
+                    Simple.ComponentA()
+                }
+                single {
+                    Simple.MyString("simple test")
+                }
+            },
+        )
     }
 
     private val componentA by inject<Simple.ComponentA>()

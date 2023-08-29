@@ -14,9 +14,11 @@ class ModuleRestartTest : KoinComponent {
     @BeforeTest
     fun before() {
         startKoin {
-            modules(module {
-                single { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
         }
     }
 

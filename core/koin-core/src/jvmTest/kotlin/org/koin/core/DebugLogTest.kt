@@ -8,25 +8,25 @@ import org.koin.core.logger.Level
 class DebugLogTest {
 
     @Test
-    fun fasterDebug(){
+    fun fasterDebug() {
         val koin = startKoin {
             printLogger(Level.INFO)
         }.koin
 
         (1..10).forEach {
-            measureDuration("with if"){
-                if (koin.logger.isAt(Level.DEBUG)){
+            measureDuration("with if") {
+                if (koin.logger.isAt(Level.DEBUG)) {
                     koin.logger.debug(message { "test me" })
                 }
             }
-            measureDuration("with fct"){
+            measureDuration("with fct") {
                 koin.logger.log(Level.DEBUG) { "test me" }
             }
         }
         stopKoin()
     }
 
-    fun message(msg : () -> String) : String{
+    fun message(msg: () -> String): String {
         println("resolve message")
         return msg()
     }

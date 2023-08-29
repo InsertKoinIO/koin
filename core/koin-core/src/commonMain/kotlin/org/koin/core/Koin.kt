@@ -78,7 +78,7 @@ class Koin {
     inline fun <reified T : Any> inject(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
 
     /**
@@ -92,7 +92,7 @@ class Koin {
     inline fun <reified T : Any> injectOrNull(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
 
     /**
@@ -103,7 +103,7 @@ class Koin {
      */
     inline fun <reified T : Any> get(
         qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): T = scopeRegistry.rootScope.get(qualifier, parameters)
 
     /**
@@ -116,7 +116,7 @@ class Koin {
      */
     inline fun <reified T : Any> getOrNull(
         qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): T? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
     /**
@@ -131,7 +131,7 @@ class Koin {
     fun <T> get(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T = scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
     /**
@@ -146,9 +146,8 @@ class Koin {
     fun <T> getOrNull(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T? = scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
-
 
     /**
      * Declare a component definition from the given instance
@@ -163,7 +162,7 @@ class Koin {
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        allowOverride: Boolean = true
+        allowOverride: Boolean = true,
     ) {
         instanceRegistry.declareRootInstance(instance, qualifier, secondaryTypes, allowOverride)
     }

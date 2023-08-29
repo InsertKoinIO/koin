@@ -36,7 +36,7 @@ interface KoinTest : KoinComponent
  */
 inline fun <reified T> KoinTest.get(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
 ): T =
     getKoin().get(qualifier, parameters)
 
@@ -46,5 +46,5 @@ inline fun <reified T> KoinTest.get(
 inline fun <reified T> KoinTest.inject(
     qualifier: Qualifier? = null,
     mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> = lazy(mode) { get<T>(qualifier, parameters) }

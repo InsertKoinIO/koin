@@ -15,7 +15,7 @@ import org.koin.core.qualifier.Qualifier
 fun <T : Any> Scope.get(
     clazz: Class<*>,
     qualifier: Qualifier? = null,
-    parameters: ParametersDefinition? = null
+    parameters: ParametersDefinition? = null,
 ): T {
     val kClass = clazz.kotlin
     return get(kClass, qualifier, parameters)

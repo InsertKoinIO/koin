@@ -31,14 +31,14 @@ annotation class KoinInternalApi
  * @author Arnaud Giuliani
  * @author Victor Alenkov
  */
-@RequiresOptIn(message = "This API is experimental and can change in the next versions",level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(message = "This API is experimental and can change in the next versions", level = RequiresOptIn.Level.WARNING)
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.TYPEALIAS,
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY,
     AnnotationTarget.FIELD,
-    AnnotationTarget.CONSTRUCTOR
+    AnnotationTarget.CONSTRUCTOR,
 )
 annotation class KoinExperimentalAPI
 
@@ -48,14 +48,14 @@ annotation class KoinExperimentalAPI
  * @author Arnaud Giuliani
  * @author Victor Alenkov
  */
-@RequiresOptIn(message = "This API is using reflection and implies some introspection performance penalties on limited capacity devices (Android)",level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(message = "This API is using reflection and implies some introspection performance penalties on limited capacity devices (Android)", level = RequiresOptIn.Level.WARNING)
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.TYPEALIAS,
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY,
     AnnotationTarget.FIELD,
-    AnnotationTarget.CONSTRUCTOR
+    AnnotationTarget.CONSTRUCTOR,
 )
 @Deprecated("Koin Reflection API is deprecated")
 annotation class KoinReflectAPI

@@ -6,7 +6,7 @@ import org.koin.core.logger.*
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
-//actual object PlatformTools {
+// actual object PlatformTools {
 //    actual fun getClassName(kClass: KClass<*>): String {
 //        return kClass.simpleName ?: "KClass@${hashCode()}"
 //    }
@@ -20,13 +20,14 @@ import kotlin.reflect.KClass
 //    actual fun printLog(level: Level, msg: MESSAGE) {
 //        println("[$level] $KOIN_TAG $msg")
 //    }
-//}
-//internal actual fun Any.ensureNeverFrozen() {}
-//internal actual fun <R> mpsynchronized(lock: Any, block: () -> R): R = block()
+// }
+// internal actual fun Any.ensureNeverFrozen() {}
+// internal actual fun <R> mpsynchronized(lock: Any, block: () -> R): R = block()
 
 actual object KoinPlatformTools {
     actual fun getStackTrace(e: Exception): String = e.toString() + Exception().toString().split("\n")
     actual fun getClassName(kClass: KClass<*>): String = kClass.simpleName ?: "KClass@${kClass.hashCode()}"
+
     // TODO Better Id generation?
     actual fun generateId(): String = Random.nextDouble().hashCode().toString()
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.NONE

@@ -34,7 +34,7 @@ object KoinPlatform {
      * @param modules
      * @param level
      */
-    fun startKoin(modules : List<Module>, level: Level){
+    fun startKoin(modules: List<Module>, level: Level) {
         org.koin.core.context.startKoin {
             logger(KoinPlatformTools.defaultLogger(level))
             modules(modules)
@@ -44,7 +44,7 @@ object KoinPlatform {
     /**
      * Stop Current Koin instance
      */
-    fun stopKoin(){
+    fun stopKoin() {
         org.koin.core.context.stopKoin()
     }
 

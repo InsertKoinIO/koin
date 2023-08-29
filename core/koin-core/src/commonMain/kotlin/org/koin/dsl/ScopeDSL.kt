@@ -31,7 +31,7 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
 
     inline fun <reified T> scoped(
         qualifier: Qualifier? = null,
-        noinline definition: Definition<T>
+        noinline definition: Definition<T>,
     ): KoinDefinition<T> {
         val def = _scopedInstanceFactory(qualifier, definition, scopeQualifier)
         module.indexPrimaryType(def)
@@ -40,7 +40,7 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
 
     inline fun <reified T> factory(
         qualifier: Qualifier? = null,
-        noinline definition: Definition<T>
+        noinline definition: Definition<T>,
     ): KoinDefinition<T> {
         return module.factory(qualifier, definition, scopeQualifier)
     }

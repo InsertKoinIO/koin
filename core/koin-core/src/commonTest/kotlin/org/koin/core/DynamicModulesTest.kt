@@ -1,8 +1,5 @@
 package org.koin.core
 
-import kotlin.test.fail
-import kotlin.test.Test
-import kotlin.test.*
 import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.context.*
@@ -16,6 +13,9 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.getBeanDefinition
+import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.fail
 
 class DynamicModulesTest : KoinCoreTest() {
 
@@ -248,7 +248,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             42,
-            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id,
         )
 
         unloadKoinModules(module)
@@ -256,7 +256,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             24,
-            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id,
         )
 
         stopKoin()

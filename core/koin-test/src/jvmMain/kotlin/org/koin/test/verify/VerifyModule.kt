@@ -36,7 +36,10 @@ fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = listOf()) {
 object Verify {
 
     internal val primitiveTypes = listOf(
-        String::class, Int::class, Long::class, Double::class
+        String::class,
+        Int::class,
+        Long::class,
+        Double::class,
     )
 
     internal val whiteList = arrayListOf<KClass<*>>().apply {

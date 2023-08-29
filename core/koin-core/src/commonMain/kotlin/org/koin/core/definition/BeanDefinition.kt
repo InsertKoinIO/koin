@@ -16,7 +16,6 @@
 package org.koin.core.definition
 
 import org.koin.core.module.KoinDslMarker
-import org.koin.core.module.OptionDslMarker
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
@@ -49,11 +48,13 @@ data class BeanDefinition<T>(
         val defType = "'${primaryType.getFullName()}'"
         val defName = qualifier?.let { ",qualifier:$qualifier" } ?: ""
         val defScope =
-            scopeQualifier.let { if (it == rootScopeQualifier) "" else ",scope:${scopeQualifier}" }
+            scopeQualifier.let { if (it == rootScopeQualifier) "" else ",scope:$scopeQualifier" }
         val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
             val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
             ",binds:$typesAsString"
-        } else ""
+        } else {
+            ""
+        }
         return "[$defKind:$defType$defName$defScope$defOtherTypes]"
     }
 
@@ -87,7 +88,6 @@ data class BeanDefinition<T>(
         result = 31 * result + scopeQualifier.hashCode()
         return result
     }
-
 }
 
 fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
@@ -107,7 +107,7 @@ inline fun <reified T> _createDefinition(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
     secondaryTypes: List<KClass<*>> = emptyList(),
-    scopeQualifier: Qualifier
+    scopeQualifier: Qualifier,
 ): BeanDefinition<T> {
     return BeanDefinition(
         scopeQualifier,
@@ -115,6 +115,6 @@ inline fun <reified T> _createDefinition(
         qualifier,
         definition,
         kind,
-        secondaryTypes = secondaryTypes
+        secondaryTypes = secondaryTypes,
     )
 }

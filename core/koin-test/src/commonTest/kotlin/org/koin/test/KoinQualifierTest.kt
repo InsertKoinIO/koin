@@ -7,7 +7,6 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-
 class KoinQualifierTest : KoinTest {
 
     val qualifier = named("42")
@@ -19,7 +18,7 @@ class KoinQualifierTest : KoinTest {
             modules(
                 module {
                     single(qualifier) { Simple.MyString("42") }
-                }
+                },
             )
         }
 
@@ -27,5 +26,4 @@ class KoinQualifierTest : KoinTest {
 
         stopKoin()
     }
-
 }

@@ -28,7 +28,7 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
 
     private var value: T? = null
 
-    private fun getValue() : T = value ?: error("Single instance created couldn't return value")
+    private fun getValue(): T = value ?: error("Single instance created couldn't return value")
 
     override fun isCreated(context: InstanceContext?): Boolean = (value != null)
 
@@ -37,14 +37,16 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         value = null
     }
 
-    override fun dropAll(){
+    override fun dropAll() {
         drop()
     }
 
     override fun create(context: InstanceContext): T {
         return if (value == null) {
             super.create(context)
-        } else getValue()
+        } else {
+            getValue()
+        }
     }
 
     override fun get(context: InstanceContext): T {

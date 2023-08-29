@@ -21,5 +21,5 @@ import org.koin.core.annotation.KoinExperimentalAPI
 
 @KoinExperimentalAPI
 actual object KoinPlatformCoroutinesTools {
-    actual fun defaultCoroutineDispatcher() : CoroutineDispatcher = Dispatchers.Default
+    actual fun defaultCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }

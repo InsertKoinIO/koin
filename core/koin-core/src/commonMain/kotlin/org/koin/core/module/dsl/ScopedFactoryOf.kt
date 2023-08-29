@@ -59,7 +59,6 @@ inline fun <reified R, reified T1, reified T2> ScopeDSL.factoryOf(
     noinline options: DefinitionOptions<R>? = null,
 ): KoinDefinition<R> = factory { new(constructor) }.onOptions(options)
 
-
 /**
  * @see factoryOf
  */

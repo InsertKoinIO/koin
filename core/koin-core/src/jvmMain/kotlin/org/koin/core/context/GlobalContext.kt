@@ -18,7 +18,6 @@ package org.koin.core.context
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.ApplicationAlreadyStartedException
-import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -53,7 +52,6 @@ object GlobalContext : KoinContext {
         _koin = null
     }
 
-
     override fun startKoin(koinApplication: KoinApplication): KoinApplication = synchronized(this) {
         register(koinApplication)
         koinApplication.createEagerInstances()
@@ -67,7 +65,6 @@ object GlobalContext : KoinContext {
         koinApplication.createEagerInstances()
         return koinApplication
     }
-
 
     override fun loadKoinModules(module: Module) = synchronized(this) {
         get().loadModules(listOf(module))

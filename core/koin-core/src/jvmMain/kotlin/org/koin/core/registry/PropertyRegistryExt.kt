@@ -2,10 +2,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.error.NoPropertyFileFoundException
-import org.koin.core.logger.Level
-import org.koin.ext.clearQuotes
 import java.util.*
-
 
 /**
  *Save properties values into PropertyRegister
@@ -28,7 +25,7 @@ fun PropertyRegistry.loadPropertiesFromFile(fileName: String) {
 
     val content = Koin::class.java.getResource(fileName)?.readText()
     if (content != null) {
-        _koin.logger.info("loaded properties from file:'$fileName'" )
+        _koin.logger.info("loaded properties from file:'$fileName'")
         val properties = readDataFromFile(content)
         saveProperties(properties)
     } else {

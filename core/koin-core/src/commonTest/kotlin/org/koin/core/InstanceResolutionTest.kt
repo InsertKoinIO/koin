@@ -1,24 +1,24 @@
 package org.koin.core
 
-import kotlin.test.*
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.*
+import kotlin.test.Test
 
 class InstanceResolutionTest {
 
     @Test
     fun `can resolve a single`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    })
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
         }
 
         val koin = app.koin
@@ -30,13 +30,13 @@ class InstanceResolutionTest {
 
     @Test
     fun `can resolve all ComponentInterface1`() {
-
         val koin = koinApplication {
             modules(
-                    module {
-                        single { Simple.Component1() } bind Simple.ComponentInterface1::class
-                        single { Simple.Component2() } bind Simple.ComponentInterface1::class
-                    })
+                module {
+                    single { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    single { Simple.Component2() } bind Simple.ComponentInterface1::class
+                },
+            )
         }.koin
 
         val a1: Simple.Component1 = koin.get()
@@ -44,18 +44,18 @@ class InstanceResolutionTest {
 
         val instances = koin.getAll<Simple.ComponentInterface1>()
 
-        assertEquals(2,instances.size)
+        assertEquals(2, instances.size)
         assertTrue(instances.contains(a1) && instances.contains(a2))
     }
 
     @Test
     fun `cannot resolve a single`() {
-
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                    })
+                module {
+                },
+            )
         }
 
         val koin = app.koin
@@ -66,12 +66,12 @@ class InstanceResolutionTest {
 
     @Test
     fun `cannot inject a single`() {
-
         val app = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                    })
+                module {
+                },
+            )
         }
 
         val koin = app.koin
@@ -82,12 +82,12 @@ class InstanceResolutionTest {
 
     @Test
     fun `can lazy resolve a single`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    })
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
         }
 
         val koin = app.koin
@@ -99,14 +99,14 @@ class InstanceResolutionTest {
 
     @Test
     fun `can resolve a singles by name`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        val componentA = Simple.ComponentA()
-                        single(named("A")) { componentA }
-                        single(named("B")) { componentA }
-                    })
+                module {
+                    val componentA = Simple.ComponentA()
+                    single(named("A")) { componentA }
+                    single(named("B")) { componentA }
+                },
+            )
         }
 
         val koin = app.koin
@@ -118,14 +118,14 @@ class InstanceResolutionTest {
 
     @Test
     fun `can resolve a factory by name`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        val componentA = Simple.ComponentA()
-                        factory(named("A")) { componentA }
-                        factory(named("B")) { componentA }
-                    })
+                module {
+                    val componentA = Simple.ComponentA()
+                    factory(named("A")) { componentA }
+                    factory(named("B")) { componentA }
+                },
+            )
         }
 
         val koin = app.koin
@@ -137,12 +137,12 @@ class InstanceResolutionTest {
 
     @Test
     fun `can resolve a factory`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        factory { Simple.ComponentA() }
-                    })
+                module {
+                    factory { Simple.ComponentA() }
+                },
+            )
         }
 
         val koin = app.koin
@@ -154,13 +154,13 @@ class InstanceResolutionTest {
 
     @Test
     fun `should resolve default`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1>(named("2")) { Simple.Component2() }
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                    })
+                module {
+                    single<Simple.ComponentInterface1>(named("2")) { Simple.Component2() }
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                },
+            )
         }
 
         val koin = app.koin
@@ -176,17 +176,16 @@ class InstanceResolutionTest {
 
     @Test
     fun `should getAll - no duplicates`() {
-
         val koinModule = module {
-            factory<B>{ B() } bind A::class
-            factory<C>{ C() } bind A::class
+            factory<B> { B() } bind A::class
+            factory<C> { C() } bind A::class
         }
 
         val koin = koinApplication {
             modules(koinModule)
         }.koin
 
-        val list  = koin.getAll<A>()
+        val list = koin.getAll<A>()
         assert(list.size == 2)
     }
 }

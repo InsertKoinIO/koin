@@ -20,5 +20,5 @@ import org.koin.core.annotation.KoinExperimentalAPI
 
 @KoinExperimentalAPI
 expect object KoinPlatformCoroutinesTools {
-    fun defaultCoroutineDispatcher() : CoroutineDispatcher
+    fun defaultCoroutineDispatcher(): CoroutineDispatcher
 }

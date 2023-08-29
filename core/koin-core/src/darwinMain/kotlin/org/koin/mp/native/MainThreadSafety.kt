@@ -1,5 +1,5 @@
-//package org.koin.mp.native
+// package org.koin.mp.native
 //
-//import platform.Foundation.NSThread
+// import platform.Foundation.NSThread
 //
-//actual val isMainThread: Boolean = NSThread.isMainThread
+// actual val isMainThread: Boolean = NSThread.isMainThread

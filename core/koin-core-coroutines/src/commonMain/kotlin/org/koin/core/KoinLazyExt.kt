@@ -28,7 +28,7 @@ import org.koin.core.extension.coroutinesEngine
  */
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
-suspend fun Koin.awaitAllStartJobs(){
+suspend fun Koin.awaitAllStartJobs() {
     coroutinesEngine.awaitAllStartJobs()
 }
 
@@ -38,7 +38,7 @@ suspend fun Koin.awaitAllStartJobs(){
  * @param block
  */
 @KoinExperimentalAPI
-suspend fun Koin.onKoinStarted(block : suspend (Koin) -> Unit){
+suspend fun Koin.onKoinStarted(block: suspend (Koin) -> Unit) {
     awaitAllStartJobs()
     block(this)
 }
@@ -48,6 +48,6 @@ suspend fun Koin.onKoinStarted(block : suspend (Koin) -> Unit){
  */
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
-fun Koin.isAllStartedJobsDone() : Boolean {
+fun Koin.isAllStartedJobsDone(): Boolean {
     return coroutinesEngine.startJobs.all { !it.isActive }
 }

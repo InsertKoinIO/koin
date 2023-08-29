@@ -40,11 +40,13 @@ interface KoinComponent {
  */
 inline fun <reified T : Any> KoinComponent.get(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
 ): T {
     return if (this is KoinScopeComponent) {
         scope.get(qualifier, parameters)
-    } else getKoin().get(qualifier, parameters)
+    } else {
+        getKoin().get(qualifier, parameters)
+    }
 }
 
 /**
@@ -56,7 +58,6 @@ inline fun <reified T : Any> KoinComponent.get(
 inline fun <reified T : Any> KoinComponent.inject(
     qualifier: Qualifier? = null,
     mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> =
     lazy(mode) { get<T>(qualifier, parameters) }
-

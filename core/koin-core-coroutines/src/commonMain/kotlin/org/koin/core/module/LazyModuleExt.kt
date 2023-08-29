@@ -18,7 +18,6 @@ package org.koin.core.module
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 
-
 /**
  * Include list of `Lazy<Module>`, to be resolved only lazily
  */

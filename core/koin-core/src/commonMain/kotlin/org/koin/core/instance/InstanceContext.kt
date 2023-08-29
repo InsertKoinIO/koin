@@ -19,7 +19,6 @@ import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.scope.Scope
 
-
 /**
  * Instance resolution Context
  * Help support DefinitionContext & DefinitionParameters when resolving definition function
@@ -27,5 +26,5 @@ import org.koin.core.scope.Scope
 class InstanceContext(
     val logger: Logger,
     val scope: Scope,
-    val parameters: ParametersHolder? = null
+    val parameters: ParametersHolder? = null,
 )

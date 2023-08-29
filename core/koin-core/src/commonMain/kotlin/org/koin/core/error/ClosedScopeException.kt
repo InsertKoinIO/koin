@@ -20,4 +20,4 @@ package org.koin.core.error
  *
  * @author Arnaud Giuliani
  */
-class ClosedScopeException(msg : String) : Exception(msg)
+class ClosedScopeException(msg: String) : Exception(msg)

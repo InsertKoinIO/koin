@@ -24,7 +24,6 @@ import org.koin.mp.KoinPlatformTimeTools
  * @author Arnaud Giuliani
  */
 
-
 /**
  * Measure time in milliseconds for given code
  * @param code - code to execute

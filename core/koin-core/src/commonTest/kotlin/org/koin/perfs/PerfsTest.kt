@@ -1,15 +1,15 @@
-//package org.koin.perfs
+// package org.koin.perfs
 //
-//import kotlin.test.Test
-//import org.koin.core.annotation.KoinInternalApi
-//import org.koin.core.logger.*
-//import org.koin.core.time.Timer
-//import org.koin.dsl.koinApplication
-//import org.koin.mp.KoinPlatformTools
-//import org.koin.test.assertDefinitionsCount
+// import kotlin.test.Test
+// import org.koin.core.annotation.KoinInternalApi
+// import org.koin.core.logger.*
+// import org.koin.core.time.Timer
+// import org.koin.dsl.koinApplication
+// import org.koin.mp.KoinPlatformTools
+// import org.koin.test.assertDefinitionsCount
 //
-//@OptIn(KoinInternalApi::class)
-//class PerfsTest {
+// @OptIn(KoinInternalApi::class)
+// class PerfsTest {
 //
 //    @Test
 //    fun empty_module_perfs() {
@@ -48,4 +48,4 @@
 //
 //        app.close()
 //    }
-//}
+// }

@@ -1,15 +1,15 @@
-//package org.koin.core
+// package org.koin.core
 //
-//import kotlin.test.Test
-//import org.koin.Simple
-//import org.koin.dsl.koinApplication
-//import org.koin.dsl.module
-//import org.koin.test.getInstanceFactory
-//import kotlin.random.Random
+// import kotlin.test.Test
+// import org.koin.Simple
+// import org.koin.dsl.koinApplication
+// import org.koin.dsl.module
+// import org.koin.test.getInstanceFactory
+// import kotlin.random.Random
 //
-//const val MAX_TIME = 1000L
+// const val MAX_TIME = 1000L
 //
-//class MultithreadTest {
+// class MultithreadTest {
 //
 //    @Test
 //    fun `multi thread get`() {
@@ -57,4 +57,4 @@
 //        println("thread sleep  $timer")
 //        Thread.sleep(timer)
 //    }
-//}
+// }

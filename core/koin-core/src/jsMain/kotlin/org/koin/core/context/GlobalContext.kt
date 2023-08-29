@@ -48,7 +48,6 @@ object GlobalContext : KoinContext {
         _koin = null
     }
 
-
     override fun startKoin(koinApplication: KoinApplication): KoinApplication {
         register(koinApplication)
         return koinApplication

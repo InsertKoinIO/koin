@@ -31,11 +31,11 @@ class ExtensionManager(internal val _koin: Koin) {
     @PublishedApi
     internal val extensions = hashMapOf<String, KoinExtension>()
 
-    inline fun <reified T : KoinExtension> getExtension(id : String) : T = getExtensionOrNull(id) ?: error("Koin extension '$id' not found.")
+    inline fun <reified T : KoinExtension> getExtension(id: String): T = getExtensionOrNull(id) ?: error("Koin extension '$id' not found.")
 
-    inline fun <reified T : KoinExtension> getExtensionOrNull(id : String) : T? = extensions[id] as? T
+    inline fun <reified T : KoinExtension> getExtensionOrNull(id: String): T? = extensions[id] as? T
 
-    fun <T : KoinExtension> registerExtension(id : String, extension : T){
+    fun <T : KoinExtension> registerExtension(id: String, extension: T) {
         extensions[id] = extension
         extension.koin = _koin
     }

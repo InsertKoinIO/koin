@@ -27,7 +27,7 @@ interface KoinExtension {
     /**
      * Current Koin instance
      */
-    var koin : Koin
+    var koin: Koin
 
     /**
      * Called when closing Koin

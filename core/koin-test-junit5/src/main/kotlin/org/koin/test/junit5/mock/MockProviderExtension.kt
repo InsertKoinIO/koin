@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.koin.test.mock.MockProvider
 import org.koin.test.mock.Provider
 
-
 class MockProviderExtension private constructor(private val mockProvider: Provider<*>) : BeforeEachCallback {
 
     companion object {

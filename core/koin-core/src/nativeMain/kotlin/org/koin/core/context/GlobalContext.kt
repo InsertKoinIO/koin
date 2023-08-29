@@ -20,7 +20,6 @@ import co.touchlab.stately.concurrency.withLock
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.error.ApplicationAlreadyStartedException
-import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -29,7 +28,7 @@ internal fun globalContextByMemoryModel(): KoinContext = MutableGlobalContext()
 /**
  * Mutable global context for the new memory model. Very similar to how the JVM global context works.
  */
-internal class MutableGlobalContext:KoinContext {
+internal class MutableGlobalContext : KoinContext {
     private val lock = Lock()
     private var _koin: Koin? = null
     private var _koinApplication: KoinApplication? = null
