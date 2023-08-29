@@ -20,6 +20,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
@@ -177,7 +178,7 @@ data class Scope(
             _koin.logger.debug("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin.logger.debug("* No instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("* No instance found for type '${clazz.getFullName()}' on scope '${toString()}'")
             null
         }
     }
@@ -300,9 +301,9 @@ data class Scope(
         qualifier: Qualifier?,
         clazz: KClass<*>
     ): Nothing {
-        val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
-        throw NoBeanDefFoundException(
-            "No definition found for class:'${clazz.getFullName()}' q:'$qualifierString'. Check your definitions!"
+        val qualifierString = qualifier?.let { " and qualifier '$qualifier'" } ?: ""
+        throw NoDefinitionFoundException(
+            "No definition found for type '${clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!"
         )
     }
 

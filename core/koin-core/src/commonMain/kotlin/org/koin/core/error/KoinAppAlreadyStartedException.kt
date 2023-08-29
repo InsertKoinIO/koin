@@ -18,4 +18,5 @@ package org.koin.core.error
 /**
  * Koin standalone app is already started error
  */
+@Deprecated("Will be renamed in ApplicationAlreadyStartedException")
 class KoinAppAlreadyStartedException(msg: String) : Exception(msg)

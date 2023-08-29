@@ -19,6 +19,7 @@ import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.error.ApplicationAlreadyStartedException
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -41,7 +42,7 @@ internal class MutableGlobalContext:KoinContext {
 
     private fun register(koinApplication: KoinApplication) {
         if (_koin != null) {
-            throw KoinAppAlreadyStartedException("A Koin Application has already been started")
+            throw ApplicationAlreadyStartedException("A Koin Application has already been started")
         }
         _koinApplication = koinApplication
         _koin = koinApplication.koin

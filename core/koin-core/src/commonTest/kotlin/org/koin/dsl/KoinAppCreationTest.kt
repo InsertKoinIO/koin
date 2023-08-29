@@ -46,6 +46,7 @@ class KoinAppCreationTest {
             startKoin { }
             fail("should throw  KoinAppAlreadyStartedException")
         } catch (e: KoinAppAlreadyStartedException) {
+            e.printStackTrace()
         }
     }
 

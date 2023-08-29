@@ -18,4 +18,5 @@ package org.koin.core.error
 /**
  * Definition not Found
  */
+@Deprecated("Will be renamed in NoDefinitionFoundException")
 class NoBeanDefFoundException(msg: String) : Exception(msg)
