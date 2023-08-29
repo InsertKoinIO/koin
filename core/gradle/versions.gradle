@@ -4,6 +4,7 @@ ext {
     
     // Kotlin
     kotlin_version = '1.9.10'
+    validator_version = '0.13.2'
     
     coroutines_version = "1.7.3"
 

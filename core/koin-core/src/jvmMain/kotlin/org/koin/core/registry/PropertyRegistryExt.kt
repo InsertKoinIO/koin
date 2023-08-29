@@ -7,6 +7,7 @@ import java.util.*
 /**
  *Save properties values into PropertyRegister
  */
+@Suppress("UNCHECKED_CAST")
 fun PropertyRegistry.saveProperties(properties: Properties) {
     _koin.logger.debug("load ${properties.size} properties")
 

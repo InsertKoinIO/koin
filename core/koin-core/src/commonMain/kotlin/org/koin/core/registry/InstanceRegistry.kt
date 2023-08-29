@@ -33,6 +33,7 @@ import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
 import kotlin.reflect.KClass
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 class InstanceRegistry(val _koin: Koin) {
 
@@ -162,7 +163,7 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun close() {
-        _instances.forEach { (key, factory) ->
+        _instances.forEach { (_, factory) ->
             factory.dropAll()
         }
         _instances.clear()

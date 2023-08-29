@@ -62,6 +62,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         values.clear()
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun refreshInstance(scopeID: ScopeID, instance: Any) {
         values[scopeID] = instance as T
     }

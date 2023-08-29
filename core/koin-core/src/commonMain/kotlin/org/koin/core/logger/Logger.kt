@@ -24,29 +24,29 @@ abstract class Logger(var level: Level = Level.INFO) {
 
     abstract fun display(level: Level, msg: MESSAGE)
 
-    inline fun debug(msg: MESSAGE) {
+    fun debug(msg: MESSAGE) {
         log(Level.DEBUG, msg)
     }
 
-    inline fun info(msg: MESSAGE) {
+    fun info(msg: MESSAGE) {
         log(Level.INFO, msg)
     }
 
-    inline fun warn(msg: MESSAGE) {
+    fun warn(msg: MESSAGE) {
         log(Level.WARNING, msg)
     }
 
-    inline fun error(msg: MESSAGE) {
+    fun error(msg: MESSAGE) {
         log(Level.ERROR, msg)
     }
 
     fun isAt(lvl: Level): Boolean = this.level <= lvl
 
-    inline fun log(lvl: Level, msg: String) {
+    fun log(lvl: Level, msg: String) {
         if (isAt(lvl)) display(lvl, msg)
     }
 
-    inline fun log(lvl: Level, msg: () -> String) {
+    fun log(lvl: Level, msg: () -> String) {
         if (isAt(lvl)) display(lvl, msg())
     }
 }

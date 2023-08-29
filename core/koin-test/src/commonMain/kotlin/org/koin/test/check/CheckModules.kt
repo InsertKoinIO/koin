@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("UNUSED_PARAMETER")
+
 package org.koin.test.check
 
 import org.koin.core.Koin

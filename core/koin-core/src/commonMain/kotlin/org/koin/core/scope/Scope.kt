@@ -35,6 +35,7 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import kotlin.reflect.KClass
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 @KoinDslMarker
 data class Scope(

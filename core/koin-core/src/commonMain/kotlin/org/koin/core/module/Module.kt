@@ -239,7 +239,7 @@ tailrec fun flatten(modules: List<Module>, newModules: Set<Module> = emptySet())
     return if (modules.isEmpty()) {
         newModules
     } else {
-        val head = modules.first() ?: error("Flatten - No head element in list")
+        val head = modules.first()
         val tail = modules.subList(1, modules.size)
         if (head.includedModules.isEmpty()) {
             flatten(tail, newModules + head)

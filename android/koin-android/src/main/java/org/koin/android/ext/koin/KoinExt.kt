@@ -73,11 +73,9 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
 
 /**
  * Load properties file from Assets
- * @param androidContext
  * @param koinPropertyFile
  */
 @OptIn(KoinInternalApi::class)
-
 fun KoinApplication.androidFileProperties(
         koinPropertyFile: String = "koin.properties",
 ): KoinApplication {

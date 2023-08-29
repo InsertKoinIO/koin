@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package org.koin.core.instance
 
 import org.koin.core.annotation.KoinReflectAPI

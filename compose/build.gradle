@@ -22,7 +22,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.13.2'
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version "$validator_version"
 }
 
 wrapper {

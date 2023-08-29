@@ -30,6 +30,7 @@ typealias ModuleDeclaration = Module.() -> Unit
  * @param createdAtStart
  *
  */
+@Suppress("UNUSED_PARAMETER")
 @Deprecated("'override' parameter is not used anymore. See 'allowOverride' in KoinApplication")
 @KoinDslMarker
 fun module(createdAtStart: Boolean = false, override: Boolean = false, moduleDeclaration: ModuleDeclaration): Module {
