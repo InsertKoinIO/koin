@@ -30,6 +30,9 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Install Core
         run: cd core && ./install.sh
       
