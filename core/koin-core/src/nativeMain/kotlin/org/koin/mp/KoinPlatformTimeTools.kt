@@ -1,9 +1,9 @@
 package org.koin.mp
 
-import kotlin.system.getTimeNanos
+import kotlin.time.TimeSource
 
 actual object KoinPlatformTimeTools {
-    actual fun getTimeInNanoSeconds() : Long {
-        return getTimeNanos()
+    actual fun getTimeInNanoSeconds(): Long {
+        return TimeSource.Monotonic.markNow().elapsedNow().inWholeNanoseconds
     }
 }
