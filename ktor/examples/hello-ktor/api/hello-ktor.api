@@ -1,0 +1,34 @@
+public final class org/koin/sample/AppModule2Kt {
+	public static final fun module2 (Lio/ktor/server/application/Application;)V
+}
+
+public final class org/koin/sample/ApplicationKt {
+	public static final fun main ([Ljava/lang/String;)V
+	public static final fun mainModule (Lio/ktor/server/application/Application;)V
+}
+
+public final class org/koin/sample/HelloRepository {
+	public fun <init> ()V
+	public final fun getHello ()Ljava/lang/String;
+}
+
+public abstract interface class org/koin/sample/HelloService {
+	public abstract fun sayHello ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/HelloService2 : org/koin/sample/HelloService {
+	public fun <init> ()V
+	public fun sayHello ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/HelloServiceImpl : org/koin/sample/HelloService {
+	public fun <init> (Lorg/koin/sample/HelloRepository;)V
+	public final fun getHelloRepository ()Lorg/koin/sample/HelloRepository;
+	public fun sayHello ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/KoinAppModuleKt {
+	public static final fun getAppModule ()Lorg/koin/core/module/Module;
+	public static final fun getAppModule2 ()Lorg/koin/core/module/Module;
+}
+

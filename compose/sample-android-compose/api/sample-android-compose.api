@@ -1,0 +1,128 @@
+public final class org/koin/sample/androidx/compose/AppKt {
+	public static final fun App (Lorg/koin/sample/androidx/compose/viewmodel/UserViewModel;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FactoryComposable (Ljava/lang/String;Lorg/koin/sample/androidx/compose/data/MyFactory;Landroidx/compose/runtime/Composer;II)V
+	public static final fun InnerFactoryComposable (Ljava/lang/String;Lorg/koin/sample/androidx/compose/data/MyInnerFactory;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ScopeComposable (Ljava/lang/String;Ljava/lang/String;Lorg/koin/sample/androidx/compose/data/MyScoped;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SingleComposable (Ljava/lang/String;Lorg/koin/sample/androidx/compose/data/MySingle;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ViewModelComposable (Ljava/lang/String;Lorg/koin/sample/androidx/compose/viewmodel/SSHViewModel;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class org/koin/sample/androidx/compose/BuildConfig {
+	public static final field APPLICATION_ID Ljava/lang/String;
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field VERSION_CODE I
+	public static final field VERSION_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class org/koin/sample/androidx/compose/ComposableSingletons$AppKt {
+	public static final field INSTANCE Lorg/koin/sample/androidx/compose/ComposableSingletons$AppKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function3;
+	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+	public static field lambda-3 Lkotlin/jvm/functions/Function3;
+	public static field lambda-4 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$sample_android_compose_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-2$sample_android_compose_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-3$sample_android_compose_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-4$sample_android_compose_release ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class org/koin/sample/androidx/compose/ComposableSingletons$MainActivityKt {
+	public static final field INSTANCE Lorg/koin/sample/androidx/compose/ComposableSingletons$MainActivityKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$sample_android_compose_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$sample_android_compose_release ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class org/koin/sample/androidx/compose/MainActivity : org/koin/androidx/scope/ScopeActivity {
+	public static final field $stable I
+	public static final field Companion Lorg/koin/sample/androidx/compose/MainActivity$Companion;
+	public fun <init> ()V
+}
+
+public final class org/koin/sample/androidx/compose/MainActivity$Companion {
+	public final fun getLogger ()Ljava/util/logging/Logger;
+}
+
+public final class org/koin/sample/androidx/compose/MainApplication : android/app/Application {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun onCreate ()V
+}
+
+public final class org/koin/sample/androidx/compose/UIComponentsKt {
+	public static final fun ButtonForCreate (Ljava/lang/String;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)V
+	public static final fun UsersView (Ljava/util/List;Landroidx/compose/runtime/Composer;I)V
+	public static final fun clickComponent (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun now ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/androidx/compose/data/MyFactory {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/androidx/compose/data/MyInnerFactory {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/androidx/compose/data/MyScoped {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/androidx/compose/data/MySingle {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/androidx/compose/data/User {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;I)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun copy (Ljava/lang/String;I)Lorg/koin/sample/androidx/compose/data/User;
+	public static synthetic fun copy$default (Lorg/koin/sample/androidx/compose/data/User;Ljava/lang/String;IILjava/lang/Object;)Lorg/koin/sample/androidx/compose/data/User;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAge ()I
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/koin/sample/androidx/compose/data/UserRepository {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getUsers ()Ljava/util/List;
+}
+
+public final class org/koin/sample/androidx/compose/di/AppModuleKt {
+	public static final fun getAppModule ()Lorg/koin/core/module/Module;
+	public static final fun getSecondModule ()Lorg/koin/core/module/Module;
+	public static final fun getWALLET_SCOPE ()Lorg/koin/core/qualifier/StringQualifier;
+}
+
+public final class org/koin/sample/androidx/compose/viewmodel/SSHViewModel : androidx/lifecycle/ViewModel {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Landroidx/lifecycle/SavedStateHandle;)V
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLastIds ()Ljava/util/Set;
+	public final fun saveId ()V
+	public final fun setLastIds (Ljava/util/Set;)V
+}
+
+public final class org/koin/sample/androidx/compose/viewmodel/UserViewModel : androidx/lifecycle/ViewModel {
+	public static final field $stable I
+	public fun <init> (Lorg/koin/sample/androidx/compose/data/UserRepository;)V
+	public final fun getUsers ()Ljava/util/List;
+}
+

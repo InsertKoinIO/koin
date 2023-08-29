@@ -1,0 +1,130 @@
+public abstract interface class org/koin/test/KoinTest : org/koin/core/component/KoinComponent {
+}
+
+public final class org/koin/test/KoinTest$DefaultImpls {
+	public static fun getKoin (Lorg/koin/test/KoinTest;)Lorg/koin/core/Koin;
+}
+
+public final class org/koin/test/Simple {
+	public fun <init> ()V
+}
+
+public final class org/koin/test/Simple$ComponentA {
+	public fun <init> ()V
+}
+
+public final class org/koin/test/Simple$ComponentB {
+	public fun <init> (Lorg/koin/test/Simple$ComponentA;)V
+	public final fun getA ()Lorg/koin/test/Simple$ComponentA;
+}
+
+public final class org/koin/test/Simple$ComponentC {
+	public fun <init> (Lorg/koin/test/Simple$ComponentB;)V
+	public final fun getB ()Lorg/koin/test/Simple$ComponentB;
+}
+
+public final class org/koin/test/Simple$MyString {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getS ()Ljava/lang/String;
+}
+
+public final class org/koin/test/Simple$UUIDComponent {
+	public fun <init> ()V
+	public final fun getUUID ()Ljava/lang/String;
+}
+
+public final class org/koin/test/UpperCase : org/koin/core/qualifier/Qualifier {
+	public static final field INSTANCE Lorg/koin/test/UpperCase;
+	public fun getValue ()Ljava/lang/String;
+}
+
+public abstract interface class org/koin/test/category/CheckModuleTest {
+}
+
+public final class org/koin/test/check/CheckModulesKt {
+	public static final fun checkKoinModules (Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static final fun checkKoinModules (Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static final fun checkKoinModules ([Lorg/koin/core/module/Module;Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun checkKoinModules$default (Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun checkKoinModules$default (Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun checkKoinModules$default ([Lorg/koin/core/module/Module;Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun checkModules (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function1;)V
+	public static final fun checkModules (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function1;)V
+	public static final fun checkModules (Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun checkModules$default (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun checkModules$default (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun checkModules$default (Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class org/koin/test/check/CheckedComponent {
+	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;)V
+	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lorg/koin/core/qualifier/Qualifier;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;)Lorg/koin/test/check/CheckedComponent;
+	public static synthetic fun copy$default (Lorg/koin/test/check/CheckedComponent;Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;ILjava/lang/Object;)Lorg/koin/test/check/CheckedComponent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getQualifier ()Lorg/koin/core/qualifier/Qualifier;
+	public final fun getType ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/koin/test/check/ParametersBinding {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public final fun create (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function1;
+	public static synthetic fun create$default (Lorg/koin/test/check/ParametersBinding;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
+	public final fun getDefaultValues ()Ljava/util/Map;
+	public final fun getKoin ()Lorg/koin/core/Koin;
+	public final fun getParametersCreators ()Ljava/util/Map;
+	public final fun getScopeLinks ()Ljava/util/Map;
+	public final fun withParameter (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function1;
+	public static synthetic fun withParameter$default (Lorg/koin/test/check/ParametersBinding;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
+	public final fun withParameters (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function1;
+	public static synthetic fun withParameters$default (Lorg/koin/test/check/ParametersBinding;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
+	public final fun withProperty (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun withScopeLink (Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/qualifier/Qualifier;)Lorg/koin/core/qualifier/Qualifier;
+}
+
+public final class org/koin/test/mock/MockProvider {
+	public static final field INSTANCE Lorg/koin/test/mock/MockProvider;
+	public final fun getProvider ()Lkotlin/jvm/functions/Function1;
+	public final fun makeMock (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public final fun register (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class org/koin/test/parameter/MockParameter : org/koin/core/parameter/ParametersHolder {
+	public fun <init> (Lorg/koin/core/scope/Scope;Ljava/util/Map;)V
+	public fun elementAt (ILkotlin/reflect/KClass;)Ljava/lang/Object;
+	public fun getOrNull (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+}
+
+public final class org/koin/test/verify/CircularInjectionException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class org/koin/test/verify/MissingKoinDefinitionException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class org/koin/test/verify/Verification {
+	public fun <init> (Lorg/koin/core/module/Module;Ljava/util/List;)V
+	public final fun getModule ()Lorg/koin/core/module/Module;
+	public final fun verify ()V
+}
+
+public final class org/koin/test/verify/Verify {
+	public static final field INSTANCE Lorg/koin/test/verify/Verify;
+	public final fun addExtraTypes (Ljava/util/List;)V
+	public final fun addExtraTypes ([Lkotlin/reflect/KClass;)V
+	public final fun verify (Lorg/koin/core/module/Module;Ljava/util/List;)V
+	public static synthetic fun verify$default (Lorg/koin/test/verify/Verify;Lorg/koin/core/module/Module;Ljava/util/List;ILjava/lang/Object;)V
+}
+
+public final class org/koin/test/verify/VerifyModuleKt {
+	public static final fun verify (Lorg/koin/core/module/Module;Ljava/util/List;)V
+	public static synthetic fun verify$default (Lorg/koin/core/module/Module;Ljava/util/List;ILjava/lang/Object;)V
+	public static final fun verifyAll (Ljava/util/List;Ljava/util/List;)V
+	public static synthetic fun verifyAll$default (Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)V
+}
+
