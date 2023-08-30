@@ -12,7 +12,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
@@ -28,6 +28,15 @@ jobs:
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: 11
+  
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -43,25 +52,9 @@ jobs:
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
-    - name: Build core
-      working-directory: core
-      run: ./install.sh
-
-    - name: Build android
-      working-directory: android
-      run: ./install.sh
-
-    - name: Build compose
-      working-directory: compose
-      run: ./install.sh
-
-    - name: Build ktor
-      working-directory: ktor
-      run: ./install.sh
-
-    - name: Build plugins
-      working-directory: plugins
-      run: ./install.sh
+    - name: Build and install all
+      # working-directory: core
+      run: ./install_all.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
