@@ -1,0 +1,33 @@
+apply from: "../gradle/versions.gradle"
+apply from: "../../core/gradle/versions.gradle"
+apply from: "../../ktor/gradle/versions.gradle"
+apply from: "../../android/gradle/versions.gradle"
+apply from: "../../compose/gradle/versions.gradle"
+
+version = "$koin_bom_version"
+
+dependencies {
+    constraints {
+        // core
+        api "io.insert-koin:koin-core:$koin_version"
+        api "io.insert-koin:koin-core-coroutines:$koin_version"
+        api "io.insert-koin:koin-test:$koin_version"
+        api "io.insert-koin:koin-test-junit4:$koin_version"
+        api "io.insert-koin:koin-test-junit5:$koin_version"
+        // core
+        api "io.insert-koin:koin-ktor:$koin_ktor_version"
+        api "io.insert-koin:koin-logger-slf4j:$koin_ktor_version"
+        // android
+        api "io.insert-koin:koin-android:$koin_android_version"
+        api "io.insert-koin:koin-android-compat:$koin_android_version"
+        api "io.insert-koin:koin-android-test:$koin_android_version"
+        api "io.insert-koin:koin-androidx-navigation:$koin_android_version"
+        api "io.insert-koin:koin-androidx-workmnanager:$koin_android_version"
+        // compose
+        api "io.insert-koin:koin-androidx-compose:$koin_androidx_compose_version"
+        api "io.insert-koin:koin-androidx-compose-navigation:$koin_androidx_compose_version"
+        api "io.insert-koin:koin-compose:$koin_compose_version"
+    }
+}
+
+apply from: '../gradle/publish.gradle'

@@ -1,0 +1,5 @@
+ext {
+    koin_bom_version = '3.5.0'
+
+    koin_annotations_bom_version = '1.2.3'
+}
