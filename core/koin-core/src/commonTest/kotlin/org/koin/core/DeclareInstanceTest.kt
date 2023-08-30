@@ -264,4 +264,34 @@ class DeclareInstanceTest {
 
         session2.get<Simple.ComponentA>()
     }
+
+    @Test
+    fun `avoid to start eager instances`() {
+        var count = 0
+       koinApplication {
+            modules(
+                module {
+                    single(createdAtStart = true){
+                        count++
+                        Simple.ComponentA()
+                    }
+                },
+            )
+        }
+
+        assertEquals(1,count)
+        count = 0
+
+        koinApplication(createEagerInstances = false) {
+            modules(
+                module {
+                    single(createdAtStart = true){
+                        count++
+                        Simple.ComponentA()
+                    }
+                },
+            )
+        }
+        assertEquals(0,count)
+    }
 }

@@ -317,7 +317,7 @@ class Koin {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances() {
-        logger.debug("Eager instances ...")
+        logger.debug("Create eager instances ...")
         val duration = measureDuration {
             instanceRegistry.createAllEagerInstances()
         }

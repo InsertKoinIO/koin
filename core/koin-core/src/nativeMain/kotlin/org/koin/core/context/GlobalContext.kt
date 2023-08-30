@@ -55,7 +55,7 @@ internal class MutableGlobalContext : KoinContext {
     override fun startKoin(koinApplication: KoinApplication): KoinApplication = lock.withLock {
         register(koinApplication)
         koinApplication.createEagerInstances()
-        return koinApplication
+        koinApplication
     }
 
     override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = lock.withLock {
@@ -63,7 +63,7 @@ internal class MutableGlobalContext : KoinContext {
         register(koinApplication)
         appDeclaration(koinApplication)
         koinApplication.createEagerInstances()
-        return koinApplication
+        koinApplication
     }
 
     override fun loadKoinModules(module: Module) = lock.withLock {

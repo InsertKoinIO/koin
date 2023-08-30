@@ -585,8 +585,8 @@ public final class org/koin/dsl/DefinitionBindingKt {
 }
 
 public final class org/koin/dsl/KoinApplicationKt {
-	public static final fun koinApplication (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
-	public static synthetic fun koinApplication$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
+	public static final fun koinApplication (ZLkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static synthetic fun koinApplication$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 }
 
 public final class org/koin/dsl/ModuleDSLKt {

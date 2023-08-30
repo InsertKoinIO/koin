@@ -23,11 +23,16 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
 /**
  * Create a KoinApplication instance and help configure it
  * @author Arnaud Giuliani
+ *
+ * @param createEagerInstances - allow to create eager instances or not
+ * @param appDeclaration
  */
 @KoinApplicationDslMarker
-fun koinApplication(appDeclaration: KoinAppDeclaration? = null): KoinApplication {
+fun koinApplication(createEagerInstances : Boolean = true, appDeclaration: KoinAppDeclaration? = null): KoinApplication {
     val koinApplication = KoinApplication.init()
     appDeclaration?.invoke(koinApplication)
-    koinApplication.createEagerInstances()
+    if (createEagerInstances) {
+        koinApplication.createEagerInstances()
+    }
     return koinApplication
 }
