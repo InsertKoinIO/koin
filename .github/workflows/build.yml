@@ -66,7 +66,7 @@ jobs:
         run: cd android && ./test.sh
 
   build-compose:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
