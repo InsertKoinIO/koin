@@ -3,7 +3,7 @@ ext {
     koin_version = '3.5.0'
     
     // Kotlin
-    kotlin_version = '1.9.10'
+    kotlin_version = '1.9.0' //TODO wait Compose for 1.9.10 or +
     validator_version = '0.13.2'
     
     coroutines_version = "1.7.3"
