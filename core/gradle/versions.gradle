@@ -13,7 +13,7 @@ ext {
 
     // Test
     junit_version = "4.13.2"
-    junit5_version = "5.8.2"
+    junit5_version = "5.9.3"
     mockito_version = "4.7.0"
     mockk_version = "1.12.2"
 }
