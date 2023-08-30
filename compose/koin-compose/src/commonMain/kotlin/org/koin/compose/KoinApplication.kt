@@ -55,7 +55,7 @@ fun KoinApplication(
     application: KoinAppDeclaration,
     content: @Composable () -> Unit
 ) {
-    val koinApplication = koinApplication(application)
+    val koinApplication = koinApplication(appDeclaration = application)
     CompositionLocalProvider(
         LocalKoinApplication provides koinApplication.koin,
         LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
