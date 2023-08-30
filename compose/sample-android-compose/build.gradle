@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 apply from: "../gradle/versions.gradle"
 
 android {
-    compileSdkVersion 34
+    compileSdk android_target_version
     buildToolsVersion '30.0.3'
 
     defaultConfig {

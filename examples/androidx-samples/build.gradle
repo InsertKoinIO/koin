@@ -13,12 +13,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion android_target_version
+    compileSdk android_target_version
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion android_target_version
+//        targetSdkVersion android_target_version
         applicationId "org.koin.sample.sandbox"
         versionCode 1
         versionName "1.0"
