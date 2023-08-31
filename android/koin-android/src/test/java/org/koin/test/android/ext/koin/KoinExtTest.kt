@@ -18,6 +18,7 @@ import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
 import org.koin.core.registry.saveProperties
 
+@OptIn(KoinInternalApi::class)
 class KoinExtTest {
 
     @Test

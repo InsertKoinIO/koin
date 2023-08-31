@@ -16,6 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -24,6 +25,7 @@ import org.koin.mp.KoinPlatformTools
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(internal val _koin: Koin) {
 

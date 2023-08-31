@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.koin.core.logger
 
 /**
- * Logger that print on system.out
- * @author - Arnaud GIULIANI
+ * Multiplatform Basic Logger
+ *
+ * @author Arnaud Giuliani
  */
-actual class PrintLogger actual constructor(level: Level) : Logger(level) {
-
-    private val printer = if (level >= Level.WARNING) System.err else System.out
-
-    override fun display(level: Level, msg: MESSAGE) {
-        printer.println("[$level] $KOIN_TAG $msg")
-    }
-}
+expect class PrintLogger(level: Level = Level.INFO) : Logger

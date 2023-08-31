@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.android.ext.koin
 
 import android.app.Application
@@ -39,8 +41,6 @@ import java.util.*
  * Setup Android Logger for Koin
  * @param level
  */
-@OptIn(KoinInternalApi::class)
-
 fun KoinApplication.androidLogger(
         level: Level = Level.INFO,
 ): KoinApplication {

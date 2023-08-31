@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:Suppress("UNUSED_PARAMETER")
+@file:OptIn(KoinInternalApi::class)
 
 package org.koin.test.check
 

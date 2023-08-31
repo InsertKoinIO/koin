@@ -6,12 +6,14 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 //TODO Deprecate
+@OptIn(KoinInternalApi::class)
 class LifecycleViewModelScopeDelegate(
         private val lifecycleOwner: ComponentActivity,
         private val koin : Koin,

@@ -1,6 +1,9 @@
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.NoPropertyFileFoundException
 import java.util.*
 

@@ -19,6 +19,7 @@ import org.junit.rules.TestRule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -30,6 +31,7 @@ import org.koin.mp.KoinPlatformTools
  * @author Nick Cipollo
  * @author Jan Mottl
  */
+@OptIn(KoinInternalApi::class)
 class KoinTestRule private constructor(private val appDeclaration: KoinAppDeclaration) : TestWatcher() {
 
     private var _koin: Koin? = null
