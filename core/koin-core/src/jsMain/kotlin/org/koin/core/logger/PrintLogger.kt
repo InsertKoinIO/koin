@@ -19,7 +19,7 @@ package org.koin.core.logger
  * Logger that print on system.out
  * @author - Arnaud GIULIANI
  */
-actual class PrintLogger actual constructor(level: Level) : Logger(level) {
+class PrintLogger(level: Level = Level.INFO) : Logger(level) {
 
     override fun display(level: Level, msg: MESSAGE) {
         println("[$level] $KOIN_TAG $msg")

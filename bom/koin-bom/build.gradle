@@ -22,7 +22,7 @@ dependencies {
         api "io.insert-koin:koin-android-compat:$koin_android_version"
         api "io.insert-koin:koin-android-test:$koin_android_version"
         api "io.insert-koin:koin-androidx-navigation:$koin_android_version"
-        api "io.insert-koin:koin-androidx-workmnanager:$koin_android_version"
+        api "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
         // compose
         api "io.insert-koin:koin-androidx-compose:$koin_androidx_compose_version"
         api "io.insert-koin:koin-androidx-compose-navigation:$koin_androidx_compose_version"

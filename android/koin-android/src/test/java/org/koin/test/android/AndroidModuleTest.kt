@@ -98,6 +98,6 @@ class AndroidModuleTest : KoinTest {
             modules(SampleModule)
         }.koin
 
-        assertTrue(koin.logger is PrintLogger)
+        assertTrue(koin.logger is EmptyLogger)
     }
 }
