@@ -38,7 +38,7 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 @KoinDslMarker
-data class Scope(
+class Scope(
     val scopeQualifier: Qualifier,
     val id: ScopeID,
     val isRoot: Boolean = false,
