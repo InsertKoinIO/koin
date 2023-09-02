@@ -19,11 +19,11 @@ class CascadeParamTest {
         val stringParam = "_string_"
         val p = parametersOf(intParam, stringParam)
 
-        assertEquals(0,p.index)
-        assertEquals(stringParam,p.getOrNull<String>())
-        assertEquals(0,p.index)
-        assertEquals(intParam,p.getOrNull<Int>())
-        assertEquals(stringParam,p.getOrNull<String>())
+        assertEquals(0, p.index)
+        assertEquals(stringParam, p.getOrNull<String>())
+        assertEquals(0, p.index)
+        assertEquals(intParam, p.getOrNull<Int>())
+        assertEquals(stringParam, p.getOrNull<String>())
     }
 
     @Test
@@ -32,11 +32,11 @@ class CascadeParamTest {
         val stringParam = "_string_"
         val p = parameterArrayOf(intParam, stringParam)
 
-        assertEquals(0,p.index)
+        assertEquals(0, p.index)
         assertNull(p.getOrNull<String>())
-        assertEquals(intParam,p.get<Int>())
-        assertEquals(stringParam,p.get<String>())
-        assertEquals(1,p.index)
+        assertEquals(intParam, p.get<Int>())
+        assertEquals(stringParam, p.get<String>())
+        assertEquals(1, p.index)
     }
 
     @Test
@@ -45,11 +45,11 @@ class CascadeParamTest {
         val stringParam = "_string_"
         val p = parameterSetOf(intParam, stringParam)
 
-        assertEquals(0,p.index)
-        assertEquals(stringParam,p.getOrNull<String>())
-        assertEquals(intParam,p.getOrNull<Int>())
-        assertEquals(stringParam,p.getOrNull<String>())
-        assertEquals(0,p.index)
+        assertEquals(0, p.index)
+        assertEquals(stringParam, p.getOrNull<String>())
+        assertEquals(intParam, p.getOrNull<Int>())
+        assertEquals(stringParam, p.getOrNull<String>())
+        assertEquals(0, p.index)
     }
 
     @Test
