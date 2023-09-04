@@ -75,6 +75,7 @@ kotlin {
             dependsOn commonMain
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+                implementation "co.touchlab:stately-concurrency:1.2.2"
             }
         }
 

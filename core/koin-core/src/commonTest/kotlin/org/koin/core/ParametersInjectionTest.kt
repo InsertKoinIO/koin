@@ -74,8 +74,8 @@ class ParametersInjectionTest {
         val koin = app.koin
         val a: Simple.MySingleAndNull = koin.get { parametersOf(42) }
 
-        assertEquals(42, a.ms.id)
-        assertTrue { koin.scopeRegistry.rootScope._parameterStack.isEmpty() }
+        assertEquals(42, a.ms.id, "id is the right injected")
+        assertTrue("parameter stack is empty") { koin.scopeRegistry.rootScope._parameterStackLocal.get()?.isEmpty() == true }
     }
 
     @Test
