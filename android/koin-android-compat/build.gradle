@@ -14,6 +14,10 @@ android {
         minSdkVersion android_min_version
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures {
+        buildConfig false
+    }
 }
 
 dependencies {
