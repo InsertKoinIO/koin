@@ -39,7 +39,7 @@ fun <T : ViewModel> resolveViewModel(
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
     return when {
-        qualifier != null -> provider[qualifier.value + key?.let { "_$it" }, modelClass]
+        qualifier != null -> provider[qualifier.value + (key?.let { "_$it" } ?: ""), modelClass]
         key != null -> provider[key, modelClass]
         else -> provider[modelClass]
     }
