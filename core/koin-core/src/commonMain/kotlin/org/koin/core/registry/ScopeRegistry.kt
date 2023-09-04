@@ -64,7 +64,10 @@ class ScopeRegistry(private val _koin: Koin) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
         val scope = Scope(qualifier, scopeId, _koin = _koin)
-        source?.let { scope._source = source }
+        source?.let {
+            _koin.logger.debug("|- Scope source set id:'$scopeId' -> $source")
+            scope._source = source
+        }
         scope.linkTo(rootScope)
         _scopes[scopeId] = scope
         return scope

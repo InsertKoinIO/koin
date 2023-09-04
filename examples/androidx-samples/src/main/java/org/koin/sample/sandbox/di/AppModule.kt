@@ -68,6 +68,9 @@ val mvvmModule = lazyModule {
         viewModelOf(::ExtSimpleViewModel)
         viewModelOf(::ExtSimpleViewModel) { named("ext") }
         viewModelOf(::SavedStateViewModel) { named("vm2") }
+
+        scoped { MVVMPresenter1(get()) }
+        scoped { MVVMPresenter2(get()) }
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }

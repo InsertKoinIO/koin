@@ -141,7 +141,6 @@ class Scope(
      *
      * Deprecation: Source instance resolution is now done within graph resolution part. It's done in the regular "get()" function.
      */
-    @Deprecated("No need to use getSource(). You can an use get() directly.", ReplaceWith("get()"))
     inline fun <reified T : Any> getSource(): T? {
         return _source as? T
     }
@@ -244,18 +243,21 @@ class Scope(
         clazz: KClass<*>,
         instanceContext: InstanceContext,
         parameterDef: ParametersDefinition?
-    ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
+    ) = (
+            _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
             _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
-            _source?.let { source ->
-                if (source::class == clazz && qualifier == null) {
-                    _source as? T
-                } else null
-            }
+            if (!isRoot){
+                _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
+                _source?.let { source ->
+                    if (clazz.isInstance(source) && qualifier == null) {
+                        _source as? T
+                    } else null
+                }
+            } else null
         }
         ?: run {
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )

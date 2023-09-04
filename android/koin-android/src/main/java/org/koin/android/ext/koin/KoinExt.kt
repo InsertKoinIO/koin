@@ -24,9 +24,7 @@ import org.koin.android.logger.AndroidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
-import org.koin.core.module.KoinApplicationDslMarker
 import org.koin.core.registry.saveProperties
-import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import java.util.*
@@ -42,7 +40,7 @@ import java.util.*
  * @param level
  */
 fun KoinApplication.androidLogger(
-        level: Level = Level.INFO,
+    level: Level = Level.INFO,
 ): KoinApplication {
     koin.setupLogger(AndroidLogger(level))
     return this
@@ -60,11 +58,11 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
 
     if (androidContext is Application) {
         koin.loadModules(listOf(module {
-            single { androidContext } binds arrayOf(Context::class,Application::class)
+            single { androidContext } binds arrayOf(Context::class, Application::class)
         }))
     } else {
         koin.loadModules(listOf(module {
-            single{ androidContext }
+            single { androidContext }
         }))
     }
 
@@ -77,7 +75,7 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
  */
 @OptIn(KoinInternalApi::class)
 fun KoinApplication.androidFileProperties(
-        koinPropertyFile: String = "koin.properties",
+    koinPropertyFile: String = "koin.properties",
 ): KoinApplication {
     val koinProperties = Properties()
     val androidContext = koin.get<Context>()
