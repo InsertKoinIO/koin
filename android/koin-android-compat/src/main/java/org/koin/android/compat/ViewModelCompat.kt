@@ -15,6 +15,7 @@
  */
 package org.koin.android.compat
 
+import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
@@ -48,10 +49,11 @@ object ViewModelCompat {
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
+        extrasProducer: (() -> CreationExtras)? = null,
         parameters: ParametersDefinition? = null
     ): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE) {
-            getViewModel(owner, clazz, qualifier, parameters)
+            getViewModel(owner, clazz, qualifier, extrasProducer, parameters)
         }
     }
 
@@ -72,13 +74,17 @@ object ViewModelCompat {
         owner: ViewModelStoreOwner,
         clazz: Class<T>,
         qualifier: Qualifier? = null,
+        extrasProducer: (() -> CreationExtras)? = null,
         parameters: ParametersDefinition? = null
     ): T = resolveViewModelCompat(
         clazz,
         owner.viewModelStore,
-        extras = CreationExtras.Empty,
+        extras = extrasProducer?.invoke() ?: getDefaultViewModelCreationExtras(owner),
         qualifier = qualifier,
         parameters = parameters,
         scope = GlobalContext.get().scopeRegistry.rootScope
     )
+
+    private fun getDefaultViewModelCreationExtras(owner: ViewModelStoreOwner): CreationExtras =
+        if (owner is ComponentActivity) owner.defaultViewModelCreationExtras else CreationExtras.Empty
 }
