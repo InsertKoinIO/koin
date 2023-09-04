@@ -60,12 +60,12 @@ object GlobalContext : KoinContext {
         return koinApplication
     }
 
-    override fun loadKoinModules(module: Module) {
-        get().loadModules(listOf(module))
+    override fun loadKoinModules(module: Module,createEagerInstances : Boolean) {
+        get().loadModules(listOf(module), createEagerInstances = createEagerInstances)
     }
 
-    override fun loadKoinModules(modules: List<Module>) {
-        get().loadModules(modules)
+    override fun loadKoinModules(modules: List<Module>, createEagerInstances : Boolean) {
+        get().loadModules(modules, createEagerInstances = createEagerInstances)
     }
 
     override fun unloadKoinModules(module: Module) {

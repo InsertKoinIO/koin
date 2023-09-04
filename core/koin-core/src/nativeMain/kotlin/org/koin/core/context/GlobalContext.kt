@@ -66,12 +66,12 @@ internal class MutableGlobalContext : KoinContext {
         koinApplication
     }
 
-    override fun loadKoinModules(module: Module) = lock.withLock {
-        get().loadModules(listOf(module))
+    override fun loadKoinModules(module: Module, createEagerInstances : Boolean) = lock.withLock {
+        get().loadModules(listOf(module), createEagerInstances = createEagerInstances)
     }
 
-    override fun loadKoinModules(modules: List<Module>) = lock.withLock {
-        get().loadModules(modules)
+    override fun loadKoinModules(modules: List<Module>, createEagerInstances : Boolean) = lock.withLock {
+        get().loadModules(modules, createEagerInstances = createEagerInstances)
     }
 
     override fun unloadKoinModules(module: Module) = lock.withLock {

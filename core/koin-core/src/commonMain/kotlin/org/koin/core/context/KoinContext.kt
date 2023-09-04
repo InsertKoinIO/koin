@@ -55,12 +55,12 @@ interface KoinContext {
     /**
      * load Koin module in global Koin context
      */
-    fun loadKoinModules(module: Module)
+    fun loadKoinModules(module: Module, createEagerInstances: Boolean = false)
 
     /**
      * load Koin modules in global Koin context
      */
-    fun loadKoinModules(modules: List<Module>)
+    fun loadKoinModules(modules: List<Module>, createEagerInstances: Boolean = false)
 
     /**
      * unload Koin module from global Koin context

@@ -84,7 +84,7 @@ class KoinApplication private constructor() {
     }
 
     private fun loadModules(modules: List<Module>) {
-        koin.loadModules(modules, allowOverride = allowOverride)
+        koin.loadModules(modules, allowOverride = allowOverride, createEagerInstances = false)
     }
 
     /**

@@ -302,11 +302,18 @@ class Koin {
 
     /**
      * Load module & create eager instances
+     *
+     * @param allowOverride - allow to override definitions
+     * @param createEagerInstances - run instance creation for eager single definitions
      */
-    fun loadModules(modules: List<Module>, allowOverride: Boolean = true) {
+    fun loadModules(modules: List<Module>, allowOverride: Boolean = true, createEagerInstances : Boolean = false) {
         val flattedModules = flatten(modules)
         instanceRegistry.loadModules(flattedModules, allowOverride)
         scopeRegistry.loadScopes(flattedModules)
+
+        if (createEagerInstances){
+            createEagerInstances()
+        }
     }
 
     fun unloadModules(modules: List<Module>) {

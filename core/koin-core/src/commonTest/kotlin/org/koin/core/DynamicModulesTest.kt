@@ -187,7 +187,7 @@ class DynamicModulesTest : KoinCoreTest() {
         assertEquals(42, app.koin.get<Simple.MySingle> { parametersOf(42) }.id)
 
         koin.unloadModules(listOf(module))
-        koin.loadModules(listOf(module))
+        koin.loadModules(listOf(module), createEagerInstances = false)
 
         assertNotNull(app.getBeanDefinition(Simple.MySingle::class))
 
@@ -209,7 +209,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         val koin = app.koin
 
-        koin.loadModules(listOf(module))
+        koin.loadModules(listOf(module), createEagerInstances = false)
         koin.createEagerInstances()
 
         assertTrue(created)
@@ -230,8 +230,28 @@ class DynamicModulesTest : KoinCoreTest() {
 
         val koin = app.koin
 
-        koin.loadModules(listOf(module))
+        koin.loadModules(listOf(module), createEagerInstances = false)
         koin.createEagerInstances()
+
+        assertTrue(created)
+    }
+
+    @Test
+    fun `create at start for external modules - create eager`() {
+        var created = false
+        val module = module(createdAtStart = true) {
+            single {
+                created = true
+                Simple.MySingle(42)
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+        }
+
+        val koin = app.koin
+
+        koin.loadModules(listOf(module), createEagerInstances = true)
 
         assertTrue(created)
     }
