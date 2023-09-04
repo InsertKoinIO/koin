@@ -38,6 +38,8 @@ kotlin {
 
     mingwX64()
     linuxX64()
+//    linuxArm64()
+
 //    mingwX86()
 //    linuxArm32Hfp()
 //    linuxMips32()
@@ -53,7 +55,7 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
 
@@ -130,7 +132,9 @@ kotlin {
         }
         configure([
                 targets.linuxX64,
+//                targets.linuxArm64,
                 targets.mingwX64,
+
 //                targets.linuxArm32Hfp,
 //                targets.linuxMips32,
 //                targets.mingwX86
