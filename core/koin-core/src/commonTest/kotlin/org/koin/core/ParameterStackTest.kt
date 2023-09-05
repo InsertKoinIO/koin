@@ -14,13 +14,13 @@ import kotlin.test.assertTrue
 class ParameterStackTest {
 
     @Test
-    fun test_parameterstack_is_empty(){
+    fun test_parameterstack_is_empty() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
                 module {
-                    factory { (id : String) -> Simple.MyStringFactory(id) }
-                }
+                    factory { (id: String) -> Simple.MyStringFactory(id) }
+                },
             )
         }.koin
 
@@ -28,6 +28,6 @@ class ParameterStackTest {
             koin.get<Simple.MyStringFactory> { parametersOf(KoinPlatformTools.generateId()) }
         }
 
-        assertTrue(koin.scopeRegistry.rootScope._parameterStack.isEmpty())
+        assertTrue(koin.scopeRegistry.rootScope._parameterStackLocal.get()!!.isEmpty())
     }
 }

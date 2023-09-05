@@ -16,15 +16,14 @@ class A(val repository: MyRepository)
 class CheckTest {
     internal object MyComponents {
 
-        val modulee : Module = module {
+        val modulee: Module = module {
             factory {
                 A(
-                    repository = get<MyRepository>()
+                    repository = get<MyRepository>(),
                 )
             }
         }
     }
-
 
     class CheckModulesTest {
 

@@ -1,0 +1,24 @@
+public final class org/koin/sample/compose/desktop/ComposableSingletons$MainKt {
+	public static final field INSTANCE Lorg/koin/sample/compose/desktop/ComposableSingletons$MainKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+	public static field lambda-3 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$sample_desktop_compose ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$sample_desktop_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-3$sample_desktop_compose ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class org/koin/sample/compose/desktop/MainKt {
+	public static final fun App (Landroidx/compose/runtime/Composer;I)V
+	public static final fun getMod ()Lorg/koin/core/module/Module;
+	public static final fun main ()V
+	public static synthetic fun main ([Ljava/lang/String;)V
+}
+
+public final class org/koin/sample/compose/desktop/Myfactory {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+

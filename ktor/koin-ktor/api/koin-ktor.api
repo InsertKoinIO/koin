@@ -1,0 +1,34 @@
+public final class org/koin/ktor/ext/ApplicationCallExtKt {
+	public static final fun getKoin (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/application/ApplicationCall;Ljava/lang/String;)Ljava/lang/Object;
+	public static final fun getProperty (Lio/ktor/server/application/ApplicationCall;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/koin/ktor/ext/ApplicationExtKt {
+	public static final fun getKoin (Lio/ktor/server/application/Application;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/application/Application;Ljava/lang/String;)Ljava/lang/Object;
+	public static final fun getProperty (Lio/ktor/server/application/Application;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/koin/ktor/ext/RouteExtKt {
+	public static final fun getKoin (Lio/ktor/server/routing/Route;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/routing/Route;Ljava/lang/String;)Ljava/lang/Object;
+	public static final fun getProperty (Lio/ktor/server/routing/Route;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/koin/ktor/ext/RoutingExtKt {
+	public static final fun getKoin (Lio/ktor/server/routing/Routing;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/routing/Routing;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class org/koin/ktor/plugin/KoinApplicationEventsKt {
+	public static final fun getKoinApplicationStarted ()Lio/ktor/events/EventDefinition;
+	public static final fun getKoinApplicationStopPreparing ()Lio/ktor/events/EventDefinition;
+	public static final fun getKoinApplicationStopped ()Lio/ktor/events/EventDefinition;
+}
+
+public final class org/koin/ktor/plugin/KoinPluginKt {
+	public static final fun getKoin ()Lio/ktor/server/application/ApplicationPlugin;
+	public static final fun koin (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.koin.mp.KoinPlatformTools
 class Module(
 
     @PublishedApi
-    internal val _createdAtStart: Boolean = false
+    internal val _createdAtStart: Boolean = false,
 ) {
     val id = KoinPlatformTools.generateId()
 
@@ -103,7 +103,7 @@ class Module(
     inline fun <reified T> single(
         qualifier: Qualifier? = null,
         createdAtStart: Boolean = false,
-        noinline definition: Definition<T>
+        noinline definition: Definition<T>,
     ): KoinDefinition<T> {
         val factory = _singleInstanceFactory(qualifier, definition)
         indexPrimaryType(factory)
@@ -146,7 +146,7 @@ class Module(
      */
     inline fun <reified T> factory(
         qualifier: Qualifier? = null,
-        noinline definition: Definition<T>
+        noinline definition: Definition<T>,
     ): KoinDefinition<T> {
         return factory(qualifier, definition, rootScopeQualifier)
     }
@@ -155,7 +155,7 @@ class Module(
     internal inline fun <reified T> factory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
-        scopeQualifier: Qualifier
+        scopeQualifier: Qualifier,
     ): KoinDefinition<T> {
         val factory = _factoryInstanceFactory(qualifier, definition, scopeQualifier)
         indexPrimaryType(factory)
@@ -191,17 +191,16 @@ class Module(
 @PublishedApi
 internal fun overrideError(
     factory: InstanceFactory<*>,
-    mapping: IndexKey
+    mapping: IndexKey,
 ) {
     throw DefinitionOverrideException("Already existing definition for ${factory.beanDefinition} at $mapping")
 }
-
 
 @KoinInternalApi
 inline fun <reified T> _singleInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
-    scopeQualifier: Qualifier = rootScopeQualifier
+    scopeQualifier: Qualifier = rootScopeQualifier,
 ): SingleInstanceFactory<T> {
     val def = _createDefinition(Kind.Singleton, qualifier, definition, scopeQualifier = scopeQualifier)
     return SingleInstanceFactory(def)
@@ -211,7 +210,7 @@ inline fun <reified T> _singleInstanceFactory(
 inline fun <reified T> _factoryInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
-    scopeQualifier: Qualifier = rootScopeQualifier
+    scopeQualifier: Qualifier = rootScopeQualifier,
 ): FactoryInstanceFactory<T> {
     val def = _createDefinition(Kind.Factory, qualifier, definition, scopeQualifier = scopeQualifier)
     return FactoryInstanceFactory(def)
@@ -221,7 +220,7 @@ inline fun <reified T> _factoryInstanceFactory(
 inline fun <reified T> _scopedInstanceFactory(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>,
-    scopeQualifier: Qualifier
+    scopeQualifier: Qualifier,
 ): ScopedInstanceFactory<T> {
     val def = _createDefinition(Kind.Scoped, qualifier, definition, scopeQualifier = scopeQualifier)
     return ScopedInstanceFactory(def)

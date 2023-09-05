@@ -1,7 +1,5 @@
 package org.koin.core
 
-import kotlin.test.*
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
@@ -11,6 +9,8 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.getBeanDefinition
+import kotlin.test.*
+import kotlin.test.Test
 
 class KoinApplicationIsolationTest {
 
@@ -20,14 +20,16 @@ class KoinApplicationIsolationTest {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val app2 = koinApplication {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val a1: Simple.ComponentA = app1.koin.get()
@@ -43,13 +45,15 @@ class KoinApplicationIsolationTest {
             modules(
                 module {
                     single(createdAtStart = true) { Simple.ComponentA() }
-                })
+                },
+            )
             createEagerInstances()
         }
 
         app.getBeanDefinition(Simple.ComponentA::class)!!
-        assertTrue(app.koin.scopeRegistry.rootScope._koin.instanceRegistry.instances.values
-            .first { instanceFactory -> instanceFactory.beanDefinition.primaryType == Simple.ComponentA::class }.isCreated()
+        assertTrue(
+            app.koin.scopeRegistry.rootScope._koin.instanceRegistry.instances.values
+                .first { instanceFactory -> instanceFactory.beanDefinition.primaryType == Simple.ComponentA::class }.isCreated(),
         )
     }
 
@@ -59,14 +63,16 @@ class KoinApplicationIsolationTest {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val app2 = koinApplication {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val a1: Simple.ComponentA = KoinPlatformTools.defaultContext().get().get()
@@ -118,17 +124,24 @@ class KoinApplicationIsolationTest {
     @Test
     fun `create multiple context without named qualifier`() {
         val koinA = koinApplication {
-            modules(listOf(module {
-                single { ModelA() }
-            }, module {
-                single { ModelB(get()) }
-            }))
+            modules(
+                listOf(
+                    module {
+                        single { ModelA() }
+                    },
+                    module {
+                        single { ModelB(get()) }
+                    },
+                ),
+            )
         }
 
         val koinB = koinApplication {
-            modules(module {
-                single { ModelC() }
-            })
+            modules(
+                module {
+                    single { ModelC() }
+                },
+            )
         }
 
         koinA.koin.get<ModelA>()

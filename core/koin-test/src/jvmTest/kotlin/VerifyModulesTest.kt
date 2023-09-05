@@ -1,4 +1,5 @@
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
@@ -87,9 +88,11 @@ class VerifyModulesTest {
     @Test
     fun verify_one_simple_module_w_submodule() {
         val module = module {
-            includes(module {
-                single { Simple.ComponentA() }
-            })
+            includes(
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
             single { Simple.ComponentB(get()) } bind Simple.MyComponentB::class
         }
 
@@ -103,7 +106,7 @@ class VerifyModulesTest {
     @Test
     fun verify_one_simple_module_w_extra() {
         val module = module {
-            single { (a : Simple.ComponentA) -> Simple.ComponentB(a) }
+            single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
         }
 
         try {
@@ -118,7 +121,7 @@ class VerifyModulesTest {
         Verify.addExtraTypes(Simple.ComponentA::class)
 
         val module = module {
-            single { (a : Simple.ComponentA) -> Simple.ComponentB(a) }
+            single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
         }
 
         try {
@@ -134,7 +137,7 @@ class VerifyModulesTest {
     @Test
     fun verify_one_simple_module_w_extra_broken() {
         val module = module {
-            single { (a : Simple.ComponentA) -> Simple.ComponentB(a) }
+            single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
         }
 
         try {

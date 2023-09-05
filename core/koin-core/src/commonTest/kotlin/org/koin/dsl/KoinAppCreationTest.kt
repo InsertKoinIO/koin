@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.error.KoinAppAlreadyStartedException
@@ -12,6 +13,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
+@OptIn(KoinInternalApi::class)
 class KoinAppCreationTest {
 
     @AfterTest
@@ -46,6 +48,7 @@ class KoinAppCreationTest {
             startKoin { }
             fail("should throw  KoinAppAlreadyStartedException")
         } catch (e: KoinAppAlreadyStartedException) {
+            e.printStackTrace()
         }
     }
 

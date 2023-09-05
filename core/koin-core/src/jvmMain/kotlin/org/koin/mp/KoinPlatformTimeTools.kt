@@ -1,7 +1,7 @@
 package org.koin.mp
 
 actual object KoinPlatformTimeTools {
-    actual fun getTimeInNanoSeconds() : Long {
+    actual fun getTimeInNanoSeconds(): Long {
         return System.nanoTime()
     }
 }

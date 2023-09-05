@@ -15,41 +15,41 @@ class CascadeParamTest {
 
     @Test
     fun consume_bad_value() {
-        val intParam : Int = 42
+        val intParam: Int = 42
         val stringParam = "_string_"
         val p = parametersOf(intParam, stringParam)
 
-        assertEquals(0,p.index)
-        assertEquals(stringParam,p.getOrNull<String>())
-        assertEquals(0,p.index)
-        assertEquals(intParam,p.getOrNull<Int>())
-        assertEquals(stringParam,p.getOrNull<String>())
+        assertEquals(0, p.index)
+        assertEquals(stringParam, p.getOrNull<String>())
+        assertEquals(0, p.index)
+        assertEquals(intParam, p.getOrNull<Int>())
+        assertEquals(stringParam, p.getOrNull<String>())
     }
 
     @Test
     fun parameter_array() {
-        val intParam : Int = 42
+        val intParam: Int = 42
         val stringParam = "_string_"
         val p = parameterArrayOf(intParam, stringParam)
 
-        assertEquals(0,p.index)
+        assertEquals(0, p.index)
         assertNull(p.getOrNull<String>())
-        assertEquals(intParam,p.get<Int>())
-        assertEquals(stringParam,p.get<String>())
-        assertEquals(1,p.index)
+        assertEquals(intParam, p.get<Int>())
+        assertEquals(stringParam, p.get<String>())
+        assertEquals(1, p.index)
     }
 
     @Test
     fun parameter_set() {
-        val intParam : Int = 42
+        val intParam: Int = 42
         val stringParam = "_string_"
         val p = parameterSetOf(intParam, stringParam)
 
-        assertEquals(0,p.index)
-        assertEquals(stringParam,p.getOrNull<String>())
-        assertEquals(intParam,p.getOrNull<Int>())
-        assertEquals(stringParam,p.getOrNull<String>())
-        assertEquals(0,p.index)
+        assertEquals(0, p.index)
+        assertEquals(stringParam, p.getOrNull<String>())
+        assertEquals(intParam, p.getOrNull<Int>())
+        assertEquals(stringParam, p.getOrNull<String>())
+        assertEquals(0, p.index)
     }
 
     @Test
@@ -60,7 +60,8 @@ class CascadeParamTest {
                     factoryOf(Simple::MyIntFactory)
                     factoryOf(Simple::MyStringFactory)
                     factoryOf(Simple::AllFactory)
-                })
+                },
+            )
         }.koin
 
         val intParam = 42
@@ -78,7 +79,8 @@ class CascadeParamTest {
                     factoryOf(Simple::MyIntFactory)
                     factoryOf(Simple::MyStringFactory)
                     factoryOf(Simple::AllFactory2)
-                })
+                },
+            )
         }.koin
 
         val intParam = 42
@@ -98,9 +100,11 @@ class CascadeParamTest {
                     factory {
                         Simple.AllFactory(
                             get(),
-                            get())
+                            get(),
+                        )
                     }
-                })
+                },
+            )
         }.koin
 
         val intParam = 43

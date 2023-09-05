@@ -1,5 +1,3 @@
-package org.koin.test
-
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.KoinPlatformTools
 
@@ -17,5 +15,4 @@ class Simple {
 
 object UpperCase : Qualifier {
     override val value: String = "UpperCase"
-
 }

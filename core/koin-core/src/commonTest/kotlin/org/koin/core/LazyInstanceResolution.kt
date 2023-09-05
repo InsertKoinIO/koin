@@ -1,21 +1,21 @@
 package org.koin.core
 
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class LazyInstanceResolution {
     @Test
     fun `can lazy resolve a single`() {
-
         val app = koinApplication {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val koin = app.koin
@@ -32,15 +32,19 @@ class LazyInstanceResolution {
             printLogger(Level.DEBUG)
             modules(
                 module(createdAtStart = true) {
-                    single { i++; Simple.ComponentA() }
-                })
+                    single {
+                        i++
+                        Simple.ComponentA()
+                    }
+                },
+            )
             createEagerInstances()
         }
 
         val koin = app.koin
-        assertEquals(1,i)
+        assertEquals(1, i)
         koin.get<Simple.ComponentA>()
-        assertEquals(1,i)
+        assertEquals(1, i)
     }
 
     @Test
@@ -50,15 +54,19 @@ class LazyInstanceResolution {
             printLogger(Level.DEBUG)
             modules(
                 module(createdAtStart = true) {
-                    single { i++; Simple.ComponentA() }
-                })
+                    single {
+                        i++
+                        Simple.ComponentA()
+                    }
+                },
+            )
             createEagerInstances()
         }
 
         val koin = app.koin
-        assertEquals(1,i)
+        assertEquals(1, i)
         koin.createEagerInstances()
-        assertEquals(1,i)
+        assertEquals(1, i)
     }
 
     @Test
@@ -68,19 +76,26 @@ class LazyInstanceResolution {
             printLogger(Level.DEBUG)
             modules(
                 module(createdAtStart = true) {
-                    single { i++; Simple.ComponentA() }
+                    single {
+                        i++
+                        Simple.ComponentA()
+                    }
                 },
                 module(createdAtStart = true) {
-                    single { i++; Simple.ComponentB(get()) }
-                })
+                    single {
+                        i++
+                        Simple.ComponentB(get())
+                    }
+                },
+            )
             createEagerInstances()
         }
 
         val koin = app.koin
-        assertEquals(2,i)
+        assertEquals(2, i)
         koin.get<Simple.ComponentA>()
         koin.get<Simple.ComponentB>()
-        assertEquals(2,i)
+        assertEquals(2, i)
     }
 
     @Test
@@ -90,19 +105,26 @@ class LazyInstanceResolution {
             printLogger(Level.DEBUG)
             modules(
                 module {
-                    single { i++; Simple.ComponentA() }
+                    single {
+                        i++
+                        Simple.ComponentA()
+                    }
                 },
                 module(createdAtStart = true) {
-                    single { i++; Simple.ComponentB(get()) }
-                })
+                    single {
+                        i++
+                        Simple.ComponentB(get())
+                    }
+                },
+            )
             createEagerInstances()
         }
 
         val koin = app.koin
-        assertEquals(2,i)
+        assertEquals(2, i)
         koin.get<Simple.ComponentA>()
         koin.get<Simple.ComponentB>()
-        assertEquals(2,i)
+        assertEquals(2, i)
     }
 
     @Test
@@ -115,6 +137,6 @@ class LazyInstanceResolution {
             }
         }
 
-        assertEquals(1,module.eagerInstances.size)
+        assertEquals(1, module.eagerInstances.size)
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import org.koin.dsl.KoinAppDeclaration
  * [TestExtension] which will automatically start and stop Koin.
  * @author Marko Pukari
  */
-class KoinTestExtension private constructor(private val appDeclaration: KoinAppDeclaration):
-        BeforeEachCallback, AfterEachCallback, ParameterResolver {
+class KoinTestExtension private constructor(private val appDeclaration: KoinAppDeclaration) :
+    BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
     override fun beforeEach(context: ExtensionContext) {
         val koin = startKoin(appDeclaration = appDeclaration).koin
@@ -55,7 +55,6 @@ class KoinTestExtension private constructor(private val appDeclaration: KoinAppD
             return KoinTestExtension(appDeclaration)
         }
 
-        private val KOIN_STORE: ExtensionContext.Namespace  = ExtensionContext.Namespace.create("KOIN_STORE")
+        private val KOIN_STORE: ExtensionContext.Namespace = ExtensionContext.Namespace.create("KOIN_STORE")
     }
-
 }

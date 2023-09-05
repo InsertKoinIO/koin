@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
-import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
@@ -58,15 +56,18 @@ class ScopeRegistry(private val _koin: Koin) {
     @PublishedApi
     internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
         _koin.logger.debug("|- (+) Scope - id:'$scopeId' q:$qualifier")
-        if (!_scopeDefinitions.contains(qualifier)){
+        if (!_scopeDefinitions.contains(qualifier)) {
             _koin.logger.warn("| Scope '$qualifier' not defined. Creating it ...")
             _scopeDefinitions.add(qualifier)
         }
         if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
-        val scope = Scope(qualifier,scopeId, _koin = _koin)
-        source?.let { scope._source = source }
+        val scope = Scope(qualifier, scopeId, _koin = _koin)
+        source?.let {
+            _koin.logger.debug("|- Scope source set id:'$scopeId' -> $source")
+            scope._source = source
+        }
         scope.linkTo(rootScope)
         _scopes[scopeId] = scope
         return scope
@@ -105,6 +106,7 @@ class ScopeRegistry(private val _koin: Koin) {
 
     companion object {
         private const val ROOT_SCOPE_ID = "_root_"
+
         @PublishedApi
         internal val rootScopeQualifier = _q(ROOT_SCOPE_ID)
     }

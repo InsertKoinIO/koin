@@ -1,13 +1,13 @@
 package org.koin.core
 
-import kotlin.test.assertEquals
-import kotlin.test.fail
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class OpenCloseScopeInstanceTest {
 
@@ -17,11 +17,11 @@ class OpenCloseScopeInstanceTest {
     fun `get definition from a scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeName) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(scopeName) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -33,11 +33,11 @@ class OpenCloseScopeInstanceTest {
     fun `can't get definition from another scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeName) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(scopeName) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -54,12 +54,12 @@ class OpenCloseScopeInstanceTest {
     fun `get definition from scope and out of scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scopeName) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(scopeName) {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -75,14 +75,14 @@ class OpenCloseScopeInstanceTest {
         val scope1Name = named("SCOPE_1")
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(scope1Name) {
-                            scoped { B() }
-                        }
-                        scope(named("SCOPE_2")) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(scope1Name) {
+                        scoped { B() }
                     }
+                    scope(named("SCOPE_2")) {
+                        scoped { Simple.ComponentA() }
+                    }
+                },
             )
         }.koin
 

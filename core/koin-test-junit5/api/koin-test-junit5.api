@@ -1,0 +1,38 @@
+public abstract class org/koin/test/junit5/AutoCloseKoinTest : org/koin/test/KoinTest {
+	public fun <init> ()V
+	public final fun autoClose ()V
+	public fun getKoin ()Lorg/koin/core/Koin;
+}
+
+public abstract interface class org/koin/test/junit5/ClosingKoinTest : org/koin/test/KoinTest {
+	public abstract fun autoClose ()V
+}
+
+public final class org/koin/test/junit5/ClosingKoinTest$DefaultImpls {
+	public static fun autoClose (Lorg/koin/test/junit5/ClosingKoinTest;)V
+	public static fun getKoin (Lorg/koin/test/junit5/ClosingKoinTest;)Lorg/koin/core/Koin;
+}
+
+public final class org/koin/test/junit5/KoinTestExtension : org/junit/jupiter/api/extension/AfterEachCallback, org/junit/jupiter/api/extension/BeforeEachCallback, org/junit/jupiter/api/extension/ParameterResolver {
+	public static final field Companion Lorg/koin/test/junit5/KoinTestExtension$Companion;
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterEach (Lorg/junit/jupiter/api/extension/ExtensionContext;)V
+	public fun beforeEach (Lorg/junit/jupiter/api/extension/ExtensionContext;)V
+	public fun resolveParameter (Lorg/junit/jupiter/api/extension/ParameterContext;Lorg/junit/jupiter/api/extension/ExtensionContext;)Ljava/lang/Object;
+	public fun supportsParameter (Lorg/junit/jupiter/api/extension/ParameterContext;Lorg/junit/jupiter/api/extension/ExtensionContext;)Z
+}
+
+public final class org/koin/test/junit5/KoinTestExtension$Companion {
+	public final fun create (Lkotlin/jvm/functions/Function1;)Lorg/koin/test/junit5/KoinTestExtension;
+}
+
+public final class org/koin/test/junit5/mock/MockProviderExtension : org/junit/jupiter/api/extension/BeforeEachCallback {
+	public static final field Companion Lorg/koin/test/junit5/mock/MockProviderExtension$Companion;
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun beforeEach (Lorg/junit/jupiter/api/extension/ExtensionContext;)V
+}
+
+public final class org/koin/test/junit5/mock/MockProviderExtension$Companion {
+	public final fun create (Lkotlin/jvm/functions/Function1;)Lorg/koin/test/junit5/mock/MockProviderExtension;
+}
+

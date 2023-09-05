@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,15 @@ class KoinCoroutinesEngine : CoroutineScope, KoinExtension {
 
     override lateinit var koin: Koin
 
-    fun <T> launchStartJob(block: suspend CoroutineScope.() -> T){
+    fun <T> launchStartJob(block: suspend CoroutineScope.() -> T) {
         startJobs.add(async { block() })
     }
 
-    suspend fun awaitAllStartJobs(){
+    suspend fun awaitAllStartJobs() {
         koin.logger.debug("await All Start Jobs ...")
         startJobs.map { it.await() }
         startJobs.clear()
     }
-
 
     override fun onClose() {
         koin.logger.debug("onClose $this")
@@ -61,4 +60,3 @@ class KoinCoroutinesEngine : CoroutineScope, KoinExtension {
         const val EXTENSION_NAME = "coroutine-engine"
     }
 }
-

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(KoinInternalApi::class)
-
 package org.koin.androidx.fragment.dsl
 
 import androidx.fragment.app.Fragment

@@ -5,7 +5,6 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.registry.loadEnvironmentProperties
 import org.koin.core.registry.loadPropertiesFromFile
 
-
 /**
  * Load properties from file
  * @param fileName

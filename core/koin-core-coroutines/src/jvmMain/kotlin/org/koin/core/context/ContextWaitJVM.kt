@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.koin.core.context
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.waitAllStartJobs
 import org.koin.mp.KoinPlatform
-import org.koin.mp.KoinPlatformTools
 
 /**
  * Starter function to help start Koin context with default context parameters

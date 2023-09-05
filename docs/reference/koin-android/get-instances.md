@@ -82,3 +82,29 @@ val appModule = module {
     }
 }
 ```
+
+## Android Scope & Android Context resolution
+
+While you have a scope that is binding the `Context` type, you may need to resolve the `Context` but from different level.
+
+Let's take a config:
+
+```kotlin
+class MyPresenter(val context : Context)
+
+startKoin {
+  androidContext(context)
+  modules(
+    module {
+      scope<MyActivity> {
+        scoped { MyPresenter( <get() ???> ) }
+      }
+    }
+  )
+}
+```
+
+To resolve the right type in `MyPresenter`, use the following:
+- `get()` will resolve closest `Context` definition, here it will be the source scope `MyActivity`
+- `androidContext()` will also resolve closest `Context` definition, here it will be the source scope `MyActivity`
+- `androidApplication()` will also resolve `Application` definition, here it will be the source scope `context` object defined in Koin setup

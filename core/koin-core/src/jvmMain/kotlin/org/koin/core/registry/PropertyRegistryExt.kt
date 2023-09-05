@@ -1,15 +1,16 @@
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.NoPropertyFileFoundException
-import org.koin.core.logger.Level
-import org.koin.ext.clearQuotes
 import java.util.*
-
 
 /**
  *Save properties values into PropertyRegister
  */
+@Suppress("UNCHECKED_CAST")
 fun PropertyRegistry.saveProperties(properties: Properties) {
     _koin.logger.debug("load ${properties.size} properties")
 
@@ -28,7 +29,7 @@ fun PropertyRegistry.loadPropertiesFromFile(fileName: String) {
 
     val content = Koin::class.java.getResource(fileName)?.readText()
     if (content != null) {
-        _koin.logger.info("loaded properties from file:'$fileName'" )
+        _koin.logger.info("loaded properties from file:'$fileName'")
         val properties = readDataFromFile(content)
         saveProperties(properties)
     } else {

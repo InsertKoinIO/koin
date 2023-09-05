@@ -1,25 +1,27 @@
 package org.koin.core
 
-import kotlin.test.assertEquals
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.assertDefinitionsCount
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class MultipleModuleDeclarationTest {
 
     @Test
     fun `run with DI with several modules`() {
-
         val app = koinApplication {
-            modules(listOf(
-                module {
-                    single { Simple.ComponentA() }
-                },
-                module {
-                    single { Simple.ComponentB(get()) }
-                }))
+            modules(
+                listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    },
+                ),
+            )
         }
 
         app.assertDefinitionsCount(2)
@@ -27,15 +29,17 @@ class MultipleModuleDeclarationTest {
 
     @Test
     fun `resolve DI with several modules`() {
-
         val app = koinApplication {
-            modules(listOf(
-                module {
-                    single { Simple.ComponentA() }
-                },
-                module {
-                    single { Simple.ComponentB(get()) }
-                }))
+            modules(
+                listOf(
+                    module {
+                        single { Simple.ComponentA() }
+                    },
+                    module {
+                        single { Simple.ComponentB(get()) }
+                    },
+                ),
+            )
         }
 
         val koin = app.koin

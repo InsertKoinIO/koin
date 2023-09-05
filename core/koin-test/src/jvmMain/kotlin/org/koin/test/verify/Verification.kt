@@ -7,7 +7,6 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.module.Module
 import org.koin.core.module.flatten
 import org.koin.ext.getFullName
-import java.util.HashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KVisibility
@@ -35,13 +34,24 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
         index: List<String>,
     ): List<KClass<*>> {
         val beanDefinition = factory.beanDefinition
-        println("|-> $beanDefinition")
-        val types = listOf(beanDefinition.primaryType) + beanDefinition.secondaryTypes
-        println("| bound types : $types")
+        println("\n|-> definition $beanDefinition")
+        if (beanDefinition.qualifier != null){
+            println("| qualifier: ${beanDefinition.qualifier}")
+        }
 
-        return types.flatMap { type ->
-            val constructors = type.constructors.filter { it.visibility == KVisibility.PUBLIC }
-            constructors.flatMap { ctor -> verifyConstructor(ctor, type, index, beanDefinition) }
+        val boundTypes = listOf(beanDefinition.primaryType) + beanDefinition.secondaryTypes
+        println("| bind types: $boundTypes")
+
+        val functionType = beanDefinition.primaryType
+        val constructors = functionType.constructors.filter { it.visibility == KVisibility.PUBLIC }
+
+        return constructors.flatMap { constructor ->
+            verifyConstructor(
+                constructor,
+                functionType,
+                index,
+                beanDefinition
+            )
         }
     }
 
@@ -52,28 +62,37 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
         beanDefinition: BeanDefinition<*>,
     ): List<KClass<*>> {
         val constructorParameters = constructorFunction.parameters
-        println("| constructor: $classOrigin -> $constructorParameters")
+
+        if (constructorParameters.isEmpty()){
+            println("| no dependency to check")
+        } else {
+            println("| ${constructorParameters.size} dependencies to check")
+        }
 
         return constructorParameters.map { constructorParameter ->
             val ctorParamClass = (constructorParameter.type.classifier as KClass<*>)
             val ctorParamClassName = ctorParamClass.getFullName()
 
             val isDefinitionDeclared = index.any { k -> k.contains(ctorParamClassName) }
-
             val alreadyBoundFactory = verifiedFactories.keys.firstOrNull { ctorParamClass in listOf(it.beanDefinition.primaryType) + it.beanDefinition.secondaryTypes }
             val factoryDependencies = verifiedFactories[alreadyBoundFactory]
             val isCircular = factoryDependencies?.let { classOrigin in factoryDependencies } ?: false
 
             when {
                 !isDefinitionDeclared -> {
-                    System.err.println("* ----- > Missing type '${ctorParamClass.qualifiedName}' for class '${classOrigin.qualifiedName}' in definition '$beanDefinition'\nFix your Koin configuration or add extraTypes parameter: verify(extraTypes = listOf(${ctorParamClass.qualifiedName}::class))")
-                    throw MissingKoinDefinitionException("Missing type '${ctorParamClass.qualifiedName}' for class '${classOrigin.qualifiedName}' in definition '$beanDefinition'")
+                    val errorMessage = "Missing definition type '${ctorParamClass.qualifiedName}' in definition '$beanDefinition'"
+                    System.err.println("* ----- > $errorMessage\nFix your Koin configuration or add extraTypes parameter to whitelist the type: verify(extraTypes = listOf(${ctorParamClass.qualifiedName}::class))")
+                    throw MissingKoinDefinitionException(errorMessage)
                 }
+
                 isCircular -> {
-                    throw CircularInjectionException("Circular type injection '${ctorParamClass.qualifiedName}' to '${classOrigin.qualifiedName}'")
+                    val errorMessage = "Circular injection between '${ctorParamClass.qualifiedName}' and '${classOrigin.qualifiedName}'. Fix your Koin configuration"
+                    System.err.println("* ----- > $errorMessage")
+                    throw CircularInjectionException(errorMessage)
                 }
+
                 else -> {
-                    println("|- '$ctorParamClass'")
+                    println("|- dependency '$ctorParamClass' found ✅")
                     ctorParamClass
                 }
             }

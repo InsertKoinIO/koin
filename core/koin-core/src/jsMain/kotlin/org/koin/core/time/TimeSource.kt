@@ -17,8 +17,8 @@ interface TimeSource {
 internal fun getTimeSource(): TimeSource {
     val isNode = js(
         "typeof process !== 'undefined' " +
-                "&& process.versions " +
-                "&& !!process.versions.node"
+            "&& process.versions " +
+            "&& !!process.versions.node",
     ) as Boolean
 
     return if (isNode) {

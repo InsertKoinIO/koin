@@ -1,10 +1,10 @@
-//package org.koin.core
+// package org.koin.core
 //
-//import kotlin.test.Test
-//import kotlin.test.assertEquals
-//import kotlin.test.assertTrue
+// import kotlin.test.Test
+// import kotlin.test.assertEquals
+// import kotlin.test.assertTrue
 //
-//class AttributesTest {
+// class AttributesTest {
 //
 //    @Test
 //    fun `can store & get an attribute value`() {
@@ -33,4 +33,4 @@
 //        val string = attr.get<String>("myKey")
 //        assertEquals("myString2", string)
 //    }
-//}
+// }

@@ -16,7 +16,7 @@ startKoin {
 }
 ```
 
-This uses teh default Koin context to register your dependencies.
+This uses the default Koin context to register your dependencies.
 
 But if we want to use an isolated Koin instance, you need declare an instance and store it in a class to hold your instance.
 You will have to keep your Koin Application instance available in your library and pass it to your custom KoinComponent implementation:

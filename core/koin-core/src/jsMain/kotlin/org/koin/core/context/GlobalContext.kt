@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.koin.core.context
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.error.ApplicationAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -38,7 +38,7 @@ object GlobalContext : KoinContext {
 
     private fun register(koinApplication: KoinApplication) {
         if (_koin != null) {
-            throw KoinAppAlreadyStartedException("A Koin Application has already been started")
+            throw ApplicationAlreadyStartedException("A Koin Application has already been started")
         }
         _koin = koinApplication.koin
     }
@@ -47,7 +47,6 @@ object GlobalContext : KoinContext {
         _koin?.close()
         _koin = null
     }
-
 
     override fun startKoin(koinApplication: KoinApplication): KoinApplication {
         register(koinApplication)
@@ -61,12 +60,12 @@ object GlobalContext : KoinContext {
         return koinApplication
     }
 
-    override fun loadKoinModules(module: Module) {
-        get().loadModules(listOf(module))
+    override fun loadKoinModules(module: Module,createEagerInstances : Boolean) {
+        get().loadModules(listOf(module), createEagerInstances = createEagerInstances)
     }
 
-    override fun loadKoinModules(modules: List<Module>) {
-        get().loadModules(modules)
+    override fun loadKoinModules(modules: List<Module>, createEagerInstances : Boolean) {
+        get().loadModules(modules, createEagerInstances = createEagerInstances)
     }
 
     override fun unloadKoinModules(module: Module) {

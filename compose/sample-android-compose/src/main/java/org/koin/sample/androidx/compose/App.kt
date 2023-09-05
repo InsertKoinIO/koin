@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.scope.KoinActivityScope
+import org.koin.compose.KoinIsolatedContext
 import org.koin.compose.koinInject
 import org.koin.compose.module.rememberKoinModules
 import org.koin.compose.rememberKoinInject
@@ -18,6 +19,8 @@ import org.koin.sample.androidx.compose.data.MyFactory
 import org.koin.sample.androidx.compose.data.MyInnerFactory
 import org.koin.sample.androidx.compose.data.MyScoped
 import org.koin.sample.androidx.compose.data.MySingle
+import org.koin.sample.androidx.compose.data.sdk.SDKData
+import org.koin.sample.androidx.compose.di.IsolatedContextSDK
 import org.koin.sample.androidx.compose.di.secondModule
 import org.koin.sample.androidx.compose.viewmodel.SSHViewModel
 import org.koin.sample.androidx.compose.viewmodel.UserViewModel
@@ -37,6 +40,7 @@ fun App(userViewModel: UserViewModel = koinViewModel()) {
                     SingleComposable(parentStatus = updatedTime)
                     FactoryComposable(parentStatus = updatedTime)
                     ViewModelComposable(parentStatus = updatedTime)
+                    IsolatedSDKComposable(parentStatus = updatedTime)
                 }
             }
 
@@ -84,6 +88,7 @@ fun ViewModelComposable(
 //        SingleComposable()
 //    }
 //}
+
 
 @Composable
 fun SingleComposable(

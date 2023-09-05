@@ -1,0 +1,12 @@
+public final class org/koin/logger/KoinApplicationExtKt {
+	public static final fun slf4jLogger (Lorg/koin/core/KoinApplication;Lorg/koin/core/logger/Level;)V
+	public static synthetic fun slf4jLogger$default (Lorg/koin/core/KoinApplication;Lorg/koin/core/logger/Level;ILjava/lang/Object;)V
+}
+
+public final class org/koin/logger/SLF4JLogger : org/koin/core/logger/Logger {
+	public fun <init> ()V
+	public fun <init> (Lorg/koin/core/logger/Level;)V
+	public synthetic fun <init> (Lorg/koin/core/logger/Level;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun display (Lorg/koin/core/logger/Level;Ljava/lang/String;)V
+}
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("UNUSED_PARAMETER")
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.test.check
 
 import org.koin.core.Koin
@@ -57,7 +60,7 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
  * @param appDeclaration - Koin app config if needed
  * @param parameters - Check parameters DSL
  */
-fun checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
+fun checkKoinModules(modules: List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
     startKoin(appDeclaration)
         .modules(modules)
         .checkModules(parameters)
@@ -83,7 +86,7 @@ fun checkKoinModules(level: Level = Level.INFO, parameters: CheckParameters? = n
  * Deprecated
  */
 @Deprecated("use instead checkKoinModules(modules : List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null)")
-fun checkKoinModules(vararg modules : Module, level: Level = Level.INFO, parameters: CheckParameters? = null) {
+fun checkKoinModules(vararg modules: Module, level: Level = Level.INFO, parameters: CheckParameters? = null) {
     startKoin({})
         .logger(KoinPlatformTools.defaultLogger(level))
         .checkModules(parameters)
@@ -97,7 +100,7 @@ fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     logger.info("[Check] checking modules ...")
 
     checkAllDefinitions(
-        declareParameterCreators(parametersDefinition)
+        declareParameterCreators(parametersDefinition),
     )
 
     logger.info("[Check] All checked")
@@ -113,7 +116,7 @@ private fun Koin.checkAllDefinitions(allParameters: ParametersBinding) {
     allParameters.scopeLinks.forEach { scopeLink ->
         val linkTargets = scopes.filter { it.scopeQualifier == scopeLink.value }
         scopes.filter { it.scopeQualifier == scopeLink.key }
-                .forEach { scope -> linkTargets.forEach { linkTarget -> scope.linkTo(linkTarget) } }
+            .forEach { scope -> linkTargets.forEach { linkTarget -> scope.linkTo(linkTarget) } }
     }
     instanceRegistry.instances.values.toSet().forEach { factory ->
         checkDefinition(allParameters, factory.beanDefinition, scopes.first { it.scopeQualifier == factory.beanDefinition.scopeQualifier })
@@ -131,19 +134,23 @@ private fun Koin.instantiateAllScopes(allParameters: ParametersBinding): List<Sc
 private fun mockSourceValue(qualifier: Qualifier): Any? {
     return if (qualifier is TypeQualifier) {
         MockProvider.makeMock(qualifier.type)
-    } else null
+    } else {
+        null
+    }
 }
 
 private fun Koin.checkDefinition(
     allParameters: ParametersBinding,
     definition: BeanDefinition<*>,
-    scope: Scope
+    scope: Scope,
 ) {
-    val parameters: ParametersHolder = allParameters.parametersCreators[CheckedComponent(
+    val parameters: ParametersHolder = allParameters.parametersCreators[
+        CheckedComponent(
+            definition.qualifier,
+            definition.primaryType,
+        ),
+    ]?.invoke(
         definition.qualifier,
-        definition.primaryType
-    )]?.invoke(
-        definition.qualifier
     ) ?: MockParameter(scope, allParameters.defaultValues)
     logger.info("[Check] definition: $definition")
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }

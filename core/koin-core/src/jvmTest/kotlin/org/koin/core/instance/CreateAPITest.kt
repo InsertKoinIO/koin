@@ -16,10 +16,12 @@ class CreateAPITest {
     fun `should find 1st constructor and build`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { ComponentA() }
-                single { ComponentB(get()) }
-            })
+            modules(
+                module {
+                    single { ComponentA() }
+                    single { ComponentB(get()) }
+                },
+            )
         }.koin
 
         val duration = measureDuration {
@@ -29,10 +31,12 @@ class CreateAPITest {
 
         val createKoin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { ComponentA() }
-                single { newInstance(ComponentB::class, it) }
-            })
+            modules(
+                module {
+                    single { ComponentA() }
+                    single { newInstance(ComponentB::class, it) }
+                },
+            )
         }.koin
 
         val createDuration = measureDuration {
@@ -46,9 +50,11 @@ class CreateAPITest {
         try {
             val koin = koinApplication {
                 printLogger(Level.DEBUG)
-                modules(module {
-                    single { newInstance(ComponentB::class, it) }
-                })
+                modules(
+                    module {
+                        single { newInstance(ComponentB::class, it) }
+                    },
+                )
             }.koin
 
             koin.get<ComponentB>()
@@ -62,9 +68,11 @@ class CreateAPITest {
     fun `create with empty ctor`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { newInstance(ComponentA::class, it) }
-            })
+            modules(
+                module {
+                    single { newInstance(ComponentA::class, it) }
+                },
+            )
         }.koin
 
         koin.get<ComponentA>()
@@ -74,10 +82,12 @@ class CreateAPITest {
     fun `create for interface`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { ComponentA() }
-                single<Component> { newInstance(ComponentD::class, it) }
-            })
+            modules(
+                module {
+                    single { ComponentA() }
+                    single<Component> { newInstance(ComponentD::class, it) }
+                },
+            )
         }.koin
 
         koin.get<Component>()
@@ -87,10 +97,12 @@ class CreateAPITest {
     fun `create factory for interface`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { ComponentA() }
-                factory<Component> { newInstance(ComponentD::class, it) }
-            })
+            modules(
+                module {
+                    single { ComponentA() }
+                    factory<Component> { newInstance(ComponentD::class, it) }
+                },
+            )
         }.koin
 
         val f1 = koin.get<Component>()
@@ -103,10 +115,12 @@ class CreateAPITest {
     fun `create API overhead`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { newInstance<ComponentA>(it) }
-                factory<Component> { newInstance<ComponentD>(it) }
-            })
+            modules(
+                module {
+                    single { newInstance<ComponentA>(it) }
+                    factory<Component> { newInstance<ComponentD>(it) }
+                },
+            )
         }.koin
 
         (1..3).forEach {
@@ -118,9 +132,11 @@ class CreateAPITest {
     fun `create API with param`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single<ComponentD>()
-            })
+            modules(
+                module {
+                    single<ComponentD>()
+                },
+            )
         }.koin
 
         koin.get<ComponentD> { parametersOf(ComponentA()) }

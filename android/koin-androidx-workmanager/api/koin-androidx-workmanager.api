@@ -1,0 +1,17 @@
+public final class org/koin/androidx/workmanager/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class org/koin/androidx/workmanager/factory/KoinWorkerFactory : androidx/work/WorkerFactory, org/koin/core/component/KoinComponent {
+	public fun <init> ()V
+	public fun createWorker (Landroid/content/Context;Ljava/lang/String;Landroidx/work/WorkerParameters;)Landroidx/work/ListenableWorker;
+	public fun getKoin ()Lorg/koin/core/Koin;
+}
+
+public final class org/koin/androidx/workmanager/koin/KoinApplicationExtKt {
+	public static final fun workManagerFactory (Lorg/koin/core/KoinApplication;)V
+}
+

@@ -16,9 +16,7 @@
 package org.koin.java
 
 import org.junit.After
-import kotlin.test.assertEquals
 import org.junit.Before
-import kotlin.test.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
@@ -33,11 +31,13 @@ open class KoinJavaComponentTest {
     fun before() {
         startKoin {
             properties(mapOf("PrefixProp" to "_", "SeparatorProp" to "|"))
-            modules(module {
-                single(named("db")) { LocalDbImplementation() as DataSource }
-                single(named("api")) { RemoteApiImplementation() as DataSource }
-                single { (separator: String) -> DataConverter(separator) }
-            })
+            modules(
+                module {
+                    single(named("db")) { LocalDbImplementation() as DataSource }
+                    single(named("api")) { RemoteApiImplementation() as DataSource }
+                    single { (separator: String) -> DataConverter(separator) }
+                },
+            )
         }
     }
 
@@ -46,8 +46,8 @@ open class KoinJavaComponentTest {
         stopKoin()
     }
 
-    //Getting java.lang.NoClassDefFoundError: org/koin/java/DataFetcher
-    //https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#java-support-in-jvm-targets
+    // Getting java.lang.NoClassDefFoundError: org/koin/java/DataFetcher
+    // https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#java-support-in-jvm-targets
     /*@Test
     fun `inject components in java DataFetcher class test`() {
         val dataFetcherInstance = DataFetcher()

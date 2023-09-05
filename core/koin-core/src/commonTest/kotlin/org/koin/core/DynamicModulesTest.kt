@@ -1,8 +1,5 @@
 package org.koin.core
 
-import kotlin.test.fail
-import kotlin.test.Test
-import kotlin.test.*
 import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.context.*
@@ -16,6 +13,9 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.getBeanDefinition
+import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.fail
 
 class DynamicModulesTest : KoinCoreTest() {
 
@@ -187,7 +187,7 @@ class DynamicModulesTest : KoinCoreTest() {
         assertEquals(42, app.koin.get<Simple.MySingle> { parametersOf(42) }.id)
 
         koin.unloadModules(listOf(module))
-        koin.loadModules(listOf(module))
+        koin.loadModules(listOf(module), createEagerInstances = false)
 
         assertNotNull(app.getBeanDefinition(Simple.MySingle::class))
 
@@ -209,7 +209,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         val koin = app.koin
 
-        koin.loadModules(listOf(module))
+        koin.loadModules(listOf(module), createEagerInstances = false)
         koin.createEagerInstances()
 
         assertTrue(created)
@@ -230,8 +230,28 @@ class DynamicModulesTest : KoinCoreTest() {
 
         val koin = app.koin
 
-        koin.loadModules(listOf(module))
+        koin.loadModules(listOf(module), createEagerInstances = false)
         koin.createEagerInstances()
+
+        assertTrue(created)
+    }
+
+    @Test
+    fun `create at start for external modules - create eager`() {
+        var created = false
+        val module = module(createdAtStart = true) {
+            single {
+                created = true
+                Simple.MySingle(42)
+            }
+        }
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+        }
+
+        val koin = app.koin
+
+        koin.loadModules(listOf(module), createEagerInstances = true)
 
         assertTrue(created)
     }
@@ -248,7 +268,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             42,
-            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(42) }.id,
         )
 
         unloadKoinModules(module)
@@ -256,7 +276,7 @@ class DynamicModulesTest : KoinCoreTest() {
 
         assertEquals(
             24,
-            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id
+            KoinPlatformTools.defaultContext().get().get<Simple.MySingle> { parametersOf(24) }.id,
         )
 
         stopKoin()
