@@ -70,7 +70,7 @@ class Module(
      * A collection of [Module] from which the current [Module] is compose.
      * Duplicated modules are ignored.
      */
-    fun includes(module: List<Module>) {
+    fun includes(module: Collection<Module>) {
         includedModules += module
     }
 
