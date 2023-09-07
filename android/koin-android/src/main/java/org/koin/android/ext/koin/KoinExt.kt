@@ -25,7 +25,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.registry.saveProperties
-import org.koin.dsl.binds
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.util.*
 
@@ -58,7 +58,7 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
 
     if (androidContext is Application) {
         koin.loadModules(listOf(module {
-            single { androidContext } binds arrayOf(Context::class, Application::class)
+            single { androidContext } bind Context::class
         }))
     } else {
         koin.loadModules(listOf(module {
