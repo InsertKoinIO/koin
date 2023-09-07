@@ -32,7 +32,7 @@ import org.koin.dsl.bind
  * @author Arnaud Giuliani
  **/
 inline fun <reified T : ListenableWorker> Module.worker(
-    qualifier: Qualifier? = null,
+    qualifier: Qualifier = named<T>(),
     noinline definition: Definition<T>
 ): KoinDefinition<T> {
     val factory = factory(qualifier, definition)

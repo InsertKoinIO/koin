@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:OptIn(KoinInternalApi::class)
 
 package org.koin.androidx.viewmodel.dsl
 
@@ -34,7 +33,7 @@ import org.koin.dsl.ScopeDSL
  * class MyViewModel : ViewModel()
  *
  * val myModule = module {
- *   viewModel(::MyViewModel)
+ *   viewModelOf(::MyViewModel)
  * }
  * ```
  *

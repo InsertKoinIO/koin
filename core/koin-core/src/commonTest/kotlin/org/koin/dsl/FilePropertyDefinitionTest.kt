@@ -1,11 +1,11 @@
-//package org.koin.dsl
+// package org.koin.dsl
 //
-//import kotlin.test.assertEquals
-//import kotlin.test.fail
-//import kotlin.test.Test
-//import org.koin.core.error.NoPropertyFileFoundException
+// import kotlin.test.assertEquals
+// import kotlin.test.fail
+// import kotlin.test.Test
+// import org.koin.core.error.NoPropertyFileFoundException
 //
-//class FilePropertyDefinitionTest {
+// class FilePropertyDefinitionTest {
 //
 //    @Test
 //    fun `load and get properties from file`() {
@@ -78,4 +78,4 @@
 //
 //        assertEquals(42.0f, koin.getProperty<String>("float.value")?.toFloat())
 //    }
-//}
+// }

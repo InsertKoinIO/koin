@@ -5,11 +5,11 @@ import org.koin.core.*
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.core.context.waitKoinStart
-import kotlin.test.Test
 import org.koin.core.logger.*
 import org.koin.core.time.Timer
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
+import kotlin.test.Test
 
 class PerfsTest {
 
@@ -53,7 +53,7 @@ class PerfsTest {
     }
 
     @Test
-    fun start_and_wait(){
+    fun start_and_wait() {
         startKoin {
             lazyModules(perfModule400())
         }
@@ -67,7 +67,7 @@ class PerfsTest {
     }
 
     @Test
-    fun run_after_start_coroutine(){
+    fun run_after_start_coroutine() {
         startKoin {
             printLogger(Level.DEBUG)
             lazyModules(perfModule400())
@@ -79,11 +79,10 @@ class PerfsTest {
             }
         }
         stopKoin()
-
     }
 
     @Test
-    fun run_after_start(){
+    fun run_after_start() {
         startKoin {
             printLogger(Level.DEBUG)
             lazyModules(perfModule400())
@@ -93,6 +92,5 @@ class PerfsTest {
             koin.get<Perfs.A27>()
         }
         stopKoin()
-
     }
 }

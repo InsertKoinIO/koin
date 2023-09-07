@@ -1,8 +1,8 @@
 package org.koin.benchmark
 
-import org.koin.dsl.lazyModule
+import org.koin.dsl.module
 
-fun perfModule400() = lazyModule {
+fun perfModule400() = module {
    single { A1() }
    single { B1(get()) }
    single { C1(get(), get()) }

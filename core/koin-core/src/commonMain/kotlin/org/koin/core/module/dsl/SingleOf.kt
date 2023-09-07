@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.koin.core.module.dsl
 
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 
 /**
@@ -31,7 +30,7 @@ import org.koin.core.module.Module
  * class Model
  *
  * val myModule = module {
- *   factory(::Model)
+ *   singleOf(::Model)
  * }
  * ```
  * @author Arnaud Giuliani

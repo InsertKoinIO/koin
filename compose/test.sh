@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./gradlew cleanTest test --parallel
+./gradlew cleanTest test --parallel --no-build-cache

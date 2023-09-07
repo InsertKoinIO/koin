@@ -81,3 +81,41 @@ val myModule = module {
 ```
 
 
+## Injected parameters: indexed values or set (`3.4.3`)
+
+In addition to `parametersOf`, the following API are accessible:
+
+- `parameterArrayOf`: to use an array of value, and data will be use by its index
+
+```kotlin
+val params = parameterArrayOf(1,2,3)
+params.get<Int>() == 1
+params.get<Int>() == 2
+params.get<Int>() == 3
+params.get<Int>() == 3
+```
+
+- `parameterSetOf`: to use a set of values, with different kinds. Doesn't use index to scroll values.
+
+```kotlin
+val params = parameterSetOf("a_string", 42)
+params.get<Int>() == 42
+params.get<String>() == "a_string"
+params.get<Int>() == 42
+params.get<String>() == "a_string"
+```
+
+The default function `parametersOf` is working with both index & set of values:
+
+```kotlin
+val params = parametersOf(1,2,"a_string")
+params.get<String>() == "a_string"
+params.get<Int>() == 1
+params.get<Int>() == 2
+params.get<Int>() == 2
+params.get<String>() == "a_string"
+```
+
+:::note
+  You can "cascade" parameter injection with `parametersOf` or `parameterArrayOf`, to consume value based on index. Or use `parametersOf` or `parameterSetOf` to cascading based on type to resolve. 
+:::

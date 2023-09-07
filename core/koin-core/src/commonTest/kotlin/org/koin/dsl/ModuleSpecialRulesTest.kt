@@ -1,17 +1,19 @@
 package org.koin.dsl
 
-import kotlin.test.assertEquals
-import kotlin.test.Test
 import org.koin.core.qualifier.named
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ModuleSpecialRulesTest {
 
     @Test
     fun `generic type declaration`() {
         val koin = koinApplication {
-            modules(module {
-                single { arrayListOf<String>() }
-            })
+            modules(
+                module {
+                    single { arrayListOf<String>() }
+                },
+            )
         }.koin
 
         koin.get<ArrayList<String>>()
@@ -20,10 +22,12 @@ class ModuleSpecialRulesTest {
     @Test
     fun `generic types declaration`() {
         val koin = koinApplication {
-            modules(module {
-                single(named("strings")) { arrayListOf<String>() }
-                single(named("ints")) { arrayListOf<Int>() }
-            })
+            modules(
+                module {
+                    single(named("strings")) { arrayListOf<String>() }
+                    single(named("ints")) { arrayListOf<Int>() }
+                },
+            )
         }.koin
 
         val strings = koin.get<ArrayList<String>>(named("strings"))

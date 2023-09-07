@@ -2,7 +2,6 @@ package org.koin.test
 
 import org.koin.dsl.lazyModule
 
-
 fun perfModule400() = lazyModule {
     single { Perfs.A1() }
     single { Perfs.B1(get()) }

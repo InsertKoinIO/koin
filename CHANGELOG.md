@@ -4,6 +4,78 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.4]()
 
+## 3.4.3 - 2023-07-26
+
+## [core-3.4.3]() 
+* `[UPDATED]` - `koin-core` 3.4.3
+* `[FIXED]` - Revert scope Id/name reified update - #1600
+* `[FIXED]` - parametersOf is using indexed values + fallback on value for type - 
+
+## [android-3.4.3]()
+* `[UPDATED]` - `koin-core` 3.4.3
+
+## [ktor-3.4.3]()
+* `[UPDATED]` - `koin-core` 3.4.3
+* `[UPDATED]` - updated to Ktor `2.3.2`
+
+## [androidx-compose-3.4.6]()
+* `[UPDATED]` - `koin-compose` 1.0.4
+* `[UPDATED]` - updated libraries - androidx.compose.runtime:runtime:1.4.3, androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1
+
+## [compose-1.0.4]()
+* `[FIXED]` - Fixed native target for Compose
+* `[UPDATED]` - Compose Compiler to `1.4.8`
+* `[UPDATED]` - `koin-core` 3.4.3
+* `[UPDATED]` - `koin-android` 3.4.3
+
+
+## 3.4.2 - 2023-06-05
+
+## [core-3.4.2]() 
+* `[UPDATED]` - `koin-core` 3.4.2
+* `[FIXED]` - Revert scope Id/name reified update - #1600
+
+## [android-3.4.2]()
+* `[UPDATED]` - `koin-core` 3.4.2
+
+## [ktor-3.4.2]()
+* `[UPDATED]` - `koin-core` 3.4.2
+* `[UPDATED]` - updated to Ktor `2.3.0`
+
+--
+
+## 3.4.1 - 2023-05-31
+
+## [android-3.4.1](https://github.com/InsertKoinIO/koin/milestone/50?closed=1) 
+* `[FIXED]` - Fix broken API `workerOf` and `worker` - #1582 #1554
+* `[UPDATED]` - Remove borken imports in sample - PR #1577 - Thanks to @pedrofsn
+* `[FIXED]` - Fix java static overload - #1579
+* `[FIXED]` - Fix Fragment Scope to allow fetch parent scope explicitly with `useParentActivityScope` parameter in `Fragment.createFragmentScope(useParentActivityScope : Boolean = true)` - #1580
+* `[UPDATED]` - lib update `androidx.fragment:fragment-ktx:1.5.7`
+* `[UPDATED]` - lib update `androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1`
+* `[UPDATED]` - lib update `androidx.lifecycle:lifecycle-common-java8:2.6.1`
+* `[UPDATED]` - lib update `androidx.work:work-runtime-ktx:2.8.1`
+
+
+## [core-coroutines-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1)
+* `[FIXED]` - Fix kotlin files duplication issues, when importing to an Android project 
+* `[UPDATED]` - coroutines update `1.7.1` 
+
+
+## [core-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1)
+* `[UPDATED]` - PR for Documentation updates - #1558 #1587 #1591 #1575 #1555 #1553 #1528 #1520 #1514 #1524 - Thanks to @Pitel @GrzegorzBobryk @lammertw @zsmb13 @christxph @sezikim @enzosego @igorwojda @lalnuo @mecoFarid 
+* `[FIXED]`  - Allow `getScopeId` &  `getScopeName` to use reified type - Fix for #1536
+* `[UPDATED]` - Better error message for `checkModules` - PR #1569 - Thanks @mreichelt
+* `[UPDATED]` - Injected parameters are now consumed in order and Ctor DSL can now handle cascade parameetr injection - f92a4c43779280f7a6ca6ca04856468d1484da49 45c3b1229bd1c35d2b1af9e735db41a6b10f2403
+* `[UPDATED]` - Kotlin `1.8.21`
+
+
+## [compose-1.0.3](https://github.com/InsertKoinIO/koin/milestone/51?closed=1)
+* `[UPDATED]` - `koin-compose` 1.0.3
+* `[UPDATED]` - `koin-androidx-compose` 3.4.5
+* `[UPDATED]` - lib update `androidx.compose.runtime:runtime:1.4.3`
+* `[FIXED]` - Redeploy all native targets for Compose Multiplatform
+
 -- 
 
 ## [androidx-compose-3.4.4]() - 2023-03-24

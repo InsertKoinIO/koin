@@ -12,15 +12,14 @@ class DefinitionOverrideTest {
 
     @Test
     fun `allow overrides by type`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component2() }
-                    },
-                    module {
-                        single<Simple.ComponentInterface1> { Simple.Component1() }
-                    }
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component2() }
+                },
+                module {
+                    single<Simple.ComponentInterface1> { Simple.Component1() }
+                },
             )
         }
 
@@ -32,16 +31,16 @@ class DefinitionOverrideTest {
     fun `allow overrides by type - scope`() {
         val app = koinApplication {
             modules(
-                    module {
-                        scope<Simple.ComponentA> {
-                            scoped<Simple.ComponentInterface1> { Simple.Component2() }
-                        }
-                    },
+                module {
+                    scope<Simple.ComponentA> {
+                        scoped<Simple.ComponentInterface1> { Simple.Component2() }
+                    }
+                },
                 module {
                     scope<Simple.ComponentA> {
                         scoped<Simple.ComponentInterface1> { Simple.Component1() }
                     }
-                }
+                },
             )
         }
         val scope = app.koin.createScope<Simple.ComponentA>("_ID_")
@@ -50,15 +49,14 @@ class DefinitionOverrideTest {
 
     @Test
     fun `allow overrides by name`() {
-
         val app = koinApplication {
             modules(
-                    module {
-                        single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
-                    },
-                    module {
-                        single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component1() }
-                    }
+                module {
+                    single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component2() }
+                },
+                module {
+                    single<Simple.ComponentInterface1>(named("DEF")) { Simple.Component1() }
+                },
             )
         }
 

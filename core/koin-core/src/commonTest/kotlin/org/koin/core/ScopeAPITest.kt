@@ -1,7 +1,5 @@
 package org.koin.core
 
-import kotlin.test.*
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
@@ -10,6 +8,8 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.*
+import kotlin.test.Test
 
 class ScopeAPITest {
 
@@ -20,7 +20,7 @@ class ScopeAPITest {
                 scope(scopeKey) {
                     scoped { A() }
                 }
-            }
+            },
         )
     }.koin
 
@@ -54,7 +54,6 @@ class ScopeAPITest {
 
     @Test
     fun `can create scope instance with unknown scope def`() {
-
         try {
             koin.createScope("myScope", named("a_scope"))
         } catch (e: NoScopeDefFoundException) {
@@ -64,7 +63,6 @@ class ScopeAPITest {
 
     @Test
     fun `create scope instance with scope def`() {
-
         assertNotNull(koin.createScope("myScope", scopeKey))
     }
 
@@ -81,7 +79,6 @@ class ScopeAPITest {
 
     @Test
     fun `can't get a closed scope`() {
-
         val scope = koin.createScope("myScope1", scopeKey)
         scope.close()
         try {
@@ -94,7 +91,6 @@ class ScopeAPITest {
 
     @Test
     fun `reuse a closed scope`() {
-
         val scope = koin.createScope("myScope1", scopeKey)
         scope.close()
         try {

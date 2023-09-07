@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,4 +31,4 @@ import org.koin.core.module.Module
  */
 @KoinExperimentalAPI
 @KoinDslMarker
-fun lazyModule(moduleDefinition : ModuleDeclaration) : Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }
+fun lazyModule(moduleDefinition: ModuleDeclaration): Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }

@@ -10,49 +10,46 @@ In a standard way, we can start Koin like that:
 ```kotlin
 // start a KoinApplication and register it in Global context
 startKoin {
+
     // declare used modules
-    modules(coffeeAppModule)
+    modules(...)
 }
 ```
 
-From this, we can use the `KoinComponent` as it: it will use the `GlobalContext` Koin instance.
+This uses the default Koin context to register your dependencies.
 
-But if we want to use an isolated Koin instance, you can just declare it like follow:
+But if we want to use an isolated Koin instance, you need declare an instance and store it in a class to hold your instance.
+You will have to keep your Koin Application instance available in your library and pass it to your custom KoinComponent implementation:
 
-```kotlin
-// create a KoinApplication
-val myApp = koinApplication {
-    // declare used modules
-    modules(coffeeAppModule)
-}
-```
-
-You will have to keep your `myApp` instance available in your library and pass it to your custom KoinComponent implementation:
+The `MyIsolatedKoinContext` class is holding our Koin instance here:
 
 ```kotlin
 // Get a Context for your Koin instance
-object MyKoinContext {
-    var koinApp : KoinApplication? = null
-}
+object MyIsolatedKoinContext {
 
-// Register the Koin context
-MyKoinContext.koinApp = KoinApp
-```
+    val koinApp = koinApplication {
+        // declare used modules
+        modules(coffeeAppModule)
+    }
 
-```kotlin
-abstract class CustomKoinComponent : KoinComponent {
-    // Override default Koin instance, initially target on GlobalContext to yours
-    override fun getKoin(): Koin = MyKoinContext.koinApp?.koin
+    val koin = koinApp.koin 
 }
 ```
 
-And now, you register your context and run your own isolated Koin components:
+Let's use `MyIsolatedKoinContext` to define our `IsolatedKoinComponent` class, a KoinComponent that will use our isolated context:
 
 ```kotlin
-// Register the Koin context
-MyKoinContext.koinApp = myApp
+abstract class IsolatedKoinComponent : KoinComponent {
 
-class ACustomKoinComponent : CustomKoinComponent(){
+    // Override default Koin instance
+    override fun getKoin(): Koin = MyIsolatedKoinContext.koin
+}
+```
+
+Everything is ready, just use `IsolatedKoinComponent` to retrieve instances from isolated context:
+
+```kotlin
+class MyKoinComponent : IsolatedKoinComponent(){
     // inject & get will target MyKoinContext
 }
 ```

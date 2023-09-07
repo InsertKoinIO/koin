@@ -16,7 +16,6 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare a single on the fly`() {
-
         val koin = koinApplication {
             printLogger()
             modules(emptyList())
@@ -31,12 +30,13 @@ class DeclareInstanceTest {
 
     @Test
     fun `can't declare a single on the fly`() {
-
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
         }.koin
 
         val a = Simple.ComponentA()
@@ -51,12 +51,13 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare and override a single on the fly`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                single { Simple.MySingle(1) }
-            })
+            modules(
+                module {
+                    single { Simple.MySingle(1) }
+                },
+            )
         }.koin
 
         val a = Simple.MySingle(2)
@@ -67,12 +68,13 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare and override a single on the fly when override is set to false`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                single { Simple.MySingle(1) }
-            })
+            modules(
+                module {
+                    single { Simple.MySingle(1) }
+                },
+            )
         }.koin
 
         val a = Simple.MySingle(2)
@@ -87,12 +89,13 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare a single with qualifier on the fly`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                single { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
         }.koin
 
         val a = Simple.ComponentA()
@@ -105,13 +108,14 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare and override a single with qualifier on the fly`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                single { Simple.ComponentA() }
-                single(named("another_a")) { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                    single(named("another_a")) { Simple.ComponentA() }
+                },
+            )
         }.koin
 
         val a = Simple.ComponentA()
@@ -124,7 +128,6 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare a single with secondary type on the fly`() {
-
         val koin = koinApplication {
             printLogger()
         }.koin
@@ -139,7 +142,6 @@ class DeclareInstanceTest {
 
     @Test
     fun `can override a single on the fly`() {
-
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(emptyList())
@@ -174,14 +176,15 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare a scoped on the fly`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                scope(named("Session")) {
-                    scoped { Simple.ComponentB(get()) }
-                }
-            })
+            modules(
+                module {
+                    scope(named("Session")) {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                },
+            )
         }.koin
 
         val a = Simple.ComponentA()
@@ -195,14 +198,15 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare a scoped on the fly with primary type`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                scope(named("Session")) {
-                    scoped { B() }
-                }
-            })
+            modules(
+                module {
+                    scope(named("Session")) {
+                        scoped { B() }
+                    }
+                },
+            )
         }.koin
 
         val a = Simple.Component2()
@@ -215,14 +219,15 @@ class DeclareInstanceTest {
 
     @Test
     fun `can't declare a scoped-single on the fly`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                scope(named("Session")) {
-                    scoped { B() }
-                }
-            })
+            modules(
+                module {
+                    scope(named("Session")) {
+                        scoped { B() }
+                    }
+                },
+            )
         }.koin
 
         val a = Simple.ComponentA()
@@ -240,14 +245,15 @@ class DeclareInstanceTest {
 
     @Test
     fun `can declare a other scoped on the fly`() {
-
         val koin = koinApplication {
             printLogger()
-            modules(module {
-                scope(named("Session")) {
-                    scoped { B() }
-                }
-            })
+            modules(
+                module {
+                    scope(named("Session")) {
+                        scoped { B() }
+                    }
+                },
+            )
         }.koin
 
         val a = Simple.ComponentA()
@@ -257,5 +263,35 @@ class DeclareInstanceTest {
         session1.declare(a, allowOverride = false)
 
         session2.get<Simple.ComponentA>()
+    }
+
+    @Test
+    fun `avoid to start eager instances`() {
+        var count = 0
+       koinApplication {
+            modules(
+                module {
+                    single(createdAtStart = true){
+                        count++
+                        Simple.ComponentA()
+                    }
+                },
+            )
+        }
+
+        assertEquals(1,count)
+        count = 0
+
+        koinApplication(createEagerInstances = false) {
+            modules(
+                module {
+                    single(createdAtStart = true){
+                        count++
+                        Simple.ComponentA()
+                    }
+                },
+            )
+        }
+        assertEquals(0,count)
     }
 }

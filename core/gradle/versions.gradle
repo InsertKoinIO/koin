@@ -1,18 +1,19 @@
 ext {
     // Koin Versions
-    koin_version = '3.4.0'
+    koin_version = '3.5.0'
     
     // Kotlin
-    kotlin_version = '1.8.10'
+    kotlin_version = '1.9.0' //TODO wait Compose for 1.9.10 or +
+    validator_version = '0.13.2'
     
-    coroutines_version = "1.6.4"
+    coroutines_version = "1.7.3"
 
     // Dokka
     dokka_version = '1.8.10'
 
     // Test
     junit_version = "4.13.2"
-    junit5_version = "5.8.2"
+    junit5_version = "5.9.3"
     mockito_version = "4.7.0"
     mockk_version = "1.12.2"
 }

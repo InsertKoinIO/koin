@@ -27,7 +27,7 @@ class MainApplication : Application(), KoinComponent {
 ```
 
 It's also important that you edit your AndroidManifest.xml to prevent
-Android initializing its default WorkManagerFactory, as shown in https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration
+Android initializing its default WorkManagerFactory, as shown in https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration#remove-default
 . Failing to do so will make the app crash.
 
 
@@ -35,10 +35,16 @@ Android initializing its default WorkManagerFactory, as shown in https://develop
     <application . . .>
         . . .
         <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove" />
-    </application
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+    </application>
 ```
 
 ## Declare ListenableWorker

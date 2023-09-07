@@ -6,7 +6,6 @@ import org.junit.Test
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
@@ -16,6 +15,8 @@ import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
 import org.mockito.Mockito
 import java.util.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class CheckModulesTest {
 
@@ -96,7 +97,7 @@ class CheckModulesTest {
                         scoped { Simple.ComponentA() }
                         scoped { Simple.ComponentB(get()) }
                     }
-                }
+                },
             )
         }.checkModules()
     }
@@ -109,7 +110,7 @@ class CheckModulesTest {
                     scope(named("scope")) {
                         scoped { Simple.ComponentB(get()) }
                     }
-                }
+                },
             )
         }.checkModules {
             withInstance<Simple.ComponentA>()
@@ -165,7 +166,7 @@ class CheckModulesTest {
                         scoped { Simple.ComponentA() }
                         scoped { Simple.ComponentB(get()) }
                     }
-                }
+                },
             )
         }.checkModules()
     }
@@ -179,7 +180,7 @@ class CheckModulesTest {
                     scope<Simple.ComponentA> {
                         scoped { Simple.ComponentB(get()) }
                     }
-                }
+                },
             )
         }.checkModules()
     }
@@ -195,7 +196,7 @@ class CheckModulesTest {
                         scope(named("scope")) {
                             scoped { Simple.ComponentA() }
                         }
-                    }
+                    },
                 )
             }.checkModules()
             fail()
@@ -217,7 +218,7 @@ class CheckModulesTest {
                         scope(named("scope1")) {
                             scoped { Simple.ComponentA() }
                         }
-                    }
+                    },
                 )
             }.checkModules()
             fail()
@@ -241,7 +242,7 @@ class CheckModulesTest {
                     scope(named("scope1")) {
                         scoped { Simple.ComponentA() }
                     }
-                }
+                },
             )
         }.checkModules {
             koin.createScope("scopei1", named("scope1"))
@@ -255,7 +256,7 @@ class CheckModulesTest {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                }
+                },
             )
         }.checkModules()
     }
@@ -268,7 +269,7 @@ class CheckModulesTest {
                 module {
                     single { Simple.ComponentA() }
                     single { Simple.ComponentB(get()) }
-                }
+                },
             )
         }.checkModules()
     }
@@ -290,7 +291,7 @@ class CheckModulesTest {
                 modules(
                     module {
                         single { Simple.ComponentB(get()) }
-                    }
+                    },
                 )
             }.checkModules()
             fail("should not pass with broken definitions")
@@ -307,7 +308,7 @@ class CheckModulesTest {
                 module {
                     single { (s: String) -> Simple.MyString(s) }
                     single(UpperCase) { (s: String) -> Simple.MyString(s.uppercase(Locale.getDefault())) }
-                }
+                },
             )
         }.checkModules {
             withParameters<Simple.MyString> { parametersOf("param") }
@@ -323,7 +324,7 @@ class CheckModulesTest {
                 module {
                     single { (s: String) -> Simple.MyString(s) }
                     single(UpperCase) { (s: String) -> Simple.MyString(s.uppercase(Locale.getDefault())) }
-                }
+                },
             )
         }.checkModules {
             withParameter(Simple.MyString::class) { "param" }
@@ -341,7 +342,7 @@ class CheckModulesTest {
                 module {
                     single { (s: String) -> Simple.MyString(s) }
                     single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
-                }
+                },
             )
         }.checkModules()
     }
@@ -358,7 +359,7 @@ class CheckModulesTest {
                         injectedValue = s
                         Simple.MyString(s)
                     }
-                }
+                },
             )
         }.checkModules {
             withParameter<Simple.MyString> { id }
@@ -379,7 +380,7 @@ class CheckModulesTest {
                         _id = get()
                         Simple.MyString(_id)
                     }
-                }
+                },
             )
         }
         app.checkModules {
@@ -400,7 +401,7 @@ class CheckModulesTest {
                         _value = get()
                         Simple.MyString(_value!!)
                     }
-                }
+                },
             )
         }
         app.checkModules()
@@ -419,7 +420,7 @@ class CheckModulesTest {
                         _a = get()
                         Simple.ComponentB(_a!!)
                     }
-                }
+                },
             )
         }
         app.checkModules {
@@ -441,7 +442,7 @@ class CheckModulesTest {
                         injectedValue = a
                         Simple.ComponentB(a)
                     }
-                }
+                },
             )
         }.checkModules {
             withInstance(a)
@@ -459,7 +460,7 @@ class CheckModulesTest {
                     scope<Simple.ComponentA> {
                         scoped { Simple.ComponentB(get()) }
                     }
-                }
+                },
             )
         }.checkModules()
     }
@@ -474,7 +475,7 @@ class CheckModulesTest {
                         scope<Simple.ComponentA> {
                             scoped { Simple.ComponentC(get()) }
                         }
-                    }
+                    },
                 )
             }.checkModules()
             fail()
@@ -487,9 +488,11 @@ class CheckModulesTest {
     fun `check with qualifier`() {
         koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single(named("test")) { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single(named("test")) { Simple.ComponentA() }
+                },
+            )
         }.checkModules()
     }
 
@@ -501,7 +504,7 @@ class CheckModulesTest {
             modules(
                 module {
                     single { Simple.MyString(getProperty("aValue")) }
-                }
+                },
             )
         }.checkModules()
     }
@@ -522,7 +525,6 @@ class CheckModulesTest {
         }
     }
 
-
     @Test
     fun `check a module with linked scopes`() {
         koinApplication {
@@ -536,7 +538,7 @@ class CheckModulesTest {
                     scope<Simple.ComponentB> {
                         scoped { Simple.ComponentE(get()) }
                     }
-                }
+                },
             )
         }.checkModules {
             withScopeLink<Simple.ComponentB, Simple.ComponentA>()
@@ -551,7 +553,7 @@ class CheckModulesTest {
                 module {
                     single { "the_string" }.bind<CharSequence>()
                     single { 42 } bind Number::class
-                }
+                },
             )
         }.checkModules()
     }
@@ -566,14 +568,14 @@ class CheckModulesTest {
                         String::class,
                         CharSequence::class,
                     )
-                }
+                },
             )
         }.checkModules()
     }
 
     @Test
     fun `check a module with wrong secondary types array - error`() {
-        try {
+        val exception = assertFailsWith<IllegalArgumentException> {
             koinApplication {
                 printLogger(Level.DEBUG)
                 modules(
@@ -582,12 +584,14 @@ class CheckModulesTest {
                             CharSequence::class,
                             Int::class,
                         )
-                    }
+                    },
                 )
             }.checkModules()
-            fail("should not pass with broken definitions")
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+
+        assertEquals(
+            expected = "instance of class kotlin.String is not inheritable from class kotlin.Int",
+            actual = exception.message,
+        )
     }
 }

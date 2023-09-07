@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.core.module
+package org.koin.core.context
 
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
-
+import org.koin.core.module.Module
+import org.koin.mp.KoinPlatformTools
 
 /**
- * Include list of `Lazy<Module>`, to be resolved only lazily
+ * Starter function to help start Koin context with default context parameters
+ *
+ * @author Arnaud Giuliani
  */
-@OptIn(KoinInternalApi::class)
-@KoinExperimentalAPI
-fun Module.includes(vararg module: Lazy<Module>) {
-    includedModules += module.map { it.value }
-}
+
+/**
+ * load Koin module in global Koin context
+ */
+fun loadKoinModules(module: Lazy<Module>) = KoinPlatformTools.defaultContext().loadKoinModules(module.value)

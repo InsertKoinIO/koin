@@ -25,7 +25,7 @@ internal fun <T : Any> Module.createDefinition(
     qualifier: Qualifier? = null,
     definition: Definition<T>,
     secondaryTypes: List<KClass<*>> = emptyList(),
-    scopeQualifier: Qualifier = ScopeRegistry.rootScopeQualifier
+    scopeQualifier: Qualifier = ScopeRegistry.rootScopeQualifier,
 ): BeanDefinition<T> {
     return BeanDefinition(
         scopeQualifier,
@@ -33,7 +33,7 @@ internal fun <T : Any> Module.createDefinition(
         qualifier,
         definition,
         kind,
-        secondaryTypes = secondaryTypes
+        secondaryTypes = secondaryTypes,
     )
 }
 
@@ -44,7 +44,7 @@ fun <T : Any> Module.factory(
     kClass: KClass<T>,
     qualifier: Qualifier? = null,
     definition: Definition<T>,
-    scopeQualifier: Qualifier = ScopeRegistry.rootScopeQualifier
+    scopeQualifier: Qualifier = ScopeRegistry.rootScopeQualifier,
 ): KoinDefinition<T> {
     val def = createDefinition(Kind.Factory, kClass, qualifier, definition, scopeQualifier = scopeQualifier)
     val factory = FactoryInstanceFactory(def)
@@ -60,7 +60,7 @@ fun <T : Any> Module.single(
     qualifier: Qualifier? = null,
     definition: Definition<T>,
     createdAtStart: Boolean = false,
-    scopeQualifier: Qualifier = ScopeRegistry.rootScopeQualifier
+    scopeQualifier: Qualifier = ScopeRegistry.rootScopeQualifier,
 ): KoinDefinition<T> {
     val def = createDefinition(Kind.Singleton, kClass, qualifier, definition, scopeQualifier = scopeQualifier)
     val factory = SingleInstanceFactory(def)

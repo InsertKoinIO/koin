@@ -1,5 +1,5 @@
 #!/bin/sh
 
-../gradlew publishAllPublicationsToStagingRepository --info
+../gradlew publishAllPublicationsToStagingRepository --max-workers 1
 
 

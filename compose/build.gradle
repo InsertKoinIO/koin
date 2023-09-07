@@ -1,7 +1,7 @@
 buildscript {
-    apply from: "./gradle/versions.gradle"
     apply from: "../core/gradle/versions.gradle"
     apply from: "../android/gradle/versions.gradle"
+    apply from: "./gradle/versions.gradle"
 
     repositories {
         google()
@@ -19,6 +19,10 @@ buildscript {
         // Android
         classpath "com.android.tools.build:gradle:7.3.1"
     }
+}
+
+plugins {
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version "$validator_version"
 }
 
 wrapper {

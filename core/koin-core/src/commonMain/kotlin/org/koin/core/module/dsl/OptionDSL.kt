@@ -22,7 +22,7 @@ typealias DefinitionOptions<T> = BeanDefinition<T>.() -> Unit
  */
 @OptionDslMarker
 inline infix fun <T> KoinDefinition<T>.withOptions(
-    options: DefinitionOptions<T>
+    options: DefinitionOptions<T>,
 ): KoinDefinition<T> {
     val def = factory.beanDefinition
     val primary = def.qualifier
@@ -40,7 +40,7 @@ inline infix fun <T> KoinDefinition<T>.withOptions(
 }
 
 fun <T> KoinDefinition<T>.onOptions(
-    options: DefinitionOptions<T>? = null
+    options: DefinitionOptions<T>? = null,
 ): KoinDefinition<T> {
     if (options != null) {
         withOptions(options)

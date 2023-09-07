@@ -8,7 +8,7 @@ import kotlin.test.assertNotNull
 class ModuleIncludeTest {
 
     @Test
-    fun test_include(){
+    fun test_include() {
         val m2 = module {
             singleOf(::ClassB)
         }
@@ -22,7 +22,7 @@ class ModuleIncludeTest {
     }
 
     @Test
-    fun test_include_higher(){
+    fun test_include_higher() {
         val m3 = module {
             singleOf(::ClassB)
         }
@@ -39,7 +39,7 @@ class ModuleIncludeTest {
     }
 
     @Test
-    fun test_include_higher2(){
+    fun test_include_higher2() {
         val m3 = module {
             singleOf(::ClassB)
         }
@@ -47,7 +47,7 @@ class ModuleIncludeTest {
             singleOf(::ClassA)
         }
         val m1 = module {
-            includes(m2,m3)
+            includes(m2, m3)
         }
 
         val koin = koinApplication { modules(m1) }.koin
@@ -56,7 +56,7 @@ class ModuleIncludeTest {
 
     val q1 = named("1")
     val q2 = named("2")
-    data class Person(val parent : Person? = null)
+    data class Person(val parent: Person? = null)
     val m2 = module {
         factory(q2) { Person(get(q1)) }
     }
@@ -66,7 +66,7 @@ class ModuleIncludeTest {
     }
 
     @Test
-    fun should_include_all(){
+    fun should_include_all() {
         val koin = koinApplication { modules(m1) }.koin
         assertNotNull(koin.getOrNull<Person>(q1))
         assertNotNull(koin.getOrNull<Person>(q2))

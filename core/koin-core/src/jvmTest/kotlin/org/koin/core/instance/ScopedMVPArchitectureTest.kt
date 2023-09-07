@@ -24,12 +24,13 @@ class ScopedMVPArchitectureTest {
     }
 
     @After
-    fun after(){
+    fun after() {
         stopKoin()
     }
 
     @Test
     fun `should create all MVP hierarchy`() {
+        stopKoin()
         val koin = startKoin {
             printLogger(Level.DEBUG)
             modules(MVPModule + DataSourceModule)

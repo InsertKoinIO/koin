@@ -31,9 +31,9 @@ class DeclareMockFromKoinTest : AutoCloseKoinTest() {
         startKoin {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.UUIDComponent() }
-                    }
+                module {
+                    single { Simple.UUIDComponent() }
+                },
             )
         }
 
@@ -51,9 +51,9 @@ class DeclareMockFromKoinTest : AutoCloseKoinTest() {
         startKoin {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        factory { Simple.UUIDComponent() }
-                    }
+                module {
+                    factory { Simple.UUIDComponent() }
+                },
             )
         }
 

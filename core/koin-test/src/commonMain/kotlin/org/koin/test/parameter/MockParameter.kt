@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class MockParameter(
     private val scope: Scope,
-    private val defaultValues: MutableMap<String, Any>
+    private val defaultValues: MutableMap<String, Any>,
 ) : ParametersHolder(arrayListOf()) {
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
         return defaultValues[KoinPlatformTools.getClassName(clazz)] as? T
@@ -29,6 +29,6 @@ class MockParameter(
 
     override fun <T> getOrNull(clazz: KClass<*>): T? {
         return defaultValues.values.firstOrNull { clazz.isInstance(it) } as? T
-            ?: getDefaultPrimaryValue(clazz) //?: elementAt(0, clazz)
+            ?: getDefaultPrimaryValue(clazz) // ?: elementAt(0, clazz)
     }
 }

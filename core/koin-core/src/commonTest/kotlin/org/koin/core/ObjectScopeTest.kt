@@ -1,7 +1,5 @@
 package org.koin.core
 
-import kotlin.test.*
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
@@ -9,24 +7,28 @@ import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.*
+import kotlin.test.Test
 
 class ObjectScopeTest {
 
     @AfterTest
-    fun after(){
+    fun after() {
         stopKoin()
     }
 
     @Test
     fun `typed scope`() {
         val koin = koinApplication {
-            modules(module {
-                single { A() }
-                scope<A> {
-                    scoped { B() }
-                    scoped { C() }
-                }
-            })
+            modules(
+                module {
+                    single { A() }
+                    scope<A> {
+                        scoped { B() }
+                        scoped { C() }
+                    }
+                },
+            )
         }.koin
 
         assertNotNull(koin.get<A>())
@@ -38,16 +40,17 @@ class ObjectScopeTest {
     fun `typed scope and source`() {
         val koin = startKoin {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { A() }
-                scope<A> {
-                    scoped { BofA(get()) }
-
-                }
-                scope<BofA> {
-                    scoped { CofB(get()) }
-                }
-            })
+            modules(
+                module {
+                    single { A() }
+                    scope<A> {
+                        scoped { BofA(get()) }
+                    }
+                    scope<BofA> {
+                        scoped { CofB(get()) }
+                    }
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -61,16 +64,17 @@ class ObjectScopeTest {
     fun `typed scope and source with get`() {
         val koin = startKoin {
             printLogger(Level.DEBUG)
-            modules(module {
-                single { A() }
-                scope<A> {
-                    scoped { BofA(get()) }
-
-                }
-                scope<BofA> {
-                    scoped { CofB(get()) }
-                }
-            })
+            modules(
+                module {
+                    single { A() }
+                    scope<A> {
+                        scoped { BofA(get()) }
+                    }
+                    scope<BofA> {
+                        scoped { CofB(get()) }
+                    }
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -83,13 +87,15 @@ class ObjectScopeTest {
     @Test
     fun `scope from instance object`() {
         val koin = startKoin {
-            modules(module {
-                single { A() }
-                scope<A> {
-                    scoped { B() }
-                    scoped { C() }
-                }
-            })
+            modules(
+                module {
+                    single { A() }
+                    scope<A> {
+                        scoped { B() }
+                        scoped { C() }
+                    }
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -115,13 +121,15 @@ class ObjectScopeTest {
     @Test
     fun `scope property`() {
         val koin = startKoin {
-            modules(module {
-                single { A() }
-                scope<A> {
-                    scoped { B() }
-                    scoped { C() }
-                }
-            })
+            modules(
+                module {
+                    single { A() }
+                    scope<A> {
+                        scoped { B() }
+                        scoped { C() }
+                    }
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -135,7 +143,6 @@ class ObjectScopeTest {
         try {
             a.scope.get<B>()
         } catch (e: Exception) {
-
         }
     }
 
@@ -148,7 +155,8 @@ class ObjectScopeTest {
                     scope<A> {
                         scoped { B() }
                     }
-                })
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -177,7 +185,8 @@ class ObjectScopeTest {
                     scope<B> {
                         scoped { C() }
                     }
-                })
+                },
+            )
         }.koin
 
         var a = koin.get<A>()
@@ -208,7 +217,8 @@ class ObjectScopeTest {
                     scope<B> {
                         scoped { C() }
                     }
-                })
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -231,7 +241,8 @@ class ObjectScopeTest {
                     scope<B> {
                         scoped { C() }
                     }
-                })
+                },
+            )
         }.koin
 
         val a = koin.get<A>()
@@ -258,9 +269,9 @@ class ObjectScopeTest {
                     scope<C> {
                         scoped { Simple.ComponentA() }
                     }
-                })
+                },
+            )
         }.koin
-
 
         val scopeA = koin.createScope<A>()
         val scopeB = koin.createScope<B>()
@@ -272,7 +283,7 @@ class ObjectScopeTest {
         val compb_scopeB = scopeB.get<Simple.ComponentB>()
 
         assertNotEquals(compb_scopeA, compb_scopeB)
-        //shared ComponentA instance
+        // shared ComponentA instance
         assertEquals(compb_scopeA.a, compb_scopeB.a)
     }
 
@@ -288,9 +299,9 @@ class ObjectScopeTest {
                     scope<A> {
                         scoped { B() }
                     }
-                })
+                },
+            )
         }.koin
-
 
         val a = koin.get<A>()
         try {
@@ -300,5 +311,4 @@ class ObjectScopeTest {
             e.printStackTrace()
         }
     }
-
 }

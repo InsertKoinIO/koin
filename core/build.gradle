@@ -15,6 +15,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version "$validator_version"
+}
+
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
