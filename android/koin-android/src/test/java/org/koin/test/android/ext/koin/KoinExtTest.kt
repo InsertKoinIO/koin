@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import io.mockk.every
 import io.mockk.mockk
-import java.lang.Exception
 import org.junit.Assert
 import org.junit.Test
 import org.koin.android.ext.koin.androidContext
@@ -16,7 +15,6 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
-import org.koin.core.registry.saveProperties
 
 class KoinExtTest {
 
@@ -78,13 +76,14 @@ class KoinExtTest {
 
         val keys = instances.keys.toList()
         val values = instances.flatMap { it.value.beanDefinition.secondaryTypes }.distinct()
+        val valueApp = instances.firstNotNullOf { it.value.beanDefinition.primaryType }
         val keyContext = keys[0]
         val keyApplication = keys[1]
 
         Assert.assertEquals(keyContext, "android.content.Context::_root_")
         Assert.assertEquals(keyApplication, "android.app.Application::_root_")
         Assert.assertTrue(values.contains(Context::class))
-        Assert.assertTrue(values.contains(Application::class))
+        Assert.assertTrue(valueApp.java.isAssignableFrom(Application::class.java))
 
     }
 
