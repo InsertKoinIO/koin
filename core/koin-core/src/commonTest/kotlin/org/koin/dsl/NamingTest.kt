@@ -1,10 +1,10 @@
 package org.koin.dsl
 
-import kotlin.test.assertEquals
-import kotlin.test.Test
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class NamingTest {
 
@@ -13,14 +13,15 @@ class NamingTest {
         val scopeName = named("MY_SCOPE")
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
+            modules(
+                module {
+                    single(named("24")) { Simple.MySingle(24) }
 
-                single(named("24")) { Simple.MySingle(24) }
-
-                scope(scopeName) {
-                    scoped { Simple.MySingle(42) }
-                }
-            })
+                    scope(scopeName) {
+                        scoped { Simple.MySingle(42) }
+                    }
+                },
+            )
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
@@ -30,16 +31,17 @@ class NamingTest {
 
     @Test
     fun `enum naming`() {
-        assertEquals("my_string",named(MyNames.MY_STRING).value)
+        assertEquals("my_string", named(MyNames.MY_STRING).value)
     }
 
     @Test
     fun `can resolve enum naming`() {
         val koin = koinApplication {
-            modules(module {
-                single(named(MyNames.MY_STRING)) { Simple.MySingle(24) }
-
-            })
+            modules(
+                module {
+                    single(named(MyNames.MY_STRING)) { Simple.MySingle(24) }
+                },
+            )
         }.koin
 
         assertEquals(24, koin.get<Simple.MySingle>(named(MyNames.MY_STRING)).id)
@@ -49,12 +51,13 @@ class NamingTest {
     fun `can resolve scope enum naming`() {
         val scopeName = named(MyNames.MY_SCOPE)
         val koin = koinApplication {
-            modules(module {
-
-                scope(scopeName) {
-                    scoped { Simple.MySingle(42) }
-                }
-            })
+            modules(
+                module {
+                    scope(scopeName) {
+                        scoped { Simple.MySingle(42) }
+                    }
+                },
+            )
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
@@ -65,14 +68,15 @@ class NamingTest {
     fun `can resolve naming with q`() {
         val scopeName = _q("MY_SCOPE")
         val koin = koinApplication {
-            modules(module {
+            modules(
+                module {
+                    single(_q("24")) { Simple.MySingle(24) }
 
-                single(_q("24")) { Simple.MySingle(24) }
-
-                scope(scopeName) {
-                    scoped { Simple.MySingle(42) }
-                }
-            })
+                    scope(scopeName) {
+                        scoped { Simple.MySingle(42) }
+                    }
+                },
+            )
         }.koin
 
         val scope = koin.createScope("myScope", scopeName)
@@ -83,5 +87,5 @@ class NamingTest {
 
 enum class MyNames {
     MY_SCOPE,
-    MY_STRING
+    MY_STRING,
 }

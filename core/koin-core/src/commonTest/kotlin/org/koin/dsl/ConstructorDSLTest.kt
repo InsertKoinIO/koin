@@ -14,9 +14,11 @@ class ConstructorDSLTest {
     @Test
     fun test_reified_type_constructor() {
         val koin = koinApplication {
-            modules(module {
-                singleOf<IClassA>(::ClassA)
-            })
+            modules(
+                module {
+                    singleOf<IClassA>(::ClassA)
+                },
+            )
         }.koin
         assertNotNull(koin.getOrNull<IClassA>())
         assertNull(koin.getOrNull<ClassA>())
@@ -24,13 +26,14 @@ class ConstructorDSLTest {
 
     @Test
     fun test_allow_extra_binds() {
-
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                singleOf(::ClassA) { bind<IClassA>() }
-                singleOf(::ClassA2) { bind<IClassA>() }
-            })
+            modules(
+                module {
+                    singleOf(::ClassA) { bind<IClassA>() }
+                    singleOf(::ClassA2) { bind<IClassA>() }
+                },
+            )
         }.koin
 
         assertNotNull(koin.getOrNull<IClassA>() is ClassA2)
@@ -49,7 +52,8 @@ class ConstructorDSLTest {
                         factoryOf(::ClassA2) bind IClassA::class
                         factoryOf(::ClassB)
                     }
-            })
+                },
+            )
         }.koin
         val scopeA = koin.createScope("ID", name)
         assertNotNull(scopeA.get<ClassB>())

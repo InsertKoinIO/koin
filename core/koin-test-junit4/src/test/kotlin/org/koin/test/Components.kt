@@ -15,10 +15,8 @@ class Simple {
     class UUIDComponent {
         fun getUUID() = UUID.randomUUID().toString()
     }
-
 }
 
 object UpperCase : Qualifier {
     override val value: String = "UpperCase"
-
 }

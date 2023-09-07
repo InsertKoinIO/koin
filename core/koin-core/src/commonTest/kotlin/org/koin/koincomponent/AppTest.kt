@@ -23,10 +23,11 @@ class AppTest {
         val app = startKoin {
             printLogger()
             modules(
-                    module {
-                        single { TasksView() }
-                        single { TasksPresenter(get()) }
-                    })
+                module {
+                    single { TasksView() }
+                    single { TasksPresenter(get()) }
+                },
+            )
         }
 
         val koin = app.koin

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
@@ -32,16 +33,18 @@ import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
+import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 @KoinDslMarker
-data class Scope(
+class Scope(
     val scopeQualifier: Qualifier,
     val id: ScopeID,
     val isRoot: Boolean = false,
     @PublishedApi
-    internal val _koin: Koin
+    internal val _koin: Koin,
 ) : Lockable() {
     private val linkedScopes: ArrayList<Scope> = arrayListOf()
 
@@ -56,7 +59,7 @@ data class Scope(
     private val _callbacks = arrayListOf<ScopeCallback>()
 
     @KoinInternalApi
-    val _parameterStack = ArrayDeque<ParametersHolder>()
+    val _parameterStackLocal = ThreadLocal<ArrayDeque<ParametersHolder>>()
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -101,7 +104,7 @@ data class Scope(
     inline fun <reified T : Any> inject(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): Lazy<T> =
         lazy(mode) { get<T>(qualifier, parameters) }
 
@@ -116,7 +119,7 @@ data class Scope(
     inline fun <reified T : Any> injectOrNull(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): Lazy<T?> =
         lazy(mode) { getOrNull<T>(qualifier, parameters) }
 
@@ -128,7 +131,7 @@ data class Scope(
      */
     inline fun <reified T : Any> get(
         qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): T {
         return get(T::class, qualifier, parameters)
     }
@@ -138,7 +141,6 @@ data class Scope(
      *
      * Deprecation: Source instance resolution is now done within graph resolution part. It's done in the regular "get()" function.
      */
-    @Deprecated("No need to use getSource(). You can an use get() directly.", ReplaceWith("get()"))
     inline fun <reified T : Any> getSource(): T? {
         return _source as? T
     }
@@ -153,7 +155,7 @@ data class Scope(
      */
     inline fun <reified T : Any> getOrNull(
         qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): T? {
         return getOrNull(T::class, qualifier, parameters)
     }
@@ -169,7 +171,7 @@ data class Scope(
     fun <T> getOrNull(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
@@ -177,7 +179,7 @@ data class Scope(
             _koin.logger.debug("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
         } catch (e: NoBeanDefFoundException) {
-            _koin.logger.debug("* No instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.debug("* No instance found for type '${clazz.getFullName()}' on scope '${toString()}'")
             null
         }
     }
@@ -193,16 +195,16 @@ data class Scope(
     fun <T> get(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T {
-        return if (_koin.logger.isAt(Level.DEBUG)){
+        return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
             _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString ...")
 
             val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
             val instance = resolveInstance<T>(qualifier, clazz, parameters)
             val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
-            val duration = (stop-start)/Timer.NANO_TO_MILLI
+            val duration = (stop - start) / Timer.NANO_TO_MILLI
 
             _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
             instance
@@ -215,25 +217,23 @@ data class Scope(
     private fun <T> resolveInstance(
         qualifier: Qualifier?,
         clazz: KClass<*>,
-        parameterDef: ParametersDefinition?
+        parameterDef: ParametersDefinition?,
     ): T {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
         val parameters = parameterDef?.invoke()
+        var localDeque: ArrayDeque<ParametersHolder>? = null
         if (parameters != null) {
-            _koin.logger.log(Level.DEBUG){ "| >> parameters $parameters " }
-            KoinPlatformTools.synchronized(this@Scope) {
-                _parameterStack.addFirst(parameters)
-            }
+            _koin.logger.log(Level.DEBUG) { "| >> parameters $parameters " }
+            localDeque = _parameterStackLocal.get() ?: ArrayDeque<ParametersHolder>().also(_parameterStackLocal::set)
+            localDeque.addFirst(parameters)
         }
         val instanceContext = InstanceContext(_koin.logger, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
-        if (parameters != null) {
+        if (localDeque != null) {
             _koin.logger.debug("| << parameters")
-            KoinPlatformTools.synchronized(this@Scope) {
-                _parameterStack.removeFirstOrNull()
-            }
+            localDeque.removeFirstOrNull()
         }
         return value
     }
@@ -243,33 +243,30 @@ data class Scope(
         clazz: KClass<*>,
         instanceContext: InstanceContext,
         parameterDef: ParametersDefinition?
-    ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
+    ) = (
+            _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
-            //try resolve in injected param
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
-            _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
+            _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
-            //try resolve in scope source
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
-            _source?.let { source ->
-                if (source::class == clazz && qualifier == null) {
-                    _source as? T
-                } else null
-            }
+            if (!isRoot){
+                _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
+                _source?.let { source ->
+                    if (clazz.isInstance(source) && qualifier == null) {
+                        _source as? T
+                    } else null
+                }
+            } else null
         }
         ?: run {
-            //try resolve in other scopes
             _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            // in case of error
-            if (parameterDef != null){
-                KoinPlatformTools.synchronized(this@Scope) {
-                    _parameterStack.removeFirstOrNull()
-                }
-                _koin.logger.debug("|- << parameters" )
+            if (parameterDef != null) {
+                _parameterStackLocal.remove()
+                _koin.logger.debug("|- << parameters")
             }
             throwDefinitionNotFound(qualifier, clazz)
         })
@@ -282,14 +279,14 @@ data class Scope(
     private fun <T> findInOtherScope(
         clazz: KClass<*>,
         qualifier: Qualifier?,
-        parameters: ParametersDefinition?
+        parameters: ParametersDefinition?,
     ): T? {
         var instance: T? = null
         for (scope in linkedScopes) {
             instance = scope.getOrNull<T>(
                 clazz,
                 qualifier,
-                parameters
+                parameters,
             )
             if (instance != null) break
         }
@@ -298,11 +295,11 @@ data class Scope(
 
     private fun throwDefinitionNotFound(
         qualifier: Qualifier?,
-        clazz: KClass<*>
+        clazz: KClass<*>,
     ): Nothing {
-        val qualifierString = qualifier?.let { " & qualifier:'$qualifier'" } ?: ""
-        throw NoBeanDefFoundException(
-            "No definition found for class:'${clazz.getFullName()}' q:'$qualifierString'. Check your definitions!"
+        val qualifierString = qualifier?.let { " and qualifier '$qualifier'" } ?: ""
+        throw NoDefinitionFoundException(
+            "No definition found for type '${clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
         )
     }
 
@@ -320,7 +317,7 @@ data class Scope(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        allowOverride: Boolean = true
+        allowOverride: Boolean = true,
     ) = KoinPlatformTools.synchronized(this) {
         _koin.instanceRegistry.declareScopedInstance(
             instance,
@@ -328,7 +325,7 @@ data class Scope(
             secondaryTypes,
             allowOverride,
             scopeQualifier,
-            id
+            id,
         )
     }
 

@@ -41,7 +41,7 @@ object KoinJavaComponent {
     fun <T> inject(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): Lazy<T> {
         return lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             get(clazz, qualifier, parameters)
@@ -61,7 +61,7 @@ object KoinJavaComponent {
     fun <T> injectOrNull(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): Lazy<T?> {
         return lazy {
             getOrNull(clazz, qualifier, parameters)
@@ -81,13 +81,13 @@ object KoinJavaComponent {
     fun <T> get(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T {
         val kClass = clazz.kotlin
         return getKoin().get(
             kClass,
             qualifier,
-            parameters
+            parameters,
         )
     }
 
@@ -104,13 +104,13 @@ object KoinJavaComponent {
     fun <T> getOrNull(
         clazz: Class<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T? {
         val kClass = clazz.kotlin
         return getKoin().getOrNull(
             kClass,
             qualifier,
-            parameters
+            parameters,
         )
     }
 

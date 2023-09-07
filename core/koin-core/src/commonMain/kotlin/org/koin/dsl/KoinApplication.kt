@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,16 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
 /**
  * Create a KoinApplication instance and help configure it
  * @author Arnaud Giuliani
+ *
+ * @param createEagerInstances - allow to create eager instances or not
+ * @param appDeclaration
  */
 @KoinApplicationDslMarker
-fun koinApplication(appDeclaration: KoinAppDeclaration? = null): KoinApplication {
+fun koinApplication(createEagerInstances : Boolean = true, appDeclaration: KoinAppDeclaration? = null): KoinApplication {
     val koinApplication = KoinApplication.init()
     appDeclaration?.invoke(koinApplication)
-    koinApplication.createEagerInstances()
+    if (createEagerInstances) {
+        koinApplication.createEagerInstances()
+    }
     return koinApplication
 }

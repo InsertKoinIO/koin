@@ -26,9 +26,9 @@ class DeclareMockTests : AutoCloseKoinTest() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.UUIDComponent() }
-                    }
+                module {
+                    single { Simple.UUIDComponent() }
+                },
             )
         }.koin
 
@@ -49,11 +49,11 @@ class DeclareMockTests : AutoCloseKoinTest() {
     fun `declare and stub an existing scoped definition`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named<Simple>()) {
-                            scoped { Simple.UUIDComponent() }
-                        }
+                module {
+                    scope(named<Simple>()) {
+                        scoped { Simple.UUIDComponent() }
                     }
+                },
             )
         }.koin
 
@@ -76,11 +76,11 @@ class DeclareMockTests : AutoCloseKoinTest() {
     fun `declare a Mock of an existing definition for given scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named<Simple>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named<Simple>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -99,11 +99,11 @@ class DeclareMockTests : AutoCloseKoinTest() {
     fun `declare and mock an existing definition for given scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named<Simple>()) {
-                            scoped { Simple.UUIDComponent() }
-                        }
+                module {
+                    scope(named<Simple>()) {
+                        scoped { Simple.UUIDComponent() }
                     }
+                },
             )
         }.koin
 
@@ -127,9 +127,9 @@ class DeclareMockTests : AutoCloseKoinTest() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                    }
+                module {
+                    single { Simple.ComponentA() }
+                },
             )
         }.koin
 
@@ -147,9 +147,9 @@ class DeclareMockTests : AutoCloseKoinTest() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                    module {
-                        single { Simple.UUIDComponent() }
-                    }
+                module {
+                    single { Simple.UUIDComponent() }
+                },
             )
         }.koin
 
@@ -170,9 +170,11 @@ class DeclareMockTests : AutoCloseKoinTest() {
     fun `mock with qualifier`() {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
-            modules(module {
-                single(named("test")) { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single(named("test")) { Simple.ComponentA() }
+                },
+            )
         }.koin
 
         koin.declareMock<Simple.ComponentA>(named("test"))

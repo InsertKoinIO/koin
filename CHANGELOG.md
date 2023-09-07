@@ -44,9 +44,9 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 --
 
-## 3.4.1
+## 3.4.1 - 2023-05-31
 
-## [android-3.4.1](https://github.com/InsertKoinIO/koin/milestone/50?closed=1) - 2023-05-31
+## [android-3.4.1](https://github.com/InsertKoinIO/koin/milestone/50?closed=1) 
 * `[FIXED]` - Fix broken API `workerOf` and `worker` - #1582 #1554
 * `[UPDATED]` - Remove borken imports in sample - PR #1577 - Thanks to @pedrofsn
 * `[FIXED]` - Fix java static overload - #1579
@@ -57,12 +57,12 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - lib update `androidx.work:work-runtime-ktx:2.8.1`
 
 
-## [core-coroutines-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1) - 2023-05-31
+## [core-coroutines-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1)
 * `[FIXED]` - Fix kotlin files duplication issues, when importing to an Android project 
 * `[UPDATED]` - coroutines update `1.7.1` 
 
 
-## [core-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1) - 2023-05-31
+## [core-3.4.1](https://github.com/InsertKoinIO/koin/milestone/48?closed=1)
 * `[UPDATED]` - PR for Documentation updates - #1558 #1587 #1591 #1575 #1555 #1553 #1528 #1520 #1514 #1524 - Thanks to @Pitel @GrzegorzBobryk @lammertw @zsmb13 @christxph @sezikim @enzosego @igorwojda @lalnuo @mecoFarid 
 * `[FIXED]`  - Allow `getScopeId` &  `getScopeName` to use reified type - Fix for #1536
 * `[UPDATED]` - Better error message for `checkModules` - PR #1569 - Thanks @mreichelt
@@ -70,7 +70,7 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 * `[UPDATED]` - Kotlin `1.8.21`
 
 
-## [compose-1.0.3](https://github.com/InsertKoinIO/koin/milestone/51?closed=1) - 2023-05-16
+## [compose-1.0.3](https://github.com/InsertKoinIO/koin/milestone/51?closed=1)
 * `[UPDATED]` - `koin-compose` 1.0.3
 * `[UPDATED]` - `koin-androidx-compose` 3.4.5
 * `[UPDATED]` - lib update `androidx.compose.runtime:runtime:1.4.3`

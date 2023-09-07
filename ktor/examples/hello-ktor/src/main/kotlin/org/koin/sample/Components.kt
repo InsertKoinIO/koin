@@ -1,5 +1,7 @@
 package org.koin.sample
 
+import java.util.UUID
+
 class HelloRepository {
     fun getHello(): String = "Ktor & Koin"
 }
@@ -14,4 +16,8 @@ class HelloServiceImpl(val helloRepository: HelloRepository) : HelloService {
 
 class HelloService2() : HelloService{
     override fun sayHello() = "Hello Again!"
+}
+
+class ScopeComponent {
+    val id = UUID.randomUUID().toString()
 }

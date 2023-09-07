@@ -9,5 +9,4 @@ abstract class KoinCoreTest {
     fun after() {
         stopKoin()
     }
-
 }

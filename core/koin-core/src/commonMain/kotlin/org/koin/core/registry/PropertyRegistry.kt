@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
-import org.koin.core.logger.Level
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -25,6 +25,7 @@ import org.koin.mp.KoinPlatformTools
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(internal val _koin: Koin) {
 
@@ -35,7 +36,7 @@ class PropertyRegistry(internal val _koin: Koin) {
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        _koin.logger.debug("load ${properties.size} properties" )
+        _koin.logger.debug("load ${properties.size} properties")
         _values.putAll(properties)
     }
 

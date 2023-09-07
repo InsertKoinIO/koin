@@ -16,34 +16,55 @@
 package org.koin.ktor.plugin
 
 import io.ktor.server.application.*
+import io.ktor.server.application.hooks.*
+import io.ktor.util.*
 import org.koin.core.KoinApplication
-import org.koin.core.context.GlobalContext
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
+import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.koinApplication
 
 /**
  * @author Arnaud Giuliani
  * @author Vinicius Carvalho
  * @author Victor Alenkov
+ * @author Zak Henry
  *
  * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
  *
  */
 
 // Plugin
-val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
-    val monitor = environment?.monitor
-    val koinApplication = startKoin(pluginConfig)
-    monitor?.raise(KoinApplicationStarted, koinApplication)
+val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinApplication) {
+    val koinApplication = pluginConfig
+    application.attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
 
+    val monitor = environment?.monitor
+    monitor?.raise(KoinApplicationStarted, koinApplication)
+    // Core Plugin
     monitor?.subscribe(ApplicationStopping) {
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
-        stopKoin()
+        koinApplication.koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
+    }
+
+    // Scope Handling
+    on(CallSetup) { call ->
+        val scopeComponent = RequestScope(koinApplication.koin)
+        call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scopeComponent.scope)
+    }
+    on(ResponseSent) { call ->
+        call.attributes[KOIN_SCOPE_ATTRIBUTE_KEY].close()
     }
 }
 
 fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
-    GlobalContext.getKoinApplicationOrNull()?.apply(configuration)
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.apply(configuration)
 } ?: install(Koin, configuration)
+
+const val KOIN_KEY = "KOIN"
+val KOIN_ATTRIBUTE_KEY = AttributeKey<KoinApplication>(KOIN_KEY)
+
+val ApplicationCall.scope: Scope get() = this.attributes[KOIN_SCOPE_ATTRIBUTE_KEY]
+
+const val KOIN_SCOPE_KEY = "KOIN_SCOPE"
+val KOIN_SCOPE_ATTRIBUTE_KEY = AttributeKey<Scope>(KOIN_SCOPE_KEY)

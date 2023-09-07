@@ -16,7 +16,6 @@ class ClosedScopeAPI {
     class ScopeType
     class ScopeType2
 
-
     val scopeName = "MY_SCOPE"
 
     @Test
@@ -24,11 +23,11 @@ class ClosedScopeAPI {
         val koin = koinApplication {
             printLogger()
             modules(
-                    module {
-                        scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named<ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -49,7 +48,7 @@ class ClosedScopeAPI {
                     scope(named<ScopeType2>()) {
                         scoped { Simple.ComponentA() }
                     }
-                }
+                },
             )
         }.koin
 
@@ -58,7 +57,7 @@ class ClosedScopeAPI {
         scope1.linkTo(scope2)
         val all = listOf(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
         val expected = scope1.getAll<Simple.ComponentA>()
-        assertEquals(expected,all)
+        assertEquals(expected, all)
     }
 
     @Test
@@ -66,11 +65,11 @@ class ClosedScopeAPI {
         val koin = startKoin {
             printLogger()
             modules(
-                    module {
-                        scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                        }
+                module {
+                    scope(named<ScopeType>()) {
+                        scoped { Simple.ComponentA() }
                     }
+                },
             )
         }.koin
 
@@ -86,12 +85,12 @@ class ClosedScopeAPI {
     fun `get definition from current scope type`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(named<ScopeType>()) {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -104,12 +103,12 @@ class ClosedScopeAPI {
     fun `get definition from current factory scope type`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named<ScopeType>()) {
-                            scoped { Simple.ComponentA() }
-                            factory { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(named<ScopeType>()) {
+                        scoped { Simple.ComponentA() }
+                        factory { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -122,12 +121,12 @@ class ClosedScopeAPI {
     fun `get definition from factory scope type`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                        scope(named<ScopeType>()) {
-                            factory { Simple.ComponentB(get()) }
-                        }
+                module {
+                    single { Simple.ComponentA() }
+                    scope(named<ScopeType>()) {
+                        factory { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -139,7 +138,8 @@ class ClosedScopeAPI {
     @Test
     fun `get definition from current scope type - dispatched modules`() {
         val koin = koinApplication {
-            modules(listOf(
+            modules(
+                listOf(
                     module {
                         scope(named<ScopeType>()) {
                         }
@@ -153,7 +153,8 @@ class ClosedScopeAPI {
                         scope(named<ScopeType>()) {
                             scoped { Simple.ComponentB(get()) }
                         }
-                    })
+                    },
+                ),
             )
         }.koin
 
@@ -166,12 +167,12 @@ class ClosedScopeAPI {
     fun `get definition from current scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named(scopeName)) {
-                            scoped { Simple.ComponentA() }
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(named(scopeName)) {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -184,12 +185,12 @@ class ClosedScopeAPI {
     fun `get definition from outside single`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        single { Simple.ComponentA() }
-                        scope(named(scopeName)) {
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    single { Simple.ComponentA() }
+                    scope(named(scopeName)) {
+                        scoped { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -202,12 +203,12 @@ class ClosedScopeAPI {
     fun `get definition from outside factory`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        factory { Simple.ComponentA() }
-                        scope(named(scopeName)) {
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    factory { Simple.ComponentA() }
+                    scope(named(scopeName)) {
+                        scoped { Simple.ComponentB(get()) }
                     }
+                },
             )
         }.koin
 
@@ -220,14 +221,14 @@ class ClosedScopeAPI {
     fun `bad mix definition from a scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named("SCOPE_1")) {
-                            scoped { Simple.ComponentA() }
-                        }
-                        scope(named("SCOPE_2")) {
-                            scoped { Simple.ComponentB(get()) }
-                        }
+                module {
+                    scope(named("SCOPE_1")) {
+                        scoped { Simple.ComponentA() }
                     }
+                    scope(named("SCOPE_2")) {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                },
             )
         }.koin
 
@@ -244,14 +245,14 @@ class ClosedScopeAPI {
     fun `mix definition from a scope`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named("SCOPE_1")) {
-                            scoped { Simple.ComponentA() }
-                        }
-                        scope(named("SCOPE_2")) {
-                            scoped { (scope: Scope) -> Simple.ComponentB(scope.get()) }
-                        }
+                module {
+                    scope(named("SCOPE_1")) {
+                        scoped { Simple.ComponentA() }
                     }
+                    scope(named("SCOPE_2")) {
+                        scoped { (scope: Scope) -> Simple.ComponentB(scope.get()) }
+                    }
+                },
             )
         }.koin
 
@@ -267,11 +268,11 @@ class ClosedScopeAPI {
     fun `definition params for scoped definitions`() {
         val koin = koinApplication {
             modules(
-                    module {
-                        scope(named("SCOPE_1")) {
-                            scoped { (i: Int) -> Simple.MySingle(i) }
-                        }
+                module {
+                    scope(named("SCOPE_1")) {
+                        scoped { (i: Int) -> Simple.MySingle(i) }
                     }
+                },
             )
         }.koin
 

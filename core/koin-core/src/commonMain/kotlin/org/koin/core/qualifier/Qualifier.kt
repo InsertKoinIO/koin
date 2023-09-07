@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ fun named(name: String) = StringQualifier(name)
 
 fun <E : Enum<E>> named(enum: Enum<E>) = enum.qualifier
 
-
 fun qualifier(name: String) = StringQualifier(name)
 fun <E : Enum<E>> qualifier(enum: Enum<E>) = enum.qualifier
 
@@ -53,6 +52,6 @@ inline fun <reified T> qualifier() = TypeQualifier(T::class)
 inline fun <reified T> _q() = TypeQualifier(T::class)
 
 val <E : Enum<E>> Enum<E>.qualifier
-    get() : Qualifier {
+    get(): Qualifier {
         return StringQualifier(this.toString().toLowerCase())
     }

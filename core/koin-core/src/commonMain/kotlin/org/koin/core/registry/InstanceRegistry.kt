@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.koin.core.instance.InstanceContext
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
-import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.overrideError
 import org.koin.core.qualifier.Qualifier
@@ -34,6 +33,7 @@ import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
 import kotlin.reflect.KClass
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 class InstanceRegistry(val _koin: Koin) {
 
@@ -41,7 +41,7 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
-    private val eagerInstances = hashMapOf<Int,SingleInstanceFactory<*>>()
+    private val eagerInstances = hashMapOf<Int, SingleInstanceFactory<*>>()
 
     internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
@@ -76,7 +76,7 @@ class InstanceRegistry(val _koin: Koin) {
         allowOverride: Boolean,
         mapping: IndexKey,
         factory: InstanceFactory<*>,
-        logWarning: Boolean = true
+        logWarning: Boolean = true,
     ) {
         if (_instances.containsKey(mapping)) {
             if (!allowOverride) {
@@ -101,7 +101,7 @@ class InstanceRegistry(val _koin: Koin) {
     internal fun resolveDefinition(
         clazz: KClass<*>,
         qualifier: Qualifier?,
-        scopeQualifier: Qualifier
+        scopeQualifier: Qualifier,
     ): InstanceFactory<*>? {
         val indexKey = indexKey(clazz, qualifier, scopeQualifier)
         return _instances[indexKey]
@@ -111,7 +111,7 @@ class InstanceRegistry(val _koin: Koin) {
         qualifier: Qualifier?,
         clazz: KClass<*>,
         scopeQualifier: Qualifier,
-        instanceContext: InstanceContext
+        instanceContext: InstanceContext,
     ): T? {
         return resolveDefinition(clazz, qualifier, scopeQualifier)?.get(instanceContext) as? T
     }
@@ -123,7 +123,7 @@ class InstanceRegistry(val _koin: Koin) {
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true,
         scopeQualifier: Qualifier,
-        scopeID: ScopeID
+        scopeID: ScopeID,
     ) {
         val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
@@ -138,7 +138,6 @@ class InstanceRegistry(val _koin: Koin) {
                 saveMapping(allowOverride, index, factory)
             }
         }
-
     }
 
     @PublishedApi
@@ -146,7 +145,7 @@ class InstanceRegistry(val _koin: Koin) {
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        allowOverride: Boolean = true
+        allowOverride: Boolean = true,
     ) {
         val rootQualifier = _koin.scopeRegistry.rootScope.scopeQualifier
         val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, rootQualifier)
@@ -159,13 +158,12 @@ class InstanceRegistry(val _koin: Koin) {
         }
     }
 
-
     internal fun dropScopeInstances(scope: Scope) {
         _instances.values.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
     }
 
     internal fun close() {
-        _instances.forEach { (key, factory) ->
+        _instances.forEach { (_, factory) ->
             factory.dropAll()
         }
         _instances.clear()
@@ -178,7 +176,7 @@ class InstanceRegistry(val _koin: Koin) {
             }
             .filter { factory ->
                 factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(
-                    clazz
+                    clazz,
                 )
             }
             .distinct()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,16 @@ import org.junit.runners.model.Statement
 class MockProviderRule private constructor(private val mockProvider: Provider<*>) : TestRule {
 
     override fun apply(base: Statement, description: Description): Statement =
-            object : Statement() {
-                override fun evaluate() {
-                    MockProvider.register(mockProvider)
-                    base.evaluate()
-                }
+        object : Statement() {
+            override fun evaluate() {
+                MockProvider.register(mockProvider)
+                base.evaluate()
             }
+        }
 
     companion object {
         fun create(mockProvider: Provider<*>): MockProviderRule {
             return MockProviderRule(mockProvider)
         }
     }
-
 }

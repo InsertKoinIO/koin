@@ -16,6 +16,7 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
 
+@OptIn(KoinInternalApi::class)
 class KoinExtTest {
 
     @Test

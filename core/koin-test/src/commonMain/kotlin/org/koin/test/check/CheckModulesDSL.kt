@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ class ParametersBinding(val koin: Koin) {
     fun withProperty(key: String, value: Any) = koin.setProperty(key, value)
     inline fun <reified T : Any, reified U : Any> withScopeLink() = withScopeLink(qualifier<T>(), qualifier<U>())
     inline fun withScopeLink(scopeQualifier: Qualifier, targetScopeQualifier: Qualifier) =
-            scopeLinks.put(scopeQualifier, targetScopeQualifier)
+        scopeLinks.put(scopeQualifier, targetScopeQualifier)
 }
 
 typealias ParametersCreator = (Qualifier?) -> ParametersHolder

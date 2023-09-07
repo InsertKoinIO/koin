@@ -42,6 +42,9 @@ jobs:
       - name: Install Android
         run: cd android && ./install.sh
 
+      - name: Install BOM
+        run: cd bom && ./install.sh
+        
       - name: Test Examples
         run: cd examples && ./test.sh
 

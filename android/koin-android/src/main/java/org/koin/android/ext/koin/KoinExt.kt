@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.android.ext.koin
 
 import android.app.Application
@@ -37,10 +39,8 @@ import java.util.*
  * Setup Android Logger for Koin
  * @param level
  */
-@OptIn(KoinInternalApi::class)
-
 fun KoinApplication.androidLogger(
-        level: Level = Level.INFO,
+    level: Level = Level.INFO,
 ): KoinApplication {
     koin.setupLogger(AndroidLogger(level))
     return this
@@ -71,13 +71,11 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
 
 /**
  * Load properties file from Assets
- * @param androidContext
  * @param koinPropertyFile
  */
 @OptIn(KoinInternalApi::class)
-
 fun KoinApplication.androidFileProperties(
-        koinPropertyFile: String = "koin.properties",
+    koinPropertyFile: String = "koin.properties",
 ): KoinApplication {
     val koinProperties = Properties()
     val androidContext = koin.get<Context>()

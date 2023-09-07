@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
-import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
@@ -45,12 +44,12 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
      * @return T
      */
     open fun create(context: InstanceContext): T {
-        context.logger.debug( "| (+) '$beanDefinition'")
+        context.logger.debug("| (+) '$beanDefinition'")
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
             return beanDefinition.definition.invoke(
                 context.scope,
-                parameters
+                parameters,
             )
         } catch (e: Exception) {
             val stack = KoinPlatformTools.getStackTrace(e)
@@ -71,6 +70,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
 
     abstract fun dropAll()
 
+    @Suppress("NAME_SHADOWING")
     override fun equals(other: Any?): Boolean {
         val other = (other as? InstanceFactory<*>)?.beanDefinition
         return beanDefinition == other

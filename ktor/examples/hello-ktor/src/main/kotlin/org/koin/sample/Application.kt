@@ -6,11 +6,9 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.core.logger.Level
 import org.koin.ktor.ext.inject
-import org.koin.ktor.plugin.Koin
-import org.koin.ktor.plugin.KoinApplicationStarted
-import org.koin.ktor.plugin.KoinApplicationStopPreparing
-import org.koin.ktor.plugin.KoinApplicationStopped
+import org.koin.ktor.plugin.*
 import org.koin.logger.slf4jLogger
 
 fun main(args: Array<String>) {
@@ -23,7 +21,7 @@ fun main(args: Array<String>) {
 fun Application.mainModule() {
     install(CallLogging)
     install(Koin) {
-        slf4jLogger()
+        slf4jLogger(Level.DEBUG)
         modules(appModule)
     }
 
@@ -42,9 +40,10 @@ fun Application.mainModule() {
     // Routing section
     routing {
         get("/hello") {
+            val newId = call.scope.get<ScopeComponent>().id
+            println("ScopeComponent.id = $newId")
             call.respondText(helloService.sayHello())
         }
     }
 }
-
 

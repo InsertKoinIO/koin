@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,11 +40,13 @@ interface KoinComponent {
  */
 inline fun <reified T : Any> KoinComponent.get(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
 ): T {
     return if (this is KoinScopeComponent) {
         scope.get(qualifier, parameters)
-    } else getKoin().get(qualifier, parameters)
+    } else {
+        getKoin().get(qualifier, parameters)
+    }
 }
 
 /**
@@ -56,15 +58,6 @@ inline fun <reified T : Any> KoinComponent.get(
 inline fun <reified T : Any> KoinComponent.inject(
     qualifier: Qualifier? = null,
     mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> =
     lazy(mode) { get<T>(qualifier, parameters) }
-
-///**
-// * Get instance instance from Koin by Primary Type P, as secondary type S
-// * @param parameters
-// */
-//inline fun <reified S : Any, reified P : Any> KoinComponent.bind(
-//    noinline parameters: ParametersDefinition? = null
-//): S =
-//    getKoin().bind<S, P>(parameters)

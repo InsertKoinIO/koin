@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters
 import org.koin.android.test.verify.AndroidVerify.androidTypes
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.Module
+import org.koin.test.verify.MissingKoinDefinitionException
 import kotlin.reflect.KClass
 
 /**

@@ -36,7 +36,10 @@ fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = listOf()) {
 object Verify {
 
     internal val primitiveTypes = listOf(
-        String::class, Int::class, Long::class, Double::class
+        String::class,
+        Int::class,
+        Long::class,
+        Double::class,
     )
 
     internal val whiteList = arrayListOf<KClass<*>>().apply {
@@ -63,13 +66,13 @@ object Verify {
         val timer = Timer.start()
 
         val verification = Verification(module, extraTypes)
-        println("Verifying Module '$module' ...")
-        println("- index keys: ${verification.definitionIndex.size}")
+        println("Verifying module '$module' ...")
+//        println("- index: ${verification.definitionIndex.size}")
         verification.verify()
 
         timer.stop()
         val time =
             if (timer.getTimeInMillis() < 1000) "${timer.getTimeInMillis()} ms" else "${timer.getTimeInSeconds()} sec"
-        println("[SUCCESS] module '$this' has been verified in $time.")
+        println("\n[SUCCESS] module '$this' has been verified in $time.")
     }
 }

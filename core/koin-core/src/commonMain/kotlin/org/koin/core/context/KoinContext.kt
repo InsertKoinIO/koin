@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,12 +55,12 @@ interface KoinContext {
     /**
      * load Koin module in global Koin context
      */
-    fun loadKoinModules(module: Module)
+    fun loadKoinModules(module: Module, createEagerInstances: Boolean = false)
 
     /**
      * load Koin modules in global Koin context
      */
-    fun loadKoinModules(modules: List<Module>)
+    fun loadKoinModules(modules: List<Module>, createEagerInstances: Boolean = false)
 
     /**
      * unload Koin module from global Koin context

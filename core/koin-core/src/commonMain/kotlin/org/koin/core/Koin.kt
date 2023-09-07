@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-Present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,7 @@ class Koin {
     @KoinInternalApi
     val extensionManager = ExtensionManager(this)
 
+    @KoinInternalApi
     var logger: Logger = EmptyLogger()
         private set
 
@@ -78,7 +79,7 @@ class Koin {
     inline fun <reified T : Any> inject(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
 
     /**
@@ -92,7 +93,7 @@ class Koin {
     inline fun <reified T : Any> injectOrNull(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
 
     /**
@@ -103,7 +104,7 @@ class Koin {
      */
     inline fun <reified T : Any> get(
         qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): T = scopeRegistry.rootScope.get(qualifier, parameters)
 
     /**
@@ -116,7 +117,7 @@ class Koin {
      */
     inline fun <reified T : Any> getOrNull(
         qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
     ): T? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
     /**
@@ -131,7 +132,7 @@ class Koin {
     fun <T> get(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T = scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
     /**
@@ -146,9 +147,8 @@ class Koin {
     fun <T> getOrNull(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+        parameters: ParametersDefinition? = null,
     ): T? = scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
-
 
     /**
      * Declare a component definition from the given instance
@@ -163,7 +163,7 @@ class Koin {
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
-        allowOverride: Boolean = true
+        allowOverride: Boolean = true,
     ) {
         instanceRegistry.declareRootInstance(instance, qualifier, secondaryTypes, allowOverride)
     }
@@ -302,11 +302,18 @@ class Koin {
 
     /**
      * Load module & create eager instances
+     *
+     * @param allowOverride - allow to override definitions
+     * @param createEagerInstances - run instance creation for eager single definitions
      */
-    fun loadModules(modules: List<Module>, allowOverride: Boolean = true) {
+    fun loadModules(modules: List<Module>, allowOverride: Boolean = true, createEagerInstances : Boolean = false) {
         val flattedModules = flatten(modules)
         instanceRegistry.loadModules(flattedModules, allowOverride)
         scopeRegistry.loadScopes(flattedModules)
+
+        if (createEagerInstances){
+            createEagerInstances()
+        }
     }
 
     fun unloadModules(modules: List<Module>) {
@@ -318,7 +325,7 @@ class Koin {
      * Create Single instances Definitions marked as createdAtStart
      */
     fun createEagerInstances() {
-        logger.debug("Eager instances ...")
+        logger.debug("Create eager instances ...")
         val duration = measureDuration {
             instanceRegistry.createAllEagerInstances()
         }

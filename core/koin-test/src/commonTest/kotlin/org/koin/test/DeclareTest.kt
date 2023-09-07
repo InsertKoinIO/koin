@@ -25,7 +25,7 @@ class DeclareTest : KoinTest {
         loadKoinModules(
             module {
                 single { Simple.ComponentA() }
-            }
+            },
         )
 
         get<Simple.ComponentA>()

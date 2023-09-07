@@ -29,7 +29,8 @@ class KoinComponentTest {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val koin = app.koin
@@ -58,7 +59,8 @@ class KoinComponentTest {
             modules(
                 module {
                     single { Simple.ComponentA() }
-                })
+                },
+            )
         }
 
         val koin = app.koin

@@ -17,8 +17,8 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Koin project used and used version (please complete the following information):**
- [e.g]: `koin-core version 0.9.2`
+**Koin module and version:**
+ [e.g]: `koin-core:3.4.3`
 
-**Additional moduleDefinition**
-Add any other moduleDefinition about the problem here.
+**Snippet or Sample project to help reproduce**
+Add a snippet or even a small sample project to hel reproduce your case.

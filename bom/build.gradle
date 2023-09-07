@@ -1,0 +1,16 @@
+allprojects {
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    apply plugin: 'java-platform'
+    apply plugin: 'maven-publish'
+
+    group = 'io.insert-koin'
+
+    javaPlatform {
+        allowDependencies()
+    }
+}

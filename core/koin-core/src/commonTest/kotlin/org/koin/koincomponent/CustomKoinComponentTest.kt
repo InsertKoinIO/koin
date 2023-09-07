@@ -18,9 +18,11 @@ abstract class CustomKoinComponent : KoinComponent {
     @ThreadLocal
     companion object {
         val customKoin = koinApplication {
-            modules(module {
-                single { Simple.ComponentA() }
-            })
+            modules(
+                module {
+                    single { Simple.ComponentA() }
+                },
+            )
         }.koin
     }
 }

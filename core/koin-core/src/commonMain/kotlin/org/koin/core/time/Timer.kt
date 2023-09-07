@@ -8,13 +8,13 @@ import kotlin.time.toDuration
 
 class Timer {
 
-    val start : Duration = KoinPlatformTimeTools.getTimeInNanoSeconds().toDuration(DurationUnit.NANOSECONDS)
-    var end : Duration = ZERO
+    val start: Duration = KoinPlatformTimeTools.getTimeInNanoSeconds().toDuration(DurationUnit.NANOSECONDS)
+    var end: Duration = ZERO
         private set
-    private var time : Duration = ZERO
+    private var time: Duration = ZERO
 
-    fun stop(){
-        if (end == ZERO){
+    fun stop() {
+        if (end == ZERO) {
             end = KoinPlatformTimeTools.getTimeInNanoSeconds().toDuration(DurationUnit.NANOSECONDS)
             time = end - start
         }
@@ -26,6 +26,6 @@ class Timer {
 
     companion object {
         const val NANO_TO_MILLI = 1_000_000.0
-        fun start() : Timer = Timer()
+        fun start(): Timer = Timer()
     }
 }

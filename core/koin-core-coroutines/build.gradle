@@ -12,21 +12,23 @@ kotlin {
     jvm {
         withJava()
     }
-    js(BOTH) {
+    js(IR) {
         nodejs()
         browser()
+        binaries.executable() // not applicable to BOTH, see details below
     }
 
     macosX64()
     macosArm64()
     iosX64()
+    iosX64()
     iosArm64()
-    iosArm32()
+//    iosArm32()
     iosSimulatorArm64()
-    watchosArm32()
+//    watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
-    watchosX86()
+//    watchosX86()
     watchosX64()
     tvosArm64()
     tvosSimulatorArm64()
@@ -43,8 +45,7 @@ kotlin {
             dependencies {
                 api kotlin("stdlib-common")
                 api project(":koin-core")
-
-                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
             }
         }
 
@@ -52,8 +53,7 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
 
@@ -111,9 +111,9 @@ kotlin {
         configure([
                 targets.macosX64,
                 targets.macosArm64,
-                targets.watchosArm32,
+//                targets.watchosArm32,
                 targets.watchosArm64,
-                targets.watchosX86,
+//                targets.watchosX86,
                 targets.watchosX64,
                 targets.watchosSimulatorArm64,
                 targets.tvosArm64,
@@ -121,7 +121,7 @@ kotlin {
                 targets.tvosSimulatorArm64,
                 targets.iosX64,
                 targets.iosSimulatorArm64,
-                targets.iosArm32,
+//                targets.iosArm32,
                 targets.iosArm64
         ]) {
             compilations.main.source(sourceSets.darwinMain)
@@ -129,10 +129,10 @@ kotlin {
         }
 //        configure([
 //                targets.linuxX64,
-//                targets.linuxArm32Hfp,
-//                targets.linuxMips32,
+////                targets.linuxArm32Hfp,
+////                targets.linuxMips32,
 //                targets.mingwX64,
-//                targets.mingwX86
+////                targets.mingwX86
 //        ]) {
 //            compilations.main.source(sourceSets.otherMain)
 //            compilations.test.source(sourceSets.nativeTest)

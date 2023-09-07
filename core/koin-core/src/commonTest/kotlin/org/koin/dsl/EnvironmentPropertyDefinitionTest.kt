@@ -1,10 +1,10 @@
-//package org.koin.dsl
+// package org.koin.dsl
 //
-//import kotlin.test.assertEquals
-//import kotlin.test.Test
-//import org.koin.core.logger.Level
+// import kotlin.test.assertEquals
+// import kotlin.test.Test
+// import org.koin.core.logger.Level
 //
-//class EnvironmentPropertyDefinitionTest {
+// class EnvironmentPropertyDefinitionTest {
 //
 //    @Test
 //    fun `load and get properties from environment`() {
@@ -20,4 +20,4 @@
 //        val foundValue = koin.getProperty<String>(aPropertyKey)
 //        assertEquals(aPropertyValue, foundValue)
 //    }
-//}
+// }

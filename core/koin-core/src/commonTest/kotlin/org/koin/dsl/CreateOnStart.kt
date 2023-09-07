@@ -12,20 +12,22 @@ import kotlin.test.assertTrue
 class CreateOnStart {
 
     @AfterTest
-    fun after(){
+    fun after() {
         stopKoin()
     }
 
     @Test
     fun `works with koin 2_2_3 and koin 3_0_2 breaks with koin 3_1_4`() {
         startKoin {
-            modules(module {
-                single(createdAtStart = true) { InjectionTarget() }
-            })
+            modules(
+                module {
+                    single(createdAtStart = true) { InjectionTarget() }
+                },
+            )
             properties(
                 mapOf(
-                    "foo" to "bar"
-                )
+                    "foo" to "bar",
+                ),
             )
         }
     }
@@ -35,12 +37,14 @@ class CreateOnStart {
         startKoin {
             properties(
                 mapOf(
-                    "foo" to "bar"
-                )
+                    "foo" to "bar",
+                ),
             )
-            modules(module {
-                single(createdAtStart = true) { InjectionTarget() }
-            })
+            modules(
+                module {
+                    single(createdAtStart = true) { InjectionTarget() }
+                },
+            )
         }
     }
 
@@ -48,12 +52,14 @@ class CreateOnStart {
     fun `createdAt start`() {
         var created = 0
         startKoin {
-            modules(module {
-                single(createdAtStart = true) {
-                    Simple.ComponentA()
-                    created++
-                }
-            })
+            modules(
+                module {
+                    single(createdAtStart = true) {
+                        Simple.ComponentA()
+                        created++
+                    }
+                },
+            )
         }
 
         assertTrue(created == 1)
@@ -63,12 +69,14 @@ class CreateOnStart {
     fun `createdAt start - koinApp`() {
         var created = 0
         koinApplication {
-            modules(module {
-                single(createdAtStart = true) {
-                    Simple.ComponentA()
-                    created++
-                }
-            })
+            modules(
+                module {
+                    single(createdAtStart = true) {
+                        Simple.ComponentA()
+                        created++
+                    }
+                },
+            )
         }
 
         assertTrue(created == 1)

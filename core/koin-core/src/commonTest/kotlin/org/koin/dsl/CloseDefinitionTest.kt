@@ -8,7 +8,7 @@ import kotlin.test.assertTrue
 class CloseDefinitionTest {
 
     @Test
-    fun test_onClose(){
+    fun test_onClose() {
         var closed = false
 
         val koin = koinApplication {
@@ -17,7 +17,7 @@ class CloseDefinitionTest {
                     single { Simple.ComponentA() } onClose {
                         closed = true
                     }
-                }
+                },
             )
         }.koin
 
@@ -26,7 +26,7 @@ class CloseDefinitionTest {
     }
 
     @Test
-    fun test_onClose_from_unload(){
+    fun test_onClose_from_unload() {
         var closed = false
 
         val module = module {
@@ -39,7 +39,7 @@ class CloseDefinitionTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
-                module
+                module,
             )
         }.koin
 
@@ -50,5 +50,4 @@ class CloseDefinitionTest {
         koin.unloadModules(listOf(module))
         assertTrue(!closed)
     }
-
 }

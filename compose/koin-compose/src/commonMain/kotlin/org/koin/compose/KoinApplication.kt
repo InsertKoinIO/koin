@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 @file:OptIn(KoinInternalApi::class)
 
 package org.koin.compose
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import org.koin.core.Koin
+import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -55,7 +57,7 @@ fun KoinApplication(
     application: KoinAppDeclaration,
     content: @Composable () -> Unit
 ) {
-    val koinApplication = koinApplication(application)
+    val koinApplication = koinApplication(appDeclaration = application)
     CompositionLocalProvider(
         LocalKoinApplication provides koinApplication.koin,
         LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
@@ -81,6 +83,33 @@ fun KoinApplication(
     CompositionLocalProvider(
         LocalKoinApplication provides koinApplication.koin,
         LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
+    ) {
+        content()
+    }
+}
+
+//TODO Test Isolated Context
+/**
+ * Provides Koin Isolated context to be setup into LocalKoinApplication & LocalKoinScope via CompositionLocalProvider,
+ * to be used by child Composable.
+ *
+ * This allows to use an isolated context, directly in all current Composable API
+ *
+ * Koin isolated context has to created with koinApplication() function, storing the instance in a static field
+ *
+ * @param context - Koin isolated context
+ * @param content - child Composable
+ *
+ * @author Arnaud Giuliani
+ */
+@Composable
+fun KoinIsolatedContext(
+    context: KoinApplication,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalKoinApplication provides context.koin,
+        LocalKoinScope provides context.koin.scopeRegistry.rootScope
     ) {
         content()
     }

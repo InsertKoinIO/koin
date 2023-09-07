@@ -7,7 +7,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.EmptyLogger
+import org.koin.core.logger.PrintLogger
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
@@ -16,6 +18,7 @@ import org.mockito.Mockito.mock
 /**
  * Android Module Tests
  */
+@OptIn(KoinInternalApi::class)
 class AndroidModuleTest : KoinTest {
 
     companion object {

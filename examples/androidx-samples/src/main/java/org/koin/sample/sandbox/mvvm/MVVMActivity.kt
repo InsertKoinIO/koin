@@ -1,5 +1,6 @@
 package org.koin.sample.sandbox.mvvm
 
+import android.app.Application
 import android.os.Bundle
 import android.widget.Button
 import org.koin.android.ext.android.getKoin
@@ -75,5 +76,11 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         assert(scopeVm.session.id == extScopeVm.session.id)
         assert(stateVM.result == "vm1")
         assert(vm1.id != vm2.id)
+
+        val p1 = scope.get<MVVMPresenter1>()
+        val p2 = scope.get<MVVMPresenter2>()
+
+        assert(p1.ctx == this)
+        assert(p2.ctx == getKoin().get<Application>())
     }
 }

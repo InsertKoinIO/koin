@@ -1,13 +1,9 @@
 package org.koin.full
 
-import kotlin.test.*
 import org.koin.core.logger.Level
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.named
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.*
 
 class TODOAppTest {
 
@@ -21,7 +17,7 @@ class TODOAppTest {
     }
 
     val overrideDef = module {
-        single<TasksDataSource>{ TasksLocalDataSource() }
+        single<TasksDataSource> { TasksLocalDataSource() }
     }
 
     interface TasksDataSource
