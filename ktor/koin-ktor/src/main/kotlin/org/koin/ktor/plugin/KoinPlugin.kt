@@ -34,7 +34,7 @@ import org.koin.dsl.koinApplication
 // Plugin
 val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinApplication) {
     val koinApplication = pluginConfig
-    application.attributes.put(koinKey, koinApplication)
+    application.attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
 
     val monitor = environment?.monitor
     monitor?.raise(KoinApplicationStarted, koinApplication)
@@ -47,7 +47,8 @@ val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinAp
 }
 
 fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
-    attributes.getOrNull(koinKey)?.apply(configuration)
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.apply(configuration)
 } ?: install(Koin, configuration)
 
-val koinKey = AttributeKey<KoinApplication>("KoinKey")
+const val KOIN_KEY = "KOIN"
+val KOIN_ATTRIBUTE_KEY = AttributeKey<KoinApplication>(KOIN_KEY)

@@ -19,7 +19,7 @@ import io.ktor.server.application.*
 import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.ktor.plugin.koinKey
+import org.koin.ktor.plugin.KOIN_ATTRIBUTE_KEY
 
 /**
  * Ktor Koin extensions
@@ -31,7 +31,7 @@ import org.koin.ktor.plugin.koinKey
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = attributes.get(koinKey).koin
+fun Application.getKoin(): Koin = attributes.get(KOIN_ATTRIBUTE_KEY).koin
 
 /**
  * inject lazily given dependency
