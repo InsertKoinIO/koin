@@ -16,8 +16,10 @@
 package org.koin.ktor.plugin
 
 import io.ktor.server.application.*
+import io.ktor.server.application.hooks.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
+import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
 
@@ -38,11 +40,20 @@ val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinAp
 
     val monitor = environment?.monitor
     monitor?.raise(KoinApplicationStarted, koinApplication)
-
+    // Core Plugin
     monitor?.subscribe(ApplicationStopping) {
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
         koinApplication.koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
+    }
+
+    // Scope Handling
+    on(CallSetup) { call ->
+        val scopeComponent = RequestScope(koinApplication.koin)
+        call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scopeComponent.scope)
+    }
+    on(ResponseSent) { call ->
+        call.attributes[KOIN_SCOPE_ATTRIBUTE_KEY].close()
     }
 }
 
@@ -52,3 +63,8 @@ fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.le
 
 const val KOIN_KEY = "KOIN"
 val KOIN_ATTRIBUTE_KEY = AttributeKey<KoinApplication>(KOIN_KEY)
+
+val ApplicationCall.scope: Scope get() = this.attributes[KOIN_SCOPE_ATTRIBUTE_KEY]
+
+const val KOIN_SCOPE_KEY = "KOIN_SCOPE"
+val KOIN_SCOPE_ATTRIBUTE_KEY = AttributeKey<Scope>(KOIN_SCOPE_KEY)
