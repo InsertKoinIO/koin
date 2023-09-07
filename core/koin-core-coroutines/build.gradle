@@ -45,8 +45,7 @@ kotlin {
             dependencies {
                 api kotlin("stdlib-common")
                 api project(":koin-core")
-
-                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
             }
         }
 
@@ -54,8 +53,7 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
 
