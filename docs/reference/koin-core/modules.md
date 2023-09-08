@@ -252,6 +252,9 @@ startKoin { modules(featureModule1, featureModule2) }
 
 Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
 
+:::info
+    If you have any compiling issue while including modules from the same file, either use `get()` Kotlin attribute operator on your module eitehr separate each moduel in files. See https://github.com/InsertKoinIO/koin/issues/1341 workaround
+:::
 
 ## Lazy modules & background modules loading with Kotlin coroutines [Experimental]
 
