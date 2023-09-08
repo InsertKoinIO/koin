@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.koin.core.scope.Scope
 @Composable
 inline fun <reified T> koinInject(
     qualifier: Qualifier? = null,
-    scope: Scope = LocalKoinScope.current,
+    scope: Scope = getKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T = rememberKoinInject(qualifier, scope, parameters)
 
@@ -47,7 +47,7 @@ inline fun <reified T> koinInject(
 @Composable
 inline fun <reified T> rememberKoinInject(
     qualifier: Qualifier? = null,
-    scope: Scope = LocalKoinScope.current,
+    scope: Scope = getKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T = remember(qualifier, scope, parameters) {
     scope.get(qualifier, parameters)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.koin.androidx.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import org.koin.compose.getKoinScope
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.GlobalContext
@@ -39,7 +40,7 @@ import org.koin.core.scope.Scope
 @Deprecated("use koinInject() instead")
 inline fun <reified T> get(
     qualifier: Qualifier? = null,
-    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
+    scope: Scope = getKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T = remember(qualifier, parameters, scope) {
     scope.get(qualifier, parameters)

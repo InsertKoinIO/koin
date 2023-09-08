@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.scope.KoinActivityScope
-import org.koin.compose.KoinIsolatedContext
 import org.koin.compose.koinInject
 import org.koin.compose.module.rememberKoinModules
 import org.koin.compose.rememberKoinInject
