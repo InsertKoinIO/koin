@@ -329,6 +329,6 @@ class Koin {
         val duration = measureDuration {
             instanceRegistry.createAllEagerInstances()
         }
-        logger.debug("Eager instances created in $duration ms")
+        logger.debug("Koin created eager instances in $duration ms")
     }
 }

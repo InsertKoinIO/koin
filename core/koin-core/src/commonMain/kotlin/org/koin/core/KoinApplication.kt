@@ -60,7 +60,7 @@ class KoinApplication private constructor() {
         if (koin.logger.isAt(Level.INFO)) {
             val duration = measureDuration { loadModules(modules) }
             val count = koin.instanceRegistry.size()
-            koin.logger.display(Level.INFO, "loaded $count definitions in $duration ms")
+            koin.logger.display(Level.INFO, "Koin started with $count definitions in $duration ms")
         } else {
             loadModules(modules)
         }
