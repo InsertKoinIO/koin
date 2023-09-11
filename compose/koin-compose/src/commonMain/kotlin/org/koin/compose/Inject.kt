@@ -17,6 +17,7 @@ package org.koin.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import org.koin.compose.stable.rememberStableParametersDefinition
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -49,8 +50,9 @@ inline fun <reified T> rememberKoinInject(
     qualifier: Qualifier? = null,
     scope: Scope = getKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T = remember(qualifier, scope, parameters) {
-    scope.get(qualifier, parameters)
+): T {
+    val st = rememberStableParametersDefinition(parameters)
+    return remember(qualifier, scope) {
+        scope.get(qualifier, st.parametersDefinition)
+    }
 }
-
-
