@@ -5,39 +5,6 @@ public final class org/koin/test/KoinTest$DefaultImpls {
 	public static fun getKoin (Lorg/koin/test/KoinTest;)Lorg/koin/core/Koin;
 }
 
-public final class org/koin/test/Simple {
-	public fun <init> ()V
-}
-
-public final class org/koin/test/Simple$ComponentA {
-	public fun <init> ()V
-}
-
-public final class org/koin/test/Simple$ComponentB {
-	public fun <init> (Lorg/koin/test/Simple$ComponentA;)V
-	public final fun getA ()Lorg/koin/test/Simple$ComponentA;
-}
-
-public final class org/koin/test/Simple$ComponentC {
-	public fun <init> (Lorg/koin/test/Simple$ComponentB;)V
-	public final fun getB ()Lorg/koin/test/Simple$ComponentB;
-}
-
-public final class org/koin/test/Simple$MyString {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun getS ()Ljava/lang/String;
-}
-
-public final class org/koin/test/Simple$UUIDComponent {
-	public fun <init> ()V
-	public final fun getUUID ()Ljava/lang/String;
-}
-
-public final class org/koin/test/UpperCase : org/koin/core/qualifier/Qualifier {
-	public static final field INSTANCE Lorg/koin/test/UpperCase;
-	public fun getValue ()Ljava/lang/String;
-}
-
 public abstract interface class org/koin/test/category/CheckModuleTest {
 }
 

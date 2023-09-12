@@ -33,9 +33,11 @@ public final class org/koin/sample/androidx/compose/ComposableSingletons$MainAct
 	public static final field INSTANCE Lorg/koin/sample/androidx/compose/ComposableSingletons$MainActivityKt;
 	public static field lambda-1 Lkotlin/jvm/functions/Function2;
 	public static field lambda-2 Lkotlin/jvm/functions/Function2;
+	public static field lambda-3 Lkotlin/jvm/functions/Function2;
 	public fun <init> ()V
 	public final fun getLambda-1$sample_android_compose_release ()Lkotlin/jvm/functions/Function2;
 	public final fun getLambda-2$sample_android_compose_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-3$sample_android_compose_release ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class org/koin/sample/androidx/compose/MainActivity : org/koin/androidx/scope/ScopeActivity {
@@ -52,6 +54,10 @@ public final class org/koin/sample/androidx/compose/MainApplication : android/ap
 	public static final field $stable I
 	public fun <init> ()V
 	public fun onCreate ()V
+}
+
+public final class org/koin/sample/androidx/compose/SDKComposableKt {
+	public static final fun IsolatedSDKComposable (Ljava/lang/String;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class org/koin/sample/androidx/compose/UIComponentsKt {
@@ -105,10 +111,26 @@ public final class org/koin/sample/androidx/compose/data/UserRepository {
 	public final fun getUsers ()Ljava/util/List;
 }
 
+public final class org/koin/sample/androidx/compose/data/sdk/SDKData {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+
 public final class org/koin/sample/androidx/compose/di/AppModuleKt {
 	public static final fun getAppModule ()Lorg/koin/core/module/Module;
 	public static final fun getSecondModule ()Lorg/koin/core/module/Module;
 	public static final fun getWALLET_SCOPE ()Lorg/koin/core/qualifier/StringQualifier;
+}
+
+public final class org/koin/sample/androidx/compose/di/IsolatedContextKt {
+	public static final fun getSdkModule ()Lorg/koin/core/module/Module;
+}
+
+public final class org/koin/sample/androidx/compose/di/IsolatedContextSDK {
+	public static final field $stable I
+	public static final field INSTANCE Lorg/koin/sample/androidx/compose/di/IsolatedContextSDK;
+	public final fun getKoinApp ()Lorg/koin/core/KoinApplication;
 }
 
 public final class org/koin/sample/androidx/compose/viewmodel/SSHViewModel : androidx/lifecycle/ViewModel {

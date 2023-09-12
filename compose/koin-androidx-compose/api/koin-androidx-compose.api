@@ -1,12 +1,9 @@
-public final class org/koin/androidx/compose/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public final class org/koin/androidx/compose/GetExtKt {
 	public static final fun getKoin (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
+}
+
+public final class org/koin/androidx/compose/KoinAndroidContextKt {
+	public static final fun KoinAndroidContext (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 }
 
 public final class org/koin/androidx/compose/ViewModelInternalsKt {

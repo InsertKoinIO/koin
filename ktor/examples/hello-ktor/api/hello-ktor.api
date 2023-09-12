@@ -32,3 +32,8 @@ public final class org/koin/sample/KoinAppModuleKt {
 	public static final fun getAppModule2 ()Lorg/koin/core/module/Module;
 }
 
+public final class org/koin/sample/ScopeComponent {
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+
