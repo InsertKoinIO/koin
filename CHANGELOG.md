@@ -2,6 +2,103 @@
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`, `[Experimental]`
 
+# [3.5]()
+
+## 3.5.0 - 2023-09-12
+
+### [bom-3.5.0]() 
+
+* Create BOM for Koin `io.insert-koin:koin-bom` to cover koin projects, by @arnaudgiuliani in 73acbcf0bee45388aef83a2c03040db7002459bc, Fix #1519
+
+### [core-3.5.0]() 
+
+Version upgrades
+* Kotlin update to `1.9.0` by @arnaudgiuliani in cc44d818e4184607d77d3a3e587c582966cba318
+* JUnit 5 update to `5.9.3` & stately-concurrency to `1.2.5` by @arnaudgiuliani in 0e9ec2c072b2d4d45392c04f799e03eb338f5634
+* Coroutines lib updates to `1.7.3` by @arnaudgiuliani in 217e2cb97f83ed81163a24efe1602df3b9fbfc7b
+
+Updates
+* Type alias NoBeanDefFoundException to NoDefinitionFoundException & KoinAppAlreadyStartedException to ApplicationAlreadyStartedException by @arnaudgiuliani in 901b0cccddc96cd2a9fb096bc31ec58a30a715e3
+* Remove old native memory management by @arnaudgiuliani in 313f6dc00d934dbc6bfe185d4d4189010b7d3612
+* Remove deprecated use of native time API by @arnaudgiuliani in 0a91bceaba452c8e45aa409b90b10297bc74b299
+* Open K2 compiler experiment by @arnaudgiuliani in d7382d92b232296eb37a4adfec4366378d60db47
+* Protect Logger internal API by @arnaudgiuliani in 565f642e2ee2e3baf4ab8ffd241eaa6f32575864
+* add optional boolean "createEagerinstances" to `loadKoinModules` function, to let decide to create eager instances or not by @arnaudgiuliani in 4477082c00b8a7603b3dcd7b033eddc6a8918946
+* Update case of Scope source type shadowing  by @arnaudgiuliani in #1595
+* Allow includes to take Collection by @DebitCardz in https://github.com/InsertKoinIO/koin/pull/1632
+* update start message by @arnaudgiuliani in 9c7d8d344c71b5da000bafa9eeb426645d29420c
+
+Fixes
+* Fixing race condition in Scope - Fixed for 3.5.0 by @octa-one and @arnaudgiuliani in https://github.com/InsertKoinIO/koin/pull/1643
+* Allow to run koinApplication and specify if eager instances are created or not, with `createEagerInstances : Boolean = true` parameter, by @arnaudgiuliani in bbd18decab33a8879d2b4443d760dafcbb668780
+* Clean up `verify()` API logs by @arnaudgiuliani in 088d8da2c715bf22bf81a04e8065ca40707866b4
+* `Scope` class is no longer a data class by @arnaudgiuliani in 1110c2a7a1d9173c520565f32623ae411478e357
+* Improve formatting. by @johnjohndoe in https://github.com/InsertKoinIO/koin/pull/1608
+* Fix number of type parameters for scopedOf dsl by @floatdrop in https://github.com/InsertKoinIO/koin/pull/1641
+* perf The module flattening function can reduce GC using MutableSet by @KAMO030 in https://github.com/InsertKoinIO/koin/pull/1640
+
+
+### [android-3.5.0]()
+
+Version upgrades
+* android lib updates: `androidx.activity:activity-ktx:1.7.2`, `androidx.fragment:fragment-ktx:1.6.1`, `androidx.navigation:navigation-fragment-ktx:2.7.1` by @arnaudgiuliani in 1fb1193e5caf565dc5b387a5ae1e67502ec294ba
+
+Fixes
+* Fix #1631, Disable BuildConfig for android modules by @5peak2me in https://github.com/InsertKoinIO/koin/pull/1642
+* Dont ignore getviewmodel key by @lammertw and @arnaudgiuliani in https://github.com/InsertKoinIO/koin/pull/1644
+* Fix Java compat for ViewModel creation extras by @arnaudgiuliani #1584 
+* androidContext redundant bind by @GrzegorzBobryk in https://github.com/InsertKoinIO/koin/pull/1648
+
+### [ktor-3.5.0]()
+
+Version upgrades
+* ktor `2.3.3` by @arnaudgiuliani in aff4f42ca9afaad3bec1c7d7f3907eb0ea4388c2
+
+Updates
+* Koin context isolation for Ktor by @zakhenry in fff847ea9f6a1131c5f39b62f7bd0fb0f8142109
+* Koin Request Scope for Ktor by @arnaudgiuliani in 280fdfeb79a5108225dd8c87e72e76405a41ddb8 2e491fb0977be9bcaec2ec95be90751d3ae9456a dc46cec44a14bea61aa7183bb803db59f0eeb920
+
+### [compose-1.1.0]() [androidx-compose-3.5.0]()
+
+Version upgrades
+* Jetpack & Jetbrains Compose compiler to `1.5.0` by @arnaudgiuliani in ea90be4d94dfa244744704e726793edd4c7bd12a
+* Android lib update for compose - `androidx.compose.runtime:runtime:1.5.0`, `androidx.navigation:navigation-compose:2.7.1` by @arnaudgiuliani in ea90be4d94dfa244744704e726793edd4c7bd12a
+
+New Features
+* Compose `KoinIsolatedContext` to help run child composables using a isolated Koin context by @arnaudgiuliani in 8ca591b53e75ad75e08eaf301559bef98db8b2f6
+* add KoinContext & KoinAndroidContext with check over CompositionLocalProvider to avoid outdated link to Koin scope - Fix #1557 by @arnaudgiuliani and @jjkester in 61a88bbf79d593c9ed777f5b1acb07caa5e6db2e
+
+Fixes
+* koin-compose - Fix #1601 with stable parameter definition holder by @arnaudgiuliani in deb1253d92a723a46acfa76127a5b9c255e3ea64
+
+### [documentation]()
+* Pointed to correct dependancy for koin-test-junit5 in docs by @MarcusDunn in https://github.com/InsertKoinIO/koin/pull/1610
+* Fixed a typo in context-isolation.md by @Deishelon in https://github.com/InsertKoinIO/koin/pull/1602
+* docs: Fix a typo in the context isolation reference by @sschuberth in https://github.com/InsertKoinIO/koin/pull/1620
+* [bugfix] dls documentation by @GrzegorzBobryk in https://github.com/InsertKoinIO/koin/pull/1645
+* Workaround for module include compile issue - Fix #1341 doc note by @arnaudgiuliani in 57c84c3773880b76e1da73837fc93b924c14e42d
+* Doc update for Compose features - KoinContext KoinAndroidContext and KoinIsolatedContext by @arnaudgiuliani in 11397b23aacb51ef51454eacfc68246918ee1c33
+
+### [CI/CD]()
+* Add CodeQL workflow by @jorgectf in https://github.com/InsertKoinIO/koin/pull/1615
+* Use more gradle-build-action by @Goooler in https://github.com/InsertKoinIO/koin/pull/1628
+* Add binary API check format by @arnaudgiuliani in c839ae16fd693f4538202e4808ac45058bc18449
+
+### New Contributors
+* @MarcusDunn made their first contribution in https://github.com/InsertKoinIO/koin/pull/1610
+* @Deishelon made their first contribution in https://github.com/InsertKoinIO/koin/pull/1602
+* @Goooler made their first contribution in https://github.com/InsertKoinIO/koin/pull/1628
+* @sschuberth made their first contribution in https://github.com/InsertKoinIO/koin/pull/1620
+* @jorgectf made their first contribution in https://github.com/InsertKoinIO/koin/pull/1615
+* @floatdrop made their first contribution in https://github.com/InsertKoinIO/koin/pull/1641
+* @5peak2me made their first contribution in https://github.com/InsertKoinIO/koin/pull/1642
+* @KAMO030 made their first contribution in https://github.com/InsertKoinIO/koin/pull/1640
+* @DebitCardz made their first contribution in https://github.com/InsertKoinIO/koin/pull/1632
+
+**Full Changelog**: https://github.com/InsertKoinIO/koin/compare/core-3.4.3...3.5.0
+
+## [core-3.4.3]() 
+
 # [3.4]()
 
 ## 3.4.3 - 2023-07-26
