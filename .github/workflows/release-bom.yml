@@ -1,4 +1,4 @@
-name: Release Android
+name: Release BOM
 
 on:
   push:
