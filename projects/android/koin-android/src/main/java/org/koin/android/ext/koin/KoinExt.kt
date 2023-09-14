@@ -56,15 +56,15 @@ fun KoinApplication.androidContext(androidContext: Context): KoinApplication {
         koin.logger.info("[init] declare Android Context")
     }
 
-    if (androidContext is Application) {
-        koin.loadModules(listOf(module {
-            single { androidContext } bind Context::class
-        }))
-    } else {
-        koin.loadModules(listOf(module {
-            single { androidContext }
-        }))
-    }
+    koin.loadModules(listOf(
+        module {
+            if (androidContext is Application) {
+                single { androidContext } bind Context::class
+            } else {
+                single { androidContext }
+            }
+        }
+    ))
 
     return this
 }
