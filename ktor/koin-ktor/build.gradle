@@ -7,12 +7,13 @@ repositories {
 }
 
 dependencies {
+    // Koin
     api "io.insert-koin:koin-core:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
-
     // Ktor
     api "io.ktor:ktor-server-core:$ktor_version"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
+    testImplementation "io.ktor:ktor-server-netty:$ktor_version"
 }
 
 // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata.
