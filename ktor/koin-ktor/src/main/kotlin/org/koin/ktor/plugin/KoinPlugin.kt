@@ -21,7 +21,6 @@ import io.ktor.util.*
 import org.koin.core.KoinApplication
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.koinApplication
 
 /**
  * @author Arnaud Giuliani
@@ -32,21 +31,34 @@ import org.koin.dsl.koinApplication
  * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
  *
  */
+val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
+    val koinApplication = setupKoinApplication()
+    setupMonitoring(koinApplication)
+    setupKoinScope(koinApplication)
+}
 
-// Plugin
-val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinApplication) {
+private fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
     val koinApplication = pluginConfig
-    application.attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
+    koinApplication.createEagerInstances()
+    application.setKoinApplication(koinApplication)
+    return koinApplication
+}
 
+fun Application.setKoinApplication(koinApplication: KoinApplication){
+    attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
+}
+
+private fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: KoinApplication) {
     val monitor = environment?.monitor
     monitor?.raise(KoinApplicationStarted, koinApplication)
-    // Core Plugin
     monitor?.subscribe(ApplicationStopping) {
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
         koinApplication.koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
     }
+}
 
+private fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
     // Scope Handling
     on(CallSetup) { call ->
         val scopeComponent = RequestScope(koinApplication.koin)
@@ -57,14 +69,20 @@ val Koin = createApplicationPlugin(name = "Koin", createConfiguration = ::koinAp
     }
 }
 
-fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
-    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.apply(configuration)
-} ?: install(Koin, configuration)
-
 const val KOIN_KEY = "KOIN"
 val KOIN_ATTRIBUTE_KEY = AttributeKey<KoinApplication>(KOIN_KEY)
 
-val ApplicationCall.scope: Scope get() = this.attributes[KOIN_SCOPE_ATTRIBUTE_KEY]
-
 const val KOIN_SCOPE_KEY = "KOIN_SCOPE"
 val KOIN_SCOPE_ATTRIBUTE_KEY = AttributeKey<Scope>(KOIN_SCOPE_KEY)
+
+//TODO move both to ext file
+/**
+ * Scope property to let your resolve dependencies from Request Scope
+ */
+val ApplicationCall.scope: Scope get() = this.attributes.getOrNull(KOIN_SCOPE_ATTRIBUTE_KEY) ?: error("Koin Request Scope is not ready")
+/**
+ * Run extra koin configuration, like modules()
+ */
+fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.apply(configuration)
+} ?: install(Koin, configuration)
