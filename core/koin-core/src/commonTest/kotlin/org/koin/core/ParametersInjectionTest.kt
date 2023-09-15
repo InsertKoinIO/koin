@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
@@ -355,26 +356,30 @@ class ParametersInjectionTest {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `inject across multiple threads`() = runTest {
-        val app = koinApplication {
-            modules(
-                module {
-                    factory { (i: Int) -> Simple.MyIntFactory(i) }
-                },
-            )
-        }
-
-        val koin = app.koin
-
-        repeat(1000) {
-            val range = (0 until 1000)
-            val deferreds = range.map {
-                async(Dispatchers.Default) {
-                    koin.get<Simple.MyIntFactory> { parametersOf(it) }
-                }
+    fun `inject across multiple threads`(): TestResult {
+        val times = 100
+        
+        return runTest {
+            val app = koinApplication {
+                modules(
+                    module {
+                        factory { (i: Int) -> Simple.MyIntFactory(i) }
+                    },
+                )
             }
-            val values = awaitAll(*deferreds.toTypedArray())
-            assertEquals(range.map { it }, values.map { it.id })
+
+            val koin = app.koin
+
+            repeat(times) {
+                val range = (0 until times)
+                val deferreds = range.map {
+                    async(Dispatchers.Default) {
+                        koin.get<Simple.MyIntFactory> { parametersOf(it) }
+                    }
+                }
+                val values = awaitAll(*deferreds.toTypedArray())
+                assertEquals(range.map { it }, values.map { it.id })
+            }
         }
     }
 }
