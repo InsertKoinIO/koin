@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
 fun Application.mainModule() {
     install(CallLogging)
     install(Koin) {
-        slf4jLogger(Level.DEBUG)
+        printLogger(Level.DEBUG)
         modules(appModule)
     }
 
@@ -42,6 +42,7 @@ fun Application.mainModule() {
         get("/hello") {
             val newId = call.scope.get<ScopeComponent>().id
             println("ScopeComponent.id = $newId")
+            assert(Counter.init == 1)
             call.respondText(helloService.sayHello())
         }
     }

@@ -71,4 +71,4 @@ inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
 /**
  * Help work on ModuleDefinition
  */
-fun Routing.getKoin(): Koin = application.attributes.get(KOIN_ATTRIBUTE_KEY).koin
+fun Routing.getKoin(): Koin = application.getKoin()

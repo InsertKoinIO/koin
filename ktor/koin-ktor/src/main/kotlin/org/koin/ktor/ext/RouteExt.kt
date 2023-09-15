@@ -71,4 +71,4 @@ fun Route.getProperty(key: String, defaultValue: String) =
 /**
  * Help work on ModuleDefinition
  */
-fun Route.getKoin(): Koin = application.attributes.get(KOIN_ATTRIBUTE_KEY).koin
+fun Route.getKoin(): Koin = application.getKoin()

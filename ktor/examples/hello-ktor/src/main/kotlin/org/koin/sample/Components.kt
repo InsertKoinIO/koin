@@ -1,5 +1,6 @@
 package org.koin.sample
 
+import org.koin.sample.Counter.init
 import java.util.UUID
 
 class HelloRepository {
@@ -10,7 +11,15 @@ interface HelloService {
     fun sayHello(): String
 }
 
+object Counter {
+    var init = 0
+}
+
 class HelloServiceImpl(val helloRepository: HelloRepository) : HelloService {
+    init {
+        println("created at start")
+        init++
+    }
     override fun sayHello() = "Hello ${helloRepository.getHello()}!"
 }
 

@@ -17,9 +17,13 @@ package org.koin.ktor.ext
 
 import io.ktor.server.application.*
 import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.dsl.KoinAppDeclaration
 import org.koin.ktor.plugin.KOIN_ATTRIBUTE_KEY
+import org.koin.ktor.plugin.Koin
+import org.koin.ktor.plugin.setKoinApplication
 
 /**
  * Ktor Koin extensions
@@ -28,10 +32,17 @@ import org.koin.ktor.plugin.KOIN_ATTRIBUTE_KEY
  * @author Laurent Baresse
  */
 
+
+
 /**
  * Help work on ModuleDefinition
  */
-fun Application.getKoin(): Koin = attributes.get(KOIN_ATTRIBUTE_KEY).koin
+fun Application.getKoin(): Koin =
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.koin ?: run {
+        val defaultInstance = GlobalContext.getKoinApplicationOrNull() ?: error("No Koin instance started. Use install(Koin) or startKoin()")
+        setKoinApplication(defaultInstance)
+        attributes[KOIN_ATTRIBUTE_KEY].koin
+    }
 
 /**
  * inject lazily given dependency
