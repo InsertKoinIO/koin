@@ -4,6 +4,17 @@ Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKIN
 
 # [3.5]()
 
+## 3.5.1 - 2023-09-15
+
+### [bom-3.5.1]() 
+
+* Update to update `koin-ktor` to `3.5.1`
+
+### [ktor-3.5.1]() 
+
+* Fix Ktor Koin plugin with the right start process by @arnaudgiuliani in https://github.com/InsertKoinIO/koin/pull/1657
+* Bump BOM & koin-ktor to 3.5.1 by @arnaudgiuliani in https://github.com/InsertKoinIO/koin/pull/1658
+
 ## 3.5.0 - 2023-09-12
 
 ### [bom-3.5.0]() 
