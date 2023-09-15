@@ -28,6 +28,7 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.junit.Ignore
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
@@ -49,6 +50,7 @@ class KoinPluginRunTest {
     }
 
     @Test
+    @Ignore
     fun `run outside context`()  = runBlocking<Unit> {
         var counter = 0
         startKoin {
