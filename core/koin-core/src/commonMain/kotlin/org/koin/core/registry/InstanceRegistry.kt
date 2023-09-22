@@ -62,7 +62,6 @@ class InstanceRegistry(val _koin: Koin) {
 
     internal fun createAllEagerInstances() {
         createEagerInstances(eagerInstances.values)
-        eagerInstances.clear()
     }
 
     private fun loadModule(module: Module, allowOverride: Boolean) {
@@ -92,8 +91,10 @@ class InstanceRegistry(val _koin: Koin) {
     private fun createEagerInstances(eagerInstances: Collection<SingleInstanceFactory<*>>) {
         if (eagerInstances.isNotEmpty()) {
             val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
-            eagerInstances.forEach { factory ->
-                factory.get(defaultContext)
+            while (eagerInstances.isNotEmpty()) {
+                eagerInstances.toList()
+                    .also { eagerInstances.clear() }
+                    .forEach { it.get(defaultContext) }
             }
         }
     }
