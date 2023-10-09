@@ -6,7 +6,6 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
         //TODO replace io.mockk
     }
     dependencies {
@@ -32,7 +31,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
     }
 
     group = 'io.insert-koin'
