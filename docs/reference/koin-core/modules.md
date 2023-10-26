@@ -99,7 +99,7 @@ This way, your share the definitions and avoid preallocate factories in a value.
 
 ## Overriding definition or module (before 3.1.0)
 
-Koin won't allow you to redefinition an already existing definition (type,name,path ...). You will an error if you try this:
+Koin won't allow you to redefine an already existing definition (type,name,path ...). You will get an error if you try this:
 
 ```kotlin
 val myModuleA = module {
