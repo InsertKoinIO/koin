@@ -2,13 +2,13 @@
 title: Koin
 ---
 
-All you need to setup Koin in your project 
+All you need to setup Koin in your project
 
 ## Current Versions
 
 You can find all Koin packages on [maven central](https://search.maven.org/search?q=io.insert-koin).
 
-Here are the current available versions:
+Here are the currently available versions:
 
 | Project   |      Version      |
 |----------|:-------------:|
@@ -30,20 +30,42 @@ Here are the current available versions:
 
 ### Kotlin
 
-Add `koin-core` dependency to your application:
+Starting from 3.5.0 you can use BOM-version to manage all Koin library versions. When using the BOM in your app, you don't need to add any version to the Koin library dependencies themselves. When you update the BOM version, all the libraries that you're using are automatically updated to their new versions.
 
-```groovy
+Add `koin-bom` BOM and `koin-core` dependency to your application: 
+```kotlin
+implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+implementation("io.insert-koin:koin-core")
+```
+If you are using version catalogs:
+```toml
+[versions]
+koin-bom = "x.x.x"
+...
+
+[libraries]
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "di-koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+...
+```
+```kotlin
 dependencies {
-    
-    compile "io.insert-koin:koin-core:$koin_version"
+    implementation(libs.koin.bom)
+    implementation(libs.koin.core)
 }
 ```
 
-You are now ready to start Koin: 
+Or use an old way of specifying the exact dependency version for Koin:
+```kotlin
+dependencies {
+    implementation("io.insert-koin:koin-core:$koin_version")
+}
+```
+
+You are now ready to start Koin:
 
 ```kotlin
 fun main() {
-    
     startKoin {
         modules(...)
     }
@@ -55,11 +77,11 @@ If you need testing capacity:
 ```groovy
 dependencies {
     // Koin Test features
-    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation("io.insert-koin:koin-test:$koin_version")
     // Koin for JUnit 4
-    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
+    testImplementation("io.insert-koin:koin-test-junit4:$koin_version")
     // Koin for JUnit 5
-    testImplementation "io.insert-koin:koin-test-junit5:$koin_version"
+    testImplementation("io.insert-koin:koin-test-junit5:$koin_version")
 }
 ```
 
@@ -73,19 +95,18 @@ Add `koin-android` dependency to your Android application:
 
 ```groovy
 dependencies {
-
-    implementation "io.insert-koin:koin-android:$koin_android_version"
+    implementation("io.insert-koin:koin-android:$koin_android_version")
 }
 ```
 
-You are now ready to start Koin in your `Application` class: 
+You are now ready to start Koin in your `Application` class:
 
 ```kotlin
-class MainApplication : Application(){
+class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        startKoin{
+        startKoin {
             modules(appModule)
         }
     }
@@ -97,11 +118,11 @@ If you need extra features, add the following needed package:
 ```groovy
 dependencies {
     // Java Compatibility
-    implementation "io.insert-koin:koin-android-compat:$koin_android_version"
+    implementation("io.insert-koin:koin-android-compat:$koin_android_version")
     // Jetpack WorkManager
-    implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
+    implementation("io.insert-koin:koin-androidx-workmanager:$koin_android_version")
     // Navigation Graph
-    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
+    implementation("io.insert-koin:koin-androidx-navigation:$koin_android_version")
 }
 ```
 
@@ -113,19 +134,18 @@ From now you can continue on Koin Tutorials to learn about using Koin: [Android 
 
 ```groovy
 dependencies {
-
-    implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
+    implementation("io.insert-koin:koin-androidx-compose:$koin_android_compose_version")
 }
 ```
 
-You are now ready to start Koin in your `Application` class: 
+You are now ready to start Koin in your `Application` class:
 
 ```kotlin
-class MainApplication : Application(){
+class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        startKoin{
+        startKoin {
             modules(appModule)
         }
     }
@@ -143,8 +163,7 @@ Add `koin-core` dependency to your multiplatform application, for shared Kotlin 
 
 ```groovy
 dependencies {
-    
-    compile "io.insert-koin:koin-core:$koin_version"
+    implementation("io.insert-koin:koin-core:$koin_version")
 }
 ```
 
@@ -159,13 +178,13 @@ Add `koin-ktor` dependency to your multiplatform application:
 ```groovy
 dependencies {
     // Koin for Ktor 
-    implementation "io.insert-koin:koin-ktor:$koin_ktor"
+    implementation("io.insert-koin:koin-ktor:$koin_ktor")
     // SLF4J Logger
-    implementation "io.insert-koin:koin-logger-slf4j:$koin_ktor"
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
 }
 ```
 
-You are now ready to intall Koin feature into your Ktor application:
+You are now ready to install Koin feature into your Ktor application:
 
 ```kotlin
 fun Application.main() {
