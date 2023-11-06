@@ -154,7 +154,7 @@ From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin M
 
 ### **Ktor**
 
-Add `koin-ktor` dependency to your multiplatform application:
+Add `koin-ktor` dependency to your Ktor application:
 
 ```groovy
 dependencies {
@@ -165,7 +165,7 @@ dependencies {
 }
 ```
 
-You are now ready to intall Koin feature into your Ktor application:
+You are now ready to install Koin feature into your Ktor application:
 
 ```kotlin
 fun Application.main() {
