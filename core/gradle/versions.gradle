@@ -8,6 +8,8 @@ ext {
     
     coroutines_version = "1.7.3"
 
+    stately_concurrency = "2.0.5"
+
     // Dokka
     dokka_version = '1.8.10'
 
