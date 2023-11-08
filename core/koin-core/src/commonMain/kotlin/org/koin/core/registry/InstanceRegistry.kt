@@ -52,17 +52,14 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun addAllEagerInstances(module: Module) {
         module.eagerInstances.forEach { factory ->
-//            if (eagerInstances.contains(factory)){
-//                eagerInstances.remove(factory)
-//            }
-//            eagerInstances.add(factory)
             eagerInstances[factory.hashCode()] = factory
         }
     }
 
     internal fun createAllEagerInstances() {
-        createEagerInstances(eagerInstances.values)
+        val instances = arrayListOf(*eagerInstances.values.toTypedArray())
         eagerInstances.clear()
+        createEagerInstances(instances)
     }
 
     private fun loadModule(module: Module, allowOverride: Boolean) {
@@ -89,13 +86,9 @@ class InstanceRegistry(val _koin: Koin) {
         _instances[mapping] = factory
     }
 
-    private fun createEagerInstances(eagerInstances: Collection<SingleInstanceFactory<*>>) {
-        if (eagerInstances.isNotEmpty()) {
-            val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
-            eagerInstances.forEach { factory ->
-                factory.get(defaultContext)
-            }
-        }
+    private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
+        val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
+        instances.forEach { factory -> factory.get(defaultContext) }
     }
 
     internal fun resolveDefinition(
