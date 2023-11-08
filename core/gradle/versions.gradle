@@ -1,9 +1,9 @@
 ext {
     // Koin Versions
-    koin_version = '3.5.0'
+    koin_version = '3.5.2'
     
     // Kotlin
-    kotlin_version = '1.9.0' //TODO wait Compose for 1.9.10 or +
+    kotlin_version = '1.9.20'
     validator_version = '0.13.2'
     
     coroutines_version = "1.7.3"
