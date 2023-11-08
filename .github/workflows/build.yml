@@ -1,6 +1,6 @@
 name: Build & Test
 
-on: pull_request:
+on: pull_request
 
 concurrency:
   group: build-${{ github.ref }}
