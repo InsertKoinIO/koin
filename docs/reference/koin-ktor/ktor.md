@@ -1,5 +1,5 @@
 ---
-title: Ktor dependency injection with Koin
+title: Dependency Injection in Ktor
 ---
 
 The `koin-ktor` module is dedicated to bring dependency injection for Ktor.
@@ -10,7 +10,7 @@ To start a Koin container in Ktor, just install the `Koin` plugin like follow:
 
 ```kotlin
 fun Application.main() {
-    // Install Ktor features
+    // Install Koin
     install(Koin) {
         slf4jLogger()
         modules(helloAppModule)
@@ -18,11 +18,6 @@ fun Application.main() {
 
 }
 ```
-
-:::note
- Koin Ktor plugin uses isolated Koin context. You won't be able to start Koin outside of Ktor
-:::
-
 
 ## Inject in Ktor
 
