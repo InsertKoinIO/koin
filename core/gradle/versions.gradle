@@ -1,9 +1,10 @@
 ext {
     // Koin Versions
-    koin_version = '3.5.4-beta-1'
+    koin_version = '3.5.4-wasm-RC1'
     
     // Kotlin
     kotlin_version = '1.9.21'
+    kotlin_wasm_version = ""
     validator_version = '0.13.2'
     
     coroutines_version = "1.7.3"

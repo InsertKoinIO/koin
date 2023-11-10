@@ -20,6 +20,8 @@ kotlin {
         browser()
         binaries.executable() // not applicable to BOTH, see details below
     }
+    wasmJs()
+    wasmWasi()
 
     macosX64()
     macosArm64()
@@ -77,6 +79,22 @@ kotlin {
             dependsOn commonMain
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+                implementation "co.touchlab:stately-concurrency:$stately_concurrency"
+            }
+        }
+
+        wasmMain {
+            dependsOn commonMain
+            dependencies {
+//                implementation 'org.jetbrains.kotlin:kotlin-stdlib-wasm'
+                implementation "co.touchlab:stately-concurrency:$stately_concurrency"
+            }
+        }
+
+        wasmWasiMain {
+            dependsOn commonMain
+            dependencies {
+//                implementation 'org.jetbrains.kotlin:kotlin-stdlib-wasm'
                 implementation "co.touchlab:stately-concurrency:$stately_concurrency"
             }
         }
