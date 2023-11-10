@@ -44,8 +44,8 @@ dependencies {
     api "io.insert-koin:koin-android:$koin_android_version"
     api project(":koin-compose")
     // Compose
-    api "androidx.compose.runtime:runtime:1.5.0"
-    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    api "androidx.compose.runtime:runtime:1.5.4"
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
 }
 
 apply from: '../../gradle/publish-to-central.gradle'

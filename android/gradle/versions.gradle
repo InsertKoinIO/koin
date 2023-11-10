@@ -1,6 +1,6 @@
 ext {
     // Koin Versions
-    koin_android_version = '3.5.0'
+    koin_android_version = '3.5.2-RC1'
 
     // build Tools
     android_min_version = 14
