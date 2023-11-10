@@ -1,7 +1,6 @@
 package org.koin.androidx.viewmodel
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -38,10 +37,22 @@ fun <T : ViewModel> resolveViewModel(
     val modelClass: Class<T> = vmClass.java
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
+    val vmKey = getViewModelKey(qualifier, scope, key)
     return when {
-        qualifier != null -> provider[qualifier.value + (key?.let { "_$it" } ?: ""), modelClass]
-        key != null -> provider[key, modelClass]
+        vmKey != null -> provider[vmKey, modelClass]
         else -> provider[modelClass]
+    }
+}
+
+@KoinInternalApi
+internal fun getViewModelKey(qualifier: Qualifier?, scope: Scope, key: String?): String? {
+    return if (qualifier == null && key == null && scope.isRoot) {
+        null
+    } else {
+        val q = qualifier?.value ?: ""
+        val k = key ?: ""
+        val s = if (!scope.isRoot) scope.id else ""
+        "$q$k$s"
     }
 }
 
@@ -68,5 +79,15 @@ fun <T : ViewModel> lazyResolveViewModel(
     scope: Scope,
     parameters: (() -> ParametersHolder)? = null,
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { resolveViewModel(vmClass, viewModelStore(), key, extras(), qualifier, scope, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) {
+        resolveViewModel(
+            vmClass,
+            viewModelStore(),
+            key,
+            extras(),
+            qualifier,
+            scope,
+            parameters
+        )
+    }
 }

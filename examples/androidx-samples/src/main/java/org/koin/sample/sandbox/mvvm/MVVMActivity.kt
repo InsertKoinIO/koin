@@ -8,7 +8,9 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.ScopeActivity
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.sample.sandbox.R
@@ -21,7 +23,7 @@ import org.koin.sample.sandbox.utils.navigateTo
 
 class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
-    val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
+    lateinit var simpleViewModel: SimpleViewModel //by viewModel { parametersOf(ID) }
 
     val vm1: SimpleViewModel by viewModel(named("vm1")) { parametersOf("vm1") }
     val vm2: SimpleViewModel by viewModel(named("vm2")) { parametersOf("vm2") }
@@ -57,6 +59,8 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         findViewById<Button>(R.id.mvvm_button).setOnClickListener {
             navigateTo<ScopedActivityA>(isRoot = true)
         }
+
+//        simpleViewModel = viewModelForClass(SimpleViewModel::class, owner = this).value
 
         checks()
     }
