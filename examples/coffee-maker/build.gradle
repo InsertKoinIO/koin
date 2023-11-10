@@ -2,7 +2,6 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
     dependencies {
 //        classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
