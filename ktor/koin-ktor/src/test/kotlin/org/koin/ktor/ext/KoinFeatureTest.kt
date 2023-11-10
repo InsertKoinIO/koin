@@ -2,9 +2,11 @@ package org.koin.ktor.ext
 
 import io.ktor.server.application.*
 import io.ktor.server.testing.*
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.annotation.KoinReflectAPI
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.ktor.plugin.KoinIsolated
@@ -21,6 +23,11 @@ class Bar2(val name: String = "")
 
 @OptIn(KoinReflectAPI::class)
 class KoinFeatureTest {
+
+    @After
+    fun after(){
+        stopKoin()
+    }
 
     @Test
     fun `can install feature`() {
