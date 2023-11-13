@@ -15,6 +15,13 @@
  */
 package org.koin.mp
 
-expect object KoinPlatformTimeTools {
-    fun getTimeInNanoSeconds(): Long
+import kotlin.time.TimeSource
+
+@Deprecated("Use kotlin.time instead.")
+object KoinPlatformTimeTools {
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Use TimeSource.Monotonic.markNow() instead.")
+    fun getTimeInNanoSeconds(): Long =
+        TimeSource.Monotonic.markNow().elapsedNow().inWholeNanoseconds
 }
