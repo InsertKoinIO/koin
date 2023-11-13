@@ -20,8 +20,8 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.KoinApplicationDslMarker
 import org.koin.core.module.Module
-import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
+import kotlin.time.measureTime
 
 /**
  * Koin Application
@@ -58,9 +58,9 @@ class KoinApplication private constructor() {
      */
     fun modules(modules: List<Module>): KoinApplication {
         if (koin.logger.isAt(Level.INFO)) {
-            val duration = measureDuration { loadModules(modules) }
+            val duration = measureTime { loadModules(modules) }
             val count = koin.instanceRegistry.size()
-            koin.logger.display(Level.INFO, "Started $count definitions in $duration ms")
+            koin.logger.display(Level.INFO, "Started $count definitions in $duration")
         } else {
             loadModules(modules)
         }

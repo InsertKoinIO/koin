@@ -7,11 +7,11 @@ import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDuration
 import org.koin.dsl.module
 import org.koin.ext.inject
 import kotlin.test.AfterTest
 import kotlin.test.Test
+import kotlin.time.measureTime
 
 class B : KoinScopeComponent {
     override val scope: Scope by lazy { createScope(this) }
@@ -56,30 +56,27 @@ class PlayTest {
             )
         }.koin
 
-        measureDuration("by inject") {
+        val byInjectDuration = measureTime {
             val ai = A_inj()
             ai.b
             ai.c
         }
+        println("by inject in $byInjectDuration")
 
-        measureDuration("prop get") {
+        val propGetDuration = measureTime {
             val a = A()
             a.b = koin.get()
             a.c = koin.get()
         }
+        println("prop get in $propGetDuration")
 
-        measureDuration("prop inject") {
+        val propInjectDuration = measureTime {
             val a = A()
             a::b.inject()
             a::c.inject()
         }
+        println("prop inject in $propInjectDuration")
 
         stopKoin()
     }
-}
-
-fun measureDuration(msg: String, code: () -> Unit): Double {
-    val duration = measureDuration(code)
-    println("$msg in $duration ms")
-    return duration
 }

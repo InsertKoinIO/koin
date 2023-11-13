@@ -1,36 +1,35 @@
 package org.koin.benchmark
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
-import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 object PerfRunner {
 
     suspend fun runAll(scope: CoroutineScope): PerfResult {
         val results = (1..10).map { i -> withContext(scope.coroutineContext) { runScenario(i) } }
-        val avgStart = (results.sumOf { it.first } / results.size).round(100)
-        val avgExec = (results.sumOf { it.second } / results.size).round(1000)
+        val avgStart = results.map { it.first.inWholeMilliseconds }.average().milliseconds
+        val avgExec = results.map { it.second.inWholeMilliseconds }.average().milliseconds
 
-        println("Avg start: $avgStart ms")
-        println("Avg execution: $avgExec ms")
-        return PerfResult(avgStart,avgExec)
+        println("Avg start: $avgStart")
+        println("Avg execution: $avgExec")
+        return PerfResult(avgStart, avgExec)
     }
 
-    @OptIn(KoinExperimentalAPI::class)
-    fun runScenario(index: Int): Pair<Double, Double> {
-        val (app, duration) = measureDurationForResult {
+    fun runScenario(index: Int): Pair<Duration, Duration> {
+        val (app, duration) = measureTimedValue {
             koinApplication {
                 modules(
                     perfModule400()
                 )
             }
         }
-        println("Perf[$index] start in $duration ms")
+        println("Perf[$index] start in $duration")
 
         val koin: Koin = app.koin
 
@@ -38,10 +37,10 @@ object PerfRunner {
 //            koin.awaitAllStartJobs()
 //        }
 
-        val (_, executionDuration) = measureDurationForResult {
+        val executionDuration = measureTime {
             koinScenario(koin)
         }
-        println("Perf[$index] run in $executionDuration ms")
+        println("Perf[$index] run in $executionDuration")
         app.close()
         return Pair(duration, executionDuration)
     }
@@ -54,13 +53,11 @@ object PerfRunner {
     }
 }
 
-fun Double.round(digits : Int) : Double = (this * digits).roundToInt() / digits.toDouble()
+data class PerfLimit(val startTime: Duration, val execTime: Duration)
 
-data class PerfLimit(val startTime : Double, val execTime : Double)
-
-data class PerfResult(val startTime : Double, val execTime : Double) {
-    var worstMaxStartTime = 0.0
-    var worstExecTime = 0.0
+data class PerfResult(val startTime: Duration, val execTime: Duration) {
+    var worstMaxStartTime = Duration.ZERO
+    var worstExecTime = Duration.ZERO
     var isStartOk = false
     var isExecOk = false
     var isOk = true

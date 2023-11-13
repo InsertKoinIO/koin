@@ -28,13 +28,12 @@ import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.time.Timer
 import org.koin.ext.getFullName
-import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
+import kotlin.time.measureTimedValue
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -202,12 +201,11 @@ class Scope(
             val scopeId = if (isRoot) "" else "- scope:'$id"
             _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString $scopeId...")
 
-            val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
-            val instance = resolveInstance<T>(qualifier, clazz, parameters)
-            val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
-            val duration = (stop - start) / Timer.NANO_TO_MILLI
+            val (instance, duration) = measureTimedValue {
+                resolveInstance<T>(qualifier, clazz, parameters)
+            }
 
-            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
+            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration")
             instance
         } else {
             resolveInstance(qualifier, clazz, parameters)

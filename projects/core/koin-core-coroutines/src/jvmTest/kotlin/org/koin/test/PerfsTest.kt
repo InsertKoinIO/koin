@@ -6,10 +6,11 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.core.context.waitKoinStart
 import org.koin.core.logger.*
-import org.koin.core.time.Timer
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
 import kotlin.test.Test
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 class PerfsTest {
 
@@ -24,16 +25,17 @@ class PerfsTest {
     }
 
     private fun runPerfs(log: Logger = EmptyLogger(), isLazy: Boolean = false) {
-        val timerStart = Timer.start()
-        val app = koinApplication {
-            if (isLazy) {
-                lazyModules(perfModule400())
-            } else {
-                modules(perfModule400().value)
+        val (app, startKoinAppDuration) = measureTimedValue {
+            koinApplication {
+                if (isLazy) {
+                    lazyModules(perfModule400())
+                } else {
+                    modules(perfModule400().value)
+                }
             }
         }
-        timerStart.stop()
-        println("perf400 - start in ${timerStart.getTimeInMillis()}")
+
+        println("perf400 - start in $startKoinAppDuration")
 
         val koin = app.koin
 
@@ -41,13 +43,14 @@ class PerfsTest {
             koin.waitAllStartJobs()
         }
 
-        val timerRun = Timer.start()
-        koin.get<Perfs.A27>()
-        koin.get<Perfs.B31>()
-        koin.get<Perfs.C12>()
-        koin.get<Perfs.D42>()
-        timerRun.stop()
-        println("perf400 - executed in ${timerRun.getTimeInMillis()}")
+        val getDepsDuration = measureTime {
+            koin.get<Perfs.A27>()
+            koin.get<Perfs.B31>()
+            koin.get<Perfs.C12>()
+            koin.get<Perfs.D42>()
+        }
+
+        println("perf400 - executed in $getDepsDuration")
 
         app.close()
     }
