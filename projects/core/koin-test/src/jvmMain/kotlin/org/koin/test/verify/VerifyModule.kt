@@ -1,8 +1,8 @@
 package org.koin.test.verify
 
 import org.koin.core.module.Module
-import org.koin.core.time.Timer
 import kotlin.reflect.KClass
+import kotlin.time.measureTime
 
 /**
  * Make a static verification about all declared classes constructors, to ensure they are all bound to an existing definition
@@ -57,16 +57,13 @@ object Verify {
      * @throws MissingKoinDefinitionException
      */
     fun verify(module: Module, extraTypes: List<KClass<*>> = listOf()) {
-        val timer = Timer.start()
+        val duration = measureTime {
+            val verification = Verification(module, extraTypes)
+            println("Verifying module '$module' ...")
+//            println("- index: ${verification.definitionIndex.size}")
+            verification.verify()
+        }
 
-        val verification = Verification(module, extraTypes)
-        println("Verifying module '$module' ...")
-//        println("- index: ${verification.definitionIndex.size}")
-        verification.verify()
-
-        timer.stop()
-        val time =
-            if (timer.getTimeInMillis() < 1000) "${timer.getTimeInMillis()} ms" else "${timer.getTimeInSeconds()} sec"
-        println("\n[SUCCESS] module '$this' has been verified in $time.")
+        println("\n[SUCCESS] module '$this' has been verified in $duration.")
     }
 }

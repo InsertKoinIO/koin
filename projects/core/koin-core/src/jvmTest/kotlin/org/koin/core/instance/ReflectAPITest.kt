@@ -1,54 +1,55 @@
 package org.koin.core.instance
 
 import org.junit.Test
-import org.koin.core.time.measureDurationForResult
 import kotlin.reflect.KClass
+import kotlin.time.measureTimedValue
 
 class ReflectAPITest {
 
     @Test
     fun `reflect api to construct an instance`() {
-        makeJavaInstance(ComponentA::class)
+        measureRefInstantiation(ComponentA::class)
 
-        makeInstance { ComponentA() }
+        measureFctInstantiation { ComponentA() }
 
-        makeJavaInstance(ComponentA2::class)
+        measureRefInstantiation(ComponentA2::class)
 
-        makeInstance { ComponentA2() }
+        measureFctInstantiation { ComponentA2() }
 
-        makeJavaInstance(ComponentB::class)
+        measureRefInstantiation(ComponentB::class)
 
-        makeInstance { ComponentB(makeInstance { ComponentA() }) }
+        measureFctInstantiation { ComponentB(measureFctInstantiation { ComponentA() }) }
     }
 
-    inline fun <reified T : Any> makeInstance(noinline code: () -> T): T {
-        return measure("+ make fct - ${T::class}", code)
+    private inline fun <reified T : Any> measureFctInstantiation(noinline code: () -> T): T {
+        val (instance, duration) = measureTimedValue(code)
+        println("+ make fct - ${T::class} in $duration")
+        return instance
     }
 
-    private inline fun <reified T : Any> makeJavaInstance(clazz: KClass<T>): T {
-        return measure("+ make ref - ${T::class}") {
+    private inline fun <reified T : Any> measureRefInstantiation(clazz: KClass<T>): T {
+        val (instance, duration) = measureTimedValue {
             val javaClass = clazz.java
             val ctor = javaClass.constructors.first()
             val types = ctor.parameterTypes
-            return@measure if (types.isEmpty()) {
+            return@measureTimedValue if (types.isEmpty()) {
                 ctor.newInstance() as T
             } else {
-                println("|- types:${types.toList()}")
-                val (map, duration) = measureDurationForResult {
+                println("|- types: ${types.toList()}")
+                val (map, makeSubInstancesDuration) = measureTimedValue {
                     types.map { it.constructors.first().newInstance() }
                 }
-                println("|- make sub instances:$map in $duration")
+                println("|- make sub instances: $map in $makeSubInstancesDuration")
                 val toTypedArray = map.toTypedArray()
-                measure("|- created with subtypes") {
+                val (instance, makeInstanceDuration) = measureTimedValue {
                     ctor.newInstance(*toTypedArray) as T
                 }
+                println("|- created with subtypes: $map in $makeInstanceDuration")
+                return@measureTimedValue instance
             }
         }
-    }
-}
 
-fun <T> measure(message: String, code: () -> T): T {
-    val (i, time) = measureDurationForResult(code)
-    println("$message in $time ms")
-    return i
+        println("+ make ref - ${T::class} in $duration")
+        return instance
+    }
 }

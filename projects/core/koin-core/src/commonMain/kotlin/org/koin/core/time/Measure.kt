@@ -29,6 +29,8 @@ import org.koin.mp.KoinPlatformTimeTools
  * @param code - code to execute
  * @return Time in milliseconds
  */
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("Use measureTime() from kotlin.time instead.")
 inline fun measureDuration(code: () -> Unit): TimeInMillis {
     return measureTimedValue(code).second
 }
@@ -38,11 +40,13 @@ inline fun measureDuration(code: () -> Unit): TimeInMillis {
  * @param code - code to execute
  * @return Pair Value & Time in milliseconds
  */
+@Deprecated("Use measureTimedValue() from kotlin.time instead.")
 inline fun <T> measureDurationForResult(code: () -> T): Pair<T, TimeInMillis> {
     val (value, duration) = measureTimedValue(code)
     return Pair(value, duration)
 }
 
+@Deprecated("Use measureTimedValue() from kotlin.time instead.")
 inline fun <T> measureTimedValue(code: () -> T): Pair<T, TimeInMillis> {
     val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
     val value = code()
@@ -50,4 +54,5 @@ inline fun <T> measureTimedValue(code: () -> T): Pair<T, TimeInMillis> {
     return Pair(value, (stop - start) / Timer.NANO_TO_MILLI)
 }
 
+@Deprecated("Use kotlin.time.Duration instead.")
 typealias TimeInMillis = Double

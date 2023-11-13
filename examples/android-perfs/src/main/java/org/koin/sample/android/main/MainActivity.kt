@@ -8,6 +8,7 @@ import org.koin.benchmark.PerfLimit
 import org.koin.benchmark.PerfRunner.runAll
 import org.koin.sample.android.R
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
 
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         title = "Android First Perfs"
 
         runBlocking {
-            val limits = PerfLimit(10.8, 0.185)
+            val limits = PerfLimit(10.8.milliseconds, 0.185.milliseconds)
 
             println("Perf Tolerance: $limits")
 
@@ -29,8 +30,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
 
             val textWidget = findViewById<TextView>(R.id.text)
             var textReport = """
-                Start time: $startTime - max ${results.worstMaxStartTime} ms
-                Exec time: $execTime - max ${results.worstExecTime} ms
+                Start time: $startTime - max ${results.worstMaxStartTime}
+                Exec time: $execTime - max ${results.worstExecTime}
             """.trimIndent()
 
             if (!results.isOk) textReport += "\nTest Failed!"

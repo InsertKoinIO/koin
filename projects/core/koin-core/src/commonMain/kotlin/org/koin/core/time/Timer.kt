@@ -6,6 +6,7 @@ import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@Deprecated("Use TimeSource.Monotonic instead.")
 class Timer {
 
     val start: Duration = KoinPlatformTimeTools.getTimeInNanoSeconds().toDuration(DurationUnit.NANOSECONDS)
