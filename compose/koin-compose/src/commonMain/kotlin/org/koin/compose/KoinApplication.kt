@@ -117,6 +117,28 @@ fun KoinApplication(
 }
 
 /**
+ * Create a new Koin Application context for Compose.
+ *
+ * @param moduleList  list of modules to run within Koin application
+ * @param content     provided Composable element
+ *
+ * @author Bloemcol
+ */
+@Composable
+fun KoinApplication(
+    moduleList: List<Module>,
+    content: @Composable () -> Unit
+) {
+    val koinApplication = remember(moduleList) { koinApplication { modules(moduleList) } }
+    CompositionLocalProvider(
+        LocalKoinApplication provides koinApplication.koin,
+        LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
+    ) {
+        content()
+    }
+}
+
+/**
  * Create a new Koin Application context for Compose
  *
  * @param moduleList - list of Modules to run within Koin Application
