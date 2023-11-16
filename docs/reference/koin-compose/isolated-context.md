@@ -6,7 +6,7 @@ With a Compose application, you can work the same way with an [isolated context]
 
 ## Define isolated context
 
-First let's declare our isolated context holder, in order to store our isolated Koin isntance in memory. This can be done with a simple Object class like this. The `MyIsolatedKoinContext` class is holding our Koin instance:
+First let's declare our isolated context holder, in order to store our isolated Koin instance in memory. This can be done with a simple Object class like this. The `MyIsolatedKoinContext` class is holding our Koin instance:
 
 ```kotlin
 object MyIsolatedKoinContext {

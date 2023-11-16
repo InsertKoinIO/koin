@@ -191,7 +191,7 @@ ComponentActivity.viewModelForClass(
 ```
 
 :::note
-This function is still using `state: BundleDefinition`, but will comvert it to `CreationExtras`
+This function is still using `state: BundleDefinition`, but will convert it to `CreationExtras`
 :::
 
 Note that you can have access to the top level function, callable from anywhere:
