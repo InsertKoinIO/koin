@@ -78,7 +78,25 @@ fun getKoin(): Koin = currentComposer.run {
  */
 @OptIn(InternalComposeApi::class)
 @Composable
-fun getKoinScope(): Scope = currentComposer.run {
+fun currentKoinScope(): Scope = currentComposer.run {
+    try {
+        consume(LocalKoinScope)
+    } catch (_: UnknownKoinContext) {
+        val ctx = getKoinContext()
+        ctx.warnNoContext()
+        getKoinContext().scopeRegistry.rootScope
+    }
+}
+
+/**
+ * Retrieve the current Koin scope from the composition
+ *
+ * @author @author jjkester
+ *
+ */
+@OptIn(InternalComposeApi::class)
+@Composable
+fun rememberCurrentKoinScope(): Scope = currentComposer.run {
     remember {
         try {
             consume(LocalKoinScope)

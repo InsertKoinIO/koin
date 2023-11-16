@@ -23,7 +23,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.compose.LocalKoinScope
-import org.koin.compose.getKoinScope
+import org.koin.compose.currentKoinScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -46,7 +46,7 @@ inline fun <reified T : ViewModel> koinNavViewModel(
     },
     key: String? = null,
     extras: CreationExtras = defaultNavExtras(viewModelStoreOwner),
-    scope: Scope = getKoinScope(),
+    scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
     return resolveViewModel(
