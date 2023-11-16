@@ -5,7 +5,6 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
     }
     dependencies {
         // Kotlin
@@ -28,7 +27,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
     }
 
     group = 'io.insert-koin'

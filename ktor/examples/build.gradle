@@ -4,7 +4,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         // Kotlin
@@ -22,6 +21,5 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
     }
 }
