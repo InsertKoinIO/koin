@@ -91,7 +91,7 @@ fun getKoinScope(): Scope = currentComposer.run {
 }
 
 private fun warningNoContext(ctx: Koin) {
-    ctx.logger.error("[Warning] - No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
+    ctx.logger.debug("[Warning] - No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
 }
 
 /**
