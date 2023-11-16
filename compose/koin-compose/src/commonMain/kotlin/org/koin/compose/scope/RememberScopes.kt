@@ -20,13 +20,18 @@ package org.koin.compose.scope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import org.koin.compose.getKoin
+import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.StringQualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 
 /**
  * Remember Koin Scope & run CompositionKoinScopeLoader to handle scope closure
  *
+ * @param scope - Koin scope
  * @author Arnaud Giuliani
  */
 @KoinExperimentalAPI

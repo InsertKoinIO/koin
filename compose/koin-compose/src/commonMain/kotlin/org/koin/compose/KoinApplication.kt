@@ -117,28 +117,6 @@ fun KoinApplication(
 }
 
 /**
- * Create a new Koin Application context for Compose
- *
- * @param moduleList - list of Modules to run within Koin Application
- * @param content - following compose function
- *
- * @author Arnaud Giuliani
- */
-@Composable
-fun KoinApplication(
-    moduleList: () -> List<Module>,
-    content: @Composable () -> Unit
-) {
-    val koinApplication = remember(moduleList) { koinApplication { modules(moduleList()) } }
-    CompositionLocalProvider(
-        LocalKoinApplication provides koinApplication.koin,
-        LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
-    ) {
-        content()
-    }
-}
-
-/**
  * Run and bind Compose with existing Koin context
  *
  * @see KoinPlatformTools.defaultContext()
