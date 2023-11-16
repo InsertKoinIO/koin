@@ -57,7 +57,7 @@ class ScopeRegistry(private val _koin: Koin) {
     internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
         _koin.logger.debug("|- (+) Scope - id:'$scopeId' q:$qualifier")
         if (!_scopeDefinitions.contains(qualifier)) {
-            _koin.logger.warn("| Scope '$qualifier' not defined. Creating it ...")
+            _koin.logger.debug("| Scope '$qualifier' not defined. Creating it ...")
             _scopeDefinitions.add(qualifier)
         }
         if (_scopes.contains(scopeId)) {

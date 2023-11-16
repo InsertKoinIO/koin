@@ -21,7 +21,6 @@ import org.koin.compose.LocalKoinScope
 import org.koin.compose.getKoin
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.component.getScopeId
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
@@ -42,7 +41,7 @@ fun KoinScope(
     content: @Composable () -> Unit
 ) {
     val scope = scopeDefinition(getKoin())
-    RememberScope(scope, content)
+    OnKoinScope(scope, content)
 }
 
 /**
@@ -61,38 +60,7 @@ inline fun <reified T : Any> KoinScope(
     noinline content: @Composable () -> Unit
 ) {
     val scope = getKoin().getOrCreateScope<T>(scopeID)
-    RememberScope(scope, content)
-}
-
-@KoinExperimentalAPI
-@Composable
-@PublishedApi
-internal fun RememberScope(scope: Scope, content: @Composable () -> Unit) {
-    rememberKoinScope(scope)
-    CompositionLocalProvider(
-        LocalKoinScope provides scope,
-    ) {
-        content()
-    }
-}
-
-/**
- * Create Koin Scope from context & close it when Composition is on onForgotten/onAbandoned
- *
- * @param context
- *
- * @see rememberKoinScope
- *
- * @author Arnaud Giuliani
- */
-@KoinExperimentalAPI
-@Composable
-inline fun <reified T : Any> KoinScope(
-    context : Any,
-    noinline content: @Composable () -> Unit
-) {
-    val scope = getKoin().getOrCreateScope<T>(context.getScopeId())
-    RememberScope(scope, content)
+    OnKoinScope(scope, content)
 }
 
 /**
@@ -113,5 +81,17 @@ inline fun KoinScope(
     noinline content: @Composable () -> Unit
 ) {
     val scope = getKoin().getOrCreateScope(scopeID, scopeQualifier)
-    RememberScope(scope, content)
+    OnKoinScope(scope, content)
+}
+
+@KoinExperimentalAPI
+@Composable
+@PublishedApi
+internal fun OnKoinScope(scope: Scope, content: @Composable () -> Unit) {
+    rememberKoinScope(scope)
+    CompositionLocalProvider(
+        LocalKoinScope provides scope,
+    ) {
+        content()
+    }
 }

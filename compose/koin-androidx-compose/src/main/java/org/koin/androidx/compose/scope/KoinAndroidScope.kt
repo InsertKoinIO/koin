@@ -20,7 +20,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.compose.LocalKoinScope
-import org.koin.compose.getKoinScope
 
 
 @Composable

@@ -19,6 +19,7 @@ import io.ktor.server.application.*
 import io.ktor.server.application.hooks.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
+import org.koin.core.context.startKoin
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 
@@ -28,16 +29,17 @@ import org.koin.dsl.KoinAppDeclaration
  * @author Victor Alenkov
  * @author Zak Henry
  *
- * Ktor Feature class. Allows Koin Context to start using Ktor default install(<feature>) method.
+ * Ktor Feature class. Allows Koin Standard Context to start using Ktor default install(<feature>) method.
  *
  */
 val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
     val koinApplication = setupKoinApplication()
+    startKoin(koinApplication)
     setupMonitoring(koinApplication)
     setupKoinScope(koinApplication)
 }
 
-private fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
+internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
     val koinApplication = pluginConfig
     koinApplication.createEagerInstances()
     application.setKoinApplication(koinApplication)
@@ -48,7 +50,7 @@ fun Application.setKoinApplication(koinApplication: KoinApplication){
     attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
 }
 
-private fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: KoinApplication) {
+internal fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: KoinApplication) {
     val monitor = environment?.monitor
     monitor?.raise(KoinApplicationStarted, koinApplication)
     monitor?.subscribe(ApplicationStopping) {
@@ -58,7 +60,7 @@ private fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: Koin
     }
 }
 
-private fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
+internal  fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
     // Scope Handling
     on(CallSetup) { call ->
         val scopeComponent = RequestScope(koinApplication.koin)

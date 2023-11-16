@@ -28,9 +28,11 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -38,6 +40,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class KoinPluginRunTest {
+
+    @Before
+    fun before(){
+        stopKoin()
+    }
 
     @Test
     fun `minimalistic app run`() {
@@ -50,7 +57,7 @@ class KoinPluginRunTest {
     }
 
     @Test
-    @Ignore
+    @Ignore // socket exception on GH
     fun `run outside context`()  = runBlocking<Unit> {
         var counter = 0
         startKoin {

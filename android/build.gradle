@@ -6,7 +6,6 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
         //TODO replace io.mockk
     }
     dependencies {
@@ -32,7 +31,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
     }
 
     group = 'io.insert-koin'
@@ -53,8 +51,6 @@ allprojects {
 
         kotlinOptions {
             jvmTarget = '1.8'
-            apiVersion = '1.5'
-            languageVersion = '1.5'
         }
     }
 }

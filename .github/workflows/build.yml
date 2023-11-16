@@ -1,14 +1,6 @@
 name: Build & Test
 
-on:
-  push:
-    branches:
-      - '*'
-      - '*/*'
-  pull_request:
-    branches:    
-      - '*'
-      - '*/*'
+on: pull_request
 
 concurrency:
   group: build-${{ github.ref }}

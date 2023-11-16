@@ -40,7 +40,7 @@ Difference between `KoinAndroidContext` and `KoinContext`:
 
 ### Compose Preview with Koin
 
-The `KoinApplication` function is also interesting to start dedicated context for preview. This can be also used to helo with Compose preview:
+The `KoinApplication` function is also interesting to start dedicated context for preview. This can be also used to help with Compose preview:
 
 ```kotlin
 @Composable
@@ -66,8 +66,9 @@ For a module that declares a 'MyService' component:
 
 ```kotlin
 val androidModule = module {
-
     single { MyService() }
+    // or constructor DSL
+    singleOf(::MyService)
 }
 ```
 

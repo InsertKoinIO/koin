@@ -15,6 +15,8 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
+import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -66,10 +68,11 @@ inline fun <reified T : ViewModel> Fragment.getActivityViewModel(
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): T {
+    val op = ownerProducer()
     return resolveViewModel(
         T::class,
-        ownerProducer().viewModelStore,
-        extras = extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras,
+        op.viewModelStore,
+        extras = extrasProducer?.invoke() ?: (op as? ComponentActivity)?.defaultViewModelCreationExtras ?: this.defaultViewModelCreationExtras,
         qualifier = qualifier,
         parameters = parameters,
         scope = getKoinScope()
