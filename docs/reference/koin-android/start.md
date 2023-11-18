@@ -22,13 +22,13 @@ class MainApplication : Application() {
             // Load modules
             modules(myAppModules)
         }
-        
+
     }
 }
 ```
 
 :::info
-You can also start Koin from anywhere if you don't ant to start it from your Application class.
+You can also start Koin from anywhere if you don't want to start it from your Application class.
 :::
 
 If you need to start Koin from another Android class, you can use the `startKoin` function and provide your Android `Context`
@@ -70,7 +70,7 @@ startKoin {
     // ...
     // use properties from assets/koin.properties
     androidFileProperties()
-    
+
 }
 ```
 
