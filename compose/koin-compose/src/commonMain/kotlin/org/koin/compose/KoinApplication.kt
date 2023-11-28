@@ -49,7 +49,7 @@ val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf {
     throw UnknownKoinContext()
 }
 
-private fun getKoinContext() = KoinPlatformTools.defaultContext().get()
+private fun getDefaultKoinContext() = KoinPlatformTools.defaultContext().get()
 
 /**
  * Retrieve the current Koin application from the composition.
@@ -59,14 +59,12 @@ private fun getKoinContext() = KoinPlatformTools.defaultContext().get()
 @OptIn(InternalComposeApi::class)
 @Composable
 fun getKoin(): Koin = currentComposer.run {
-    remember {
-        try {
-            consume(LocalKoinApplication)
-        } catch (_: UnknownKoinContext) {
-            val ctx = getKoinContext()
-            ctx.warnNoContext()
-            ctx
-        }
+    try {
+        consume(LocalKoinApplication)
+    } catch (_: UnknownKoinContext) {
+        val ctx = getDefaultKoinContext()
+        ctx.warnNoContext()
+        ctx
     }
 }
 
@@ -82,9 +80,9 @@ fun currentKoinScope(): Scope = currentComposer.run {
     try {
         consume(LocalKoinScope)
     } catch (_: UnknownKoinContext) {
-        val ctx = getKoinContext()
+        val ctx = getDefaultKoinContext()
         ctx.warnNoContext()
-        getKoinContext().scopeRegistry.rootScope
+        getDefaultKoinContext().scopeRegistry.rootScope
     }
 }
 
@@ -101,15 +99,15 @@ fun rememberCurrentKoinScope(): Scope = currentComposer.run {
         try {
             consume(LocalKoinScope)
         } catch (_: UnknownKoinContext) {
-            val ctx = getKoinContext()
+            val ctx = getDefaultKoinContext()
             ctx.warnNoContext()
-            getKoinContext().scopeRegistry.rootScope
+            getDefaultKoinContext().scopeRegistry.rootScope
         }
     }
 }
 
 private fun Koin.warnNoContext() {
-    logger.debug("[Warning] - No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
+    logger.debug("[Warning] - No Koin context defined in Compose, falling back with Default Koin Context.\nUse KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context with Compose and avoid such message.")
 }
 
 /**
@@ -130,10 +128,9 @@ fun KoinApplication(
 ) {
     val koinApplication = remember(application) {
         val alreadyExists = KoinPlatformTools.defaultContext().getOrNull() != null
-        if (alreadyExists){
+        if (alreadyExists) {
             throw ApplicationAlreadyStartedException("Trying to run new Koin Application whereas Koin is already started. Use 'KoinContext()' instead of check for any 'startKoin' usage. ")
-        }
-        else {
+        } else {
             startKoin(application)
         }
     }
