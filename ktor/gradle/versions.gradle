@@ -1,6 +1,6 @@
 ext {
     // Koin
-    koin_ktor_version = '3.5.2'
+    koin_ktor_version = '3.5.2-RC2'
     // Ktor
     ktor_version = '2.3.6'
 }

@@ -1,8 +1,8 @@
 ext {
 
     // Koin Versions
-    koin_androidx_compose_version = '3.5.2'
-    koin_compose_version = "1.1.1"
+    koin_androidx_compose_version = '3.5.2-RC2'
+    koin_compose_version = "1.1.1-RC2"
 
     // Compose
     compose_compiler = "1.5.4"
@@ -12,6 +12,6 @@ ext {
     
     // Forced Version to keep compat
     kotlin_version = '1.9.20'
-    koin_version = '3.5.2-RC1'
-    koin_android_version = '3.5.2-RC1'
+    koin_version = '3.5.2-RC2'
+    koin_android_version = '3.5.2-RC2'
 }
