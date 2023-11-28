@@ -13,6 +13,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 import java.util.UUID
 
@@ -30,6 +31,7 @@ fun App() {
     KoinApplication(
         application = {
             modules(mod)
+            printLogger(Level.DEBUG)
         }
     ) {
         var text by remember { mutableStateOf("Hello, World!") }
