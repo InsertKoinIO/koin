@@ -11,7 +11,7 @@ ext {
     jb_compose_version = "1.5.11"
     
     // Forced Version to keep compat
-//    kotlin_version = '1.9.0'
-//    koin_version = '3.5.0'
-//    koin_android_version = '3.5.0'
+    kotlin_version = '1.9.20'
+    koin_version = '3.5.2-RC1'
+    koin_android_version = '3.5.2-RC1'
 }
