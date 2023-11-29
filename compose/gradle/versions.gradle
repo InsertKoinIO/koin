@@ -5,13 +5,13 @@ ext {
     koin_compose_version = "1.1.1-RC2"
 
     // Compose
-    compose_compiler = "1.5.4"
+    compose_compiler = "1.5.5-dev-k1.9.21-163bb051fe5"
 
     // JB Compose
     jb_compose_version = "1.5.11"
     
     // Forced Version to keep compat
-    kotlin_version = '1.9.20'
-    koin_version = '3.5.2-RC2'
-    koin_android_version = '3.5.2-RC2'
+//    kotlin_version = '1.9.20'
+//    koin_version = '3.5.2-RC2'
+//    koin_android_version = '3.5.2-RC2'
 }
