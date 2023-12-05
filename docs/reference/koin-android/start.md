@@ -28,7 +28,7 @@ class MainApplication : Application() {
 ```
 
 :::info
-You can also start Koin from anywhere if you don't ant to start it from your Application class.
+You can also start Koin from anywhere if you don't want to start it from your Application class.
 :::
 
 If you need to start Koin from another Android class, you can use the `startKoin` function and provide your Android `Context`
@@ -48,7 +48,7 @@ From your Koin configuration (in `startKoin { }` block code), you can also confi
 
 ### Koin Logging for Android
 
-Within your `KoinApplication` instance, we have an extension `androidLogger` which use the `AndroidLogger()`#
+Within your `KoinApplication` instance, we have an extension `androidLogger` which uses the `AndroidLogger` class.
 This logger is an Android implementation of the Koin logger.
 
 Up to you to change this logger if it doesn't suits to your needs.
@@ -73,4 +73,3 @@ startKoin {
     
 }
 ```
-
