@@ -27,10 +27,13 @@ import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.time.Timer
 import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
+import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
+import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
@@ -54,7 +57,7 @@ data class Scope(
     private val _callbacks = arrayListOf<ScopeCallback>()
 
     @KoinInternalApi
-    val _parameterStack = ArrayDeque<ParametersHolder>()
+    val _parameterStackLocal = ThreadLocal<ArrayDeque<ParametersHolder>>()
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -195,12 +198,15 @@ data class Scope(
     ): T {
         return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin.logger.debug("+- '${clazz.getFullName()}'$qualifierString")
-            val (instance: T, duration: Double) = measureDurationForResult {
-                resolveInstance<T>(qualifier, clazz, parameters)
-            }
-            _koin.logger.debug("|- '${clazz.getFullName()}' in $duration ms")
-            return instance
+            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString ...")
+
+            val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
+            val instance = resolveInstance<T>(qualifier, clazz, parameters)
+            val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
+            val duration = (stop - start) / Timer.NANO_TO_MILLI
+
+            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
+            instance
         } else {
             resolveInstance(qualifier, clazz, parameters)
         }
@@ -216,15 +222,17 @@ data class Scope(
             throw ClosedScopeException("Scope '$id' is closed")
         }
         val parameters = parameterDef?.invoke()
+        var localDeque: ArrayDeque<ParametersHolder>? = null
         if (parameters != null) {
-            _koin.logger.log(Level.DEBUG) { "| put parameters on stack $parameters " }
-            _parameterStack.addFirst(parameters)
+            _koin.logger.log(Level.DEBUG) { "| >> parameters $parameters " }
+            localDeque = _parameterStackLocal.get() ?: ArrayDeque<ParametersHolder>().also(_parameterStackLocal::set)
+            localDeque.addFirst(parameters)
         }
-        val instanceContext = InstanceContext(_koin, this, parameters)
+        val instanceContext = InstanceContext(_koin.logger, this, parameters)
         val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
-        if (parameters != null) {
-            _koin.logger.log(Level.DEBUG) { "| remove parameters from stack" }
-            _parameterStack.removeFirstOrNull()
+        if (localDeque != null) {
+            _koin.logger.debug("| << parameters")
+            localDeque.removeFirstOrNull()
         }
         return value
     }
@@ -234,26 +242,31 @@ data class Scope(
         clazz: KClass<*>,
         instanceContext: InstanceContext,
         parameterDef: ParametersDefinition?
-    ) = (_koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
+    ) = (
+            _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters" }
-            _parameterStack.firstOrNull()?.getOrNull<T>(clazz)
+            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
+            _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" }
-            _source?.let {
-                if (clazz.isInstance(it)) {
-                    _source as? T
-                } else null
-            }
+            if (!isRoot){
+                _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
+                _source?.let { source ->
+                    if (clazz.isInstance(source) && qualifier == null) {
+                        _source as? T
+                    } else null
+                }
+            } else null
         }
         ?: run {
-            _koin.logger.log(Level.DEBUG) { "- lookup? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" }
+            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
-            _parameterStack.clear()
-            _koin.logger.log(Level.DEBUG) { "| clear parameter stack" }
+            if (parameterDef != null) {
+                _parameterStackLocal.remove()
+                _koin.logger.debug("|- << parameters")
+            }
             throwDefinitionNotFound(qualifier, clazz)
         })
 
@@ -340,7 +353,7 @@ data class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
-        val context = InstanceContext(_koin, this)
+        val context = InstanceContext(_koin.logger, this)
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
@@ -396,19 +409,12 @@ data class Scope(
      * Close all instances from this scope
      */
     fun close() = KoinPlatformTools.synchronized(this) {
-        _closed = true
-        clearData()
-        _koin.scopeRegistry.deleteScope(this)
-    }
-
-    private fun clearData() {
-        _source = null
-        if (_koin.logger.isAt(Level.DEBUG)) {
-            _koin.logger.info("closing scope:'$id'")
-        }
-        // call on close from callbacks
+        _koin.logger.debug("|- (-) Scope - id:'$id'")
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
+        _source = null
+        _closed = true
+        _koin.scopeRegistry.deleteScope(this)
     }
 
     override fun toString(): String {

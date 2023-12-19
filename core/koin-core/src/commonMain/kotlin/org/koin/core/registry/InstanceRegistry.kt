@@ -86,7 +86,7 @@ class InstanceRegistry(val _koin: Koin) {
             if (_koin.logger.isAt(Level.DEBUG)) {
                 _koin.logger.debug("Creating eager instances ...")
             }
-            val defaultContext = InstanceContext(_koin, _koin.scopeRegistry.rootScope)
+            val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
             eagerInstances.forEach { factory ->
                 factory.get(defaultContext)
             }

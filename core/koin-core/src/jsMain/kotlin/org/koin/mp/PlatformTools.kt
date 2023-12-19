@@ -37,3 +37,26 @@ actual object KoinPlatformTools {
 }
 
 actual typealias Lockable = Any
+
+actual typealias ThreadLocal<T> = ThreadLocalRef<T>
+
+// Import from Stately
+var <T> ThreadLocalRef<T>.value: T?
+    get() = get()
+    set(value) {
+        set(value)
+    }
+
+open class ThreadLocalRef<T> {
+    private var localValue: T? = null
+
+    fun remove() {
+        value = null
+    }
+
+    fun get(): T? = localValue
+
+    fun set(value: T?) {
+        localValue = value
+    }
+}

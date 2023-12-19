@@ -1,6 +1,7 @@
 package org.koin.mp
 
 import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.ThreadLocalRef
 import co.touchlab.stately.concurrency.withLock
 import org.koin.core.context.KoinContext
 import org.koin.core.context.globalContextByMemoryModel
@@ -39,3 +40,5 @@ actual object KoinPlatformTools {
 actual open class Lockable {
     internal val lock = Lock()
 }
+
+actual typealias ThreadLocal<T> = ThreadLocalRef<T>

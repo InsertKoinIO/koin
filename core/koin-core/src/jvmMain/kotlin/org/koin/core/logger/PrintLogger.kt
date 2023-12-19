@@ -21,10 +21,9 @@ package org.koin.core.logger
  */
 class PrintLogger(level: Level = Level.INFO) : Logger(level) {
 
-    override fun log(level: Level, msg: MESSAGE) {
-        if (this.level <= level) {
-            val printer = if (level >= Level.ERROR) System.err else System.out
-            printer.println("[$level] $KOIN_TAG $msg")
-        }
+    private val printer = if (level >= Level.WARNING) System.err else System.out
+
+    override fun display(level: Level, msg: MESSAGE) {
+        printer.println("[$level] $KOIN_TAG $msg")
     }
 }
