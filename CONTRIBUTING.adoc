@@ -48,7 +48,7 @@ https://developer.android.com/studio/[AndroidStudio]
 
 === Building from source
 To build the source you will need to install
-https://gradle.org/[Gradle] v4.7 or more.
+https://gradle.org/[Gradle] v7.4.2 or more.
 
 We use Gradlew in the build scripts
 

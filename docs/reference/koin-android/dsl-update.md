@@ -8,7 +8,7 @@ Koin now offer a new kind of DSL keyword that allow you to target a class constr
 
 Check the new [Constructor DSL](../koin-core/dsl-update.md#constructor-dsl-since-32) section for more details.
 
-For Android, this implies the following new constructore DSL Keyword:
+For Android, this implies the following new constructor DSL Keyword:
 
 * `viewModelOf()` - equivalent of `viewModel { }`
 * `fragmentOf()` - equivalent of `fragment { }`

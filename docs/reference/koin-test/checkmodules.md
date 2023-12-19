@@ -48,10 +48,10 @@ class NiaAppModuleCheck {
 Launch the JUnit test and you're done! ✅
 
 
-As you may see, we use the extraTypesparameter to list types used in the Koin configuration but not declared directly. This is the case for SavedStateHandle and WorkerParameters types, that are used as injected parameters. The Context is declared by androidContext() function at start.
+As you may see, we use the extra Types parameter to list types used in the Koin configuration but not declared directly. This is the case for SavedStateHandle and WorkerParameters types, that are used as injected parameters. The Context is declared by androidContext() function at start.
 
 
-The verify() API is ultra light to run and doesn't require any kind of mock/stubb to run on your configuration.
+The verify() API is ultra light to run and doesn't require any kind of mock/stub to run on your configuration.
 
 
 ### Koin Dynamic Check - CheckModules()  

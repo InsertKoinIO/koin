@@ -19,7 +19,7 @@ class MainActivity : ScopeActivity() {
         assert(getKoin().getOrNull<SDKData>() == null)
 
         setContent {
-            KoinContext {
+            KoinAndroidContext {
                 MaterialTheme {
                     App()
                 }

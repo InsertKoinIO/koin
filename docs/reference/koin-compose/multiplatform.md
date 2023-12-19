@@ -34,7 +34,7 @@ fun App() {
 
 ### Compose Preview with Koin
 
-The `KoinApplication` function is also interesting to start dedicated context for preview. This can be also used to helo with Compose preview:
+The `KoinApplication` function is also interesting to start dedicated context for preview. This can be also used to help with Compose preview:
 
 ```kotlin
 @Composable

@@ -8,6 +8,7 @@ buildscript {
         mavenCentral()
         mavenLocal()
         maven { url "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven" }
+        maven { url 'https://androidx.dev/storage/compose-compiler/repository/' }
     }
     dependencies {
         // Kotlin
@@ -35,6 +36,7 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven { url "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven" }
+        maven { url 'https://androidx.dev/storage/compose-compiler/repository/' }
     }
 
     group = 'io.insert-koin'

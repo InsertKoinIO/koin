@@ -25,49 +25,55 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
-import org.koin.compose.error.UnknownKoinContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.module.Module
+import org.koin.core.context.startKoin
+import org.koin.core.error.ApplicationAlreadyStartedException
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.koinApplication
+import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
 
 /**
  * Current Koin Application context
  */
 val LocalKoinApplication: ProvidableCompositionLocal<Koin> = compositionLocalOf {
-    throw UnknownKoinContext()
+    getDefaultKoinContext().apply {
+        warnNoContext()
+    }
 }
 
 /**
  * Current Koin Scope
  */
 val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf {
-    throw UnknownKoinContext()
+    getDefaultKoinContext().apply {
+        warnNoContext()
+    }.scopeRegistry.rootScope
 }
 
-private fun getKoinContext() = KoinPlatformTools.defaultContext().get()
+private fun getDefaultKoinContext() = KoinPlatformTools.defaultContext().get()
 
 /**
  * Retrieve the current Koin application from the composition.
  *
  * @author @author jjkester
  */
-@OptIn(InternalComposeApi::class)
 @Composable
 fun getKoin(): Koin = currentComposer.run {
-    remember {
-        try {
-            consume(LocalKoinApplication)
-        } catch (_: UnknownKoinContext) {
-            val ctx = getKoinContext()
-            warningNoContext(ctx)
-            ctx
-        }
-    }
+    return LocalKoinApplication.current
+}
+
+/**
+ * Retrieve the current Koin scope from the composition
+ *
+ * @author @author jjkester
+ *
+ */
+@Composable
+fun currentKoinScope(): Scope = currentComposer.run {
+    return LocalKoinScope.current
 }
 
 /**
@@ -78,36 +84,41 @@ fun getKoin(): Koin = currentComposer.run {
  */
 @OptIn(InternalComposeApi::class)
 @Composable
-fun getKoinScope(): Scope = currentComposer.run {
+fun rememberCurrentKoinScope(): Scope = currentComposer.run {
     remember {
-        try {
-            consume(LocalKoinScope)
-        } catch (_: UnknownKoinContext) {
-            val ctx = getKoinContext()
-            warningNoContext(ctx)
-            getKoinContext().scopeRegistry.rootScope
-        }
+        consume(LocalKoinScope)
     }
 }
 
-private fun warningNoContext(ctx: Koin) {
-    ctx.logger.error("[Warning] - No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
+@OptIn(KoinInternalApi::class)
+private fun Koin.warnNoContext() {
+    logger.info("[Warning] - No Koin context defined in Compose, fallback to default Koin context.\nUse KoinContext(), KoinAndroidContext() or KoinApplication() to setup or create Koin context with Compose and avoid such message.")
 }
 
 /**
- * Start a new Koin Application in Compose context
+ * Start a new Koin Application and associate it for Compose context
+ * if Koin's Default Context is already set,
  *
  * @param application - Koin Application declaration lambda (like startKoin)
  * @param content - following compose function
  *
+ * @throws ApplicationAlreadyStartedException
  * @author Arnaud Giuliani
  */
 @Composable
+@Throws(ApplicationAlreadyStartedException::class)
 fun KoinApplication(
     application: KoinAppDeclaration,
     content: @Composable () -> Unit
 ) {
-    val koinApplication = remember(application) { koinApplication(appDeclaration = application) }
+    val koinApplication = remember(application) {
+        val alreadyExists = KoinPlatformTools.defaultContext().getOrNull() != null
+        if (alreadyExists) {
+            throw ApplicationAlreadyStartedException("Trying to run new Koin Application whereas Koin is already started. Use 'KoinContext()' instead of check for any 'startKoin' usage. ")
+        } else {
+            startKoin(application)
+        }
+    }
     CompositionLocalProvider(
         LocalKoinApplication provides koinApplication.koin,
         LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
@@ -117,29 +128,7 @@ fun KoinApplication(
 }
 
 /**
- * Create a new Koin Application context for Compose
- *
- * @param moduleList - list of Modules to run within Koin Application
- * @param content - following compose function
- *
- * @author Arnaud Giuliani
- */
-@Composable
-fun KoinApplication(
-    moduleList: () -> List<Module>,
-    content: @Composable () -> Unit
-) {
-    val koinApplication = remember(moduleList) { koinApplication { modules(moduleList()) } }
-    CompositionLocalProvider(
-        LocalKoinApplication provides koinApplication.koin,
-        LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
-    ) {
-        content()
-    }
-}
-
-/**
- * Run and bind Compose with existing Koin context
+ * Use Compose with current existing Koin context, by default 'KoinPlatform.getKoin()'
  *
  * @see KoinPlatformTools.defaultContext()
  * @param content - following compose function
@@ -148,7 +137,7 @@ fun KoinApplication(
  */
 @Composable
 fun KoinContext(
-    context: Koin = KoinPlatformTools.defaultContext().get(),
+    context: Koin = KoinPlatform.getKoin(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(

@@ -57,7 +57,7 @@ val myModule = module {
 
 ## Resolving injected parameters in order
 
-Instead of using `get()` to resovle a parameter, if you have several parameters of the same type you can use the index as follow `get(index)` (also same as `[ ]` operator):
+Instead of using `get()` to resolve a parameter, if you have several parameters of the same type you can use the index as follow `get(index)` (also same as `[ ]` operator):
 
 ```kotlin
 class Presenter(val view : View)

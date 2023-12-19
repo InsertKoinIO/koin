@@ -34,9 +34,14 @@ import org.koin.core.scope.Scope
 @Composable
 inline fun <reified T> koinInject(
     qualifier: Qualifier? = null,
-    scope: Scope = getKoinScope(),
+    scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T = rememberKoinInject(qualifier, scope, parameters)
+): T {
+    val st = parameters?.let { rememberStableParametersDefinition(parameters) }
+    return remember(qualifier, scope) {
+        scope.get(qualifier, st?.parametersDefinition)
+    }
+}
 
 /**
  * alias of koinInject()
@@ -46,13 +51,14 @@ inline fun <reified T> koinInject(
  * @author Arnaud Giuliani
  */
 @Composable
+@Deprecated("")
 inline fun <reified T> rememberKoinInject(
     qualifier: Qualifier? = null,
-    scope: Scope = getKoinScope(),
+    scope: Scope = rememberCurrentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val st = rememberStableParametersDefinition(parameters)
+    val st = parameters?.let { rememberStableParametersDefinition(parameters) }
     return remember(qualifier, scope) {
-        scope.get(qualifier, st.parametersDefinition)
+        scope.get(qualifier, st?.parametersDefinition)
     }
 }

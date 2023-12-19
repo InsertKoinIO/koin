@@ -92,7 +92,7 @@ fun ViewModelComposable(
 @Composable
 fun SingleComposable(
     parentStatus: String = "- status -",
-    mySingle: MySingle = rememberKoinInject()
+    mySingle: MySingle = koinInject()
 ) {
     var created by remember { mutableStateOf(false) }
 
@@ -108,7 +108,7 @@ fun SingleComposable(
 @Composable
 fun FactoryComposable(
     parentStatus: String = "- status -",
-    myFactory: MyFactory = rememberKoinInject { parametersOf("stable_status") }
+    myFactory: MyFactory = koinInject { parametersOf("stable_status") }
 ) {
     var created by remember { mutableStateOf(false) }
     rememberKoinModules(modules = { listOf(secondModule) })

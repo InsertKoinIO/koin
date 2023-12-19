@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import org.koin.compose.KoinIsolatedContext
+import org.koin.compose.koinInject
 import org.koin.compose.rememberKoinInject
 import org.koin.sample.androidx.compose.data.sdk.SDKData
 import org.koin.sample.androidx.compose.di.IsolatedContextSDK
@@ -23,7 +24,7 @@ fun IsolatedSDKComposable(
 @Composable
 private fun SDKComposable(
     parentStatus: String = "- status -",
-    sdkData: SDKData = rememberKoinInject()
+    sdkData: SDKData = koinInject()
 ) {
     var created by remember { mutableStateOf(false) }
 

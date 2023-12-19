@@ -36,9 +36,9 @@ kotlin {
 
 //    mingwX64()
 //    mingwX86()
-//    linuxX64()
 //    linuxArm32Hfp()
 //    linuxMips32()
+    linuxX64()
 
     sourceSets {
         commonMain {
@@ -127,16 +127,16 @@ kotlin {
             compilations.main.source(sourceSets.darwinMain)
             compilations.test.source(sourceSets.nativeTest)
         }
-//        configure([
-//                targets.linuxX64,
+        configure([
+                targets.linuxX64,
 ////                targets.linuxArm32Hfp,
 ////                targets.linuxMips32,
 //                targets.mingwX64,
 ////                targets.mingwX86
-//        ]) {
-//            compilations.main.source(sourceSets.otherMain)
-//            compilations.test.source(sourceSets.nativeTest)
-//        }
+        ]) {
+            compilations.main.source(sourceSets.otherMain)
+            compilations.test.source(sourceSets.nativeTest)
+        }
     }
 }
 

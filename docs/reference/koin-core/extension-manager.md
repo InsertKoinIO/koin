@@ -2,11 +2,11 @@
 title: Extension Manager
 ---
 
-Here is a brief description of `KoinExtension` manager, deidcated to add new features inside Koin framework.
+Here is a brief description of `KoinExtension` manager, dedicated to add new features inside Koin framework.
 
 ## Defining an extension
 
-A Koin extension consist in having a class inhereting from `KoinExtension` interface:
+A Koin extension consist in having a class inheriting from `KoinExtension` interface:
 
 ```kotlin
 interface KoinExtension {
