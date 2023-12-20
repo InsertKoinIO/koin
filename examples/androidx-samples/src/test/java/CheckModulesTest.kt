@@ -10,6 +10,7 @@ import org.junit.rules.TestRule
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
+import org.koin.sample.androidx.components.scope.Session
 import org.koin.sample.androidx.di.allTestModules
 import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProviderRule
@@ -34,6 +35,7 @@ class CheckModulesTest {
 //                withInstance<Context>()
 //                withInstance<Activity>()
 //                withInstance<Application>()
+                withInstance<Session>()
                 withInstance<SavedStateHandle>()
                 withInstance<WorkerParameters>()
             }
