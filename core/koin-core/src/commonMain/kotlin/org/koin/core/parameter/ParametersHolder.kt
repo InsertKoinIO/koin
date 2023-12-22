@@ -34,6 +34,7 @@ open class ParametersHolder(
     internal val _values: MutableList<Any?> = mutableListOf(),
     // TODO by default useIndexedValues to null, to keep compatibility with both indexed params & set params
     val useIndexedValues: Boolean? = null,
+    val incrementIndexOnNullValues: Boolean = false,
 ) {
 
     val values: List<Any?> get() = _values
@@ -95,7 +96,14 @@ open class ParametersHolder(
      * return T
      */
     inline fun <reified T : Any> get(): T =
-        getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
+        get(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
+
+    /**
+     * Get first element of given type T
+     * return T
+     */
+    fun <T> get(clazz: KClass<*>): T? =
+        getOrNull(clazz,false) ?: throw DefinitionParameterException("No value found for type '${clazz.getFullName()}'")
 
     /**
      * Get first element of given type T
@@ -107,13 +115,15 @@ open class ParametersHolder(
      * Get first element of given type T
      * return T
      */
-    open fun <T> getOrNull(clazz: KClass<*>): T? {
+    open fun <T> getOrNull(clazz: KClass<*>): T? =getOrNull(clazz, true)
+
+    private  fun <T> getOrNull(clazz: KClass<*>, nullIsExpected:Boolean): T? {
         return if (_values.isEmpty()) {
             null
         } else {
             when (useIndexedValues) {
-                null -> getIndexedValue<T>(clazz) ?: getFirstValue<T>(clazz)
-                true -> getIndexedValue<T>(clazz)
+                null -> getIndexedValue<T>(clazz, nullIsExpected) ?: getFirstValue<T>(clazz)
+                true -> getIndexedValue<T>(clazz, nullIsExpected)
                 else -> getFirstValue<T>(clazz)
             }
         }
@@ -124,9 +134,12 @@ open class ParametersHolder(
             ?.let { it as T } // firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
     }
 
-    private fun <T> getIndexedValue(clazz: KClass<*>): T? {
-        val currentValue: T? = _values[index].takeIf { clazz.isInstance(it) }?.let { it as T }
-        if (currentValue != null) {
+    private fun <T> getIndexedValue(clazz: KClass<*>, nullIsExpected: Boolean): T? {
+        val value = _values[index]
+        val isInstance = clazz.isInstance(value)
+
+        val currentValue: T? = value.takeIf { isInstance }?.let { it as T }
+        if (currentValue != null || (nullIsExpected && incrementIndexOnNullValues)) {
             increaseIndex()
         }
         return currentValue
@@ -161,6 +174,19 @@ fun parametersOf(vararg parameters: Any?) = ParametersHolder(parameters.toMutabl
  * return ParameterList
  */
 fun parameterArrayOf(vararg parameters: Any?) = ParametersHolder(parameters.toMutableList(), useIndexedValues = true)
+
+/**
+ * DefinitionParameters with array of values, dedicated to be consumed one by one.
+ * Array may contain nullable values, which will be passed further.
+ *
+ * Ideally used for cascading parameter, or if you have several parameters of same type
+ *
+ * @see parameters
+ * return ParameterList
+ */
+fun parameterArrayOfNullable(vararg parameters: Any?) =
+    ParametersHolder(parameters.toMutableList(), useIndexedValues = true, incrementIndexOnNullValues = true)
+
 
 /**
  * DefinitionParameters with set of values

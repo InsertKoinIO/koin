@@ -3,6 +3,7 @@ package org.koin.core
 import org.koin.Simple
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.parameter.parameterArrayOf
+import org.koin.core.parameter.parameterArrayOfNullable
 import org.koin.core.parameter.parameterSetOf
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
@@ -37,6 +38,22 @@ class CascadeParamTest {
         assertEquals(intParam, p.get<Int>())
         assertEquals(stringParam, p.get<String>())
         assertEquals(1, p.index)
+    }
+
+    @Test
+    fun parameter_array_of_nullable() {
+        val intParam: Int = 42
+        val nullableStringParam: String? = null
+        val stringParam = "_string_"
+        val p = parameterArrayOfNullable(intParam, nullableStringParam, stringParam)
+
+        assertEquals(0, p.index)
+        assertEquals(intParam, p.get<Int>())
+        assertEquals(1, p.index)
+        assertEquals(nullableStringParam, p.getOrNull<String>())
+        assertEquals(2, p.index)
+        assertEquals(stringParam, p.get<String>())
+
     }
 
     @Test
