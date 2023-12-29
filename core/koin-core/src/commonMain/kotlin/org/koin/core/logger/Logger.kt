@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-Present the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,39 +22,42 @@ package org.koin.core.logger
  */
 abstract class Logger(var level: Level = Level.INFO) {
 
-    abstract fun display(level: Level, msg: MESSAGE)
+    abstract fun log(level: Level, msg: MESSAGE)
+
+    private fun canLog(level: Level): Boolean = this.level <= level
+
+    private fun doLog(level: Level, msg: MESSAGE) {
+        if (canLog(level)) {
+            log(level, msg)
+        }
+    }
 
     fun debug(msg: MESSAGE) {
-        log(Level.DEBUG, msg)
+        doLog(Level.DEBUG, msg)
     }
 
     fun info(msg: MESSAGE) {
-        log(Level.INFO, msg)
-    }
-
-    fun warn(msg: MESSAGE) {
-        log(Level.WARNING, msg)
+        doLog(Level.INFO, msg)
     }
 
     fun error(msg: MESSAGE) {
-        log(Level.ERROR, msg)
+        doLog(Level.ERROR, msg)
     }
 
     fun isAt(lvl: Level): Boolean = this.level <= lvl
 
-    fun log(lvl: Level, msg: String) {
-        if (isAt(lvl)) display(lvl, msg)
-    }
-
-    fun log(lvl: Level, msg: () -> String) {
-        if (isAt(lvl)) display(lvl, msg())
+    fun log(lvl: Level, msg : () -> String){
+        if (isAt(lvl)) doLog(lvl,msg())
     }
 }
 
 const val KOIN_TAG = "[Koin]"
 
+/**
+ * Log Level
+ */
 enum class Level {
-    DEBUG, INFO, WARNING, ERROR, NONE
+    DEBUG, INFO, ERROR, NONE
 }
 
 typealias MESSAGE = String

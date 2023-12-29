@@ -20,5 +20,6 @@ package org.koin.core.logger
  */
 class EmptyLogger : Logger(Level.NONE) {
 
-    override fun display(level: Level, msg: MESSAGE) {}
+    override fun log(level: Level, msg: MESSAGE) {
+    }
 }

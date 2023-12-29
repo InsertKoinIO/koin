@@ -198,14 +198,14 @@ data class Scope(
     ): T {
         return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString ...")
+            _koin.logger.debug("|- '${clazz.getFullName()}'$qualifierString ...")
 
             val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
             val instance = resolveInstance<T>(qualifier, clazz, parameters)
             val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
             val duration = (stop - start) / Timer.NANO_TO_MILLI
 
-            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
+            _koin.logger.debug("|- '${clazz.getFullName()}' in $duration ms")
             instance
         } else {
             resolveInstance(qualifier, clazz, parameters)

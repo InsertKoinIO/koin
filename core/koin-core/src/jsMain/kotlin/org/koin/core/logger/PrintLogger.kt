@@ -21,7 +21,9 @@ package org.koin.core.logger
  */
 class PrintLogger(level: Level = Level.INFO) : Logger(level) {
 
-    override fun display(level: Level, msg: MESSAGE) {
-        println("[$level] $KOIN_TAG $msg")
+    override fun log(level: Level, msg: MESSAGE) {
+        if (this.level <= level) {
+            println("[$level] $KOIN_TAG $msg")
+        }
     }
 }
