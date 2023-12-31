@@ -16,8 +16,8 @@ val myModule = module {
 
 ## Using several modules
 
-Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
-module. Definitions are lazy, and then are resolved only when a a component is requesting it.
+Components don't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from another
+module. Definitions are lazy, and they are resolved only when a component requests them.
 
 Let's take an example, with linked components in separate modules:
 
@@ -95,7 +95,7 @@ fun sharedModule() = module {
 }
 ```
 
-This way, your share the definitions and avoid preallocate factories in a value.
+This way, you share the definitions and avoid preallocating factories in a value.
 
 ## Overriding definition or module (before 3.1.0)
 
@@ -229,7 +229,7 @@ An important detail to observe is that you can use `includes` to add `internal` 
 Module loading is now optimized to flatten all your module graphs and avoid duplicated definitions of modules.
 :::
 
-Finally, you can include multiple nested or duplicates modules, and Koin will flatten all the included modules removing duplicates:
+Finally, you can include multiple nested or duplicated modules, and Koin will flatten all the included modules removing duplicates:
 
 ```kotlin
 // :feature module
@@ -253,12 +253,12 @@ startKoin { modules(featureModule1, featureModule2) }
 Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
 
 :::info
-    If you have any compiling issue while including modules from the same file, either use `get()` Kotlin attribute operator on your module either separate each module in files. See https://github.com/InsertKoinIO/koin/issues/1341 workaround
+    If you have any compiling issue while including modules from the same file, either use `get()` Kotlin attribute operator on your module or separate each module in files. See https://github.com/InsertKoinIO/koin/issues/1341 workaround
 :::
 
 ## Lazy modules & background modules loading with Kotlin coroutines [Experimental]
 
-You can now declare "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start.
+You can now declare a "lazy" Koin module, to avoid triggering any pre allocation of resources and load them in background with Koin start.
 
 - `lazyModule` - declare a Lazy Kotlin version of Koin Module
 - `Module.includes` - allow to include lazy Modules
