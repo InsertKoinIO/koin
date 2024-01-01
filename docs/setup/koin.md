@@ -44,7 +44,7 @@ koin-bom = "x.x.x"
 ...
 
 [libraries]
-koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "di-koin" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 ...
 ```
