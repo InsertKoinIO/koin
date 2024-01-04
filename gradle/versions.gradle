@@ -1,7 +1,7 @@
 ext {
     // Koin Versions
-    koin_version = '3.2.4-rc2'
-    koin_android_version = '3.2.4-rc2'
+    koin_version = '3.2.4'
+    koin_android_version = '3.2.4'
 
     // Kotlin
     kotlin_version = '1.6.21'
