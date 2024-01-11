@@ -39,4 +39,29 @@ class LazyModuleTest {
 
         assertNotNull(koin.getOrNull<ClassB>())
     }
+
+    @Test
+    fun test_plus() {
+        var m2Resolved: Boolean? = null
+        val m2 = lazyModule {
+            m2Resolved = true
+            singleOf(::ClassB)
+        }
+        var m1Resolved: Boolean? = null
+        val m1 = lazyModule {
+            m1Resolved = true
+            singleOf(::ClassA) { bind<IClassA>() }
+        }
+
+        assertTrue(m2Resolved == null, "m2Resolved should be null: $m2Resolved")
+        assertTrue(m1Resolved == null, "m1Resolved should be null: $m1Resolved")
+
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            lazyModules(m1 + m2)
+        }.koin
+        koin.waitAllStartJobs()
+
+        assertNotNull(koin.getOrNull<ClassB>())
+    }
 }
