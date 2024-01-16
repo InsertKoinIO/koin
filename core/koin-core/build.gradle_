@@ -20,8 +20,11 @@ kotlin {
         browser()
         binaries.executable() // not applicable to BOTH, see details below
     }
-    wasmJs()
-    wasmWasi()
+
+    wasmJs {
+        nodejs()
+        binaries.executable()
+    }
 
     macosX64()
     macosArm64()
@@ -57,7 +60,7 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+//                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
 
@@ -86,16 +89,8 @@ kotlin {
         wasmMain {
             dependsOn commonMain
             dependencies {
-//                implementation 'org.jetbrains.kotlin:kotlin-stdlib-wasm'
-                implementation "co.touchlab:stately-concurrency:$stately_concurrency"
-            }
-        }
-
-        wasmWasiMain {
-            dependsOn commonMain
-            dependencies {
-//                implementation 'org.jetbrains.kotlin:kotlin-stdlib-wasm'
-                implementation "co.touchlab:stately-concurrency:$stately_concurrency"
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-wasm'
+//                implementation "co.touchlab:stately-concurrency:$stately_concurrency"
             }
         }
 
@@ -152,7 +147,7 @@ kotlin {
                 targets.linuxX64,
                 targets.linuxArm64,
                 targets.mingwX64,
-                
+
         // Deprecated
 //                targets.linuxArm32Hfp,
 //                targets.linuxMips32,
@@ -163,6 +158,14 @@ kotlin {
         }
     }
 }
-
+//
+//rootProject.the(NodeJsRootExtension).apply {
+//    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
+//    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+//}
+//
+//tasks.withType(KotlinNpmInstallTask::class).configureEach {
+//    args.add("--ignore-engines")
+//}
 
 apply from: '../../gradle/publish-to-central.gradle'

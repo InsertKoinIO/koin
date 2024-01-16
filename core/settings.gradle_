@@ -1,0 +1,9 @@
+// Core
+include 'koin-core'
+//include 'koin-test'
+
+//include 'koin-core-coroutines'
+//include 'koin-test-junit4'
+//include 'koin-test-junit5'
+
+
