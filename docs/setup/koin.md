@@ -198,3 +198,26 @@ fun Application.main() {
 :::info
 From now you can continue on Koin Tutorials to learn about using Koin: [Ktor App Tutorial](../quickstart/ktor)
 :::
+
+
+### **Koin BOM**
+The Koin Bill of Materials (BOM) lets you manage all of your Koin library versions by specifying only the BOM’s version. The BOM itself has links to the stable versions of the different Koin libraries, in such a way that they work well together. When using the BOM in your app, you don't need to add any version to the Koin library dependencies themselves. When you update the BOM version, all the libraries that you're using are automatically updated to their new versions.
+
+```groovy
+dependencies {
+    // Declare koin-bom version
+    implementation platform("io.insert-koin:koin-bom:$koin_bom")
+    
+    // Declare the koin dependencies that you need
+    implementation("io.insert-koin:koin-android")
+    implementation("io.insert-koin:koin-core-coroutines")
+    implementation("io.insert-koin:koin-androidx-workmanager")
+    
+    // If you need specify some version it's just point to desired version
+    implementation("io.insert-koin:koin-androidx-navigation:1.2.3-alpha03")
+    
+    // Works with test libraries too!
+    testImplementation("io.insert-koin:koin-test-junit4")
+    testImplementation("io.insert-koin:koin-android-test")
+}
+```
