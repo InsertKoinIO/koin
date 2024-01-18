@@ -1,6 +1,0 @@
-ext {
-    // Koin
-    koin_ktor_version = '3.5.4-beta-1'
-    // Ktor
-    ktor_version = '2.3.7'
-}

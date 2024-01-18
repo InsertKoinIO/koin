@@ -2,10 +2,10 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ 'main','3.5.0' ]
+    branches: [ 'main' ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ 'main','3.5.0' ]
+    branches: [ 'main' ]
   schedule:
     - cron: '52 13 * * 6'
 
@@ -54,7 +54,7 @@ jobs:
 
     - name: Build and install all
       # working-directory: core
-      run: ./install_all.sh
+      run: cd projects && ./install.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
