@@ -15,6 +15,7 @@
  */
 package org.koin.ext
 
+import co.touchlab.stately.collections.ConcurrentMutableMap
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
@@ -31,4 +32,4 @@ fun KClass<*>.saveCache(): String {
     return name
 }
 
-private val classNames: MutableMap<KClass<*>, String> = KoinPlatformTools.safeHashMap()
+private val classNames: MutableMap<KClass<*>, String> = ConcurrentMutableMap()

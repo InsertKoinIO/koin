@@ -27,8 +27,6 @@ actual object KoinPlatformTools {
     actual fun defaultContext(): KoinContext = defaultContext
 
     actual fun <R> synchronized(lock: Lockable, block: () -> R): R = lock.lock.withLock { block() }
-
-    actual fun <K, V> safeHashMap(): MutableMap<K, V> = HashMap()
 }
 
 actual open class Lockable {

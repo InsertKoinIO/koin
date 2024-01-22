@@ -650,7 +650,6 @@ public final class org/koin/mp/KoinPlatformTools {
 	public final fun generateId ()Ljava/lang/String;
 	public final fun getClassName (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public final fun getStackTrace (Ljava/lang/Exception;)Ljava/lang/String;
-	public final fun safeHashMap ()Ljava/util/Map;
 	public final fun synchronized (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 

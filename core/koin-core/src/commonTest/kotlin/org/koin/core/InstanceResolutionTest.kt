@@ -186,6 +186,6 @@ class InstanceResolutionTest {
         }.koin
 
         val list = koin.getAll<A>()
-        assert(list.size == 2)
+        assertEquals(2, list.size)
     }
 }

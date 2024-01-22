@@ -48,6 +48,7 @@ kotlin {
         commonMain {
             dependencies {
                 api kotlin("stdlib-common")
+                implementation "co.touchlab:stately-concurrent-collections:$stately_concurrency"
             }
         }
 

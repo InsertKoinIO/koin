@@ -15,6 +15,7 @@
  */
 package org.koin.core.registry
 
+import co.touchlab.stately.collections.ConcurrentMutableMap
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformTools
@@ -29,7 +30,7 @@ import org.koin.mp.KoinPlatformTools
 @Suppress("UNCHECKED_CAST")
 class PropertyRegistry(internal val _koin: Koin) {
 
-    private val _values: MutableMap<String, Any> = KoinPlatformTools.safeHashMap()
+    private val _values: MutableMap<String, Any> = ConcurrentMutableMap()
 
     /**
      * saveProperty all properties to registry

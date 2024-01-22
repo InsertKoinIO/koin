@@ -34,7 +34,6 @@ actual object KoinPlatformTools {
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext
     actual fun <R> synchronized(lock: Lockable, block: () -> R) = kotlin.synchronized(lock, block)
-    actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentHashMap<K, V>()
 }
 
 actual typealias Lockable = Any

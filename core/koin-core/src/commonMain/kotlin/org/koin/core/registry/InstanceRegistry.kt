@@ -15,6 +15,7 @@
  */
 package org.koin.core.registry
 
+import co.touchlab.stately.collections.ConcurrentMutableMap
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.IndexKey
@@ -30,14 +31,13 @@ import org.koin.core.module.overrideError
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.mp.KoinPlatformTools.safeHashMap
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 class InstanceRegistry(val _koin: Koin) {
 
-    private val _instances = safeHashMap<IndexKey, InstanceFactory<*>>()
+    private val _instances = ConcurrentMutableMap<IndexKey, InstanceFactory<*>>()
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 

@@ -15,6 +15,7 @@
  */
 package org.koin.core.registry
 
+import co.touchlab.stately.collections.ConcurrentMutableMap
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ScopeAlreadyCreatedException
@@ -23,7 +24,6 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier._q
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.mp.KoinPlatformTools.safeHashMap
 
 /**
  * Scope Registry
@@ -38,7 +38,7 @@ class ScopeRegistry(private val _koin: Koin) {
     val scopeDefinitions: Set<Qualifier>
         get() = _scopeDefinitions
 
-    private val _scopes = safeHashMap<ScopeID, Scope>()
+    private val _scopes = ConcurrentMutableMap<ScopeID, Scope>()
 
     @KoinInternalApi
     val rootScope = Scope(rootScopeQualifier, ROOT_SCOPE_ID, isRoot = true, _koin = _koin)
@@ -89,7 +89,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun closeAllScopes() {
-        _scopes.values.forEach { scope ->
+        _scopes.values.toList().forEach { scope ->
             scope.close()
         }
     }
