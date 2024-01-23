@@ -3,7 +3,7 @@ name: Release Core
 on:
   push:
     tags:
-    - 'core*'
+    - '*'
 
 env:
   IS_RELEASE: true
