@@ -82,6 +82,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Run Core
+      - name: Test
         run: cd projects && ./gradlew :core:koin-core:macosX64Test --no-daemon --stacktrace
 

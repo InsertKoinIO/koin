@@ -1,4 +1,4 @@
-name: Release Core
+name: Release
 
 on:
   push:
@@ -33,10 +33,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Install Core
+      - name: Install
         run: cd projects && ./install.sh
       
-      - name: Release Core
+      - name: Release
         run: cd projects && ./release.sh
 
 
