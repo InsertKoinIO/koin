@@ -54,16 +54,12 @@ inline fun <reified T> koinInject(
  * @author Arnaud Giuliani
  */
 @Composable
-@Deprecated("")
+@Deprecated(
+    message = "Use koinInject() instead",
+    replaceWith = ReplaceWith("koinInject<T>(qualifier, scope, parameters)")
+)
 inline fun <reified T> rememberKoinInject(
     qualifier: Qualifier? = null,
     scope: Scope = rememberCurrentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T {
-    // This will always refer to the latest parameters
-    val currentParameters by rememberUpdatedState(parameters)
-
-    return remember(qualifier, scope) {
-        scope.get(qualifier, currentParameters)
-    }
-}
+): T = koinInject(qualifier, scope, parameters)
