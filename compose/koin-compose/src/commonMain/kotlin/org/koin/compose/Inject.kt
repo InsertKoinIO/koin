@@ -16,8 +16,9 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import org.koin.compose.stable.rememberStableParametersDefinition
+import androidx.compose.runtime.rememberUpdatedState
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -37,9 +38,11 @@ inline fun <reified T> koinInject(
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val st = parameters?.let { rememberStableParametersDefinition(parameters) }
+    // This will always refer to the latest parameters
+    val currentParameters by rememberUpdatedState(parameters)
+
     return remember(qualifier, scope) {
-        scope.get(qualifier, st?.parametersDefinition)
+        scope.get(qualifier, currentParameters)
     }
 }
 
@@ -57,8 +60,10 @@ inline fun <reified T> rememberKoinInject(
     scope: Scope = rememberCurrentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val st = parameters?.let { rememberStableParametersDefinition(parameters) }
+    // This will always refer to the latest parameters
+    val currentParameters by rememberUpdatedState(parameters)
+
     return remember(qualifier, scope) {
-        scope.get(qualifier, st?.parametersDefinition)
+        scope.get(qualifier, currentParameters)
     }
 }
