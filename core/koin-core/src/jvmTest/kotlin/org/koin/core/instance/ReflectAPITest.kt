@@ -1,8 +1,8 @@
 package org.koin.core.instance
 
 import org.junit.Test
-import org.koin.core.time.measureDurationForResult
 import kotlin.reflect.KClass
+import kotlin.time.measureTimedValue
 
 class ReflectAPITest {
 
@@ -34,10 +34,10 @@ class ReflectAPITest {
                 ctor.newInstance() as T
             } else {
                 println("|- types:${types.toList()}")
-                val (map, duration) = measureDurationForResult {
+                val (map, duration) = measureTimedValue {
                     types.map { it.constructors.first().newInstance() }
                 }
-                println("|- make sub instances:$map in $duration")
+                println("|- make sub instances: $map in $duration")
                 val toTypedArray = map.toTypedArray()
                 measure("|- created with subtypes") {
                     ctor.newInstance(*toTypedArray) as T
@@ -48,7 +48,7 @@ class ReflectAPITest {
 }
 
 fun <T> measure(message: String, code: () -> T): T {
-    val (i, time) = measureDurationForResult(code)
-    println("$message in $time ms")
+    val (i, duration) = measureTimedValue(code)
+    println("$message in ${duration.inWholeMilliseconds} ms")
     return i
 }

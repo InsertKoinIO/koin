@@ -33,9 +33,9 @@ import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
-import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
+import kotlin.time.measureTime
 
 /**
  * Koin
@@ -326,9 +326,9 @@ class Koin {
      */
     fun createEagerInstances() {
         logger.debug("Create eager instances ...")
-        val duration = measureDuration {
+        val duration = measureTime {
             instanceRegistry.createAllEagerInstances()
         }
-        logger.debug("Created eager instances in $duration ms")
+        logger.debug("Created eager instances in ${duration.inWholeMilliseconds} ms")
     }
 }
