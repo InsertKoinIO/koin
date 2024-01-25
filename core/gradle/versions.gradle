@@ -1,6 +1,6 @@
 ext {
     // Koin Versions
-    koin_version = '3.5.3'
+    koin_version = '3.5.4-beta-1'
     
     // Kotlin
     kotlin_version = '1.9.21'
@@ -18,4 +18,7 @@ ext {
     junit5_version = "5.9.3"
     mockito_version = "4.7.0"
     mockk_version = "1.12.2"
+
+    // Publish Plugin
+    publish_plugin_version = '2.0.0-rc-1'
 }

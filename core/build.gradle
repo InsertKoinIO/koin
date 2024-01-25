@@ -11,11 +11,24 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // Dokka
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+        // Publish Plugin
+        classpath "io.github.gradle-nexus:publish-plugin:$publish_plugin_version"
     }
 }
 
 plugins {
     id 'org.jetbrains.kotlinx.binary-compatibility-validator' version "$validator_version"
+    id 'io.github.gradle-nexus.publish-plugin' version "$publish_plugin_version"
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            username = findProperty('OSSRH_USERNAME') ?: System.getenv('OSSRH_USERNAME') ?: ""
+            password = findProperty('OSSRH_PASSWORD') ?: System.getenv('OSSRH_PASSWORD') ?: ""
+        }
+    }
 }
 
 wrapper {
