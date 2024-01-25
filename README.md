@@ -83,4 +83,4 @@ Thank you all for your work! ❤️
 
 ## OpenCollective - Sponsorship ❤️
 
-Support this project by becoming a sponsor and be displayed on the offcial website. [[Help us and Become a sponsor!](https://opencollective.com/koin#sponsor)]
+Support this project by becoming a sponsor and be displayed on the official website. [[Help us and Become a sponsor!](https://opencollective.com/koin#sponsor)]
