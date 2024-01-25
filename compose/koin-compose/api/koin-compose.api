@@ -9,11 +9,6 @@ public final class org/koin/compose/KoinApplicationKt {
 	public static final fun rememberCurrentKoinScope (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/scope/Scope;
 }
 
-public final class org/koin/compose/error/UnknownKoinContext : java/lang/RuntimeException {
-	public static final field $stable I
-	public fun <init> ()V
-}
-
 public final class org/koin/compose/module/CompositionKoinModuleLoader : androidx/compose/runtime/RememberObserver {
 	public static final field $stable I
 	public fun <init> (Ljava/util/List;Lorg/koin/core/Koin;ZZ)V

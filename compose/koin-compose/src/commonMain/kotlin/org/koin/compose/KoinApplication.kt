@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-@file:OptIn(KoinInternalApi::class)
-
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
@@ -47,6 +46,7 @@ val LocalKoinApplication: ProvidableCompositionLocal<Koin> = compositionLocalOf 
 /**
  * Current Koin Scope
  */
+@OptIn(KoinInternalApi::class)
 val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf {
     getDefaultKoinContext().apply {
         warnNoContext()
@@ -61,9 +61,8 @@ private fun getDefaultKoinContext() = KoinPlatformTools.defaultContext().get()
  * @author @author jjkester
  */
 @Composable
-fun getKoin(): Koin = currentComposer.run {
-    return LocalKoinApplication.current
-}
+@ReadOnlyComposable
+fun getKoin(): Koin = LocalKoinApplication.current
 
 /**
  * Retrieve the current Koin scope from the composition
@@ -72,9 +71,8 @@ fun getKoin(): Koin = currentComposer.run {
  *
  */
 @Composable
-fun currentKoinScope(): Scope = currentComposer.run {
-    return LocalKoinScope.current
-}
+@ReadOnlyComposable
+fun currentKoinScope(): Scope = LocalKoinScope.current
 
 /**
  * Retrieve the current Koin scope from the composition
@@ -92,7 +90,8 @@ fun rememberCurrentKoinScope(): Scope = currentComposer.run {
 
 @OptIn(KoinInternalApi::class)
 private fun Koin.warnNoContext() {
-    logger.info("[Warning] - No Koin context defined in Compose, fallback to default Koin context.\nUse KoinContext(), KoinAndroidContext() or KoinApplication() to setup or create Koin context with Compose and avoid such message.")
+    logger.info("[Warning] - No Koin context defined in Compose, fallback to default Koin context." +
+        "Use KoinContext(), KoinAndroidContext() or KoinApplication() to setup or create Koin context with Compose and avoid such message.")
 }
 
 /**
@@ -105,6 +104,7 @@ private fun Koin.warnNoContext() {
  * @throws ApplicationAlreadyStartedException
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 @Throws(ApplicationAlreadyStartedException::class)
 fun KoinApplication(
@@ -121,10 +121,9 @@ fun KoinApplication(
     }
     CompositionLocalProvider(
         LocalKoinApplication provides koinApplication.koin,
-        LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope
-    ) {
-        content()
-    }
+        LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope,
+        content = content
+    )
 }
 
 /**
@@ -135,6 +134,7 @@ fun KoinApplication(
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 fun KoinContext(
     context: Koin = KoinPlatform.getKoin(),
@@ -142,10 +142,9 @@ fun KoinContext(
 ) {
     CompositionLocalProvider(
         LocalKoinApplication provides context,
-        LocalKoinScope provides context.scopeRegistry.rootScope
-    ) {
-        content()
-    }
+        LocalKoinScope provides context.scopeRegistry.rootScope,
+        content = content
+    )
 }
 
 /**
@@ -161,6 +160,7 @@ fun KoinContext(
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 fun KoinIsolatedContext(
     context: KoinApplication,
@@ -168,8 +168,7 @@ fun KoinIsolatedContext(
 ) {
     CompositionLocalProvider(
         LocalKoinApplication provides context.koin,
-        LocalKoinScope provides context.koin.scopeRegistry.rootScope
-    ) {
-        content()
-    }
+        LocalKoinScope provides context.koin.scopeRegistry.rootScope,
+        content = content
+    )
 }
