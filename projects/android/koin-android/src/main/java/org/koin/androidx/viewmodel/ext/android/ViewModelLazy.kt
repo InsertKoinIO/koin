@@ -91,3 +91,25 @@ fun <T : ViewModel> getLazyViewModelForClass(
         )
     }
 }
+
+@OptIn(KoinInternalApi::class)
+@MainThread
+inline fun <reified T : ViewModel> lazyViewModelForClass(
+    crossinline viewModelStoreOwnerLazy: () -> ViewModelStoreOwner,
+    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
+    qualifier: Qualifier? = null,
+    noinline state: BundleDefinition? = null,
+    key: String? = null,
+    noinline parameters: ParametersDefinition? = null,
+): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
+    val viewModelStoreOwner = viewModelStoreOwnerLazy()
+    resolveViewModel(
+        vmClass = T::class,
+        viewModelStore = viewModelStoreOwner.viewModelStore,
+        extras = state?.invoke()?.toExtras(viewModelStoreOwner) ?: CreationExtras.Empty,
+        qualifier = qualifier,
+        parameters = parameters,
+        key = key,
+        scope = scope
+    )
+}
