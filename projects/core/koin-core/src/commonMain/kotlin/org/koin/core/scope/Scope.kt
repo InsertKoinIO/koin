@@ -15,6 +15,7 @@
  */
 package org.koin.core.scope
 
+import org.koin.core.Instances
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
@@ -45,7 +46,7 @@ class Scope(
     val isRoot: Boolean = false,
     @PublishedApi
     internal val _koin: Koin,
-) : Lockable() {
+) : Lockable(), Instances {
     private val linkedScopes: ArrayList<Scope> = arrayListOf()
 
     @KoinInternalApi
@@ -106,7 +107,7 @@ class Scope(
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
     ): Lazy<T> =
-        lazy(mode) { get<T>(qualifier, parameters) }
+        inject(T::class, qualifier, mode, parameters)
 
     /**
      * Lazy inject a Koin instance if available
@@ -121,7 +122,7 @@ class Scope(
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
     ): Lazy<T?> =
-        lazy(mode) { getOrNull<T>(qualifier, parameters) }
+        injectOrNull(T::class, qualifier, mode, parameters)
 
     /**
      * Get a Koin instance
@@ -160,18 +161,10 @@ class Scope(
         return getOrNull(T::class, qualifier, parameters)
     }
 
-    /**
-     * Get a Koin instance if available
-     * @param qualifier
-     * @param scope
-     * @param parameters
-     *
-     * @return instance of type T or null
-     */
-    fun <T> getOrNull(
+    override fun <T> getOrNull(
         clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?,
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
@@ -184,18 +177,10 @@ class Scope(
         }
     }
 
-    /**
-     * Get a Koin instance
-     * @param clazz
-     * @param qualifier
-     * @param parameters
-     *
-     * @return instance of type T
-     */
-    fun <T> get(
+    override fun <T> get(
         clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?,
     ): T {
         return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
@@ -212,6 +197,22 @@ class Scope(
             resolveInstance(qualifier, clazz, parameters)
         }
     }
+
+    override fun <T> injectOrNull(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        mode: LazyThreadSafetyMode,
+        parameters: ParametersDefinition?
+    ): Lazy<T?> =
+        lazy(mode) { getOrNull<T>(clazz, qualifier, parameters) }
+
+    override fun <T> inject(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        mode: LazyThreadSafetyMode,
+        parameters: ParametersDefinition?
+    ): Lazy<T> =
+        lazy(mode) { get<T>(clazz, qualifier, parameters) }
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> resolveInstance(
@@ -354,35 +355,16 @@ class Scope(
      */
     inline fun <reified T : Any> getAll(): List<T> = getAll(T::class)
 
-    /**
-     * Get a all instance for given class (in primary or secondary type)
-     * @param clazz T
-     *
-     * @return list of instances of type T
-     */
-    fun <T> getAll(clazz: KClass<*>): List<T> {
+    override fun <T> getAll(clazz: KClass<*>): List<T> {
         val context = InstanceContext(_koin.logger, this)
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
-    /**
-     * Retrieve a property
-     * @param key
-     * @param defaultValue
-     */
-    fun <T : Any> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
+    override fun <T : Any> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
 
-    /**
-     * Retrieve a property
-     * @param key
-     */
-    fun <T : Any> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
+    override fun <T : Any> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
 
-    /**
-     * Retrieve a property
-     * @param key
-     */
-    fun <T : Any> getProperty(key: String): T = _koin.getProperty(key)
+    override fun <T : Any> getProperty(key: String): T = _koin.getProperty(key)
         ?: throw MissingPropertyException("Property '$key' not found")
 
     /**

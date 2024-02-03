@@ -19,6 +19,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
+import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.extension.ExtensionManager
 import org.koin.core.logger.EmptyLogger
@@ -45,7 +46,7 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
-class Koin {
+class Koin : Instances {
 
     @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)
@@ -120,34 +121,35 @@ class Koin {
         noinline parameters: ParametersDefinition? = null,
     ): T? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
-    /**
-     * Get a Koin instance
-     * @param clazz
-     * @param qualifier
-     * @param scope
-     * @param parameters
-     *
-     * @return instance of type T
-     */
-    fun <T> get(
+    override fun <T> get(
         clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?,
     ): T = scopeRegistry.rootScope.get(clazz, qualifier, parameters)
 
-    /**
-     * Get a Koin instance if available
-     * @param clazz
-     * @param qualifier
-     * @param scope
-     * @param parameters
-     *
-     * @return instance of type T or null
-     */
-    fun <T> getOrNull(
+    override fun <T> injectOrNull(
         clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null,
+        qualifier: Qualifier?,
+        mode: LazyThreadSafetyMode,
+        parameters: ParametersDefinition?
+    ): Lazy<T?> =
+        scopeRegistry.rootScope.injectOrNull(clazz, qualifier, mode, parameters)
+
+    override fun <T> inject(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        mode: LazyThreadSafetyMode,
+        parameters: ParametersDefinition?
+    ): Lazy<T> =
+        scopeRegistry.rootScope.inject(clazz, qualifier, mode, parameters)
+
+    override fun <T> getAll(clazz: KClass<*>): List<T> =
+        scopeRegistry.rootScope.getAll(clazz)
+
+    override fun <T> getOrNull(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?,
     ): T? = scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
 
     /**
@@ -256,22 +258,17 @@ class Koin {
         scopeRegistry.deleteScope(scopeId)
     }
 
-    /**
-     * Retrieve a property
-     * @param key
-     * @param defaultValue
-     */
-    fun <T : Any> getProperty(key: String, defaultValue: T): T {
+    override fun <T : Any> getProperty(key: String, defaultValue: T): T {
         return propertyRegistry.getProperty(key) ?: defaultValue
     }
 
-    /**
-     * Retrieve a property
-     * @param key
-     */
-    fun <T : Any> getProperty(key: String): T? {
+    override fun <T : Any> getProperty(key: String): T {
         return propertyRegistry.getProperty(key)
+            ?: throw MissingPropertyException("Property '$key' not found")
     }
+
+    override fun <T : Any> getPropertyOrNull(key: String): T? =
+        propertyRegistry.getProperty(key)
 
     /**
      * Save a property
