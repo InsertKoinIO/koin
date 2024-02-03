@@ -36,6 +36,11 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
+import org.koin.core.get as extensionGet
+import org.koin.core.getAll as extensionGetAll
+import org.koin.core.getOrNull as extensionGetOrNull
+import org.koin.core.inject as extensionInject
+import org.koin.core.injectOrNull as extensionInjectOrNull
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -106,8 +111,7 @@ class Scope(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
-    ): Lazy<T> =
-        inject(T::class, qualifier, mode, parameters)
+    ): Lazy<T> = extensionInject<T>(qualifier, mode, parameters)
 
     /**
      * Lazy inject a Koin instance if available
@@ -121,8 +125,7 @@ class Scope(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
-    ): Lazy<T?> =
-        injectOrNull(T::class, qualifier, mode, parameters)
+    ): Lazy<T?> = extensionInjectOrNull<T>(qualifier, mode, parameters)
 
     /**
      * Get a Koin instance
@@ -133,9 +136,7 @@ class Scope(
     inline fun <reified T : Any> get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-    ): T {
-        return get(T::class, qualifier, parameters)
-    }
+    ): T = extensionGet(qualifier, parameters)
 
     /**
      * Get Koin Scope "source" instance. Retrive the object instance, that initiated the creation of the scope.
@@ -157,9 +158,7 @@ class Scope(
     inline fun <reified T : Any> getOrNull(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-    ): T? {
-        return getOrNull(T::class, qualifier, parameters)
-    }
+    ): T? = extensionGetOrNull<T>(qualifier, parameters)
 
     override fun <T> getOrNull(
         clazz: KClass<*>,
@@ -353,7 +352,7 @@ class Scope(
      *
      * @return list of instances of type T
      */
-    inline fun <reified T : Any> getAll(): List<T> = getAll(T::class)
+    inline fun <reified T : Any> getAll(): List<T> = extensionGetAll<T>()
 
     override fun <T> getAll(clazz: KClass<*>): List<T> {
         val context = InstanceContext(_koin.logger, this)

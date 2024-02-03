@@ -37,6 +37,11 @@ import org.koin.core.scope.ScopeID
 import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
+import org.koin.core.get as extensionGet
+import org.koin.core.getAll as extensionGetAll
+import org.koin.core.getOrNull as extensionGetOrNull
+import org.koin.core.inject as extensionInject
+import org.koin.core.injectOrNull as extensionInjectOrNull
 
 /**
  * Koin
@@ -81,7 +86,7 @@ class Koin : Instances {
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
         noinline parameters: ParametersDefinition? = null,
-    ): Lazy<T> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
+    ): Lazy<T> = extensionInject<T>(qualifier, mode, parameters)
 
     /**
      * Lazy inject a Koin instance if available
@@ -95,7 +100,7 @@ class Koin : Instances {
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
         noinline parameters: ParametersDefinition? = null,
-    ): Lazy<T?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
+    ): Lazy<T?> = extensionInjectOrNull<T>(qualifier, mode, parameters)
 
     /**
      * Get a Koin instance
@@ -106,7 +111,7 @@ class Koin : Instances {
     inline fun <reified T : Any> get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-    ): T = scopeRegistry.rootScope.get(qualifier, parameters)
+    ): T = extensionGet<T>(qualifier, parameters)
 
     /**
      * Get a Koin instance if available
@@ -119,7 +124,7 @@ class Koin : Instances {
     inline fun <reified T : Any> getOrNull(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-    ): T? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
+    ): T? = extensionGetOrNull<T>(qualifier, parameters)
 
     override fun <T> get(
         clazz: KClass<*>,
@@ -175,7 +180,7 @@ class Koin : Instances {
      *
      * @return list of instances of type T
      */
-    inline fun <reified T> getAll(): List<T> = scopeRegistry.rootScope.getAll()
+    inline fun <reified T> getAll(): List<T> = extensionGetAll<T>()
 
     /**
      * Create a Scope instance
