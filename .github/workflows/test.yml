@@ -36,14 +36,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Install Core
-        run: cd core && ./install.sh
-      
-      - name: Install Android
-        run: cd android && ./install.sh
-
-      - name: Install BOM
-        run: cd bom && ./install.sh
+      - name: Install
+        run: cd projects && ./install.sh
         
       - name: Test Examples
         run: cd examples && ./test.sh
