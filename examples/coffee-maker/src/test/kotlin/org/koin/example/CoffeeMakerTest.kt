@@ -3,6 +3,7 @@ package org.koin.example
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.verifySequence
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.koin.core.context.startKoin
@@ -12,7 +13,6 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.koin.test.mock.MockProviderRule
 import org.koin.test.mock.declareMock
-import kotlin.test.AfterTest
 
 class CoffeeMakerTest : KoinTest {
 
@@ -24,7 +24,7 @@ class CoffeeMakerTest : KoinTest {
         mockkClass(clazz, relaxed = true)
     }
 
-    @AfterTest
+    @After
     fun after() {
         stopKoin()
     }
