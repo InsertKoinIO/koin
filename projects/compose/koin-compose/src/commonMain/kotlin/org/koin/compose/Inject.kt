@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
@@ -42,7 +43,9 @@ inline fun <reified T> koinInject(
     val currentParameters by rememberUpdatedState(parameters)
 
     return remember(qualifier, scope) {
-        scope.get(qualifier, currentParameters)
+        scope.get(qualifier) {
+            currentParameters?.invoke() ?: emptyParametersHolder()
+        }
     }
 }
 

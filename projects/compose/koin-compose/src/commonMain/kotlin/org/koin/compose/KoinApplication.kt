@@ -18,11 +18,9 @@ package org.koin.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
@@ -80,13 +78,12 @@ fun currentKoinScope(): Scope = LocalKoinScope.current
  * @author @author jjkester
  *
  */
-@OptIn(InternalComposeApi::class)
+@Deprecated(
+    message = "Use currentKoinScope() instead",
+    replaceWith = ReplaceWith("currentKoinScope()")
+)
 @Composable
-fun rememberCurrentKoinScope(): Scope = currentComposer.run {
-    remember {
-        consume(LocalKoinScope)
-    }
-}
+fun rememberCurrentKoinScope(): Scope = currentKoinScope()
 
 @OptIn(KoinInternalApi::class)
 private fun Koin.warnNoContext() {
