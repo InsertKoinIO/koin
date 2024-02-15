@@ -43,4 +43,4 @@ dependencies {
     api "androidx.navigation:navigation-compose:2.7.5"
 }
 
-apply from: '../../gradle/publish-to-central.gradle'
+//apply from: '../../gradle/publish-to-central.gradle'

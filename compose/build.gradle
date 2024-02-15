@@ -42,11 +42,11 @@ allprojects {
     group = 'io.insert-koin'
 
     // Dokka
-    apply plugin: 'org.jetbrains.dokka'
-    dokkaJavadoc {
-    }
-    task dokkaJar(type: Jar) {
-        classifier = 'javadoc'
-        from dokkaJavadoc
-    }
+//    apply plugin: 'org.jetbrains.dokka'
+//    dokkaJavadoc {
+//    }
+//    task dokkaJar(type: Jar) {
+//        classifier = 'javadoc'
+//        from dokkaJavadoc
+//    }
 }
