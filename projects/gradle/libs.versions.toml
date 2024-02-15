@@ -23,7 +23,7 @@ composeJB = "1.5.11"
 composeJetpackRuntime = "1.5.4"
 composeJetpackViewmodel = "2.6.2"
 # Test
-stately = "2.0.5"
+stately = "2.0.6"
 junit = "4.13.2"
 jupiter = "5.9.3"
 mockito = "4.7.0"
