@@ -54,23 +54,13 @@ We use Gradlew in the build scripts
 
 
 ==== Default build
-The project can be built from the root directory using the script:
+The project can be built from the "projects" directory using the script:
 
 [indent=0]
 ----
-	$ ./install_all.sh
+	$ ./install.sh
 ----
 
-NOTE: you can use the `test.sh` and `install.sh` scripts to test all modules and make local install
+NOTE: you can use the `test.sh` script to test all modules
 
 
-== Integration tests
-
-the `koin-test` module gather all test against `koin-core`. Here you'll found most of usecase tests.
-
-The following command script launch all tests from projects:
-
-[indent=0]
-----
-	$ ./test_all.sh
-----
