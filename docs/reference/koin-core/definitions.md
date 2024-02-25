@@ -103,7 +103,7 @@ class ServiceImp() : Service {
 }
 ```
 
-In a Koin module we can use the `as` cast Kotlin operator as follow:
+In a Koin module we can use the `as` cast Kotlin operator as follows:
 
 ```kotlin
 val myModule = module {
