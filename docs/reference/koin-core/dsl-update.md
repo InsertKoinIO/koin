@@ -81,7 +81,7 @@ module {
 
 ## Injected Parameters
 
-With such kind of declaration, you can still use injected parameters. Koin will look in injected parameters and current dependencies to try inject your constructor.
+With such kind of declaration, you can still use injected parameters. Koin will look in injected parameters and current dependencies to try to inject your constructor.
 
 Like following:
 
