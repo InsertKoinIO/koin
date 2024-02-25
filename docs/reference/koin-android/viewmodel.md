@@ -21,7 +21,7 @@ Your declared component must at least extends the `android.arch.lifecycle.ViewMo
 and use the `get()` function to inject dependencies.
 
 :::info
-The `viewModel`/`viewModelOf` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
+The `viewModel`/`viewModelOf` keyword helps to declare a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
 It also will let inject parameters.
 :::
 
