@@ -57,7 +57,7 @@ Java/JVM Specific API are isolated in `koin-core-jvm` part of Koin core. Here ar
 
 #### Android Modules
 
-In v3, the `koin-android` modules is using AndroidX API, and merge also all Scope/Fragment/ViewModel API. You don't need anymore to specify `koin-androidx-fragment`, `koin-androidx-viewmodel` or `koin-androidx-scope` as their are all in the `koin-android` module:
+In v3, the `koin-android` modules is using AndroidX API, and merge also all Scope/Fragment/ViewModel API. You don't need anymore to specify `koin-androidx-fragment`, `koin-androidx-viewmodel` or `koin-androidx-scope` as there are all in the `koin-android` module:
 
 ```groovy
 // Koin main features for Android (Scope,ViewModel ...)
