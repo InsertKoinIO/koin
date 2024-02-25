@@ -106,7 +106,7 @@ For this use `unloadOnForgotten` or `unloadOnAbandoned` argument for `rememberKo
 
 ## Creating Koin Scope with Composable
 
-The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow up current to close scope once Composable is ended.
+The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow-up current to close scope once Composable is ended.
 
 :::info
 this API is still unstable for now
