@@ -20,6 +20,7 @@ import io.ktor.server.application.hooks.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 
@@ -34,7 +35,8 @@ import org.koin.dsl.KoinAppDeclaration
  */
 val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
     val koinApplication = setupKoinApplication()
-    startKoin(koinApplication)
+    runningKoinApplication?.let { stopKoin() } // for ktor auto-reload
+    runningKoinApplication = startKoin(koinApplication)
     setupMonitoring(koinApplication)
     setupKoinScope(koinApplication)
 }
@@ -76,6 +78,7 @@ val KOIN_ATTRIBUTE_KEY = AttributeKey<KoinApplication>(KOIN_KEY)
 
 const val KOIN_SCOPE_KEY = "KOIN_SCOPE"
 val KOIN_SCOPE_ATTRIBUTE_KEY = AttributeKey<Scope>(KOIN_SCOPE_KEY)
+private var runningKoinApplication: KoinApplication? = null
 
 //TODO move both to ext file
 /**
