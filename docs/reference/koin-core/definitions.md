@@ -184,7 +184,7 @@ val service : Service by inject(qualifier = named("default"))
 
 `get()` and `by inject()` functions let you specify a definition name if needed. This name is a `qualifier` produced by the `named()` function.
 
-By default Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
+By default, Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
 
 ```kotlin
 val myModule = module {
