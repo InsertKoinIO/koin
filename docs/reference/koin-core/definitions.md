@@ -84,7 +84,7 @@ val myModule = module {
 
 ## Definition: binding an interface
 
-A `single` or a `factory` definition use the type from the their given lambda definition: i.e  `single { T }`
+A `single` or a `factory` definition use the type from their given lambda definition: i.e  `single { T }`
 The matched type of the definition is the only matched type from this expression.
 
 Let's take an example with a class and implemented interface:
