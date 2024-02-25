@@ -3,7 +3,7 @@ title: Injecting in Android
 ---
 
 
-Once you have declared some modules and you have started Koin, how can you retrieve your instances in your
+Once you have declared some modules, and you have started Koin, how can you retrieve your instances in your
 Android Activity Fragments or Services?
 
 ## Ready for Android Classes
