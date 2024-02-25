@@ -2,7 +2,7 @@
 title: Koin
 ---
 
-All you need to setup Koin in your project
+All you need to setting up Koin in your project
 
 ## Current Versions
 
