@@ -132,7 +132,7 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 }
 ```
 
-We can also setting up a retained scope (backed by a ViewModel lifecycle) with the following:
+We can also to setting up a retained scope (backed by a ViewModel lifecycle) with the following:
 
 ```kotlin
 class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
