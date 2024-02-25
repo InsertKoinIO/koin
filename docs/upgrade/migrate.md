@@ -33,7 +33,7 @@ The new Koin core is now Multiplatform. You can use it even if your project is n
 
 #### Reimporting for new API
 
-If you seen unresolved Koin API import, you can try to remove/reimport the used API as some packages has been moved in the Koin core module. See new section 
+If you have seen unresolved Koin API import, you can try to remove/reimport the used API as some packages has been moved in the Koin core module. See new section 
 
 #### Kotlin Core & JVM features
 
