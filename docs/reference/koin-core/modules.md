@@ -17,7 +17,7 @@ val myModule = module {
 ## Using several modules
 
 Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
-module. Definitions are lazy, and then are resolved only when a a component is requesting it.
+module. Definitions are lazy, and then are resolved only when a component is requesting it.
 
 Let's take an example, with linked components in separate modules:
 
