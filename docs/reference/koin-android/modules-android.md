@@ -6,8 +6,8 @@ By using Koin, you describe definitions in modules. In this section we will see 
 
 ## Using several modules
 
-Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
-module. Definitions are lazy, and then are resolved only when a component is requesting it.
+Components don't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from another
+module. Definitions are lazy, and they are resolved only when a component requests them.
 
 Let's take an example, with linked components in separate modules:
 

@@ -95,7 +95,7 @@ fun sharedModule() = module {
 }
 ```
 
-This way, your share the definitions and avoid preallocate factories in a value.
+This way, you share the definitions and avoid preallocating factories in a value.
 
 ## Overriding definition or module (before 3.1.0)
 
@@ -253,12 +253,12 @@ startKoin { modules(featureModule1, featureModule2) }
 Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
 
 :::info
-    If you have any compiling issue while including modules from the same file, either use `get()` Kotlin attribute operator on your module either separate each module in files. See https://github.com/InsertKoinIO/koin/issues/1341 workaround
+    If you have any compiling issue while including modules from the same file, either use `get()` Kotlin attribute operator on your module or separate each module in files. See https://github.com/InsertKoinIO/koin/issues/1341 workaround
 :::
 
 ## Lazy modules & background modules loading with Kotlin coroutines [Experimental]
 
-You can now declare "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start.
+You can now declare a "lazy" Koin module, to avoid triggering any pre allocation of resources and load them in background with Koin start.
 
 - `lazyModule` - declare a Lazy Kotlin version of Koin Module
 - `Module.includes` - allow to include lazy Modules

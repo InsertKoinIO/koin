@@ -48,12 +48,12 @@ override fun onCreate(savedInstanceState: Bundle?) {
 ```
 
 :::info
-if you class doesn't have extensions, just add KoinComponent interface If you need to `inject()` or `get()` an instance from another class.
+if your class doesn't have extensions, just implement the `KoinComponent` interface in it to `inject()` or `get()` an instance from another class.
 :::
 
 ## Using the Android Context in a Definition
 
-Once your `Application` class you can use `androidContext` function:
+Once your `Application` class configures Koin you can use the `androidContext` function to inject Android Context so that it can be resolved later when you need it in modules:
 
 ```kotlin
 class MainApplication : Application() {
@@ -62,7 +62,7 @@ class MainApplication : Application() {
         super.onCreate()
 
         startKoin {
-            //inject Android context
+            // inject Android context
             androidContext(this@MainApplication)
             // ...
         }
