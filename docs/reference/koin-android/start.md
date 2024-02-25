@@ -51,7 +51,7 @@ From your Koin configuration (in `startKoin { }` block code), you can also confi
 Within your `KoinApplication` instance, we have an extension `androidLogger` which use the `AndroidLogger()`#
 This logger is an Android implementation of the Koin logger.
 
-Up to you to change this logger if it doesn't suits to your needs.
+Up to you to change this logger if it doesn't suit to your needs.
 
 ```kotlin
 startKoin {
