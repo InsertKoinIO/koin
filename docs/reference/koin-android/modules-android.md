@@ -124,7 +124,7 @@ Notice that all modules will be included only once: `dataModule`, `domainModule`
 
 ## Reducing Startup time with background module loading
 
-You can now declared "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start. This can help avoid to block Android starting process, by passing lazy modules to be loaded in background.
+You can now declare "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start. This can help avoid to block Android starting process, by passing lazy modules to be loaded in background.
 
 - `lazyModule` - declare a Lazy Kotlin version of Koin Module
 - `Module.includes` - allow to include lazy Modules
