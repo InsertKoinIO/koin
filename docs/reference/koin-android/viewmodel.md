@@ -165,7 +165,7 @@ All `stateViewModel` functions are deprecated. You can just use the regular `vie
 
 ## Navigation Graph ViewModel
 
-You can scope a ViewModel instance to your Navigation graph. Just retrieve with `by koinNavGraphViewModel()`. You just need your graph Id.
+You can scope a ViewModel instance to your Navigation graph. Just retrieve with `by koinNavGraphViewModel()`. You just need your graph id.
 
 ```kotlin
 class NavFragment : Fragment() {
