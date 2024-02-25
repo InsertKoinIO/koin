@@ -8,7 +8,7 @@ https://developer.android.com/jetpack/androidx/releases/fragment
 
 ## Fragment Factory
 
-Since `2.1.0-alpha-3` version, has been introduce the `FragmentFactory`, a class dedicated to create instance of `Fragment` class:
+Since `2.1.0-alpha-3` version, has been introduced the `FragmentFactory`, a class dedicated to create instance of `Fragment` class:
 
 https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentFactory
 
