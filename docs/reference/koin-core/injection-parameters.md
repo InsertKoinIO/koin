@@ -85,7 +85,7 @@ val myModule = module {
 
 In addition to `parametersOf`, the following API are accessible:
 
-- `parameterArrayOf`: to use an array of value, and data will be use by its index
+- `parameterArrayOf`: to use an array of value, and data will be uses by its index
 
 ```kotlin
 val params = parameterArrayOf(1,2,3)
