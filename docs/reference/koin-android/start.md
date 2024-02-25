@@ -6,7 +6,7 @@ The `koin-android` project is dedicated to provide Koin powers to Android world.
 
 ## From your Application class
 
-From your `Application` class you can use the `startKoin` function and inject the Android context with `androidContext` as follow:
+From your `Application` class you can use the `startKoin` function and inject the Android context with `androidContext` as follows:
 
 ```kotlin
 class MainApplication : Application() {
