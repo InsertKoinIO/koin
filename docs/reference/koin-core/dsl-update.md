@@ -2,7 +2,7 @@
 title: Constructor DSL
 ---
 
-Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to to have type your definition within a lambda expression.
+Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to have type your definition within a lambda expression.
 
 For a given class `ClassA` with following dependencies:
 
