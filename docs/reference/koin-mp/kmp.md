@@ -99,7 +99,7 @@ We can initialize it in our Main app entry:
 @main
 struct iOSApp: App {
     
-        // KMM - Koin Call
+    // KMM - Koin Call
     init() {
         HelperKt.doInitKoin()
     }
