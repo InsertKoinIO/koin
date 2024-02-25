@@ -123,7 +123,7 @@ class MyTest : KoinTest {
 ```
 
 :::note
- declareMock can specify if you want a single or factory, and if you wan to have it in a module path.
+ declareMock can specify if you want a single or factory, and if you want to have it in a module path.
 :::
 
 ## Declaring a component on the fly
