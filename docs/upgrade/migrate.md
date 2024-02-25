@@ -10,7 +10,7 @@ The new branch of Koin 3.x is bringing latest features & fixes. It brings Multip
 
 #### Android & AndroidX Module
 
-The following modules are available for Android. Be sure to use the `koin-androidx` modules, as their are based on the latest AndroidX library support:
+The following modules are available for Android. Be sure to use the `koin-androidx` modules, as there are based on the latest AndroidX library support:
 
 ```groovy
 // Koin AndroidX Scope features
