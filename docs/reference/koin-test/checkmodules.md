@@ -252,7 +252,7 @@ fun `test DI modules`(){
 }
 ```
 
-All injected definition that are using a injected `String` parameter, will receive `"_ID_"`:
+All injected definition that are using an injected `String` parameter, will receive `"_ID_"`:
 
 ```kotlin
 module {
