@@ -41,7 +41,7 @@ The result type of your lambda is the main type of your component
 
 ## Defining a factory
 
-A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition (this instance is not retained by Koin container, as it won't inject this instance in other definitions later). Use the `factory` function with a lambda expression to build a component.
+A factory component declaration is a definition that will provide you a *new instance each time* you ask for this definition (this instance is not retained by Koin container, as it won't inject this instance in other definitions later). Use the `factory` function with a lambda expression to build a component.
 
 ```kotlin
 class Controller()
