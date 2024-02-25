@@ -3,7 +3,7 @@ title: Verifying your Koin configuration
 ---
 
 :::note 
-Koin allows you to verify your configuration modules, avoiding to discover dependency injection issues at runtime.
+Koin allows you to verify your configuration modules, avoiding discovering dependency injection issues at runtime.
 :::
 
 
