@@ -45,7 +45,7 @@ The following keywords are available to build your definition from constructor:
 * `scopedOf` - equivalent of `scoped { }` - scoped definition
 
 :::info
-Be sure to not use any default value in your constructor, as Koin will try to fill every parameter of it.
+Be sure to not use any default value in your constructor, as Koin will try to fill every parameter with it.
 :::
 
 ## DSL Options
