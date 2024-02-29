@@ -36,6 +36,8 @@ slf4j = "1.7.36"
 # Core
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 extras-stately = { module = "co.touchlab:stately-concurrency", version.ref = "stately" }
+extras-stately-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "stately" }
+
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 test-junit = { module = "junit:junit", version.ref = "junit" }
