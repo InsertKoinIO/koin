@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.compose)
 }
 
+val koinComposeVersion: String by project
+version = koinComposeVersion
+
 kotlin {
     jvm {
         withJava()
