@@ -109,7 +109,7 @@ abstract class ScopeActivity(
 }
 ```
 
-We need to use the `AndroidScopeComponent` interface and implement the `scope` property. This will setup the default scope used by your class.
+We need to use the `AndroidScopeComponent` interface and implement the `scope` property. This will setting up the default scope used by your class.
 
 ### Android Scope API
 
@@ -132,7 +132,7 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 }
 ```
 
-We can also setup a retained scope (backed by a ViewModel lifecycle) with the following:
+We can also to setting up a retained scope (backed by a ViewModel lifecycle) with the following:
 
 ```kotlin
 class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
