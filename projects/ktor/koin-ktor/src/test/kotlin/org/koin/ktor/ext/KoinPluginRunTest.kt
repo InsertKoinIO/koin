@@ -84,6 +84,29 @@ class KoinPluginRunTest {
         s.stop()
         assert(counter == 1){ "counter should 1 - instance is created" }
     }
+
+    @Test
+    @Ignore // socket exception on GH
+    fun `should can reload`()  = runBlocking<Unit> {
+        val koinModule = module {
+            single<String> {
+                "Reproduction test"
+            }
+        }
+        val s = embeddedServer(
+            Netty,
+            module = {
+                install(Koin) {
+                    modules(koinModule)
+                }
+            },
+        ).start(false)
+        delay(500)
+
+        // verify for can auto-reload
+        (s.environment as ApplicationEngineEnvironmentReloading).reload()
+        s.stop()
+    }
 }
 
 private fun testMyApplication(test: suspend (jsonClient: HttpClient) -> Unit) = testApplication {

@@ -20,8 +20,10 @@ import io.ktor.server.application.hooks.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.mp.KoinPlatformTools
 
 /**
  * @author Arnaud Giuliani
@@ -34,6 +36,7 @@ import org.koin.dsl.KoinAppDeclaration
  */
 val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
     val koinApplication = setupKoinApplication()
+    KoinPlatformTools.defaultContext().getOrNull()?.let { stopKoin() } // for ktor auto-reload
     startKoin(koinApplication)
     setupMonitoring(koinApplication)
     setupKoinScope(koinApplication)
