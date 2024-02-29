@@ -3,7 +3,7 @@ title: Verifying your Koin configuration
 ---
 
 :::note 
-Koin allows you to verify your configuration modules, avoiding to discover dependency injection issues at runtime.
+Koin allows you to verify your configuration modules, avoiding discovering dependency injection issues at runtime.
 :::
 
 
@@ -252,7 +252,7 @@ fun `test DI modules`(){
 }
 ```
 
-All injected definition that are using a injected `String` parameter, will receive `"_ID_"`:
+All injected definition that are using an injected `String` parameter, will receive `"_ID_"`:
 
 ```kotlin
 module {

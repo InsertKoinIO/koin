@@ -21,7 +21,7 @@ Your declared component must at least extends the `android.arch.lifecycle.ViewMo
 and use the `get()` function to inject dependencies.
 
 :::info
-The `viewModel`/`viewModelOf` keyword helps declaring a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
+The `viewModel`/`viewModelOf` keyword helps to declare a factory instance of ViewModel. This instance will be handled by internal ViewModelFactory and reattach ViewModel instance if needed.
 It also will let inject parameters.
 :::
 
@@ -165,7 +165,7 @@ All `stateViewModel` functions are deprecated. You can just use the regular `vie
 
 ## Navigation Graph ViewModel
 
-You can scope a ViewModel instance to your Navigation graph. Just retrieve with `by koinNavGraphViewModel()`. You just need your graph Id.
+You can scope a ViewModel instance to your Navigation graph. Just retrieve with `by koinNavGraphViewModel()`. You just need your graph id.
 
 ```kotlin
 class NavFragment : Fragment() {

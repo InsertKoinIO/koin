@@ -36,7 +36,7 @@ As you can see above, we can describe a Koin container configuration in 2 ways: 
 - `koinApplication` describe a Koin container instance
 - `startKoin` describe a Koin container instance and register it in Koin `GlobalContext`
 
-By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default we use the one from `GlobalContext`.
+By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default, we use the one from `GlobalContext`.
 
 Check chapters about Custom Koin instance for more information.
 
@@ -70,7 +70,7 @@ To describe your content in a module, you can use the following functions:
 * `bind()` - add type to bind for given bean definition
 * `binds()` - add types array for given bean definition
 * `scope { // scope group }` - define a logical group for `scoped` definition 
-* `scoped { //definition }`- provide a bean definition that will exists only in a scope
+* `scoped { //definition }`- provide a bean definition that will exist only in a scope
 
 Note: the `named()` function allow you to give a qualifier either by a string, an enum or a type. It is used to name your definitions.
 

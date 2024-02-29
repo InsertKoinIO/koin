@@ -2,7 +2,7 @@
 title: Constructor DSL
 ---
 
-Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to to have type your definition within a lambda expression.
+Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to have type your definition within a lambda expression.
 
 For a given class `ClassA` with following dependencies:
 
@@ -45,7 +45,7 @@ The following keywords are available to build your definition from constructor:
 * `scopedOf` - equivalent of `scoped { }` - scoped definition
 
 :::info
-Be sure to not use any default value in your constructor, as Koin will try to fill every parameter of it.
+Be sure to not use any default value in your constructor, as Koin will try to fill every parameter with it.
 :::
 
 ## DSL Options
@@ -71,7 +71,7 @@ Usual options and DSL keywords are available in this lambda:
 * `binds(listOf(...))` - add types list for given bean definition
 * `createdAtStart()` - create single instance at Koin start
 
-You can also use `bind` or `binds` operator, without any need of lambda:
+You can also to use `bind` or `binds` operator, without any need of lambda:
 
 ```kotlin
 module {
@@ -81,7 +81,7 @@ module {
 
 ## Injected Parameters
 
-With such kind of declaration, you can still use injected parameters. Koin will look in injected parameters and current dependencies to try inject your constructor.
+With such kind of declaration, you can still use injected parameters. Koin will look in injected parameters and current dependencies to try to inject your constructor.
 
 Like following:
 
