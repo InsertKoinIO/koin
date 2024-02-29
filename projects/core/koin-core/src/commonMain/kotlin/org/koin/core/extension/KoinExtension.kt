@@ -25,9 +25,9 @@ import org.koin.core.Koin
 interface KoinExtension {
 
     /**
-     * Current Koin instance
+     * register from Koin instance
      */
-    var koin: Koin
+    fun onRegister(koin : Koin)
 
     /**
      * Called when closing Koin
