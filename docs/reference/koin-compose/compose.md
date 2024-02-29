@@ -40,17 +40,19 @@ Difference between `KoinAndroidContext` and `KoinContext`:
 
 ### Compose Preview with Koin
 
-The `KoinApplication` function is also interesting to start dedicated context for preview. This can be also used to help with Compose preview:
+If the composables you want to preview depend on definitions provided by Koin, you can use the `KoinPreviewApplication'.  
+This function allows you to launch a dedicated Koin context for each of your composable previews:
 
 ```kotlin
 @Composable
 @Preview
-fun App() {
-    KoinApplication(application = {
-        // your preview config here
-        modules(previewModule)
+fun MyComposablePreview() {
+    KoinPreviewApplication(modules = {
+        // Your definitions which the composable you want to preview here depend on here
+        listOf(previewModule)
     }) {
-        // Compose to preview with Koin
+        // Composable to preview with Koin here
+        MyComposable()
     }
 }
 ```
