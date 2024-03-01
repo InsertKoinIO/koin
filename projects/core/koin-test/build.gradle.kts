@@ -34,7 +34,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
-            implementation(libs.kotlin.test)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
