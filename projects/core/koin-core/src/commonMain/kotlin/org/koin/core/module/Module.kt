@@ -239,7 +239,7 @@ fun flatten(modules: List<Module>): Set<Module> {
     val flatten = HashSet<Module>()
     val stack = ArrayDeque<Module>(modules)
 
-    while (queue.isNotEmpty()) {
+    while (stack.isNotEmpty()) {
         val current = stack.removeLast()
         flatten.add(current)
         current.includedModules.forEach {
