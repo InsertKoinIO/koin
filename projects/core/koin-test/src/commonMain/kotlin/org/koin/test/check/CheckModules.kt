@@ -35,6 +35,8 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import org.koin.test.parameter.MockParameter
 
+//TODO TO BE DEPRECATED in 3.6
+
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
@@ -152,6 +154,7 @@ private fun Koin.checkDefinition(
     ]?.invoke(
         definition.qualifier,
     ) ?: MockParameter(scope, allParameters.defaultValues)
+
     logger.info("[Check] definition: $definition")
     scope.get<Any>(definition.primaryType, definition.qualifier) { parameters }
 

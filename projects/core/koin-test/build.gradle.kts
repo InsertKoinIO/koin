@@ -35,6 +35,9 @@ kotlin {
         commonMain.dependencies {
             api(project(":core:koin-core"))
         }
+        jvmMain.dependencies {
+            implementation(kotlin("reflect"))
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

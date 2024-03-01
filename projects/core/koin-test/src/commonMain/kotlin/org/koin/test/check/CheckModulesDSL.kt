@@ -24,6 +24,8 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import kotlin.reflect.KClass
 
+//TODO TO BE DEPRECATED in 3.6
+
 data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*>)
 
 class ParametersBinding(val koin: Koin) {
