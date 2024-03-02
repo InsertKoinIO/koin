@@ -1,7 +1,6 @@
 package org.koin.benchmark
 
 import org.koin.benchmark.PerfRunner.koinScenario
-import org.koin.core.context.startKoin
 import org.koin.dsl.koinApplication
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit

@@ -1,5 +1,5 @@
-Benchmark                         Mode  Cnt   Score    Error  Units
-BenchmarkClass.emptyStart         avgt   10  ≈ 10⁻³           ms/op
-BenchmarkClass.start400           avgt   10   0,272 ±  0,045  ms/op
-BenchmarkClass.start400AndInject  avgt   10   0,265 ±  0,022  ms/op
-BenchmarkClass.flatten            avgt   10   1.190 ±  0.024  ms/op
+Benchmark                         Mode  Cnt    Score    Error  Units
+BenchmarkClass.emptyStart         avgt   10   ≈ 10⁻³           ms/op
+BenchmarkClass.flatten            avgt   10  138.186 ± 12.825  ms/op
+BenchmarkClass.start400           avgt   10    0.511 ±  0.341  ms/op
+BenchmarkClass.start400AndInject  avgt   10    0.373 ±  0.100  ms/op
