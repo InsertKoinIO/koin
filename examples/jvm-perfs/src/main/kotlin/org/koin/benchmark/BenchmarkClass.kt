@@ -38,4 +38,9 @@ open class BenchmarkClass {
     fun flatten() {
         org.koin.core.module.flatten(nestedModules)
     }
+
+    @Benchmark
+    fun newFlatten() {
+        newFlatten(nestedModules)
+    }
 }
