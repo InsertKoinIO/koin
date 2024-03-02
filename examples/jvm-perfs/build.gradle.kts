@@ -5,7 +5,7 @@ plugins {
     kotlin("kapt")
 }
 
-val jvmTarget = "17"
+val jvmTarget = "11"
 
 tasks.getByName<JavaCompile>("compileJava") {
     targetCompatibility = jvmTarget
