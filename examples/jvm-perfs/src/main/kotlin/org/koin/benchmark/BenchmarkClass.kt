@@ -1,6 +1,7 @@
 package org.koin.benchmark
 
 import org.koin.benchmark.PerfRunner.koinScenario
+import org.koin.core.context.startKoin
 import org.koin.dsl.koinApplication
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
@@ -32,5 +33,10 @@ open class BenchmarkClass {
             modules(perfModule400())
         }.koin
         koinScenario(koin)
+    }
+
+    @Benchmark
+    fun flatten() {
+        org.koin.core.module.flatten(nestedModules)
     }
 }
