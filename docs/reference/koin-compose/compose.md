@@ -32,10 +32,14 @@ fun App() {
 }
 ```
 
-:::info
+:::note
 Difference between `KoinAndroidContext` and `KoinContext`:
 - `KoinAndroidContext` is looking into current Android app context for Koin instance
 - `KoinContext` is looking into current GlobalContext for Koin instances
+:::
+
+:::info
+If you get some `ClosedScopeException` from a Composable, either use `KoinContext` on your Composable or ensure to have proper Koin start configuration [with Android context](/docs/reference/koin-android/start.md#from-your-application-class)
 :::
 
 ### Compose Preview with Koin
