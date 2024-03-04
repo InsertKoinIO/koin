@@ -2,7 +2,7 @@
 title: Start Koin on Android
 ---
 
-The `koin-android` project is dedicated to provide Koin powers to Android world. See the [Android setup](../../setup/koin#android) section for more details.
+The `koin-android` project is dedicated to provide Koin powers to Android world. See the [Android setup](/docs/setup/koin#android) section for more details.
 
 ## From your Application class
 

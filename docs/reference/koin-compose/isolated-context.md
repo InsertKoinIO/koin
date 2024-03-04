@@ -2,7 +2,7 @@
 title: Isolated Context with Compose
 ---
 
-With a Compose application, you can work the same way with an [isolated context](../koin-core/context-isolation.md) to deal with SDK or white label application, in order to not mix your Koin definitions with an end user's one. 
+With a Compose application, you can work the same way with an [isolated context](/docs/reference/koin-core/context-isolation.md) to deal with SDK or white label application, in order to not mix your Koin definitions with an end user's one. 
 
 ## Define isolated context
 
