@@ -39,6 +39,17 @@ fun <T : ViewModel> resolveViewModel(
     return resolveViewModel(vmClass, viewModelStore, key, extras, qualifier, scope.getKoin(), parameters)
 }
 
+/**
+ * Resolve a ViewModel instance
+ *
+ * @param vmClass
+ * @param viewModelStore
+ * @param key
+ * @param extras - @see CreationExtras
+ * @param qualifier
+ * @param koin
+ * @param parameters - for instance building injection
+ */
 @KoinInternalApi
 fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
@@ -54,6 +65,7 @@ fun <T : ViewModel> resolveViewModel(
     val provider = ViewModelProvider(viewModelStore, factory, extras)
     val vmKey = getViewModelKey(qualifier, key)
 
+    //To help track Keys
 //    koin.logger.debug("[vm_key] - provider:$provider - class:$modelClass = $vmKey (q:'${qualifier?.value}', k:'$key')")
     return when {
         vmKey != null -> provider[vmKey, modelClass]
