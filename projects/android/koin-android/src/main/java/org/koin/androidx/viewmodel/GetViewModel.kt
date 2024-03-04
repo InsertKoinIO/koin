@@ -38,6 +38,7 @@ fun <T : ViewModel> resolveViewModel(
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
     val vmKey = getViewModelKey(qualifier, scope, key)
+    scope.logger.debug("[vm_key] - $modelClass = $vmKey")
     return when {
         vmKey != null -> provider[vmKey, modelClass]
         else -> provider[modelClass]
