@@ -1,5 +1,5 @@
 ---
-title: Kotlin Multiplatform Mobile
+title: Kotlin Multiplatform - Mobile Apps
 ---
 
 > This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
@@ -8,7 +8,7 @@ title: Kotlin Multiplatform Mobile
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kmm)
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kmp)
 :::
 
 ## Application Overview
