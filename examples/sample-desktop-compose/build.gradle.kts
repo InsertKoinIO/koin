@@ -7,11 +7,12 @@ plugins {
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
 }
 
-val koin_version : String by project
+val koin_compose_version : String by project
 
 dependencies {
     // Note, if you develop a library, you should use compose.desktop.common.
@@ -19,7 +20,7 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
-    implementation("io.insert-koin:koin-compose:$koin_version")
+    implementation("io.insert-koin:koin-compose:$koin_compose_version")
 }
 
 compose.desktop {

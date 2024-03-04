@@ -174,7 +174,7 @@ If you ViewModel can't get access to a dependency, check in which scope it has b
 
 
 :::note
-If you _really_ need to leak a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel.
+If you _really_ need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel.
 :::
 
 `ScopeViewModel` is a new class to help work on ViewModel scope. This handle ViewModel's scope creation, and provide `scope` property to allow inject with `by scope.inject()`:
