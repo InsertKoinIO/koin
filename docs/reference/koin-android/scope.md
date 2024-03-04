@@ -216,6 +216,24 @@ class MyActivity : AppCompatActivity() {
 
 Once your ViewModel is created, all associated dependencies from within this scope can be created and injected.
 
+To implement manually your ViewModel scope without `ScopeViewModel` class proceed as follow:
+
+```kotlin
+class MyScopeViewModel : ViewModel(), KoinScopeComponent {
+
+    override val scope: Scope = createScope(this)
+
+    // inject your dependency
+    val session by scope.inject<Session>()
+
+    // clear scope
+    override fun onCleared() {
+        super.onCleared()
+        scope.close()
+    }
+}
+```
+
 ## Scope Links
 
 Scope links allow to share instances between components with custom scopes.
