@@ -12,6 +12,7 @@ import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.dsl.koinApplication
 
 @KoinInternalApi
 class GetViewModelTest {
@@ -19,12 +20,12 @@ class GetViewModelTest {
     private val viewModelStore: ViewModelStore = mockk(relaxed = true)
     private val extras: CreationExtras = mockk()
     private val qualifier: Qualifier = mockk()
-    private val scope: Scope = mockk()
+    private val koin = koinApplication {  }.koin
+    private val scope: Scope = koin.scopeRegistry.rootScope
 
     @Test
     fun `should return a ViewModel with a default Android key`() {
         val classToTest = ViewModel::class
-        every { scope.isRoot } returns true
 
         val firstViewModel = resolveViewModel(
             classToTest,
@@ -47,10 +48,7 @@ class GetViewModelTest {
         val classToTest = ViewModel::class
         val qualifierName = "qualifier"
         val key = "key"
-        val scopeId = "scopeId"
 
-        every { scope.isRoot } returns false
-        every { scope.id } returns scopeId
         every { qualifier.value } returns qualifierName
 
         val viewModel = resolveViewModel(
@@ -63,40 +61,16 @@ class GetViewModelTest {
             null
         )
 
-        val koinVmKey = "$qualifierName$key$scopeId"
+        val koinVmKey = "${qualifierName}_$key"
 
         assertNotNull(viewModel)
         verify { viewModelStore[koinVmKey] }
     }
 
     @Test
-    fun `should return a ViewModel considering only a non root scope identifier`() {
-        val classToTest = ViewModel::class
-        val scopeId = "scopeId"
-
-        every { scope.isRoot } returns false
-        every { scope.id } returns scopeId
-
-        val viewModel = resolveViewModel(
-            classToTest,
-            viewModelStore,
-            null,
-            extras,
-            null,
-            scope,
-            null
-        )
-
-        assertNotNull(viewModel)
-        verify { viewModelStore[scopeId] }
-    }
-
-    @Test
     fun `should return a ViewModel considering a key and a root scope identifier`() {
         val classToTest = ViewModel::class
         val key = "key"
-
-        every { scope.isRoot } returns true
 
         val viewModel = resolveViewModel(
             classToTest,
@@ -117,7 +91,6 @@ class GetViewModelTest {
         val classToTest = ViewModel::class
         val qualifierValue = "qualifier"
 
-        every { scope.isRoot } returns true
         every { qualifier.value } returns qualifierValue
 
         val viewModel = resolveViewModel(

@@ -60,7 +60,7 @@ val androidModule = module {
 on it and can't totally drop it via garbage collection.
 :::
 
-## Scope for Android Components (3.2.1 update)
+## Scope for Android Components (since 3.2.1)
 
 ### Declare an Android Scope
 
@@ -163,6 +163,76 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 :::note
 If you try to access Scope from `onDestroy()` function, scope will be already closed.
 :::
+
+### ViewModel Scope (since 3.5.4)
+
+ViewModel is only created against root scope to avoid any leaking (leaking Activity or Fragment ...). This guard for the visibility problem, where ViewModel could have access to incompatible scopes.
+
+:::note
+If you ViewModel can't get access to a dependency, check in which scope it has been declared.
+:::
+
+
+:::note
+If you _really_ need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel.
+:::
+
+`ScopeViewModel` is a new class to help work on ViewModel scope. This handle ViewModel's scope creation, and provide `scope` property to allow inject with `by scope.inject()`:
+
+```kotlin
+module {
+    viewModelOf(::MyScopeViewModel)
+    scope<MyScopeViewModel> {
+        scopedOf(::Session)
+    }    
+}
+
+class MyScopeViewModel : ScopeViewModel() {
+
+    // on onCleared, scope is closed
+    
+    // injected from current MyScopeViewModel's scope
+    val session by scope.inject<Session>()
+
+}
+```
+
+By using `ScopeViewModel` you can also overrode `onCloseScope()` function, to run code before scope is being closed.
+
+:::note
+All instances inside a ViewModel scope have the same visibility and will survive for lifetime of ViewModel instance, until ViewModel's onCleared function is called
+:::
+
+For example, Once an Activity or fragment has created a ViewModel, the associated scope is created:
+
+```kotlin
+class MyActivity : AppCompatActivity() {
+
+    // Create ViewModel and its scope
+    val myViewModel by viewModel<MyScopeViewModel>()
+
+}
+```
+
+Once your ViewModel is created, all associated dependencies from within this scope can be created and injected.
+
+To implement manually your ViewModel scope without `ScopeViewModel` class proceed as follow:
+
+```kotlin
+class MyScopeViewModel : ViewModel(), KoinScopeComponent {
+
+    override val scope: Scope = createScope(this)
+
+    // inject your dependency
+    val session by scope.inject<Session>()
+
+    // clear scope
+    override fun onCleared() {
+        super.onCleared()
+        scope.close()
+    }
+}
+```
 
 ## Scope Links
 

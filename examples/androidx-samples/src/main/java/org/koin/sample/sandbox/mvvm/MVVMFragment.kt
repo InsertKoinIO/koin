@@ -11,13 +11,10 @@ import org.koin.androidx.scope.requireScopeActivity
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.getActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.sample.sandbox.R
 import org.koin.sample.sandbox.components.ID
-import org.koin.sample.sandbox.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.sandbox.components.mvvm.SavedStateViewModel
 import org.koin.sample.sandbox.components.mvvm.SimpleViewModel
 import org.koin.sample.sandbox.components.scope.Session
@@ -27,14 +24,8 @@ class MVVMFragment(private val session: Session) : Fragment(R.layout.mvvm_fragme
     override val scope: Scope by fragmentScope()
 
     val simpleViewModel: SimpleViewModel by viewModel { parametersOf(ID) }
-
-    // Generic KClass Access
-    val scopeVm: ExtSimpleViewModel by viewModelForClass(ExtSimpleViewModel::class)
-    val extScopeVm: ExtSimpleViewModel by viewModel(named("ext"))
-
     val shared: SimpleViewModel by activityViewModel { parametersOf(ID) }
 
-    val sharedSaved: SavedStateViewModel by activityViewModel { parametersOf(ID) }
     val saved by viewModel<SavedStateViewModel> { parametersOf(ID) }
     val saved2 by viewModel<SavedStateViewModel> { parametersOf(ID) }
 
@@ -48,13 +39,8 @@ class MVVMFragment(private val session: Session) : Fragment(R.layout.mvvm_fragme
         checkNotNull(session)
         assert(shared != simpleViewModel)
 
-        // TODO Handle shared isntance - out of Scope
-//        assert((requireActivity() as MVVMActivity).simpleViewModel == shared)
-//        assert((requireActivity() as MVVMActivity).savedVm == sharedSaved)
-
         assert((requireActivity() as MVVMActivity).savedVm != saved)
         assert((requireActivity() as MVVMActivity).savedVm != saved2)
-        assert(scopeVm.session.id == extScopeVm.session.id)
 
 
         val shared2 = getActivityViewModel<SimpleViewModel> { parametersOf(ID) }
