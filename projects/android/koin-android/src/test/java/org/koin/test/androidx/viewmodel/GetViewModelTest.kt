@@ -12,6 +12,7 @@ import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.dsl.koinApplication
 
 @KoinInternalApi
 class GetViewModelTest {
@@ -19,7 +20,8 @@ class GetViewModelTest {
     private val viewModelStore: ViewModelStore = mockk(relaxed = true)
     private val extras: CreationExtras = mockk()
     private val qualifier: Qualifier = mockk()
-    private val scope: Scope = mockk()
+    private val koin = koinApplication {  }.koin
+    private val scope: Scope = koin.scopeRegistry.rootScope
 
     @Test
     fun `should return a ViewModel with a default Android key`() {
