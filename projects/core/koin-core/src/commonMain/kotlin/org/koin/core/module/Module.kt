@@ -235,16 +235,25 @@ operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(mod
  * Run through the module list to flatten all modules & submodules
  */
 @OptIn(KoinInternalApi::class)
-fun flatten(modules: List<Module>): Set<Module> {    
+fun flatten(modules: List<Module>): Set<Module> {
+    // This is essentially a DFS traversal of the module graph,
+    // but we're using a stack instead of recursion to avoid stack overflows and performance overhead.
+
     val flatten = HashSet<Module>()
-    val stack = ArrayDeque<Module>(modules)
+    val stack = ArrayDeque(modules)
 
     while (stack.isNotEmpty()) {
         val current = stack.removeLast()
-        flatten.add(current)
-        current.includedModules.forEach {
-            if (it !in flatten) {
-                stack.addLast(it)
+
+        // If the module is already in the set, that means we've already visited it, so we can skip it.
+        if (!flatten.add(current)) {
+            continue
+        }
+
+        // Add all the included modules to the stack if they haven't been visited yet.
+        for (module in current.includedModules) {
+            if (module !in flatten) {
+                stack += module
             }
         }
     }
