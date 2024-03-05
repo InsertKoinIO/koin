@@ -7,7 +7,7 @@ plugins {
 
 val androidCompileSDK : String by project
 val androidMinSDK : String by project
-val composeCompiler : String by project
+val jetpackComposeCompiler : String by project
 
 android {
     compileSdk = androidCompileSDK.toInt()
@@ -19,7 +19,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = composeCompiler
+        kotlinCompilerExtensionVersion = jetpackComposeCompiler
     }
 }
 
