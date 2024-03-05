@@ -168,13 +168,12 @@ If you try to access Scope from `onDestroy()` function, scope will be already cl
 
 ViewModel is only created against root scope to avoid any leaking (leaking Activity or Fragment ...). This guard for the visibility problem, where ViewModel could have access to incompatible scopes.
 
-:::note
-If you ViewModel can't get access to a dependency, check in which scope it has been declared.
+:::warn
+ViewModel can't access to Activity or Fragment scope. Why? Because ViewModel is lasting long than Activity and Fragment, and then it would leak dependencies outside of proper scopes.
 :::
 
-
 :::note
-If you _really_ need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel.
+If you _really_ need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel: `viewModel { p ->  }`
 :::
 
 `ScopeViewModel` is a new class to help work on ViewModel scope. This handle ViewModel's scope creation, and provide `scope` property to allow inject with `by scope.inject()`:

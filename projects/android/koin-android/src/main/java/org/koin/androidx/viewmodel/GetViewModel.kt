@@ -26,7 +26,7 @@ import kotlin.reflect.KClass
  * @param parameters - for instance building injection
  */
 @KoinInternalApi
-@Deprecated("scope is not used for ViewModel creation")
+@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
 fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
     viewModelStore: ViewModelStore,

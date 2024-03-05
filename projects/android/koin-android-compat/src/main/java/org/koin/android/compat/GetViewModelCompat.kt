@@ -27,6 +27,7 @@ import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
+@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
 @KoinInternalApi
 fun <T : ViewModel> resolveViewModelCompat(
     vmClass: Class<T>,
