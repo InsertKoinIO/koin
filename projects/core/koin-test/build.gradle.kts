@@ -39,7 +39,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
-            implementation(libs.kotlin.test)
+        }
+        jvmMain.dependencies {
+            implementation(kotlin("reflect"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -11,19 +11,19 @@ dokka = "1.9.10"
 # Android
 agp = "7.4.1"
 android-appcompat = "1.6.1"
-android-activity = "1.7.2"
+android-activity = "1.8.2"
 android-fragment = "1.6.2"
-androidx-viewmodel = "2.6.2"
-androidx-commonJava8 = "2.6.2"
-androidx-workmanager = "2.8.1"
-androidx-navigation = "2.7.5"
+androidx-viewmodel = "2.7.0"
+androidx-commonJava8 = "2.7.0"
+androidx-workmanager = "2.9.0"
+androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.6.0-beta01"
-composeJetpackRuntime = "1.6.0-rc01"
-composeJetpackViewmodel = "2.6.2"
+composeJB = "1.6.0"
+composeJetpackRuntime = "1.6.2"
+composeJetpackViewmodel = "2.7.0"
 # Test
-stately = "2.0.5"
+stately = "2.0.6"
 junit = "4.13.2"
 jupiter = "5.9.3"
 mockito = "4.7.0"
@@ -36,6 +36,8 @@ slf4j = "1.7.36"
 # Core
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 extras-stately = { module = "co.touchlab:stately-concurrency", version.ref = "stately" }
+extras-stately-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "stately" }
+
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 test-junit = { module = "junit:junit", version.ref = "junit" }

@@ -2,7 +2,7 @@
 title: Isolated Context with Compose
 ---
 
-With a Compose application, you can work the same way with an [isolated context](../koin-core/context-isolation.md) to deal with SDK or white label application, in order to not mix your Koin definitions with a end user's one. 
+With a Compose application, you can work the same way with an [isolated context](/docs/reference/koin-core/context-isolation.md) to deal with SDK or white label application, in order to not mix your Koin definitions with an end user's one. 
 
 ## Define isolated context
 
@@ -24,7 +24,7 @@ Adapt the `MyIsolatedKoinContext` class according your need of initialization
 
 ## Setup isolated context with Compose
 
-Now that you have defined an isolated Koin context, we can setup it up to Compose to use it and override all the API. Just use the `KoinIsolatedContext` at the root Compose function. This will propagate your Koin context in all child composables.
+Now that you have defined an isolated Koin context, we can seting up it up to Compose to use it and override all the API. Just use the `KoinIsolatedContext` at the root Compose function. This will propagate your Koin context in all child composables.
 
 ```kotlin
 @Composable

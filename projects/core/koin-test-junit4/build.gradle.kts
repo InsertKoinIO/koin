@@ -7,7 +7,7 @@ plugins {
 dependencies {
     api(project(":core:koin-test"))
     implementation(libs.test.junit)
-    implementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.test)
     testImplementation(libs.test.mockito)
 }
 

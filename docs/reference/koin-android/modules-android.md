@@ -6,8 +6,8 @@ By using Koin, you describe definitions in modules. In this section we will see 
 
 ## Using several modules
 
-Components doesn't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from other
-module. Definitions are lazy, and then are resolved only when a a component is requesting it.
+Components don't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from another
+module. Definitions are lazy, and they are resolved only when a component requests them.
 
 Let's take an example, with linked components in separate modules:
 
@@ -47,7 +47,7 @@ class MainApplication : Application() {
 ```
 Up to you to organise your self per Gradle module, and gather several Koin modules.
 
-> Check [Koin Modules Section](../koin-core/modules) for more details
+> Check [Koin Modules Section](/docs/reference/koin-core/modules) for more details
 
 ## Module Includes (since 3.2)
 
@@ -124,7 +124,7 @@ Notice that all modules will be included only once: `dataModule`, `domainModule`
 
 ## Reducing Startup time with background module loading
 
-You can now declared "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start. This can help avoid to block Android starting process, by passing lazy modules to be loaded in background.
+You can now declare "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start. This can help avoid to block Android starting process, by passing lazy modules to be loaded in background.
 
 - `lazyModule` - declare a Lazy Kotlin version of Koin Module
 - `Module.includes` - allow to include lazy Modules

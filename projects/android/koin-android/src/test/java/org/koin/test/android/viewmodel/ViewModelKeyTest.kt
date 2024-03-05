@@ -13,32 +13,20 @@ class ViewModelKeyTest {
     @OptIn(KoinInternalApi::class)
     @Test
     fun generate_right_key() {
-        val koin = koinApplication().koin
-        val root = koin.scopeRegistry.rootScope
-
         val q = StringQualifier("_qualifier_")
-        val scope = Scope(StringQualifier("_q_"), id = "_id_", _koin = koin, isRoot = false)
         val key = "_KEY_"
 
         assertEquals(
-            null, getViewModelKey(qualifier = null, scope = root, key = null)
+            null, getViewModelKey(qualifier = null,  key = null)
         )
         assertEquals(
-            q.value, getViewModelKey(qualifier = q, scope = root, key = null)
+            q.value, getViewModelKey(qualifier = q, key = null)
         )
         assertEquals(
-            key, getViewModelKey(qualifier = null, scope = root, key = key)
+            q.value + "_$key", getViewModelKey(qualifier = q, key = key)
         )
         assertEquals(
-            scope.id, getViewModelKey(qualifier = null, scope = scope, key = null)
-        )
-
-        assertEquals(
-            key + scope.id, getViewModelKey(qualifier = null, scope = scope, key = key)
-        )
-
-        assertEquals(
-            q.value + key + scope.id, getViewModelKey(qualifier = q, scope = scope, key = key)
+            key, getViewModelKey(qualifier = null, key = key)
         )
     }
 }
