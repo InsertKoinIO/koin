@@ -55,8 +55,8 @@ open class BenchmarkClass {
 
 private val nestedModulesLazy = lazy {
     buildNestedModule(
-        depth = 10,
-        width = 20,
+        depth = 8,
+        width = 10,
     )
 }
 
