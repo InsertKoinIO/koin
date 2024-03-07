@@ -8,13 +8,11 @@ import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
 import org.openjdk.jmh.annotations.Mode
 import org.openjdk.jmh.annotations.OutputTimeUnit
+import org.openjdk.jmh.annotations.Scope
+import org.openjdk.jmh.annotations.Setup
+import org.openjdk.jmh.annotations.State
 import org.openjdk.jmh.annotations.Warmup
 import java.util.concurrent.TimeUnit
-
-private val nestedModules = buildNestedModule(
-    depth = 128,
-    width = 256,
-)
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -45,12 +43,29 @@ open class BenchmarkClass {
     }
 
     @Benchmark
-    fun flattenRecursive() {
-        org.koin.core.module.flatten(nestedModules)
+    fun flattenRecursive(state: BenchmarkState) {
+        org.koin.core.module.flatten(state.nestedModules)
     }
 
     @Benchmark
-    fun flattenIterative() {
-        flattenIterative(nestedModules)
+    fun flattenIterative(state: BenchmarkState) {
+        flattenIterative(state.nestedModules)
+    }
+}
+
+private val nestedModulesLazy = lazy {
+    buildNestedModule(
+        depth = 24,
+        width = 32,
+    )
+}
+
+@State(Scope.Benchmark)
+open class BenchmarkState {
+    val nestedModules get() = nestedModulesLazy.value
+
+    @Setup
+    fun prepare() {
+        nestedModulesLazy.value
     }
 }
