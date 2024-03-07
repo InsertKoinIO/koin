@@ -236,7 +236,7 @@ operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(mod
  */
 @OptIn(KoinInternalApi::class)
 fun flatten(modules: List<Module>): Set<Module> {
-    // This is essentially a DFS traversal of the module graph,
+    // This is actually a DFS traversal of the module graph,
     // but we're using a stack instead of recursion to avoid stack overflows and performance overhead.
 
     val flatten = HashSet<Module>()
