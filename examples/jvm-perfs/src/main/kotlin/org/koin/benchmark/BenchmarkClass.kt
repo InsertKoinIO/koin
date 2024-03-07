@@ -11,16 +11,17 @@ import org.openjdk.jmh.annotations.OutputTimeUnit
 import org.openjdk.jmh.annotations.Warmup
 import java.util.concurrent.TimeUnit
 
+private val nestedModules = buildNestedModule(
+    depth = 128,
+    width = 256,
+)
+
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(value = 2, warmups = 0)
 @Measurement(iterations = 5, time = 2)
 @Warmup(iterations = 1)
 open class BenchmarkClass {
-    private val nestedModules = buildNestedModule(
-        depth = 128,
-        width = 256,
-    )
 
     @Benchmark
     fun emptyStart() {
