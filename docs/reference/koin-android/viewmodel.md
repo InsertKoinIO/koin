@@ -41,6 +41,10 @@ class DetailActivity : AppCompatActivity() {
 }
 ```
 
+:::note
+ViewModel key is calculated against Key and/or Qualifier
+:::
+
 ## Activity Shared ViewModel
 
 One ViewModel instance can be shared between Fragments and their host Activity.
@@ -174,6 +178,10 @@ class NavFragment : Fragment() {
 
 }
 ```
+
+## ViewModel Scope API
+
+see all API to be used for ViewModel and Scopes: [ViewModel Scope](/docs/reference/koin-android/scope.md#viewmodel-scope-since-354)
 
 ## ViewModel Generic API
 

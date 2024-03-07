@@ -89,7 +89,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun closeAllScopes() {
-        _scopes.values.forEach { scope ->
+        _scopes.values.toList().forEach { scope ->
             scope.close()
         }
     }

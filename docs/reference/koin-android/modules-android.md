@@ -47,7 +47,7 @@ class MainApplication : Application() {
 ```
 Up to you to organise your self per Gradle module, and gather several Koin modules.
 
-> Check [Koin Modules Section](../koin-core/modules) for more details
+> Check [Koin Modules Section](/docs/reference/koin-core/modules) for more details
 
 ## Module Includes (since 3.2)
 

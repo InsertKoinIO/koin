@@ -1,5 +1,6 @@
 package org.koin.mp
 
+import co.touchlab.stately.collections.ConcurrentMutableMap
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import co.touchlab.stately.concurrency.ThreadLocalRef
@@ -28,7 +29,7 @@ actual object KoinPlatformTools {
 
     actual fun <R> synchronized(lock: Lockable, block: () -> R): R = lock.lock.withLock { block() }
 
-    actual fun <K, V> safeHashMap(): MutableMap<K, V> = HashMap()
+    actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentMutableMap()
 }
 
 actual open class Lockable {

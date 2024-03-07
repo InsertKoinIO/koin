@@ -1,8 +1,12 @@
+import org.koin.core.logger.Level
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.Simple
+import org.koin.test.check.checkModules
 import org.koin.test.verify.CircularInjectionException
 import org.koin.test.verify.MissingKoinDefinitionException
 import org.koin.test.verify.Verify
@@ -161,5 +165,23 @@ class VerifyModulesTest {
         } catch (e: CircularInjectionException) {
             System.err.println("$e")
         }
+    }
+
+    @Test
+    fun `verify dependency and param in one class - 3`() {
+        val modules = module {
+            factory { p -> Simple.MyComplexBool(get(), p.get()) }
+        }
+
+        modules.verify(extraTypes = listOf(Simple.ComponentA::class, Boolean::class))
+    }
+
+    @Test
+    fun `verify function builder`() {
+        val modules = module {
+            factoryOf(Simple::buildB)
+        }
+
+        modules.verify(extraTypes = listOf(Simple.ComponentA::class))
     }
 }
