@@ -37,7 +37,7 @@ class ExtensionManager(internal val _koin: Koin) {
 
     fun <T : KoinExtension> registerExtension(id: String, extension: T) {
         extensions[id] = extension
-        extension.koin = _koin
+        extension.onRegister(_koin)
     }
 
     fun close() {

@@ -2,11 +2,11 @@
 title: Start Koin on Android
 ---
 
-The `koin-android` project is dedicated to provide Koin powers to Android world. See the [Android setup](../../setup/v3.2#android) section for more details.
+The `koin-android` project is dedicated to provide Koin powers to Android world. See the [Android setup](/docs/setup/koin#android) section for more details.
 
 ## From your Application class
 
-From your `Application` class you can use the `startKoin` function and inject the Android context with `androidContext` as follow:
+From your `Application` class you can use the `startKoin` function and inject the Android context with `androidContext` as follows:
 
 ```kotlin
 class MainApplication : Application() {
@@ -22,13 +22,12 @@ class MainApplication : Application() {
             // Load modules
             modules(myAppModules)
         }
-        
     }
 }
 ```
 
 :::info
-You can also start Koin from anywhere if you don't ant to start it from your Application class.
+You can also start Koin from anywhere if you don't want to start it from your Application class.
 :::
 
 If you need to start Koin from another Android class, you can use the `startKoin` function and provide your Android `Context`
@@ -48,10 +47,10 @@ From your Koin configuration (in `startKoin { }` block code), you can also confi
 
 ### Koin Logging for Android
 
-Within your `KoinApplication` instance, we have an extension `androidLogger` which use the `AndroidLogger()`#
+Within your `KoinApplication` instance, we have an extension `androidLogger` which uses the `AndroidLogger()` class.
 This logger is an Android implementation of the Koin logger.
 
-Up to you to change this logger if it doesn't suits to your needs.
+Up to you to change this logger if it doesn't suit to your needs.
 
 ```kotlin
 startKoin {
@@ -69,8 +68,7 @@ You can use Koin properties in the `assets/koin.properties` file, to store keys/
 startKoin {
     // ...
     // use properties from assets/koin.properties
-    androidFileProperties()
-    
+    androidFileProperties()   
 }
 ```
 

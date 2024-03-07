@@ -68,6 +68,7 @@ fun <T : ViewModel> Fragment.viewModelForClass(
 }
 
 @OptIn(KoinInternalApi::class)
+@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
 @MainThread
 fun <T : ViewModel> getLazyViewModelForClass(
     clazz: KClass<T>,

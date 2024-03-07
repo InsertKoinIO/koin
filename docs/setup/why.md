@@ -2,7 +2,7 @@
 title: Why Koin?
 ---
 
-Koin provides a easy and efficient way to incorporate dependency injection into any Kotlin application(Multiplatform, Android, backend ...)
+Koin provides an easy and efficient way to incorporate dependency injection into any Kotlin application(Multiplatform, Android, backend ...)
 
 The goals of Koin are:
 - Simplify your Dependency Injection infrastructure with smart API

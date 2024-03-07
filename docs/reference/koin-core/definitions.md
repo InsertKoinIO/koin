@@ -41,7 +41,7 @@ The result type of your lambda is the main type of your component
 
 ## Defining a factory
 
-A factory component declaration is a definition that will gives you a *new instance each time* you ask for this definition (this instance is not retained by Koin container, as it won't inject this instance in other definitions later). Use the `factory` function with a lambda expression to build a component.
+A factory component declaration is a definition that will provide you a *new instance each time* you ask for this definition (this instance is not retained by Koin container, as it won't inject this instance in other definitions later). Use the `factory` function with a lambda expression to build a component.
 
 ```kotlin
 class Controller()
@@ -84,7 +84,7 @@ val myModule = module {
 
 ## Definition: binding an interface
 
-A `single` or a `factory` definition use the type from the their given lambda definition: i.e  `single { T }`
+A `single` or a `factory` definition use the type from their given lambda definition i.e:  `single { T }`
 The matched type of the definition is the only matched type from this expression.
 
 Let's take an example with a class and implemented interface:
@@ -103,7 +103,7 @@ class ServiceImp() : Service {
 }
 ```
 
-In a Koin module we can use the `as` cast Kotlin operator as follow:
+In a Koin module we can use the `as` cast Kotlin operator as follows:
 
 ```kotlin
 val myModule = module {
@@ -184,7 +184,7 @@ val service : Service by inject(qualifier = named("default"))
 
 `get()` and `by inject()` functions let you specify a definition name if needed. This name is a `qualifier` produced by the `named()` function.
 
-By default Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
+By default, Koin will bind a definition by its type or by its name, if the type is already bound to a definition.
 
 ```kotlin
 val myModule = module {

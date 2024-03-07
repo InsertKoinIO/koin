@@ -57,7 +57,7 @@ val myModule = module {
 
 ## Resolving injected parameters in order
 
-Instead of using `get()` to resolve a parameter, if you have several parameters of the same type you can use the index as follow `get(index)` (also same as `[ ]` operator):
+Instead of using `get()` to resolve a parameter, if you have several parameters of the same type you can use the index as follows `get(index)` (also same as `[ ]` operator):
 
 ```kotlin
 class Presenter(val view : View)
@@ -85,7 +85,7 @@ val myModule = module {
 
 In addition to `parametersOf`, the following API are accessible:
 
-- `parameterArrayOf`: to use an array of value, and data will be use by its index
+- `parameterArrayOf`: to use an array of value, and data will be uses by its index
 
 ```kotlin
 val params = parameterArrayOf(1,2,3)

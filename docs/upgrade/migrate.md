@@ -10,7 +10,7 @@ The new branch of Koin 3.x is bringing latest features & fixes. It brings Multip
 
 #### Android & AndroidX Module
 
-The following modules are available for Android. Be sure to use the `koin-androidx` modules, as their are based on the latest AndroidX library support:
+The following modules are available for Android. Be sure to use the `koin-androidx` modules, as there are based on the latest AndroidX library support:
 
 ```groovy
 // Koin AndroidX Scope features
@@ -33,7 +33,7 @@ The new Koin core is now Multiplatform. You can use it even if your project is n
 
 #### Reimporting for new API
 
-If you seen unresolved Koin API import, you can try to remove/reimport the used API as some packages has been moved in the Koin core module. See new section 
+If you have seen unresolved Koin API import, you can try to remove/reimport the used API as some packages has been moved in the Koin core module. See new section 
 
 #### Kotlin Core & JVM features
 
@@ -57,7 +57,7 @@ Java/JVM Specific API are isolated in `koin-core-jvm` part of Koin core. Here ar
 
 #### Android Modules
 
-In v3, the `koin-android` modules is using AndroidX API, and merge also all Scope/Fragment/ViewModel API. You don't need anymore to specify `koin-androidx-fragment`, `koin-androidx-viewmodel` or `koin-androidx-scope` as their are all in the `koin-android` module:
+In v3, the `koin-android` modules is using AndroidX API, and merge also all Scope/Fragment/ViewModel API. You don't need anymore to specify `koin-androidx-fragment`, `koin-androidx-viewmodel` or `koin-androidx-scope` as there are all in the `koin-android` module:
 
 ```groovy
 // Koin main features for Android (Scope,ViewModel ...)
