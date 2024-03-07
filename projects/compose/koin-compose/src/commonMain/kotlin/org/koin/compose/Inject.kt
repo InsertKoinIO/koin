@@ -16,9 +16,11 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import org.koin.compose.stable.rememberStableParametersDefinition
+import androidx.compose.runtime.rememberUpdatedState
 import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
@@ -37,9 +39,13 @@ inline fun <reified T> koinInject(
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val st = parameters?.let { rememberStableParametersDefinition(parameters) }
+    // This will always refer to the latest parameters
+    val currentParameters by rememberUpdatedState(parameters)
+
     return remember(qualifier, scope) {
-        scope.get(qualifier, st?.parametersDefinition)
+        scope.get(qualifier) {
+            currentParameters?.invoke() ?: emptyParametersHolder()
+        }
     }
 }
 
@@ -51,14 +57,12 @@ inline fun <reified T> koinInject(
  * @author Arnaud Giuliani
  */
 @Composable
-@Deprecated("")
+@Deprecated(
+    message = "Use koinInject() instead",
+    replaceWith = ReplaceWith("koinInject<T>(qualifier, scope, parameters)")
+)
 inline fun <reified T> rememberKoinInject(
     qualifier: Qualifier? = null,
     scope: Scope = rememberCurrentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T {
-    val st = parameters?.let { rememberStableParametersDefinition(parameters) }
-    return remember(qualifier, scope) {
-        scope.get(qualifier, st?.parametersDefinition)
-    }
-}
+): T = koinInject(qualifier, scope, parameters)
