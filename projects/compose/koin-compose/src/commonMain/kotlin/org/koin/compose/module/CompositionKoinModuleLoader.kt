@@ -26,8 +26,8 @@ import org.koin.core.module.Module
 class CompositionKoinModuleLoader(
     val modules: List<Module>,
     val koin: Koin,
-    val unloadOnForgotten : Boolean,
-    val unloadOnAbandoned : Boolean,
+    val unloadOnForgotten: Boolean,
+    val unloadOnAbandoned: Boolean,
 ) : RememberObserver {
 
     init {
@@ -40,13 +40,13 @@ class CompositionKoinModuleLoader(
     }
 
     override fun onForgotten() {
-        if (unloadOnForgotten){
+        if (unloadOnForgotten) {
             unloadModules()
         }
     }
 
     override fun onAbandoned() {
-        if (unloadOnAbandoned){
+        if (unloadOnAbandoned) {
             unloadModules()
         }
     }
