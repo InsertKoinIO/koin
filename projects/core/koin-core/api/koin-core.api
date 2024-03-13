@@ -519,6 +519,7 @@ public final class org/koin/core/scope/Scope {
 	public final fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static synthetic fun get$default (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun getAll (Lkotlin/reflect/KClass;)Ljava/util/List;
+	public final fun getAll (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public final fun getClosed ()Z
 	public final fun getId ()Ljava/lang/String;
 	public final fun getKoin ()Lorg/koin/core/Koin;
