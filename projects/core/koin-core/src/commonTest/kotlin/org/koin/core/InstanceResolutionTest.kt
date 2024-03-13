@@ -1,13 +1,16 @@
 package org.koin.core
 
+import org.koin.ComplexQualifier
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.test.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class InstanceResolutionTest {
 
@@ -46,6 +49,33 @@ class InstanceResolutionTest {
 
         assertEquals(2, instances.size)
         assertTrue(instances.contains(a1) && instances.contains(a2))
+    }
+
+    @Test
+    fun `can resolve all ComponentInterface1 with qualifier predicate`() {
+        val q1 = ComplexQualifier(1, "asd")
+        val q2 = ComplexQualifier(2, "qwe")
+        val q3 = ComplexQualifier(2, "zxc")
+        val koin = koinApplication {
+            modules(
+                module {
+                    single(q1) { Simple.Component1() } bind Simple.ComponentInterface1::class
+                    single(q2) { Simple.Component2() } bind Simple.ComponentInterface1::class
+                    single(q3) { Simple.Component2() } bind Simple.ComponentInterface1::class
+                },
+            )
+        }.koin
+
+        val a1: Simple.Component1 = koin.get(q1)
+        val a2: Simple.Component2 = koin.get(q2)
+        val a3: Simple.Component2 = koin.get(q3)
+
+        val instances = koin.getAll<Simple.ComponentInterface1> {
+            (it as? ComplexQualifier)?.value1 == 2
+        }
+
+        assertEquals(2, instances.size)
+        assertTrue(instances.contains(a2) && instances.contains(a3))
     }
 
     @Test

@@ -162,8 +162,13 @@ class InstanceRegistry(val _koin: Koin) {
         _instances.clear()
     }
 
-    internal fun <T> getAll(clazz: KClass<*>, instanceContext: InstanceContext): List<T> {
+    internal fun <T> getAll(
+        clazz: KClass<*>,
+        instanceContext: InstanceContext,
+        qualifierPredicate: (Qualifier?) -> Boolean = { true },
+    ): List<T> {
         return _instances.values
+            .asSequence()
             .filter { factory ->
                 factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier
             }
@@ -172,8 +177,12 @@ class InstanceRegistry(val _koin: Koin) {
                     clazz,
                 )
             }
+            .filter { factory ->
+                qualifierPredicate(factory.beanDefinition.qualifier)
+            }
             .distinct()
             .map { it.get(instanceContext) as T }
+            .toList()
     }
 
     internal fun unloadModules(modules: Set<Module>) {

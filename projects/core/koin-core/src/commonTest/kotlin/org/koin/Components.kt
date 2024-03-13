@@ -1,5 +1,8 @@
 package org.koin
 
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.QualifierValue
+
 class Simple {
     class ComponentA
     class ComponentB(val a: ComponentA)
@@ -20,6 +23,10 @@ class Simple {
     class MyStringFactory(val s: String)
     class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)
     class AllFactory2(val strings: MyStringFactory, val ints: MyIntFactory)
+}
+
+class ComplexQualifier(val value1: Int, val value2: String) : Qualifier {
+    override val value: QualifierValue = "$value1$value2"
 }
 
 @Suppress("unused")

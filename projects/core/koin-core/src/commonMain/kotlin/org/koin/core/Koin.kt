@@ -169,11 +169,20 @@ class Koin {
     }
 
     /**
-     * Get a all instance for given inferred class (in primary or secondary type)
+     * Get all instances for given inferred class (in primary or secondary type)
      *
      * @return list of instances of type T
      */
     inline fun <reified T> getAll(): List<T> = scopeRegistry.rootScope.getAll()
+
+    /**
+     * Get all instances for given inferred class (in primary or secondary type) matching the qualifier predicate
+     *
+     * @param qualifierPredicate qualifier predicate
+     * @return list of instances of type T
+     */
+    inline fun <reified T> getAll(noinline qualifierPredicate: (Qualifier?) -> Boolean): List<T> =
+        scopeRegistry.rootScope.getAll(qualifierPredicate)
 
     /**
      * Create a Scope instance

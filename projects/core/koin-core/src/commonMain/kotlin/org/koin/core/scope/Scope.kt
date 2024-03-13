@@ -348,21 +348,38 @@ class Scope(
     }
 
     /**
-     * Get a all instance for given inferred class (in primary or secondary type)
+     * Get all instances for given inferred class (in primary or secondary type)
      *
      * @return list of instances of type T
      */
-    inline fun <reified T : Any> getAll(): List<T> = getAll(T::class)
+    inline fun <reified T : Any> getAll(): List<T> = getAll<T> { true }
 
     /**
-     * Get a all instance for given class (in primary or secondary type)
+     * Get all instances for given inferred class (in primary or secondary type) matching the qualifier predicate
+     *
+     * @return list of instances of type T
+     */
+    inline fun <reified T : Any> getAll(noinline qualifierPredicate: (Qualifier?) -> Boolean): List<T> =
+        getAll(T::class, qualifierPredicate)
+
+    /**
+     * Get all instances for given class (in primary or secondary type)
      * @param clazz T
      *
      * @return list of instances of type T
      */
-    fun <T> getAll(clazz: KClass<*>): List<T> {
+    fun <T> getAll(clazz: KClass<*>): List<T> = getAll(clazz) { true }
+
+    /**
+     * Get all instances for given class (in primary or secondary type) matching the qualifier predicate
+     * @param clazz T
+     * @param qualifierPredicate qualifier predicate
+     *
+     * @return list of instances of type T
+     */
+    fun <T> getAll(clazz: KClass<*>, qualifierPredicate: (Qualifier?) -> Boolean): List<T> {
         val context = InstanceContext(_koin.logger, this)
-        return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
+        return _koin.instanceRegistry.getAll<T>(clazz, context, qualifierPredicate) + linkedScopes.flatMap { scope -> scope.getAll(clazz, qualifierPredicate) }
     }
 
     /**
