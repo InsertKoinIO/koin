@@ -4,7 +4,25 @@ public final class org/koin/KoinApplicationExtKt {
 	public static synthetic fun fileProperties$default (Lorg/koin/core/KoinApplication;Ljava/lang/String;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 }
 
-public final class org/koin/core/Koin {
+public abstract interface class org/koin/core/Instances {
+	public abstract fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public abstract fun getAll (Lkotlin/reflect/KClass;)Ljava/util/List;
+	public abstract fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public abstract fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getPropertyOrNull (Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun inject (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
+	public abstract fun injectOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
+}
+
+public final class org/koin/core/Instances$DefaultImpls {
+	public static synthetic fun get$default (Lorg/koin/core/Instances;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun getOrNull$default (Lorg/koin/core/Instances;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun inject$default (Lorg/koin/core/Instances;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
+	public static synthetic fun injectOrNull$default (Lorg/koin/core/Instances;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
+}
+
+public final class org/koin/core/Koin : org/koin/core/Instances {
 	public fun <init> ()V
 	public final fun close ()V
 	public final fun createEagerInstances ()V
@@ -13,21 +31,23 @@ public final class org/koin/core/Koin {
 	public static synthetic fun createScope$default (Lorg/koin/core/Koin;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public final fun deleteProperty (Ljava/lang/String;)V
 	public final fun deleteScope (Ljava/lang/String;)V
-	public final fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static synthetic fun get$default (Lorg/koin/core/Koin;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public fun getAll (Lkotlin/reflect/KClass;)Ljava/util/List;
 	public final fun getExtensionManager ()Lorg/koin/core/extension/ExtensionManager;
 	public final fun getInstanceRegistry ()Lorg/koin/core/registry/InstanceRegistry;
 	public final fun getLogger ()Lorg/koin/core/logger/Logger;
 	public final fun getOrCreateScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun getOrCreateScope$default (Lorg/koin/core/Koin;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
-	public final fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static synthetic fun getOrNull$default (Lorg/koin/core/Koin;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
-	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getPropertyOrNull (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getPropertyRegistry ()Lorg/koin/core/registry/PropertyRegistry;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeOrNull (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeRegistry ()Lorg/koin/core/registry/ScopeRegistry;
+	public fun inject (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
+	public fun injectOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
 	public final fun loadModules (Ljava/util/List;ZZ)V
 	public static synthetic fun loadModules$default (Lorg/koin/core/Koin;Ljava/util/List;ZZILjava/lang/Object;)V
 	public final fun setProperty (Ljava/lang/String;Ljava/lang/Object;)V
@@ -512,27 +532,27 @@ public final class org/koin/core/registry/ScopeRegistry$Companion {
 	public final fun getRootScopeQualifier ()Lorg/koin/core/qualifier/StringQualifier;
 }
 
-public final class org/koin/core/scope/Scope {
+public final class org/koin/core/scope/Scope : org/koin/core/Instances {
 	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;ZLorg/koin/core/Koin;)V
 	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;ZLorg/koin/core/Koin;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun close ()V
-	public final fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static synthetic fun get$default (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun getAll (Lkotlin/reflect/KClass;)Ljava/util/List;
+	public fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public fun getAll (Lkotlin/reflect/KClass;)Ljava/util/List;
 	public final fun getClosed ()Z
 	public final fun getId ()Ljava/lang/String;
 	public final fun getKoin ()Lorg/koin/core/Koin;
 	public final fun getLogger ()Lorg/koin/core/logger/Logger;
-	public final fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static synthetic fun getOrNull$default (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
-	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
-	public final fun getPropertyOrNull (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getPropertyOrNull (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeQualifier ()Lorg/koin/core/qualifier/Qualifier;
 	public final fun get_koin ()Lorg/koin/core/Koin;
 	public final fun get_parameterStackLocal ()Ljava/lang/ThreadLocal;
 	public final fun get_source ()Ljava/lang/Object;
+	public fun inject (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
+	public fun injectOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/LazyThreadSafetyMode;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
 	public final fun isNotClosed ()Z
 	public final fun isRoot ()Z
 	public final fun linkTo ([Lorg/koin/core/scope/Scope;)V

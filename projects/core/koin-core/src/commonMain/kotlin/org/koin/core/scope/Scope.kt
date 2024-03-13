@@ -15,6 +15,7 @@
  */
 package org.koin.core.scope
 
+import org.koin.core.Instances
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
@@ -35,6 +36,11 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
+import org.koin.core.get as extensionGet
+import org.koin.core.getAll as extensionGetAll
+import org.koin.core.getOrNull as extensionGetOrNull
+import org.koin.core.inject as extensionInject
+import org.koin.core.injectOrNull as extensionInjectOrNull
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -45,7 +51,7 @@ class Scope(
     val isRoot: Boolean = false,
     @PublishedApi
     internal val _koin: Koin,
-) : Lockable() {
+) : Lockable(), Instances {
     private val linkedScopes: ArrayList<Scope> = arrayListOf()
 
     @KoinInternalApi
@@ -105,8 +111,7 @@ class Scope(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
-    ): Lazy<T> =
-        lazy(mode) { get<T>(qualifier, parameters) }
+    ): Lazy<T> = extensionInject<T>(qualifier, mode, parameters)
 
     /**
      * Lazy inject a Koin instance if available
@@ -120,8 +125,7 @@ class Scope(
         qualifier: Qualifier? = null,
         mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
         noinline parameters: ParametersDefinition? = null,
-    ): Lazy<T?> =
-        lazy(mode) { getOrNull<T>(qualifier, parameters) }
+    ): Lazy<T?> = extensionInjectOrNull<T>(qualifier, mode, parameters)
 
     /**
      * Get a Koin instance
@@ -132,9 +136,7 @@ class Scope(
     inline fun <reified T : Any> get(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-    ): T {
-        return get(T::class, qualifier, parameters)
-    }
+    ): T = extensionGet(qualifier, parameters)
 
     /**
      * Get Koin Scope "source" instance. Retrive the object instance, that initiated the creation of the scope.
@@ -156,22 +158,12 @@ class Scope(
     inline fun <reified T : Any> getOrNull(
         qualifier: Qualifier? = null,
         noinline parameters: ParametersDefinition? = null,
-    ): T? {
-        return getOrNull(T::class, qualifier, parameters)
-    }
+    ): T? = extensionGetOrNull<T>(qualifier, parameters)
 
-    /**
-     * Get a Koin instance if available
-     * @param qualifier
-     * @param scope
-     * @param parameters
-     *
-     * @return instance of type T or null
-     */
-    fun <T> getOrNull(
+    override fun <T> getOrNull(
         clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?,
     ): T? {
         return try {
             get(clazz, qualifier, parameters)
@@ -184,18 +176,10 @@ class Scope(
         }
     }
 
-    /**
-     * Get a Koin instance
-     * @param clazz
-     * @param qualifier
-     * @param parameters
-     *
-     * @return instance of type T
-     */
-    fun <T> get(
+    override fun <T> get(
         clazz: KClass<*>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null,
+        qualifier: Qualifier?,
+        parameters: ParametersDefinition?,
     ): T {
         return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
@@ -212,6 +196,22 @@ class Scope(
             resolveInstance(qualifier, clazz, parameters)
         }
     }
+
+    override fun <T> injectOrNull(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        mode: LazyThreadSafetyMode,
+        parameters: ParametersDefinition?
+    ): Lazy<T?> =
+        lazy(mode) { getOrNull<T>(clazz, qualifier, parameters) }
+
+    override fun <T> inject(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        mode: LazyThreadSafetyMode,
+        parameters: ParametersDefinition?
+    ): Lazy<T> =
+        lazy(mode) { get<T>(clazz, qualifier, parameters) }
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> resolveInstance(
@@ -352,37 +352,18 @@ class Scope(
      *
      * @return list of instances of type T
      */
-    inline fun <reified T : Any> getAll(): List<T> = getAll(T::class)
+    inline fun <reified T : Any> getAll(): List<T> = extensionGetAll<T>()
 
-    /**
-     * Get a all instance for given class (in primary or secondary type)
-     * @param clazz T
-     *
-     * @return list of instances of type T
-     */
-    fun <T> getAll(clazz: KClass<*>): List<T> {
+    override fun <T> getAll(clazz: KClass<*>): List<T> {
         val context = InstanceContext(_koin.logger, this)
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
-    /**
-     * Retrieve a property
-     * @param key
-     * @param defaultValue
-     */
-    fun <T : Any> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
+    override fun <T : Any> getProperty(key: String, defaultValue: T): T = _koin.getProperty(key, defaultValue)
 
-    /**
-     * Retrieve a property
-     * @param key
-     */
-    fun <T : Any> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
+    override fun <T : Any> getPropertyOrNull(key: String): T? = _koin.getProperty(key)
 
-    /**
-     * Retrieve a property
-     * @param key
-     */
-    fun <T : Any> getProperty(key: String): T = _koin.getProperty(key)
+    override fun <T : Any> getProperty(key: String): T = _koin.getProperty(key)
         ?: throw MissingPropertyException("Property '$key' not found")
 
     /**
