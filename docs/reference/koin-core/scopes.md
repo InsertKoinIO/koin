@@ -12,7 +12,7 @@ When the scope context ends, any objects bound under that scope cannot be inject
 
 ## Scope definition
 
-By default in Koin, we have 3 kind of scopes:
+By default, in Koin, we have 3 kind of scopes:
 
 - `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
 - `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).

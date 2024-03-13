@@ -84,7 +84,7 @@ In case both Koin and workFactory1 provided WorkManagerFactory can instantiate a
 ## A few assumptions
 
 ### Add manifest changes in koin lib itself
-We can make it one step less for application developers if koin-androidx-workmanager's own manifest disables the default work manager. However it can be confusing since if the app developer don't initialize koin's work manager infrastructure, he'll end up having no usable work manager factories.
+We can make it one step less for application developers if koin-androidx-workmanager's own manifest disables the default work manager. However, it can be confusing since if the app developer don't initialize koin's work manager infrastructure, he'll end up having no usable work manager factories.
 
 
 That's something that checkModules could help: if any class in the project implements ListenableWorker we inspect both manifest and code and make sure they make sense?

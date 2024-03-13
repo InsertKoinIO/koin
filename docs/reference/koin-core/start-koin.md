@@ -3,11 +3,11 @@ title: Start Koin
 ---
 
 
-Koin is a DSL, a lightweight container and a pragmatic API. Once you have declared your definitions within Koin modules, your are ready to start the Koin container.
+Koin is a DSL, a lightweight container and a pragmatic API. Once you have declared your definitions within Koin modules, you are ready to start the Koin container.
 
 ### The startKoin function
 
-The `startKoin` function is the main entry point to launch Koin container. It need a *list of Koin modules* to run.
+The `startKoin` function is the main entry point to launch Koin container. It needs a *list of Koin modules* to run.
 Modules are loaded and definitions are ready to be resolved by the Koin container.
 
 .Starting Koin

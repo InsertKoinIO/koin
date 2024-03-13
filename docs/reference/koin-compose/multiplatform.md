@@ -6,7 +6,7 @@ This page describe how you can inject your dependencies for your Jetpack & Jetbr
 
 ## Starting Koin with Compose - KoinApplication or KoinContext
 
-Most of the time, `startKoin` function is used to start Koin in your application. This is done before running any Composable function. You need to setup Compose with your current Koin instance. Use `KoinContext()` to do so:
+Most of the time, `startKoin` function is used to start Koin in your application. This is done before running any Composable function. You need to seting up Compose with your current Koin instance. Use `KoinContext()` to do so:
 
 ```kotlin
 @Composable
@@ -106,7 +106,7 @@ For this use `unloadOnForgotten` or `unloadOnAbandoned` argument for `rememberKo
 
 ## Creating Koin Scope with Composable
 
-The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow up current to close scope once Composable is ended.
+The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow-up current to close scope once Composable is ended.
 
 :::info
 this API is still unstable for now

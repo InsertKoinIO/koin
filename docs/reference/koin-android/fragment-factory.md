@@ -8,7 +8,7 @@ https://developer.android.com/jetpack/androidx/releases/fragment
 
 ## Fragment Factory
 
-Since `2.1.0-alpha-3` version, has been introduce the `FragmentFactory`, a class dedicated to create instance of `Fragment` class:
+Since `2.1.0-alpha-3` version, has been introduced the `FragmentFactory`, a class dedicated to create instance of `Fragment` class:
 
 https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentFactory
 
@@ -16,7 +16,7 @@ Koin can bring a `KoinFragmentFactory` to help you inject your `Fragment` instan
 
 ## Setup Fragment Factory
 
-At start, in your KoinApplication declaration, use the `fragmentFactory()` keyword to setup a default `KoinFragmentFactory` instance:
+At start, in your KoinApplication declaration, use the `fragmentFactory()` keyword to setting up a default `KoinFragmentFactory` instance:
 
 ```kotlin
  startKoin {
@@ -49,7 +49,7 @@ val appModule = module {
 
 ## Get your Fragment
 
-From your host `Activity` class, setup your fragment factory with `setupKoinFragmentFactory()`:
+From your host `Activity` class, setting up your fragment factory with `setupKoinFragmentFactory()`:
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
@@ -95,7 +95,7 @@ val appModule = module {
 }
 ```
 
-and setup your Koin Fragment Factory with your scope: `setupKoinFragmentFactory(lifecycleScope)`
+and setting up your Koin Fragment Factory with your scope: `setupKoinFragmentFactory(lifecycleScope)`
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
