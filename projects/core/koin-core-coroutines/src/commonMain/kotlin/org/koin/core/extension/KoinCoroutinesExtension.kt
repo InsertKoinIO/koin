@@ -15,6 +15,7 @@
  */
 package org.koin.core.extension
 
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -31,10 +32,10 @@ import org.koin.core.coroutine.KoinCoroutinesEngine.Companion.EXTENSION_NAME
  */
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
-fun KoinApplication.coroutinesEngine() {
+fun KoinApplication.coroutinesEngine(dispatcher : CoroutineDispatcher? = null) {
     with(koin.extensionManager) {
         if (getExtensionOrNull<KoinCoroutinesEngine>(EXTENSION_NAME) == null) {
-            registerExtension(EXTENSION_NAME, KoinCoroutinesEngine())
+            registerExtension(EXTENSION_NAME, KoinCoroutinesEngine(dispatcher))
         }
     }
 }

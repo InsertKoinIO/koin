@@ -4,9 +4,9 @@ title: Constructor DSL for Android
 
 ## New Constructor DSL (Since 3.2)
 
-Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to to have type your definition within a lambda expression.
+Koin now offer a new kind of DSL keyword that allow you to target a class constructor directly, and avoid to have type your definition within a lambda expression.
 
-Check the new [Constructor DSL](../koin-core/dsl-update.md#constructor-dsl-since-32) section for more details.
+Check the new [Constructor DSL](/docs/reference/koin-core/dsl-update.md#constructor-dsl-since-32) section for more details.
 
 For Android, this implies the following new constructor DSL Keyword:
 

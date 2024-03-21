@@ -6,7 +6,7 @@ This page describe how you can inject your dependencies for your Jetpack Compose
 
 ## Starting Koin with Android Jetpack Compose - KoinApplication or KoinAndroidContext
 
-Most of the time, `startKoin` function is used to start Koin in your application. This is done before running any Composable function. You need to setup Compose with your current Koin instance. Use `KoinAndroidContext()` to do so:
+Most of the time, `startKoin` function is used to start Koin in your application. This is done before running any Composable function. You need to setting up Compose with your current Koin instance. Use `KoinAndroidContext()` to do so:
 
 ```kotlin
 @Composable
@@ -32,10 +32,14 @@ fun App() {
 }
 ```
 
-:::info
+:::note
 Difference between `KoinAndroidContext` and `KoinContext`:
 - `KoinAndroidContext` is looking into current Android app context for Koin instance
 - `KoinContext` is looking into current GlobalContext for Koin instances
+:::
+
+:::info
+If you get some `ClosedScopeException` from a Composable, either use `KoinContext` on your Composable or ensure to have proper Koin start configuration [with Android context](/docs/reference/koin-android/start.md#from-your-application-class)
 :::
 
 ### Compose Preview with Koin

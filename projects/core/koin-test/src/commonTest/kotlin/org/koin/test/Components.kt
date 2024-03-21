@@ -18,6 +18,10 @@ class Simple {
 
     class CycleAB(val b: CycleBA)
     class CycleBA(val a: CycleAB)
+
+    class MyComplexBool(val a : ComponentA, val b : Boolean)
+
+    fun buildB(a: ComponentA) : MyComponentB = ComponentB(a)
 }
 
 object UpperCase : Qualifier {

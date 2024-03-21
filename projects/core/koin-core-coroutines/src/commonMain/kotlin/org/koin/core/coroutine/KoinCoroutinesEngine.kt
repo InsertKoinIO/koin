@@ -20,6 +20,7 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.extension.KoinExtension
+import org.koin.core.logger.Logger
 import org.koin.mp.KoinPlatformCoroutinesTools
 import kotlin.coroutines.CoroutineContext
 
@@ -28,35 +29,43 @@ import kotlin.coroutines.CoroutineContext
  *
  * Help handle coroutines jobs for different purposes
  *
- * @author Arnaud Giulani
+ * @author Arnaud Giuliani
  */
 @KoinExperimentalAPI
 @KoinInternalApi
-class KoinCoroutinesEngine : CoroutineScope, KoinExtension {
-    private val dispatcher: CoroutineDispatcher = KoinPlatformCoroutinesTools.defaultCoroutineDispatcher()
+class KoinCoroutinesEngine(coroutineDispatcher: CoroutineDispatcher? = null) : CoroutineScope, KoinExtension {
+    private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: KoinPlatformCoroutinesTools.defaultCoroutineDispatcher()
     private val supervisorJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = supervisorJob + dispatcher
 
     internal val startJobs = arrayListOf<Deferred<*>>()
 
-    override lateinit var koin: Koin
+    private var _koin: Koin? = null
+    private fun getKoin() : Koin = _koin ?: error("No Koin instance is registered for plugin $this")
+    private fun getLogger() : Logger = getKoin().logger
+
+    override fun onRegister(koin: Koin) {
+        _koin = koin
+        koin.logger.debug("$TAG - init ($dispatcher)")
+    }
 
     fun <T> launchStartJob(block: suspend CoroutineScope.() -> T) {
         startJobs.add(async { block() })
     }
 
     suspend fun awaitAllStartJobs() {
-        koin.logger.debug("await All Start Jobs ...")
+        getLogger().debug("$TAG - await All Start Jobs ...")
         startJobs.map { it.await() }
         startJobs.clear()
     }
 
     override fun onClose() {
-        koin.logger.debug("onClose $this")
+        getLogger().debug("$TAG - onClose $this")
         cancel("KoinCoroutinesEngine shutdown")
     }
 
     companion object {
+        const val TAG = "[CoroutinesEngine]"
         const val EXTENSION_NAME = "coroutine-engine"
     }
 }

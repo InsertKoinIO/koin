@@ -93,13 +93,13 @@ fun initKoin(){
 }
 ```
 
-We can init it in our Main app entry:
+We can initialize it in our Main app entry:
 
 ```kotlin
 @main
 struct iOSApp: App {
     
-        // KMM - Koin Call
+    // KMM - Koin Call
     init() {
         HelperKt.doInitKoin()
     }

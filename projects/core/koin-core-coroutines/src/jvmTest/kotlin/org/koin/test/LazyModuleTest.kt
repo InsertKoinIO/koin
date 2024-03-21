@@ -1,5 +1,6 @@
 package org.koin.test
 
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.lazyModules
 import org.koin.core.logger.Level
 import org.koin.core.module.dsl.bind
@@ -34,6 +35,28 @@ class LazyModuleTest {
         val koin = koinApplication {
             printLogger(Level.DEBUG)
             lazyModules(m1)
+        }.koin
+        koin.waitAllStartJobs()
+
+        assertNotNull(koin.getOrNull<ClassB>())
+    }
+    
+        @Test
+    fun test_dispatchers() {
+        var resolved: Boolean? = null
+        val m2 = lazyModule {
+            resolved = true
+            singleOf(::ClassB)
+        }
+        val m1 = lazyModule {
+            includes(m2)
+            singleOf(::ClassA) { bind<IClassA>() }
+        }
+        assertTrue(resolved == null, "resolved should be null: $resolved")
+
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            lazyModules(m1, dispatcher = Dispatchers.IO)
         }.koin
         koin.waitAllStartJobs()
 
