@@ -17,6 +17,7 @@ package org.koin.dsl
 
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.KoinDslMarker
+import org.koin.core.module.LazyModule
 import org.koin.core.module.Module
 
 /**
@@ -31,4 +32,4 @@ import org.koin.core.module.Module
  */
 @KoinExperimentalAPI
 @KoinDslMarker
-fun lazyModule(moduleDefinition: ModuleDeclaration): Lazy<Module> = lazy(LazyThreadSafetyMode.NONE) { module(moduleDeclaration = moduleDefinition) }
+fun lazyModule(moduleDefinition: ModuleDeclaration): LazyModule = LazyModule { module(moduleDeclaration = moduleDefinition) }
