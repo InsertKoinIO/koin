@@ -31,6 +31,20 @@ class KoinAppCreationTest {
     }
 
     @Test
+    fun `maintain koinApplication source compatibility`() {
+        // Successful compilation and a lack of exceptions is sufficient
+        koinApplication { modules() }
+        koinApplication(createEagerInstances = true)
+        koinApplication(createEagerInstances = true) { modules() }
+        koinApplication(true) { modules() }
+        val declaration: KoinAppDeclaration = { modules() }
+        koinApplication(declaration)
+        koinApplication(createEagerInstances = true, declaration)
+        koinApplication(createEagerInstances = true, appDeclaration = declaration)
+        koinApplication(true, declaration)
+    }
+
+    @Test
     fun `start a Koin application`() {
         val app = startKoin { }
 
