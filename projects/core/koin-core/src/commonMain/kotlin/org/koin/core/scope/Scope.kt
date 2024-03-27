@@ -199,7 +199,8 @@ class Scope(
     ): T {
         return if (_koin.logger.isAt(Level.DEBUG)) {
             val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString ...")
+            val scopeId = if (isRoot) "" else "- scope:'$id"
+            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString $scopeId...")
 
             val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
             val instance = resolveInstance<T>(qualifier, clazz, parameters)

@@ -26,7 +26,6 @@ import kotlin.reflect.KClass
  * @param parameters - for instance building injection
  */
 @KoinInternalApi
-@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
 fun <T : ViewModel> resolveViewModel(
     vmClass: KClass<T>,
     viewModelStore: ViewModelStore,
@@ -36,32 +35,9 @@ fun <T : ViewModel> resolveViewModel(
     scope: Scope,
     parameters: ParametersDefinition? = null,
 ): T {
-    return resolveViewModel(vmClass, viewModelStore, key, extras, qualifier, scope.getKoin(), parameters)
-}
-
-/**
- * Resolve a ViewModel instance
- *
- * @param vmClass
- * @param viewModelStore
- * @param key
- * @param extras - @see CreationExtras
- * @param qualifier
- * @param koin
- * @param parameters - for instance building injection
- */
-@KoinInternalApi
-fun <T : ViewModel> resolveViewModel(
-    vmClass: KClass<T>,
-    viewModelStore: ViewModelStore,
-    key: String? = null,
-    extras: CreationExtras,
-    qualifier: Qualifier? = null,
-    koin : Koin,
-    parameters: ParametersDefinition? = null,
-): T {
     val modelClass: Class<T> = vmClass.java
-    val factory = KoinViewModelFactory(vmClass, koin.scopeRegistry.rootScope, qualifier, parameters)
+    //TODO In 3.6 - propose to resolve scope strictly from root or not
+    val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
     val vmKey = getViewModelKey(qualifier, key)
 
