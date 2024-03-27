@@ -15,30 +15,31 @@ class ViewModelKeyTest {
     fun generate_right_key() {
         val koin = koinApplication().koin
         val root = koin.scopeRegistry.rootScope
+        val modelClass = String::class.java
 
         val q = StringQualifier("_qualifier_")
         val scope = Scope(StringQualifier("_q_"), id = "_id_", _koin = koin, isRoot = false)
         val key = "_KEY_"
 
         assertEquals(
-            null, getViewModelKey(qualifier = null, scope = root, key = null)
+            null, getViewModelKey(qualifier = null, scope = root, key = null, modelClass = modelClass)
         )
         assertEquals(
-            q.value, getViewModelKey(qualifier = q, scope = root, key = null)
+            "${q.value}:${modelClass.canonicalName}", getViewModelKey(qualifier = q, scope = root, key = null, modelClass = modelClass)
         )
         assertEquals(
-            key, getViewModelKey(qualifier = null, scope = root, key = key)
+            "$key:${modelClass.canonicalName}", getViewModelKey(qualifier = null, scope = root, key = key, modelClass = modelClass)
         )
         assertEquals(
-            scope.id, getViewModelKey(qualifier = null, scope = scope, key = null)
-        )
-
-        assertEquals(
-            key + scope.id, getViewModelKey(qualifier = null, scope = scope, key = key)
+            "${scope.id}:${modelClass.canonicalName}", getViewModelKey(qualifier = null, scope = scope, key = null, modelClass = modelClass)
         )
 
         assertEquals(
-            q.value + key + scope.id, getViewModelKey(qualifier = q, scope = scope, key = key)
+            "$key${scope.id}:${modelClass.canonicalName}", getViewModelKey(qualifier = null, scope = scope, key = key, modelClass = modelClass)
+        )
+
+        assertEquals(
+            "${q.value}$key${scope.id}:${modelClass.canonicalName}", getViewModelKey(qualifier = q, scope = scope, key = key, modelClass = modelClass)
         )
     }
 }
