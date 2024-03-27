@@ -29,7 +29,7 @@ jupiter = "5.9.3"
 mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
-ktor = "2.3.7"
+ktor = "2.3.9"
 slf4j = "1.7.36"
 
 [libraries]
