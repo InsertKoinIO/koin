@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
-import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
@@ -39,10 +38,7 @@ fun <T : ViewModel> resolveViewModel(
     //TODO In 3.6 - propose to resolve scope strictly from root or not
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
-    val vmKey = getViewModelKey(qualifier, key)
-
-    //To help track Keys
-//    koin.logger.debug("[vm_key] - provider:$provider - class:$modelClass = $vmKey (q:'${qualifier?.value}', k:'$key')")
+    val vmKey = getViewModelKey(qualifier, key, modelClass.canonicalName)
     return when {
         vmKey != null -> provider[vmKey, modelClass]
         else -> provider[modelClass]
@@ -50,10 +46,10 @@ fun <T : ViewModel> resolveViewModel(
 }
 
 @KoinInternalApi
-internal fun getViewModelKey(qualifier: Qualifier?, key: String?): String? {
+internal fun getViewModelKey(qualifier: Qualifier? = null, key: String? = null, className: String? = null): String? {
     return when {
-        qualifier != null -> qualifier.value + (key?.let { "_$it" } ?: "")
         key != null -> key
+        qualifier != null -> qualifier.value + (className?.let { "_$className" } ?: "")
         else -> null
     }
 }
