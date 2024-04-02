@@ -3,7 +3,7 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 binaryValidator = "0.13.2"
 publish = "2.0.0-rc-1"
 coroutines = "1.7.3" # "1.8.0-RC2" for wasm
@@ -19,7 +19,7 @@ androidx-workmanager = "2.8.1"
 androidx-navigation = "2.7.5"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.5.11"
+composeJB = "1.5.12"
 composeJetpackRuntime = "1.5.4"
 composeJetpackViewmodel = "2.6.2"
 # Test
@@ -29,7 +29,7 @@ jupiter = "5.9.3"
 mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
-ktor = "2.3.7"
+ktor = "2.3.9"
 slf4j = "1.7.36"
 
 [libraries]
