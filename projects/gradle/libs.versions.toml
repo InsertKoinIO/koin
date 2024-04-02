@@ -3,25 +3,25 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 binaryValidator = "0.13.2"
 publish = "2.0.0-rc-1"
-coroutines = "1.7.3" # "1.8.0-RC2" for wasm
+coroutines = "1.8.0" # "1.8.0-RC2" for wasm
 dokka = "1.9.10"
 # Android
-agp = "7.4.1"
+agp = "7.4.2"
 android-appcompat = "1.6.1"
-android-activity = "1.7.2"
+android-activity = "1.8.2"
 android-fragment = "1.6.2"
-androidx-viewmodel = "2.6.2"
-androidx-commonJava8 = "2.6.2"
-androidx-workmanager = "2.8.1"
-androidx-navigation = "2.7.5"
+androidx-viewmodel = "2.7.0"
+androidx-commonJava8 = "2.7.0"
+androidx-workmanager = "2.9.0"
+androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.5.12"
-composeJetpackRuntime = "1.5.4"
-composeJetpackViewmodel = "2.6.2"
+composeJB = "1.6.1"
+composeJetpackRuntime = "1.6.4"
+composeJetpackViewmodel = "2.7.0"
 # Test
 stately = "2.0.6"
 junit = "4.13.2"
