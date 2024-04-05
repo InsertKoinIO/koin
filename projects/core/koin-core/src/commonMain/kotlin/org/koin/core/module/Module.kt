@@ -240,7 +240,7 @@ fun flatten(modules: List<Module>): Set<Module> {
     // but we're using a stack instead of recursion to avoid stack overflows and performance overhead.
 
     val flatten = linkedSetOf<Module>()
-    val stack = ArrayDeque(modules)
+    val stack = ArrayDeque(modules.asReversed())
 
     while (stack.isNotEmpty()) {
         val current = stack.removeLast()
