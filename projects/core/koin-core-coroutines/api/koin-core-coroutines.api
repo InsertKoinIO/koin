@@ -1,6 +1,8 @@
 public final class org/koin/core/KoinApplicationLazyExtKt {
-	public static final fun lazyModules (Lorg/koin/core/KoinApplication;Ljava/util/List;)V
-	public static final fun lazyModules (Lorg/koin/core/KoinApplication;[Lkotlin/Lazy;)V
+	public static final fun lazyModules (Lorg/koin/core/KoinApplication;Ljava/util/List;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static final fun lazyModules (Lorg/koin/core/KoinApplication;[Lkotlin/Lazy;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static synthetic fun lazyModules$default (Lorg/koin/core/KoinApplication;Ljava/util/List;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
+	public static synthetic fun lazyModules$default (Lorg/koin/core/KoinApplication;[Lkotlin/Lazy;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
 }
 
 public final class org/koin/core/KoinLazyExtKt {
@@ -25,21 +27,23 @@ public final class org/koin/core/context/LoadLazyModulesKt {
 public final class org/koin/core/coroutine/KoinCoroutinesEngine : kotlinx/coroutines/CoroutineScope, org/koin/core/extension/KoinExtension {
 	public static final field Companion Lorg/koin/core/coroutine/KoinCoroutinesEngine$Companion;
 	public static final field EXTENSION_NAME Ljava/lang/String;
-	public field koin Lorg/koin/core/Koin;
+	public static final field TAG Ljava/lang/String;
 	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun awaitAllStartJobs (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getKoin ()Lorg/koin/core/Koin;
 	public final fun launchStartJob (Lkotlin/jvm/functions/Function2;)V
 	public fun onClose ()V
-	public fun setKoin (Lorg/koin/core/Koin;)V
+	public fun onRegister (Lorg/koin/core/Koin;)V
 }
 
 public final class org/koin/core/coroutine/KoinCoroutinesEngine$Companion {
 }
 
 public final class org/koin/core/extension/KoinCoroutinesExtensionKt {
-	public static final fun coroutinesEngine (Lorg/koin/core/KoinApplication;)V
+	public static final fun coroutinesEngine (Lorg/koin/core/KoinApplication;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static synthetic fun coroutinesEngine$default (Lorg/koin/core/KoinApplication;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
 	public static final fun getCoroutinesEngine (Lorg/koin/core/Koin;)Lorg/koin/core/coroutine/KoinCoroutinesEngine;
 }
 

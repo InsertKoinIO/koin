@@ -4,8 +4,6 @@ import org.junit.Test
 import org.koin.androidx.viewmodel.getViewModelKey
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.StringQualifier
-import org.koin.core.scope.Scope
-import org.koin.dsl.koinApplication
 import kotlin.test.assertEquals
 
 class ViewModelKeyTest {
@@ -13,32 +11,32 @@ class ViewModelKeyTest {
     @OptIn(KoinInternalApi::class)
     @Test
     fun generate_right_key() {
-        val koin = koinApplication().koin
-        val root = koin.scopeRegistry.rootScope
-
         val q = StringQualifier("_qualifier_")
-        val scope = Scope(StringQualifier("_q_"), id = "_id_", _koin = koin, isRoot = false)
         val key = "_KEY_"
+        val className = "this.is.just.a.class"
 
         assertEquals(
-            null, getViewModelKey(qualifier = null, scope = root, key = null)
+            null, getViewModelKey(qualifier = null, key = null, className = null)
         )
         assertEquals(
-            q.value, getViewModelKey(qualifier = q, scope = root, key = null)
+            q.value, getViewModelKey(qualifier = q, key = null, className = null)
         )
         assertEquals(
-            key, getViewModelKey(qualifier = null, scope = root, key = key)
+            q.value+"_"+className, getViewModelKey(qualifier = q, key = null, className = className)
         )
         assertEquals(
-            scope.id, getViewModelKey(qualifier = null, scope = scope, key = null)
+            key, getViewModelKey(
+                qualifier = q,
+                key = key,
+                className = null
+            )
+        )
+        assertEquals(
+            key, getViewModelKey(qualifier = null, key = key, className = null)
         )
 
         assertEquals(
-            key + scope.id, getViewModelKey(qualifier = null, scope = scope, key = key)
-        )
-
-        assertEquals(
-            q.value + key + scope.id, getViewModelKey(qualifier = q, scope = scope, key = key)
+            key, getViewModelKey(qualifier = q, key = key, className = className)
         )
     }
 }

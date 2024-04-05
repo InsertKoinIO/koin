@@ -22,7 +22,7 @@ class TypeQualifier(val type: KClass<*>) : Qualifier {
     override val value: QualifierValue = type.getFullName()
 
     override fun toString(): String {
-        return "q:'$value'"
+        return value
     }
 
     override fun equals(other: Any?): Boolean {

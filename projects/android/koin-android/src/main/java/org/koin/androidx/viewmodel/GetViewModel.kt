@@ -35,9 +35,10 @@ fun <T : ViewModel> resolveViewModel(
     parameters: ParametersDefinition? = null,
 ): T {
     val modelClass: Class<T> = vmClass.java
+    //TODO In 3.6 - propose to resolve scope strictly from root or not
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider(viewModelStore, factory, extras)
-    val vmKey = getViewModelKey(qualifier, scope, key)
+    val vmKey = getViewModelKey(qualifier, key, modelClass.canonicalName)
     return when {
         vmKey != null -> provider[vmKey, modelClass]
         else -> provider[modelClass]
@@ -45,14 +46,11 @@ fun <T : ViewModel> resolveViewModel(
 }
 
 @KoinInternalApi
-internal fun getViewModelKey(qualifier: Qualifier?, scope: Scope, key: String?): String? {
-    return if (qualifier == null && key == null && scope.isRoot) {
-        null
-    } else {
-        val q = qualifier?.value ?: ""
-        val k = key ?: ""
-        val s = if (!scope.isRoot) scope.id else ""
-        "$q$k$s"
+internal fun getViewModelKey(qualifier: Qualifier? = null, key: String? = null, className: String? = null): String? {
+    return when {
+        key != null -> key
+        qualifier != null -> qualifier.value + (className?.let { "_$className" } ?: "")
+        else -> null
     }
 }
 

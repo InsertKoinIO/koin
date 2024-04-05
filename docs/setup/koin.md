@@ -51,7 +51,7 @@ koin-core = { module = "io.insert-koin:koin-core" }
 ```
 ```kotlin
 dependencies {
-    implementation(libs.koin.bom)
+    implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
 }
 ```
@@ -87,7 +87,7 @@ dependencies {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin App Tutorial](../quickstart/kotlin)
+From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin App Tutorial](/docs/quickstart/kotlin)
 :::
 
 ### **Android**
@@ -128,7 +128,7 @@ dependencies {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Android App Tutorial](../quickstart/android-viewmodel)
+From now you can continue on Koin Tutorials to learn about using Koin: [Android App Tutorial](/docs/quickstart/android-viewmodel)
 :::
 
 ### **Android Jetpack Compose**
@@ -154,7 +154,7 @@ class MainApplication : Application() {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Android Compose App Tutorial](../quickstart/android-compose)
+From now you can continue on Koin Tutorials to learn about using Koin: [Android Compose App Tutorial](/docs/quickstart/android-compose)
 :::
 
 
@@ -169,7 +169,7 @@ dependencies {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](../quickstart/kmm)
+From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](/docs/quickstart/kmm)
 :::
 
 ### **Ktor**
@@ -197,7 +197,7 @@ fun Application.main() {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Ktor App Tutorial](../quickstart/ktor)
+From now you can continue on Koin Tutorials to learn about using Koin: [Ktor App Tutorial](/docs/quickstart/ktor)
 :::
 
 

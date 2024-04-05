@@ -55,7 +55,7 @@ class ScopeRegistry(private val _koin: Koin) {
 
     @PublishedApi
     internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
-        _koin.logger.debug("|- (+) Scope - id:'$scopeId' q:$qualifier")
+        _koin.logger.debug("| (+) Scope - id:'$scopeId' q:'$qualifier'")
         if (!_scopeDefinitions.contains(qualifier)) {
             _koin.logger.debug("| Scope '$qualifier' not defined. Creating it ...")
             _scopeDefinitions.add(qualifier)
@@ -89,7 +89,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun closeAllScopes() {
-        _scopes.values.forEach { scope ->
+        _scopes.values.toList().forEach { scope ->
             scope.close()
         }
     }

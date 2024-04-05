@@ -24,15 +24,39 @@ typealias KoinAppDeclaration = KoinApplication.() -> Unit
  * Create a KoinApplication instance and help configure it
  * @author Arnaud Giuliani
  *
- * @param createEagerInstances - allow to create eager instances or not
- * @param appDeclaration
+ * @param createEagerInstances allow to create eager instances or not
+ * @param appDeclaration closure for configuration of a new Koin context
  */
 @KoinApplicationDslMarker
-fun koinApplication(createEagerInstances : Boolean = true, appDeclaration: KoinAppDeclaration? = null): KoinApplication {
+fun koinApplication(createEagerInstances: Boolean = true, appDeclaration: KoinAppDeclaration? = null): KoinApplication {
     val koinApplication = KoinApplication.init()
     appDeclaration?.invoke(koinApplication)
     if (createEagerInstances) {
         koinApplication.createEagerInstances()
     }
     return koinApplication
+}
+
+/**
+ * Create a KoinApplication instance and help configure it.
+ * This overload helps ensure backward-compatible bytecode.
+ *
+ * @param appDeclaration closure for configuration of a new Koin context
+ * @author Gary Spreder
+ */
+@KoinApplicationDslMarker
+fun koinApplication(appDeclaration: KoinAppDeclaration?): KoinApplication {
+    return koinApplication(createEagerInstances = true, appDeclaration = appDeclaration)
+}
+
+/**
+ * Create a KoinApplication instance and help configure it.
+ * This overload helps ensure backward-compatible bytecode.
+ *
+ * @param createEagerInstances allow to create eager instances or not
+ * @author Gary Spreder
+ */
+@KoinApplicationDslMarker
+fun koinApplication(createEagerInstances: Boolean): KoinApplication {
+    return koinApplication(createEagerInstances = createEagerInstances, appDeclaration = null)
 }

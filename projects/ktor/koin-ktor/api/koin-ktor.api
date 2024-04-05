@@ -27,6 +27,10 @@ public final class org/koin/ktor/plugin/KoinApplicationEventsKt {
 	public static final fun getKoinApplicationStopped ()Lio/ktor/events/EventDefinition;
 }
 
+public final class org/koin/ktor/plugin/KoinIsolatedContextPluginKt {
+	public static final fun getKoinIsolated ()Lio/ktor/server/application/ApplicationPlugin;
+}
+
 public final class org/koin/ktor/plugin/KoinPluginKt {
 	public static final field KOIN_KEY Ljava/lang/String;
 	public static final field KOIN_SCOPE_KEY Ljava/lang/String;
@@ -35,6 +39,7 @@ public final class org/koin/ktor/plugin/KoinPluginKt {
 	public static final fun getKoin ()Lio/ktor/server/application/ApplicationPlugin;
 	public static final fun getScope (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/scope/Scope;
 	public static final fun koin (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun setKoinApplication (Lio/ktor/server/application/Application;Lorg/koin/core/KoinApplication;)V
 }
 
 public final class org/koin/ktor/plugin/RequestScope : org/koin/core/component/KoinScopeComponent {

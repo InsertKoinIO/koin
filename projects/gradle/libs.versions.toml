@@ -3,7 +3,7 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 binaryValidator = "0.13.2"
 publish = "2.0.0-rc-1"
 coroutines = "1.7.3" # "1.8.0-RC2" for wasm
@@ -19,23 +19,25 @@ androidx-workmanager = "2.8.1"
 androidx-navigation = "2.7.5"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.5.11"
+composeJB = "1.5.12"
 composeJetpackRuntime = "1.5.4"
 composeJetpackViewmodel = "2.6.2"
 # Test
-stately = "2.0.5"
+stately = "2.0.6"
 junit = "4.13.2"
 jupiter = "5.9.3"
 mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
-ktor = "2.3.7"
+ktor = "2.3.9"
 slf4j = "1.7.36"
 
 [libraries]
 # Core
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 extras-stately = { module = "co.touchlab:stately-concurrency", version.ref = "stately" }
+extras-stately-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "stately" }
+
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 test-junit = { module = "junit:junit", version.ref = "junit" }
