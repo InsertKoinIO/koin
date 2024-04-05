@@ -5,6 +5,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.*
+import org.koin.core.module.includes
 import org.koin.core.qualifier.named
 import org.koin.dsl.lazyModule
 import org.koin.sample.sandbox.components.Counter
@@ -119,4 +120,6 @@ val navModule = lazyModule {
     viewModelOf(::NavViewModel)
 }
 
-val allModules = appModule + mvpModule + mvvmModule  + scopeModule  + workerServiceModule  + workerScopedModule  + navModule  + scopeModuleActivityA
+val allModules = lazyModule {
+    includes(appModule, mvpModule, mvvmModule , scopeModule , workerServiceModule , workerScopedModule , navModule , scopeModuleActivityA)
+}
