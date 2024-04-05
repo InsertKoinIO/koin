@@ -239,7 +239,7 @@ fun flatten(modules: List<Module>): Set<Module> {
     // This is actually a DFS traversal of the module graph,
     // but we're using a stack instead of recursion to avoid stack overflows and performance overhead.
 
-    val flatten = HashSet<Module>()
+    val flatten = linkedSetOf<Module>()
     val stack = ArrayDeque(modules)
 
     while (stack.isNotEmpty()) {
