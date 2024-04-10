@@ -15,9 +15,11 @@ Koin is a pragmatic lightweight dependency injection framework for Kotlin develo
 
 ## Setup & Current Version
 
-Here are the current available Koin projects versions:
+Here are the current available Koin project versions:
 - stable: `3.5.4`
 - unstable: `3.6.0-Beta2`
+
+## Koin Packages
 
 | Project   |      Version      |
 |----------|:-------------:|
