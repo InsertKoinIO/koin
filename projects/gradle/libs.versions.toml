@@ -20,7 +20,7 @@ androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
 composeJB = "1.6.1"
-composeJetpackRuntime = "1.6.4"
+composeJetpackRuntime = "1.6.5"
 composeJetpackViewmodel = "2.7.0"
 # Test
 stately = "2.0.6"
