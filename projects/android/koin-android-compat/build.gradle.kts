@@ -26,4 +26,10 @@ dependencies {
     implementation(project(":android:koin-android"))
 }
 
+// android sources
+val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.map { it.java.srcDirs })
+}
+
 apply(from = file("../../gradle/publish-android.gradle.kts"))
