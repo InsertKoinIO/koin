@@ -24,8 +24,14 @@ android {
 }
 
 dependencies {
-    implementation(project(":compose:koin-androidx-compose"))
-    implementation(libs.androidx.composeNavigation)
+    api(project(":compose:koin-androidx-compose"))
+    api(libs.androidx.composeNavigation)
+}
+
+// android sources
+val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.map { it.java.srcDirs })
 }
 
 // android sources

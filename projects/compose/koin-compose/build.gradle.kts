@@ -34,7 +34,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
-            implementation(libs.compose.jb)
+            api(libs.compose.jb)
         }
     }
 }

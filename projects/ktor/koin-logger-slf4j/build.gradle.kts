@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     api(project(":core:koin-core"))
-    implementation(libs.ktor.slf4j)
+    api(libs.ktor.slf4j)
 }
 
 tasks.withType<KotlinCompile>().all {

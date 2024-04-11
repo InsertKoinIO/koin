@@ -23,10 +23,9 @@ android {
 }
 
 dependencies {
-    implementation(kotlin("reflect"))
-    implementation(project(":android:koin-android"))
-    implementation(project(":android:koin-androidx-workmanager"))
-    implementation(project(":core:koin-test"))
+    api(project(":android:koin-android"))
+    api(project(":android:koin-androidx-workmanager"))
+    api(project(":core:koin-test"))
     // Test
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockito)
