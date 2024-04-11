@@ -33,8 +33,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.extras.stately)
-            implementation(libs.extras.stately.collections)
+            api(libs.extras.stately)
+            api(libs.extras.stately.collections)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

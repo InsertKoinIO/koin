@@ -26,8 +26,8 @@ android {
 dependencies {
     api(project(":android:koin-android"))
     api(project(":compose:koin-compose"))
-    implementation(libs.androidx.composeRuntime)
-    implementation(libs.androidx.composeViewModel)
+    api(libs.androidx.composeRuntime)
+    api(libs.androidx.composeViewModel)
 }
 
 // android sources
