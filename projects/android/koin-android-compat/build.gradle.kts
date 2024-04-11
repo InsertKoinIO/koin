@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":android:koin-android"))
+    api(project(":android:koin-android"))
 }
 
 // android sources

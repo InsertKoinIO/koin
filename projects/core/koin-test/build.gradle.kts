@@ -35,10 +35,10 @@ kotlin {
         commonMain.dependencies {
             api(project(":core:koin-core"))
             //TODO remove in 3.6
-            implementation(libs.kotlin.test)
+            api(libs.kotlin.test)
         }
         jvmMain.dependencies {
-            implementation(kotlin("reflect"))
+            api(kotlin("reflect"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

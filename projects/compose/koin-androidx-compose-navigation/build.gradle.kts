@@ -24,8 +24,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":compose:koin-androidx-compose"))
-    implementation(libs.androidx.composeNavigation)
+    api(project(":compose:koin-androidx-compose"))
+    api(libs.androidx.composeNavigation)
 }
 
 // android sources
