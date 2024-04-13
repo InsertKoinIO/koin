@@ -11,10 +11,14 @@ import kotlin.reflect.KClass
  * Throws MissingDefinitionException if any definition is missing
  *
  * @param extraTypes - allow to declare extra type, to be bound above the existing definitions
+ * @param manualVerification manual validation mode for additional types that cannot be passed through extraTypes for one reason or another. (For example, no access to type)
  * @throws MissingKoinDefinitionException
  */
 @KoinExperimentalAPI
-fun Module.verify(extraTypes: List<KClass<*>> = listOf()) = Verify.verify(this, extraTypes)
+fun Module.verify(
+    extraTypes: List<KClass<*>> = listOf(),
+    manualVerification: ((String) -> Boolean)? = null,
+) = Verify.verify(this, extraTypes, manualVerification)
 
 /**
  * Verify a list of Modules
@@ -60,12 +64,17 @@ object Verify {
      *
      * @param module the moduel to verify
      * @param extraTypes allow to declare extra type, to be bound above the existing definitions
+     * @param manualVerification manual validation mode for additional types that cannot be passed through extraTypes for one reason or another. (For example, no access to type)
      * @throws MissingKoinDefinitionException
      */
-    fun verify(module: Module, extraTypes: List<KClass<*>> = listOf()) {
+    fun verify(
+        module: Module,
+        extraTypes: List<KClass<*>> = listOf(),
+        manualVerification: ((String) -> Boolean)? = null,
+    ) {
         val timer = Timer.start()
 
-        val verification = Verification(module, extraTypes)
+        val verification = Verification(module, extraTypes, manualVerification)
         println("Verifying module '$module' ...")
 //        println("- index: ${verification.definitionIndex.size}")
         verification.verify()

@@ -12,7 +12,11 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KVisibility
 
 @OptIn(KoinInternalApi::class)
-class Verification(val module: Module, extraTypes: List<KClass<*>>) {
+class Verification(
+    val module: Module,
+    extraTypes: List<KClass<*>>,
+    private val manualVerification: ((String) -> Boolean)?,
+) {
 
     private val allModules: Set<Module> = flatten(module.includedModules.toList()) + module
     private val factories: List<InstanceFactory<*>> = allModules.flatMap { it.mappings.values.toList() }
@@ -23,7 +27,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
     fun verify() {
         factories.forEach { factory ->
             if (factory !in verifiedFactories.keys) {
-                val injectedDependencies = verifyFactory(factory, definitionIndex)
+                val injectedDependencies = verifyFactory(factory, definitionIndex, manualVerification)
                 verifiedFactories[factory] = injectedDependencies
             }
         }
@@ -32,6 +36,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
     private fun verifyFactory(
         factory: InstanceFactory<*>,
         index: List<String>,
+        manualVerification: ((String) -> Boolean)?,
     ): List<KClass<*>> {
         val beanDefinition = factory.beanDefinition
         println("\n|-> definition $beanDefinition")
@@ -50,7 +55,8 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
                 constructor,
                 functionType,
                 index,
-                beanDefinition
+                beanDefinition,
+                manualVerification,
             )
         }
     }
@@ -60,6 +66,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
         classOrigin: KClass<*>,
         index: List<String>,
         beanDefinition: BeanDefinition<*>,
+        manualVerification: ((String) -> Boolean)?,
     ): List<KClass<*>> {
         val constructorParameters = constructorFunction.parameters
 
@@ -73,7 +80,8 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>) {
             val ctorParamClass = (constructorParameter.type.classifier as KClass<*>)
             val ctorParamClassName = ctorParamClass.getFullName()
 
-            val isDefinitionDeclared = index.any { k -> k.contains(ctorParamClassName) }
+            val isDefinitionDeclared = index.any { k -> k.contains(ctorParamClassName) } ||
+                    manualVerification?.invoke(ctorParamClassName) == true
             val alreadyBoundFactory = verifiedFactories.keys.firstOrNull { ctorParamClass in listOf(it.beanDefinition.primaryType) + it.beanDefinition.secondaryTypes }
             val factoryDependencies = verifiedFactories[alreadyBoundFactory]
             val isCircular = factoryDependencies?.let { classOrigin in factoryDependencies } ?: false
