@@ -34,6 +34,7 @@ include(
     ":compose:koin-compose",
     ":compose:koin-androidx-compose",
     ":compose:koin-androidx-compose-navigation",
+    ":compose:koin-decompose",
     // Plugin
     ":plugins:koin-gradle-plugin",
     // BOM
