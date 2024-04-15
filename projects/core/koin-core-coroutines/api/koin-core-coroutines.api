@@ -47,12 +47,21 @@ public final class org/koin/core/extension/KoinCoroutinesExtensionKt {
 	public static final fun getCoroutinesEngine (Lorg/koin/core/Koin;)Lorg/koin/core/coroutine/KoinCoroutinesEngine;
 }
 
+public final class org/koin/core/module/LazyModule : kotlin/Lazy {
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun getValue ()Ljava/lang/Object;
+	public fun getValue ()Lorg/koin/core/module/Module;
+	public fun isInitialized ()Z
+	public final fun plus (Ljava/util/List;)Ljava/util/List;
+	public final fun plus (Lorg/koin/core/module/LazyModule;)Ljava/util/List;
+}
+
 public final class org/koin/core/module/LazyModuleExtKt {
 	public static final fun includes (Lorg/koin/core/module/Module;[Lkotlin/Lazy;)V
 }
 
 public final class org/koin/dsl/LazyModuleDSLKt {
-	public static final fun lazyModule (Lkotlin/jvm/functions/Function1;)Lkotlin/Lazy;
+	public static final fun lazyModule (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/module/LazyModule;
 }
 
 public final class org/koin/mp/KoinPlatformCoroutinesTools {
