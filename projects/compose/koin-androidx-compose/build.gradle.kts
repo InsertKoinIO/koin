@@ -36,10 +36,4 @@ val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
     from(android.sourceSets.map { it.java.srcDirs })
 }
 
-// android sources
-val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(android.sourceSets.map { it.java.srcDirs })
-}
-
 apply(from = file("../../gradle/publish-android.gradle.kts"))
