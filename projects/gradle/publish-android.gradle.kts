@@ -1,10 +1,12 @@
 apply(plugin = "maven-publish")
 
 val javadocJar = tasks.getByName("javadocJar")
+val sourcesJar = tasks.getByName("sourcesJar")
 
 configure<PublishingExtension> {
     publications {
         register<MavenPublication>("release") {
+            artifact(sourcesJar)
             artifact(javadocJar)
             afterEvaluate {
                 from(components["release"])

@@ -8,6 +8,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import org.koin.androidx.viewmodel.getViewModelKey
 import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.Qualifier
@@ -64,7 +65,7 @@ class GetViewModelTest {
         val koinVmKey = "${qualifierName}_$key"
 
         assertNotNull(viewModel)
-        verify { viewModelStore[koinVmKey] }
+        verify { viewModelStore[key] }
     }
 
     @Test
@@ -104,7 +105,7 @@ class GetViewModelTest {
         )
 
         assertNotNull(viewModel)
-        verify { viewModelStore[qualifierValue] }
+        verify { viewModelStore[qualifierValue+"_"+classToTest.java.canonicalName] }
     }
 
     companion object {

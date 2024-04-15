@@ -257,9 +257,8 @@ public final class org/koin/core/extension/ExtensionManager {
 }
 
 public abstract interface class org/koin/core/extension/KoinExtension {
-	public abstract fun getKoin ()Lorg/koin/core/Koin;
 	public abstract fun onClose ()V
-	public abstract fun setKoin (Lorg/koin/core/Koin;)V
+	public abstract fun onRegister (Lorg/koin/core/Koin;)V
 }
 
 public final class org/koin/core/instance/FactoryInstanceFactory : org/koin/core/instance/InstanceFactory {
@@ -582,6 +581,8 @@ public final class org/koin/dsl/DefinitionBindingKt {
 }
 
 public final class org/koin/dsl/KoinApplicationKt {
+	public static final fun koinApplication (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static final fun koinApplication (Z)Lorg/koin/core/KoinApplication;
 	public static final fun koinApplication (ZLkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
 	public static synthetic fun koinApplication$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 }

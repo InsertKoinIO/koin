@@ -22,6 +22,7 @@ kotlin {
     macosArm64()
     watchosArm32()
     watchosArm64()
+    watchosDeviceArm64()
     watchosSimulatorArm64()
     watchosX64()
     tvosArm64()
@@ -34,7 +35,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
-            implementation(libs.kotlin.coroutines)
+            api(libs.kotlin.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

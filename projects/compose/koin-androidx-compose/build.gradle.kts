@@ -7,7 +7,7 @@ plugins {
 
 val androidCompileSDK : String by project
 val androidMinSDK : String by project
-val composeCompiler : String by project
+val jetpackComposeCompiler : String by project
 
 android {
     compileSdk = androidCompileSDK.toInt()
@@ -19,15 +19,21 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = composeCompiler
+        kotlinCompilerExtensionVersion = jetpackComposeCompiler
     }
 }
 
 dependencies {
     api(project(":android:koin-android"))
     api(project(":compose:koin-compose"))
-    implementation(libs.androidx.composeRuntime)
-    implementation(libs.androidx.composeViewModel)
+    api(libs.androidx.composeRuntime)
+    api(libs.androidx.composeViewModel)
+}
+
+// android sources
+val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.map { it.java.srcDirs })
 }
 
 apply(from = file("../../gradle/publish-android.gradle.kts"))

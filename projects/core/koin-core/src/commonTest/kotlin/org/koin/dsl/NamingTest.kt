@@ -83,6 +83,28 @@ class NamingTest {
         assertEquals(24, scope.get<Simple.MySingle>(named("24")).id)
         assertEquals(42, scope.get<Simple.MySingle>().id)
     }
+
+    @Test
+    fun same_qualifier_but_different_type() {
+        val qualifier = named("qualifier")
+        val targetString = "_another_string_"
+        val targetInt = 42
+
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single { Simple.MyIntFactory(24) }
+                    single(qualifier) { Simple.MyIntFactory(targetInt) }
+                    single { Simple.MyStringFactory("_a_string_") }
+                    single(qualifier) { Simple.MyStringFactory(targetString) }
+                },
+            )
+        }.koin
+
+        assertEquals(targetInt,koin.get<Simple.MyIntFactory>(qualifier).id)
+        assertEquals(targetString,koin.get<Simple.MyStringFactory>(qualifier).s)
+    }
 }
 
 enum class MyNames {
