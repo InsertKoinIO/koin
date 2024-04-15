@@ -9,11 +9,6 @@ public final class org/koin/compose/KoinApplicationKt {
 	public static final fun rememberCurrentKoinScope (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/scope/Scope;
 }
 
-public final class org/koin/compose/error/UnknownKoinContext : java/lang/RuntimeException {
-	public static final field $stable I
-	public fun <init> ()V
-}
-
 public final class org/koin/compose/module/CompositionKoinModuleLoader : androidx/compose/runtime/RememberObserver {
 	public static final field $stable I
 	public fun <init> (Ljava/util/List;Lorg/koin/core/Koin;ZZ)V
@@ -48,15 +43,5 @@ public final class org/koin/compose/scope/KoinScopeKt {
 
 public final class org/koin/compose/scope/RememberScopesKt {
 	public static final fun rememberKoinScope (Lorg/koin/core/scope/Scope;Landroidx/compose/runtime/Composer;I)Lorg/koin/core/scope/Scope;
-}
-
-public final class org/koin/compose/stable/StableHoldersKt {
-	public static final fun rememberStableParametersDefinition (Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lorg/koin/compose/stable/StableParametersDefinition;
-}
-
-public final class org/koin/compose/stable/StableParametersDefinition {
-	public static final field $stable I
-	public fun <init> (Lkotlin/jvm/functions/Function0;)V
-	public final fun getParametersDefinition ()Lkotlin/jvm/functions/Function0;
 }
 
