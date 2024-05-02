@@ -35,7 +35,7 @@ Starting from 3.5.0 you can use BOM-version to manage all Koin library versions.
 
 Add `koin-bom` BOM and `koin-core` dependency to your application: 
 ```kotlin
-implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koin_version"))
 implementation("io.insert-koin:koin-core")
 ```
 If you are using version catalogs:
@@ -51,7 +51,7 @@ koin-core = { module = "io.insert-koin:koin-core" }
 ```
 ```kotlin
 dependencies {
-    implementation(platform(libs.koin.bom))
+    implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
 }
 ```
