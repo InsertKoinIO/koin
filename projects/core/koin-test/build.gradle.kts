@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -13,6 +14,26 @@ kotlin {
         nodejs()
         browser()
         binaries.executable()
+
+        // To run tests
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += listOf("-XXLanguage:+JsAllowInvalidCharsIdentifiersEscaping")
+            }
+        }
+    }
+
+    wasmJs {
+        nodejs()
+        browser()
+        binaries.executable()
+
+        // To run tests
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += listOf("-XXLanguage:+JsAllowInvalidCharsIdentifiersEscaping")
+            }
+        }
     }
 
     iosX64()
@@ -50,6 +71,11 @@ tasks.withType<KotlinCompile>().all {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+rootProject.the<NodeJsRootExtension>().apply {
+    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
+    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
 }
 
 apply(from = file("../../gradle/publish.gradle.kts"))

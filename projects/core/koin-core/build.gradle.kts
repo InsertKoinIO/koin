@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -13,6 +14,26 @@ kotlin {
         nodejs()
         browser()
         binaries.executable()
+
+        // To run tests
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += listOf("-XXLanguage:+JsAllowInvalidCharsIdentifiersEscaping")
+            }
+        }
+    }
+
+    wasmJs {
+        nodejs()
+        browser()
+        binaries.executable()
+
+        // To run tests
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += listOf("-XXLanguage:+JsAllowInvalidCharsIdentifiersEscaping")
+            }
+        }
     }
 
     iosX64()
@@ -31,6 +52,8 @@ kotlin {
     linuxX64()
     linuxArm64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain.dependencies {
             api(libs.extras.stately)
@@ -40,6 +63,18 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.test.coroutines)
         }
+
+        val jsAndWasmMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        val jsMain by getting {
+            dependsOn(jsAndWasmMain)
+        }
+
+        val wasmJsMain by getting {
+            dependsOn(jsAndWasmMain)
+        }
     }
 }
 
@@ -47,6 +82,12 @@ tasks.withType<KotlinCompile>().all {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+
+rootProject.the<NodeJsRootExtension>().apply {
+    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
+    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
 }
 
 apply(from = file("../../gradle/publish.gradle.kts"))
