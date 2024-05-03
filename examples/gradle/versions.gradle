@@ -2,15 +2,15 @@ ext {
     // Kotlin
     kotlin_version = '1.9.23'
     // Koin Versions
-    koin_version = '3.6.0-Beta2'
+    koin_version = '3.6.0-Beta4'
     koin_android_version = koin_version
-    koin_compose_version = "1.2.0-Beta2"
+    koin_compose_version = "1.2.0-Beta4"
 
     coroutines_version = "1.8.0"
-    ktor_version = "2.3.9"
+    ktor_version = "2.3.10"
     // Compose
     compose_compiler = "1.5.11"
-    jb_compose_version = "1.6.1"
+    jb_compose_version = "1.6.2"
 
     // Test
     junit_version = "4.13.2"
@@ -22,5 +22,5 @@ ext {
     android_min_version = 14
     android_target_version = 34
     android_build_tools_version = '33.0.1'
-    android_gradle_version = '7.4.1'
+    android_gradle_version = '7.4.2'
 }

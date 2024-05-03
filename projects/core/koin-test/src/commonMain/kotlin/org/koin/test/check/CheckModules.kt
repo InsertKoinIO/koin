@@ -40,6 +40,7 @@ import org.koin.test.parameter.MockParameter
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
+@Deprecated("Migrate to verify() API")
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
 /**
@@ -49,6 +50,7 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  * @param parameters - parameter setup
  * @param appDeclaration - koin Application
  */
+@Deprecated("Migrate to verify() API")
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
@@ -62,6 +64,7 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
  * @param appDeclaration - Koin app config if needed
  * @param parameters - Check parameters DSL
  */
+@Deprecated("Migrate to verify() API")
 fun checkKoinModules(modules: List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
     startKoin(appDeclaration)
         .modules(modules)
@@ -98,6 +101,7 @@ fun checkKoinModules(vararg modules: Module, level: Level = Level.INFO, paramete
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
+@Deprecated("Migrate to verify() API")
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     logger.info("[Check] checking modules ...")
 
