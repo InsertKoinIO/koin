@@ -17,7 +17,6 @@ package org.koin.core.coroutine
 
 import kotlinx.coroutines.*
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.extension.KoinExtension
 import org.koin.core.logger.Logger
@@ -31,7 +30,6 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author Arnaud Giuliani
  */
-@KoinExperimentalAPI
 @KoinInternalApi
 class KoinCoroutinesEngine(coroutineDispatcher: CoroutineDispatcher? = null) : CoroutineScope, KoinExtension {
     private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: KoinPlatformCoroutinesTools.defaultCoroutineDispatcher()

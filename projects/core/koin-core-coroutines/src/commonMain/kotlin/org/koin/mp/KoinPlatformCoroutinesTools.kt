@@ -17,8 +17,9 @@ package org.koin.mp
 
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinInternalApi
 
-@KoinExperimentalAPI
+@KoinInternalApi
 expect object KoinPlatformCoroutinesTools {
     fun defaultCoroutineDispatcher(): CoroutineDispatcher
 }
