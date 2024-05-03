@@ -3,7 +3,7 @@ build/
 .idea/
 *.iml
 .gradle
-projects/local.properties
+local.properties
 classes/
 .DS_Store
 /build
