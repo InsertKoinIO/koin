@@ -11,16 +11,16 @@ dokka = "1.9.10"
 # Android
 agp = "7.4.2"
 android-appcompat = "1.6.1"
-android-activity = "1.8.2"
-android-fragment = "1.6.2"
+android-activity = "1.9.0"
+android-fragment = "1.7.0"
 androidx-viewmodel = "2.7.0"
 androidx-commonJava8 = "2.7.0"
 androidx-workmanager = "2.9.0"
 androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.6.1"
-composeJetpackRuntime = "1.6.5"
+composeJB = "1.6.2"
+composeJetpackRuntime = "1.6.7"
 composeJetpackViewmodel = "2.7.0"
 # Test
 stately = "2.0.6"
@@ -29,7 +29,7 @@ jupiter = "5.9.3"
 mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
-ktor = "2.3.9"
+ktor = "2.3.10"
 slf4j = "1.7.36"
 
 [libraries]
