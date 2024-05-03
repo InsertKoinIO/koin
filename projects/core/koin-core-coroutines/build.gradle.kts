@@ -52,6 +52,8 @@ kotlin {
     linuxX64()
     linuxArm64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
