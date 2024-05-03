@@ -21,8 +21,10 @@ package org.koin.core.module
  * Accepts a lambda that initializes a [Module] via [lazy()][lazy]
  * using [LazyThreadSafetyMode.NONE] as thread-safety [mode][LazyThreadSafetyMode].
  *
- * @author Chris Paleopanos
  * @param moduleInitializer a lambda that will be used to initialize a [Module] lazily
+ *
+ * @author Chris Paleopanos
+ * @author Arnaud Giuliani
  */
 @KoinDslMarker
 class LazyModule(moduleInitializer: () -> Module) : Lazy<Module> by lazy(LazyThreadSafetyMode.NONE, moduleInitializer) {

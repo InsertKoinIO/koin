@@ -15,14 +15,16 @@
  */
 package org.koin.core.module
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
+
+/**
+ * @author Arnaud Giuliani
+ */
 
 /**
  * Include list of `Lazy<Module>`, to be resolved only lazily
  */
 @OptIn(KoinInternalApi::class)
-@KoinExperimentalAPI
 fun Module.includes(vararg module: Lazy<Module>) {
     includedModules += module.map { it.value }
 }

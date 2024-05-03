@@ -35,7 +35,6 @@ import org.koin.core.module.Module
  *
  * run coroutinesEngine() to setup if needed
  */
-@KoinExperimentalAPI
 fun KoinApplication.lazyModules(vararg moduleList: Lazy<Module>,dispatcher: CoroutineDispatcher? = null) {
     coroutinesEngine(dispatcher)
     koin.coroutinesEngine.launchStartJob {
@@ -51,7 +50,6 @@ fun KoinApplication.lazyModules(vararg moduleList: Lazy<Module>,dispatcher: Coro
  *
  * run coroutinesEngine() to setup if needed
  */
-@KoinExperimentalAPI
 fun KoinApplication.lazyModules(moduleList: List<Lazy<Module>>,dispatcher: CoroutineDispatcher? = null) {
     coroutinesEngine(dispatcher)
     koin.coroutinesEngine.launchStartJob {

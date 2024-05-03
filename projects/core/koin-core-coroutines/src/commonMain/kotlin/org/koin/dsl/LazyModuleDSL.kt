@@ -15,10 +15,8 @@
  */
 package org.koin.dsl
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.LazyModule
-import org.koin.core.module.Module
 
 /**
  * Authors
@@ -30,6 +28,5 @@ import org.koin.core.module.Module
  *
  * @See lazyModules() function, to load Lazy module in background
  */
-@KoinExperimentalAPI
 @KoinDslMarker
 fun lazyModule(moduleDefinition: ModuleDeclaration): LazyModule = LazyModule { module(moduleDeclaration = moduleDefinition) }
