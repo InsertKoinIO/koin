@@ -245,14 +245,15 @@ class Scope(
         instanceContext: InstanceContext,
         parameterDef: ParametersDefinition?
     ) = (
+        val targetRef = "|- ? t:'${clazz.getFullName()}' - q:'$qualifier'"
             _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
         ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
+            _koin.logger.debug("$targetRef look in injected parameters")
             _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
         }
         ?: run {
             if (!isRoot){
-                _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
+                _koin.logger.debug("$targetRef look at scope source" )
                 _source?.let { source ->
                     if (clazz.isInstance(source) && qualifier == null) {
                         _source as? T
@@ -261,7 +262,7 @@ class Scope(
             } else null
         }
         ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
+            _koin.logger.debug("$targetRef look in other scopes" )
             findInOtherScope<T>(clazz, qualifier, parameterDef)
         }
         ?: run {
