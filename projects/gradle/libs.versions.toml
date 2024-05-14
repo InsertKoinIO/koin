@@ -30,7 +30,7 @@ mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
 ktor = "2.3.10"
-slf4j = "1.7.36"
+slf4j = "2.0.13"
 
 [libraries]
 # Core
