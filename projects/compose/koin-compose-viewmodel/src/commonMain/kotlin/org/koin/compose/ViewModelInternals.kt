@@ -28,6 +28,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
 @KoinInternalApi
@@ -42,7 +43,7 @@ fun <T : ViewModel> resolveViewModel(
 ): T {
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider.create(viewModelStore, factory, extras)
-    val vmKey = getViewModelKey(qualifier, key, vmClass.qualifiedName)
+    val vmKey = getViewModelKey(qualifier, key, KoinPlatformTools.getClassName(vmClass))
     return when {
         vmKey != null -> provider[vmKey, vmClass]
         else -> provider[vmClass]
