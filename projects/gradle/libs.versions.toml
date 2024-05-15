@@ -6,19 +6,20 @@
 kotlin = "1.9.23"
 binaryValidator = "0.13.2"
 publish = "2.0.0-rc-1"
-coroutines = "1.8.0" # "1.8.0-RC2" for wasm
+coroutines = "1.8.0"
 dokka = "1.9.10"
 # Android
 agp = "7.4.2"
 android-appcompat = "1.6.1"
 android-activity = "1.9.0"
 android-fragment = "1.7.1"
-androidx-lifecycle = "2.8.0"
+androidx-lifecycle = "2.8.0-rc01"
 androidx-workmanager = "2.9.0"
 androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.6.10-rc01"
+composeJB = "1.6.10-rc02"
+composeLifecycke = "2.8.0-rc02"
 composeJetpackRuntime = "1.6.7"
 # Test
 stately = "2.0.6"
@@ -58,6 +59,7 @@ ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor"
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 # Compose
 compose-jb = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeJB" }
+compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeLifecycke" }
 androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "composeJetpackRuntime" }
 androidx-composeViewModel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-composeNavigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }

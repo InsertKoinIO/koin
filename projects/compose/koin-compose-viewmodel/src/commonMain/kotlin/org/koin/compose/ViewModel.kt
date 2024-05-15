@@ -20,6 +20,7 @@ package org.koin.compose
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition

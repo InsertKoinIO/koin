@@ -21,8 +21,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":compose:koin-compose"))
-            api(libs.compose.jb)
-            api(libs.androidx.composeViewModel)
+            api(libs.compose.viewmodel)
         }
     }
 }
