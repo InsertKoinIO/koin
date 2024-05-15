@@ -22,6 +22,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":compose:koin-compose"))
             api(libs.compose.viewmodel)
+            api(libs.compose.navigation)
         }
     }
 }
