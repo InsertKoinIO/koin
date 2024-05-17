@@ -15,7 +15,7 @@
  */
 @file:Suppress("DeprecatedCallableAddReplaceWith")
 
-package org.koin.compose
+package org.koin.compose.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.core.bundle.Bundle

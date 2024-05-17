@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.koin.compose
+package org.koin.compose.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
@@ -66,8 +66,7 @@ class KoinViewModelFactory(
     private val params: ParametersDefinition? = null
 ) : ViewModelProvider.Factory {
 
-    //TODO Handle Extras/Bundle
-
+    //TODO Should handle Extras/Bundle injection here (see Android side)
     override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
         return scope.get(kClass, qualifier,params)
     }
