@@ -32,6 +32,7 @@ include(
     ":android:koin-android-test",
     // Compose
     ":compose:koin-compose",
+    ":compose:koin-compose-viewmodel",
     ":compose:koin-androidx-compose",
     ":compose:koin-androidx-compose-navigation",
     // Plugin
