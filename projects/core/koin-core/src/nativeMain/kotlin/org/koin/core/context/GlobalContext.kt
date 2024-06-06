@@ -37,7 +37,7 @@ internal class MutableGlobalContext : KoinContext {
 
     override fun getOrNull(): Koin? = _koin
 
-    fun getKoinApplicationOrNull(): KoinApplication? = _koinApplication
+    override fun getKoinApplicationOrNull(): KoinApplication? = _koinApplication
 
     private fun register(koinApplication: KoinApplication) {
         if (_koin != null) {

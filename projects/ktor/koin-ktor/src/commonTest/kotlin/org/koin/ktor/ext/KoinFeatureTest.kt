@@ -2,15 +2,16 @@ package org.koin.ktor.ext
 
 import io.ktor.server.application.*
 import io.ktor.server.testing.*
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Test
 import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.ktor.plugin.KoinIsolated
 import org.koin.mp.KoinPlatform
+import kotlin.test.AfterTest
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 /**
  * @author vinicius
@@ -24,7 +25,7 @@ class Bar2(val name: String = "")
 @OptIn(KoinReflectAPI::class)
 class KoinFeatureTest {
 
-    @After
+    @AfterTest
     fun after(){
         stopKoin()
     }

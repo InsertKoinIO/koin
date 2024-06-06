@@ -20,28 +20,27 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
-import org.junit.Before
-import org.junit.Ignore
-import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
+import kotlin.test.BeforeTest
+import kotlin.test.Ignore
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class KoinPluginRunTest {
 
-    @Before
+    @BeforeTest
     fun before(){
         stopKoin()
     }
@@ -73,7 +72,7 @@ class KoinPluginRunTest {
         }
 
         val s = embeddedServer(
-            Netty,
+            CIO,
             module = {
                 val test by inject<String>()
                 println(test)
@@ -82,30 +81,7 @@ class KoinPluginRunTest {
 
         delay(500)
         s.stop()
-        assert(counter == 1){ "counter should 1 - instance is created" }
-    }
-
-    @Test
-    @Ignore // socket exception on GH
-    fun `should can reload`()  = runBlocking<Unit> {
-        val koinModule = module {
-            single<String> {
-                "Reproduction test"
-            }
-        }
-        val s = embeddedServer(
-            Netty,
-            module = {
-                install(Koin) {
-                    modules(koinModule)
-                }
-            },
-        ).start(false)
-        delay(500)
-
-        // verify for can auto-reload
-        (s.environment as ApplicationEngineEnvironmentReloading).reload()
-        s.stop()
+        assertTrue("counter should 1 - instance is created") { counter == 1 }
     }
 }
 
