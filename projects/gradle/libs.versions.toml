@@ -55,7 +55,8 @@ androidx-navigation = { module = "androidx.navigation:navigation-fragment-ktx", 
 androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-workmanager" }
 # Ktor
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
-ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-netty = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
+ktor-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 # Compose

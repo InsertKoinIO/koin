@@ -16,11 +16,30 @@ Let's go 🚀
 
 First, add the Koin dependency like below:
 
+For JVM applications:
 ```kotlin
 dependencies {
     // Koin for Kotlin apps
     implementation "io.insert-koin:koin-ktor:$koin_version"
     implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
+}
+```
+
+For Multiplatform applications:
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            // Koin for Ktor 
+            implementation("io.insert-koin:koin-ktor:$koin_ktor")
+        }
+
+        // Optional
+        jvmMain.dependencies {
+            // SLF4J Logger
+            implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+        }
+    }
 }
 ```
 
