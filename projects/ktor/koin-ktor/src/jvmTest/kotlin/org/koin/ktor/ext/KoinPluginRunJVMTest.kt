@@ -13,6 +13,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 
+/**
+ *  @author Rafael Rain
+ */
 class KoinPluginRunJVMTest {
     @BeforeTest
     fun before(){
