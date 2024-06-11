@@ -35,6 +35,9 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
 
     val presenter : FactoryPresenter by inject { parametersOf("_MVVMActivity_id_") }
 
+    val session : Session by inject()
+    val sharedVM : SharedVM by viewModel { parametersOf(session) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // should set `lifecycleScope` here because we're
         // using MVVMActivity with scope in mvvmModule (AppModule)
@@ -81,5 +84,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         assert(scopeVm2.session.id == scopeVm2.scope.get<Session>().id)
         assert(scopeVm2.scope.get<SessionConsumer>().getSessionId() == scopeVm2.scope.get<Session>().id)
         assert(scopeVm1.session.id != scopeVm2.session.id)
+
+        println("activity sharedVM.session:${sharedVM.session}")
     }
 }

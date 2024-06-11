@@ -74,6 +74,7 @@ val mvvmModule = lazyModule {
 
     viewModelOf(::SavedStateViewModel) { named("vm2") }
 
+    viewModel { (s : Session) -> SharedVM(s)}
     scope<MVVMActivity> {
         scopedOf(::Session)
         fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }

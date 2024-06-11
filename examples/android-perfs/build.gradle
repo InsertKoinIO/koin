@@ -2,8 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace = "org.koin.sample.android"
+
     compileSdk android_target_version
-    buildToolsVersion android_build_tools_version
+//    buildToolsVersion android_build_tools_version
 
     defaultConfig {
         minSdkVersion 21
@@ -23,7 +25,7 @@ android {
 dependencies {
     // Koin
     implementation "io.insert-koin:koin-core:$koin_version"
-    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation project(":jvm-perfs")
 

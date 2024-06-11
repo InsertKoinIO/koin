@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply from: "../gradle/versions.gradle"
 
 android {
+    namespace = "org.koin.sample.androidx.compose"
     compileSdk android_target_version
     buildToolsVersion '30.0.3'
 
