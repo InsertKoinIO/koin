@@ -21,6 +21,6 @@ ext {
     // build Tools
     android_min_version = 14
     android_target_version = 34
-    android_build_tools_version = '33.0.1'
-    android_gradle_version = '7.4.2'
+    android_build_tools_version = '34.0.0'
+    android_gradle_version = '8.2.0'
 }
