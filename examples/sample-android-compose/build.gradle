@@ -45,6 +45,8 @@ dependencies {
 
     // Koin
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+//    implementation "io.insert-koin:koin-androidx-compose-viewmodel:$koin_version"
+
     implementation "io.insert-koin:koin-androidx-compose-navigation:$koin_version"
 
     // Compose
