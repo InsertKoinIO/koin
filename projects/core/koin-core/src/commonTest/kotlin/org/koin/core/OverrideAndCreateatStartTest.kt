@@ -1,11 +1,16 @@
 package org.koin.core
 
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.definition.IndexKey
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatform
 import kotlin.test.AfterTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 interface SomeClassInterface
@@ -45,8 +50,9 @@ class OverrideAndCreateatStartTest {
         stopKoin()
     }
 
+    @OptIn(KoinInternalApi::class)
     @Test
-    fun testMe() {
+    fun testDefinitionOverride() {
         startKoin {
             printLogger(Level.DEBUG)
             modules(moduleA + moduleB)
@@ -54,5 +60,9 @@ class OverrideAndCreateatStartTest {
 
         assertTrue(count == 1)
         assertTrue(created == "SomeClassB")
+        KoinPlatform.getKoin().instanceRegistry.instances.firstNotNullOf { (k: IndexKey,v: InstanceFactory<*>) ->
+            assertEquals(k, moduleB.mappings.keys.first())
+            assertEquals(v, moduleB.mappings.values.first())
+        }
     }
 }

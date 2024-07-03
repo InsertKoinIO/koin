@@ -52,7 +52,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun addAllEagerInstances(module: Module) {
         module.eagerInstances.forEach { factory ->
-            eagerInstances[factory.hashCode()] = factory
+            eagerInstances[factory.beanDefinition.hashCode()] = factory
         }
     }
 
