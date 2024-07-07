@@ -37,8 +37,8 @@ Here are the current available Koin project versions: ![](https://img.shields.io
 | [koin-android-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-android-compose-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-ktor](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/1.1.5-blue) - ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
-| [koin-compose-viewmodel](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
+| [koin-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-compose) |  ![](https://img.shields.io/badge/1.1.5-blue) - ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
+| [koin-compose-viewmodel](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-viewmodel) |  ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
 | [koin-ktor](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-logger-slf4](https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-annotations](https://mvnrepository.com/artifact/io.insert-koin/koin-annotations) |  ![](https://img.shields.io/badge/1.3.1-blue) - ![](https://img.shields.io/badge/1.4.0-alpha1-orange) |
