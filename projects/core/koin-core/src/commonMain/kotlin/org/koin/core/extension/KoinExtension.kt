@@ -25,7 +25,7 @@ import org.koin.core.Koin
 interface KoinExtension {
 
     /**
-     * register from Koin instance
+     * Register from Koin instance
      */
     fun onRegister(koin : Koin)
 
