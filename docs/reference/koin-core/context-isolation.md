@@ -61,11 +61,12 @@ To test classes that are retrieving dependencies with `by inject()` delegate ove
 
 ```kotlin
 class MyClassTest : KoinTest {
-    // Koin Context used to retrieve bindings
+    // Koin Context used to retrieve dependencies
     override fun getKoin(): Koin = MyIsolatedKoinContext.koin
 
     @Before
     fun setUp() {
+       // Define custom Koin module
         val module = module {
             // Register dependencies
         }
