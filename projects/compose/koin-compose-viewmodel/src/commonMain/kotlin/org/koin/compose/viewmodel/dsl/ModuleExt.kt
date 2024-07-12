@@ -21,7 +21,7 @@ import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 
-//TODO Ported from Android side
+//TODO DEPRECATE in favor of koin-viewmodel to mutualise ViewModel DSL for Android and Compose
 
 /**
  * ViewModel DSL Extension

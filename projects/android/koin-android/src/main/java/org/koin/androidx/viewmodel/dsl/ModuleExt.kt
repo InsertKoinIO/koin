@@ -23,6 +23,8 @@ import org.koin.core.instance.newInstance
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 
+//TODO DEPRECATE in favor of koin-viewmodel to mutualise ViewModel DSL for Android and Compose
+
 /**
  * ViewModel DSL Extension
  * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
