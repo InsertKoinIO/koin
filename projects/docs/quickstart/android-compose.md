@@ -125,7 +125,7 @@ The `koinViewModel` function allows us to retrieve a ViewModel instances, create
 
 ### The `UserStateHolder` class
 
-Let's write a ViewModel component to display a user:
+Let's write a State holder component to display a user:
 
 ```kotlin
 class UserStateHolder(private val repository: UserRepository) {
@@ -139,7 +139,7 @@ class UserStateHolder(private val repository: UserRepository) {
 
 > UserRepository is referenced in UserViewModel's constructor
 
-We declare `UserViewModel` in our Koin module. We declare it as a `viewModel` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
+We declare `UserStateHolder` in our Koin module. We declare it as a `factory` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
 
 ```kotlin
 val appModule = module {
@@ -150,17 +150,17 @@ val appModule = module {
 
 ### Injecting UserStateHolder in Compose
 
-The `UserViewModel` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `get()` function: 
+The `UserStateHolder` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `koinInject()` function: 
 
 ```kotlin
 @Composable
-fun FactoryInject(userName : String, presenter: UserStateHolder = get()){
+fun FactoryInject(userName : String, presenter: UserStateHolder = koinInject()){
     Text(text = presenter.sayHello(userName), modifier = Modifier.padding(8.dp))
 }
 ```
 
 :::info
-The `get` function allows us to retrieve a ViewModel instances, create the associated ViewModel Factory for you and bind it to the lifecycle
+The `koinInject` function allows us to retrieve a ViewModel instances, create the associated ViewModel Factory for you and bind it to the lifecycle
 :::
 
 
@@ -217,7 +217,7 @@ Add the Koin Android dependency like below:
 ```groovy
 // Add Maven Central to your repositories if needed
 repositories {
-	mavenCentral()    
+    mavenCentral()    
 }
 
 dependencies {
