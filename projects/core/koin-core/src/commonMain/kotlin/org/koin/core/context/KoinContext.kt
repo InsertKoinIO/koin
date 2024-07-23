@@ -38,6 +38,11 @@ interface KoinContext {
     fun getOrNull(): Koin?
 
     /**
+     * Get Koin Application instance
+     */
+    fun getKoinApplicationOrNull(): KoinApplication?
+
+    /**
      * Stop current Koin instance
      */
     fun stopKoin()

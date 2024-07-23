@@ -1,18 +1,40 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlinMultiplatform)
 }
 
-dependencies {
-    api(project(":core:koin-core"))
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.test.junit)
+kotlin {
+    jvm {
+        withJava()
+    }
 
-    // Ktor
-    api(libs.ktor.core)
-    testImplementation(libs.ktor.netty)
-    testImplementation(libs.ktor.testHost)
+    macosX64()
+    macosArm64()
+    mingwX64()
+    linuxX64()
+    linuxArm64()
+
+    sourceSets {
+        commonMain.dependencies {
+            api(project(":core:koin-core"))
+
+            // Ktor
+            api(libs.ktor.core)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+
+            // Ktor
+            implementation(libs.ktor.testHost)
+            implementation(libs.ktor.cio)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.ktor.netty)
+        }
+    }
 }
 
 tasks.withType<KotlinCompile>().all {
@@ -20,13 +42,5 @@ tasks.withType<KotlinCompile>().all {
         jvmTarget = "1.8"
     }
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_11 // or the desired Java version
-    targetCompatibility = JavaVersion.VERSION_11 // or the desired Java version
-}
-val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.map { it.allSource.sourceDirectories })
-}
 
-apply(from = file("../../gradle/publish-java.gradle.kts"))
+apply(from = file("../../gradle/publish.gradle.kts"))

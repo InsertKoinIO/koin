@@ -185,6 +185,25 @@ dependencies {
 }
 ```
 
+If you are using Kotlin Multiplatform:
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            // Koin for Ktor 
+            implementation("io.insert-koin:koin-ktor:$koin_ktor")
+        }
+
+        // Optional
+        jvmMain.dependencies {
+            // SLF4J Logger
+            implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+        }
+    }
+}
+```
+
+
 You are now ready to install Koin feature into your Ktor application:
 
 ```kotlin
