@@ -1,5 +1,6 @@
 package org.koin.core
 
+import org.koin.ComplexQualifier
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -9,7 +10,11 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class ClosedScopeAPI {
 
@@ -58,6 +63,35 @@ class ClosedScopeAPI {
         val all = listOf(scope1.get<Simple.ComponentA>(), scope2.get<Simple.ComponentA>())
         val expected = scope1.getAll<Simple.ComponentA>()
         assertEquals(expected, all)
+    }
+
+    @Test
+    fun `get all definition from current scope and linked scopes with qualifier predicate`() {
+        val q1 = ComplexQualifier(1, "asd")
+        val q2 = ComplexQualifier(1, "qwe")
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    scope(named<ScopeType>()) {
+                        scoped(q1) { Simple.ComponentA() }
+                    }
+                    scope(named<ScopeType2>()) {
+                        scoped(q2) { Simple.ComponentA() }
+                    }
+                    scope(named<ScopeType2>()) {
+                        scoped(ComplexQualifier(2, "zxc")) { Simple.ComponentA() }
+                    }
+                },
+            )
+        }.koin
+
+        val scope1 = koin.createScope("scope1", named<ScopeType>())
+        val scope2 = koin.createScope("scope2", named<ScopeType2>())
+        scope1.linkTo(scope2)
+        val expected = listOf(scope1.get<Simple.ComponentA>(q1), scope2.get<Simple.ComponentA>(q2))
+        val actual = scope1.getAll<Simple.ComponentA> { (it as? ComplexQualifier)?.value1 == 1 }
+        assertEquals(expected, actual)
     }
 
     @Test
