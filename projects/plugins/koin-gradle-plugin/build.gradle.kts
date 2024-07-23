@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -11,13 +12,13 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile>().all {
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 java {
-    sourceCompatibility = JavaVersion.VERSION_11 // or the desired Java version
-    targetCompatibility = JavaVersion.VERSION_11 // or the desired Java version
+    sourceCompatibility = JavaVersion.VERSION_1_8 // or the desired Java version
+    targetCompatibility = JavaVersion.VERSION_1_8 // or the desired Java version
 }
 val sourcesJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
     archiveClassifier.set("sources")
