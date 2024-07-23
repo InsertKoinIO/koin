@@ -7,6 +7,7 @@ val androidCompileSDK : String by project
 val androidMinSDK : String by project
 
 android {
+    namespace = "org.koin.androidx.workmanager"
     compileSdk = androidCompileSDK.toInt()
     defaultConfig {
         minSdk = androidMinSDK.toInt()

@@ -3,13 +3,14 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.compose.compiler)
 }
 
 val androidCompileSDK : String by project
 val androidMinSDK : String by project
-val jetpackComposeCompiler : String by project
 
 android {
+    namespace = "org.koin.androidx.compose.navigation"
     compileSdk = androidCompileSDK.toInt()
     defaultConfig {
         minSdk = androidMinSDK.toInt()
@@ -17,9 +18,6 @@ android {
     buildFeatures {
         buildConfig = false
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = jetpackComposeCompiler
     }
 }
 

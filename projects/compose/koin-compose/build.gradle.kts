@@ -3,11 +3,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
-val koinComposeVersion: String by project
-version = koinComposeVersion
+val koinVersion: String by project
+version = koinVersion
 
 kotlin {
     jvm {

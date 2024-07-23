@@ -3,11 +3,11 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 binaryValidator = "0.13.2"
 publish = "2.0.0"
 coroutines = "1.8.1"
-dokka = "1.9.10"
+dokka = "1.9.20"
 # Android
 agp = "7.4.2"
 android-appcompat = "1.7.0"
@@ -18,7 +18,7 @@ androidx-workmanager = "2.9.0"
 androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.6.10"
+composeJB = "1.6.11"
 composeLifecycle = "2.8.0"
 composeNavigation = "2.7.0-alpha07"
 composeJetpackRuntime = "1.6.7"
@@ -70,7 +70,8 @@ androidx-composeNavigation = { module = "androidx.navigation:navigation-compose"
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-compose = { id = "org.jetbrains.compose", version.ref = "composeJB" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "composeJB" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 # Tools
 kotlinBinary = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryValidator" }
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish" }
