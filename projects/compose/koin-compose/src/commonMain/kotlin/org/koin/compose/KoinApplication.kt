@@ -85,7 +85,7 @@ private fun Koin.warnNoContext() {
  * @param application - Koin Application declaration lambda (like startKoin)
  * @param content - following compose function
  *
- * @throws ApplicationAlreadyStartedException
+ * @throws KoinApplicationAlreadyStartedException
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
