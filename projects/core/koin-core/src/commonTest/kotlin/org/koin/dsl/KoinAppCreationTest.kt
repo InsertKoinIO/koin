@@ -3,7 +3,7 @@ package org.koin.dsl
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.logger.Level
 import org.koin.mp.KoinPlatformTools
 import org.koin.test.assertDefinitionsCount
@@ -61,7 +61,7 @@ class KoinAppCreationTest {
         try {
             startKoin { }
             fail("should throw  KoinAppAlreadyStartedException")
-        } catch (e: KoinAppAlreadyStartedException) {
+        } catch (e: KoinApplicationAlreadyStartedException) {
             e.printStackTrace()
         }
     }

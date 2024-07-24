@@ -29,13 +29,6 @@ import org.koin.ext.getFullName
 interface KoinScopeComponent : KoinComponent {
 
     val scope: Scope
-
-    @Deprecated("not used internaly anymore")
-    fun closeScope() {
-        if (scope.isNotClosed()) {
-            scope.close()
-        }
-    }
 }
 
 fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + this.hashCode()

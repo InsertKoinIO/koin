@@ -2,7 +2,7 @@ package org.koin.core
 
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
-import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -238,7 +238,7 @@ class DeclareInstanceTest {
         try {
             koin.get<Simple.ComponentA>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }

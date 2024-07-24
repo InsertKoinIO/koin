@@ -3,7 +3,7 @@ package org.koin.core
 import org.koin.Errors
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
-import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
@@ -19,7 +19,7 @@ class ErrorCheckTest {
         try {
             app.koin.get<Simple.ComponentA>()
             fail("should not get instance")
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }

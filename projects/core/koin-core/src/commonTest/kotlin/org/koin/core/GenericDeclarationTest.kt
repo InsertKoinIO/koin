@@ -1,6 +1,6 @@
 package org.koin.core
 
-import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -32,7 +32,7 @@ class GenericDeclarationTest {
         try {
             koin.get<List<String>>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             assertNotNull(e)
         }
     }
