@@ -1,6 +1,6 @@
 Benchmark                         Mode  Cnt   Score    Error  Units
-BenchmarkClass.emptyStart         avgt   10  ≈ 10⁻³           ms/op
-BenchmarkClass.flattenIterative   avgt   10   0.643 ±  0.112  ms/op
-BenchmarkClass.flattenRecursive   avgt   10   1.297 ±  0.043  ms/op
-BenchmarkClass.start400           avgt   10   0.297 ±  0.053  ms/op
-BenchmarkClass.start400AndInject  avgt   10   0.283 ±  0.007  ms/op
+BenchmarkClass.emptyStart         avgt   10  ≈ 10⁻⁴           ms/op
+BenchmarkClass.flattenIterative   avgt   10   0,544 ±  0,033  ms/op
+BenchmarkClass.flattenRecursive   avgt   10   0,318 ±  0,009  ms/op
+BenchmarkClass.start400           avgt   10   0,219 ±  0,005  ms/op
+BenchmarkClass.start400AndInject  avgt   10   0,221 ±  0,007  ms/op
