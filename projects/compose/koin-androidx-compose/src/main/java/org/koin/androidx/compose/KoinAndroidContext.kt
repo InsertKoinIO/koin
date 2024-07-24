@@ -48,7 +48,6 @@ import org.koin.mp.KoinPlatformTools
  * @author jjkester
  */
 @Composable
-@KoinExperimentalAPI
 fun KoinAndroidContext(
     content: @Composable () -> Unit
 ) {

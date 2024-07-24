@@ -42,7 +42,6 @@ import org.koin.core.scope.Scope
  */
 
 @OptIn(KoinInternalApi::class)
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T : ViewModel> koinViewModel(
     qualifier: Qualifier? = null,
