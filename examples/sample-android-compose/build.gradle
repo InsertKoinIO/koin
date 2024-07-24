@@ -36,10 +36,6 @@ android {
     buildFeatures {
         compose true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion compose_compiler
-    }
 }
 
 dependencies {
