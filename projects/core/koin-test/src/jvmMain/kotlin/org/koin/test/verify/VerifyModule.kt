@@ -1,7 +1,5 @@
 package org.koin.test.verify
 
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
 import org.koin.core.time.Timer
 import kotlin.reflect.KClass
@@ -13,7 +11,6 @@ import kotlin.reflect.KClass
  * @param extraTypes - allow to declare extra type, to be bound above the existing definitions
  * @throws MissingKoinDefinitionException
  */
-@KoinExperimentalAPI
 fun Module.verify(extraTypes: List<KClass<*>> = listOf()) = Verify.verify(this, extraTypes)
 
 /**
@@ -21,7 +18,6 @@ fun Module.verify(extraTypes: List<KClass<*>> = listOf()) = Verify.verify(this, 
  *
  * @see Module.verify
  */
-@KoinExperimentalAPI
 fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = listOf()) {
     forEach { module -> module.verify(extraTypes) }
 }
@@ -31,8 +27,6 @@ fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = listOf()) {
  *
  * Help to check current factory of a Module
  */
-@OptIn(KoinInternalApi::class)
-@KoinExperimentalAPI
 object Verify {
 
     internal val primitiveTypes = listOf(
