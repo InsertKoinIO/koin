@@ -4,7 +4,7 @@
 
 # Core
 kotlin = "2.0.0"
-binaryValidator = "0.13.2"
+binaryValidator = "0.16.0"
 publish = "2.0.0"
 coroutines = "1.8.1"
 dokka = "1.9.20"
