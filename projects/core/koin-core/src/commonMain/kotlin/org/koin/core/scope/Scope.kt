@@ -19,7 +19,6 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
-import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.InstanceContext
 import org.koin.core.logger.Level
@@ -178,7 +177,7 @@ class Scope(
         } catch (e: ClosedScopeException) {
             _koin.logger.debug("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
             null
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             _koin.logger.debug("* No instance found for type '${clazz.getFullName()}' on scope '${toString()}'")
             null
         }

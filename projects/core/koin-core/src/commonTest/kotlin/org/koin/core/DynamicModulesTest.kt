@@ -4,7 +4,7 @@ import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.context.*
 import org.koin.core.definition.Kind
-import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -41,7 +41,7 @@ class DynamicModulesTest : KoinCoreTest() {
         try {
             app.koin.get<Simple.ComponentA>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }
@@ -69,14 +69,14 @@ class DynamicModulesTest : KoinCoreTest() {
         try {
             app.koin.get<Simple.Component1>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
 
         try {
             app.koin.get<Simple.ComponentInterface1>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }
@@ -107,7 +107,7 @@ class DynamicModulesTest : KoinCoreTest() {
         try {
             app.koin.get<Simple.ComponentB>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }
@@ -138,7 +138,7 @@ class DynamicModulesTest : KoinCoreTest() {
         try {
             app.koin.get<Simple.ComponentB>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }
@@ -166,7 +166,7 @@ class DynamicModulesTest : KoinCoreTest() {
         try {
             app.koin.get<Simple.MySingle>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }
@@ -309,7 +309,7 @@ class DynamicModulesTest : KoinCoreTest() {
         try {
             scope.get<Simple.ComponentA>()
             fail()
-        } catch (e: NoBeanDefFoundException) {
+        } catch (e: NoDefinitionFoundException) {
             e.printStackTrace()
         }
     }

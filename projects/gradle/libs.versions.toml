@@ -4,7 +4,7 @@
 
 # Core
 kotlin = "2.0.0"
-binaryValidator = "0.13.2"
+binaryValidator = "0.16.0"
 publish = "2.0.0"
 coroutines = "1.8.1"
 dokka = "1.9.20"
@@ -12,24 +12,24 @@ dokka = "1.9.20"
 agp = "7.4.2"
 android-appcompat = "1.7.0"
 android-activity = "1.9.0"
-android-fragment = "1.7.1"
-androidx-lifecycle = "2.8.1"
+android-fragment = "1.8.1"
+androidx-lifecycle = "2.8.3"
 androidx-workmanager = "2.9.0"
 androidx-navigation = "2.7.7"
 # Compose
 # /!\ Compose compiler in gradle.properties /!\
 composeJB = "1.6.11"
 composeLifecycle = "2.8.0"
-composeNavigation = "2.7.0-alpha07"
-composeJetpackRuntime = "1.6.7"
+composeNavigation = "2.8.0-alpha08"
+composeJetpackRuntime = "1.6.8"
 # Test
-stately = "2.0.6"
+stately = "2.0.7"
 junit = "4.13.2"
 jupiter = "5.9.3"
 mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
-ktor = "2.3.10"
+ktor = "2.3.12"
 slf4j = "2.0.13"
 
 [libraries]

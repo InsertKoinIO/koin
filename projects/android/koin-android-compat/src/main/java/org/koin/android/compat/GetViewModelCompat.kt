@@ -16,18 +16,15 @@
 package org.koin.android.compat
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewmodel.CreationExtras
-import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
-@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
+// TODO - scope is not used for ViewModel creation. This will fallback to root scope
 @KoinInternalApi
 fun <T : ViewModel> resolveViewModelCompat(
     vmClass: Class<T>,

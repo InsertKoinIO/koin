@@ -41,21 +41,3 @@ annotation class KoinInternalApi
     AnnotationTarget.CONSTRUCTOR,
 )
 annotation class KoinExperimentalAPI
-
-/**
- * API marked with this annotation is using reflection
- *
- * @author Arnaud Giuliani
- * @author Victor Alenkov
- */
-@RequiresOptIn(message = "This API is using reflection and implies some introspection performance penalties on limited capacity devices (Android)", level = RequiresOptIn.Level.WARNING)
-@Target(
-    AnnotationTarget.CLASS,
-    AnnotationTarget.TYPEALIAS,
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.PROPERTY,
-    AnnotationTarget.FIELD,
-    AnnotationTarget.CONSTRUCTOR,
-)
-@Deprecated("Koin Reflection API is deprecated")
-annotation class KoinReflectAPI

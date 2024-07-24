@@ -15,7 +15,6 @@
  */
 package org.koin.androidx.viewmodel.ext.android
 
-import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment

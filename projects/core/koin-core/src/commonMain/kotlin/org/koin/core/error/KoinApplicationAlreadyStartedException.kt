@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.test.category
+package org.koin.core.error
 
-interface CheckModuleTest
+/**
+ * Koin standalone app is already started error
+ */
+class KoinApplicationAlreadyStartedException(msg: String) : Exception(msg)

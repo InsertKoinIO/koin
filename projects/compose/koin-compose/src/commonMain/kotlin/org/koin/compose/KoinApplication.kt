@@ -26,7 +26,7 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
-import org.koin.core.error.ApplicationAlreadyStartedException
+import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.mp.KoinPlatform
@@ -72,19 +72,6 @@ fun getKoin(): Koin = LocalKoinApplication.current
 @ReadOnlyComposable
 fun currentKoinScope(): Scope = LocalKoinScope.current
 
-/**
- * Retrieve the current Koin scope from the composition
- *
- * @author @author jjkester
- *
- */
-@Deprecated(
-    message = "Use currentKoinScope() instead",
-    replaceWith = ReplaceWith("currentKoinScope()")
-)
-@Composable
-fun rememberCurrentKoinScope(): Scope = currentKoinScope()
-
 @OptIn(KoinInternalApi::class)
 private fun Koin.warnNoContext() {
     logger.info("[Warning] - No Koin context defined in Compose, fallback to default Koin context." +
@@ -103,7 +90,7 @@ private fun Koin.warnNoContext() {
  */
 @OptIn(KoinInternalApi::class)
 @Composable
-@Throws(ApplicationAlreadyStartedException::class)
+@Throws(KoinApplicationAlreadyStartedException::class)
 fun KoinApplication(
     application: KoinAppDeclaration,
     content: @Composable () -> Unit
@@ -111,7 +98,7 @@ fun KoinApplication(
     val koinApplication = remember(application) {
         val alreadyExists = KoinPlatformTools.defaultContext().getOrNull() != null
         if (alreadyExists) {
-            throw ApplicationAlreadyStartedException("Trying to run new Koin Application whereas Koin is already started. Use 'KoinContext()' instead of check for any 'startKoin' usage. ")
+            throw KoinApplicationAlreadyStartedException("Trying to run new Koin Application whereas Koin is already started. Use 'KoinContext()' instead of check for any 'startKoin' usage. ")
         } else {
             startKoin(application)
         }

@@ -17,7 +17,7 @@ class ClassA : IClassA
 class ClassB(val a: IClassA)
 interface IClassA
 
-class LazyModuleOperatorTest {
+class JVMLazyModuleOperatorTest {
 
     @Test
     fun test_include() {
