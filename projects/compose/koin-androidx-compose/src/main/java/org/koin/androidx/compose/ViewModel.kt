@@ -22,9 +22,7 @@ import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.androidx.viewmodel.resolveViewModel
-import org.koin.compose.LocalKoinScope
 import org.koin.compose.currentKoinScope
-import org.koin.compose.rememberCurrentKoinScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -38,22 +36,6 @@ import org.koin.core.scope.Scope
  *
  * @author Arnaud Giuliani
  */
-
-@Composable
-@Deprecated("use koinViewModel() instead", replaceWith = ReplaceWith("koinViewModel"))
-inline fun <reified T : ViewModel> getViewModel(
-    qualifier: Qualifier? = null,
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    },
-    key: String? = null,
-    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
-    scope: Scope = rememberCurrentKoinScope(),
-    noinline parameters: ParametersDefinition? = null,
-): T {
-    return koinViewModel(qualifier, viewModelStoreOwner, key, extras, scope, parameters)
-}
-
 @OptIn(KoinInternalApi::class)
 @Composable
 inline fun <reified T : ViewModel> koinViewModel(

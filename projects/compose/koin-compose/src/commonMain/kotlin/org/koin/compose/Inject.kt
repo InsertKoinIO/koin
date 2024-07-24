@@ -48,21 +48,3 @@ inline fun <reified T> koinInject(
         }
     }
 }
-
-/**
- * alias of koinInject()
- *
- * @see koinInject
- *
- * @author Arnaud Giuliani
- */
-@Composable
-@Deprecated(
-    message = "Use koinInject() instead",
-    replaceWith = ReplaceWith("koinInject<T>(qualifier, scope, parameters)")
-)
-inline fun <reified T> rememberKoinInject(
-    qualifier: Qualifier? = null,
-    scope: Scope = rememberCurrentKoinScope(),
-    noinline parameters: ParametersDefinition? = null,
-): T = koinInject(qualifier, scope, parameters)

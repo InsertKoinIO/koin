@@ -24,7 +24,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
 @OptIn(KoinInternalApi::class)
-@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
+// TODO - scope is not used for ViewModel creation. This will fallback to root scope
 @KoinInternalApi
 fun <T : ViewModel> resolveViewModelCompat(
     vmClass: Class<T>,

@@ -24,8 +24,8 @@ import android.os.Bundle
  *
  * @author Arnaud Giuliani
  */
-@Deprecated("Replaced by CreationExtras API")
+//TODO Replace with CreationExtras API
 fun emptyState(): BundleDefinition = { Bundle() }
 
-@Deprecated("Replaced by CreationExtras API")
+//TODO Replace with CreationExtras API
 typealias BundleDefinition = () -> Bundle
