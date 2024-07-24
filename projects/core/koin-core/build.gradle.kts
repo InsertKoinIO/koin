@@ -45,6 +45,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.extras.stately)
             api(libs.extras.stately.collections)
+            api(libs.extras.uuid)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

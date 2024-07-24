@@ -27,6 +27,7 @@ import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.dsl.ScopeDSL
 import org.koin.mp.KoinPlatformTools
+import org.koin.mp.generateId
 
 /**
  * Koin Module

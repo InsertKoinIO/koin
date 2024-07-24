@@ -15,6 +15,7 @@
  */
 package org.koin.mp
 
+import com.benasher44.uuid.uuid4
 import org.koin.core.context.KoinContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
@@ -23,7 +24,6 @@ import kotlin.reflect.KClass
 expect object KoinPlatformTools {
     fun getStackTrace(e: Exception): String
     fun getClassName(kClass: KClass<*>): String
-    fun generateId(): String
     fun defaultLazyMode(): LazyThreadSafetyMode
     fun defaultLogger(level: Level = Level.INFO): Logger
     fun defaultContext(): KoinContext
@@ -31,10 +31,5 @@ expect object KoinPlatformTools {
     fun <K, V> safeHashMap(): MutableMap<K, V>
 }
 
-expect open class Lockable()
+fun KoinPlatformTools.generateId() : String = uuid4().toString()
 
-expect open class ThreadLocal<T>() {
-    fun get(): T?
-    fun set(value: T?)
-    fun remove()
-}

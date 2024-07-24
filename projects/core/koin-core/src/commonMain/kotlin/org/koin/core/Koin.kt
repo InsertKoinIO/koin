@@ -35,6 +35,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.time.measureDuration
 import org.koin.mp.KoinPlatformTools
+import org.koin.mp.generateId
 import kotlin.reflect.KClass
 
 /**
