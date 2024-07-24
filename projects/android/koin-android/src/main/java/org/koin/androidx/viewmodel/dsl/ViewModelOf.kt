@@ -17,7 +17,6 @@
 package org.koin.androidx.viewmodel.dsl
 
 import androidx.lifecycle.ViewModel
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.DefinitionOptions

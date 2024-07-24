@@ -17,9 +17,7 @@
 package org.koin.androidx.workmanager.dsl
 
 import androidx.work.ListenableWorker
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.DefinitionOptions
 import org.koin.core.module.dsl.new

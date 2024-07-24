@@ -49,10 +49,6 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
  * @param useParentActivityScope - check parent Activity scope to link it to current Fragment's scope
  */
 fun Fragment.fragmentScope(useParentActivityScope : Boolean = true) = lazy { createFragmentScope(useParentActivityScope) }
-
-@Deprecated("Unused Internal API")
-internal fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
-
 fun Fragment.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 val Fragment.scopeActivity: ScopeActivity? get() = activity as? ScopeActivity
 inline fun <reified T : ScopeActivity> Fragment.requireScopeActivity(): T = activity as? T ?: error("can't get ScopeActivity for class ${T::class}")

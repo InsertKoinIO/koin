@@ -16,10 +16,8 @@
 package org.koin.androidx.fragment.dsl
 
 import androidx.fragment.app.Fragment
-import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.instance.newInstance
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeDSL
 
@@ -36,9 +34,3 @@ inline fun <reified T : Fragment> ScopeDSL.fragment(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
 ): KoinDefinition<T> = factory(qualifier, definition)
-
-@KoinReflectAPI
-@Deprecated("API is deprecated in favor of fragmentOf DSL")
-inline fun <reified T : Fragment> ScopeDSL.fragment(
-    qualifier: Qualifier? = null
-): KoinDefinition<T> = factory(qualifier) { newInstance(it) }

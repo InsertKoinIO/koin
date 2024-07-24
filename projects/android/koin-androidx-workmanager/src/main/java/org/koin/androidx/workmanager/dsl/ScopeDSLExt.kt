@@ -16,10 +16,8 @@
 package org.koin.androidx.workmanager.dsl
 
 import androidx.work.ListenableWorker
-import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.instance.newInstance
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.ScopeDSL
@@ -35,16 +33,6 @@ inline fun <reified T : ListenableWorker> ScopeDSL.worker(
     noinline definition: Definition<T>
 ): KoinDefinition<T> {
     val factory = factory(qualifier, definition)
-    factory.bind<ListenableWorker>()
-    return factory
-}
-
-@KoinReflectAPI
-@Deprecated("API is deprecated in favor of workerOf DSL")
-inline fun <reified T : ListenableWorker> ScopeDSL.worker(
-    qualifier: Qualifier = named<T>()
-): KoinDefinition<T> {
-    val factory = factory(qualifier) { newInstance<T>(it) }
     factory.bind<ListenableWorker>()
     return factory
 }
