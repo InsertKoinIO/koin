@@ -94,7 +94,7 @@ Koin offers you a way to load specific modules for a given Composable function. 
 @Preview
 fun MyComponentComposable() {
     // load module at first call of this component
-    rememberKoinModules(myModule)
+    rememberKoinModules { listOf(myModule) }
 }
 ```
 
