@@ -16,8 +16,8 @@ actual object KoinPlatformTools {
     }
 
     actual fun getStackTrace(e: Exception): String = e.toString() + Exception().toString().split("\n")
-    actual fun getClassName(kClass: KClass<*>): String = kClass.qualifiedName ?: "KClass@${kClass.hashCode()}"
-
+    actual fun getClassName(kClass: KClass<*>): String = kClass.qualifiedName ?: getKClassDefaultName(kClass)
+    actual fun getClassFullNameOrNull(kClass: KClass<*>): String? = kClass.qualifiedName
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.PUBLICATION
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = defaultContext
