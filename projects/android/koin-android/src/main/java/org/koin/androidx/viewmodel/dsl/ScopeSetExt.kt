@@ -31,7 +31,9 @@ import org.koin.dsl.ScopeDSL
  *
  * @param qualifier - definition qualifier
  * @param definition - allow definition override
+ *
  */
+@Deprecated("Moved ViewModel DSL package. Remove old imports and use org.koin.core.module.dsl.*")
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>

@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
 }
 
 val koinVersion: String by project
@@ -37,7 +35,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
-            api(libs.jb.composeRuntime)
+            api(libs.jb.lifecycleViewmodel)
+            api(libs.jb.lifecycleViewmodelSavedState)
+            api(libs.jb.bundle)
+            api(libs.jb.savedstate)
+            api(libs.jb.navigation)
         }
     }
 }

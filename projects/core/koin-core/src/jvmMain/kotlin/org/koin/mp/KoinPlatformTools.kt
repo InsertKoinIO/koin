@@ -28,6 +28,7 @@ import kotlin.reflect.KClass
 actual object KoinPlatformTools {
     actual fun getStackTrace(e: Exception): String = e.toString() + InstanceFactory.ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }.joinToString(InstanceFactory.ERROR_SEPARATOR)
     actual fun getClassName(kClass: KClass<*>): String = kClass.java.name
+    actual fun getClassFullNameOrNull(kClass: KClass<*>): String? = kClass.qualifiedName
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext

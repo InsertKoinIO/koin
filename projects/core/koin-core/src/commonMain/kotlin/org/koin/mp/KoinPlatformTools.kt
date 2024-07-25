@@ -24,6 +24,7 @@ import kotlin.reflect.KClass
 expect object KoinPlatformTools {
     fun getStackTrace(e: Exception): String
     fun getClassName(kClass: KClass<*>): String
+    fun getClassFullNameOrNull(kClass: KClass<*>): String?
     fun defaultLazyMode(): LazyThreadSafetyMode
     fun defaultLogger(level: Level = Level.INFO): Logger
     fun defaultContext(): KoinContext
@@ -31,5 +32,6 @@ expect object KoinPlatformTools {
     fun <K, V> safeHashMap(): MutableMap<K, V>
 }
 
+fun KoinPlatformTools.getKClassDefaultName(kClass: KClass<*>) : String = "KClass@${kClass.hashCode()}"
 fun KoinPlatformTools.generateId() : String = uuid4().toString()
 

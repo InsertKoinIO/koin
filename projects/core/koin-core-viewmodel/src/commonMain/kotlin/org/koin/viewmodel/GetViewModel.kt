@@ -1,16 +1,18 @@
-package org.koin.androidx.viewmodel
+package org.koin.viewmodel
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewmodel.CreationExtras
-import org.koin.androidx.viewmodel.factory.KoinViewModelFactory
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.mp.KoinPlatformTools
+import org.koin.mp.getKClassDefaultName
+import org.koin.viewmodel.factory.KoinViewModelFactory
 import kotlin.reflect.KClass
 
 /**
@@ -34,19 +36,18 @@ fun <T : ViewModel> resolveViewModel(
     scope: Scope,
     parameters: ParametersDefinition? = null,
 ): T {
-    val modelClass: Class<T> = vmClass.java
-    //TODO In 3.6 - propose to resolve scope strictly from root or not
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
-    val provider = ViewModelProvider(viewModelStore, factory, extras)
-    val vmKey = getViewModelKey(qualifier, key, modelClass.canonicalName)
+    val provider = ViewModelProvider.create(viewModelStore, factory, extras)
+    val className = KoinPlatformTools.getClassFullNameOrNull(vmClass) ?: KoinPlatformTools.getKClassDefaultName(vmClass)
+    val vmKey = getViewModelKey(qualifier, key, className)
     return when {
-        vmKey != null -> provider[vmKey, modelClass]
-        else -> provider[modelClass]
+        vmKey != null -> provider[vmKey, vmClass]
+        else -> provider[vmClass]
     }
 }
 
 @KoinInternalApi
-internal fun getViewModelKey(qualifier: Qualifier? = null, key: String? = null, className: String? = null): String? {
+fun getViewModelKey(qualifier: Qualifier? = null, key: String? = null, className: String? = null): String? {
     return when {
         key != null -> key
         qualifier != null -> qualifier.value + (className?.let { "_$className" } ?: "")

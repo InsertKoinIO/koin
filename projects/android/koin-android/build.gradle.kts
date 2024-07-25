@@ -32,6 +32,7 @@ tasks.withType<KotlinCompile>().all {
 
 dependencies {
     api(project(":core:koin-core"))
+    api(project(":core:koin-core-viewmodel"))
     api(libs.android.appcompat)
     api(libs.android.activity)
     api(libs.android.fragment)

@@ -22,6 +22,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.viewmodel.resolveViewModel
 
 @OptIn(KoinInternalApi::class)
 // TODO - scope is not used for ViewModel creation. This will fallback to root scope
@@ -34,4 +35,4 @@ fun <T : ViewModel> resolveViewModelCompat(
     qualifier: Qualifier? = null,
     scope: Scope,
     parameters: ParametersDefinition? = null,
-): T = org.koin.androidx.viewmodel.resolveViewModel(vmClass.kotlin, viewModelStore, key, extras, qualifier, scope, parameters)
+): T = resolveViewModel(vmClass.kotlin, viewModelStore, key, extras, qualifier, scope, parameters)

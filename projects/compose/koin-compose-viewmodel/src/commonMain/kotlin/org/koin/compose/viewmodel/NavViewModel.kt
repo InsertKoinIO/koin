@@ -27,6 +27,8 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.viewmodel.defaultNavExtras
+import org.koin.viewmodel.resolveViewModel
 
 /*
     Ported directly from Android side. Waiting more feedback

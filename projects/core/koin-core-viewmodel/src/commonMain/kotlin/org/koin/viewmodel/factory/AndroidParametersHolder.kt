@@ -1,4 +1,4 @@
-package org.koin.androidx.viewmodel.parameter
+package org.koin.viewmodel.factory
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.createSavedStateHandle
@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 class AndroidParametersHolder(
     initialValues: ParametersDefinition? = null,
-    val extras: CreationExtras,
+    private val extras: CreationExtras,
 ) : ParametersHolder(initialValues?.invoke()?.values?.toMutableList() ?: mutableListOf()) {
 
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
