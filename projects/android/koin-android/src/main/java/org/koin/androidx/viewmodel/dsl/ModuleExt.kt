@@ -32,6 +32,7 @@ import org.koin.core.qualifier.Qualifier
  * @param qualifier - definition qualifier
  * @param definition - allow definition override
  */
+@Deprecated("Moved ViewModel DSL package. Remove old imports and use org.koin.core.module.dsl.*")
 inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.viewmodel.dsl
+package org.koin.core.module.dsl
 
 import androidx.lifecycle.ViewModel
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
+import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.ScopeDSL
 
 /**
  * ViewModel DSL Extension
@@ -30,7 +30,7 @@ import org.koin.dsl.ScopeDSL
  * @param qualifier - definition qualifier
  * @param definition - allow definition override
  */
-inline fun <reified T : ViewModel> ScopeDSL.viewModel(
+inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
 ): KoinDefinition<T> {
