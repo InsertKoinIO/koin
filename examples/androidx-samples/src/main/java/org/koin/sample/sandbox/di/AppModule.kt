@@ -1,8 +1,9 @@
 package org.koin.sample.sandbox.di
 
 import org.koin.androidx.fragment.dsl.fragmentOf
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+// 4.0 deprecations
+//import org.koin.androidx.viewmodel.dsl.viewModel
+//import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.*
 import org.koin.core.module.includes
