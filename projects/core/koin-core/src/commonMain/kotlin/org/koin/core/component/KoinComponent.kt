@@ -34,7 +34,7 @@ interface KoinComponent {
 }
 
 /**
- * Get instance instance from Koin
+ * Get instance from Koin
  * @param qualifier
  * @param parameters
  */
