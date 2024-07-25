@@ -39,6 +39,7 @@ kotlin {
             api(libs.jb.lifecycleViewmodelSavedState)
             api(libs.jb.bundle)
             api(libs.jb.savedstate)
+            api(libs.jb.navigation)
         }
     }
 }

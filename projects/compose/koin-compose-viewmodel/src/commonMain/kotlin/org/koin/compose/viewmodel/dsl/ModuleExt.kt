@@ -32,6 +32,7 @@ import org.koin.core.qualifier.Qualifier
  * @param qualifier - definition qualifier
  * @param definition - allow definition override
  */
+@Deprecated("use org.koin.viewmodel.dsl", ReplaceWith(expression = "viewModel", imports = ["org.koin.compose.dsl"]))
 inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>

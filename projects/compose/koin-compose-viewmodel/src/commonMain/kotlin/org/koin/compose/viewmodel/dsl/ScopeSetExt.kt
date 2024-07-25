@@ -32,6 +32,7 @@ import org.koin.dsl.ScopeDSL
  * @param qualifier - definition qualifier
  * @param definition - allow definition override
  */
+@Deprecated("use org.koin.viewmodel.dsl", ReplaceWith(expression = "viewModel", imports = ["org.koin.compose.dsl"]))
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
