@@ -1,9 +1,9 @@
 package org.koin.test.android.viewmodel
 
 import org.junit.Test
-import org.koin.androidx.viewmodel.getViewModelKey
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.StringQualifier
+import org.koin.viewmodel.getViewModelKey
 import kotlin.test.assertEquals
 
 class ViewModelKeyTest {

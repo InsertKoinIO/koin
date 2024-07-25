@@ -8,12 +8,11 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import org.koin.androidx.viewmodel.getViewModelKey
-import org.koin.androidx.viewmodel.resolveViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
+import org.koin.viewmodel.resolveViewModel
 
 @KoinInternalApi
 class GetViewModelTest {
@@ -105,7 +104,7 @@ class GetViewModelTest {
         )
 
         assertNotNull(viewModel)
-        verify { viewModelStore[qualifierValue+"_"+classToTest.java.canonicalName] }
+        verify { viewModelStore[qualifierValue+"_"+classToTest.qualifiedName] }
     }
 
     companion object {

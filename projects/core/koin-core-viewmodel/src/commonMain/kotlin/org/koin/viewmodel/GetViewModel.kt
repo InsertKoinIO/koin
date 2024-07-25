@@ -47,7 +47,7 @@ fun <T : ViewModel> resolveViewModel(
 }
 
 @KoinInternalApi
-internal fun getViewModelKey(qualifier: Qualifier? = null, key: String? = null, className: String? = null): String? {
+fun getViewModelKey(qualifier: Qualifier? = null, key: String? = null, className: String? = null): String? {
     return when {
         key != null -> key
         qualifier != null -> qualifier.value + (className?.let { "_$className" } ?: "")
