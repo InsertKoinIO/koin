@@ -5,6 +5,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
+import kotlin.time.measureTime
 
 @OptIn(KoinInternalApi::class)
 class DebugLogTest {
@@ -16,14 +17,19 @@ class DebugLogTest {
         }.koin
 
         (1..10).forEach {
-            measureDuration("with if") {
+            val withIfDuration = measureTime {
                 if (koin.logger.isAt(Level.DEBUG)) {
                     koin.logger.debug(message { "test me" })
                 }
             }
-            measureDuration("with fct") {
+
+            println("with if in $withIfDuration")
+
+            val withFctDuration = measureTime {
                 koin.logger.log(Level.DEBUG) { "test me" }
             }
+
+            println("with fct in $withFctDuration")
         }
         stopKoin()
     }

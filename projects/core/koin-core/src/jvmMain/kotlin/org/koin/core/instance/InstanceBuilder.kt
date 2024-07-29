@@ -8,10 +8,10 @@ import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDurationForResult
 import org.koin.ext.getFullName
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
+import kotlin.time.measureTimedValue
 
 @KoinReflectAPI
 @Deprecated("Koin Reflection API is deprecated")
@@ -35,20 +35,20 @@ fun <T : Any> Scope.newInstance(kClass: KClass<T>, params: ParametersHolder): T 
         ?: error("No constructor found for class '${kClass.getFullName()}'")
 
     val args = if (logger.level == Level.DEBUG) {
-        val (_args, duration) = measureDurationForResult {
+        val (_args, duration) = measureTimedValue {
             getArguments(constructor, this, params)
         }
-        logger.debug("|- got arguments in $duration ms")
+        logger.debug("|- got arguments in $duration")
         _args
     } else {
         getArguments(constructor, this, params)
     }
 
     instance = if (logger.level == Level.DEBUG) {
-        val (_instance, duration) = measureDurationForResult {
+        val (_instance, duration) = measureTimedValue {
             createInstance(args, constructor)
         }
-        logger.debug("|- created instance in $duration ms")
+        logger.debug("|- created instance in $duration")
         _instance
     } else {
         createInstance(args, constructor)
