@@ -51,8 +51,8 @@ koin-core = { module = "io.insert-koin:koin-core" }
 ```
 ```kotlin
 dependencies {
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(project.dependencies.enforcedPlatform(libs.koin.core))
 }
 ```
 
