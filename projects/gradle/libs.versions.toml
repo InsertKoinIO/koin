@@ -22,7 +22,7 @@ androidx-navigation = "2.7.7"
 # Compose
 composeJB = "1.6.11"
 composeLifecycle = "2.8.0"
-composeNavigation = "2.8.0-alpha08"
+composeNavigation = "2.7.0-alpha07"
 composeJetpackRuntime = "1.6.8"
 jbCoreBundle = "1.0.0"
 jbSavedState = "1.2.0"
