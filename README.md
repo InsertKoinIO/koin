@@ -32,15 +32,14 @@ Here are the current available Koin project versions: ![](https://img.shields.io
 | [koin-android](https://mvnrepository.com/artifact/io.insert-koin/koin-android) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-android-test](https://mvnrepository.com/artifact/io.insert-koin/koin-android-test) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-android-compat](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compat) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-android-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-android-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-android-workmanager](https://mvnrepository.com/artifact/io.insert-koin/koin-android-workmanager) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-android-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-android-compose-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-androidx-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-androidx-workmanager](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-workmanager) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-androidx-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-androidx-compose-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-compose-jvm](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-jvm) |  ![](https://img.shields.io/badge/1.1.5-blue) - ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
+| [koin-compose-viewmodel](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-viewmodel) |  ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
 | [koin-ktor](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/1.1.5-blue) - ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
-| [koin-compose-viewmodel](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
-| [koin-ktor](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
-| [koin-logger-slf4](https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-logger-slf4j](https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
 | [koin-annotations](https://mvnrepository.com/artifact/io.insert-koin/koin-annotations) |  ![](https://img.shields.io/badge/1.3.1-blue) - ![](https://img.shields.io/badge/1.4.0-alpha1-orange) |
 
 🔎 Check the [latest changes](https://github.com/InsertKoinIO/koin/blob/main/CHANGELOG.md) to update your Koin project.
