@@ -1,18 +1,14 @@
-import org.koin.core.logger.Level
+import kotlin.test.Test
+import kotlin.test.fail
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.bind
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.Simple
-import org.koin.test.check.checkModules
 import org.koin.test.verify.CircularInjectionException
 import org.koin.test.verify.MissingKoinDefinitionException
 import org.koin.test.verify.Verify
 import org.koin.test.verify.verify
-import kotlin.test.Test
-import kotlin.test.fail
 
 class VerifyModulesTest {
 
