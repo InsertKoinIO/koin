@@ -3,7 +3,7 @@ title: Context Isolation
 ---
 
 
-For SDK Makers, you can also work with Koin in a non global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
+For SDK Makers, you can also work with Koin in a non-global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
 
 In a standard way, we can start Koin like that:
 

@@ -1,6 +1,14 @@
 name: Build & Test
 
-on: pull_request
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+  pull_request:
+    branches:
+      - '*'
+      - '*/*'
 
 concurrency:
   group: build-${{ github.ref }}
@@ -8,7 +16,7 @@ concurrency:
 
 jobs:
 
-  build-core:
+  build-test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -19,19 +27,19 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 17
     
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build Core
-        run: cd core && ./test.sh
+      - name: Build & Test
+        run: cd projects && ./test.sh
 
-  build-android:
+  build-publish-local:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -42,22 +50,19 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 11
-    
+          java-version: 17
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Install Core
-        run: cd core && ./install.sh
-      
-      - name: Build Android
-        run: cd android && ./test.sh
+      - name: Build & Install
+        run: cd projects && ./install.sh
 
-  build-compose:
+  build-macos:
     runs-on: macos-latest
     timeout-minutes: 30
 
@@ -68,69 +73,15 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 11
-    
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Install Core
-        run: cd core && ./install.sh
-      
-      - name: Install Android
-        run: cd android && ./install.sh
-
-      - name: Build AndroidX Compose
-        run: cd compose && ./install.sh
-
-  build-core-macos:
-    runs-on: macos-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 11
+          java-version: 17
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Run Core
-        run: cd core && ../gradlew macosX64Test --no-daemon --stacktrace
+      - name: Test
+        run: cd projects && ./gradlew :core:koin-core:macosX64Test --no-daemon --stacktrace
 
-  build-ktor:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 11
-    
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Install Core
-        run: cd core && ./install.sh
-      
-      - name: Build Ktor
-        run: cd ktor && ./test.sh

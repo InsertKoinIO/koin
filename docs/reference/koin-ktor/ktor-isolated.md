@@ -20,7 +20,7 @@ fun Application.main() {
 ```
 
 :::warning
- By using an isolated Koin context you won't be able to use Koin outside of Ktor server instance (i.e: by using `GlobalContext` for example)
+ By using an isolated Koin context you won't be able to use Koin outside Ktor server instance (i.e: by using `GlobalContext` for example)
 :::
 
 

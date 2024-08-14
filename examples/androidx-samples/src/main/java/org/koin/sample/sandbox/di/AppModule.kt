@@ -8,7 +8,6 @@ import org.koin.core.module.dsl.*
 import org.koin.core.module.includes
 import org.koin.core.qualifier.named
 import org.koin.dsl.lazyModule
-import org.koin.dsl.module
 import org.koin.sample.sandbox.components.Counter
 import org.koin.sample.sandbox.components.SCOPE_ID
 import org.koin.sample.sandbox.components.SCOPE_SESSION
@@ -21,6 +20,7 @@ import org.koin.sample.sandbox.components.mvp.ScopedPresenter
 import org.koin.sample.sandbox.components.mvvm.*
 import org.koin.sample.sandbox.components.scope.Session
 import org.koin.sample.sandbox.components.scope.SessionActivity
+import org.koin.sample.sandbox.components.scope.SessionConsumer
 import org.koin.sample.sandbox.mvp.MVPActivity
 import org.koin.sample.sandbox.mvvm.MVVMActivity
 import org.koin.sample.sandbox.mvvm.MVVMFragment
@@ -45,13 +45,13 @@ val mvpModule = lazyModule {
 
     scope<MVPActivity> {
         scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
+
     }
 }
 
 val mvvmModule = lazyModule {
 
     viewModelOf(::SimpleViewModel)// { (id: String) -> SimpleViewModel(id, get()) }
-
     viewModelOf(::SimpleViewModel) { named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
     viewModel(named("vm2")) { (id: String) -> SimpleViewModel(id, get()) }
 
@@ -61,22 +61,31 @@ val mvvmModule = lazyModule {
     // viewModel<AbstractViewModel> { ViewModelImpl(get()) }
     viewModelOf(::ViewModelImpl) { bind<AbstractViewModel>() }
 
-    scope<MVVMActivity> {
+    viewModelOf(::MyScopeViewModel)
+    scope<MyScopeViewModel> {
+        scopedOf(::Session)
+    }
 
+    viewModelOf(::MyScopeViewModel2)
+    scope<MyScopeViewModel2> {
+        scopedOf(::Session)
+        scopedOf(::SessionConsumer)
+    }
+
+    viewModelOf(::SavedStateViewModel) { named("vm2") }
+
+    viewModel { (s : Session) -> SharedVM(s)}
+    scope<MVVMActivity> {
         scopedOf(::Session)
         fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
-        viewModelOf(::ExtSimpleViewModel)
-        viewModelOf(::ExtSimpleViewModel) { named("ext") }
-        viewModelOf(::SavedStateViewModel) { named("vm2") }
 
         scoped { MVVMPresenter1(get()) }
         scoped { MVVMPresenter2(get()) }
     }
     scope<MVVMFragment> {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
+        // to retrieve from parent
 //        scopedOf(::Session)
-        viewModelOf(::ExtSimpleViewModel)
-        viewModelOf(::ExtSimpleViewModel) { named("ext") }
     }
 }
 

@@ -1,0 +1,71 @@
+public final class org/koin/core/KoinApplicationLazyExtKt {
+	public static final fun lazyModules (Lorg/koin/core/KoinApplication;Ljava/util/List;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static final fun lazyModules (Lorg/koin/core/KoinApplication;[Lkotlin/Lazy;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static synthetic fun lazyModules$default (Lorg/koin/core/KoinApplication;Ljava/util/List;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
+	public static synthetic fun lazyModules$default (Lorg/koin/core/KoinApplication;[Lkotlin/Lazy;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
+}
+
+public final class org/koin/core/KoinLazyExtKt {
+	public static final fun awaitAllStartJobs (Lorg/koin/core/Koin;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun isAllStartedJobsDone (Lorg/koin/core/Koin;)Z
+	public static final fun onKoinStarted (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/koin/core/KoinWaitExtKt {
+	public static final fun runOnKoinStarted (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;)V
+	public static final fun waitAllStartJobs (Lorg/koin/core/Koin;)V
+}
+
+public final class org/koin/core/context/ContextWaitJVMKt {
+	public static final fun waitKoinStart ()V
+}
+
+public final class org/koin/core/context/LoadLazyModulesKt {
+	public static final fun loadKoinModules (Lkotlin/Lazy;)V
+}
+
+public final class org/koin/core/coroutine/KoinCoroutinesEngine : kotlinx/coroutines/CoroutineScope, org/koin/core/extension/KoinExtension {
+	public static final field Companion Lorg/koin/core/coroutine/KoinCoroutinesEngine$Companion;
+	public static final field EXTENSION_NAME Ljava/lang/String;
+	public static final field TAG Ljava/lang/String;
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun awaitAllStartJobs (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun launchStartJob (Lkotlin/jvm/functions/Function2;)V
+	public fun onClose ()V
+	public fun onRegister (Lorg/koin/core/Koin;)V
+}
+
+public final class org/koin/core/coroutine/KoinCoroutinesEngine$Companion {
+}
+
+public final class org/koin/core/extension/KoinCoroutinesExtensionKt {
+	public static final fun coroutinesEngine (Lorg/koin/core/KoinApplication;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static synthetic fun coroutinesEngine$default (Lorg/koin/core/KoinApplication;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
+	public static final fun getCoroutinesEngine (Lorg/koin/core/Koin;)Lorg/koin/core/coroutine/KoinCoroutinesEngine;
+}
+
+public final class org/koin/core/module/LazyModule : kotlin/Lazy {
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun getValue ()Ljava/lang/Object;
+	public fun getValue ()Lorg/koin/core/module/Module;
+	public fun isInitialized ()Z
+	public final fun plus (Ljava/util/List;)Ljava/util/List;
+	public final fun plus (Lorg/koin/core/module/LazyModule;)Ljava/util/List;
+}
+
+public final class org/koin/core/module/LazyModuleExtKt {
+	public static final fun includes (Lorg/koin/core/module/Module;[Lkotlin/Lazy;)V
+}
+
+public final class org/koin/dsl/LazyModuleDSLKt {
+	public static final fun lazyModule (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/module/LazyModule;
+}
+
+public final class org/koin/mp/KoinPlatformCoroutinesTools {
+	public static final field INSTANCE Lorg/koin/mp/KoinPlatformCoroutinesTools;
+	public final fun defaultCoroutineDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+}
+

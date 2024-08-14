@@ -12,6 +12,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace = "org.koin.sample.sandbox"
     compileSdk android_target_version
     buildToolsVersion android_build_tools_version
 
@@ -56,7 +57,7 @@ android {
 dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
     implementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation "junit:junit:4.13.2"

@@ -1,6 +1,6 @@
 ![logo](./docs/img/koin_main_logo.png)
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.24-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![Github Actions](https://github.com/InsertKoinIO/koin/actions/workflows/build.yml/badge.svg)
 [![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/InsertKoinIO/koin/blob/main/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-orange.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/koin/)
@@ -15,25 +15,33 @@ Koin is a pragmatic lightweight dependency injection framework for Kotlin develo
 
 ## Setup & Current Version
 
-Here are the current available Koin projects versions:
+Here are the current available Koin project versions: ![](https://img.shields.io/badge/stable-version-blue) ![](https://img.shields.io/badge/unstable-version-orange)
 
-| Project   |      Version      |
+- Koin ![](https://img.shields.io/badge/3.5.6-blue) ![](https://img.shields.io/badge/3.6.0-Beta4-orange)
+- Koin for Compose ![](https://img.shields.io/badge/1.1.5-blue) ![](https://img.shields.io/badge/1.2.0-Beta4-orange)
+- Koin Annotations ![](https://img.shields.io/badge/1.3.1-blue) ![](https://img.shields.io/badge/1.4.0-Alpha1-orange)
+
+## Koin Packages
+
+| Project   |      Versions     |
 |----------|:-------------:|
-| koin-bom |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-bom)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) |
-| koin-core |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core) |
-| koin-core-coroutines |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core-coroutines)](https://mvnrepository.com/artifact/io.insert-koin/koin-core-coroutines) |
-| koin-test |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-test)](https://mvnrepository.com/artifact/io.insert-koin/koin-test) |
-| koin-android |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-android)](https://mvnrepository.com/artifact/io.insert-koin/koin-android) |
-| koin-android-test |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-android-test)](https://mvnrepository.com/artifact/io.insert-koin/koin-android-test) |
-| koin-android-compat |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-android-compat)](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compat) |
-| koin-androidx-navigation |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-navigation) |
-| koin-androidx-workmanager |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-workmanager)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-workmanager) |
-| koin-androidx-compose |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose) |
-| koin-androidx-compose-navigation |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-compose-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose-navigation) |
-| koin-compose |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose) |
-| koin-ktor |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-ktor)](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |
-| koin-logger-slf4j |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-logger-slf4j)](https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j) |
-| koin-annotations |  [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-annotations)](https://mvnrepository.com/artifact/io.insert-koin/koin-annotations) |
+| [koin-bom](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-core](https://mvnrepository.com/artifact/io.insert-koin/koin-core) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-core-coroutines](https://mvnrepository.com/artifact/io.insert-koin/koin-core-coroutines) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-test](https://mvnrepository.com/artifact/io.insert-koin/koin-test) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android](https://mvnrepository.com/artifact/io.insert-koin/koin-android) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android-test](https://mvnrepository.com/artifact/io.insert-koin/koin-android-test) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android-compat](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compat) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-android-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android-workmanager](https://mvnrepository.com/artifact/io.insert-koin/koin-android-workmanager) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-android-compose-navigation](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-ktor](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-compose](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/1.1.5-blue) - ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
+| [koin-compose-viewmodel](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compose-navigation) |  ![](https://img.shields.io/badge/1.2.0-Beta4-orange) |
+| [koin-ktor](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-logger-slf4](https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4) |  ![](https://img.shields.io/badge/3.5.6-blue) - ![](https://img.shields.io/badge/3.6.0-Beta4-orange) |
+| [koin-annotations](https://mvnrepository.com/artifact/io.insert-koin/koin-annotations) |  ![](https://img.shields.io/badge/1.3.1-blue) - ![](https://img.shields.io/badge/1.4.0-alpha1-orange) |
 
 🔎 Check the [latest changes](https://github.com/InsertKoinIO/koin/blob/main/CHANGELOG.md) to update your Koin project.
 
