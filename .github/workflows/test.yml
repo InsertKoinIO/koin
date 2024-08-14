@@ -27,23 +27,17 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 17
     
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Install Core
-        run: cd core && ./install.sh
-      
-      - name: Install Android
-        run: cd android && ./install.sh
-
-      - name: Install BOM
-        run: cd bom && ./install.sh
+      - name: Install
+        run: cd projects && ./install.sh
         
       - name: Test Examples
         run: cd examples && ./test.sh

@@ -1,10 +1,10 @@
 buildscript {
-    apply from: "../core/gradle/versions.gradle"
-    apply from: "../android/gradle/versions.gradle"
+    apply from: "./gradle/versions.gradle"
 
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -15,7 +15,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
-
+        // Compose
+        classpath "org.jetbrains.compose:compose-gradle-plugin:$jb_compose_version"
+        // Benchmark
         classpath "me.champeau.gradle:jmh-gradle-plugin:0.5.3"
     }
 }
@@ -24,7 +26,6 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 allprojects {
-
     repositories {
         mavenLocal()
         mavenCentral()

@@ -5,7 +5,7 @@ plugins {
     kotlin("kapt")
 }
 
-val jvmTarget = "11"
+val jvmTarget = "17"
 
 tasks.getByName<JavaCompile>("compileJava") {
     targetCompatibility = jvmTarget
@@ -17,8 +17,8 @@ tasks.getByName<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin"
 
 val jmhVersion = "1.36"
 //TODO get from existing version.gradle file
-val koin_version = "3.5.2-RC1"
-val coroutines_version = "1.7.3"
+val koin_version = "3.6.0-Beta5"
+val coroutines_version = "1.8.1"
 
 dependencies {
     api("io.insert-koin:koin-core:$koin_version")

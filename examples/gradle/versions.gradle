@@ -1,0 +1,26 @@
+ext {
+    // Kotlin
+    kotlin_version = '1.9.24'
+    // Koin Versions
+    koin_version = '3.6.0-Beta5'
+    koin_android_version = koin_version
+    koin_compose_version = "1.2.0-Beta5"
+
+    coroutines_version = "1.8.1"
+    ktor_version = "2.3.10"
+    // Compose
+    compose_compiler = "1.5.14"
+    jb_compose_version = "1.6.10"
+
+    // Test
+    junit_version = "4.13.2"
+    junit5_version = "5.9.3"
+    mockito_version = "4.7.0"
+    mockk_version = "1.12.2"
+
+    // build Tools
+    android_min_version = 14
+    android_target_version = 34
+    android_build_tools_version = '34.0.0'
+    android_gradle_version = '8.2.0'
+}

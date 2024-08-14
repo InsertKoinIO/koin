@@ -9,6 +9,6 @@ class SavedStateViewModel(val handle: SavedStateHandle, val id: String, val serv
     init {
         val get = handle.get<String>(id)
         println("handle: $get")
-        handle.set(id,UUID.randomUUID().toString())
+        handle[id] = UUID.randomUUID().toString()
     }
 }

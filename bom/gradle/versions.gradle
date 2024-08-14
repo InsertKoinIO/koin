@@ -1,3 +1,0 @@
-ext {
-    koin_bom_version = '3.5.4-beta-1'
-}

@@ -4,7 +4,7 @@ title: Injecting in Tests
 
 ## Making your test a KoinComponent with KoinTest
 
-*Warning*: This does not apply to Android Instrumented tests. For Instrumented testing with Koin, please see [Android Instrumented Testing](../koin-android/instrumented-testing.md)
+*Warning*: This does not apply to Android Instrumented tests. For Instrumented testing with Koin, please see [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing.md)
 
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
@@ -123,7 +123,7 @@ class MyTest : KoinTest {
 ```
 
 :::note
- declareMock can specify if you want a single or factory, and if you wan to have it in a module path.
+ declareMock can specify if you want a single or factory, and if you want to have it in a module path.
 :::
 
 ## Declaring a component on the fly
