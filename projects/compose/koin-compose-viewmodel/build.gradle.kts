@@ -24,8 +24,8 @@ kotlin {
     }
 
     wasmJs {
-        binaries.executable()
         nodejs()
+        binaries.executable()
     }
 
     iosX64()
@@ -47,17 +47,6 @@ kotlin {
 tasks.withType<KotlinCompile>().all {
     kotlinOptions {
         jvmTarget = "11"
-    }
-}
-
-rootProject.the<NodeJsRootExtension>().apply {
-    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-}
-
-tasks.withType<KotlinCompile>().all {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 

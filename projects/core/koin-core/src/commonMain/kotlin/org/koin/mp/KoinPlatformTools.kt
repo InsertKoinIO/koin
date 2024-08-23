@@ -15,11 +15,12 @@
  */
 package org.koin.mp
 
-import com.benasher44.uuid.uuid4
 import org.koin.core.context.KoinContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import kotlin.reflect.KClass
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 expect object KoinPlatformTools {
     fun getStackTrace(e: Exception): String
@@ -33,5 +34,6 @@ expect object KoinPlatformTools {
 }
 
 fun KoinPlatformTools.getKClassDefaultName(kClass: KClass<*>) : String = "KClass@${kClass.hashCode()}"
-fun KoinPlatformTools.generateId() : String = uuid4().toString()
+@OptIn(ExperimentalUuidApi::class)
+fun KoinPlatformTools.generateId() : String = Uuid.random().toString()
 

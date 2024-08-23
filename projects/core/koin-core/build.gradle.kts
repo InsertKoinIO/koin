@@ -20,8 +20,8 @@ kotlin {
     }
 
     wasmJs {
-        binaries.executable()
         nodejs()
+        binaries.executable()
     }
 
     iosX64()
@@ -45,7 +45,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.extras.stately)
             api(libs.extras.stately.collections)
-            api(libs.extras.uuid)
+//            api(libs.extras.uuid)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -61,12 +61,4 @@ tasks.withType<KotlinCompile>().all {
         }
 }
 
-rootProject.the<NodeJsRootExtension>().apply {
-    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
-    args.add("--ignore-engines")
-}
 apply(from = file("../../gradle/publish.gradle.kts"))
