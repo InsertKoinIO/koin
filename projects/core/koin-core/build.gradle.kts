@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -43,8 +42,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.extras.stately)
-            api(libs.extras.stately.collections)
+            implementation(libs.extras.stately)
+            implementation(libs.extras.stately.collections)
 //            api(libs.extras.uuid)
         }
         commonTest.dependencies {
