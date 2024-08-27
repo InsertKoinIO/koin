@@ -43,6 +43,7 @@ tasks.withType<KotlinCompile>().all {
 
 dependencies {
     api(project(":compose:koin-androidx-compose"))
+    api(project(":core:koin-core-viewmodel-navigation"))
     api(libs.androidx.composeNavigation)
 }
 

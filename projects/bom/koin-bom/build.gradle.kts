@@ -13,6 +13,7 @@ dependencies {
         api(project(":core:koin-core"))
         api(project(":core:koin-core-coroutines"))
         api(project(":core:koin-core-viewmodel"))
+        api(project(":core:koin-core-viewmodel-navigation"))
         api(project(":core:koin-test"))
         api(project(":core:koin-test-junit4"))
         api(project(":core:koin-test-junit5"))
@@ -28,6 +29,7 @@ dependencies {
 
         api(project(":compose:koin-compose"))
         api(project(":compose:koin-compose-viewmodel"))
+        api(project(":compose:koin-compose-viewmodel-navigation"))
         api(project(":compose:koin-androidx-compose"))
         api(project(":compose:koin-androidx-compose-navigation"))
     }

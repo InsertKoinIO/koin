@@ -19,6 +19,7 @@ include(
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
+    ":core:koin-core-viewmodel-navigation",
     ":core:koin-test",
     ":core:koin-test-junit4",
     ":core:koin-test-junit5",
@@ -34,6 +35,7 @@ include(
     // Compose
     ":compose:koin-compose",
     ":compose:koin-compose-viewmodel",
+    ":compose:koin-compose-viewmodel-navigation",
     ":compose:koin-androidx-compose",
     ":compose:koin-androidx-compose-navigation",
     // Plugin
