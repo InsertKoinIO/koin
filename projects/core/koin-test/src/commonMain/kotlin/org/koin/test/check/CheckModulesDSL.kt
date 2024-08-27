@@ -24,7 +24,7 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import kotlin.reflect.KClass
 
-//TODO TO BE DEPRECATED in 3.6
+//TODO TO BE DEPRECATED in 4.0
 
 @Deprecated("Migrate to verify() API")
 data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*>)
