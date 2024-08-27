@@ -9,12 +9,14 @@ import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.sample.sandbox.R
+import org.koin.sample.sandbox.navigation.NavFragmentB.Companion
 
 class NavFragmentA : Fragment() {
 
     val mainViewModel: NavViewModel by koinNavGraphViewModel(R.id.main)
 
     lateinit var button: Button
+    var int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,10 +31,14 @@ class NavFragmentA : Fragment() {
         button = requireView().findViewById(R.id.a_button)
 
         button.setOnClickListener {
-            findNavController().navigate(R.id.action_fragmentA_to_fragmentB)
+            int++
+            println("A -> $int")
+            findNavController().navigate(R.id.action_fragmentA_to_fragmentB,
+                Bundle().apply { putString("argKey", "value+$int") })
         }
 
         ID = mainViewModel.id
+        println("A vm id: ${NavFragmentB.ID}")
     }
 
     companion object {

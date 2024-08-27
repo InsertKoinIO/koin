@@ -26,6 +26,7 @@ import org.koin.sample.sandbox.mvp.MVPActivity
 import org.koin.sample.sandbox.mvvm.MVVMActivity
 import org.koin.sample.sandbox.mvvm.MVVMFragment
 import org.koin.sample.sandbox.navigation.NavViewModel
+import org.koin.sample.sandbox.navigation.NavViewModel2
 import org.koin.sample.sandbox.scope.ScopedActivityA
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
@@ -120,6 +121,7 @@ val workerScopedModule = lazyModule {
 
 val navModule = lazyModule {
     viewModelOf(::NavViewModel)
+    viewModelOf(::NavViewModel2)
 }
 
 val allModules = lazyModule {
