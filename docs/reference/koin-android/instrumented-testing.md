@@ -43,14 +43,19 @@ class KoinTestRule(
     private val modules: List<Module>
 ) : TestWatcher() {
     override fun starting(description: Description) {
-        startKoin {
-            androidContext(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext)
-            modules(modules)
+
+        if (getKoinApplicationOrNull() == null) {
+            startKoin {
+                androidContext(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext)
+                modules(modules)
+            }
+        } else {
+            loadKoinModules(modules)
         }
     }
 
     override fun finished(description: Description) {
-        stopKoin()
+        unloadKoinModules(modules)
     }
 }
 ```
