@@ -5,9 +5,6 @@ public final class org/koin/test/KoinTest$DefaultImpls {
 	public static fun getKoin (Lorg/koin/test/KoinTest;)Lorg/koin/core/Koin;
 }
 
-public abstract interface class org/koin/test/category/CheckModuleTest {
-}
-
 public final class org/koin/test/check/CheckModulesKt {
 	public static final fun checkKoinModules (Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 	public static final fun checkKoinModules (Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V

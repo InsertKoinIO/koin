@@ -60,9 +60,6 @@ public abstract interface annotation class org/koin/core/annotation/KoinExperime
 public abstract interface annotation class org/koin/core/annotation/KoinInternalApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class org/koin/core/annotation/KoinReflectAPI : java/lang/annotation/Annotation {
-}
-
 public abstract interface class org/koin/core/component/KoinComponent {
 	public abstract fun getKoin ()Lorg/koin/core/Koin;
 }
@@ -72,12 +69,10 @@ public final class org/koin/core/component/KoinComponent$DefaultImpls {
 }
 
 public abstract interface class org/koin/core/component/KoinScopeComponent : org/koin/core/component/KoinComponent {
-	public abstract fun closeScope ()V
 	public abstract fun getScope ()Lorg/koin/core/scope/Scope;
 }
 
 public final class org/koin/core/component/KoinScopeComponent$DefaultImpls {
-	public static fun closeScope (Lorg/koin/core/component/KoinScopeComponent;)V
 	public static fun getKoin (Lorg/koin/core/component/KoinScopeComponent;)Lorg/koin/core/Koin;
 }
 
@@ -217,7 +212,7 @@ public final class org/koin/core/error/InstanceCreationException : java/lang/Exc
 	public fun <init> (Ljava/lang/String;Ljava/lang/Exception;)V
 }
 
-public final class org/koin/core/error/KoinAppAlreadyStartedException : java/lang/Exception {
+public final class org/koin/core/error/KoinApplicationAlreadyStartedException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;)V
 }
 
@@ -225,7 +220,7 @@ public final class org/koin/core/error/MissingPropertyException : java/lang/Exce
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public final class org/koin/core/error/NoBeanDefFoundException : java/lang/Exception {
+public final class org/koin/core/error/NoDefinitionFoundException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;)V
 }
 
@@ -269,10 +264,6 @@ public final class org/koin/core/instance/FactoryInstanceFactory : org/koin/core
 	public fun isCreated (Lorg/koin/core/instance/InstanceContext;)Z
 }
 
-public final class org/koin/core/instance/InstanceBuilderKt {
-	public static final fun newInstance (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/parameter/ParametersHolder;)Ljava/lang/Object;
-}
-
 public final class org/koin/core/instance/InstanceContext {
 	public fun <init> (Lorg/koin/core/logger/Logger;Lorg/koin/core/scope/Scope;Lorg/koin/core/parameter/ParametersHolder;)V
 	public synthetic fun <init> (Lorg/koin/core/logger/Logger;Lorg/koin/core/scope/Scope;Lorg/koin/core/parameter/ParametersHolder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -289,10 +280,8 @@ public abstract class org/koin/core/instance/InstanceFactory {
 	public abstract fun drop (Lorg/koin/core/scope/Scope;)V
 	public static synthetic fun drop$default (Lorg/koin/core/instance/InstanceFactory;Lorg/koin/core/scope/Scope;ILjava/lang/Object;)V
 	public abstract fun dropAll ()V
-	public fun equals (Ljava/lang/Object;)Z
 	public abstract fun get (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
 	public final fun getBeanDefinition ()Lorg/koin/core/definition/BeanDefinition;
-	public fun hashCode ()I
 	public abstract fun isCreated (Lorg/koin/core/instance/InstanceContext;)Z
 	public static synthetic fun isCreated$default (Lorg/koin/core/instance/InstanceFactory;Lorg/koin/core/instance/InstanceContext;ILjava/lang/Object;)Z
 }
@@ -589,9 +578,7 @@ public final class org/koin/dsl/KoinApplicationKt {
 
 public final class org/koin/dsl/ModuleDSLKt {
 	public static final fun module (ZLkotlin/jvm/functions/Function1;)Lorg/koin/core/module/Module;
-	public static final fun module (ZZLkotlin/jvm/functions/Function1;)Lorg/koin/core/module/Module;
 	public static synthetic fun module$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/module/Module;
-	public static synthetic fun module$default (ZZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/module/Module;
 }
 
 public final class org/koin/dsl/ScopeDSL {
@@ -648,10 +635,15 @@ public final class org/koin/mp/KoinPlatformTools {
 	public final fun defaultLazyMode ()Lkotlin/LazyThreadSafetyMode;
 	public final fun defaultLogger (Lorg/koin/core/logger/Level;)Lorg/koin/core/logger/Logger;
 	public static synthetic fun defaultLogger$default (Lorg/koin/mp/KoinPlatformTools;Lorg/koin/core/logger/Level;ILjava/lang/Object;)Lorg/koin/core/logger/Logger;
-	public final fun generateId ()Ljava/lang/String;
+	public final fun getClassFullNameOrNull (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public final fun getClassName (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public final fun getStackTrace (Ljava/lang/Exception;)Ljava/lang/String;
 	public final fun safeHashMap ()Ljava/util/Map;
 	public final fun synchronized (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class org/koin/mp/KoinPlatformToolsKt {
+	public static final fun generateId (Lorg/koin/mp/KoinPlatformTools;)Ljava/lang/String;
+	public static final fun getKClassDefaultName (Lorg/koin/mp/KoinPlatformTools;Lkotlin/reflect/KClass;)Ljava/lang/String;
 }
 
