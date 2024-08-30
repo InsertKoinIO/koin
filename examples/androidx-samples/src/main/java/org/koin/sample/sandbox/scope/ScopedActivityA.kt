@@ -5,11 +5,13 @@ import android.widget.Button
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
+import org.koin.androidx.fragment.android.replace
 import org.koin.androidx.scope.RetainedScopeActivity
 import org.koin.core.qualifier.named
 import org.koin.sample.sandbox.R
 import org.koin.sample.sandbox.components.*
 import org.koin.sample.sandbox.components.scope.Session
+import org.koin.sample.sandbox.mvvm.MVVMFragment
 import org.koin.sample.sandbox.utils.navigateTo
 
 class ScopedActivityA : RetainedScopeActivity(R.layout.scoped_activity_a) {
@@ -19,6 +21,10 @@ class ScopedActivityA : RetainedScopeActivity(R.layout.scoped_activity_a) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        supportFragmentManager.beginTransaction()
+            .replace<ScopedFragment>(R.id.mvvm_frame)
+            .commit()
 
         assert(currentSession == get<Session>())
         if (SESSION_ID_VAR.isEmpty()) {
