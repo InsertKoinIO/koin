@@ -1,50 +1,83 @@
 ---
-title: Injecting in Jetpack Compose and Android
+title: Koin for Jetpack Compose and Compose Multiplatform
 ---
 
-This page describe how you can inject your dependencies for your Jetpack Compose app - https://developer.android.com/jetpack/compose
+This page describe how you can inject your dependencies for your [Android Jetpack Compose](https://developer.android.com/jetpack/compose) or your [Multiplaform Compose](https://www.jetbrains.com/lp/compose-mpp/) apps.
 
-## Starting Koin with Android Jetpack Compose - KoinApplication or KoinAndroidContext
 
-Most of the time, `startKoin` function is used to start Koin in your application. This is done before running any Composable function. You need to setting up Compose with your current Koin instance. Use `KoinAndroidContext()` to do so:
+## Koin Compose Multiplatform vs Koin Android Jetpack Compose
+
+Since mid 2024, Compose applications can be done with Koin Multiplatform API. All APIs are identifcal between Koin Jetpack Compose (koin-androidx-compose) and Koin Compose Multiplatform (koin-compose).
+
+### What Koin package for Compose?
+
+for a pure Android app that uses only Android Jetpack Compose API, use the following packages:
+- `koin-androidx-compose` - to unlock Compose base API + Compose ViewModel API
+- `koin-androidx-compose-navigation` - Compose ViewModel API with Navigation API integration
+
+for an Android/Multiplatform app, use the following packages:
+- `koin-compose` - Compose base API
+- `koin-compose-viewmodel` - Compose ViewModel API
+- `koin-compose-viewmodel-navigation` - Compose ViewModel API with Navigation API integration
+
+## Starting Koin in a Compose App with KoinApplication
+
+The function `KoinApplication` helps to create Koin application instance, as a Composable:
+
+```kotlin
+fun koinConfiguration() = koinApplication {
+    // your configuration & modules here
+    modules(...)
+}
+
+@Composable
+fun App() {
+    KoinApplication(::koinConfiguration) {
+        
+        // your screens here ...
+        MyScreen()
+    }
+}
+```
+
+The `KoinApplication` function will handle start & stop of your Koin context, regarding the cycle of the Compose context. This function start and stop a new Koin application context.
+
+:::info
+In an Android Application, the `KoinApplication` will handle any need to stop/restart Koin context regarding configuration changes or drop of Activities.
+:::
+
+:::note
+This replaces the use of the classic `startKoin` application function.
+:::
+
+## Starting over an existing Koin context
+
+Some time the `startKoin` function is already used in the application, to start Koin in your application (like in Android main app class, the Application class). In that case you need to inform your Compose application about the current Koin context with `KoinContext` or `KoinAndroidContext`. Those functions reuse current Koin context and bind it to the Compose application.
 
 ```kotlin
 @Composable
 fun App() {
     // Set current Koin instance to Compose context
-    KoinAndroidContext() {
+    KoinContext() {
 
         MyScreen()
     }
 }
 ```
 
-Else if you want to start a new Koin instance from your Compose app, The function `KoinApplication` helps to create Koin application instance, as a Composable. This is a replacement of the classic `startKoin` application function.
-
-```kotlin
-@Composable
-fun App() {
-    KoinApplication(application = {
-        // Koin configuration here
-    }) {
-        
-    }
-}
-```
-
-:::note
+:::info
 Difference between `KoinAndroidContext` and `KoinContext`:
 - `KoinAndroidContext` is looking into current Android app context for Koin instance
 - `KoinContext` is looking into current GlobalContext for Koin instances
 :::
 
-:::info
+:::note
 If you get some `ClosedScopeException` from a Composable, either use `KoinContext` on your Composable or ensure to have proper Koin start configuration [with Android context](/docs/reference/koin-android/start.md#from-your-application-class)
 :::
 
 ### Compose Preview with Koin
 
-The `KoinApplication` function is also interesting to start dedicated context for preview. This can be also used to help with Compose preview:
+The `KoinApplication` function is interesting to start dedicated context for preview. This can be also used to help with Compose preview:
 
 ```kotlin
 @Composable
@@ -61,10 +94,7 @@ fun App() {
 
 ## Injecting into a @Composable
 
-While writing your composable function, you gain access to the following Koin API:
-
-* `koinInject()` - fetch instance from Koin container
-* `getKoin()` - get current Koin instance
+While writing your composable function, you gain access to the following Koin API: `koinInject()`, to inject instance from Koin container
 
 For a module that declares a 'MyService' component:
 
@@ -85,13 +115,13 @@ fun App() {
 }
 ```
 
-:::note 
-To keep aligned on the functional aspect of Jetpack Compose, the best writing approach is to inject instances directly into functions properties. This way allow to have default implementation with Koin, but keep open to inject instances how you want.
-:::
+
+To keep aligned on the functional aspect of Jetpack Compose, the best writing approach is to inject instances directly into functions parameters. This way allow to have default implementation with Koin, but keep open to inject instances how you want.
 
 ```kotlin
 @Composable
 fun App(myService: MyService = koinInject()) {
+
 }
 ```
 
@@ -99,7 +129,8 @@ fun App(myService: MyService = koinInject()) {
 
 The same way you have access to classical single/factory instances, you gain access to the following Koin ViewModel API:
 
-* `koinViewModel()` - fetch instance
+* `koinViewModel()` - inject ViewModel instance
+* `koinNavViewModel()` - inject ViewModel instance + Navigation arguments data (if you are using `Navigation` API)
 
 For a module that declares a 'MyViewModel' component:
 
@@ -130,6 +161,34 @@ fun App(vm : MyViewModel = koinViewModel()) {
 ```
 
 :::warning
-Lazy API is not supported with updates of jetpack Compose 1.1+
+Lazy API are not supported with updates of jetpack Compose
 :::
 
+
+
+## Module loading & unloading tied to Composable
+
+Koin offers you a way to load specific modules for a given Composable function. The `rememberKoinModules` function load Koin modules and remember on current Composable:
+
+```kotlin
+@Composable
+@Preview
+fun MyComponentComposable() {
+    // load module at first call of this component
+    rememberKoinModules(myModule)
+}
+```
+
+You can use one of the abandon function, to unload module on 2 aspects:
+- onForgotten - after a composition is dropped out
+- onAbandoned - composition has failed
+
+For this use `unloadOnForgotten` or `unloadOnAbandoned` argument for `rememberKoinModules`.
+
+## Creating Koin Scope with Composable
+
+The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow-up current to close scope once Composable is ended.
+
+:::info
+this API is still unstable for now
+:::
