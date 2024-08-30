@@ -28,6 +28,7 @@ import org.koin.core.component.getScopeId
 import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
+import org.koin.ext.getFullName
 
 /**
  * Provide Koin Scope tied to ComponentActivity
@@ -84,13 +85,14 @@ fun ComponentActivity.createActivityRetainedScope(): Scope {
     if (this !is AndroidScopeComponent) {
         error("Activity should implement AndroidScopeComponent")
     }
-//    if (this.scope != null) {
-//        error("Activity Scope is already created")
-//    }
+
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null) {
-        val scope = getKoin().createScope(getScopeId(), getScopeName())
+        val scope = getKoin().createScope(retainedScopeId(), getScopeName())
         scopeViewModel.scope = scope
     }
     return scopeViewModel.scope!!
 }
+
+fun ComponentActivity.retainedScopeId() : String = this::class.getFullName()
+fun ComponentActivity.getRetainedScopeOrNull(): Scope? = getKoin().getScopeOrNull(retainedScopeId())

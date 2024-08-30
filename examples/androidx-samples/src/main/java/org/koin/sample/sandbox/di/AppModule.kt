@@ -28,6 +28,7 @@ import org.koin.sample.sandbox.mvvm.MVVMFragment
 import org.koin.sample.sandbox.navigation.NavViewModel
 import org.koin.sample.sandbox.navigation.NavViewModel2
 import org.koin.sample.sandbox.scope.ScopedActivityA
+import org.koin.sample.sandbox.scope.ScopedFragment
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
 
@@ -106,8 +107,12 @@ val scopeModule = lazyModule {
 
 val scopeModuleActivityA = lazyModule {
     scope<ScopedActivityA> {
+        fragmentOf(::ScopedFragment)
         scopedOf(::Session)
         scopedOf(::SessionActivity)
+    }
+    scope<ScopedFragment> {
+
     }
 }
 
