@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.component.getScopeId
-import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 
 /**
@@ -33,11 +32,11 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
     }
     val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
     if (useParentActivityScope){
-        val activityScope = requireActivity().getScopeOrNull()
+        val activityScope = requireActivity().getScopeOrNull() ?: requireActivity().getRetainedScopeOrNull()
         if (activityScope != null) {
             scope.linkTo(activityScope)
         } else {
-            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope")
+            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope. No Parent Scope found.")
         }
     }
     return scope
