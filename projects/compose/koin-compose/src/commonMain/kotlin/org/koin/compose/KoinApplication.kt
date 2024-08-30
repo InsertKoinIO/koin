@@ -21,14 +21,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
+import org.koin.compose.application.rememberKoinApplication
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.context.startKoin
 import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.scope.Scope
-import org.koin.dsl.KoinAppDeclaration
 import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
 
@@ -92,20 +90,13 @@ private fun Koin.warnNoContext() {
 @Composable
 @Throws(KoinApplicationAlreadyStartedException::class)
 fun KoinApplication(
-    application: KoinAppDeclaration,
+    application: () -> KoinApplication,
     content: @Composable () -> Unit
 ) {
-    val koinApplication = remember(application) {
-        val alreadyExists = KoinPlatformTools.defaultContext().getOrNull() != null
-        if (alreadyExists) {
-            throw KoinApplicationAlreadyStartedException("Trying to run new Koin Application whereas Koin is already started. Use 'KoinContext()' instead of check for any 'startKoin' usage. ")
-        } else {
-            startKoin(application)
-        }
-    }
+    val koin = rememberKoinApplication(koinApplication = application())
     CompositionLocalProvider(
-        LocalKoinApplication provides koinApplication.koin,
-        LocalKoinScope provides koinApplication.koin.scopeRegistry.rootScope,
+        LocalKoinApplication provides koin,
+        LocalKoinScope provides koin.scopeRegistry.rootScope,
         content = content
     )
 }
