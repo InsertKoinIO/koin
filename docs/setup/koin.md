@@ -14,6 +14,8 @@ Here are the currently available versions:
 |----------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | koin-bom                         |                         [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-bom)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)                         |
 | koin-core                        |                        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)                        |
+| koin-core-viewmodel              |                        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core-viewmodel)](https://mvnrepository.com/artifact/io.insert-koin/koin-core-viewmodel)               |
+| koin-core-viewmodel-navigation |                        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core--viewmodel-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-core-viewmodel-navigation) |
 | koin-core-coroutines             |             [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core-coroutines)](https://mvnrepository.com/artifact/io.insert-koin/koin-core-coroutines)             |
 | koin-test                        |                        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-test)](https://mvnrepository.com/artifact/io.insert-koin/koin-test)                        |
 | koin-android                     |                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-android)](https://mvnrepository.com/artifact/io.insert-koin/koin-android)                     |
@@ -22,6 +24,8 @@ Here are the currently available versions:
 | koin-androidx-navigation         |         [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-navigation)         |
 | koin-androidx-workmanager        |        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-workmanager)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-workmanager)        |
 | koin-compose                     |                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose)                     |
+| koin-compose-viewmodel           |                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose-viewmodel)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-viewmodel)            |
+| koin-compose-viewmodel-navigation|                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose-viewmodel-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-viewmodel-navigation) |
 | koin-androidx-compose            |            [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose)            |
 | koin-androidx-compose-navigation | [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-compose-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-compose-navigation) |
 | koin-ktor                        |                        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-ktor)](https://mvnrepository.com/artifact/io.insert-koin/koin-ktor)                        |
@@ -169,7 +173,7 @@ dependencies {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](/docs/quickstart/kmp)
+From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](/docs/quickstart/kmm)
 :::
 
 ### **Ktor**
