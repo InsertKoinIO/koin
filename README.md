@@ -22,7 +22,7 @@ Here are the current available Koin project versions:
 - Koin [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
 - Koin for Compose [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose)
 - Koin Annotations [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-annotations)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
-- Koin ![](https://img.shields.io/badge/3.5.x-LTS-blue) - Professional [Long Term Support](https://support.insert-koin.io) for Enterprises by Kotzilla
+- Koin ![](https://img.shields.io/badge/3.5.x-LTS-blue) - Official [Long Term Support](https://support.insert-koin.io) for Enterprises by Kotzilla
 
 
 
