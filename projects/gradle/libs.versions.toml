@@ -28,7 +28,7 @@ jbCoreBundle = "1.0.0"
 jbSavedState = "1.2.0"
 
 # Test
-stately = "2.0.7"
+stately = "2.1.0"
 junit = "4.13.2"
 jupiter = "5.9.3"
 mockito = "4.7.0"
