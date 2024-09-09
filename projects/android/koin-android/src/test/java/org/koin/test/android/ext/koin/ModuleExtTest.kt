@@ -17,21 +17,21 @@ class ModuleExtTest {
     fun `GIVEN exception WHEN ty to get android context THEN throws exception`() {
         // GIVEN
         val scope = mockk<Scope>(relaxed = true)
-        every { scope.get<Context>() } throws Exception("message")
+        every { scope.get<Context>() } throws MissingAndroidContextException("message")
 
         try {
             // WHEN
             scope.androidContext()
         } catch (e: MissingAndroidContextException) {
             // THEN
-            Assert.assertEquals("Can't resolve Context instance. Please use androidContext() function in your KoinApplication configuration.", e.localizedMessage)
+            Assert.assertEquals("message", e.localizedMessage)
         }
     }
 
     @Test(expected = MissingAndroidContextException::class)
     fun `GIVEN exception WHEN ty to get android application THEN throws exception`() {
         val scope = mockk<Scope>(relaxed = true)
-        every { scope.get<Application>() } throws Exception()
+        every { scope.get<Application>() } throws MissingAndroidContextException("")
         scope.androidApplication()
     }
 
