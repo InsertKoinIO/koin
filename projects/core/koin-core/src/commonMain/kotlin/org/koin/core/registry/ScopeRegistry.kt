@@ -66,7 +66,7 @@ class ScopeRegistry(private val _koin: Koin) {
         val scope = Scope(qualifier, scopeId, _koin = _koin)
         source?.let {
             _koin.logger.debug("|- Scope source set id:'$scopeId' -> $source")
-            scope._source = source
+            scope.sourceValue = source
         }
         scope.linkTo(rootScope)
         _scopes[scopeId] = scope

@@ -26,7 +26,7 @@ import org.koin.core.scope.Scope
 class FactoryInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     InstanceFactory<T>(beanDefinition) {
 
-    override fun isCreated(context: InstanceContext?): Boolean = false
+    override fun isCreated(context: ResolutionContext?): Boolean = false
 
     override fun drop(scope: Scope?) {
         beanDefinition.callbacks.onClose?.invoke(null)
@@ -34,7 +34,7 @@ class FactoryInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
 
     override fun dropAll() {}
 
-    override fun get(context: InstanceContext): T {
+    override fun get(context: ResolutionContext): T {
         return create(context)
     }
 }

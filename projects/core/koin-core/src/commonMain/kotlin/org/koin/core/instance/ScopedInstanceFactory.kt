@@ -29,7 +29,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
 
     private var values = hashMapOf<ScopeID, T>()
 
-    override fun isCreated(context: InstanceContext?): Boolean = (values[context?.scope?.id] != null)
+    override fun isCreated(context: ResolutionContext?): Boolean = (values[context?.scope?.id] != null)
 
     override fun drop(scope: Scope?) {
         scope?.let {
@@ -38,7 +38,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         }
     }
 
-    override fun create(context: InstanceContext): T {
+    override fun create(context: ResolutionContext): T {
         return if (values[context.scope.id] == null) {
             super.create(context)
         } else {
@@ -46,7 +46,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         }
     }
 
-    override fun get(context: InstanceContext): T {
+    override fun get(context: ResolutionContext): T {
         if (context.scope.scopeQualifier != beanDefinition.scopeQualifier) {
             error("Wrong Scope: trying to open instance for ${context.scope.id} in $beanDefinition")
         }

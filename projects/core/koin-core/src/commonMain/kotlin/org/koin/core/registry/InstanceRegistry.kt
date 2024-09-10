@@ -21,8 +21,9 @@ import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
 import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
-import org.koin.core.instance.InstanceContext
+import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.NoClass
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
@@ -87,7 +88,7 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
-        val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
+        val defaultContext = ResolutionContext(_koin.logger, _koin.scopeRegistry.rootScope, clazz = NoClass::class)
         instances.forEach { factory -> factory.get(defaultContext) }
     }
 
@@ -104,7 +105,7 @@ class InstanceRegistry(val _koin: Koin) {
         qualifier: Qualifier?,
         clazz: KClass<*>,
         scopeQualifier: Qualifier,
-        instanceContext: InstanceContext,
+        instanceContext: ResolutionContext,
     ): T? {
         return resolveDefinition(clazz, qualifier, scopeQualifier)?.get(instanceContext) as? T
     }
@@ -162,7 +163,7 @@ class InstanceRegistry(val _koin: Koin) {
         _instances.clear()
     }
 
-    internal fun <T> getAll(clazz: KClass<*>, instanceContext: InstanceContext): List<T> {
+    internal fun <T> getAll(clazz: KClass<*>, instanceContext: ResolutionContext): List<T> {
         return _instances.values
             .filter { factory ->
                 factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier

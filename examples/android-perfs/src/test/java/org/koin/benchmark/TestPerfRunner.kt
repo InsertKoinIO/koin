@@ -10,7 +10,7 @@ class TestPerfRunner {
      * Avg start time: 13.06
      * Avg execution time: 0.158
      */
-//    @Test
+    @Test
     fun main() = runBlocking {
         val limits = PerfLimit(17.0, 0.175)
 
