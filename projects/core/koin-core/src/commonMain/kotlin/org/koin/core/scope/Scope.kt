@@ -27,13 +27,14 @@ import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.time.Timer
+import org.koin.core.time.inMs
 import org.koin.ext.getFullName
-import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
+import kotlin.time.Duration
+import kotlin.time.measureTimedValue
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -232,11 +233,10 @@ class Scope(
         }
 
         logInstanceRequest(clazz, qualifier)
-        val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
-        val result = resolveInstance<T>(qualifier, clazz, parameters)
-        logInstanceDuration(clazz, start)
+        val result = measureTimedValue { resolveInstance<T>(qualifier, clazz, parameters) }
+        logInstanceDuration(clazz, result.duration)
 
-        return result
+        return result.value
     }
 
     private inline fun logInstanceRequest(clazz: KClass<*>, qualifier: Qualifier?) {
@@ -245,10 +245,8 @@ class Scope(
         _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString$scopeId...")
     }
 
-    private inline fun logInstanceDuration(clazz: KClass<*>, start: Long) {
-        val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
-        val duration = (stop - start) / Timer.NANO_TO_MILLI
-        _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
+    private inline fun logInstanceDuration(clazz: KClass<*>, duration: Duration) {
+        _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in ${duration.inMs} ms")
     }
 
     private inline fun <T> resolveInstance(

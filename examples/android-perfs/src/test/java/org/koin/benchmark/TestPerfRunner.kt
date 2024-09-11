@@ -12,11 +12,11 @@ class TestPerfRunner {
      */
     @Test
     fun main() = runBlocking {
-        val limits = PerfLimit(10.0, 0.100)
+        val limits = PerfLimit(10.0, 0.1)
 
-        println("Perf Tolerance: $limits")
+        println("Perf target: $limits")
 
-        val results = PerfRunner.runAll()
+        val results = PerfRunner.runAll(useDebugLogs = false)
         results.applyLimits(limits)
 
         assertTrue("Should start under ${results.worstMaxStartTime} ms", results.isStartOk)

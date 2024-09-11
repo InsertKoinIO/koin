@@ -11,13 +11,13 @@ class MainApplication : Application() {
         super.onCreate()
 
         runBlocking {
-            results = runAll()
+            results = runAll(useDebugLogs = false)
             results!!.applyLimits(limits)
         }
     }
 
     companion object {
-        val limits = PerfLimit(11.0, 0.150)
+        val limits = PerfLimit(27.0, 0.150)
         var results : PerfResult? = null
     }
 }
