@@ -42,7 +42,7 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
-    private val eagerInstances = mutableSetOf<SingleInstanceFactory<*>>()
+    private val eagerInstances = safeHashMap<Int, SingleInstanceFactory<*>>()
 
     internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
@@ -53,12 +53,12 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun addAllEagerInstances(module: Module) {
         module.eagerInstances.forEach { factory ->
-            eagerInstances.add(factory)
+            eagerInstances[factory.beanDefinition.hashCode()] = factory
         }
     }
 
     internal fun createAllEagerInstances() {
-        val instances = ArrayList(eagerInstances)
+        val instances = arrayListOf(*eagerInstances.values.toTypedArray())
         eagerInstances.clear()
         createEagerInstances(instances)
     }

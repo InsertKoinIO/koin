@@ -68,10 +68,15 @@ class BeanDefinition<T>(
 
 
     override fun equals(other: Any?): Boolean {
-        return other is BeanDefinition<*> &&
-                primaryType == other.primaryType &&
-                qualifier == other.qualifier &&
-                scopeQualifier == other.scopeQualifier
+        if (this === other) return true
+
+        other as BeanDefinition<*>
+
+        if (primaryType != other.primaryType) return false
+        if (qualifier != other.qualifier) return false
+        if (scopeQualifier != other.scopeQualifier) return false
+
+        return true
     }
 
     inline fun hasType(clazz: KClass<*>): Boolean {
@@ -82,14 +87,12 @@ class BeanDefinition<T>(
         return hasType(clazz) && this.qualifier == qualifier && this.scopeQualifier == scopeDefinition
     }
 
-    private val cachedHashCode: Int by lazy {
-        var result = primaryType.hashCode()
-        result = 31 * result + (qualifier?.hashCode() ?: 0)
+    override fun hashCode(): Int {
+        var result = qualifier?.hashCode() ?: 0
+        result = 31 * result + primaryType.hashCode()
         result = 31 * result + scopeQualifier.hashCode()
-//        result = 31 * result + secondaryTypes.hashCode()
-        result
+        return result
     }
-    override fun hashCode(): Int = cachedHashCode
 }
 
 inline fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {

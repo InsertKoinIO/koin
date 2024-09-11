@@ -108,11 +108,14 @@ open class ParametersHolder(
      * return T
      */
     open fun <T> getOrNull(clazz: KClass<*>): T? {
-        return when {
-            _values.isEmpty() -> null
-            useIndexedValues == true -> getIndexedValue(clazz)
-            useIndexedValues == false -> getFirstValue(clazz)
-            else -> getIndexedValue(clazz) ?: getFirstValue(clazz)
+        return if (_values.isEmpty()) {
+            null
+        } else {
+            when (useIndexedValues) {
+                null -> getIndexedValue<T>(clazz) ?: getFirstValue<T>(clazz)
+                true -> getIndexedValue<T>(clazz)
+                else -> getFirstValue<T>(clazz)
+            }
         }
     }
 
@@ -121,7 +124,7 @@ open class ParametersHolder(
     }
 
     private fun <T> getIndexedValue(clazz: KClass<*>): T? {
-        val currentValue: T? = _values.getOrNull(index)?.takeIf { clazz.isInstance(it) } as? T
+        val currentValue: T? = _values[index].takeIf { clazz.isInstance(it) } as? T
         if (currentValue != null) {
             increaseIndex()
         }
