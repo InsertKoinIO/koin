@@ -1,49 +1,44 @@
 package org.koin.benchmark
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.time.measureDurationForResult
 import org.koin.dsl.koinApplication
 import kotlin.math.roundToInt
+import kotlin.time.measureTimedValue
 
 object PerfRunner {
 
-    suspend fun runAll(scope: CoroutineScope): PerfResult {
-        val results = (1..10).map { i -> withContext(scope.coroutineContext) { runScenario(i) } }
+    fun runAll(): PerfResult {
+        val results = (1..10).map { i -> runScenario(i) }
         val avgStart = (results.sumOf { it.first } / results.size).round(100)
-        val avgExec = (results.sumOf { it.second } / results.size).round(1000)
+        val avgExec = (results.sumOf { it.second } / results.size).round(10000)
 
         println("Avg start: $avgStart ms")
         println("Avg execution: $avgExec ms")
         return PerfResult(avgStart,avgExec)
     }
 
-    @OptIn(KoinExperimentalAPI::class)
     fun runScenario(index: Int): Pair<Double, Double> {
-        val (app, duration) = measureDurationForResult {
+        val appDuration = measureTimedValue {
             koinApplication {
                 modules(
                     perfModule400()
                 )
             }
         }
-        println("Perf[$index] start in $duration ms")
+        val appDurationValue = appDuration.duration.inWholeMicroseconds / 1000.0
 
-        val koin: Koin = app.koin
+        println("Perf[$index] start in $appDurationValue ms")
 
-//        runBlocking {
-//            koin.awaitAllStartJobs()
-//        }
+        val koin: Koin = appDuration.value.koin
 
-        val (_, executionDuration) = measureDurationForResult {
+        val scenarioDuration = measureTimedValue {
             koinScenario(koin)
         }
-        println("Perf[$index] run in $executionDuration ms")
-        app.close()
-        return Pair(duration, executionDuration)
+        val scenarioDurationValue = scenarioDuration.duration.inWholeMicroseconds / 1000.0
+        println("Perf[$index] run in $scenarioDurationValue ms")
+
+        return Pair(appDurationValue, scenarioDurationValue)
     }
 
     fun koinScenario(koin: Koin){
