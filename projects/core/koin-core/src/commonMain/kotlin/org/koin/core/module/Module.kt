@@ -116,14 +116,14 @@ class Module(
     }
 
     @KoinInternalApi
-    inline fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
+    fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
         saveMapping(mapping, instanceFactory)
     }
 
     @KoinInternalApi
-    inline fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
+    fun indexSecondaryTypes(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         def.secondaryTypes.forEach { clazz ->
             val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
@@ -132,12 +132,12 @@ class Module(
     }
 
     @KoinInternalApi
-    inline fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
+    fun prepareForCreationAtStart(instanceFactory: SingleInstanceFactory<*>) {
         eagerInstances.add(instanceFactory)
     }
 
     @PublishedApi
-    inline internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>) {
+    internal fun saveMapping(mapping: IndexKey, factory: InstanceFactory<*>) {
         mappings[mapping] = factory
     }
 
@@ -167,12 +167,12 @@ class Module(
     /**
      * Help write list of Modules
      */
-    inline operator fun plus(module: Module) = listOf(this, module)
+    operator fun plus(module: Module) = listOf(this, module)
 
     /**
      * Help write list of Modules
      */
-    inline operator fun plus(modules: List<Module>) = listOf(this) + modules
+    operator fun plus(modules: List<Module>) = listOf(this) + modules
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -226,7 +226,7 @@ inline fun <reified T> _scopedInstanceFactory(
 /**
  * Help write list of Modules
  */
-inline operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
+operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(module)
 
 /**
  * Run through the module list to flatten all modules & submodules
