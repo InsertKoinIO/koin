@@ -76,11 +76,11 @@ class InstanceRegistry(val _koin: Koin) {
         factory: InstanceFactory<*>,
         logWarning: Boolean = true,
     ) {
-        if (_instances.containsKey(mapping)) {
+        _instances[mapping]?.let {
             if (!allowOverride) {
                 overrideError(factory, mapping)
-            } else {
-                if (logWarning) _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+            } else if (logWarning) {
+                _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
             }
         }
         _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
