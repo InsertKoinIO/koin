@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
  * @author Arnaud Giuliani
  */
 @KoinDslMarker
-data class BeanDefinition<T>(
+class BeanDefinition<T>(
     val scopeQualifier: Qualifier,
     val primaryType: KClass<*>,
     var qualifier: Qualifier? = null,
@@ -44,55 +44,62 @@ data class BeanDefinition<T>(
     internal var _createdAtStart = false
 
     override fun toString(): String {
-        val defKind = kind.toString()
-        val defType = "'${primaryType.getFullName()}'"
-        val defName = qualifier?.let { ",qualifier:$qualifier" } ?: ""
-        val defScope =
-            scopeQualifier.let { if (it == rootScopeQualifier) "" else ",scope:$scopeQualifier" }
-        val defOtherTypes = if (secondaryTypes.isNotEmpty()) {
-            val typesAsString = secondaryTypes.joinToString(",") { it.getFullName() }
-            ",binds:$typesAsString"
-        } else {
-            ""
+        return buildString {
+            append('[')
+            append(kind)
+            append(": '")
+            append(primaryType.getFullName())
+            append('\'')
+            if (qualifier != null) {
+                append(",qualifier:")
+                append(qualifier)
+            }
+            if (scopeQualifier != rootScopeQualifier) {
+                append(",scope:")
+                append(scopeQualifier)
+            }
+            if (secondaryTypes.isNotEmpty()) {
+                append(",binds:")
+                secondaryTypes.joinTo(this, ",") { it.getFullName() }
+            }
+            append(']')
         }
-        return "[$defKind:$defType$defName$defScope$defOtherTypes]"
     }
+
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-
-        other as BeanDefinition<*>
-
-        if (primaryType != other.primaryType) return false
-        if (qualifier != other.qualifier) return false
-        if (scopeQualifier != other.scopeQualifier) return false
-
-        return true
+        return other is BeanDefinition<*> &&
+                primaryType == other.primaryType &&
+                qualifier == other.qualifier &&
+                scopeQualifier == other.scopeQualifier
     }
 
-    fun hasType(clazz: KClass<*>): Boolean {
+    inline fun hasType(clazz: KClass<*>): Boolean {
         return primaryType == clazz || secondaryTypes.contains(clazz)
     }
 
-    fun `is`(clazz: KClass<*>, qualifier: Qualifier?, scopeDefinition: Qualifier): Boolean {
+    inline fun `is`(clazz: KClass<*>, qualifier: Qualifier?, scopeDefinition: Qualifier): Boolean {
         return hasType(clazz) && this.qualifier == qualifier && this.scopeQualifier == scopeDefinition
     }
 
-//    fun canBind(primary: KClass<*>, secondary: KClass<*>): Boolean {
-//        return primaryType == primary && secondaryTypes.contains(secondary)
-//    }
-
     override fun hashCode(): Int {
-        var result = qualifier?.hashCode() ?: 0
-        result = 31 * result + primaryType.hashCode()
+        // Prime number 31 is commonly used for its balance of speed and distribution
+        var result = primaryType.hashCode()
+        result = 31 * result + (qualifier?.hashCode() ?: 0)
         result = 31 * result + scopeQualifier.hashCode()
+        result = 31 * result + secondaryTypes.hashCode()
         return result
     }
 }
 
-fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
-    val tq = typeQualifier?.value ?: ""
-    return "${clazz.getFullName()}:$tq:$scopeQualifier"
+inline fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
+    return buildString {
+        append(clazz.getFullName())
+        append(':')
+        append(typeQualifier?.value ?: "")
+        append(':')
+        append(scopeQualifier)
+    }
 }
 
 enum class Kind {
