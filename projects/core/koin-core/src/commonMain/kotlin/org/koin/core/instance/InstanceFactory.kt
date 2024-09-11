@@ -70,6 +70,18 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
 
     abstract fun dropAll()
 
+    private val cachedHashCode: Int by lazy { 31 * beanDefinition.hashCode() }
+    override fun hashCode(): Int = cachedHashCode
+
+    override fun equals(other: Any?): Boolean {
+        // Check for reference equality and type
+        if (this === other) return true
+        if (other !is InstanceFactory<*>) return false
+
+        // Check for equality based on relevant fields
+        return beanDefinition == other.beanDefinition
+    }
+
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
     }

@@ -82,14 +82,14 @@ class BeanDefinition<T>(
         return hasType(clazz) && this.qualifier == qualifier && this.scopeQualifier == scopeDefinition
     }
 
-    override fun hashCode(): Int {
-        // Prime number 31 is commonly used for its balance of speed and distribution
+    private val cachedHashCode: Int by lazy {
         var result = primaryType.hashCode()
         result = 31 * result + (qualifier?.hashCode() ?: 0)
         result = 31 * result + scopeQualifier.hashCode()
-        result = 31 * result + secondaryTypes.hashCode()
-        return result
+//        result = 31 * result + secondaryTypes.hashCode()
+        result
     }
+    override fun hashCode(): Int = cachedHashCode
 }
 
 inline fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
