@@ -45,7 +45,7 @@ class Scope(
     @PublishedApi
     internal val _koin: Koin,
 ) : Lockable() {
-    private val linkedScopes: ArrayList<Scope> = arrayListOf()
+    private val linkedScopes = LinkedHashSet<Scope>()
 
     @KoinInternalApi
     var sourceValue: Any? = null
@@ -53,12 +53,13 @@ class Scope(
     val closed: Boolean
         get() = _closed
 
-    fun isNotClosed() = !closed
+    inline fun isNotClosed() = !closed
 
-    private val _callbacks = arrayListOf<ScopeCallback>()
+    private val _callbacks = LinkedHashSet<ScopeCallback>()
 
     @KoinInternalApi
-    private val parameterStack = ThreadLocal<ArrayDeque<ParametersHolder>>()
+    private var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -276,19 +277,36 @@ class Scope(
 
         // stack parameters
         _koin.logger.log(Level.DEBUG) { "| >> parameters $parameters" }
-        val stack = parameterStack.get() ?: ArrayDeque<ParametersHolder>().also { parameterStack.set(it) }
-        stack.addFirst(parameters)
+        val stack = onParameterOnStack(parameters)
 
         try {
             return resolveFromContext(instanceContext)
         } finally {
             _koin.logger.debug("| << parameters")
             // unstack parameters
-            stack.removeFirstOrNull()
-            if (stack.isEmpty()) {
-                parameterStack.remove()
-            }
+            clearParameterStack(stack)
         }
+    }
+
+    private fun onParameterOnStack(parameters: ParametersHolder): ArrayDeque<ParametersHolder>? {
+        val stack = getOrCreateParameterStack()
+        stack?.addFirst(parameters)
+        return stack
+    }
+
+    private fun clearParameterStack(stack: ArrayDeque<ParametersHolder>?) {
+        stack?.removeFirstOrNull()
+        if (stack?.isEmpty() == true) {
+            parameterStack?.remove()
+        }
+    }
+
+    private fun getOrCreateParameterStack(): ArrayDeque<ParametersHolder>? {
+        if (parameterStack == null) {
+            parameterStack = ThreadLocal()
+            parameterStack!!.set(ArrayDeque())
+        }
+        return parameterStack?.get()
     }
 
     private inline fun <T> resolveFromContext(
@@ -317,7 +335,7 @@ class Scope(
     }
 
     private inline fun <T> resolveFromStackedParameters(ctx: ResolutionContext): T? {
-        val current = parameterStack.get()
+        val current = parameterStack?.get()
         return if (current.isNullOrEmpty()) null
          else {
             _koin.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
