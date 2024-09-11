@@ -25,5 +25,6 @@ actual object KoinPlatformTools {
     actual fun <R> synchronized(lock: Lockable, block: () -> R): R = lock.lock.withLock { block() }
 
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentMutableMap()
+    actual fun <K> safeSet(): MutableSet<K> = mutableSetOf()
 }
 

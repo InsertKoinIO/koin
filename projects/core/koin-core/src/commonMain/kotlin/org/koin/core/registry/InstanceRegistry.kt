@@ -42,7 +42,7 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
-    private val eagerInstances = hashMapOf<Int, SingleInstanceFactory<*>>()
+    private val eagerInstances = mutableSetOf<SingleInstanceFactory<*>>()
 
     internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
@@ -53,12 +53,12 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun addAllEagerInstances(module: Module) {
         module.eagerInstances.forEach { factory ->
-            eagerInstances[factory.beanDefinition.hashCode()] = factory
+            eagerInstances.add(factory)
         }
     }
 
     internal fun createAllEagerInstances() {
-        val instances = arrayListOf(*eagerInstances.values.toTypedArray())
+        val instances = ArrayList(eagerInstances)
         eagerInstances.clear()
         createEagerInstances(instances)
     }
@@ -166,15 +166,11 @@ class InstanceRegistry(val _koin: Koin) {
     internal fun <T> getAll(clazz: KClass<*>, instanceContext: ResolutionContext): List<T> {
         return _instances.values
             .filter { factory ->
-                factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier
-            }
-            .filter { factory ->
-                factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(
-                    clazz,
-                )
+                factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier &&
+                (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
             }
             .distinct()
-            .map { it.get(instanceContext) as T }
+            .mapNotNull { it.get(instanceContext) as? T }
     }
 
     internal fun unloadModules(modules: Set<Module>) {
@@ -183,10 +179,8 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun unloadModule(module: Module) {
         module.mappings.keys.forEach { mapping ->
-            if (_instances.containsKey(mapping)) {
-                _instances[mapping]?.dropAll()
-                _instances.remove(mapping)
-            }
+            _instances[mapping]?.dropAll()
+            _instances.remove(mapping)
         }
     }
 

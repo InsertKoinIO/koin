@@ -22,6 +22,7 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -34,4 +35,5 @@ actual object KoinPlatformTools {
     actual fun defaultContext(): KoinContext = GlobalContext
     actual fun <R> synchronized(lock: Lockable, block: () -> R) = kotlin.synchronized(lock, block)
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentHashMap<K, V>()
+    actual fun <K> safeSet(): MutableSet<K> = Collections.newSetFromMap(ConcurrentHashMap())
 }
