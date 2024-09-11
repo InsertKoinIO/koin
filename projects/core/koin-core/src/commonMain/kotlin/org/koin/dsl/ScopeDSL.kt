@@ -18,7 +18,16 @@ package org.koin.dsl
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.*
+import org.koin.core.module.KoinDslMarker
+import org.koin.core.module.MapMultibinding
+import org.koin.core.module.Module
+import org.koin.core.module.MultibindingIterateKey
+import org.koin.core.module.SetMultibinding
+import org.koin.core.module._scopedInstanceFactory
+import org.koin.core.module.mapMultibindingQualifier
+import org.koin.core.module.multibindingIterateKeyQualifier
+import org.koin.core.module.multibindingValueQualifier
+import org.koin.core.module.setMultibindingQualifier
 import org.koin.core.qualifier.Qualifier
 
 /**
@@ -43,5 +52,62 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
         noinline definition: Definition<T>,
     ): KoinDefinition<T> {
         return module.factory(qualifier, definition, scopeQualifier)
+    }
+
+    /**
+     * Declare a scoped Map<K, V> and inject an element to it with a given key
+     * @param key can't be null
+     * @param definition - the element definition function
+     */
+    inline fun <reified K : Any, reified V> intoMap(
+        key: K,
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        noinline definition: Definition<V>,
+    ): KoinDefinition<Map<K, V>> {
+        scoped(multibindingValueQualifier(qualifier, key), definition)
+        scoped(multibindingIterateKeyQualifier(qualifier, key)) {
+            MultibindingIterateKey(key, multibindingValueQualifier(qualifier, key))
+        }
+        return declareMapMultibinding(qualifier)
+    }
+
+    /**
+     * Declare a scoped Map<K, V> definition, the key type [K] can't be null
+     * @param qualifier can't be null
+     */
+    inline fun <reified K : Any, reified V> declareMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+    ): KoinDefinition<Map<K, V>> {
+        return scoped(qualifier) { parametersHolder ->
+            MapMultibinding(false, this, qualifier, V::class, parametersHolder)
+        }
+    }
+
+    /**
+     * Declare a scoped Set<E> and inject an element to it
+     * @param definition - the element definition function
+     */
+    inline fun <reified E> intoSet(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        noinline definition: Definition<E>,
+    ): KoinDefinition<Set<E>> {
+        val key = SetMultibinding.getDistinctKey()
+        scoped(multibindingValueQualifier(qualifier, key), definition = definition)
+        scoped(multibindingIterateKeyQualifier(qualifier, key)) {
+            MultibindingIterateKey(key, multibindingValueQualifier(qualifier, key))
+        }
+        return declareSetMultibinding(qualifier)
+    }
+
+    /**
+     * Declare a scoped Set<E> definition
+     * @param qualifier can't be null
+     */
+    inline fun <reified E> declareSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+    ): KoinDefinition<Set<E>> {
+        return scoped(qualifier) { parametersHolder ->
+            SetMultibinding(false, this, qualifier, E::class, parametersHolder)
+        }
     }
 }
