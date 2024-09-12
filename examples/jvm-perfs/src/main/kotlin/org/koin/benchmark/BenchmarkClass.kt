@@ -43,6 +43,21 @@ open class BenchmarkClass {
     }
 
     @Benchmark
+    fun start400_Fu() {
+        koinApplication {
+            modules(perfModule400_Fu())
+        }.koin
+    }
+
+    @Benchmark
+    fun start400AndInject_Fu() {
+        val koin = koinApplication {
+            modules(perfModule400_Fu())
+        }.koin
+        koinScenario(koin)
+    }
+
+    @Benchmark
     fun flattenRecursive(state: BenchmarkState) {
         org.koin.core.module.flatten(state.nestedModules)
     }

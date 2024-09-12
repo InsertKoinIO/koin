@@ -23,6 +23,11 @@ include(
     ":core:koin-test",
     ":core:koin-test-junit4",
     ":core:koin-test-junit5",
+
+    // Fu DSL - Experimental
+    ":core:koin-fu",
+    ":core:koin-fu-viewmodel",
+
     // Ktor
     ":ktor:koin-ktor",
     ":ktor:koin-logger-slf4j",

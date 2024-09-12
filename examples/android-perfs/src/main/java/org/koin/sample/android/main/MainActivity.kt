@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import org.koin.benchmark.PerfLimit
-import org.koin.benchmark.PerfRunner.runAll
 import org.koin.sample.android.R
 import org.koin.sample.android.main.MainApplication.Companion.limits
 import org.koin.sample.android.main.MainApplication.Companion.results

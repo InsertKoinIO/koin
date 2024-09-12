@@ -215,7 +215,7 @@ class Scope(
         return resolveWithOptionalLogging(clazz, qualifier,parameters?.invoke())
     }
 
-    internal fun <T> get(
+    private fun <T> get(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersHolder? = null,
