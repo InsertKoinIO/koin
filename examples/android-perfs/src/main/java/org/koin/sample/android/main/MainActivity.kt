@@ -7,44 +7,47 @@ import kotlinx.coroutines.*
 import org.koin.benchmark.PerfLimit
 import org.koin.benchmark.PerfRunner.runAll
 import org.koin.sample.android.R
+import org.koin.sample.android.main.MainApplication.Companion.limits
+import org.koin.sample.android.main.MainApplication.Companion.results
 import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
+    override val coroutineContext: CoroutineContext = Job() + Dispatchers.Default
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         title = "Android First Perfs"
 
-        runBlocking {
-            val limits = PerfLimit(10.8, 0.185)
+    }
 
-            println("Perf Tolerance: $limits")
+    override fun onStart() {
+        super.onStart()
+        extractResults()
+    }
 
-            val results = runAll(this)
-            results.applyLimits(limits)
-            val (startTime,execTime) = results
+    private fun extractResults() {
+        println("Perf Tolerance: $limits")
+        val (startTime, execTime) = results!!
+        val ok = results!!.isOk
 
-            val textWidget = findViewById<TextView>(R.id.text)
-            var textReport = """
-                Start time: $startTime - max ${results.worstMaxStartTime} ms
-                Exec time: $execTime - max ${results.worstExecTime} ms
-            """.trimIndent()
+        val textWidget = findViewById<TextView>(R.id.text)
 
-            if (!results.isOk) textReport += "\nTest Failed!"
+        var textReport = """
+                    Start time: $startTime - max ${results?.worstMaxStartTime} ms
+                    Exec time: $execTime - max ${results?.worstExecTime} ms
+                """.trimIndent()
 
-            textWidget.text = textReport
+        if (!ok) textReport += "\nTest Failed!"
 
-            val color = if (!results.isOk) {
-                android.R.color.holo_red_dark
-            } else android.R.color.holo_green_dark
+        textWidget.text = textReport
 
-            textWidget.setTextColor(resources.getColor(color))
-        }
+        val color = if (!ok) {
+            android.R.color.holo_red_dark
+        } else android.R.color.holo_green_dark
 
-
+        textWidget.setTextColor(resources.getColor(color))
     }
 
     override fun onDestroy() {

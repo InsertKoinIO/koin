@@ -42,6 +42,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(kotlin("stdlib"))
             implementation(libs.extras.stately)
             implementation(libs.extras.stately.collections)
 //            api(libs.extras.uuid)

@@ -50,6 +50,7 @@ class CreateOnStart {
 
     @Test
     fun `createdAt start`() {
+        stopKoin()
         var created = 0
         startKoin {
             modules(

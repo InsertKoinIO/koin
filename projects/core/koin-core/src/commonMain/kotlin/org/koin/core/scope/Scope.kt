@@ -20,20 +20,21 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
 import org.koin.core.error.NoDefinitionFoundException
-import org.koin.core.instance.InstanceContext
+import org.koin.core.instance.ResolutionContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.time.Timer
+import org.koin.core.time.inMs
 import org.koin.ext.getFullName
-import org.koin.mp.KoinPlatformTimeTools
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import org.koin.mp.ThreadLocal
 import kotlin.reflect.KClass
+import kotlin.time.Duration
+import kotlin.time.measureTimedValue
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -45,20 +46,21 @@ class Scope(
     @PublishedApi
     internal val _koin: Koin,
 ) : Lockable() {
-    private val linkedScopes: ArrayList<Scope> = arrayListOf()
+    private val linkedScopes = LinkedHashSet<Scope>()
 
     @KoinInternalApi
-    var _source: Any? = null
+    var sourceValue: Any? = null
 
     val closed: Boolean
         get() = _closed
 
-    fun isNotClosed() = !closed
+    inline fun isNotClosed() = !closed
 
-    private val _callbacks = arrayListOf<ScopeCallback>()
+    private val _callbacks = LinkedHashSet<ScopeCallback>()
 
     @KoinInternalApi
-    val _parameterStackLocal = ThreadLocal<ArrayDeque<ParametersHolder>>()
+    private var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -141,7 +143,7 @@ class Scope(
      * Deprecation: Source instance resolution is now done within graph resolution part. It's done in the regular "get()" function.
      */
     inline fun <reified T : Any> getSource(): T? {
-        return _source as? T
+        return sourceValue as? T
     }
 
     /**
@@ -183,6 +185,20 @@ class Scope(
         }
     }
 
+    internal fun <T> getOrNull(
+        ctx: ResolutionContext
+    ): T? {
+        return try {
+            get(ctx.clazz, ctx.qualifier, ctx.parameters)
+        } catch (e: ClosedScopeException) {
+            _koin.logger.debug("* Scope closed - no instance found for ${ctx.clazz.getFullName()} on scope ${toString()}")
+            null
+        } catch (e: NoDefinitionFoundException) {
+            _koin.logger.debug("* No instance found for type '${ctx.clazz.getFullName()}' on scope '${toString()}'")
+            null
+        }
+    }
+
     /**
      * Get a Koin instance
      * @param clazz
@@ -196,110 +212,167 @@ class Scope(
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null,
     ): T {
-        return if (_koin.logger.isAt(Level.DEBUG)) {
-            val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
-            val scopeId = if (isRoot) "" else "- scope:'$id"
-            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString $scopeId...")
-
-            val start = KoinPlatformTimeTools.getTimeInNanoSeconds()
-            val instance = resolveInstance<T>(qualifier, clazz, parameters)
-            val stop = KoinPlatformTimeTools.getTimeInNanoSeconds()
-            val duration = (stop - start) / Timer.NANO_TO_MILLI
-
-            _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in $duration ms")
-            instance
-        } else {
-            resolveInstance(qualifier, clazz, parameters)
-        }
+        return resolveWithOptionalLogging(clazz, qualifier,parameters?.invoke())
     }
 
-    @Suppress("UNCHECKED_CAST")
+    internal fun <T> get(
+        clazz: KClass<*>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersHolder? = null,
+    ): T {
+        return resolveWithOptionalLogging(clazz, qualifier, parameters)
+    }
+
+    private fun <T> resolveWithOptionalLogging(
+        clazz: KClass<*>,
+        qualifier: Qualifier?,
+        parameters: ParametersHolder? = null
+    ): T {
+        if (!_koin.logger.isAt(Level.DEBUG)) {
+            return resolveInstance(qualifier, clazz, parameters)
+        }
+
+        logInstanceRequest(clazz, qualifier)
+        val result = measureTimedValue { resolveInstance<T>(qualifier, clazz, parameters) }
+        logInstanceDuration(clazz, result.duration)
+
+        return result.value
+    }
+
+    private inline fun logInstanceRequest(clazz: KClass<*>, qualifier: Qualifier?) {
+        val qualifierString = qualifier?.let { " with qualifier '$qualifier'" } ?: ""
+        val scopeId = if (isRoot) "" else " - scope:'$id'"
+        _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}'$qualifierString$scopeId...")
+    }
+
+    private inline fun logInstanceDuration(clazz: KClass<*>, duration: Duration) {
+        _koin.logger.display(Level.DEBUG, "|- '${clazz.getFullName()}' in ${duration.inMs} ms")
+    }
+
     private fun <T> resolveInstance(
         qualifier: Qualifier?,
         clazz: KClass<*>,
-        parameterDef: ParametersDefinition?,
+        parameters: ParametersHolder?,
     ): T {
+        checkScopeIsOpen()
+        val instanceContext = ResolutionContext(_koin.logger, this, clazz, qualifier, parameters)
+        return stackParametersCall(parameters, instanceContext)
+    }
+
+    private inline fun checkScopeIsOpen() {
         if (_closed) {
             throw ClosedScopeException("Scope '$id' is closed")
         }
-        val parameters = parameterDef?.invoke()
-        var localDeque: ArrayDeque<ParametersHolder>? = null
-        if (parameters != null) {
-            _koin.logger.log(Level.DEBUG) { "| >> parameters $parameters " }
-            localDeque = _parameterStackLocal.get() ?: ArrayDeque<ParametersHolder>().also(_parameterStackLocal::set)
-            localDeque.addFirst(parameters)
+    }
+
+    private fun <T> stackParametersCall(
+        parameters: ParametersHolder?,
+        instanceContext: ResolutionContext
+    ): T {
+        if (parameters == null) {
+            return resolveFromContext(instanceContext)
         }
-        val instanceContext = InstanceContext(_koin.logger, this, parameters)
-        val value = resolveValue<T>(qualifier, clazz, instanceContext, parameterDef)
-        if (localDeque != null) {
+
+        // stack parameters
+        _koin.logger.log(Level.DEBUG) { "| >> parameters $parameters" }
+        val stack = onParameterOnStack(parameters)
+
+        try {
+            return resolveFromContext(instanceContext)
+        } finally {
             _koin.logger.debug("| << parameters")
-            localDeque.removeFirstOrNull()
+            // unstack parameters
+            clearParameterStack(stack)
         }
-        return value
     }
 
-    private fun <T> resolveValue(
-        qualifier: Qualifier?,
-        clazz: KClass<*>,
-        instanceContext: InstanceContext,
-        parameterDef: ParametersDefinition?
-    ) = (
-            _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
-        ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
-            _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
-        }
-        ?: run {
-            if (!isRoot){
-                _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
-                _source?.let { source ->
-                    if (clazz.isInstance(source) && qualifier == null) {
-                        _source as? T
-                    } else null
-                }
-            } else null
-        }
-        ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
-            findInOtherScope<T>(clazz, qualifier, parameterDef)
-        }
-        ?: run {
-            if (parameterDef != null) {
-                _parameterStackLocal.remove()
-                _koin.logger.debug("|- << parameters")
-            }
-            throwDefinitionNotFound(qualifier, clazz)
-        })
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> getFromSource(clazz: KClass<*>): T? {
-        return if (clazz.isInstance(_source)) _source as? T else null
+    private fun onParameterOnStack(parameters: ParametersHolder): ArrayDeque<ParametersHolder> {
+        val stack = getOrCreateParameterStack()
+        stack.addFirst(parameters)
+        return stack
     }
+
+    private fun clearParameterStack(stack: ArrayDeque<ParametersHolder>) {
+        stack.removeFirstOrNull()
+        if (stack.isEmpty()) {
+            parameterStack?.remove()
+            parameterStack = null
+        }
+    }
+
+    private fun getOrCreateParameterStack(): ArrayDeque<ParametersHolder> {
+        return parameterStack?.get() ?: ArrayDeque<ParametersHolder>().let { parameterStack = ThreadLocal(); parameterStack?.set(it) ; it }
+    }
+
+    private fun <T> resolveFromContext(
+        instanceContext: ResolutionContext
+    ): T {
+        return resolveFromInjectedParameters(instanceContext)
+            ?: resolveFromRegistry(instanceContext)
+            ?: resolveFromStackedParameters(instanceContext)
+            ?: resolveFromScopeSource(instanceContext)
+            ?: resolveFromParentScopes(instanceContext)
+            ?: throwNoDefinitionFound(instanceContext)
+    }
+
+    private fun <T> resolveFromRegistry(
+        ctx: ResolutionContext
+    ): T? {
+        return _koin.instanceRegistry.resolveInstance(ctx.qualifier, ctx.clazz, this.scopeQualifier, ctx)
+    }
+
+    private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
+        return if (ctx.parameters == null) null
+            else {
+            _koin.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
+            ctx.parameters.getOrNull(clazz = ctx.clazz)
+        }
+    }
+
+    private inline fun <T> resolveFromStackedParameters(ctx: ResolutionContext): T? {
+        val current = parameterStack?.get()
+        return if (current.isNullOrEmpty()) null
+         else {
+            _koin.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
+            val parameters = current.firstOrNull()
+            parameters?.getOrNull(ctx.clazz)
+         }
+    }
+
+    private inline fun <T> resolveFromScopeSource(ctx: ResolutionContext): T? {
+        if (isRoot) return null
+        _koin.logger.debug("|- ? ${ctx.debugTag} look at scope source")
+        return if (ctx.clazz.isInstance(sourceValue) && ctx.qualifier == null) { sourceValue as? T } else null
+    }
+
+    private fun <T> resolveFromParentScopes(ctx: ResolutionContext): T? {
+        _koin.logger.debug("|- ? ${ctx.debugTag} look in other scopes")
+        return findInOtherScope(ctx)
+    }
+
+    private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
+        _koin.logger.debug("|- << parameters")
+        throwDefinitionNotFound(ctx)
+    }
+
+
+//    @Suppress("UNCHECKED_CAST")
+//    private fun <T> getFromSource(clazz: KClass<*>): T? {
+//        return if (clazz.isInstance(_source)) _source as? T else null
+//    }
 
     private fun <T> findInOtherScope(
-        clazz: KClass<*>,
-        qualifier: Qualifier?,
-        parameters: ParametersDefinition?,
+        ctx: ResolutionContext,
     ): T? {
-        var instance: T? = null
-        for (scope in linkedScopes) {
-            instance = scope.getOrNull<T>(
-                clazz,
-                qualifier,
-                parameters,
-            )
-            if (instance != null) break
-        }
-        return instance
+        return linkedScopes.firstNotNullOfOrNull { it.getOrNull(ctx) }
     }
 
-    private fun throwDefinitionNotFound(
-        qualifier: Qualifier?,
-        clazz: KClass<*>,
+    private inline fun throwDefinitionNotFound(
+        ctx: ResolutionContext
     ): Nothing {
-        val qualifierString = qualifier?.let { " and qualifier '$qualifier'" } ?: ""
+        val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
         throw NoDefinitionFoundException(
-            "No definition found for type '${clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
+            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
         )
     }
 
@@ -361,7 +434,7 @@ class Scope(
      * @return list of instances of type T
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
-        val context = InstanceContext(_koin.logger, this)
+        val context = ResolutionContext(_koin.logger, this, clazz)
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
@@ -392,7 +465,7 @@ class Scope(
         _koin.logger.debug("|- (-) Scope - id:'$id'")
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
-        _source = null
+        sourceValue = null
         _closed = true
         _koin.scopeRegistry.deleteScope(this)
     }

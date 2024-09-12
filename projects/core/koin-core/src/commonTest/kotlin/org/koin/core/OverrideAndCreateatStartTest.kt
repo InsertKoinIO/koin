@@ -6,6 +6,7 @@ import org.koin.core.context.stopKoin
 import org.koin.core.definition.IndexKey
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.logger.Level
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 import kotlin.test.AfterTest

@@ -31,6 +31,7 @@ expect object KoinPlatformTools {
     fun defaultContext(): KoinContext
     fun <R> synchronized(lock: Lockable, block: () -> R): R
     fun <K, V> safeHashMap(): MutableMap<K, V>
+    fun <K> safeSet(): MutableSet<K> // safe only in JVM for now
 }
 
 fun KoinPlatformTools.getKClassDefaultName(kClass: KClass<*>) : String = "KClass@${kClass.hashCode()}"
