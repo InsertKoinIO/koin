@@ -33,7 +33,7 @@ private val functionsCache = mutableMapOf<KClass<*>, KFunction<*>>()
 @KoinInternalApi
 fun <R> buildComponent(scope: Scope, function: KFunction<R>): R {
     val parameterTypes = getParameters(function)
-    val args = parameterTypes.map { clazz -> scope.get<Any>(clazz = clazz) }.toTypedArray()
+    val args = parameterTypes.map { (clazz, isOptional) -> if (!isOptional) scope.get<Any>(clazz = clazz) else scope.getOrNull<Any>(clazz = clazz) }.toTypedArray()
     return function.call(*args)
 }
 
@@ -47,9 +47,9 @@ fun cacheFunction(function: KFunction<*>) {
 }
 
 //TODO check if we can cache params?
-private fun getParameters(constructor: KFunction<*>): List<KClass<*>> {
+private fun getParameters(constructor: KFunction<*>): List<Pair<KClass<*>, Boolean>> {
     val parameterTypes = constructor.parameters.map {
-        it.type.classifier as KClass<*>
+        it.type.classifier as KClass<*> to it.isOptional
     }
     return parameterTypes
 }

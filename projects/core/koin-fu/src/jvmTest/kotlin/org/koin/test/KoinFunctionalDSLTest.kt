@@ -80,4 +80,22 @@ class KoinFunctionalDSLTest {
         val scope = koin.createScope<A1>(a.getScopeId(),a)
         assertNotNull(scope.getOrNull<B1>())
     }
+
+    @Test
+    fun testNullableInjection() {
+
+        class B1OrNull(val a : A1? = null)
+
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    factory(::B1OrNull)
+                }
+            )
+        }.koin
+        assertNotNull(koin.getOrNull<B1OrNull>())
+        assert(koin.getOrNull<B1OrNull>()?.a == null)
+        assert(koin.getOrNull<B1OrNull>{ parametersOf(A1())}?.a != null)
+    }
 }
