@@ -16,6 +16,7 @@
 package org.koin.core.module.dsl
 
 import org.koin.core.scope.Scope
+import kotlin.reflect.KFunction
 
 /**
  * Auto resolve a class dependencies by using its constructor reference.
