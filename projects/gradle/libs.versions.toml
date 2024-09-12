@@ -42,7 +42,6 @@ slf4j = "2.0.13"
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 extras-stately = { module = "co.touchlab:stately-concurrency", version.ref = "stately" }
 extras-stately-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "stately" }
-extras-uuid = {module = "com.benasher44:uuid", version.ref = "uuid"}
 
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
