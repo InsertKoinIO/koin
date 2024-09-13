@@ -35,6 +35,7 @@ mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
 ktor = "2.3.12"
+ktor3 = "3.0.0-rc-1"
 slf4j = "2.0.13"
 
 [libraries]
@@ -62,6 +63,9 @@ androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref 
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+ktor3-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor3" }
+ktor3-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor3" }
+ktor3-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor3" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 # jetpack Compose
 androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "composeJetpackRuntime" }
