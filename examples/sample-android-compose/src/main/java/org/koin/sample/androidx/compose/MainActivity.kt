@@ -21,7 +21,9 @@ class MainActivity : ScopeActivity() {
         setContent {
             KoinAndroidContext {
                 MaterialTheme {
-                    App()
+                    KoinContext {
+                        App()
+                    }
                 }
             }
         }
