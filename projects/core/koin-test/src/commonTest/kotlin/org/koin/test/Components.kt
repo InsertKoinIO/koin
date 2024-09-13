@@ -2,6 +2,7 @@ package org.koin.test
 
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.KoinPlatformTools
+import org.koin.mp.generateId
 
 @Suppress("unused")
 class Simple {

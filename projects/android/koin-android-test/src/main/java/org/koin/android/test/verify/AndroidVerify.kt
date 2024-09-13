@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters
 import org.koin.android.test.verify.AndroidVerify.androidTypes
 import org.koin.core.module.Module
 import org.koin.test.verify.MissingKoinDefinitionException
+import org.koin.test.verify.ParameterTypeInjection
 import kotlin.reflect.KClass
 
 /**
@@ -20,8 +21,8 @@ import kotlin.reflect.KClass
  * @param extraTypes - allow to declare extra type, to be bound above the existing definitions
  * @throws MissingKoinDefinitionException
  */
-fun Module.verify(extraTypes: List<KClass<*>> = listOf()) {
-    org.koin.test.verify.Verify.verify(this,extraTypes + androidTypes)
+fun Module.verify(extraTypes: List<KClass<*>> = listOf(), injections: List<ParameterTypeInjection>? = null) {
+    org.koin.test.verify.Verify.verify(this,extraTypes + androidTypes, injections)
 }
 
 /**
@@ -35,8 +36,8 @@ fun Module.verify(extraTypes: List<KClass<*>> = listOf()) {
  * @param extraTypes - allow to declare extra type, to be bound above the existing definitions
  * @throws MissingKoinDefinitionException
  */
-fun Module.androidVerify(extraTypes: List<KClass<*>> = listOf()) {
-    org.koin.test.verify.Verify.verify(this,extraTypes + androidTypes)
+fun Module.androidVerify(extraTypes: List<KClass<*>> = listOf(), injections: List<ParameterTypeInjection>? = null) {
+    org.koin.test.verify.Verify.verify(this,extraTypes + androidTypes, injections)
 }
 
 object AndroidVerify {

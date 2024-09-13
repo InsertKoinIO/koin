@@ -1,3 +1,4 @@
+import org.koin.core.annotation.KoinExperimentalAPI
 import kotlin.test.Test
 import kotlin.test.fail
 import org.koin.core.module.dsl.factoryOf
@@ -5,10 +6,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
-import org.koin.test.verify.CircularInjectionException
-import org.koin.test.verify.MissingKoinDefinitionException
-import org.koin.test.verify.Verify
-import org.koin.test.verify.verify
+import org.koin.test.verify.*
 
 class VerifyModulesTest {
 
@@ -146,6 +144,20 @@ class VerifyModulesTest {
         } catch (e: MissingKoinDefinitionException) {
             System.err.println("$e")
         }
+    }
+
+    @OptIn(KoinExperimentalAPI::class)
+    @Test
+    fun verify_one_simple_module_w_inject_param() {
+        val module = module {
+            single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
+        }
+
+        module.verify(
+            injections = injectedParameters(
+                definition<Simple.ComponentB>(Simple.ComponentA::class)
+            )
+        )
     }
 
     @Test
