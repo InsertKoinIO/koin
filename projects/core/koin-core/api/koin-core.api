@@ -130,14 +130,6 @@ public final class org/koin/core/context/KoinContext$DefaultImpls {
 public final class org/koin/core/definition/BeanDefinition {
 	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;)V
 	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lorg/koin/core/qualifier/Qualifier;
-	public final fun component2 ()Lkotlin/reflect/KClass;
-	public final fun component3 ()Lorg/koin/core/qualifier/Qualifier;
-	public final fun component4 ()Lkotlin/jvm/functions/Function2;
-	public final fun component5 ()Lorg/koin/core/definition/Kind;
-	public final fun component6 ()Ljava/util/List;
-	public final fun copy (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;)Lorg/koin/core/definition/BeanDefinition;
-	public static synthetic fun copy$default (Lorg/koin/core/definition/BeanDefinition;Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;ILjava/lang/Object;)Lorg/koin/core/definition/BeanDefinition;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCallbacks ()Lorg/koin/core/definition/Callbacks;
 	public final fun getDefinition ()Lkotlin/jvm/functions/Function2;
@@ -260,52 +252,59 @@ public final class org/koin/core/instance/FactoryInstanceFactory : org/koin/core
 	public fun <init> (Lorg/koin/core/definition/BeanDefinition;)V
 	public fun drop (Lorg/koin/core/scope/Scope;)V
 	public fun dropAll ()V
-	public fun get (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
-	public fun isCreated (Lorg/koin/core/instance/InstanceContext;)Z
-}
-
-public final class org/koin/core/instance/InstanceContext {
-	public fun <init> (Lorg/koin/core/logger/Logger;Lorg/koin/core/scope/Scope;Lorg/koin/core/parameter/ParametersHolder;)V
-	public synthetic fun <init> (Lorg/koin/core/logger/Logger;Lorg/koin/core/scope/Scope;Lorg/koin/core/parameter/ParametersHolder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getLogger ()Lorg/koin/core/logger/Logger;
-	public final fun getParameters ()Lorg/koin/core/parameter/ParametersHolder;
-	public final fun getScope ()Lorg/koin/core/scope/Scope;
+	public fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+	public fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
 }
 
 public abstract class org/koin/core/instance/InstanceFactory {
 	public static final field Companion Lorg/koin/core/instance/InstanceFactory$Companion;
 	public static final field ERROR_SEPARATOR Ljava/lang/String;
 	public fun <init> (Lorg/koin/core/definition/BeanDefinition;)V
-	public fun create (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
+	public fun create (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 	public abstract fun drop (Lorg/koin/core/scope/Scope;)V
 	public static synthetic fun drop$default (Lorg/koin/core/instance/InstanceFactory;Lorg/koin/core/scope/Scope;ILjava/lang/Object;)V
 	public abstract fun dropAll ()V
-	public abstract fun get (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
+	public abstract fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 	public final fun getBeanDefinition ()Lorg/koin/core/definition/BeanDefinition;
-	public abstract fun isCreated (Lorg/koin/core/instance/InstanceContext;)Z
-	public static synthetic fun isCreated$default (Lorg/koin/core/instance/InstanceFactory;Lorg/koin/core/instance/InstanceContext;ILjava/lang/Object;)Z
+	public abstract fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
+	public static synthetic fun isCreated$default (Lorg/koin/core/instance/InstanceFactory;Lorg/koin/core/instance/ResolutionContext;ILjava/lang/Object;)Z
 }
 
 public final class org/koin/core/instance/InstanceFactory$Companion {
 }
 
+public final class org/koin/core/instance/NoClass {
+	public fun <init> ()V
+}
+
+public final class org/koin/core/instance/ResolutionContext {
+	public fun <init> (Lorg/koin/core/logger/Logger;Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/parameter/ParametersHolder;)V
+	public synthetic fun <init> (Lorg/koin/core/logger/Logger;Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/parameter/ParametersHolder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getClazz ()Lkotlin/reflect/KClass;
+	public final fun getDebugTag ()Ljava/lang/String;
+	public final fun getLogger ()Lorg/koin/core/logger/Logger;
+	public final fun getParameters ()Lorg/koin/core/parameter/ParametersHolder;
+	public final fun getQualifier ()Lorg/koin/core/qualifier/Qualifier;
+	public final fun getScope ()Lorg/koin/core/scope/Scope;
+}
+
 public final class org/koin/core/instance/ScopedInstanceFactory : org/koin/core/instance/InstanceFactory {
 	public fun <init> (Lorg/koin/core/definition/BeanDefinition;)V
-	public fun create (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
+	public fun create (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 	public fun drop (Lorg/koin/core/scope/Scope;)V
 	public fun dropAll ()V
-	public fun get (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
-	public fun isCreated (Lorg/koin/core/instance/InstanceContext;)Z
+	public fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+	public fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
 	public final fun refreshInstance (Ljava/lang/String;Ljava/lang/Object;)V
 }
 
 public final class org/koin/core/instance/SingleInstanceFactory : org/koin/core/instance/InstanceFactory {
 	public fun <init> (Lorg/koin/core/definition/BeanDefinition;)V
-	public fun create (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
+	public fun create (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 	public fun drop (Lorg/koin/core/scope/Scope;)V
 	public fun dropAll ()V
-	public fun get (Lorg/koin/core/instance/InstanceContext;)Ljava/lang/Object;
-	public fun isCreated (Lorg/koin/core/instance/InstanceContext;)Z
+	public fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+	public fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
 }
 
 public final class org/koin/core/logger/EmptyLogger : org/koin/core/logger/Logger {
@@ -362,11 +361,11 @@ public final class org/koin/core/module/Module {
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEagerInstances ()Ljava/util/HashSet;
+	public final fun getEagerInstances ()Ljava/util/LinkedHashSet;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getIncludedModules ()Ljava/util/List;
-	public final fun getMappings ()Ljava/util/HashMap;
-	public final fun getScopes ()Ljava/util/HashSet;
+	public final fun getMappings ()Ljava/util/LinkedHashMap;
+	public final fun getScopes ()Ljava/util/LinkedHashSet;
 	public final fun get_createdAtStart ()Z
 	public fun hashCode ()I
 	public final fun includes (Ljava/util/Collection;)V
@@ -518,14 +517,13 @@ public final class org/koin/core/scope/Scope {
 	public final fun getPropertyOrNull (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeQualifier ()Lorg/koin/core/qualifier/Qualifier;
+	public final fun getSourceValue ()Ljava/lang/Object;
 	public final fun get_koin ()Lorg/koin/core/Koin;
-	public final fun get_parameterStackLocal ()Ljava/lang/ThreadLocal;
-	public final fun get_source ()Ljava/lang/Object;
 	public final fun isNotClosed ()Z
 	public final fun isRoot ()Z
 	public final fun linkTo ([Lorg/koin/core/scope/Scope;)V
 	public final fun registerCallback (Lorg/koin/core/scope/ScopeCallback;)V
-	public final fun set_source (Ljava/lang/Object;)V
+	public final fun setSourceValue (Ljava/lang/Object;)V
 	public fun toString ()Ljava/lang/String;
 	public final fun unlink ([Lorg/koin/core/scope/Scope;)V
 }
@@ -541,26 +539,8 @@ public final class org/koin/core/scope/ScopeJVMKt {
 	public static synthetic fun get$default (Lorg/koin/core/scope/Scope;Ljava/lang/Class;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class org/koin/core/time/MeasureKt {
-	public static final fun measureDuration (Lkotlin/jvm/functions/Function0;)D
-	public static final fun measureDurationForResult (Lkotlin/jvm/functions/Function0;)Lkotlin/Pair;
-	public static final fun measureTimedValue (Lkotlin/jvm/functions/Function0;)Lkotlin/Pair;
-}
-
-public final class org/koin/core/time/Timer {
-	public static final field Companion Lorg/koin/core/time/Timer$Companion;
-	public static final field NANO_TO_MILLI D
-	public fun <init> ()V
-	public final fun getEnd-UwyO8pc ()J
-	public final fun getStart-UwyO8pc ()J
-	public final fun getTimeInMillis ()D
-	public final fun getTimeInNanos ()D
-	public final fun getTimeInSeconds ()D
-	public final fun stop ()V
-}
-
-public final class org/koin/core/time/Timer$Companion {
-	public final fun start ()Lorg/koin/core/time/Timer;
+public final class org/koin/core/time/DurationExtKt {
+	public static final fun getInMs-LRDsOJo (J)D
 }
 
 public final class org/koin/dsl/DefinitionBindingKt {
@@ -620,13 +600,9 @@ public final class org/koin/java/KoinJavaComponent {
 public final class org/koin/mp/KoinPlatform {
 	public static final field INSTANCE Lorg/koin/mp/KoinPlatform;
 	public final fun getKoin ()Lorg/koin/core/Koin;
+	public final fun getKoinOrNull ()Lorg/koin/core/Koin;
 	public final fun startKoin (Ljava/util/List;Lorg/koin/core/logger/Level;)V
 	public final fun stopKoin ()V
-}
-
-public final class org/koin/mp/KoinPlatformTimeTools {
-	public static final field INSTANCE Lorg/koin/mp/KoinPlatformTimeTools;
-	public final fun getTimeInNanoSeconds ()J
 }
 
 public final class org/koin/mp/KoinPlatformTools {
@@ -639,6 +615,7 @@ public final class org/koin/mp/KoinPlatformTools {
 	public final fun getClassName (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public final fun getStackTrace (Ljava/lang/Exception;)Ljava/lang/String;
 	public final fun safeHashMap ()Ljava/util/Map;
+	public final fun safeSet ()Ljava/util/Set;
 	public final fun synchronized (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 

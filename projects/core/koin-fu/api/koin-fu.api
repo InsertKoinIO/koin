@@ -1,0 +1,5 @@
+public final class org/koin/dsl/fu/KoinFuKt {
+	public static final fun buildComponent (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KFunction;)Ljava/lang/Object;
+	public static final fun cacheFunction (Lkotlin/reflect/KFunction;)V
+}
+

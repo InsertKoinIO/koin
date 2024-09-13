@@ -1,4 +1,4 @@
-public final class org/koin/viewmodel/CreationExtrasExtKt {
+public final class org/koin/viewmodel/CreationNavExtrasExtKt {
 	public static final fun defaultNavExtras (Landroidx/lifecycle/ViewModelStoreOwner;)Landroidx/lifecycle/viewmodel/CreationExtras;
 }
 
