@@ -22,6 +22,11 @@ buildscript {
     }
 }
 
+plugins {
+    // Apply the new Kotlin Compose plugin
+    id 'org.jetbrains.kotlin.plugin.compose' version "$kotlin_version" apply false
+}
+
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }

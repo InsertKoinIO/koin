@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 apply from: "../gradle/versions.gradle"
 
 android {
     namespace = "org.koin.sample.androidx.compose"
     compileSdk android_target_version
-    buildToolsVersion '30.0.3'
+//    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "org.koin.sample.androidx.compose"
@@ -45,17 +46,16 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-compose-navigation:$koin_version"
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:1.5.4"
-    implementation "androidx.compose.ui:ui:1.5.4"
-    implementation "androidx.compose.foundation:foundation-layout:1.5.4"
-    implementation "androidx.compose.material:material:1.5.4"
-
-    implementation "androidx.navigation:navigation-compose:2.7.6"
+    implementation "androidx.compose.runtime:runtime:1.7.1"
+    implementation "androidx.compose.ui:ui:1.7.1"
+    implementation "androidx.compose.foundation:foundation-layout:1.7.1"
+    implementation "androidx.compose.material:material:1.7.1"
+    implementation "androidx.navigation:navigation-compose:2.8.0"
 
     // Tooling preview
-    debugImplementation "androidx.compose.ui:ui-tooling:1.5.4"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.5.4"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    debugImplementation "androidx.compose.ui:ui-tooling:1.7.1"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.7.1"
+    implementation 'androidx.appcompat:appcompat:1.7.0'
 
     testImplementation 'junit:junit:4.13.2'
 }
