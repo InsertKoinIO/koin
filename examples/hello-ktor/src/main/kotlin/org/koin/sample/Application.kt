@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
 fun Application.mainModule() {
     install(CallLogging)
     install(Koin) {
-        slf4jLogger(Level.INFO)
+        printLogger(Level.DEBUG)
         modules(appModule)
     }
 
