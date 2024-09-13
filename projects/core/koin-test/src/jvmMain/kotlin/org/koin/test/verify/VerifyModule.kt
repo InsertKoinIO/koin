@@ -1,8 +1,5 @@
-@file:OptIn(KoinExperimentalAPI::class)
-
 package org.koin.test.verify
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.Module
 import kotlin.reflect.KClass
 import kotlin.time.measureTime
@@ -12,7 +9,7 @@ import kotlin.time.measureTime
  * Throws MissingDefinitionException if any definition is missing
  *
  * @param extraTypes - allow to declare extra type, to be bound above the existing definitions
- * @param injections - defines parameters injection types to allow (normally used in parametersOf)
+ * @param injections - Experimental - defines parameters injection types to allow (normally used in parametersOf)
  * @throws MissingKoinDefinitionException
  */
 fun Module.verify(extraTypes: List<KClass<*>> = listOf(), injections: List<ParameterTypeInjection>? = emptyList()) = Verify.verify(this, extraTypes,injections)
@@ -60,7 +57,7 @@ object Verify {
      * @param extraTypes allow to declare extra type, to be bound above the existing definitions
      * @throws MissingKoinDefinitionException
      */
-    fun verify(module: Module, extraTypes: List<KClass<*>> = listOf(), injections: List<ParameterTypeInjection>?) {
+    fun verify(module: Module, extraTypes: List<KClass<*>> = listOf(), injections: List<ParameterTypeInjection>? = null) {
 
         val verification = Verification(module, extraTypes, injections)
         println("Verifying module '$module' ...")

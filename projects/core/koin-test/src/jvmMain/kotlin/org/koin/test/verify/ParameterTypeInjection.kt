@@ -26,6 +26,16 @@ inline fun <reified T> definition(vararg injectedParameterTypes : KClass<*>): Pa
 }
 
 /**
+ * Define injection for a definition Type
+ * @param T - definition type
+ * @param injectedParameterTypes - Types that need to be injected later with parametersOf
+ */
+@KoinExperimentalAPI
+inline fun <reified T> definition(injectedParameterTypes : List<KClass<*>>): ParameterTypeInjection{
+    return ParameterTypeInjection(T::class, injectedParameterTypes)
+}
+
+/**
  * Declare list of ParameterTypeInjection - in order to help define parmater injection types to allow in verify
  * @param injectionType - list of ParameterTypeInjection
  */

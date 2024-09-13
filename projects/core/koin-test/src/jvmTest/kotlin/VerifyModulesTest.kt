@@ -1,3 +1,4 @@
+import org.koin.core.annotation.KoinExperimentalAPI
 import kotlin.test.Test
 import kotlin.test.fail
 import org.koin.core.module.dsl.factoryOf
@@ -145,22 +146,18 @@ class VerifyModulesTest {
         }
     }
 
+    @OptIn(KoinExperimentalAPI::class)
     @Test
     fun verify_one_simple_module_w_inject_param() {
         val module = module {
             single { (a: Simple.ComponentA) -> Simple.ComponentB(a) }
         }
 
-        try {
-            module.verify(
-                injections = injectedParameters(
-                    definition<Simple.ComponentB>(Simple.ComponentA::class)
-                )
+        module.verify(
+            injections = injectedParameters(
+                definition<Simple.ComponentB>(Simple.ComponentA::class)
             )
-        } catch (e: Exception) {
-            System.err.println("$e")
-            fail("Should not fail to verify module")
-        }
+        )
     }
 
     @Test
