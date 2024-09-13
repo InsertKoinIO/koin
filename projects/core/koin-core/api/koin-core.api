@@ -78,7 +78,9 @@ public final class org/koin/core/component/KoinScopeComponent$DefaultImpls {
 
 public final class org/koin/core/component/KoinScopeComponentKt {
 	public static final fun createScope (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public static final fun createScope (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/String;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun createScope$default (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public static synthetic fun createScope$default (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static final fun getOrCreateScope (Lorg/koin/core/component/KoinScopeComponent;)Lkotlin/Lazy;
 	public static final fun getScopeId (Ljava/lang/Object;)Ljava/lang/String;
 	public static final fun getScopeName (Ljava/lang/Object;)Lorg/koin/core/qualifier/TypeQualifier;
