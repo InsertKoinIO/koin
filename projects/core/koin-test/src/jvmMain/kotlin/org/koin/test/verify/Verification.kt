@@ -62,7 +62,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
         verificationByStatus[VerificationStatus.MISSING]?.let { list ->
                 val first = list.first()
                 val errorMessage = "Missing definition for '$first' in definition '$beanDefinition'."
-                val generateParameterInjection = "Fix your Koin configuration or define it as injection for '$beanDefinition':\n${generateInjectionCode(beanDefinition,first)}"
+                val generateParameterInjection = "- Fix your Koin configuration -\n${generateFixDefinition(first)}\n${generateInjectionCode(beanDefinition,first)}"
                 System.err.println("* ----- > $errorMessage\n$generateParameterInjection")
                 throw MissingKoinDefinitionException(errorMessage)
         }
@@ -78,11 +78,21 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
         } ?: emptyList()
     }
 
-    private fun generateInjectionCode(beanDefinition: BeanDefinition<*>, p: VerifiedParameter): String {
+    private fun generateFixDefinition(first: VerifiedParameter): String {
+        val className = first.type.qualifiedName
         return """
+            1- add missing definition for type '$className'. like: singleOf(::$className)
+            or
+        """.trimIndent()
+    }
+
+    private fun generateInjectionCode(beanDefinition: BeanDefinition<*>, p: VerifiedParameter): String {
+        val className = beanDefinition.primaryType.qualifiedName
+        return """
+            2- else define injection for '$className' with:
             module.verify(
                 injections = injectedParameters(
-                    definition<${beanDefinition.primaryType.qualifiedName}>(${p.type.qualifiedName}::class)
+                    definition<$className>(${p.type.qualifiedName}::class)
                 )
             )
         """.trimIndent()
