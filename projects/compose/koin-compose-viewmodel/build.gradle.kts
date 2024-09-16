@@ -44,8 +44,8 @@ kotlin {
 }
 
 tasks.withType<KotlinCompile>().all {
-    kotlinOptions {
-        jvmTarget = "11"
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
