@@ -30,6 +30,8 @@ import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.scope.Scope
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
 
@@ -97,20 +99,19 @@ private fun warningNoContext(ctx: Koin) {
  * Start a new Koin Application and associate it for Compose context
  * if Koin's Default Context is already set,
  *
- * @param application - Koin Application declaration lambda (like startKoin)
+ * @param application - Koin Application declaration lambda
  * @param content - following compose function
  *
- * @throws KoinApplicationAlreadyStartedException
+ * @throws ApplicationAlreadyStartedException
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
 @Composable
-@Throws(KoinApplicationAlreadyStartedException::class)
 fun KoinApplication(
-    application: () -> KoinApplication,
+    application: KoinAppDeclaration,
     content: @Composable () -> Unit
 ) {
-    val koin = rememberKoinApplication(koinApplication = application())
+    val koin = rememberKoinApplication(koinApplication = koinApplication(application))
     CompositionLocalProvider(
         LocalKoinApplication provides koin,
         LocalKoinScope provides koin.scopeRegistry.rootScope,
