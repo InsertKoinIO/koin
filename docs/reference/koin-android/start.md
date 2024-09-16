@@ -72,3 +72,29 @@ startKoin {
 }
 ```
 
+## Start Koin with Androidx Startup (4.0)
+
+By using Gradle packge `koin-androidx-startup`, we can use `onKoinStartup` function durectly in `init` block of your Application class:
+
+```kotlin
+class MainApplication : Application() {
+
+    init {
+        // Use AndroidX Startup for Koin
+        onKoinStartup {
+            androidContext(this@MainApplication)
+            modules(allModules)
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+    }
+}
+```
+
+This replaces the `startKoin` function that is usally used in `onCreate`. 
+
+:::info
+Gain over from `onKoinStartup` to regular `startKoin` can go over 30% of time gained, for startup time.
+:::

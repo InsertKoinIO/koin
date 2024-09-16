@@ -37,6 +37,7 @@ include(
     ":android:koin-androidx-navigation",
     ":android:koin-androidx-workmanager",
     ":android:koin-android-test",
+    ":android:koin-androidx-startup",
     // Compose
     ":compose:koin-compose",
     ":compose:koin-compose-viewmodel",
