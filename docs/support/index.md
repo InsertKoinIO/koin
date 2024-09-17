@@ -9,7 +9,7 @@ The Koin team is leading its development with open-source and community-driven a
 
 We drive our developments with release cycles of 6 months to follow Kotlin language and library updates in a consistent manner. We will use beta periods of 6 weeks or more, to help gather first feedbacks.
 
-Once a new version is released, we start the Community support phase for 6 months minimum. During that phase, we are actively gathering feedbacks, following all updates impacting our framework, like librairies, Kotling Android, Ktor and others frameworks versions.
+Once a new version is released, we start the Community support phase for 6 months minimum. During that phase, we are actively gathering feedbacks, following all updates impacting our framework, like libraries, Kotlin Android, Ktor and others frameworks versions.
 
 ## Establishing Roadmap with Structured Versions 
 

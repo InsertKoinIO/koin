@@ -36,6 +36,8 @@ object GlobalContext : KoinContext {
 
     override fun getOrNull(): Koin? = _koin
 
+    override fun getKoinApplicationOrNull(): KoinApplication? = null
+
     private fun register(koinApplication: KoinApplication) {
         if (_koin != null) {
             throw ApplicationAlreadyStartedException("A Koin Application has already been started")
