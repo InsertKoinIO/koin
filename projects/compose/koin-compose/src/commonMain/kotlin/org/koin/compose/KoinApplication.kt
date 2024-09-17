@@ -28,7 +28,6 @@ import org.koin.compose.error.UnknownKoinContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
@@ -111,7 +110,7 @@ fun KoinApplication(
     application: KoinAppDeclaration,
     content: @Composable () -> Unit
 ) {
-    val koin = rememberKoinApplication(koinApplication = koinApplication(application))
+    val koin = rememberKoinApplication(koinApplication(application))
     CompositionLocalProvider(
         LocalKoinApplication provides koin,
         LocalKoinScope provides koin.scopeRegistry.rootScope,

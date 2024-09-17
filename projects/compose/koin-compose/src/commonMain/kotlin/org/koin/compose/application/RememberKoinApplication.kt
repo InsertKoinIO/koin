@@ -30,9 +30,10 @@ import org.koin.core.annotation.KoinInternalApi
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 inline fun rememberKoinApplication(koinApplication: KoinApplication): Koin {
-    val wrapper = remember(koinApplication) {
+    val wrapper = remember {
         CompositionKoinApplicationLoader(koinApplication)
     }
     return wrapper.koinApplication.koin
