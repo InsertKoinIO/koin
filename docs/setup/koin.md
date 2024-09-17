@@ -23,6 +23,7 @@ Here are the currently available versions:
 | koin-android-compat              |              [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-android-compat)](https://mvnrepository.com/artifact/io.insert-koin/koin-android-compat)              |
 | koin-androidx-navigation         |         [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-navigation)         |
 | koin-androidx-workmanager        |        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-workmanager)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-workmanager)        |
+| koin-androidx-startup        |        [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-androidx-startup)](https://mvnrepository.com/artifact/io.insert-koin/koin-androidx-startup)        |
 | koin-compose                     |                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose)                     |
 | koin-compose-viewmodel           |                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose-viewmodel)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-viewmodel)            |
 | koin-compose-viewmodel-navigation|                     [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose-viewmodel-navigation)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose-viewmodel-navigation) |
@@ -128,6 +129,8 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-workmanager:$koin_android_version")
     // Navigation Graph
     implementation("io.insert-koin:koin-androidx-navigation:$koin_android_version")
+    // App Startup
+    implementation("io.insert-koin:koin-androidx-startup:$koin_android_version")
 }
 ```
 
@@ -135,32 +138,26 @@ dependencies {
 From now you can continue on Koin Tutorials to learn about using Koin: [Android App Tutorial](/docs/quickstart/android-viewmodel)
 :::
 
-### **Android Jetpack Compose**
+### **Jetpack Compose or Compose Multiplatform**
+
+Add `koin-compose` dependency to your multiplatform application, for use Koin & Compose API:
 
 ```groovy
 dependencies {
-    implementation("io.insert-koin:koin-androidx-compose:$koin_android_compose_version")
+    implementation("io.insert-koin:koin-compose:$koin_version")
+    implementation("io.insert-koin:koin-compose-viewmodel:$koin_version")
+    implementation("io.insert-koin:koin-compose-viewmodel-navigation:$koin_version")
 }
 ```
 
-You are now ready to start Koin in your `Application` class:
+If you are using pure Android Jetpack Compose, you can go with
 
-```kotlin
-class MainApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        
-        startKoin {
-            modules(appModule)
-        }
-    }
+```groovy
+dependencies {
+    implementation("io.insert-koin:koin-androidx-compose:$koin_version")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:$koin_version")
 }
 ```
-
-:::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Android Compose App Tutorial](/docs/quickstart/android-compose)
-:::
-
 
 ### **Kotlin Multiplatform**
 

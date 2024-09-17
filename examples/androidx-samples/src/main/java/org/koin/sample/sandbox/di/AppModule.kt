@@ -9,6 +9,7 @@ import org.koin.core.module.dsl.*
 import org.koin.core.module.includes
 import org.koin.core.qualifier.named
 import org.koin.dsl.lazyModule
+import org.koin.dsl.module
 import org.koin.sample.sandbox.components.Counter
 import org.koin.sample.sandbox.components.SCOPE_ID
 import org.koin.sample.sandbox.components.SCOPE_SESSION
@@ -32,7 +33,7 @@ import org.koin.sample.sandbox.scope.ScopedFragment
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
 
-val appModule = lazyModule {
+val appModule = module {
 
     singleOf(::SimpleServiceImpl) { bind<SimpleService>() }
     singleOf(::DumbServiceImpl) {
@@ -42,7 +43,7 @@ val appModule = lazyModule {
     factory { RandomId() }
 }
 
-val mvpModule = lazyModule {
+val mvpModule = module {
     //factory { (id: String) -> FactoryPresenter(id, get()) }
     factoryOf(::FactoryPresenter)
 
@@ -52,7 +53,7 @@ val mvpModule = lazyModule {
     }
 }
 
-val mvvmModule = lazyModule {
+val mvvmModule = module {
 
     viewModelOf(::SimpleViewModel)// { (id: String) -> SimpleViewModel(id, get()) }
     viewModelOf(::SimpleViewModel) { named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
@@ -92,7 +93,7 @@ val mvvmModule = lazyModule {
     }
 }
 
-val scopeModule = lazyModule {
+val scopeModule = module {
     scope(named(SCOPE_ID)) {
         scopedOf(::Session) {
             named(SCOPE_SESSION)
@@ -105,7 +106,7 @@ val scopeModule = lazyModule {
     }
 }
 
-val scopeModuleActivityA = lazyModule {
+val scopeModuleActivityA = module {
     scope<ScopedActivityA> {
         fragmentOf(::ScopedFragment)
         scopedOf(::Session)
@@ -116,19 +117,19 @@ val scopeModuleActivityA = lazyModule {
     }
 }
 
-val workerServiceModule = lazyModule {
+val workerServiceModule = module {
     singleOf(::SimpleWorkerService)
 }
 
-val workerScopedModule = lazyModule {
+val workerScopedModule = module {
     workerOf(::SimpleWorker)// { SimpleWorker(get(), androidContext(), it.get()) }
 }
 
-val navModule = lazyModule {
+val navModule = module {
     viewModelOf(::NavViewModel)
     viewModelOf(::NavViewModel2)
 }
 
-val allModules = lazyModule {
+val allModules = module {
     includes(appModule, mvpModule, mvvmModule , scopeModule , workerServiceModule , workerScopedModule , navModule , scopeModuleActivityA)
 }

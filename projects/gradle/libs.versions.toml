@@ -13,11 +13,12 @@ uuid = "0.8.4"
 # Android
 agp = "7.4.2"
 android-appcompat = "1.7.0"
-android-activity = "1.9.1"
-android-fragment = "1.8.2"
-androidx-lifecycle = "2.8.4"
+android-activity = "1.9.2"
+android-fragment = "1.8.3"
+androidx-lifecycle = "2.8.5"
 androidx-workmanager = "2.9.1"
-androidx-navigation = "2.7.7"
+androidx-navigation = "2.8.0"
+androidx-startup= "1.1.1"
 
 # Compose
 composeJetpackRuntime = "1.6.8"
@@ -58,6 +59,8 @@ androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", ve
 androidx-commonJava8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
 androidx-navigation = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-workmanager" }
+androidx-startup = {module ="androidx.startup:startup-runtime", version.ref = "androidx-startup" }
+
 # Ktor
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }

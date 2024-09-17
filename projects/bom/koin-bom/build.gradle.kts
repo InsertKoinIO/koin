@@ -26,6 +26,7 @@ dependencies {
         api(project(":android:koin-android-test"))
         api(project(":android:koin-androidx-navigation"))
         api(project(":android:koin-androidx-workmanager"))
+        api(project(":android:koin-androidx-startup"))
 
         api(project(":compose:koin-compose"))
         api(project(":compose:koin-compose-viewmodel"))

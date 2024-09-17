@@ -1,12 +1,14 @@
 package org.koin.sample.sandbox.main
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
+import org.koin.sample.sandbox.MainApplication
 import org.koin.sample.sandbox.R
 import org.koin.sample.sandbox.components.APP_TITLE
 import org.koin.sample.sandbox.components.main.*
@@ -44,6 +46,15 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.main_button).setOnClickListener {
             navigateTo<MVPActivity>(isRoot = true)
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            val endTime = System.currentTimeMillis()
+            val startupTime = endTime - MainApplication.startTime
+            Log.i("[MEASURE]","App startup time - $startupTime ms")
         }
     }
 }
