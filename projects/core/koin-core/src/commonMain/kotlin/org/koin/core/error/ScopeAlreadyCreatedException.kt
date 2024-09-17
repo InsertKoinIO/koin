@@ -15,4 +15,8 @@
  */
 package org.koin.core.error
 
+/**
+ * Scope is already created error
+ * @author Arnaud Giuliani
+ */
 class ScopeAlreadyCreatedException(s: String) : Exception(s)
