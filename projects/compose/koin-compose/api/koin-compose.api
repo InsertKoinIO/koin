@@ -1,5 +1,5 @@
 public final class org/koin/compose/KoinApplicationKt {
-	public static final fun KoinApplication (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+	public static final fun KoinApplication (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun KoinContext (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun KoinIsolatedContext (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun currentKoinScope (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/scope/Scope;

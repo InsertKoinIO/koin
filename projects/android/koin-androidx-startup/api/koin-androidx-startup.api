@@ -1,0 +1,12 @@
+public final class org/koin/androix/startup/KoinInitializer : androidx/startup/Initializer {
+	public fun <init> ()V
+	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
+	public fun create (Landroid/content/Context;)Lorg/koin/core/Koin;
+	public fun dependencies ()Ljava/util/List;
+}
+
+public final class org/koin/androix/startup/KoinStartup {
+	public static final field INSTANCE Lorg/koin/androix/startup/KoinStartup;
+	public final fun onKoinStartup (Lkotlin/jvm/functions/Function1;)V
+}
+
