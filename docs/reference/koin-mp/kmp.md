@@ -141,4 +141,4 @@ struct ContentView: View {
 
 ### New Native Memory Management
 
-Activate experimental with root [gradle.properties](http://gradle.properties) properties:
+Activate experimental with root [gradle.properties](https://kotlinlang.org/docs/native-memory-manager.html).
