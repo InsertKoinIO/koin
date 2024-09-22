@@ -45,5 +45,5 @@ suspend fun Koin.onKoinStarted(block: suspend (Koin) -> Unit) {
  */
 @OptIn(KoinInternalApi::class)
 fun Koin.isAllStartedJobsDone(): Boolean {
-    return coroutinesEngine.startJobs.all { !it.isActive }
+    return coroutinesEngine.startJobs.none { it.isActive }
 }
