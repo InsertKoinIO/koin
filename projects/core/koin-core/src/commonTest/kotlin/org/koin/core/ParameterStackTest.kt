@@ -25,7 +25,7 @@ class ParameterStackTest {
             )
         }.koin
 
-        (1..10).forEach {
+        for (index in 1..10) {
             koin.get<Simple.MyStringFactory> { parametersOf(KoinPlatformTools.generateId()) }
         }
 
