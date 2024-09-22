@@ -15,7 +15,7 @@ class DebugLogTest {
             printLogger(Level.INFO)
         }.koin
 
-        (1..10).forEach {
+        for (index in 1..10) {
             measureDuration("with if") {
                 if (koin.logger.isAt(Level.DEBUG)) {
                     koin.logger.debug(message { "test me" })
