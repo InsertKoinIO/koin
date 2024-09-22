@@ -18,14 +18,15 @@ package org.koin.dsl
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.*
+import org.koin.core.module.KoinDslMarker
+import org.koin.core.module.Module
+import org.koin.core.module._scopedInstanceFactory
 import org.koin.core.qualifier.Qualifier
 
 /**
  * DSL Scope Definition
  */
 @OptIn(KoinInternalApi::class)
-@Suppress("UNUSED_PARAMETER")
 @KoinDslMarker
 class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
 
