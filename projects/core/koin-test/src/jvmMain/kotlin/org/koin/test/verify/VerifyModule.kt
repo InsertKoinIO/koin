@@ -1,7 +1,6 @@
 package org.koin.test.verify
 
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
 import org.koin.core.time.Timer
 import kotlin.reflect.KClass
@@ -31,7 +30,6 @@ fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = listOf()) {
  *
  * Help to check current factory of a Module
  */
-@OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 object Verify {
 

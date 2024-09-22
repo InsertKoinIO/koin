@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DeprecatedCallableAddReplaceWith")
 
 package org.koin.androidx.compose
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.androidx.viewmodel.resolveViewModel
-import org.koin.compose.LocalKoinScope
 import org.koin.compose.currentKoinScope
 import org.koin.compose.rememberCurrentKoinScope
 import org.koin.core.annotation.KoinInternalApi

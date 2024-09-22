@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(KoinInternalApi::class)
-
 package org.koin.androidx.compose
 
 import android.app.Application
@@ -28,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import org.koin.android.ext.android.getKoin
 import org.koin.compose.KoinContext
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
 import org.koin.mp.KoinPlatformTools
 
@@ -52,7 +49,7 @@ import org.koin.mp.KoinPlatformTools
 @Composable
 @KoinExperimentalAPI
 fun KoinAndroidContext(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
     val koinApplication = remember(context) {

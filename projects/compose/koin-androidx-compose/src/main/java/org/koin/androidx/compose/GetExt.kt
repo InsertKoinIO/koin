@@ -18,9 +18,7 @@ package org.koin.androidx.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import org.koin.compose.currentKoinScope
-import org.koin.compose.rememberCurrentKoinScope
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -36,7 +34,6 @@ import org.koin.core.scope.Scope
  * @author Arnaud Giuliani
  * @author Henrique Horbovyi
  */
-@OptIn(KoinInternalApi::class)
 @Composable
 @Deprecated("use koinInject() instead")
 inline fun <reified T> get(
