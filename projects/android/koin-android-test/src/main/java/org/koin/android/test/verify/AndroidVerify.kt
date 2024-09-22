@@ -22,8 +22,8 @@ import kotlin.reflect.KClass
  * @throws MissingKoinDefinitionException
  */
 @KoinExperimentalAPI
-fun Module.verify(extraTypes: List<KClass<*>> = listOf()) {
-    org.koin.test.verify.Verify.verify(this,extraTypes + androidTypes)
+fun Module.verify(extraTypes: List<KClass<*>> = emptyList()) {
+    org.koin.test.verify.Verify.verify(this, extraTypes + androidTypes)
 }
 
 /**
@@ -38,8 +38,8 @@ fun Module.verify(extraTypes: List<KClass<*>> = listOf()) {
  * @throws MissingKoinDefinitionException
  */
 @KoinExperimentalAPI
-fun Module.androidVerify(extraTypes: List<KClass<*>> = listOf()) {
-    org.koin.test.verify.Verify.verify(this,extraTypes + androidTypes)
+fun Module.androidVerify(extraTypes: List<KClass<*>> = emptyList()) {
+    org.koin.test.verify.Verify.verify(this, extraTypes + androidTypes)
 }
 
 @KoinExperimentalAPI

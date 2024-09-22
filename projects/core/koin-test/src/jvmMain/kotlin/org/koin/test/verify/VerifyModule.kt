@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  * @throws MissingKoinDefinitionException
  */
 @KoinExperimentalAPI
-fun Module.verify(extraTypes: List<KClass<*>> = listOf()) = Verify.verify(this, extraTypes)
+fun Module.verify(extraTypes: List<KClass<*>> = emptyList()) = Verify.verify(this, extraTypes)
 
 /**
  * Verify a list of Modules
@@ -22,7 +22,7 @@ fun Module.verify(extraTypes: List<KClass<*>> = listOf()) = Verify.verify(this, 
  * @see Module.verify
  */
 @KoinExperimentalAPI
-fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = listOf()) {
+fun List<Module>.verifyAll(extraTypes: List<KClass<*>> = emptyList()) {
     forEach { module -> module.verify(extraTypes) }
 }
 
@@ -62,7 +62,7 @@ object Verify {
      * @param extraTypes allow to declare extra type, to be bound above the existing definitions
      * @throws MissingKoinDefinitionException
      */
-    fun verify(module: Module, extraTypes: List<KClass<*>> = listOf()) {
+    fun verify(module: Module, extraTypes: List<KClass<*>> = emptyList()) {
         val timer = Timer.start()
 
         val verification = Verification(module, extraTypes)

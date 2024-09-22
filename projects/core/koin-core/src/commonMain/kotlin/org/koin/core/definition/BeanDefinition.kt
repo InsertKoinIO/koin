@@ -36,7 +36,7 @@ data class BeanDefinition<T>(
     var qualifier: Qualifier? = null,
     val definition: Definition<T>,
     val kind: Kind,
-    var secondaryTypes: List<KClass<*>> = listOf(),
+    var secondaryTypes: List<KClass<*>> = emptyList(),
 ) {
     var callbacks: Callbacks<T> = Callbacks()
 
