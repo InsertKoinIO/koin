@@ -90,7 +90,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
         return verificationByStatus[VerificationStatus.OK]?.map {
             println("|- dependency '${it.name}' - ${it.type.qualifiedName} found!")
             it.type
-        } ?: emptyList()
+        }.orEmpty()
     }
 
     private fun generateFixDefinition(first: VerifiedParameter): String {
