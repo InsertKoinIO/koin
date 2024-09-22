@@ -1,12 +1,18 @@
 package org.koin.test
 
 import kotlinx.coroutines.runBlocking
-import org.koin.core.*
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.core.context.waitKoinStart
-import org.koin.core.logger.*
+import org.koin.core.isAllStartedJobsDone
+import org.koin.core.lazyModules
+import org.koin.core.logger.EmptyLogger
+import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
+import org.koin.core.onKoinStarted
+import org.koin.core.runOnKoinStarted
 import org.koin.core.time.Timer
+import org.koin.core.waitAllStartJobs
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
 import kotlin.test.Test
@@ -15,12 +21,16 @@ class PerfsTest {
 
     @Test
     fun perfModule400_module_perfs() {
-        (1..3).forEach { runPerfs() }
+        for (index in 1..3) {
+            runPerfs()
+        }
     }
 
     @Test
     fun perfModule400_lazy_module_perfs() {
-        (1..3).forEach { runPerfs(isLazy = true) }
+        for (index in 1..3) {
+            runPerfs(isLazy = true)
+        }
     }
 
     private fun runPerfs(log: Logger = EmptyLogger(), isLazy: Boolean = false) {
