@@ -2,7 +2,7 @@
 title: Koin DSL
 ---
 
-Thanks to the power of Kotlin language, Koin provides a DSL to help your describe your app instead of annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to achieve to prepare your dependency injection.
+Thanks to the power of Kotlin language, Koin provides a DSL to help you describe your app instead of annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to achieve to prepare your dependency injection.
 
 ## Application & Module DSL
 
