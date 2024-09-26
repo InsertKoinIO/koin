@@ -22,7 +22,6 @@ class Simple {
     class AllFactory2(val strings: MyStringFactory, val ints: MyIntFactory)
 }
 
-@Suppress("unused")
 class Errors {
     class Boom {
         init {

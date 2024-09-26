@@ -214,7 +214,6 @@ class Scope(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun <T> resolveInstance(
         qualifier: Qualifier?,
         clazz: KClass<*>,
@@ -243,34 +242,34 @@ class Scope(
         qualifier: Qualifier?,
         clazz: KClass<*>,
         instanceContext: InstanceContext,
-        parameterDef: ParametersDefinition?
+        parameterDef: ParametersDefinition?,
     ) = (
             _koin.instanceRegistry.resolveInstance(qualifier, clazz, this.scopeQualifier, instanceContext)
-        ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
-            _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
-        }
-        ?: run {
-            if (!isRoot){
-                _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source" )
-                _source?.let { source ->
-                    if (clazz.isInstance(source) && qualifier == null) {
-                        _source as? T
+                ?: run {
+                    _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in injected parameters")
+                    _parameterStackLocal.get()?.firstOrNull()?.getOrNull<T>(clazz)
+                }
+                ?: run {
+                    if (!isRoot) {
+                        _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look at scope source")
+                        _source?.let { source ->
+                            if (clazz.isInstance(source) && qualifier == null) {
+                                _source as? T
+                            } else null
+                        }
                     } else null
                 }
-            } else null
-        }
-        ?: run {
-            _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes" )
-            findInOtherScope<T>(clazz, qualifier, parameterDef)
-        }
-        ?: run {
-            if (parameterDef != null) {
-                _parameterStackLocal.remove()
-                _koin.logger.debug("|- << parameters")
-            }
-            throwDefinitionNotFound(qualifier, clazz)
-        })
+                ?: run {
+                    _koin.logger.debug("|- ? t:'${clazz.getFullName()}' - q:'$qualifier' look in other scopes")
+                    findInOtherScope<T>(clazz, qualifier, parameterDef)
+                }
+                ?: run {
+                    if (parameterDef != null) {
+                        _parameterStackLocal.remove()
+                        _koin.logger.debug("|- << parameters")
+                    }
+                    throwDefinitionNotFound(qualifier, clazz)
+                })
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> getFromSource(clazz: KClass<*>): T? {
