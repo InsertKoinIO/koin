@@ -15,19 +15,20 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.client.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.testing.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -42,7 +43,7 @@ import kotlin.test.assertTrue
 class KoinPluginRunTest {
 
     @Before
-    fun before(){
+    fun before() {
         stopKoin()
     }
 
@@ -58,7 +59,7 @@ class KoinPluginRunTest {
 
     @Test
     @Ignore("socket exception on GH")
-    fun `run outside context`()  = runBlocking<Unit> {
+    fun `run outside context`() = runBlocking<Unit> {
         var counter = 0
         startKoin {
             printLogger(Level.DEBUG)
@@ -82,12 +83,12 @@ class KoinPluginRunTest {
 
         delay(500)
         s.stop()
-        assert(counter == 1){ "counter should 1 - instance is created" }
+        assert(counter == 1) { "counter should 1 - instance is created" }
     }
 
     @Test
     @Ignore("socket exception on GH")
-    fun `should can reload`()  = runBlocking<Unit> {
+    fun `should can reload`() = runBlocking<Unit> {
         val koinModule = module {
             single<String> {
                 "Reproduction test"
@@ -104,7 +105,7 @@ class KoinPluginRunTest {
         delay(500)
 
         // verify for can auto-reload
-        (s.environment as ApplicationEngineEnvironmentReloading).reload()
+        s.reload()
         s.stop()
     }
 }
@@ -123,12 +124,13 @@ private fun testMyApplication(test: suspend (jsonClient: HttpClient) -> Unit) = 
     test.invoke(createClient {})
 }
 
-private fun testMyApplicationNoKoin(test: suspend (jsonClient: HttpClient) -> Unit) = testApplication {
-    application {
+private fun testMyApplicationNoKoin(test: suspend (jsonClient: HttpClient) -> Unit) =
+    testApplication {
+        application {
 
+        }
+        test.invoke(createClient {})
     }
-    test.invoke(createClient {})
-}
 
 class KtorMyModule(application: Application) {
     init {
