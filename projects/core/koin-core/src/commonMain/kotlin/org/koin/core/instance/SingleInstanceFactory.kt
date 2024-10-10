@@ -15,7 +15,9 @@
  */
 package org.koin.core.instance
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.error.DependencyCycleException
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 
@@ -25,6 +27,8 @@ import org.koin.mp.KoinPlatformTools
  */
 class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     InstanceFactory<T>(beanDefinition) {
+
+    private val instanceCreationInProgress = AtomicBoolean(false)
 
     private var value: T? = null
 
@@ -41,12 +45,13 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         drop()
     }
 
-    override fun create(context: InstanceContext): T {
-        return if (value == null) {
-            super.create(context)
-        } else {
-            getValue()
+    override fun create(context: InstanceContext): T = value ?: run {
+        if (!instanceCreationInProgress.compareAndSet(false, true)) {
+            throw DependencyCycleException("Instance creation invoked twice, most likely it's a dependency cycle")
         }
+        val instance = super.create(context)
+        instanceCreationInProgress.value = false
+        instance
     }
 
     override fun get(context: InstanceContext): T {
