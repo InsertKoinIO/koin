@@ -2,6 +2,8 @@ package org.koin.core
 
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
+import org.koin.core.error.DependencyCycleException
+import org.koin.core.error.InstanceCreationException
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
@@ -10,6 +12,7 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class DeclareInstanceTest {
@@ -293,5 +296,76 @@ class DeclareInstanceTest {
             )
         }
         assertEquals(0,count)
+    }
+
+    @Test
+    fun `detect dependency cycle single`() {
+
+        val koin = koinApplication {
+            modules(
+                module {
+                    single { Simple.DependencyCycle1(get()) }
+                    single { Simple.DependencyCycle2(get()) }
+                    single { Simple.DependencyCycle3(get()) }
+                },
+            )
+        }.koin
+
+
+        try {
+            koin.get<Simple.DependencyCycle1>()
+            fail()
+        } catch (e: InstanceCreationException) {
+
+            // one of the 'causes' must be DependencyCycleException, ensure there is one
+            val causeStack = mutableListOf<Throwable>()
+            var current = e.cause
+            while (true) {
+                if (current == null) break
+                causeStack.add(current)
+                current = current.cause
+            }
+
+            assertTrue(causeStack.any { it is DependencyCycleException })
+        }
+        koin.close()
+    }
+
+    @Test
+    fun `detect dependency cycle scoped`() {
+        val scopeKey = named("_test_scope_")
+        val scopeId = "_test_scope_id_"
+
+        val koin = koinApplication {
+            modules(
+                module {
+                    scope(scopeKey) {
+                        scoped { Simple.DependencyCycle1(get()) }
+                        scoped { Simple.DependencyCycle2(get()) }
+                        scoped { Simple.DependencyCycle3(get()) }
+                    }
+                },
+            )
+        }.koin
+
+
+        val scope = koin.createScope(scopeId, scopeKey)
+        try {
+            scope.get<Simple.DependencyCycle1>()
+            fail()
+        } catch (e: InstanceCreationException) {
+
+            // one of the 'causes' must be DependencyCycleException, ensure there is one
+            val causeStack = mutableListOf<Throwable>()
+            var current = e.cause
+            while (true) {
+                if (current == null) break
+                causeStack.add(current)
+                current = current.cause
+            }
+
+            assertTrue(causeStack.any { it is DependencyCycleException })
+        }
+        koin.close()
     }
 }

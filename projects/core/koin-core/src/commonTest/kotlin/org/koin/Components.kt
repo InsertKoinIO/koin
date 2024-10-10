@@ -20,6 +20,10 @@ class Simple {
     class MyStringFactory(val s: String)
     class AllFactory(val ints: MyIntFactory, val strings: MyStringFactory)
     class AllFactory2(val strings: MyStringFactory, val ints: MyIntFactory)
+
+    data class DependencyCycle1(val dependencyCycle3: DependencyCycle3)
+    data class DependencyCycle2(val dependencyCycle1: DependencyCycle1)
+    data class DependencyCycle3(val dependencyCycle2: DependencyCycle2)
 }
 
 @Suppress("unused")
