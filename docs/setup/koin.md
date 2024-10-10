@@ -113,7 +113,7 @@ You are now ready to start Koin in your `Application` class:
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        
+
         startKoin {
             modules(appModule)
         }
@@ -211,15 +211,15 @@ The Koin Bill of Materials (BOM) lets you manage all of your Koin library versio
 dependencies {
     // Declare koin-bom version
     implementation platform("io.insert-koin:koin-bom:$koin_bom")
-    
+
     // Declare the koin dependencies that you need
     implementation("io.insert-koin:koin-android")
     implementation("io.insert-koin:koin-core-coroutines")
     implementation("io.insert-koin:koin-androidx-workmanager")
-    
+
     // If you need specify some version it's just point to desired version
     implementation("io.insert-koin:koin-androidx-navigation:1.2.3-alpha03")
-    
+
     // Works with test libraries too!
     testImplementation("io.insert-koin:koin-test-junit4")
     testImplementation("io.insert-koin:koin-android-test")
