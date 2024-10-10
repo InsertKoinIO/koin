@@ -17,6 +17,8 @@
 
 package org.koin.core.instance
 
+import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicLong
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
 import org.koin.core.parameter.ParametersHolder
@@ -28,8 +30,12 @@ import org.koin.mp.Lockable
 /**
  * Koin Instance Holder
  * create/get/release an instance of given definition
+ *
+ * Implements [Comparable] to provide factories soring by instance creation order
  */
-abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Lockable() {
+abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Lockable(), Comparable<InstanceFactory<*>> {
+    private val instanceCreationOrderSet = AtomicBoolean(false)
+    private var instanceCreationOrderPosition = Long.MAX_VALUE
 
     /**
      * Retrieve an instance
@@ -47,15 +53,34 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
         context.logger.debug("| (+) '$beanDefinition'")
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
-            return beanDefinition.definition.invoke(
+            val instance = beanDefinition.definition.invoke(
                 context.scope,
                 parameters,
             )
+            if (instanceCreationOrderSet.compareAndSet(false, true)) {
+                instanceCreationOrderPosition = INSTANCE_CREATION_ORDER_COUNTER.incrementAndGet()
+
+                // just to be sure that counter provides normal values
+                check(instanceCreationOrderPosition >= 0) {
+                    "Unexpected negative instance creation order position"
+                }
+
+                // it's required to have `Long.MAX_VALUE` instantiations happened to make this check fail,
+                // which is not likely to happen
+                check(instanceCreationOrderPosition < Long.MAX_VALUE) {
+                    "Instance creation order position reached Long.MAX_VALUE"
+                }
+            }
+            return instance
         } catch (e: Exception) {
             val stack = KoinPlatformTools.getStackTrace(e)
             context.logger.error("* Instance creation error : could not create instance for '$beanDefinition': $stack")
             throw InstanceCreationException("Could not create instance for '$beanDefinition'", e)
         }
+    }
+
+    override fun compareTo(other: InstanceFactory<*>): Int {
+        return instanceCreationOrderPosition.compareTo(other.instanceCreationOrderPosition)
     }
 
     /**
@@ -72,5 +97,6 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
+        private val INSTANCE_CREATION_ORDER_COUNTER = AtomicLong(-1)
     }
 }
