@@ -16,6 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.error.DependencyCycleException
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools
@@ -27,7 +28,8 @@ import org.koin.mp.KoinPlatformTools
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     InstanceFactory<T>(beanDefinition) {
 
-    private var values = hashMapOf<ScopeID, T>()
+    private var instanceCreationInProgressMap = KoinPlatformTools.safeHashMap<ScopeID, Unit>()
+    private var values = KoinPlatformTools.safeHashMap<ScopeID, T>()
 
     override fun isCreated(context: InstanceContext?): Boolean = (values[context?.scope?.id] != null)
 
@@ -38,12 +40,13 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         }
     }
 
-    override fun create(context: InstanceContext): T {
-        return if (values[context.scope.id] == null) {
-            super.create(context)
-        } else {
-            values[context.scope.id] ?: error("Scoped instance not found for ${context.scope.id} in $beanDefinition")
+    override fun create(context: InstanceContext): T = values.getOrPut(context.scope.id) {
+        if (instanceCreationInProgressMap.put(context.scope.id, Unit) != null) {
+            throw DependencyCycleException("Instance creation invoked twice, most likely it's a dependency cycle")
         }
+        val instance = super.create(context)
+        instanceCreationInProgressMap.remove(context.scope.id)
+        instance
     }
 
     override fun get(context: InstanceContext): T {
