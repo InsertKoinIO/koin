@@ -32,6 +32,8 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
 import kotlin.reflect.KClass
+import kotlin.sequences.sortedDescending
+
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -152,13 +154,18 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun dropScopeInstances(scope: Scope) {
-        _instances.values.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
+        _instances.values
+            .asSequence()
+            .filterIsInstance<ScopedInstanceFactory<*>>()
+            .sortedDescending()
+            .forEach { factory -> factory.drop(scope) }
     }
 
     internal fun close() {
-        _instances.forEach { (_, factory) ->
-            factory.dropAll()
-        }
+        _instances.values
+            .asSequence()
+            .sortedDescending()
+            .forEach { factory -> factory.dropAll() }
         _instances.clear()
     }
 
@@ -181,12 +188,10 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     private fun unloadModule(module: Module) {
-        module.mappings.keys.forEach { mapping ->
-            if (_instances.containsKey(mapping)) {
-                _instances[mapping]?.dropAll()
-                _instances.remove(mapping)
-            }
-        }
+        module.mappings.keys
+            .mapNotNull { mapping -> _instances.remove(mapping) }
+            .sortedDescending()
+            .forEach { factory -> factory.dropAll() }
     }
 
     fun size(): Int {
