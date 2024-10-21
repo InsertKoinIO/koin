@@ -23,7 +23,7 @@ configure<PublishingExtension> {
                 }
                 scm {
                     url.set("https://github.com/InsertKoinIO/koin")
-                    connection.set("https://github.com/InsertKoinIO/koin.git")
+                    connection.set("scm:git:https://github.com/InsertKoinIO/koin.git")
                 }
                 developers {
                     developer {
