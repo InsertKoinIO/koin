@@ -35,6 +35,7 @@ class SLF4JLogger(level: Level = Level.INFO) : Logger(level) {
             Level.DEBUG -> logger.debug(msg)
             Level.INFO -> logger.info(msg)
             Level.ERROR -> logger.error(msg)
+            Level.WARNING -> logger.warn(msg)
             else -> logger.error(msg)
         }
     }
