@@ -1,5 +1,5 @@
 ---
-title: Ktor
+title: Ktor & Annotations
 ---
 
 > Ktor is a framework for building asynchronous servers and clients in connected systems using the powerful Kotlin programming language. We will use Ktor here, to build a simple web application.
@@ -13,7 +13,7 @@ update - 2024-10-21
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/ktor)
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/ktor-annotations)
 :::
 
 ## Gradle Setup
@@ -21,10 +21,18 @@ update - 2024-10-21
 First, add the Koin dependency like below:
 
 ```kotlin
+plugins {
+
+    id("com.google.devtools.ksp") version kspVersion
+}
+
 dependencies {
     // Koin for Kotlin apps
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+
+    implementation("io.insert-koin:koin-annotations:$koinAnnotationsVersion")
+    ksp("io.insert-koin:koin-ksp-compiler:$koinAnnotationsVersion")
 }
 ```
 
@@ -66,20 +74,21 @@ class UserRepositoryImpl : UserRepository {
 
 ## The Koin module
 
-Use the `module` function to declare a Koin module. A Koin module is the place where we define all our components to be injected.
+Use the `@Module` annotation to declare a Koin module, from a given Kotlin class. A Koin module is the place where we define all our components to be injected.
 
 ```kotlin
-val appModule = module {
-    
-}
+@Module
+@ComponentScan("org.koin.sample")
+class AppModule
 ```
 
-Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`
+The `@ComponentScan("org.koin.sample")` will help scan annotated classes from targeted package.
+
+Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`. We tag it `@Single`
 
 ```kotlin
-val appModule = module {
-    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-}
+@Single
+class UserRepositoryImpl : UserRepository
 ```
 
 ## The UserService Component
@@ -95,13 +104,11 @@ class UserService(private val userRepository: UserRepository) {
 
 > UserRepository is referenced in UserPresenter`s constructor
 
-We declare `UserService` in our Koin module. We declare it as a `singleOf` definition:
+We declare `UserService` in our Koin module. We tag with `@Single` annotation:
 
 ```kotlin
-val appModule = module {
-    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-    singleOf(::UserService)
-}
+@Single
+class UserService(private val userRepository: UserRepository)
 ```
 
 ## HTTP Controller
@@ -141,17 +148,6 @@ ktor {
 }
 ```
 
-## Declare your dependencies
-
-Let's assemble our components with a Koin module:
-
-```kotlin
-val appModule = module {
-    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-    singleOf(::UserService)
-}
-```
-
 ## Start and Inject
 
 Finally, let's start Koin from Ktor:
@@ -160,7 +156,7 @@ Finally, let's start Koin from Ktor:
 fun Application.main() {
     install(Koin) {
         slf4jLogger()
-        modules(appModule)
+        modules(AppModule().module)
     }
 
     // Lazy inject HelloService
@@ -175,6 +171,8 @@ fun Application.main() {
     }
 }
 ```
+
+By writing the `AppModule().module` we use a generated extension on `AppModule` class.
 
 Let's start Ktor:
 

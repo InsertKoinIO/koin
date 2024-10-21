@@ -1,51 +1,45 @@
 ---
-title: Android - Annotations
+title: Android & Annotations
 ---
 
 > This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
-> You need around __10/15 min__ to do the tutorial.
+> You need around __10 min__ to do the tutorial.
+
+:::note
+update - 2024-10-21
+:::
 
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/android)
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/android-annotations)
 :::
 
 ## Gradle Setup
 
-Let's configure the KSP Plugin like this:
+Let's configure the KSP Plugin like this, and the following dependencies:
 
 ```groovy
-apply plugin: 'com.google.devtools.ksp'
-
-android {
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-    }
-    // For KSP
-    applicationVariants.configureEach { variant ->
-        kotlin.sourceSets {
-            getByName(name) {
-                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
-            }
-        }
-    }
+plugins {
+    alias(libs.plugins.ksp)
 }
-```
 
-Add the Koin Android dependency like below:
-
-```groovy
 dependencies {
-    // Koin
-    implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-annotations:$koin_ksp_version"
-    ksp "io.insert-koin:koin-ksp-compiler:$koin_ksp_version"
+    // ...
+
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp)
+}
+
+// Compile time check
+ksp {
+    arg("KOIN_CONFIG_CHECK","true")
 }
 ```
 
-
+:::note
+See `libs.versions.toml` for current versions
+:::
 
 ## Application Overview
 
@@ -250,7 +244,7 @@ dependencies {
 
 ### Checking your modules
 
-The `verify()` function allow to verify the given Koin modules:
+The `androidVerify()` function allow to verify the given Koin modules:
 
 ```kotlin
 class CheckModulesTest : KoinTest {
@@ -258,10 +252,7 @@ class CheckModulesTest : KoinTest {
     @Test
     fun checkAllModules() {
 
-        AppModule().module.verify(
-            extraTypes = listOf(
-                SavedStateHandle::class
-            ))
+        AppModule().module.androidVerify()
     }
 }
 ```
