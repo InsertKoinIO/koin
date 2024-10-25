@@ -1,6 +1,7 @@
 package org.koin.compose.application
 
 import androidx.compose.runtime.RememberObserver
+import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
@@ -11,6 +12,12 @@ import org.koin.mp.KoinPlatform
 class CompositionKoinApplicationLoader(
     val koinApplication: KoinApplication,
 ) : RememberObserver {
+
+    var koin : Koin? = null
+
+    init {
+        start()
+    }
 
     override fun onAbandoned() {
         stop()
@@ -25,11 +32,14 @@ class CompositionKoinApplicationLoader(
     }
 
     private fun start() {
-        val koin = startKoin(koinApplication).koin
-        koin.logger.debug("$this -> started Koin Application $koinApplication")
+        if (KoinPlatform.getKoinOrNull() == null){
+            koin = startKoin(koinApplication).koin
+            koin!!.logger.debug("$this -> started Koin Application $koinApplication")
+        }
     }
 
     private fun stop() {
+        koin = null
         KoinPlatform.getKoinOrNull()?.logger?.debug("$this -> stop Koin Application $koinApplication")
         stopKoin()
     }
