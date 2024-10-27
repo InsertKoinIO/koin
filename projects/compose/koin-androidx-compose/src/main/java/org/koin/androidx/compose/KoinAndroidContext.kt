@@ -25,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import org.koin.android.ext.android.getKoin
 import org.koin.compose.KoinContext
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.component.KoinComponent
 import org.koin.mp.KoinPlatformTools
 

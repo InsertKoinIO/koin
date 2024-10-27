@@ -6,7 +6,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.koin.Simple
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -17,7 +16,6 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class ParametersInjectionTest {
 
@@ -61,7 +59,6 @@ class ParametersInjectionTest {
         )
     }
 
-    @OptIn(KoinInternalApi::class)
     private fun ensureCanInjectParam(module1: Module) {
         val app = koinApplication {
             printLogger(Level.DEBUG)

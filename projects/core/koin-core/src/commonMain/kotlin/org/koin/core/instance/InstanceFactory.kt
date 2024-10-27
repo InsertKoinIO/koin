@@ -23,7 +23,6 @@ import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
-import org.koin.mp.generateId
 
 /**
  * Koin Instance Holder

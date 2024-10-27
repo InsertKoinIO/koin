@@ -1,10 +1,9 @@
 package org.koin.ktor.ext
 
-import io.ktor.server.application.install
-import io.ktor.server.testing.withApplication
+import io.ktor.server.application.*
+import io.ktor.server.testing.*
 import org.junit.After
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
+import org.junit.Assert.*
 import org.junit.Test
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -24,7 +23,7 @@ class Bar2(val name: String = "")
 class KoinFeatureTest {
 
     @After
-    fun after() {
+    fun after(){
         stopKoin()
     }
 
