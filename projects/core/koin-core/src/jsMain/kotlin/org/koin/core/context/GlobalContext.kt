@@ -17,7 +17,7 @@ package org.koin.core.context
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.error.ApplicationAlreadyStartedException
+import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -38,7 +38,7 @@ object GlobalContext : KoinContext {
 
     private fun register(koinApplication: KoinApplication) {
         if (_koin != null) {
-            throw ApplicationAlreadyStartedException("A Koin Application has already been started")
+            throw KoinApplicationAlreadyStartedException("A Koin Application has already been started")
         }
         _koin = koinApplication.koin
     }

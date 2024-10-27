@@ -3,7 +3,11 @@ title: Android
 ---
 
 > This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
-> You need around __10/15 min__ to do the tutorial.
+> You need around __10 min__ to do the tutorial.
+
+:::note
+update - 2024-10-21
+:::
 
 ## Get the code
 
@@ -19,7 +23,7 @@ Add the Koin Android dependency like below:
 dependencies {
 
     // Koin for Android
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation("io.insert-koin:koin-android:$koin_version")
 }
 ```
 
@@ -73,7 +77,7 @@ Let's declare our first component. We want a singleton of `UserRepository`, by c
 
 ```kotlin
 val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
 }
 ```
 
@@ -93,12 +97,12 @@ class UserPresenter(private val repository: UserRepository) {
 
 > UserRepository is referenced in UserPresenter`s constructor
 
-We declare `UserPresenter` in our Koin module. We declare it as a `factory` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
+We declare `UserPresenter` in our Koin module. We declare it as a `factoryOf` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
 
 ```kotlin
 val appModule = module {
-     single<UserRepository> { UserRepositoryImpl() }
-     factory { MyPresenter(get()) }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    factoryOf(::UserStateHolder)
 }
 ```
 

@@ -5,6 +5,10 @@ title: Kotlin
 > This tutorial lets you write a Kotlin application and use Koin dependency injection to retrieve your components.
 > You need around __10 min__ to do the tutorial.
 
+:::note
+update - 2024-10-21
+:::
+
 ## Get the code
 
 :::info

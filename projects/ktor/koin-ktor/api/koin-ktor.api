@@ -44,7 +44,6 @@ public final class org/koin/ktor/plugin/KoinPluginKt {
 
 public final class org/koin/ktor/plugin/RequestScope : org/koin/core/component/KoinScopeComponent {
 	public fun <init> (Lorg/koin/core/Koin;)V
-	public fun closeScope ()V
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public fun getScope ()Lorg/koin/core/scope/Scope;
 }

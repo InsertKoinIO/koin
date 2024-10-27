@@ -27,6 +27,7 @@ import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.dsl.ScopeDSL
 import org.koin.mp.KoinPlatformTools
+import org.koin.mp.generateId
 
 /**
  * Koin Module
@@ -43,17 +44,18 @@ class Module(
 ) {
     val id = KoinPlatformTools.generateId()
 
-    var eagerInstances = hashSetOf<SingleInstanceFactory<*>>()
+    var eagerInstances = LinkedHashSet<SingleInstanceFactory<*>>()
         internal set
 
     @KoinInternalApi
-    val mappings = hashMapOf<IndexKey, InstanceFactory<*>>()
+    val mappings = LinkedHashMap<IndexKey, InstanceFactory<*>>()
 
     val isLoaded: Boolean
-        get() = mappings.size > 0
+        get() = mappings.isNotEmpty()
+
 
     @PublishedApi
-    internal val scopes = hashSetOf<Qualifier>()
+    internal val scopes = LinkedHashSet<Qualifier>()
 
     @KoinInternalApi
     val includedModules = mutableListOf<Module>()
@@ -63,7 +65,7 @@ class Module(
      * Duplicated modules are ignored.
      */
     fun includes(vararg module: Module) {
-        includedModules += module
+        includedModules.addAll(module)
     }
 
     /**
@@ -71,7 +73,7 @@ class Module(
      * Duplicated modules are ignored.
      */
     fun includes(module: Collection<Module>) {
-        includedModules += module
+        includedModules.addAll(module)
     }
 
     /**
@@ -174,13 +176,8 @@ class Module(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as Module
-
-        if (id != other.id) return false
-
-        return true
+        if (other !is Module) return false
+        return id == other.id
     }
 
     override fun hashCode(): Int {

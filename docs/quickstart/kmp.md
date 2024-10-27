@@ -1,14 +1,18 @@
 ---
-title: Kotlin Multiplatform - Mobile Apps
+title: Kotlin Multiplatform - No shared UI
 ---
 
 > This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
-> You need around __10/15 min__ to do the tutorial.
+> You need around __15 min__ to do the tutorial.
+
+:::note
+update - 2024-10-21
+:::
 
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kmp)
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/KotlinMultiplatform)
 :::
 
 ## Application Overview
@@ -57,7 +61,7 @@ Let's declare our first component. We want a singleton of `UserRepository`, by c
 
 ```kotlin
 module {
-    single<UserRepository> { UserRepositoryImpl() }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
 }
 ```
 
@@ -66,139 +70,145 @@ module {
 Let's write a presenter component to display a user:
 
 ```kotlin
-class KMPUserPresenter(private val repository: UserRepository) {
+class UserPresenter(private val repository: UserRepository) {
 
-    fun sayHello() : String {
-        val name = DefaultData.DEFAULT_USER.name
+    fun sayHello(name : String) : String{
         val foundUser = repository.findUser(name)
-        return foundUser?.let { "Hello '$it' from $this" } ?: "User '$name' not found!"
+        val platform = getPlatform()
+        return foundUser?.let { "Hello '$it' from ${platform.name}" } ?: "User '$name' not found!"
     }
 }
 ```
 
 > UserRepository is referenced in UserPresenter`s constructor
 
-We declare `UserPresenter` in our Koin module. We declare it as a `factory` definition, to not keep any instance in memory and let the native system hold it:
+We declare `UserPresenter` in our Koin module. We declare it as a `factoryOf` definition, to not keep any instance in memory and let the native system hold it:
 
 ```kotlin
-fun appModule() = module {
-    single<UserRepository> { UserRepositoryImpl() }
-    factory { KMPUserPresenter(get()) }
+val appModule = module {
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    factoryOf(::UserPresenter)
 }
 ```
 
 :::note
-The Koin module is available as function to run (`appModule()` here), to be easily runned from iOS side, with `initKoin()` function. 
+The Koin module is available as function to run (`appModule` here), to be easily runned from iOS side, with `initKoin()` function. 
 :::
 
-## Injecting Dependencies in Android
+
+## Native Component
+
+The following native component is defined in Android and iOS:
+
+```kotlin
+interface Platform {
+    val name: String
+}
+
+expect fun getPlatform(): Platform
+```
+
+Both get local platform implementation
+
+
+## Injecting in Android
 
 > All the Android app is located in `androidApp` Gradle project
 
-The `KMPUserPresenter` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `by inject()` delegate function: 
+The `UserPresenter` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `koinInject` compose function: 
 
 ```kotlin
-class MainActivity : AppCompatActivity() {
+// in App()
 
-    private val presenter: UserPresenter by inject()
+val greeting = koinInject<UserPresenter>().sayHello("Koin")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        //...
-    }
+Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Image(painterResource(Res.drawable.compose_multiplatform), null)
+    Text("Compose: $greeting")
 }
 ```
 
 That's it, your app is ready.
 
 :::info
-The `by inject()` function allows us to retrieve Koin instances, in Android components runtime (Activity, fragment, Service...)
+The `koinInject()` function allows us to retrieve Koin instances, in Android Compose runtime
 :::
 
-We need to start Koin with our Android application. Just call the `startKoin()` function in the application's main entry point, our `MainApplication` class:
+We need to start Koin with our Android application. Just call the `KoinApplication()` function in the compose application function `App`:
 
 ```kotlin
-class MainApplication : Application() {
-
-    private val userRepository : UserRepository by inject()
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            androidContext(this@MainApplication)
-            androidLogger()
-            modules(appModule() + androidModule)
-        }
-
-        userRepository.addUsers(DefaultData.DEFAULT_USERS)
+fun App() {
+    
+    KoinApplication(application = koinAndroidConfiguration(LocalContext.current)){
+        // ...
     }
 }
 ```
 
+We gather Koin android configuration, from the shared KMP configuration:
+
+```kotlin
+// Android config
+fun koinAndroidConfiguration(context: Context) : KoinAppDeclaration = {
+    androidContext(context)
+    androidLogger()
+    koinSharedConfiguration()
+}
+```
+
+:::note
+We get the current Android context from Compose with `LocalContext.current`
+:::
+
+And the shared KMP config:
+
+```kotlin
+// Common config
+fun koinSharedConfiguration() : KoinAppDeclaration = {
+    modules(appModule)
+}
+```
+
 :::info
-The `modules()` function in `startKoin` load the given list of modules
+The `modules()` function load the given list of modules
 :::
 
 
-## Injecting Dependencies in iOS
+## Injecting in iOS
 
 > All the iOS app is located in `iosApp` folder
 
-The `KMPUserPresenter` component will be created, resolving the `UserRepository` instance with it. To get it into our `ContentView`, we need to create a Helper class to boostrap Koin dependencies: 
+The `UserPresenter` component will be created, resolving the `UserRepository` instance with it. To get it into our `ContentView`, we need to create a function to retrieve Koin dependencies for iOS: 
 
 ```kotlin
-class KMPUserPresenterHelper : KoinComponent {
+// Koin.kt
 
-    private val userPresenter : KMPUserPresenter by inject()
-
-    fun sayHello(): String = userPresenter.sayHello()
-}
+fun getUserPresenter() : UserPresenter = KoinPlatform.getKoin().get()
 ```
 
-That's it, you can just call `sayHello()` function from iOS part. 
+That's it, you can just call `KoinKt.getUserPresenter().sayHello()` function from iOS part. 
 
 ```swift
-import shared
+import Shared
 
 struct ContentView: View {
-    let helloText = KMPUserPresenterHelper().sayHello()
 
-	var body: some View {
-		Text(helloText)
-	}
+    // ...
+    let greet = KoinKt.getUserPresenter().sayHello(name: "Koin")
 }
 ```
 
-We need to start Koin with our iOS application. In the Kotlin shared code, we have a function to let us configure Koin (and setup default data):
-
-```kotlin
-// in HelperKt.kt
-
-fun initKoin() {
-    // start Koin
-    val koinApp = startKoin {
-        modules(appModule())
-    }.koin
-    
-    // load default users
-    koinApp.get<UserRepository>().addUsers(DefaultData.DEFAULT_USERS)
-}
-```
-
-Finally in the iOS main entry, we can call the `HelperKt.doInitKoin()` function that is calling our helper function above.
+We need to start Koin with our iOS application. In the Kotlin shared code, we can use the shared configuration with `initKoin()` function. 
+Finally in the iOS main entry, we can call the `KoinAppKt.doInitKoin()` function that is calling our helper function above.
 
 ```swift
 @main
 struct iOSApp: App {
     
     init() {
-        HelperKt.doInitKoin()
+        KoinAppKt.doInitKoin()
     }
-    
+
     //...
 }
 ```
-
-

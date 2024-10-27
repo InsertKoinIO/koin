@@ -6,7 +6,24 @@ public final class org/koin/compose/KoinApplicationKt {
 	public static final fun getKoin (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
 	public static final fun getLocalKoinApplication ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 	public static final fun getLocalKoinScope ()Landroidx/compose/runtime/ProvidableCompositionLocal;
-	public static final fun rememberCurrentKoinScope (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/scope/Scope;
+}
+
+public final class org/koin/compose/application/CompositionKoinApplicationLoader : androidx/compose/runtime/RememberObserver {
+	public static final field $stable I
+	public fun <init> (Lorg/koin/core/KoinApplication;)V
+	public final fun getKoinApplication ()Lorg/koin/core/KoinApplication;
+	public fun onAbandoned ()V
+	public fun onForgotten ()V
+	public fun onRemembered ()V
+}
+
+public final class org/koin/compose/application/RememberKoinApplicationKt {
+	public static final fun rememberKoinApplication (Lorg/koin/core/KoinApplication;Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
+}
+
+public final class org/koin/compose/error/UnknownKoinContext : java/lang/Exception {
+	public static final field $stable I
+	public fun <init> ()V
 }
 
 public final class org/koin/compose/module/CompositionKoinModuleLoader : androidx/compose/runtime/RememberObserver {

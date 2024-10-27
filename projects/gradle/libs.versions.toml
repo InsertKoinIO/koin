@@ -3,33 +3,39 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "1.9.24"
-binaryValidator = "0.13.2"
+kotlin = "2.0.20"
+binaryValidator = "0.16.0"
 publish = "2.0.0"
 coroutines = "1.8.1"
-dokka = "1.9.10"
+dokka = "1.9.20"
+uuid = "0.8.4"
+
 # Android
 agp = "7.4.2"
 android-appcompat = "1.7.0"
-android-activity = "1.9.0"
-android-fragment = "1.7.1"
-androidx-lifecycle = "2.8.1"
-androidx-workmanager = "2.9.0"
-androidx-navigation = "2.7.7"
+android-activity = "1.9.2"
+android-fragment = "1.8.3"
+androidx-lifecycle = "2.8.5"
+androidx-workmanager = "2.9.1"
+androidx-navigation = "2.8.0"
+androidx-startup= "1.1.1"
+
 # Compose
-# /!\ Compose compiler in gradle.properties /!\
-composeJB = "1.6.10"
+composeJetpackRuntime = "1.6.8"
+composeJB = "1.6.11"
 composeLifecycle = "2.8.0"
-composeNavigation = "2.7.0-alpha07"
-composeJetpackRuntime = "1.6.7"
+composeNavigation = "2.8.0-alpha09" # 2.8.0-alpha02 to keep compose 1.6.11
+jbCoreBundle = "1.0.0"
+jbSavedState = "1.2.0"
+
 # Test
-stately = "2.0.6"
+stately = "2.1.0"
 junit = "4.13.2"
 jupiter = "5.9.3"
 mockito = "4.7.0"
 mockk = "1.13.2"
 # Ktor
-ktor = "2.3.10"
+ktor = "2.3.12"
 slf4j = "2.0.13"
 
 [libraries]
@@ -53,24 +59,33 @@ androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", ve
 androidx-commonJava8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
 androidx-navigation = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-workmanager" }
+androidx-startup = {module ="androidx.startup:startup-runtime", version.ref = "androidx-startup" }
+
 # Ktor
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
-# Compose
-compose-jb = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeJB" }
-compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeLifecycle" }
-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+# jetpack Compose
 androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "composeJetpackRuntime" }
 androidx-composeViewModel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-composeNavigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+# jb Compose
+jb-composeRuntime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeJB" }
+jb-composeViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeLifecycle" }
+jb-lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "composeLifecycle" }
+jb-lifecycleViewmodelSavedState = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "composeLifecycle" }
+jb-bundle = { module = "org.jetbrains.androidx.core:core-bundle", version.ref = "jbCoreBundle" }
+jb-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", version.ref = "jbSavedState" }
+jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-compose = { id = "org.jetbrains.compose", version.ref = "composeJB" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "composeJB" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 # Tools
 kotlinBinary = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryValidator" }
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish" }

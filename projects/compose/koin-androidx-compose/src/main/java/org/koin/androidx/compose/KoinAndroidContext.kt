@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(KoinInternalApi::class)
-
 package org.koin.androidx.compose
 
 import android.app.Application
@@ -50,7 +48,6 @@ import org.koin.mp.KoinPlatformTools
  * @author jjkester
  */
 @Composable
-@KoinExperimentalAPI
 fun KoinAndroidContext(
     content: @Composable () -> Unit
 ) {

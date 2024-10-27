@@ -6,6 +6,10 @@ title: Ktor
 
 Let's go 🚀
 
+:::note
+update - 2024-10-21
+:::
+
 ## Get the code
 
 :::info
@@ -19,8 +23,8 @@ First, add the Koin dependency like below:
 ```kotlin
 dependencies {
     // Koin for Kotlin apps
-    implementation "io.insert-koin:koin-ktor:$koin_version"
-    implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 }
 ```
 
@@ -74,7 +78,7 @@ Let's declare our first component. We want a singleton of `UserRepository`, by c
 
 ```kotlin
 val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
 }
 ```
 
@@ -91,12 +95,12 @@ class UserService(private val userRepository: UserRepository) {
 
 > UserRepository is referenced in UserPresenter`s constructor
 
-We declare `UserService` in our Koin module. We declare it as a `single` definition:
+We declare `UserService` in our Koin module. We declare it as a `singleOf` definition:
 
 ```kotlin
 val appModule = module {
-     single<UserRepository> { UserRepositoryImpl() }
-     single { UserService(get()) }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    singleOf(::UserService)
 }
 ```
 

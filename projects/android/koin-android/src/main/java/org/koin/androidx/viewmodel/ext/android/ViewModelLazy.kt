@@ -9,13 +9,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.android.ext.android.getKoinScope
-import org.koin.androidx.viewmodel.resolveViewModel
-import org.koin.androidx.viewmodel.scope.BundleDefinition
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
+import org.koin.viewmodel.BundleDefinition
+import org.koin.viewmodel.resolveViewModel
+import org.koin.viewmodel.toExtras
 import kotlin.reflect.KClass
 
 @OptIn(KoinInternalApi::class)
@@ -63,32 +62,6 @@ fun <T : ViewModel> Fragment.viewModelForClass(
             parameters = parameters,
             key = key,
             scope = getKoinScope()
-        )
-    }
-}
-
-@OptIn(KoinInternalApi::class)
-@Deprecated("scope is not used for ViewModel creation. This will fallback to root scope.")
-@MainThread
-fun <T : ViewModel> getLazyViewModelForClass(
-    clazz: KClass<T>,
-    owner: ViewModelStoreOwner,
-    scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
-    qualifier: Qualifier? = null,
-    state: BundleDefinition? = null,
-    key: String? = null,
-    parameters: ParametersDefinition? = null,
-): Lazy<T> {
-    val viewModelStore = owner.viewModelStore
-    return lazy(LazyThreadSafetyMode.NONE) {
-        resolveViewModel(
-            clazz,
-            viewModelStore,
-            extras = state?.invoke()?.toExtras(owner) ?: CreationExtras.Empty,
-            qualifier = qualifier,
-            parameters = parameters,
-            key = key,
-            scope = scope
         )
     }
 }

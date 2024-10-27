@@ -7,11 +7,12 @@ import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.scope.Scope
-import org.koin.core.time.measureDuration
+import org.koin.core.time.inMs
 import org.koin.dsl.module
 import org.koin.ext.inject
 import kotlin.test.AfterTest
 import kotlin.test.Test
+import kotlin.time.measureTime
 
 class B : KoinScopeComponent {
     override val scope: Scope by lazy { createScope(this) }
@@ -79,7 +80,7 @@ class PlayTest {
 }
 
 fun measureDuration(msg: String, code: () -> Unit): Double {
-    val duration = measureDuration(code)
+    val duration = measureTime(code)
     println("$msg in $duration ms")
-    return duration
+    return duration.inMs
 }

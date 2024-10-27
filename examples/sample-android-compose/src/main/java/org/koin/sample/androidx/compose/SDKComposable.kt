@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import org.koin.compose.KoinIsolatedContext
 import org.koin.compose.koinInject
-import org.koin.compose.rememberKoinInject
 import org.koin.sample.androidx.compose.data.sdk.SDKData
 import org.koin.sample.androidx.compose.di.IsolatedContextSDK
 

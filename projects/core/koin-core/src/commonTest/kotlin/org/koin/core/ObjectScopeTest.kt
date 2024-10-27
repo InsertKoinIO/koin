@@ -257,7 +257,7 @@ class ObjectScopeTest {
 
     @Test
     fun `shared linked scope `() {
-        val koin: Koin = startKoin() {
+        val koin: Koin = startKoin {
             modules(
                 module {
                     scope<A> {
@@ -291,7 +291,7 @@ class ObjectScopeTest {
     @Test
     @Ignore
     fun `error for root linked scope `() {
-        val koin = startKoin {
+        val koin = koinApplication {
             printLogger(Level.DEBUG)
             modules(
                 module {

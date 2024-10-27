@@ -2,6 +2,7 @@
 title: Context Isolation
 ---
 
+## What Context Isolation?
 
 For SDK Makers, you can also work with Koin in a non-global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
 
@@ -51,5 +52,26 @@ Everything is ready, just use `IsolatedKoinComponent` to retrieve instances from
 ```kotlin
 class MyKoinComponent : IsolatedKoinComponent(){
     // inject & get will target MyKoinContext
+}
+```
+
+## Testing
+
+To test classes that are retrieving dependencies with `by inject()` delegate override `getKoin()` method and define custom Koin module:
+
+```kotlin
+class MyClassTest : KoinTest {
+    // Koin Context used to retrieve dependencies
+    override fun getKoin(): Koin = MyIsolatedKoinContext.koin
+
+    @Before
+    fun setUp() {
+       // Define custom Koin module
+        val module = module {
+            // Register dependencies
+        }
+
+        koin.loadModules(listOf(module))
+    }
 }
 ```

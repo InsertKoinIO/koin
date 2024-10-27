@@ -57,7 +57,7 @@ class MyApplication : Application() {
 Koin provides easy and powerful API to retrieve your dependencies anywhere in Android components, with just using by inject() or by viewModel()
 
 ```kotlin
-class MyActivity : Application() {
+class MyActivity : AppCompatActivity() {
 
   val myPresenter : MyPresenter by inject()
 

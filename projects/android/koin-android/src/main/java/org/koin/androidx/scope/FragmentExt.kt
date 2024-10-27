@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.component.getScopeId
-import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 
 /**
@@ -33,11 +32,11 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
     }
     val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
     if (useParentActivityScope){
-        val activityScope = requireActivity().getScopeOrNull()
+        val activityScope = requireActivity().getScopeOrNull() ?: requireActivity().getRetainedScopeOrNull()
         if (activityScope != null) {
             scope.linkTo(activityScope)
         } else {
-            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope")
+            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope. No Parent Scope found.")
         }
     }
     return scope
@@ -49,10 +48,6 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
  * @param useParentActivityScope - check parent Activity scope to link it to current Fragment's scope
  */
 fun Fragment.fragmentScope(useParentActivityScope : Boolean = true) = lazy { createFragmentScope(useParentActivityScope) }
-
-@Deprecated("Unused Internal API")
-internal fun Fragment.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
-
 fun Fragment.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 val Fragment.scopeActivity: ScopeActivity? get() = activity as? ScopeActivity
 inline fun <reified T : ScopeActivity> Fragment.requireScopeActivity(): T = activity as? T ?: error("can't get ScopeActivity for class ${T::class}")

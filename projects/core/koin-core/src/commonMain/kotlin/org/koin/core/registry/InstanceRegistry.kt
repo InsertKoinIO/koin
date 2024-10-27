@@ -21,8 +21,9 @@ import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
 import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
-import org.koin.core.instance.InstanceContext
+import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.InstanceFactory
+import org.koin.core.instance.NoClass
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
@@ -41,7 +42,7 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
-    private val eagerInstances = hashMapOf<Int, SingleInstanceFactory<*>>()
+    private val eagerInstances = safeHashMap<Int, SingleInstanceFactory<*>>()
 
     internal fun loadModules(modules: Set<Module>, allowOverride: Boolean) {
         modules.forEach { module ->
@@ -75,11 +76,11 @@ class InstanceRegistry(val _koin: Koin) {
         factory: InstanceFactory<*>,
         logWarning: Boolean = true,
     ) {
-        if (_instances.containsKey(mapping)) {
+        _instances[mapping]?.let {
             if (!allowOverride) {
                 overrideError(factory, mapping)
-            } else {
-                if (logWarning) _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+            } else if (logWarning) {
+                _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
             }
         }
         _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
@@ -87,7 +88,7 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
-        val defaultContext = InstanceContext(_koin.logger, _koin.scopeRegistry.rootScope)
+        val defaultContext = ResolutionContext(_koin.logger, _koin.scopeRegistry.rootScope, clazz = NoClass::class)
         instances.forEach { factory -> factory.get(defaultContext) }
     }
 
@@ -104,7 +105,7 @@ class InstanceRegistry(val _koin: Koin) {
         qualifier: Qualifier?,
         clazz: KClass<*>,
         scopeQualifier: Qualifier,
-        instanceContext: InstanceContext,
+        instanceContext: ResolutionContext,
     ): T? {
         return resolveDefinition(clazz, qualifier, scopeQualifier)?.get(instanceContext) as? T
     }
@@ -162,18 +163,14 @@ class InstanceRegistry(val _koin: Koin) {
         _instances.clear()
     }
 
-    internal fun <T> getAll(clazz: KClass<*>, instanceContext: InstanceContext): List<T> {
+    internal fun <T> getAll(clazz: KClass<*>, instanceContext: ResolutionContext): List<T> {
         return _instances.values
             .filter { factory ->
-                factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier
-            }
-            .filter { factory ->
-                factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(
-                    clazz,
-                )
+                factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier &&
+                (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
             }
             .distinct()
-            .map { it.get(instanceContext) as T }
+            .mapNotNull { it.get(instanceContext) as? T }
     }
 
     internal fun unloadModules(modules: Set<Module>) {
@@ -182,10 +179,8 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun unloadModule(module: Module) {
         module.mappings.keys.forEach { mapping ->
-            if (_instances.containsKey(mapping)) {
-                _instances[mapping]?.dropAll()
-                _instances.remove(mapping)
-            }
+            _instances[mapping]?.dropAll()
+            _instances.remove(mapping)
         }
     }
 

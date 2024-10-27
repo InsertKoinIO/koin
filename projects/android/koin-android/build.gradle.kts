@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
@@ -7,6 +10,7 @@ val androidCompileSDK : String by project
 val androidMinSDK : String by project
 
 android {
+    namespace = "org.koin.android"
     compileSdk = androidCompileSDK.toInt()
     defaultConfig {
         minSdk = androidMinSDK.toInt()
@@ -16,14 +20,19 @@ android {
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+}
+
+tasks.withType<KotlinCompile>().all {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
 dependencies {
     api(project(":core:koin-core"))
+    api(project(":core:koin-core-viewmodel"))
     api(libs.android.appcompat)
     api(libs.android.activity)
     api(libs.android.fragment)

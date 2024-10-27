@@ -1,57 +1,12 @@
 ---
-title: Verifying your Koin configuration
+title: CheckModules - Check Koin configuration (Deprecated)
 ---
 
-:::note 
-Koin allows you to verify your configuration modules, avoiding discovering dependency injection issues at runtime.
+:::warning
+This API is now deprecated - since Koin 4.0
 :::
 
-
-### Koin Configuration check with Verify() - JVM Only [3.3]
-
-Use the verify() extension function on a Koin Module. That's it! Under the hood, This will verify all constructor classes and crosscheck with the Koin configuration to know if there is a component declared for this dependency. In case of failure, the function will throw a MissingKoinDefinitionException.
-
-```kotlin
-val niaAppModule = module {
-    includes(
-        jankStatsKoinModule,
-        dataKoinModule,
-        syncWorkerKoinModule,
-        topicKoinModule,
-        authorKoinModule,
-        interestsKoinModule,
-        settingsKoinModule,
-        bookMarksKoinModule,
-        forYouKoinModule
-    )
-    viewModelOf(::MainActivityViewModel)
-}
-```
-
-
-```kotlin
-class NiaAppModuleCheck {
-
-    @Test
-    fun checkKoinModule() {
-
-        // Verify Koin configuration
-        niaAppModule.verify(
-            // List types used in definitions but not declared directly (like parameters injection)
-            extraTypes = listOf(...)
-        )
-    }
-}
-```
-
-
-Launch the JUnit test and you're done! ✅
-
-
-As you may see, we use the extra Types parameter to list types used in the Koin configuration but not declared directly. This is the case for SavedStateHandle and WorkerParameters types, that are used as injected parameters. The Context is declared by androidContext() function at start.
-
-
-The verify() API is ultra light to run and doesn't require any kind of mock/stub to run on your configuration.
+Koin allows you to verify your configuration modules, avoiding discovering dependency injection issues at runtime.
 
 
 ### Koin Dynamic Check - CheckModules()  

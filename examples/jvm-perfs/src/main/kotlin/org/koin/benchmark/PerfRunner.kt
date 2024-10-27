@@ -1,56 +1,88 @@
 package org.koin.benchmark
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.time.measureDurationForResult
+import org.koin.core.KoinApplication
+import org.koin.core.lazyModules
+import org.koin.core.logger.Level
+import org.koin.core.module.LazyModule
+import org.koin.core.module.Module
+import org.koin.core.time.inMs
+import org.koin.core.waitAllStartJobs
 import org.koin.dsl.koinApplication
 import kotlin.math.roundToInt
+import kotlin.time.TimedValue
+import kotlin.time.measureTimedValue
 
 object PerfRunner {
 
-    suspend fun runAll(scope: CoroutineScope): PerfResult {
-        val results = (1..10).map { i -> withContext(scope.coroutineContext) { runScenario(i) } }
+    fun runAll(useDebugLogs : Boolean = false, module : () -> Module): PerfResult {
+        val results = (1..10).map { i -> runScenario(i,useDebugLogs, module) }
         val avgStart = (results.sumOf { it.first } / results.size).round(100)
-        val avgExec = (results.sumOf { it.second } / results.size).round(1000)
+        val avgExec = (results.sumOf { it.second } / results.size).round(10000)
 
         println("Avg start: $avgStart ms")
         println("Avg execution: $avgExec ms")
         return PerfResult(avgStart,avgExec)
     }
 
-    @OptIn(KoinExperimentalAPI::class)
-    fun runScenario(index: Int): Pair<Double, Double> {
-        val (app, duration) = measureDurationForResult {
+    fun runAllLazy(useDebugLogs : Boolean = false, module : () -> LazyModule): PerfResult {
+        val results = (1..10).map { i -> runScenarioLazy(i,useDebugLogs, module) }
+        val avgStart = (results.sumOf { it.first } / results.size).round(100)
+        val avgExec = (results.sumOf { it.second } / results.size).round(10000)
+
+        println("Avg start: $avgStart ms")
+        println("Avg execution: $avgExec ms")
+        return PerfResult(avgStart,avgExec)
+    }
+
+    fun runScenario(index: Int, useDebugLogs: Boolean, module: () -> Module): Pair<Double, Double> {
+        val appDuration = measureTimedValue {
             koinApplication {
+                if (useDebugLogs){
+                    printLogger(level = Level.DEBUG)
+                }
                 modules(
-                    perfModule400()
+                    module()
                 )
             }
         }
-        println("Perf[$index] start in $duration ms")
+        return onScenarioRun(appDuration, index)
+    }
 
-        val koin: Koin = app.koin
+    fun runScenarioLazy(index: Int, useDebugLogs: Boolean, lazyModule: () -> LazyModule): Pair<Double, Double> {
+        val appDuration = measureTimedValue {
+            koinApplication {
+                if (useDebugLogs){
+                    printLogger(level = Level.DEBUG)
+                }
+                lazyModules(
+                    lazyModule()
+                )
+            }
+        }
+        appDuration.value.koin.waitAllStartJobs()
+        return onScenarioRun(appDuration, index)
+    }
 
-//        runBlocking {
-//            koin.awaitAllStartJobs()
-//        }
-
-        val (_, executionDuration) = measureDurationForResult {
+    private fun onScenarioRun(
+        appDuration: TimedValue<KoinApplication>,
+        index: Int
+    ): Pair<Double, Double> {
+        val koin: Koin = appDuration.value.koin
+        val scenarioDuration = measureTimedValue {
             koinScenario(koin)
         }
-        println("Perf[$index] run in $executionDuration ms")
-        app.close()
-        return Pair(duration, executionDuration)
+
+        val appDurationValue = appDuration.duration.inMs
+        val scenarioDurationValue = scenarioDuration.duration.inMs
+        println("Perf[$index] start in $appDurationValue ms")
+        println("Perf[$index] run in $scenarioDurationValue ms")
+
+        return Pair(appDurationValue, scenarioDurationValue)
     }
 
     fun koinScenario(koin: Koin){
-        koin.get<A27>()
         koin.get<A31>()
-        koin.get<A12>()
-        koin.get<A42>()
     }
 }
 

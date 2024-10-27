@@ -30,7 +30,7 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
 
     private fun getValue(): T = value ?: error("Single instance created couldn't return value")
 
-    override fun isCreated(context: InstanceContext?): Boolean = (value != null)
+    override fun isCreated(context: ResolutionContext?): Boolean = (value != null)
 
     override fun drop(scope: Scope?) {
         beanDefinition.callbacks.onClose?.invoke(value)
@@ -41,7 +41,7 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         drop()
     }
 
-    override fun create(context: InstanceContext): T {
+    override fun create(context: ResolutionContext): T {
         return if (value == null) {
             super.create(context)
         } else {
@@ -49,7 +49,7 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         }
     }
 
-    override fun get(context: InstanceContext): T {
+    override fun get(context: ResolutionContext): T {
         KoinPlatformTools.synchronized(this) {
             if (!isCreated(context)) {
                 value = create(context)

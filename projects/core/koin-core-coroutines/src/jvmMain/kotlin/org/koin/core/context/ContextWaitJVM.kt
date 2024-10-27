@@ -15,7 +15,6 @@
  */
 package org.koin.core.context
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.waitAllStartJobs
 import org.koin.mp.KoinPlatform
 
@@ -28,5 +27,4 @@ import org.koin.mp.KoinPlatform
 /**
  * Wait for Koin start jobs to complete
  */
-@KoinExperimentalAPI
 fun waitKoinStart() = KoinPlatform.getKoin().waitAllStartJobs()

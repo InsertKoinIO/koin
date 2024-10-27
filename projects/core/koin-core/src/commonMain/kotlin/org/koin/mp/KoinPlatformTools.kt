@@ -19,22 +19,22 @@ import org.koin.core.context.KoinContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import kotlin.reflect.KClass
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 expect object KoinPlatformTools {
     fun getStackTrace(e: Exception): String
     fun getClassName(kClass: KClass<*>): String
-    fun generateId(): String
+    fun getClassFullNameOrNull(kClass: KClass<*>): String?
     fun defaultLazyMode(): LazyThreadSafetyMode
     fun defaultLogger(level: Level = Level.INFO): Logger
     fun defaultContext(): KoinContext
     fun <R> synchronized(lock: Lockable, block: () -> R): R
     fun <K, V> safeHashMap(): MutableMap<K, V>
+    fun <K> safeSet(): MutableSet<K> // safe only in JVM for now
 }
 
-expect open class Lockable()
+fun KoinPlatformTools.getKClassDefaultName(kClass: KClass<*>) : String = "KClass@${kClass.hashCode()}"
+@OptIn(ExperimentalUuidApi::class)
+fun KoinPlatformTools.generateId() : String = Uuid.random().toString()
 
-expect open class ThreadLocal<T>() {
-    fun get(): T?
-    fun set(value: T?)
-    fun remove()
-}

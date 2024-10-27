@@ -52,4 +52,9 @@ object KoinPlatform {
      * Retrieve Koin default instance
      */
     fun getKoin(): Koin = KoinPlatformTools.defaultContext().get()
+
+    /**
+     * Retrieve Koin? default instance
+     */
+    fun getKoinOrNull(): Koin? = KoinPlatformTools.defaultContext().getOrNull()
 }

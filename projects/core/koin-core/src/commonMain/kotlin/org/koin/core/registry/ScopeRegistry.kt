@@ -24,6 +24,7 @@ import org.koin.core.qualifier._q
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
+import org.koin.mp.KoinPlatformTools.safeSet
 
 /**
  * Scope Registry
@@ -34,7 +35,7 @@ import org.koin.mp.KoinPlatformTools.safeHashMap
 @OptIn(KoinInternalApi::class)
 class ScopeRegistry(private val _koin: Koin) {
 
-    private val _scopeDefinitions = HashSet<Qualifier>()
+    private val _scopeDefinitions = safeSet<Qualifier>()
     val scopeDefinitions: Set<Qualifier>
         get() = _scopeDefinitions
 
@@ -66,7 +67,7 @@ class ScopeRegistry(private val _koin: Koin) {
         val scope = Scope(qualifier, scopeId, _koin = _koin)
         source?.let {
             _koin.logger.debug("|- Scope source set id:'$scopeId' -> $source")
-            scope._source = source
+            scope.sourceValue = source
         }
         scope.linkTo(rootScope)
         _scopes[scopeId] = scope

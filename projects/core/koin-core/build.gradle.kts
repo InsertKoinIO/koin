@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -6,6 +6,8 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(1_8)
+
     jvm {
         withJava()
     }
@@ -17,8 +19,8 @@ kotlin {
     }
 
     wasmJs {
-        binaries.executable()
         nodejs()
+        binaries.executable()
     }
 
     iosX64()
@@ -40,8 +42,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.extras.stately)
-            api(libs.extras.stately.collections)
+            implementation(libs.extras.stately)
+            implementation(libs.extras.stately.collections)
+//            api(libs.extras.uuid)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -50,17 +53,11 @@ kotlin {
     }
 }
 
+
 tasks.withType<KotlinCompile>().all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-rootProject.the<NodeJsRootExtension>().apply {
-    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+    compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+        }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
-    args.add("--ignore-engines")
-}
 apply(from = file("../../gradle/publish.gradle.kts"))

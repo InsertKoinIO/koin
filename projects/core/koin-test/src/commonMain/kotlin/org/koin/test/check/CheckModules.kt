@@ -35,12 +35,15 @@ import org.koin.mp.KoinPlatformTools
 import org.koin.test.mock.MockProvider
 import org.koin.test.parameter.MockParameter
 
-//TODO TO BE DEPRECATED in 3.6
+//TODO TO BE DEPRECATED in 4.0
 
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
-@Deprecated("Migrate to verify() API")
+@Deprecated(
+    message = "Migrate to verify() API",
+    replaceWith = ReplaceWith("org.koin.test.verify.Verify")
+)
 fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.checkModules(parameters)
 
 /**
@@ -50,7 +53,10 @@ fun KoinApplication.checkModules(parameters: CheckParameters? = null) = koin.che
  * @param parameters - parameter setup
  * @param appDeclaration - koin Application
  */
-@Deprecated("Migrate to verify() API")
+@Deprecated(
+    message = "Migrate to verify() API",
+    replaceWith = ReplaceWith("org.koin.test.verify.Verify")
+)
 fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null, appDeclaration: KoinAppDeclaration) {
     startKoin(appDeclaration)
         .logger(KoinPlatformTools.defaultLogger(level))
@@ -64,7 +70,10 @@ fun checkModules(level: Level = Level.INFO, parameters: CheckParameters? = null,
  * @param appDeclaration - Koin app config if needed
  * @param parameters - Check parameters DSL
  */
-@Deprecated("Migrate to verify() API")
+@Deprecated(
+    message = "Migrate to verify() API",
+    replaceWith = ReplaceWith("modules.verifyAll()", "org.koin.test.verify.verifyAll")
+)
 fun checkKoinModules(modules: List<Module>, appDeclaration: KoinAppDeclaration = {}, parameters: CheckParameters? = null) {
     startKoin(appDeclaration)
         .modules(modules)
@@ -101,7 +110,10 @@ fun checkKoinModules(vararg modules: Module, level: Level = Level.INFO, paramete
 /**
  * Check all definition's dependencies - start all modules and check if definitions can run
  */
-@Deprecated("Migrate to verify() API")
+@Deprecated(
+    message = "Migrate to verify() API",
+    replaceWith = ReplaceWith("org.koin.test.verify.Verify")
+)
 fun Koin.checkModules(parametersDefinition: CheckParameters? = null) {
     logger.info("[Check] checking modules ...")
 

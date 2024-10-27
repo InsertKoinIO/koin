@@ -16,7 +16,6 @@ import org.koin.core.scope.Scope
  *
  * @author Arnaud Giuliani
  */
-@KoinExperimentalAPI
 abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
 
     override val scope: Scope = createScope(this)

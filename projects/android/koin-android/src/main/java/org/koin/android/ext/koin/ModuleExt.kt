@@ -18,6 +18,7 @@ package org.koin.android.ext.koin
 import android.app.Application
 import android.content.Context
 import org.koin.android.error.MissingAndroidContextException
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.scope.Scope
 
 const val ERROR_MSG = "Please use androidContext() function in your KoinApplication configuration."
@@ -29,7 +30,7 @@ const val ERROR_MSG = "Please use androidContext() function in your KoinApplicat
  */
 fun Scope.androidContext(): Context = try {
     get()
-} catch (e: Exception) {
+} catch (e: NoDefinitionFoundException) {
     throw MissingAndroidContextException("Can't resolve Context instance. $ERROR_MSG")
 }
 
@@ -40,6 +41,6 @@ fun Scope.androidContext(): Context = try {
  */
 fun Scope.androidApplication(): Application = try {
     get()
-} catch (e: Exception) {
+} catch (e: NoDefinitionFoundException) {
     throw MissingAndroidContextException("Can't resolve Application instance. $ERROR_MSG")
 }

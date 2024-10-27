@@ -39,7 +39,7 @@ open class ParametersHolder(
     val values: List<Any?> get() = _values
 
     open fun <T> elementAt(i: Int, clazz: KClass<*>): T =
-        if (_values.size > i) {
+        if (i < _values.size) {
             _values[i] as T
         } else {
             throw NoParameterFoundException(
@@ -73,12 +73,12 @@ open class ParametersHolder(
     /**
      * Tells if it has no parameter
      */
-    fun isEmpty() = size() == 0
+    fun isEmpty() = _values.isEmpty()
 
     /**
      * Tells if it has parameters
      */
-    fun isNotEmpty() = !isEmpty()
+    fun isNotEmpty() = _values.isNotEmpty()
 
     fun insert(index: Int, value: Any): ParametersHolder {
         _values.add(index, value)
@@ -120,12 +120,11 @@ open class ParametersHolder(
     }
 
     private fun <T> getFirstValue(clazz: KClass<*>): T? {
-        return _values.firstOrNull { clazz.isInstance(it) }
-            ?.let { it as T } // firstNotNullOfOrNull { value -> if (clazz.isInstance(value)) value as? T? else null }
+        return _values.firstOrNull { clazz.isInstance(it) } as? T
     }
 
     private fun <T> getIndexedValue(clazz: KClass<*>): T? {
-        val currentValue: T? = _values[index].takeIf { clazz.isInstance(it) }?.let { it as T }
+        val currentValue: T? = _values[index].takeIf { clazz.isInstance(it) } as? T
         if (currentValue != null) {
             increaseIndex()
         }

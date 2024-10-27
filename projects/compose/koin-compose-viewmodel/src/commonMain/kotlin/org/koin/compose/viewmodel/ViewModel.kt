@@ -22,11 +22,12 @@ import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.compose.currentKoinScope
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
+import org.koin.viewmodel.defaultExtras
+import org.koin.viewmodel.resolveViewModel
 
 /*
     Ported directly from Android side. Waiting more feedback
@@ -42,7 +43,6 @@ import org.koin.core.scope.Scope
  */
 
 @OptIn(KoinInternalApi::class)
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T : ViewModel> koinViewModel(
     qualifier: Qualifier? = null,

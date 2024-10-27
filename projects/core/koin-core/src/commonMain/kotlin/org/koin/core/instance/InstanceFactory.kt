@@ -24,6 +24,7 @@ import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
+import org.koin.mp.generateId
 
 /**
  * Koin Instance Holder
@@ -36,14 +37,14 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
      * @param context
      * @return T
      */
-    abstract fun get(context: InstanceContext): T
+    abstract fun get(context: ResolutionContext): T
 
     /**
      * Create an instance
      * @param context
      * @return T
      */
-    open fun create(context: InstanceContext): T {
+    open fun create(context: ResolutionContext): T {
         context.logger.debug("| (+) '$beanDefinition'")
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
@@ -61,7 +62,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
     /**
      * Is instance created
      */
-    abstract fun isCreated(context: InstanceContext? = null): Boolean
+    abstract fun isCreated(context: ResolutionContext? = null): Boolean
 
     /**
      * Drop the instance

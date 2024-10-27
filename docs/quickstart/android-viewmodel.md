@@ -3,7 +3,11 @@ title: Android - ViewModel
 ---
 
 > This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
-> You need around __10/15 min__ to do the tutorial.
+> You need around __10 min__ to do the tutorial.
+
+:::note
+update - 2024-10-21
+:::
 
 ## Get the code
 
@@ -19,7 +23,7 @@ Add the Koin Android dependency like below:
 dependencies {
 
     // Koin for Android
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation("io.insert-koin:koin-android:$koin_version")
 }
 ```
 
@@ -73,7 +77,7 @@ Let's declare our first component. We want a singleton of `UserRepository`, by c
 
 ```kotlin
 val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
+   singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
 }
 ```
 
@@ -93,16 +97,15 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
 > UserRepository is referenced in UserViewModel`s constructor
 
-We declare `UserViewModel` in our Koin module. We declare it as a `viewModel` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
+We declare `UserViewModel` in our Koin module. We declare it as a `viewModelOf` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
 
 ```kotlin
 val appModule = module {
-     single<UserRepository> { UserRepositoryImpl() }
-     viewModel { MyViewModel(get()) }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    viewModelOf(::UserViewModel)
 }
 ```
 
-> The `get()` function allow to ask Koin to resolve the needed dependency.
 
 ## Injecting ViewModel in Android
 

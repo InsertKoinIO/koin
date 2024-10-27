@@ -10,17 +10,24 @@ class TestPerfRunner {
      * Avg start time: 13.06
      * Avg execution time: 0.158
      */
-//    @Test
+    @Test
     fun main() = runBlocking {
-        val limits = PerfLimit(17.0, 0.175)
+//        val limits = PerfLimit(10.0, 0.1)
+//        println("Perf target: $limits")
 
-        println("Perf Tolerance: $limits")
+        val results = PerfRunner.runAll(useDebugLogs = false, module = ::perfModule400)
+        println("Perfs results: $results")
+//        results.applyLimits(limits)
+    }
 
-        val results = PerfRunner.runAll(this)
-        results.applyLimits(limits)
+    @Test
+    fun main_Fu() = runBlocking {
+//        val limits = PerfLimit(10.0, 0.1)
+//        println("Perf target: $limits")
 
-        assertTrue("Should start under ${results.worstMaxStartTime} ms", results.isStartOk)
-        assertTrue("Should exec under ${results.worstExecTime} ms", results.isExecOk)
+        val results = PerfRunner.runAll(useDebugLogs = false, module = ::perfModule400_Fu)
+        println("Perfs results: $results")
+//        results.applyLimits(limits)
     }
 
 }

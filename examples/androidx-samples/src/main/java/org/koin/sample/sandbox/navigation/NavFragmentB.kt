@@ -13,6 +13,7 @@ import org.koin.sample.sandbox.R
 class NavFragmentB : Fragment() {
 
     val mainViewModel: NavViewModel by koinNavGraphViewModel(R.id.main)
+    val vm2: NavViewModel2 by koinNavGraphViewModel(R.id.main)
 
     lateinit var button: Button
 
@@ -34,7 +35,10 @@ class NavFragmentB : Fragment() {
 
         ID = mainViewModel.id
         assert(ID == NavFragmentA.ID)
-        println("vm id: $ID")
+        println("B vm id: $ID")
+        println("vm arg: ${mainViewModel.argument}")
+
+        println("B - ${vm2.id} - ${vm2.argument}")
     }
 
     companion object {

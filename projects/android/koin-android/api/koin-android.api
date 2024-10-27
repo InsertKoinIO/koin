@@ -1,9 +1,3 @@
-public final class androidx/lifecycle/StateViewModelFactory : androidx/lifecycle/AbstractSavedStateViewModelFactory {
-	public fun <init> (Lorg/koin/core/scope/Scope;Lorg/koin/androidx/viewmodel/ViewModelParameter;)V
-	public final fun getParameters ()Lorg/koin/androidx/viewmodel/ViewModelParameter;
-	public final fun getScope ()Lorg/koin/core/scope/Scope;
-}
-
 public final class org/koin/android/error/MissingAndroidContextException : java/lang/Throwable {
 	public fun <init> (Ljava/lang/String;)V
 }
@@ -102,7 +96,9 @@ public final class org/koin/androidx/scope/ComponentActivityExtKt {
 	public static final fun createActivityScope (Landroidx/activity/ComponentActivity;)Lorg/koin/core/scope/Scope;
 	public static final fun createScope (Landroidx/activity/ComponentActivity;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun createScope$default (Landroidx/activity/ComponentActivity;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public static final fun getRetainedScopeOrNull (Landroidx/activity/ComponentActivity;)Lorg/koin/core/scope/Scope;
 	public static final fun getScopeOrNull (Landroidx/activity/ComponentActivity;)Lorg/koin/core/scope/Scope;
+	public static final fun retainedScopeId (Landroidx/activity/ComponentActivity;)Ljava/lang/String;
 }
 
 public final class org/koin/androidx/scope/FragmentExtKt {
@@ -112,19 +108,6 @@ public final class org/koin/androidx/scope/FragmentExtKt {
 	public static synthetic fun fragmentScope$default (Landroidx/fragment/app/Fragment;ZILjava/lang/Object;)Lkotlin/Lazy;
 	public static final fun getScopeActivity (Landroidx/fragment/app/Fragment;)Lorg/koin/androidx/scope/ScopeActivity;
 	public static final fun getScopeOrNull (Landroidx/fragment/app/Fragment;)Lorg/koin/core/scope/Scope;
-}
-
-public final class org/koin/androidx/scope/LifecycleOwnerExtKt {
-	public static final fun getCurrentScope (Landroidx/lifecycle/LifecycleOwner;)Lorg/koin/core/scope/Scope;
-	public static final fun getLifecycleScope (Landroidx/lifecycle/LifecycleOwner;)Lorg/koin/core/scope/Scope;
-	public static final fun getScope (Landroidx/lifecycle/LifecycleOwner;)Lorg/koin/core/scope/Scope;
-}
-
-public final class org/koin/androidx/scope/LifecycleViewModelScopeDelegate : kotlin/properties/ReadOnlyProperty {
-	public fun <init> (Landroidx/activity/ComponentActivity;Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Landroidx/activity/ComponentActivity;Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getValue (Landroidx/lifecycle/LifecycleOwner;Lkotlin/reflect/KProperty;)Lorg/koin/core/scope/Scope;
-	public synthetic fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 }
 
 public abstract class org/koin/androidx/scope/RetainedScopeActivity : androidx/appcompat/app/AppCompatActivity, org/koin/android/scope/AndroidScopeComponent {
@@ -162,92 +145,16 @@ public final class org/koin/androidx/scope/ScopeHandlerViewModel : androidx/life
 
 public abstract class org/koin/androidx/scope/ScopeViewModel : androidx/lifecycle/ViewModel, org/koin/core/component/KoinScopeComponent {
 	public fun <init> ()V
-	public fun closeScope ()V
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public fun getScope ()Lorg/koin/core/scope/Scope;
 	protected fun onCleared ()V
 	public fun onCloseScope ()V
 }
 
-public final class org/koin/androidx/viewmodel/GetViewModelKt {
-	public static final fun lazyResolveViewModel (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
-	public static synthetic fun lazyResolveViewModel$default (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
-	public static final fun resolveViewModel (Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStore;Ljava/lang/String;Landroidx/lifecycle/viewmodel/CreationExtras;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;)Landroidx/lifecycle/ViewModel;
-	public static synthetic fun resolveViewModel$default (Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStore;Ljava/lang/String;Landroidx/lifecycle/viewmodel/CreationExtras;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
-}
-
-public final class org/koin/androidx/viewmodel/ViewModelOwner {
-	public static final field Companion Lorg/koin/androidx/viewmodel/ViewModelOwner$Companion;
-	public fun <init> (Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/savedstate/SavedStateRegistryOwner;)V
-	public synthetic fun <init> (Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/savedstate/SavedStateRegistryOwner;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getStateRegistry ()Landroidx/savedstate/SavedStateRegistryOwner;
-	public final fun getStoreOwner ()Landroidx/lifecycle/ViewModelStoreOwner;
-}
-
-public final class org/koin/androidx/viewmodel/ViewModelOwner$Companion {
-	public final fun from (Landroidx/lifecycle/ViewModelStoreOwner;)Lorg/koin/androidx/viewmodel/ViewModelOwner;
-	public final fun from (Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/savedstate/SavedStateRegistryOwner;)Lorg/koin/androidx/viewmodel/ViewModelOwner;
-	public static synthetic fun from$default (Lorg/koin/androidx/viewmodel/ViewModelOwner$Companion;Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/savedstate/SavedStateRegistryOwner;ILjava/lang/Object;)Lorg/koin/androidx/viewmodel/ViewModelOwner;
-	public final fun fromAny (Ljava/lang/Object;)Lorg/koin/androidx/viewmodel/ViewModelOwner;
-}
-
-public final class org/koin/androidx/viewmodel/ViewModelParameter {
-	public fun <init> (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/savedstate/SavedStateRegistryOwner;)V
-	public synthetic fun <init> (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/savedstate/SavedStateRegistryOwner;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getClazz ()Lkotlin/reflect/KClass;
-	public final fun getParameters ()Lkotlin/jvm/functions/Function0;
-	public final fun getQualifier ()Lorg/koin/core/qualifier/Qualifier;
-	public final fun getRegistryOwner ()Landroidx/savedstate/SavedStateRegistryOwner;
-	public final fun getState ()Lkotlin/jvm/functions/Function0;
-	public final fun getViewModelStoreOwner ()Landroidx/lifecycle/ViewModelStoreOwner;
-}
-
-public final class org/koin/androidx/viewmodel/ViewModelResolverKt {
-	public static final fun pickFactory (Lorg/koin/core/scope/Scope;Lorg/koin/androidx/viewmodel/ViewModelParameter;)Landroidx/lifecycle/ViewModelProvider$Factory;
-}
-
-public final class org/koin/androidx/viewmodel/ext/android/BundleExtKt {
-	public static final fun toExtras (Landroid/os/Bundle;Landroidx/lifecycle/ViewModelStoreOwner;)Landroidx/lifecycle/viewmodel/CreationExtras;
-}
-
-public final class org/koin/androidx/viewmodel/ext/android/FragmentSharedStateVMKt {
-	public static final fun getSharedStateViewModel (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;)Landroidx/lifecycle/ViewModel;
-	public static synthetic fun getSharedStateViewModel$default (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
-	public static final fun sharedStateViewModel (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
-	public static synthetic fun sharedStateViewModel$default (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
-}
-
 public final class org/koin/androidx/viewmodel/ext/android/ViewModelLazyKt {
-	public static final fun getLazyViewModelForClass (Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStoreOwner;Lorg/koin/core/scope/Scope;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
-	public static synthetic fun getLazyViewModelForClass$default (Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStoreOwner;Lorg/koin/core/scope/Scope;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
 	public static final fun viewModelForClass (Landroidx/activity/ComponentActivity;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
 	public static final fun viewModelForClass (Landroidx/fragment/app/Fragment;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
 	public static synthetic fun viewModelForClass$default (Landroidx/activity/ComponentActivity;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
 	public static synthetic fun viewModelForClass$default (Landroidx/fragment/app/Fragment;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
-}
-
-public final class org/koin/androidx/viewmodel/factory/DefaultViewModelFactory : androidx/lifecycle/ViewModelProvider$Factory {
-	public fun <init> (Lorg/koin/core/scope/Scope;Lorg/koin/androidx/viewmodel/ViewModelParameter;)V
-	public fun create (Ljava/lang/Class;)Landroidx/lifecycle/ViewModel;
-	public final fun getParameters ()Lorg/koin/androidx/viewmodel/ViewModelParameter;
-	public final fun getScope ()Lorg/koin/core/scope/Scope;
-}
-
-public final class org/koin/androidx/viewmodel/factory/KoinViewModelFactory : androidx/lifecycle/ViewModelProvider$Factory {
-	public fun <init> (Lkotlin/reflect/KClass;Lorg/koin/core/scope/Scope;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Lkotlin/reflect/KClass;Lorg/koin/core/scope/Scope;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Ljava/lang/Class;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModel;
-}
-
-public final class org/koin/androidx/viewmodel/parameter/AndroidParametersHolder : org/koin/core/parameter/ParametersHolder {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Landroidx/lifecycle/viewmodel/CreationExtras;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Landroidx/lifecycle/viewmodel/CreationExtras;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun elementAt (ILkotlin/reflect/KClass;)Ljava/lang/Object;
-	public final fun getExtras ()Landroidx/lifecycle/viewmodel/CreationExtras;
-	public fun getOrNull (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-}
-
-public final class org/koin/androidx/viewmodel/scope/ScopeExtKt {
-	public static final fun emptyState ()Lkotlin/jvm/functions/Function0;
 }
 

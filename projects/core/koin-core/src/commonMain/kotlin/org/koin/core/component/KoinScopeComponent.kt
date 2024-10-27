@@ -17,6 +17,7 @@ package org.koin.core.component
 
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 import org.koin.ext.getFullName
 
 /**
@@ -29,17 +30,14 @@ import org.koin.ext.getFullName
 interface KoinScopeComponent : KoinComponent {
 
     val scope: Scope
-
-    @Deprecated("not used internaly anymore")
-    fun closeScope() {
-        if (scope.isNotClosed()) {
-            scope.close()
-        }
-    }
 }
 
 fun <T : Any> T.getScopeId() = this::class.getFullName() + "@" + this.hashCode()
 fun <T : Any> T.getScopeName() = TypeQualifier(this::class)
+
+fun <T : KoinScopeComponent> T.createScope(scopeId : ScopeID, source: Any? = null): Scope {
+    return getKoin().createScope(scopeId, getScopeName(), source)
+}
 
 fun <T : KoinScopeComponent> T.createScope(source: Any? = null): Scope {
     return getKoin().createScope(getScopeId(), getScopeName(), source)

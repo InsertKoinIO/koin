@@ -5,6 +5,10 @@ title: Android - Jetpack Compose
 > This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
 > You need around __10 min__ to do the tutorial.
 
+:::note
+update - 2024-10-21
+:::
+
 ## Get the code
 
 :::info
@@ -73,7 +77,7 @@ Let's declare our first component. We want a singleton of `UserRepository`, by c
 
 ```kotlin
 val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
 }
 ```
 
@@ -95,12 +99,12 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
 > UserRepository is referenced in UserViewModel's constructor
 
-We declare `UserViewModel` in our Koin module. We declare it as a `viewModel` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
+We declare `UserViewModel` in our Koin module. We declare it as a `viewModelOf` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
 
 ```kotlin
 val appModule = module {
-     single<UserRepository> { UserRepositoryImpl() }
-     viewModel { MyViewModel(get()) }
+     singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    viewModelOf(::UserViewModel)
 }
 ```
 
@@ -125,7 +129,7 @@ The `koinViewModel` function allows us to retrieve a ViewModel instances, create
 
 ### The `UserStateHolder` class
 
-Let's write a ViewModel component to display a user:
+Let's write a State holder component to display a user:
 
 ```kotlin
 class UserStateHolder(private val repository: UserRepository) {
@@ -139,28 +143,28 @@ class UserStateHolder(private val repository: UserRepository) {
 
 > UserRepository is referenced in UserViewModel's constructor
 
-We declare `UserViewModel` in our Koin module. We declare it as a `viewModel` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
+We declare `UserStateHolder` in our Koin module. We declare it as a `factoryOf` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
 
 ```kotlin
 val appModule = module {
-     single<UserRepository> { UserRepositoryImpl() }
-     factory { UserStateHolder(get()) }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    factoryOf(::UserStateHolder)
 }
 ```
 
 ### Injecting UserStateHolder in Compose
 
-The `UserViewModel` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `get()` function: 
+The `UserStateHolder` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `koinInject()` function: 
 
 ```kotlin
 @Composable
-fun FactoryInject(userName : String, presenter: UserStateHolder = get()){
+fun FactoryInject(userName : String, presenter: UserStateHolder = koinInject()){
     Text(text = presenter.sayHello(userName), modifier = Modifier.padding(8.dp))
 }
 ```
 
 :::info
-The `get` function allows us to retrieve a ViewModel instances, create the associated ViewModel Factory for you and bind it to the lifecycle
+The `koinInject` function allows us to retrieve a ViewModel instances, create the associated ViewModel Factory for you and bind it to the lifecycle
 :::
 
 
@@ -185,6 +189,24 @@ class MainApplication : Application(){
 :::info
 The `modules()` function in `startKoin` load the given list of modules
 :::
+
+While starting the Compose application we need to link Koin to our current Compose application, with `KoinAndroidContext`:
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                KoinAndroidContext {
+                    App()
+                }
+            }
+        }
+    }
+}
+```
 
 ## Koin module: classic or constructor DSL?
 
@@ -215,11 +237,6 @@ We can ensure that our Koin configuration is good before launching our app, by v
 Add the Koin Android dependency like below:
 
 ```groovy
-// Add Maven Central to your repositories if needed
-repositories {
-	mavenCentral()    
-}
-
 dependencies {
     
     // Koin for Tests

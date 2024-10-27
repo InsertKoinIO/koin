@@ -16,10 +16,8 @@
 package org.koin.androidx.viewmodel.dsl
 
 import androidx.lifecycle.ViewModel
-import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.instance.newInstance
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeDSL
 
@@ -33,17 +31,12 @@ import org.koin.dsl.ScopeDSL
  *
  * @param qualifier - definition qualifier
  * @param definition - allow definition override
+ *
  */
+@Deprecated("Moved ViewModel DSL package. Remove old imports and use org.koin.core.module.dsl.*")
 inline fun <reified T : ViewModel> ScopeDSL.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
 ): KoinDefinition<T> {
     return factory(qualifier, definition)
-}
-
-@KoinReflectAPI
-inline fun <reified T : ViewModel> ScopeDSL.viewModel(
-    qualifier: Qualifier? = null
-): KoinDefinition<T> {
-    return factory(qualifier) { newInstance(it) }
 }
