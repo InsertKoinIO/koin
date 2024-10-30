@@ -25,15 +25,12 @@ import org.koin.dsl.KoinAppDeclaration
  * @author Arnaud Giuliani
  */
 @KoinExperimentalAPI
-object KoinStartup {
-    internal var koinAppDeclaration : KoinAppDeclaration? = null
+interface KoinStartup {
 
     /**
      * startKoin with AndroidX startup Initializer
      * @see startKoin function
      */
     @KoinApplicationDslMarker
-    fun onKoinStartup(koinAppDeclaration : KoinAppDeclaration){
-        this.koinAppDeclaration = koinAppDeclaration
-    }
+    fun onKoinStartup() : KoinAppDeclaration
 }

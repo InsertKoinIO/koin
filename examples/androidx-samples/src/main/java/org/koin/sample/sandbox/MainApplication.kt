@@ -9,25 +9,22 @@ import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.androidx.workmanager.koin.workManagerFactory
-import org.koin.androix.startup.KoinStartup.onKoinStartup
-import org.koin.core.context.startKoin
+import org.koin.androix.startup.KoinStartup
 import org.koin.core.logger.Level
+import org.koin.dsl.KoinAppDeclaration
 import org.koin.sample.sandbox.di.allModules
 
 
 
-class MainApplication : Application() {
+class MainApplication : Application(), KoinStartup {
 
-    init {
-        onKoinStartup {
-            androidLogger(Level.DEBUG)
-            androidContext(this@MainApplication)
-            androidFileProperties()
-            fragmentFactory()
-            workManagerFactory()
-
-            modules(allModules)
-        }
+    override fun onKoinStartup() : KoinAppDeclaration = {
+        androidLogger(Level.DEBUG)
+        androidContext(this@MainApplication)
+        androidFileProperties()
+        fragmentFactory()
+        workManagerFactory()
+        modules(allModules)
     }
 
     companion object {
