@@ -37,6 +37,7 @@ mockk = "1.13.2"
 # Ktor
 ktor = "2.3.12"
 slf4j = "2.0.13"
+uuidVersion = "0.8.4"
 
 [libraries]
 # Core
@@ -79,6 +80,7 @@ jb-bundle = { module = "org.jetbrains.androidx.core:core-bundle", version.ref = 
 jb-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", version.ref = "jbSavedState" }
 jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
+uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
