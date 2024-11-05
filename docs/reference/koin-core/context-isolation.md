@@ -40,7 +40,7 @@ object MyIsolatedKoinContext {
 Let's use `MyIsolatedKoinContext` to define our `IsolatedKoinComponent` class, a KoinComponent that will use our isolated context:
 
 ```kotlin
-abstract class IsolatedKoinComponent : KoinComponent {
+internal interface IsolatedKoinComponent : KoinComponent {
 
     // Override default Koin instance
     override fun getKoin(): Koin = MyIsolatedKoinContext.koin
@@ -50,7 +50,7 @@ abstract class IsolatedKoinComponent : KoinComponent {
 Everything is ready, just use `IsolatedKoinComponent` to retrieve instances from isolated context:
 
 ```kotlin
-class MyKoinComponent : IsolatedKoinComponent(){
+class MyKoinComponent : IsolatedKoinComponent{
     // inject & get will target MyKoinContext
 }
 ```
