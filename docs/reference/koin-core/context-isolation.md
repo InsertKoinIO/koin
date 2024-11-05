@@ -28,7 +28,7 @@ The `MyIsolatedKoinContext` class is holding our Koin instance here:
 // Get a Context for your Koin instance
 object MyIsolatedKoinContext {
 
-    val koinApp = koinApplication {
+    private val koinApp = koinApplication {
         // declare used modules
         modules(coffeeAppModule)
     }
@@ -50,7 +50,7 @@ internal interface IsolatedKoinComponent : KoinComponent {
 Everything is ready, just use `IsolatedKoinComponent` to retrieve instances from isolated context:
 
 ```kotlin
-class MyKoinComponent : IsolatedKoinComponent{
+class MyKoinComponent : IsolatedKoinComponent {
     // inject & get will target MyKoinContext
 }
 ```
