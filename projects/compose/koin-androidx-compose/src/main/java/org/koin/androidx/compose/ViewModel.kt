@@ -41,9 +41,7 @@ import org.koin.viewmodel.resolveViewModel
 @Composable
 inline fun <reified T : ViewModel> koinViewModel(
     qualifier: Qualifier? = null,
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    },
+    viewModelStoreOwner: ViewModelStoreOwner =  LocalViewModelStoreOwner.current ?: error("No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"),
     key: String? = null,
     extras: CreationExtras = defaultExtras(viewModelStoreOwner),
     scope: Scope = currentKoinScope(),
