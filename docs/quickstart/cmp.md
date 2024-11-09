@@ -142,6 +142,9 @@ fun App() {
             modules(appModule)
         }
     )
+{
+// Compose content
+}
 }
 ```
 
