@@ -21,8 +21,8 @@ androidx-navigation = "2.8.4"
 androidx-startup= "1.2.0"
 
 # Compose
-composeJetpackRuntime = "1.6.8"
-composeJB = "1.6.11"
+composeJetpackRuntime = "1.7.5"
+composeJB = "1.7.0"
 composeLifecycle = "2.8.3"
 composeNavigation = "2.8.0-alpha10" # 2.8.0-alpha02 to keep compose 1.6.11
 jbCoreBundle = "1.0.1"
