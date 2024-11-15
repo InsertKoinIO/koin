@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:OptIn(KoinInternalApi::class)
 
 package org.koin.core.module.dsl
 
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.*
 import org.koin.dsl.ScopeDSL
 
 /**
