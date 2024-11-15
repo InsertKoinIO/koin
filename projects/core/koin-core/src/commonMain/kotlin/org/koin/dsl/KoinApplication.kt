@@ -18,6 +18,7 @@ package org.koin.dsl
 import org.koin.core.KoinApplication
 import org.koin.core.module.KoinApplicationDslMarker
 
+//TODO Koin 4.1 - KoinAppDeclaration migration type to KoinConfiguration
 typealias KoinAppDeclaration = KoinApplication.() -> Unit
 
 /**
