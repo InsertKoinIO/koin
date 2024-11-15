@@ -1,6 +1,8 @@
 //package org.koin.core.instance
 //
-//import org.junit.Assert.*
+//import org.junit.Assert.assertEquals
+//import org.junit.Assert.assertNotEquals
+//import org.junit.Assert.fail
 //import org.junit.Test
 //import org.koin.core.error.InstanceCreationException
 //import org.koin.core.logger.Level
@@ -123,7 +125,7 @@
 //            )
 //        }.koin
 //
-//        (1..3).forEach {
+//        for (index in 1..3) {
 //            koin.get<Component>()
 //        }
 //    }
