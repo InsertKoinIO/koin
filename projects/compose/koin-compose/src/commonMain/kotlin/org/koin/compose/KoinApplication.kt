@@ -93,7 +93,7 @@ fun currentKoinScope(): Scope = currentComposer.run {
         }
     } catch (e: ClosedScopeException) {
         getDefaultKoinContext().let {
-            it.logger.warn("Try to refresh scope - fallback on default context from - $e")
+            it.logger.debug("Try to refresh scope - fallback on default context from - $e")
             it.scopeRegistry.rootScope
         }
     }
@@ -102,7 +102,7 @@ fun currentKoinScope(): Scope = currentComposer.run {
 
 @OptIn(KoinInternalApi::class)
 private fun warningNoContext(ctx: Koin) {
-    ctx.logger.error("[Warning] - No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
+    ctx.logger.info("No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
 }
 
 /**
