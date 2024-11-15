@@ -90,7 +90,9 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     private fun closeAllScopes() {
-        _scopes.values.toList().forEach { scope ->
+        // use another list to workaround ConcurrentModificationException
+        val scopes = List(_scopes.values.size) { _scopes.values.elementAt(it) }
+        scopes.forEach { scope ->
             scope.close()
         }
     }
