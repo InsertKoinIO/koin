@@ -36,5 +36,5 @@ expect object KoinPlatformTools {
 
 fun KoinPlatformTools.getKClassDefaultName(kClass: KClass<*>) : String = "KClass@${kClass.hashCode()}"
 @OptIn(ExperimentalUuidApi::class)
-fun KoinPlatformTools.generateId() : String = Uuid.random().toString()
+expect fun KoinPlatformTools.generateId() : String
 

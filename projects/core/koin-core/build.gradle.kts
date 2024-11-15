@@ -50,6 +50,9 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.test.coroutines)
         }
+        wasmJsMain.dependencies {
+            implementation(libs.uuid)
+        }
     }
 }
 
