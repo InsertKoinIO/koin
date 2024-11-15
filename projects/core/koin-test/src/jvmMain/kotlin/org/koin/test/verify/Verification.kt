@@ -38,7 +38,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
     private val extraKeys: List<String> = (extraTypes + Verify.whiteList).map { it.getFullName() }
     internal val definitionIndex: List<IndexKey> = allModules.flatMap { it.mappings.keys.toList() }
     private val verifiedFactories: HashMap<InstanceFactory<*>, List<KClass<*>>> = hashMapOf()
-    private val parameterInjectionIndex : Map<String, List<String>> = injections?.associate { inj -> inj.targetType.getFullName() to inj.injectedTypes.map { it.getFullName() }.toList() } ?: emptyMap()
+    private val parameterInjectionIndex: Map<String, List<String>> = injections?.associate { inj -> inj.targetType.getFullName() to inj.injectedTypes.map { it.getFullName() }.toList() }.orEmpty()
 
     fun verify() {
         factories.forEach { factory ->
@@ -55,7 +55,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
     ): List<KClass<*>> {
         val beanDefinition = factory.beanDefinition
         println("\n|-> definition $beanDefinition")
-        if (beanDefinition.qualifier != null){
+        if (beanDefinition.qualifier != null) {
             println("| qualifier: ${beanDefinition.qualifier}")
         }
 
@@ -71,26 +71,26 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
                     constructor,
                     functionType,
                     index
-            )
-        }
+                )
+            }
         val verificationByStatus = verifications.groupBy { it.status }
         verificationByStatus[VerificationStatus.MISSING]?.let { list ->
-                val first = list.first()
-                val errorMessage = "Missing definition for '$first' in definition '$beanDefinition'."
-                val generateParameterInjection = "- Fix your Koin configuration -\n${generateFixDefinition(first)}\n${generateInjectionCode(beanDefinition,first)}"
-                System.err.println("* ----- > $errorMessage\n$generateParameterInjection")
-                throw MissingKoinDefinitionException(errorMessage)
+            val first = list.first()
+            val errorMessage = "Missing definition for '$first' in definition '$beanDefinition'."
+            val generateParameterInjection = "- Fix your Koin configuration -\n${generateFixDefinition(first)}\n${generateInjectionCode(beanDefinition, first)}"
+            System.err.println("* ----- > $errorMessage\n$generateParameterInjection")
+            throw MissingKoinDefinitionException(errorMessage)
         }
         verificationByStatus[VerificationStatus.CIRCULAR]?.let { list ->
-                val errorMessage = "Circular injection between ${list.first()} and '${functionType.qualifiedName}'.\nFix your Koin configuration!"
-                System.err.println("* ----- > $errorMessage")
-                throw CircularInjectionException(errorMessage)
+            val errorMessage = "Circular injection between ${list.first()} and '${functionType.qualifiedName}'.\nFix your Koin configuration!"
+            System.err.println("* ----- > $errorMessage")
+            throw CircularInjectionException(errorMessage)
         }
 
         return verificationByStatus[VerificationStatus.OK]?.map {
             println("|- dependency '${it.name}' - ${it.type.qualifiedName} found!")
             it.type
-        } ?: emptyList()
+        }.orEmpty()
     }
 
     private fun generateFixDefinition(first: VerifiedParameter): String {
@@ -120,7 +120,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
     ): List<VerifiedParameter> {
         val constructorParameters = constructorFunction.parameters
 
-        if (constructorParameters.isEmpty()){
+        if (constructorParameters.isEmpty()) {
             println("| no dependency to check")
         } else {
             println("| ${constructorParameters.size} dependencies to check")
@@ -133,11 +133,11 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
 
             val hasDefinition = isClassInDefinitionIndex(index, ctorParamFullClassName)
             val isParameterInjected = isClassInInjectionIndex(functionType, ctorParamFullClassName)
-            if (isParameterInjected){
+            if (isParameterInjected) {
                 println("| dependency '$ctorParamLabel' is injected")
             }
             val isWhiteList = ctorParamFullClassName in extraKeys
-            if (isWhiteList){
+            if (isWhiteList) {
                 println("| dependency '$ctorParamLabel' is whitelisted")
             }
             val isDefinitionDeclared = hasDefinition || isParameterInjected || isWhiteList
@@ -148,16 +148,16 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
 
             //TODO refactor to attach type / case of error
             when {
-                !isDefinitionDeclared -> VerifiedParameter(ctorParamLabel,ctorParamClass,VerificationStatus.MISSING)
-                isCircular -> VerifiedParameter(ctorParamLabel,ctorParamClass,VerificationStatus.CIRCULAR)
-                else -> VerifiedParameter(ctorParamLabel,ctorParamClass,VerificationStatus.OK)
+                !isDefinitionDeclared -> VerifiedParameter(ctorParamLabel, ctorParamClass, VerificationStatus.MISSING)
+                isCircular -> VerifiedParameter(ctorParamLabel, ctorParamClass, VerificationStatus.CIRCULAR)
+                else -> VerifiedParameter(ctorParamLabel, ctorParamClass, VerificationStatus.OK)
             }
         }
     }
 
     private fun isClassInInjectionIndex(
         classOrigin: KClass<*>,
-        ctorParamFullClassName: String
+        ctorParamFullClassName: String,
     ): Boolean {
         return parameterInjectionIndex[classOrigin.getFullName()]?.let { ctorParamFullClassName in it } ?: false
     }
@@ -166,7 +166,7 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
         index.any { k -> k.contains(ctorParamFullClassName) }
 }
 
-data class VerifiedParameter(val name : String, val type : KClass<*>, val status: VerificationStatus){
+data class VerifiedParameter(val name: String, val type: KClass<*>, val status: VerificationStatus) {
     override fun toString(): String = "[field:'$name' - type:'${type.qualifiedName}']"
 }
 
