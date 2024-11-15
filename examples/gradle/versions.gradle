@@ -2,12 +2,12 @@ ext {
     // Kotlin
     kotlin_version = '2.0.20'
     // Koin Versions
-    koin_version = '4.0.1-Beta1'
+    koin_version = '4.1.0-Beta1'
     koin_android_version = koin_version
     koin_compose_version = koin_version
 
     coroutines_version = "1.8.1"
-    ktor_version = "2.3.12"
+    ktor_version = "3.0.1"
     jb_compose_version = "1.6.11"
 
     // Test
