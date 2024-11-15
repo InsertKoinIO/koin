@@ -1,7 +1,12 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupByRegex(".*google.*")
+                includeGroupByRegex(".*android.*")
+            }
+        }
         gradlePluginPortal()
         mavenCentral()
     }
@@ -9,7 +14,12 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupByRegex(".*google.*")
+                includeGroupByRegex(".*android.*")
+            }
+        }
         mavenCentral()
     }
 }
@@ -30,6 +40,7 @@ include(
 
     // Ktor
     ":ktor:koin-ktor",
+    ":ktor:koin-ktor3",
     ":ktor:koin-logger-slf4j",
     // Android
     ":android:koin-android",

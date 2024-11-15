@@ -3,6 +3,7 @@ package org.koin.ktor.ext
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.testing.TestApplication
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -30,7 +31,7 @@ class KoinFeatureTest {
     }
 
     @Test
-    fun `can install feature`() {
+    fun `can install feature`() = runTest {
         val module = module {
             single { Foo("bar") }
         }
@@ -48,7 +49,7 @@ class KoinFeatureTest {
     }
 
     @Test
-    fun `can install feature - isolated context`() {
+    fun `can install feature - isolated context`() = runTest {
         val module = module {
             single { Foo("bar") }
         }
