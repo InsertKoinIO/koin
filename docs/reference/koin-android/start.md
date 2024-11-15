@@ -77,7 +77,7 @@ startKoin {
 By using Gradle packge `koin-androidx-startup`, we can use `KoinStartup` interface to declare your Koin configuration your Application class:
 
 ```kotlin
-class MainApplication : Application() {
+class MainApplication : Application(),KoinStartup {
 
      override fun onKoinStartup(): KoinAppDeclaration = {
         androidContext(this@MainApplication)
@@ -93,7 +93,7 @@ class MainApplication : Application() {
 This replaces the `startKoin` function that is usally used in `onCreate`. 
 
 :::info
-Gain over from `KoinStartup` to regular `startKoin` can go over 30% of time gained, for startup time.
+`KoinStartup` avoid blocking main thread at for startup time, and offers better performances.
 :::
 
 ## Startup Dependency with Koin

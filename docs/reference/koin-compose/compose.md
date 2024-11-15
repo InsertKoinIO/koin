@@ -25,14 +25,11 @@ for an Android/Multiplatform app, use the following packages:
 The function `KoinApplication` helps to create Koin application instance, as a Composable:
 
 ```kotlin
-fun koinConfiguration() = koinApplication {
-    // your configuration & modules here
-    modules(...)
-}
-
 @Composable
 fun App() {
-    KoinApplication(::koinConfiguration) {
+    KoinApplication(application = {
+        modules(...)
+    }) {
         
         // your screens here ...
         MyScreen()
