@@ -72,7 +72,7 @@ Koin Logger
 ```kotlin
 abstract class Logger(var level: Level = Level.INFO) {
 
-    abstract fun log(level: Level, msg: MESSAGE)
+    abstract fun display(level: Level, msg: MESSAGE)
 
     fun debug(msg: MESSAGE) {
         log(Level.DEBUG, msg)
@@ -80,6 +80,10 @@ abstract class Logger(var level: Level = Level.INFO) {
 
     fun info(msg: MESSAGE) {
         log(Level.INFO, msg)
+    }
+
+    fun warn(msg: MESSAGE) {
+        log(Level.WARNING, msg)
     }
 
     fun error(msg: MESSAGE) {
