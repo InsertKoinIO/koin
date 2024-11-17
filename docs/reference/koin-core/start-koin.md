@@ -101,7 +101,7 @@ Koin proposes some implementation of logging, in function of the target platform
 
 ### Set logging at start
 
-By default, By default Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
+By default, Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
 
 ```kotlin
 startKoin {
