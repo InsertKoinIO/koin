@@ -23,8 +23,8 @@ Once `startKoin` has been called, Koin will read all your modules & definitions.
 
 Your Koin container can have several options:
 
-* `logger` - to enable logging - see <<logging.adoc#_logging,logging>> section
-* `properties()`, `fileProperties( )` or `environmentProperties( )` to load properties from environment, koin.properties file, extra properties ... - see <<properties.adoc#_lproperties,properties>> section
+* `logger` - to enable logging - see [Logging](#logging) section
+* `properties()`, `fileProperties( )` or `environmentProperties( )` to load properties from environment, koin.properties file, extra properties ... - see [Loading properties](#loading-properties) section
 
 
 :::info
@@ -72,7 +72,7 @@ Koin Logger
 ```kotlin
 abstract class Logger(var level: Level = Level.INFO) {
 
-    abstract fun log(level: Level, msg: MESSAGE)
+    abstract fun display(level: Level, msg: MESSAGE)
 
     fun debug(msg: MESSAGE) {
         log(Level.DEBUG, msg)
@@ -80,6 +80,10 @@ abstract class Logger(var level: Level = Level.INFO) {
 
     fun info(msg: MESSAGE) {
         log(Level.INFO, msg)
+    }
+
+    fun warn(msg: MESSAGE) {
+        log(Level.WARNING, msg)
     }
 
     fun error(msg: MESSAGE) {
@@ -97,7 +101,7 @@ Koin proposes some implementation of logging, in function of the target platform
 
 ### Set logging at start
 
-By default, By default Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
+By default, Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
 
 ```kotlin
 startKoin {
