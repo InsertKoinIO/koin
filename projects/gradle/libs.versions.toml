@@ -38,6 +38,8 @@ mockk = "1.13.2"
 ktor = "2.3.12"
 slf4j = "2.0.13"
 uuidVersion = "0.8.4"
+#decompose
+decompose = "3.2.2"
 
 [libraries]
 # Core
@@ -81,6 +83,8 @@ jb-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", versi
 jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
+#decompose
+decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
