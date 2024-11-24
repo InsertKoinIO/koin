@@ -1,0 +1,14 @@
+public final class org/koin/decompose/ComponentContextExtKt {
+	public static final fun componentScope (Lorg/koin/decompose/DecomposeScopeComponent;)Lkotlin/Lazy;
+	public static final fun createComponentScope (Lorg/koin/decompose/DecomposeScopeComponent;)Lorg/koin/core/scope/Scope;
+}
+
+public abstract interface class org/koin/decompose/DecomposeScopeComponent : com/arkivanov/decompose/ComponentContext, org/koin/core/component/KoinScopeComponent {
+	public abstract fun onScopeClose (Lorg/koin/core/scope/Scope;)V
+}
+
+public final class org/koin/decompose/DecomposeScopeComponent$DefaultImpls {
+	public static fun getKoin (Lorg/koin/decompose/DecomposeScopeComponent;)Lorg/koin/core/Koin;
+	public static fun onScopeClose (Lorg/koin/decompose/DecomposeScopeComponent;Lorg/koin/core/scope/Scope;)V
+}
+
