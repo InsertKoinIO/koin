@@ -29,7 +29,7 @@ jobs:
       - name: Install
         run: cd projects && ./install.sh
 
-      - name: Test Examples
-        run: cd examples/jvm-perfs && ./benchmark.sh
+      - name: Benchmark
+        run: cd projects && ./benchmark.sh
 
 
