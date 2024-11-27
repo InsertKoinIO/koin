@@ -12,6 +12,9 @@ kotlin {
     jvm {
         withJava()
     }
+    macosX64()
+    macosArm64()
+
 
     sourceSets {
         commonMain.dependencies {
@@ -20,6 +23,9 @@ kotlin {
         }
         jvmMain.dependencies {
 
+        }
+        nativeMain.dependencies {
+            
         }
     }
 }
@@ -31,5 +37,7 @@ allOpen {
 benchmark {
     targets {
         register("jvm")
+        register("macosX64")
+        register("macosArm64")
     }
 }
