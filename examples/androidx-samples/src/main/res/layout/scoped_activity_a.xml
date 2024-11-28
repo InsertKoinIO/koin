@@ -13,6 +13,12 @@
         android:text="Scoped A completed!" />
 
     <Button
+        android:id="@+id/scoped_a_restart_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restart" />
+
+    <Button
         android:id="@+id/scoped_a_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

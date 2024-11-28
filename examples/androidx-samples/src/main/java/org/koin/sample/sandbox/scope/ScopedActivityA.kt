@@ -22,16 +22,15 @@ class ScopedActivityA : RetainedScopeActivity(R.layout.scoped_activity_a) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportFragmentManager.beginTransaction()
-            .replace<ScopedFragment>(R.id.mvvm_frame)
-            .commit()
-
         assert(currentSession == get<Session>())
-        if (SESSION_ID_VAR.isEmpty()) {
+        if (SESSION_ID_VAR.isEmpty() || SESSION_ID_VAR.first() == "") {
+            if (SESSION_ID_VAR.isNotEmpty()){
+                SESSION_ID_VAR.removeFirst()
+            }
             println("Create ID for session: $SESSION_ID_VAR")
-            SESSION_ID_VAR = currentSession.id
+            SESSION_ID_VAR.addFirst(currentSession.id)
         }
-        assert(SESSION_ID_VAR == currentSession.id)
+        assert(SESSION_ID_VAR.first() == currentSession.id)
 
         // Conpare different scope instances
         val scopeSession1 = getKoin().createScope(SESSION_1, named(SCOPE_ID))
@@ -52,6 +51,11 @@ class ScopedActivityA : RetainedScopeActivity(R.layout.scoped_activity_a) {
 
         title = "Scope Activity A"
 
+        findViewById<Button>(R.id.scoped_a_restart_button).setOnClickListener {
+            SESSION_ID_VAR.addFirst("")
+            navigateTo<ScopedActivityA>(isRoot = false)
+        }
+
         findViewById<Button>(R.id.scoped_a_button).setOnClickListener {
             navigateTo<ScopedActivityB>(isRoot = true)
         }
@@ -60,7 +64,13 @@ class ScopedActivityA : RetainedScopeActivity(R.layout.scoped_activity_a) {
         scopeSession2.close()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        SESSION_ID_VAR.removeFirst()
+    }
+
     companion object {
-        var SESSION_ID_VAR = ""
+        var SESSION_ID_VAR = ArrayDeque<String>()
     }
 }
