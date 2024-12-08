@@ -88,7 +88,7 @@ class AppModule
 ```
 
 * We use the `@Module` to declare our class as Koin module
-* The `@ComponentScan("org.koin.sample")` allow to scann any Koin definition in `"org.koin.sample"`package
+* The `@ComponentScan("org.koin.sample")` allow to scan any Koin definition in `"org.koin.sample"`package
 
 Let's simply add `@Single` on `UserRepositoryImpl` class to declare it as singleton:
 
