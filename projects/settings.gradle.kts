@@ -33,6 +33,7 @@ include(
     ":core:koin-test",
     ":core:koin-test-junit4",
     ":core:koin-test-junit5",
+    ":core:benchmark",
 
     // Fu DSL - Experimental
     ":core:koin-fu",

@@ -40,6 +40,8 @@ ktor3 = "3.0.1"
 slf4j = "2.0.16"
 uuidVersion = "0.8.4"
 
+benchmark = "0.4.13"
+
 [libraries]
 # Core
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -85,6 +87,8 @@ jb-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", versi
 jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
+# Benchmark
+benchmark-runtime = {module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "benchmark"}
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -96,3 +100,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlinBinary = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryValidator" }
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "benchmark"}
