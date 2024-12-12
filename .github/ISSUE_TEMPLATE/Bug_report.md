@@ -21,4 +21,4 @@ A clear and concise description of what you expected to happen.
  [e.g]: `koin-core:3.4.3`
 
 **Snippet or Sample project to help reproduce**
-Add a snippet or even a small sample project to hel reproduce your case.
+Add a snippet or even a small sample project to help reproduce your case.
