@@ -189,7 +189,7 @@ class Scope(
         ctx: ResolutionContext
     ): T? {
         return try {
-            get(ctx.clazz, ctx.qualifier, ctx.parameters)
+            getWithParameters(ctx.clazz, ctx.qualifier, ctx.parameters)
         } catch (e: ClosedScopeException) {
             _koin.logger.debug("* Scope closed - no instance found for ${ctx.clazz.getFullName()} on scope ${toString()}")
             null
@@ -212,18 +212,19 @@ class Scope(
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null,
     ): T {
-        return resolveWithOptionalLogging(clazz, qualifier,parameters?.invoke())
+        return resolve(clazz, qualifier,parameters?.invoke())
     }
 
-    private fun <T> get(
+    @KoinInternalApi
+    fun <T> getWithParameters(
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
         parameters: ParametersHolder? = null,
     ): T {
-        return resolveWithOptionalLogging(clazz, qualifier, parameters)
+        return resolve(clazz, qualifier, parameters)
     }
 
-    private fun <T> resolveWithOptionalLogging(
+    private fun <T> resolve(
         clazz: KClass<*>,
         qualifier: Qualifier?,
         parameters: ParametersHolder? = null

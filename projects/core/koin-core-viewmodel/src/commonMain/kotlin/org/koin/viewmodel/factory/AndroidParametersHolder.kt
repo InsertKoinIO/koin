@@ -35,7 +35,7 @@ class AndroidParametersHolder(
         return createSavedStateHandleOrElse(clazz) { super.getOrNull(clazz) }
     }
 
-    private fun <T> createSavedStateHandleOrElse(clazz: KClass<*>, block: () -> T): T {
+    private inline fun <T> createSavedStateHandleOrElse(clazz: KClass<*>, block: () -> T): T {
         return if (clazz == SavedStateHandle::class) {
             extras.createSavedStateHandle() as T
         } else block()
