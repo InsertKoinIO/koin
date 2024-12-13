@@ -3,8 +3,8 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "2.0.21"
-binaryValidator = "0.16.0"
+kotlin = "2.1.0"
+binaryValidator = "0.16.3"
 publish = "2.0.0"
 coroutines = "1.9.0"
 dokka = "1.9.20"
@@ -17,11 +17,11 @@ android-activity = "1.9.3"
 android-fragment = "1.8.5"
 androidx-lifecycle = "2.8.7"
 androidx-workmanager = "2.10.0"
-androidx-navigation = "2.8.4"
+androidx-navigation = "2.8.5"
 androidx-startup= "1.2.0"
 
 # Compose
-composeJetpackRuntime = "1.7.5"
+composeJetpackRuntime = "1.7.6"
 composeJB = "1.7.1"
 composeLifecycle = "2.8.3"
 composeNavigation = "2.8.0-alpha10" # 2.8.0-alpha02 to keep compose 1.6.11

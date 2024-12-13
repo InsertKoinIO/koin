@@ -7,7 +7,8 @@ ext {
     koin_compose_version = koin_version
 
     coroutines_version = "1.8.1"
-    ktor_version = "3.0.1"
+    // TODO Ktor 3 version pb with tests
+    ktor_version = "2.3.12"
     jb_compose_version = "1.6.11"
 
     // Test
@@ -18,7 +19,7 @@ ext {
 
     // build Tools
     android_min_version = 14
-    android_target_version = 34
+    android_target_version = 35
     android_build_tools_version = '34.0.0'
     android_gradle_version = '8.7.0'
 }

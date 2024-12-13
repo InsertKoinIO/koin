@@ -58,6 +58,6 @@ private fun cancelPendingWorkManager(mainApplication: MainApplication) {
         WorkManager.getInstance(mainApplication)
                 .cancelAllWork()
                 .result
-                .await()
+                .get()
     }
 }
