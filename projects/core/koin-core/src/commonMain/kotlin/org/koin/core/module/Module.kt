@@ -54,8 +54,9 @@ class Module(
         get() = mappings.isNotEmpty()
 
 
-    @PublishedApi
-    internal val scopes = LinkedHashSet<Qualifier>()
+    @KoinInternalApi
+    // used by Ktor ext
+    val scopes = LinkedHashSet<Qualifier>()
 
     @KoinInternalApi
     val includedModules = mutableListOf<Module>()
