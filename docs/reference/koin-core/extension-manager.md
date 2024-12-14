@@ -10,9 +10,9 @@ A Koin extension consist in having a class inheriting from `KoinExtension` inter
 
 ```kotlin
 interface KoinExtension {
-    
-    var koin : Koin
-    
+
+    fun onRegister(koin : Koin)
+
     fun onClose()
 }
 ```
