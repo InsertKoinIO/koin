@@ -139,6 +139,16 @@ open class ParametersHolder(
     }
 
     override fun toString(): String = "DefinitionParameters${_values.toList()}"
+
+    override fun equals(other: Any?): Boolean {
+        if (other is ParametersHolder){
+            return this.values == other.values
+        } else return false
+    }
+
+    override fun hashCode(): Int {
+        return values.hashCode()
+    }
 }
 
 /**

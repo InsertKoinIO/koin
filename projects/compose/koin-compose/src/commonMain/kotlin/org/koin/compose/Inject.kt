@@ -16,11 +16,10 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
@@ -33,18 +32,15 @@ import org.koin.core.scope.Scope
  *
  * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 @Composable
 inline fun <reified T> koinInject(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    // This will always refer to the latest parameters
-    val currentParameters by rememberUpdatedState(parameters)
-
-    return remember(qualifier, scope) {
-        scope.get(qualifier) {
-            currentParameters?.invoke() ?: emptyParametersHolder()
-        }
+    val params: ParametersHolder? = parameters?.invoke()
+    return remember(qualifier, scope, params) {
+        scope.getWithParameters(T::class, qualifier,params)
     }
 }
