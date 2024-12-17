@@ -128,3 +128,19 @@ inline fun <reified T> _createDefinition(
         secondaryTypes = secondaryTypes,
     )
 }
+
+inline fun <reified T> _createDeclaredDefinition(
+    kind: Kind = Kind.Singleton,
+    qualifier: Qualifier? = null,
+    secondaryTypes: List<KClass<*>> = emptyList(),
+    scopeQualifier: Qualifier,
+): BeanDefinition<T> {
+    return BeanDefinition(
+        scopeQualifier,
+        T::class,
+        qualifier,
+        { error("declared instance error ") },
+        kind,
+        secondaryTypes = secondaryTypes,
+    )
+}
