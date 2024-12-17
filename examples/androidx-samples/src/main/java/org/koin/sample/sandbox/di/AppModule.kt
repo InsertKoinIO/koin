@@ -33,7 +33,7 @@ import org.koin.sample.sandbox.scope.ScopedFragment
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
 
-val appModule = module {
+val appModule = lazyModule {
 
     singleOf(::SimpleServiceImpl) { bind<SimpleService>() }
     singleOf(::DumbServiceImpl) {
@@ -43,7 +43,7 @@ val appModule = module {
     factory { RandomId() }
 }
 
-val mvpModule = module {
+val mvpModule = lazyModule {
     //factory { (id: String) -> FactoryPresenter(id, get()) }
     factoryOf(::FactoryPresenter)
 
@@ -53,7 +53,7 @@ val mvpModule = module {
     }
 }
 
-val mvvmModule = module {
+val mvvmModule = lazyModule {
 
     viewModelOf(::SimpleViewModel)// { (id: String) -> SimpleViewModel(id, get()) }
     viewModelOf(::SimpleViewModel) { named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
@@ -93,7 +93,7 @@ val mvvmModule = module {
     }
 }
 
-val scopeModule = module {
+val scopeModule = lazyModule {
     scope(named(SCOPE_ID)) {
         scopedOf(::Session) {
             named(SCOPE_SESSION)
@@ -106,7 +106,7 @@ val scopeModule = module {
     }
 }
 
-val scopeModuleActivityA = module {
+val scopeModuleActivityA = lazyModule {
     scope<ScopedActivityA> {
         fragmentOf(::ScopedFragment)
         scopedOf(::Session)
@@ -117,19 +117,19 @@ val scopeModuleActivityA = module {
     }
 }
 
-val workerServiceModule = module {
+val workerServiceModule = lazyModule {
     singleOf(::SimpleWorkerService)
 }
 
-val workerScopedModule = module {
+val workerScopedModule = lazyModule {
     workerOf(::SimpleWorker)// { SimpleWorker(get(), androidContext(), it.get()) }
 }
 
-val navModule = module {
+val navModule = lazyModule {
     viewModelOf(::NavViewModel)
     viewModelOf(::NavViewModel2)
 }
 
-val allModules = module {
+val allModules = lazyModule {
     includes(appModule, mvpModule, mvvmModule , scopeModule , workerServiceModule , workerScopedModule , navModule , scopeModuleActivityA)
 }
