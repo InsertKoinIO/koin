@@ -61,8 +61,8 @@ class MainApplication : Application() {
             androidFileProperties()
             fragmentFactory()
             workManagerFactory()
-            lazyModules(allModules, dispatcher = IO)
-//            modules(allModules)
+//            lazyModules(allModules, dispatcher = IO)
+            modules(allModules)
         }
 
         //TODO Load/Unload Koin modules scenario cases
