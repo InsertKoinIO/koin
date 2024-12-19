@@ -117,65 +117,42 @@ class Module(
     }
 
     /**
-     * Declare a Single Map<K, V> and inject an element to it with a given key
-     * @param key can't be null
-     * @param definition - the element definition function
-     */
-    inline fun <reified K : Any, reified V> intoMap(
-        key: K,
-        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
-        noinline definition: Definition<V>,
-    ): KoinDefinition<Map<K, V>> {
-        single(multibindingValueQualifier(qualifier, key), definition = definition)
-        single(multibindingIterateKeyQualifier(qualifier, key)) {
-            MultibindingIterateKey(key, multibindingValueQualifier(qualifier, key))
-        }
-        return declareMapMultibinding(qualifier)
-    }
-
-    /**
      * Declare a Single Map<K, V> definition, the key type [K] can't be null
      * @param qualifier can't be null
      * @param createdAtStart
+     * @param elementDefinition - call `intoMap` to inject elements
      */
-    inline fun <reified K : Any, reified V> declareMapMultibinding(
+    inline fun <reified K : Any, reified V : Any> declareMapMultibinding(
         qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
         createdAtStart: Boolean = false,
-    ): KoinDefinition<Map<K, V>> {
+        elementDefinition: MapMultibindingElementDefinition<K, V>.() -> Unit = {},
+    ): MapMultibindingElementDefinition<K, V> {
         val isCreatedAtStart = createdAtStart || this._createdAtStart
-        return single<Map<K, V>>(qualifier) { parametersHolder ->
+        single<Map<K, V>>(qualifier) { parametersHolder ->
             MapMultibinding(isCreatedAtStart, this, qualifier, V::class, parametersHolder)
         }
-    }
-
-    /**
-     * Declare a Single Set<E> and inject an element to it
-     * @param definition - the element definition function
-     */
-    inline fun <reified E> intoSet(
-        qualifier: Qualifier = setMultibindingQualifier<E>(),
-        noinline definition: Definition<E>,
-    ): KoinDefinition<Set<E>> {
-        val key = SetMultibinding.getDistinctKey()
-        single(multibindingValueQualifier(qualifier, key), definition = definition)
-        single(multibindingIterateKeyQualifier(qualifier, key)) {
-            MultibindingIterateKey(key, multibindingValueQualifier(qualifier, key))
+        return MapMultibindingElementDefinition<K, V>(qualifier, V::class, this, null).apply {
+            elementDefinition(this)
         }
-        return declareSetMultibinding(qualifier)
     }
 
     /**
      * Declare a Single Set<E> definition
      * @param qualifier can't be null
      * @param createdAtStart
+     * @param elementDefinition - call `intoSet` to inject elements
      */
-    inline fun <reified E> declareSetMultibinding(
+    inline fun <reified E : Any> declareSetMultibinding(
         qualifier: Qualifier = setMultibindingQualifier<E>(),
         createdAtStart: Boolean = false,
-    ): KoinDefinition<Set<E>> {
+        elementDefinition: SetMultibindingElementDefinition<E>.() -> Unit = {},
+    ): SetMultibindingElementDefinition<E> {
         val isCreatedAtStart = createdAtStart || this._createdAtStart
-        return single(qualifier) { parametersHolder ->
-            SetMultibinding(isCreatedAtStart, this, qualifier, E::class, parametersHolder)
+        single<Set<E>>(qualifier) { parametersHolder ->
+            SetMultibinding<E>(isCreatedAtStart, this, qualifier, E::class, parametersHolder)
+        }
+        return SetMultibindingElementDefinition<E>(qualifier, E::class, this, null).apply {
+            elementDefinition(this)
         }
     }
 
