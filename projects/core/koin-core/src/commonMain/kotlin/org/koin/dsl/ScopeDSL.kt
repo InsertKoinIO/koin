@@ -44,4 +44,38 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
     ): KoinDefinition<T> {
         return module.factory(qualifier, definition, scopeQualifier)
     }
+
+    /**
+     * Declare a scoped Map<K, V> definition, the key type [K] can't be null
+     * @param qualifier can't be null
+     * @param elementDefinition - call `intoMap` to inject elements
+     */
+    inline fun <reified K : Any, reified V : Any> declareMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        elementDefinition: MapMultibindingElementDefinition<K, V>.() -> Unit = {},
+    ): MapMultibindingElementDefinition<K, V> {
+        scoped<Map<K, V>>(qualifier) { parametersHolder ->
+            MapMultibinding(false, this, qualifier, V::class, parametersHolder)
+        }
+        return MapMultibindingElementDefinition<K, V>(qualifier, V::class, null, this).apply {
+            elementDefinition(this)
+        }
+    }
+
+    /**
+     * Declare a scoped Set<E> definition
+     * @param qualifier can't be null
+     * @param elementDefinition - call `intoSet` to inject elements
+     */
+    inline fun <reified E : Any> declareSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        elementDefinition: SetMultibindingElementDefinition<E>.() -> Unit = {},
+    ): SetMultibindingElementDefinition<E> {
+        scoped<Set<E>>(qualifier) { parametersHolder ->
+            SetMultibinding<E>(false, this, qualifier, E::class, parametersHolder)
+        }
+        return SetMultibindingElementDefinition<E>(qualifier, E::class, null, this).apply {
+            elementDefinition(this)
+        }
+    }
 }

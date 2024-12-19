@@ -116,6 +116,46 @@ class Module(
         return KoinDefinition(this, factory)
     }
 
+    /**
+     * Declare a Single Map<K, V> definition, the key type [K] can't be null
+     * @param qualifier can't be null
+     * @param createdAtStart
+     * @param elementDefinition - call `intoMap` to inject elements
+     */
+    inline fun <reified K : Any, reified V : Any> declareMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        createdAtStart: Boolean = false,
+        elementDefinition: MapMultibindingElementDefinition<K, V>.() -> Unit = {},
+    ): MapMultibindingElementDefinition<K, V> {
+        val isCreatedAtStart = createdAtStart || this._createdAtStart
+        single<Map<K, V>>(qualifier) { parametersHolder ->
+            MapMultibinding(isCreatedAtStart, this, qualifier, V::class, parametersHolder)
+        }
+        return MapMultibindingElementDefinition<K, V>(qualifier, V::class, this, null).apply {
+            elementDefinition(this)
+        }
+    }
+
+    /**
+     * Declare a Single Set<E> definition
+     * @param qualifier can't be null
+     * @param createdAtStart
+     * @param elementDefinition - call `intoSet` to inject elements
+     */
+    inline fun <reified E : Any> declareSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        createdAtStart: Boolean = false,
+        elementDefinition: SetMultibindingElementDefinition<E>.() -> Unit = {},
+    ): SetMultibindingElementDefinition<E> {
+        val isCreatedAtStart = createdAtStart || this._createdAtStart
+        single<Set<E>>(qualifier) { parametersHolder ->
+            SetMultibinding<E>(isCreatedAtStart, this, qualifier, E::class, parametersHolder)
+        }
+        return SetMultibindingElementDefinition<E>(qualifier, E::class, this, null).apply {
+            elementDefinition(this)
+        }
+    }
+
     @KoinInternalApi
     fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
