@@ -1,12 +1,15 @@
 package org.koin.core
 
 import org.koin.Simple
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class MultibindingTest {
@@ -59,11 +62,9 @@ class MultibindingTest {
         val app = koinApplication {
             modules(
                 module {
-                    intoMap<String, Simple.ComponentInterface1>(keyOfComponent1) {
-                        component1
-                    }
-                    intoMap<String, Simple.ComponentInterface1>(keyOfComponent2) {
-                        component2
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component1 }
+                        intoMap(keyOfComponent2) { component2 }
                     }
                 },
             )
@@ -75,10 +76,11 @@ class MultibindingTest {
         assertEquals(map, map2)
 
         assertEquals(2, map.size)
-        assertContains(map, keyOfComponent1)
+        assertContains(map, keyOfComponent2)
         assertContains(map, keyOfComponent2)
         assertEquals(component1, map[keyOfComponent1])
         assertEquals(component2, map[keyOfComponent2])
+        assertNull(map["invalid key"])
     }
 
     @Test
@@ -89,11 +91,9 @@ class MultibindingTest {
             modules(
                 module {
                     scope(scopeKey) {
-                        intoMap<String, Simple.ComponentInterface1>(keyOfComponent1) {
-                            component1
-                        }
-                        intoMap<String, Simple.ComponentInterface1>(keyOfComponent2) {
-                            component2
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent1) { component1 }
+                            intoMap(keyOfComponent2) { component2 }
                         }
                     }
                 },
@@ -109,6 +109,7 @@ class MultibindingTest {
         assertEquals(2, map.size)
         assertEquals(component1, map[keyOfComponent1])
         assertEquals(component2, map[keyOfComponent2])
+        assertNull(map["invalid key"])
     }
 
     @Test
@@ -122,18 +123,14 @@ class MultibindingTest {
         val app = koinApplication {
             modules(
                 module {
-                    intoMap<String, Simple.ComponentInterface1>("rootComponent1") {
-                        rootComponent1
-                    }
-                    intoMap<String, Simple.ComponentInterface1>("rootComponent2") {
-                        rootComponent2
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap("rootComponent1") { rootComponent1 }
+                        intoMap("rootComponent2") { rootComponent2 }
                     }
                     scope(scopeKey) {
-                        intoMap<String, Simple.ComponentInterface1>("scopeComponent1") {
-                            scopeComponent1
-                        }
-                        intoMap<String, Simple.ComponentInterface1>("scopeComponent2") {
-                            scopeComponent2
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap("scopeComponent1") { scopeComponent1 }
+                            intoMap("scopeComponent2") { scopeComponent2 }
                         }
                     }
                 },
@@ -153,6 +150,7 @@ class MultibindingTest {
         assertEquals(rootComponent2, scopeMap["rootComponent2"])
         assertEquals(scopeComponent1, scopeMap["scopeComponent1"])
         assertEquals(scopeComponent2, scopeMap["scopeComponent2"])
+        assertNull(scopeMap["invalid key"])
     }
 
     @Test
@@ -199,11 +197,9 @@ class MultibindingTest {
         val app = koinApplication {
             modules(
                 module {
-                    intoSet<Simple.ComponentInterface1> {
-                        component1
-                    }
-                    intoSet<Simple.ComponentInterface1> {
-                        component2
+                    declareSetMultibinding<Simple.ComponentInterface1> {
+                        intoSet { component1 }
+                        intoSet { component2 }
                     }
                 },
             )
@@ -226,11 +222,9 @@ class MultibindingTest {
             modules(
                 module {
                     scope(scopeKey) {
-                        intoSet<Simple.ComponentInterface1> {
-                            component1
-                        }
-                        intoSet<Simple.ComponentInterface1> {
-                            component2
+                        declareSetMultibinding<Simple.ComponentInterface1> {
+                            intoSet { component1 }
+                            intoSet { component2 }
                         }
                     }
                 },
@@ -258,18 +252,14 @@ class MultibindingTest {
         val app = koinApplication {
             modules(
                 module {
-                    intoSet<Simple.ComponentInterface1> {
-                        rootComponent1
-                    }
-                    intoSet<Simple.ComponentInterface1> {
-                        rootComponent2
+                    declareSetMultibinding<Simple.ComponentInterface1> {
+                        intoSet { rootComponent1 }
+                        intoSet { rootComponent2 }
                     }
                     scope(scopeKey) {
-                        intoSet<Simple.ComponentInterface1> {
-                            scopeComponent1
-                        }
-                        intoSet<Simple.ComponentInterface1> {
-                            scopeComponent2
+                        declareSetMultibinding<Simple.ComponentInterface1> {
+                            intoSet { scopeComponent1 }
+                            intoSet { scopeComponent2 }
                         }
                     }
                 },

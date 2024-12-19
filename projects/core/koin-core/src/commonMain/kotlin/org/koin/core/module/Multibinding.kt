@@ -16,11 +16,17 @@
 package org.koin.core.module
 
 import co.touchlab.stately.concurrency.AtomicInt
+import org.koin.core.definition.Definition
+import org.koin.core.definition.KoinDefinition
+import org.koin.core.definition.indexKey
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.scope.Scope
+import org.koin.dsl.ScopeDSL
+import org.koin.dsl.bind
 import org.koin.ext.getFullName
+import kotlin.collections.plus
 import kotlin.reflect.KClass
 
 /**
@@ -47,6 +53,29 @@ internal fun <K> multibindingIterateKeyQualifier(
 
 @PublishedApi
 internal class MultibindingIterateKey<T>(val key: T, val valueQualifier: Qualifier)
+
+class MapMultibindingElementDefinition<K, V : Any>(
+    val mapMultibindingQualifier: Qualifier,
+    val valueClass: KClass<V>,
+    val declareModule: Module?,
+    val declareScope: ScopeDSL?,
+) {
+    inline fun <reified Key : K, reified Value : V> intoMap(
+        key: Key,
+        noinline definition: Definition<Value>
+    ) {
+        val valueQualifier = multibindingValueQualifier(mapMultibindingQualifier, key)
+        val iterateKeyQualifier = multibindingIterateKeyQualifier(mapMultibindingQualifier, key)
+        declareModule?.single(valueQualifier, definition = definition)?.bind(valueClass)
+        declareModule?.single(iterateKeyQualifier) {
+            MultibindingIterateKey(key, valueQualifier)
+        }
+        declareScope?.scoped(valueQualifier, definition = definition)?.bind(valueClass)
+        declareScope?.scoped(iterateKeyQualifier) {
+            MultibindingIterateKey(key, valueQualifier)
+        }
+    }
+}
 
 @PublishedApi
 internal class MapMultibinding<K : Any, V>(
@@ -105,6 +134,29 @@ internal class MapMultibinding<K : Any, V>(
     override fun isEmpty(): Boolean = keys.isEmpty()
 
     private class Entry<K, V>(override val key: K, override val value: V) : Map.Entry<K, V>
+}
+
+class SetMultibindingElementDefinition<E : Any>(
+    val setMultibindingQualifier: Qualifier,
+    val valueClass: KClass<E>,
+    val declareModule: Module?,
+    val declareScope: ScopeDSL?,
+) {
+    inline fun <reified Element : E> intoSet(
+        noinline definition: Definition<Element>
+    ) {
+        val key = SetMultibinding.getDistinctKey()
+        val valueQualifier = multibindingValueQualifier(setMultibindingQualifier, key)
+        val iterateKeyQualifier = multibindingIterateKeyQualifier(setMultibindingQualifier, key)
+        declareModule?.single(valueQualifier, definition = definition)?.bind(valueClass)
+        declareModule?.single(iterateKeyQualifier) {
+            MultibindingIterateKey(key, valueQualifier)
+        }
+        declareScope?.scoped(valueQualifier, definition = definition)?.bind(valueClass)
+        declareScope?.scoped(iterateKeyQualifier) {
+            MultibindingIterateKey(key, valueQualifier)
+        }
+    }
 }
 
 @PublishedApi
