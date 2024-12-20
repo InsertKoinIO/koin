@@ -1,11 +1,13 @@
 package org.koin.core
 
+import co.touchlab.stately.concurrency.AtomicInt
 import org.koin.Simple
+import org.koin.core.parameter.parameterSetOf
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier._q
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -17,6 +19,8 @@ class MultibindingTest {
     private val keyOfComponent2 = "component2"
     private val component1 = Simple.Component1()
     private val component2 = Simple.Component2()
+    private val scopeId = "myScope"
+    private val scopeKey = named("KEY")
 
     @Test
     fun `declare map multibinding in root scope`() {
@@ -37,8 +41,6 @@ class MultibindingTest {
 
     @Test
     fun `declare map multibinding in none root scope`() {
-        val scopeId = "myScope"
-        val scopeKey = named("KEY")
         val app = koinApplication {
             modules(
                 module {
@@ -85,8 +87,6 @@ class MultibindingTest {
 
     @Test
     fun `inject some elements into map multibinding in none root scope`() {
-        val scopeId = "myScope"
-        val scopeKey = named("KEY")
         val app = koinApplication {
             modules(
                 module {
@@ -118,8 +118,6 @@ class MultibindingTest {
         val rootComponent2 = Simple.Component2()
         val scopeComponent1 = Simple.Component1()
         val scopeComponent2 = Simple.Component2()
-        val scopeId = "myScope"
-        val scopeKey = named("KEY")
         val app = koinApplication {
             modules(
                 module {
@@ -154,6 +152,38 @@ class MultibindingTest {
     }
 
     @Test
+    fun `override map multibinding elements that define in linked scope`() {
+        val rootComponent = Simple.Component1()
+        val scopeComponent = Simple.Component2()
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { rootComponent }
+                    }
+                    scope(scopeKey) {
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent1) { scopeComponent }
+                            intoMap(keyOfComponent2) { Simple.Component2() }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        val scopeMap: Map<String, Simple.ComponentInterface1> = myScope.getMapMultibinding()
+        assertEquals(1, rootMap.size)
+        assertEquals(rootComponent, rootMap[keyOfComponent1])
+        assertTrue { rootMap.containsValue(rootComponent) }
+        assertEquals(2, scopeMap.size)
+        assertEquals(scopeComponent, scopeMap[keyOfComponent1])
+        assertTrue { scopeMap.containsValue(scopeComponent) }
+    }
+
+    @Test
     fun `declare set multibinding in root scope`() {
         val app = koinApplication {
             modules(
@@ -172,8 +202,6 @@ class MultibindingTest {
 
     @Test
     fun `declare set multibinding in none root scope`() {
-        val scopeId = "myScope"
-        val scopeKey = named("KEY")
         val app = koinApplication {
             modules(
                 module {
@@ -216,8 +244,6 @@ class MultibindingTest {
 
     @Test
     fun `inject some elements into set multibinding in none root scope`() {
-        val scopeId = "myScope"
-        val scopeKey = named("KEY")
         val app = koinApplication {
             modules(
                 module {
@@ -247,8 +273,6 @@ class MultibindingTest {
         val rootComponent2 = Simple.Component2()
         val scopeComponent1 = Simple.Component1()
         val scopeComponent2 = Simple.Component2()
-        val scopeId = "myScope"
-        val scopeKey = named("KEY")
         val app = koinApplication {
             modules(
                 module {
@@ -274,6 +298,310 @@ class MultibindingTest {
         assertEquals(2, rootSet.size)
         assertTrue { rootSet.containsAll(listOf(rootComponent1, rootComponent2)) }
         assertEquals(4, scopeSet.size)
-        assertTrue { scopeSet.containsAll(listOf(rootComponent1, rootComponent2, scopeComponent1, scopeComponent2)) }
+        assertTrue {
+            scopeSet.containsAll(
+                listOf(
+                    rootComponent1,
+                    rootComponent2,
+                    scopeComponent1,
+                    scopeComponent2,
+                )
+            )
+        }
+        // in elements definition order
+        assertEquals(
+            listOf(
+                rootComponent1,
+                rootComponent2,
+                scopeComponent1,
+                scopeComponent2,
+            ),
+            scopeSet.toList()
+        )
+    }
+
+    @Test
+    fun `override set multibinding elements that define in linked scope`() {
+        data class SetElement(
+            val intValue: Int = 0
+        ) {
+            var name = ""
+        }
+
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<SetElement> {
+                        intoSet { SetElement().apply { name = "root" } }
+                    }
+                    scope(scopeKey) {
+                        declareSetMultibinding<SetElement> {
+                            intoSet { SetElement().apply { name = "scoped" } }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootSet: Set<SetElement> = koin.getSetMultibinding()
+        val scopeSet: Set<SetElement> = myScope.getSetMultibinding()
+        assertEquals(1, rootSet.size)
+        assertEquals(1, scopeSet.size)
+        assertEquals("root", (rootSet.first() as SetElement).name)
+        assertEquals("scoped", (scopeSet.first() as SetElement).name)
+    }
+
+    @Test
+    fun `declare multibinding elements in separated modules`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<Simple.ComponentInterface1> {
+                        intoSet { component1 }
+                    }
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component1 }
+                    }
+                    scope(scopeKey) {
+                        declareSetMultibinding<Simple.ComponentInterface1> {
+                            intoSet { component1 }
+                        }
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent1) { component1 }
+                        }
+                    }
+                },
+                module {
+                    declareSetMultibinding<Simple.ComponentInterface1> {
+                        intoSet { component2 }
+                    }
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent2) { component2 }
+                    }
+                    scope(scopeKey) {
+                        declareSetMultibinding<Simple.ComponentInterface1> {
+                            intoSet { component2 }
+                        }
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent2) { component2 }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootSet: Set<Simple.ComponentInterface1> = koin.getSetMultibinding()
+        val scopeSet: Set<Simple.ComponentInterface1> = myScope.getSetMultibinding()
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        val scopeMap: Map<String, Simple.ComponentInterface1> = myScope.getMapMultibinding()
+
+        for (set in listOf(rootSet, scopeSet)) {
+            assertEquals(2, set.size)
+            assertTrue { set.containsAll(listOf(component1, component2)) }
+        }
+        for (map in listOf(rootMap, scopeMap)) {
+            assertEquals(2, map.size)
+            assertTrue { map.values.containsAll(listOf(component1, component2)) }
+        }
+    }
+
+    @Test
+    fun `declare multibinding elements through different MultibindingElementDefinitions`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<Simple.ComponentInterface1> {
+                        intoSet { component1 }
+                    }
+                    declareSetMultibinding<Simple.ComponentInterface1> {
+                        intoSet { component2 }
+                    }
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component1 }
+                    }
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent2) { component2 }
+                    }
+                    scope(scopeKey) {
+                        declareSetMultibinding<Simple.ComponentInterface1> {
+                            intoSet { component1 }
+                        }
+                        declareSetMultibinding<Simple.ComponentInterface1> {
+                            intoSet { component2 }
+                        }
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent1) { component1 }
+                        }
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent2) { component2 }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootSet: Set<Simple.ComponentInterface1> = koin.getSetMultibinding()
+        val scopeSet: Set<Simple.ComponentInterface1> = myScope.getSetMultibinding()
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        val scopeMap: Map<String, Simple.ComponentInterface1> = myScope.getMapMultibinding()
+
+        for (set in listOf(rootSet, scopeSet)) {
+            assertEquals(2, set.size)
+            assertTrue { set.containsAll(listOf(component1, component2)) }
+        }
+        for (map in listOf(rootMap, scopeMap)) {
+            assertEquals(2, map.size)
+            assertTrue { map.values.containsAll(listOf(component1, component2)) }
+        }
+    }
+
+    @Test
+    fun `declare multibinding elements by MultibindingElementDefinition reference`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    val setElementDefinition =
+                        declareSetMultibinding<Simple.ComponentInterface1>()
+                    setElementDefinition.intoSet { component1 }
+                    setElementDefinition.intoSet { component2 }
+                    val mapElementDefinition =
+                        declareMapMultibinding<String, Simple.ComponentInterface1>()
+                    mapElementDefinition.intoMap(keyOfComponent1) { component1 }
+                    mapElementDefinition.intoMap(keyOfComponent2) { component2 }
+                    scope(scopeKey) {
+                        val setElementDefinition =
+                            declareSetMultibinding<Simple.ComponentInterface1>()
+                        setElementDefinition.intoSet { component1 }
+                        setElementDefinition.intoSet { component2 }
+                        val mapElementDefinition =
+                            declareMapMultibinding<String, Simple.ComponentInterface1>()
+                        mapElementDefinition.intoMap(keyOfComponent1) { component1 }
+                        mapElementDefinition.intoMap(keyOfComponent2) { component2 }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootSet: Set<Simple.ComponentInterface1> = koin.getSetMultibinding()
+        val scopeSet: Set<Simple.ComponentInterface1> = myScope.getSetMultibinding()
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        val scopeMap: Map<String, Simple.ComponentInterface1> = myScope.getMapMultibinding()
+
+        for (set in listOf(rootSet, scopeSet)) {
+            assertEquals(2, set.size)
+            assertTrue { set.containsAll(listOf(component1, component2)) }
+        }
+        for (map in listOf(rootMap, scopeMap)) {
+            assertEquals(2, map.size)
+            assertTrue { map.values.containsAll(listOf(component1, component2)) }
+        }
+    }
+
+    @Test
+    fun `declare multibinding with specific qualifier`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<Simple.ComponentInterface1>(_q<Set<*>>()) {
+                        intoSet { component1 }
+                        intoSet { component2 }
+                    }
+                    declareMapMultibinding<String, Simple.ComponentInterface1>(_q("map")) {
+                        intoMap(keyOfComponent1) { component1 }
+                        intoMap(keyOfComponent2) { component2 }
+                    }
+                    scope(scopeKey) {
+                        declareSetMultibinding<Simple.ComponentInterface1>(_q<Set<*>>()) {
+                            intoSet { component1 }
+                            intoSet { component2 }
+                        }
+                        declareMapMultibinding<String, Simple.ComponentInterface1>(_q("map1")) {
+                            intoMap(keyOfComponent1) { component1 }
+                            intoMap(keyOfComponent2) { component2 }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootSet: Set<Simple.ComponentInterface1> =
+            koin.getSetMultibinding(_q<Set<*>>())
+        val scopeSet: Set<Simple.ComponentInterface1> =
+            myScope.getSetMultibinding(_q<Set<*>>())
+        val rootMap: Map<String, Simple.ComponentInterface1> =
+            koin.getMapMultibinding(_q("map"))
+        val scopeMap: Map<String, Simple.ComponentInterface1> =
+            myScope.getMapMultibinding(_q("map1"))
+
+        for (set in listOf(rootSet, scopeSet)) {
+            assertEquals(2, set.size)
+            assertTrue { set.containsAll(listOf(component1, component2)) }
+        }
+        for (map in listOf(rootMap, scopeMap)) {
+            assertEquals(2, map.size)
+            assertTrue { map.values.containsAll(listOf(component1, component2)) }
+        }
+    }
+
+    @Test
+    fun `create multibinding at start`() {
+        val accumulator = AtomicInt(0)
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<Int>(createdAtStart = true) {
+                        intoSet { accumulator.incrementAndGet() }
+                        intoSet { accumulator.incrementAndGet() }
+                    }
+                    declareMapMultibinding<String, Int>(createdAtStart = true) {
+                        intoMap("one") { accumulator.incrementAndGet() }
+                        intoMap("two") { accumulator.incrementAndGet() }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        koin.getSetMultibinding<Int>()
+        koin.getMapMultibinding<String, Int>()
+        assertEquals(4, accumulator.get())
+    }
+
+    @Test
+    fun `create multibinding elements using parameters`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<String> {
+                        intoSet { it.get<String>() + "1" }
+                        intoSet { it.get<String>() + "2" }
+                    }
+                    declareMapMultibinding<String, String> {
+                        intoMap("one") { it.get<String>() + "1" }
+                        intoMap("two") { it.get<String>() + "2" }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        assertTrue {
+            koin.getSetMultibinding<String> { parametersOf("set") }
+                .containsAll(listOf("set1", "set2"))
+        }
+        assertTrue {
+            koin.getMapMultibinding<String, String> { parametersOf("map") }
+                .values.containsAll(listOf("map1", "map2"))
+        }
     }
 }
