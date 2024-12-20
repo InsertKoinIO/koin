@@ -17,7 +17,7 @@ package org.koin.androix.startup
 
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.KoinApplicationDslMarker
-import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.KoinConfiguration
 
 /**
  * KoinStartup holds KoinAppDeclaration for AndroidX Startup with KoinInitializer
@@ -32,5 +32,5 @@ interface KoinStartup {
      * @see startKoin function
      */
     @KoinApplicationDslMarker
-    fun onKoinStartup() : KoinAppDeclaration
+    fun onKoinStartup() : KoinConfiguration
 }

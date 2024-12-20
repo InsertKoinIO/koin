@@ -16,18 +16,33 @@
 package org.koin.dsl
 
 import org.koin.core.KoinApplication
+import org.koin.core.logger.Level
 import org.koin.core.module.KoinApplicationDslMarker
 
 //TODO Koin 4.1 - KoinAppDeclaration migration type to KoinConfiguration
 
 /**
+ * Koin Configuration holder - use the koinConfiguration() function to define Koin configuration:
+ * koinConfiguration {
+ *  modules(...)
+ * }
+ *
+ */
+class KoinConfiguration(val config: KoinApplication.() -> Unit) {
+    operator fun invoke(): KoinApplication.() -> Unit {
+        return config
+    }
+}
+
+/**
  * function helper to save a Koin configuration
  *
- * @param configuration - Koin configuration lambda
+ * @param koinConfiguration - Koin configuration lambda
  * @author Arnaud Giuliani
  */
 @KoinApplicationDslMarker
-public fun koinConfiguration(configuration: KoinAppDeclaration): KoinAppDeclaration = configuration
+public fun koinConfiguration(declaration: KoinAppDeclaration): KoinConfiguration =
+    KoinConfiguration(declaration)
 
 /**
  * Includes other KoinConfiguration in the current KoinApplication
@@ -37,5 +52,16 @@ public fun koinConfiguration(configuration: KoinAppDeclaration): KoinAppDeclarat
  */
 public fun KoinApplication.includes(vararg configurations: KoinAppDeclaration?): KoinApplication {
     configurations.forEach { it?.invoke(this@includes) }
+    return this
+}
+
+/**
+ * Includes other KoinConfiguration in the current KoinApplication
+ *
+ * @param configurations - Koin configurations
+ * @author Arnaud Giuliani
+ */
+public fun KoinApplication.includes(vararg configurations: KoinConfiguration?): KoinApplication {
+    configurations.forEach { it?.config?.invoke(this@includes) }
     return this
 }

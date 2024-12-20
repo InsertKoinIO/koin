@@ -49,6 +49,10 @@ fun koinApplication(createEagerInstances: Boolean = true, appDeclaration: KoinAp
 fun koinApplication(appDeclaration: KoinAppDeclaration?): KoinApplication {
     return koinApplication(createEagerInstances = true, appDeclaration = appDeclaration)
 }
+@KoinApplicationDslMarker
+fun koinApplication(configuration: KoinConfiguration?): KoinApplication {
+    return koinApplication(createEagerInstances = true, appDeclaration = configuration?.invoke())
+}
 
 /**
  * Create a KoinApplication instance and help configure it.
