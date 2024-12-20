@@ -11,15 +11,28 @@ import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.androix.startup.KoinStartup
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.lazyModules
 import org.koin.core.logger.Level
 import org.koin.core.waitAllStartJobs
+import org.koin.dsl.KoinConfiguration
+import org.koin.dsl.koinConfiguration
 import org.koin.mp.KoinPlatform
 import org.koin.sample.sandbox.di.allModules
 
 
-class MainApplication : Application() {
+class MainApplication : Application(), KoinStartup {
+
+    override fun onKoinStartup() = koinConfiguration {
+        androidLogger(Level.DEBUG)
+        androidContext(this@MainApplication)
+        androidFileProperties()
+        fragmentFactory()
+        workManagerFactory()
+//            lazyModules(allModules, dispatcher = IO)
+        modules(allModules)
+    }
 
 //    override fun onKoinStartup() : KoinAppDeclaration = {
 //        androidLogger(Level.DEBUG)
@@ -55,15 +68,15 @@ class MainApplication : Application() {
 
         startTime = System.currentTimeMillis()
 
-        startKoin {
-            androidLogger(Level.DEBUG)
-            androidContext(this@MainApplication)
-            androidFileProperties()
-            fragmentFactory()
-            workManagerFactory()
-//            lazyModules(allModules, dispatcher = IO)
-            modules(allModules)
-        }
+//        startKoin {
+//            androidLogger(Level.DEBUG)
+//            androidContext(this@MainApplication)
+//            androidFileProperties()
+//            fragmentFactory()
+//            workManagerFactory()
+////            lazyModules(allModules, dispatcher = IO)
+//            modules(allModules)
+//        }
 
         //TODO Load/Unload Koin modules scenario cases
         cancelPendingWorkManager(this)
