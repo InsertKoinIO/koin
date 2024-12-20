@@ -93,6 +93,7 @@ public final class org/koin/core/context/DefaultContextExtKt {
 	public static final fun loadKoinModules (Lorg/koin/core/module/Module;)V
 	public static final fun startKoin (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
 	public static final fun startKoin (Lorg/koin/core/KoinApplication;)Lorg/koin/core/KoinApplication;
+	public static final fun startKoin (Lorg/koin/dsl/KoinConfiguration;)Lorg/koin/core/KoinApplication;
 	public static final fun stopKoin ()V
 	public static final fun unloadKoinModules (Ljava/util/List;)V
 	public static final fun unloadKoinModules (Lorg/koin/core/module/Module;)V
@@ -248,6 +249,16 @@ public final class org/koin/core/extension/ExtensionManager {
 public abstract interface class org/koin/core/extension/KoinExtension {
 	public abstract fun onClose ()V
 	public abstract fun onRegister (Lorg/koin/core/Koin;)V
+}
+
+public final class org/koin/core/instance/DeclaredScopedInstance : org/koin/core/instance/InstanceFactory {
+	public fun <init> (Lorg/koin/core/definition/BeanDefinition;Ljava/lang/String;)V
+	public fun drop (Lorg/koin/core/scope/Scope;)V
+	public fun dropAll ()V
+	public fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+	public final fun getScopeID ()Ljava/lang/String;
+	public fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
+	public final fun setValue (Ljava/lang/Object;)V
 }
 
 public final class org/koin/core/instance/FactoryInstanceFactory : org/koin/core/instance/InstanceFactory {
@@ -407,12 +418,14 @@ public class org/koin/core/parameter/ParametersHolder {
 	public synthetic fun <init> (Ljava/util/List;Ljava/lang/Boolean;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun add (Ljava/lang/Object;)Lorg/koin/core/parameter/ParametersHolder;
 	public fun elementAt (ILkotlin/reflect/KClass;)Ljava/lang/Object;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun get (I)Ljava/lang/Object;
 	public final fun getIndex ()I
 	public fun getOrNull (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public final fun getUseIndexedValues ()Ljava/lang/Boolean;
 	public final fun getValues ()Ljava/util/List;
 	public final fun get_values ()Ljava/util/List;
+	public fun hashCode ()I
 	public final fun increaseIndex ()V
 	public final fun insert (ILjava/lang/Object;)Lorg/koin/core/parameter/ParametersHolder;
 	public final fun isEmpty ()Z
@@ -520,6 +533,8 @@ public final class org/koin/core/scope/Scope {
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeQualifier ()Lorg/koin/core/qualifier/Qualifier;
 	public final fun getSourceValue ()Ljava/lang/Object;
+	public final fun getWithParameters (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/parameter/ParametersHolder;)Ljava/lang/Object;
+	public static synthetic fun getWithParameters$default (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/parameter/ParametersHolder;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun get_koin ()Lorg/koin/core/Koin;
 	public final fun isNotClosed ()Z
 	public final fun isRoot ()Z
@@ -553,9 +568,22 @@ public final class org/koin/dsl/DefinitionBindingKt {
 
 public final class org/koin/dsl/KoinApplicationKt {
 	public static final fun koinApplication (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static final fun koinApplication (Lorg/koin/dsl/KoinConfiguration;)Lorg/koin/core/KoinApplication;
 	public static final fun koinApplication (Z)Lorg/koin/core/KoinApplication;
 	public static final fun koinApplication (ZLkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
 	public static synthetic fun koinApplication$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
+}
+
+public final class org/koin/dsl/KoinConfiguration {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final fun getConfig ()Lkotlin/jvm/functions/Function1;
+	public final fun invoke ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class org/koin/dsl/KoinConfigurationKt {
+	public static final fun includes (Lorg/koin/core/KoinApplication;[Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static final fun includes (Lorg/koin/core/KoinApplication;[Lorg/koin/dsl/KoinConfiguration;)Lorg/koin/core/KoinApplication;
+	public static final fun koinConfiguration (Lkotlin/jvm/functions/Function1;)Lorg/koin/dsl/KoinConfiguration;
 }
 
 public final class org/koin/dsl/ModuleDSLKt {
@@ -622,7 +650,10 @@ public final class org/koin/mp/KoinPlatformTools {
 }
 
 public final class org/koin/mp/KoinPlatformToolsKt {
-	public static final fun generateId (Lorg/koin/mp/KoinPlatformTools;)Ljava/lang/String;
 	public static final fun getKClassDefaultName (Lorg/koin/mp/KoinPlatformTools;Lkotlin/reflect/KClass;)Ljava/lang/String;
+}
+
+public final class org/koin/mp/KoinPlatformTools_jvmKt {
+	public static final fun generateId (Lorg/koin/mp/KoinPlatformTools;)Ljava/lang/String;
 }
 

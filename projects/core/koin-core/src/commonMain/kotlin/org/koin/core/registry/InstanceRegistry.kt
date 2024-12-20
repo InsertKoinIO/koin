@@ -21,6 +21,7 @@ import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
 import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
+import org.koin.core.instance.DeclaredScopedInstance
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.NoClass
@@ -111,7 +112,7 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     @PublishedApi
-    internal inline fun <reified T> declareScopedInstance(
+    internal inline fun <reified T> scopeDeclaredInstance(
         instance: T,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
@@ -121,16 +122,17 @@ class InstanceRegistry(val _koin: Koin) {
     ) {
         val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
-        val existingFactory = instances[indexKey] as? ScopedInstanceFactory
+        val existingFactory = instances[indexKey] as? DeclaredScopedInstance<T>
         if (existingFactory != null) {
-            existingFactory.refreshInstance(scopeID, instance as Any)
+            existingFactory.setValue(instance)
         } else {
-            val factory = ScopedInstanceFactory(def)
+            val factory = DeclaredScopedInstance(def,scopeID)
             saveMapping(allowOverride, indexKey, factory)
             def.secondaryTypes.forEach { clazz ->
                 val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
                 saveMapping(allowOverride, index, factory)
             }
+            factory.setValue(instance)
         }
     }
 
@@ -154,6 +156,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     internal fun dropScopeInstances(scope: Scope) {
         _instances.values.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
+        _instances.values.removeAll { it is DeclaredScopedInstance<*> && it.scopeID == scope.id }
     }
 
     internal fun close() {

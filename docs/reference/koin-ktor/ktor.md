@@ -59,7 +59,7 @@ routing {
 ```
 
 :::note
-    For each new request, the scope will be recreated. This creates and drop scope instances, for each request
+For each new request, the scope will be recreated. This creates and drop scope instances, for each request
 :::
 
 
