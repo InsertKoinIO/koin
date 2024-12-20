@@ -131,7 +131,12 @@ class Module(
         single<Map<K, V>>(qualifier) { parametersHolder ->
             MapMultibinding(isCreatedAtStart, this, qualifier, V::class, parametersHolder)
         }
-        return MapMultibindingElementDefinition<K, V>(qualifier, V::class, this, null).apply {
+        return MapMultibindingElementDefinition<K, V>(
+            multibindingQualifier = qualifier,
+            elementClass = V::class,
+            declareModule = this,
+            scopeQualifier = rootScopeQualifier,
+        ).apply {
             elementDefinition(this)
         }
     }
@@ -151,7 +156,12 @@ class Module(
         single<Set<E>>(qualifier) { parametersHolder ->
             SetMultibinding<E>(isCreatedAtStart, this, qualifier, E::class, parametersHolder)
         }
-        return SetMultibindingElementDefinition<E>(qualifier, E::class, this, null).apply {
+        return SetMultibindingElementDefinition<E>(
+            multibindingQualifier = qualifier,
+            elementClass = E::class,
+            declareModule = this,
+            scopeQualifier = rootScopeQualifier,
+        ).apply {
             elementDefinition(this)
         }
     }
