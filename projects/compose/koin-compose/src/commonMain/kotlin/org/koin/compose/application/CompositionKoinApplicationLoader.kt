@@ -33,8 +33,12 @@ class CompositionKoinApplicationLoader(
 
     private fun start() {
         if (KoinPlatform.getKoinOrNull() == null){
-            koin = startKoin(koinApplication).koin
-            koin!!.logger.debug("$this -> started Koin Application $koinApplication")
+            try {
+                koin = startKoin(koinApplication).koin
+                koin!!.logger.debug("$this -> started Koin Application $koinApplication")
+            } catch (e: Exception) {
+                error("Can't start Koin from Compose context - $e")
+            }
         }
     }
 
