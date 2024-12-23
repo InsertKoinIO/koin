@@ -32,8 +32,10 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
+import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
@@ -82,7 +84,6 @@ fun getKoin(): Koin = currentComposer.run {
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
 @ReadOnlyComposable
-//fun currentKoinScope(): Scope = LocalKoinScope.current
 fun currentKoinScope(): Scope = currentComposer.run {
     try {
         consume(LocalKoinScope)
@@ -110,24 +111,34 @@ private fun warningNoContext(ctx: Koin) {
  * if Koin's Default Context is already set,
  *
  * @param application - Koin Application declaration lambda
+ * @param logLevel - KMP active logger (androidLogger or printLogger)
  * @param content - following compose function
  *
- * @throws ApplicationAlreadyStartedException
+ * @throws org.koin.core.error.KoinApplicationAlreadyStartedException
+ *
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
 @Composable
 fun KoinApplication(
     application: KoinAppDeclaration,
+    logLevel : Level = Level.INFO,
     content: @Composable () -> Unit
 ) {
-    val koin = rememberKoinApplication(koinApplication(application))
+    val configuration = composeConfiguration(logLevel, config = application)
+    val koin = rememberKoinApplication(koinApplication(configuration))
     CompositionLocalProvider(
         LocalKoinApplication provides koin,
         LocalKoinScope provides koin.scopeRegistry.rootScope,
         content = content
     )
 }
+
+/**
+ * Handle Multiplatform Config & Logger level - Help handle automatically Android Logger
+ */
+@Composable
+internal expect fun composeConfiguration(loggerLevel : Level = Level.INFO, config : KoinApplication.() -> Unit) : KoinConfiguration
 
 /**
  * Use Compose with current existing Koin context, by default 'KoinPlatform.getKoin()'
