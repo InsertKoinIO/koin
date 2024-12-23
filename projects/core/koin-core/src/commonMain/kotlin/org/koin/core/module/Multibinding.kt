@@ -205,61 +205,59 @@ class SetMultibindingElementDefinition<E : Any> @PublishedApi internal construct
 @PublishedApi
 internal class SetMultibinding<E>(
     createdAtStart: Boolean,
-    private val scope: Scope,
-    private val qualifier: Qualifier,
-    private val valueClass: KClass<*>,
-    private val parametersHolder: ParametersHolder,
+    scope: Scope,
+    qualifier: Qualifier,
+    elementClass: KClass<*>,
+    parametersHolder: ParametersHolder,
 ) : Set<E> {
+    private val mapMultibinding = MapMultibinding<Key, E>(
+        false,
+        scope,
+        qualifier,
+        elementClass,
+        parametersHolder
+    )
+
     init {
         if (createdAtStart) {
-            getAll()
+            elementSet
         }
     }
 
-    override val size: Int
-        get() = getAllKeys().size
-
-    override fun contains(element: E): Boolean {
-        return getAll().contains(element)
-    }
-
-    override fun containsAll(elements: Collection<E>): Boolean {
-        return getAll().containsAll(elements)
-    }
-
-    override fun isEmpty(): Boolean = size == 0
-
-    override fun iterator(): Iterator<E> {
-        return getAll().iterator()
-    }
-
-    private fun getAllKeys(): Set<Key> {
-        val multibindingKeys = mutableSetOf<Key>()
-        scope.getAll<MultibindingIterateKey<*>>()
-            .mapNotNullTo(multibindingKeys) { multibindingIterateKey ->
-                if (multibindingIterateKey.elementQualifier.value.startsWith(qualifier.value)) {
-                    multibindingIterateKey.key as? Key
+    private val elementSet: Set<E>
+        get() {
+            val sortedKeys = mapMultibinding.keys.sorted()
+            val set = LinkedHashSet<E>(sortedKeys.size)
+            for (key in sortedKeys) {
+                val element = mapMultibinding[key] ?: continue
+                if (set.add(element)) {
+                    // done
                 } else {
-                    null
+                    // latter element survives
+                    set.remove(element)
+                    set.add(element)
                 }
             }
-        return multibindingKeys
-    }
-
-    private fun getAll(): Set<E> {
-        val result = LinkedHashSet<E>()
-        getAllKeys().mapNotNullTo(result) { get(it) ?: return@mapNotNullTo null }
-        return result
-    }
-
-    private fun get(key: Key): E? {
-        return scope.getOrNull(valueClass, multibindingElementQualifier(qualifier, key)) {
-            parametersHolder
+            return set
         }
-    }
 
-    class Key(private val placeholder: Int) {
+    override val size: Int
+        get() = elementSet.size
+
+    override fun contains(element: E): Boolean =
+        elementSet.contains(element)
+
+    override fun containsAll(elements: Collection<E>): Boolean =
+        elementSet.containsAll(elements)
+
+    override fun isEmpty(): Boolean = elementSet.isEmpty()
+
+    override fun iterator(): Iterator<E> = elementSet.iterator()
+
+    class Key(private val placeholder: Int) : Comparable<Key> {
         override fun toString(): String = "placeholder_$placeholder"
+
+        override fun compareTo(other: Key): Int = placeholder.compareTo(other.placeholder)
     }
 
     companion object {
