@@ -17,7 +17,7 @@ version = koinVersion
 kotlin {
     jvmToolchain(1_8)
     jvm()
-    android {
+    androidTarget {
         publishLibraryVariants("release")
     }
 
