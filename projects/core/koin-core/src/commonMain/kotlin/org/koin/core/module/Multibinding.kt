@@ -50,7 +50,7 @@ private fun <K> multibindingIterateKeyQualifier(
 ): Qualifier =
     StringQualifier("${multibindingQualifier.value}_iterate_$key")
 
-private class MultibindingIterateKey<T>(val key: T, val elementQualifier: Qualifier)
+private class MultibindingIterateKey<T>(val elementKey: T, val multibindingQualifier: Qualifier)
 
 class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constructor(
     private val multibindingQualifier: Qualifier,
@@ -68,20 +68,19 @@ class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constr
      * ```
      */
     fun intoMap(key: K, definition: Definition<E>) {
-        val elementQualifier = declareElement(key, definition)
-        declareIterateKey(key, elementQualifier)
+        declareElement(key, definition)
+        declareIterateKey(key)
     }
 
-    private fun declareElement(key: K, definition: Definition<E>): Qualifier {
+    private fun declareElement(key: K, definition: Definition<E>) {
         val elementQualifier = multibindingElementQualifier(multibindingQualifier, key)
         singleOrScopedInstance(elementQualifier, elementClass, definition)
-        return elementQualifier
     }
 
-    private fun declareIterateKey(key: K, elementQualifier: Qualifier) {
+    private fun declareIterateKey(key: K) {
         val iterateKeyQualifier = multibindingIterateKeyQualifier(multibindingQualifier, key)
         singleOrScopedInstance(iterateKeyQualifier, MultibindingIterateKey::class) {
-            MultibindingIterateKey(key, elementQualifier)
+            MultibindingIterateKey(key, multibindingQualifier)
         }
     }
 
@@ -136,8 +135,8 @@ internal class MapMultibinding<K : Any, V>(
             val multibindingKeys = mutableSetOf<K>()
             scope.getAll<MultibindingIterateKey<*>>()
                 .mapNotNullTo(multibindingKeys) { multibindingIterateKey ->
-                    if (multibindingIterateKey.elementQualifier.value.startsWith(qualifier.value)) {
-                        multibindingIterateKey.key as? K
+                    if (multibindingIterateKey.multibindingQualifier == qualifier) {
+                        multibindingIterateKey.elementKey as? K
                     } else {
                         null
                     }
