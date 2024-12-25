@@ -322,7 +322,7 @@ class Scope(
     }
 
     private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
-        return if (ctx.parameters == null) null
+        return if (ctx.parameters == null || ctx.qualifier != null) null
             else {
             _koin.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
             ctx.parameters.getOrNull(clazz = ctx.clazz)
@@ -331,7 +331,7 @@ class Scope(
 
     private inline fun <T> resolveFromStackedParameters(ctx: ResolutionContext): T? {
         val current = parameterStack?.get()
-        return if (current.isNullOrEmpty()) null
+        return if (current.isNullOrEmpty() || ctx.qualifier != null) null
          else {
             _koin.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
             val parameters = current.firstOrNull()
