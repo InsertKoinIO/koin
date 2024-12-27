@@ -15,12 +15,15 @@
  */
 package org.koin.core.qualifier
 
+import kotlin.jvm.JvmInline
+
 /**
  * Help qualify a component
  */
-interface Qualifier {
+@JvmInline
+value class Qualifier(
     val value: QualifierValue
-}
+)
 
 typealias QualifierValue = String
 
@@ -34,6 +37,7 @@ fun <E : Enum<E>> named(enum: Enum<E>) = enum.qualifier
 fun qualifier(name: String) = StringQualifier(name)
 fun <E : Enum<E>> qualifier(enum: Enum<E>) = enum.qualifier
 
+@Suppress("FunctionName")
 fun _q(name: String) = StringQualifier(name)
 
 /**
@@ -49,6 +53,7 @@ inline fun <reified T> qualifier() = TypeQualifier(T::class)
 /**
  * Give a Type based qualifier
  */
+@Suppress("FunctionName")
 inline fun <reified T> _q() = TypeQualifier(T::class)
 
 val <E : Enum<E>> Enum<E>.qualifier
