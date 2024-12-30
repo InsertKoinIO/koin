@@ -50,7 +50,18 @@ private fun <K> multibindingIterateKeyQualifier(
 ): Qualifier =
     StringQualifier("${multibindingQualifier.value}_iterate_$key")
 
-private class MultibindingIterateKey<T>(val elementKey: T, val multibindingQualifier: Qualifier)
+private class MultibindingIterateKey<T>(
+    val elementKey: T,
+    val multibindingQualifier: Qualifier,
+    val definitionOrder: Int,
+) : Comparable<MultibindingIterateKey<T>> {
+    override fun compareTo(other: MultibindingIterateKey<T>): Int =
+        definitionOrder.compareTo(other.definitionOrder)
+
+    companion object {
+        val order = AtomicInt(0)
+    }
+}
 
 class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constructor(
     private val multibindingQualifier: Qualifier,
@@ -79,8 +90,9 @@ class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constr
 
     private fun declareIterateKey(key: K) {
         val iterateKeyQualifier = multibindingIterateKeyQualifier(multibindingQualifier, key)
+        val definitionOrder = MultibindingIterateKey.order.incrementAndGet()
         singleOrScopedInstance(iterateKeyQualifier, MultibindingIterateKey::class) {
-            MultibindingIterateKey(key, multibindingQualifier)
+            MultibindingIterateKey(key, multibindingQualifier, definitionOrder)
         }
     }
 
@@ -132,20 +144,23 @@ internal class MapMultibinding<K : Any, V>(
 
     override val keys: Set<K>
         get() {
-            val multibindingKeys = mutableSetOf<K>()
+            // in the definition order
+            return reversedKeys.reversed()
+        }
+
+    // this is useful for element overriding
+    val reversedKeys: LinkedHashSet<K>
+        get() {
+            val multibindingKeys = LinkedHashSet<K>()
             scope.getAll<MultibindingIterateKey<*>>()
-                .mapNotNullTo(multibindingKeys) { multibindingIterateKey ->
-                    if (multibindingIterateKey.multibindingQualifier == qualifier) {
-                        multibindingIterateKey.elementKey as? K
-                    } else {
-                        null
-                    }
-                }
+                .filter { it.multibindingQualifier == qualifier }
+                .sortedByDescending { it.definitionOrder } // later element definition wins
+                .mapNotNullTo(multibindingKeys) { it.elementKey as? K }
             return multibindingKeys
         }
 
     override val size: Int
-        get() = keys.size
+        get() = reversedKeys.size
 
     override val values: Collection<V>
         get() = keys.mapNotNull { get(it) }
@@ -158,18 +173,42 @@ internal class MapMultibinding<K : Any, V>(
         }
 
     override fun containsKey(key: K): Boolean =
-        keys.contains(key)
+        reversedKeys.contains(key)
 
     override fun containsValue(value: V): Boolean =
         values.contains(value)
 
     override fun get(key: K): V? {
-        return scope.getOrNull(valueClass, multibindingElementQualifier(qualifier, key)) {
+        return scope.getOrNull<V>(valueClass, multibindingElementQualifier(qualifier, key)) {
             parametersHolder
+        }.takeIf {
+            // there is a case where the multibindingElementQualifier is valid, but the key is invalid
+            isKeyValid(key, it)
+        } ?: getFromKeys(key)
+    }
+
+    // retrieve from keys, this may happen when key1 == key2 but key1.toString() != key2.toString()
+    private fun getFromKeys(key: K): V? {
+        return reversedKeys.find { it == key }?.let { get(it) }
+    }
+
+    // a key is valid if it's in the key set and the value is not null
+    private fun isKeyValid(key: K, value: Any?): Boolean {
+        return when (key) {
+            is Boolean,
+            is Number,
+            is String,
+            is Enum<*>,
+            is SetMultibinding.Key -> {
+                // for those types of key, it's always valid if the corresponding value is not null
+                value != null
+            }
+
+            else -> value != null && reversedKeys.contains(key)
         }
     }
 
-    override fun isEmpty(): Boolean = keys.isEmpty()
+    override fun isEmpty(): Boolean = reversedKeys.isEmpty()
 
     private class Entry<K, V>(override val key: K, override val value: V) : Map.Entry<K, V>
 }
@@ -225,19 +264,13 @@ internal class SetMultibinding<E>(
 
     private val elementSet: Set<E>
         get() {
-            val sortedKeys = mapMultibinding.keys.sorted()
-            val set = LinkedHashSet<E>(sortedKeys.size)
-            for (key in sortedKeys) {
+            val reversedKeys = mapMultibinding.reversedKeys
+            val elements = LinkedHashSet<E>(reversedKeys.size)
+            for (key in reversedKeys) {
                 val element = mapMultibinding[key] ?: continue
-                if (set.add(element)) {
-                    // done
-                } else {
-                    // latter element survives
-                    set.remove(element)
-                    set.add(element)
-                }
+                elements.add(element)
             }
-            return set
+            return elements.reversed()
         }
 
     override val size: Int
@@ -253,10 +286,8 @@ internal class SetMultibinding<E>(
 
     override fun iterator(): Iterator<E> = elementSet.iterator()
 
-    class Key(private val placeholder: Int) : Comparable<Key> {
+    class Key(private val placeholder: Int) {
         override fun toString(): String = "placeholder_$placeholder"
-
-        override fun compareTo(other: Key): Int = placeholder.compareTo(other.placeholder)
     }
 
     companion object {
@@ -264,4 +295,12 @@ internal class SetMultibinding<E>(
 
         fun getDistinctKey() = Key(accumulatingKey.incrementAndGet())
     }
+}
+
+private fun <E> LinkedHashSet<E>.reversed(): LinkedHashSet<E> {
+    if (this.size <= 1) return this
+    val elements = this.toList()
+    this.clear()
+    elements.reversed().forEach(this::add)
+    return this
 }

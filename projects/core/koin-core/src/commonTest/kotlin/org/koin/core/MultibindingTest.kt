@@ -149,6 +149,72 @@ class MultibindingTest {
         assertEquals(scopeComponent1, scopeMap["scopeComponent1"])
         assertEquals(scopeComponent2, scopeMap["scopeComponent2"])
         assertNull(scopeMap["invalid key"])
+        // in elements definition order
+        assertEquals(
+            listOf(
+                rootComponent1,
+                rootComponent2,
+                scopeComponent1,
+                scopeComponent2,
+            ),
+            scopeMap.values.toList()
+        )
+    }
+
+    @Test
+    fun `override map multibinding elements`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component1 }
+                        intoMap(keyOfComponent1) { component2 }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        assertEquals(1, rootMap.size)
+        assertEquals(component2, rootMap[keyOfComponent1])
+        koin.loadModules(
+            listOf(
+                module {
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component1 }
+                    }
+                }
+            )
+        )
+        assertEquals(1, rootMap.size)
+        assertEquals(component1, rootMap[keyOfComponent1])
+    }
+
+    @Test
+    fun `override map multibinding elements with equal keys but different toString`() {
+        data class MapKey(val value: Int) {
+            override fun toString(): String {
+                return super<Any>.toString()
+            }
+        }
+
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
+                        intoMap(MapKey(1)) { component1 }
+                        intoMap(MapKey(1)) { component2 }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val rootMap: Map<MapKey, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        assertEquals(1, rootMap.size)
+        assertEquals(component2, rootMap[MapKey(1)])
+        assertNull(rootMap[MapKey(0)])
     }
 
     @Test
@@ -318,6 +384,42 @@ class MultibindingTest {
             ),
             scopeSet.toList()
         )
+    }
+
+    @Test
+    fun `override set multibinding elements`() {
+        data class SetElement(
+            val intValue: Int = 0
+        ) {
+            var name = ""
+        }
+
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<SetElement> {
+                        intoSet { SetElement().apply { name = "element1" } }
+                        intoSet { SetElement().apply { name = "element2" } }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val rootSet: Set<SetElement> = koin.getSetMultibinding()
+        assertEquals(1, rootSet.size)
+        assertEquals("element2", (rootSet.first() as SetElement).name)
+        koin.loadModules(
+            listOf(
+                module {
+                    declareSetMultibinding<SetElement> {
+                        intoSet { SetElement().apply { name = "element1" } }
+                    }
+                }
+            )
+        )
+        assertEquals(1, rootSet.size)
+        assertEquals("element1", (rootSet.first() as SetElement).name)
     }
 
     @Test
