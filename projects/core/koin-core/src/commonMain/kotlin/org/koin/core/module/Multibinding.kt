@@ -16,13 +16,17 @@
 package org.koin.core.module
 
 import co.touchlab.stately.concurrency.AtomicInt
+import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
 import org.koin.core.definition.Kind
+import org.koin.core.definition.indexKey
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.parameter.ParametersHolder
+import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
@@ -50,6 +54,8 @@ private fun <K> multibindingIterateKeyQualifier(
 ): Qualifier =
     StringQualifier("${multibindingQualifier.value}_iterate_$key")
 
+class MapMultibindingKeyTypeException(msg: String) : Exception(msg)
+
 private class MultibindingIterateKey<T>(
     val elementKey: T,
     val multibindingQualifier: Qualifier,
@@ -63,7 +69,7 @@ private class MultibindingIterateKey<T>(
     }
 }
 
-class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constructor(
+class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal constructor(
     private val multibindingQualifier: Qualifier,
     private val elementClass: KClass<E>,
     private val declareModule: Module,
@@ -91,17 +97,22 @@ class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constr
     private fun declareIterateKey(key: K) {
         val iterateKeyQualifier = multibindingIterateKeyQualifier(multibindingQualifier, key)
         val definitionOrder = MultibindingIterateKey.order.incrementAndGet()
-        singleOrScopedInstance(iterateKeyQualifier, MultibindingIterateKey::class) {
-            MultibindingIterateKey(key, multibindingQualifier, definitionOrder)
-        }
+        val oldInstanceFactory =
+            singleOrScopedInstance(iterateKeyQualifier, MultibindingIterateKey::class) {
+                MultibindingIterateKey(key, multibindingQualifier, definitionOrder)
+            }
+        checkMultibindingKeyCollision(oldInstanceFactory, key)
     }
 
+    /**
+     * @return old definition
+     */
     @OptIn(KoinInternalApi::class)
     private fun <T> singleOrScopedInstance(
         qualifier: Qualifier,
         instanceClass: KClass<*>,
         definition: Definition<T>
-    ) {
+    ): InstanceFactory<*>? {
         val instanceFactory = if (isRootScope) {
             SingleInstanceFactory(
                 BeanDefinition(
@@ -123,7 +134,46 @@ class MapMultibindingElementDefinition<K, E : Any> @PublishedApi internal constr
                 )
             )
         }
-        declareModule.indexPrimaryType(instanceFactory)
+        return indexPrimaryType(instanceFactory)
+    }
+
+    @OptIn(KoinInternalApi::class)
+    private fun indexPrimaryType(instanceFactory: InstanceFactory<*>): InstanceFactory<*>? {
+        val def = instanceFactory.beanDefinition
+        val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
+        return declareModule.mappings[mapping].apply {
+            declareModule.saveMapping(mapping, instanceFactory)
+        }
+    }
+
+    // TODO this only works for the same module, find a way to check across modules.
+    private fun checkMultibindingKeyCollision(oldInstanceFactory: InstanceFactory<*>?, newKey: K) {
+        if (oldInstanceFactory != null && needToCheckKeyType(newKey)) {
+            val oldKey = (oldInstanceFactory.beanDefinition.definition(
+                Scope(scopeQualifier, "stub scope for multibinding", _koin = Koin()),
+                emptyParametersHolder()
+            ) as? MultibindingIterateKey<*>)?.elementKey
+            if (newKey != oldKey) {
+                throw MapMultibindingKeyTypeException(
+                    """
+                        MapMultibinding key collision: "$newKey" conflicts with a previous key. But it does NOT equal to the previous key.
+                        Consider overriding `toString()` correctly for the class of "$newKey".
+                    """.trimIndent()
+                )
+            }
+        }
+    }
+
+    private fun needToCheckKeyType(key: K): Boolean {
+        return when (key) {
+            is Boolean,
+            is Number,
+            is String,
+            is Enum<*>,
+            is KClass<*> -> false
+
+            else -> true
+        }
     }
 }
 
@@ -199,6 +249,7 @@ internal class MapMultibinding<K : Any, V>(
             is Number,
             is String,
             is Enum<*>,
+            is KClass<*>,
             is SetMultibinding.Key -> {
                 // for those types of key, it's always valid if the corresponding value is not null
                 value != null

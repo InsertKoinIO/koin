@@ -2,6 +2,7 @@ package org.koin.core
 
 import co.touchlab.stately.concurrency.AtomicInt
 import org.koin.Simple
+import org.koin.core.module.MapMultibindingKeyTypeException
 import org.koin.core.parameter.parameterSetOf
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier._q
@@ -11,6 +12,7 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -215,6 +217,39 @@ class MultibindingTest {
         assertEquals(1, rootMap.size)
         assertEquals(component2, rootMap[MapKey(1)])
         assertNull(rootMap[MapKey(0)])
+    }
+
+    @Test
+    fun `override map multibinding elements with different keys but same toString`() {
+        data class MapKey(
+            val name: String,
+            val value: Int,
+        ) {
+            override fun toString(): String = name
+        }
+
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
+                        intoMap(MapKey(keyOfComponent1, 1)) { component1 }
+                    }
+                },
+            )
+        }
+        val koin = app.koin
+        val rootMap: Map<MapKey, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        assertEquals(1, rootMap.size)
+        assertEquals(component1, rootMap[MapKey(keyOfComponent1, 1)])
+        assertNull(rootMap[MapKey(keyOfComponent1, 2)])
+        module {
+            declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
+                intoMap(MapKey(keyOfComponent1, 1)) { component1 }
+                assertFailsWith(MapMultibindingKeyTypeException::class) {
+                    intoMap(MapKey(keyOfComponent1, 2)) { component1 }
+                }
+            }
+        }
     }
 
     @Test
