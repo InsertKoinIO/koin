@@ -196,7 +196,7 @@ class MyScopeViewModel : ScopeViewModel() {
 }
 ```
 
-By using `ScopeViewModel` you can also overrode `onCloseScope()` function, to run code before scope is being closed.
+By using `ScopeViewModel` you can also override the `onCloseScope()` function, to run code before the scope is closed.
 
 :::note
 All instances inside a ViewModel scope have the same visibility and will survive for lifetime of ViewModel instance, until ViewModel's onCleared function is called
