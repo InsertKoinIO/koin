@@ -17,6 +17,12 @@ class SetMultibindingTest {
     private val scopeId = "myScope"
     private val scopeKey = named("KEY")
 
+    data class SetElement(
+        val value: Int = 0
+    ) {
+        var name = ""
+    }
+
     @Test
     fun `declare set multibinding in root scope`() {
         val app = koinApplication {
@@ -155,13 +161,7 @@ class SetMultibindingTest {
     }
 
     @Test
-    fun `override set multibinding elements`() {
-        data class SetElement(
-            val value: Int = 0
-        ) {
-            var name = ""
-        }
-
+    fun `override set multibinding elements in same module`() {
         val app = koinApplication {
             modules(
                 module {
@@ -177,27 +177,62 @@ class SetMultibindingTest {
         val rootSet: Set<SetElement> = koin.getSetMultibinding()
         assertEquals(1, rootSet.size)
         assertEquals("element2", (rootSet.first() as SetElement).name)
-        koin.loadModules(
-            listOf(
+    }
+
+    @Test
+    fun `override set multibinding elements across modules`() {
+        val app = koinApplication {
+            modules(
                 module {
                     declareSetMultibinding<SetElement> {
                         intoSet { SetElement().apply { name = "element1" } }
                     }
-                }
+                },
+                module {
+                    declareSetMultibinding<SetElement> {
+                        intoSet { SetElement().apply { name = "element2" } }
+                    }
+                },
             )
-        )
+        }
+
+        val koin = app.koin
+        val rootSet: Set<SetElement> = koin.getSetMultibinding()
+        assertEquals(1, rootSet.size)
+        assertEquals("element2", (rootSet.first() as SetElement).name)
+    }
+
+    @Test
+    fun `override set multibinding elements across modules and scopes`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareSetMultibinding<SetElement> {
+                        intoSet { SetElement().apply { name = "element1" } }
+                    }
+                },
+                module {
+                    scope(scopeKey) {
+                        declareSetMultibinding<SetElement> {
+                            intoSet { SetElement().apply { name = "element2" } }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootSet: Set<SetElement> = koin.getSetMultibinding()
+        val scopeSet: Set<SetElement> = myScope.getSetMultibinding()
         assertEquals(1, rootSet.size)
         assertEquals("element1", (rootSet.first() as SetElement).name)
+        assertEquals(1, scopeSet.size)
+        assertEquals("element2", (scopeSet.first() as SetElement).name)
     }
 
     @Test
     fun `override set multibinding elements that define in linked scope`() {
-        data class SetElement(
-            val value: Int = 0
-        ) {
-            var name = ""
-        }
-
         val app = koinApplication {
             modules(
                 module {

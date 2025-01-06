@@ -163,7 +163,7 @@ class MapMultibindingTest {
     }
 
     @Test
-    fun `override map multibinding elements`() {
+    fun `override map multibinding elements in same module`() {
         val app = koinApplication {
             modules(
                 module {
@@ -179,17 +179,70 @@ class MapMultibindingTest {
         val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
         assertEquals(1, rootMap.size)
         assertEquals(component2, rootMap[keyOfComponent1])
-        koin.loadModules(
-            listOf(
+        assertTrue {
+            rootMap.values.contains(component2)
+        }
+    }
+
+    @Test
+    fun `override map multibinding elements across modules`() {
+        val app = koinApplication {
+            modules(
                 module {
                     declareMapMultibinding<String, Simple.ComponentInterface1> {
                         intoMap(keyOfComponent1) { component1 }
                     }
-                }
+                },
+                module {
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component2 }
+                    }
+                },
             )
-        )
+        }
+
+        val koin = app.koin
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        assertEquals(1, rootMap.size)
+        assertEquals(component2, rootMap[keyOfComponent1])
+        assertTrue {
+            rootMap.values.contains(component2)
+        }
+    }
+
+    @Test
+    fun `override map multibinding elements across modules and scopes`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<String, Simple.ComponentInterface1> {
+                        intoMap(keyOfComponent1) { component1 }
+                    }
+                },
+                module {
+                    scope(scopeKey) {
+                        declareMapMultibinding<String, Simple.ComponentInterface1> {
+                            intoMap(keyOfComponent1) { component2 }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val myScope = koin.createScope(scopeId, scopeKey)
+        val rootMap: Map<String, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        val scopeMap: Map<String, Simple.ComponentInterface1> = myScope.getMapMultibinding()
         assertEquals(1, rootMap.size)
         assertEquals(component1, rootMap[keyOfComponent1])
+        assertTrue {
+            rootMap.values.contains(component1)
+        }
+        assertEquals(1, scopeMap.size)
+        assertEquals(component2, scopeMap[keyOfComponent1])
+        assertTrue {
+            scopeMap.values.contains(component2)
+        }
     }
 
     @Test

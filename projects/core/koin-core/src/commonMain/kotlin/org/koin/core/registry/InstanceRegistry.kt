@@ -15,6 +15,7 @@
  */
 package org.koin.core.registry
 
+import co.touchlab.stately.concurrency.AtomicInt
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.IndexKey
@@ -24,6 +25,7 @@ import org.koin.core.definition.indexKey
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.NoClass
+import org.koin.core.instance.OrderedInstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
@@ -37,6 +39,7 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
 class InstanceRegistry(val _koin: Koin) {
+    private val instanceOrder = AtomicInt(0)
 
     private val _instances = safeHashMap<IndexKey, InstanceFactory<*>>()
     val instances: Map<IndexKey, InstanceFactory<*>>
@@ -84,7 +87,11 @@ class InstanceRegistry(val _koin: Koin) {
             }
         }
         _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
-        _instances[mapping] = factory
+        _instances[mapping] = if (factory is OrderedInstanceFactory<*>) {
+            factory.copy(order = instanceOrder.incrementAndGet())
+        } else {
+            factory
+        }
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
@@ -170,7 +177,17 @@ class InstanceRegistry(val _koin: Koin) {
                 (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
             }
             .distinct()
+            .sortedIfNecessary()
             .mapNotNull { it.get(instanceContext) as? T }
+    }
+
+    private fun List<InstanceFactory<*>>.sortedIfNecessary(): List<InstanceFactory<*>> {
+        return if (all { it is OrderedInstanceFactory<*> }) {
+            this as List<OrderedInstanceFactory<*>>
+            this.sorted()
+        } else {
+            this
+        }
     }
 
     internal fun unloadModules(modules: Set<Module>) {

@@ -25,6 +25,7 @@ import org.koin.core.definition.indexKey
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.instance.keepDefinitionOrderAcrossModules
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.Qualifier
@@ -59,15 +60,7 @@ class MapMultibindingKeyTypeException(msg: String) : Exception(msg)
 private class MultibindingIterateKey<T>(
     val elementKey: T,
     val multibindingQualifier: Qualifier,
-    val definitionOrder: Int,
-) : Comparable<MultibindingIterateKey<T>> {
-    override fun compareTo(other: MultibindingIterateKey<T>): Int =
-        definitionOrder.compareTo(other.definitionOrder)
-
-    companion object {
-        val order = AtomicInt(0)
-    }
-}
+)
 
 class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal constructor(
     private val multibindingQualifier: Qualifier,
@@ -91,16 +84,23 @@ class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal 
 
     private fun declareElement(key: K, definition: Definition<E>) {
         val elementQualifier = multibindingElementQualifier(multibindingQualifier, key)
-        singleOrScopedInstance(elementQualifier, elementClass, definition)
+        singleOrScopedInstance(elementQualifier, elementClass, definition) {
+            it.keepDefinitionOrderAcrossModules(ascending = true)
+        }
     }
 
     private fun declareIterateKey(key: K) {
         val iterateKeyQualifier = multibindingIterateKeyQualifier(multibindingQualifier, key)
-        val definitionOrder = MultibindingIterateKey.order.incrementAndGet()
         val oldInstanceFactory =
-            singleOrScopedInstance(iterateKeyQualifier, MultibindingIterateKey::class) {
-                MultibindingIterateKey(key, multibindingQualifier, definitionOrder)
-            }
+            singleOrScopedInstance(
+                iterateKeyQualifier,
+                MultibindingIterateKey::class,
+                definition = {
+                    MultibindingIterateKey(key, multibindingQualifier)
+                },
+                instanceFactoryModifier = {
+                    it.keepDefinitionOrderAcrossModules(ascending = false)
+                })
         checkMultibindingKeyCollision(oldInstanceFactory, key)
     }
 
@@ -108,10 +108,11 @@ class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal 
      * @return old definition
      */
     @OptIn(KoinInternalApi::class)
-    private fun <T> singleOrScopedInstance(
+    private inline fun <T> singleOrScopedInstance(
         qualifier: Qualifier,
         instanceClass: KClass<*>,
-        definition: Definition<T>
+        noinline definition: Definition<T>,
+        instanceFactoryModifier: (InstanceFactory<*>) -> InstanceFactory<*>
     ): InstanceFactory<*>? {
         val instanceFactory = if (isRootScope) {
             SingleInstanceFactory(
@@ -133,7 +134,7 @@ class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal 
                     Kind.Scoped,
                 )
             )
-        }
+        }.let(instanceFactoryModifier)
         return indexPrimaryType(instanceFactory)
     }
 
@@ -202,10 +203,16 @@ internal class MapMultibinding<K : Any, V>(
     val reversedKeys: LinkedHashSet<K>
         get() {
             val multibindingKeys = LinkedHashSet<K>()
+            // MultibindingIterateKey is created by OrderedInstanceFactory(ascending = false)
+            // so the list here is in reversed order
             scope.getAll<MultibindingIterateKey<*>>()
-                .filter { it.multibindingQualifier == qualifier }
-                .sortedByDescending { it.definitionOrder } // later element definition wins
-                .mapNotNullTo(multibindingKeys) { it.elementKey as? K }
+                .mapNotNullTo(multibindingKeys) {
+                    if (it.multibindingQualifier == qualifier) {
+                        it.elementKey as? K
+                    } else {
+                        null
+                    }
+                }
             return multibindingKeys
         }
 
