@@ -24,17 +24,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
 
       - name: Build & Test
         run: cd projects && ./test.sh
@@ -47,17 +38,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
 
       - name: Build & Install
         run: cd projects && ./install.sh
@@ -70,18 +52,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
 
       - name: Test
         run: cd projects && ./gradlew :core:koin-core:macosX64Test --no-daemon --stacktrace
-
