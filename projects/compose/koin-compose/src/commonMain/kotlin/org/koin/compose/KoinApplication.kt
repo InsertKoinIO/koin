@@ -21,13 +21,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
 import org.koin.compose.application.rememberKoinApplication
 import org.koin.compose.error.UnknownKoinContext
-import org.koin.compose.scope.rememberKoinScope
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
@@ -54,7 +52,7 @@ val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf {
     throw UnknownKoinContext()
 }
 
-private fun getDefaultKoinContext() = KoinPlatformTools.defaultContext().get()
+private fun getDefaultKoinContext() = KoinPlatform.getKoin()
 
 /**
  * Retrieve the current Koin application from the composition.
@@ -110,6 +108,8 @@ private fun warningNoContext(ctx: Koin) {
  * Start a new Koin Application and associate it for Compose context
  * if Koin's Default Context is already set,
  *
+ * @see composeMultiplatformConfiguration()
+ *
  * @param application - Koin Application declaration lambda
  * @param logLevel - KMP active logger (androidLogger or printLogger)
  * @param content - following compose function
@@ -125,20 +125,17 @@ fun KoinApplication(
     logLevel : Level = Level.INFO,
     content: @Composable () -> Unit
 ) {
-    val configuration = composeConfiguration(logLevel, config = application)
+    val configuration = composeMultiplatformConfiguration(logLevel, config = application)
     val koin = rememberKoinApplication(koinApplication(configuration))
-    CompositionLocalProvider(
-        LocalKoinApplication provides koin,
-        LocalKoinScope provides koin.scopeRegistry.rootScope,
-        content = content
-    )
+    KoinContext(koin,content)
 }
 
 /**
- * Handle Multiplatform Config & Logger level - Help handle automatically Android Logger
+ * Handle Multiplatform Config & Logger level
+ * - Help handle automatically Android Logger Anticipate Android context injection, to having to setup androidContext() and androidLogger
  */
 @Composable
-internal expect fun composeConfiguration(loggerLevel : Level = Level.INFO, config : KoinApplication.() -> Unit) : KoinConfiguration
+internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Level.INFO, config : KoinApplication.() -> Unit) : KoinConfiguration
 
 /**
  * Use Compose with current existing Koin context, by default 'KoinPlatform.getKoin()'
@@ -151,7 +148,7 @@ internal expect fun composeConfiguration(loggerLevel : Level = Level.INFO, confi
 @OptIn(KoinInternalApi::class)
 @Composable
 fun KoinContext(
-    context: Koin = KoinPlatform.getKoin(),
+    context: Koin = retrieveDefaultInstance(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
@@ -160,6 +157,9 @@ fun KoinContext(
         content = content
     )
 }
+
+@Composable
+internal expect fun retrieveDefaultInstance() : Koin
 
 /**
  * Provides Koin Isolated context to be setup into LocalKoinApplication & LocalKoinScope via CompositionLocalProvider,

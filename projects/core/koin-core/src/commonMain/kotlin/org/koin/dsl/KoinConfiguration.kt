@@ -29,9 +29,19 @@ import org.koin.core.module.KoinApplicationDslMarker
  *
  */
 class KoinConfiguration(val config: KoinApplication.() -> Unit) {
+
+    /**
+     * return current KoinConfiguration as KoinAppDeclaration
+     */
     operator fun invoke(): KoinApplication.() -> Unit {
         return config
     }
+
+    /**
+     * value exporting KoinConfiguration as KoinAppDeclaration
+     * @see invoke()
+     */
+    val appDeclaration : KoinApplication.() -> Unit = invoke()
 }
 
 /**
