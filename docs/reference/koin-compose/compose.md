@@ -25,14 +25,11 @@ for an Android/Multiplatform app, use the following packages:
 The function `KoinApplication` helps to create Koin application instance, as a Composable:
 
 ```kotlin
-fun koinConfiguration() = koinApplication {
-    // your configuration & modules here
-    modules(...)
-}
-
 @Composable
 fun App() {
-    KoinApplication(::koinConfiguration) {
+    KoinApplication(application = {
+        modules(...)
+    }) {
         
         // your screens here ...
         MyScreen()
@@ -160,11 +157,44 @@ fun App(vm : MyViewModel = koinViewModel()) {
 }
 ```
 
-:::warning
+:::note
 Lazy API are not supported with updates of jetpack Compose
 :::
 
+### ViewModel and SavedStateHandle for @Composable
 
+You can have a `SavedStateHandle` constructor parameter, it will be injected regarding the Compose environment (Navigation BackStack or ViewModel).
+Either it's injected via ViewModel `CreationExtras` either via Navigation `BackStackEntry`:
+
+```kotlin
+// Setting objectId argument in Navhost
+NavHost(
+    navController,
+    startDestination = "list"
+) {
+    composable("list") { backStackEntry ->
+        //...
+    }
+    composable("detail/{objectId}") { backStackEntry ->
+        val objectId = backStackEntry.arguments?.getString("objectId")?.toInt()
+        DetailScreen(navController, objectId!!)
+    }
+}
+
+// Injected Argument in ViewModel
+class DetailViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    init {
+        println("$this - objectId: ${savedStateHandle.get<String>("objectId")}")
+    }
+}
+```
+
+:::note
+More details about SavedStateHandle injection difference: https://github.com/InsertKoinIO/koin/issues/1935#issuecomment-2362335705
+:::
 
 ## Module loading & unloading tied to Composable
 

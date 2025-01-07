@@ -33,7 +33,7 @@ private val functionsCache = mutableMapOf<KClass<*>, KFunction<*>>()
 @KoinInternalApi
 fun <R> buildComponent(scope: Scope, function: KFunction<R>): R {
     val parameterTypes = getParameters(function)
-    val args = parameterTypes.map { (clazz, isOptional) -> if (!isOptional) scope.get<Any>(clazz = clazz) else scope.getOrNull<Any>(clazz = clazz) }.toTypedArray()
+    val args = parameterTypes.map { (clazz, isOptional) -> if (!isOptional) scope.getWithParameters<Any>(clazz = clazz) else scope.getOrNull<Any>(clazz = clazz) }.toTypedArray()
     return function.call(*args)
 }
 

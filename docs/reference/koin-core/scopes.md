@@ -48,6 +48,9 @@ From a `Koin` instance, you can access:
 - `getScope(id : ScopeID)` - retrieve a previously created scope with given id
 - `getOrCreateScope(id : ScopeID, scopeName : Qualifier)` - create or retrieve if already created, the closed scope instance with given id and scopeName
 
+:::note
+By default calling `createScope` on an object, doesn't pass the "source" of the scope. You need to pass it as parameters: `T.createScope(<source>)`
+:::
 
 ### Scope Component: Associate a scope to a component [2.2.0]
 

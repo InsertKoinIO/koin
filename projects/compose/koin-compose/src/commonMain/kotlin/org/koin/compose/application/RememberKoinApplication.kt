@@ -36,5 +36,5 @@ inline fun rememberKoinApplication(koinApplication: KoinApplication): Koin {
     val wrapper = remember {
         CompositionKoinApplicationLoader(koinApplication)
     }
-    return wrapper.koinApplication.koin
+    return wrapper.koin ?: error("Koin context has not been initialized in rememberKoinApplication")
 }

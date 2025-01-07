@@ -3,7 +3,7 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 binaryValidator = "0.16.0"
 publish = "2.0.0"
 coroutines = "1.8.1"
@@ -13,31 +13,33 @@ uuid = "0.8.4"
 # Android
 agp = "7.4.2"
 android-appcompat = "1.7.0"
-android-activity = "1.9.2"
-android-fragment = "1.8.3"
-androidx-lifecycle = "2.8.5"
+android-activity = "1.9.3"
+android-fragment = "1.8.5"
+androidx-lifecycle = "2.8.7"
 androidx-workmanager = "2.9.1"
-androidx-navigation = "2.8.0"
-androidx-startup= "1.1.1"
+androidx-navigation = "2.8.4"
+androidx-startup= "1.2.0"
 
 # Compose
 composeJetpackRuntime = "1.6.8"
 composeJB = "1.6.11"
-composeLifecycle = "2.8.0"
-composeNavigation = "2.8.0-alpha09" # 2.8.0-alpha02 to keep compose 1.6.11
-jbCoreBundle = "1.0.0"
-jbSavedState = "1.2.0"
+composeLifecycle = "2.8.3"
+composeNavigation = "2.8.0-alpha10" # 2.8.0-alpha02 to keep compose 1.6.11
+jbCoreBundle = "1.0.1"
+jbSavedState = "1.2.2"
 
 # Test
 stately = "2.1.0"
 junit = "4.13.2"
 jupiter = "5.9.3"
-mockito = "4.7.0"
+mockito = "4.8.0"
 mockk = "1.13.2"
 # Ktor
 ktor = "2.3.12"
-slf4j = "2.0.13"
+slf4j = "2.0.16"
 uuidVersion = "0.8.4"
+
+benchmark = "0.4.13"
 
 [libraries]
 # Core
@@ -81,6 +83,8 @@ jb-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", versi
 jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
+# Benchmark
+benchmark-runtime = {module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "benchmark"}
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -92,3 +96,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlinBinary = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryValidator" }
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "benchmark"}

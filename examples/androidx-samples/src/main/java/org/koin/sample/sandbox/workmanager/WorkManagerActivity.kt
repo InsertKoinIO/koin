@@ -89,7 +89,7 @@ class WorkManagerActivity : AppCompatActivity() {
         WorkManager.getInstance(this@WorkManagerActivity)
             .cancelAllWork()
             .result
-            .await()
+            .get()
 
         enqueueWork<SimpleWorker>(createData(42))
         enqueueWork<SimpleWorker>(createData(43))

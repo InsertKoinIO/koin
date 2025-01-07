@@ -53,7 +53,7 @@ fun <T : ViewModel> resolveViewModel(
 ): T {
     val factory = KoinViewModelFactory(vmClass, scope, qualifier, parameters)
     val provider = ViewModelProvider.create(viewModelStore, factory, extras)
-    val className = KoinPlatformTools.getClassFullNameOrNull(vmClass) ?: KoinPlatformTools.getKClassDefaultName(vmClass)
+    val className = KoinPlatformTools.getClassFullNameOrNull(vmClass)
     val vmKey = getViewModelKey(qualifier, key, className)
     return when {
         vmKey != null -> provider[vmKey, vmClass]

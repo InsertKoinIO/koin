@@ -123,4 +123,15 @@ class ParametersHolderTest {
         val p = parametersOf(Simple.Component1())
         assertNotNull(p.get<Simple.ComponentInterface1>())
     }
+
+    @Test
+    fun `equality check`() {
+        val p1 = parametersOf(1, 2, 3, 4)
+        val p2 = parametersOf(1, 2, 3, 4)
+        val p3 = parametersOf(1, 2, 3)
+
+        assertEquals(p1, p2)
+
+        assertNotEquals(p1,p3)
+    }
 }

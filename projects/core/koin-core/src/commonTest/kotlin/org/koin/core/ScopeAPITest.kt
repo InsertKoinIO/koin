@@ -1,8 +1,13 @@
 package org.koin.core
 
 import org.koin.Simple
+import org.koin.Simple.ComponentA
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.createScope
 import org.koin.core.error.NoScopeDefFoundException
 import org.koin.core.error.ScopeAlreadyCreatedException
+import org.koin.core.logger.Level
+import org.koin.core.module.dsl.scopedOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
@@ -120,5 +125,29 @@ class ScopeAPITest {
         })
         scope1.close()
         assertTrue(closed)
+    }
+
+    class MyScopeComponent(private val _koin: Koin) : KoinScopeComponent {
+        override fun getKoin(): Koin = _koin
+        override val scope: Scope = createScope()
+    }
+
+    @Test
+    fun scope_clean_test() {
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+        }.koin
+
+        val scopeComponent = MyScopeComponent(koin)
+        val scope = scopeComponent.scope
+        scope.declare("hello")
+
+        assertEquals("hello", scope.get<String>())
+        scope.close()
+
+        val scopeComponent2 = MyScopeComponent(koin)
+        val scope2 = scopeComponent2.scope
+
+        assertNull(scope2.getOrNull<String>())
     }
 }

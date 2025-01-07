@@ -39,7 +39,7 @@ fun Application.main() {
 
 ### Resolve from Ktor Request Scope (since 3.5.0)
 
-You can declare components to live within Ktor request scope timeline. For this, you just need to declare your component inside a `scope<ScopeRequest>` section. Given a `ScopeComponent` class to instantiate on RequestScope, let's declare it:
+You can declare components to live within Ktor request scope timeline. For this, you just need to declare your component inside a `scope<RequestScope>` section. Given a `ScopeComponent` class to instantiate on `RequestScope`, let's declare it:
 
 ```kotlin
 scope<RequestScope>{

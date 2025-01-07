@@ -32,11 +32,11 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
     }
     val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
     if (useParentActivityScope){
-        val activityScope = requireActivity().getScopeOrNull() ?: requireActivity().getRetainedScopeOrNull()
+        val activityScope: Scope? = (activity as? AndroidScopeComponent)?.scope
         if (activityScope != null) {
             scope.linkTo(activityScope)
         } else {
-            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope. No Parent Scope found.")
+            scope.logger.debug("Fragment '$this' can't be linked to parent activity scope. No Parent Activity Scope found.")
         }
     }
     return scope

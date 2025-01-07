@@ -1,6 +1,7 @@
 package org.koin.mp
 
 import co.touchlab.stately.collections.ConcurrentMutableMap
+import co.touchlab.stately.collections.ConcurrentMutableSet
 import co.touchlab.stately.concurrency.withLock
 import org.koin.core.context.KoinContext
 import org.koin.core.context.globalContextByMemoryModel
@@ -21,10 +22,8 @@ actual object KoinPlatformTools {
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.PUBLICATION
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = defaultContext
-
-    actual fun <R> synchronized(lock: Lockable, block: () -> R): R = lock.lock.withLock { block() }
-
+    actual fun <R> synchronized(lock: Lockable, block: () -> R): R = lock.lock.withLock(block)
     actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentMutableMap()
-    actual fun <K> safeSet(): MutableSet<K> = mutableSetOf()
+    actual fun <K> safeSet(): MutableSet<K> = ConcurrentMutableSet()
 }
 

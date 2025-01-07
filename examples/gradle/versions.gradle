@@ -1,8 +1,8 @@
 ext {
     // Kotlin
-    kotlin_version = '2.0.20'
+    kotlin_version = '2.0.21'
     // Koin Versions
-    koin_version = '4.0.0'
+    koin_version = '4.0.1-RC2'
     koin_android_version = koin_version
     koin_compose_version = koin_version
 
@@ -20,5 +20,5 @@ ext {
     android_min_version = 14
     android_target_version = 34
     android_build_tools_version = '34.0.0'
-    android_gradle_version = '8.2.0'
+    android_gradle_version = '8.7.0'
 }

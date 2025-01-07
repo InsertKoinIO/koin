@@ -20,14 +20,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.remember
 import org.koin.compose.application.rememberKoinApplication
 import org.koin.compose.error.UnknownKoinContext
+import org.koin.compose.scope.rememberKoinScope
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.error.ClosedScopeException
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.koinApplication
@@ -77,21 +81,28 @@ fun getKoin(): Koin = currentComposer.run {
  */
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
+@ReadOnlyComposable
+//fun currentKoinScope(): Scope = LocalKoinScope.current
 fun currentKoinScope(): Scope = currentComposer.run {
-    remember {
-        try {
-            consume(LocalKoinScope)
-        } catch (_: UnknownKoinContext) {
-            val ctx = getDefaultKoinContext()
-            warningNoContext(ctx)
-            getDefaultKoinContext().scopeRegistry.rootScope
+    try {
+        consume(LocalKoinScope)
+    } catch (_: UnknownKoinContext) {
+        getDefaultKoinContext().let {
+            warningNoContext(it)
+            it.scopeRegistry.rootScope
+        }
+    } catch (e: ClosedScopeException) {
+        getDefaultKoinContext().let {
+            it.logger.debug("Try to refresh scope - fallback on default context from - $e")
+            it.scopeRegistry.rootScope
         }
     }
 }
 
+
 @OptIn(KoinInternalApi::class)
 private fun warningNoContext(ctx: Koin) {
-    ctx.logger.error("[Warning] - No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
+    ctx.logger.info("No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
 }
 
 /**

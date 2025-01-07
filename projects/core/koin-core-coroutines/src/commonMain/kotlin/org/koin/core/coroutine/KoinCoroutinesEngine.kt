@@ -53,7 +53,7 @@ class KoinCoroutinesEngine(coroutineDispatcher: CoroutineDispatcher? = null) : C
 
     suspend fun awaitAllStartJobs() {
         getLogger().debug("$TAG - await All Start Jobs ...")
-        startJobs.map { it.await() }
+        startJobs.awaitAll()
         startJobs.clear()
     }
 

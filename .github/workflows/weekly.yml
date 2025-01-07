@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
+        uses: gradle/wrapper-validation-action@v3
 
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -29,7 +29,7 @@ jobs:
       - name: Install
         run: cd projects && ./install.sh
 
-      - name: Test Examples
-        run: cd examples/jvm-perfs && ./benchmark.sh
+      - name: Benchmark
+        run: cd projects && ./benchmark.sh
 
 

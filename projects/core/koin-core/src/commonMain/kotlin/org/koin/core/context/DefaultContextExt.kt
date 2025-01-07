@@ -19,6 +19,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.module.KoinApplicationDslMarker
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.KoinConfiguration
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -38,6 +39,9 @@ fun startKoin(koinApplication: KoinApplication): KoinApplication = KoinPlatformT
  */
 @KoinApplicationDslMarker
 fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = KoinPlatformTools.defaultContext().startKoin(appDeclaration)
+
+@KoinApplicationDslMarker
+fun startKoin(appConfiguration: KoinConfiguration): KoinApplication = KoinPlatformTools.defaultContext().startKoin(appConfiguration.config)
 
 /**
  * Stop current StandAlone Koin application

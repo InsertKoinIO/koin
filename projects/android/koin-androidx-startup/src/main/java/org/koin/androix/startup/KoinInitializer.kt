@@ -30,9 +30,9 @@ class KoinInitializer : Initializer<Koin> {
 
     @OptIn(KoinExperimentalAPI::class)
     override fun create(context: Context): Koin {
-        return KoinStartup.koinAppDeclaration?.let {
-            startKoin(it).koin
-        } ?: error("KoinInitializer can't start Koin configuration. Please use KoinStartup.onKoinStartup() function to register your Koin application.")
+       return if (context is KoinStartup){
+            startKoin(context.onKoinStartup()).koin
+        } else error("Can't start Koin configuration on current Context. Please use KoinStartup interface to define your Koin configuration with.")
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
