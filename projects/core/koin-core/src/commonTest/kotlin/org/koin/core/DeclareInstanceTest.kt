@@ -260,7 +260,7 @@ class DeclareInstanceTest {
 
         val session1 = koin.createScope("session1", named("Session"))
         val session2 = koin.createScope("session2", named("Session"))
-        session1.declare(a, allowOverride = false)
+        session1.declare(a, allowOverride = false, holdInstance = true)
 
         session2.get<Simple.ComponentA>()
     }
