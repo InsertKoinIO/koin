@@ -136,15 +136,13 @@ We need to start Koin with our Android application. Just call the `KoinApplicati
 
 ```kotlin
 fun App() {
-    
     KoinApplication(
         application = {
             modules(appModule)
         }
-    )
-{
-// Compose content
-}
+    ){
+       // Compose content
+    }
 }
 ```
 
