@@ -1,13 +1,14 @@
 package org.koin.core
 
 import org.junit.Test
+import org.koin.KoinCoreTest
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 
 @OptIn(KoinInternalApi::class)
-class DebugLogTest {
+class DebugLogTest : KoinCoreTest(){
 
     @Test
     fun fasterDebug() {

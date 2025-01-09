@@ -1,12 +1,13 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class NamingTest {
+class NamingTest : KoinCoreTest(){
 
     @Test
     fun `can resolve naming from root`() {

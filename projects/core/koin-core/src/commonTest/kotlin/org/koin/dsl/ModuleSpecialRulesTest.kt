@@ -1,10 +1,11 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.core.qualifier.named
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ModuleSpecialRulesTest {
+class ModuleSpecialRulesTest : KoinCoreTest() {
 
     @Test
     fun `generic type declaration`() {

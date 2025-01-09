@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -9,7 +10,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class ModuleRestartTest : KoinComponent {
+class ModuleRestartTest : KoinComponent, KoinCoreTest() {
 
     @BeforeTest
     fun before() {
@@ -20,11 +21,6 @@ class ModuleRestartTest : KoinComponent {
                 },
             )
         }
-    }
-
-    @AfterTest
-    fun after() {
-        stopKoin()
     }
 
     @Test
