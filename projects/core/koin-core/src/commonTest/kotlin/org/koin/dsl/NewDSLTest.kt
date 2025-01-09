@@ -2,6 +2,7 @@
 
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.instance.FactoryInstanceFactory
 import org.koin.core.instance.ScopedInstanceFactory
@@ -18,7 +19,7 @@ class ClassA2 : IClassA
 class ClassB(val a: IClassA)
 interface IClassA
 
-class NewDSLTest {
+class NewDSLTest : KoinCoreTest() {
 
     @Test
     fun singleof_options() {

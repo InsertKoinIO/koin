@@ -1,5 +1,6 @@
 package org.koin.perfs// package org.koin.perfs
 
+ import org.koin.KoinCoreTest
  import kotlin.test.Test
  import org.koin.core.time.inMs
  import org.koin.dsl.koinApplication
@@ -7,7 +8,7 @@ package org.koin.perfs// package org.koin.perfs
  import kotlin.time.measureTime
  import kotlin.time.measureTimedValue
 
- class PerfsTest {
+ class PerfsTest : KoinCoreTest(){
 
     @Test
     fun empty_module_perfs() {

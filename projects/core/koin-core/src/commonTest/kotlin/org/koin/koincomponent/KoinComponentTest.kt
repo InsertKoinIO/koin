@@ -1,5 +1,6 @@
 package org.koin.koincomponent
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -20,7 +21,7 @@ class MyLazyComponent : KoinComponent {
     val anInject: Simple.ComponentA by inject()
 }
 
-class KoinComponentTest {
+class KoinComponentTest : KoinCoreTest(){
 
     @Test
     fun can_lazy_inject_from_KoinComponent() {

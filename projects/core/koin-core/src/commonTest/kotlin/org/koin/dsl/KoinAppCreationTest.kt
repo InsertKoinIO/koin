@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple.ComponentA
 import org.koin.Simple.ComponentB
 import org.koin.core.annotation.KoinInternalApi
@@ -19,12 +20,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.fail
 
 @OptIn(KoinInternalApi::class)
-class KoinAppCreationTest {
-
-    @AfterTest
-    fun after() {
-        stopKoin()
-    }
+class KoinAppCreationTest : KoinCoreTest() {
 
     @Test
     fun `make a Koin application`() {

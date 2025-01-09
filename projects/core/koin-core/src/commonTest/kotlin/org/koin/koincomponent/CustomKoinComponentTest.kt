@@ -1,5 +1,6 @@
 package org.koin.koincomponent
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
@@ -31,7 +32,7 @@ class MyCustomApp : CustomKoinComponent() {
     val a: Simple.ComponentA by inject()
 }
 
-class CustomKoinComponentTest {
+class CustomKoinComponentTest : KoinCoreTest(){
 
     @Test
     fun can_inject_KoinComponent_from_custom_instance() {

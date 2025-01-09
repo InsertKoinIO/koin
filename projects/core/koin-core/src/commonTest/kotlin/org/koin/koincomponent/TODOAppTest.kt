@@ -1,5 +1,6 @@
 package org.koin.koincomponent
 
+import org.koin.KoinCoreTest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -10,7 +11,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.test.Test
 
-class TODOAppTest {
+class TODOAppTest : KoinCoreTest(){
 
     val todoAppModule = module {
         single { TasksView() } bind TasksContract.View::class
