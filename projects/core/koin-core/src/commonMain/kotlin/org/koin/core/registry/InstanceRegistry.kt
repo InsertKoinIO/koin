@@ -34,6 +34,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
+import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
@@ -159,13 +160,13 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun dropScopeInstances(scope: Scope) {
-        _instances.values.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
+        val factories = _instances.values.toTypedArray()
+        factories.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
     }
 
     internal fun close() {
-        _instances.forEach { (_, factory) ->
-            factory.dropAll()
-        }
+        val factories = _instances.values.toTypedArray()
+        factories.forEach { factory -> factory.dropAll() }
         _instances.clear()
     }
 
