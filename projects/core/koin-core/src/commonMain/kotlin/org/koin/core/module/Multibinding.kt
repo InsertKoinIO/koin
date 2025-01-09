@@ -30,6 +30,7 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.StringQualifier
+import org.koin.core.qualifier._q
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
@@ -41,19 +42,18 @@ import kotlin.reflect.KClass
  * @author - luozejiaqun
  */
 inline fun <reified K, reified V> mapMultibindingQualifier(): Qualifier =
-    StringQualifier("map_multibinding_${K::class.getFullName()}_${V::class.getFullName()}")
+    _q("MapMultibinding<${K::class.getFullName()}, ${V::class.getFullName()}>")
 
 inline fun <reified E> setMultibindingQualifier(): Qualifier =
-    StringQualifier("set_multibinding_${E::class.getFullName()}")
+    _q("SetMultibinding<${E::class.getFullName()}>")
 
 private fun <K> multibindingElementQualifier(multibindingQualifier: Qualifier, key: K): Qualifier =
-    StringQualifier("${multibindingQualifier.value}_of_$key")
+    _q("${multibindingQualifier.value} of $key")
 
 private fun <K> multibindingIterateKeyQualifier(
     multibindingQualifier: Qualifier,
     key: K
-): Qualifier =
-    StringQualifier("${multibindingQualifier.value}_iterate_$key")
+): Qualifier = _q("${multibindingQualifier.value} iterate of $key")
 
 class MapMultibindingKeyTypeException(msg: String) : Exception(msg)
 
@@ -345,7 +345,7 @@ internal class SetMultibinding<E>(
     override fun iterator(): Iterator<E> = elementSet.iterator()
 
     class Key(private val placeholder: Int) {
-        override fun toString(): String = "placeholder_$placeholder"
+        override fun toString(): String = "placeholder$placeholder"
     }
 
     companion object {
