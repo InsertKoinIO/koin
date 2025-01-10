@@ -1,7 +1,6 @@
 package org.koin.core
 
 import org.koin.Simple
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
@@ -9,9 +8,7 @@ import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.generateId
 import kotlin.test.Test
-import kotlin.test.assertTrue
 
-@OptIn(KoinInternalApi::class)
 class ParameterStackTest {
 
     @Test
