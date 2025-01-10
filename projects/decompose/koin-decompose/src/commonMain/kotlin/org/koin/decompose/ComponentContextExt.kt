@@ -6,9 +6,16 @@ import org.koin.core.component.getScopeName
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
 
+/**
+ * Create Scope for Component.
+ * Doesn't link to parent component's Scope
+ */
 fun DecomposeScopeComponent.createComponentScope() =
     getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle()
 
+/**
+ * Provide scope tied to Component
+ */
 fun DecomposeScopeComponent.componentScope() = lazy { createComponentScope() }
 
 private fun DecomposeScopeComponent.createScopeForCurrentLifecycle(): Scope {
