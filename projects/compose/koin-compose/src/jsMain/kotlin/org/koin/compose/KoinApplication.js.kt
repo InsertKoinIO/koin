@@ -10,7 +10,7 @@ import org.koin.dsl.includes
 import org.koin.mp.KoinPlatform
 
 @Composable
-internal actual fun composeMultiplatformConfiguration(loggerLevel : Level, config : KoinApplication.() -> Unit) : KoinConfiguration {
+internal actual fun composeMultiplatformConfiguration(loggerLevel : Level, config : KoinConfiguration) : KoinConfiguration {
     return koinConfiguration {
         printLogger(loggerLevel)
         includes(config)
