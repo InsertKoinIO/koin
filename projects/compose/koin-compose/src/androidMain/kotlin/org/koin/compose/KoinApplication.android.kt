@@ -20,9 +20,9 @@ import org.koin.dsl.includes
 
 @Composable
 internal actual fun composeMultiplatformConfiguration(loggerLevel : Level, config : KoinApplication.() -> Unit) : KoinConfiguration {
-    val current = LocalContext.current
+    val appContext = LocalContext.current.applicationContext ?: error("Android ApplicationContext not found!")
     return koinConfiguration {
-        androidContext(current)
+        androidContext(appContext)
         androidLogger(loggerLevel)
         includes(config)
     }
