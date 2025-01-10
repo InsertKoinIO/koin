@@ -172,7 +172,7 @@ dependencies {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](/docs/quickstart/kmm)
+From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](/docs/quickstart/kmp)
 :::
 
 ### **Ktor**
