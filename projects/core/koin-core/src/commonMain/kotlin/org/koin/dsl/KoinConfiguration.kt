@@ -22,7 +22,9 @@ import org.koin.core.module.KoinApplicationDslMarker
 //TODO Koin 4.1 - KoinAppDeclaration migration type to KoinConfiguration
 
 /**
- * Koin Configuration holder - use the koinConfiguration() function to define Koin configuration:
+ * Koin Configuration class holder, intended to replace KoinAppDeclaration that is a typealias on extension function
+ *
+ * use the koinConfiguration() function to define Koin configuration:
  * koinConfiguration {
  *  modules(...)
  * }

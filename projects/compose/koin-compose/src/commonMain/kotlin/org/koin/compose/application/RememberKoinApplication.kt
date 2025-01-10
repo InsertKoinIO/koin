@@ -24,20 +24,22 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.koinApplication
 
-/**
- * Remember Koin Application to handle its closure if necessary
- *
- * @param koinApplication
- *
- * @author Arnaud Giuliani
- */
+@Composable
+internal inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclaration): Koin {
+    val wrapper = remember(koinAppDeclaration) {
+        CompositionKoinApplicationLoader(koinApplication(koinAppDeclaration))
+    }
+    return wrapper.koin ?: error("Koin context has not been initialized in rememberKoinApplication")
+}
+
 @OptIn(KoinInternalApi::class)
 @Composable
-inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclaration, logLevel: Level): Koin {
-    val configuration = composeMultiplatformConfiguration(logLevel, config = koinAppDeclaration)
-    val wrapper = remember(koinAppDeclaration,logLevel) {
+internal inline fun rememberKoinMPApplication(configuration: KoinConfiguration, logLevel: Level): Koin {
+    val configuration = composeMultiplatformConfiguration(logLevel, config = configuration)
+    val wrapper = remember(configuration,logLevel) {
         CompositionKoinApplicationLoader(koinApplication(configuration))
     }
     return wrapper.koin ?: error("Koin context has not been initialized in rememberKoinApplication")
