@@ -3,8 +3,10 @@ package org.koin.sample.androidx.compose
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,7 @@ import org.koin.sample.androidx.compose.data.MySingle
 import org.koin.sample.androidx.compose.di.secondModule
 import org.koin.sample.androidx.compose.viewmodel.SSHViewModel
 import org.koin.sample.androidx.compose.viewmodel.UserViewModel
+import java.util.UUID
 
 
 @Composable
@@ -43,6 +46,9 @@ fun App(userViewModel: UserViewModel = koinViewModel()) {
             item {
                 ButtonForCreate("-X- Main") { created = !created }
             }
+            item {
+                MyScreen()
+            }
         }
     } else {
         Surface(modifier = Modifier.padding(8.dp)) {
@@ -50,6 +56,27 @@ fun App(userViewModel: UserViewModel = koinViewModel()) {
         }
     }
 
+}
+
+@Composable
+fun MyScreen() {
+
+    var someValue by remember { mutableStateOf("initial") }
+    val myDependency = koinInject<MyFactory>(parameters = parametersOf(someValue))
+
+    SideEffect {
+        println("MyScreen 1")
+    }
+
+    Column {
+        Text(text = myDependency.id)
+        TextField(someValue, onValueChange = { someValue = it })
+        Button(onClick = {
+            if (someValue == "") someValue = "${UUID.randomUUID()}"
+        }) {
+            Text("Update")
+        }
+    }
 }
 
 @Composable
@@ -69,21 +96,6 @@ fun ViewModelComposable(
         ButtonForCreate("(+) ViewModel") { created = !created }
     }
 }
-
-// Preview
-
-//val fakeKoin = module {
-//    singleOf(::MySingle)
-//    factoryOf(::MyInnerFactory)
-//}
-//
-//@Preview
-//@Composable
-//fun PreviewViewModelComposable() {
-//    KoinApplication(moduleList = { listOf(fakeKoin) }) {
-//        SingleComposable()
-//    }
-//}
 
 
 @Composable
@@ -105,7 +117,7 @@ fun SingleComposable(
 @Composable
 fun FactoryComposable(
     parentStatus: String = "- status -",
-    myFactory: MyFactory = koinInject { parametersOf("stable_status") }
+    myFactory: MyFactory = koinInject(parameters = parametersOf("stable_status"))
 ) {
     var created by remember { mutableStateOf(false) }
     rememberKoinModules(modules = { listOf(secondModule) })
@@ -132,7 +144,7 @@ fun FactoryComposable(
 //TODO Hold instance until recreate Composable
 fun InnerFactoryComposable(
     parentStatus: String,
-    myFactory: MyInnerFactory = koinInject { parametersOf("_stable_") }
+    myFactory: MyInnerFactory = koinInject(parameters = parametersOf("_stable_"))
 ) {
     var created by remember { mutableStateOf(false) }
     if (created) {
