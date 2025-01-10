@@ -1,10 +1,11 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.core.module.flatten
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class FlattenTest {
+class FlattenTest : KoinCoreTest() {
 
     @Test
     fun test_simple_flatten() {

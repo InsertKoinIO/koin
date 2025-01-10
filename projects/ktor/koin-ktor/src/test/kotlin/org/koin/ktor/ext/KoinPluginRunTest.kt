@@ -57,7 +57,7 @@ class KoinPluginRunTest {
     }
 
     @Test
-    @Ignore // socket exception on GH
+    @Ignore("socket exception on GH")
     fun `run outside context`()  = runBlocking<Unit> {
         var counter = 0
         startKoin {
@@ -86,7 +86,7 @@ class KoinPluginRunTest {
     }
 
     @Test
-    @Ignore // socket exception on GH
+    @Ignore("socket exception on GH")
     fun `should can reload`()  = runBlocking<Unit> {
         val koinModule = module {
             single<String> {

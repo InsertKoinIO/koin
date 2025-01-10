@@ -1,10 +1,11 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class PropertyDefinitionTest {
+class PropertyDefinitionTest : KoinCoreTest(){
 
     @Test
     fun `load and get properties`() {

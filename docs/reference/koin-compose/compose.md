@@ -20,37 +20,7 @@ for an Android/Multiplatform app, use the following packages:
 - `koin-compose-viewmodel` - Compose ViewModel API
 - `koin-compose-viewmodel-navigation` - Compose ViewModel API with Navigation API integration
 
-## Starting Koin in a Compose App with KoinApplication
-
-The function `KoinApplication` helps to create Koin application instance, as a Composable:
-
-```kotlin
-fun koinConfiguration() = koinApplication {
-    // your configuration & modules here
-    modules(...)
-}
-
-@Composable
-fun App() {
-    KoinApplication(::koinConfiguration) {
-        
-        // your screens here ...
-        MyScreen()
-    }
-}
-```
-
-The `KoinApplication` function will handle start & stop of your Koin context, regarding the cycle of the Compose context. This function start and stop a new Koin application context.
-
-:::info
-In an Android Application, the `KoinApplication` will handle any need to stop/restart Koin context regarding configuration changes or drop of Activities.
-:::
-
-:::note
-This replaces the use of the classic `startKoin` application function.
-:::
-
-## Starting over an existing Koin context
+## Starting over an existing Koin context (Koin already started)
 
 Some time the `startKoin` function is already used in the application, to start Koin in your application (like in Android main app class, the Application class). In that case you need to inform your Compose application about the current Koin context with `KoinContext` or `KoinAndroidContext`. Those functions reuse current Koin context and bind it to the Compose application.
 
@@ -74,6 +44,34 @@ Difference between `KoinAndroidContext` and `KoinContext`:
 :::note
 If you get some `ClosedScopeException` from a Composable, either use `KoinContext` on your Composable or ensure to have proper Koin start configuration [with Android context](/docs/reference/koin-android/start.md#from-your-application-class)
 :::
+
+## Starting Koin with a Compose App - KoinApplication
+
+The function `KoinApplication` helps to create Koin application instance, as a Composable:
+
+```kotlin
+@Composable
+fun App() {
+    KoinApplication(application = {
+        modules(...)
+    }) {
+        
+        // your screens here ...
+        MyScreen()
+    }
+}
+```
+
+The `KoinApplication` function will handle start & stop of your Koin context, regarding the cycle of the Compose context. This function start and stop a new Koin application context.
+
+:::info
+In an Android Application, the `KoinApplication` will handle any need to stop/restart Koin context regarding configuration changes or drop of Activities.
+:::
+
+:::note
+This replaces the use of the classic `startKoin` application function.
+:::
+
 
 ### Compose Preview with Koin
 
@@ -125,6 +123,23 @@ fun App(myService: MyService = koinInject()) {
 }
 ```
 
+### Injecting into a @Composable with Parameters
+
+While you request a new dependency from Koin, you may need to inject parameters. To do this you can use `parameters` parameter of the `koinInject` function, with the `parametersOf()` function like this:
+
+```kotlin
+@Composable
+fun App() {
+    val myService = koinInject<MyService>(parameters = parametersOf("a_string"))
+}
+```
+
+:::info
+You can use parameters with lambda injection like `koinInject<MyService>{ parametersOf("a_string") }`, but this can have a performance impact if your recomposing a lot around. This version with lambda needs to unwrap your parameters on call, to help avoid remembering your parameters.
+
+From version 4.0.2 of Koin, koinInject(Qualifier,Scope,ParametersHolder) is introduced to let you use parameters in the most efficient way
+:::
+
 ## ViewModel for @Composable
 
 The same way you have access to classical single/factory instances, you gain access to the following Koin ViewModel API:
@@ -160,11 +175,44 @@ fun App(vm : MyViewModel = koinViewModel()) {
 }
 ```
 
-:::warning
+:::note
 Lazy API are not supported with updates of jetpack Compose
 :::
 
+### ViewModel and SavedStateHandle for @Composable
 
+You can have a `SavedStateHandle` constructor parameter, it will be injected regarding the Compose environment (Navigation BackStack or ViewModel).
+Either it's injected via ViewModel `CreationExtras` either via Navigation `BackStackEntry`:
+
+```kotlin
+// Setting objectId argument in Navhost
+NavHost(
+    navController,
+    startDestination = "list"
+) {
+    composable("list") { backStackEntry ->
+        //...
+    }
+    composable("detail/{objectId}") { backStackEntry ->
+        val objectId = backStackEntry.arguments?.getString("objectId")?.toInt()
+        DetailScreen(navController, objectId!!)
+    }
+}
+
+// Injected Argument in ViewModel
+class DetailViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    init {
+        println("$this - objectId: ${savedStateHandle.get<String>("objectId")}")
+    }
+}
+```
+
+:::note
+More details about SavedStateHandle injection difference: https://github.com/InsertKoinIO/koin/issues/1935#issuecomment-2362335705
+:::
 
 ## Module loading & unloading tied to Composable
 

@@ -1,0 +1,2222 @@
+public class org/koin/benchmark/JvmBenchmark {
+	public fun <init> ()V
+	public fun retrieveDependencyA ()V
+	public fun retrieveDependencyB ()V
+	public fun setUp ()V
+}
+
+public final class org/koin/benchmark/Module_400Kt {
+	public static final fun perfModule400 ()Lorg/koin/core/module/Module;
+}
+
+public final class org/koin/benchmark/Perfs {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A1 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A10 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A100 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A11 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A12 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A13 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A14 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A15 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A16 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A17 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A18 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A19 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A2 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A20 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A21 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A22 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A23 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A24 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A25 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A26 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A27 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A28 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A29 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A3 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A30 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A31 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A32 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A33 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A34 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A35 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A36 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A37 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A38 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A39 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A4 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A40 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A41 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A42 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A43 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A44 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A45 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A46 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A47 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A48 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A49 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A5 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A50 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A51 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A52 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A53 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A54 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A55 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A56 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A57 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A58 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A59 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A6 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A60 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A61 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A62 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A63 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A64 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A65 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A66 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A67 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A68 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A69 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A7 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A70 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A71 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A72 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A73 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A74 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A75 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A76 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A77 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A78 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A79 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A8 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A80 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A81 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A82 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A83 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A84 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A85 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A86 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A87 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A88 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A89 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A9 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A90 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A91 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A92 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A93 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A94 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A95 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A96 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A97 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A98 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$A99 {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/Perfs$B1 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A1;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A1;
+}
+
+public final class org/koin/benchmark/Perfs$B10 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A10;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A10;
+}
+
+public final class org/koin/benchmark/Perfs$B100 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A100;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A100;
+}
+
+public final class org/koin/benchmark/Perfs$B11 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A11;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A11;
+}
+
+public final class org/koin/benchmark/Perfs$B12 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A12;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A12;
+}
+
+public final class org/koin/benchmark/Perfs$B13 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A13;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A13;
+}
+
+public final class org/koin/benchmark/Perfs$B14 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A14;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A14;
+}
+
+public final class org/koin/benchmark/Perfs$B15 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A15;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A15;
+}
+
+public final class org/koin/benchmark/Perfs$B16 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A16;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A16;
+}
+
+public final class org/koin/benchmark/Perfs$B17 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A17;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A17;
+}
+
+public final class org/koin/benchmark/Perfs$B18 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A18;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A18;
+}
+
+public final class org/koin/benchmark/Perfs$B19 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A19;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A19;
+}
+
+public final class org/koin/benchmark/Perfs$B2 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A2;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A2;
+}
+
+public final class org/koin/benchmark/Perfs$B20 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A20;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A20;
+}
+
+public final class org/koin/benchmark/Perfs$B21 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A21;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A21;
+}
+
+public final class org/koin/benchmark/Perfs$B22 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A22;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A22;
+}
+
+public final class org/koin/benchmark/Perfs$B23 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A23;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A23;
+}
+
+public final class org/koin/benchmark/Perfs$B24 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A24;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A24;
+}
+
+public final class org/koin/benchmark/Perfs$B25 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A25;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A25;
+}
+
+public final class org/koin/benchmark/Perfs$B26 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A26;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A26;
+}
+
+public final class org/koin/benchmark/Perfs$B27 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A27;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A27;
+}
+
+public final class org/koin/benchmark/Perfs$B28 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A28;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A28;
+}
+
+public final class org/koin/benchmark/Perfs$B29 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A29;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A29;
+}
+
+public final class org/koin/benchmark/Perfs$B3 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A3;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A3;
+}
+
+public final class org/koin/benchmark/Perfs$B30 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A30;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A30;
+}
+
+public final class org/koin/benchmark/Perfs$B31 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A31;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A31;
+}
+
+public final class org/koin/benchmark/Perfs$B32 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A32;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A32;
+}
+
+public final class org/koin/benchmark/Perfs$B33 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A33;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A33;
+}
+
+public final class org/koin/benchmark/Perfs$B34 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A34;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A34;
+}
+
+public final class org/koin/benchmark/Perfs$B35 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A35;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A35;
+}
+
+public final class org/koin/benchmark/Perfs$B36 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A36;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A36;
+}
+
+public final class org/koin/benchmark/Perfs$B37 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A37;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A37;
+}
+
+public final class org/koin/benchmark/Perfs$B38 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A38;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A38;
+}
+
+public final class org/koin/benchmark/Perfs$B39 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A39;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A39;
+}
+
+public final class org/koin/benchmark/Perfs$B4 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A4;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A4;
+}
+
+public final class org/koin/benchmark/Perfs$B40 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A40;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A40;
+}
+
+public final class org/koin/benchmark/Perfs$B41 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A41;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A41;
+}
+
+public final class org/koin/benchmark/Perfs$B42 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A42;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A42;
+}
+
+public final class org/koin/benchmark/Perfs$B43 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A43;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A43;
+}
+
+public final class org/koin/benchmark/Perfs$B44 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A44;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A44;
+}
+
+public final class org/koin/benchmark/Perfs$B45 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A45;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A45;
+}
+
+public final class org/koin/benchmark/Perfs$B46 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A46;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A46;
+}
+
+public final class org/koin/benchmark/Perfs$B47 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A47;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A47;
+}
+
+public final class org/koin/benchmark/Perfs$B48 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A48;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A48;
+}
+
+public final class org/koin/benchmark/Perfs$B49 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A49;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A49;
+}
+
+public final class org/koin/benchmark/Perfs$B5 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A5;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A5;
+}
+
+public final class org/koin/benchmark/Perfs$B50 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A50;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A50;
+}
+
+public final class org/koin/benchmark/Perfs$B51 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A51;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A51;
+}
+
+public final class org/koin/benchmark/Perfs$B52 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A52;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A52;
+}
+
+public final class org/koin/benchmark/Perfs$B53 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A53;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A53;
+}
+
+public final class org/koin/benchmark/Perfs$B54 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A54;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A54;
+}
+
+public final class org/koin/benchmark/Perfs$B55 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A55;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A55;
+}
+
+public final class org/koin/benchmark/Perfs$B56 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A56;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A56;
+}
+
+public final class org/koin/benchmark/Perfs$B57 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A57;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A57;
+}
+
+public final class org/koin/benchmark/Perfs$B58 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A58;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A58;
+}
+
+public final class org/koin/benchmark/Perfs$B59 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A59;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A59;
+}
+
+public final class org/koin/benchmark/Perfs$B6 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A6;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A6;
+}
+
+public final class org/koin/benchmark/Perfs$B60 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A60;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A60;
+}
+
+public final class org/koin/benchmark/Perfs$B61 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A61;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A61;
+}
+
+public final class org/koin/benchmark/Perfs$B62 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A62;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A62;
+}
+
+public final class org/koin/benchmark/Perfs$B63 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A63;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A63;
+}
+
+public final class org/koin/benchmark/Perfs$B64 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A64;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A64;
+}
+
+public final class org/koin/benchmark/Perfs$B65 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A65;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A65;
+}
+
+public final class org/koin/benchmark/Perfs$B66 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A66;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A66;
+}
+
+public final class org/koin/benchmark/Perfs$B67 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A67;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A67;
+}
+
+public final class org/koin/benchmark/Perfs$B68 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A68;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A68;
+}
+
+public final class org/koin/benchmark/Perfs$B69 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A69;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A69;
+}
+
+public final class org/koin/benchmark/Perfs$B7 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A7;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A7;
+}
+
+public final class org/koin/benchmark/Perfs$B70 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A70;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A70;
+}
+
+public final class org/koin/benchmark/Perfs$B71 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A71;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A71;
+}
+
+public final class org/koin/benchmark/Perfs$B72 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A72;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A72;
+}
+
+public final class org/koin/benchmark/Perfs$B73 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A73;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A73;
+}
+
+public final class org/koin/benchmark/Perfs$B74 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A74;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A74;
+}
+
+public final class org/koin/benchmark/Perfs$B75 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A75;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A75;
+}
+
+public final class org/koin/benchmark/Perfs$B76 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A76;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A76;
+}
+
+public final class org/koin/benchmark/Perfs$B77 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A77;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A77;
+}
+
+public final class org/koin/benchmark/Perfs$B78 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A78;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A78;
+}
+
+public final class org/koin/benchmark/Perfs$B79 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A79;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A79;
+}
+
+public final class org/koin/benchmark/Perfs$B8 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A8;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A8;
+}
+
+public final class org/koin/benchmark/Perfs$B80 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A80;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A80;
+}
+
+public final class org/koin/benchmark/Perfs$B81 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A81;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A81;
+}
+
+public final class org/koin/benchmark/Perfs$B82 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A82;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A82;
+}
+
+public final class org/koin/benchmark/Perfs$B83 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A83;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A83;
+}
+
+public final class org/koin/benchmark/Perfs$B84 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A84;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A84;
+}
+
+public final class org/koin/benchmark/Perfs$B85 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A85;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A85;
+}
+
+public final class org/koin/benchmark/Perfs$B86 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A86;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A86;
+}
+
+public final class org/koin/benchmark/Perfs$B87 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A87;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A87;
+}
+
+public final class org/koin/benchmark/Perfs$B88 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A88;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A88;
+}
+
+public final class org/koin/benchmark/Perfs$B89 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A89;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A89;
+}
+
+public final class org/koin/benchmark/Perfs$B9 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A9;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A9;
+}
+
+public final class org/koin/benchmark/Perfs$B90 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A90;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A90;
+}
+
+public final class org/koin/benchmark/Perfs$B91 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A91;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A91;
+}
+
+public final class org/koin/benchmark/Perfs$B92 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A92;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A92;
+}
+
+public final class org/koin/benchmark/Perfs$B93 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A93;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A93;
+}
+
+public final class org/koin/benchmark/Perfs$B94 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A94;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A94;
+}
+
+public final class org/koin/benchmark/Perfs$B95 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A95;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A95;
+}
+
+public final class org/koin/benchmark/Perfs$B96 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A96;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A96;
+}
+
+public final class org/koin/benchmark/Perfs$B97 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A97;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A97;
+}
+
+public final class org/koin/benchmark/Perfs$B98 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A98;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A98;
+}
+
+public final class org/koin/benchmark/Perfs$B99 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A99;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A99;
+}
+
+public final class org/koin/benchmark/Perfs$C1 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A1;Lorg/koin/benchmark/Perfs$B1;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A1;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B1;
+}
+
+public final class org/koin/benchmark/Perfs$C10 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A10;Lorg/koin/benchmark/Perfs$B10;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A10;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B10;
+}
+
+public final class org/koin/benchmark/Perfs$C100 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A100;Lorg/koin/benchmark/Perfs$B100;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A100;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B100;
+}
+
+public final class org/koin/benchmark/Perfs$C11 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A11;Lorg/koin/benchmark/Perfs$B11;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A11;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B11;
+}
+
+public final class org/koin/benchmark/Perfs$C12 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A12;Lorg/koin/benchmark/Perfs$B12;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A12;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B12;
+}
+
+public final class org/koin/benchmark/Perfs$C13 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A13;Lorg/koin/benchmark/Perfs$B13;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A13;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B13;
+}
+
+public final class org/koin/benchmark/Perfs$C14 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A14;Lorg/koin/benchmark/Perfs$B14;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A14;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B14;
+}
+
+public final class org/koin/benchmark/Perfs$C15 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A15;Lorg/koin/benchmark/Perfs$B15;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A15;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B15;
+}
+
+public final class org/koin/benchmark/Perfs$C16 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A16;Lorg/koin/benchmark/Perfs$B16;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A16;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B16;
+}
+
+public final class org/koin/benchmark/Perfs$C17 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A17;Lorg/koin/benchmark/Perfs$B17;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A17;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B17;
+}
+
+public final class org/koin/benchmark/Perfs$C18 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A18;Lorg/koin/benchmark/Perfs$B18;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A18;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B18;
+}
+
+public final class org/koin/benchmark/Perfs$C19 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A19;Lorg/koin/benchmark/Perfs$B19;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A19;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B19;
+}
+
+public final class org/koin/benchmark/Perfs$C2 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A2;Lorg/koin/benchmark/Perfs$B2;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A2;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B2;
+}
+
+public final class org/koin/benchmark/Perfs$C20 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A20;Lorg/koin/benchmark/Perfs$B20;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A20;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B20;
+}
+
+public final class org/koin/benchmark/Perfs$C21 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A21;Lorg/koin/benchmark/Perfs$B21;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A21;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B21;
+}
+
+public final class org/koin/benchmark/Perfs$C22 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A22;Lorg/koin/benchmark/Perfs$B22;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A22;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B22;
+}
+
+public final class org/koin/benchmark/Perfs$C23 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A23;Lorg/koin/benchmark/Perfs$B23;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A23;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B23;
+}
+
+public final class org/koin/benchmark/Perfs$C24 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A24;Lorg/koin/benchmark/Perfs$B24;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A24;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B24;
+}
+
+public final class org/koin/benchmark/Perfs$C25 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A25;Lorg/koin/benchmark/Perfs$B25;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A25;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B25;
+}
+
+public final class org/koin/benchmark/Perfs$C26 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A26;Lorg/koin/benchmark/Perfs$B26;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A26;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B26;
+}
+
+public final class org/koin/benchmark/Perfs$C27 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A27;Lorg/koin/benchmark/Perfs$B27;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A27;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B27;
+}
+
+public final class org/koin/benchmark/Perfs$C28 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A28;Lorg/koin/benchmark/Perfs$B28;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A28;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B28;
+}
+
+public final class org/koin/benchmark/Perfs$C29 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A29;Lorg/koin/benchmark/Perfs$B29;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A29;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B29;
+}
+
+public final class org/koin/benchmark/Perfs$C3 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A3;Lorg/koin/benchmark/Perfs$B3;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A3;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B3;
+}
+
+public final class org/koin/benchmark/Perfs$C30 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A30;Lorg/koin/benchmark/Perfs$B30;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A30;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B30;
+}
+
+public final class org/koin/benchmark/Perfs$C31 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A31;Lorg/koin/benchmark/Perfs$B31;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A31;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B31;
+}
+
+public final class org/koin/benchmark/Perfs$C32 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A32;Lorg/koin/benchmark/Perfs$B32;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A32;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B32;
+}
+
+public final class org/koin/benchmark/Perfs$C33 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A33;Lorg/koin/benchmark/Perfs$B33;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A33;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B33;
+}
+
+public final class org/koin/benchmark/Perfs$C34 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A34;Lorg/koin/benchmark/Perfs$B34;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A34;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B34;
+}
+
+public final class org/koin/benchmark/Perfs$C35 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A35;Lorg/koin/benchmark/Perfs$B35;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A35;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B35;
+}
+
+public final class org/koin/benchmark/Perfs$C36 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A36;Lorg/koin/benchmark/Perfs$B36;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A36;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B36;
+}
+
+public final class org/koin/benchmark/Perfs$C37 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A37;Lorg/koin/benchmark/Perfs$B37;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A37;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B37;
+}
+
+public final class org/koin/benchmark/Perfs$C38 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A38;Lorg/koin/benchmark/Perfs$B38;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A38;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B38;
+}
+
+public final class org/koin/benchmark/Perfs$C39 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A39;Lorg/koin/benchmark/Perfs$B39;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A39;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B39;
+}
+
+public final class org/koin/benchmark/Perfs$C4 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A4;Lorg/koin/benchmark/Perfs$B4;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A4;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B4;
+}
+
+public final class org/koin/benchmark/Perfs$C40 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A40;Lorg/koin/benchmark/Perfs$B40;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A40;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B40;
+}
+
+public final class org/koin/benchmark/Perfs$C41 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A41;Lorg/koin/benchmark/Perfs$B41;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A41;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B41;
+}
+
+public final class org/koin/benchmark/Perfs$C42 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A42;Lorg/koin/benchmark/Perfs$B42;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A42;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B42;
+}
+
+public final class org/koin/benchmark/Perfs$C43 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A43;Lorg/koin/benchmark/Perfs$B43;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A43;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B43;
+}
+
+public final class org/koin/benchmark/Perfs$C44 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A44;Lorg/koin/benchmark/Perfs$B44;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A44;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B44;
+}
+
+public final class org/koin/benchmark/Perfs$C45 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A45;Lorg/koin/benchmark/Perfs$B45;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A45;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B45;
+}
+
+public final class org/koin/benchmark/Perfs$C46 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A46;Lorg/koin/benchmark/Perfs$B46;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A46;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B46;
+}
+
+public final class org/koin/benchmark/Perfs$C47 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A47;Lorg/koin/benchmark/Perfs$B47;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A47;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B47;
+}
+
+public final class org/koin/benchmark/Perfs$C48 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A48;Lorg/koin/benchmark/Perfs$B48;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A48;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B48;
+}
+
+public final class org/koin/benchmark/Perfs$C49 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A49;Lorg/koin/benchmark/Perfs$B49;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A49;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B49;
+}
+
+public final class org/koin/benchmark/Perfs$C5 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A5;Lorg/koin/benchmark/Perfs$B5;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A5;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B5;
+}
+
+public final class org/koin/benchmark/Perfs$C50 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A50;Lorg/koin/benchmark/Perfs$B50;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A50;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B50;
+}
+
+public final class org/koin/benchmark/Perfs$C51 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A51;Lorg/koin/benchmark/Perfs$B51;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A51;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B51;
+}
+
+public final class org/koin/benchmark/Perfs$C52 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A52;Lorg/koin/benchmark/Perfs$B52;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A52;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B52;
+}
+
+public final class org/koin/benchmark/Perfs$C53 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A53;Lorg/koin/benchmark/Perfs$B53;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A53;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B53;
+}
+
+public final class org/koin/benchmark/Perfs$C54 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A54;Lorg/koin/benchmark/Perfs$B54;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A54;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B54;
+}
+
+public final class org/koin/benchmark/Perfs$C55 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A55;Lorg/koin/benchmark/Perfs$B55;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A55;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B55;
+}
+
+public final class org/koin/benchmark/Perfs$C56 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A56;Lorg/koin/benchmark/Perfs$B56;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A56;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B56;
+}
+
+public final class org/koin/benchmark/Perfs$C57 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A57;Lorg/koin/benchmark/Perfs$B57;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A57;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B57;
+}
+
+public final class org/koin/benchmark/Perfs$C58 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A58;Lorg/koin/benchmark/Perfs$B58;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A58;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B58;
+}
+
+public final class org/koin/benchmark/Perfs$C59 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A59;Lorg/koin/benchmark/Perfs$B59;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A59;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B59;
+}
+
+public final class org/koin/benchmark/Perfs$C6 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A6;Lorg/koin/benchmark/Perfs$B6;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A6;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B6;
+}
+
+public final class org/koin/benchmark/Perfs$C60 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A60;Lorg/koin/benchmark/Perfs$B60;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A60;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B60;
+}
+
+public final class org/koin/benchmark/Perfs$C61 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A61;Lorg/koin/benchmark/Perfs$B61;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A61;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B61;
+}
+
+public final class org/koin/benchmark/Perfs$C62 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A62;Lorg/koin/benchmark/Perfs$B62;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A62;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B62;
+}
+
+public final class org/koin/benchmark/Perfs$C63 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A63;Lorg/koin/benchmark/Perfs$B63;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A63;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B63;
+}
+
+public final class org/koin/benchmark/Perfs$C64 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A64;Lorg/koin/benchmark/Perfs$B64;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A64;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B64;
+}
+
+public final class org/koin/benchmark/Perfs$C65 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A65;Lorg/koin/benchmark/Perfs$B65;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A65;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B65;
+}
+
+public final class org/koin/benchmark/Perfs$C66 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A66;Lorg/koin/benchmark/Perfs$B66;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A66;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B66;
+}
+
+public final class org/koin/benchmark/Perfs$C67 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A67;Lorg/koin/benchmark/Perfs$B67;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A67;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B67;
+}
+
+public final class org/koin/benchmark/Perfs$C68 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A68;Lorg/koin/benchmark/Perfs$B68;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A68;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B68;
+}
+
+public final class org/koin/benchmark/Perfs$C69 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A69;Lorg/koin/benchmark/Perfs$B69;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A69;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B69;
+}
+
+public final class org/koin/benchmark/Perfs$C7 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A7;Lorg/koin/benchmark/Perfs$B7;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A7;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B7;
+}
+
+public final class org/koin/benchmark/Perfs$C70 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A70;Lorg/koin/benchmark/Perfs$B70;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A70;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B70;
+}
+
+public final class org/koin/benchmark/Perfs$C71 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A71;Lorg/koin/benchmark/Perfs$B71;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A71;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B71;
+}
+
+public final class org/koin/benchmark/Perfs$C72 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A72;Lorg/koin/benchmark/Perfs$B72;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A72;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B72;
+}
+
+public final class org/koin/benchmark/Perfs$C73 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A73;Lorg/koin/benchmark/Perfs$B73;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A73;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B73;
+}
+
+public final class org/koin/benchmark/Perfs$C74 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A74;Lorg/koin/benchmark/Perfs$B74;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A74;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B74;
+}
+
+public final class org/koin/benchmark/Perfs$C75 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A75;Lorg/koin/benchmark/Perfs$B75;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A75;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B75;
+}
+
+public final class org/koin/benchmark/Perfs$C76 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A76;Lorg/koin/benchmark/Perfs$B76;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A76;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B76;
+}
+
+public final class org/koin/benchmark/Perfs$C77 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A77;Lorg/koin/benchmark/Perfs$B77;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A77;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B77;
+}
+
+public final class org/koin/benchmark/Perfs$C78 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A78;Lorg/koin/benchmark/Perfs$B78;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A78;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B78;
+}
+
+public final class org/koin/benchmark/Perfs$C79 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A79;Lorg/koin/benchmark/Perfs$B79;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A79;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B79;
+}
+
+public final class org/koin/benchmark/Perfs$C8 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A8;Lorg/koin/benchmark/Perfs$B8;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A8;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B8;
+}
+
+public final class org/koin/benchmark/Perfs$C80 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A80;Lorg/koin/benchmark/Perfs$B80;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A80;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B80;
+}
+
+public final class org/koin/benchmark/Perfs$C81 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A81;Lorg/koin/benchmark/Perfs$B81;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A81;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B81;
+}
+
+public final class org/koin/benchmark/Perfs$C82 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A82;Lorg/koin/benchmark/Perfs$B82;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A82;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B82;
+}
+
+public final class org/koin/benchmark/Perfs$C83 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A83;Lorg/koin/benchmark/Perfs$B83;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A83;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B83;
+}
+
+public final class org/koin/benchmark/Perfs$C84 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A84;Lorg/koin/benchmark/Perfs$B84;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A84;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B84;
+}
+
+public final class org/koin/benchmark/Perfs$C85 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A85;Lorg/koin/benchmark/Perfs$B85;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A85;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B85;
+}
+
+public final class org/koin/benchmark/Perfs$C86 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A86;Lorg/koin/benchmark/Perfs$B86;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A86;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B86;
+}
+
+public final class org/koin/benchmark/Perfs$C87 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A87;Lorg/koin/benchmark/Perfs$B87;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A87;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B87;
+}
+
+public final class org/koin/benchmark/Perfs$C88 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A88;Lorg/koin/benchmark/Perfs$B88;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A88;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B88;
+}
+
+public final class org/koin/benchmark/Perfs$C89 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A89;Lorg/koin/benchmark/Perfs$B89;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A89;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B89;
+}
+
+public final class org/koin/benchmark/Perfs$C9 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A9;Lorg/koin/benchmark/Perfs$B9;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A9;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B9;
+}
+
+public final class org/koin/benchmark/Perfs$C90 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A90;Lorg/koin/benchmark/Perfs$B90;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A90;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B90;
+}
+
+public final class org/koin/benchmark/Perfs$C91 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A91;Lorg/koin/benchmark/Perfs$B91;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A91;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B91;
+}
+
+public final class org/koin/benchmark/Perfs$C92 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A92;Lorg/koin/benchmark/Perfs$B92;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A92;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B92;
+}
+
+public final class org/koin/benchmark/Perfs$C93 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A93;Lorg/koin/benchmark/Perfs$B93;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A93;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B93;
+}
+
+public final class org/koin/benchmark/Perfs$C94 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A94;Lorg/koin/benchmark/Perfs$B94;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A94;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B94;
+}
+
+public final class org/koin/benchmark/Perfs$C95 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A95;Lorg/koin/benchmark/Perfs$B95;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A95;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B95;
+}
+
+public final class org/koin/benchmark/Perfs$C96 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A96;Lorg/koin/benchmark/Perfs$B96;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A96;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B96;
+}
+
+public final class org/koin/benchmark/Perfs$C97 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A97;Lorg/koin/benchmark/Perfs$B97;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A97;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B97;
+}
+
+public final class org/koin/benchmark/Perfs$C98 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A98;Lorg/koin/benchmark/Perfs$B98;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A98;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B98;
+}
+
+public final class org/koin/benchmark/Perfs$C99 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A99;Lorg/koin/benchmark/Perfs$B99;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A99;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B99;
+}
+
+public final class org/koin/benchmark/Perfs$D1 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A1;Lorg/koin/benchmark/Perfs$B1;Lorg/koin/benchmark/Perfs$C1;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A1;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B1;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C1;
+}
+
+public final class org/koin/benchmark/Perfs$D10 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A10;Lorg/koin/benchmark/Perfs$B10;Lorg/koin/benchmark/Perfs$C10;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A10;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B10;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C10;
+}
+
+public final class org/koin/benchmark/Perfs$D100 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A100;Lorg/koin/benchmark/Perfs$B100;Lorg/koin/benchmark/Perfs$C100;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A100;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B100;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C100;
+}
+
+public final class org/koin/benchmark/Perfs$D11 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A11;Lorg/koin/benchmark/Perfs$B11;Lorg/koin/benchmark/Perfs$C11;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A11;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B11;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C11;
+}
+
+public final class org/koin/benchmark/Perfs$D12 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A12;Lorg/koin/benchmark/Perfs$B12;Lorg/koin/benchmark/Perfs$C12;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A12;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B12;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C12;
+}
+
+public final class org/koin/benchmark/Perfs$D13 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A13;Lorg/koin/benchmark/Perfs$B13;Lorg/koin/benchmark/Perfs$C13;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A13;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B13;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C13;
+}
+
+public final class org/koin/benchmark/Perfs$D14 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A14;Lorg/koin/benchmark/Perfs$B14;Lorg/koin/benchmark/Perfs$C14;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A14;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B14;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C14;
+}
+
+public final class org/koin/benchmark/Perfs$D15 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A15;Lorg/koin/benchmark/Perfs$B15;Lorg/koin/benchmark/Perfs$C15;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A15;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B15;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C15;
+}
+
+public final class org/koin/benchmark/Perfs$D16 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A16;Lorg/koin/benchmark/Perfs$B16;Lorg/koin/benchmark/Perfs$C16;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A16;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B16;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C16;
+}
+
+public final class org/koin/benchmark/Perfs$D17 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A17;Lorg/koin/benchmark/Perfs$B17;Lorg/koin/benchmark/Perfs$C17;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A17;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B17;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C17;
+}
+
+public final class org/koin/benchmark/Perfs$D18 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A18;Lorg/koin/benchmark/Perfs$B18;Lorg/koin/benchmark/Perfs$C18;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A18;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B18;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C18;
+}
+
+public final class org/koin/benchmark/Perfs$D19 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A19;Lorg/koin/benchmark/Perfs$B19;Lorg/koin/benchmark/Perfs$C19;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A19;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B19;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C19;
+}
+
+public final class org/koin/benchmark/Perfs$D2 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A2;Lorg/koin/benchmark/Perfs$B2;Lorg/koin/benchmark/Perfs$C2;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A2;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B2;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C2;
+}
+
+public final class org/koin/benchmark/Perfs$D20 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A20;Lorg/koin/benchmark/Perfs$B20;Lorg/koin/benchmark/Perfs$C20;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A20;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B20;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C20;
+}
+
+public final class org/koin/benchmark/Perfs$D21 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A21;Lorg/koin/benchmark/Perfs$B21;Lorg/koin/benchmark/Perfs$C21;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A21;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B21;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C21;
+}
+
+public final class org/koin/benchmark/Perfs$D22 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A22;Lorg/koin/benchmark/Perfs$B22;Lorg/koin/benchmark/Perfs$C22;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A22;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B22;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C22;
+}
+
+public final class org/koin/benchmark/Perfs$D23 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A23;Lorg/koin/benchmark/Perfs$B23;Lorg/koin/benchmark/Perfs$C23;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A23;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B23;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C23;
+}
+
+public final class org/koin/benchmark/Perfs$D24 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A24;Lorg/koin/benchmark/Perfs$B24;Lorg/koin/benchmark/Perfs$C24;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A24;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B24;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C24;
+}
+
+public final class org/koin/benchmark/Perfs$D25 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A25;Lorg/koin/benchmark/Perfs$B25;Lorg/koin/benchmark/Perfs$C25;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A25;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B25;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C25;
+}
+
+public final class org/koin/benchmark/Perfs$D26 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A26;Lorg/koin/benchmark/Perfs$B26;Lorg/koin/benchmark/Perfs$C26;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A26;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B26;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C26;
+}
+
+public final class org/koin/benchmark/Perfs$D27 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A27;Lorg/koin/benchmark/Perfs$B27;Lorg/koin/benchmark/Perfs$C27;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A27;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B27;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C27;
+}
+
+public final class org/koin/benchmark/Perfs$D28 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A28;Lorg/koin/benchmark/Perfs$B28;Lorg/koin/benchmark/Perfs$C28;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A28;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B28;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C28;
+}
+
+public final class org/koin/benchmark/Perfs$D29 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A29;Lorg/koin/benchmark/Perfs$B29;Lorg/koin/benchmark/Perfs$C29;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A29;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B29;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C29;
+}
+
+public final class org/koin/benchmark/Perfs$D3 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A3;Lorg/koin/benchmark/Perfs$B3;Lorg/koin/benchmark/Perfs$C3;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A3;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B3;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C3;
+}
+
+public final class org/koin/benchmark/Perfs$D30 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A30;Lorg/koin/benchmark/Perfs$B30;Lorg/koin/benchmark/Perfs$C30;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A30;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B30;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C30;
+}
+
+public final class org/koin/benchmark/Perfs$D31 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A31;Lorg/koin/benchmark/Perfs$B31;Lorg/koin/benchmark/Perfs$C31;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A31;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B31;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C31;
+}
+
+public final class org/koin/benchmark/Perfs$D32 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A32;Lorg/koin/benchmark/Perfs$B32;Lorg/koin/benchmark/Perfs$C32;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A32;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B32;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C32;
+}
+
+public final class org/koin/benchmark/Perfs$D33 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A33;Lorg/koin/benchmark/Perfs$B33;Lorg/koin/benchmark/Perfs$C33;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A33;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B33;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C33;
+}
+
+public final class org/koin/benchmark/Perfs$D34 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A34;Lorg/koin/benchmark/Perfs$B34;Lorg/koin/benchmark/Perfs$C34;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A34;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B34;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C34;
+}
+
+public final class org/koin/benchmark/Perfs$D35 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A35;Lorg/koin/benchmark/Perfs$B35;Lorg/koin/benchmark/Perfs$C35;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A35;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B35;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C35;
+}
+
+public final class org/koin/benchmark/Perfs$D36 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A36;Lorg/koin/benchmark/Perfs$B36;Lorg/koin/benchmark/Perfs$C36;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A36;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B36;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C36;
+}
+
+public final class org/koin/benchmark/Perfs$D37 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A37;Lorg/koin/benchmark/Perfs$B37;Lorg/koin/benchmark/Perfs$C37;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A37;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B37;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C37;
+}
+
+public final class org/koin/benchmark/Perfs$D38 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A38;Lorg/koin/benchmark/Perfs$B38;Lorg/koin/benchmark/Perfs$C38;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A38;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B38;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C38;
+}
+
+public final class org/koin/benchmark/Perfs$D39 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A39;Lorg/koin/benchmark/Perfs$B39;Lorg/koin/benchmark/Perfs$C39;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A39;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B39;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C39;
+}
+
+public final class org/koin/benchmark/Perfs$D4 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A4;Lorg/koin/benchmark/Perfs$B4;Lorg/koin/benchmark/Perfs$C4;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A4;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B4;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C4;
+}
+
+public final class org/koin/benchmark/Perfs$D40 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A40;Lorg/koin/benchmark/Perfs$B40;Lorg/koin/benchmark/Perfs$C40;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A40;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B40;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C40;
+}
+
+public final class org/koin/benchmark/Perfs$D41 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A41;Lorg/koin/benchmark/Perfs$B41;Lorg/koin/benchmark/Perfs$C41;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A41;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B41;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C41;
+}
+
+public final class org/koin/benchmark/Perfs$D42 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A42;Lorg/koin/benchmark/Perfs$B42;Lorg/koin/benchmark/Perfs$C42;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A42;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B42;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C42;
+}
+
+public final class org/koin/benchmark/Perfs$D43 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A43;Lorg/koin/benchmark/Perfs$B43;Lorg/koin/benchmark/Perfs$C43;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A43;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B43;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C43;
+}
+
+public final class org/koin/benchmark/Perfs$D44 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A44;Lorg/koin/benchmark/Perfs$B44;Lorg/koin/benchmark/Perfs$C44;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A44;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B44;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C44;
+}
+
+public final class org/koin/benchmark/Perfs$D45 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A45;Lorg/koin/benchmark/Perfs$B45;Lorg/koin/benchmark/Perfs$C45;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A45;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B45;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C45;
+}
+
+public final class org/koin/benchmark/Perfs$D46 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A46;Lorg/koin/benchmark/Perfs$B46;Lorg/koin/benchmark/Perfs$C46;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A46;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B46;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C46;
+}
+
+public final class org/koin/benchmark/Perfs$D47 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A47;Lorg/koin/benchmark/Perfs$B47;Lorg/koin/benchmark/Perfs$C47;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A47;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B47;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C47;
+}
+
+public final class org/koin/benchmark/Perfs$D48 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A48;Lorg/koin/benchmark/Perfs$B48;Lorg/koin/benchmark/Perfs$C48;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A48;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B48;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C48;
+}
+
+public final class org/koin/benchmark/Perfs$D49 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A49;Lorg/koin/benchmark/Perfs$B49;Lorg/koin/benchmark/Perfs$C49;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A49;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B49;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C49;
+}
+
+public final class org/koin/benchmark/Perfs$D5 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A5;Lorg/koin/benchmark/Perfs$B5;Lorg/koin/benchmark/Perfs$C5;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A5;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B5;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C5;
+}
+
+public final class org/koin/benchmark/Perfs$D50 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A50;Lorg/koin/benchmark/Perfs$B50;Lorg/koin/benchmark/Perfs$C50;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A50;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B50;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C50;
+}
+
+public final class org/koin/benchmark/Perfs$D51 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A51;Lorg/koin/benchmark/Perfs$B51;Lorg/koin/benchmark/Perfs$C51;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A51;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B51;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C51;
+}
+
+public final class org/koin/benchmark/Perfs$D52 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A52;Lorg/koin/benchmark/Perfs$B52;Lorg/koin/benchmark/Perfs$C52;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A52;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B52;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C52;
+}
+
+public final class org/koin/benchmark/Perfs$D53 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A53;Lorg/koin/benchmark/Perfs$B53;Lorg/koin/benchmark/Perfs$C53;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A53;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B53;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C53;
+}
+
+public final class org/koin/benchmark/Perfs$D54 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A54;Lorg/koin/benchmark/Perfs$B54;Lorg/koin/benchmark/Perfs$C54;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A54;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B54;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C54;
+}
+
+public final class org/koin/benchmark/Perfs$D55 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A55;Lorg/koin/benchmark/Perfs$B55;Lorg/koin/benchmark/Perfs$C55;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A55;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B55;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C55;
+}
+
+public final class org/koin/benchmark/Perfs$D56 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A56;Lorg/koin/benchmark/Perfs$B56;Lorg/koin/benchmark/Perfs$C56;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A56;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B56;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C56;
+}
+
+public final class org/koin/benchmark/Perfs$D57 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A57;Lorg/koin/benchmark/Perfs$B57;Lorg/koin/benchmark/Perfs$C57;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A57;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B57;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C57;
+}
+
+public final class org/koin/benchmark/Perfs$D58 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A58;Lorg/koin/benchmark/Perfs$B58;Lorg/koin/benchmark/Perfs$C58;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A58;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B58;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C58;
+}
+
+public final class org/koin/benchmark/Perfs$D59 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A59;Lorg/koin/benchmark/Perfs$B59;Lorg/koin/benchmark/Perfs$C59;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A59;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B59;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C59;
+}
+
+public final class org/koin/benchmark/Perfs$D6 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A6;Lorg/koin/benchmark/Perfs$B6;Lorg/koin/benchmark/Perfs$C6;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A6;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B6;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C6;
+}
+
+public final class org/koin/benchmark/Perfs$D60 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A60;Lorg/koin/benchmark/Perfs$B60;Lorg/koin/benchmark/Perfs$C60;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A60;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B60;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C60;
+}
+
+public final class org/koin/benchmark/Perfs$D61 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A61;Lorg/koin/benchmark/Perfs$B61;Lorg/koin/benchmark/Perfs$C61;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A61;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B61;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C61;
+}
+
+public final class org/koin/benchmark/Perfs$D62 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A62;Lorg/koin/benchmark/Perfs$B62;Lorg/koin/benchmark/Perfs$C62;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A62;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B62;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C62;
+}
+
+public final class org/koin/benchmark/Perfs$D63 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A63;Lorg/koin/benchmark/Perfs$B63;Lorg/koin/benchmark/Perfs$C63;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A63;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B63;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C63;
+}
+
+public final class org/koin/benchmark/Perfs$D64 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A64;Lorg/koin/benchmark/Perfs$B64;Lorg/koin/benchmark/Perfs$C64;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A64;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B64;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C64;
+}
+
+public final class org/koin/benchmark/Perfs$D65 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A65;Lorg/koin/benchmark/Perfs$B65;Lorg/koin/benchmark/Perfs$C65;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A65;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B65;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C65;
+}
+
+public final class org/koin/benchmark/Perfs$D66 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A66;Lorg/koin/benchmark/Perfs$B66;Lorg/koin/benchmark/Perfs$C66;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A66;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B66;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C66;
+}
+
+public final class org/koin/benchmark/Perfs$D67 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A67;Lorg/koin/benchmark/Perfs$B67;Lorg/koin/benchmark/Perfs$C67;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A67;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B67;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C67;
+}
+
+public final class org/koin/benchmark/Perfs$D68 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A68;Lorg/koin/benchmark/Perfs$B68;Lorg/koin/benchmark/Perfs$C68;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A68;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B68;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C68;
+}
+
+public final class org/koin/benchmark/Perfs$D69 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A69;Lorg/koin/benchmark/Perfs$B69;Lorg/koin/benchmark/Perfs$C69;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A69;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B69;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C69;
+}
+
+public final class org/koin/benchmark/Perfs$D7 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A7;Lorg/koin/benchmark/Perfs$B7;Lorg/koin/benchmark/Perfs$C7;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A7;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B7;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C7;
+}
+
+public final class org/koin/benchmark/Perfs$D70 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A70;Lorg/koin/benchmark/Perfs$B70;Lorg/koin/benchmark/Perfs$C70;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A70;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B70;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C70;
+}
+
+public final class org/koin/benchmark/Perfs$D71 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A71;Lorg/koin/benchmark/Perfs$B71;Lorg/koin/benchmark/Perfs$C71;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A71;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B71;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C71;
+}
+
+public final class org/koin/benchmark/Perfs$D72 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A72;Lorg/koin/benchmark/Perfs$B72;Lorg/koin/benchmark/Perfs$C72;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A72;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B72;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C72;
+}
+
+public final class org/koin/benchmark/Perfs$D73 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A73;Lorg/koin/benchmark/Perfs$B73;Lorg/koin/benchmark/Perfs$C73;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A73;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B73;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C73;
+}
+
+public final class org/koin/benchmark/Perfs$D74 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A74;Lorg/koin/benchmark/Perfs$B74;Lorg/koin/benchmark/Perfs$C74;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A74;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B74;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C74;
+}
+
+public final class org/koin/benchmark/Perfs$D75 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A75;Lorg/koin/benchmark/Perfs$B75;Lorg/koin/benchmark/Perfs$C75;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A75;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B75;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C75;
+}
+
+public final class org/koin/benchmark/Perfs$D76 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A76;Lorg/koin/benchmark/Perfs$B76;Lorg/koin/benchmark/Perfs$C76;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A76;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B76;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C76;
+}
+
+public final class org/koin/benchmark/Perfs$D77 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A77;Lorg/koin/benchmark/Perfs$B77;Lorg/koin/benchmark/Perfs$C77;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A77;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B77;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C77;
+}
+
+public final class org/koin/benchmark/Perfs$D78 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A78;Lorg/koin/benchmark/Perfs$B78;Lorg/koin/benchmark/Perfs$C78;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A78;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B78;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C78;
+}
+
+public final class org/koin/benchmark/Perfs$D79 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A79;Lorg/koin/benchmark/Perfs$B79;Lorg/koin/benchmark/Perfs$C79;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A79;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B79;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C79;
+}
+
+public final class org/koin/benchmark/Perfs$D8 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A8;Lorg/koin/benchmark/Perfs$B8;Lorg/koin/benchmark/Perfs$C8;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A8;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B8;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C8;
+}
+
+public final class org/koin/benchmark/Perfs$D80 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A80;Lorg/koin/benchmark/Perfs$B80;Lorg/koin/benchmark/Perfs$C80;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A80;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B80;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C80;
+}
+
+public final class org/koin/benchmark/Perfs$D81 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A81;Lorg/koin/benchmark/Perfs$B81;Lorg/koin/benchmark/Perfs$C81;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A81;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B81;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C81;
+}
+
+public final class org/koin/benchmark/Perfs$D82 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A82;Lorg/koin/benchmark/Perfs$B82;Lorg/koin/benchmark/Perfs$C82;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A82;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B82;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C82;
+}
+
+public final class org/koin/benchmark/Perfs$D83 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A83;Lorg/koin/benchmark/Perfs$B83;Lorg/koin/benchmark/Perfs$C83;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A83;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B83;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C83;
+}
+
+public final class org/koin/benchmark/Perfs$D84 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A84;Lorg/koin/benchmark/Perfs$B84;Lorg/koin/benchmark/Perfs$C84;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A84;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B84;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C84;
+}
+
+public final class org/koin/benchmark/Perfs$D85 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A85;Lorg/koin/benchmark/Perfs$B85;Lorg/koin/benchmark/Perfs$C85;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A85;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B85;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C85;
+}
+
+public final class org/koin/benchmark/Perfs$D86 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A86;Lorg/koin/benchmark/Perfs$B86;Lorg/koin/benchmark/Perfs$C86;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A86;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B86;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C86;
+}
+
+public final class org/koin/benchmark/Perfs$D87 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A87;Lorg/koin/benchmark/Perfs$B87;Lorg/koin/benchmark/Perfs$C87;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A87;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B87;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C87;
+}
+
+public final class org/koin/benchmark/Perfs$D88 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A88;Lorg/koin/benchmark/Perfs$B88;Lorg/koin/benchmark/Perfs$C88;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A88;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B88;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C88;
+}
+
+public final class org/koin/benchmark/Perfs$D89 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A89;Lorg/koin/benchmark/Perfs$B89;Lorg/koin/benchmark/Perfs$C89;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A89;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B89;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C89;
+}
+
+public final class org/koin/benchmark/Perfs$D9 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A9;Lorg/koin/benchmark/Perfs$B9;Lorg/koin/benchmark/Perfs$C9;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A9;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B9;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C9;
+}
+
+public final class org/koin/benchmark/Perfs$D90 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A90;Lorg/koin/benchmark/Perfs$B90;Lorg/koin/benchmark/Perfs$C90;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A90;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B90;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C90;
+}
+
+public final class org/koin/benchmark/Perfs$D91 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A91;Lorg/koin/benchmark/Perfs$B91;Lorg/koin/benchmark/Perfs$C91;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A91;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B91;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C91;
+}
+
+public final class org/koin/benchmark/Perfs$D92 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A92;Lorg/koin/benchmark/Perfs$B92;Lorg/koin/benchmark/Perfs$C92;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A92;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B92;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C92;
+}
+
+public final class org/koin/benchmark/Perfs$D93 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A93;Lorg/koin/benchmark/Perfs$B93;Lorg/koin/benchmark/Perfs$C93;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A93;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B93;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C93;
+}
+
+public final class org/koin/benchmark/Perfs$D94 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A94;Lorg/koin/benchmark/Perfs$B94;Lorg/koin/benchmark/Perfs$C94;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A94;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B94;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C94;
+}
+
+public final class org/koin/benchmark/Perfs$D95 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A95;Lorg/koin/benchmark/Perfs$B95;Lorg/koin/benchmark/Perfs$C95;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A95;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B95;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C95;
+}
+
+public final class org/koin/benchmark/Perfs$D96 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A96;Lorg/koin/benchmark/Perfs$B96;Lorg/koin/benchmark/Perfs$C96;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A96;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B96;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C96;
+}
+
+public final class org/koin/benchmark/Perfs$D97 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A97;Lorg/koin/benchmark/Perfs$B97;Lorg/koin/benchmark/Perfs$C97;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A97;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B97;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C97;
+}
+
+public final class org/koin/benchmark/Perfs$D98 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A98;Lorg/koin/benchmark/Perfs$B98;Lorg/koin/benchmark/Perfs$C98;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A98;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B98;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C98;
+}
+
+public final class org/koin/benchmark/Perfs$D99 {
+	public fun <init> (Lorg/koin/benchmark/Perfs$A99;Lorg/koin/benchmark/Perfs$B99;Lorg/koin/benchmark/Perfs$C99;)V
+	public final fun getA ()Lorg/koin/benchmark/Perfs$A99;
+	public final fun getB ()Lorg/koin/benchmark/Perfs$B99;
+	public final fun getC ()Lorg/koin/benchmark/Perfs$C99;
+}
+
+public class org/koin/benchmark/StartupBenchmark {
+	public fun <init> ()V
+	public fun setUp ()V
+	public fun startupKoinWith400 ()V
+	public fun startupKoinWith400Fun ()V
+}
+

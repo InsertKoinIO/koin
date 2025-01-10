@@ -64,3 +64,20 @@ koin.runOnKoinStarted { koin ->
 :::info
     Default dispatcher for coroutines engine is `Dispatchers.Default`
 :::
+
+### Limitation - Mixing Modules/Lazy Modules
+
+For now we advise to avoid mixing modules & lazy modules, in the startup. Avoid having `mainModule` requiring dependency in `lazyReporter`.
+
+```kotlin
+startKoin {
+    androidLogger()
+    androidContext(this@TestApp)
+    modules(mainModule)
+    lazyModules(lazyReporter)
+}
+```
+
+:::warning
+For now Koin doesn't check if your module depends on a lazy modules
+:::

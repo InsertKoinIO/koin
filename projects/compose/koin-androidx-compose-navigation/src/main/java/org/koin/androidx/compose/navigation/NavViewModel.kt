@@ -26,7 +26,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import org.koin.viewmodel.defaultNavExtras
+import org.koin.viewmodel.defaultExtras
 import org.koin.viewmodel.resolveViewModel
 
 /**
@@ -38,6 +38,7 @@ import org.koin.viewmodel.resolveViewModel
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
+@Deprecated("koinViewModel() can be used instead of koinNavViewModel(), as it's embedding nav backstack arguments")
 @Composable
 inline fun <reified T : ViewModel> koinNavViewModel(
     qualifier: Qualifier? = null,
@@ -45,7 +46,7 @@ inline fun <reified T : ViewModel> koinNavViewModel(
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
     },
     key: String? = null,
-    extras: CreationExtras = defaultNavExtras(viewModelStoreOwner),
+    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
 ): T {

@@ -37,7 +37,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":compose:koin-compose-viewmodel"))
-            api(project(":core:koin-core-viewmodel-navigation"))
+//            api(project(":core:koin-core-viewmodel-navigation"))
             api(libs.jb.composeNavigation)
         }
     }

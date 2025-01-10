@@ -3,13 +3,13 @@ package org.koin.sample
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.callloging.CallLogging
+//import io.ktor.server.plugins.+calllogging.CallLogging
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.core.logger.Level
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.*
-import org.koin.logger.slf4jLogger
 
 fun main(args: Array<String>) {
     embeddedServer(Netty, port = 8080) {

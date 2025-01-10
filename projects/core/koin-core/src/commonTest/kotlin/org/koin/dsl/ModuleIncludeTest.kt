@@ -1,11 +1,12 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class ModuleIncludeTest {
+class ModuleIncludeTest : KoinCoreTest() {
 
     @Test
     fun test_include() {

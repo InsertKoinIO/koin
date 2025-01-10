@@ -96,9 +96,7 @@ public final class org/koin/androidx/scope/ComponentActivityExtKt {
 	public static final fun createActivityScope (Landroidx/activity/ComponentActivity;)Lorg/koin/core/scope/Scope;
 	public static final fun createScope (Landroidx/activity/ComponentActivity;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun createScope$default (Landroidx/activity/ComponentActivity;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
-	public static final fun getRetainedScopeOrNull (Landroidx/activity/ComponentActivity;)Lorg/koin/core/scope/Scope;
 	public static final fun getScopeOrNull (Landroidx/activity/ComponentActivity;)Lorg/koin/core/scope/Scope;
-	public static final fun retainedScopeId (Landroidx/activity/ComponentActivity;)Ljava/lang/String;
 }
 
 public final class org/koin/androidx/scope/FragmentExtKt {

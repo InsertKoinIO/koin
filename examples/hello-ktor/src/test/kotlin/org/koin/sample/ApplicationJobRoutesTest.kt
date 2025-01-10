@@ -8,6 +8,7 @@ import io.ktor.server.testing.*
 import org.junit.Before
 import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
+import kotlin.test.Ignore
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

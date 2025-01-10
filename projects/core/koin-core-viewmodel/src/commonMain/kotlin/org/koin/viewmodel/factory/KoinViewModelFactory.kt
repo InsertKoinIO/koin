@@ -18,6 +18,7 @@ package org.koin.viewmodel.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -34,8 +35,9 @@ class KoinViewModelFactory(
     private val params: ParametersDefinition? = null
 ) : ViewModelProvider.Factory {
 
+    @OptIn(KoinInternalApi::class)
     override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
         val androidParams = AndroidParametersHolder(params, extras)
-        return scope.get(kClass, qualifier) { androidParams }
+        return scope.getWithParameters(kClass, qualifier, androidParams)
     }
 }

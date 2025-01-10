@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
@@ -9,12 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CreateOnStart {
-
-    @AfterTest
-    fun after() {
-        stopKoin()
-    }
+class CreateOnStart : KoinCoreTest() {
 
     @Test
     fun `works with koin 2_2_3 and koin 3_0_2 breaks with koin 3_1_4`() {

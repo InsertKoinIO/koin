@@ -36,7 +36,7 @@ class BeanDefinition<T>(
     var qualifier: Qualifier? = null,
     val definition: Definition<T>,
     val kind: Kind,
-    var secondaryTypes: List<KClass<*>> = listOf(),
+    var secondaryTypes: List<KClass<*>> = emptyList(),
 ) {
     var callbacks: Callbacks<T> = Callbacks()
 
@@ -124,6 +124,22 @@ inline fun <reified T> _createDefinition(
         T::class,
         qualifier,
         definition,
+        kind,
+        secondaryTypes = secondaryTypes,
+    )
+}
+
+inline fun <reified T> _createDeclaredDefinition(
+    kind: Kind = Kind.Singleton,
+    qualifier: Qualifier? = null,
+    secondaryTypes: List<KClass<*>> = emptyList(),
+    scopeQualifier: Qualifier,
+): BeanDefinition<T> {
+    return BeanDefinition(
+        scopeQualifier,
+        T::class,
+        qualifier,
+        { error("declared instance error ") },
         kind,
         secondaryTypes = secondaryTypes,
     )

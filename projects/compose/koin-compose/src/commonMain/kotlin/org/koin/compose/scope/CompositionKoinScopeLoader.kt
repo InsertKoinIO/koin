@@ -16,7 +16,6 @@
 package org.koin.compose.scope
 
 import androidx.compose.runtime.RememberObserver
-import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
@@ -24,8 +23,7 @@ import org.koin.core.scope.Scope
 @KoinExperimentalAPI
 @KoinInternalApi
 class CompositionKoinScopeLoader(
-    val scope: Scope,
-    val koin : Koin
+    val scope: Scope
 ) : RememberObserver {
 
     override fun onRemembered() {
@@ -41,7 +39,9 @@ class CompositionKoinScopeLoader(
     }
 
     private fun close() {
-        koin.logger.debug("$this -> close scope id: '${scope.id}'")
-        scope.close()
+        if (!scope.isRoot && !(scope.closed)){
+            scope.logger.debug("CompositionKoinScopeLoader close scope: '${scope.id}'")
+            scope.close()
+        }
     }
 }

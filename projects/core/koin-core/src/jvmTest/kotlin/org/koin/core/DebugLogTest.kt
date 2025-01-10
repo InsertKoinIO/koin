@@ -1,13 +1,14 @@
 package org.koin.core
 
 import org.junit.Test
+import org.koin.KoinCoreTest
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 
 @OptIn(KoinInternalApi::class)
-class DebugLogTest {
+class DebugLogTest : KoinCoreTest(){
 
     @Test
     fun fasterDebug() {
@@ -15,7 +16,7 @@ class DebugLogTest {
             printLogger(Level.INFO)
         }.koin
 
-        (1..10).forEach {
+        for (index in 1..10) {
             measureDuration("with if") {
                 if (koin.logger.isAt(Level.DEBUG)) {
                     koin.logger.debug(message { "test me" })

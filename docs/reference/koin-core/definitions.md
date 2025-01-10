@@ -221,6 +221,17 @@ val presenter : Presenter by inject { parametersOf(view) }
 
 Further reading in the [Injection Parameters Section](/docs/reference/koin-core/injection-parameters)
 
+## Definition Termination - OnClose
+
+You can use the `onClose` function, to add on a definition, the callback once definition closing is called:
+
+```kotlin
+class Presenter(val view : View)
+
+val myModule = module {
+    factory { (view : View) -> Presenter(view) } onClose { // closing callback - it is Presenter }
+}
+```
 
 ## Using definition flags
 
