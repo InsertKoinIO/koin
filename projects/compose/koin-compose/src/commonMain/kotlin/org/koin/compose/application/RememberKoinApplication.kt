@@ -19,9 +19,12 @@ package org.koin.compose.application
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import org.koin.compose.composeMultiplatformConfiguration
 import org.koin.core.Koin
-import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.logger.Level
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.koinApplication
 
 /**
  * Remember Koin Application to handle its closure if necessary
@@ -32,9 +35,10 @@ import org.koin.core.annotation.KoinInternalApi
  */
 @OptIn(KoinInternalApi::class)
 @Composable
-inline fun rememberKoinApplication(koinApplication: KoinApplication): Koin {
-    val wrapper = remember {
-        CompositionKoinApplicationLoader(koinApplication)
+inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclaration, logLevel: Level): Koin {
+    val configuration = composeMultiplatformConfiguration(logLevel, config = koinAppDeclaration)
+    val wrapper = remember(koinAppDeclaration,logLevel) {
+        CompositionKoinApplicationLoader(koinApplication(configuration))
     }
     return wrapper.koin ?: error("Koin context has not been initialized in rememberKoinApplication")
 }
