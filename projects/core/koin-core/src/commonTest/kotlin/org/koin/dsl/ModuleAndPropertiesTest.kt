@@ -1,12 +1,13 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.error.InstanceCreationException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-class ModuleAndPropertiesTest {
+class ModuleAndPropertiesTest : KoinCoreTest() {
 
     @Test
     fun `get a property from a module`() {

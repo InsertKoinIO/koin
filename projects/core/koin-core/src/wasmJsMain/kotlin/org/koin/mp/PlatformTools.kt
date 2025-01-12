@@ -16,6 +16,8 @@
 
 package org.koin.mp
 
+import co.touchlab.stately.collections.ConcurrentMutableMap
+import co.touchlab.stately.collections.ConcurrentMutableSet
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.KoinContext
 import org.koin.core.logger.*
@@ -30,6 +32,6 @@ actual object KoinPlatformTools {
     actual fun defaultLogger(level: Level): Logger = PrintLogger(level)
     actual fun defaultContext(): KoinContext = GlobalContext
     actual fun <R> synchronized(lock: Lockable, block: () -> R) = block()
-    actual fun <K, V> safeHashMap(): MutableMap<K, V> = HashMap()
-    actual fun <K> safeSet(): MutableSet<K> = mutableSetOf()
+    actual fun <K, V> safeHashMap(): MutableMap<K, V> = ConcurrentMutableMap()
+    actual fun <K> safeSet(): MutableSet<K> = ConcurrentMutableSet()
 }

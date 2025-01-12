@@ -72,19 +72,16 @@ startKoin {
 }
 ```
 
-## Start Koin with Androidx Startup (4.0)
+## Start Koin with Androidx Startup (4.0.1)
 
-By using Gradle packge `koin-androidx-startup`, we can use `onKoinStartup` function durectly in `init` block of your Application class:
+By using Gradle packge `koin-androidx-startup`, we can use `KoinStartup` interface to declare your Koin configuration your Application class:
 
 ```kotlin
-class MainApplication : Application() {
+class MainApplication : Application(),KoinStartup {
 
-    init {
-        // Use AndroidX Startup for Koin
-        onKoinStartup {
-            androidContext(this@MainApplication)
-            modules(allModules)
-        }
+     override fun onKoinStartup(): KoinAppDeclaration = {
+        androidContext(this@MainApplication)
+        modules(appModule)
     }
 
     override fun onCreate() {
@@ -96,5 +93,25 @@ class MainApplication : Application() {
 This replaces the `startKoin` function that is usally used in `onCreate`. 
 
 :::info
-Gain over from `onKoinStartup` to regular `startKoin` can go over 30% of time gained, for startup time.
+`KoinStartup` avoid blocking main thread at for startup time, and offers better performances.
 :::
+
+## Startup Dependency with Koin
+
+You can make your `Initializer` depend on `KoinInitializer` if you need Koin to be setup, and allow to inject dependencies:
+
+```kotlin
+class CrashTrackerInitializer : Initializer<Unit>, KoinComponent {
+
+    private val crashTrackerService: CrashTrackerService by inject()
+
+    override fun create(context: Context) {
+        crashTrackerService.configure(context)
+    }
+
+    override fun dependencies(): List<Class<out Initializer<*>>> {
+        return listOf(KoinInitializer::class.java)
+    }
+
+}
+```

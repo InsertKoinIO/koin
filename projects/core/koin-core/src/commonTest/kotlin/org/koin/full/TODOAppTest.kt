@@ -1,11 +1,12 @@
 package org.koin.full
 
+import org.koin.KoinCoreTest
 import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.*
 
-class TODOAppTest {
+class TODOAppTest : KoinCoreTest(){
 
     val defaultModule = module {
         single { TasksRepository(get()) }

@@ -13,12 +13,13 @@ dependencies {
         api(project(":core:koin-core"))
         api(project(":core:koin-core-coroutines"))
         api(project(":core:koin-core-viewmodel"))
-        api(project(":core:koin-core-viewmodel-navigation"))
+//        api(project(":core:koin-core-viewmodel-navigation"))
         api(project(":core:koin-test"))
         api(project(":core:koin-test-junit4"))
         api(project(":core:koin-test-junit5"))
 
         api(project(":ktor:koin-ktor"))
+        api(project(":ktor:koin-ktor3"))
         api(project(":ktor:koin-logger-slf4j"))
 
         api(project(":android:koin-android"))

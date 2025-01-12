@@ -36,10 +36,9 @@ import org.koin.core.scope.ScopeID
  */
 @KoinExperimentalAPI
 @Composable
-inline fun rememberKoinScope(scope: Scope): Scope {
-    val koin = getKoin()
+fun rememberKoinScope(scope: Scope): Scope {
     val wrapper = remember(scope) {
-        CompositionKoinScopeLoader(scope, koin)
+        CompositionKoinScopeLoader(scope)
     }
     return wrapper.scope
 }

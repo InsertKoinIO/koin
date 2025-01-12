@@ -32,8 +32,8 @@ wrapper {
 }
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
         google()
     }
 }

@@ -1,9 +1,11 @@
 package org.koin.ktor.ext
 
-import io.ktor.server.application.*
-import io.ktor.server.testing.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.testing.TestApplication
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -23,7 +25,7 @@ class Bar2(val name: String = "")
 class KoinFeatureTest {
 
     @After
-    fun after(){
+    fun after() {
         stopKoin()
     }
 
@@ -32,13 +34,17 @@ class KoinFeatureTest {
         val module = module {
             single { Foo("bar") }
         }
-        withApplication {
-            application.install(Koin) {
-                modules(module)
+        val application = TestApplication {
+            application {
+                install(Koin) {
+                    modules(module)
+                }
             }
-            val bean = KoinPlatform.getKoin().getOrNull<Foo>()
-            assertNotNull(bean)
         }
+        application.start()
+        val bean = KoinPlatform.getKoin().getOrNull<Foo>()
+        assertNotNull(bean)
+        runCatching { application.stop() }
     }
 
     @Test
@@ -46,14 +52,22 @@ class KoinFeatureTest {
         val module = module {
             single { Foo("bar") }
         }
-        withApplication {
-            application.install(KoinIsolated) {
-                modules(module)
+        var application: Application? = null
+        val testApplication = TestApplication {
+            application {
+                install(KoinIsolated) {
+                    modules(module)
+                }
+                application = this
             }
-            val bean1 = application.get<Foo>()
-            assertNotNull(bean1)
-            val bean2 = runCatching { KoinPlatform.getKoin().getOrNull<Foo>() }.getOrNull()
-            assertNull(bean2)
         }
+        testApplication.start()
+        // Isolated context should be limited to the application scope only
+        val bean1 = application?.get<Foo>()
+        assertNotNull(bean1)
+        // Isolated Koin will not be set to the global scope
+        val bean2 = runCatching { KoinPlatform.getKoin().getOrNull<Foo>() }.getOrNull()
+        assertNull(bean2)
+        runCatching { testApplication.stop() }
     }
 }

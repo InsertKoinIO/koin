@@ -16,35 +16,79 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.parameter.emptyParametersHolder
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
+
 /**
- * Resolve Koin dependency
+ * Resolve Koin dependency for given Type T
  *
- * @param qualifier
- * @param scope - Koin's root default
- * @param parameters - injected parameters
+ * <u>Note</u> this version unwrap parameters to ParametersHolder in order to let remember all parameters
+ * This parameters unwrap will be triggered on recomposition
+ *
+ * For better performances we advise to use koinInject(Qualifier,Scope,ParametersHolder)
+ *
+ * @param qualifier - dependency qualifier
+ * @param scope - Koin's root by default
+ * @param parameters - injected parameters (with lambda & parametersOf())
+ * @return instance of type T
+ *
+ * @author Arnaud Giuliani
+ */
+@Composable
+@OptIn(KoinInternalApi::class)
+inline fun <reified T> koinInject(
+    qualifier: Qualifier? = null,
+    scope: Scope = currentKoinScope(),
+    noinline parameters: ParametersDefinition,
+): T {
+    val p = parameters.invoke()
+    return remember(qualifier, scope, p) {
+        scope.getWithParameters(T::class, qualifier, p)
+    }
+}
+
+/**
+ * Resolve Koin dependency for given Type T
+ *
+ * @param qualifier - dependency qualifier
+ * @param scope - Koin's root by default
+ * @param parameters - parameters (used with parametersOf(), no lambda)
+ * @return instance of type T
+ *
+ * @author Arnaud Giuliani
+ */
+@Composable
+@OptIn(KoinInternalApi::class)
+inline fun <reified T> koinInject(
+    qualifier: Qualifier? = null,
+    scope: Scope = currentKoinScope(),
+    parameters: ParametersHolder,
+): T {
+    return remember(qualifier, scope, parameters) {
+        scope.getWithParameters(T::class, qualifier, parameters)
+    }
+}
+
+/**
+ * Resolve Koin dependency for given Type T
+ *
+ * @param qualifier - dependency qualifier
+ * @param scope - Koin's root by default
+ * @return instance of type T
  *
  * @author Arnaud Giuliani
  */
 @Composable
 inline fun <reified T> koinInject(
     qualifier: Qualifier? = null,
-    scope: Scope = currentKoinScope(),
-    noinline parameters: ParametersDefinition? = null,
+    scope: Scope = currentKoinScope()
 ): T {
-    // This will always refer to the latest parameters
-    val currentParameters by rememberUpdatedState(parameters)
-
     return remember(qualifier, scope) {
-        scope.get(qualifier) {
-            currentParameters?.invoke() ?: emptyParametersHolder()
-        }
+        scope.get(T::class, qualifier)
     }
 }

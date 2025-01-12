@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.core.logger.Level
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
@@ -9,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class ConstructorDSLTest {
+class ConstructorDSLTest : KoinCoreTest() {
 
     @Test
     fun test_reified_type_constructor() {

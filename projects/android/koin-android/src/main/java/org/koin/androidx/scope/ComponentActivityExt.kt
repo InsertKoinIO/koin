@@ -88,11 +88,8 @@ fun ComponentActivity.createActivityRetainedScope(): Scope {
 
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null) {
-        val scope = getKoin().createScope(retainedScopeId(), getScopeName())
+        val scope = getKoin().createScope(getScopeId(), getScopeName())
         scopeViewModel.scope = scope
     }
     return scopeViewModel.scope!!
 }
-
-fun ComponentActivity.retainedScopeId() : String = this::class.getFullName()
-fun ComponentActivity.getRetainedScopeOrNull(): Scope? = getKoin().getScopeOrNull(retainedScopeId())

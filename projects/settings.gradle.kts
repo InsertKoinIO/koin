@@ -1,7 +1,12 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupByRegex(".*google.*")
+                includeGroupByRegex(".*android.*")
+            }
+        }
         gradlePluginPortal()
         mavenCentral()
     }
@@ -9,7 +14,12 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupByRegex(".*google.*")
+                includeGroupByRegex(".*android.*")
+            }
+        }
         mavenCentral()
     }
 }
@@ -19,10 +29,11 @@ include(
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
-    ":core:koin-core-viewmodel-navigation",
+//    ":core:koin-core-viewmodel-navigation",
     ":core:koin-test",
     ":core:koin-test-junit4",
     ":core:koin-test-junit5",
+    ":core:benchmark",
 
     // Fu DSL - Experimental
     ":core:koin-fu",
@@ -30,6 +41,7 @@ include(
 
     // Ktor
     ":ktor:koin-ktor",
+    ":ktor:koin-ktor3",
     ":ktor:koin-logger-slf4j",
     // Android
     ":android:koin-android",

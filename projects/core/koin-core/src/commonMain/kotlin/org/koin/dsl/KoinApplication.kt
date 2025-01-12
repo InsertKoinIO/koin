@@ -18,6 +18,7 @@ package org.koin.dsl
 import org.koin.core.KoinApplication
 import org.koin.core.module.KoinApplicationDslMarker
 
+//TODO Koin 4.1 - KoinAppDeclaration migration type to KoinConfiguration
 typealias KoinAppDeclaration = KoinApplication.() -> Unit
 
 /**
@@ -47,6 +48,10 @@ fun koinApplication(createEagerInstances: Boolean = true, appDeclaration: KoinAp
 @KoinApplicationDslMarker
 fun koinApplication(appDeclaration: KoinAppDeclaration?): KoinApplication {
     return koinApplication(createEagerInstances = true, appDeclaration = appDeclaration)
+}
+@KoinApplicationDslMarker
+fun koinApplication(configuration: KoinConfiguration?): KoinApplication {
+    return koinApplication(createEagerInstances = true, appDeclaration = configuration?.invoke())
 }
 
 /**

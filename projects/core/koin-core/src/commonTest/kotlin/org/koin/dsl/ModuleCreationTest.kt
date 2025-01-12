@@ -1,12 +1,13 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.test.assertDefinitionsCount
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ModuleCreationTest {
+class ModuleCreationTest : KoinCoreTest() {
 
     @Test
     fun `create an empty module`() {
