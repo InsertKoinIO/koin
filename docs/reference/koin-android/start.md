@@ -79,7 +79,7 @@ By using Gradle packge `koin-androidx-startup`, we can use `KoinStartup` interfa
 ```kotlin
 class MainApplication : Application(),KoinStartup {
 
-     override fun onKoinStartup(): KoinAppDeclaration = {
+     override fun onKoinStartup()= koinConfiguration {
         androidContext(this@MainApplication)
         modules(appModule)
     }
@@ -90,7 +90,7 @@ class MainApplication : Application(),KoinStartup {
 }
 ```
 
-This replaces the `startKoin` function that is usally used in `onCreate`. 
+This replaces the `startKoin` function that is usally used in `onCreate`. The `koinConfiguration` function is returning a `KoinConfiguration` instance.
 
 :::info
 `KoinStartup` avoid blocking main thread at for startup time, and offers better performances.
