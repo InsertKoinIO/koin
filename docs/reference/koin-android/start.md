@@ -79,7 +79,7 @@ By using Gradle packge `koin-androidx-startup`, we can use `KoinStartup` interfa
 ```kotlin
 class MainApplication : Application(), KoinStartup {
 
-     override fun onKoinStartup(): KoinConfiguration = KoinConfiguration {
+     override fun onKoinStartup(): KoinConfiguration = koinConfiguration {
         androidContext(this@MainApplication)
         modules(appModule)
     }
