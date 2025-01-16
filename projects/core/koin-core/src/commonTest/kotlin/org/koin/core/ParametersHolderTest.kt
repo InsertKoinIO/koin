@@ -134,4 +134,52 @@ class ParametersHolderTest {
 
         assertNotEquals(p1,p3)
     }
+
+    @Test
+    fun `equality mutable check`() {
+        val p1 = parametersOf(1, 2, 3, 4)
+        val p2 = parametersOf(1, 2, 3, 4)
+
+        assertEquals(p1, p2)
+
+        p2.add(5)
+
+        assertNotEquals(p1, p2)
+    }
+
+    class DumBParam(v : ArrayList<Any?>) : ParametersHolder(v)
+
+    @Test
+    fun `equality check 2`() {
+        val p1 = DumBParam(arrayListOf(1, 2, 3, 4))
+        val p2 = DumBParam(arrayListOf(1, 2, 3, 4))
+        val p3 = DumBParam(arrayListOf(1, 2, 3))
+
+        assertEquals(p1, p2)
+
+        assertNotEquals(p1,p3)
+    }
+
+    @Test
+    fun `test equals considers useIndexedValues`() {
+        val holderWithIndexed = ParametersHolder(mutableListOf(1, 2, 3), useIndexedValues = true)
+        val holderWithoutIndexed = ParametersHolder(mutableListOf(1, 2, 3), useIndexedValues = false)
+
+        // Assert they are not equal due to differing `useIndexedValues`
+        assertNotEquals(holderWithIndexed, holderWithoutIndexed, "ParametersHolder instances with different useIndexedValues should not be equal.")
+    }
+
+    @Test
+    fun `test mutability affects hashCode and equality`() {
+        val holder = ParametersHolder(mutableListOf(1, 2, 3))
+        val originalHashCode = holder.hashCode()
+
+        // Modify the values list
+        holder.add(4)
+        // Assert hashCode changes after modification
+        assertNotEquals(originalHashCode, holder.hashCode(), "hashCode should reflect changes in the values list.")
+        // Assert equality is impacted
+        val holderUnmodified = ParametersHolder(mutableListOf(1, 2, 3))
+        assertNotEquals(holder, holderUnmodified, "ParametersHolder should not be equal after its content is modified.")
+    }
 }

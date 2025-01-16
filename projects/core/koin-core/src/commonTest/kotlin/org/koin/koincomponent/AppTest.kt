@@ -1,5 +1,6 @@
 package org.koin.koincomponent
 
+import org.koin.KoinCoreTest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -16,7 +17,7 @@ class MyApp : KoinComponent {
     val presenter: TasksPresenter by inject()
 }
 
-class AppTest {
+class AppTest : KoinCoreTest(){
 
     @Test
     fun can_run_KoinComponent_app() {

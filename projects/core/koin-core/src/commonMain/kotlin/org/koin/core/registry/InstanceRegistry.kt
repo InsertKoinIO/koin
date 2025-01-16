@@ -17,11 +17,11 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
 import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
-import org.koin.core.instance.DeclaredScopedInstance
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.NoClass
@@ -29,10 +29,12 @@ import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
 import org.koin.core.module.overrideError
+import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
+import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
@@ -114,25 +116,28 @@ class InstanceRegistry(val _koin: Koin) {
     @PublishedApi
     internal inline fun <reified T> scopeDeclaredInstance(
         instance: T,
+        scopeQualifier: Qualifier,
+        scopeID: ScopeID,
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true,
-        scopeQualifier: Qualifier,
-        scopeID: ScopeID,
+        holdInstance : Boolean
     ) {
-        val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, scopeQualifier)
-        val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
-        val existingFactory = instances[indexKey] as? DeclaredScopedInstance<T>
+        val primaryType = T::class
+        val indexKey = indexKey(primaryType, qualifier, scopeQualifier)
+        val existingFactory = instances[indexKey] as? ScopedInstanceFactory<T>
         if (existingFactory != null) {
-            existingFactory.setValue(instance)
+            existingFactory.saveValue(scopeID, instance)
         } else {
-            val factory = DeclaredScopedInstance(def,scopeID)
+            val definitionFunction : Scope.(ParametersHolder) -> T = if (!holdInstance) ( { error("Declared definition of type '$primaryType' shouldn't be executed") } ) else ({ instance })
+            val def: BeanDefinition<T> = _createDefinition(Kind.Scoped, qualifier, definitionFunction, secondaryTypes, scopeQualifier)
+            val factory = ScopedInstanceFactory(def, holdInstance = holdInstance)
             saveMapping(allowOverride, indexKey, factory)
             def.secondaryTypes.forEach { clazz ->
                 val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
                 saveMapping(allowOverride, index, factory)
             }
-            factory.setValue(instance)
+            factory.saveValue(scopeID, instance)
         }
     }
 
@@ -155,14 +160,13 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun dropScopeInstances(scope: Scope) {
-        _instances.values.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
-        _instances.values.removeAll { it is DeclaredScopedInstance<*> && it.scopeID == scope.id }
+        val factories = _instances.values.toTypedArray()
+        factories.filterIsInstance<ScopedInstanceFactory<*>>().forEach { factory -> factory.drop(scope) }
     }
 
     internal fun close() {
-        _instances.forEach { (_, factory) ->
-            factory.dropAll()
-        }
+        val factories = _instances.values.toTypedArray()
+        factories.forEach { factory -> factory.dropAll() }
         _instances.clear()
     }
 

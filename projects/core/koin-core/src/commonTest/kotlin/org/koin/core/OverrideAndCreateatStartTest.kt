@@ -1,5 +1,6 @@
 package org.koin.core
 
+import org.koin.KoinCoreTest
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -33,7 +34,7 @@ class SomeClassB : SomeClassInterface {
     }
 }
 
-class OverrideAndCreateatStartTest {
+class OverrideAndCreateatStartTest : KoinCoreTest(){
     val moduleA = module {
         single<SomeClassInterface>(createdAtStart = true) {
             SomeClassA()
@@ -44,11 +45,6 @@ class OverrideAndCreateatStartTest {
         single<SomeClassInterface>(createdAtStart = true) {
             SomeClassB()
         }
-    }
-
-    @AfterTest
-    fun after() {
-        stopKoin()
     }
 
     @OptIn(KoinInternalApi::class)

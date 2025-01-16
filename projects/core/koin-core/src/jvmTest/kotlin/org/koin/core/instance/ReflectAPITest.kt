@@ -1,11 +1,12 @@
 package org.koin.core.instance
 
 import org.junit.Test
+import org.koin.KoinCoreTest
 import org.koin.core.time.inMs
 import kotlin.reflect.KClass
 import kotlin.time.measureTimedValue
 
-class ReflectAPITest {
+class ReflectAPITest : KoinCoreTest(){
 
     @Test
     fun `reflect api to construct an instance`() {

@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
@@ -9,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 // TODO - Check flaky tests
-class AdditionalTypeBindingTest {
+class AdditionalTypeBindingTest : KoinCoreTest() {
 
 //    @Test
 //    fun `can resolve an additional type - bind`() {

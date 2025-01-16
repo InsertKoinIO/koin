@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.logger.Level
@@ -8,7 +9,7 @@ import org.koin.test.assertDefinitionsCount
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ModuleDeclarationRulesTest {
+class ModuleDeclarationRulesTest : KoinCoreTest() {
 
     @Test
     fun `don't allow redeclaration`() {

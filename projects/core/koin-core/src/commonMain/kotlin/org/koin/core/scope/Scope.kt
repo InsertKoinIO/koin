@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
+import org.koin.core.error.MissingScopeValueException
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.logger.Level
@@ -60,7 +61,6 @@ class Scope(
 
     @KoinInternalApi
     private var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
-
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -181,6 +181,9 @@ class Scope(
             null
         } catch (e: NoDefinitionFoundException) {
             _koin.logger.debug("* No instance found for type '${clazz.getFullName()}' on scope '${toString()}'")
+            null
+        } catch (e: MissingScopeValueException) {
+            _koin.logger.debug("* No Scoped value found for type '${clazz.getFullName()}' on scope '${toString()}'")
             null
         }
     }
@@ -394,14 +397,16 @@ class Scope(
         qualifier: Qualifier? = null,
         secondaryTypes: List<KClass<*>> = emptyList(),
         allowOverride: Boolean = true,
+        holdInstance : Boolean = false
     ) = KoinPlatformTools.synchronized(this) {
         _koin.instanceRegistry.scopeDeclaredInstance(
             instance,
+            scopeQualifier,
+            id,
             qualifier,
             secondaryTypes,
             allowOverride,
-            scopeQualifier,
-            id,
+            holdInstance = holdInstance
         )
     }
 
@@ -466,10 +471,16 @@ class Scope(
      */
     fun close() = KoinPlatformTools.synchronized(this) {
         _koin.logger.debug("|- (-) Scope - id:'$id'")
+        _closed = true
+
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
+
         sourceValue = null
-        _closed = true
+
+        parameterStack?.get()?.clear()
+        parameterStack = null
+
         _koin.scopeRegistry.deleteScope(this)
     }
 

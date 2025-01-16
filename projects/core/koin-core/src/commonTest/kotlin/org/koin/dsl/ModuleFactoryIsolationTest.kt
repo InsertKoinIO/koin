@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
@@ -14,7 +15,7 @@ val myGetModule : Module get() = module { single { Simple.ComponentA() }  }
 fun myFunModule() = module { single { Simple.ComponentA() }  }
 
 @OptIn(KoinInternalApi::class)
-class ModuleFactoryIsolationTest {
+class ModuleFactoryIsolationTest : KoinCoreTest() {
 
     @Test
     fun testVariableIsolationAndInstanceFactories(){

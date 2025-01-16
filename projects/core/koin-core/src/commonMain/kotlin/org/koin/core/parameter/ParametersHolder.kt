@@ -141,13 +141,14 @@ open class ParametersHolder(
     override fun toString(): String = "DefinitionParameters${_values.toList()}"
 
     override fun equals(other: Any?): Boolean {
-        if (other is ParametersHolder){
-            return this.values == other.values
-        } else return false
+        if (this === other) return true
+        if (other !is ParametersHolder) return false
+
+        return values == other.values && useIndexedValues == other.useIndexedValues
     }
 
     override fun hashCode(): Int {
-        return values.hashCode()
+        return 31 * values.hashCode() + (useIndexedValues?.hashCode() ?: 0)
     }
 }
 

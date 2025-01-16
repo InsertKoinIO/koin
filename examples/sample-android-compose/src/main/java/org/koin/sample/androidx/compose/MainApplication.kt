@@ -14,7 +14,6 @@ class MainApplication : Application() {
 
         startKoin {
             androidLogger(Level.DEBUG)
-//            printLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             modules(appModule)
         }

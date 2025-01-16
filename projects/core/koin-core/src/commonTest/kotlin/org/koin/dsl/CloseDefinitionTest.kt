@@ -1,5 +1,6 @@
 package org.koin.dsl
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -9,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CloseDefinitionTest {
+class CloseDefinitionTest : KoinCoreTest() {
 
     @Test
     fun test_onClose() {

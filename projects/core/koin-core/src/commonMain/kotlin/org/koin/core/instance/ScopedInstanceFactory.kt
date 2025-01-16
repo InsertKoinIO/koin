@@ -16,6 +16,7 @@
 package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
+import org.koin.core.error.MissingScopeValueException
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools
@@ -24,10 +25,17 @@ import org.koin.mp.KoinPlatformTools
  * Single instance holder
  * @author Arnaud Giuliani
  */
-class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
+class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :
     InstanceFactory<T>(beanDefinition) {
 
     private var values = hashMapOf<ScopeID, T>()
+
+    fun size() = values.size
+
+    @PublishedApi
+    internal fun saveValue(id : ScopeID, value : T){
+        values[id] = value
+    }
 
     override fun isCreated(context: ResolutionContext?): Boolean = (values[context?.scope?.id] != null)
 
@@ -42,20 +50,20 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
         return if (values[context.scope.id] == null) {
             super.create(context)
         } else {
-            values[context.scope.id] ?: error("Scoped instance not found for ${context.scope.id} in $beanDefinition")
+            values[context.scope.id] ?: throw MissingScopeValueException("Factory.create - Scoped instance not found for ${context.scope.id} in $beanDefinition")
         }
     }
 
     override fun get(context: ResolutionContext): T {
         if (context.scope.scopeQualifier != beanDefinition.scopeQualifier) {
-            error("Wrong Scope: trying to open instance for ${context.scope.id} in $beanDefinition")
+            error("Wrong Scope qualifier: trying to open instance for ${context.scope.id} in $beanDefinition")
         }
         KoinPlatformTools.synchronized(this) {
-            if (!isCreated(context)) {
-                values[context.scope.id] = create(context)
+            if (!isCreated(context) && holdInstance) {
+                values[context.scope.id] = super.create(context)
             }
         }
-        return values[context.scope.id] ?: error("Scoped instance not found for ${context.scope.id} in $beanDefinition")
+        return values[context.scope.id] ?: throw MissingScopeValueException("Factory.get -Scoped instance not found for ${context.scope.id} in $beanDefinition")
     }
 
     override fun dropAll() {
