@@ -62,6 +62,8 @@ private class MultibindingIterateKey<T>(
     val multibindingQualifier: Qualifier,
 )
 
+private val multibindingKeyCollisionDetectModule = Module()
+
 class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal constructor(
     private val multibindingQualifier: Qualifier,
     private val elementClass: KClass<E>,
@@ -142,12 +144,12 @@ class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal 
     private fun indexPrimaryType(instanceFactory: InstanceFactory<*>): InstanceFactory<*>? {
         val def = instanceFactory.beanDefinition
         val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
-        return declareModule.mappings[mapping].apply {
+        return multibindingKeyCollisionDetectModule.mappings[mapping].apply {
             declareModule.saveMapping(mapping, instanceFactory)
+            multibindingKeyCollisionDetectModule.saveMapping(mapping, instanceFactory)
         }
     }
 
-    // TODO this only works for the same module, find a way to check across modules.
     private fun checkMultibindingKeyCollision(oldInstanceFactory: InstanceFactory<*>?, newKey: K) {
         if (oldInstanceFactory != null && needToCheckKeyType(newKey)) {
             val oldKey = (oldInstanceFactory.beanDefinition.definition(

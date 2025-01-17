@@ -272,7 +272,7 @@ class MapMultibindingTest {
     }
 
     @Test
-    fun `override map multibinding elements with different keys but same toString`() {
+    fun `get exception when overriding map multibinding elements with different keys but same toString`() {
         data class MapKey(
             val name: String,
             val value: Int,
@@ -280,25 +280,25 @@ class MapMultibindingTest {
             override fun toString(): String = name
         }
 
-        val app = koinApplication {
-            modules(
-                module {
-                    declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
-                        intoMap(MapKey(keyOfComponent1, 1)) { component1 }
-                    }
-                },
-            )
-        }
-        val koin = app.koin
-        val rootMap: Map<MapKey, Simple.ComponentInterface1> = koin.getMapMultibinding()
-        assertEquals(1, rootMap.size)
-        assertEquals(component1, rootMap[MapKey(keyOfComponent1, 1)])
-        assertNull(rootMap[MapKey(keyOfComponent1, 2)])
+        // declare in same module
         module {
             declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
                 intoMap(MapKey(keyOfComponent1, 1)) { component1 }
                 assertFailsWith(MapMultibindingKeyTypeException::class) {
                     intoMap(MapKey(keyOfComponent1, 2)) { component1 }
+                }
+            }
+        }
+        // declare in different modules
+        module {
+            declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
+                intoMap(MapKey(keyOfComponent2, 1)) { component1 }
+            }
+        }
+        module {
+            declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
+                assertFailsWith(MapMultibindingKeyTypeException::class) {
+                    intoMap(MapKey(keyOfComponent2, 2)) { component1 }
                 }
             }
         }
