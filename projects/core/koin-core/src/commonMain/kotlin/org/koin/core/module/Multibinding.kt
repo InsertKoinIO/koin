@@ -111,6 +111,10 @@ class MapMultibindingElementDefinition<in K : Any, in E : Any> @PublishedApi int
 ) {
     private val isRootScope = scopeQualifier == rootScopeQualifier
 
+    fun intoMap(key: K, element: E) {
+        intoMap(key) { element }
+    }
+
     /**
      * the parameters of [definition] come from MapMultibinding creation
      *
@@ -277,6 +281,10 @@ class SetMultibindingElementDefinition<in E : Any> @PublishedApi internal constr
             declareModule,
             scopeQualifier
         )
+
+    fun intoSet(element: E) {
+        intoSet { element }
+    }
 
     /**
      * the parameters of [definition] come from SetMultibinding creation
