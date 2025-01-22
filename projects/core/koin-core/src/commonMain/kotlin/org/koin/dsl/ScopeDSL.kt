@@ -55,10 +55,18 @@ class ScopeDSL(val scopeQualifier: Qualifier, val module: Module) {
         elementDefinition: MapMultibindingElementDefinition<K, V>.() -> Unit = {},
     ): MapMultibindingElementDefinition<K, V> {
         scoped<Map<K, V>>(qualifier) { parametersHolder ->
-            MapMultibinding(false, this, qualifier, V::class, parametersHolder)
+            MapMultibinding(
+                createdAtStart = false,
+                scope = this,
+                qualifier = qualifier,
+                keyClass = K::class,
+                valueClass = V::class,
+                parametersHolder = parametersHolder,
+            )
         }
         return MapMultibindingElementDefinition<K, V>(
             multibindingQualifier = qualifier,
+            keyClass = K::class,
             elementClass = V::class,
             declareModule = module,
             scopeQualifier = scopeQualifier,

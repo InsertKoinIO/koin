@@ -2,7 +2,6 @@ package org.koin.core
 
 import co.touchlab.stately.concurrency.AtomicInt
 import org.koin.Simple
-import org.koin.core.module.MapMultibindingKeyTypeException
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier._q
 import org.koin.core.qualifier.named
@@ -11,7 +10,6 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -277,31 +275,26 @@ class MapMultibindingTest {
             val name: String,
             val value: Int,
         ) {
-            override fun toString(): String = name
+            override fun toString(): String = "MapKey"
         }
 
-        // declare in same module
-        module {
-            declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
-                intoMap(MapKey(keyOfComponent1, 1)) { component1 }
-                assertFailsWith(MapMultibindingKeyTypeException::class) {
-                    intoMap(MapKey(keyOfComponent1, 2)) { component1 }
-                }
-            }
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
+                        intoMap(MapKey(keyOfComponent1, 1)) { component1 }
+                        intoMap(MapKey(keyOfComponent2, 2)) { component2 }
+                    }
+                },
+            )
         }
-        // declare in different modules
-        module {
-            declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
-                intoMap(MapKey(keyOfComponent2, 1)) { component1 }
-            }
-        }
-        module {
-            declareMapMultibinding<MapKey, Simple.ComponentInterface1> {
-                assertFailsWith(MapMultibindingKeyTypeException::class) {
-                    intoMap(MapKey(keyOfComponent2, 2)) { component1 }
-                }
-            }
-        }
+
+        val koin = app.koin
+        val rootMap: Map<MapKey, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        assertEquals(2, rootMap.size)
+        assertEquals(component1, rootMap[MapKey(keyOfComponent1, 1)])
+        assertEquals(component2, rootMap[MapKey(keyOfComponent2, 2)])
+        assertNull(rootMap[MapKey(keyOfComponent1, 3)])
     }
 
     @Test
@@ -500,6 +493,48 @@ class MapMultibindingTest {
         assertTrue {
             app.koin.getMapMultibinding<String, String> { parametersOf("map") }
                 .values.containsAll(listOf("map1", "map2"))
+        }
+    }
+
+    enum class TrafficLight {
+        RED,
+        GREEN,
+        YELLOW
+    }
+
+    enum class Color {
+        RED,
+        GREEN,
+        YELLOW
+    }
+
+    @Test
+    fun `known issue, use multi enums as map key`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    declareMapMultibinding<Enum<*>, Simple.ComponentInterface1> {
+                        TrafficLight.entries.forEach {
+                            intoMap(it) { Simple.Component1() }
+                        }
+                        Color.entries.forEach {
+                            intoMap(it) { Simple.Component2() }
+                        }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val colorMap: Map<Enum<*>, Simple.ComponentInterface1> = koin.getMapMultibinding()
+        assertEquals(3, colorMap.size)
+        // TrafficLight.entry.name == Color.entry.name
+        // Color entries override each element
+        TrafficLight.entries.forEach {
+            assertTrue { colorMap[it] is Simple.Component2 }
+        }
+        Color.entries.forEach {
+            assertTrue { colorMap[it] is Simple.Component2 }
         }
     }
 }

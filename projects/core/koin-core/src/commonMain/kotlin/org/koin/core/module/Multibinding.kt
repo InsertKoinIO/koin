@@ -16,7 +16,6 @@
 package org.koin.core.module
 
 import co.touchlab.stately.concurrency.AtomicInt
-import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Definition
@@ -27,13 +26,15 @@ import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.instance.keepDefinitionOrderAcrossModules
 import org.koin.core.parameter.ParametersHolder
-import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.QualifierValue
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier._q
 import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
+import org.koin.mp.KoinPlatformTools
+import org.koin.mp.generateId
 import kotlin.reflect.KClass
 
 /**
@@ -47,25 +48,63 @@ inline fun <reified K, reified V> mapMultibindingQualifier(): Qualifier =
 inline fun <reified E> setMultibindingQualifier(): Qualifier =
     _q("SetMultibinding<${E::class.getFullName()}>")
 
-private fun <K> multibindingElementQualifier(multibindingQualifier: Qualifier, key: K): Qualifier =
-    _q("${multibindingQualifier.value} of $key")
-
-private fun <K> multibindingIterateKeyQualifier(
+private fun <K> multibindingElementQualifier(
+    keyClass: KClass<*>,
     multibindingQualifier: Qualifier,
     key: K
-): Qualifier = _q("${multibindingQualifier.value} iterate of $key")
+): Qualifier = distinctQualifierBasedOnType(keyClass, key) {
+    _q("${multibindingQualifier.value} of $it")
+}
 
-class MapMultibindingKeyTypeException(msg: String) : Exception(msg)
+private fun <K> multibindingIterateKeyQualifier(
+    keyClass: KClass<*>,
+    multibindingQualifier: Qualifier,
+    key: K
+): Qualifier = distinctQualifierBasedOnType(keyClass, key) {
+    _q("${multibindingQualifier.value} iterate of $it")
+}
 
-private class MultibindingIterateKey<T>(
+private fun <K> distinctQualifierBasedOnType(
+    type: KClass<*>,
+    value: K,
+    multibindingQualifierMixin: (QualifierValue) -> Qualifier
+): Qualifier = when (type) {
+    Boolean::class,
+    Byte::class,
+    Int::class,
+    Long::class,
+    Float::class,
+    Double::class,
+    String::class,
+    KClass::class,
+    SetMultibinding.Key::class -> multibindingQualifierMixin(value.toString())
+
+    Enum::class -> multibindingQualifierMixin((value as Enum<*>).name)
+
+    else -> _q(KoinPlatformTools.generateId())
+}
+
+internal data class MultibindingIterateKey<T>(
     val elementKey: T,
     val multibindingQualifier: Qualifier,
-)
+) {
+    var elementQualifier: Qualifier = _q("")
 
-private val multibindingKeyCollisionDetectModule = Module()
+    internal constructor(
+        elementKey: T,
+        multibindingQualifier: Qualifier,
+        elementQualifier: Qualifier,
+    ) : this(
+        elementKey,
+        multibindingQualifier,
+    ) {
+        this.elementQualifier = elementQualifier
+    }
+}
 
-class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal constructor(
+class MapMultibindingElementDefinition<in K : Any, in E : Any> @PublishedApi internal constructor(
     private val multibindingQualifier: Qualifier,
+    private val keyClass: KClass<K>,
     private val elementClass: KClass<E>,
     private val declareModule: Module,
     private val scopeQualifier: Qualifier,
@@ -80,42 +119,39 @@ class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal 
      * ```
      */
     fun intoMap(key: K, definition: Definition<E>) {
-        declareElement(key, definition)
-        declareIterateKey(key)
+        val elementQualifier = declareElement(key, definition)
+        declareIterateKey(key, elementQualifier)
     }
 
-    private fun declareElement(key: K, definition: Definition<E>) {
-        val elementQualifier = multibindingElementQualifier(multibindingQualifier, key)
+    private fun declareElement(key: K, definition: Definition<E>): Qualifier {
+        val elementQualifier = multibindingElementQualifier(keyClass, multibindingQualifier, key)
         singleOrScopedInstance(elementQualifier, elementClass, definition) {
             it.keepDefinitionOrderAcrossModules(ascending = true)
         }
+        return elementQualifier
     }
 
-    private fun declareIterateKey(key: K) {
-        val iterateKeyQualifier = multibindingIterateKeyQualifier(multibindingQualifier, key)
-        val oldInstanceFactory =
-            singleOrScopedInstance(
-                iterateKeyQualifier,
-                MultibindingIterateKey::class,
-                definition = {
-                    MultibindingIterateKey(key, multibindingQualifier)
-                },
-                instanceFactoryModifier = {
-                    it.keepDefinitionOrderAcrossModules(ascending = false)
-                })
-        checkMultibindingKeyCollision(oldInstanceFactory, key)
+    private fun declareIterateKey(key: K, elementQualifier: Qualifier) {
+        val iterateKeyQualifier =
+            multibindingIterateKeyQualifier(keyClass, multibindingQualifier, key)
+        singleOrScopedInstance(
+            iterateKeyQualifier,
+            MultibindingIterateKey::class,
+            definition = {
+                MultibindingIterateKey(key, multibindingQualifier, elementQualifier)
+            },
+            instanceFactoryModifier = {
+                it.keepDefinitionOrderAcrossModules(ascending = false)
+            })
     }
 
-    /**
-     * @return old definition
-     */
     @OptIn(KoinInternalApi::class)
     private inline fun <T> singleOrScopedInstance(
         qualifier: Qualifier,
         instanceClass: KClass<*>,
         noinline definition: Definition<T>,
         instanceFactoryModifier: (InstanceFactory<*>) -> InstanceFactory<*>
-    ): InstanceFactory<*>? {
+    ) {
         val instanceFactory = if (isRootScope) {
             SingleInstanceFactory(
                 BeanDefinition(
@@ -137,46 +173,14 @@ class MapMultibindingElementDefinition<K : Any, E : Any> @PublishedApi internal 
                 )
             )
         }.let(instanceFactoryModifier)
-        return indexPrimaryType(instanceFactory)
+        indexPrimaryType(instanceFactory)
     }
 
     @OptIn(KoinInternalApi::class)
-    private fun indexPrimaryType(instanceFactory: InstanceFactory<*>): InstanceFactory<*>? {
+    private fun indexPrimaryType(instanceFactory: InstanceFactory<*>) {
         val def = instanceFactory.beanDefinition
         val mapping = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
-        return multibindingKeyCollisionDetectModule.mappings[mapping].apply {
-            declareModule.saveMapping(mapping, instanceFactory)
-            multibindingKeyCollisionDetectModule.saveMapping(mapping, instanceFactory)
-        }
-    }
-
-    private fun checkMultibindingKeyCollision(oldInstanceFactory: InstanceFactory<*>?, newKey: K) {
-        if (oldInstanceFactory != null && needToCheckKeyType(newKey)) {
-            val oldKey = (oldInstanceFactory.beanDefinition.definition(
-                Scope(scopeQualifier, "stub scope for multibinding", _koin = Koin()),
-                emptyParametersHolder()
-            ) as? MultibindingIterateKey<*>)?.elementKey
-            if (newKey != oldKey) {
-                throw MapMultibindingKeyTypeException(
-                    """
-                        MapMultibinding key collision: "$newKey" conflicts with a previous key. But it does NOT equal to the previous key.
-                        Consider overriding `toString()` correctly for the class of "$newKey".
-                    """.trimIndent()
-                )
-            }
-        }
-    }
-
-    private fun needToCheckKeyType(key: K): Boolean {
-        return when (key) {
-            is Boolean,
-            is Number,
-            is String,
-            is Enum<*>,
-            is KClass<*> -> false
-
-            else -> true
-        }
+        declareModule.saveMapping(mapping, instanceFactory)
     }
 }
 
@@ -185,6 +189,7 @@ internal class MapMultibinding<K : Any, V>(
     createdAtStart: Boolean,
     private val scope: Scope,
     private val qualifier: Qualifier,
+    private val keyClass: KClass<*>,
     private val valueClass: KClass<*>,
     private val parametersHolder: ParametersHolder,
 ) : Map<K, V> {
@@ -198,19 +203,19 @@ internal class MapMultibinding<K : Any, V>(
     override val keys: Set<K>
         get() {
             // in the definition order
-            return reversedKeys.reversed()
+            return reversedKeys.reversed { it.elementKey }
         }
 
     // this is useful for element overriding
-    val reversedKeys: LinkedHashSet<K>
+    internal val reversedKeys: LinkedHashSet<MultibindingIterateKey<K>>
         get() {
-            val multibindingKeys = LinkedHashSet<K>()
+            val multibindingKeys = LinkedHashSet<MultibindingIterateKey<K>>()
             // MultibindingIterateKey is created by OrderedInstanceFactory(ascending = false)
             // so the list here is in reversed order
-            scope.getAll<MultibindingIterateKey<*>>()
+            scope.getAll<MultibindingIterateKey<K>>(MultibindingIterateKey::class)
                 .mapNotNullTo(multibindingKeys) {
                     if (it.multibindingQualifier == qualifier) {
-                        it.elementKey as? K
+                        it
                     } else {
                         null
                     }
@@ -232,40 +237,25 @@ internal class MapMultibinding<K : Any, V>(
         }
 
     override fun containsKey(key: K): Boolean =
-        reversedKeys.contains(key)
+        reversedKeys.contains(MultibindingIterateKey(key, qualifier))
 
     override fun containsValue(value: V): Boolean =
         values.contains(value)
 
     override fun get(key: K): V? {
-        return scope.getOrNull<V>(valueClass, multibindingElementQualifier(qualifier, key)) {
+        return getOrNull(multibindingElementQualifier(keyClass, qualifier, key)) ?: getFromKeys(key)
+    }
+
+    private fun getOrNull(elementQualifier: Qualifier): V? {
+        return scope.getOrNull<V>(valueClass, elementQualifier) {
             parametersHolder
-        }.takeIf {
-            // there is a case where the multibindingElementQualifier is valid, but the key is invalid
-            isKeyValid(key, it)
-        } ?: getFromKeys(key)
-    }
-
-    // retrieve from keys, this may happen when key1 == key2 but key1.toString() != key2.toString()
-    private fun getFromKeys(key: K): V? {
-        return reversedKeys.find { it == key }?.let { get(it) }
-    }
-
-    // a key is valid if it's in the key set and the value is not null
-    private fun isKeyValid(key: K, value: Any?): Boolean {
-        return when (key) {
-            is Boolean,
-            is Number,
-            is String,
-            is Enum<*>,
-            is KClass<*>,
-            is SetMultibinding.Key -> {
-                // for those types of key, it's always valid if the corresponding value is not null
-                value != null
-            }
-
-            else -> value != null && reversedKeys.contains(key)
         }
+    }
+
+    // retrieve from keys, this may happen when key1 == key2
+    // but multibindingElementQualifier(key1) != multibindingElementQualifier(key2)
+    private fun getFromKeys(key: K): V? {
+        return reversedKeys.find { it.elementKey == key }?.let { getOrNull(it.elementQualifier) }
     }
 
     override fun isEmpty(): Boolean = reversedKeys.isEmpty()
@@ -273,7 +263,7 @@ internal class MapMultibinding<K : Any, V>(
     private class Entry<K, V>(override val key: K, override val value: V) : Map.Entry<K, V>
 }
 
-class SetMultibindingElementDefinition<E : Any> @PublishedApi internal constructor(
+class SetMultibindingElementDefinition<in E : Any> @PublishedApi internal constructor(
     multibindingQualifier: Qualifier,
     elementClass: KClass<E>,
     declareModule: Module,
@@ -282,6 +272,7 @@ class SetMultibindingElementDefinition<E : Any> @PublishedApi internal construct
     private val multibindingElementDefinition =
         MapMultibindingElementDefinition<SetMultibinding.Key, E>(
             multibindingQualifier,
+            SetMultibinding.Key::class,
             elementClass,
             declareModule,
             scopeQualifier
@@ -312,39 +303,39 @@ internal class SetMultibinding<E>(
         false,
         scope,
         qualifier,
+        Key::class,
         elementClass,
         parametersHolder
     )
 
     init {
         if (createdAtStart) {
-            elementSet
+            getElementSet()
         }
     }
 
-    private val elementSet: Set<E>
-        get() {
-            val reversedKeys = mapMultibinding.reversedKeys
-            val elements = LinkedHashSet<E>(reversedKeys.size)
-            for (key in reversedKeys) {
-                val element = mapMultibinding[key] ?: continue
-                elements.add(element)
-            }
-            return elements.reversed()
+    private fun getElementSet(ordered: Boolean = false): Set<E> {
+        val reversedKeys = mapMultibinding.reversedKeys
+        val elements = LinkedHashSet<E>(reversedKeys.size)
+        for (iterateKey in reversedKeys) {
+            val element = mapMultibinding[iterateKey.elementKey] ?: continue
+            elements.add(element)
         }
+        return if (ordered) elements.reversed { it } else elements
+    }
 
     override val size: Int
-        get() = elementSet.size
+        get() = getElementSet().size
 
     override fun contains(element: E): Boolean =
-        elementSet.contains(element)
+        getElementSet().contains(element)
 
     override fun containsAll(elements: Collection<E>): Boolean =
-        elementSet.containsAll(elements)
+        getElementSet().containsAll(elements)
 
-    override fun isEmpty(): Boolean = elementSet.isEmpty()
+    override fun isEmpty(): Boolean = getElementSet().isEmpty()
 
-    override fun iterator(): Iterator<E> = elementSet.iterator()
+    override fun iterator(): Iterator<E> = getElementSet(true).iterator()
 
     class Key(private val placeholder: Int) {
         override fun toString(): String = "placeholder$placeholder"
@@ -357,10 +348,10 @@ internal class SetMultibinding<E>(
     }
 }
 
-private fun <E> LinkedHashSet<E>.reversed(): LinkedHashSet<E> {
-    if (this.size <= 1) return this
-    val elements = this.toList()
-    this.clear()
-    elements.reversed().forEach(this::add)
-    return this
+private inline fun <E, R> LinkedHashSet<E>.reversed(transform: (E) -> R): Set<R> {
+    val set = LinkedHashSet<R>(this.size)
+    toList<E>().reversed().forEach {
+        set.add(transform(it))
+    }
+    return set
 }

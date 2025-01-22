@@ -129,10 +129,18 @@ class Module(
     ): MapMultibindingElementDefinition<K, V> {
         val isCreatedAtStart = createdAtStart || this._createdAtStart
         single<Map<K, V>>(qualifier) { parametersHolder ->
-            MapMultibinding(isCreatedAtStart, this, qualifier, V::class, parametersHolder)
+            MapMultibinding(
+                createdAtStart = isCreatedAtStart,
+                scope = this,
+                qualifier = qualifier,
+                keyClass = K::class,
+                valueClass = V::class,
+                parametersHolder = parametersHolder,
+            )
         }
         return MapMultibindingElementDefinition<K, V>(
             multibindingQualifier = qualifier,
+            keyClass = K::class,
             elementClass = V::class,
             declareModule = this,
             scopeQualifier = rootScopeQualifier,
