@@ -22,9 +22,8 @@ import org.koin.core.definition.IndexKey
 import org.koin.core.definition.Kind
 import org.koin.core.definition._createDefinition
 import org.koin.core.definition.indexKey
-import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.InstanceFactory
-import org.koin.core.instance.NoClass
+import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
@@ -91,7 +90,7 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
-        val defaultContext = ResolutionContext(_koin.logger, _koin.scopeRegistry.rootScope, clazz = NoClass::class)
+        val defaultContext = ResolutionContext(_koin.logger, _koin.scopeRegistry.rootScope, clazz = Nothing::class)
         instances.forEach { factory -> factory.get(defaultContext) }
     }
 
