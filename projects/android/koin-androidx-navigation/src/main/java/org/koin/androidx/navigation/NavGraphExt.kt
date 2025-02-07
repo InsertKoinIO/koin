@@ -35,9 +35,15 @@ import org.koin.core.qualifier.Qualifier
 inline fun <reified VM : ViewModel> Fragment.koinNavGraphViewModel(
     @IdRes navGraphId: Int,
     qualifier: Qualifier? = null,
-    noinline ownerProducer: () -> ViewModelStoreOwner = { findNavController().getBackStackEntry(navGraphId) },
+    noinline ownerProducer: (() -> ViewModelStoreOwner)? = null,
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline parameters: (() -> ParametersHolder)? = null,
 ): Lazy<VM> {
-    return viewModel(qualifier, ownerProducer, extrasProducer, parameters)
+    val backStackEntry by lazy { findNavController().getBackStackEntry(navGraphId) }
+    return viewModel(
+        qualifier,
+        ownerProducer ?: { backStackEntry },
+        extrasProducer ?: { backStackEntry.defaultViewModelCreationExtras },
+        parameters
+    )
 }
