@@ -14,6 +14,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.scope.KoinActivityScope
 import org.koin.compose.koinInject
 import org.koin.compose.module.rememberKoinModules
+import org.koin.compose.scope.KoinScope
 import org.koin.core.parameter.parametersOf
 import org.koin.sample.androidx.compose.data.MyFactory
 import org.koin.sample.androidx.compose.data.MyInnerFactory
@@ -125,7 +126,7 @@ fun FactoryComposable(
     if (created) {
         clickComponent("Factory", myFactory.id, parentStatus) {
 
-            KoinActivityScope {
+            KoinScope<MyFactory>("factory_"+myFactory.id) {
                 InnerFactoryComposable(parentStatus)
                 ScopeComposable("SC_1", parentStatus)
                 ScopeComposable("SC_2", parentStatus)

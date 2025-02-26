@@ -20,6 +20,10 @@ val appModule = module {
 
 val WALLET_SCOPE = named("wallet")
 val secondModule = module {
+    scope<MyFactory>{
+        factoryOf(::MyInnerFactory)
+        scoped { MyScoped() }
+    }
     scope<MainActivity> {
         factoryOf(::MyInnerFactory)
         scoped { MyScoped() }
