@@ -47,6 +47,7 @@ import org.koin.mp.KoinPlatformTools
  * @author Arnaud Giuliani
  * @author jjkester
  */
+//TODO Deprecate in 4.1? - as we have default context
 @Composable
 fun KoinAndroidContext(
     content: @Composable () -> Unit
