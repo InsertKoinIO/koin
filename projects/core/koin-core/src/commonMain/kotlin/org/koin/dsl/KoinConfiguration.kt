@@ -30,6 +30,7 @@ import org.koin.core.module.KoinApplicationDslMarker
  * }
  *
  */
+@KoinApplicationDslMarker
 class KoinConfiguration(val config: KoinApplication.() -> Unit) {
 
     /**
