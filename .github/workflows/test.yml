@@ -24,17 +24,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
 
       - name: Install
         run: cd projects && ./install.sh
@@ -49,4 +40,3 @@ jobs:
           name: test-reports
           path: |
             '**/*/examples/android-perfs/build/reports/tests/testDebugUnitTest/'
-
