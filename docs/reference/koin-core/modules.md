@@ -38,7 +38,7 @@ val moduleB = module {
 ```
 
 :::info 
-Koin doesn't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only a request for its type has been done.
+Koin doesn't have any import concept. Koin definitions are lazy: a Koin definition is started with Koin container but is not instantiated. An instance is created only when a request for its type has been done.
 :::
 
 We just have to declare list of used modules when we start our Koin container:
