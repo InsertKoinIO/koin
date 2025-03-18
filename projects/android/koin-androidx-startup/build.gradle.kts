@@ -32,7 +32,7 @@ tasks.withType<KotlinCompile>().all {
 
 dependencies {
     api(project(":android:koin-android"))
-    api(libs.androidx.workmanager)
+    api(libs.androidx.startup)
 
     // Test
     testImplementation(libs.test.junit)
