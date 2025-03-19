@@ -155,7 +155,7 @@ internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Leve
  */
 @OptIn(KoinInternalApi::class)
 @Composable
-@Deprecated("KoinContext is not required. Use startKoin() outside of Compose app")
+@Deprecated("KoinContext is not needed anymore. Compose Koin context is setup with StartKoin()")
 fun KoinContext(
     context: Koin = retrieveDefaultInstance(),
     content: @Composable () -> Unit
