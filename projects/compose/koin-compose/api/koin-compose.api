@@ -11,10 +11,12 @@ public final class org/koin/compose/KoinApplicationKt {
 public final class org/koin/compose/application/CompositionKoinApplicationLoader : androidx/compose/runtime/RememberObserver {
 	public static final field $stable I
 	public fun <init> (Lorg/koin/core/KoinApplication;)V
+	public final fun getKoin ()Lorg/koin/core/Koin;
 	public final fun getKoinApplication ()Lorg/koin/core/KoinApplication;
 	public fun onAbandoned ()V
 	public fun onForgotten ()V
 	public fun onRemembered ()V
+	public final fun setKoin (Lorg/koin/core/Koin;)V
 }
 
 public final class org/koin/compose/application/RememberKoinApplicationKt {
@@ -44,8 +46,7 @@ public final class org/koin/compose/module/RememberModulesKt {
 
 public final class org/koin/compose/scope/CompositionKoinScopeLoader : androidx/compose/runtime/RememberObserver {
 	public static final field $stable I
-	public fun <init> (Lorg/koin/core/scope/Scope;Lorg/koin/core/Koin;)V
-	public final fun getKoin ()Lorg/koin/core/Koin;
+	public fun <init> (Lorg/koin/core/scope/Scope;)V
 	public final fun getScope ()Lorg/koin/core/scope/Scope;
 	public fun onAbandoned ()V
 	public fun onForgotten ()V
