@@ -35,6 +35,7 @@ class NavFragmentB : Fragment() {
 
         ID = mainViewModel.id
         assert(ID == NavFragmentA.ID)
+        println("- Check restored State -")
         println("B vm id: $ID")
         println("vm arg: ${mainViewModel.argument}")
 

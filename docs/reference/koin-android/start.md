@@ -77,9 +77,9 @@ startKoin {
 By using Gradle packge `koin-androidx-startup`, we can use `KoinStartup` interface to declare your Koin configuration your Application class:
 
 ```kotlin
-class MainApplication : Application(),KoinStartup {
+class MainApplication : Application(), KoinStartup {
 
-     override fun onKoinStartup()= koinConfiguration {
+    override fun onKoinStartup(): KoinConfiguration = koinConfiguration {
         androidContext(this@MainApplication)
         modules(appModule)
     }

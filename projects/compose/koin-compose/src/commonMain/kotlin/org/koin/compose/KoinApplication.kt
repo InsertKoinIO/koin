@@ -20,13 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.currentComposer
-import androidx.compose.runtime.remember
 import org.koin.compose.application.rememberKoinApplication
 import org.koin.compose.application.rememberKoinMPApplication
-import org.koin.compose.error.UnknownKoinContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
@@ -39,18 +36,15 @@ import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
 
 /**
- * Current Koin Application context
+ * Current Koin Application context, as default with Default Koin context
  */
-val LocalKoinApplication: ProvidableCompositionLocal<Koin> = compositionLocalOf {
-    throw UnknownKoinContext()
-}
+val LocalKoinApplication: ProvidableCompositionLocal<Koin> = compositionLocalOf { getDefaultKoinContext() }
 
 /**
- * Current Koin Scope
+ * Current Koin Scope, as default with Default Koin context root scope
  */
-val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf {
-    throw UnknownKoinContext()
-}
+@OptIn(KoinInternalApi::class)
+val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf { getDefaultKoinContext().scopeRegistry.rootScope }
 
 private fun getDefaultKoinContext() = KoinPlatform.getKoin()
 
@@ -59,17 +53,16 @@ private fun getDefaultKoinContext() = KoinPlatform.getKoin()
  *
  * @author @author jjkester
  */
-@OptIn(InternalComposeApi::class)
+@OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
 fun getKoin(): Koin = currentComposer.run {
-    remember {
-        try {
-            consume(LocalKoinApplication)
-        } catch (_: UnknownKoinContext) {
-            val ctx = getDefaultKoinContext()
-            warningNoContext(ctx)
-            ctx
-        }
+    try {
+        consume(LocalKoinApplication)
+    } catch (e: Exception) {
+        KoinPlatform.getKoinOrNull()?.let {
+            it.logger.debug("Error while accessing Koin context. Fallback on default context ...")
+            it
+        } ?: error("Can't get Koin context due to error:$e")
     }
 }
 
@@ -85,23 +78,12 @@ fun getKoin(): Koin = currentComposer.run {
 fun currentKoinScope(): Scope = currentComposer.run {
     try {
         consume(LocalKoinScope)
-    } catch (_: UnknownKoinContext) {
-        getDefaultKoinContext().let {
-            warningNoContext(it)
-            it.scopeRegistry.rootScope
-        }
     } catch (e: ClosedScopeException) {
-        getDefaultKoinContext().let {
-            it.logger.debug("Try to refresh scope - fallback on default context from - $e")
+        KoinPlatform.getKoinOrNull()?.let {
+            it.logger.debug("Error while accessing Koin scope. Fallback on default root scope...")
             it.scopeRegistry.rootScope
-        }
+        } ?: error("Can't get Koin scope due to error:$e")
     }
-}
-
-
-@OptIn(KoinInternalApi::class)
-private fun warningNoContext(ctx: Koin) {
-    ctx.logger.info("No Compose Koin context setup, taking default. Use KoinContext(), KoinAndroidContext() or KoinApplication() function to setup or create Koin context and avoid such message.")
 }
 
 /**
@@ -172,6 +154,7 @@ internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Leve
  */
 @OptIn(KoinInternalApi::class)
 @Composable
+//TODO Deprecate in 4.1? - as we have default context
 fun KoinContext(
     context: Koin = retrieveDefaultInstance(),
     content: @Composable () -> Unit
