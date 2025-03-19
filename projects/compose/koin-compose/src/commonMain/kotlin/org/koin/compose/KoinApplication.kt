@@ -26,6 +26,7 @@ import org.koin.compose.application.rememberKoinApplication
 import org.koin.compose.application.rememberKoinMPApplication
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.logger.Level
@@ -74,7 +75,6 @@ fun getKoin(): Koin = currentComposer.run {
  */
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
-@ReadOnlyComposable
 fun currentKoinScope(): Scope = currentComposer.run {
     try {
         consume(LocalKoinScope)
@@ -127,6 +127,7 @@ fun KoinApplication(
  */
 @OptIn(KoinInternalApi::class)
 @Composable
+@KoinExperimentalAPI
 fun KoinMultiplatformApplication(
     config: KoinConfiguration,
     logLevel : Level = Level.INFO,
@@ -154,7 +155,7 @@ internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Leve
  */
 @OptIn(KoinInternalApi::class)
 @Composable
-//TODO Deprecate in 4.1? - as we have default context
+@Deprecated("KoinContext is not required. Use startKoin() outside of Compose app")
 fun KoinContext(
     context: Koin = retrieveDefaultInstance(),
     content: @Composable () -> Unit

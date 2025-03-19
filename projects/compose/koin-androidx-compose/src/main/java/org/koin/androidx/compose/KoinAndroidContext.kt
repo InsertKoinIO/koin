@@ -37,8 +37,8 @@ import org.koin.mp.KoinPlatformTools
  * @author Arnaud Giuliani
  * @author jjkester
  */
-//TODO Deprecate in 4.1? - as we have default context
 @Composable
+@Deprecated("KoinAndroidContext is not required. Use startKoin() outside of Compose app")
 fun KoinAndroidContext(
     content: @Composable () -> Unit
 ) {
