@@ -62,7 +62,7 @@ fun App(userViewModel: UserViewModel = koinViewModel()) {
 fun MyScreen() {
 
     var someValue by remember { mutableStateOf("initial") }
-    val myDependency = koinInject<MyFactory>(parameters = parametersOf(someValue))
+    val myDependency = koinInject<MyFactory> { parametersOf(someValue) }
 
     SideEffect {
         println("MyScreen 1")
@@ -117,7 +117,7 @@ fun SingleComposable(
 @Composable
 fun FactoryComposable(
     parentStatus: String = "- status -",
-    myFactory: MyFactory = koinInject(parameters = parametersOf("stable_status"))
+    myFactory: MyFactory = koinInject(parametersHolder = parametersOf("stable_status"))
 ) {
     var created by remember { mutableStateOf(false) }
     rememberKoinModules(modules = { listOf(secondModule) })
@@ -144,7 +144,7 @@ fun FactoryComposable(
 //TODO Hold instance until recreate Composable
 fun InnerFactoryComposable(
     parentStatus: String,
-    myFactory: MyInnerFactory = koinInject(parameters = parametersOf("_stable_"))
+    myFactory: MyInnerFactory = koinInject { parametersOf("_stable_") }
 ) {
     var created by remember { mutableStateOf(false) }
     if (created) {
