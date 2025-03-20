@@ -38,7 +38,13 @@ import org.koin.viewmodel.resolveViewModel
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
-@Deprecated("koinViewModel() can be used instead of koinNavViewModel(), as it's embedding nav backstack arguments")
+@Deprecated(
+    message = "koinNavViewModel is deprecated. Use koinViewModel instead.",
+    replaceWith = ReplaceWith(
+        expression = "koinViewModel()",
+        imports = ["org.koin.compose.viewmodel.koinViewModel"]
+    )
+)
 @Composable
 inline fun <reified T : ViewModel> koinNavViewModel(
     qualifier: Qualifier? = null,

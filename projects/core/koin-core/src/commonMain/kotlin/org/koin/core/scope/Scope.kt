@@ -471,10 +471,10 @@ class Scope(
      */
     fun close() = KoinPlatformTools.synchronized(this) {
         _koin.logger.debug("|- (-) Scope - id:'$id'")
-        _closed = true
 
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()
+        _closed = true
 
         sourceValue = null
 

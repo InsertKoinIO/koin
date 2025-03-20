@@ -57,7 +57,7 @@ inline fun <reified T> koinInject(
  *
  * @param qualifier - dependency qualifier
  * @param scope - Koin's root by default
- * @param parameters - parameters (used with parametersOf(), no lambda)
+ * @param parametersHolder - parameters (used with parametersOf(), no lambda)
  * @return instance of type T
  *
  * @author Arnaud Giuliani
@@ -67,10 +67,10 @@ inline fun <reified T> koinInject(
 inline fun <reified T> koinInject(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope(),
-    parameters: ParametersHolder,
+    parametersHolder: ParametersHolder,
 ): T {
-    return remember(qualifier, scope, parameters) {
-        scope.getWithParameters(T::class, qualifier, parameters)
+    return remember(qualifier, scope, parametersHolder) {
+        scope.getWithParameters(T::class, qualifier, parametersHolder)
     }
 }
 
