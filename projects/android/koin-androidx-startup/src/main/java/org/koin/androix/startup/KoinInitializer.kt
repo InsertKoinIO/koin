@@ -26,6 +26,7 @@ import org.koin.core.context.startKoin
  *
  * @author Arnaud Giuliani
  */
+@KoinExperimentalAPI
 class KoinInitializer : Initializer<Koin> {
 
     @OptIn(KoinExperimentalAPI::class)
