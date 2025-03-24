@@ -16,22 +16,39 @@
 package org.koin.core.annotation
 
 /**
- * KoinInternal
- *
- * Help limit internal access
+Internal APIs
+@KoinInternalAPI annotation. Tag APIs are not part of the public contract and:
+
+- **Internal use only**: Are designed solely for the internal mechanisms of Koin.
+- **Subject to change**: May undergo modifications or be removed in future releases without prior notice.
+- **Avoid external usage**: Developers are discouraged from using these APIs in their application code to maintain long-term compatibility.
+
+ * @author Arnaud Giuliani
  */
-@RequiresOptIn(message = "Used to extend current API with Koin API. Shouldn't be used outside of Koin API", level = RequiresOptIn.Level.ERROR)
+@RequiresOptIn(message = "API marked as @KoinInternalAPI and is intended for internal framework use only. It may change or be removed in future releases without notice. External usage is strongly discouraged.", level = RequiresOptIn.Level.ERROR)
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR,
+)
 annotation class KoinInternalApi
 
 /**
- * API marked with this annotation is "experimental", as it can still change a bit and is not guaranteed to be completely stable.
+Experimental APIs -
+To foster innovation while gathering valuable community feedback, we introduce new features and APIs under the @KoinExperimentalAPI annotation. This designation indicates that:
+
+- Under active development: The API is still in its design phase and is subject to change.
+- Feedback encouraged: We invite developers to test these features and share their experiences, helping us refine and improve the design.
+- Potential breaking changes: Because these APIs are experimental, they might be modified or removed in subsequent releases as we iterate based on community input.
  *
  * @author Arnaud Giuliani
  * @author Victor Alenkov
  */
-@RequiresOptIn(message = "This API is experimental and can change in the next versions", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(message = "API marked as @KoinExperimentalAPI. The current API is actively under development, and may change or be removed without notice. Feedback will help stabilize this API.", level = RequiresOptIn.Level.WARNING)
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.TYPEALIAS,
