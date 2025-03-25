@@ -19,12 +19,10 @@ Follow the dedicated [setup page](https://insert-koin.io/docs/setup/koin) to set
 
 Here are the current available Koin project versions:
 
-- Koin [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
-- Koin for Compose [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compose)](https://mvnrepository.com/artifact/io.insert-koin/koin-compose)
+- Koin Stable: [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.0.3)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) - Unstable: [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.1.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
 - Koin Annotations [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-annotations)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
-- Koin ![](https://img.shields.io/badge/3.5.x-LTS-blue) - Official [Long Term Support](https://support.insert-koin.io) for Enterprises by Kotzilla
-
-
+- Koin ![](https://img.shields.io/badge/3.5-LTS-red) [Official Enterprise Support](mailto:koin@kotzilla.io) by Kotzilla
+- Koin Plugin ![](https://img.shields.io/badge/1.0-IntelliJ-red) Free download on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
 
 ## Latest News & Resources 🌐
 - Official Website: [insert-koin.io](https://insert-koin.io)
