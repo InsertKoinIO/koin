@@ -47,3 +47,20 @@ inline fun <reified VM : ViewModel> Fragment.koinNavGraphViewModel(
         parameters
     )
 }
+
+/**
+ * Request a ViewModel instance, scoped to Navigation graph
+ *
+ * @param route
+ *
+ * @author Sebastian Helzer
+ */
+inline fun <reified VM : ViewModel> Fragment.koinNavGraphViewModel(
+    route: Int,
+    qualifier: Qualifier? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { findNavController().getBackStackEntry(route) },
+    noinline extrasProducer: (() -> CreationExtras)? = null,
+    noinline parameters: (() -> ParametersHolder)? = null,
+): Lazy<VM> {
+    return viewModel(qualifier, ownerProducer, extrasProducer, parameters)
+}
