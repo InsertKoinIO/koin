@@ -88,15 +88,19 @@ all API annotated with `@KoinReflectAPI` has been removed
   - `KoinContextHandler` removed in favor of `GlobalContext`
 
 `koin-android` 
-  - all state ViewModel API are removed - `stateViewModel()`,`getStateViewModel()`, `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
+  - all state ViewModel API are deprecated at error level: 
+    - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
+    - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
   - function `fun Fragment.createScope()` is removed
   - All API around ViewModel factory (internal mainly) are reworked for new internals
 
 `koin-compose`
-  - functions `get()` and `inject()` have been removed in favor of `koinInject()`
-  - functions `getViewModel()` has been removed in favor of `koinViewModel()`
-  - removed all Lazy ViewModel API `viewModel()`
-  - function `rememberKoinInject()` has been moved into `koinInject()`, along with `StableParametersDefinition`
+  - old compose API function are deprecated at error level:
+    - functions `inject()` have been removed in favor of `koinInject()`
+    - functions `getViewModel()` has been removed in favor of `koinViewModel()`
+    - function `rememberKoinInject()` has been moved into `koinInject()`, 
+  - removed `StableParametersDefinition` as not used  anymore in internals
+  - removed all Lazy ViewModel API - old `viewModel()`
   - removed `rememberStableParametersDefinition()` as not used internally anymore
 
 ## 3.5.6
