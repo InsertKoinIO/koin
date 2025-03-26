@@ -51,3 +51,16 @@ inline fun <reified T : ViewModel> koinViewModel(
         T::class, viewModelStoreOwner.viewModelStore, key, extras, qualifier, scope, parameters
     )
 }
+
+@Composable
+@Deprecated("This API is deprecated and will be removed in next version. use koinViewModel() instead", replaceWith = ReplaceWith("koinViewModel"), level = DeprecationLevel.ERROR)
+inline fun <reified T : ViewModel> getViewModel(
+    qualifier: Qualifier? = null,
+    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
+        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+    },
+    key: String? = null,
+    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
+    scope: Scope = currentKoinScope(),
+    noinline parameters: ParametersDefinition? = null,
+): T = TODO("this function is deprecated")

@@ -215,6 +215,10 @@ public final class org/koin/core/error/MissingPropertyException : java/lang/Exce
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public final class org/koin/core/error/MissingScopeValueException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public final class org/koin/core/error/NoDefinitionFoundException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;)V
 }
@@ -249,16 +253,6 @@ public final class org/koin/core/extension/ExtensionManager {
 public abstract interface class org/koin/core/extension/KoinExtension {
 	public abstract fun onClose ()V
 	public abstract fun onRegister (Lorg/koin/core/Koin;)V
-}
-
-public final class org/koin/core/instance/DeclaredScopedInstance : org/koin/core/instance/InstanceFactory {
-	public fun <init> (Lorg/koin/core/definition/BeanDefinition;Ljava/lang/String;)V
-	public fun drop (Lorg/koin/core/scope/Scope;)V
-	public fun dropAll ()V
-	public fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
-	public final fun getScopeID ()Ljava/lang/String;
-	public fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
-	public final fun setValue (Ljava/lang/Object;)V
 }
 
 public final class org/koin/core/instance/FactoryInstanceFactory : org/koin/core/instance/InstanceFactory {
@@ -302,13 +296,17 @@ public final class org/koin/core/instance/ResolutionContext {
 }
 
 public final class org/koin/core/instance/ScopedInstanceFactory : org/koin/core/instance/InstanceFactory {
-	public fun <init> (Lorg/koin/core/definition/BeanDefinition;)V
+	public fun <init> (Lorg/koin/core/definition/BeanDefinition;Z)V
+	public synthetic fun <init> (Lorg/koin/core/definition/BeanDefinition;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 	public fun drop (Lorg/koin/core/scope/Scope;)V
 	public fun dropAll ()V
 	public fun get (Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+	public final fun getHoldInstance ()Z
 	public fun isCreated (Lorg/koin/core/instance/ResolutionContext;)Z
 	public final fun refreshInstance (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun saveValue (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun size ()I
 }
 
 public final class org/koin/core/instance/SingleInstanceFactory : org/koin/core/instance/InstanceFactory {
