@@ -28,6 +28,7 @@ internal actual fun composeMultiplatformConfiguration(loggerLevel : Level, confi
     }
 }
 
+@Deprecated("KoinContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 @Composable
 internal actual fun retrieveDefaultInstance() : Koin {
     val context = LocalContext.current
@@ -37,6 +38,7 @@ internal actual fun retrieveDefaultInstance() : Koin {
     return koin
 }
 
+@Deprecated("KoinContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 private fun Context.findContextForKoin(): ComponentCallbacks {
     var context = this
     while (context is ContextWrapper) {

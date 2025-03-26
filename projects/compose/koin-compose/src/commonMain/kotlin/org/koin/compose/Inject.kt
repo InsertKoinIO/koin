@@ -92,17 +92,3 @@ inline fun <reified T> koinInject(
         scope.get(T::class, qualifier)
     }
 }
-
-/**
- * Old alias of koinInject()
- *
- * @see koinInject
- * @author Arnaud Giuliani
- */
-@Composable
-@Deprecated("This API is deprecated and will be removed in next version. Use koinInject() instead", level = DeprecationLevel.ERROR)
-inline fun <reified T> rememberKoinInject(
-    qualifier: Qualifier? = null,
-    scope: Scope = currentKoinScope(),
-    noinline parameters: ParametersDefinition? = null,
-): T = TODO("function is deprecated")

@@ -17,6 +17,50 @@ For each version, the document is structured into the following sections:
 
 This structured approach not only clarifies the incremental changes in each release but also reinforces our commitment to transparency, stability, and continuous improvement in the Koin project.
 
+See [Api Stability Contract](api-stability.md) for more details.
+
+## 4.1.0
+
+### New 🎉
+
+`koin-core`
+- `KoinConfiguration` API to help wrap configuration
+
+`koin-ktor`
+- `Module.requestScope` - allow to declare definitions inside a Ktor request scope (avoid to declare `scope<RequestScope>` manually)
+
+`koin-ktor3` offering API for Ktor 3.x
+
+### Experimental 🚧
+
+`koin-compose`
+- Opening design for `KoinMultiplatformApplication`, to try proposing a Multiplatform Compose entry point 
+
+### Deprecation ⚠️
+
+`koin-compose`
+- compose context API is not required anymore, as Koin context is properly prepared on current default context. Following is deprecated and can be removed: `KoinContext`
+
+`koin-androidx-compose`
+- Jetpack compose context API is not required anymore, as Koin context is properly prepared on current default context. Following is deprecated and can be removed: `KoinAndroidContext`
+
+`koin-androidx-compose-navigation`
+- due to lifecycle lib update the function `koinNavViewModel` is not needed, can be replaced with `koinViewModel`
+
+### Breaking 💥
+
+`koin-android`
+- all state old ViewModel API are now removed:
+    - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
+    - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
+
+`koin-compose`
+- old compose API function are removed:
+    - function `inject()` have been removed in favor of `koinInject()`
+    - function `getViewModel()` has been removed in favor of `koinViewModel()`
+    - function `rememberKoinInject()` has been moved into `koinInject()`,
+- function `rememberKoinApplication` is marked as `@KoinInternalAPI`
+
 ## 4.0.3
 
 :::note
@@ -67,6 +111,15 @@ The following APIs have been deprecated, and should not be used anymore:
 
 - `koin-android` 
   - ViewModel DSL in favor of new centralized DSL in koin-core
+  - all state ViewModel API are deprecated at error level:
+      - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
+      - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
+
+`koin-compose`
+  - old compose API function are deprecated at error level:
+    - function `inject()` is deprecated (error level) in favor of `koinInject()`
+    - function `getViewModel()` is deprecated (error level) in favor of `koinViewModel()`
+    - function `rememberKoinInject()` is deprecated (error level) in favor of `koinInject()`,
 
 - `koin-compose-viewmodel` 
   - ViewModel DSL in favor of new centralized DSL in koin-core
@@ -88,17 +141,10 @@ all API annotated with `@KoinReflectAPI` has been removed
   - `KoinContextHandler` removed in favor of `GlobalContext`
 
 `koin-android` 
-  - all state ViewModel API are deprecated at error level: 
-    - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
-    - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
   - function `fun Fragment.createScope()` is removed
   - All API around ViewModel factory (internal mainly) are reworked for new internals
 
 `koin-compose`
-  - old compose API function are deprecated at error level:
-    - functions `inject()` have been removed in favor of `koinInject()`
-    - functions `getViewModel()` has been removed in favor of `koinViewModel()`
-    - function `rememberKoinInject()` has been moved into `koinInject()`, 
   - removed `StableParametersDefinition` as not used  anymore in internals
   - removed all Lazy ViewModel API - old `viewModel()`
   - removed `rememberStableParametersDefinition()` as not used internally anymore
@@ -217,11 +263,3 @@ Uses Kotlin `1.8.21`
 
 `koin-androidx-compose`
   - Removed `getStateViewModel` in favor of `koinViewModel`
-
-
-
-
-
-
-
-

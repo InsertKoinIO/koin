@@ -574,6 +574,7 @@ public final class org/koin/dsl/KoinApplicationKt {
 
 public final class org/koin/dsl/KoinConfiguration {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final fun getAppDeclaration ()Lkotlin/jvm/functions/Function1;
 	public final fun getConfig ()Lkotlin/jvm/functions/Function1;
 	public final fun invoke ()Lkotlin/jvm/functions/Function1;
 }

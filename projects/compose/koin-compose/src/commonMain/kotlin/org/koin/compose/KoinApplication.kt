@@ -104,7 +104,11 @@ fun KoinApplication(
     content: @Composable () -> Unit
 ) {
     val koin = rememberKoinApplication(application)
-    KoinContext(koin,content)
+    CompositionLocalProvider(
+        LocalKoinApplication provides koin,
+        LocalKoinScope provides koin.scopeRegistry.rootScope,
+        content = content
+    )
 }
 
 /**
@@ -134,7 +138,11 @@ fun KoinMultiplatformApplication(
     content: @Composable () -> Unit
 ) {
     val koin = rememberKoinMPApplication(config,logLevel)
-    KoinContext(koin,content)
+    CompositionLocalProvider(
+        LocalKoinApplication provides koin,
+        LocalKoinScope provides koin.scopeRegistry.rootScope,
+        content = content
+    )
 }
 
 /**
@@ -143,6 +151,7 @@ fun KoinMultiplatformApplication(
  */
 @Composable
 @PublishedApi
+@KoinInternalApi
 internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Level.INFO, config : KoinConfiguration) : KoinConfiguration
 
 /**
@@ -155,7 +164,7 @@ internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Leve
  */
 @OptIn(KoinInternalApi::class)
 @Composable
-@Deprecated("KoinContext is not needed anymore. Compose Koin context is setup with StartKoin()")
+@Deprecated("KoinContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 fun KoinContext(
     context: Koin = retrieveDefaultInstance(),
     content: @Composable () -> Unit
@@ -168,6 +177,7 @@ fun KoinContext(
 }
 
 @Composable
+@Deprecated("KoinContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 internal expect fun retrieveDefaultInstance() : Koin
 
 /**

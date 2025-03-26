@@ -28,7 +28,8 @@ import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.koinApplication
 
 @Composable
-internal inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclaration): Koin {
+@KoinInternalApi
+inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclaration): Koin {
     val wrapper = remember(koinAppDeclaration) {
         CompositionKoinApplicationLoader(koinApplication(koinAppDeclaration))
     }
@@ -37,7 +38,8 @@ internal inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinApp
 
 @OptIn(KoinInternalApi::class)
 @Composable
-internal inline fun rememberKoinMPApplication(configuration: KoinConfiguration, logLevel: Level): Koin {
+@KoinInternalApi
+inline fun rememberKoinMPApplication(configuration: KoinConfiguration, logLevel: Level): Koin {
     val configuration = composeMultiplatformConfiguration(logLevel, config = configuration)
     val wrapper = remember(configuration,logLevel) {
         CompositionKoinApplicationLoader(koinApplication(configuration))

@@ -1,7 +1,8 @@
 public final class org/koin/compose/KoinApplicationKt {
-	public static final fun KoinApplication (Lkotlin/jvm/functions/Function1;Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun KoinApplication (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun KoinContext (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun KoinIsolatedContext (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+	public static final fun KoinMultiplatformApplication (Lorg/koin/dsl/KoinConfiguration;Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun currentKoinScope (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/scope/Scope;
 	public static final fun getKoin (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
 	public static final fun getLocalKoinApplication ()Landroidx/compose/runtime/ProvidableCompositionLocal;
@@ -20,7 +21,8 @@ public final class org/koin/compose/application/CompositionKoinApplicationLoader
 }
 
 public final class org/koin/compose/application/RememberKoinApplicationKt {
-	public static final fun rememberKoinApplication (Lorg/koin/core/KoinApplication;Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
+	public static final fun rememberKoinApplication (Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
+	public static final fun rememberKoinMPApplication (Lorg/koin/dsl/KoinConfiguration;Lorg/koin/core/logger/Level;Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
 }
 
 public final class org/koin/compose/error/UnknownKoinContext : java/lang/Exception {

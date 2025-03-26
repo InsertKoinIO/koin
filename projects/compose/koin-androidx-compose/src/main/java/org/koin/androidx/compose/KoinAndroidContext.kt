@@ -38,7 +38,7 @@ import org.koin.mp.KoinPlatformTools
  * @author jjkester
  */
 @Composable
-@Deprecated("KoinAndroidContext is not needed anymore. Compose Koin context is setup with StartKoin()")
+@Deprecated("KoinAndroidContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 fun KoinAndroidContext(
     content: @Composable () -> Unit
 ) {
