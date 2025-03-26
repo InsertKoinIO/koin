@@ -60,7 +60,7 @@ val myModule = module {
 ## Resolving & injecting dependencies
 
 Now that we can declare components definitions, we want to link instances with dependency injection. To *resolve an instance* in a Koin module, just use the `get()`
-function to the requested needed component instance. This `get()` function is usually used into constructor, to inject constructor values.
+function to request the needed component instance. This `get()` function is usually used into constructor, to inject constructor values.
 
 :::info
  To make dependency injection with Koin container, we have to write it in *constructor injection* style: resolve dependencies in class constructors. This way, your instance will be created with injected instances from Koin.
