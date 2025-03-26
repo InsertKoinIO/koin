@@ -3,7 +3,7 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 binaryValidator = "0.16.3"
 publish = "2.0.0"
 coroutines = "1.10.1"

@@ -1,5 +1,5 @@
 ---
-title: Releases & API Compatibility Guide
+title: Releases & API Upgrade Guides
 custom_edit_url: null
 ---
 
@@ -35,6 +35,9 @@ See [Api Stability Contract](api-stability.md) for more details.
 
 `koin-compose`
 - Opening design for `KoinMultiplatformApplication`, to try proposing a Multiplatform Compose entry point 
+
+`koin-core` - `wasm`
+- use of Kotlin 2.1.20 Uuid generation
 
 ### Deprecation ⚠️
 

@@ -1,5 +1,9 @@
 package org.koin.mp
 
-import com.benasher44.uuid.uuid4
+import org.koin.core.annotation.KoinExperimentalAPI
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-actual fun KoinPlatformTools.generateId(): String = uuid4().toString()
+@OptIn(ExperimentalUuidApi::class)
+@KoinExperimentalAPI
+actual fun KoinPlatformTools.generateId(): String = Uuid.random().toString()
