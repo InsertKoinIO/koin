@@ -9,6 +9,7 @@ publish = "2.0.0"
 coroutines = "1.10.1"
 dokka = "1.9.20"
 uuid = "0.8.4"
+detekt = "1.23.8"
 
 # Android
 agp = "7.4.2"
@@ -102,3 +103,4 @@ kotlinBinary = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", ve
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "benchmark"}
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
