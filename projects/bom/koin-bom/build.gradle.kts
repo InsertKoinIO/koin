@@ -34,6 +34,8 @@ dependencies {
         api(project(":compose:koin-compose-viewmodel-navigation"))
         api(project(":compose:koin-androidx-compose"))
         api(project(":compose:koin-androidx-compose-navigation"))
+
+        api(project(":decompose:koin-decompose"))
     }
 }
 
