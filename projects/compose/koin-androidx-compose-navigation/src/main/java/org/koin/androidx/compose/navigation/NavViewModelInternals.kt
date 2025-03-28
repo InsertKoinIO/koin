@@ -20,33 +20,18 @@ package org.koin.androidx.compose.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import org.koin.compose.currentKoinScope
-import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.Scope
 import org.koin.viewmodel.defaultExtras
 
 /**
- * Resolve ViewModel instance with Navigation NavBackStackEntry as extras parameters
+ * Resolve ViewModel instance
  *
  * @param qualifier
  * @param parameters
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("koinNavViewModel() is deprecated in favor of koinViewModel().")
 @OptIn(KoinInternalApi::class)
-@Deprecated("koinNavViewModel() is deprecated in favor of koinViewModel().", replaceWith = ReplaceWith("koinViewModel()","org.koin.compose.viewmodel"))
 @Composable
-inline fun <reified T : ViewModel> koinNavViewModel(
-    qualifier: Qualifier? = null,
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    },
-    key: String? = null,
-    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
-    scope: Scope = currentKoinScope(),
-    noinline parameters: ParametersDefinition? = null,
-): T = koinViewModel(qualifier,viewModelStoreOwner,key,extras,scope,parameters)
+fun defaultNavExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras = defaultExtras(viewModelStoreOwner)

@@ -22,6 +22,7 @@ import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.compose.currentKoinScope
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -46,11 +47,7 @@ inline fun <reified T : ViewModel> koinViewModel(
     extras: CreationExtras = defaultExtras(viewModelStoreOwner),
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T {
-    return resolveViewModel(
-        T::class, viewModelStoreOwner.viewModelStore, key, extras, qualifier, scope, parameters
-    )
-}
+): T = koinViewModel(qualifier,viewModelStoreOwner,key,extras,scope,parameters)
 
 @Composable
 @Deprecated("This API is deprecated and will be removed in next version. use koinViewModel() instead", replaceWith = ReplaceWith("koinViewModel"), level = DeprecationLevel.ERROR)
@@ -63,4 +60,4 @@ inline fun <reified T : ViewModel> getViewModel(
     extras: CreationExtras = defaultExtras(viewModelStoreOwner),
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T = TODO("this function is deprecated")
+): T = koinViewModel(qualifier,viewModelStoreOwner,key,extras,scope,parameters)

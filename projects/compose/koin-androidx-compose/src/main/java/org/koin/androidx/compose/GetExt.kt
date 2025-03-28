@@ -13,40 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DeprecatedCallableAddReplaceWith")
-
-package org.koin.androidx.compose.navigation
+package org.koin.androidx.compose
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.koin.compose.currentKoinScope
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.getKoin
+import org.koin.compose.koinInject
+import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
-import org.koin.viewmodel.defaultExtras
 
 /**
- * Resolve ViewModel instance with Navigation NavBackStackEntry as extras parameters
- *
+ * Resolve a dependency for [Composable] functions
  * @param qualifier
  * @param parameters
  *
+ * @return Lazy instance of type T
+ *
  * @author Arnaud Giuliani
+ * @author Henrique Horbovyi
  */
 @OptIn(KoinInternalApi::class)
-@Deprecated("koinNavViewModel() is deprecated in favor of koinViewModel().", replaceWith = ReplaceWith("koinViewModel()","org.koin.compose.viewmodel"))
 @Composable
-inline fun <reified T : ViewModel> koinNavViewModel(
+@Deprecated("get() function is deprecated. Use koinInject() instead.", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("koinInject()","org.koin.compose"))
+inline fun <reified T> get(
     qualifier: Qualifier? = null,
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    },
-    key: String? = null,
-    extras: CreationExtras = defaultExtras(viewModelStoreOwner),
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition? = null,
-): T = koinViewModel(qualifier,viewModelStoreOwner,key,extras,scope,parameters)
+): T = koinInject(qualifier,scope)
+
+@Composable
+@Deprecated("getKoin() function has been moved to koin-compose.", replaceWith = ReplaceWith("getKoin()","org.koin.compose"), level = DeprecationLevel.ERROR)
+fun getKoin(): Koin = getKoin()
