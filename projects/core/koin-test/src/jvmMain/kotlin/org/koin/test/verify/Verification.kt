@@ -140,7 +140,8 @@ class Verification(val module: Module, extraTypes: List<KClass<*>>, injections: 
             if (isWhiteList) {
                 println("| dependency '$ctorParamLabel' is whitelisted")
             }
-            val isDefinitionDeclared = hasDefinition || isParameterInjected || isWhiteList
+            val isOptionalParameter = constructorParameter.isOptional
+            val isDefinitionDeclared = hasDefinition || isParameterInjected || isWhiteList || isOptionalParameter
 
             val alreadyBoundFactory = verifiedFactories.keys.firstOrNull { ctorParamClass in listOf(it.beanDefinition.primaryType) + it.beanDefinition.secondaryTypes }
             val factoryDependencies = verifiedFactories[alreadyBoundFactory]
