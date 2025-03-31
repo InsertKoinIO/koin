@@ -17,6 +17,8 @@ Koin is a pragmatic lightweight dependency injection framework for Kotlin develo
 
 Follow the dedicated [setup page](https://insert-koin.io/docs/setup/koin) to setup Koin for your project. Additionally, you may need to check the last changes for [Maven Central packages](https://insert-koin.io/docs/setup/koin#current-versions).
 
+Follow the [Release Upgrade Guide](https://insert-koin.io/docs/support/releases) to anticipate your next version upgrade.
+
 Here are the current available Koin project versions:
 
 - Koin Stable: [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.0.3)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) - Unstable: [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.1.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
