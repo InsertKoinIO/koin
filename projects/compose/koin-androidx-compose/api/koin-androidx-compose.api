@@ -1,5 +1,13 @@
+public final class org/koin/androidx/compose/GetExtKt {
+	public static final fun getKoin (Landroidx/compose/runtime/Composer;I)Lorg/koin/core/Koin;
+}
+
 public final class org/koin/androidx/compose/KoinAndroidContextKt {
 	public static final fun KoinAndroidContext (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class org/koin/androidx/compose/ViewModelInternalsKt {
+	public static final fun defaultExtras (Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/compose/runtime/Composer;I)Landroidx/lifecycle/viewmodel/CreationExtras;
 }
 
 public final class org/koin/androidx/compose/scope/KoinAndroidScopeKt {
