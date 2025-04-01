@@ -36,7 +36,7 @@ Here are the current available Koin project versions:
 
 You can find here tutorials to help you learn and get started with Koin framework:
 - [Kotlin](https://insert-koin.io/docs/quickstart/kotlin)
-- [Kotlin with Koin Annotations](https://insert-koin.io/docs/quickstart/kotlin-annotations)
+- [Kotlin with Koin Annotations](https://insert-koin.io/docs/reference/koin-annotations/start)
 - [Android](https://insert-koin.io/docs/quickstart/android-viewmodel)
 - [Android with Koin Annotations](https://insert-koin.io/docs/quickstart/android-annotations)
 - [Android Jetpack Compose](https://insert-koin.io/docs/quickstart/android-compose)
