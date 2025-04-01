@@ -17,9 +17,9 @@ First, add the Koin dependency like below:
 ```groovy
 dependencies {
     // Koin testing tools
-    testCompile "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin_version"
     // Needed JUnit version
-    testCompile "io.insert-koin:koin-test-junit4:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 }
 ```
 
