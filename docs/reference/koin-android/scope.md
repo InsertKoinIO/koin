@@ -145,9 +145,9 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 If you don't want to use Android Scope classes, you can work with your own and use `AndroidScopeComponent` with the Scope creation API
 :::
 
-### AndroidScopeComponent and Scope closing handling
+### AndroidScopeComponent and handling Scope closing
 
-You can run some code before Koin Scope is being destroyed, by overriding `onCloseScope` function from `AndroidScopeComponent`:
+You can run code before Koin Scope is destroyed, by overriding the `onCloseScope` function from `AndroidScopeComponent`:
 
 ```kotlin
 class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
