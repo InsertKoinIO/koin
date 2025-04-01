@@ -13,7 +13,7 @@ Koin offers several keywords to let you describe the elements of a Koin Applicat
 
 ## Application DSL
 
-A `KoinApplication` instance is a Koin container instance configuration. This will let your configure logging, properties loading and modules.
+A `KoinApplication` instance is a Koin container instance configuration. This will let you configure logging, properties loading and modules.
 
 To build a new `KoinApplication`, use the following functions:
 
