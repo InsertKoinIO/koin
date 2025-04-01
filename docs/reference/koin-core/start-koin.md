@@ -42,7 +42,7 @@ The `GlobalContext` is a default JVM context strategy for Koin. It's called by `
 
 You can't call the `startKoin` function more than once. But you can use directly the `loadKoinModules()` functions.
 
-This function is interesting for SDK makers who want to use Koin, because they don't need to use the `starKoin()` function and just use the `loadKoinModules` at the start of their library.
+This function is interesting for SDK makers who want to use Koin, because they don't need to use the `startKoin()` function and just use the `loadKoinModules` at the start of their library.
 
 ```kotlin
 loadKoinModules(module1,module2 ...)
