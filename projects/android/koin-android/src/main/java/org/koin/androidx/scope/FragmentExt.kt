@@ -19,7 +19,9 @@ import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.component.getScopeId
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
+
 
 /**
  * Create Scope for Fragment, given it's extending AndroidScopeComponent.
@@ -30,7 +32,7 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
     if (this !is AndroidScopeComponent) {
         error("Fragment should implement AndroidScopeComponent")
     }
-    val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this)
+    val scope = getKoin().getScopeOrNull(getScopeId()) ?: createScopeForCurrentLifecycle(this, FragmentScopeArchetype)
     if (useParentActivityScope){
         val activityScope: Scope? = (activity as? AndroidScopeComponent)?.scope
         if (activityScope != null) {

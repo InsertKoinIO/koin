@@ -1,6 +1,9 @@
 package org.koin.sample.sandbox.di
 
 import org.koin.androidx.fragment.dsl.fragmentOf
+import org.koin.androidx.scope.dsl.activityScope
+import org.koin.androidx.scope.dsl.fragmentScope
+import org.koin.androidx.scope.dsl.retainedActivityScope
 // 4.0 deprecations
 //import org.koin.androidx.viewmodel.dsl.viewModel
 //import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -32,6 +35,7 @@ import org.koin.sample.sandbox.scope.ScopedActivityA
 import org.koin.sample.sandbox.scope.ScopedFragment
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
+import org.koin.viewmodel.scope.viewModelScope
 
 val appModule = module {
 
@@ -47,10 +51,13 @@ val mvpModule = module {
     //factory { (id: String) -> FactoryPresenter(id, get()) }
     factoryOf(::FactoryPresenter)
 
-    scope<MVPActivity> {
-        scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
-
+    activityScope {
+        scopedOf(::ScopedPresenter)
     }
+//    scope<MVPActivity> {
+//        scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
+//
+//    }
 }
 
 val mvvmModule = module {
@@ -66,31 +73,49 @@ val mvvmModule = module {
     viewModelOf(::ViewModelImpl) { bind<AbstractViewModel>() }
 
     viewModelOf(::MyScopeViewModel)
-    scope<MyScopeViewModel> {
-        scopedOf(::Session)
-    }
-
     viewModelOf(::MyScopeViewModel2)
-    scope<MyScopeViewModel2> {
+
+    viewModelScope {
         scopedOf(::Session)
         scopedOf(::SessionConsumer)
     }
 
+    scope<MyScopeViewModel> {
+        scopedOf(::Session)
+    }
+//
+//    scope<MyScopeViewModel2> {
+//        scopedOf(::Session)
+//        scopedOf(::SessionConsumer)
+//    }
+
     viewModelOf(::SavedStateViewModel) { named("vm2") }
 
     viewModel { (s : Session) -> SharedVM(s)}
-    scope<MVVMActivity> {
+
+    activityScope {
         scopedOf(::Session)
         fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
 
         scoped { MVVMPresenter1(get()) }
         scoped { MVVMPresenter2(get()) }
     }
-    scope<MVVMFragment> {
+    fragmentScope {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
-        // to retrieve from parent
-//        scopedOf(::Session)
     }
+
+//    scope<MVVMActivity> {
+//        scopedOf(::Session)
+//        fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
+//
+//        scoped { MVVMPresenter1(get()) }
+//        scoped { MVVMPresenter2(get()) }
+//    }
+//    scope<MVVMFragment> {
+//        scoped { (id: String) -> ScopedPresenter(id, get()) }
+//        // to retrieve from parent
+////        scopedOf(::Session)
+//    }
 }
 
 val scopeModule = module {
@@ -107,14 +132,18 @@ val scopeModule = module {
 }
 
 val scopeModuleActivityA = module {
-    scope<ScopedActivityA> {
+    retainedActivityScope {
         fragmentOf(::ScopedFragment)
         scopedOf(::Session)
         scopedOf(::SessionActivity)
     }
-    scope<ScopedFragment> {
-
-    }
+//    scope<ScopedActivityA> {
+//        fragmentOf(::ScopedFragment)
+//        scopedOf(::Session)
+//        scopedOf(::SessionActivity)
+//    }
+//    scope<ScopedFragment> {
+//    }
 }
 
 val workerServiceModule = module {

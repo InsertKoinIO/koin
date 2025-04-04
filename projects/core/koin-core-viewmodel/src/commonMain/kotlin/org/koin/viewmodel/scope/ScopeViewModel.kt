@@ -1,10 +1,10 @@
-package org.koin.androidx.scope
+package org.koin.viewmodel.scope
 
 import androidx.lifecycle.ViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
 import org.koin.core.scope.Scope
-import org.koin.viewmodel.scope.ViewModelScopeArchetype
 
 /**
  * Class to help support Koin Scope in a ViewModel
@@ -16,7 +16,7 @@ import org.koin.viewmodel.scope.ViewModelScopeArchetype
  *
  * @author Arnaud Giuliani
  */
-@Deprecated("ScopeViewModel has been moved to org.koin.viewmodel.scope.ScopeViewModel (koin-core-viewmodel)", ReplaceWith(expression = "ScopeViewModel()", imports = ["org.koin.viewmodel.scope"]))
+@KoinExperimentalAPI
 abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
 
     override val scope: Scope = createScope(source = this, scopeArchetype = ViewModelScopeArchetype)

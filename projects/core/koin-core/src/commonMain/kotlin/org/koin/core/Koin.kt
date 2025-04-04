@@ -182,17 +182,17 @@ class Koin {
      * @param scopeId
      * @param scopeDefinitionName
      */
-    fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
-        return scopeRegistry.createScope(scopeId, qualifier, source)
+    fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null, scopeArchetype : TypeQualifier? = null): Scope {
+        return scopeRegistry.createScope(scopeId, qualifier, source,scopeArchetype)
     }
 
     /**
      * Create a Scope instance
      * @param scopeId
      */
-    inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null): Scope {
+    inline fun <reified T : Any> createScope(scopeId: ScopeID, source: Any? = null, scopeArchetype : TypeQualifier? = null): Scope {
         val qualifier = TypeQualifier(T::class)
-        return scopeRegistry.createScope(scopeId, qualifier, source)
+        return scopeRegistry.createScope(scopeId, qualifier, source, scopeArchetype)
     }
 
     /**

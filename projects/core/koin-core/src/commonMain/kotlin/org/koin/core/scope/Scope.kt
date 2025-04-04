@@ -16,6 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
@@ -28,6 +29,7 @@ import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.time.inMs
 import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
@@ -44,6 +46,7 @@ class Scope(
     val scopeQualifier: Qualifier,
     val id: ScopeID,
     val isRoot: Boolean = false,
+    val scopeArchetype : TypeQualifier? = null,
     @PublishedApi
     internal val _koin: Koin,
 ) : Lockable() {
@@ -315,6 +318,7 @@ class Scope(
             ?: resolveFromRegistry(instanceContext)
             ?: resolveFromStackedParameters(instanceContext)
             ?: resolveFromScopeSource(instanceContext)
+            ?: resolveFromScopeArchetype(instanceContext)
             ?: resolveFromParentScopes(instanceContext)
             ?: throwNoDefinitionFound(instanceContext)
     }
@@ -347,6 +351,13 @@ class Scope(
         if (isRoot) return null
         _koin.logger.debug("|- ? ${ctx.debugTag} look at scope source")
         return if (ctx.clazz.isInstance(sourceValue) && ctx.qualifier == null) { sourceValue as? T } else null
+    }
+
+    @KoinExperimentalAPI
+    private inline fun <T> resolveFromScopeArchetype(ctx: ResolutionContext): T? {
+        if (isRoot || scopeQualifier !is TypeQualifier) return null
+        _koin.logger.debug("|- ? ${ctx.debugTag} look at scope archetype")
+        return _koin.instanceRegistry.resolveScopeArchetypeInstance<T>(ctx.qualifier, ctx.clazz, ctx)
     }
 
     private fun <T> resolveFromParentScopes(ctx: ResolutionContext): T? {
