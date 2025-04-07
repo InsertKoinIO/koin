@@ -40,6 +40,11 @@ kotlin {
             api(libs.jb.bundle)
             api(libs.jb.savedstate)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.test.junit)
+            implementation(libs.test.mockk)
+        }
     }
 }
 

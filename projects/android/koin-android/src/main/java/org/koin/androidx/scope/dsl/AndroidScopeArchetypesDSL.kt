@@ -17,7 +17,7 @@ package org.koin.androidx.scope.dsl
 
 import org.koin.androidx.scope.ActivityScopeArchetype
 import org.koin.androidx.scope.FragmentScopeArchetype
-import org.koin.androidx.scope.RetainedActivityScopeArchetype
+import org.koin.androidx.scope.ActivityRetainedScopeArchetype
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
@@ -32,8 +32,8 @@ fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
 
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
-fun Module.retainedActivityScope(scopeSet: ScopeDSL.() -> Unit) {
-    val qualifier = RetainedActivityScopeArchetype
+fun Module.activityRetainedScope(scopeSet: ScopeDSL.() -> Unit) {
+    val qualifier = ActivityRetainedScopeArchetype
     ScopeDSL(qualifier, this).apply(scopeSet)
 }
 

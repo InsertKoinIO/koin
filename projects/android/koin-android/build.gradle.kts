@@ -22,6 +22,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 tasks.withType<KotlinCompile>().all {
@@ -46,6 +52,7 @@ dependencies {
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockito)
     testImplementation(libs.test.mockk)
+    testImplementation(libs.test.robolectric)
 }
 
 // android sources

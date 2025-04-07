@@ -18,7 +18,6 @@ package org.koin.androidx.scope
 import android.content.ComponentCallbacks
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import org.koin.android.ext.android.getKoin
@@ -89,7 +88,7 @@ fun ComponentActivity.createActivityRetainedScope(): Scope {
 
     val scopeViewModel = viewModels<ScopeHandlerViewModel>().value
     if (scopeViewModel.scope == null) {
-        val scope = getKoin().createScope(getScopeId(), getScopeName(), scopeArchetype = RetainedActivityScopeArchetype)
+        val scope = getKoin().createScope(getScopeId(), getScopeName(), scopeArchetype = ActivityRetainedScopeArchetype)
         scopeViewModel.scope = scope
     }
     return scopeViewModel.scope!!
