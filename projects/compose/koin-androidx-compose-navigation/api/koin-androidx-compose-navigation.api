@@ -1,0 +1,4 @@
+public final class org/koin/androidx/compose/navigation/NavViewModelInternalsKt {
+	public static final fun defaultNavExtras (Landroidx/lifecycle/ViewModelStoreOwner;Landroidx/compose/runtime/Composer;I)Landroidx/lifecycle/viewmodel/CreationExtras;
+}
+

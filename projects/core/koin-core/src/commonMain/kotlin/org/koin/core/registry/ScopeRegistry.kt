@@ -20,6 +20,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ScopeAlreadyCreatedException
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier._q
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
@@ -55,7 +56,7 @@ class ScopeRegistry(private val _koin: Koin) {
     }
 
     @PublishedApi
-    internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null): Scope {
+    internal fun createScope(scopeId: ScopeID, qualifier: Qualifier, source: Any? = null,scopeArchetype : TypeQualifier? = null): Scope {
         _koin.logger.debug("| (+) Scope - id:'$scopeId' q:'$qualifier'")
         if (!_scopeDefinitions.contains(qualifier)) {
             _koin.logger.debug("| Scope '$qualifier' not defined. Creating it ...")
@@ -64,7 +65,7 @@ class ScopeRegistry(private val _koin: Koin) {
         if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
-        val scope = Scope(qualifier, scopeId, _koin = _koin)
+        val scope = Scope(qualifier, scopeId, _koin = _koin, scopeArchetype = scopeArchetype)
         source?.let {
             _koin.logger.debug("|- Scope source set id:'$scopeId' -> $source")
             scope.sourceValue = source

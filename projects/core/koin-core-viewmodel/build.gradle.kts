@@ -15,6 +15,15 @@ kotlin {
         withJava()
     }
 
+    // Enable context receivers for all targets
+    targets.all {
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += listOf("-Xcontext-receivers")
+            }
+        }
+    }
+
     js(IR) {
         nodejs()
         browser()
@@ -39,6 +48,11 @@ kotlin {
             api(libs.jb.lifecycleViewmodelSavedState)
             api(libs.jb.bundle)
             api(libs.jb.savedstate)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.test.junit)
+            implementation(libs.test.mockk)
         }
     }
 }

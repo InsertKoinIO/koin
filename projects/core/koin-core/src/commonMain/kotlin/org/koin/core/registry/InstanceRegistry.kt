@@ -16,6 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
@@ -102,6 +103,18 @@ class InstanceRegistry(val _koin: Koin) {
     ): InstanceFactory<*>? {
         val indexKey = indexKey(clazz, qualifier, scopeQualifier)
         return _instances[indexKey]
+    }
+
+    @KoinExperimentalAPI
+    internal fun <T> resolveScopeArchetypeInstance(
+        qualifier: Qualifier?,
+        klass: KClass<*>,
+        context: ResolutionContext
+    ) :T? {
+        return context.scope.scopeArchetype?.let {
+            context.scopeArchetype = it
+            resolveInstance(qualifier,klass,it,context)
+        }
     }
 
     internal fun <T> resolveInstance(
@@ -194,4 +207,6 @@ class InstanceRegistry(val _koin: Koin) {
     fun size(): Int {
         return _instances.size
     }
+
+
 }

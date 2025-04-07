@@ -13,24 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.androidx.fragment.dsl
+package org.koin.viewmodel.scope
 
-import androidx.fragment.app.Fragment
-import org.koin.core.definition.Definition
-import org.koin.core.definition.KoinDefinition
-import org.koin.core.module.Module
-import org.koin.core.module.dsl.new
-import org.koin.core.qualifier.Qualifier
+import androidx.lifecycle.ViewModel
+import org.koin.core.qualifier.TypeQualifier
 
-/**
- * Fragment Constructor DSL
- *
- * @author Arnaud Giuliani
- *
- * @param qualifier - definition qualifier
- * @param definition - allow definition override
- */
-inline fun <reified T : Fragment> Module.fragment(
-    qualifier: Qualifier? = null,
-    noinline definition: Definition<T>
-): KoinDefinition<T> = factory(qualifier, definition)
+val ViewModelScopeArchetype = TypeQualifier(ViewModel::class)

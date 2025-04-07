@@ -11,7 +11,7 @@ dokka = "1.9.20"
 uuid = "0.8.4"
 
 # Android
-agp = "7.4.2"
+agp = "8.3.0"
 android-appcompat = "1.7.0"
 android-activity = "1.10.1"
 android-fragment = "1.8.6"
@@ -34,6 +34,7 @@ junit = "4.13.2"
 jupiter = "5.11.3"
 mockito = "4.8.0"
 mockk = "1.13.2"
+robolectric = "4.14.1"
 # Ktor
 ktor = "2.3.12" #to be removed after Koin 4.1
 ktor3 = "3.1.1"
@@ -55,6 +56,7 @@ test-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 test-jupiter = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jupiter" }
 test-mockito = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
 test-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+test-robolectric = {module = "org.robolectric:robolectric", version.ref = "robolectric"}
 # Android
 android-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "android-appcompat" }
 android-activity = { module = "androidx.activity:activity-ktx", version.ref = "android-activity" }

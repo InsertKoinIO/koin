@@ -29,3 +29,23 @@ public final class org/koin/viewmodel/factory/KoinViewModelFactory : androidx/li
 	public fun create (Lkotlin/reflect/KClass;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModel;
 }
 
+public abstract class org/koin/viewmodel/scope/ScopeViewModel : androidx/lifecycle/ViewModel, org/koin/core/component/KoinScopeComponent {
+	public fun <init> ()V
+	public fun getKoin ()Lorg/koin/core/Koin;
+	public fun getScope ()Lorg/koin/core/scope/Scope;
+	protected fun onCleared ()V
+	public fun onCloseScope ()V
+}
+
+public final class org/koin/viewmodel/scope/ScopeViewModelKt {
+	public static final fun viewModelScope (Landroidx/lifecycle/ViewModel;Lorg/koin/core/component/KoinScopeComponent;)Lorg/koin/core/scope/Scope;
+}
+
+public final class org/koin/viewmodel/scope/ViewModelScopeArchetypeDSLKt {
+	public static final fun viewModelScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class org/koin/viewmodel/scope/ViewModelScopeArchetypeKt {
+	public static final fun getViewModelScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+}
+
