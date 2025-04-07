@@ -1,14 +1,7 @@
 name: Test Examples
 
 on:
-  push:
-    branches:
-      - '*'
-      - '*/*'
   pull_request:
-    branches:
-      - '*'
-      - '*/*'
 
 concurrency:
   group: test-examples-${{ github.ref }}

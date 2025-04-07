@@ -1,14 +1,7 @@
 name: Build & Test
 
 on:
-  push:
-    branches:
-      - '*'
-      - '*/*'
   pull_request:
-    branches:
-      - '*'
-      - '*/*'
 
 concurrency:
   group: build-${{ github.ref }}
@@ -76,8 +69,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 17
+          distribution: temurin
+          java-version: '18'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
