@@ -28,6 +28,9 @@ android {
             isReturnDefaultValues = true
         }
     }
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 tasks.withType<KotlinCompile>().all {
