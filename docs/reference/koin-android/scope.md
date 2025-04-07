@@ -73,9 +73,15 @@ class MyAdapter(val presenter : MyPresenter)
 module {
   // Declare scope for MyActivity
   scope<MyActivity> {
-    // get MyPresenter instance from current scope 
-    scoped { MyAdapter(get()) }
-    scoped { MyPresenter() }
+   // get MyPresenter instance from current scope 
+   scoped { MyAdapter(get()) }
+   scoped { MyPresenter() }
+  }
+ 
+  // or
+  activityScope {
+   scoped { MyAdapter(get()) }
+   scoped { MyPresenter() }
   }
 }
 ```
@@ -183,7 +189,11 @@ module {
     viewModelOf(::MyScopeViewModel)
     scope<MyScopeViewModel> {
         scopedOf(::Session)
-    }    
+    }
+    // or
+    viewModelScope {
+        scopedOf(::Session)
+    }
 }
 
 class MyScopeViewModel : ScopeViewModel() {
@@ -229,6 +239,50 @@ class MyScopeViewModel : ViewModel(), KoinScopeComponent {
     override fun onCleared() {
         super.onCleared()
         scope.close()
+    }
+}
+```
+### Scope Archetypes (4.1.0) [Experimental]
+
+As new feature, you can now declare scope by archetype: you don't require to define a scope against a type but against an "archetype". You can declare a scope for "Activity", "Fragment" and "ViewModel":
+
+```kotlin
+
+module {
+ activityScope {
+  // scoped instances for an An activity
+ }
+
+ activityRetainedScope {
+  // scoped instances for an An activity, retained scope
+ }
+
+ fragmentScope {
+  // scoped instances for Fragment
+ }
+
+ viewModelScope {
+  // scoped instances for ViewModel
+ }
+}
+```
+
+This will help reuse instances in between scopes easily. No need to use a specific type like `scope<>{ }`, apart if you need scope on a precise object.
+
+Use the regular `activityScope()`, `activityRetainedScope()` and `fragmentScope()` delegates function to create API. Those will trigger scope archetypes. Also you can use Koin's `ScopeActivity` or `ScopeFragment` classes.
+
+For ViewModel's scope, you can use `ScopeViewModel` class, or deal yourself with the API and `viewModelScope()` function:
+
+```kotlin
+class MyViewModel : ViewModel(), KoinScopeComponent {
+
+    override val scope: Scope = viewModelScope()
+
+    override fun onCleared() {
+        // Close Koin scope here
+        scope.close()
+     
+        super.onCleared()
     }
 }
 ```
