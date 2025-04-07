@@ -1,3 +1,5 @@
+@file:Suppress("CONTEXT_RECEIVERS_DEPRECATED")
+
 package org.koin.viewmodel.scope
 
 import androidx.lifecycle.ViewModel
@@ -19,7 +21,7 @@ import org.koin.core.scope.Scope
 @KoinExperimentalAPI
 abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
 
-    override val scope: Scope = createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
+    override val scope: Scope = viewModelScope()
 
     /**
      * To override to add behavior before closing Scope
@@ -31,4 +33,9 @@ abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
         scope.close()
         super.onCleared()
     }
+}
+
+context(ViewModel)
+fun KoinScopeComponent.viewModelScope() : Scope {
+    return createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
 }
