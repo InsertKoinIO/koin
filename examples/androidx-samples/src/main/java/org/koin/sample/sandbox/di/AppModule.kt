@@ -1,17 +1,22 @@
 package org.koin.sample.sandbox.di
 
-import org.koin.androidx.fragment.dsl.fragmentOf
-import org.koin.androidx.scope.dsl.activityScope
-import org.koin.androidx.scope.dsl.fragmentScope
-import org.koin.androidx.scope.dsl.retainedActivityScope
 // 4.0 deprecations
 //import org.koin.androidx.viewmodel.dsl.viewModel
 //import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.androidx.fragment.dsl.fragmentOf
+import org.koin.androidx.scope.dsl.activityRetainedScope
+import org.koin.androidx.scope.dsl.activityScope
+import org.koin.androidx.scope.dsl.fragmentScope
 import org.koin.androidx.workmanager.dsl.workerOf
-import org.koin.core.module.dsl.*
-import org.koin.core.module.includes
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.named
+import org.koin.core.module.dsl.onClose
+import org.koin.core.module.dsl.scopedOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
-import org.koin.dsl.lazyModule
 import org.koin.dsl.module
 import org.koin.sample.sandbox.components.Counter
 import org.koin.sample.sandbox.components.SCOPE_ID
@@ -22,16 +27,22 @@ import org.koin.sample.sandbox.components.main.SimpleService
 import org.koin.sample.sandbox.components.main.SimpleServiceImpl
 import org.koin.sample.sandbox.components.mvp.FactoryPresenter
 import org.koin.sample.sandbox.components.mvp.ScopedPresenter
-import org.koin.sample.sandbox.components.mvvm.*
+import org.koin.sample.sandbox.components.mvvm.AbstractViewModel
+import org.koin.sample.sandbox.components.mvvm.MVVMPresenter1
+import org.koin.sample.sandbox.components.mvvm.MVVMPresenter2
+import org.koin.sample.sandbox.components.mvvm.MyScopeViewModel
+import org.koin.sample.sandbox.components.mvvm.MyScopeViewModel2
+import org.koin.sample.sandbox.components.mvvm.SavedStateBundleViewModel
+import org.koin.sample.sandbox.components.mvvm.SavedStateViewModel
+import org.koin.sample.sandbox.components.mvvm.SharedVM
+import org.koin.sample.sandbox.components.mvvm.SimpleViewModel
+import org.koin.sample.sandbox.components.mvvm.ViewModelImpl
 import org.koin.sample.sandbox.components.scope.Session
 import org.koin.sample.sandbox.components.scope.SessionActivity
 import org.koin.sample.sandbox.components.scope.SessionConsumer
-import org.koin.sample.sandbox.mvp.MVPActivity
-import org.koin.sample.sandbox.mvvm.MVVMActivity
 import org.koin.sample.sandbox.mvvm.MVVMFragment
 import org.koin.sample.sandbox.navigation.NavViewModel
 import org.koin.sample.sandbox.navigation.NavViewModel2
-import org.koin.sample.sandbox.scope.ScopedActivityA
 import org.koin.sample.sandbox.scope.ScopedFragment
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
@@ -91,7 +102,7 @@ val mvvmModule = module {
 
     viewModelOf(::SavedStateViewModel) { named("vm2") }
 
-    viewModel { (s : Session) -> SharedVM(s)}
+    viewModel { (s: Session) -> SharedVM(s) }
 
     activityScope {
         scopedOf(::Session)
@@ -132,7 +143,7 @@ val scopeModule = module {
 }
 
 val scopeModuleActivityA = module {
-    retainedActivityScope {
+    activityRetainedScope {
         fragmentOf(::ScopedFragment)
         scopedOf(::Session)
         scopedOf(::SessionActivity)
@@ -160,5 +171,14 @@ val navModule = module {
 }
 
 val allModules = module {
-    includes(appModule, mvpModule, mvvmModule , scopeModule , workerServiceModule , workerScopedModule , navModule , scopeModuleActivityA)
+    includes(
+        appModule,
+        mvpModule,
+        mvvmModule,
+        scopeModule,
+        workerServiceModule,
+        workerScopedModule,
+        navModule,
+        scopeModuleActivityA
+    )
 }
