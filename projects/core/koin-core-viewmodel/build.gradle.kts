@@ -15,14 +15,14 @@ kotlin {
         withJava()
     }
 
-    // Enable context receivers for all targets
-    targets.all {
-        compilations.all {
-            kotlinOptions {
-                freeCompilerArgs += listOf("-Xcontext-receivers")
-            }
-        }
-    }
+//    // Enable context receivers for all targets
+//    targets.all {
+//        compilations.all {
+//            kotlinOptions {
+//                freeCompilerArgs += listOf("-Xcontext-receivers")
+//            }
+//        }
+//    }
 
     js(IR) {
         nodejs()

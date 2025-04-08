@@ -30,15 +30,17 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
 
 /**
- * Provide Koin Scope tied to ComponentActivity
+ * Create Koin Scope for Activity
  */
-
 fun ComponentActivity.activityScope() = lazy { createActivityScope() }
+
+/**
+ * Create Koin Scope for Activity - Retained Scope
+ */
 fun ComponentActivity.activityRetainedScope() = lazy { createActivityRetainedScope() }
 
 @KoinInternalApi
 fun ComponentActivity.createScope(source: Any? = null): Scope = getKoin().createScope(getScopeId(), getScopeName(), source)
-
 fun ComponentActivity.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getScopeId())
 
 

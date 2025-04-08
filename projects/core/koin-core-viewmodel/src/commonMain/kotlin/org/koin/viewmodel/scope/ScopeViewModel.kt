@@ -35,7 +35,13 @@ abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
     }
 }
 
-context(ViewModel)
+/**
+ * Create a ViewModel Scope as ViewModelScope archetype for given ViewModel
+ */
+@KoinExperimentalAPI
 fun KoinScopeComponent.viewModelScope() : Scope {
+    if (this !is ViewModel) {
+        error("$this should implement ViewModel() class")
+    }
     return createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
 }
