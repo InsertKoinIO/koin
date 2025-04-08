@@ -31,6 +31,9 @@ See [Api Stability Contract](api-stability.md) for more details.
 
 `koin-ktor3` offering API for Ktor 3.x
 
+`koin-android`
+- upgraded libraries (`androidx.appcompat:appcompat:1.7.0`, `androidx.activity:activity-ktx:1.10.1`) imposes to raise Min SDK level from 14 to 21
+
 ### Experimental 🚧
 
 `koin-compose`
