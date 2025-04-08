@@ -19,7 +19,7 @@ This structured approach not only clarifies the incremental changes in each rele
 
 See [Api Stability Contract](api-stability.md) for more details.
 
-## 4.1.0
+## 4.1.0 (Beta)
 
 ### New 🎉
 
@@ -38,6 +38,16 @@ See [Api Stability Contract](api-stability.md) for more details.
 
 `koin-core` - `wasm`
 - use of Kotlin 2.1.20 Uuid generation
+- introduce new Scope Archetype of dedicated Scope Type qualifier for category of scope. Resolution can be done against a scope category (aka Archetype)
+
+`koin-android`
+- added `activityScope`, `activityRetainedScope` and `fragmentScope` Koin Module DSL extensions to declare scope within Activity/Fragment 
+- `activityScope()`, `activityRetainedScope()` and `fragmentScope()` API functions are now triggering Scope Archetypes
+
+`koin-core-viewmodel`
+- added `viewModelScope` Module DSL extension, to declare component scoped to ViewModel scope archetype
+- added `viewModelScope()` function, to create a scope for ViewModel (tied to ViewModel class)
+- added `ScopeViewModel` class, to give support for ready to use ViewModel scoped class (handle scope creation and closing)
 
 ### Deprecation ⚠️
 
@@ -49,6 +59,9 @@ See [Api Stability Contract](api-stability.md) for more details.
 
 `koin-androidx-compose-navigation`
 - due to lifecycle lib update the function `koinNavViewModel` is not needed, can be replaced with `koinViewModel`
+
+`koin-android`
+- `ScopeViewModel` is now deprecated to be used by `koin-core-viewmodel` `ScopeViewModel` class instead
 
 ### Breaking 💥
 
@@ -64,7 +77,7 @@ See [Api Stability Contract](api-stability.md) for more details.
     - function `rememberKoinInject()` has been moved into `koinInject()`,
 - function `rememberKoinApplication` is marked as `@KoinInternalAPI`
 
-## 4.0.3
+## 4.0.4
 
 :::note
 Uses Kotlin `2.0.21`
