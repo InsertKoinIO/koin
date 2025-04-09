@@ -1,13 +1,11 @@
 package org.koin.core
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.koin.Simple
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -18,7 +16,6 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class ParametersInjectionTest {
 
@@ -38,7 +35,6 @@ class ParametersInjectionTest {
         assertEquals(42, a.id)
     }
 
-    @OptIn(KoinInternalApi::class)
     @Test
     fun inject_param_get_or_null() {
         ensureCanInjectParam(
@@ -63,7 +59,6 @@ class ParametersInjectionTest {
         )
     }
 
-    @OptIn(KoinInternalApi::class)
     private fun ensureCanInjectParam(module1: Module) {
         val app = koinApplication {
             printLogger(Level.DEBUG)
@@ -355,10 +350,9 @@ class ParametersInjectionTest {
     }
 
     @Test
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun `inject across multiple threads`(): TestResult {
         val times = 100
-        
+
         return runTest {
             val app = koinApplication {
                 modules(
