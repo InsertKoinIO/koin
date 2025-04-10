@@ -18,10 +18,14 @@
 package org.koin.compose.viewmodel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import org.koin.compose.currentKoinScope
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -62,5 +66,27 @@ inline fun <reified T : ViewModel> koinNavViewModel(
 ): T {
     return resolveViewModel(
         T::class, viewModelStoreOwner.viewModelStore, key, extras, qualifier, scope, parameters
+    )
+}
+
+/**
+ * Reuse ViewModel instance from NavBackStackEntry if any, else create ViewModel instance
+ * It finds the parentEntry with "navController.getBackStackEntry(navGraphRoute)"
+ *
+ * Originally from Philipp Lackner - CMP Bookpedia app
+ *
+ * @author Arnaud Giuliani
+ */
+@KoinExperimentalAPI
+@Composable
+private inline fun <reified T: ViewModel> NavBackStackEntry.sharedKoinViewModel(
+    navController: NavController
+): T {
+    val navGraphRoute = destination.parent?.route ?: return koinViewModel<T>()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return koinViewModel(
+        viewModelStoreOwner = parentEntry
     )
 }

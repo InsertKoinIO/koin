@@ -214,6 +214,24 @@ class DetailViewModel(
 More details about SavedStateHandle injection difference: https://github.com/InsertKoinIO/koin/issues/1935#issuecomment-2362335705
 :::
 
+### Shared ViewModel and Navigation (Experimental)
+
+Koin Compose Naviation has now a `NavBackEntry.sharedKoinViewModel()` function, to allow to retrieve ViewModel already stored in current NavBackEntry. Inside your navigation part, just use `sharedKoinViewModel`:
+
+```kotlin
+navigation<Route.BookGraph>(
+                startDestination = Route.BookList
+            ) {
+                composable<Route.BookList>(
+                    exitTransition = { slideOutHorizontally() },
+                    popEnterTransition = { slideInHorizontally() }
+                ) {
+                    // Use SharedViewModel here ...
+
+                    val selectedBookViewModel =
+                        it.sharedKoinViewModel<SelectedBookViewModel>(navController)
+```
+
 ## Module loading & unloading tied to Composable
 
 Koin offers you a way to load specific modules for a given Composable function. The `rememberKoinModules` function load Koin modules and remember on current Composable:
