@@ -52,6 +52,9 @@ See [Api Stability Contract](api-stability.md) for more details.
 - added `viewModelScope()` function, to create a scope for ViewModel (tied to ViewModel class)
 - added `ScopeViewModel` class, to give support for ready to use ViewModel scoped class (handle scope creation and closing)
 
+`koin-core-viewmodel-navigation`
+- added `sharedViewModel` to reuse ViewModel instance from navigation's NavbackEntry
+
 ### Deprecation ⚠️
 
 `koin-compose`
