@@ -20,7 +20,7 @@ for an Android/Multiplatform app, use the following packages:
 - `koin-compose-viewmodel` - Compose ViewModel API
 - `koin-compose-viewmodel-navigation` - Compose ViewModel API with Navigation API integration
 
-## Starting over an existing Koin context (Koin already started)
+## Starting over an existing Koin context (Deprecated in 4.1)
 
 Some time the `startKoin` function is already used in the application, to start Koin in your application (like in Android main app class, the Application class). In that case you need to inform your Compose application about the current Koin context with `KoinContext` or `KoinAndroidContext`. Those functions reuse current Koin context and bind it to the Compose application.
 
@@ -39,10 +39,14 @@ fun App() {
 Difference between `KoinAndroidContext` and `KoinContext`:
 - `KoinAndroidContext` is looking into current Android app context for Koin instance
 - `KoinContext` is looking into current GlobalContext for Koin instances
-:::
+  :::
 
 :::note
 If you get some `ClosedScopeException` from a Composable, either use `KoinContext` on your Composable or ensure to have proper Koin start configuration [with Android context](/docs/reference/koin-android/start.md#from-your-application-class)
+:::
+
+:::info
+Both `KoinContext` and `KoinAndroidContext` are not necessary anymore. Those functions are deprecated in 4.1
 :::
 
 ## Starting Koin with a Compose App - KoinApplication
