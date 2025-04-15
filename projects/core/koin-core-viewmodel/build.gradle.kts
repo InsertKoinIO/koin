@@ -10,7 +10,7 @@ val koinVersion: String by project
 version = koinVersion
 
 kotlin {
-    jvmToolchain(1_8)
+    
     jvm {
         withJava()
     }
@@ -52,7 +52,6 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.test.junit)
-            implementation(libs.test.mockk)
         }
     }
 }

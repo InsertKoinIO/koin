@@ -10,7 +10,7 @@ val koinVersion: String by project
 version = koinVersion
 
 kotlin {
-    jvmToolchain(1_8)
+    
     jvm {
         withJava()
     }
