@@ -16,6 +16,8 @@
 package org.koin.core.component
 
 import org.koin.core.Koin
+import org.koin.core.module.mapMultibindingQualifier
+import org.koin.core.module.setMultibindingQualifier
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.KoinPlatformTools
@@ -61,3 +63,51 @@ inline fun <reified T : Any> KoinComponent.inject(
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> =
     lazy(mode) { get<T>(qualifier, parameters) }
+
+/**
+ * Get Koin Map Multibinding instance from Koin
+ * @param qualifier
+ * @param parameters
+ */
+inline fun <reified K, reified V> KoinComponent.getMapMultibinding(
+    qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+    noinline parameters: ParametersDefinition? = null,
+): Map<K, V> =
+    get(qualifier, parameters)
+
+/**
+ * Lazy inject Koin Map Multibinding instance from Koin
+ * @param qualifier
+ * @param mode - LazyThreadSafetyMode
+ * @param parameters
+ */
+inline fun <reified K, reified V> KoinComponent.injectMapMultibinding(
+    qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+    mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+    noinline parameters: ParametersDefinition? = null,
+): Lazy<Map<K, V>> =
+    lazy(mode) { get<Map<K, V>>(qualifier, parameters) }
+
+/**
+ * Get Koin Set Multibinding instance from Koin
+ * @param qualifier
+ * @param parameters
+ */
+inline fun <reified E> KoinComponent.getSetMultibinding(
+    qualifier: Qualifier = setMultibindingQualifier<E>(),
+    noinline parameters: ParametersDefinition? = null,
+): Set<E> =
+    get(qualifier, parameters)
+
+/**
+ * Lazy inject Koin Set Multibinding instance from Koin
+ * @param qualifier
+ * @param mode - LazyThreadSafetyMode
+ * @param parameters
+ */
+inline fun <reified E> KoinComponent.injectSetMultibinding(
+    qualifier: Qualifier = setMultibindingQualifier<E>(),
+    mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+    noinline parameters: ParametersDefinition? = null,
+): Lazy<Set<E>> =
+    lazy(mode) { get<Set<E>>(qualifier, parameters) }
