@@ -1,6 +1,5 @@
 package org.koin.viewmodel.scope
 
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -15,7 +14,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(KoinInternalApi::class)
 class ScopeArchetypeTest {
 
     @BeforeTest
@@ -24,7 +22,7 @@ class ScopeArchetypeTest {
     }
 
     @AfterTest
-    fun stop(){
+    fun stop() {
         stopKoin()
     }
 
@@ -34,8 +32,8 @@ class ScopeArchetypeTest {
         val vm = MyViewModelClass()
 
         val scope = vm.scope
-        assertEquals(scope.scopeArchetype,ViewModelScopeArchetype)
-        assertEquals(scope,koin.getScope(vm.getScopeId()))
+        assertEquals(scope.scopeArchetype, ViewModelScopeArchetype)
+        assertEquals(scope, koin.getScope(vm.getScopeId()))
     }
 
     @Test

@@ -16,14 +16,12 @@
 package org.koin.viewmodel.scope
 
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
 import org.koin.dsl.ScopeDSL
 
 /**
  * Declare a ViewModel scope
  */
-@OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 fun Module.viewModelScope(scopeSet: ScopeDSL.() -> Unit) {
     val qualifier = ViewModelScopeArchetype
