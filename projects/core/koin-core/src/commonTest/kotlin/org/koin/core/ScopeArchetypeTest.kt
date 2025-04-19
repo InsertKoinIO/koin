@@ -1,6 +1,5 @@
 package org.koin.core
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.logger.Level
@@ -10,8 +9,6 @@ import org.koin.core.qualifier.TypeQualifier
 import org.koin.dsl.ScopeDSL
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.reflect.KType
-import kotlin.reflect.typeOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -23,15 +20,14 @@ class ScopeArchetypeTest {
     class ClassA
 
     @KoinDslMarker
-    @OptIn(KoinInternalApi::class, KoinExperimentalAPI::class)
-    fun Module.scopeArchetype(scopeSet: ScopeDSL.() -> Unit){
+    fun Module.scopeArchetype(scopeSet: ScopeDSL.() -> Unit) {
         val qualifier = TypeQualifier(Archetype::class)
         ScopeDSL(qualifier, this).apply(scopeSet)
     }
 
     @OptIn(KoinInternalApi::class)
     @Test
-    fun moduleArchetypeData(){
+    fun moduleArchetypeData() {
         val scopeModule = module {
             scopeArchetype {
                 scoped { ClassA() }
@@ -43,7 +39,7 @@ class ScopeArchetypeTest {
     }
 
     @Test
-    fun declareAndRunArchetype(){
+    fun declareAndRunArchetype() {
         val scopeModule = module {
             scopeArchetype {
                 scoped { ClassA() }
@@ -55,15 +51,17 @@ class ScopeArchetypeTest {
         }.koin
 
         val archetypeExt = ArchetypeExt()
-        val scope = koin.createScope<ArchetypeExt>(archetypeExt.getScopeId(), archetypeExt,
-            TypeQualifier(Archetype::class))
+        val scope = koin.createScope<ArchetypeExt>(
+            archetypeExt.getScopeId(), archetypeExt,
+            TypeQualifier(Archetype::class)
+        )
 
         val a = scope.getOrNull<ClassA>()
         assertNotNull(a)
     }
 
     @Test
-    fun declareAndRunArchetypeWithoutSource(){
+    fun declareAndRunArchetypeWithoutSource() {
         val scopeModule = module {
             scopeArchetype {
                 scoped { ClassA() }

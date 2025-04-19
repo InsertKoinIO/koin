@@ -6,16 +6,15 @@ import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.ActivityRetainedScopeArchetype
 import org.koin.androidx.scope.ActivityScopeArchetype
 import org.koin.androidx.scope.FragmentScopeArchetype
-import org.koin.androidx.scope.ActivityRetainedScopeArchetype
 import org.koin.androidx.scope.activityRetainedScope
 import org.koin.androidx.scope.activityScope
+import org.koin.androidx.scope.dsl.activityRetainedScope
 import org.koin.androidx.scope.dsl.activityScope
 import org.koin.androidx.scope.dsl.fragmentScope
-import org.koin.androidx.scope.dsl.activityRetainedScope
 import org.koin.androidx.scope.fragmentScope
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -47,7 +46,6 @@ class FakeRetainedActivity : ComponentActivity(), AndroidScopeComponent {
 }
 
 @RunWith(RobolectricTestRunner::class)
-@OptIn(KoinInternalApi::class)
 class ActivityScopeArchetypeTest {
 
     @Before
@@ -56,7 +54,7 @@ class ActivityScopeArchetypeTest {
     }
 
     @After
-    fun stop(){
+    fun stop() {
         stopKoin()
     }
 
@@ -86,7 +84,7 @@ class ActivityScopeArchetypeTest {
 
         val scope = activity.scope
         val mf = scope.get<MyFactoryClass>()
-        assertEquals(mf.ms,scope.get<MyScopedClass>())
+        assertEquals(mf.ms, scope.get<MyScopedClass>())
     }
 
     @Test
@@ -115,7 +113,7 @@ class ActivityScopeArchetypeTest {
 
         val scope = fragment.scope
         val mf = scope.get<MyFactoryClass>()
-        assertEquals(mf.ms,scope.get<MyScopedClass>())
+        assertEquals(mf.ms, scope.get<MyScopedClass>())
     }
 
     @Test
@@ -149,7 +147,7 @@ class ActivityScopeArchetypeTest {
 
         val scope = activity.activityRetainedScope().value
         val mf = scope.get<MyFactoryClass>()
-        assertEquals(mf.ms,scope.get<MyScopedClass>())
+        assertEquals(mf.ms, scope.get<MyScopedClass>())
     }
 
     @Test

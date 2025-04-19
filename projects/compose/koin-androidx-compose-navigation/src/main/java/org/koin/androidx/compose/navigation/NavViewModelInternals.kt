@@ -20,7 +20,6 @@ package org.koin.androidx.compose.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.viewmodel.defaultExtras
 
 /**
@@ -32,6 +31,5 @@ import org.koin.viewmodel.defaultExtras
  * @author Arnaud Giuliani
  */
 @Deprecated("koinNavViewModel() is deprecated in favor of koinViewModel().")
-@OptIn(KoinInternalApi::class)
 @Composable
 fun defaultNavExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras = defaultExtras(viewModelStoreOwner)
