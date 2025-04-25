@@ -1,8 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
@@ -12,9 +9,17 @@ val koinVersion: String by project
 version = koinVersion
 
 kotlin {
-    
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+    }
+
     jvm {
-        withJava()
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
     }
 
     js(IR) {
@@ -43,10 +48,11 @@ kotlin {
     }
 }
 
-tasks.withType<KotlinCompile>().all {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
-    }
+val androidCompileSDK: String by project
+
+android {
+    namespace = "org.koin.compose.viewmodel"
+    compileSdk = androidCompileSDK.toInt()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
