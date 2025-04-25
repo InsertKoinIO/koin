@@ -22,9 +22,9 @@ androidx-startup= "1.2.0"
 
 # Compose
 composeJetpackRuntime = "1.7.8"
-composeJB = "1.7.3"
+composeJB = "1.8.0-rc01"
 composeLifecycle = "2.8.4"
-composeNavigation = "2.8.0-alpha10" # 2.8.0-alpha02 to keep compose 1.6.11
+composeNavigation = "2.9.0-alpha17"
 jbCoreBundle = "1.0.1"
 jbSavedState = "1.2.2"
 
