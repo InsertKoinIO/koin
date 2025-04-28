@@ -7,15 +7,15 @@ import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
 
 @OptIn(SavedStateHandleSaveableApi::class)
-class SSHViewModel(val id: String, private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class SSHViewModel(val id: String,) : ViewModel() {
 
-    var lastIds by savedStateHandle.saveable {
-        mutableStateOf<Set<String>>(emptySet())
-    }
-
-    fun saveId(){
-        lastIds = lastIds + id
-    }
+//    var lastIds by savedStateHandle.saveable {
+//        mutableStateOf<Set<String>>(emptySet())
+//    }
+//
+//    fun saveId(){
+//        lastIds = lastIds + id
+//    }
 
     init {
         println("$this created '$id'")
