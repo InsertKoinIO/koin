@@ -30,15 +30,15 @@ class OptionRegistry {
 
     private val options = hashMapOf<KoinOption,Any>()
 
-    fun setValues(values: Map<KoinOption, Any>) {
+    internal fun setValues(values: Map<KoinOption, Any>) {
         options.putAll(values)
     }
 
-    fun <T> getOrNull(op : KoinOption) : T?{
+    internal fun <T> getOrNull(op : KoinOption) : T?{
         return options[op] as? T
     }
 
-    fun <T> getOrDefault(op : KoinOption, default : T) : T{
+    internal fun <T> getOrDefault(op : KoinOption, default : T) : T{
         return getOrNull<T>(op) as? T ?: default
     }
 }

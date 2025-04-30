@@ -68,7 +68,7 @@ class MainApplication : Application() {
 //            lazyModules(allModules, dispatcher = IO)
             modules(allModules)
             options(
-                viewModelScopeFactory()
+//                viewModelScopeFactory()
             )
         }
 

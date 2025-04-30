@@ -41,6 +41,12 @@ import org.koin.viewmodel.factory.ViewModelScopeAutoCloseable
 abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
 
     override val scope: Scope = viewModelScope()
+
+    /**
+     * To override to add behavior before closing Scope
+     */
+    @Deprecated("Not used anymore. Now close scope automatically with ViewModelScopeAutoCloseable")
+    open fun onCloseScope(){}
 }
 
 /**
@@ -54,7 +60,7 @@ fun KoinScopeComponent.viewModelScope() : Scope {
     }
     val koin = getKoin()
     if (koin.optionRegistry.hasViewModelScopeFactory()){
-        koin.logger.warn("${this::class} is using viewModelScope(), while you are using ViewModelScope Factory.")
+        koin.logger.warn("${this::class} is using viewModelScope() while you are using viewModelScopeFactory() option. Remove viewModelScope() usage to use constructor injection in your ViewModel.")
     }
     val vmScope = createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
     addCloseable(ViewModelScopeAutoCloseable(vmScope.id,vmScope.getKoin()))
