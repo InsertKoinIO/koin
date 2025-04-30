@@ -60,7 +60,7 @@ fun KoinScopeComponent.viewModelScope() : Scope {
     }
     val koin = getKoin()
     if (koin.optionRegistry.hasViewModelScopeFactory()){
-        koin.logger.warn("${this::class} is using viewModelScope() while you are using viewModelScopeFactory() option. Remove viewModelScope() usage to use constructor injection in your ViewModel.")
+        koin.logger.warn("${this::class} is using viewModelScope() while you are using viewModelScopeFactory() option. Remove viewModelScope() usage to use ViewModel constructor injection with automatic scope creation.")
     }
     val vmScope = createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
     addCloseable(ViewModelScopeAutoCloseable(vmScope.id,vmScope.getKoin()))
