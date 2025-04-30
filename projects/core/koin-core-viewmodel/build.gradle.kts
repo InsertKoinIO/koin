@@ -46,8 +46,6 @@ kotlin {
             api(project(":core:koin-core"))
             api(libs.jb.lifecycleViewmodel)
             api(libs.jb.lifecycleViewmodelSavedState)
-            api(libs.jb.bundle)
-            api(libs.jb.savedstate)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

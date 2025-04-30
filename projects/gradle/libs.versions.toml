@@ -25,8 +25,6 @@ composeJetpackRuntime = "1.7.8"
 composeJB = "1.8.0-rc01"
 composeLifecycle = "2.8.4"
 composeNavigation = "2.9.0-alpha17"
-jbCoreBundle = "1.0.1"
-jbSavedState = "1.2.2"
 
 # Test
 stately = "2.1.0"
@@ -85,8 +83,6 @@ jb-composeRuntime = { module = "org.jetbrains.compose.runtime:runtime", version.
 jb-composeViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeLifecycle" }
 jb-lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "composeLifecycle" }
 jb-lifecycleViewmodelSavedState = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "composeLifecycle" }
-jb-bundle = { module = "org.jetbrains.androidx.core:core-bundle", version.ref = "jbCoreBundle" }
-jb-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", version.ref = "jbSavedState" }
 jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
