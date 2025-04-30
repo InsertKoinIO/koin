@@ -18,6 +18,7 @@ public final class org/koin/core/Koin {
 	public final fun getExtensionManager ()Lorg/koin/core/extension/ExtensionManager;
 	public final fun getInstanceRegistry ()Lorg/koin/core/registry/InstanceRegistry;
 	public final fun getLogger ()Lorg/koin/core/logger/Logger;
+	public final fun getOptionRegistry ()Lorg/koin/core/registry/OptionRegistry;
 	public final fun getOrCreateScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun getOrCreateScope$default (Lorg/koin/core/Koin;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public final fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
@@ -45,6 +46,7 @@ public final class org/koin/core/KoinApplication {
 	public final fun modules (Ljava/util/List;)Lorg/koin/core/KoinApplication;
 	public final fun modules (Lorg/koin/core/module/Module;)Lorg/koin/core/KoinApplication;
 	public final fun modules ([Lorg/koin/core/module/Module;)Lorg/koin/core/KoinApplication;
+	public final fun options ([Lkotlin/Pair;)Lorg/koin/core/KoinApplication;
 	public final fun printLogger (Lorg/koin/core/logger/Level;)Lorg/koin/core/KoinApplication;
 	public static synthetic fun printLogger$default (Lorg/koin/core/KoinApplication;Lorg/koin/core/logger/Level;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 	public final fun properties (Ljava/util/Map;)Lorg/koin/core/KoinApplication;
@@ -412,6 +414,18 @@ public final class org/koin/core/module/dsl/OptionDSLKt {
 	public static final fun withOptions (Lorg/koin/core/definition/KoinDefinition;Lkotlin/jvm/functions/Function1;)Lorg/koin/core/definition/KoinDefinition;
 }
 
+public final class org/koin/core/option/KoinOption : java/lang/Enum {
+	public static final field VIEWMODEL_SCOPE_FACTORY Lorg/koin/core/option/KoinOption;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/koin/core/option/KoinOption;
+	public static fun values ()[Lorg/koin/core/option/KoinOption;
+}
+
+public final class org/koin/core/option/KoinOptionKt {
+	public static final fun hasViewModelScopeFactory (Lorg/koin/core/registry/OptionRegistry;)Z
+	public static final fun viewModelScopeFactory ()Lkotlin/Pair;
+}
+
 public class org/koin/core/parameter/ParametersHolder {
 	public fun <init> ()V
 	public fun <init> (Ljava/util/List;Ljava/lang/Boolean;)V
@@ -483,6 +497,10 @@ public final class org/koin/core/registry/InstanceRegistry {
 	public final fun saveMapping (ZLjava/lang/String;Lorg/koin/core/instance/InstanceFactory;Z)V
 	public static synthetic fun saveMapping$default (Lorg/koin/core/registry/InstanceRegistry;ZLjava/lang/String;Lorg/koin/core/instance/InstanceFactory;ZILjava/lang/Object;)V
 	public final fun size ()I
+}
+
+public final class org/koin/core/registry/OptionRegistry {
+	public fun <init> ()V
 }
 
 public final class org/koin/core/registry/PropertyRegistry {

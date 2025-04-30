@@ -19,9 +19,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.option.hasViewModelScopeFactory
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
+import org.koin.mp.KoinPlatformTools
+import org.koin.mp.generateId
+import org.koin.viewmodel.scope.ViewModelScopeArchetype
 import kotlin.reflect.KClass
 
 /**
@@ -38,6 +44,19 @@ class KoinViewModelFactory(
     @OptIn(KoinInternalApi::class)
     override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
         val androidParams = AndroidParametersHolder(params, extras)
-        return scope.getWithParameters(kClass, qualifier, androidParams)
+        val koin = scope.getKoin()
+        return if (!koin.optionRegistry.hasViewModelScopeFactory()){
+            scope.getWithParameters(kClass, qualifier, androidParams)
+        } else {
+            val scopeId = getViewModelScopeId(modelClass)
+            val vmScope = koin.createScope(scopeId, TypeQualifier(modelClass), null, ViewModelScopeArchetype)
+            val vm : T = vmScope.getWithParameters(kClass, qualifier, androidParams)
+            vm.addCloseable(ViewModelScopeAutoCloseable(scopeId,koin))
+            vm
+        }
     }
+
+    @KoinInternalApi
+    private fun <T : ViewModel> getViewModelScopeId(modelClass: KClass<T>) : ScopeID = "${modelClass.simpleName}-${KoinPlatformTools.generateId()}"
 }
+
