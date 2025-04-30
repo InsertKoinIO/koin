@@ -29,6 +29,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.registry.InstanceRegistry
+import org.koin.core.registry.OptionRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.scope.Scope
@@ -60,6 +61,9 @@ class Koin {
 
     @KoinInternalApi
     val extensionManager = ExtensionManager(this)
+
+    @KoinInternalApi
+    val optionRegistry = OptionRegistry()
 
     @KoinInternalApi
     var logger: Logger = EmptyLogger()

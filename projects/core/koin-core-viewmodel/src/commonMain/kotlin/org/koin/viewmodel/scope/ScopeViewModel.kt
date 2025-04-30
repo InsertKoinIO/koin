@@ -1,12 +1,30 @@
+/*
+ * Copyright 2017-Present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @file:Suppress("CONTEXT_RECEIVERS_DEPRECATED")
 
 package org.koin.viewmodel.scope
 
 import androidx.lifecycle.ViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
+import org.koin.core.option.hasViewModelScopeFactory
 import org.koin.core.scope.Scope
+import org.koin.viewmodel.factory.ViewModelScopeAutoCloseable
 
 /**
  * Class to help support Koin Scope in a ViewModel
@@ -14,34 +32,31 @@ import org.koin.core.scope.Scope
  *
  * allow to intercept before scope closing with `onCloseScope`, to be overriden
  *
- * Destroy linked scope with `onCleared`
+ * Destroy linked scope with ViewModelScopeAutoCloseable
  *
+ * @see ViewModelScopeAutoCloseable
  * @author Arnaud Giuliani
  */
 @KoinExperimentalAPI
 abstract class ScopeViewModel : ViewModel(), KoinScopeComponent {
 
     override val scope: Scope = viewModelScope()
-
-    /**
-     * To override to add behavior before closing Scope
-     */
-    open fun onCloseScope(){}
-
-    override fun onCleared() {
-        onCloseScope()
-        scope.close()
-        super.onCleared()
-    }
 }
 
 /**
  * Create a ViewModel Scope as ViewModelScope archetype for given ViewModel
  */
+@OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 fun KoinScopeComponent.viewModelScope() : Scope {
     if (this !is ViewModel) {
         error("$this should implement ViewModel() class")
     }
-    return createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
+    val koin = getKoin()
+    if (koin.optionRegistry.hasViewModelScopeFactory()){
+        koin.logger.warn("${this::class} is using viewModelScope(), while you are using ViewModelScope Factory.")
+    }
+    val vmScope = createScope(source = this, scopeArchetype = ViewModelScopeArchetype)
+    addCloseable(ViewModelScopeAutoCloseable(vmScope.id,vmScope.getKoin()))
+    return vmScope
 }

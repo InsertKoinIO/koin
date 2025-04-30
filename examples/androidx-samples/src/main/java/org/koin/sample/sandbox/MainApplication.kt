@@ -14,6 +14,7 @@ import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.lazyModules
 import org.koin.core.logger.Level
+import org.koin.core.option.viewModelScopeFactory
 import org.koin.core.waitAllStartJobs
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.koinConfiguration
@@ -66,6 +67,9 @@ class MainApplication : Application() {
             workManagerFactory()
 //            lazyModules(allModules, dispatcher = IO)
             modules(allModules)
+            options(
+                viewModelScopeFactory()
+            )
         }
 
         //TODO Load/Unload Koin modules scenario cases

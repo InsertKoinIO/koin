@@ -83,17 +83,18 @@ val mvvmModule = module {
     // viewModel<AbstractViewModel> { ViewModelImpl(get()) }
     viewModelOf(::ViewModelImpl) { bind<AbstractViewModel>() }
 
-    viewModelOf(::MyScopeViewModel)
     viewModelOf(::MyScopeViewModel2)
 
     viewModelScope {
+        viewModelOf(::MyScopeViewModel)
         scopedOf(::Session)
         scopedOf(::SessionConsumer)
     }
 
-    scope<MyScopeViewModel> {
-        scopedOf(::Session)
-    }
+//    scope<MyScopeViewModel> {
+//        scopedOf(::Session)
+//    }
+
 //
 //    scope<MyScopeViewModel2> {
 //        scopedOf(::Session)

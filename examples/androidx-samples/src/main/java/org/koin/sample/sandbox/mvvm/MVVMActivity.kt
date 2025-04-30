@@ -80,7 +80,7 @@ class MVVMActivity : ScopeActivity(contentLayoutId = R.layout.mvvm_activity) {
         assert(p1.ctx == this)
         assert(p2.ctx == getKoin().get<Application>())
 
-        assert(scopeVm1.session.id == scopeVm1.scope.get<Session>().id)
+//        assert(scopeVm1.session.id == scopeVm1.scope.get<Session>().id)
         assert(scopeVm2.session.id == scopeVm2.scope.get<Session>().id)
         assert(scopeVm2.scope.get<SessionConsumer>().getSessionId() == scopeVm2.scope.get<Session>().id)
         assert(scopeVm1.session.id != scopeVm2.session.id)
