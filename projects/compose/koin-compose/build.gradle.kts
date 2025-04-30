@@ -1,9 +1,3 @@
-import org.gradle.kotlin.dsl.android
-import org.gradle.kotlin.dsl.api
-import org.gradle.kotlin.dsl.jvm
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
@@ -15,10 +9,17 @@ val koinVersion: String by project
 version = koinVersion
 
 kotlin {
-    
-    jvm()
     androidTarget {
         publishLibraryVariants("release")
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+    }
+
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
     }
 
     js(IR) {
@@ -73,12 +74,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-
-tasks.withType<KotlinCompile>().all {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
