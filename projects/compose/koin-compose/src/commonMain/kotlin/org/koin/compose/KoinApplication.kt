@@ -33,6 +33,7 @@ import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.KoinConfiguration
+import org.koin.dsl.koinApplication
 import org.koin.mp.KoinPlatform
 import org.koin.mp.KoinPlatformTools
 
@@ -199,6 +200,28 @@ fun KoinIsolatedContext(
     context: KoinApplication,
     content: @Composable () -> Unit
 ) {
+    CompositionLocalProvider(
+        LocalKoinApplication provides context.koin,
+        LocalKoinScope provides context.koin.scopeRegistry.rootScope,
+        content = content
+    )
+}
+
+/**
+ * Composable Function to run a local Koin application and to help run Compose preview
+ * This function is lighter than KoinApplication, and allow parallel recomposition in Android Studio
+ *
+ * @param application - Koin application config
+ * @param content
+ */
+@OptIn(KoinInternalApi::class)
+@KoinExperimentalAPI
+@Composable
+fun KoinApplicationPreview(
+    application: KoinAppDeclaration,
+    content: @Composable () -> Unit
+) {
+    val context = koinApplication(application)
     CompositionLocalProvider(
         LocalKoinApplication provides context.koin,
         LocalKoinScope provides context.koin.scopeRegistry.rootScope,
