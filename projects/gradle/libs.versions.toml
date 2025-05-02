@@ -15,16 +15,20 @@ agp = "8.7.3"
 android-appcompat = "1.7.0"
 android-activity = "1.10.1"
 android-fragment = "1.8.6"
-androidx-lifecycle = "2.8.7"
 androidx-workmanager = "2.10.0"
-androidx-navigation = "2.8.9"
-androidx-startup= "1.2.0"
+androidx-startup = "1.2.0"
+
+# Lifecycle
+androidx-lifecycle = "2.9.0-beta01" # Keep in sync with "jb-lifecycle"
+jb-lifecycle = "2.9.0-alpha07"
+
+# Navigation
+androidx-navigation = "2.9.0-beta01" # Keep in sync with "jb-navigation"
+jb-navigation = "2.9.0-alpha17"
 
 # Compose
-composeJetpackRuntime = "1.7.8"
-composeJB = "1.8.0-rc01"
-composeLifecycle = "2.8.4"
-composeNavigation = "2.9.0-alpha17"
+androidx-compose = "1.8.0-rc03" # Keep in sync with "jb-compose"
+jb-compose = "1.8.0-rc01"
 
 # Test
 stately = "2.1.0"
@@ -46,6 +50,7 @@ benchmark = "0.4.13"
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 extras-stately = { module = "co.touchlab:stately-concurrency", version.ref = "stately" }
 extras-stately-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "stately" }
+uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
 
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -74,18 +79,17 @@ ktor3-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor3" }
 ktor3-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor3" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 # jetpack Compose
-androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "composeJetpackRuntime" }
-androidx-composeFoundation = { module = "androidx.compose.foundation:foundation", version.ref = "composeJetpackRuntime" }
+androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
+androidx-composeFoundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
 androidx-composeViewModel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-composeNavigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 # jb Compose
-jb-composeRuntime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeJB" }
-jb-composeViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeLifecycle" }
-jb-lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "composeLifecycle" }
-jb-lifecycleViewmodelSavedState = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "composeLifecycle" }
-jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
-jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "composeNavigation" }
-uuid = { module = "com.benasher44:uuid", version.ref = "uuidVersion" }
+jb-composeRuntime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jb-compose" }
+jb-composeViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jb-lifecycle" }
+jb-lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "jb-lifecycle" }
+jb-lifecycleViewmodelSavedState = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "jb-lifecycle" }
+jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jb-navigation" }
+jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "jb-navigation" }
 # Benchmark
 benchmark-runtime = {module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "benchmark"}
 
@@ -93,7 +97,7 @@ benchmark-runtime = {module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime",
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "composeJB" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "jb-compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 # Tools
 kotlinBinary = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryValidator" }
