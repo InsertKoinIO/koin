@@ -14,6 +14,9 @@ if (isReleaseBuild()) {
     tasks.withType<PublishToMavenLocal>().configureEach {
         dependsOn(tasks.withType<Sign>())
     }
+    tasks.matching { it.name.endsWith("ToSonatypeRepository") }.configureEach {
+        dependsOn(tasks.withType<Sign>())
+    }
 
     configure<SigningExtension> {
         useInMemoryPgpKeys(
