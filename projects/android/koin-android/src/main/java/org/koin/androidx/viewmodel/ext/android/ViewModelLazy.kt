@@ -12,7 +12,7 @@ import org.koin.android.ext.android.getKoinScope
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.viewmodel.BundleDefinition
+import org.koin.viewmodel.SavedStateDefinition
 import org.koin.viewmodel.resolveViewModel
 import org.koin.viewmodel.toExtras
 import kotlin.reflect.KClass
@@ -23,7 +23,7 @@ fun <T : ViewModel> ComponentActivity.viewModelForClass(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     owner: ViewModelStoreOwner = this,
-    state: BundleDefinition? = null,
+    state: SavedStateDefinition? = null,
     key: String? = null,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {
@@ -47,7 +47,7 @@ fun <T : ViewModel> Fragment.viewModelForClass(
     clazz: KClass<T>,
     qualifier: Qualifier? = null,
     owner: () -> ViewModelStoreOwner = { this },
-    state: BundleDefinition? = null,
+    state: SavedStateDefinition? = null,
     key: String? = null,
     parameters: ParametersDefinition? = null,
 ): Lazy<T> {

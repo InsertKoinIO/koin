@@ -15,14 +15,16 @@
  */
 package org.koin.viewmodel
 
-import androidx.core.bundle.Bundle
 import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.savedstate.SavedState
 import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.read
+import androidx.savedstate.savedState
 import org.koin.core.annotation.KoinInternalApi
 
 /**
@@ -32,16 +34,16 @@ import org.koin.core.annotation.KoinInternalApi
  */
 
 /**
- * Convert current Bundle to CreationExtras
+ * Convert current SavedState to CreationExtras
  * @param viewModelStoreOwner
  */
 @KoinInternalApi
-fun Bundle.toExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras? {
-    return if (keySet().isEmpty()) null
+fun SavedState.toExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras? = read {
+    return if (isEmpty()) null
     else {
         runCatching {
             MutableCreationExtras().also { extras ->
-                extras[DEFAULT_ARGS_KEY] = this
+                extras[DEFAULT_ARGS_KEY] = this@toExtras
                 extras[VIEW_MODEL_STORE_OWNER_KEY] = viewModelStoreOwner
                 extras[SAVED_STATE_REGISTRY_OWNER_KEY] = viewModelStoreOwner as SavedStateRegistryOwner
             }
@@ -50,7 +52,7 @@ fun Bundle.toExtras(viewModelStoreOwner: ViewModelStoreOwner): CreationExtras? {
 }
 
 //TODO Replace with CreationExtras API
-fun emptyState(): BundleDefinition = { Bundle() }
+fun emptyState(): SavedStateDefinition = { savedState() }
 
 //TODO Replace with CreationExtras API
-typealias BundleDefinition = () -> Bundle
+typealias SavedStateDefinition = () -> SavedState
