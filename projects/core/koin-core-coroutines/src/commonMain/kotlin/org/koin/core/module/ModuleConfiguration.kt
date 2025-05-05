@@ -36,7 +36,7 @@ class ModuleConfiguration(){
 }
 
 /**
- * Declare a ModuleConfiguration configuration
+ * Declare a ModuleConfiguration configuration in KoinApplication
  *
  * @see ModuleConfiguration
  */
@@ -48,6 +48,11 @@ fun KoinApplication.moduleConfiguration(config : ModuleConfiguration.() -> Unit)
     moduleConfiguration(conf)
 }
 
+/**
+ * Declare a ModuleConfiguration configuration in KoinApplication
+ *
+ * @see ModuleConfiguration
+ */
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @KoinApplicationDslMarker
@@ -56,6 +61,11 @@ fun KoinApplication.moduleConfiguration(config : ModuleConfiguration){
     lazyModules(config._lazyModules, config._dispatcher)
 }
 
+/**
+ * Declare a ModuleConfiguration configuration
+ *
+ * @see ModuleConfiguration
+ */
 @KoinDslMarker
 @KoinExperimentalAPI
 fun moduleConfiguration(config : ModuleConfiguration.() -> Unit) : ModuleConfiguration = ModuleConfiguration().also(config)
