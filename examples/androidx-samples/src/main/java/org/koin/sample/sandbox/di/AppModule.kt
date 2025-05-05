@@ -16,7 +16,9 @@ import org.koin.core.module.dsl.scopedOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.moduleConfiguration
 import org.koin.core.qualifier.named
+import org.koin.dsl.lazyModule
 import org.koin.dsl.module
 import org.koin.sample.sandbox.components.Counter
 import org.koin.sample.sandbox.components.SCOPE_ID
@@ -58,7 +60,7 @@ val appModule = module {
     factory { RandomId() }
 }
 
-val mvpModule = module {
+val mvpModule = lazyModule {
     //factory { (id: String) -> FactoryPresenter(id, get()) }
     factoryOf(::FactoryPresenter)
 
@@ -71,7 +73,7 @@ val mvpModule = module {
 //    }
 }
 
-val mvvmModule = module {
+val mvvmModule = lazyModule {
 
     viewModelOf(::SimpleViewModel)// { (id: String) -> SimpleViewModel(id, get()) }
     viewModelOf(::SimpleViewModel) { named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
@@ -133,7 +135,7 @@ val mvvmModule = module {
 //    }
 }
 
-val scopeModule = module {
+val scopeModule = lazyModule {
     scope(named(SCOPE_ID)) {
         scopedOf(::Session) {
             named(SCOPE_SESSION)
@@ -146,7 +148,7 @@ val scopeModule = module {
     }
 }
 
-val scopeModuleActivityA = module {
+val scopeModuleActivityA = lazyModule {
     activityRetainedScope {
         fragmentOf(::ScopedFragment)
         scopedOf(::Session)
@@ -161,28 +163,26 @@ val scopeModuleActivityA = module {
 //    }
 }
 
-val workerServiceModule = module {
+val workerServiceModule = lazyModule {
     singleOf(::SimpleWorkerService)
 }
 
-val workerScopedModule = module {
+val workerScopedModule = lazyModule {
     workerOf(::SimpleWorker)// { SimpleWorker(get(), androidContext(), it.get()) }
 }
 
-val navModule = module {
+val navModule = lazyModule {
     viewModelOf(::NavViewModel)
     viewModelOf(::NavViewModel2)
 }
 
-val allModules = module {
-    includes(
-        appModule,
-        mvpModule,
+val allModules = moduleConfiguration {
+    modules(appModule)
+    lazyModules(mvpModule,
         mvvmModule,
         scopeModule,
         workerServiceModule,
         workerScopedModule,
         navModule,
-        scopeModuleActivityA
-    )
+        scopeModuleActivityA)
 }
