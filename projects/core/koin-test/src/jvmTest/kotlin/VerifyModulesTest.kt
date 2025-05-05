@@ -6,7 +6,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
-import org.koin.test.Simple.ComponentA
 import org.koin.test.verify.*
 
 class VerifyModulesTest {
@@ -228,5 +227,31 @@ class VerifyModulesTest {
             single { Simple.ComponentA() }
             single { Simple.ComponentBLazy(inject()) }
         }.verify()
+    }
+
+    @Test
+    fun `verify annotated param`(){
+        module {
+            single { (a : Others.ComponentA) -> Others.ComponentBParam(a) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify annotated provided`(){
+        module {
+            single { (a : Others.ComponentA) -> Others.ComponentBProvided(a) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify annotated param - fail`(){
+        try {
+            module {
+                single { (a : Others.ComponentA) -> Others.ComponentB(a) }
+            }.verify()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

@@ -101,7 +101,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
     private fun generateFixDefinition(first: VerifiedParameter): String {
         val className = first.type.qualifiedName
         return """
-            1- add missing definition for type '$className'. like: singleOf(::$className)
+            -1- Missing definition? Add missing definition for type '$className' like: 'singleOf(::$className)'
             or
         """.trimIndent()
     }
@@ -109,12 +109,9 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
     private fun generateInjectionCode(beanDefinition: BeanDefinition<*>, p: VerifiedParameter): String {
         val className = beanDefinition.primaryType.qualifiedName
         return """
-            2- else define injection for '$className' with:
-            module.verify(
-                injections = injectedParameters(
-                    definition<$className>(${p.type.qualifiedName}::class)
-                )
-            )
+            -2- Injected parameter? Annotate property with @${InjectedParam::class.simpleName} like: '@${InjectedParam::class.simpleName} ${p.name} : ${p.type.qualifiedName}'
+            or
+            -3- Whitelisted type? Define type '$className' with 'module.verify(injections = injectedParameters(definition<$className>(${p.type.qualifiedName}::class)))'
         """.trimIndent()
     }
 
@@ -137,9 +134,13 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
             val ctorParamFullClassName = ctorParamClass.getFullName()
 
             var hasDefinition = isClassInDefinitionIndex(index, ctorParamFullClassName)
-            val isParameterInjected = isClassInInjectionIndex(functionType, ctorParamFullClassName)
+            val isProvidedDynamically  = constructorParameter.annotations.any { it.annotationClass == Provided::class }
+            if (isProvidedDynamically){
+                System.err.println("* ----- > dependency '$ctorParamLabel' is tagged as provided dynamically!")
+            }
+            val isParameterInjected = constructorParameter.annotations.any { it.annotationClass == InjectedParam::class } || isClassInInjectionIndex(functionType, ctorParamFullClassName)
             if (isParameterInjected) {
-                println("| dependency '$ctorParamLabel' is injected")
+                println("| dependency '$ctorParamLabel' is tagged as dynamically injected as parameter")
             }
 
             var isWhiteList = ctorParamFullClassName in extraKeys
@@ -159,10 +160,10 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
                 }
             }
 
-            val isFound = hasDefinition || isParameterInjected || isWhiteList
+            val isFound = hasDefinition || isParameterInjected || isWhiteList || isProvidedDynamically
             if (isOptionalParameter) {
                 if (!isFound){
-                    println("* ----- > dependency '$ctorParamLabel' is optional, but no definition found in current configuration! It will be always null.")
+                    System.err.println("* ----- > dependency '$ctorParamLabel' is optional, but no definition found in current configuration! It will be always null.")
                 }
             }
 
