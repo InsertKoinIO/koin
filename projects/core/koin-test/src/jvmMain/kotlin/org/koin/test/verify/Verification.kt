@@ -93,7 +93,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
         }
 
         return verificationByStatus[VerificationStatus.OK]?.map {
-            println("|- dependency '${it.name}' - ${it.type.qualifiedName} found!")
+            println("|- dependency '${it.name}' - ${it.type.qualifiedName} is verified!")
             it.type
         }.orEmpty()
     }
@@ -136,31 +136,41 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
             val ctorParamClass = (constructorParameter.type.classifier as KClass<*>)
             val ctorParamFullClassName = ctorParamClass.getFullName()
 
-            val hasDefinition = isClassInDefinitionIndex(index, ctorParamFullClassName)
+            var hasDefinition = isClassInDefinitionIndex(index, ctorParamFullClassName)
             val isParameterInjected = isClassInInjectionIndex(functionType, ctorParamFullClassName)
             if (isParameterInjected) {
                 println("| dependency '$ctorParamLabel' is injected")
             }
-            val isWhiteList = ctorParamFullClassName in extraKeys
+
+            var isWhiteList = ctorParamFullClassName in extraKeys
             if (isWhiteList) {
                 println("| dependency '$ctorParamLabel' is whitelisted")
             }
+
             val isOptionalParameter = constructorParameter.isOptional
-            if (isOptionalParameter) {
-                println("| dependency '$ctorParamLabel' is optional")
-            }
-            //TODO Handle classifier
+
             val classifier = (constructorParameter.type.classifier as? KClass<*>)?.simpleName
             if (classifier == "Lazy" || classifier == "List"){
-
+                val realType = constructorParameter.type.arguments.first().type?.classifier as? KClass<*>
+                realType?.let {
+                    val realTypeFullName = it.getFullName()
+                    hasDefinition = isClassInDefinitionIndex(index, realTypeFullName)
+                    isWhiteList = realTypeFullName in extraKeys
+                }
             }
-            val isDefinitionDeclared = hasDefinition || isParameterInjected || isWhiteList || isOptionalParameter
 
+            val isFound = hasDefinition || isParameterInjected || isWhiteList
+            if (isOptionalParameter) {
+                if (!isFound){
+                    println("* ----- > dependency '$ctorParamLabel' is optional, but no definition found in current configuration! It will be always null.")
+                }
+            }
+
+            val isDefinitionDeclared = isFound || isOptionalParameter
             val alreadyBoundFactory = verifiedFactories.keys.firstOrNull { ctorParamClass in listOf(it.beanDefinition.primaryType) + it.beanDefinition.secondaryTypes }
             val factoryDependencies = verifiedFactories[alreadyBoundFactory]
             val isCircular = factoryDependencies?.let { functionType in factoryDependencies } == true
 
-            //TODO refactor to attach type / case of error
             when {
                 !isDefinitionDeclared -> VerifiedParameter(ctorParamLabel, ctorParamClass, VerificationStatus.MISSING)
                 isCircular -> VerifiedParameter(ctorParamLabel, ctorParamClass, VerificationStatus.CIRCULAR)

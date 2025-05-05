@@ -6,6 +6,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.test.Simple
+import org.koin.test.Simple.ComponentA
 import org.koin.test.verify.*
 
 class VerifyModulesTest {
@@ -41,7 +42,18 @@ class VerifyModulesTest {
     @Test
     fun allow_verify_optional_dep() {
         val module = module {
-            single { Simple.ComponentBOp(get()) }
+            single { Simple.ComponentBOptional(get()) }
+        }
+
+        // verified as optional
+        module.verify()
+    }
+
+    @Test
+    fun allow_verify_optional_dep_ok() {
+        val module = module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentBOptional(get()) }
         }
 
         module.verify()
@@ -200,5 +212,21 @@ class VerifyModulesTest {
         }
 
         modules.verify(extraTypes = listOf(Simple.ComponentA::class))
+    }
+
+    @Test
+    fun `verify list`(){
+        module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentBList(getAll()) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify lazy`(){
+        module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentBLazy(inject()) }
+        }.verify()
     }
 }
