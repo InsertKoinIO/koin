@@ -72,7 +72,7 @@ object Verify {
      * @param extraTypes allow to declare extra type, to be bound above the existing definitions
      * @throws MissingKoinDefinitionException
      */
-    fun verify(module: Module, extraTypes: List<KClass<*>> = emptyList(), injections: List<ParameterTypeInjection>? = null) {
+    fun verify(module: Module, extraTypes: List<KClass<*>> = emptyList(), injections: List<ParameterTypeInjection>? = null): Verification {
 
         val verification = Verification(module, extraTypes, injections)
         println("Verifying module '$module' ...")
@@ -82,5 +82,6 @@ object Verify {
         }
 
         println("\n[SUCCESS] module '$this' has been verified in $time.")
+        return verification
     }
 }

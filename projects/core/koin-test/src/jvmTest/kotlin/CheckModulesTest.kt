@@ -1,3 +1,5 @@
+import org.junit.After
+import org.koin.core.context.stopKoin
 import kotlin.test.Test
 import kotlin.test.fail
 import org.koin.core.error.InstanceCreationException
@@ -30,5 +32,10 @@ class CheckModulesTest {
 
         checkKoinModules(listOf(module))
         fail("Should fail to verify module")
+    }
+
+    @After
+    fun after(){
+        stopKoin()
     }
 }

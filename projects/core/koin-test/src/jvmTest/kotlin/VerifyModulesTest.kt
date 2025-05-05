@@ -39,6 +39,15 @@ class VerifyModulesTest {
     }
 
     @Test
+    fun allow_verify_optional_dep() {
+        val module = module {
+            single { Simple.ComponentBOp(get()) }
+        }
+
+        module.verify()
+    }
+
+    @Test
     fun verify_one_simple_module_w_interface() {
         val module = module {
             single { Simple.ComponentA() }

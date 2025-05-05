@@ -8,6 +8,7 @@ import org.koin.mp.generateId
 class Simple {
     class ComponentA : MyComponentA
     class ComponentB(val a: ComponentA) : MyComponentB
+    class ComponentBOp(val a: ComponentA? = null) : MyComponentB
     interface MyComponentA
     interface MyComponentB
     class ComponentC(val b: MyComponentB)

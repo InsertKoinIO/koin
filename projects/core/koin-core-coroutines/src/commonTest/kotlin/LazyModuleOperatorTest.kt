@@ -7,6 +7,11 @@ import kotlin.test.assertEquals
 class LazyModuleOperatorTest {
 
     @Test
+    fun module_config(){
+
+    }
+
+    @Test
     fun test_include() {
         val m2 = lazyModule {}
         val m1 = lazyModule {}
