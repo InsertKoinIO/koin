@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNCHECKED_CAST")
 
 package org.koin.core.instance
 
@@ -24,7 +23,6 @@ import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
-import org.koin.mp.generateId
 
 /**
  * Koin Instance Holder

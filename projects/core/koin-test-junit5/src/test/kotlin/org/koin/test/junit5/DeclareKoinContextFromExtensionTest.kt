@@ -11,7 +11,6 @@ import org.koin.test.KoinTest
 import org.koin.test.Simple
 import org.koin.test.inject
 
-@Suppress("UNCHECKED_CAST")
 class DeclareKoinContextFromExtensionTest : KoinTest {
 
     @JvmField

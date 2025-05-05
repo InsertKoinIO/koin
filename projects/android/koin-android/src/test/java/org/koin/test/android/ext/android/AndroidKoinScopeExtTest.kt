@@ -16,7 +16,6 @@ import org.koin.test.android.helper.Helper.componentCallbacks
 import org.koin.test.android.helper.Helper.koinComponent
 import org.koin.test.android.helper.Helper.koinScopeComponent
 
-@Suppress("OPT_IN_IS_NOT_ENABLED")
 @OptIn(KoinInternalApi::class)
 class AndroidKoinScopeExtTest : KoinTest {
 

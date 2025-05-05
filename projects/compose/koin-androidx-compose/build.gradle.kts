@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -10,8 +8,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-val androidCompileSDK : String by project
-val androidMinSDK : String by project
+val androidCompileSDK: String by project
+val androidMinSDK: String by project
 
 android {
     namespace = "org.koin.androidx.compose"
