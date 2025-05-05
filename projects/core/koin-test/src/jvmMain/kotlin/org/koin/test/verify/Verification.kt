@@ -15,8 +15,10 @@
  */
 package org.koin.test.verify
 
+import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.annotation.Provided
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
 import org.koin.core.instance.InstanceFactory

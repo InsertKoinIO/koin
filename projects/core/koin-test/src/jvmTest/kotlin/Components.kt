@@ -1,8 +1,8 @@
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.Provided
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.generateId
-import org.koin.test.verify.InjectedParam
-import org.koin.test.verify.Provided
 
 @Suppress("unused")
 class Others {

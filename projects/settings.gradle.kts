@@ -26,6 +26,7 @@ dependencyResolutionManagement {
 
 include(
     // Core
+    ":core:koin-core-annotations",
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
