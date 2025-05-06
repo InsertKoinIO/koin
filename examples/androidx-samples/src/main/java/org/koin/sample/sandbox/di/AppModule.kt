@@ -176,7 +176,7 @@ val navModule = lazyModule {
     viewModelOf(::NavViewModel2)
 }
 
-val allModules = moduleConfiguration {
+val appModules = moduleConfiguration {
     modules(appModule)
     lazyModules(mvpModule,
         mvvmModule,
