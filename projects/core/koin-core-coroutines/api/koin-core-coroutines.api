@@ -60,6 +60,25 @@ public final class org/koin/core/module/LazyModuleExtKt {
 	public static final fun includes (Lorg/koin/core/module/Module;[Lkotlin/Lazy;)V
 }
 
+public final class org/koin/core/module/ModuleConfiguration {
+	public fun <init> ()V
+	public final fun dispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public static synthetic fun dispatcher$default (Lorg/koin/core/module/ModuleConfiguration;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
+	public final fun get_dispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public final fun get_lazyModules ()Ljava/util/ArrayList;
+	public final fun get_modules ()Ljava/util/ArrayList;
+	public final fun lazyModules (Ljava/util/List;)Z
+	public final fun lazyModules ([Lorg/koin/core/module/LazyModule;)Z
+	public final fun modules (Ljava/util/List;)Z
+	public final fun modules ([Lorg/koin/core/module/Module;)Z
+}
+
+public final class org/koin/core/module/ModuleConfigurationKt {
+	public static final fun moduleConfiguration (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/module/ModuleConfiguration;
+	public static final fun moduleConfiguration (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function1;)V
+	public static final fun moduleConfiguration (Lorg/koin/core/KoinApplication;Lorg/koin/core/module/ModuleConfiguration;)V
+}
+
 public final class org/koin/dsl/LazyModuleDSLKt {
 	public static final fun lazyModule (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/module/LazyModule;
 }

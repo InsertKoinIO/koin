@@ -1,7 +1,5 @@
-public abstract interface class org/koin/test/KoinTest : org/koin/core/component/KoinComponent {
-}
-
-public final class org/koin/test/KoinTest$DefaultImpls {
-	public static fun getKoin (Lorg/koin/test/KoinTest;)Lorg/koin/core/Koin;
+public final class org/koin/test/verify/ModuleConfigurationExtKt {
+	public static final fun verify (Lorg/koin/core/module/ModuleConfiguration;Ljava/util/List;Ljava/util/List;)V
+	public static synthetic fun verify$default (Lorg/koin/core/module/ModuleConfiguration;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)V
 }
 
