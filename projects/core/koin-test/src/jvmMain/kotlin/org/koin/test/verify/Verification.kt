@@ -38,12 +38,22 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
     private var allModules: Set<Module> = module?.let { flatten(module.includedModules.toList()) + module } ?: emptySet()
     private var factories: Set<InstanceFactory<*>> = allModules.flatMap { it.mappings.values.toList() }.toSet()
     private var definitionIndex: Set<IndexKey> = allModules.flatMap { it.mappings.keys.toList() }.toSet()
-    private var extraKeys: Set<String> = (extraTypes + Verify.whiteList).map { it.getFullName() }.toSet()
+    private var extraKeys: HashSet<String> = (extraTypes + Verify.whiteList).map { it.getFullName() }.toHashSet()
     private var parameterInjectionIndex: Map<String, List<String>> = injections?.associate { inj -> inj.targetType.getFullName() to inj.injectedTypes.map { it.getFullName() }.toList() }.orEmpty()
 
     private val verifiedFactories: HashMap<InstanceFactory<*>, List<KClass<*>>> = hashMapOf()
 
     fun verify() {
+
+        // index duplication
+        val allIndex = allModules.flatMap { it.mappings.toList() }
+        allIndex.forEach { (k,v) ->
+            val last = allIndex.last { it.first == k }
+            if (last.second != v){
+                println("\n+ definition override detected on index '$k' - from ${v.beanDefinition} over ${last.second.beanDefinition}")
+            }
+        }
+
         factories.forEach { factory ->
             if (factory !in verifiedFactories.keys) {
                 val injectedDependencies = verifyFactory(factory, definitionIndex)
@@ -84,7 +94,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
         verificationByStatus[VerificationStatus.MISSING]?.let { list ->
             val first = list.first()
             val errorMessage = "Missing definition for '$first' in definition '$beanDefinition'."
-            val generateParameterInjection = "- Fix your Koin configuration -\n${generateFixDefinition(first)}\n${generateInjectionCode(beanDefinition, first)}"
+            val generateParameterInjection = "--- Fix your Koin configuration ---\n${generateFixDefinition(first)}\n${generateInjectionCode(beanDefinition, first)}\n---"
             System.err.println("* ----- > $errorMessage\n$generateParameterInjection")
             throw MissingKoinDefinitionException(errorMessage)
         }
@@ -103,7 +113,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
     private fun generateFixDefinition(first: VerifiedParameter): String {
         val className = first.type.qualifiedName
         return """
-            -1- Missing definition? Add missing definition for type '$className' like: 'singleOf(::$className)'
+            -1- Missing Definition? Add missing definition for like: 'singleOf(::$className)'
             or
         """.trimIndent()
     }
@@ -111,9 +121,10 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
     private fun generateInjectionCode(beanDefinition: BeanDefinition<*>, p: VerifiedParameter): String {
         val className = beanDefinition.primaryType.qualifiedName
         return """
-            -2- Injected parameter? Annotate property with @${InjectedParam::class.simpleName} like: '@${InjectedParam::class.simpleName} ${p.name} : ${p.type.qualifiedName}'
+            -2- Injected Parameter? Annotate property with @${InjectedParam::class.simpleName} like: '@${InjectedParam::class.simpleName} ${p.name} : ${p.type.qualifiedName}'
             or
-            -3- Whitelisted type? Define type '$className' with 'module.verify(injections = injectedParameters(definition<$className>(${p.type.qualifiedName}::class)))'
+            -3- Dynamically Provided? Annotate property with @${Provided::class.simpleName} like: '@${Provided::class.simpleName} ${p.name} : ${p.type.qualifiedName}'
+            Or Define type '$className' with 'module.verify(injections = injectedParameters(definition<$className>(${p.type.qualifiedName}::class)))'
         """.trimIndent()
     }
 
@@ -136,18 +147,20 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
             val ctorParamFullClassName = ctorParamClass.getFullName()
 
             var hasDefinition = isClassInDefinitionIndex(index, ctorParamFullClassName)
-            val isProvidedDynamically  = constructorParameter.annotations.any { it.annotationClass == Provided::class }
-            if (isProvidedDynamically){
-                System.err.println("* ----- > dependency '$ctorParamLabel' is tagged as provided dynamically!")
-            }
             val isParameterInjected = constructorParameter.annotations.any { it.annotationClass == InjectedParam::class } || isClassInInjectionIndex(functionType, ctorParamFullClassName)
             if (isParameterInjected) {
                 println("| dependency '$ctorParamLabel' is tagged as dynamically injected as parameter")
             }
-
             var isWhiteList = ctorParamFullClassName in extraKeys
             if (isWhiteList) {
                 println("| dependency '$ctorParamLabel' is whitelisted")
+            }
+
+            val isProvidedDynamically  = constructorParameter.annotations.any { it.annotationClass == Provided::class }
+            if (!isWhiteList && isProvidedDynamically){
+                System.err.println("* ----- > dependency '$ctorParamLabel' is tagged as provided dynamically!")
+                extraKeys.add(ctorParamFullClassName)
+                println("| dependency '$ctorParamLabel' is now whitelisted")
             }
 
             val isOptionalParameter = constructorParameter.isOptional
@@ -196,7 +209,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
         this.allModules = allModules + v.allModules
         this.factories = factories + v.factories
         this.definitionIndex = definitionIndex + v.definitionIndex
-        this.extraKeys = extraKeys + v.extraKeys
+        this.extraKeys.addAll(v.extraKeys)
         this.parameterInjectionIndex = parameterInjectionIndex + v.parameterInjectionIndex
         return this
     }

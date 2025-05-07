@@ -86,6 +86,22 @@ class VerifyModuleConfigurationTest {
     }
 
     @Test
+    fun verify_module_configuration_lazy_list() {
+
+        val common = lazyModule {
+            single { Simple.ComponentA() }
+        }
+        val lm1 = lazyModule {
+            single { Simple.ComponentB(get()) }
+        }
+        val conf = moduleConfiguration {
+            lazyModules(lm1,common)
+        }
+
+        conf.verify()
+    }
+
+    @Test
     fun verify_module_configuration_lazy_include() {
 
         val common = lazyModule {
@@ -100,6 +116,20 @@ class VerifyModuleConfigurationTest {
         }
 
         conf.verify()
+    }
+
+    @Test
+    fun `verify index duplication`(){
+        val m1 = module {
+            single { Simple.ComponentA() }
+        }
+        val m2 = module {
+            single { Simple.ComponentA() }
+        }
+        moduleConfiguration {
+            modules(m1,m2)
+        }.verify()
+
     }
 
 }

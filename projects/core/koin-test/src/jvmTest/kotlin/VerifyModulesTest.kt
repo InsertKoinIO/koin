@@ -244,6 +244,14 @@ class VerifyModulesTest {
     }
 
     @Test
+    fun `verify annotated provided - whitelisted`(){
+        module {
+            single { (a : Others.ComponentA) -> Others.ComponentBProvided(a) }
+            single { (a : Others.ComponentA) -> Others.ComponentBProvided2(a) }
+        }.verify()
+    }
+
+    @Test
     fun `verify annotated param - fail`(){
         try {
             module {

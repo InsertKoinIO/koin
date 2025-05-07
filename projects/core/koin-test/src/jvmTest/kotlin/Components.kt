@@ -10,6 +10,7 @@ class Others {
     class ComponentB(val a: ComponentA)
     class ComponentBParam(@InjectedParam val a: ComponentA)
     class ComponentBProvided(@Provided val a: ComponentA)
+    class ComponentBProvided2(@Provided val a: ComponentA)
     class ComponentC(val b: ComponentB)
     class MyString(val s: String)
 
