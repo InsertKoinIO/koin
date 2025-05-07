@@ -11,10 +11,10 @@ dependencies {
     testImplementation(libs.test.junit)
 
     // Ktor
-    compileOnly(libs.ktor3.core)
-    testImplementation(libs.ktor3.core)
-    testImplementation(libs.ktor3.netty)
-    testImplementation(libs.ktor3.testHost)
+    compileOnly(libs.ktor.core)
+    testImplementation(libs.ktor.core)
+    testImplementation(libs.ktor.netty)
+    testImplementation(libs.ktor.testHost)
 }
 
 tasks.withType<KotlinCompile>().all {
