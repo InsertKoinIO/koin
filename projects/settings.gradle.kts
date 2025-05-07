@@ -42,8 +42,8 @@ include(
     ":core:koin-fu-viewmodel",
 
     // Ktor
-    ":ktor:koin-ktor",
-    ":ktor:koin-ktor3",
+//    ":ktor:koin-ktor",
+//    ":ktor:koin-ktor3",
     ":ktor:koin-logger-slf4j",
     // Android
     ":android:koin-android",
