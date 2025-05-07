@@ -48,7 +48,3 @@ public final class org/koin/ktor/plugin/RequestScope : org/koin/core/component/K
 	public fun getScope ()Lorg/koin/core/scope/Scope;
 }
 
-public final class org/koin/module/ModuleExtKt {
-	public static final fun requestScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
-}
-

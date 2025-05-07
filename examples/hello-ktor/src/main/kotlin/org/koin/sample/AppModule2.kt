@@ -5,7 +5,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.koin
-import org.koin.ktor.plugin.scope
 
 fun Application.module2() {
     koin {

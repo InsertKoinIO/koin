@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-present the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,16 @@
  */
 package org.koin.ktor.plugin
 
-import io.ktor.server.application.*
-import io.ktor.server.application.hooks.*
-import io.ktor.util.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationStopping
+import io.ktor.server.application.PluginBuilder
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.hooks.CallSetup
+import io.ktor.server.application.hooks.ResponseSent
+import io.ktor.server.application.install
+import io.ktor.server.application.pluginOrNull
+import io.ktor.util.AttributeKey
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -34,13 +41,14 @@ import org.koin.mp.KoinPlatformTools
  * Ktor Feature class. Allows Koin Standard Context to start using Ktor default install(<feature>) method.
  *
  */
-val Koin = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
-    val koinApplication = setupKoinApplication()
-    KoinPlatformTools.defaultContext().getOrNull()?.let { stopKoin() } // for ktor auto-reload
-    startKoin(koinApplication)
-    setupMonitoring(koinApplication)
-    setupKoinScope(koinApplication)
-}
+val Koin =
+    createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
+        val koinApplication = setupKoinApplication()
+        KoinPlatformTools.defaultContext().getOrNull()?.let { stopKoin() } // for ktor auto-reload
+        startKoin(koinApplication)
+        setupMonitoring(koinApplication)
+        setupKoinScope(koinApplication)
+    }
 
 internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
     val koinApplication = pluginConfig
@@ -49,21 +57,21 @@ internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplicat
     return koinApplication
 }
 
-fun Application.setKoinApplication(koinApplication: KoinApplication){
+fun Application.setKoinApplication(koinApplication: KoinApplication) {
     attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
 }
 
 internal fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: KoinApplication) {
-    val monitor = environment?.monitor
-    monitor?.raise(KoinApplicationStarted, koinApplication)
-    monitor?.subscribe(ApplicationStopping) {
+    val monitor = application.monitor
+    monitor.raise(KoinApplicationStarted, koinApplication)
+    monitor.subscribe(ApplicationStopping) {
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
         koinApplication.koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
     }
 }
 
-internal  fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
+internal fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
     // Scope Handling
     on(CallSetup) { call ->
         val scopeComponent = RequestScope(koinApplication.koin)
@@ -84,7 +92,10 @@ val KOIN_SCOPE_ATTRIBUTE_KEY = AttributeKey<Scope>(KOIN_SCOPE_KEY)
 /**
  * Scope property to let your resolve dependencies from Request Scope
  */
-val ApplicationCall.scope: Scope get() = this.attributes.getOrNull(KOIN_SCOPE_ATTRIBUTE_KEY) ?: error("Koin Request Scope is not ready")
+val ApplicationCall.scope: Scope
+    get() = this.attributes.getOrNull(KOIN_SCOPE_ATTRIBUTE_KEY)
+        ?: error("Koin Request Scope is not ready")
+
 /**
  * Run extra koin configuration, like modules()
  */

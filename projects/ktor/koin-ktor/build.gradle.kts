@@ -11,7 +11,8 @@ dependencies {
     testImplementation(libs.test.junit)
 
     // Ktor
-    api(libs.ktor.core)
+    compileOnly(libs.ktor.core)
+    testImplementation(libs.ktor.core)
     testImplementation(libs.ktor.netty)
     testImplementation(libs.ktor.testHost)
 }

@@ -20,7 +20,6 @@ dependencies {
         api(project(":core:koin-test-junit5"))
 
         api(project(":ktor:koin-ktor"))
-        api(project(":ktor:koin-ktor3"))
         api(project(":ktor:koin-logger-slf4j"))
 
         api(project(":android:koin-android"))
