@@ -1,5 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.koin.androidx.startup" xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.koin.androidx.startup">
+
     <application>
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -7,7 +10,8 @@
             android:exported="false"
             tools:node="merge">
             <!-- This entry makes ExampleLoggerInitializer discoverable. -->
-            <meta-data  android:name="org.koin.androix.startup.KoinInitializer"
+            <meta-data
+                android:name="org.koin.androix.startup.KoinInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>
