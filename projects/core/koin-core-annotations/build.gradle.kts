@@ -39,22 +39,6 @@ kotlin {
     mingwX64()
     linuxX64()
     linuxArm64()
-
-    sourceSets {
-        commonMain.dependencies {
-            api(project(":core:koin-core-annotations"))
-            implementation(libs.extras.stately)
-            implementation(libs.extras.stately.collections)
-//            api(libs.extras.uuid)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation(libs.test.coroutines)
-        }
-//        wasmJsMain.dependencies {
-//            implementation(libs.uuid)
-//        }
-    }
 }
 
 

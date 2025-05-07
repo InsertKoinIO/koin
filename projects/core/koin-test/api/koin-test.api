@@ -89,9 +89,11 @@ public final class org/koin/test/verify/ParameterTypeInjectionKt {
 }
 
 public final class org/koin/test/verify/Verification {
+	public fun <init> ()V
 	public fun <init> (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;)V
 	public synthetic fun <init> (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getModule ()Lorg/koin/core/module/Module;
+	public final fun plus (Lorg/koin/test/verify/Verification;)Lorg/koin/test/verify/Verification;
 	public final fun verify ()V
 }
 
@@ -123,13 +125,13 @@ public final class org/koin/test/verify/Verify {
 	public static final field INSTANCE Lorg/koin/test/verify/Verify;
 	public final fun addExtraTypes (Ljava/util/List;)V
 	public final fun addExtraTypes ([Lkotlin/reflect/KClass;)V
-	public final fun verify (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;)V
-	public static synthetic fun verify$default (Lorg/koin/test/verify/Verify;Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)V
+	public final fun verify (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;)Lorg/koin/test/verify/Verification;
+	public static synthetic fun verify$default (Lorg/koin/test/verify/Verify;Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/koin/test/verify/Verification;
 }
 
 public final class org/koin/test/verify/VerifyModuleKt {
-	public static final fun verify (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;)V
-	public static synthetic fun verify$default (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)V
+	public static final fun verify (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;)Lorg/koin/test/verify/Verification;
+	public static synthetic fun verify$default (Lorg/koin/core/module/Module;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/koin/test/verify/Verification;
 	public static final fun verifyAll (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 	public static synthetic fun verifyAll$default (Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)V
 }

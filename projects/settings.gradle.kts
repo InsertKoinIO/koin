@@ -26,11 +26,13 @@ dependencyResolutionManagement {
 
 include(
     // Core
+    ":core:koin-core-annotations",
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
 //    ":core:koin-core-viewmodel-navigation",
     ":core:koin-test",
+    ":core:koin-test-coroutines",
     ":core:koin-test-junit4",
     ":core:koin-test-junit5",
     ":core:benchmark",
