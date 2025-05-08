@@ -48,10 +48,14 @@ kotlin {
 }
 
 val androidCompileSDK: String by project
+val androidMinSDK : String by project
 
 android {
     namespace = "org.koin.compose.viewmodel.navigation"
     compileSdk = androidCompileSDK.toInt()
+    defaultConfig {
+        minSdk = androidMinSDK.toInt()
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
