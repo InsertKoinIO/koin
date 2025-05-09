@@ -59,11 +59,19 @@ kotlin {
     }
 }
 
-val androidCompileSDK: String by project
+val androidCompileSDK : String by project
+val androidMinSDK : String by project
 
 android {
     namespace = "org.koin.viewmodel"
     compileSdk = androidCompileSDK.toInt()
+    defaultConfig {
+        minSdk = androidMinSDK.toInt()
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }
 
 apply(from = file("../../gradle/publish.gradle.kts"))

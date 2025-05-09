@@ -46,7 +46,6 @@ dependencies {
     api(libs.android.activity)
     api(libs.android.fragment)
     api(libs.androidx.viewmodel)
-    api(libs.androidx.commonJava8)
 
     // tests
     testImplementation(project(":core:koin-test"))
