@@ -43,11 +43,10 @@ kotlin {
         commonMain.dependencies {
             api(project(":core:koin-core"))
             api(libs.jb.composeRuntime)
+            api(libs.jb.composeFoundation)
         }
         androidMain.dependencies {
             api(project(":android:koin-android"))
-            api(libs.androidx.composeRuntime)
-            api(libs.androidx.composeFoundation)
         }
         nativeMain.dependencies {
         }

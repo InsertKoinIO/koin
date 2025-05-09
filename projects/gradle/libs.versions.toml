@@ -19,23 +19,23 @@ androidx-workmanager = "2.10.1"
 androidx-startup = "1.2.0"
 
 # Lifecycle
-androidx-lifecycle = "2.9.0-rc01" # Keep in sync with "jb-lifecycle"
-jb-lifecycle = "2.9.0-alpha07"
+androidx-lifecycle = "2.9.0" # Keep in sync with "jb-lifecycle"
+jb-lifecycle = "2.9.0-beta01"
 
 # Navigation
-androidx-navigation = "2.9.0-rc01" # Keep in sync with "jb-navigation"
-jb-navigation = "2.9.0-alpha17"
+androidx-navigation = "2.9.0" # Keep in sync with "jb-navigation"
+jb-navigation = "2.9.0-beta01"
 
 # Compose
-androidx-compose = "1.8.0" # Keep in sync with "jb-compose"
-jb-compose = "1.8.0-rc01"
+#androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
+jb-compose = "1.8.0"
 
 # Test
 stately = "2.1.0"
 junit = "4.13.2"
 jupiter = "5.11.2" #5.12.0 causing issues
 mockito = "4.8.0"
-mockk = "1.13.2"
+mockk = "1.13.16"
 robolectric = "4.14.1"
 # Ktor
 ktor = "3.1.3"
@@ -64,7 +64,7 @@ android-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "an
 android-activity = { module = "androidx.activity:activity-ktx", version.ref = "android-activity" }
 android-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "android-fragment" }
 androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
-androidx-commonJava8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
+#androidx-commonJava8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
 androidx-navigation = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-workmanager" }
 androidx-startup = {module ="androidx.startup:startup-runtime", version.ref = "androidx-startup" }
@@ -75,12 +75,12 @@ ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 # jetpack Compose
-androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
-androidx-composeFoundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
-androidx-composeViewModel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
-androidx-composeNavigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+#androidx-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
+#androidx-composeViewModel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+#androidx-composeNavigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 # jb Compose
 jb-composeRuntime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jb-compose" }
+jb-composeFoundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jb-compose" }
 jb-composeViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jb-lifecycle" }
 jb-lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "jb-lifecycle" }
 jb-lifecycleViewmodelSavedState = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "jb-lifecycle" }

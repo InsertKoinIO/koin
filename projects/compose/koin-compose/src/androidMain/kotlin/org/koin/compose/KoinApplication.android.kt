@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import org.koin.core.KoinApplication
 import org.koin.dsl.KoinConfiguration
 import androidx.compose.ui.platform.LocalContext
 import org.koin.android.ext.android.getKoin

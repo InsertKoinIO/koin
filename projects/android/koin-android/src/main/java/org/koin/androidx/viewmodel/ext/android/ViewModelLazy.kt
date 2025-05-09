@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.koin.androidx.viewmodel.ext.android
 
 import androidx.activity.ComponentActivity
