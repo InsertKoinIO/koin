@@ -7,9 +7,7 @@ plugins {
 
 kotlin {
     
-    jvm {
-        withJava()
-    }
+    jvm()
 
     js(IR) {
         nodejs()
