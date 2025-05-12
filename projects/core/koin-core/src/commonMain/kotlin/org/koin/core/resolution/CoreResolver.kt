@@ -25,10 +25,29 @@ import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 
 /**
+ * ResolutionExtension offers a way to extend Koin capacity to resolve instance in external systems
+ * For example it allows to extend Koin to Ktor's internal DI, and make your Koin definition benefits from Ktor DI declared components
  *
+ * Initially extracted from Scope, to help externalise resolution engine and extensions.
+ *
+ * Each extension has
+ * - a name, to help display resolution debugs
+ * - implement fun resolve(scope : Scope, instanceContext: ResolutionContext)
+ *
+ * @author Arnaud Giuliani
  */
+@OptIn(KoinInternalApi::class)
 interface ResolutionExtension {
+    /**
+     * Extension Name
+     */
     val name : String
+
+    /**
+     * Resolve function for given scope and ResolutionContext
+     * @param scope
+     * @param instanceContext
+     */
     fun resolve(scope : Scope, instanceContext: ResolutionContext) : Any?
 }
 
@@ -112,7 +131,6 @@ class CoreResolver(
     }
 
     private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
-        ctx.logger.debug("|- << parameters")
         throwDefinitionNotFound(ctx)
     }
 
