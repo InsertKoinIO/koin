@@ -56,8 +56,7 @@ class Koin {
         private set
 
     @KoinInternalApi
-    @PublishedApi
-    internal val resolver = CoreResolver(this)
+    val resolver = CoreResolver(this)
 
     @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)
