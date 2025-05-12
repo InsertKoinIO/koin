@@ -18,7 +18,14 @@ package org.koin.core.resolution
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.scope.Scope
 
-interface InstanceResolver {
+/**
+ * Resolution Engine abstraction
+ *
+ * Ask for resolution for
+ * @param Scope
+ * @param ResolutionContext
+ */
+internal interface InstanceResolver {
     fun <T> resolveFromContext(scope : Scope, instanceContext: ResolutionContext): T
 }
 

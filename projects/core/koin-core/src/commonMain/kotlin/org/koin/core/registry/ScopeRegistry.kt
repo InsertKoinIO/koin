@@ -43,7 +43,7 @@ class ScopeRegistry(private val _koin: Koin) {
     private val _scopes = safeHashMap<ScopeID, Scope>()
 
     @KoinInternalApi
-    val rootScope = Scope(rootScopeQualifier, ROOT_SCOPE_ID, isRoot = true, _koin = _koin, instanceResolver = _koin.resolver)
+    val rootScope = Scope(rootScopeQualifier, ROOT_SCOPE_ID, isRoot = true, _koin = _koin)
 
     init {
         _scopeDefinitions.add(rootScope.scopeQualifier)
@@ -65,7 +65,7 @@ class ScopeRegistry(private val _koin: Koin) {
         if (_scopes.contains(scopeId)) {
             throw ScopeAlreadyCreatedException("Scope with id '$scopeId' is already created")
         }
-        val scope = Scope(qualifier, scopeId, _koin = _koin, scopeArchetype = scopeArchetype, instanceResolver = _koin.resolver)
+        val scope = Scope(qualifier, scopeId, _koin = _koin, scopeArchetype = scopeArchetype)
         source?.let {
             _koin.logger.debug("|- Scope source set id:'$scopeId' -> $source")
             scope.sourceValue = source

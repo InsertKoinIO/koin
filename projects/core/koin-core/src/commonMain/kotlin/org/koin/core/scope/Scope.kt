@@ -50,7 +50,6 @@ class Scope(
     val scopeArchetype : TypeQualifier? = null,
     @PublishedApi
     internal val _koin: Koin,
-    internal val instanceResolver: InstanceResolver
 ) : Lockable() {
     internal val linkedScopes = LinkedHashSet<Scope>()
 
@@ -316,7 +315,7 @@ class Scope(
     private fun <T> resolveFromContext(
         instanceContext: ResolutionContext
     ): T {
-        return instanceResolver.resolveFromContext(this,instanceContext)
+        return _koin.resolver.resolveFromContext(this,instanceContext)
     }
 
 

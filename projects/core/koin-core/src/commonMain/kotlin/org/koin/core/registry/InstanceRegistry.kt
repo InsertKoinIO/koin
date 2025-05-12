@@ -96,16 +96,6 @@ class InstanceRegistry(val _koin: Koin) {
         instances.forEach { factory -> factory.get(defaultContext) }
     }
 
-    //TODO Added?
-    internal fun hasDefinition(
-        clazz: KClass<*>,
-        qualifier: Qualifier?,
-        scopeQualifier: Qualifier,
-    ): InstanceFactory<*>? {
-        val indexKey = indexKey(clazz, qualifier, scopeQualifier)
-        return _instances[indexKey]
-    }
-
     internal fun resolveDefinition(
         clazz: KClass<*>,
         qualifier: Qualifier?,

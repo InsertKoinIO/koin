@@ -24,13 +24,19 @@ import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 
+/**
+ *
+ */
 interface ResolutionExtension {
     val name : String
     fun resolve(scope : Scope, instanceContext: ResolutionContext) : Any?
 }
 
+/**
+ *
+ */
 @KoinInternalApi
-class CoreInstanceResolver(
+class CoreResolver(
     private val _koin : Koin
 ) : InstanceResolver {
 
@@ -38,10 +44,6 @@ class CoreInstanceResolver(
 
     fun addResolutionExtension(resolutionExtension : ResolutionExtension){
         extendedResolution += resolutionExtension
-    }
-
-    fun addResolutionExtension(resolutionExtension : ResolutionExtension, index: Int){
-        extendedResolution.add(index, resolutionExtension)
     }
 
     override fun <T> resolveFromContext(scope : Scope, instanceContext: ResolutionContext): T {
@@ -128,7 +130,7 @@ class CoreInstanceResolver(
         ctx: ResolutionContext
     ) : T?{
         return extendedResolution.firstNotNullOfOrNull {
-            ctx.logger.debug("|- '${it.name}' -> ${ctx.debugTag} ?")
+            ctx.logger.debug("|- ['${it.name}'] ?")
             it.resolve(scope,ctx) as T?
         }
     }
