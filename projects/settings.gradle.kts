@@ -20,6 +20,12 @@ dependencyResolutionManagement {
                 includeGroupByRegex(".*android.*")
             }
         }
+        // For Ktor EAP
+        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap") {
+            mavenContent {
+                includeGroupAndSubgroups("io.ktor")
+            }
+        }
         mavenCentral()
     }
 }
