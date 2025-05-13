@@ -26,6 +26,7 @@ public final class org/koin/core/Koin {
 	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getPropertyRegistry ()Lorg/koin/core/registry/PropertyRegistry;
+	public final fun getResolver ()Lorg/koin/core/resolution/CoreResolver;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeOrNull (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeRegistry ()Lorg/koin/core/registry/ScopeRegistry;
@@ -530,6 +531,17 @@ public final class org/koin/core/registry/ScopeRegistry {
 
 public final class org/koin/core/registry/ScopeRegistry$Companion {
 	public final fun getRootScopeQualifier ()Lorg/koin/core/qualifier/StringQualifier;
+}
+
+public final class org/koin/core/resolution/CoreResolver : org/koin/core/resolution/InstanceResolver {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+}
+
+public abstract interface class org/koin/core/resolution/ResolutionExtension {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun resolve (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 }
 
 public final class org/koin/core/scope/Scope {

@@ -39,6 +39,9 @@ public final class org/koin/ktor/plugin/KoinPluginKt {
 	public static final fun getKoin ()Lio/ktor/server/application/ApplicationPlugin;
 	public static final fun getScope (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/scope/Scope;
 	public static final fun koin (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun koinModule (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Lkotlin/Unit;
+	public static final fun koinModules (Lio/ktor/server/application/Application;[Lorg/koin/core/module/Module;)Lkotlin/Unit;
+	public static final fun setKoin (Lio/ktor/server/application/Application;Lorg/koin/core/Koin;)V
 	public static final fun setKoinApplication (Lio/ktor/server/application/Application;Lorg/koin/core/KoinApplication;)V
 }
 
@@ -46,5 +49,9 @@ public final class org/koin/ktor/plugin/RequestScope : org/koin/core/component/K
 	public fun <init> (Lorg/koin/core/Koin;)V
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public fun getScope ()Lorg/koin/core/scope/Scope;
+}
+
+public final class org/koin/module/ModuleExtKt {
+	public static final fun requestScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
 }
 
