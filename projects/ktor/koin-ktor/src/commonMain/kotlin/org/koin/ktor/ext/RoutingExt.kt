@@ -15,41 +15,24 @@
  */
 package org.koin.ktor.ext
 
-import io.ktor.server.application.*
+import io.ktor.server.routing.*
 import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.KoinAppDeclaration
-import org.koin.ktor.plugin.KOIN_ATTRIBUTE_KEY
-import org.koin.ktor.plugin.Koin
-import org.koin.ktor.plugin.setKoinApplication
 
 /**
- * Ktor Koin extensions
+ * Ktor Koin extensions for Routing class
  *
  * @author Arnaud Giuliani
  * @author Laurent Baresse
  */
-
-
-
-/**
- * Help work on ModuleDefinition
- */
-fun Application.getKoin(): Koin =
-    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.koin ?: run {
-        val defaultInstance = GlobalContext.getKoinApplicationOrNull() ?: error("No Koin instance started. Use install(Koin) or startKoin()")
-        setKoinApplication(defaultInstance)
-        attributes[KOIN_ATTRIBUTE_KEY].koin
-    }
 
 /**
  * inject lazily given dependency
  * @param qualifier - bean name / optional
  * @param parameters
  */
-inline fun <reified T : Any> Application.inject(
+inline fun <reified T : Any> Routing.inject(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
@@ -60,7 +43,7 @@ inline fun <reified T : Any> Application.inject(
  * @param qualifier - bean name / optional
  * @param parameters
  */
-inline fun <reified T : Any> Application.get(
+inline fun <reified T : Any> Routing.get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ) =
@@ -70,7 +53,7 @@ inline fun <reified T : Any> Application.get(
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
-fun <T : Any> Application.getProperty(key: String) =
+fun <T : Any> Routing.getProperty(key: String) =
     getKoin().getProperty<T>(key)
 
 /**
@@ -81,5 +64,10 @@ fun <T : Any> Application.getProperty(key: String) =
  * @param defaultValue - default value if property is missing
  *
  */
-fun Application.getProperty(key: String, defaultValue: String) =
+inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
     getKoin().getProperty(key) ?: defaultValue
+
+/**
+ * Help work on ModuleDefinition
+ */
+fun Routing.getKoin(): Koin = application.getKoin()

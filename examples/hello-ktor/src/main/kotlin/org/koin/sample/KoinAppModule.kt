@@ -18,7 +18,3 @@ val appModule = module {
         scopedOf(::ScopeComponent)
     }
 }
-
-val appModule2 = module {
-    singleOf(::HelloService2)
-}
