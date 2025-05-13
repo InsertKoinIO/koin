@@ -20,8 +20,8 @@ import org.koin.core.Koin
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.ktor.plugin.KOIN_ATTRIBUTE_KEY
-import org.koin.ktor.plugin.setKoinApplication
-import org.koin.mp.KoinPlatformTools
+import org.koin.ktor.plugin.setKoin
+import org.koin.mp.KoinPlatform
 
 /**
  * Ktor Koin extensions
@@ -36,10 +36,10 @@ import org.koin.mp.KoinPlatformTools
  * Help work on ModuleDefinition
  */
 fun Application.getKoin(): Koin =
-    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.koin ?: run {
-        val defaultInstance = KoinPlatformTools.defaultContext().getOrNull() ?: error("No Koin instance started. Use install(Koin) or startKoin()")
-        setKoinApplication(defaultInstance)
-        attributes[KOIN_ATTRIBUTE_KEY].koin
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY) ?: run {
+        val defaultInstance = KoinPlatform.getKoinOrNull() ?: error("No Koin instance started. Use install(Koin) or startKoin()")
+        setKoin(defaultInstance)
+        attributes[KOIN_ATTRIBUTE_KEY]
     }
 
 /**
