@@ -12,6 +12,7 @@ dependencies {
 
     // Ktor
     compileOnly(libs.ktor.core)
+    compileOnly(libs.ktor.core.di)
     testImplementation(libs.ktor.core)
     testImplementation(libs.ktor.netty)
     testImplementation(libs.ktor.testHost)

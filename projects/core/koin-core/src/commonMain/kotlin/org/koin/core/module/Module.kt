@@ -15,7 +15,6 @@
  */
 package org.koin.core.module
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.*
 import org.koin.core.error.DefinitionOverrideException

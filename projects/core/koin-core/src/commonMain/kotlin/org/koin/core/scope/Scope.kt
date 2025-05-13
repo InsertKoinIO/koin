@@ -30,6 +30,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.resolution.InstanceResolver
 import org.koin.core.time.inMs
 import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
@@ -50,7 +51,7 @@ class Scope(
     @PublishedApi
     internal val _koin: Koin,
 ) : Lockable() {
-    private val linkedScopes = LinkedHashSet<Scope>()
+    internal val linkedScopes = LinkedHashSet<Scope>()
 
     @KoinInternalApi
     var sourceValue: Any? = null
@@ -63,7 +64,7 @@ class Scope(
     private val _callbacks = LinkedHashSet<ScopeCallback>()
 
     @KoinInternalApi
-    private var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+    internal var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -314,60 +315,7 @@ class Scope(
     private fun <T> resolveFromContext(
         instanceContext: ResolutionContext
     ): T {
-        return resolveFromInjectedParameters(instanceContext)
-            ?: resolveFromRegistry(instanceContext)
-            ?: resolveFromStackedParameters(instanceContext)
-            ?: resolveFromScopeSource(instanceContext)
-            ?: resolveFromScopeArchetype(instanceContext)
-            ?: resolveFromParentScopes(instanceContext)
-            ?: throwNoDefinitionFound(instanceContext)
-    }
-
-    private fun <T> resolveFromRegistry(
-        ctx: ResolutionContext
-    ): T? {
-        return _koin.instanceRegistry.resolveInstance(ctx.qualifier, ctx.clazz, this.scopeQualifier, ctx)
-    }
-
-    private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
-        return if (ctx.parameters == null) null
-            else {
-            _koin.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
-            ctx.parameters.getOrNull(clazz = ctx.clazz)
-        }
-    }
-
-    private inline fun <T> resolveFromStackedParameters(ctx: ResolutionContext): T? {
-        val current = parameterStack?.get()
-        return if (current.isNullOrEmpty()) null
-         else {
-            _koin.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
-            val parameters = current.firstOrNull()
-            parameters?.getOrNull(ctx.clazz)
-         }
-    }
-
-    private inline fun <T> resolveFromScopeSource(ctx: ResolutionContext): T? {
-        if (isRoot) return null
-        _koin.logger.debug("|- ? ${ctx.debugTag} look at scope source")
-        return if (ctx.clazz.isInstance(sourceValue) && ctx.qualifier == null) { sourceValue as? T } else null
-    }
-
-    @KoinExperimentalAPI
-    private inline fun <T> resolveFromScopeArchetype(ctx: ResolutionContext): T? {
-        if (isRoot || scopeQualifier !is TypeQualifier) return null
-        _koin.logger.debug("|- ? ${ctx.debugTag} look at scope archetype")
-        return _koin.instanceRegistry.resolveScopeArchetypeInstance<T>(ctx.qualifier, ctx.clazz, ctx)
-    }
-
-    private fun <T> resolveFromParentScopes(ctx: ResolutionContext): T? {
-        _koin.logger.debug("|- ? ${ctx.debugTag} look in other scopes")
-        return findInOtherScope(ctx)
-    }
-
-    private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
-        _koin.logger.debug("|- << parameters")
-        throwDefinitionNotFound(ctx)
+        return _koin.resolver.resolveFromContext(this,instanceContext)
     }
 
 
@@ -375,21 +323,6 @@ class Scope(
 //    private fun <T> getFromSource(clazz: KClass<*>): T? {
 //        return if (clazz.isInstance(_source)) _source as? T else null
 //    }
-
-    private fun <T> findInOtherScope(
-        ctx: ResolutionContext,
-    ): T? {
-        return linkedScopes.firstNotNullOfOrNull { it.getOrNull(ctx) }
-    }
-
-    private inline fun throwDefinitionNotFound(
-        ctx: ResolutionContext
-    ): Nothing {
-        val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
-        throw NoDefinitionFoundException(
-            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
-        )
-    }
 
     /**
      * Declare a component definition from the given instance

@@ -26,10 +26,14 @@ import io.ktor.server.application.install
 import io.ktor.server.application.pluginOrNull
 import io.ktor.util.AttributeKey
 import org.koin.core.KoinApplication
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.ModuleDeclaration
+import org.koin.ktor.di.KtorDIExtension
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -50,9 +54,11 @@ val Koin =
         setupKoinScope(koinApplication)
     }
 
+@OptIn(KoinInternalApi::class)
 internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
     val koinApplication = pluginConfig
     koinApplication.createEagerInstances()
+    koinApplication.koin.resolver.addResolutionExtension(KtorDIExtension(application))
     application.setKoinApplication(koinApplication)
     return koinApplication
 }
@@ -102,3 +108,10 @@ val ApplicationCall.scope: Scope
 fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
     attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.apply(configuration)
 } ?: install(Koin, configuration)
+
+fun Application.koinModule(moduleDeclaration : ModuleDeclaration) = pluginOrNull(Koin)?.let {
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.let { koin ->
+        val module = Module().also { moduleDeclaration(it) }
+        koin.modules(module)
+    } ?: error("Koin plugin is not installed properly")
+}

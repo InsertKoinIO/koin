@@ -32,6 +32,7 @@ import org.koin.core.registry.InstanceRegistry
 import org.koin.core.registry.OptionRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
+import org.koin.core.resolution.CoreResolver
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.time.inMs
@@ -51,6 +52,13 @@ import kotlin.time.measureTime
 class Koin {
 
     @KoinInternalApi
+    var logger: Logger = EmptyLogger()
+        private set
+
+    @KoinInternalApi
+    val resolver = CoreResolver(this)
+
+    @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)
 
     @KoinInternalApi
@@ -64,10 +72,6 @@ class Koin {
 
     @KoinInternalApi
     val optionRegistry = OptionRegistry()
-
-    @KoinInternalApi
-    var logger: Logger = EmptyLogger()
-        private set
 
     @KoinInternalApi
     fun setupLogger(logger: Logger) {
