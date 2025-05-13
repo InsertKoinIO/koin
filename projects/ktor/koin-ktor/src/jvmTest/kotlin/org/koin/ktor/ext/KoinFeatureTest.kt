@@ -5,14 +5,14 @@ import io.ktor.server.application.install
 import io.ktor.server.testing.TestApplication
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Test
+import org.junit.jupiter.api.assertNotNull
+import org.junit.jupiter.api.assertNull
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.ktor.plugin.KoinIsolated
 import org.koin.mp.KoinPlatform
+import kotlin.test.Test
 
 /**
  * @author vinicius
