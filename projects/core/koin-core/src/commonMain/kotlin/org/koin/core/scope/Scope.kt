@@ -51,7 +51,8 @@ class Scope(
     @PublishedApi
     internal val _koin: Koin,
 ) : Lockable() {
-    internal val linkedScopes = LinkedHashSet<Scope>()
+
+    internal val linkedScopes = ArrayList<Scope>()
 
     @KoinInternalApi
     var sourceValue: Any? = null
@@ -81,7 +82,7 @@ class Scope(
      */
     fun linkTo(vararg scopes: Scope) {
         if (!isRoot) {
-            linkedScopes.addAll(scopes)
+            linkedScopes.addAll(0, scopes.toList())
         } else {
             error("Can't add scope link to a root scope")
         }

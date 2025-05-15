@@ -66,14 +66,17 @@ class CoreResolver(
     }
 
     override fun <T> resolveFromContext(scope : Scope, instanceContext: ResolutionContext): T {
+        return resolveFromContextOrNull(scope,instanceContext) ?: throwNoDefinitionFound(instanceContext)
+    }
+
+    private fun <T> resolveFromContextOrNull(scope : Scope, instanceContext: ResolutionContext, lookupParent : Boolean = true): T? {
         return resolveFromInjectedParameters(instanceContext)
             ?: resolveFromRegistry(scope,instanceContext)
             ?: resolveFromStackedParameters(scope,instanceContext)
             ?: resolveFromScopeSource(scope,instanceContext)
             ?: resolveFromScopeArchetype(scope,instanceContext)
-            ?: resolveFromParentScopes(scope,instanceContext)
+            ?: if (lookupParent) resolveFromParentScopes(scope,instanceContext) else null
             ?: resolveInExtensions(scope,instanceContext)
-            ?: throwNoDefinitionFound(instanceContext)
     }
 
 
@@ -85,7 +88,7 @@ class CoreResolver(
     }
 
     private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
-        return if (ctx.parameters == null) null
+        return if (ctx.parameters == null || ctx.parameters.isEmpty()) null
         else {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
             ctx.parameters.getOrNull(clazz = ctx.clazz)
@@ -103,9 +106,9 @@ class CoreResolver(
     }
 
     private inline fun <T> resolveFromScopeSource(scope: Scope, ctx: ResolutionContext): T? {
-        if (scope.isRoot || scope.sourceValue == null) return null
+        if (scope.isRoot || scope.sourceValue == null || !(ctx.clazz.isInstance(scope.sourceValue) && ctx.qualifier == null)) return null
         ctx.logger.debug("|- ? ${ctx.debugTag} look at scope source")
-        return if (ctx.clazz.isInstance(scope.sourceValue) && ctx.qualifier == null) { scope.sourceValue as? T } else null
+        return if (ctx.clazz.isInstance(scope.sourceValue)) { scope.sourceValue as? T } else null
     }
 
     @KoinExperimentalAPI
@@ -125,18 +128,35 @@ class CoreResolver(
         scope: Scope,
         ctx: ResolutionContext,
     ): T? {
-        return scope.linkedScopes.firstNotNullOfOrNull {
-            resolveFromContext(it,ctx)
+        val parentScope = if (scope.linkedScopes.size > 1) flatten(scope.linkedScopes) else scope.linkedScopes
+        return parentScope.firstNotNullOfOrNull {
+            ctx.logger.debug("|- ? ${ctx.debugTag} look in scope '${it.id}'")
+            val instanceContext = if (!it.isRoot) ctx.newContextForScope(it) else ctx
+            resolveFromContextOrNull(it, instanceContext, lookupParent = false)
         }
     }
 
-    private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
-        throwDefinitionNotFound(ctx)
+    @OptIn(KoinInternalApi::class)
+    fun flatten(scopes: List<Scope>): Set<Scope> {
+        val flatten = linkedSetOf<Scope>()
+        val stack = ArrayDeque(scopes.asReversed())
+
+        while (stack.isNotEmpty()) {
+            val current = stack.removeLast()
+            if (!flatten.add(current)) {
+                continue
+            }
+            for (module in current.linkedScopes) {
+                if (module !in flatten) {
+                    stack += module
+                }
+            }
+        }
+
+        return flatten
     }
 
-    private inline fun throwDefinitionNotFound(
-        ctx: ResolutionContext
-    ): Nothing {
+    private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
         val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
         throw NoDefinitionFoundException(
             "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
