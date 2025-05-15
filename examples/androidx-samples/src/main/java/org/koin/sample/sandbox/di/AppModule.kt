@@ -85,13 +85,10 @@ val mvvmModule = lazyModule {
     // viewModel<AbstractViewModel> { ViewModelImpl(get()) }
     viewModelOf(::ViewModelImpl) { bind<AbstractViewModel>() }
 
+    viewModelOf(::MyScopeViewModel)
     viewModelOf(::MyScopeViewModel2)
 
-    // uses viewModelScopeFactory
-//    viewModelOf(::MyScopeViewModel)
-
     viewModelScope {
-        viewModelOf(::MyScopeViewModel)
         scopedOf(::Session)
         scopedOf(::SessionConsumer)
     }
