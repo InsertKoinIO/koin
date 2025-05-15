@@ -30,6 +30,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 
+
 class FakeActivity : ComponentActivity(), AndroidScopeComponent {
 
     override val scope by activityScope()
@@ -88,7 +89,7 @@ class ActivityScopeArchetypeTest {
     }
 
     @Test
-    fun `fragmentScope creates scope with ActivityScopeArchetype`() {
+    fun `fragmentScope creates scope with FragmentScopeArchetype`() {
         val koin = KoinPlatform.getKoin()
         val fragment = FakeFragment()
 
@@ -99,7 +100,7 @@ class ActivityScopeArchetypeTest {
     }
 
     @Test
-    fun `fragmentScope resolves scope with ActivityScopeArchetype`() {
+    fun `fragmentScope resolves scope with FragmentScopeArchetype`() {
         val koin = KoinPlatform.getKoin()
         val module = module {
             fragmentScope {
@@ -114,6 +115,32 @@ class ActivityScopeArchetypeTest {
         val scope = fragment.scope
         val mf = scope.get<MyFactoryClass>()
         assertEquals(mf.ms, scope.get<MyScopedClass>())
+    }
+
+    @Test
+    fun `fragmentScope resolves scope with FragmentScopeArchetype - cascade activity scope`() {
+        val koin = KoinPlatform.getKoin()
+        val module = module {
+            activityScope {
+                scoped { MyScopedClass() }
+            }
+            fragmentScope {
+                factory { MyFactoryClass(get()) }
+            }
+        }
+        koin.loadModules(listOf(module))
+
+        val activity = FakeActivity()
+        val fragment = FakeFragment()
+
+        val activityScope = activity.scope
+        val fragmentScope = fragment.scope
+
+        // fake by fragmentScope -> activityScope
+        fragmentScope.linkTo(activityScope)
+
+        val mf = fragmentScope.get<MyFactoryClass>()
+        assertEquals(mf.ms, activityScope.get<MyScopedClass>())
     }
 
     @Test
