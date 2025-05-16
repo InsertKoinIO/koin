@@ -297,6 +297,7 @@ public final class org/koin/core/instance/ResolutionContext {
 	public final fun getQualifier ()Lorg/koin/core/qualifier/Qualifier;
 	public final fun getScope ()Lorg/koin/core/scope/Scope;
 	public final fun getScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+	public final fun newContextForScope (Lorg/koin/core/scope/Scope;)Lorg/koin/core/instance/ResolutionContext;
 	public final fun setScopeArchetype (Lorg/koin/core/qualifier/TypeQualifier;)V
 }
 
@@ -537,6 +538,10 @@ public final class org/koin/core/resolution/CoreResolver : org/koin/core/resolut
 	public fun <init> (Lorg/koin/core/Koin;)V
 	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
 	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+}
+
+public final class org/koin/core/resolution/CoreResolverKt {
+	public static final fun flatten (Ljava/util/List;)Ljava/util/Set;
 }
 
 public abstract interface class org/koin/core/resolution/ResolutionExtension {
