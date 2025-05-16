@@ -32,6 +32,7 @@ import org.koin.core.registry.InstanceRegistry
 import org.koin.core.registry.OptionRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
+import org.koin.core.resolution.CoreResolver
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.time.inMs
@@ -51,6 +52,13 @@ import kotlin.time.measureTime
 class Koin {
 
     @KoinInternalApi
+    var logger: Logger = EmptyLogger()
+        private set
+
+    @KoinInternalApi
+    val resolver = CoreResolver(this)
+
+    @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)
 
     @KoinInternalApi
@@ -65,13 +73,18 @@ class Koin {
     @KoinInternalApi
     val optionRegistry = OptionRegistry()
 
-    @KoinInternalApi
-    var logger: Logger = EmptyLogger()
-        private set
-
+    /**
+     * Allow register Logger, but prevent from overriding non default one
+     *
+     * @param logger
+     */
     @KoinInternalApi
     fun setupLogger(logger: Logger) {
-        this.logger = logger
+        if (this.logger is EmptyLogger){
+            this.logger = logger
+        } else {
+            error("Trying to register Koin logger '$logger' but ${this.logger} is already registered!")
+        }
     }
 
     /**

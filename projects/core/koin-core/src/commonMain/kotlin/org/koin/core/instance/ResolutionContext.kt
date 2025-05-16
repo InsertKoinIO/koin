@@ -37,6 +37,18 @@ class ResolutionContext(
 ){
     val debugTag = "t:'${clazz.getFullName()}' - q:'$qualifier'"
     var scopeArchetype : TypeQualifier? = null
+
+    fun newContextForScope(s : Scope) : ResolutionContext{
+        val rc = ResolutionContext(
+            logger,
+            s,
+            clazz,
+            qualifier,
+            parameters
+        )
+        rc.scopeArchetype = s.scopeArchetype
+        return rc
+    }
 }
 
 @KoinInternalApi

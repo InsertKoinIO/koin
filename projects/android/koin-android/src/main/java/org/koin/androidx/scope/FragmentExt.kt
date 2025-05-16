@@ -36,6 +36,7 @@ fun Fragment.createFragmentScope(useParentActivityScope : Boolean = true): Scope
     if (useParentActivityScope){
         val activityScope: Scope? = (activity as? AndroidScopeComponent)?.scope
         if (activityScope != null) {
+            scope.logger.debug("Link to parent activity scope: '${activityScope.id}'")
             scope.linkTo(activityScope)
         } else {
             scope.logger.debug("Fragment '$this' can't be linked to parent activity scope. No Parent Activity Scope found.")

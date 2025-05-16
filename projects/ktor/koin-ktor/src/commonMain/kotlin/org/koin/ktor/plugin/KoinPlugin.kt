@@ -25,11 +25,17 @@ import io.ktor.server.application.hooks.ResponseSent
 import io.ktor.server.application.install
 import io.ktor.server.application.pluginOrNull
 import io.ktor.util.AttributeKey
+import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.logger.Level
+import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.ModuleDeclaration
+import org.koin.ktor.di.KtorDIExtension
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -50,15 +56,21 @@ val Koin =
         setupKoinScope(koinApplication)
     }
 
+@OptIn(KoinInternalApi::class)
 internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
     val koinApplication = pluginConfig
     koinApplication.createEagerInstances()
+    koinApplication.koin.resolver.addResolutionExtension(KtorDIExtension(application))
     application.setKoinApplication(koinApplication)
     return koinApplication
 }
 
+fun Application.setKoin(koin : Koin) {
+    attributes.put(KOIN_ATTRIBUTE_KEY, koin)
+}
+
 fun Application.setKoinApplication(koinApplication: KoinApplication) {
-    attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication)
+    attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication.koin)
 }
 
 internal fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: KoinApplication) {
@@ -83,7 +95,7 @@ internal fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: Koin
 }
 
 const val KOIN_KEY = "KOIN"
-val KOIN_ATTRIBUTE_KEY = AttributeKey<KoinApplication>(KOIN_KEY)
+val KOIN_ATTRIBUTE_KEY = AttributeKey<Koin>(KOIN_KEY)
 
 const val KOIN_SCOPE_KEY = "KOIN_SCOPE"
 val KOIN_SCOPE_ATTRIBUTE_KEY = AttributeKey<Scope>(KOIN_SCOPE_KEY)
@@ -99,6 +111,30 @@ val ApplicationCall.scope: Scope
 /**
  * Run extra koin configuration, like modules()
  */
+@Deprecated("Use koinModule { } or koinModules() to declare your Koin modules", level = DeprecationLevel.ERROR)
 fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.let {
-    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.apply(configuration)
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)
 } ?: install(Koin, configuration)
+
+/**
+ * declare Koin module in current configuration
+ *
+ * @param moduleDeclaration - module declaration
+ */
+fun Application.koinModule(moduleDeclaration : ModuleDeclaration) = pluginOrNull(Koin)?.let {
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.let { koin ->
+        val module = Module().also { moduleDeclaration(it) }
+        koin.loadModules(listOf(module))
+    } ?: error("Koin plugin is not installed properly")
+}
+
+/**
+ * declare Koin module in current configuration
+ *
+ * @param module - list of modules
+ */
+fun Application.koinModules(vararg module : Module) = pluginOrNull(Koin)?.let {
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.let { koin ->
+        koin.loadModules(module.toList())
+    } ?: error("Koin plugin is not installed properly")
+}
