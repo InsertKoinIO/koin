@@ -231,7 +231,7 @@ operator fun List<Module>.plus(module: Module): List<Module> = this + listOf(mod
 /**
  * Run through the module list to flatten all modules & submodules
  */
-@OptIn(KoinInternalApi::class)
+@KoinInternalApi
 fun flatten(modules: List<Module>): Set<Module> {
     // This is actually a DFS traversal of the module graph,
     // but we're using a stack instead of recursion to avoid stack overflows and performance overhead.

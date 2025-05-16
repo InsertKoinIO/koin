@@ -1,10 +1,12 @@
 package org.koin.dsl
 
 import org.koin.KoinCoreTest
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.flatten
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+@OptIn(KoinInternalApi::class)
 class FlattenTest : KoinCoreTest() {
 
     @Test

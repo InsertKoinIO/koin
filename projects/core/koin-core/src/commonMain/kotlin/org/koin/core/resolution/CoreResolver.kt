@@ -136,26 +136,6 @@ class CoreResolver(
         }
     }
 
-    @OptIn(KoinInternalApi::class)
-    fun flatten(scopes: List<Scope>): Set<Scope> {
-        val flatten = linkedSetOf<Scope>()
-        val stack = ArrayDeque(scopes.asReversed())
-
-        while (stack.isNotEmpty()) {
-            val current = stack.removeLast()
-            if (!flatten.add(current)) {
-                continue
-            }
-            for (module in current.linkedScopes) {
-                if (module !in flatten) {
-                    stack += module
-                }
-            }
-        }
-
-        return flatten
-    }
-
     private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
         val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
         throw NoDefinitionFoundException(
@@ -172,4 +152,24 @@ class CoreResolver(
             it.resolve(scope,ctx) as T?
         }
     }
+}
+
+@KoinInternalApi
+fun flatten(scopes: List<Scope>): Set<Scope> {
+    val flatten = linkedSetOf<Scope>()
+    val stack = ArrayDeque(scopes.asReversed())
+
+    while (stack.isNotEmpty()) {
+        val current = stack.removeLast()
+        if (!flatten.add(current)) {
+            continue
+        }
+        for (module in current.linkedScopes) {
+            if (module !in flatten) {
+                stack += module
+            }
+        }
+    }
+
+    return flatten
 }
