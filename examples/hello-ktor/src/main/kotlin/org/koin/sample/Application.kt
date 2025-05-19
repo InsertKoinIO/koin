@@ -39,8 +39,10 @@ fun Application.mainModule() {
     // Routing section
     routing {
         get("/hello") {
-            val newId = call.scope.get<ScopeComponent>().id
-            println("ScopeComponent.id = $newId")
+            val scopeComponent = call.scope.get<ScopeComponent>()
+            val newId = scopeComponent.id
+            println("ScopeComponent id = $newId")
+            println("ScopeComponent call = $${scopeComponent.call}")
             assert(Counter.init == 1)
             call.respondText(helloService.sayHello())
         }

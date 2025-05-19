@@ -30,7 +30,6 @@ import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
@@ -86,7 +85,7 @@ internal fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: Koi
 internal fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
     // Scope Handling
     on(CallSetup) { call ->
-        val scopeComponent = RequestScope(koinApplication.koin)
+        val scopeComponent = RequestScope(koinApplication.koin, call)
         call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scopeComponent.scope)
     }
     on(ResponseSent) { call ->

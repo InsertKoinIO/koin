@@ -15,6 +15,7 @@
  */
 package org.koin.ktor.plugin
 
+import io.ktor.server.application.ApplicationCall
 import org.koin.core.Koin
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
@@ -26,8 +27,8 @@ import org.koin.mp.generateId
  *
  * @author Arnaud Giuliani
  */
-class RequestScope(private val _koin: Koin) : KoinScopeComponent {
+class RequestScope(private val _koin: Koin, call: ApplicationCall) : KoinScopeComponent {
     private val scopeId = "request_"+KoinPlatformTools.generateId()
     override fun getKoin(): Koin = _koin
-    override val scope = createScope(scopeId = scopeId)
+    override val scope = createScope(scopeId = scopeId, source = call)
 }
