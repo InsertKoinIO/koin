@@ -35,10 +35,13 @@ class CompositionKoinApplicationLoader(
         if (KoinPlatform.getKoinOrNull() == null){
             try {
                 koin = startKoin(koinApplication).koin
-                koin!!.logger.debug("$this -> started Koin Application $koinApplication")
+                koin!!.logger.debug("$this -> attach Koin instance $koin")
             } catch (e: Exception) {
                 error("Can't start Koin from Compose context - $e")
             }
+        } else {
+            koin = KoinPlatform.getKoin()
+            koin!!.logger.debug("$this -> re-attach Koin instance $koin")
         }
     }
 
