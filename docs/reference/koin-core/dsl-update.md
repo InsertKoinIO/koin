@@ -71,7 +71,7 @@ Usual options and DSL keywords are available in this lambda:
 * `binds(listOf(...))` - add types list for given bean definition
 * `createdAtStart()` - create single instance at Koin start
 
-You can also to use `bind` or `binds` operator, without any need of lambda:
+You can also use `bind` or `binds` operator, without any need of lambda:
 
 ```kotlin
 module {
