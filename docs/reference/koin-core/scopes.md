@@ -215,3 +215,23 @@ a.scope.linkTo(b.scope)
 assertTrue(a.scope.get<C>() == b.scope.get<C>())
 ```
 
+### Scope Archetypes
+
+Scope "Archetypes" are scope spaces for a generic kind of classes. For example, you can have Scope Archetypes for Android (Activity, Fragment, ViewModel) or even Ktor (RequestScope).
+Scope Archetype is Koin's `TypeQualifier` pass to different APIs, to request scope space for a given
+
+An archetype consists of:
+- Module DSL extension, to declare a scope for a given type:
+```kotlin
+// Declare a scope archetype for ActivityScopeArchetype (TypeQualifier(AppCompatActivity::class)
+fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
+    val qualifier = ActivityScopeArchetype
+    ScopeDSL(qualifier, this).apply(scopeSet)
+}
+```
+- An API that requests a Scope with the given specific Scope Archetype TypeQualifier:
+```kotlin
+// Create scope with ActivityScopeArchetype archetype
+val scope = getKoin().createScope(getScopeId(), getScopeName(), this, ActivityScopeArchetype)
+```
+

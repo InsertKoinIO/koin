@@ -4,7 +4,7 @@ custom_edit_url: null
 ---
 
 :::info
-This pages provides a comprehensive overview of every Koin main release, detailing the evolution of our framework to help you plan for upgrades and maintain compatibility.
+This page provides a comprehensive overview of every Koin main release, detailing the evolution of our framework to help you plan for upgrades and maintain compatibility.
 :::
 
 For each version, the document is structured into the following sections:
@@ -19,69 +19,197 @@ This structured approach not only clarifies the incremental changes in each rele
 
 See [Api Stability Contract](api-stability.md) for more details.
 
-## 4.1.0 (Beta)
+## 4.1.0
 
 ### New 🎉
 
 `koin-core`
-- `KoinConfiguration` API to help wrap configuration
-
-`koin-ktor`
-- `Module.requestScope` - allow to declare definitions inside a Ktor request scope (avoid to declare `scope<RequestScope>` manually)
-
-`koin-ktor3` offering API for Ktor 3.x
+- Configuration - `KoinConfiguration` API to help wrap configuration
+- Scope - Introduce a new *Scope Archetype* of a dedicated Scope Type qualifier for the category of scope. Instance resolution can now be done against a scope category (aka Archetype)
+- Feature Option - "Feature Option" to help feature flag new feature behavior inside Koin. You can activate an option with the `options` block in your Koin configuration:
+```kotlin
+startKoin {
+    options(
+        // activate a new feature
+        viewModelScopeFactory()
+    )
+}
+```
+- Core - Introduce new `CoreResolver` that allows `ResolutionExtension` to help Koin resolve in external systems or resources (it's used to help wire Ktor DI)
 
 `koin-android`
-- upgraded libraries (`androidx.appcompat:appcompat:1.7.0`, `androidx.activity:activity-ktx:1.10.1`) imposes to raise Min SDK level from 14 to 21
+- Upgraded libraries (`androidx.appcompat:appcompat:1.7.0`, `androidx.activity:activity-ktx:1.10.1`) require raising Min SDK level from 14 to 21
+
+`koin-androidx-compose`
+- Aligned with Koin Compose Multiplatform and all Compose 1.8 & Lifecycle 2.9
+
+`koin-compose`
+- Aligned with Compose 1.8 & Lifecycle 2.9
+- New Function - `KoinApplicationPreview` to help render parallel preview in Android Studio & IntelliJ
+
+`koin-ktor`
+- Multiplatform - The module is now compiled in Kotlin KMP format. You can target `koin-ktor` from a multiplatform project.
+- Integration - provides `KtorDIExtension` to integrate Ktor 3.2 Default DI engine
+```kotlin
+fun Application.setupDatabase(config: DbConfig) {
+    // ...
+    dependencies {
+        provide<Database> { database }
+    }
+}
+
+class CustomerRepositoryImpl(private val database: Database) : CustomerRepository
+fun Application.customerDataModule() {
+    koinModule {
+        singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
+    }
+}
+```
+- Merge - The Previous koin-ktor3 module has been merged into koin-ktor
+- Extension - Introduces `Application.koinModule { }` and `Application.koinModules()` to let you declare Koin modules directly joined to a Ktor a module
+```kotlin
+fun Application.customerDataModule() {
+    koinModule {
+        singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
+    }
+}
+```
+- Scope - `Module.requestScope` - allows declaring definitions inside a Ktor request scope (avoid declaring `scope<RequestScope>` manually)
+
+
+`koin-core-coroutines`
+- Module DSL - Introduce new `ModuleConfiguration` to help gather module configuration in one structure, to help better verify it later.
+```kotlin
+val m1 = module {
+    single { Simple.ComponentA() }
+}
+val lm1 = lazyModule {
+    single { Simple.ComponentB(get()) }
+}
+val conf = moduleConfiguration {
+    modules(m1)
+    lazyModules(lm1)
+}
+```
+- Configuration DSL - Koin configuration can now use `ModuleConfiguration` to load modules:
+```kotlin
+startKoin {
+    moduleConfiguration {
+        modules(m1)
+        lazyModules(lm1)
+    }
+}
+
+// or even
+val conf = moduleConfiguration {
+    modules(m1)
+    lazyModules(lm1)
+}
+
+startKoin {
+    moduleConfiguration(conf)
+}
+```
+
+`koin-test-coroutines`
+- Added new `koin-test-coroutines` Koin module to introduce new coroutines-related Test API
+- Extension - extend Verify API to let you check your Koin configuration with `moduleConfiguration`, and then verify Mix of Modules/Lazy Modules configuration:
+```kotlin
+val conf = moduleConfiguration {
+    modules(m1)
+    lazyModules(lm1)
+}
+
+conf.verify()
+
+// if you want Android types (koin-android-test)
+conf.verify(extraTypes = androidTypes)
+```
+
+`koin-core-annotations`
+- Annotations - `@InjectedParam` or `@Provided` to tag a property to be considered as an injected parameter or dynamically provided. Used for now in `Verify` API, but may be used to help with lighter DSL declaration later.
 
 ### Experimental 🚧
 
-`koin-compose`
-- Opening design for `KoinMultiplatformApplication`, to try proposing a Multiplatform Compose entry point 
-
-`koin-core` - `wasm`
-- use of Kotlin 2.1.20 Uuid generation
-- introduce new Scope Archetype of dedicated Scope Type qualifier for category of scope. Resolution can be done against a scope category (aka Archetype)
+`koin-core`
+- Wasm - Use of Kotlin 2.1.20 UUID generation
 
 `koin-android`
-- added `activityScope`, `activityRetainedScope` and `fragmentScope` Koin Module DSL extensions to declare scope within Activity/Fragment 
-- `activityScope()`, `activityRetainedScope()` and `fragmentScope()` API functions are now triggering Scope Archetypes
+- DSL - Added new Koin Module DSL extensions `activityScope`, `activityRetainedScope`, and `fragmentScope` to declare scope within Activity/Fragment
+- Scope Functions - Also `activityScope()`, `activityRetainedScope()` and `fragmentScope()` API functions are now triggering Scope Archetypes
 
 `koin-core-viewmodel`
-- added `viewModelScope` Module DSL extension, to declare component scoped to ViewModel scope archetype
-- added `viewModelScope()` function, to create a scope for ViewModel (tied to ViewModel class)
-- added `ScopeViewModel` class, to give support for ready to use ViewModel scoped class (handle scope creation and closing)
+- DSL - Added Module DSL extension `viewModelScope`, to declare component scoped to ViewModel scope archetype
+- Scope Function - Added function `viewModelScope()`, to create a scope for ViewModel (tied to ViewModel class). This API now uses `ViewModelScopeAutoCloseable` to use the `AutoCloseable` API to help declare a scope and close it. no need anymore to close ViewModel scope by hand
+- Class - Updated `ScopeViewModel` class to give support for a ready-to-use ViewModel-scoped class (handle scope creation and closing)
+- Feature Option - Constructor ViewModel injection with ViewModel's scope, requires activating Koin option `viewModelScopeFactory` :
+```kotlin
+startKoin {
+    options(
+        // activate a new ViewModel scope creation
+        viewModelScopeFactory()
+    )
+}
 
-`koin-core-viewmodel-navigation`
-- added `sharedViewModel` to reuse ViewModel instance from navigation's NavbackEntry
+// will inject Session from MyScopeViewModel's scope
+class MyScopeViewModel(val session: Session) : ViewModel()
 
-### Deprecation ⚠️
+module {
+    viewModelOf(::MyScopeViewModel)
+    viewModelScope {
+        scopedOf(::Session)
+    }
+}
+```
 
 `koin-compose`
-- compose context API is not required anymore, as Koin context is properly prepared on current default context. Following is deprecated and can be removed: `KoinContext`
+- Compose Function - Added new `KoinMultiplatformApplication` function, to try proposing a Multiplatform Compose entry point
 
-`koin-androidx-compose`
-- Jetpack compose context API is not required anymore, as Koin context is properly prepared on current default context. Following is deprecated and can be removed: `KoinAndroidContext`
+`koin-core-viewmodel-navigation`
+- Navigation Extension - added `sharedViewModel` to reuse ViewModel instance from navigation's NavbackEntry
 
-`koin-androidx-compose-navigation`
-- due to lifecycle lib update the function `koinNavViewModel` is not needed, can be replaced with `koinViewModel`
+`koin-test`
+- Annotations - The Koin configuration verification API `Verify` now helps you check for nullable, lazy, and list parameters. Simply use `@InjectedParam` or `@Provided` to tag a property to be considered as an injected parameter or dynamically provided. This avoids complex declaration in Verify API.
+```kotlin
+// now detected in Verify
+class ComponentB(val a: ComponentA? = null)
+class ComponentBParam(@InjectedParam val a: ComponentA)
+class ComponentBProvided(@Provided val a: ComponentA)
+```
+
+### Deprecation ⚠️
 
 `koin-android`
 - `ScopeViewModel` is now deprecated to be used by `koin-core-viewmodel` `ScopeViewModel` class instead
 
+`koin-compose`
+- The Compose context API is no longer required, as the Koin context is properly prepared on the current default context. Following is deprecated and can be removed: `KoinContext`
+
+`koin-androidx-compose`
+- Jetpack compose context API is not required anymore, as Koin context is properly prepared on the current default context. Following is deprecated and can be removed: `KoinAndroidContext`
+
+`koin-androidx-compose-navigation`
+- Due to lifecycle lib update, the function `koinNavViewModel` is not needed, can be replaced with `koinViewModel`
+
+`koin-core-viewmodel-navigation`
+- Due to lifecycle lib update, the function `koinNavViewModel` is not needed, can be replaced with `koinViewModel`
+
+`koin-ktor`
+- Extension - `Application.koin` is now deprecated in favor of `Application.koinModules` and `Application.koinModule`
+
 ### Breaking 💥
 
 `koin-android`
-- all state old ViewModel API are now removed:
+- All state old ViewModel API are now removed:
     - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
     - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
 
 `koin-compose`
-- old compose API function are removed:
+- Old compose API functions are removed:
     - function `inject()` have been removed in favor of `koinInject()`
     - function `getViewModel()` has been removed in favor of `koinViewModel()`
     - function `rememberKoinInject()` has been moved into `koinInject()`,
-- function `rememberKoinApplication` is marked as `@KoinInternalAPI`
+- Function `rememberKoinApplication` is marked as `@KoinInternalAPI`
 
 ## 4.0.4
 
@@ -97,19 +225,19 @@ All used lib versions are located in [libs.versions.toml](https://github.com/Ins
 - `KoinPlatformTools.generateId()` - With this new version of Kotlin, we benefit from new `kotlin.uuid.uuid` API. The `KoinPlatformTools.generateId()` Koin function now uses this new API to generates real UUID over platforms.
 
 `koin-viewmodel`
- - Koin 4.0 introduces new ViewModel DSL & API that mutualise the Google/Jetbrains KMP API. To avoid duplication over the codebase, the ViewModel API is now located in `koin-core-viewmodel` & `koin-core-viewmodel-navigation` projects.
- - Import for ViewModel DSL is `org.koin.core.module.dsl.*`
+- Koin 4.0 introduces ViewModel DSL & API that mutualises the Google/Jetbrains KMP API. To avoid duplication over the codebase, the ViewModel API is now located in `koin-core-viewmodel` & `koin-core-viewmodel-navigation` projects.
+- Import for ViewModel DSL is `org.koin.core.module.dsl.*`
 
-Following APIs in given projects, are now stable.
+Following APIs in the given projects are now stable.
 
 `koin-core-coroutines` - all API is now stable
-  - all `lazyModules` 
-  - `awaitAllStartJobs`, `onKoinStarted`, `isAllStartedJobsDone`
-  - `waitAllStartJobs`, `runOnKoinStarted`
-  - `KoinApplication.coroutinesEngine`
-  - `Module.includes(lazy)`
-  - `lazyModule()`
-  - `KoinPlatformCoroutinesTools`
+- all `lazyModules`
+- `awaitAllStartJobs`, `onKoinStarted`, `isAllStartedJobsDone`
+- `waitAllStartJobs`, `runOnKoinStarted`
+- `KoinApplication.coroutinesEngine`
+- `Module.includes(lazy)`
+- `lazyModule()`
+- `KoinPlatformCoroutinesTools`
 
 ### Experimental 🚧
 
@@ -126,26 +254,26 @@ Following APIs in given projects, are now stable.
 
 ### Deprecation ⚠️
 
-The following APIs have been deprecated, and should not be used anymore:
+The following APIs have been deprecated and should not be used anymore:
 
 - `koin-test`
-  - all API for `checkModules`. Migrate to `Verify` API.
+    - All API for `checkModules`. Migrate to `Verify` API.
 
-- `koin-android` 
-  - ViewModel DSL in favor of new centralized DSL in koin-core
-  - all state ViewModel API are deprecated at error level:
-      - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
-      - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
+- `koin-android`
+    - ViewModel DSL in favor of new centralized DSL in koin-core
+    - All state ViewModel API are deprecated at the error level:
+        - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
+        - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
 
 `koin-compose`
-  - old compose API function are deprecated at error level:
+- old compose API function are deprecated at error level:
     - function `inject()` is deprecated (error level) in favor of `koinInject()`
     - function `getViewModel()` is deprecated (error level) in favor of `koinViewModel()`
     - function `rememberKoinInject()` is deprecated (error level) in favor of `koinInject()`,
 
-- `koin-compose-viewmodel` 
-  - ViewModel DSL in favor of new centralized DSL in koin-core
-  - function `koinNavViewModel` is now deprecated, in favor of `koinViewModel`
+- `koin-compose-viewmodel`
+    - ViewModel DSL in favor of new centralized DSL in koin-core
+    - function `koinNavViewModel` is now deprecated, in favor of `koinViewModel`
 
 ### Breaking 💥
 
@@ -156,20 +284,20 @@ all API annotated with `@KoinReflectAPI` has been removed
 :::
 
 `koin-core`
-  - `ApplicationAlreadyStartedException` has been renamed `KoinApplicationAlreadyStartedException`
-  - `KoinScopeComponent.closeScope()` removed, as not used anymore internally
-  - Moved internal `ResolutionContext` to replace `InstanceContext`
-  - `KoinPlatformTimeTools`, `Timer`, `measureDuration` removed, to use Kotlin Time API instead
-  - `KoinContextHandler` removed in favor of `GlobalContext`
+- `ApplicationAlreadyStartedException` has been renamed `KoinApplicationAlreadyStartedException`
+- `KoinScopeComponent.closeScope()` removed, as not used anymore internally
+- Moved internal `ResolutionContext` to replace `InstanceContext`
+- `KoinPlatformTimeTools`, `Timer`, `measureDuration` removed, to use Kotlin Time API instead
+- `KoinContextHandler` removed in favor of `GlobalContext`
 
-`koin-android` 
-  - function `fun Fragment.createScope()` is removed
-  - All API around ViewModel factory (internal mainly) are reworked for new internals
+`koin-android`
+- function `fun Fragment.createScope()` is removed
+- All API around ViewModel factory (internal mainly) are reworked for new internals
 
 `koin-compose`
-  - removed `StableParametersDefinition` as not used  anymore in internals
-  - removed all Lazy ViewModel API - old `viewModel()`
-  - removed `rememberStableParametersDefinition()` as not used internally anymore
+- removed `StableParametersDefinition` as not used  anymore in internals
+- removed all Lazy ViewModel API - old `viewModel()`
+- removed `rememberStableParametersDefinition()` as not used internally anymore
 
 ## 3.5.6
 
@@ -182,55 +310,55 @@ All used lib versions are located in [libs.versions.toml](https://github.com/Ins
 ### New 🎉
 
 `koin-core`
-  - `KoinContext` now has followings:
+- `KoinContext` now has followings:
     - `fun loadKoinModules(module: Module, createEagerInstances: Boolean = false)`
     - `fun loadKoinModules(modules: List<Module>, createEagerInstances: Boolean = false)`
-  - `koinApplication()` function is now using several formats:
+- `koinApplication()` function is now using several formats:
     - `koinApplication(createEagerInstances: Boolean = true, appDeclaration: KoinAppDeclaration? = null)`
     - `koinApplication(appDeclaration: KoinAppDeclaration?)`
     - `koinApplication(createEagerInstances: Boolean)`
-  - `KoinAppDeclaration` to help open declaration styles
-  - `KoinPlatformTimeTools` to use API Time for JS
-  - iOS - `synchronized` API to use Touchlab Lockable API
+- `KoinAppDeclaration` to help open declaration styles
+- `KoinPlatformTimeTools` to use API Time for JS
+- iOS - `synchronized` API to use Touchlab Lockable API
 
 `koin-androidx-compose`
-  - new `KoinAndroidContext` to bind on current Koin context from Android environment
+- new `KoinAndroidContext` to bind on current Koin context from Android environment
 
 `koin-compose`
-  - new `KoinContext` context starter with current default context
+- new `KoinContext` context starter with current default context
 
 `koin-ktor`
-  - now uses isolated context for Ktor instance (uses `Application.getKoin()` instead of default context)
-  - Koin plugin introduces new monitoring
-  - `RequestScope` to allow scope instance to a Ktor request
+- now uses isolated context for Ktor instance (uses `Application.getKoin()` instead of default context)
+- Koin plugin introduces new monitoring
+- `RequestScope` to allow scope instance to a Ktor request
 
 ### Experimental 🚧
 
 `koin-android`
-  - `ViewModelScope` introduce experimental API for ViewModel scope
+- `ViewModelScope` introduce experimental API for ViewModel scope
 
 `koin-core-coroutines` - introducing new API to load modules in background
 
 ### Deprecation ⚠️
 
 `koin-android`
-  - `getLazyViewModelForClass()` API is super complex, and calling to default global context. Prefer stick to Android/Fragment API
-  - `resolveViewModelCompat()` is deprecated in favor of `resolveViewModel()`
+- `getLazyViewModelForClass()` API is super complex, and calling to default global context. Prefer stick to Android/Fragment API
+- `resolveViewModelCompat()` is deprecated in favor of `resolveViewModel()`
 
 `koin-compose`
-  - functions `get()` and `inject()` have been deprecated in favor of `koinInject()`
-  - functions `getViewModel()` has been deprecated in favor of `koinViewModel()`
-  - function `rememberKoinInject()` has been deprecated for `koinInject()`
+- functions `get()` and `inject()` have been deprecated in favor of `koinInject()`
+- functions `getViewModel()` has been deprecated in favor of `koinViewModel()`
+- function `rememberKoinInject()` has been deprecated for `koinInject()`
 
 ### Breaking 💥
 
 `koin-core`
-  - `Koin.loadModules(modules: List<Module>, allowOverride: Boolean = true, createEagerInstances : Boolean = false)` is replacing `Koin.loadModules(modules: List<Module>, allowOverride: Boolean = true)`
-  - Moved property `KoinExtension.koin` to function `KoinExtension.onRegister()`  
-  - iOS - `internal fun globalContextByMemoryModel(): KoinContext` to use `MutableGlobalContext`
+- `Koin.loadModules(modules: List<Module>, allowOverride: Boolean = true, createEagerInstances : Boolean = false)` is replacing `Koin.loadModules(modules: List<Module>, allowOverride: Boolean = true)`
+- Moved property `KoinExtension.koin` to function `KoinExtension.onRegister()`
+- iOS - `internal fun globalContextByMemoryModel(): KoinContext` to use `MutableGlobalContext`
 
 `koin-compose`
-  - function `KoinApplication(moduleList: () -> List<Module>, content: @Composable () -> Unit)` removed in favor of `KoinContext`, and `KoinAndroidContext`
+- function `KoinApplication(moduleList: () -> List<Module>, content: @Composable () -> Unit)` removed in favor of `KoinContext`, and `KoinAndroidContext`
 
 ## 3.4.3
 
@@ -241,36 +369,36 @@ Uses Kotlin `1.8.21`
 ### New 🎉
 
 `koin-core`
-  - New ExtensionManager API to help write extension engine for Koin - `ExtensionManager` + `KoinExtension`
-  - Parameters API update with `parameterArrayOf` & `parameterSetOf` 
+- New ExtensionManager API to help write extension engine for Koin - `ExtensionManager` + `KoinExtension`
+- Parameters API update with `parameterArrayOf` & `parameterSetOf`
 
 `koin-test`
-  - `Verification` API - to help run `verify` on a Module.
+- `Verification` API - to help run `verify` on a Module.
 
 `koin-android`
-  - internals for ViewModel injection
-  - add `AndroidScopeComponent.onCloseScope()` function callback
+- internals for ViewModel injection
+- add `AndroidScopeComponent.onCloseScope()` function callback
 
 `koin-android-test`
-  - `Verification` API - to help run `androidVerify()` on a Module.
+- `Verification` API - to help run `androidVerify()` on a Module.
 
 `koin-androidx-compose`
-  - new `get()`
-  - new `getViewModel()`
-  - new Scopes `KoinActivityScope`, `KoinFragmentScope`
+- new `get()`
+- new `getViewModel()`
+- new Scopes `KoinActivityScope`, `KoinFragmentScope`
 
 `koin-androidx-compose-navigation` - New module for navigation
-  - new `koinNavViewModel()`
+- new `koinNavViewModel()`
 
 `koin-compose` - New Multiplatform API for Compose
-  - `koinInject`, `rememberKoinInject`
-  - `KoinApplication`
+- `koinInject`, `rememberKoinInject`
+- `KoinApplication`
 
 ### Experimental 🚧
 
 `koin-compose` - New Experimental Multiplatform API for Compose
-  - `rememberKoinModules`
-  - `KoinScope`, `rememberKoinScope`
+- `rememberKoinModules`
+- `KoinScope`, `rememberKoinScope`
 
 ### Deprecation ⚠️
 
@@ -281,7 +409,7 @@ Uses Kotlin `1.8.21`
 ### Breaking 💥
 
 `koin-android`
-  - `LifecycleScopeDelegate` is now removed
+- `LifecycleScopeDelegate` is now removed
 
 `koin-androidx-compose`
-  - Removed `getStateViewModel` in favor of `koinViewModel`
+- Removed `getStateViewModel` in favor of `koinViewModel`

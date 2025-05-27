@@ -147,3 +147,17 @@ val myModule = module {
     single { MyService(getProperty("server_url")) }
 }
 ```
+
+## Koin Options - Feature Flagging (4.1.0)
+
+Your Koin application can now activate some experimental features through a dedicated `options` section, like:
+
+```kotlin
+startKoin {
+    options(
+        // activate ViewModel Scope factory feature 
+        viewModelScopeFactory()
+    )
+}
+```
+
