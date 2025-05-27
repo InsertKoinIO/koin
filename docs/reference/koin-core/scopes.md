@@ -132,12 +132,12 @@ val componentB = myScope.get<ComponentB>()
 ```
 
 :::info
- By default, all scope fallback to resolve in main scope if no definition is found in the current scope
+ By default, all scopes fallback to resolve in the main scope if no definition is found in the current scope
 :::
 
 ### Close a scope
 
-Once your scope instance is finished, just closed it with the `close()` function:
+Once you are finished with your scope instance, just close it with the `close()` function:
 
 ```kotlin
 // from a KoinComponent
