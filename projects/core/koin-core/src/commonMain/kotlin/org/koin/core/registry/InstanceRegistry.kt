@@ -35,6 +35,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
+import kotlin.collections.set
 import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 
@@ -85,6 +86,11 @@ class InstanceRegistry(val _koin: Koin) {
                 overrideError(factory, mapping)
             } else if (logWarning) {
                 _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+                // remove previous eager isntance too
+                val existingFactory = eagerInstances.values.firstOrNull { it.beanDefinition == factory.beanDefinition }
+                if (existingFactory != null) {
+                    eagerInstances.remove(factory.beanDefinition.hashCode())
+                }
             }
         }
         _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
