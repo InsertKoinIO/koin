@@ -104,7 +104,6 @@ class KoinApplication private constructor() {
      *
      * @see KoinOption for available options
      */
-    @KoinExperimentalAPI
     fun options(vararg optionValue : Pair<KoinOption,Any>): KoinApplication {
         koin.optionRegistry.setValues(optionValue.toMap())
         return this

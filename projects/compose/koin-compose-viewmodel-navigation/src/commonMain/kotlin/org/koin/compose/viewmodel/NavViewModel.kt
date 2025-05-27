@@ -77,7 +77,6 @@ inline fun <reified T : ViewModel> koinNavViewModel(
  *
  * @author Arnaud Giuliani
  */
-@KoinExperimentalAPI
 @Composable
 inline fun <reified T: ViewModel> NavBackStackEntry.sharedKoinViewModel(
     navController: NavController

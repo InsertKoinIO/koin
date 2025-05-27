@@ -215,7 +215,6 @@ fun KoinIsolatedContext(
  * @param content
  */
 @OptIn(KoinInternalApi::class)
-@KoinExperimentalAPI
 @Composable
 fun KoinApplicationPreview(
     application: KoinAppDeclaration,

@@ -22,19 +22,16 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.Module
 import org.koin.dsl.ScopeDSL
 
-@KoinExperimentalAPI
 fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
     val qualifier = ActivityScopeArchetype
     ScopeDSL(qualifier, this).apply(scopeSet)
 }
 
-@KoinExperimentalAPI
 fun Module.activityRetainedScope(scopeSet: ScopeDSL.() -> Unit) {
     val qualifier = ActivityRetainedScopeArchetype
     ScopeDSL(qualifier, this).apply(scopeSet)
 }
 
-@KoinExperimentalAPI
 fun Module.fragmentScope(scopeSet: ScopeDSL.() -> Unit) {
     val qualifier = FragmentScopeArchetype
     ScopeDSL(qualifier, this).apply(scopeSet)

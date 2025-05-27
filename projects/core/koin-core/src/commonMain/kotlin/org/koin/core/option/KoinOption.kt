@@ -15,23 +15,19 @@
  */
 package org.koin.core.option
 
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.registry.OptionRegistry
 
 /**
  * Koin Options to be activated
  */
-@KoinExperimentalAPI
 enum class KoinOption {
     VIEWMODEL_SCOPE_FACTORY
 }
 
-@KoinExperimentalAPI
 fun viewModelScopeFactory(): Pair<KoinOption, Boolean> {
     return KoinOption.VIEWMODEL_SCOPE_FACTORY to true
 }
 
-@OptIn(KoinExperimentalAPI::class)
 @KoinInternalApi
 fun OptionRegistry.hasViewModelScopeFactory() : Boolean = getOrNull<Boolean>(KoinOption.VIEWMODEL_SCOPE_FACTORY) == true
