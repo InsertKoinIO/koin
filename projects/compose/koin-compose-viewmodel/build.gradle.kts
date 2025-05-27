@@ -45,6 +45,9 @@ kotlin {
             api(project(":core:koin-core-viewmodel"))
             api(libs.jb.composeViewmodel)
         }
+        androidMain.dependencies {
+            api(libs.android.activity.compose)
+        }
     }
 }
 
