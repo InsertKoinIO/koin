@@ -98,9 +98,9 @@ class WeatherListFragment : Fragment() {
 }
 ```
 
-## Passing Parameters to Constructor
+## Passing Parameters to the Constructor
 
-the `viewModel` keyword and injection API is compatible with injection parameters.
+The `viewModel` keyword API is compatible with injection parameters.
 
 In the module:
 

@@ -31,6 +31,32 @@ Your Koin container can have several options:
  The `startKoin` can't be called more than once. If you need several point to load modules, use the `loadKoinModules` function.
 :::
 
+### Extending your Koin start (help reuse for KMP and other ...)
+
+Koin now supports reusable and extensible configuration objects for KoinConfiguration. You can extract shared configuration for use across platforms (Android, iOS, JVM, etc.) or tailor it to different environments. This can be done with the includes() function. Below, we can reuse easily a common configuration, and extend it to add some Android environment settings:
+
+```kotlin
+fun initKoin(config : KoinAppDeclaration? = null){
+   startKoin {
+        includes(config) //can include external configuration extension
+        modules(appModule)
+   }
+}
+
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        initKoin {
+            androidContext(this@MainApplication)
+            androidLogger()
+        }
+    }
+}
+```
+
+
 ### Behind the start - Koin instance under the hood
 
 When we start Koin, we create a `KoinApplication` instance that represents the Koin container configuration instance. Once launched, it will produce a `Koin` instance resulting of your modules and options.
