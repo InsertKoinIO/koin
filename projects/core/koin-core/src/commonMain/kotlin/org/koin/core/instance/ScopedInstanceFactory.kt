@@ -22,7 +22,7 @@ import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools
 
 /**
- * Single instance holder
+ * Scope instance holder
  * @author Arnaud Giuliani
  */
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :

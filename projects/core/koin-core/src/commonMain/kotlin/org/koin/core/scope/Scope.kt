@@ -326,16 +326,22 @@ class Scope(
 //    }
 
     /**
-     * Declare a component definition from the given instance
-     * This result of declaring a scoped definition of type T, returning the given instance
-     * (single definition of the current scope is root)
-     * 
-     * The instance will be drop at scope.close()
+     * Declare an instance definition for the current scope using the given object.
      *
-     * @param instance The instance you're declaring.
-     * @param qualifier Qualifier for this declaration
-     * @param secondaryTypes List of secondary bound types
-     * @param override Allows to override a previous declaration of the same type (default to false).
+     * This results in declaring a scoped definition of type `T`, bound to the provided instance.
+     * The instance will be dropped when the scope is closed.
+     *
+     * The `holdInstance` parameter controls whether the instance is retained by Koin or not:
+     * - `holdInstance = true` → the instance is held within the scope and behaves like a singleton.
+     * - `holdInstance = false` → the instance is not held; the definition exists in current scope, but cannot be resolved in other scope instance.
+     *
+     * This is useful for injecting pre-constructed instances into a specific scope.
+     *
+     * @param instance The instance to declare.
+     * @param qualifier An optional qualifier to distinguish this binding.
+     * @param secondaryTypes A list of additional types this instance should be bound to.
+     * @param allowOverride Whether this declaration can override an existing one (default is true).
+     * @param holdInstance Whether to retain the instance for future resolution within new scopes, or just hold for current scope (holdInstance = false).
      */
     inline fun <reified T> declare(
         instance: T,
