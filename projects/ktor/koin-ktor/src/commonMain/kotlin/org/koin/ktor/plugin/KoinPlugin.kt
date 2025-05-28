@@ -116,6 +116,15 @@ fun Application.koin(configuration: KoinAppDeclaration) = pluginOrNull(Koin)?.le
 } ?: install(Koin, configuration)
 
 /**
+ * Get current Koin instance from Ktor Application
+ *
+ * @return current Koin instance
+ */
+fun Application.koin() = pluginOrNull(Koin)?.let {
+    attributes.getOrNull(KOIN_ATTRIBUTE_KEY)
+} ?: error("Koin plugin is not installed properly")
+
+/**
  * declare Koin module in current configuration
  *
  * @param moduleDeclaration - module declaration
