@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 repositories.mavenCentral()
 
 apply(from = "../gradle/versions.gradle")
@@ -7,14 +10,16 @@ plugins {
     kotlin("kapt")
 }
 
-val jvmTarget = JavaVersion.VERSION_21.toString()
-
-tasks.getByName<JavaCompile>("compileJava") {
-    targetCompatibility = jvmTarget
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
-tasks.getByName<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin") {
-    kotlinOptions.jvmTarget = jvmTarget
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
 
 val jmhVersion = "1.36"
