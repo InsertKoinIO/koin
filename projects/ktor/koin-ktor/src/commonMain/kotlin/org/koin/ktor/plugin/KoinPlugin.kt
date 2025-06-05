@@ -34,7 +34,6 @@ import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.ModuleDeclaration
-import org.koin.ktor.di.KtorDIExtension
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -59,7 +58,8 @@ val Koin =
 internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
     val koinApplication = pluginConfig
     koinApplication.createEagerInstances()
-    koinApplication.koin.resolver.addResolutionExtension(KtorDIExtension(application))
+    //TODO Ktor 3.2
+//    koinApplication.koin.resolver.addResolutionExtension(KtorDIExtension(application))
     application.setKoinApplication(koinApplication)
     return koinApplication
 }
