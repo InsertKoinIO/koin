@@ -128,7 +128,7 @@ class CoreResolver(
         scope: Scope,
         ctx: ResolutionContext,
     ): T? {
-        val parentScope = if (scope.linkedScopes.size > 1) flatten(scope.linkedScopes) else scope.linkedScopes
+        val parentScope = flatten(scope.linkedScopes)
         return parentScope.firstNotNullOfOrNull {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in scope '${it.id}'")
             val instanceContext = if (!it.isRoot) ctx.newContextForScope(it) else ctx
@@ -164,9 +164,9 @@ fun flatten(scopes: List<Scope>): Set<Scope> {
         if (!flatten.add(current)) {
             continue
         }
-        for (module in current.linkedScopes) {
-            if (module !in flatten) {
-                stack += module
+        for (scope in current.linkedScopes) {
+            if (scope !in flatten) {
+                stack += scope
             }
         }
     }
