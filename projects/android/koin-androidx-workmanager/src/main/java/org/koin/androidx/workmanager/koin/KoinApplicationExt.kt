@@ -31,14 +31,16 @@ fun KoinApplication.workManagerFactory() {
 }
 
 private fun KoinApplication.createWorkManagerFactory() {
-    val factory = DelegatingWorkerFactory()
-        .apply {
-            addFactory(KoinWorkerFactory())
-        }
+    if (!(WorkManager.isInitialized())){
+        val factory = DelegatingWorkerFactory()
+            .apply {
+                addFactory(KoinWorkerFactory())
+            }
 
-    val conf = Configuration.Builder()
-        .setWorkerFactory(factory)
-        .build()
+        val conf = Configuration.Builder()
+            .setWorkerFactory(factory)
+            .build()
 
-    WorkManager.initialize(koin.get(), conf)
+        WorkManager.initialize(koin.get(), conf)
+    }
 }
