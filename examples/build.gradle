@@ -32,12 +32,12 @@ wrapper {
 }
 allprojects {
     repositories {
-        maven {
-            url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap"
-//            includeGroupAndSubgroups {
-//                name = "io.ktor"
-//            }
-        }
+//        maven {
+//            url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap"
+////            includeGroupAndSubgroups {
+////                name = "io.ktor"
+////            }
+//        }
         // For Ktor EAP
 //        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap") {
 //            mavenContent {
