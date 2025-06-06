@@ -38,7 +38,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:koin-core-annotations"))
             implementation(libs.extras.stately)
             implementation(libs.extras.stately.collections)
 //            api(libs.extras.uuid)
