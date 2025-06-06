@@ -19,7 +19,33 @@ This structured approach not only clarifies the incremental changes in each rele
 
 See [Api Stability Contract](api-stability.md) for more details.
 
+## 4.1.1
+
+### New 🎉
+
+`koin-ktor`
+- Integration - provides `KtorDIExtension` to integrate Ktor 3.2 Default DI engine
+```kotlin
+fun Application.setupDatabase(config: DbConfig) {
+    // ...
+    dependencies {
+        provide<Database> { database }
+    }
+}
+
+class CustomerRepositoryImpl(private val database: Database) : CustomerRepository
+fun Application.customerDataModule() {
+    koinModule {
+        singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
+    }
+}
+```
+
 ## 4.1.0
+
+:::note
+Uses Kotlin `2.1.20`
+:::
 
 ### New 🎉
 
@@ -39,6 +65,8 @@ startKoin {
 
 `koin-android`
 - Upgraded libraries (`androidx.appcompat:appcompat:1.7.0`, `androidx.activity:activity-ktx:1.10.1`) require raising Min SDK level from 14 to 21
+- DSL - Added new Koin Module DSL extensions `activityScope`, `activityRetainedScope`, and `fragmentScope` to declare scope within Activity/Fragment
+- Scope Functions - Also `activityScope()`, `activityRetainedScope()` and `fragmentScope()` API functions are now triggering Scope Archetypes
 
 `koin-androidx-compose`
 - Aligned with Koin Compose Multiplatform and all Compose 1.8 & Lifecycle 2.9
@@ -47,24 +75,11 @@ startKoin {
 - Aligned with Compose 1.8 & Lifecycle 2.9
 - New Function - `KoinApplicationPreview` to help render parallel preview in Android Studio & IntelliJ
 
+`koin-compose-viewmodel`
+- added `koinActivityViewModel` to allow set parent Activity as Host
+
 `koin-ktor`
 - Multiplatform - The module is now compiled in Kotlin KMP format. You can target `koin-ktor` from a multiplatform project.
-- Integration - provides `KtorDIExtension` to integrate Ktor 3.2 Default DI engine
-```kotlin
-fun Application.setupDatabase(config: DbConfig) {
-    // ...
-    dependencies {
-        provide<Database> { database }
-    }
-}
-
-class CustomerRepositoryImpl(private val database: Database) : CustomerRepository
-fun Application.customerDataModule() {
-    koinModule {
-        singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
-    }
-}
-```
 - Merge - The Previous koin-ktor3 module has been merged into koin-ktor
 - Extension - Introduces `Application.koinModule { }` and `Application.koinModules()` to let you declare Koin modules directly joined to a Ktor a module
 ```kotlin
@@ -75,6 +90,7 @@ fun Application.customerDataModule() {
 }
 ```
 - Scope - `Module.requestScope` - allows declaring definitions inside a Ktor request scope (avoid declaring `scope<RequestScope>` manually)
+The injected scope is also allows to inject `ApplicationCall` in constructor.
 
 
 `koin-core-coroutines`
@@ -133,10 +149,6 @@ conf.verify(extraTypes = androidTypes)
 
 `koin-core`
 - Wasm - Use of Kotlin 2.1.20 UUID generation
-
-`koin-android`
-- DSL - Added new Koin Module DSL extensions `activityScope`, `activityRetainedScope`, and `fragmentScope` to declare scope within Activity/Fragment
-- Scope Functions - Also `activityScope()`, `activityRetainedScope()` and `fragmentScope()` API functions are now triggering Scope Archetypes
 
 `koin-core-viewmodel`
 - DSL - Added Module DSL extension `viewModelScope`, to declare component scoped to ViewModel scope archetype
