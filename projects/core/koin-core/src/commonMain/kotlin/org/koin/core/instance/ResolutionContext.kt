@@ -15,7 +15,6 @@
  */
 package org.koin.core.instance
 
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
@@ -50,6 +49,3 @@ class ResolutionContext(
         return rc
     }
 }
-
-@KoinInternalApi
-class NoClass
