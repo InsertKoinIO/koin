@@ -1,5 +1,6 @@
 package org.koin.sample
 
+import io.ktor.server.application.ApplicationCall
 import org.koin.sample.Counter.init
 import java.util.UUID
 
@@ -27,6 +28,6 @@ class HelloService2() : HelloService{
     override fun sayHello() = "Hello Again!"
 }
 
-class ScopeComponent {
+class ScopeComponent(val call : ApplicationCall) {
     val id = UUID.randomUUID().toString()
 }

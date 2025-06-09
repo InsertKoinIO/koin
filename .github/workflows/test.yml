@@ -1,14 +1,7 @@
 name: Test Examples
 
 on:
-  push:
-    branches:
-      - '*'
-      - '*/*'
   pull_request:
-    branches:    
-      - '*'
-      - '*/*'
 
 concurrency:
   group: test-examples-${{ github.ref }}
@@ -22,23 +15,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 17
-    
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
 
       - name: Install
         run: cd projects && ./install.sh
-        
+
       - name: Test Examples
         run: cd examples && ./test.sh
 

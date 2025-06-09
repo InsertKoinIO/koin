@@ -23,13 +23,39 @@ Once `startKoin` has been called, Koin will read all your modules & definitions.
 
 Your Koin container can have several options:
 
-* `logger` - to enable logging - see <<logging.adoc#_logging,logging>> section
-* `properties()`, `fileProperties( )` or `environmentProperties( )` to load properties from environment, koin.properties file, extra properties ... - see <<properties.adoc#_lproperties,properties>> section
+* `logger` - to enable logging - see [Logging](#logging) section
+* `properties()`, `fileProperties( )` or `environmentProperties( )` to load properties from environment, koin.properties file, extra properties ... - see [Loading properties](#loading-properties) section
 
 
 :::info
  The `startKoin` can't be called more than once. If you need several point to load modules, use the `loadKoinModules` function.
 :::
+
+### Extending your Koin start (help reuse for KMP and other ...)
+
+Koin now supports reusable and extensible configuration objects for KoinConfiguration. You can extract shared configuration for use across platforms (Android, iOS, JVM, etc.) or tailor it to different environments. This can be done with the includes() function. Below, we can reuse easily a common configuration, and extend it to add some Android environment settings:
+
+```kotlin
+fun initKoin(config : KoinAppDeclaration? = null){
+   startKoin {
+        includes(config) //can include external configuration extension
+        modules(appModule)
+   }
+}
+
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        initKoin {
+            androidContext(this@MainApplication)
+            androidLogger()
+        }
+    }
+}
+```
+
 
 ### Behind the start - Koin instance under the hood
 
@@ -42,7 +68,7 @@ The `GlobalContext` is a default JVM context strategy for Koin. It's called by `
 
 You can't call the `startKoin` function more than once. But you can use directly the `loadKoinModules()` functions.
 
-This function is interesting for SDK makers who want to use Koin, because they don't need to use the `starKoin()` function and just use the `loadKoinModules` at the start of their library.
+This function is interesting for SDK makers who want to use Koin, because they don't need to use the `startKoin()` function and just use the `loadKoinModules` at the start of their library.
 
 ```kotlin
 loadKoinModules(module1,module2 ...)
@@ -72,7 +98,7 @@ Koin Logger
 ```kotlin
 abstract class Logger(var level: Level = Level.INFO) {
 
-    abstract fun log(level: Level, msg: MESSAGE)
+    abstract fun display(level: Level, msg: MESSAGE)
 
     fun debug(msg: MESSAGE) {
         log(Level.DEBUG, msg)
@@ -80,6 +106,10 @@ abstract class Logger(var level: Level = Level.INFO) {
 
     fun info(msg: MESSAGE) {
         log(Level.INFO, msg)
+    }
+
+    fun warn(msg: MESSAGE) {
+        log(Level.WARNING, msg)
     }
 
     fun error(msg: MESSAGE) {
@@ -97,7 +127,7 @@ Koin proposes some implementation of logging, in function of the target platform
 
 ### Set logging at start
 
-By default, By default Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
+By default, Koin use the `EmptyLogger`. You can use directly the `PrintLogger` as following:
 
 ```kotlin
 startKoin {
@@ -143,3 +173,17 @@ val myModule = module {
     single { MyService(getProperty("server_url")) }
 }
 ```
+
+## Koin Options - Feature Flagging (4.1.0)
+
+Your Koin application can now activate some experimental features through a dedicated `options` section, like:
+
+```kotlin
+startKoin {
+    options(
+        // activate ViewModel Scope factory feature 
+        viewModelScopeFactory()
+    )
+}
+```
+

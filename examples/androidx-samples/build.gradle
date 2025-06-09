@@ -42,6 +42,7 @@ android {
         unitTests.all {
             useJUnit()
         }
+        unitTests.includeAndroidResources = true
     }
 
     compileOptions {
@@ -56,8 +57,8 @@ android {
 
 dependencies {
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-    implementation "androidx.work:work-runtime-ktx:2.9.1"
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation "androidx.work:work-runtime-ktx:2.10.1"
     implementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation "junit:junit:4.13.2"
@@ -68,7 +69,15 @@ dependencies {
     implementation "io.insert-koin:koin-core-coroutines"
     implementation "io.insert-koin:koin-androidx-workmanager"
     implementation "io.insert-koin:koin-androidx-navigation"
-//    implementation "io.insert-koin:koin-androidx-startup"
+
     testImplementation "io.insert-koin:koin-test-junit4"
     testImplementation "io.insert-koin:koin-android-test"
+    testImplementation "io.insert-koin:koin-test-coroutines"
+
+    testImplementation "androidx.test.ext:junit:1.2.1"
+    testImplementation "androidx.test:runner:1.6.2"
+    testImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
+    testImplementation "org.robolectric:robolectric:$robolectric"
+    testImplementation "androidx.test:core:1.6.1"
 }

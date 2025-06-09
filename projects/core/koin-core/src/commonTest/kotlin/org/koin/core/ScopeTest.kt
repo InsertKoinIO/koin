@@ -199,4 +199,30 @@ class ScopeTest {
         assertEquals(id, single.id)
         scope.close()
     }
+
+    @Test
+    fun scope_regression_test(){
+        startKoin {
+            modules(
+                module {
+                    single<Unit> {}
+                    scope(named("one")) {}
+                    scope(named("two")) {
+                        scoped<String> {
+                            get<Unit>().toString() // gets Unit from the root scope
+                        }
+                    }
+                },
+            )
+        }.run {
+            val one = koin.createScope("one", named("one"))
+            val two = koin.createScope("two", named("two")).apply {
+                unlink(getScope("_root_"))
+                linkTo(one)
+            }
+            // in 4.1.0-Beta11 -> prints "kotlin.Unit"
+            // in 4.1.0-RC1 -> throws NoDefinitionFoundException
+            assertEquals(Unit.toString(),two.get<String>())
+        }
+    }
 }

@@ -16,6 +16,7 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
@@ -28,6 +29,8 @@ import org.koin.core.module.KoinDslMarker
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
+import org.koin.core.resolution.InstanceResolver
 import org.koin.core.time.inMs
 import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
@@ -44,10 +47,12 @@ class Scope(
     val scopeQualifier: Qualifier,
     val id: ScopeID,
     val isRoot: Boolean = false,
+    val scopeArchetype : TypeQualifier? = null,
     @PublishedApi
     internal val _koin: Koin,
 ) : Lockable() {
-    private val linkedScopes = LinkedHashSet<Scope>()
+
+    internal val linkedScopes = ArrayList<Scope>()
 
     @KoinInternalApi
     var sourceValue: Any? = null
@@ -60,7 +65,7 @@ class Scope(
     private val _callbacks = LinkedHashSet<ScopeCallback>()
 
     @KoinInternalApi
-    private var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+    internal var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -77,7 +82,7 @@ class Scope(
      */
     fun linkTo(vararg scopes: Scope) {
         if (!isRoot) {
-            linkedScopes.addAll(scopes)
+            linkedScopes.addAll(0, scopes.toList())
         } else {
             error("Can't add scope link to a root scope")
         }
@@ -311,52 +316,7 @@ class Scope(
     private fun <T> resolveFromContext(
         instanceContext: ResolutionContext
     ): T {
-        return resolveFromInjectedParameters(instanceContext)
-            ?: resolveFromRegistry(instanceContext)
-            ?: resolveFromStackedParameters(instanceContext)
-            ?: resolveFromScopeSource(instanceContext)
-            ?: resolveFromParentScopes(instanceContext)
-            ?: throwNoDefinitionFound(instanceContext)
-    }
-
-    private fun <T> resolveFromRegistry(
-        ctx: ResolutionContext
-    ): T? {
-        return _koin.instanceRegistry.resolveInstance(ctx.qualifier, ctx.clazz, this.scopeQualifier, ctx)
-    }
-
-    private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
-        return if (ctx.parameters == null) null
-            else {
-            _koin.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
-            ctx.parameters.getOrNull(clazz = ctx.clazz)
-        }
-    }
-
-    private inline fun <T> resolveFromStackedParameters(ctx: ResolutionContext): T? {
-        val current = parameterStack?.get()
-        return if (current.isNullOrEmpty()) null
-         else {
-            _koin.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
-            val parameters = current.firstOrNull()
-            parameters?.getOrNull(ctx.clazz)
-         }
-    }
-
-    private inline fun <T> resolveFromScopeSource(ctx: ResolutionContext): T? {
-        if (isRoot) return null
-        _koin.logger.debug("|- ? ${ctx.debugTag} look at scope source")
-        return if (ctx.clazz.isInstance(sourceValue) && ctx.qualifier == null) { sourceValue as? T } else null
-    }
-
-    private fun <T> resolveFromParentScopes(ctx: ResolutionContext): T? {
-        _koin.logger.debug("|- ? ${ctx.debugTag} look in other scopes")
-        return findInOtherScope(ctx)
-    }
-
-    private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
-        _koin.logger.debug("|- << parameters")
-        throwDefinitionNotFound(ctx)
+        return _koin.resolver.resolveFromContext(this,instanceContext)
     }
 
 
@@ -365,32 +325,23 @@ class Scope(
 //        return if (clazz.isInstance(_source)) _source as? T else null
 //    }
 
-    private fun <T> findInOtherScope(
-        ctx: ResolutionContext,
-    ): T? {
-        return linkedScopes.firstNotNullOfOrNull { it.getOrNull(ctx) }
-    }
-
-    private inline fun throwDefinitionNotFound(
-        ctx: ResolutionContext
-    ): Nothing {
-        val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
-        throw NoDefinitionFoundException(
-            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
-        )
-    }
-
     /**
-     * Declare a component definition from the given instance
-     * This result of declaring a scoped definition of type T, returning the given instance
-     * (single definition of the current scope is root)
-     * 
-     * The instance will be drop at scope.close()
+     * Declare an instance definition for the current scope using the given object.
      *
-     * @param instance The instance you're declaring.
-     * @param qualifier Qualifier for this declaration
-     * @param secondaryTypes List of secondary bound types
-     * @param override Allows to override a previous declaration of the same type (default to false).
+     * This results in declaring a scoped definition of type `T`, bound to the provided instance.
+     * The instance will be dropped when the scope is closed.
+     *
+     * The `holdInstance` parameter controls whether the instance is retained by Koin or not:
+     * - `holdInstance = true` → the instance is held within the scope and behaves like a singleton.
+     * - `holdInstance = false` → the instance is not held; the definition exists in current scope, but cannot be resolved in other scope instance.
+     *
+     * This is useful for injecting pre-constructed instances into a specific scope.
+     *
+     * @param instance The instance to declare.
+     * @param qualifier An optional qualifier to distinguish this binding.
+     * @param secondaryTypes A list of additional types this instance should be bound to.
+     * @param allowOverride Whether this declaration can override an existing one (default is true).
+     * @param holdInstance Whether to retain the instance for future resolution within new scopes, or just hold for current scope (holdInstance = false).
      */
     inline fun <reified T> declare(
         instance: T,

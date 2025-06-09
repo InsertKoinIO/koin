@@ -6,11 +6,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(1_8)
-
-    jvm {
-        withJava()
-    }
+    jvm()
 
     js(IR) {
         nodejs()
@@ -50,9 +46,9 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.test.coroutines)
         }
-        wasmJsMain.dependencies {
-            implementation(libs.uuid)
-        }
+//        wasmJsMain.dependencies {
+//            implementation(libs.uuid)
+//        }
     }
 }
 

@@ -7,47 +7,32 @@ This page describe how you can inject your dependencies for your [Android Jetpac
 
 ## Koin Compose Multiplatform vs Koin Android Jetpack Compose
 
-Since mid 2024, Compose applications can be done with Koin Multiplatform API. All APIs are identifcal between Koin Jetpack Compose (koin-androidx-compose) and Koin Compose Multiplatform (koin-compose).
+Since mid-2024, Compose applications can be done with the Koin Multiplatform API. All APIs are identical between Koin Jetpack Compose (koin-androidx-compose) and Koin Compose Multiplatform (koin-compose).
 
 ### What Koin package for Compose?
 
-for a pure Android app that uses only Android Jetpack Compose API, use the following packages:
+For a pure Android app that uses only the Android Jetpack Compose API, use the following packages:
 - `koin-androidx-compose` - to unlock Compose base API + Compose ViewModel API
 - `koin-androidx-compose-navigation` - Compose ViewModel API with Navigation API integration
 
-for an Android/Multiplatform app, use the following packages:
+For an Android/Multiplatform app, use the following packages:
 - `koin-compose` - Compose base API
 - `koin-compose-viewmodel` - Compose ViewModel API
 - `koin-compose-viewmodel-navigation` - Compose ViewModel API with Navigation API integration
 
-## Starting over an existing Koin context (Koin already started)
+## Starting over an existing Koin context
 
-Some time the `startKoin` function is already used in the application, to start Koin in your application (like in Android main app class, the Application class). In that case you need to inform your Compose application about the current Koin context with `KoinContext` or `KoinAndroidContext`. Those functions reuse current Koin context and bind it to the Compose application.
-
-```kotlin
-@Composable
-fun App() {
-    // Set current Koin instance to Compose context
-    KoinContext() {
-
-        MyScreen()
-    }
-}
-```
-
-:::info
-Difference between `KoinAndroidContext` and `KoinContext`:
-- `KoinAndroidContext` is looking into current Android app context for Koin instance
-- `KoinContext` is looking into current GlobalContext for Koin instances
-:::
+By using the `startKoin` function previous to your Compose application, your application is ready to welcome Koin injection. Nothing is required anymore to setup your Koin context with Compose.
 
 :::note
-If you get some `ClosedScopeException` from a Composable, either use `KoinContext` on your Composable or ensure to have proper Koin start configuration [with Android context](/docs/reference/koin-android/start.md#from-your-application-class)
+`KoinContext` and `KoinAndroidContext` are deprecated
 :::
 
-## Starting Koin with a Compose App - KoinApplication
 
-The function `KoinApplication` helps to create Koin application instance, as a Composable:
+## Starting Koin with a Compose App - KoinApplication
+If you don't have access to a space where you can run the `startKoin` function, you can relay on Compose and Koin to start your Koin configuration.
+
+The compose function `KoinApplication` helps to create a Koin application instance, as a Composable:
 
 ```kotlin
 @Composable
@@ -62,30 +47,29 @@ fun App() {
 }
 ```
 
-The `KoinApplication` function will handle start & stop of your Koin context, regarding the cycle of the Compose context. This function start and stop a new Koin application context.
+The `KoinApplication` function will handle the start and stop of your Koin context, regarding the cycle of the Compose context. This function starts and stops a new Koin application context.
 
 :::info
 In an Android Application, the `KoinApplication` will handle any need to stop/restart Koin context regarding configuration changes or drop of Activities.
 :::
 
 :::note
-This replaces the use of the classic `startKoin` application function.
+(Experimental API)
+You can use the `KoinMultiplatformApplication` to replace a multiplatform entry point: it's the same as `KoinApplication` but injects automatically `androidContext` and `androidLogger` for you.
 :::
 
+## Compose Preview with KoinApplicationPreview
 
-### Compose Preview with Koin
-
-The `KoinApplication` function is interesting to start dedicated context for preview. This can be also used to help with Compose preview:
+The `KoinApplicationPreview` compose function is dedicated to preview a Composable:
 
 ```kotlin
+@Preview(name = "1 - Pixel 2 XL", device = Devices.PIXEL_2_XL, locale = "en")
+@Preview(name = "2 - Pixel 5", device = Devices.PIXEL_5, locale = "en", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "3 - Pixel 7 ", device = Devices.PIXEL_7, locale = "ru", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-@Preview
-fun App() {
-    KoinApplication(application = {
-        // your preview config here
-        modules(previewModule)
-    }) {
-        // Compose to preview with Koin
+fun previewVMComposable(){
+    KoinApplicationPreview(application = { modules(appModule) }) {
+        ViewModelComposable()
     }
 }
 ```
@@ -166,7 +150,7 @@ fun App() {
 }
 ```
 
-We can get your instance in function parameters:
+We can get your instance in the function parameters:
 
 ```kotlin
 @Composable
@@ -176,13 +160,25 @@ fun App(vm : MyViewModel = koinViewModel()) {
 ```
 
 :::note
-Lazy API are not supported with updates of jetpack Compose
+Lazy API are not supported with updates of Jetpack Compose
 :::
+
+### Shared Activity ViewModel (4.1 - Android)
+
+You can now use the `koinActivityViewModel()` to inject a ViewModel from the same ViewModel host: Activity.
+
+```kotlin
+@Composable
+fun App() {
+    // hold ViewModel instance at Activity level
+    val vm = koinActivityViewModel<MyViewModel>()
+}
+```
 
 ### ViewModel and SavedStateHandle for @Composable
 
-You can have a `SavedStateHandle` constructor parameter, it will be injected regarding the Compose environment (Navigation BackStack or ViewModel).
-Either it's injected via ViewModel `CreationExtras` either via Navigation `BackStackEntry`:
+You can have a `SavedStateHandle` constructor parameter, which will be injected regarding the Compose environment (Navigation BackStack or ViewModel).
+Either it's injected via ViewModel `CreationExtras` or via Navigation `BackStackEntry`:
 
 ```kotlin
 // Setting objectId argument in Navhost
@@ -213,6 +209,24 @@ class DetailViewModel(
 :::note
 More details about SavedStateHandle injection difference: https://github.com/InsertKoinIO/koin/issues/1935#issuecomment-2362335705
 :::
+
+### Shared ViewModel and Navigation (Experimental)
+
+Koin Compose Naviation has now a `NavBackEntry.sharedKoinViewModel()` function, to allow to retrieve ViewModel already stored in current NavBackEntry. Inside your navigation part, just use `sharedKoinViewModel`:
+
+```kotlin
+navigation<Route.BookGraph>(
+                startDestination = Route.BookList
+            ) {
+                composable<Route.BookList>(
+                    exitTransition = { slideOutHorizontally() },
+                    popEnterTransition = { slideInHorizontally() }
+                ) {
+                    // Use SharedViewModel here ...
+
+                    val selectedBookViewModel =
+                        it.sharedKoinViewModel<SelectedBookViewModel>(navController)
+```
 
 ## Module loading & unloading tied to Composable
 

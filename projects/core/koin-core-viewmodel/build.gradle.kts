@@ -1,8 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
 }
 
@@ -10,10 +7,27 @@ val koinVersion: String by project
 version = koinVersion
 
 kotlin {
-    jvmToolchain(1_8)
-    jvm {
-        withJava()
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
     }
+    
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
+    }
+
+//    // Enable context receivers for all targets
+//    targets.all {
+//        compilations.all {
+//            kotlinOptions {
+//                freeCompilerArgs += listOf("-Xcontext-receivers")
+//            }
+//        }
+//    }
 
     js(IR) {
         nodejs()
@@ -37,15 +51,26 @@ kotlin {
             api(project(":core:koin-core"))
             api(libs.jb.lifecycleViewmodel)
             api(libs.jb.lifecycleViewmodelSavedState)
-            api(libs.jb.bundle)
-            api(libs.jb.savedstate)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.test.junit)
         }
     }
 }
 
-tasks.withType<KotlinCompile>().all {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+val androidCompileSDK : String by project
+val androidMinSDK : String by project
+
+android {
+    namespace = "org.koin.viewmodel"
+    compileSdk = androidCompileSDK.toInt()
+    defaultConfig {
+        minSdk = androidMinSDK.toInt()
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 

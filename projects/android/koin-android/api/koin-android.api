@@ -89,6 +89,12 @@ public final class org/koin/androidx/fragment/koin/KoinApplicationExtKt {
 	public static final fun fragmentFactory (Lorg/koin/core/KoinApplication;)V
 }
 
+public final class org/koin/androidx/scope/AndroidScopeArchetypesKt {
+	public static final fun getActivityRetainedScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+	public static final fun getActivityScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+	public static final fun getFragmentScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+}
+
 public final class org/koin/androidx/scope/ComponentActivityExtKt {
 	public static final fun activityRetainedScope (Landroidx/activity/ComponentActivity;)Lkotlin/Lazy;
 	public static final fun activityScope (Landroidx/activity/ComponentActivity;)Lkotlin/Lazy;
@@ -149,11 +155,10 @@ public abstract class org/koin/androidx/scope/ScopeViewModel : androidx/lifecycl
 	public fun onCloseScope ()V
 }
 
-public final class org/koin/androidx/viewmodel/ext/android/FragmentSharedStateVMKt {
-	public static final fun getSharedStateViewModel (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;)Landroidx/lifecycle/ViewModel;
-	public static synthetic fun getSharedStateViewModel$default (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
-	public static final fun sharedStateViewModel (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
-	public static synthetic fun sharedStateViewModel$default (Landroidx/fragment/app/Fragment;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
+public final class org/koin/androidx/scope/dsl/AndroidScopeArchetypesDSLKt {
+	public static final fun activityRetainedScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+	public static final fun activityScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+	public static final fun fragmentScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class org/koin/androidx/viewmodel/ext/android/ViewModelLazyKt {

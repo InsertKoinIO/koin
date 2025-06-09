@@ -7,10 +7,8 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(1_8)
-    jvm {
-        withJava()
-    }
+    
+    jvm()
 
     js(IR) {
         nodejs()
@@ -42,7 +40,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:koin-core"))
-            //TODO remove in 3.6
+            api(project(":core:koin-core-annotations"))
             api(libs.kotlin.test)
         }
         jvmMain.dependencies {

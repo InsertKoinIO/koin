@@ -22,7 +22,7 @@ import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools
 
 /**
- * Single instance holder
+ * Scope instance holder
  * @author Arnaud Giuliani
  */
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :
@@ -55,7 +55,7 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
     }
 
     override fun get(context: ResolutionContext): T {
-        if (context.scope.scopeQualifier != beanDefinition.scopeQualifier) {
+        if (context.scope.scopeQualifier != beanDefinition.scopeQualifier && context.scopeArchetype != beanDefinition.scopeQualifier) {
             error("Wrong Scope qualifier: trying to open instance for ${context.scope.id} in $beanDefinition")
         }
         KoinPlatformTools.synchronized(this) {

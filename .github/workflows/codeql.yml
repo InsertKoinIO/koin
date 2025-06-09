@@ -23,21 +23,12 @@ jobs:
       matrix:
         language: [ 'java-kotlin' ]
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -47,11 +38,14 @@ jobs:
           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
 
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
+
       - name: Build and install all
         # working-directory: core
         run: cd projects && ./install.sh
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"

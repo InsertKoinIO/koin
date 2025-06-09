@@ -5,7 +5,7 @@ import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.scopedOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import org.koin.ktor.plugin.RequestScope
+import org.koin.module.requestScope
 
 val appModule = module {
     singleOf(::HelloServiceImpl){
@@ -14,11 +14,7 @@ val appModule = module {
     }
     singleOf(::HelloRepository)
 
-    scope<RequestScope>{
+    requestScope {
         scopedOf(::ScopeComponent)
     }
-}
-
-val appModule2 = module {
-    singleOf(::HelloService2)
 }

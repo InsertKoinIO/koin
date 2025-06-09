@@ -1,3 +1,10 @@
+public final class org/koin/ktor/di/KoinDependencyMap : io/ktor/server/plugins/di/DependencyMap {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public fun contains (Lio/ktor/server/plugins/di/DependencyKey;)Z
+	public fun get (Lio/ktor/server/plugins/di/DependencyKey;)Ljava/lang/Object;
+	public final fun getKoin ()Lorg/koin/core/Koin;
+}
+
 public final class org/koin/ktor/ext/ApplicationCallExtKt {
 	public static final fun getKoin (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/Koin;
 	public static final fun getProperty (Lio/ktor/server/application/ApplicationCall;Ljava/lang/String;)Ljava/lang/Object;
@@ -38,13 +45,21 @@ public final class org/koin/ktor/plugin/KoinPluginKt {
 	public static final fun getKOIN_SCOPE_ATTRIBUTE_KEY ()Lio/ktor/util/AttributeKey;
 	public static final fun getKoin ()Lio/ktor/server/application/ApplicationPlugin;
 	public static final fun getScope (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/scope/Scope;
+	public static final fun koin (Lio/ktor/server/application/Application;)Lorg/koin/core/Koin;
 	public static final fun koin (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun koinModule (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Lkotlin/Unit;
+	public static final fun koinModules (Lio/ktor/server/application/Application;[Lorg/koin/core/module/Module;)Lkotlin/Unit;
+	public static final fun setKoin (Lio/ktor/server/application/Application;Lorg/koin/core/Koin;)V
 	public static final fun setKoinApplication (Lio/ktor/server/application/Application;Lorg/koin/core/KoinApplication;)V
 }
 
 public final class org/koin/ktor/plugin/RequestScope : org/koin/core/component/KoinScopeComponent {
-	public fun <init> (Lorg/koin/core/Koin;)V
+	public fun <init> (Lorg/koin/core/Koin;Lio/ktor/server/application/ApplicationCall;)V
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public fun getScope ()Lorg/koin/core/scope/Scope;
+}
+
+public final class org/koin/module/ModuleExtKt {
+	public static final fun requestScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
 }
 

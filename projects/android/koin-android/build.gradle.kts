@@ -22,6 +22,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 tasks.withType<KotlinCompile>().all {
@@ -37,7 +46,6 @@ dependencies {
     api(libs.android.activity)
     api(libs.android.fragment)
     api(libs.androidx.viewmodel)
-    api(libs.androidx.commonJava8)
 
     // tests
     testImplementation(project(":core:koin-test"))
@@ -46,6 +54,7 @@ dependencies {
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockito)
     testImplementation(libs.test.mockk)
+    testImplementation(libs.test.robolectric)
 }
 
 // android sources

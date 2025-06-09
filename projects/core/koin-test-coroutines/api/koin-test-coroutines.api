@@ -1,0 +1,5 @@
+public final class org/koin/test/verify/ModuleConfigurationExtKt {
+	public static final fun verify (Lorg/koin/core/module/ModuleConfiguration;Ljava/util/List;Ljava/util/List;)V
+	public static synthetic fun verify$default (Lorg/koin/core/module/ModuleConfiguration;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)V
+}
+

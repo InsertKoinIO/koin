@@ -2,7 +2,7 @@
 title: Context Isolation
 ---
 
-## What Context Isolation?
+## What is Context Isolation?
 
 For SDK Makers, you can also work with Koin in a non-global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
 
@@ -19,7 +19,7 @@ startKoin {
 
 This uses the default Koin context to register your dependencies.
 
-But if we want to use an isolated Koin instance, you need declare an instance and store it in a class to hold your instance.
+But if we want to use an isolated Koin instance, you need to declare an instance and store it in a class to hold your instance.
 You will have to keep your Koin Application instance available in your library and pass it to your custom KoinComponent implementation:
 
 The `MyIsolatedKoinContext` class is holding our Koin instance here:

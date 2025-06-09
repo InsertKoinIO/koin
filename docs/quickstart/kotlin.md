@@ -23,7 +23,7 @@ First, check that the `koin-core` dependency is added like below:
 dependencies {
     
     // Koin for Kotlin apps
-    compile "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-core:$koin_version"
 }
 ```
 

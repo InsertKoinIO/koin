@@ -1,5 +1,5 @@
 ---
-title: Managing Android Scopes
+title: Android Scopes
 ---
 
 
@@ -56,7 +56,7 @@ val androidModule = module {
 ```
 
 :::note
- Most of Android memory leaks come from referencing a UI/Android component from a non Android component. The system keeps a reference
+Most of Android memory leaks come from referencing a UI/Android component from a non Android component. The system keeps a reference
 on it and can't totally drop it via garbage collection.
 :::
 
@@ -73,9 +73,15 @@ class MyAdapter(val presenter : MyPresenter)
 module {
   // Declare scope for MyActivity
   scope<MyActivity> {
-    // get MyPresenter instance from current scope 
-    scoped { MyAdapter(get()) }
-    scoped { MyPresenter() }
+   // get MyPresenter instance from current scope 
+   scoped { MyAdapter(get()) }
+   scoped { MyPresenter() }
+  }
+ 
+  // or
+  activityScope {
+   scoped { MyAdapter(get()) }
+   scoped { MyPresenter() }
   }
 }
 ```
@@ -145,9 +151,9 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 If you don't want to use Android Scope classes, you can work with your own and use `AndroidScopeComponent` with the Scope creation API
 :::
 
-### AndroidScopeComponent and Scope closing handling
+### AndroidScopeComponent and handling Scope closing
 
-You can run some code before Koin Scope is being destroyed, by overriding `onCloseScope` function from `AndroidScopeComponent`:
+You can run code before Koin Scope is destroyed, by overriding the `onCloseScope` function from `AndroidScopeComponent`:
 
 ```kotlin
 class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
@@ -161,85 +167,130 @@ class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 ```
 
 :::note
-If you try to access Scope from `onDestroy()` function, scope will be already closed.
+If you try to access Scope from `onDestroy()` function, the scope will already be closed.
 :::
 
-### ViewModel Scope (since 3.5.4)
+### Scope Archetypes (4.1.0)
 
-ViewModel is only created against root scope to avoid any leaking (leaking Activity or Fragment ...). This guard for the visibility problem, where ViewModel could have access to incompatible scopes.
+As a new feature, you can now declare scope by **archetype**: you don't need to define a scope against a specific type, but for an "archetype" (a kind of scope class). You can declare a scope for "Activity", "Fragment", or "ViewModel".
+You can now use the following DSL sections:
+
+```kotlin
+module {
+ activityScope {
+  // scoped instances for an activity
+ }
+
+ activityRetainedScope {
+  // scoped instances for an activity, retained scope
+ }
+
+ fragmentScope {
+  // scoped instances for Fragment
+ }
+
+ viewModelScope {
+  // scoped instances for ViewModel
+ }
+}
+```
+
+This allows for better reuse of definitions between scopes easily. No need to use a specific type like `scope<>{ }`, apart from if you need scope on a precise object.
+
+:::info
+See [Android Scope API](#android-scope-api) to see how to use `by activityScope()`, `by activityRetainedScope()`, and `by fragmentScope()` functions to activate your Android scope. Those functions will trigger scope archetypes.
+:::
+
+For example, you can easily scope a defintion to an activity like that, with Scope Archetypes:
+
+```kotlin
+// declare Class Session in Activity scope
+module {
+ activityScope {
+    scopedOf(::Session)
+ }
+}
+
+// Inject the scoped Session object to the activity:
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
+    
+    // create Activity's scope
+    val scope: Scope by activityScope() 
+    
+    // inject from scope above
+    val session: Session by inject()
+}
+```
+
+### ViewModel Scope (updated in 4.1.0)
+
+ViewModel is only created against the root scope to avoid any leaking (leaking Activity or Fragment ...). This guards for the visibility problem, where the ViewModel could have access to incompatible scopes.
 
 :::warn
 ViewModel can't access to Activity or Fragment scope. Why? Because ViewModel is lasting long than Activity and Fragment, and then it would leak dependencies outside of proper scopes.
+If you need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel: `viewModel { p ->  }`
 :::
 
-:::note
-If you _really_ need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel: `viewModel { p ->  }`
-:::
-
-`ScopeViewModel` is a new class to help work on ViewModel scope. This handle ViewModel's scope creation, and provide `scope` property to allow inject with `by scope.inject()`:
+Declare your ViewModel scope as follows, tied to your ViewModel class or using the `viewModelScope` DSL section:
 
 ```kotlin
 module {
     viewModelOf(::MyScopeViewModel)
+    // scope for MyScopeViewModel only
     scope<MyScopeViewModel> {
         scopedOf(::Session)
-    }    
-}
-
-class MyScopeViewModel : ScopeViewModel() {
-
-    // on onCleared, scope is closed
-    
-    // injected from current MyScopeViewModel's scope
-    val session by scope.inject<Session>()
-
+    }
+    // ViewModel Archetype scope - Scope for all ViewModel 
+    viewModelScope {
+        scopedOf(::Session)
+    }
 }
 ```
 
-By using `ScopeViewModel` you can also overrode `onCloseScope()` function, to run code before scope is being closed.
+Once you have declared your ViewModel and your scoped components, you can _choose between_:
+- Manual API - Manually using the `KoinScopeComponent` and the `viewModelScope` function. This will handle the creation and destruction of your created ViewModel scope. But you will have to inject your scoped definitions by field, as you need to rely on `scope` property to inject your scoped definition:
+```kotlin
+class MyScopeViewModel : ViewModel(), KoinScopeComponent {
+    
+    // create ViewModel scope
+    override val scope: Scope = viewModelScope()
+    
+    // uses scope above to inject session
+    val session: Session by inject()
+}
+```
+- Automatic Scope Creation
+    - Activate the `viewModelScopeFactory` option (see [Koin Options](../koin-core/start-koin.md#koin-options---feature-flagging)) to automatically create a ViewModel scope on the fly.
+    - This allows to use of constructor injection
+```kotlin
+// activate ViewModel Scope factory
+startKoin {
+    options(
+        viewModelScopeFactory()
+    )
+}
 
-:::note
-All instances inside a ViewModel scope have the same visibility and will survive for lifetime of ViewModel instance, until ViewModel's onCleared function is called
-:::
+// Scope being created at factory level, automatically before injection
+class MyScopeViewModel(val session: Session) : ViewModel()
+```
 
-For example, Once an Activity or fragment has created a ViewModel, the associated scope is created:
+Now just call your ViewModel from your Activity or Fragment:
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
-
-    // Create ViewModel and its scope
-    val myViewModel by viewModel<MyScopeViewModel>()
-
-}
-```
-
-Once your ViewModel is created, all associated dependencies from within this scope can be created and injected.
-
-To implement manually your ViewModel scope without `ScopeViewModel` class proceed as follow:
-
-```kotlin
-class MyScopeViewModel : ViewModel(), KoinScopeComponent {
-
-    override val scope: Scope = createScope(this)
-
-    // inject your dependency
-    val session by scope.inject<Session>()
-
-    // clear scope
-    override fun onCleared() {
-        super.onCleared()
-        scope.close()
-    }
+    
+    // create MyScopeViewModel instance, and allocate MyScopeViewModel's scope
+    val vieModel: MyScopeViewModel by viewModel()
 }
 ```
 
 ## Scope Links
 
-Scope links allow to share instances between components with custom scopes.
+Scope links allow sharing instances between components with custom scopes. By default, Fragment's scope are linked to parent Activity scope.
 
 In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
 
-First declare a scope definition:
+First, declare a scope definition:
 
 ```kotlin
 module {

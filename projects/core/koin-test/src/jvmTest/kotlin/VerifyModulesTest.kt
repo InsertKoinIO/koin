@@ -39,6 +39,26 @@ class VerifyModulesTest {
     }
 
     @Test
+    fun allow_verify_optional_dep() {
+        val module = module {
+            single { Simple.ComponentBOptional(get()) }
+        }
+
+        // verified as optional
+        module.verify()
+    }
+
+    @Test
+    fun allow_verify_optional_dep_ok() {
+        val module = module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentBOptional(get()) }
+        }
+
+        module.verify()
+    }
+
+    @Test
     fun verify_one_simple_module_w_interface() {
         val module = module {
             single { Simple.ComponentA() }
@@ -191,5 +211,55 @@ class VerifyModulesTest {
         }
 
         modules.verify(extraTypes = listOf(Simple.ComponentA::class))
+    }
+
+    @Test
+    fun `verify list`(){
+        module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentBList(getAll()) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify lazy`(){
+        module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentBLazy(inject()) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify annotated param`(){
+        module {
+            single { (a : Others.ComponentA) -> Others.ComponentBParam(a) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify annotated provided`(){
+        module {
+            single { (a : Others.ComponentA) -> Others.ComponentBProvided(a) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify annotated provided - whitelisted`(){
+        module {
+            single { (a : Others.ComponentA) -> Others.ComponentBProvided(a) }
+            single { (a : Others.ComponentA) -> Others.ComponentBProvided2(a) }
+        }.verify()
+    }
+
+    @Test
+    fun `verify annotated param - fail`(){
+        try {
+            module {
+                single { (a : Others.ComponentA) -> Others.ComponentB(a) }
+            }.verify()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

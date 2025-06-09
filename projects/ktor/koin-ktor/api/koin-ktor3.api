@@ -1,0 +1,54 @@
+public final class org/koin/ktor/ext/ApplicationCallExtKt {
+	public static final fun getKoin (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/application/ApplicationCall;Ljava/lang/String;)Ljava/lang/Object;
+	public static final fun getProperty (Lio/ktor/server/application/ApplicationCall;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/koin/ktor/ext/ApplicationExtKt {
+	public static final fun getKoin (Lio/ktor/server/application/Application;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/application/Application;Ljava/lang/String;)Ljava/lang/Object;
+	public static final fun getProperty (Lio/ktor/server/application/Application;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/koin/ktor/ext/RouteExtKt {
+	public static final fun getKoin (Lio/ktor/server/routing/Route;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/routing/Route;Ljava/lang/String;)Ljava/lang/Object;
+	public static final fun getProperty (Lio/ktor/server/routing/Route;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/koin/ktor/ext/RoutingExtKt {
+	public static final fun getKoin (Lio/ktor/server/routing/Routing;)Lorg/koin/core/Koin;
+	public static final fun getProperty (Lio/ktor/server/routing/Routing;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class org/koin/ktor/plugin/KoinApplicationEventsKt {
+	public static final fun getKoinApplicationStarted ()Lio/ktor/events/EventDefinition;
+	public static final fun getKoinApplicationStopPreparing ()Lio/ktor/events/EventDefinition;
+	public static final fun getKoinApplicationStopped ()Lio/ktor/events/EventDefinition;
+}
+
+public final class org/koin/ktor/plugin/KoinIsolatedContextPluginKt {
+	public static final fun getKoinIsolated ()Lio/ktor/server/application/ApplicationPlugin;
+}
+
+public final class org/koin/ktor/plugin/KoinPluginKt {
+	public static final field KOIN_KEY Ljava/lang/String;
+	public static final field KOIN_SCOPE_KEY Ljava/lang/String;
+	public static final fun getKOIN_ATTRIBUTE_KEY ()Lio/ktor/util/AttributeKey;
+	public static final fun getKOIN_SCOPE_ATTRIBUTE_KEY ()Lio/ktor/util/AttributeKey;
+	public static final fun getKoin ()Lio/ktor/server/application/ApplicationPlugin;
+	public static final fun getScope (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/scope/Scope;
+	public static final fun koin (Lio/ktor/server/application/Application;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun setKoinApplication (Lio/ktor/server/application/Application;Lorg/koin/core/KoinApplication;)V
+}
+
+public final class org/koin/ktor/plugin/RequestScope : org/koin/core/component/KoinScopeComponent {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public fun getKoin ()Lorg/koin/core/Koin;
+	public fun getScope ()Lorg/koin/core/scope/Scope;
+}
+
+public final class org/koin/module/ModuleExtKt {
+	public static final fun requestScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+}
+

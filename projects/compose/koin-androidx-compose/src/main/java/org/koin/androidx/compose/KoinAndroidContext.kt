@@ -16,18 +16,8 @@
 
 package org.koin.androidx.compose
 
-import android.app.Application
-import android.content.ComponentCallbacks
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import org.koin.android.ext.android.getKoin
 import org.koin.compose.KoinContext
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.component.KoinComponent
 import org.koin.mp.KoinPlatformTools
 
 
@@ -48,24 +38,9 @@ import org.koin.mp.KoinPlatformTools
  * @author jjkester
  */
 @Composable
+@Deprecated("KoinAndroidContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 fun KoinAndroidContext(
     content: @Composable () -> Unit
 ) {
-    val context = LocalContext.current
-    val koinApplication = remember(context) {
-        context.findContextForKoin().getKoin()
-    }
-    KoinContext(koinApplication, content)
-}
-
-/**
- * Find the [KoinComponent] in the Context tree
- */
-private fun Context.findContextForKoin(): ComponentCallbacks {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is KoinComponent && context is ComponentCallbacks) return context
-        context = context.baseContext
-    }
-    return applicationContext as Application
+    KoinContext(content = content)
 }

@@ -8,10 +8,8 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(1_8)
-    jvm {
-        withJava()
-    }
+    
+    jvm()
     macosX64()
     macosArm64()
 

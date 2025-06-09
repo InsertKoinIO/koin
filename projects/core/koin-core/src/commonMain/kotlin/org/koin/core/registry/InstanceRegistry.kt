@@ -16,6 +16,7 @@
 package org.koin.core.registry
 
 import org.koin.core.Koin
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.IndexKey
@@ -34,6 +35,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.mp.KoinPlatformTools.safeHashMap
+import kotlin.collections.set
 import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 
@@ -84,6 +86,11 @@ class InstanceRegistry(val _koin: Koin) {
                 overrideError(factory, mapping)
             } else if (logWarning) {
                 _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+                // remove previous eager isntance too
+                val existingFactory = eagerInstances.values.firstOrNull { it.beanDefinition == factory.beanDefinition }
+                if (existingFactory != null) {
+                    eagerInstances.remove(factory.beanDefinition.hashCode())
+                }
             }
         }
         _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
@@ -102,6 +109,18 @@ class InstanceRegistry(val _koin: Koin) {
     ): InstanceFactory<*>? {
         val indexKey = indexKey(clazz, qualifier, scopeQualifier)
         return _instances[indexKey]
+    }
+
+    @KoinExperimentalAPI
+    internal fun <T> resolveScopeArchetypeInstance(
+        qualifier: Qualifier?,
+        klass: KClass<*>,
+        context: ResolutionContext
+    ) :T? {
+        return context.scope.scopeArchetype?.let {
+            context.scopeArchetype = it
+            resolveInstance(qualifier,klass,it,context)
+        }
     }
 
     internal fun <T> resolveInstance(
@@ -194,4 +213,6 @@ class InstanceRegistry(val _koin: Koin) {
     fun size(): Int {
         return _instances.size
     }
+
+
 }

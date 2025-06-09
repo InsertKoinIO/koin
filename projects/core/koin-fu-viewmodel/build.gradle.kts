@@ -1,14 +1,20 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
 }
 
 kotlin {
-    jvmToolchain(1_8)
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+    }
+
     jvm {
-        withJava()
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
     }
 
     sourceSets {
@@ -22,10 +28,11 @@ kotlin {
     }
 }
 
-tasks.withType<KotlinCompile>().all {
-    compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
-        }
+val androidCompileSDK: String by project
+
+android {
+    namespace = "org.koin.dsl.fu"
+    compileSdk = androidCompileSDK.toInt()
 }
 
 apply(from = file("../../gradle/publish.gradle.kts"))

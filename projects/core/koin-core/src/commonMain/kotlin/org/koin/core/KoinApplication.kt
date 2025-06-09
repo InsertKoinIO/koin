@@ -15,11 +15,13 @@
  */
 package org.koin.core
 
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.KoinApplicationDslMarker
 import org.koin.core.module.Module
+import org.koin.core.option.KoinOption
 import org.koin.core.time.inMs
 import org.koin.mp.KoinPlatformTools
 import kotlin.time.measureTime
@@ -94,6 +96,16 @@ class KoinApplication private constructor() {
      */
     fun properties(values: Map<String, Any>): KoinApplication {
         koin.propertyRegistry.saveProperties(values)
+        return this
+    }
+
+    /**
+     * Activate Koin Feature Flag options
+     *
+     * @see KoinOption for available options
+     */
+    fun options(vararg optionValue : Pair<KoinOption,Any>): KoinApplication {
+        koin.optionRegistry.setValues(optionValue.toMap())
         return this
     }
 

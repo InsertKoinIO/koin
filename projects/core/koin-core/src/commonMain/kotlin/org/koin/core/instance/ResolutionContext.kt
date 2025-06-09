@@ -19,6 +19,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Logger
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 import kotlin.reflect.KClass
@@ -35,6 +36,19 @@ class ResolutionContext(
     val parameters: ParametersHolder? = null,
 ){
     val debugTag = "t:'${clazz.getFullName()}' - q:'$qualifier'"
+    var scopeArchetype : TypeQualifier? = null
+
+    fun newContextForScope(s : Scope) : ResolutionContext{
+        val rc = ResolutionContext(
+            logger,
+            s,
+            clazz,
+            qualifier,
+            parameters
+        )
+        rc.scopeArchetype = s.scopeArchetype
+        return rc
+    }
 }
 
 @KoinInternalApi

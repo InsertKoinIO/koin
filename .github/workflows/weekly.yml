@@ -2,34 +2,23 @@ name: Weekly Benchmark
 
 on:
   schedule:
-    - cron:  '0 0 * * 0'    # sunday weekly
+    - cron: '0 0 * * 0'    # sunday weekly
 
 jobs:
 
   jvm-benchmark:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 17
-    
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+      - name: Set up environment for Android build
+        uses: ./.github/actions/prepare-env
 
       - name: Install
         run: cd projects && ./install.sh
 
       - name: Benchmark
         run: cd projects && ./benchmark.sh
-
-

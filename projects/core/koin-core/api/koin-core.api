@@ -8,9 +8,9 @@ public final class org/koin/core/Koin {
 	public fun <init> ()V
 	public final fun close ()V
 	public final fun createEagerInstances ()V
-	public final fun createScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public final fun createScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;)Lorg/koin/core/scope/Scope;
 	public final fun createScope (Lorg/koin/core/component/KoinScopeComponent;)Lorg/koin/core/scope/Scope;
-	public static synthetic fun createScope$default (Lorg/koin/core/Koin;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public static synthetic fun createScope$default (Lorg/koin/core/Koin;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public final fun deleteProperty (Ljava/lang/String;)V
 	public final fun deleteScope (Ljava/lang/String;)V
 	public final fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
@@ -18,6 +18,7 @@ public final class org/koin/core/Koin {
 	public final fun getExtensionManager ()Lorg/koin/core/extension/ExtensionManager;
 	public final fun getInstanceRegistry ()Lorg/koin/core/registry/InstanceRegistry;
 	public final fun getLogger ()Lorg/koin/core/logger/Logger;
+	public final fun getOptionRegistry ()Lorg/koin/core/registry/OptionRegistry;
 	public final fun getOrCreateScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun getOrCreateScope$default (Lorg/koin/core/Koin;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public final fun getOrNull (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
@@ -25,6 +26,7 @@ public final class org/koin/core/Koin {
 	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getPropertyRegistry ()Lorg/koin/core/registry/PropertyRegistry;
+	public final fun getResolver ()Lorg/koin/core/resolution/CoreResolver;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeOrNull (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeRegistry ()Lorg/koin/core/registry/ScopeRegistry;
@@ -45,6 +47,7 @@ public final class org/koin/core/KoinApplication {
 	public final fun modules (Ljava/util/List;)Lorg/koin/core/KoinApplication;
 	public final fun modules (Lorg/koin/core/module/Module;)Lorg/koin/core/KoinApplication;
 	public final fun modules ([Lorg/koin/core/module/Module;)Lorg/koin/core/KoinApplication;
+	public final fun options ([Lkotlin/Pair;)Lorg/koin/core/KoinApplication;
 	public final fun printLogger (Lorg/koin/core/logger/Level;)Lorg/koin/core/KoinApplication;
 	public static synthetic fun printLogger$default (Lorg/koin/core/KoinApplication;Lorg/koin/core/logger/Level;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 	public final fun properties (Ljava/util/Map;)Lorg/koin/core/KoinApplication;
@@ -78,9 +81,9 @@ public final class org/koin/core/component/KoinScopeComponent$DefaultImpls {
 
 public final class org/koin/core/component/KoinScopeComponentKt {
 	public static final fun createScope (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
-	public static final fun createScope (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/String;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public static final fun createScope (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/String;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;)Lorg/koin/core/scope/Scope;
 	public static synthetic fun createScope$default (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
-	public static synthetic fun createScope$default (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public static synthetic fun createScope$default (Lorg/koin/core/component/KoinScopeComponent;Ljava/lang/String;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public static final fun getOrCreateScope (Lorg/koin/core/component/KoinScopeComponent;)Lkotlin/Lazy;
 	public static final fun getScopeId (Ljava/lang/Object;)Ljava/lang/String;
 	public static final fun getScopeName (Ljava/lang/Object;)Lorg/koin/core/qualifier/TypeQualifier;
@@ -293,6 +296,9 @@ public final class org/koin/core/instance/ResolutionContext {
 	public final fun getParameters ()Lorg/koin/core/parameter/ParametersHolder;
 	public final fun getQualifier ()Lorg/koin/core/qualifier/Qualifier;
 	public final fun getScope ()Lorg/koin/core/scope/Scope;
+	public final fun getScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+	public final fun newContextForScope (Lorg/koin/core/scope/Scope;)Lorg/koin/core/instance/ResolutionContext;
+	public final fun setScopeArchetype (Lorg/koin/core/qualifier/TypeQualifier;)V
 }
 
 public final class org/koin/core/instance/ScopedInstanceFactory : org/koin/core/instance/InstanceFactory {
@@ -410,6 +416,18 @@ public final class org/koin/core/module/dsl/OptionDSLKt {
 	public static final fun withOptions (Lorg/koin/core/definition/KoinDefinition;Lkotlin/jvm/functions/Function1;)Lorg/koin/core/definition/KoinDefinition;
 }
 
+public final class org/koin/core/option/KoinOption : java/lang/Enum {
+	public static final field VIEWMODEL_SCOPE_FACTORY Lorg/koin/core/option/KoinOption;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/koin/core/option/KoinOption;
+	public static fun values ()[Lorg/koin/core/option/KoinOption;
+}
+
+public final class org/koin/core/option/KoinOptionKt {
+	public static final fun hasViewModelScopeFactory (Lorg/koin/core/registry/OptionRegistry;)Z
+	public static final fun viewModelScopeFactory ()Lkotlin/Pair;
+}
+
 public class org/koin/core/parameter/ParametersHolder {
 	public fun <init> ()V
 	public fun <init> (Ljava/util/List;Ljava/lang/Boolean;)V
@@ -483,6 +501,10 @@ public final class org/koin/core/registry/InstanceRegistry {
 	public final fun size ()I
 }
 
+public final class org/koin/core/registry/OptionRegistry {
+	public fun <init> ()V
+}
+
 public final class org/koin/core/registry/PropertyRegistry {
 	public fun <init> (Lorg/koin/core/Koin;)V
 	public final fun close ()V
@@ -500,8 +522,8 @@ public final class org/koin/core/registry/PropertyRegistryExtKt {
 public final class org/koin/core/registry/ScopeRegistry {
 	public static final field Companion Lorg/koin/core/registry/ScopeRegistry$Companion;
 	public fun <init> (Lorg/koin/core/Koin;)V
-	public final fun createScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;)Lorg/koin/core/scope/Scope;
-	public static synthetic fun createScope$default (Lorg/koin/core/registry/ScopeRegistry;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
+	public final fun createScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;)Lorg/koin/core/scope/Scope;
+	public static synthetic fun createScope$default (Lorg/koin/core/registry/ScopeRegistry;Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;ILjava/lang/Object;)Lorg/koin/core/scope/Scope;
 	public final fun getRootScope ()Lorg/koin/core/scope/Scope;
 	public final fun getScopeDefinitions ()Ljava/util/Set;
 	public final fun getScopeOrNull (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
@@ -512,9 +534,24 @@ public final class org/koin/core/registry/ScopeRegistry$Companion {
 	public final fun getRootScopeQualifier ()Lorg/koin/core/qualifier/StringQualifier;
 }
 
+public final class org/koin/core/resolution/CoreResolver : org/koin/core/resolution/InstanceResolver {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+}
+
+public final class org/koin/core/resolution/CoreResolverKt {
+	public static final fun flatten (Ljava/util/List;)Ljava/util/Set;
+}
+
+public abstract interface class org/koin/core/resolution/ResolutionExtension {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun resolve (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
+}
+
 public final class org/koin/core/scope/Scope {
-	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;ZLorg/koin/core/Koin;)V
-	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;ZLorg/koin/core/Koin;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;ZLorg/koin/core/qualifier/TypeQualifier;Lorg/koin/core/Koin;)V
+	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;ZLorg/koin/core/qualifier/TypeQualifier;Lorg/koin/core/Koin;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun close ()V
 	public final fun get (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static synthetic fun get$default (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
@@ -529,6 +566,7 @@ public final class org/koin/core/scope/Scope {
 	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getPropertyOrNull (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
+	public final fun getScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
 	public final fun getScopeQualifier ()Lorg/koin/core/qualifier/Qualifier;
 	public final fun getSourceValue ()Ljava/lang/Object;
 	public final fun getWithParameters (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/parameter/ParametersHolder;)Ljava/lang/Object;
@@ -574,6 +612,7 @@ public final class org/koin/dsl/KoinApplicationKt {
 
 public final class org/koin/dsl/KoinConfiguration {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final fun getAppDeclaration ()Lkotlin/jvm/functions/Function1;
 	public final fun getConfig ()Lkotlin/jvm/functions/Function1;
 	public final fun invoke ()Lkotlin/jvm/functions/Function1;
 }

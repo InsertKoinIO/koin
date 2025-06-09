@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,16 +10,22 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.scope.KoinActivityScope
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.koinInject
 import org.koin.compose.module.rememberKoinModules
+import org.koin.compose.scope.KoinScope
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
 import org.koin.sample.androidx.compose.data.MyFactory
 import org.koin.sample.androidx.compose.data.MyInnerFactory
 import org.koin.sample.androidx.compose.data.MyScoped
 import org.koin.sample.androidx.compose.data.MySingle
+import org.koin.sample.androidx.compose.di.appModule
 import org.koin.sample.androidx.compose.di.secondModule
 import org.koin.sample.androidx.compose.viewmodel.SSHViewModel
 import org.koin.sample.androidx.compose.viewmodel.UserViewModel
@@ -78,6 +85,26 @@ fun MyScreen() {
         }
     }
 }
+@OptIn(KoinExperimentalAPI::class)
+@Preview(name = "1 - Pixel 2 XL", device = Devices.PIXEL_2_XL, locale = "en")
+@Preview(name = "2 - Pixel 5", device = Devices.PIXEL_5, locale = "en", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "3 - Pixel 7 ", device = Devices.PIXEL_7, locale = "ru", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun previewVMComposable(){
+    KoinApplicationPreview(application = { modules(appModule) }) {
+        ViewModelComposable()
+    }
+}
+
+@OptIn(KoinExperimentalAPI::class)
+@Preview(name = "3 - Pixel 7 ", device = Devices.PIXEL_7, locale = "ru", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "4 - Pixel 7 Pro", device = Devices.PIXEL_7_PRO, locale = "fr")
+@Composable
+fun previewSingleComposable(){
+    KoinApplicationPreview(application = { modules(appModule) }) {
+        SingleComposable()
+    }
+}
 
 @Composable
 fun ViewModelComposable(
@@ -90,8 +117,8 @@ fun ViewModelComposable(
         clickComponent("ViewModel", myViewModel.id, parentStatus) {
             ButtonForCreate("-X- ViewModel") { created = !created }
         }
-        Text(text = "ViewModel - lastIds: " + myViewModel.lastIds)
-        myViewModel.saveId()
+//        Text(text = "ViewModel - lastIds: " + myViewModel.lastIds)
+//        myViewModel.saveId()
     } else {
         ButtonForCreate("(+) ViewModel") { created = !created }
     }
@@ -125,7 +152,7 @@ fun FactoryComposable(
     if (created) {
         clickComponent("Factory", myFactory.id, parentStatus) {
 
-            KoinActivityScope {
+            KoinScope<MyFactory>("factory_"+myFactory.id) {
                 InnerFactoryComposable(parentStatus)
                 ScopeComposable("SC_1", parentStatus)
                 ScopeComposable("SC_2", parentStatus)

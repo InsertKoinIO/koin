@@ -1,12 +1,22 @@
 package org.koin.sample.sandbox.di
 
-import org.koin.androidx.fragment.dsl.fragmentOf
 // 4.0 deprecations
 //import org.koin.androidx.viewmodel.dsl.viewModel
 //import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.androidx.fragment.dsl.fragmentOf
+import org.koin.androidx.scope.dsl.activityRetainedScope
+import org.koin.androidx.scope.dsl.activityScope
+import org.koin.androidx.scope.dsl.fragmentScope
 import org.koin.androidx.workmanager.dsl.workerOf
-import org.koin.core.module.dsl.*
-import org.koin.core.module.includes
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.named
+import org.koin.core.module.dsl.onClose
+import org.koin.core.module.dsl.scopedOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.moduleConfiguration
 import org.koin.core.qualifier.named
 import org.koin.dsl.lazyModule
 import org.koin.dsl.module
@@ -19,19 +29,26 @@ import org.koin.sample.sandbox.components.main.SimpleService
 import org.koin.sample.sandbox.components.main.SimpleServiceImpl
 import org.koin.sample.sandbox.components.mvp.FactoryPresenter
 import org.koin.sample.sandbox.components.mvp.ScopedPresenter
-import org.koin.sample.sandbox.components.mvvm.*
+import org.koin.sample.sandbox.components.mvvm.AbstractViewModel
+import org.koin.sample.sandbox.components.mvvm.MVVMPresenter1
+import org.koin.sample.sandbox.components.mvvm.MVVMPresenter2
+import org.koin.sample.sandbox.components.mvvm.MyScopeViewModel
+import org.koin.sample.sandbox.components.mvvm.MyScopeViewModel2
+import org.koin.sample.sandbox.components.mvvm.SavedStateBundleViewModel
+import org.koin.sample.sandbox.components.mvvm.SavedStateViewModel
+import org.koin.sample.sandbox.components.mvvm.SharedVM
+import org.koin.sample.sandbox.components.mvvm.SimpleViewModel
+import org.koin.sample.sandbox.components.mvvm.ViewModelImpl
 import org.koin.sample.sandbox.components.scope.Session
 import org.koin.sample.sandbox.components.scope.SessionActivity
 import org.koin.sample.sandbox.components.scope.SessionConsumer
-import org.koin.sample.sandbox.mvp.MVPActivity
-import org.koin.sample.sandbox.mvvm.MVVMActivity
 import org.koin.sample.sandbox.mvvm.MVVMFragment
 import org.koin.sample.sandbox.navigation.NavViewModel
 import org.koin.sample.sandbox.navigation.NavViewModel2
-import org.koin.sample.sandbox.scope.ScopedActivityA
 import org.koin.sample.sandbox.scope.ScopedFragment
 import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
+import org.koin.viewmodel.scope.viewModelScope
 
 val appModule = module {
 
@@ -43,17 +60,20 @@ val appModule = module {
     factory { RandomId() }
 }
 
-val mvpModule = module {
+val mvpModule = lazyModule {
     //factory { (id: String) -> FactoryPresenter(id, get()) }
     factoryOf(::FactoryPresenter)
 
-    scope<MVPActivity> {
-        scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
-
+    activityScope {
+        scopedOf(::ScopedPresenter)
     }
+//    scope<MVPActivity> {
+//        scopedOf(::ScopedPresenter)// { (id: String) -> ScopedPresenter(id, get()) }
+//
+//    }
 }
 
-val mvvmModule = module {
+val mvvmModule = lazyModule {
 
     viewModelOf(::SimpleViewModel)// { (id: String) -> SimpleViewModel(id, get()) }
     viewModelOf(::SimpleViewModel) { named("vm1") } //{ (id: String) -> SimpleViewModel(id, get()) }
@@ -66,34 +86,53 @@ val mvvmModule = module {
     viewModelOf(::ViewModelImpl) { bind<AbstractViewModel>() }
 
     viewModelOf(::MyScopeViewModel)
-    scope<MyScopeViewModel> {
-        scopedOf(::Session)
-    }
-
     viewModelOf(::MyScopeViewModel2)
-    scope<MyScopeViewModel2> {
+
+    viewModelScope {
         scopedOf(::Session)
         scopedOf(::SessionConsumer)
     }
 
+//    scope<MyScopeViewModel> {
+//        scopedOf(::Session)
+//    }
+
+//
+//    scope<MyScopeViewModel2> {
+//        scopedOf(::Session)
+//        scopedOf(::SessionConsumer)
+//    }
+
     viewModelOf(::SavedStateViewModel) { named("vm2") }
 
-    viewModel { (s : Session) -> SharedVM(s)}
-    scope<MVVMActivity> {
+    viewModel { (s: Session) -> SharedVM(s) }
+
+    activityScope {
         scopedOf(::Session)
         fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
 
         scoped { MVVMPresenter1(get()) }
         scoped { MVVMPresenter2(get()) }
     }
-    scope<MVVMFragment> {
+    fragmentScope {
         scoped { (id: String) -> ScopedPresenter(id, get()) }
-        // to retrieve from parent
-//        scopedOf(::Session)
     }
+
+//    scope<MVVMActivity> {
+//        scopedOf(::Session)
+//        fragmentOf(::MVVMFragment) // { MVVMFragment(get()) }
+//
+//        scoped { MVVMPresenter1(get()) }
+//        scoped { MVVMPresenter2(get()) }
+//    }
+//    scope<MVVMFragment> {
+//        scoped { (id: String) -> ScopedPresenter(id, get()) }
+//        // to retrieve from parent
+////        scopedOf(::Session)
+//    }
 }
 
-val scopeModule = module {
+val scopeModule = lazyModule {
     scope(named(SCOPE_ID)) {
         scopedOf(::Session) {
             named(SCOPE_SESSION)
@@ -106,30 +145,41 @@ val scopeModule = module {
     }
 }
 
-val scopeModuleActivityA = module {
-    scope<ScopedActivityA> {
+val scopeModuleActivityA = lazyModule {
+    activityRetainedScope {
         fragmentOf(::ScopedFragment)
         scopedOf(::Session)
         scopedOf(::SessionActivity)
     }
-    scope<ScopedFragment> {
-
-    }
+//    scope<ScopedActivityA> {
+//        fragmentOf(::ScopedFragment)
+//        scopedOf(::Session)
+//        scopedOf(::SessionActivity)
+//    }
+//    scope<ScopedFragment> {
+//    }
 }
 
-val workerServiceModule = module {
+val workerServiceModule = lazyModule {
     singleOf(::SimpleWorkerService)
 }
 
-val workerScopedModule = module {
+val workerScopedModule = lazyModule {
     workerOf(::SimpleWorker)// { SimpleWorker(get(), androidContext(), it.get()) }
 }
 
-val navModule = module {
+val navModule = lazyModule {
     viewModelOf(::NavViewModel)
     viewModelOf(::NavViewModel2)
 }
 
-val allModules = module {
-    includes(appModule, mvpModule, mvvmModule , scopeModule , workerServiceModule , workerScopedModule , navModule , scopeModuleActivityA)
+val appModules = moduleConfiguration {
+    modules(appModule)
+    lazyModules(mvpModule,
+        mvvmModule,
+        scopeModule,
+        workerServiceModule,
+        workerScopedModule,
+        navModule,
+        scopeModuleActivityA)
 }

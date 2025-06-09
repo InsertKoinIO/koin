@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -10,8 +8,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-val androidCompileSDK : String by project
-val androidMinSDK : String by project
+val androidCompileSDK: String by project
+val androidMinSDK: String by project
 
 android {
     namespace = "org.koin.androidx.compose.navigation"
@@ -30,6 +28,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 tasks.withType<KotlinCompile>().all {
@@ -40,8 +41,7 @@ tasks.withType<KotlinCompile>().all {
 
 dependencies {
     api(project(":compose:koin-androidx-compose"))
-//    api(project(":core:koin-core-viewmodel-navigation"))
-    api(libs.androidx.composeNavigation)
+//    api(libs.androidx.composeNavigation)
 }
 
 // android sources

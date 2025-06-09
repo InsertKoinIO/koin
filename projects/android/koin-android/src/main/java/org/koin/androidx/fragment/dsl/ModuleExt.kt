@@ -19,11 +19,11 @@ import androidx.fragment.app.Fragment
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.new
 import org.koin.core.qualifier.Qualifier
 
 /**
- * ViewModel DSL Extension
- * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
+ * Fragment Constructor DSL
  *
  * @author Arnaud Giuliani
  *

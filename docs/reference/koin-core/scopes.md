@@ -132,12 +132,12 @@ val componentB = myScope.get<ComponentB>()
 ```
 
 :::info
- By default, all scope fallback to resolve in main scope if no definition is found in the current scope
+ By default, all scopes fallback to resolve in the main scope if no definition is found in the current scope
 :::
 
 ### Close a scope
 
-Once your scope instance is finished, just closed it with the `close()` function:
+Once you are finished with your scope instance, just close it with the `close()` function:
 
 ```kotlin
 // from a KoinComponent
@@ -213,5 +213,25 @@ val b = a.scope.get<B>()
 a.scope.linkTo(b.scope)
 // we got the same C instance from A or B scope
 assertTrue(a.scope.get<C>() == b.scope.get<C>())
+```
+
+### Scope Archetypes
+
+Scope "Archetypes" are scope spaces for a generic kind of classes. For example, you can have Scope Archetypes for Android (Activity, Fragment, ViewModel) or even Ktor (RequestScope).
+Scope Archetype is Koin's `TypeQualifier` pass to different APIs, to request scope space for a given
+
+An archetype consists of:
+- Module DSL extension, to declare a scope for a given type:
+```kotlin
+// Declare a scope archetype for ActivityScopeArchetype (TypeQualifier(AppCompatActivity::class)
+fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
+    val qualifier = ActivityScopeArchetype
+    ScopeDSL(qualifier, this).apply(scopeSet)
+}
+```
+- An API that requests a Scope with the given specific Scope Archetype TypeQualifier:
+```kotlin
+// Create scope with ActivityScopeArchetype archetype
+val scope = getKoin().createScope(getScopeId(), getScopeName(), this, ActivityScopeArchetype)
 ```
 

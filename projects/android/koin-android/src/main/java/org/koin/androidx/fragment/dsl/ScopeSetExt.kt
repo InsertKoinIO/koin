@@ -22,9 +22,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.ScopeDSL
 
 /**
- * ViewModel DSL Extension
- * Allow to declare a ViewModel - be later inject into Activity/Fragment with dedicated injector
- *
+ * Fragment Constructor DSL
  * @author Arnaud Giuliani
  *
  * @param qualifier - definition qualifier

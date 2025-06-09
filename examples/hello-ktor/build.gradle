@@ -10,8 +10,8 @@ dependencies {
 
     implementation "io.insert-koin:koin-ktor:$koin_version"
     implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
-    implementation("org.slf4j:slf4j-api:2.0.13") // Adjust version as needed
-    implementation "ch.qos.logback:logback-classic:1.5.6"
+    implementation("org.slf4j:slf4j-api:2.0.16") // Adjust version as needed
+    implementation "ch.qos.logback:logback-classic:1.5.16"
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"

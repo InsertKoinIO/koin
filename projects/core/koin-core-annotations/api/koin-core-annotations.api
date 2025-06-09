@@ -1,0 +1,6 @@
+public abstract interface annotation class org/koin/core/annotation/InjectedParam : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/koin/core/annotation/Provided : java/lang/annotation/Annotation {
+}
+
