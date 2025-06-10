@@ -32,17 +32,6 @@ Here are the current available Koin project versions:
 - Blog: [Koin Developers](https://blog.insert-koin.io)
 - Newsletter: [Koin Newsletter](https://bit.ly/koin_newsletter)
 
-## Koin Tutorials 🚀
-
-You can find here tutorials to help you learn and get started with Koin framework:
-- [Kotlin](https://insert-koin.io/docs/quickstart/kotlin)
-- [Kotlin with Koin Annotations](https://insert-koin.io/docs/quickstart/kotlin-annotations)
-- [Android](https://insert-koin.io/docs/quickstart/android-viewmodel)
-- [Android with Koin Annotations](https://insert-koin.io/docs/quickstart/android-annotations)
-- [Android Jetpack Compose](https://insert-koin.io/docs/quickstart/android-compose)
-- [Kotlin Multiplatform](https://insert-koin.io/docs/quickstart/kmp)
-- [Ktor](https://insert-koin.io/docs/quickstart/ktor)
-
 ## Community 💬
 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
