@@ -26,20 +26,20 @@ Take a look at:
 - [Versioning](https://insert-koin.io/docs/support/)
 - [API Stability](https://insert-koin.io/docs/support/api-stability)
 
-## Developer Tools 🛠️
-
-- **Koin Plugin** can be freely downloaded on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
-> The pragmatic Kotlin and Kotlin Multiplatform Dependency Injection framework now with native support for IntelliJ IDEA and Android Studio. The primary goal of the plugin is to provide real-time configuration safety, with other connected features.
-
-- **Kotzilla Platform** Free signup on [Kotzilla](https://kotzilla.io)
-> is a console-based suite with connected cloud services that visualizes your Koin module structure, monitors runtime performance and memory metrics, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects. 
-
 ## Community & Enterprise Support 💬
 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
 - Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
 - Found a bug or a problem? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 - Opt into [Koin 3.5 LTS](https://kotzilla.io/koin-lts) SLA-backed updates, long-term maintenance, and direct access to Kotzilla experts
+
+## Developer Tools 🛠️
+
+- **Koin Plugin** can be freely downloaded on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
+> The pragmatic Kotlin and Kotlin Multiplatform Dependency Injection framework now with native support for IntelliJ IDEA and Android Studio.
+
+- **Kotzilla Platform** Free signup on [Kotzilla](https://kotzilla.io)
+> is a console-based suite with connected cloud services that visualizes your Koin module structure, monitors runtime performance and memory metrics, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects. 
 
 ## Latest News & Resources 🌐
 - Official Website: [insert-koin.io](https://insert-koin.io)
