@@ -26,7 +26,7 @@ Take a look at:
 - [Versioning](https://insert-koin.io/docs/support/)
 - [API Stability](https://insert-koin.io/docs/support/api-stability)
 
-## Koin Tooling for Kotlin Development 🛠️
+## Developer Tools 🛠️
 
 - **Koin Plugin** can be freely downloaded on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
 > The pragmatic Kotlin and Kotlin Multiplatform Dependency Injection framework now with native support for IntelliJ IDEA and Android Studio. The primary goal of the plugin is to provide real-time configuration safety, with other connected features.
@@ -34,7 +34,7 @@ Take a look at:
 - **Kotzilla Platform** Free signup on [Kotzilla](https://kotzilla.io)
 > is a console-based suite with connected cloud services that visualizes your Koin module structure, monitors runtime performance and memory metrics, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects. 
 
-## Koin Community & Enterprise Support 💬
+## Community & Enterprise Support 💬
 
 - Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
 - Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
