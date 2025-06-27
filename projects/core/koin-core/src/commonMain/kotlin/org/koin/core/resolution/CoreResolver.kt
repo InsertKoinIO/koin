@@ -131,8 +131,7 @@ class CoreResolver(
         val parentScope = flatten(scope.linkedScopes)
         return parentScope.firstNotNullOfOrNull {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in scope '${it.id}'")
-            val instanceContext = if (!it.isRoot) ctx.newContextForScope(it) else ctx
-            resolveFromContextOrNull(it, instanceContext, lookupParent = false)
+            resolveFromContextOrNull(it, ctx, lookupParent = false)
         }
     }
 
