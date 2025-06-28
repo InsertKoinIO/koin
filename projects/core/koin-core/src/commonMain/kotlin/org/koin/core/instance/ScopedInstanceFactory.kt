@@ -25,15 +25,17 @@ import org.koin.mp.KoinPlatformTools
  * Scope instance holder
  * @author Arnaud Giuliani
  */
+import java.util.concurrent.ConcurrentHashMap
+
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :
     InstanceFactory<T>(beanDefinition) {
 
-    private var values = hashMapOf<ScopeID, T>()
+    private val values = ConcurrentHashMap<ScopeID, T>()
 
-    fun size() = values.size
+    fun size(): Int = values.size
 
     @PublishedApi
-    internal fun saveValue(id : ScopeID, value : T){
+    internal fun saveValue(id: ScopeID, value: T) {
         values[id] = value
     }
 
@@ -41,27 +43,21 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
 
     override fun drop(scope: Scope?) {
         scope?.let {
-            beanDefinition.callbacks.onClose?.invoke(values[it.id])
-            values.remove(it.id)
+            val removedValue = values.remove(it.id)
+            beanDefinition.callbacks.onClose?.invoke(removedValue)
         }
     }
 
     override fun create(context: ResolutionContext): T {
-        return if (values[context.scope.id] == null) {
-            super.create(context)
-        } else {
-            values[context.scope.id] ?: throw MissingScopeValueException("Factory.create - Scoped instance not found for ${context.scope.id} in $beanDefinition")
-        }
+        return values[context.scope.id] ?: super.create(context)
     }
 
     override fun get(context: ResolutionContext): T {
         if (context.scope.scopeQualifier != beanDefinition.scopeQualifier && context.scopeArchetype != beanDefinition.scopeQualifier) {
             error("Wrong Scope qualifier: trying to open instance for ${context.scope.id} in $beanDefinition")
         }
-        KoinPlatformTools.synchronized(this) {
-            if (!isCreated(context) && holdInstance) {
-                values[context.scope.id] = super.create(context)
-            }
+        if (!isCreated(context) && holdInstance) {
+            values[context.scope.id] = super.create(context)
         }
         return values[context.scope.id] ?: throw MissingScopeValueException("Factory.get -Scoped instance not found for ${context.scope.id} in $beanDefinition")
     }
