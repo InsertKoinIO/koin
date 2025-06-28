@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :
     InstanceFactory<T>(beanDefinition) {
 
-    private val values = ConcurrentHashMap<ScopeID, T>()
+    private val values = KoinPlatformTools.safeHashMap<ScopeID, T>()
 
     fun size(): Int = values.size
 
