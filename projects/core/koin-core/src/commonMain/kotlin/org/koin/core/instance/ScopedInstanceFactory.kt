@@ -32,10 +32,10 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
 
     private val values = KoinPlatformTools.safeHashMap<ScopeID, T>()
 
-    fun size(): Int = values.size
+    fun size() = values.size
 
     @PublishedApi
-    internal fun saveValue(id: ScopeID, value: T) {
+    internal fun saveValue(id : ScopeID, value : T){
         values[id] = value
     }
 
@@ -43,13 +43,17 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
 
     override fun drop(scope: Scope?) {
         scope?.let {
-            val removedValue = values.remove(it.id)
-            beanDefinition.callbacks.onClose?.invoke(removedValue)
+            beanDefinition.callbacks.onClose?.invoke(values[it.id])
+            values.remove(it.id)
         }
     }
 
     override fun create(context: ResolutionContext): T {
-        return values[context.scope.id] ?: super.create(context)
+        return if (values[context.scope.id] == null) {
+            super.create(context)
+        } else {
+            values[context.scope.id] ?: throw MissingScopeValueException("Factory.create - Scoped instance not found for ${context.scope.id} in $beanDefinition")
+        }
     }
 
     override fun get(context: ResolutionContext): T {
@@ -61,11 +65,9 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
         }
         return values[context.scope.id] ?: throw MissingScopeValueException("Factory.get -Scoped instance not found for ${context.scope.id} in $beanDefinition")
     }
-
     override fun dropAll() {
         values.clear()
     }
-
     @Suppress("UNCHECKED_CAST")
     fun refreshInstance(scopeID: ScopeID, instance: Any) {
         values[scopeID] = instance as T
