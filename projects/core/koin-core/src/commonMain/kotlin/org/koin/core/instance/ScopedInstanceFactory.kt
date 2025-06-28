@@ -25,8 +25,6 @@ import org.koin.mp.KoinPlatformTools
  * Scope instance holder
  * @author Arnaud Giuliani
  */
-import java.util.concurrent.ConcurrentHashMap
-
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :
     InstanceFactory<T>(beanDefinition) {
 
