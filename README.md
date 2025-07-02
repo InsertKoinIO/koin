@@ -33,7 +33,7 @@ Take a look at:
 - Found a bug or a problem? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
 - Opt into [Koin 3.5 LTS](https://kotzilla.io/koin-lts) SLA-backed updates, long-term maintenance, and direct access to Kotzilla experts
 
-## Developer Tools 🛠️
+## Debugging & Performance Monitoring 🛠️
 
 - **Koin Plugin** can be freely downloaded on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
 > The pragmatic Kotlin and Kotlin Multiplatform Dependency Injection framework now with native support for IntelliJ IDEA and Android Studio.
