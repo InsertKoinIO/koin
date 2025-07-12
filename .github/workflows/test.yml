@@ -21,7 +21,7 @@ jobs:
         uses: ./.github/actions/prepare-env
 
       - name: Install
-        run: cd projects && ./install.sh
+        run: cd projects && ./install.sh && ./test.sh
 
       - name: Test Examples
         run: cd examples && ./test.sh
