@@ -5,6 +5,7 @@ import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getOrCreateScope
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.logger.Level
 import org.koin.core.module.dsl.scopedOf
@@ -20,6 +21,11 @@ class ScopeTest {
 
     private class A
     private class B
+
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
+    }
 
     @Test
     fun scope_component() {
@@ -45,8 +51,8 @@ class ScopeTest {
         }
 
         with(SubClass()) {
-            assertTrue { a is A }
-            assertTrue { b is B }
+            assertIs<A>(a)
+            assertIs<B>(b)
         }
     }
 
