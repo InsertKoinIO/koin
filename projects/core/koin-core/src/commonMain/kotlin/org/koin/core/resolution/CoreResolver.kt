@@ -121,7 +121,18 @@ class CoreResolver(
     private fun <T> resolveFromParentScopes(scope: Scope, ctx: ResolutionContext): T? {
         if (scope.isRoot) return null
         ctx.logger.debug("|- ? ${ctx.debugTag} look in other scopes")
-        return findInOtherScope(scope,ctx)
+        return getFromLinkedScopes(scope, ctx) ?: findInOtherScope(scope, ctx)
+    }
+
+    private fun <T> getFromLinkedScopes(
+        scope: Scope,
+        ctx: ResolutionContext,
+    ): T? {
+        val parentScope = flatten(scope.linkedScopes)
+        return parentScope.firstNotNullOfOrNull {
+            ctx.logger.debug("|- ? ${ctx.debugTag} get from scope '${it.id}'")
+            it.getOrNull(ctx)
+        }
     }
 
     private fun <T> findInOtherScope(
@@ -130,7 +141,7 @@ class CoreResolver(
     ): T? {
         val parentScope = flatten(scope.linkedScopes)
         return parentScope.firstNotNullOfOrNull {
-            ctx.logger.debug("|- ? ${ctx.debugTag} look in scope '${it.id}'")
+            ctx.logger.debug("|- ? ${ctx.debugTag} resolve from scope '${it.id}'")
             val instanceContext = if (!it.isRoot) ctx.newContextForScope(it) else ctx
             resolveFromContextOrNull(it, instanceContext, lookupParent = false)
         }
