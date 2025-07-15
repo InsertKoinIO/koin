@@ -17,6 +17,9 @@ if (isReleaseBuild()) {
     tasks.matching { it.name.endsWith("ToSonatypeRepository") }.configureEach {
         dependsOn(tasks.withType<Sign>())
     }
+    tasks.matching { it.name.endsWith("ToNmcpRepository") }.configureEach {
+        dependsOn(tasks.withType<Sign>())
+    }
 
     configure<SigningExtension> {
         useInMemoryPgpKeys(

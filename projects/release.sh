@@ -1,4 +1,3 @@
 #!/bin/sh
 
-./gradlew publishToSonatype
-
+./gradlew publishAggregationToCentralPortal --no-configuration-cache
