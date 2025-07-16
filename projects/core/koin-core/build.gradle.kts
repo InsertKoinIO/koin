@@ -6,6 +6,7 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(8)
     jvm()
 
     js(IR) {
@@ -55,8 +56,8 @@ kotlin {
 
 tasks.withType<KotlinCompile>().all {
     compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
-        }
+        jvmTarget.set(JvmTarget.JVM_1_8)
+    }
 }
 
 apply(from = file("../../gradle/publish.gradle.kts"))
