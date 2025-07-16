@@ -41,7 +41,7 @@ inline fun <reified T : ViewModel> koinActivityViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): T = koinViewModel<T>(
     qualifier = qualifier,
-    viewModelStoreOwner = LocalActivity as ComponentActivity,
+    viewModelStoreOwner = LocalActivity.current as ComponentActivity,
     key = key,
     scope = scope,
     parameters = parameters,
