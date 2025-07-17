@@ -6,6 +6,7 @@ include 'jvm-perfs'
 include 'android-perfs'
 // ktor
 include 'hello-ktor'
+include 'ktor-di-sample'
 
 // Compose
 include 'sample-android-compose'

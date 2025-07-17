@@ -1,0 +1,31 @@
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+archivesBaseName = 'ktor-di-sample'
+mainClassName = 'org.koin.sample.ApplicationKt'
+
+dependencies {
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-server-call-logging:$ktor_version"
+    implementation "io.ktor:ktor-server-di:$ktor_version"
+
+    // Use local Koin project dependencies
+    implementation "io.insert-koin:koin-ktor"
+    implementation "io.insert-koin:koin-logger-slf4j"
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation "ch.qos.logback:logback-classic:1.5.16"
+
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
+    testImplementation "io.insert-koin:koin-test"
+    testImplementation "io.insert-koin:koin-test-junit4"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
+}
