@@ -75,7 +75,7 @@ class CoreResolver(
             ?: resolveFromStackedParameters(scope,instanceContext)
             ?: resolveFromScopeSource(scope,instanceContext)
             ?: resolveFromScopeArchetype(scope,instanceContext)
-            ?: if (lookupParent) resolveFromParentScopes(scope,instanceContext) else null
+            ?: (if (lookupParent) resolveFromParentScopes(scope,instanceContext) else null)
             ?: resolveInExtensions(scope,instanceContext)
     }
 

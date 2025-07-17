@@ -39,7 +39,7 @@ mockito = "4.8.0"
 mockk = "1.13.16"
 robolectric = "4.14.1"
 # Ktor
-ktor = "3.1.3"
+ktor = "3.2.1"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
@@ -73,7 +73,7 @@ androidx-startup = {module ="androidx.startup:startup-runtime", version.ref = "a
 
 # Ktor
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
-#ktor-core-di = { module = "io.ktor:ktor-server-di", version.ref = "ktor" }
+ktor-core-di = { module = "io.ktor:ktor-server-di", version.ref = "ktor" }
 ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
