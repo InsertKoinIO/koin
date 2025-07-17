@@ -248,7 +248,7 @@ fun flatten(modules: List<Module>): Set<Module> {
         }
 
         // Add all the included modules to the stack if they haven't been visited yet.
-        for (module in current.includedModules) {
+        for (module in current.includedModules.asReversed()) {
             if (module !in flatten) {
                 stack += module
             }
