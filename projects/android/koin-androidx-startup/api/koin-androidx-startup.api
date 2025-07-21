@@ -1,11 +1,11 @@
-public final class org/koin/androix/startup/KoinInitializer : androidx/startup/Initializer {
+public final class org/koin/androidx/startup/KoinInitializer : androidx/startup/Initializer {
 	public fun <init> ()V
 	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
 	public fun create (Landroid/content/Context;)Lorg/koin/core/Koin;
 	public fun dependencies ()Ljava/util/List;
 }
 
-public abstract interface class org/koin/androix/startup/KoinStartup {
+public abstract interface class org/koin/androidx/startup/KoinStartup {
 	public abstract fun onKoinStartup ()Lorg/koin/dsl/KoinConfiguration;
 }
 
