@@ -7,7 +7,7 @@ ext {
     koin_compose_version = koin_version
 
     coroutines_version = "1.9.0"
-    ktor_version = "3.2.1"
+    ktor_version = "3.2.2"
     jb_compose_version = "1.8.0"
 
     // Test
