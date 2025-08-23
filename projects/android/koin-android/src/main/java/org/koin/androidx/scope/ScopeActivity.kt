@@ -16,21 +16,21 @@
 package org.koin.androidx.scope
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.scope.Scope
 
 /**
  * ScopeActivity
  *
- * AppCompatActivity, allow to create & destroy tied Koin scope
+ * ComponentActivity, allow to create & destroy tied Koin scope
  *
  * @author Arnaud Giuliani
  */
 abstract class ScopeActivity(
     @LayoutRes contentLayoutId: Int = 0,
-) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+) : ComponentActivity(contentLayoutId), AndroidScopeComponent {
 
     override val scope: Scope by activityScope()
 

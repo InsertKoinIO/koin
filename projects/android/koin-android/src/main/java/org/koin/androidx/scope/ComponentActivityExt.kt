@@ -45,7 +45,7 @@ fun ComponentActivity.getScopeOrNull(): Scope? = getKoin().getScopeOrNull(getSco
 
 
 /**
- * Create Scope for AppCompatActivity, given it's extending AndroidScopeComponent.
+ * Create Scope for ComponentActivity, given it's extending AndroidScopeComponent.
  * Also register it in AndroidScopeComponent.scope
  */
 fun ComponentActivity.createActivityScope(): Scope {
@@ -80,7 +80,7 @@ internal fun LifecycleOwner.registerScopeForLifecycle(
 }
 
 /**
- * Create Retained Scope for AppCompatActivity, given it's extending AndroidScopeComponent.
+ * Create Retained Scope for ComponentActivity, given it's extending AndroidScopeComponent.
  * Also register it in AndroidScopeComponent.scope
  */
 fun ComponentActivity.createActivityRetainedScope(): Scope {
