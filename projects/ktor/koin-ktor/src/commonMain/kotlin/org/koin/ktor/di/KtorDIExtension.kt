@@ -15,25 +15,29 @@
  */
 package org.koin.ktor.di
 
-//import io.ktor.server.application.Application
-//import io.ktor.server.plugins.di.DependencyKey
-//import io.ktor.server.plugins.di.dependencies
-//import io.ktor.server.plugins.di.getOrNull
-//import io.ktor.util.reflect.TypeInfo
-//import org.koin.core.instance.ResolutionContext
-//import org.koin.core.resolution.ResolutionExtension
-//import org.koin.core.scope.Scope
-//
-///**
-// * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects
-// *
-// * @author Arnaud Giuliani
-// */
-//TODO Ktor 3.2 - @see setupKoinApplication()
-//internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
-//    override val name: String = "ktor-di"
-//    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
-//        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
-//        return application.dependencies.getOrNull(key)
-//    }
-//}
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.DependencyKey
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.util.reflect.TypeInfo
+import org.koin.core.instance.ResolutionContext
+import org.koin.core.resolution.ResolutionExtension
+import org.koin.core.scope.Scope
+import kotlinx.coroutines.runBlocking
+
+/**
+ * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects
+ *
+ * @author Arnaud Giuliani
+ */
+internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
+    override val name: String = "ktor-di"
+    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
+        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
+        // runBlocking is required here because Ktor DI's get() function is suspend
+        // The blocking call is generally safe as dependency resolution is typically fast and non-blocking
+        // WARNING: This may cause problems for users as it can impact performance
+        return runBlocking {
+            application.dependencies.get(key)
+        }
+    }
+}
