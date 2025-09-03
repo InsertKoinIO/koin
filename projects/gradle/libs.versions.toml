@@ -3,29 +3,29 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 binaryValidator = "0.18.1"
 publish = "2.0.0"
 coroutines = "1.10.2"
 dokka = "2.0.0"
 uuid = "0.8.4"
-nmcp = "1.0.1"
+nmcp = "1.1.0"
 
 # Android
 agp = "8.7.3"
 android-appcompat = "1.7.1"
 android-activity = "1.10.1"
-android-fragment = "1.8.8"
-androidx-workmanager = "2.10.2"
+android-fragment = "1.8.9"
+androidx-workmanager = "2.10.3"
 androidx-startup = "1.2.0"
 
 # Lifecycle
-androidx-lifecycle = "2.9.1" # Keep in sync with "jb-lifecycle"
-jb-lifecycle = "2.9.1"
+androidx-lifecycle = "2.9.3" # Keep in sync with "jb-lifecycle"
+jb-lifecycle = "2.9.3"
 
 # Navigation
-androidx-navigation = "2.9.0" # Keep in sync with "jb-navigation"
-jb-navigation = "2.9.0-beta03"
+androidx-navigation = "2.9.3" # Keep in sync with "jb-navigation"
+jb-navigation = "2.9.0-rc01"
 
 # Compose
 #androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
@@ -39,7 +39,7 @@ mockito = "4.8.0"
 mockk = "1.13.16"
 robolectric = "4.15.1"
 # Ktor
-ktor = "3.2.2"
+ktor = "3.2.3"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
