@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.ktor.plugin
 
 import io.ktor.server.application.Application
@@ -27,6 +29,7 @@ import io.ktor.server.application.pluginOrNull
 import io.ktor.util.AttributeKey
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.core.KoinKtorApplication
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -34,7 +37,6 @@ import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.ModuleDeclaration
-import org.koin.ktor.di.KtorDIExtension
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -47,23 +49,27 @@ import org.koin.mp.KoinPlatformTools
  *
  */
 val Koin =
-    createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
+    createApplicationPlugin(
+        name = "Koin",
+        createConfiguration = { KoinKtorApplication.init() })
+    {
         val koinApplication = setupKoinApplication()
         KoinPlatformTools.defaultContext().getOrNull()?.let { stopKoin() } // for ktor auto-reload
         startKoin(koinApplication)
+
+        koinApplication.onPostStart()
+
         setupMonitoring(koinApplication)
         setupKoinScope(koinApplication)
     }
 
-@OptIn(KoinInternalApi::class)
-internal fun PluginBuilder<KoinApplication>.setupKoinApplication(): KoinApplication {
+internal fun PluginBuilder<KoinKtorApplication>.setupKoinApplication(): KoinKtorApplication {
     val koinApplication = pluginConfig
     koinApplication.createEagerInstances()
-    
-    // Register KtorDIExtension for Ktor DI integration
-    koinApplication.koin.resolver.addResolutionExtension(KtorDIExtension(application))
-    
+
+    koinApplication.ktorApplication = application
     application.setKoinApplication(koinApplication)
+
     return koinApplication
 }
 
@@ -75,7 +81,7 @@ fun Application.setKoinApplication(koinApplication: KoinApplication) {
     attributes.put(KOIN_ATTRIBUTE_KEY, koinApplication.koin)
 }
 
-internal fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: KoinApplication) {
+internal fun PluginBuilder<KoinKtorApplication>.setupMonitoring(koinApplication: KoinKtorApplication) {
     val monitor = application.monitor
     monitor.raise(KoinApplicationStarted, koinApplication)
     monitor.subscribe(ApplicationStopping) {
@@ -85,7 +91,7 @@ internal fun PluginBuilder<KoinApplication>.setupMonitoring(koinApplication: Koi
     }
 }
 
-internal fun PluginBuilder<KoinApplication>.setupKoinScope(koinApplication: KoinApplication) {
+internal fun PluginBuilder<KoinKtorApplication>.setupKoinScope(koinApplication: KoinKtorApplication) {
     // Scope Handling
     on(CallSetup) { call ->
         val scopeComponent = RequestScope(koinApplication.koin, call)

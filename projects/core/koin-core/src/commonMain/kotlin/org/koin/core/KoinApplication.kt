@@ -34,7 +34,7 @@ import kotlin.time.measureTime
  */
 @OptIn(KoinInternalApi::class)
 @KoinApplicationDslMarker
-class KoinApplication private constructor() {
+open class KoinApplication protected constructor() {
 
     val koin = Koin()
     private var allowOverride = true

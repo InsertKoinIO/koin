@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import org.junit.Test
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
@@ -41,7 +42,7 @@ class KtorDIBridgeTest {
     @Test
     fun `should access both dependencies in mixed mode via dependencies delegate`() = testApplication {
         application {
-            bridgeModule()
+            bridgeModule(ktorToKoin = true)
         }
 
         val response = client.get("/mixed-ktor-di")
@@ -52,7 +53,7 @@ class KtorDIBridgeTest {
     @Test
     fun `should access both dependencies in mixed mode via inject delegate`() = testApplication {
         application {
-            bridgeModule()
+            bridgeModule(koinToKtor = true)
         }
 
         val response = client.get("/mixed-koin")
@@ -60,12 +61,19 @@ class KtorDIBridgeTest {
         assertEquals("Hello from Koin! - Processed by Ktor DI", response.bodyAsText())
     }
 
-    private fun Application.bridgeModule() {
+    private fun Application.bridgeModule(ktorToKoin : Boolean = false, koinToKtor : Boolean = false) {
         // Install Koin first
         install(Koin) {
+            printLogger(Level.DEBUG)
+
             modules(module {
-                single<HelloService> { HelloServiceImpl() }
+                single<HelloKoinService> { HelloServiceImpl() }
             })
+
+            bridge {
+                if (ktorToKoin) ktorToKoin()
+                if (koinToKtor) koinToKtor()
+            }
         }
 
         // Install Ktor DI and register dependencies
@@ -75,8 +83,8 @@ class KtorDIBridgeTest {
 
         routing {
             get("/koin") {
-                val helloService: HelloService by inject() // From koin
-                call.respond(helloService.sayHello())
+                val helloKoinService: HelloKoinService by inject() // From koin
+                call.respond(helloKoinService.sayHello())
             }
 
             get("/ktor-di") {
@@ -86,10 +94,10 @@ class KtorDIBridgeTest {
 
             get("/mixed-ktor-di") {
                 // Using both Koin and Ktor DI via dependencies delegate
-                val helloService: HelloService by dependencies // From Koin via Ktor DI
+                val helloKoinService: HelloKoinService by dependencies // From Koin via Ktor DI
                 val ktorService: KtorSpecificService by dependencies // From Ktor DI
                 try {
-                    call.respond("${helloService.sayHello()} - ${ktorService.process()}")
+                    call.respond("${helloKoinService.sayHello()} - ${ktorService.process()}")
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, "Error: ${e.message}")
                 }
@@ -98,10 +106,10 @@ class KtorDIBridgeTest {
 
             get("/mixed-koin") {
                 // Using both Koin and Ktor DI via inject delegate
-                val helloService: HelloService by inject() // From Koin
+                val helloKoinService: HelloKoinService by inject() // From Koin
                 val ktorService: KtorSpecificService by inject() // From Ktor DI via Koin
                 try {
-                    call.respond("${helloService.sayHello()} - ${ktorService.process()}")
+                    call.respond("${helloKoinService.sayHello()} - ${ktorService.process()}")
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, "Error: ${e.message}")
                 }
@@ -111,11 +119,11 @@ class KtorDIBridgeTest {
 
 }
 
-interface HelloService {
+interface HelloKoinService {
     fun sayHello(): String
 }
 
-class HelloServiceImpl : HelloService {
+class HelloServiceImpl : HelloKoinService {
     override fun sayHello(): String = "Hello from Koin!"
 }
 
