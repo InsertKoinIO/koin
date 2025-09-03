@@ -1,10 +1,10 @@
 package org.koin.sample.ktor.di
 
-interface HelloService {
+interface HelloKoinService {
     fun sayHello(): String
 }
 
-class HelloServiceImpl : HelloService {
+class HelloKoinServiceImpl : HelloKoinService {
     override fun sayHello(): String = "Hello from Koin!"
 }
 

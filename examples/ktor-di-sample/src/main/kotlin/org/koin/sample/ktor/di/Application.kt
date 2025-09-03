@@ -20,22 +20,28 @@ fun main() {
 
 fun Application.mainModule() {
     install(CallLogging)
-    
+
     install(Koin) {
         printLogger(Level.DEBUG)
+
+        bridge {
+            ktorToKoin()
+            koinToKtor()
+        }
+
         modules(module {
-            single<HelloService> { HelloServiceImpl() }
+            single<HelloKoinService> { HelloKoinServiceImpl() }
         })
     }
-    
+
     dependencies {
         provide<KtorSpecificService> { KtorSpecificServiceImpl() }
     }
 
     routing {
         get("/koin") {
-            val helloService: HelloService by inject() // From koin
-            call.respondText(helloService.sayHello())
+            val helloKoinService: HelloKoinService by inject() // From koin
+            call.respondText(helloKoinService.sayHello())
         }
         
         get("/ktor-di") {
@@ -44,17 +50,17 @@ fun Application.mainModule() {
         }
         
         get("/mixed-ktor-di") {
-            val helloService: HelloService by dependencies // From Koin via Ktor DI
+            val helloKoinService: HelloKoinService by dependencies // From Koin via Ktor DI
             val ktorService: KtorSpecificService by dependencies // From Ktor DI
             
-            call.respondText("${helloService.sayHello()} - ${ktorService.process()}")
+            call.respondText("${helloKoinService.sayHello()} - ${ktorService.process()}")
         }
 
         get("/mixed-koin") {
-            val helloService: HelloService by inject() // From Koin
+            val helloKoinService: HelloKoinService by inject() // From Koin
             val ktorService: KtorSpecificService by inject() // From Ktor Di via Koin
 
-            call.respondText("${helloService.sayHello()} - ${ktorService.process()}")
+            call.respondText("${helloKoinService.sayHello()} - ${ktorService.process()}")
         }
     }
 }

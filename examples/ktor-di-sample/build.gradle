@@ -12,6 +12,7 @@ dependencies {
     implementation "io.ktor:ktor-server-di:$ktor_version"
 
     // Use local Koin project dependencies
+    implementation platform("io.insert-koin:koin-bom:$koin_version")
     implementation "io.insert-koin:koin-ktor"
     implementation "io.insert-koin:koin-logger-slf4j"
     implementation("org.slf4j:slf4j-api:2.0.16")

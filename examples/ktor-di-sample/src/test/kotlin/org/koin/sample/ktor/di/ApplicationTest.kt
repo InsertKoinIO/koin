@@ -5,6 +5,9 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
 import org.junit.Test
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.logger.Level
+import org.koin.ktor.ext.getKoin
 import kotlin.test.assertEquals
 
 class ApplicationTest {
@@ -14,6 +17,8 @@ class ApplicationTest {
         application {
             mainModule()
         }
+
+        @OptIn(KoinInternalApi::class)
 
         val response = client.get("/koin")
 
