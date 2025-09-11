@@ -47,7 +47,7 @@ Take a look at:
 
 Kotzilla.io — the team behind [Koin](https://insert-koin.io) — offers **free monitoring** for any open source Android or KMP app using Koin and published on the Google Play Store.
 
-[👉 Apply for Free Monitoring]([https://forms.gle/YOUR-FORM-ID](https://bit.ly/koin_opensource_monitoring))
+👉 [Apply for Free Monitoring](https://bit.ly/koin_opensource_monitoring)
 
 ## Latest News & Resources 🌐
 - Official Website: [insert-koin.io](https://insert-koin.io)
