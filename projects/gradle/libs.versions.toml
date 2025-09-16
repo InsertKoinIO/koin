@@ -24,8 +24,8 @@ androidx-lifecycle = "2.9.3" # Keep in sync with "jb-lifecycle"
 jb-lifecycle = "2.9.3"
 
 # Navigation
-androidx-navigation = "2.9.3" # Keep in sync with "jb-navigation"
-jb-navigation = "2.9.0-rc02"
+androidx-navigation = "2.9.4" # Keep in sync with "jb-navigation"
+jb-navigation = "2.9.0"
 
 # Compose
 #androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
