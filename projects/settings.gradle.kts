@@ -53,6 +53,7 @@ include(
     // Android
     ":android:koin-android",
     ":android:koin-android-compat",
+    ":android:koin-dagger-bridge",
     ":android:koin-androidx-navigation",
     ":android:koin-androidx-workmanager",
     ":android:koin-android-test",
