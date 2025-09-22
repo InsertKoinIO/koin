@@ -18,6 +18,7 @@ android-activity = "1.10.1"
 android-fragment = "1.8.9"
 androidx-workmanager = "2.10.3"
 androidx-startup = "1.2.0"
+dagger = "2.56"
 
 # Lifecycle
 androidx-lifecycle = "2.9.3" # Keep in sync with "jb-lifecycle"
@@ -91,6 +92,8 @@ jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-
 #jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "jb-navigation" }
 # Benchmark
 benchmark-runtime = {module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "benchmark"}
+
+dagger-core = { module = "com.google.dagger:hilt-core", version.ref = "dagger" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
