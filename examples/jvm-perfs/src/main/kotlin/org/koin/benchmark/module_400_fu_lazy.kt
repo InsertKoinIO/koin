@@ -7,7 +7,6 @@ import org.koin.dsl.module
 
 @OptIn(KoinExperimentalAPI::class)
 fun perfModule400_LazyFu() = lazyModule {
-   println("Lazy Module - Koin Fu")
    single(::A1)
    single(::B1)
    single(::C1)

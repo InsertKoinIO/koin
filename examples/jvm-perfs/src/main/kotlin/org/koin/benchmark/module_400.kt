@@ -3,7 +3,6 @@ package org.koin.benchmark
 import org.koin.dsl.module
 
 fun perfModule400() = module {
-   println("Module - Gets")
    single { A1() }
    single { B1(get()) }
    single { C1(get(), get()) }
