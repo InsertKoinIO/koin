@@ -4,32 +4,33 @@
 
 # Core
 kotlin = "2.1.21"
-binaryValidator = "0.16.3"
+binaryValidator = "0.18.1"
 publish = "2.0.0"
 coroutines = "1.10.2"
 dokka = "2.0.0"
 uuid = "0.8.4"
-nmcp = "1.0.1"
+nmcp = "1.1.0"
 
 # Android
 agp = "8.7.3"
 android-appcompat = "1.7.1"
 android-activity = "1.10.1"
-android-fragment = "1.8.8"
-androidx-workmanager = "2.10.1"
+android-fragment = "1.8.9"
+androidx-workmanager = "2.10.3"
 androidx-startup = "1.2.0"
+dagger = "2.56"
 
 # Lifecycle
-androidx-lifecycle = "2.9.0" # Keep in sync with "jb-lifecycle"
-jb-lifecycle = "2.9.0-beta01"
+androidx-lifecycle = "2.9.3" # Keep in sync with "jb-lifecycle"
+jb-lifecycle = "2.9.3"
 
 # Navigation
-androidx-navigation = "2.9.0" # Keep in sync with "jb-navigation"
-jb-navigation = "2.9.0-beta01"
+androidx-navigation = "2.9.3" # Keep in sync with "jb-navigation"
+jb-navigation = "2.9.0-rc01"
 
 # Compose
 #androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
-jb-compose = "1.8.0"
+jb-compose = "1.8.2"
 
 # Test
 stately = "2.1.0"
@@ -37,13 +38,13 @@ junit = "4.13.2"
 jupiter = "5.11.2" #5.12.0 causing issues
 mockito = "4.8.0"
 mockk = "1.13.16"
-robolectric = "4.14.1"
+robolectric = "4.15.1"
 # Ktor
 ktor = "3.2.3"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
-benchmark = "0.4.13"
+benchmark = "0.4.14"
 
 [libraries]
 # Core
@@ -88,9 +89,11 @@ jb-composeViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-vie
 jb-lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "jb-lifecycle" }
 jb-lifecycleViewmodelSavedState = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "jb-lifecycle" }
 jb-composeNavigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jb-navigation" }
-jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "jb-navigation" }
+#jb-navigation = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "jb-navigation" }
 # Benchmark
 benchmark-runtime = {module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "benchmark"}
+
+dagger-core = { module = "com.google.dagger:hilt-core", version.ref = "dagger" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

@@ -28,7 +28,6 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.error.ClosedScopeException
 import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
 import org.koin.dsl.KoinAppDeclaration
@@ -40,15 +39,21 @@ import org.koin.mp.KoinPlatformTools
 /**
  * Current Koin Application context, as default with Default Koin context
  */
-val LocalKoinApplication: ProvidableCompositionLocal<Koin> = compositionLocalOf { getDefaultKoinContext() }
+@OptIn(KoinInternalApi::class)
+val LocalKoinApplication: ProvidableCompositionLocal<ComposeContextWrapper<Koin>> =
+    compositionLocalOf { ComposeContextWrapper(getDefaultKoinContext()) { getDefaultKoinContext() } }
+
+private fun getDefaultKoinContext() = KoinPlatform.getKoin()
 
 /**
  * Current Koin Scope, as default with Default Koin context root scope
  */
 @OptIn(KoinInternalApi::class)
-val LocalKoinScope: ProvidableCompositionLocal<Scope> = compositionLocalOf { getDefaultKoinContext().scopeRegistry.rootScope }
+val LocalKoinScope: ProvidableCompositionLocal<ComposeContextWrapper<Scope>> =
+    compositionLocalOf { ComposeContextWrapper(getDefaultRootScope()) { getDefaultRootScope() } }
 
-private fun getDefaultKoinContext() = KoinPlatform.getKoin()
+@OptIn(KoinInternalApi::class)
+private fun getDefaultRootScope() = KoinPlatform.getKoin().scopeRegistry.rootScope
 
 /**
  * Retrieve the current Koin application from the composition.
@@ -59,12 +64,10 @@ private fun getDefaultKoinContext() = KoinPlatform.getKoin()
 @Composable
 fun getKoin(): Koin = currentComposer.run {
     try {
-        consume(LocalKoinApplication)
+        consume(LocalKoinApplication).getValue()
     } catch (e: Exception) {
-        KoinPlatform.getKoinOrNull()?.let {
-            it.logger.debug("Error while accessing Koin context. Fallback on default context ...")
-            it
-        } ?: error("Can't get Koin context due to error:$e")
+        consume(LocalKoinApplication).resetValue()
+            ?: error("Can't get Koin context due to error: $e")
     }
 }
 
@@ -78,12 +81,12 @@ fun getKoin(): Koin = currentComposer.run {
 @Composable
 fun currentKoinScope(): Scope = currentComposer.run {
     try {
-        consume(LocalKoinScope)
-    } catch (e: ClosedScopeException) {
-        KoinPlatform.getKoinOrNull()?.let {
-            it.logger.debug("Error while accessing Koin scope. Fallback on default root scope...")
-            it.scopeRegistry.rootScope
-        } ?: error("Can't get Koin scope due to error:$e")
+        val currentScope = consume(LocalKoinScope).getValue()
+        if (currentScope.closed) consume(LocalKoinScope).resetValue() ?: error("Can't get Koin scope. Scope '$currentScope' is closed")
+        else currentScope
+    } catch (e: Exception) {
+        consume(LocalKoinScope).resetValue()
+            ?: error("Can't get Koin scope due to error: $e")
     }
 }
 
@@ -106,8 +109,8 @@ fun KoinApplication(
 ) {
     val koin = rememberKoinApplication(application)
     CompositionLocalProvider(
-        LocalKoinApplication provides koin,
-        LocalKoinScope provides koin.scopeRegistry.rootScope,
+        LocalKoinApplication provides ComposeContextWrapper(koin) { getDefaultKoinContext() },
+        LocalKoinScope provides ComposeContextWrapper(koin.scopeRegistry.rootScope) { getDefaultRootScope() },
         content = content
     )
 }
@@ -135,13 +138,13 @@ fun KoinApplication(
 @KoinExperimentalAPI
 fun KoinMultiplatformApplication(
     config: KoinConfiguration,
-    logLevel : Level = Level.INFO,
+    logLevel: Level = Level.INFO,
     content: @Composable () -> Unit
 ) {
-    val koin = rememberKoinMPApplication(config,logLevel)
+    val koin = rememberKoinMPApplication(config, logLevel)
     CompositionLocalProvider(
-        LocalKoinApplication provides koin,
-        LocalKoinScope provides koin.scopeRegistry.rootScope,
+        LocalKoinApplication provides ComposeContextWrapper(koin) { getDefaultKoinContext() },
+        LocalKoinScope provides ComposeContextWrapper(koin.scopeRegistry.rootScope) { getDefaultRootScope() },
         content = content
     )
 }
@@ -153,7 +156,10 @@ fun KoinMultiplatformApplication(
 @Composable
 @PublishedApi
 @KoinInternalApi
-internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Level.INFO, config : KoinConfiguration) : KoinConfiguration
+internal expect fun composeMultiplatformConfiguration(
+    loggerLevel: Level = Level.INFO,
+    config: KoinConfiguration
+): KoinConfiguration
 
 /**
  * Use Compose with current existing Koin context, by default 'KoinPlatform.getKoin()'
@@ -167,19 +173,19 @@ internal expect fun composeMultiplatformConfiguration(loggerLevel : Level = Leve
 @Composable
 @Deprecated("KoinContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
 fun KoinContext(
-    context: Koin = retrieveDefaultInstance(),
+    koin: Koin = retrieveDefaultInstance(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
-        LocalKoinApplication provides context,
-        LocalKoinScope provides context.scopeRegistry.rootScope,
+        LocalKoinApplication provides ComposeContextWrapper(koin) { getDefaultKoinContext() },
+        LocalKoinScope provides ComposeContextWrapper(koin.scopeRegistry.rootScope) { getDefaultRootScope() },
         content = content
     )
 }
 
 @Composable
 @Deprecated("KoinContext is not needed anymore. This can be removed. Compose Koin context is setup with StartKoin()")
-internal expect fun retrieveDefaultInstance() : Koin
+internal expect fun retrieveDefaultInstance(): Koin
 
 /**
  * Provides Koin Isolated context to be setup into LocalKoinApplication & LocalKoinScope via CompositionLocalProvider,
@@ -201,8 +207,8 @@ fun KoinIsolatedContext(
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
-        LocalKoinApplication provides context.koin,
-        LocalKoinScope provides context.koin.scopeRegistry.rootScope,
+        LocalKoinApplication provides ComposeContextWrapper(context.koin) { context.koin} ,
+        LocalKoinScope provides ComposeContextWrapper(context.koin.scopeRegistry.rootScope) { context.koin.scopeRegistry.rootScope } ,
         content = content
     )
 }
@@ -222,8 +228,8 @@ fun KoinApplicationPreview(
 ) {
     val context = koinApplication(application)
     CompositionLocalProvider(
-        LocalKoinApplication provides context.koin,
-        LocalKoinScope provides context.koin.scopeRegistry.rootScope,
+        LocalKoinApplication provides ComposeContextWrapper(context.koin) {context.koin},
+        LocalKoinScope provides ComposeContextWrapper(context.koin.scopeRegistry.rootScope) {context.koin.scopeRegistry.rootScope},
         content = content
     )
 }

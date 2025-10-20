@@ -53,6 +53,8 @@ class Scope(
 ) : Lockable() {
 
     internal val linkedScopes = ArrayList<Scope>()
+    @KoinInternalApi
+    fun getLinkedScopeIds(): List<ScopeID> = linkedScopes.map { it.id }
 
     @KoinInternalApi
     var sourceValue: Any? = null

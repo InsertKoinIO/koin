@@ -21,25 +21,36 @@ See [Api Stability Contract](api-stability.md) for more details.
 
 ## 4.1.1
 
+:::note
+Uses Kotlin `2.1.21`
+:::
+
 ### New 🎉
 
-`koin-ktor`
-- Integration - provides `KtorDIExtension` to integrate Ktor 3.2 Default DI engine
-```kotlin
-fun Application.setupDatabase(config: DbConfig) {
-    // ...
-    dependencies {
-        provide<Database> { database }
-    }
-}
+`koin-compose-viewmodel-navigation`
+- Enhanced `sharedKoinViewModel` with optional `navGraphRoute` parameter for better Compose Navigation support
 
-class CustomerRepositoryImpl(private val database: Database) : CustomerRepository
-fun Application.customerDataModule() {
-    koinModule {
-        singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
-    }
-}
-```
+`koin-core`
+- Core resolver performance optimization - avoid unnecessary flattening with single scope resolution  
+- Enhanced scope debugging with linked scope IDs display
+
+### Library Updates 📚
+
+- **Kotlin** 2.1.21 (from 2.1.20)
+- **Ktor** 3.2.3 (from 3.1.3) 
+- **Jetbrains Compose** 1.8.2 (from 1.8.0)
+- **AndroidX**: Fragment 1.8.9, WorkManager 2.10.3, Lifecycle 2.9.3, Navigation 2.9.3
+- **Testing**: Robolectric 4.15.1, Benchmark 0.4.14
+- **Build**: Binary Validator 0.18.1, NMCP 1.1.0
+
+### Bug Fixes 🐛
+
+`koin-core`
+- Reverted logger constraint causing compatibility errors
+- Fixed Compose scope resolution with improved `LocalKoinApplication`/`LocalKoinScope` context handling
+
+`koin-build`
+- Fixed Maven Central publication issues
 
 ## 4.1.0
 

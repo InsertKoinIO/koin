@@ -17,10 +17,12 @@ package org.koin.compose.scope
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import org.koin.compose.ComposeContextWrapper
 import org.koin.compose.LocalKoinScope
 import org.koin.compose.getKoin
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
@@ -84,13 +86,14 @@ inline fun KoinScope(
     OnKoinScope(scope, content)
 }
 
+@OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @Composable
 @PublishedApi
 internal fun OnKoinScope(scope: Scope, content: @Composable () -> Unit) {
     rememberKoinScope(scope)
     CompositionLocalProvider(
-        LocalKoinScope provides scope,
+        LocalKoinScope provides ComposeContextWrapper(scope),
     ) {
         content()
     }

@@ -1,4 +1,4 @@
-package org.koin.test.android.scope
+package org.koin.core.scope
 
 import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
@@ -15,6 +15,7 @@ import org.koin.androidx.scope.dsl.activityRetainedScope
 import org.koin.androidx.scope.dsl.activityScope
 import org.koin.androidx.scope.dsl.fragmentScope
 import org.koin.androidx.scope.fragmentScope
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -194,5 +195,42 @@ class ActivityScopeArchetypeTest {
         val scope = activity.activityRetainedScope().value
         val mf = scope.getOrNull<MyFactoryClass>()
         assertNull(mf)
+    }
+
+    @OptIn(KoinInternalApi::class)
+    @Test
+    fun `scope resolution should work with single linked scope - GitHub Issue 2221 regression test`() {
+        // This test verifies that the CoreResolver fix on line 131 works correctly
+        // The issue was caused by always calling flatten() instead of conditional flattening
+        val koin = KoinPlatform.getKoin()
+        val testModule = module {
+            single<String> { "root-value" }
+            activityScope {
+                scoped<MyScopedClass> { MyScopedClass() }
+                factory<MyFactoryClass> { 
+                    // This should resolve from root scope without throwing ClosedScopeException
+                    MyFactoryClass(get()) 
+                }
+            }
+        }
+        koin.loadModules(listOf(testModule))
+        
+        val activity = FakeActivity()
+        val activityScope = activity.scope
+        
+        // Verify the activity scope has only one linked scope (root)
+        assertEquals(1, activityScope.getLinkedScopeIds().size)
+        assertEquals("_root_", activityScope.getLinkedScopeIds().first())
+        
+        // This should work without ClosedScopeException due to the CoreResolver fix
+        val factory = activityScope.get<MyFactoryClass>()
+        val scoped = activityScope.get<MyScopedClass>()
+        
+        // Verify resolution worked correctly
+        assertEquals(scoped, factory.ms)
+        
+        // Verify root scope resolution still works
+        val rootValue = activityScope.get<String>()
+        assertEquals("root-value", rootValue)
     }
 }
