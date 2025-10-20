@@ -38,7 +38,7 @@ internal class KtorDIExtension(private val application : Application) : Resoluti
     override val name: String = "ktor-di"
 
     override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
-        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value.toString())
+        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
 
         println("[DEBUG] KtorDIExtension -> $key")
         try {
