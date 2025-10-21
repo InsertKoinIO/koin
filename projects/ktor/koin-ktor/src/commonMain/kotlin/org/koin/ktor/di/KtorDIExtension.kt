@@ -15,25 +15,39 @@
  */
 package org.koin.ktor.di
 
-//import io.ktor.server.application.Application
-//import io.ktor.server.plugins.di.DependencyKey
-//import io.ktor.server.plugins.di.dependencies
-//import io.ktor.server.plugins.di.getOrNull
-//import io.ktor.util.reflect.TypeInfo
-//import org.koin.core.instance.ResolutionContext
-//import org.koin.core.resolution.ResolutionExtension
-//import org.koin.core.scope.Scope
-//
-///**
-// * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects
-// *
-// * @author Arnaud Giuliani
-// */
-//TODO Ktor 3.2 - @see setupKoinApplication()
-//internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
-//    override val name: String = "ktor-di"
-//    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
-//        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
-//        return application.dependencies.getOrNull(key)
-//    }
-//}
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.DependencyKey
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.plugins.di.getBlocking
+import io.ktor.util.reflect.TypeInfo
+import org.koin.core.instance.ResolutionContext
+import org.koin.core.resolution.ResolutionExtension
+import org.koin.core.scope.Scope
+
+/**
+ * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects
+ *
+ * @author Arnaud Giuliani
+ */
+internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
+
+    init {
+        println("[DEBUG] KtorDIExtension init")
+    }
+
+    override val name: String = "ktor-di"
+
+    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
+        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
+
+        println("[DEBUG] KtorDIExtension -> $key")
+        try {
+            val value = application.dependencies.getBlocking<Any?>(key)
+
+            println("[DEBUG] KtorDIExtension value? $value")
+            return value
+        } catch (e: Exception) {
+            error(e)
+        }
+    }
+}
