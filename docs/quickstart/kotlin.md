@@ -92,7 +92,7 @@ class UserService(private val userRepository: UserRepository) {
 }
 ```
 
-> UserRepository is referenced in UserPresenter`s constructor
+> UserRepository is referenced in UserService`s constructor
 
 We declare `UserService` in our Koin module. We declare it as a `single` definition:
 
