@@ -7,40 +7,40 @@ kotlin = "2.2.20"
 binaryValidator = "0.18.1"
 publish = "2.0.0"
 coroutines = "1.10.2"
-dokka = "2.0.0"
+dokka = "2.1.0"
 uuid = "0.8.4"
-nmcp = "1.1.0"
+nmcp = "1.2.0"
 
 # Android
 agp = "8.7.3"
 android-appcompat = "1.7.1"
-android-activity = "1.10.1"
+android-activity = "1.11.0"
 android-fragment = "1.8.9"
-androidx-workmanager = "2.10.3"
+androidx-workmanager = "2.10.5"
 androidx-startup = "1.2.0"
 dagger = "2.56"
 
 # Lifecycle
-androidx-lifecycle = "2.9.3" # Keep in sync with "jb-lifecycle"
-jb-lifecycle = "2.9.3"
+androidx-lifecycle = "2.9.4" # Keep in sync with "jb-lifecycle"
+jb-lifecycle = "2.9.5"
 
 # Navigation
-androidx-navigation = "2.9.3" # Keep in sync with "jb-navigation"
-jb-navigation = "2.9.0-rc01"
+androidx-navigation = "2.9.5" # Keep in sync with "jb-navigation"
+jb-navigation = "2.9.1"
 
 # Compose
 #androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
-jb-compose = "1.8.2"
+jb-compose = "1.9.1"
 
 # Test
 stately = "2.1.0"
 junit = "4.13.2"
 jupiter = "5.11.2" #5.12.0 causing issues
-mockito = "4.8.0"
-mockk = "1.13.16"
-robolectric = "4.15.1"
+mockito = "5.2.0"
+mockk = "1.14.6"
+robolectric = "4.16"
 # Ktor
-ktor = "3.2.3"
+ktor = "3.3.1"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
