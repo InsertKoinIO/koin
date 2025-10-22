@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 apply from: "../gradle/versions.gradle"
 
@@ -44,6 +45,7 @@ dependencies {
     // Koin
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose-navigation:$koin_version"
+    implementation "io.insert-koin:koin-compose-viewmodel-navigation:$koin_version"
 
     // Compose
     implementation "androidx.compose.runtime:runtime:1.7.1"
@@ -51,6 +53,9 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:1.7.1"
     implementation "androidx.compose.material:material:1.7.1"
     implementation "androidx.navigation:navigation-compose:2.8.0"
+
+    // Serialization for Type-Safe Navigation
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 
     // Tooling preview
     debugImplementation "androidx.compose.ui:ui-tooling:1.7.1"
