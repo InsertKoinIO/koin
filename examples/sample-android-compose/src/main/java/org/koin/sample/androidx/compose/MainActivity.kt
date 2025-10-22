@@ -10,6 +10,7 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.scope.ScopeActivity
 import org.koin.sample.androidx.compose.data.sdk.SDKData
 import org.koin.sample.androidx.compose.navigation.NavigationGraphRoute
+import org.koin.sample.androidx.compose.navigation.navigationStringGraph
 import org.koin.sample.androidx.compose.navigation.navigationTypeSafeGraph
 import java.util.logging.Logger
 
@@ -30,13 +31,21 @@ class MainActivity : ScopeActivity() {
                     startDestination = "main"
                 ) {
                     composable("main") {
-                        App(onNavigateToNavigation = {
-                            navController.navigate(NavigationGraphRoute)
-                        })
+                        App(
+                            onTypeSafeNavigateToNavigation = {
+                                navController.navigate(NavigationGraphRoute)
+                            },
+                            onStringNavigateToNavigation = {
+                                navController.navigate("navigation_graph")
+                            }
+                        )
                     }
 
                     // Type-Safe Navigation graph
                     navigationTypeSafeGraph(navController)
+
+                    // String-based Navigation graph
+                    navigationStringGraph(navController)
                 }
             }
         }

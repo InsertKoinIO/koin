@@ -35,7 +35,8 @@ import java.util.UUID
 @Composable
 fun App(
     userViewModel: UserViewModel = koinViewModel(),
-    onNavigateToNavigation: () -> Unit = {}
+    onTypeSafeNavigateToNavigation: () -> Unit = {},
+    onStringNavigateToNavigation: () -> Unit = {}
 ) {
     var created by remember { mutableStateOf(true) }
 
@@ -58,7 +59,12 @@ fun App(
             }
             item {
                 ButtonForCreate("(>)Type Safe Navigation Example") {
-                    onNavigateToNavigation()
+                    onTypeSafeNavigateToNavigation()
+                }
+            }
+            item {
+                ButtonForCreate("(>)String Navigation Example") {
+                    onStringNavigateToNavigation()
                 }
             }
             item {

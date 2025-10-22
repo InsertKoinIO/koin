@@ -46,6 +46,40 @@ fun NavGraphBuilder.navigationTypeSafeGraph(navController: NavHostController) {
     }
 }
 
+fun NavGraphBuilder.navigationStringGraph(navController: NavHostController) {
+    navigation(
+        route = "navigation_graph",
+        startDestination = "first_screen"
+    ) {
+        composable(
+            route = "first_screen"
+        ) { backStackEntry ->
+            val sharedViewModel = backStackEntry.sharedKoinViewModel<SharedViewModel>(navController)
+
+            NavigationFirstScreen(
+                viewModel = sharedViewModel,
+                onNavigateToSecond = {
+                    navController.navigate("second_screen")
+                }
+            )
+        }
+
+        composable(
+            route = "second_screen"
+        ) { backStackEntry ->
+
+            val sharedViewModel = backStackEntry.sharedKoinViewModel<SharedViewModel>(navController)
+
+            NavigationSecondScreen(
+                viewModel = sharedViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+}
+
 @Composable
 fun NavigationFirstScreen(
     viewModel: SharedViewModel,
