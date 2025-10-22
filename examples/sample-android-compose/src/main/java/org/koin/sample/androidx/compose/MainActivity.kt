@@ -3,14 +3,14 @@ package org.koin.sample.androidx.compose
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.getKoin
-import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.androidx.scope.ScopeActivity
-import org.koin.compose.KoinApplication
-import org.koin.compose.KoinContext
 import org.koin.sample.androidx.compose.data.sdk.SDKData
-import org.koin.sample.androidx.compose.di.appModule
+import org.koin.sample.androidx.compose.navigation.NavigationGraphRoute
+import org.koin.sample.androidx.compose.navigation.navigationTypeSafeGraph
 import java.util.logging.Logger
 
 class MainActivity : ScopeActivity() {
@@ -23,7 +23,21 @@ class MainActivity : ScopeActivity() {
 
         setContent {
             MaterialTheme {
-                App()
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "main"
+                ) {
+                    composable("main") {
+                        App(onNavigateToNavigation = {
+                            navController.navigate(NavigationGraphRoute)
+                        })
+                    }
+
+                    // Type-Safe Navigation graph
+                    navigationTypeSafeGraph(navController)
+                }
             }
         }
     }

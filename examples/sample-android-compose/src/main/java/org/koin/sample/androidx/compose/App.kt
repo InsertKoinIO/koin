@@ -33,7 +33,10 @@ import java.util.UUID
 
 
 @Composable
-fun App(userViewModel: UserViewModel = koinViewModel()) {
+fun App(
+    userViewModel: UserViewModel = koinViewModel(),
+    onNavigateToNavigation: () -> Unit = {}
+) {
     var created by remember { mutableStateOf(true) }
 
     val users = userViewModel.getUsers()
@@ -52,6 +55,11 @@ fun App(userViewModel: UserViewModel = koinViewModel()) {
 
             item {
                 ButtonForCreate("-X- Main") { created = !created }
+            }
+            item {
+                ButtonForCreate("(>)Type Safe Navigation Example") {
+                    onNavigateToNavigation()
+                }
             }
             item {
                 MyScreen()

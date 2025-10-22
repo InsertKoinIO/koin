@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import org.koin.sample.androidx.compose.MainActivity
 import org.koin.sample.androidx.compose.data.*
 import org.koin.sample.androidx.compose.viewmodel.SSHViewModel
+import org.koin.sample.androidx.compose.viewmodel.SharedViewModel
 import org.koin.sample.androidx.compose.viewmodel.UserViewModel
 
 val appModule = module {
@@ -16,6 +17,7 @@ val appModule = module {
     factoryOf(::MyFactory)
     single { MySingle() }
     viewModelOf(::SSHViewModel)
+    viewModelOf(::SharedViewModel)
 }
 
 val WALLET_SCOPE = named("wallet")
