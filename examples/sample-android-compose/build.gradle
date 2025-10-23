@@ -46,16 +46,16 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-compose-navigation:$koin_version"
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:1.7.1"
-    implementation "androidx.compose.ui:ui:1.7.1"
-    implementation "androidx.compose.foundation:foundation-layout:1.7.1"
-    implementation "androidx.compose.material:material:1.7.1"
-    implementation "androidx.navigation:navigation-compose:2.8.0"
+    implementation "androidx.compose.runtime:runtime:1.9.4"
+    implementation "androidx.compose.ui:ui:1.9.4"
+    implementation "androidx.compose.foundation:foundation-layout:1.9.4"
+    implementation "androidx.compose.material:material:1.9.4"
+    implementation "androidx.navigation:navigation-compose:2.9.5"
 
     // Tooling preview
-    debugImplementation "androidx.compose.ui:ui-tooling:1.7.1"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.7.1"
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    debugImplementation "androidx.compose.ui:ui-tooling:1.9.4"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.9.4"
+    implementation 'androidx.appcompat:appcompat:1.7.1'
 
     testImplementation 'junit:junit:4.13.2'
 }
