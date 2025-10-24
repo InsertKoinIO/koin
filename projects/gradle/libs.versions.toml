@@ -12,7 +12,7 @@ uuid = "0.8.4"
 nmcp = "1.2.0"
 
 # Android
-agp = "8.7.3"
+agp = "8.9.1"
 android-appcompat = "1.7.1"
 android-activity = "1.11.0"
 android-fragment = "1.8.9"
