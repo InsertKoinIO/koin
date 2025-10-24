@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 repositories.mavenCentral()
 
 plugins {
@@ -12,7 +14,9 @@ tasks.getByName<JavaCompile>("compileJava") {
 }
 
 tasks.getByName<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin") {
-    kotlinOptions.jvmTarget = jvmTarget
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
 
 val jmhVersion = "1.36"
