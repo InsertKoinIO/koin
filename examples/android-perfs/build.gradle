@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
@@ -25,8 +27,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_1_8
+        }
     }
 }
 
@@ -37,7 +41,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation project(":jvm-perfs")
 
-    testImplementation "junit:junit:4.13.2"
+    testImplementation "junit:junit:$junit_version"
     // bench
     testImplementation "org.openjdk.jmh:jmh-core:1.36"
     testImplementation "org.openjdk.jmh:jmh-generator-annprocess:1.36"
