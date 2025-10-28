@@ -192,7 +192,9 @@ class InstanceRegistry(val _koin: Koin) {
     internal fun <T> getAll(clazz: KClass<*>, instanceContext: ResolutionContext): List<T> {
         return _instances.values
             .filter { factory ->
-                factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier &&
+                (factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier ||
+                    factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeArchetype
+                ) &&
                 (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
             }
             .distinct()
