@@ -47,10 +47,9 @@ allprojects {
     version = koinVersion
 
     apply(plugin = "org.jetbrains.dokka")
-    val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
     val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
-        dependsOn(dokkaHtml)
+        dependsOn("dokkaGeneratePublicationHtml")
         archiveClassifier.set("javadoc")
-        from(dokkaHtml.outputDirectory)
+        from(layout.buildDirectory.dir("dokka/html"))
     }
 }
