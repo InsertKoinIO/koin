@@ -77,11 +77,12 @@ inline fun <reified T : ViewModel> koinNavViewModel(
  *
  * @author Arnaud Giuliani
  */
-@Composable
-inline fun <reified T: ViewModel> NavBackStackEntry.sharedKoinViewModel(
-    navController: NavController
-): T {
-    val navGraphRoute = destination.parent?.route ?: return koinViewModel<T>()
+ @Composable
+inline fun <reified VM : ViewModel> NavBackStackEntry.sharedKoinViewModel(
+    navController: NavController,
+    navGraphRoute: Any? = this.destination.parent?.route,
+): VM {
+    val navGraphRoute = navGraphRoute ?: return koinViewModel<VM>()
     val parentEntry = remember(this) {
         navController.getBackStackEntry(navGraphRoute)
     }

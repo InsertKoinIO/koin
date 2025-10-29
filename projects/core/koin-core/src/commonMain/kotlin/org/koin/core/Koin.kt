@@ -73,18 +73,9 @@ class Koin {
     @KoinInternalApi
     val optionRegistry = OptionRegistry()
 
-    /**
-     * Allow register Logger, but prevent from overriding non default one
-     *
-     * @param logger
-     */
     @KoinInternalApi
     fun setupLogger(logger: Logger) {
-        if (this.logger is EmptyLogger){
-            this.logger = logger
-        } else {
-            error("Trying to register Koin logger '$logger' but ${this.logger} is already registered!")
-        }
+        this.logger = logger
     }
 
     /**

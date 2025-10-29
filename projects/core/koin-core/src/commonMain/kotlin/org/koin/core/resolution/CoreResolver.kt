@@ -128,8 +128,8 @@ class CoreResolver(
         scope: Scope,
         ctx: ResolutionContext,
     ): T? {
-        val parentScope = flatten(scope.linkedScopes)
-        return parentScope.firstNotNullOfOrNull {
+        val parentScopes = if (scope.linkedScopes.size > 1) flatten(scope.linkedScopes) else scope.linkedScopes
+        return parentScopes.firstNotNullOfOrNull {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in scope '${it.id}'")
             val instanceContext = if (!it.isRoot) ctx.newContextForScope(it) else ctx
             resolveFromContextOrNull(it, instanceContext, lookupParent = false)

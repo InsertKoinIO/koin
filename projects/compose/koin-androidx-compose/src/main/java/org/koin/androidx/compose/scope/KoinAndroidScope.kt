@@ -19,9 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.compose.ComposeContextWrapper
 import org.koin.compose.LocalKoinScope
+import org.koin.core.annotation.KoinInternalApi
 
 
+@OptIn(KoinInternalApi::class)
 @Composable
 fun KoinActivityScope(
     content: @Composable () -> Unit
@@ -29,12 +32,13 @@ fun KoinActivityScope(
     val scope = (LocalContext.current as? AndroidScopeComponent)?.scope
         ?: error("Current context ${LocalContext.current} must implement AndroidScopeComponent interface.")
     CompositionLocalProvider(
-        LocalKoinScope provides scope,
+        LocalKoinScope provides ComposeContextWrapper(scope),
     ) {
         content()
     }
 }
 
+@OptIn(KoinInternalApi::class)
 @Composable
 fun KoinFragmentScope(
     content: @Composable () -> Unit
@@ -42,7 +46,7 @@ fun KoinFragmentScope(
     val scope = (LocalContext.current as? AndroidScopeComponent)?.scope
         ?: error("Current context ${LocalContext.current} must implement AndroidScopeComponent interface.")
     CompositionLocalProvider(
-        LocalKoinScope provides scope,
+        LocalKoinScope provides ComposeContextWrapper(scope),
     ) {
         content()
     }

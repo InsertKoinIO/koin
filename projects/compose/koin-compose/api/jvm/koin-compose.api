@@ -1,3 +1,13 @@
+public final class org/koin/compose/ComposeContextWrapper {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getSetValue ()Lkotlin/jvm/functions/Function0;
+	public final fun getValue ()Ljava/lang/Object;
+	public final fun resetValue ()Ljava/lang/Object;
+}
+
 public final class org/koin/compose/KoinApplicationKt {
 	public static final fun KoinApplication (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun KoinApplicationPreview (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
