@@ -27,6 +27,20 @@ class Simple {
     class MyComplexBool(val a : ComponentA, val b : Boolean)
 
     fun buildB(a: ComponentA) : MyComponentB = ComponentB(a)
+
+    class ComponentProvider {
+        fun getComponent(): ComponentToBeProvided {
+            return ComponentToBeProvided()
+        }
+
+        fun getComponentWithArg(a: ComponentA): ComponentToBeProvidedWithComponentA {
+            return ComponentToBeProvidedWithComponentA(a = a)
+        }
+    }
+
+    class ComponentToBeProvided
+
+    class ComponentToBeProvidedWithComponentA(val a: ComponentA)
 }
 
 object UpperCase : Qualifier {
