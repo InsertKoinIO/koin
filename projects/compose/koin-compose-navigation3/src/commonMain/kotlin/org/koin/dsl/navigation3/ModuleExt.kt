@@ -16,7 +16,7 @@
 package org.koin.dsl.navigation3
 
 import androidx.compose.runtime.Composable
-import org.koin.androidx.compose.navigation3.EntryProviderInstaller
+import org.koin.compose.navigation3.EntryProviderInstaller
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.KoinDefinition

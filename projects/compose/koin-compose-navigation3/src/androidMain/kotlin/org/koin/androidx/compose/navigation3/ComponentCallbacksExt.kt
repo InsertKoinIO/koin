@@ -1,9 +1,10 @@
 package org.koin.androidx.compose.navigation3
 
 import android.content.ComponentCallbacks
-import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
 import org.koin.android.ext.android.getKoinScope
+import org.koin.compose.navigation3.EntryProvider
+import org.koin.compose.navigation3.buildEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 
@@ -18,17 +19,13 @@ import org.koin.core.annotation.KoinInternalApi
  * @return A lazy delegate that provides the [EntryProvider] when first accessed
  *
  * @see getEntryProvider for eager initialization
+ * @See ComponentCallbacks
  */
 @KoinExperimentalAPI
 @OptIn(KoinInternalApi::class)
-inline fun ComponentCallbacks.entryProvider(
+fun ComponentCallbacks.entryProvider(
     mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-) : Lazy<EntryProvider> = lazy(mode) { val entries = getKoinScope().getAll<EntryProviderInstaller>()
-    val entryProvider: (Any) -> NavEntry<Any> = entryProvider {
-        entries.forEach { builder -> this.builder() }
-    }
-    entryProvider
-}
+) : Lazy<EntryProvider> = lazy(mode) { getEntryProvider() }
 
 /**
  * Retrieves an [EntryProvider] by collecting all [EntryProviderInstaller] instances from the Koin scope
@@ -41,13 +38,10 @@ inline fun ComponentCallbacks.entryProvider(
  * @return An [EntryProvider] that combines all registered navigation entries
  *
  * @see entryProvider for lazy initialization
+ * @See ComponentCallbacks
  */
 @KoinExperimentalAPI
 @OptIn(KoinInternalApi::class)
-inline fun ComponentCallbacks.getEntryProvider() : EntryProvider {
-    val entries = getKoinScope().getAll<EntryProviderInstaller>()
-    val entryProvider: (Any) -> NavEntry<Any> = entryProvider {
-        entries.forEach { builder -> this.builder() }
-    }
-    return entryProvider
+fun ComponentCallbacks.getEntryProvider() : EntryProvider {
+    return getKoinScope().buildEntryProvider()
 }

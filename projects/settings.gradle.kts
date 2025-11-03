@@ -59,11 +59,11 @@ include(
     ":android:koin-androidx-startup",
     // Compose
     ":compose:koin-compose",
+    ":compose:koin-compose-navigation3",
     ":compose:koin-compose-viewmodel",
     ":compose:koin-compose-viewmodel-navigation",
     ":compose:koin-androidx-compose",
     ":compose:koin-androidx-compose-navigation",
-    ":compose:koin-androidx-compose-navigation3",
     // Plugin
     ":plugins:koin-gradle-plugin",
     // BOM
