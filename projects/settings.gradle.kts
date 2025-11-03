@@ -36,7 +36,6 @@ include(
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
-//    ":core:koin-core-viewmodel-navigation",
     ":core:koin-test",
     ":core:koin-test-coroutines",
     ":core:koin-test-junit4",
@@ -64,6 +63,7 @@ include(
     ":compose:koin-compose-viewmodel-navigation",
     ":compose:koin-androidx-compose",
     ":compose:koin-androidx-compose-navigation",
+    ":compose:koin-androidx-compose-navigation3",
     // Plugin
     ":plugins:koin-gradle-plugin",
     // BOM

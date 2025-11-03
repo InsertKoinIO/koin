@@ -27,6 +27,7 @@ jb-lifecycle = "2.9.5"
 # Navigation
 androidx-navigation = "2.9.5" # Keep in sync with "jb-navigation"
 jb-navigation = "2.9.1"
+androidx-navigation3 = "1.0.0-alpha11"
 
 # Compose
 #androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
@@ -71,6 +72,7 @@ androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", ve
 androidx-navigation = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-workmanager" }
 androidx-startup = {module ="androidx.startup:startup-runtime", version.ref = "androidx-startup" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "androidx-navigation3" }
 
 # Ktor
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
