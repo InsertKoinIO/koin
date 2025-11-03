@@ -58,3 +58,26 @@ To foster innovation while gathering valuable community feedback, we introduce n
     AnnotationTarget.CONSTRUCTOR,
 )
 annotation class KoinExperimentalAPI
+
+
+/**
+Delicate APIs -
+APIs marked with @KoinDelicateAPI require careful usage and understanding of their implications. This designation indicates that:
+
+- **Advanced use cases**: The API is designed for specific scenarios that require careful consideration.
+- **Potential side effects**: Improper usage may lead to unexpected behavior or runtime issues.
+- **Expert knowledge required**: Developers should thoroughly understand the API's behavior and implications before use.
+- **Use with caution**: While stable, these APIs require careful attention to their contract and side effects.
+ *
+ * @author Arnaud Giuliani
+ */
+@RequiresOptIn(message = "API marked as @KoinDelicateAPI. This API requires careful usage and understanding of its implications. Use with caution as improper usage may lead to unexpected behavior.", level = RequiresOptIn.Level.WARNING)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR,
+)
+annotation class KoinDelicateAPI
