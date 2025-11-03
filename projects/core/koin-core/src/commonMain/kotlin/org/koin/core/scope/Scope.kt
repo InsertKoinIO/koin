@@ -396,6 +396,7 @@ class Scope(
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
         val context = ResolutionContext(_koin.logger, this, clazz)
+        context.scopeArchetype = this.scopeArchetype
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 

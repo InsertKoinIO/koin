@@ -36,7 +36,6 @@ include(
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
-//    ":core:koin-core-viewmodel-navigation",
     ":core:koin-test",
     ":core:koin-test-coroutines",
     ":core:koin-test-junit4",
@@ -60,6 +59,7 @@ include(
     ":android:koin-androidx-startup",
     // Compose
     ":compose:koin-compose",
+    ":compose:koin-compose-navigation3",
     ":compose:koin-compose-viewmodel",
     ":compose:koin-compose-viewmodel-navigation",
     ":compose:koin-androidx-compose",
