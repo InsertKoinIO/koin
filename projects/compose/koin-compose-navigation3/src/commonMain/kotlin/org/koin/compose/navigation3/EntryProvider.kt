@@ -36,7 +36,7 @@ import org.koin.core.scope.Scope
 typealias EntryProvider = (Any) -> NavEntry<Any>
 
 @KoinExperimentalAPI
-internal fun Scope.buildEntryProvider() : EntryProvider {
+internal fun Scope.getEntryProvider() : EntryProvider {
     val entries = getAll<EntryProviderInstaller>()
     val entryProvider: (Any) -> NavEntry<Any> = entryProvider {
         entries.forEach { builder -> this.builder() }
@@ -44,9 +44,33 @@ internal fun Scope.buildEntryProvider() : EntryProvider {
     return entryProvider
 }
 
+/**
+ * Composable function that retrieves an [EntryProvider] from the current or specified Koin scope.
+ *
+ * This function collects all registered [EntryProviderInstaller] instances from the Koin scope
+ * and aggregates them into a single [EntryProvider] that can be used with Navigation 3.
+ * By default, it uses the scope from [LocalKoinScope], but a custom scope can be provided.
+ *
+ * Example usage:
+ * ```kotlin
+ * @Composable
+ * fun MyApp() {
+ *     val entryProvider = koinEntryProvider()
+ *     NavigationHost(entryProvider) {
+ *         // Your navigation setup
+ *     }
+ * }
+ * ```
+ *
+ * @param scope The Koin scope to retrieve navigation entries from. Defaults to [LocalKoinScope.current].
+ * @return An [EntryProvider] that combines all registered navigation entries from the scope
+ *
+ * @see EntryProvider for the navigation entry provider type
+ * @see EntryProviderInstaller for defining navigation entries in Koin modules
+ */
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @Composable
 fun koinEntryProvider(scope : Scope = LocalKoinScope.current.getValue()) : EntryProvider {
-    return scope.buildEntryProvider()
+    return scope.getEntryProvider()
 }

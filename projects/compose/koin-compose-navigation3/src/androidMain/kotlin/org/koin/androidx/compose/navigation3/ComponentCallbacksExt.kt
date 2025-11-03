@@ -4,7 +4,7 @@ import android.content.ComponentCallbacks
 import androidx.navigation3.runtime.entryProvider
 import org.koin.android.ext.android.getKoinScope
 import org.koin.compose.navigation3.EntryProvider
-import org.koin.compose.navigation3.buildEntryProvider
+import org.koin.compose.navigation3.getEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 
@@ -43,5 +43,5 @@ fun ComponentCallbacks.entryProvider(
 @KoinExperimentalAPI
 @OptIn(KoinInternalApi::class)
 fun ComponentCallbacks.getEntryProvider() : EntryProvider {
-    return getKoinScope().buildEntryProvider()
+    return getKoinScope().getEntryProvider()
 }
