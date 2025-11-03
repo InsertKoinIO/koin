@@ -18,7 +18,7 @@ package org.koin.compose.navigation3
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
-import org.koin.compose.LocalKoinScope
+import org.koin.compose.LocalKoinScopeContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
@@ -49,7 +49,7 @@ internal fun Scope.getEntryProvider() : EntryProvider {
  *
  * This function collects all registered [EntryProviderInstaller] instances from the Koin scope
  * and aggregates them into a single [EntryProvider] that can be used with Navigation 3.
- * By default, it uses the scope from [LocalKoinScope], but a custom scope can be provided.
+ * By default, it uses the scope from [LocalKoinScopeContext], but a custom scope can be provided.
  *
  * Example usage:
  * ```kotlin
@@ -62,7 +62,7 @@ internal fun Scope.getEntryProvider() : EntryProvider {
  * }
  * ```
  *
- * @param scope The Koin scope to retrieve navigation entries from. Defaults to [LocalKoinScope.current].
+ * @param scope The Koin scope to retrieve navigation entries from. Defaults to [LocalKoinScopeContext.current].
  * @return An [EntryProvider] that combines all registered navigation entries from the scope
  *
  * @see EntryProvider for the navigation entry provider type
@@ -71,6 +71,6 @@ internal fun Scope.getEntryProvider() : EntryProvider {
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @Composable
-fun koinEntryProvider(scope : Scope = LocalKoinScope.current.getValue()) : EntryProvider {
+fun koinEntryProvider(scope : Scope = LocalKoinScopeContext.current.getValue()) : EntryProvider {
     return scope.getEntryProvider()
 }
