@@ -40,7 +40,7 @@ public final class org/koin/android/logger/AndroidLogger : org/koin/core/logger/
 
 public abstract interface class org/koin/android/scope/AndroidScopeComponent {
 	public abstract fun getScope ()Lorg/koin/core/scope/Scope;
-	public abstract fun onCloseScope ()V
+	public fun onCloseScope ()V
 }
 
 public final class org/koin/android/scope/AndroidScopeComponent$DefaultImpls {

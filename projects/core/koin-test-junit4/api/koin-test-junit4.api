@@ -5,7 +5,7 @@ public abstract class org/koin/test/AutoCloseKoinTest : org/koin/test/KoinTest {
 }
 
 public abstract interface class org/koin/test/ClosingKoinTest : org/koin/test/KoinTest {
-	public abstract fun autoClose ()V
+	public fun autoClose ()V
 }
 
 public final class org/koin/test/ClosingKoinTest$DefaultImpls {
