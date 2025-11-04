@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koin.mp
+package org.koin.core
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.annotation.KoinInternalApi
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.runBlocking
 
-@KoinInternalApi
-expect object KoinPlatformCoroutinesTools {
-    fun defaultCoroutineDispatcher(): CoroutineDispatcher
-    fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T
+/**
+ * @author Arnaud Giuliani
+ */
+
+// Moved to Common
+///**
+// * Wait for Starting coroutines jobs to finish using runBlocking
+// */
+//fun Koin.waitAllStartJobs() {
+//    runBlocking {
+//        awaitAllStartJobs()
+//    }
+//}
+
+/**
+ * Wait for Starting coroutines jobs to run block code
+ *
+ * @param block
+ */
+fun Koin.runOnKoinStarted(block: suspend (Koin) -> Unit) {
+    runBlocking {
+        onKoinStarted(block)
+    }
 }

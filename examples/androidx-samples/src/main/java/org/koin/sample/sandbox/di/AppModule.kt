@@ -16,6 +16,7 @@ import org.koin.core.module.dsl.scopedOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.includes
 import org.koin.core.module.moduleConfiguration
 import org.koin.core.qualifier.named
 import org.koin.dsl.lazyModule
@@ -50,7 +51,7 @@ import org.koin.sample.sandbox.workmanager.SimpleWorker
 import org.koin.sample.sandbox.workmanager.SimpleWorkerService
 import org.koin.viewmodel.scope.viewModelScope
 
-val appModule = module {
+val appModule = lazyModule {
 
     singleOf(::SimpleServiceImpl) { bind<SimpleService>() }
     singleOf(::DumbServiceImpl) {
@@ -173,9 +174,8 @@ val navModule = lazyModule {
     viewModelOf(::NavViewModel2)
 }
 
-val appModules = moduleConfiguration {
-    modules(appModule)
-    lazyModules(mvpModule,
+val mainModules = lazyModule {
+    includes(appModule, mvpModule,
         mvvmModule,
         scopeModule,
         workerServiceModule,

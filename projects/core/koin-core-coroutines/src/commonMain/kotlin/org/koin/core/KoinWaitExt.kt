@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(KoinInternalApi::class)
+
 package org.koin.core
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.mp.KoinPlatformCoroutinesTools
 
 /**
  * @author Arnaud Giuliani
@@ -24,19 +29,8 @@ import kotlinx.coroutines.runBlocking
 /**
  * Wait for Starting coroutines jobs to finish using runBlocking
  */
-fun Koin.waitAllStartJobs() {
-    runBlocking {
+fun Koin.waitAllStartJobs(dispatcher: CoroutineDispatcher = Dispatchers.Default) {
+    KoinPlatformCoroutinesTools.runBlocking(dispatcher) {
         awaitAllStartJobs()
-    }
-}
-
-/**
- * Wait for Starting coroutines jobs to run block code
- *
- * @param block
- */
-fun Koin.runOnKoinStarted(block: suspend (Koin) -> Unit) {
-    runBlocking {
-        onKoinStarted(block)
     }
 }
