@@ -27,24 +27,53 @@ import org.koin.core.module.Module
  */
 
 /**
- * Load asynchronously in background, a list of Lazy Module
- * uses background coroutine to load modules
+ * Load lazy modules asynchronously in parallel background coroutines.
  *
- * Lazy<Module> are not resolved directly, and help warmup time
+ * Each lazy module is loaded in its own coroutine job, enabling true parallel
+ * initialization and significantly reducing startup time when multiple modules are used.
  *
- * run coroutinesEngine() to setup if needed
+ * Lazy<Module> are not resolved directly until their job executes, improving warmup time.
+ * The coroutinesEngine() is automatically set up if needed.
+ *
+ * @param moduleList Vararg list of lazy modules to load in parallel
+ * @param dispatcher Optional coroutine dispatcher (defaults to platform default)
+ *
+ * Example:
+ * ```kotlin
+ * startKoin {
+ *     lazyModules(
+ *         lazyModule { /* module 1 */ },
+ *         lazyModule { /* module 2 */ }
+ *     )
+ * }
+ * ```
  */
 fun KoinApplication.lazyModules(vararg moduleList: Lazy<Module>,dispatcher: CoroutineDispatcher? = null) {
     lazyModules(moduleList.toList(),dispatcher)
 }
 
 /**
- * Load asynchronously in background, a list of Lazy Module
- * uses background coroutine to load modules
+ * Load lazy modules asynchronously in parallel background coroutines.
  *
- * Lazy<Module> are not resolved directly, and help warmup time
+ * Each lazy module is loaded in its own coroutine job, enabling true parallel
+ * initialization and significantly reducing startup time when multiple modules are used.
  *
- * run coroutinesEngine() to setup if needed
+ * Lazy<Module> are not resolved directly until their job executes, improving warmup time.
+ * The coroutinesEngine() is automatically set up if needed.
+ *
+ * @param moduleList List of lazy modules to load in parallel
+ * @param dispatcher Optional coroutine dispatcher (defaults to platform default)
+ *
+ * Example:
+ * ```kotlin
+ * val modules = listOf(
+ *     lazyModule { /* module 1 */ },
+ *     lazyModule { /* module 2 */ }
+ * )
+ * startKoin {
+ *     lazyModules(modules)
+ * }
+ * ```
  */
 fun KoinApplication.lazyModules(moduleList: List<Lazy<Module>>,dispatcher: CoroutineDispatcher? = null) {
     coroutinesEngine(dispatcher)

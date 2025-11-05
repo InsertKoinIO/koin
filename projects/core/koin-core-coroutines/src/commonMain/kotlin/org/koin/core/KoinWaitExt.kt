@@ -23,11 +23,33 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.mp.KoinPlatformCoroutinesTools
 
 /**
+ * Extension functions for blocking waits on Koin coroutines operations.
+ *
  * @author Arnaud Giuliani
  */
 
 /**
- * Wait for Starting coroutines jobs to finish using runBlocking
+ * Wait for all lazy module start jobs to complete using platform-specific blocking.
+ *
+ * This function blocks the current thread until all lazy modules have finished loading.
+ * Behavior varies by platform:
+ * - JVM/Native: Uses true blocking with kotlinx.coroutines.runBlocking
+ * - JS: Uses GlobalScope.promise (not truly blocking, logs a warning)
+ *
+ * Typically used after `startKoin` with `lazyModules()` to ensure all modules
+ * are loaded before proceeding.
+ *
+ * @param dispatcher The coroutine dispatcher to use for waiting (default: Dispatchers.Default)
+ *
+ * Example:
+ * ```kotlin
+ * startKoin {
+ *     lazyModules(myLazyModule1, myLazyModule2)
+ * }
+ * KoinPlatform.getKoin().waitAllStartJobs()
+ * ```
+ *
+ * @see awaitAllStartJobs for the suspend version that works on all platforms
  */
 fun Koin.waitAllStartJobs(dispatcher: CoroutineDispatcher = Dispatchers.Default) {
     KoinPlatformCoroutinesTools.runBlocking(dispatcher) {

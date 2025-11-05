@@ -124,41 +124,76 @@ Notice that all modules will be included only once: `dataModule`, `domainModule`
 
 ## Reducing Startup time with background module loading
 
-You can now declare "lazy" Koin module, to avoid trigger any pre allocation of resources and load them in background with Koin start. This can help avoid to block Android starting process, by passing lazy modules to be loaded in background.
+You can declare "lazy" Koin modules to avoid triggering any pre-allocation of resources and load them in parallel background coroutines. This helps avoid blocking the Android startup process and significantly reduces startup time when you have multiple modules.
+
+### Key Features
 
 - `lazyModule` - declare a Lazy Kotlin version of Koin Module
 - `Module.includes` - allow to include lazy Modules
-- `KoinApplication.lazyModules` - load lazy modules in background with coroutines, regarding platform default Dispatchers
-- `Koin.waitAllStartJobs` - wait for start jobs to complete
+- `KoinApplication.lazyModules` - load lazy modules in parallel background coroutines (each module in its own job)
+- `Koin.waitAllStartJobs` - wait for all start jobs to complete
 - `Koin.runOnKoinStarted` - run block code after start completion
 
-A good example is always better to understand:
+### Parallel Loading Performance (4.2.0+)
+
+Starting from version 4.2.0, lazy modules are loaded **in parallel**, with each module getting its own coroutine job. This dramatically improves startup time:
 
 ```kotlin
-
-// Lazy loaded module
-val m2 = lazyModule {
-    singleOf(::ClassB)
+// Multiple lazy loaded modules - all load in PARALLEL!
+val databaseModule = lazyModule {
+    singleOf(::DatabaseService)
 }
 
-val m1 = module {
-    singleOf(::ClassA) { bind<IClassA>() }
+val networkModule = lazyModule {
+    singleOf(::NetworkService)
 }
 
-startKoin {
-    // sync module loading
-    modules(m1)
-    // load lazy Modules in background
-    lazyModules(m2)
+val analyticsModule = lazyModule {
+    singleOf(::AnalyticsService)
 }
 
-val koin = KoinPlatform.getKoin()
+val coreModule = module {
+    singleOf(::CoreService)
+}
 
-// wait for start completion
-koin.waitAllStartJobs()
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
 
-// or run code after start
-koin.runOnKoinStarted { koin ->
-    // run after background load complete
+        startKoin {
+            androidLogger()
+            androidContext(this@MainApplication)
+
+            // Core module loads immediately
+            modules(coreModule)
+
+            // All lazy modules load in parallel in background
+            lazyModules(databaseModule, networkModule, analyticsModule)
+        }
+    }
 }
 ```
+
+**Performance Impact:**
+- With 10 modules that each take 100ms to load:
+  - Before 4.2.0: ~1000ms (sequential)
+  - After 4.2.0: ~100ms (parallel)
+
+### Waiting for completion
+
+You can wait for all lazy modules to finish loading before proceeding:
+
+```kotlin
+val koin = KoinPlatform.getKoin()
+
+// Block until all background loading is complete
+koin.waitAllStartJobs()
+
+// or run code after loading completes
+koin.runOnKoinStarted { koin ->
+    // All lazy modules are now loaded
+    koin.get<AnalyticsService>().trackAppStart()
+}
+```
+
+> See [Lazy Modules Documentation](/docs/reference/koin-core/lazy-modules) for more details on parallel loading and multiplatform support

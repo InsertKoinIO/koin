@@ -18,6 +18,8 @@ package org.koin.core
 import kotlinx.coroutines.runBlocking
 
 /**
+ * JVM-specific extension functions for Koin coroutines operations.
+ *
  * @author Arnaud Giuliani
  */
 
@@ -32,9 +34,29 @@ import kotlinx.coroutines.runBlocking
 //}
 
 /**
- * Wait for Starting coroutines jobs to run block code
+ * Wait for all lazy module start jobs to complete, then run the given block.
  *
- * @param block
+ * This JVM-only function blocks the current thread until all lazy modules have
+ * finished loading, then executes the provided suspend block with the Koin instance.
+ *
+ * Useful for scenarios where you need to perform actions after Koin is fully initialized,
+ * such as running startup tasks or initializing services that depend on all modules being loaded.
+ *
+ * @param block Suspend lambda that receives the Koin instance once all start jobs complete
+ *
+ * Example:
+ * ```kotlin
+ * startKoin {
+ *     lazyModules(myLazyModule1, myLazyModule2)
+ * }
+ * KoinPlatform.getKoin().runOnKoinStarted { koin ->
+ *     // All modules are now loaded
+ *     koin.get<StartupService>().initialize()
+ * }
+ * ```
+ *
+ * @see waitAllStartJobs for just waiting without executing code
+ * @see onKoinStarted for the suspend version
  */
 fun Koin.runOnKoinStarted(block: suspend (Koin) -> Unit) {
     runBlocking {

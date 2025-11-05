@@ -19,7 +19,10 @@ package org.koin.core.module
  * Koin Lazy Module - an implementation of [Lazy]<[Module]>.
  *
  * Accepts a lambda that initializes a [Module] via [lazy()][lazy]
- * using [LazyThreadSafetyMode.NONE] as thread-safety [mode][LazyThreadSafetyMode].
+ * using [LazyThreadSafetyMode.SYNCHRONIZED] as thread-safety [mode][LazyThreadSafetyMode].
+ *
+ * This ensures thread-safe lazy initialization, which is important when loading
+ * modules in parallel background coroutines.
  *
  * @param moduleInitializer a lambda that will be used to initialize a [Module] lazily
  *
