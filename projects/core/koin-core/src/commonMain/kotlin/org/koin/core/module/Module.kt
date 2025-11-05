@@ -186,7 +186,7 @@ class Module(
 }
 
 @PublishedApi
-internal fun overrideError(
+internal fun throwOverrideError(
     factory: InstanceFactory<*>,
     mapping: IndexKey,
 ) {

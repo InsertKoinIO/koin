@@ -29,7 +29,7 @@ import org.koin.core.instance.NoClass
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.Module
-import org.koin.core.module.overrideError
+import org.koin.core.module.throwOverrideError
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -70,7 +70,10 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun loadModule(module: Module, allowOverride: Boolean) {
         module.mappings.forEach { (mapping, factory) ->
-            saveMapping(allowOverride, mapping, factory)
+            val hasFactoryAllowOverride = factory.beanDefinition.allowOverride == true
+            val override = allowOverride || hasFactoryAllowOverride
+            saveMapping(override, mapping, factory)
+
         }
     }
 
@@ -83,7 +86,7 @@ class InstanceRegistry(val _koin: Koin) {
     ) {
         _instances[mapping]?.let {
             if (!allowOverride) {
-                overrideError(factory, mapping)
+                throwOverrideError(factory, mapping)
             } else if (logWarning) {
                 _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
                 // remove previous eager isntance too
@@ -151,10 +154,11 @@ class InstanceRegistry(val _koin: Koin) {
             val definitionFunction : Scope.(ParametersHolder) -> T = if (!holdInstance) ( { error("Declared definition of type '$primaryType' shouldn't be executed") } ) else ({ instance })
             val def: BeanDefinition<T> = _createDefinition(Kind.Scoped, qualifier, definitionFunction, secondaryTypes, scopeQualifier)
             val factory = ScopedInstanceFactory(def, holdInstance = holdInstance)
-            saveMapping(allowOverride, indexKey, factory)
+            val hasFactoryAllowOverride =  factory.beanDefinition.allowOverride == true
+            saveMapping(allowOverride || hasFactoryAllowOverride, indexKey, factory)
             def.secondaryTypes.forEach { clazz ->
                 val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
-                saveMapping(allowOverride, index, factory)
+                saveMapping(allowOverride || hasFactoryAllowOverride, index, factory)
             }
             factory.saveValue(scopeID, instance)
         }

@@ -286,6 +286,41 @@ if you need to load some definition at a special time (in a background thread in
 :::
 
 
+### Explicit override per definition (4.2.0+)
+
+When you have `allowOverride(false)` enabled for strict control, but need specific definitions to override existing ones, you can use the `.override()` option:
+
+```kotlin
+val productionModule = module {
+    single<Service> { ProductionService() }
+}
+
+val testModule = module {
+    // Explicitly mark this definition as allowed to override
+    single<Service> { MockService() }.override()
+}
+
+startKoin {
+    allowOverride(false)  // Strict mode
+    modules(productionModule, testModule)
+}
+```
+
+You can also use it with `withOptions`:
+
+```kotlin
+single<Service> { MockService() } withOptions {
+    override()
+}
+```
+
+This is particularly useful for:
+- Test configurations that need to override production services
+- Feature flags that conditionally override implementations
+- Plugin systems where specific plugins can override defaults
+
+See [Modules - Explicit Override](/docs/reference/koin-core/modules#explicit-override-per-definition-420) for more details.
+
 ### Dealing with generics
 
 Koin definitions doesn't take in accounts generics type argument. For example, the module below tries to define 2 definitions of List:

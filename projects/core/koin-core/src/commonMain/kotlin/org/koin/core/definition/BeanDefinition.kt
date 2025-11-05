@@ -37,6 +37,7 @@ class BeanDefinition<T>(
     val definition: Definition<T>,
     val kind: Kind,
     var secondaryTypes: List<KClass<*>> = emptyList(),
+    var allowOverride : Boolean? = null
 ) {
     var callbacks: Callbacks<T> = Callbacks()
 

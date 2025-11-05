@@ -78,6 +78,16 @@ class KoinApplication private constructor() {
     }
 
     /**
+     * Definition override has to be explicit on teh definition using the "override" DSL
+     * same as allowOverride(false)
+     *
+     * @see allowOverride
+     */
+    public fun strictOverride() {
+        allowOverride = false
+    }
+
+    /**
      * Allow definition override or not, in a global manner
      *
      * @param override

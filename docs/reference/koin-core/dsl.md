@@ -107,3 +107,5 @@ Within this option lambda, you can specify the following options:
 * `bind<MyInterface>()` - add type to bind for given bean definition
 * `binds(arrayOf(...))` - add types array for given bean definition
 * `createdAtStart()` - create single instance at Koin start
+* `override()` - (4.2.0+) mark this definition as allowed to override, even when global `allowOverride` is false
+* `onClose { }` - register a callback to be invoked when the definition is closed/released
