@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         if (hasFocus) {
             val endTime = System.currentTimeMillis()
             val startupTime = endTime - MainApplication.startTime
-            Log.i("[MEASURE]","App startup time - $startupTime ms")
+            Log.i("[MEASURE]","App startup time - Started in $startupTime ms")
         }
     }
 }

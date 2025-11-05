@@ -27,7 +27,7 @@ package org.koin.core.module
  * @author Arnaud Giuliani
  */
 @KoinDslMarker
-class LazyModule(moduleInitializer: () -> Module) : Lazy<Module> by lazy(LazyThreadSafetyMode.NONE, moduleInitializer) {
+class LazyModule(moduleInitializer: () -> Module) : Lazy<Module> by lazy(LazyThreadSafetyMode.SYNCHRONIZED, moduleInitializer) {
 
     /**
      * Adds and returns [this][LazyModule] and [other] as a list of [Lazy]<[Module]>

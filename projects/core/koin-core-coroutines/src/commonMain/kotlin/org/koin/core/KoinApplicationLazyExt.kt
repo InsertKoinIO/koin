@@ -18,7 +18,6 @@
 package org.koin.core
 
 import kotlinx.coroutines.CoroutineDispatcher
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.extension.coroutinesEngine
 import org.koin.core.module.Module
@@ -36,10 +35,7 @@ import org.koin.core.module.Module
  * run coroutinesEngine() to setup if needed
  */
 fun KoinApplication.lazyModules(vararg moduleList: Lazy<Module>,dispatcher: CoroutineDispatcher? = null) {
-    coroutinesEngine(dispatcher)
-    koin.coroutinesEngine.launchStartJob {
-        modules(moduleList.map { it.value })
-    }
+    lazyModules(moduleList.toList(),dispatcher)
 }
 
 /**
@@ -52,7 +48,10 @@ fun KoinApplication.lazyModules(vararg moduleList: Lazy<Module>,dispatcher: Coro
  */
 fun KoinApplication.lazyModules(moduleList: List<Lazy<Module>>,dispatcher: CoroutineDispatcher? = null) {
     coroutinesEngine(dispatcher)
-    koin.coroutinesEngine.launchStartJob {
-        modules(moduleList.map { it.value })
+
+    moduleList.forEach { m ->
+        koin.coroutinesEngine.launchStartJob {
+            modules(m.value)
+        }
     }
 }

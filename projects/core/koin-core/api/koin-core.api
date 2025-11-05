@@ -57,6 +57,9 @@ public final class org/koin/core/KoinApplication$Companion {
 	public final fun init ()Lorg/koin/core/KoinApplication;
 }
 
+public abstract interface annotation class org/koin/core/annotation/KoinDelicateAPI : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class org/koin/core/annotation/KoinExperimentalAPI : java/lang/annotation/Annotation {
 }
 
@@ -64,7 +67,7 @@ public abstract interface annotation class org/koin/core/annotation/KoinInternal
 }
 
 public abstract interface class org/koin/core/component/KoinComponent {
-	public abstract fun getKoin ()Lorg/koin/core/Koin;
+	public fun getKoin ()Lorg/koin/core/Koin;
 }
 
 public final class org/koin/core/component/KoinComponent$DefaultImpls {
@@ -121,6 +124,8 @@ public abstract interface class org/koin/core/context/KoinContext {
 	public abstract fun getOrNull ()Lorg/koin/core/Koin;
 	public abstract fun loadKoinModules (Ljava/util/List;Z)V
 	public abstract fun loadKoinModules (Lorg/koin/core/module/Module;Z)V
+	public static synthetic fun loadKoinModules$default (Lorg/koin/core/context/KoinContext;Ljava/util/List;ZILjava/lang/Object;)V
+	public static synthetic fun loadKoinModules$default (Lorg/koin/core/context/KoinContext;Lorg/koin/core/module/Module;ZILjava/lang/Object;)V
 	public abstract fun startKoin (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
 	public abstract fun startKoin (Lorg/koin/core/KoinApplication;)Lorg/koin/core/KoinApplication;
 	public abstract fun stopKoin ()V

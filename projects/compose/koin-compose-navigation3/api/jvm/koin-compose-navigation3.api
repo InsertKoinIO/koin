@@ -1,0 +1,4 @@
+public final class org/koin/compose/navigation3/EntryProviderKt {
+	public static final fun koinEntryProvider (Lorg/koin/core/scope/Scope;Landroidx/compose/runtime/Composer;II)Lkotlin/jvm/functions/Function1;
+}
+
