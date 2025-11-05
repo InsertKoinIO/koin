@@ -25,6 +25,8 @@ import org.koin.core.logger.EmptyLogger
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
 import org.koin.core.module.flatten
+import org.koin.core.module.mapMultibindingQualifier
+import org.koin.core.module.setMultibindingQualifier
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
@@ -159,6 +161,106 @@ class Koin {
         qualifier: Qualifier? = null,
         parameters: ParametersDefinition? = null,
     ): T? = scopeRegistry.rootScope.getOrNull(clazz, qualifier, parameters)
+
+    /**
+     * Lazy inject a Koin Map Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return Lazy instance of type Map<K, V>
+     */
+    inline fun <reified K, reified V> injectMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Map<K, V>> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
+
+    /**
+     * Lazy inject a Koin Set Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return Lazy instance of type Set<E>
+     */
+    inline fun <reified E> injectSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Set<E>> = scopeRegistry.rootScope.inject(qualifier, mode, parameters)
+
+    /**
+     * Lazy inject a Koin Map Multibinding instance if available
+     * @param qualifier
+     * @param parameters
+     *
+     * @return Lazy instance of type Map<K, V> or null
+     */
+    inline fun <reified K, reified V> injectMapMultibindingOrNull(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Map<K, V>?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
+
+    /**
+     * Lazy inject a Koin Set Multibinding instance if available
+     * @param qualifier
+     * @param parameters
+     *
+     * @return Lazy instance of type Set<E> or null
+     */
+    inline fun <reified E> injectSetMultibindingOrNull(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        mode: LazyThreadSafetyMode = KoinPlatformTools.defaultLazyMode(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Set<E>?> = scopeRegistry.rootScope.injectOrNull(qualifier, mode, parameters)
+
+    /**
+     * Get a Koin Map Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Map<K, V>
+     */
+    inline fun <reified K, reified V> getMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Map<K, V> = scopeRegistry.rootScope.get(qualifier, parameters)
+
+    /**
+     * Get a Koin Set Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Set<E>
+     */
+    inline fun <reified E> getSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Set<E> = scopeRegistry.rootScope.get(qualifier, parameters)
+
+    /**
+     * Get a Koin Map Multibinding instance if available
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Map<K, V> or null
+     */
+    inline fun <reified K, reified V> getMapMultibindingOrNull(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Map<K, V>? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
+
+    /**
+     * Get a Koin Set Multibinding instance if available
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Set<E> or null
+     */
+    inline fun <reified E> getSetMultibindingOrNull(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Set<E>? = scopeRegistry.rootScope.getOrNull(qualifier, parameters)
 
     /**
      * Declare a component definition from the given instance
@@ -316,12 +418,12 @@ class Koin {
      * @param allowOverride - allow to override definitions
      * @param createEagerInstances - run instance creation for eager single definitions
      */
-    fun loadModules(modules: List<Module>, allowOverride: Boolean = true, createEagerInstances : Boolean = false) {
+    fun loadModules(modules: List<Module>, allowOverride: Boolean = true, createEagerInstances: Boolean = false) {
         val flattedModules = flatten(modules)
         instanceRegistry.loadModules(flattedModules, allowOverride)
         scopeRegistry.loadScopes(flattedModules)
 
-        if (createEagerInstances){
+        if (createEagerInstances) {
             createEagerInstances()
         }
     }

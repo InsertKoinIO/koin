@@ -26,6 +26,8 @@ import org.koin.core.instance.ResolutionContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.KoinDslMarker
+import org.koin.core.module.mapMultibindingQualifier
+import org.koin.core.module.setMultibindingQualifier
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
@@ -166,6 +168,122 @@ class Scope(
         noinline parameters: ParametersDefinition? = null,
     ): T? {
         return getOrNull(T::class, qualifier, parameters)
+    }
+
+    /**
+     * Lazy inject a Koin Map Multibinding instance
+     * @param qualifier
+     * @param mode - LazyThreadSafetyMode
+     * @param parameters
+     *
+     * @return Lazy instance of type Map<K, V>
+     */
+    inline fun <reified K, reified V> injectMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Map<K, V>> =
+        lazy(mode) { get<Map<K, V>>(qualifier, parameters) }
+
+    /**
+     * Lazy inject a Koin Set Multibinding instance
+     * @param qualifier
+     * @param mode - LazyThreadSafetyMode
+     * @param parameters
+     *
+     * @return Lazy instance of type Set<E>
+     */
+    inline fun <reified E> injectSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Set<E>> =
+        lazy(mode) { get<Set<E>>(qualifier, parameters) }
+
+    /**
+     * Lazy inject a Koin Map Multibinding instance
+     * @param qualifier
+     * @param mode - LazyThreadSafetyMode
+     * @param parameters
+     *
+     * @return Lazy instance of type Map<K, V> or null
+     */
+    inline fun <reified K, reified V> injectMapMultibindingOrNull(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Map<K, V>?> =
+        lazy(mode) { getOrNull<Map<K, V>>(qualifier, parameters) }
+
+    /**
+     * Lazy inject a Koin Set Multibinding instance
+     * @param qualifier
+     * @param mode - LazyThreadSafetyMode
+     * @param parameters
+     *
+     * @return Lazy instance of type Set<E> or null
+     */
+    inline fun <reified E> injectSetMultibindingOrNull(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+        noinline parameters: ParametersDefinition? = null,
+    ): Lazy<Set<E>?> =
+        lazy(mode) { getOrNull<Set<E>>(qualifier, parameters) }
+
+    /**
+     * Get a Koin Map Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Map<K, V>
+     */
+    inline fun <reified K, reified V> getMapMultibinding(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Map<K, V> {
+        return get(Map::class, qualifier, parameters)
+    }
+
+    /**
+     * Get a Koin Set Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Set<E>
+     */
+    inline fun <reified E> getSetMultibinding(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Set<E> {
+        return get(Set::class, qualifier, parameters)
+    }
+
+    /**
+     * Get a Koin Map Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Map<K, V> or null
+     */
+    inline fun <reified K, reified V> getMapMultibindingOrNull(
+        qualifier: Qualifier = mapMultibindingQualifier<K, V>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Map<K, V>? {
+        return getOrNull(Map::class, qualifier, parameters)
+    }
+
+    /**
+     * Get a Koin Set Multibinding instance
+     * @param qualifier
+     * @param parameters
+     *
+     * @return instance of type Set<E> or null
+     */
+    inline fun <reified E> getSetMultibindingOrNull(
+        qualifier: Qualifier = setMultibindingQualifier<E>(),
+        noinline parameters: ParametersDefinition? = null,
+    ): Set<E>? {
+        return getOrNull(Set::class, qualifier, parameters)
     }
 
     /**
