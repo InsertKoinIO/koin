@@ -20,6 +20,7 @@ package org.koin.core.definition
  *
  * @author Arnaud Giuliani
  */
+//TODO Look At Closeable
 data class Callbacks<T>(val onClose: OnCloseCallback<T>? = null)
 
 typealias OnCloseCallback<T> = (T?) -> Unit
