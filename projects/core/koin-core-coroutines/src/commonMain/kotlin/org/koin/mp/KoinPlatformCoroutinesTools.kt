@@ -16,10 +16,38 @@
 package org.koin.mp
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
+import kotlin.coroutines.CoroutineContext
 
+/**
+ * Platform-specific coroutines tools for Koin.
+ *
+ * Provides multiplatform abstractions for coroutine operations that have
+ * platform-specific implementations.
+ *
+ * @author Arnaud Giuliani
+ */
 @KoinInternalApi
 expect object KoinPlatformCoroutinesTools {
+    /**
+     * Get the default coroutine dispatcher for the current platform.
+     *
+     * @return Platform-specific default dispatcher (typically Dispatchers.Default)
+     */
     fun defaultCoroutineDispatcher(): CoroutineDispatcher
+
+    /**
+     * Execute a blocking coroutine on the current platform.
+     *
+     * Platform implementations:
+     * - JVM/Native: Uses kotlinx.coroutines.runBlocking for true blocking behavior
+     * - JS: Uses GlobalScope.promise with a warning (true blocking not supported)
+     *
+     * @param context The coroutine context to use
+     * @param block The suspend block to execute
+     * @return The result of the suspend block
+     */
+    fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T
 }

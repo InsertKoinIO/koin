@@ -1,8 +1,23 @@
+public class org/koin/benchmark/HeavyStartupBenchmark {
+	public fun <init> ()V
+	public fun lazyModulesList (I)Ljava/util/List;
+	public fun modulesList (I)Ljava/util/List;
+	public fun start_get_lazy_module1 ()Lorg/koin/benchmark/Perfs$A25;
+	public fun start_get_lazy_module100 ()Lorg/koin/benchmark/Perfs$B50;
+	public fun start_get_lazy_module1000 ()Lorg/koin/benchmark/Perfs$C75;
+	public fun start_get_module1 ()V
+	public fun start_get_module100 ()V
+	public fun start_get_module1000 ()V
+}
+
 public class org/koin/benchmark/JvmBenchmark {
 	public fun <init> ()V
-	public fun retrieveDependencyA ()V
-	public fun retrieveDependencyB ()V
+	public fun retrieveDependency ()V
 	public fun setUp ()V
+}
+
+public final class org/koin/benchmark/Lazy_modules_400Kt {
+	public static final fun perfLazyModule400 ()Lorg/koin/core/module/LazyModule;
 }
 
 public final class org/koin/benchmark/Module_400Kt {
@@ -2216,7 +2231,7 @@ public final class org/koin/benchmark/Perfs$D99 {
 public class org/koin/benchmark/StartupBenchmark {
 	public fun <init> ()V
 	public fun setUp ()V
-	public fun startupKoinWith400 ()V
-	public fun startupKoinWith400Fun ()V
+	public fun startup ()V
+	public fun startup_lazy ()V
 }
 
