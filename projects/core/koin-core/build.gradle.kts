@@ -6,7 +6,6 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
     jvm()
 
     js(IR) {
