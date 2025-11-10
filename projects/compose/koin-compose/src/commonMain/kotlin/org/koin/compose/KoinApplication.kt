@@ -44,8 +44,8 @@ import org.koin.mp.KoinPlatformTools
  * @see LocalKoinScopeContext
  */
 //For Compat with 4.1.0
-@Deprecated("LocalKoinScope has been replaced with LocalKoinScopeContext, using ComposeContextWrapper.getValue() to retrieve the value" , level = DeprecationLevel.ERROR ,replaceWith = ReplaceWith("LocalKoinScopeContext"))
-val LocalKoinScope: ProvidableCompositionLocal<Scope> = error(" should not be used in favor of LocalKoinScopeContext")
+@Deprecated("LocalKoinScope has been replaced with LocalKoinScopeContext, using ComposeContextWrapper.getValue() to retrieve the value. See also KoinScope() or UnboundKoinScope() Compose functions" , level = DeprecationLevel.ERROR ,replaceWith = ReplaceWith("LocalKoinScopeContext"))
+val LocalKoinScope: ProvidableCompositionLocal<Scope> =  compositionLocalOf { error(" should not be used in favor of LocalKoinScopeContext") }
 
 /**
  * Deprecated - Internal API
@@ -53,7 +53,7 @@ val LocalKoinScope: ProvidableCompositionLocal<Scope> = error(" should not be us
  */
 //For Compat with 4.1.0
 @Deprecated("LocalKoinApplication is deprecated. Use getKoin() to access the Koin instance directly.", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("getKoin()"))
-val LocalKoinApplication :  ProvidableCompositionLocal<Koin> = error(" should not be used in favor of getKoin()")
+val LocalKoinApplication :  ProvidableCompositionLocal<Koin> =  compositionLocalOf { error(" should not be used in favor of getKoin()") }
 
 /**
  * Internal API
