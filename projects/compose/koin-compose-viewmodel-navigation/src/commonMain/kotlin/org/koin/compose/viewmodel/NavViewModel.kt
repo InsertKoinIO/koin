@@ -84,7 +84,11 @@ inline fun <reified VM : ViewModel> NavBackStackEntry.sharedKoinViewModel(
 ): VM {
     val navGraphRoute = navGraphRoute ?: return koinViewModel<VM>()
     val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
+        if (navGraphRoute is String) {
+            navController.getBackStackEntry(navGraphRoute)
+        } else {
+            navController.getBackStackEntry(navGraphRoute)
+        }
     }
     return koinViewModel(
         viewModelStoreOwner = parentEntry
