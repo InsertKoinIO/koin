@@ -16,7 +16,6 @@
 package org.koin.core.scope
 
 import org.koin.core.Koin
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.error.MissingPropertyException
@@ -30,7 +29,6 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
-import org.koin.core.resolution.InstanceResolver
 import org.koin.core.time.inMs
 import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
@@ -67,7 +65,7 @@ class Scope(
     private val _callbacks = LinkedHashSet<ScopeCallback>()
 
     @KoinInternalApi
-    internal var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+    internal var parameterStack = ThreadLocal<ArrayDeque<ParametersHolder>>()
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -306,13 +304,16 @@ class Scope(
     private fun clearParameterStack(stack: ArrayDeque<ParametersHolder>) {
         stack.removeFirstOrNull()
         if (stack.isEmpty()) {
-            parameterStack?.remove()
-            parameterStack = null
+            parameterStack.remove()
         }
     }
 
     private fun getOrCreateParameterStack(): ArrayDeque<ParametersHolder> {
-        return parameterStack?.get() ?: ArrayDeque<ParametersHolder>().let { parameterStack = ThreadLocal(); parameterStack?.set(it) ; it }
+        val oldStack = parameterStack.get()
+        if (oldStack != null) return oldStack
+        val newStack = ArrayDeque<ParametersHolder>()
+        parameterStack.set(newStack)
+        return newStack
     }
 
     private fun <T> resolveFromContext(
@@ -431,8 +432,7 @@ class Scope(
 
         sourceValue = null
 
-        parameterStack?.get()?.clear()
-        parameterStack = null
+        parameterStack.get()?.clear()
 
         _koin.scopeRegistry.deleteScope(this)
     }

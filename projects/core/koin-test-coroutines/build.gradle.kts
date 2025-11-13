@@ -8,6 +8,7 @@ plugins {
 kotlin {
     
     jvm()
+    iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {
