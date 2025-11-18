@@ -8,6 +8,10 @@ import org.koin.dsl.module
 import org.koin.test.Simple
 import org.koin.test.verify.*
 
+/**
+* @author Arnauld Giuliani
+* @author Otávio Moreira
+* */
 class VerifyModulesTest {
 
     @Test
@@ -257,6 +261,81 @@ class VerifyModulesTest {
             module {
                 single { (a : Others.ComponentA) -> Others.ComponentB(a) }
             }.verify()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `verify instance provided by other definition`() {
+        val modules = module {
+            single { Simple.ComponentProvider() }
+            single<Simple.ComponentToBeProvided> {
+                get<Simple.ComponentProvider>().getComponent()
+            }
+        }
+
+        modules.verify()
+    }
+
+    @Test
+    fun `verify instance provided by other definition - fail`() {
+        val modules = module {
+            single<Simple.ComponentToBeProvided> {
+                get<Simple.ComponentProvider>().getComponent()
+            }
+        }
+
+        try {
+            modules.verify()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `verify instance provided by other definition passing arg`() {
+        val modules = module {
+            single { Simple.ComponentA() }
+            single { Simple.ComponentProvider() }
+            single<Simple.ComponentToBeProvidedWithComponentA> {
+                get<Simple.ComponentProvider>().getComponentWithArg(a = get())
+            }
+        }
+
+        modules.verify()
+    }
+
+    @Test
+    fun `verify instance provided by other definition passing arg - fail without provider`() {
+        val modules = module {
+            single { Simple.ComponentA() }
+            single<Simple.ComponentToBeProvidedWithComponentA> {
+                get<Simple.ComponentProvider>().getComponentWithArg(a = get())
+            }
+        }
+
+        try {
+            modules.verify()
+            fail()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `verify instance provided by other definition passing arg - fail without arg`() {
+        val modules = module {
+            single { Simple.ComponentProvider() }
+            single<Simple.ComponentToBeProvidedWithComponentA> {
+                get<Simple.ComponentProvider>().getComponentWithArg(a = get())
+            }
+        }
+
+        try {
+            modules.verify()
             fail()
         } catch (e: Exception) {
             e.printStackTrace()
