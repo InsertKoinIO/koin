@@ -102,7 +102,7 @@ We declare `UserPresenter` in our Koin module. We declare it as a `factoryOf` de
 ```kotlin
 val appModule = module {
     singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-    factoryOf(::UserStateHolder)
+    factoryOf(::UserRepository)
 }
 ```
 
@@ -159,8 +159,8 @@ Here is the Koin module declaration for our app:
 
 ```kotlin
 val appModule = module {
-    single<HelloRepository> { HelloRepositoryImpl() }
-    factory { MyPresenter(get()) }
+    single<UserRepository> { UserRepositoryImpl() }
+    factory { UserPresenter(get()) }
 }
 ```
 
