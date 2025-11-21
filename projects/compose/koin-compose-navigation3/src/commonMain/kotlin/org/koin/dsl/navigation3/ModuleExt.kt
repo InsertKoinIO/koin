@@ -46,6 +46,7 @@ import org.koin.dsl.ScopeDSL
  * ```
  *
  * @param T The type representing the navigation route/destination
+ * @param metadata Optional metadata map to associate with the navigation entry (default is empty)
  * @param definition A composable function that receives the [Scope] and route instance [T] to render the destination
  * @return A [KoinDefinition] for the created [EntryProviderInstaller]
  *
@@ -55,12 +56,13 @@ import org.koin.dsl.ScopeDSL
 @KoinDslMarker
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> ScopeDSL.navigation(
+    metadata: Map<String, Any> = emptyMap(),
     noinline definition: @Composable Scope.(T) -> Unit,
 ): KoinDefinition<EntryProviderInstaller> {
     val def = _scopedInstanceFactory<EntryProviderInstaller>(named<T>(), {
         val scope = this
         {
-            entry<T>(content = { t -> definition(scope, t) })
+            entry<T>(content = { t -> definition(scope, t) }, metadata = metadata)
         }
     }, scopeQualifier)
     module.indexPrimaryType(def)
@@ -85,6 +87,7 @@ inline fun <reified T : Any> ScopeDSL.navigation(
  * ```
  *
  * @param T The type representing the navigation route/destination
+ * @param metadata Optional metadata map to associate with the navigation entry (default is empty)
  * @param definition A composable function that receives the [Scope] and route instance [T] to render the destination
  * @return A [KoinDefinition] for the created [EntryProviderInstaller]
  *
@@ -94,12 +97,13 @@ inline fun <reified T : Any> ScopeDSL.navigation(
 @KoinDslMarker
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> Module.navigation(
+    metadata: Map<String, Any> = emptyMap(),
     noinline definition: @Composable Scope.(T) -> Unit,
 ): KoinDefinition<EntryProviderInstaller> {
     val def = _singleInstanceFactory<EntryProviderInstaller>(named<T>(), {
         val scope = this
         {
-            entry<T>(content = { t -> definition(scope, t) })
+            entry<T>(content = { t -> definition(scope, t) }, metadata = metadata)
         }
     })
     indexPrimaryType(def)
