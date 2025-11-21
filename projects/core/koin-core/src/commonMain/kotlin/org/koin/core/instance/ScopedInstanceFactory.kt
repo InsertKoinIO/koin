@@ -28,7 +28,7 @@ import org.koin.mp.KoinPlatformTools
 class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstance : Boolean = true) :
     InstanceFactory<T>(beanDefinition) {
 
-    private var values = hashMapOf<ScopeID, T>()
+    private val values = KoinPlatformTools.safeHashMap<ScopeID, T>()
 
     fun size() = values.size
 
@@ -58,18 +58,14 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
         if (context.scope.scopeQualifier != beanDefinition.scopeQualifier && context.scopeArchetype != beanDefinition.scopeQualifier) {
             error("Wrong Scope qualifier: trying to open instance for ${context.scope.id} in $beanDefinition")
         }
-        KoinPlatformTools.synchronized(this) {
-            if (!isCreated(context) && holdInstance) {
-                values[context.scope.id] = super.create(context)
-            }
+        if (!isCreated(context) && holdInstance) {
+            values[context.scope.id] = super.create(context)
         }
         return values[context.scope.id] ?: throw MissingScopeValueException("Factory.get -Scoped instance not found for ${context.scope.id} in $beanDefinition")
     }
-
     override fun dropAll() {
         values.clear()
     }
-
     @Suppress("UNCHECKED_CAST")
     fun refreshInstance(scopeID: ScopeID, instance: Any) {
         values[scopeID] = instance as T
