@@ -26,7 +26,7 @@ jb-lifecycle = "2.9.5"
 
 # Navigation
 androidx-navigation = "2.9.5" # Keep in sync with "jb-navigation"
-androidx-navigation3 = "1.0.0-beta01"
+androidx-navigation3 = "1.0.0"
 jb-navigation = "2.9.1"
 
 # Compose
