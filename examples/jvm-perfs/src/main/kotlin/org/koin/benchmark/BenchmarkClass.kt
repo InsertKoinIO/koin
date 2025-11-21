@@ -1,6 +1,7 @@
 package org.koin.benchmark
 
 import org.koin.benchmark.PerfRunner.koinScenario
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.dsl.koinApplication
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
@@ -57,6 +58,7 @@ open class BenchmarkClass {
         koinScenario(koin)
     }
 
+    @OptIn(KoinInternalApi::class)
     @Benchmark
     fun flattenRecursive(state: BenchmarkState) {
         org.koin.core.module.flatten(state.nestedModules)

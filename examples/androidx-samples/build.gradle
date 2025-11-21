@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 buildscript {
     repositories {
         mavenLocal()
@@ -26,10 +28,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -46,12 +44,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_1_8
+        }
     }
 }
 
@@ -61,7 +61,7 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.10.5"
     implementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
-    testImplementation "junit:junit:4.13.2"
+    testImplementation "junit:junit:$junit_version"
 
     // Koin
     implementation platform("io.insert-koin:koin-bom:$koin_android_version")
