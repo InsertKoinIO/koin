@@ -23,9 +23,9 @@ import org.koin.core.annotation.KoinInternalApi
  */
 @KoinExperimentalAPI
 @OptIn(KoinInternalApi::class)
-fun ComponentCallbacks.entryProvider(
+fun <T : Any> ComponentCallbacks.entryProvider(
     mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-) : Lazy<EntryProvider> = lazy(mode) { getEntryProvider() }
+) : Lazy<EntryProvider<T>> = lazy(mode) { getEntryProvider() }
 
 /**
  * Retrieves an [EntryProvider] by collecting all [EntryProviderInstaller] instances from the Koin scope
@@ -42,6 +42,6 @@ fun ComponentCallbacks.entryProvider(
  */
 @KoinExperimentalAPI
 @OptIn(KoinInternalApi::class)
-fun ComponentCallbacks.getEntryProvider() : EntryProvider {
+fun <T : Any> ComponentCallbacks.getEntryProvider() : EntryProvider<T> {
     return getKoinScope().getEntryProvider()
 }

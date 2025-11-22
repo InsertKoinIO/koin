@@ -16,6 +16,7 @@
 package org.koin.compose.navigation3
 
 import androidx.compose.runtime.Composable
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
 import org.koin.compose.LocalKoinScopeContext
@@ -33,13 +34,13 @@ import org.koin.core.scope.Scope
  * @see EntryProviderInstaller for defining navigation entries in Koin modules
  */
 @KoinExperimentalAPI
-typealias EntryProvider = (Any) -> NavEntry<Any>
+typealias EntryProvider<T> = (T) -> NavEntry<T>
 
 @KoinExperimentalAPI
-internal fun Scope.getEntryProvider() : EntryProvider {
+internal fun <T : Any> Scope.getEntryProvider() : EntryProvider<T> {
     val entries = getAll<EntryProviderInstaller>()
-    val entryProvider: (Any) -> NavEntry<Any> = entryProvider {
-        entries.forEach { builder -> this.builder() }
+    val entryProvider: EntryProvider<T> = entryProvider {
+        entries.forEach { builder -> (this as EntryProviderScope<Any>).builder() }
     }
     return entryProvider
 }
@@ -71,6 +72,6 @@ internal fun Scope.getEntryProvider() : EntryProvider {
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @Composable
-fun koinEntryProvider(scope : Scope = LocalKoinScopeContext.current.getValue()) : EntryProvider {
+fun <T : Any> koinEntryProvider(scope : Scope = LocalKoinScopeContext.current.getValue()) : EntryProvider<T> {
     return scope.getEntryProvider()
 }
