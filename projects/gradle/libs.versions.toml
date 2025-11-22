@@ -13,7 +13,6 @@ nmcp = "1.2.0"
 
 # Android
 agp = "8.9.1"
-android-appcompat = "1.7.1"
 android-activity = "1.11.0"
 android-fragment = "1.8.9"
 androidx-workmanager = "2.10.5"
@@ -62,8 +61,8 @@ test-jupiter = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref 
 test-mockito = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
 test-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 test-robolectric = {module = "org.robolectric:robolectric", version.ref = "robolectric"}
+
 # Android
-android-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "android-appcompat" }
 android-activity = { module = "androidx.activity:activity-ktx", version.ref = "android-activity" }
 android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity" }
 android-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "android-fragment" }
