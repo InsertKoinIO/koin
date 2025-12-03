@@ -432,7 +432,7 @@ class Scope(
 
         sourceValue = null
 
-        parameterStack.get()?.clear()
+        parameterStack.remove()
 
         _koin.scopeRegistry.deleteScope(this)
     }
