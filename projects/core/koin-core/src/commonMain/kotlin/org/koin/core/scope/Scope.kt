@@ -65,7 +65,7 @@ class Scope(
     private val _callbacks = LinkedHashSet<ScopeCallback>()
 
     @KoinInternalApi
-    internal var parameterStack = ThreadLocal<ArrayDeque<ParametersHolder>>()
+    internal val parameterStack = ThreadLocal<ArrayDeque<ParametersHolder>>()
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
