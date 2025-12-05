@@ -31,18 +31,18 @@ class CompositionKoinScopeLoader(
     }
 
     override fun onForgotten() {
-        scope.logger.debug("CompositionKoinScopeLoader onForgotten: '${scope.id}'")
-        //don"t stop here, premature
+        scope.logger.debug("CompositionKoinScopeLoader onForgotten: '${scope.id}' ($this)")
+        close()
     }
 
     override fun onAbandoned() {
-        scope.logger.debug("CompositionKoinScopeLoader onAbandoned: '${scope.id}'")
+        scope.logger.debug("CompositionKoinScopeLoader onAbandoned: '${scope.id}' ($this)")
         close()
     }
 
     private fun close() {
         if (!scope.isRoot && !(scope.closed)){
-            scope.logger.debug("CompositionKoinScopeLoader close scope: '${scope.id}'")
+            scope.logger.debug("CompositionKoinScopeLoader close scope: '${scope.id}' ($this)")
             scope.close()
         }
     }

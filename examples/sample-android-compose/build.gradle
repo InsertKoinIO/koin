@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "org.koin.sample.androidx.compose"
-        minSdkVersion 21
+        minSdkVersion 23
         versionCode 1
         versionName "1.0"
 

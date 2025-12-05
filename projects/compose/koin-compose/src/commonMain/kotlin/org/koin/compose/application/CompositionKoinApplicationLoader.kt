@@ -26,7 +26,8 @@ class CompositionKoinApplicationLoader(
 
     override fun onForgotten() {
         koin?.logger?.debug("CompositionKoinApplicationLoader - onForgotten - $this")
-        //don"t stop here, premature
+        //don"t stop context, premature. Only de-allocate
+        koin = null
     }
 
     override fun onRemembered() {
