@@ -125,13 +125,66 @@ fun currentKoinScope(): Scope = currentComposer.run {
  *
  * @author Arnaud Giuliani
  */
+@Deprecated(
+    message = "Use KoinApplication(config: KoinConfiguration) with koinConfiguration { } instead of KoinAppDeclaration lambda",
+    replaceWith = ReplaceWith(
+        "KoinApplication(config = koinConfiguration(application), content = content)",
+        "org.koin.dsl.koinConfiguration"
+    ),
+    level = DeprecationLevel.WARNING
+)
 @OptIn(KoinInternalApi::class)
 @Composable
 fun KoinApplication(
-    application: KoinAppDeclaration, //Better to directly use KoinConfiguration class
+    application: KoinAppDeclaration,
     content: @Composable () -> Unit
 ) {
     val koin = rememberKoinApplication(application)
+    CompositionLocalProvider(
+        LocalKoinApplicationContext provides ComposeContextWrapper(koin) { getDefaultKoinContext() },
+        LocalKoinScopeContext provides ComposeContextWrapper(koin.scopeRegistry.rootScope) { getDefaultRootScope() },
+        content = content
+    )
+}
+
+/**
+ * Start a new Koin Application context and setup Compose context.
+ *
+ * This is the unified entry point for Koin in Compose applications (Android, iOS, Desktop, Web).
+ * Automatically configures:
+ * - Android: injects applicationContext and sets up androidLogger
+ * - Other platforms: sets up printLogger
+ *
+ * @param configuration Koin Application Configuration - use koinConfiguration { } to declare your Koin application
+ * @param logLevel Logger level for the application (default: Level.INFO)
+ * @param content Following compose function
+ *
+ * @throws org.koin.core.error.KoinApplicationAlreadyStartedException if Koin is already started
+ *
+ * Example:
+ * ```
+ * KoinApplication(
+ *     configuration = koinConfiguration {
+ *         modules(appModule)
+ *     }
+ * ) {
+ *     MyApp()
+ * }
+ * ```
+ *
+ * @see KoinConfiguration
+ * @see composeMultiplatformConfiguration
+ *
+ * @author Arnaud Giuliani
+ */
+@OptIn(KoinInternalApi::class)
+@Composable
+fun KoinApplication(
+    configuration: KoinConfiguration,
+    logLevel: Level = Level.INFO,
+    content: @Composable () -> Unit
+) {
+    val koin = rememberKoinMPApplication(configuration, logLevel)
     CompositionLocalProvider(
         LocalKoinApplicationContext provides ComposeContextWrapper(koin) { getDefaultKoinContext() },
         LocalKoinScopeContext provides ComposeContextWrapper(koin.scopeRegistry.rootScope) { getDefaultRootScope() },
@@ -157,6 +210,7 @@ fun KoinApplication(
  *
  * @author Arnaud Giuliani
  */
+@Deprecated("Use KoinApplication(configuration: KoinConfiguration, logLevel: Level) instead", ReplaceWith("KoinApplication(configuration = config, logLevel = logLevel, content = content)"))
 @OptIn(KoinInternalApi::class)
 @Composable
 @KoinExperimentalAPI
