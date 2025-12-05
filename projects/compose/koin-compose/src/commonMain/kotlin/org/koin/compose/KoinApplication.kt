@@ -128,7 +128,7 @@ fun currentKoinScope(): Scope = currentComposer.run {
 @Deprecated(
     message = "Use KoinApplication(config: KoinConfiguration) with koinConfiguration { } instead of KoinAppDeclaration lambda",
     replaceWith = ReplaceWith(
-        "KoinApplication(config = koinConfiguration(application), content = content)",
+        "KoinApplication(configuration = koinConfiguration(application), content = content)",
         "org.koin.dsl.koinConfiguration"
     ),
     level = DeprecationLevel.WARNING
