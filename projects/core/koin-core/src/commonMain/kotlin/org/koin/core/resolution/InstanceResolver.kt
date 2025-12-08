@@ -27,5 +27,7 @@ import org.koin.core.scope.Scope
  */
 internal interface InstanceResolver {
     fun <T> resolveFromContext(scope : Scope, instanceContext: ResolutionContext): T
+    fun addResolutionExtension(resolutionExtension: ResolutionExtension)
+    val extendedResolution: ArrayList<ResolutionExtension>
 }
 

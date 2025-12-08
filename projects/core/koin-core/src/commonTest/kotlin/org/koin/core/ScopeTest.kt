@@ -234,6 +234,7 @@ class ScopeTest {
     @Test
     fun scope_regression_test2(){
         val koin = startKoin {
+            printLogger(Level.DEBUG)
             modules(
                 module {
                     single<String> { "ABC" }
