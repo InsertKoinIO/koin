@@ -2228,6 +2228,51 @@ public final class org/koin/benchmark/Perfs$D99 {
 	public final fun getC ()Lorg/koin/benchmark/Perfs$C99;
 }
 
+public class org/koin/benchmark/ScopeBenchmark {
+	public fun <init> ()V
+	public fun activityScope ()V
+	public fun activityScope_cascade_root ()V
+	public fun fragmentScope_cascade_activity_root ()V
+	public fun getActivityScope ()Lorg/koin/core/scope/Scope;
+	public fun getFragmentScope ()Lorg/koin/core/scope/Scope;
+	public fun getKoin ()Lorg/koin/core/Koin;
+	public fun rootScope ()V
+	public fun setActivityScope (Lorg/koin/core/scope/Scope;)V
+	public fun setFragmentScope (Lorg/koin/core/scope/Scope;)V
+	public fun setKoin (Lorg/koin/core/Koin;)V
+	public fun setUp ()V
+}
+
+public final class org/koin/benchmark/ScopeBenchmark$ActivityFactoryClass {
+	public fun <init> (Lorg/koin/benchmark/ScopeBenchmark$MySingle;)V
+	public final fun getId ()Ljava/lang/String;
+	public final fun getS ()Lorg/koin/benchmark/ScopeBenchmark$MySingle;
+}
+
+public final class org/koin/benchmark/ScopeBenchmark$ActivityScopedClass {
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class org/koin/benchmark/ScopeBenchmark$FakeActivity {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/ScopeBenchmark$FakeFragment {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/ScopeBenchmark$FragmentFactoryClass {
+	public fun <init> (Lorg/koin/benchmark/ScopeBenchmark$ActivityFactoryClass;)V
+	public final fun getAct ()Lorg/koin/benchmark/ScopeBenchmark$ActivityFactoryClass;
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class org/koin/benchmark/ScopeBenchmark$MySingle {
+	public fun <init> ()V
+	public final fun getId ()Ljava/lang/String;
+}
+
 public class org/koin/benchmark/StartupBenchmark {
 	public fun <init> ()V
 	public fun setUp ()V

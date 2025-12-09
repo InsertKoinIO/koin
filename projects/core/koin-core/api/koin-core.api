@@ -26,7 +26,6 @@ public final class org/koin/core/Koin {
 	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getPropertyRegistry ()Lorg/koin/core/registry/PropertyRegistry;
-	public final fun getResolver ()Lorg/koin/core/resolution/CoreResolver;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeOrNull (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeRegistry ()Lorg/koin/core/registry/ScopeRegistry;
@@ -546,12 +545,20 @@ public final class org/koin/core/registry/ScopeRegistry$Companion {
 
 public final class org/koin/core/resolution/CoreResolver : org/koin/core/resolution/InstanceResolver {
 	public fun <init> (Lorg/koin/core/Koin;)V
-	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun getExtendedResolution ()Ljava/util/ArrayList;
 	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 }
 
 public final class org/koin/core/resolution/CoreResolverKt {
 	public static final fun flatten (Ljava/util/List;)Ljava/util/Set;
+}
+
+public final class org/koin/core/resolution/CoreResolverV2 : org/koin/core/resolution/InstanceResolver {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun getExtendedResolution ()Ljava/util/ArrayList;
+	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 }
 
 public abstract interface class org/koin/core/resolution/ResolutionExtension {
