@@ -25,7 +25,7 @@ import org.koin.ext.getFullName
 
 
 /**
- *
+ * Resolver - optimised version
  */
 @KoinInternalApi
 class CoreResolverV2(
@@ -46,7 +46,6 @@ class CoreResolverV2(
         return resolveFromRegistry(scope, instanceContext)
             ?: resolveFromInjectedParameters(instanceContext)
             ?: resolveFromStackedParameters(scope,instanceContext)
-            ?: resolveFromScopeSource(scope,instanceContext)
             ?: resolveInExtensions(scope,instanceContext)
     }
 
@@ -54,42 +53,50 @@ class CoreResolverV2(
         scope: Scope,
         ctx: ResolutionContext
     ): T? {
+        // direct definition
         var factory = _koin.instanceRegistry.resolveDefinition(ctx.clazz,ctx.qualifier, scope.scopeQualifier)
             ?: if (!scope.isRoot) scope.scopeArchetype?.let {
                 ctx.scopeArchetype = it
                 _koin.instanceRegistry.resolveDefinition(ctx.clazz,ctx.qualifier, it)
             } else null
         var newCtx = ctx
-
-        if (factory == null) {
-            var lastScope : Scope? = null
-            val scopes =  flatten(scope.linkedScopes)
-            factory = scopes.firstNotNullOfOrNull {
-                val foundDefinition = it.scopeArchetype?.let {
+        return if (factory != null){
+            factory.get(newCtx) as T?
+        }
+        else {
+            // scope source
+            if (!scope.isRoot && ctx.qualifier == null && ctx.clazz.isInstance(scope.sourceValue)) scope.sourceValue as? T
+            // parent scopes
+            else {
+                var lastScope : Scope? = null
+                val scopes =  flatten(scope.linkedScopes)
+                factory = scopes.firstNotNullOfOrNull {
+                    val foundDefinition = it.scopeArchetype?.let {
+                        _koin.instanceRegistry.resolveDefinition(
+                            ctx.clazz,
+                            ctx.qualifier,
+                            it
+                        )
+                    } ?:
                     _koin.instanceRegistry.resolveDefinition(
                         ctx.clazz,
                         ctx.qualifier,
-                        it
+                        it.scopeQualifier
                     )
-                } ?:
-                _koin.instanceRegistry.resolveDefinition(
-                    ctx.clazz,
-                    ctx.qualifier,
-                    it.scopeQualifier
-                )
-                if (foundDefinition != null){
-                    lastScope = it
+                    if (foundDefinition != null){
+                        lastScope = it
+                    }
+                    foundDefinition
                 }
-                foundDefinition
-            }
-            if (factory != null && lastScope != null && !lastScope.isRoot){
-                newCtx = ctx.newContextForScope(lastScope)
-                if (scope.scopeArchetype != null){
-                    newCtx.scopeArchetype = lastScope.scopeArchetype
+                if (factory != null && lastScope != null && !lastScope.isRoot){
+                    newCtx = ctx.newContextForScope(lastScope)
+                    if (scope.scopeArchetype != null){
+                        newCtx.scopeArchetype = lastScope.scopeArchetype
+                    }
                 }
+                factory?.get(newCtx) as T?
             }
         }
-        return factory?.get(newCtx) as T?
     }
 
     private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
@@ -110,11 +117,11 @@ class CoreResolverV2(
         }
     }
 
-    private inline fun <T> resolveFromScopeSource(scope: Scope, ctx: ResolutionContext): T? {
-        if (scope.isRoot || scope.sourceValue == null || !(ctx.clazz.isInstance(scope.sourceValue) && ctx.qualifier == null)) return null
-        ctx.logger.debug("|- ? ${ctx.debugTag} look at scope source")
-        return if (ctx.clazz.isInstance(scope.sourceValue)) { scope.sourceValue as? T } else null
-    }
+//    private inline fun <T> resolveFromScopeSource(scope: Scope, ctx: ResolutionContext): T? {
+//        if (scope.isRoot || scope.sourceValue == null || !(ctx.clazz.isInstance(scope.sourceValue) && ctx.qualifier == null)) return null
+//        ctx.logger.debug("|- ? ${ctx.debugTag} look at scope source")
+//        return if (ctx.clazz.isInstance(scope.sourceValue)) { scope.sourceValue as? T } else null
+//    }
 
     @OptIn(KoinExperimentalAPI::class)
     private inline fun <T> resolveFromScopeArchetype(scope: Scope, ctx: ResolutionContext): T? {
