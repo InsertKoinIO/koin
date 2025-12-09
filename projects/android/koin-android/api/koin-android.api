@@ -114,7 +114,7 @@ public final class org/koin/androidx/scope/FragmentExtKt {
 	public static final fun getScopeOrNull (Landroidx/fragment/app/Fragment;)Lorg/koin/core/scope/Scope;
 }
 
-public abstract class org/koin/androidx/scope/RetainedScopeActivity : androidx/appcompat/app/AppCompatActivity, org/koin/android/scope/AndroidScopeComponent {
+public abstract class org/koin/androidx/scope/RetainedScopeActivity : androidx/activity/ComponentActivity, org/koin/android/scope/AndroidScopeComponent {
 	public fun <init> ()V
 	public fun <init> (I)V
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -123,7 +123,7 @@ public abstract class org/koin/androidx/scope/RetainedScopeActivity : androidx/a
 	protected fun onCreate (Landroid/os/Bundle;)V
 }
 
-public abstract class org/koin/androidx/scope/ScopeActivity : androidx/appcompat/app/AppCompatActivity, org/koin/android/scope/AndroidScopeComponent {
+public abstract class org/koin/androidx/scope/ScopeActivity : androidx/activity/ComponentActivity, org/koin/android/scope/AndroidScopeComponent {
 	public fun <init> ()V
 	public fun <init> (I)V
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V

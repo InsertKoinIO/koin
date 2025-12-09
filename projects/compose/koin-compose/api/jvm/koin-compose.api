@@ -10,6 +10,7 @@ public final class org/koin/compose/ComposeContextWrapper {
 
 public final class org/koin/compose/KoinApplicationKt {
 	public static final fun KoinApplication (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+	public static final fun KoinApplication (Lorg/koin/dsl/KoinConfiguration;Lorg/koin/core/logger/Level;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun KoinApplicationPreview (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun KoinContext (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun KoinIsolatedContext (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
@@ -23,7 +24,9 @@ public final class org/koin/compose/KoinApplicationKt {
 
 public final class org/koin/compose/application/CompositionKoinApplicationLoader : androidx/compose/runtime/RememberObserver {
 	public static final field $stable I
+	public fun <init> ()V
 	public fun <init> (Lorg/koin/core/KoinApplication;)V
+	public synthetic fun <init> (Lorg/koin/core/KoinApplication;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getKoin ()Lorg/koin/core/Koin;
 	public final fun getKoinApplication ()Lorg/koin/core/KoinApplication;
 	public fun onAbandoned ()V

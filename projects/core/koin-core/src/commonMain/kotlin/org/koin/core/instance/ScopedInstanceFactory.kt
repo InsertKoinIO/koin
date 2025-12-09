@@ -30,18 +30,16 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
 
     private var values = KoinPlatformTools.safeHashMap<ScopeID, T>()
 
-    fun size() = KoinPlatformTools.synchronized(this) { values.size }
+    fun size() = values.size
 
     @PublishedApi
     internal fun saveValue(id : ScopeID, value : T){
-        KoinPlatformTools.synchronized(this) {
-            values[id] = value
-        }
+        values[id] = value
     }
 
-    override fun isCreated(context: ResolutionContext?): Boolean = KoinPlatformTools.synchronized(this) {
+    override fun isCreated(context: ResolutionContext?): Boolean {
         val scopeId = context?.scope?.id
-        if (scopeId == null) {
+        return if (scopeId == null) {
             // When no specific context is provided, report if any instance exists for any scope
             values.isNotEmpty()
         } else {
@@ -75,10 +73,19 @@ class ScopedInstanceFactory<T>(beanDefinition: BeanDefinition<T>, val holdInstan
         if (context.scope.scopeQualifier != beanDefinition.scopeQualifier && context.scopeArchetype != beanDefinition.scopeQualifier) {
             error("Wrong Scope qualifier: trying to open instance for ${context.scope.id} in $beanDefinition")
         }
+
+        // Fast path: check if already created without locking
+        val existing = values[context.scope.id]
+        if (existing != null) {
+            return existing
+        }
+
+        // Slow path: need to create the instance with locking
         return KoinPlatformTools.synchronized(this) {
-            val existing = values[context.scope.id]
-            if (existing != null) {
-                existing
+            // Double-check inside lock to avoid race condition
+            val doubleCheck = values[context.scope.id]
+            if (doubleCheck != null) {
+                doubleCheck
             } else {
                 if (!holdInstance) {
                     throw MissingScopeValueException("No value for scope '${context.scope.id}' in $beanDefinition")
