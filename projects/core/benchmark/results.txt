@@ -1,0 +1,17 @@
+# 2025-12-09 - M1 Macbook Pro Max
+
+jvm summary:
+Benchmark                                        Mode  Cnt     Score    Error  Units
+HeavyStartupBenchmark.start_get_lazy_module1     avgt          0,246           ms/op
+HeavyStartupBenchmark.start_get_lazy_module100   avgt          4,385           ms/op
+HeavyStartupBenchmark.start_get_lazy_module1000  avgt         43,149           ms/op
+HeavyStartupBenchmark.start_get_module1          avgt          0,234           ms/op
+HeavyStartupBenchmark.start_get_module100        avgt         24,619           ms/op
+HeavyStartupBenchmark.start_get_module1000       avgt        246,922           ms/op
+JvmBenchmark.retrieveDependency                  avgt        102,998           ns/op
+ScopeBenchmark.activityFactoryScope              avgt    3   531,470 ± 14,673  ns/op
+ScopeBenchmark.activityScope                     avgt    3   180,610 ±  3,571  ns/op
+ScopeBenchmark.fragmentFactoryScope              avgt    3  1297,748 ± 12,705  ns/op
+ScopeBenchmark.rootScope                         avgt    3   106,800 ±  1,169  ns/op
+StartupBenchmark.startup                         avgt          0,229           ms/op
+StartupBenchmark.startup_lazy                    avgt          0,001           ms/op
