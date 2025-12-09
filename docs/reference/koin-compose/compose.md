@@ -212,7 +212,7 @@ More details about SavedStateHandle injection difference: https://github.com/Ins
 
 ### Shared ViewModel and Navigation (Experimental)
 
-Koin Compose Naviation has now a `NavBackEntry.sharedKoinViewModel()` function, to allow to retrieve ViewModel already stored in current NavBackEntry. Inside your navigation part, just use `sharedKoinViewModel`:
+Koin Compose Navigation has now a `NavBackEntry.sharedKoinViewModel()` function, to allow to retrieve ViewModel already stored in current NavBackEntry. Inside your navigation part, just use `sharedKoinViewModel`:
 
 ```kotlin
 navigation<Route.BookGraph>(
