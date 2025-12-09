@@ -1,0 +1,17 @@
+
+# 4.2.0-BETA1 - 2025-12-09
+
+Benchmark                                           Mode  Cnt     Score     Error  Units
+HeavyStartupBenchmark.start_get_lazy_module1        avgt          0,254            ms/op
+HeavyStartupBenchmark.start_get_lazy_module100      avgt          6,926            ms/op
+HeavyStartupBenchmark.start_get_lazy_module1000     avgt         40,220            ms/op
+HeavyStartupBenchmark.start_get_module1             avgt          0,237            ms/op
+HeavyStartupBenchmark.start_get_module100           avgt         25,292            ms/op
+HeavyStartupBenchmark.start_get_module1000          avgt        251,296            ms/op
+JvmBenchmark.retrieveDependency                     avgt        111,483            ns/op
+ScopeBenchmark.activityScope                        avgt    3   548,998 ±  63,503  ns/op
+ScopeBenchmark.activityScope_cascade_root           avgt    3   881,919 ± 335,778  ns/op
+ScopeBenchmark.fragmentScope_cascade_activity_root  avgt    3  1803,030 ±  10,717  ns/op
+ScopeBenchmark.rootScope                            avgt    3   112,174 ±   4,734  ns/op
+StartupBenchmark.startup                            avgt          0,228            ms/op
+StartupBenchmark.startup_lazy                       avgt          0,001            ms/op
