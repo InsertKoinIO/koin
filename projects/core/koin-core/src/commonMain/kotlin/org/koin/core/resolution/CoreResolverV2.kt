@@ -18,7 +18,6 @@ package org.koin.core.resolution
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.error.MissingScopeValueException
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.scope.Scope
@@ -44,10 +43,10 @@ class CoreResolverV2(
     }
 
     private fun <T> resolveFromContextOrNull(scope : Scope, instanceContext: ResolutionContext): T? {
-        return resolveFromRegistry(scope, instanceContext)
+        return resolveFromScopeSource(scope,instanceContext)
             ?: resolveFromInjectedParameters(instanceContext)
             ?: resolveFromStackedParameters(scope,instanceContext)
-            ?: resolveFromScopeSource(scope,instanceContext)
+            ?: resolveFromRegistry(scope, instanceContext)
             ?: resolveInExtensions(scope,instanceContext)
     }
 
@@ -66,7 +65,7 @@ class CoreResolverV2(
             var lastScope : Scope? = null
             val scopes =  flatten(scope.linkedScopes)
             factory = scopes.firstNotNullOfOrNull {
-                val def = it.scopeArchetype?.let {
+                val foundDefinition = it.scopeArchetype?.let {
                     _koin.instanceRegistry.resolveDefinition(
                         ctx.clazz,
                         ctx.qualifier,
@@ -78,10 +77,10 @@ class CoreResolverV2(
                     ctx.qualifier,
                     it.scopeQualifier
                 )
-                if (def != null){
+                if (foundDefinition != null){
                     lastScope = it
                 }
-                def
+                foundDefinition
             }
             if (factory != null && lastScope != null && !lastScope.isRoot){
                 newCtx = ctx.newContextForScope(lastScope)
