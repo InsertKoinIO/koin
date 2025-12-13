@@ -10,8 +10,8 @@ You can find all Koin packages on [Maven Central](https://central.sonatype.com/s
 
 Here are the currently available Koin versions:
 
-- Koin Stable [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.0.3)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) 
-- Koin Unstable Version [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.1.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
+- Koin Stable [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core?filter=!*-*)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) 
+- Koin Unstable Version [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
 
 ## Gradle Setup
 
