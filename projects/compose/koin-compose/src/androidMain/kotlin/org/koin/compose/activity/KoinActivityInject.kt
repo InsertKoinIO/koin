@@ -43,7 +43,7 @@ import org.koin.core.scope.Scope
 @Composable
 inline fun <reified T> koinActivityInject(
     qualifier: Qualifier? = null,
-    scope: Scope = ((LocalActivity.current as ComponentActivity) as? AndroidScopeComponent)?.scope ?: error("Activity is not an AndroidScopeComponent"),
+    scope: Scope = (LocalActivity.current as? AndroidScopeComponent)?.scope ?: error("Activity is not an AndroidScopeComponent. Make your activity implement AndroidScopeComponent to use koinActivityInject"),
     noinline parameters: ParametersDefinition? = null,
 ): T {
     val p = parameters?.invoke()

@@ -46,7 +46,7 @@ class CompositionKoinApplicationLoader(
             koin = KoinPlatform.getKoin()
             koin!!.logger.debug("$this -> re-attach Koin instance $koin")
         } else {
-            error("can't start Koin context, no koinApplication argument found nor existing context")
+            error("Can't start Koin context, no koinApplication argument found nor existing context")
         }
     }
 

@@ -45,7 +45,7 @@ import org.koin.mp.KoinPlatformTools
  */
 //For Compat with 4.1.0
 @Deprecated("LocalKoinScope has been replaced with LocalKoinScopeContext, using ComposeContextWrapper.getValue() to retrieve the value. See also KoinScope() or UnboundKoinScope() Compose functions" , level = DeprecationLevel.ERROR ,replaceWith = ReplaceWith("LocalKoinScopeContext"))
-val LocalKoinScope: ProvidableCompositionLocal<Scope> =  compositionLocalOf { error(" should not be used in favor of LocalKoinScopeContext") }
+val LocalKoinScope: ProvidableCompositionLocal<Scope> =  compositionLocalOf { error("should not be used in favor of LocalKoinScopeContext") }
 
 /**
  * Deprecated - Internal API
@@ -53,7 +53,7 @@ val LocalKoinScope: ProvidableCompositionLocal<Scope> =  compositionLocalOf { er
  */
 //For Compat with 4.1.0
 @Deprecated("LocalKoinApplication is deprecated. Use getKoin() to access the Koin instance directly.", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("getKoin()"))
-val LocalKoinApplication :  ProvidableCompositionLocal<Koin> =  compositionLocalOf { error(" should not be used in favor of getKoin()") }
+val LocalKoinApplication :  ProvidableCompositionLocal<Koin> =  compositionLocalOf { error("should not be used in favor of getKoin()") }
 
 /**
  * Internal API
@@ -82,7 +82,7 @@ private fun getDefaultRootScope() = KoinPlatform.getKoin().scopeRegistry.rootSco
 /**
  * Retrieve the current Koin application from the composition.
  *
- * @author @author jjkester
+ * @author jjkester
  */
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
@@ -98,7 +98,7 @@ fun getKoin(): Koin = currentComposer.run {
 /**
  * Retrieve the current Koin scope from the composition
  *
- * @author @author jjkester
+ * @author jjkester
  *
  */
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)

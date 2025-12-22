@@ -47,9 +47,9 @@ import org.koin.viewmodel.resolveViewModel
  */
 @OptIn(KoinInternalApi::class)
 @Deprecated(
-    message = "koinNavViewModel is deprecated. Use koinViewModel instead.",
+    message = "koinNavViewModel is deprecated. Use koinViewModel instead with the same parameters.",
     replaceWith = ReplaceWith(
-        expression = "koinViewModel()",
+        expression = "koinViewModel(qualifier, viewModelStoreOwner, key, extras, scope, parameters)",
         imports = ["org.koin.compose.viewmodel.koinViewModel"]
     )
 )

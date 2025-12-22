@@ -102,7 +102,7 @@ internal class CompositionKoinNavigationScopeLoader(
 
     private fun close() {
         if (!scope.isRoot && !scope.closed){
-            scope.logger.debug("CompositionKoinScopeLoader close scope: '${scope.id}'")
+            scope.logger.debug("CompositionKoinNavigationScopeLoader close scope: '${scope.id}'")
             scope.close()
         }
     }
