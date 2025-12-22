@@ -48,6 +48,7 @@ kotlin {
             api(libs.jb.composeFoundation)
         }
         androidMain.dependencies {
+            api(libs.android.activity.compose)
             api(project(":android:koin-android"))
         }
         nativeMain.dependencies {
