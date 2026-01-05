@@ -1,0 +1,48 @@
+/*
+ * Copyright 2017-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.koin.android.annotation
+
+import kotlin.reflect.KClass
+
+/**
+ * ViewModel annotation for Koin Definition
+ * Declare type as `viewModel` definition
+ *
+ * @deprecated Moved to org.koin.core.annotation.KoinViewModel
+ * @see org.koin.core.annotation.KoinViewModel
+ */
+@Deprecated(
+    message = "Moved to org.koin.core.annotation.KoinViewModel",
+    replaceWith = ReplaceWith("KoinViewModel", "org.koin.core.annotation.KoinViewModel"),
+    level = DeprecationLevel.ERROR
+)
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
+public annotation class KoinViewModel(val binds: Array<KClass<*>> = [])
+
+/**
+ * Worker annotation for Koin Definition
+ * Declare type as `worker` definition
+ *
+ * example:
+ *
+ * @KoinWorker
+ * class MyWorker() :
+ *
+ * @Worker
+ * class
+ */
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
+public annotation class KoinWorker(val binds: Array<KClass<*>> = [])
