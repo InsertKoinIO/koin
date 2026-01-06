@@ -18,21 +18,6 @@ package org.koin.android.annotation
 import kotlin.reflect.KClass
 
 /**
- * ViewModel annotation for Koin Definition
- * Declare type as `viewModel` definition
- *
- * @deprecated Moved to org.koin.core.annotation.KoinViewModel
- * @see org.koin.core.annotation.KoinViewModel
- */
-@Deprecated(
-    message = "Moved to org.koin.core.annotation.KoinViewModel",
-    replaceWith = ReplaceWith("KoinViewModel", "org.koin.core.annotation.KoinViewModel"),
-    level = DeprecationLevel.ERROR
-)
-@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
-public annotation class KoinViewModel(val binds: Array<KClass<*>> = [])
-
-/**
  * Worker annotation for Koin Definition
  * Declare type as `worker` definition
  *

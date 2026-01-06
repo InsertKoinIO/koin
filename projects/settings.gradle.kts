@@ -33,6 +33,7 @@ dependencyResolutionManagement {
 include(
     // Core
     ":core:koin-core-annotations",
+    ":core:koin-annotations",
     ":core:koin-core",
     ":core:koin-core-coroutines",
     ":core:koin-core-viewmodel",
@@ -41,10 +42,6 @@ include(
     ":core:koin-test-junit4",
     ":core:koin-test-junit5",
     ":core:benchmark",
-
-    // Fu DSL - Experimental
-    ":core:koin-fu",
-    ":core:koin-fu-viewmodel",
 
     // Ktor
     ":ktor:koin-ktor",
@@ -64,6 +61,7 @@ include(
     ":compose:koin-compose-viewmodel-navigation",
     ":compose:koin-androidx-compose",
     ":compose:koin-androidx-compose-navigation",
+
     // Plugin
     ":plugins:koin-gradle-plugin",
     // BOM
