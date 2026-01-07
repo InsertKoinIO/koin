@@ -373,6 +373,7 @@ fun App() {
 ## Limitations
 
 - Navigation 3 is currently in **alpha** - API may change
+- It is not possible to set fallback
 - Type-safe navigation requires Kotlin serialization plugin
 - Some advanced Navigation 2.x features may not be available yet
 
