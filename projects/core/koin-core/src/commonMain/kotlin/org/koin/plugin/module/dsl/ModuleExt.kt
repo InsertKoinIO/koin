@@ -12,18 +12,14 @@ import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
-import org.koin.core.qualifier._q
 import org.koin.dsl.ScopeDSL
 import kotlin.reflect.KClass
 import org.koin.core.module.Module
-
-// Unlock from Koin
-private const val ROOT_SCOPE_ID = "_root_"
+import org.koin.core.registry.ScopeRegistry.Companion.rootScopeQualifier
 
 /**
- * Root scope qualifier.
+ * Those APIs are non reified and help support Koin Compiler Plugin
  */
-public val rootScopeQualifier: Qualifier = _q(ROOT_SCOPE_ID)
 
 /**
  * Build a singleton definition with explicit KClass.
@@ -126,40 +122,4 @@ fun <T : Any> createDefinition(
     }
 
     return KoinDefinition(module, factory)
-}
-
-// ============================================================================
-// Scope Archetype Functions
-// ============================================================================
-
-/**
- * ViewModel scope archetype.
- * Non-inline version for compiler plugin use.
- */
-public fun Module.viewModelScope(scopeSet: ScopeDSL.() -> Unit) {
-    ScopeDSL(_q("org.koin.android.scope.AndroidViewModelScope"), this).apply(scopeSet)
-}
-
-/**
- * Activity scope archetype.
- * Non-inline version for compiler plugin use.
- */
-public fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
-    ScopeDSL(_q("org.koin.android.scope.AndroidActivityScope"), this).apply(scopeSet)
-}
-
-/**
- * Activity retained scope archetype.
- * Non-inline version for compiler plugin use.
- */
-public fun Module.activityRetainedScope(scopeSet: ScopeDSL.() -> Unit) {
-    ScopeDSL(_q("org.koin.android.scope.AndroidActivityRetainedScope"), this).apply(scopeSet)
-}
-
-/**
- * Fragment scope archetype.
- * Non-inline version for compiler plugin use.
- */
-public fun Module.fragmentScope(scopeSet: ScopeDSL.() -> Unit) {
-    ScopeDSL(_q("org.koin.android.scope.AndroidFragmentScope"), this).apply(scopeSet)
 }

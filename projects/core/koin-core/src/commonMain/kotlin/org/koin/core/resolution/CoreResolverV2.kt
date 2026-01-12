@@ -122,13 +122,13 @@ class CoreResolverV2(
 //        ctx.logger.debug("|- ? ${ctx.debugTag} look at scope source")
 //        return if (ctx.clazz.isInstance(scope.sourceValue)) { scope.sourceValue as? T } else null
 //    }
-
-    @OptIn(KoinExperimentalAPI::class)
-    private inline fun <T> resolveFromScopeArchetype(scope: Scope, ctx: ResolutionContext): T? {
-        if (scope.isRoot || scope.scopeArchetype == null) return null
-        ctx.logger.debug("|- ? ${ctx.debugTag} look at scope archetype")
-        return _koin.instanceRegistry.resolveScopeArchetypeInstance<T>(ctx.qualifier, ctx.clazz, ctx)
-    }
+//
+//    @OptIn(KoinExperimentalAPI::class)
+//    private inline fun <T> resolveFromScopeArchetype(scope: Scope, ctx: ResolutionContext): T? {
+//        if (scope.isRoot || scope.scopeArchetype == null) return null
+//        ctx.logger.debug("|- ? ${ctx.debugTag} look at scope archetype")
+//        return _koin.instanceRegistry.resolveScopeArchetypeInstance<T>(ctx.qualifier, ctx.clazz, ctx)
+//    }
 
     private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
         val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
