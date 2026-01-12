@@ -69,7 +69,7 @@ class CoreResolverV2(
             // parent scopes
             else {
                 var lastScope : Scope? = null
-                val scopes =  flatten(scope.linkedScopes)
+                val scopes = listOf(scope) + flatten(scope.linkedScopes)
                 factory = scopes.firstNotNullOfOrNull {
                     val foundDefinition = it.scopeArchetype?.let {
                         _koin.instanceRegistry.resolveDefinition(

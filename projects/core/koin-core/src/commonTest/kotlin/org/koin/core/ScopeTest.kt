@@ -258,4 +258,29 @@ class ScopeTest {
 
         stopKoin()
     }
+
+    @Test
+    fun `resolve scoped dependency from within same scope`() {
+        val scopeKey = named("myScope")
+
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    scope(scopeKey) {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) } // should resolve ComponentA from current scope
+                    }
+                }
+            )
+        }.koin
+
+        val scope = koin.createScope("scope1", scopeKey)
+        val componentB = scope.get<Simple.ComponentB>()
+        assertNotNull(componentB)
+        assertNotNull(componentB.a)
+        // Verify same instance is returned (scoped behavior)
+        assertEquals(scope.get<Simple.ComponentA>(), componentB.a)
+        scope.close()
+    }
 }
