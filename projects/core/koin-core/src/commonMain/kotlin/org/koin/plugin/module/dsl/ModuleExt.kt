@@ -85,7 +85,7 @@ public fun <T : Any> typeQualifier(kclass: KClass<T>): Qualifier = TypeQualifier
  */
 @OptIn(KoinInternalApi::class)
 public fun <S : Any> KoinDefinition<*>.bind(clazz: KClass<S>): KoinDefinition<*> {
-    factory.beanDefinition.secondaryTypes = factory.beanDefinition.secondaryTypes + clazz
+    factory.beanDefinition.secondaryTypes += clazz
     module.indexSecondaryTypes(factory)
     return this
 }

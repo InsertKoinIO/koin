@@ -19,7 +19,7 @@ import org.koin.viewmodel.scope.ViewModelScopeArchetype
  * Used by the compiler plugin for generated module definitions.
  */
 public fun <T : ViewModel> Module.buildViewModel(kclass: KClass<T>, qualifier: Qualifier? = null, definition: Definition<T>): KoinDefinition<T> {
-    return createDefinition(kclass, definition, qualifier = qualifier, factoryKind = Kind.Factory, module = this)
+    return createDefinition(kclass, definition, qualifier = qualifier, factoryKind = Kind.Factory, module = this).bind(ViewModel::class) as KoinDefinition<T>
 }
 
 
@@ -28,7 +28,7 @@ public fun <T : ViewModel> Module.buildViewModel(kclass: KClass<T>, qualifier: Q
  * Used by the compiler plugin for generated scope definitions.
  */
 public fun <T : ViewModel> ScopeDSL.buildViewModel(kclass: KClass<T>, qualifier: Qualifier? = null, definition: Definition<T>): KoinDefinition<T> {
-    return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module)
+    return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module).bind(ViewModel::class::class) as KoinDefinition<T>
 }
 
 // ============================================================================
