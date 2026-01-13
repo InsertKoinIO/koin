@@ -90,7 +90,7 @@ class CoreResolverV2(
                 }
                 if (factory != null && lastScope != null){
                     newCtx = ctx.newContextForScope(lastScope)
-                    if (scope.scopeArchetype != null && !scope.isRoot){
+                    if (lastScope.scopeArchetype != null && !lastScope.isRoot){
                         newCtx.scopeArchetype = lastScope.scopeArchetype
                     }
                 }
