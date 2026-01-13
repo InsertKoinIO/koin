@@ -22,6 +22,11 @@ class ScopeTest {
     private class A
     private class B
 
+    @BeforeTest
+    fun before(){
+        stopKoin()
+    }
+
     @Test
     fun scope_component() {
         abstract class SuperClass : KoinScopeComponent {
