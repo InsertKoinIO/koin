@@ -81,8 +81,8 @@ class ViewModelScopeArchetypeTest {
     fun `viewModelScope resolves`() {
         val koin = KoinPlatform.getKoin()
         val module = module {
-            viewModel { FakeVM(get()) }
             viewModelScope {
+                viewModel { FakeVM(get()) }
                 scoped { ScopedVM() }
             }
         }
