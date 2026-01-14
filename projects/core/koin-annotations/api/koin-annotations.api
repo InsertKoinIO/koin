@@ -1,0 +1,87 @@
+public abstract interface annotation class org/koin/android/annotation/ActivityRetainedScope : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/koin/android/annotation/ActivityScope : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/koin/android/annotation/FragmentScope : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/koin/android/annotation/KoinWorker : java/lang/annotation/Annotation {
+	public abstract fun binds ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/ComponentScan : java/lang/annotation/Annotation {
+	public abstract fun value ()[Ljava/lang/String;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Configuration : java/lang/annotation/Annotation {
+	public abstract fun value ()[Ljava/lang/String;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Factory : java/lang/annotation/Annotation {
+	public abstract fun binds ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/KoinApplication : java/lang/annotation/Annotation {
+	public abstract fun configurations ()[Ljava/lang/String;
+	public abstract fun modules ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/KoinViewModel : java/lang/annotation/Annotation {
+	public abstract fun binds ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Module : java/lang/annotation/Annotation {
+	public abstract fun createdAtStart ()Z
+	public abstract fun includes ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Monitor : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/koin/core/annotation/Named : java/lang/annotation/Annotation {
+	public abstract fun type ()Ljava/lang/Class;
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Property : java/lang/annotation/Annotation {
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract interface annotation class org/koin/core/annotation/PropertyValue : java/lang/annotation/Annotation {
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Qualifier : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun value ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Scope : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun value ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/ScopeId : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun value ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Scoped : java/lang/annotation/Annotation {
+	public abstract fun binds ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class org/koin/core/annotation/Single : java/lang/annotation/Annotation {
+	public abstract fun binds ()[Ljava/lang/Class;
+	public abstract fun createdAtStart ()Z
+}
+
+public abstract interface annotation class org/koin/core/annotation/Singleton : java/lang/annotation/Annotation {
+	public abstract fun binds ()[Ljava/lang/Class;
+	public abstract fun createdAtStart ()Z
+}
+
+public abstract interface annotation class org/koin/core/annotation/ViewModelScope : java/lang/annotation/Annotation {
+}
+
