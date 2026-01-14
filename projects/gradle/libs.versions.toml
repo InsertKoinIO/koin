@@ -13,6 +13,7 @@ nmcp = "1.3.0"
 
 # Android
 agp = "8.13.2"
+android-appcompat = "1.7.1"
 android-activity = "1.12.2"
 android-fragment = "1.8.9"
 androidx-workmanager = "2.11.0"
@@ -63,6 +64,7 @@ test-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 test-robolectric = {module = "org.robolectric:robolectric", version.ref = "robolectric"}
 
 # Android
+android-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "android-appcompat" }
 android-activity = { module = "androidx.activity:activity-ktx", version.ref = "android-activity" }
 android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity" }
 android-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "android-fragment" }

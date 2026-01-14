@@ -16,21 +16,22 @@
 package org.koin.androidx.scope
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import org.koin.android.scope.AndroidScopeComponent
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 
 /**
  * RetainedScopeActivity
  *
- * ComponentActivity, allow to create & destroy tied Koin retained scope - backed by ViewModel Support
+ * AppCompatActivity, allow to create & destroy tied Koin retained scope - backed by ViewModel Support
  *
  * @author Arnaud Giuliani
  */
 abstract class RetainedScopeActivity(
     @LayoutRes contentLayoutId: Int = 0,
-) : ComponentActivity(contentLayoutId), AndroidScopeComponent {
+) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
 
     override val scope: Scope by activityRetainedScope()
 
