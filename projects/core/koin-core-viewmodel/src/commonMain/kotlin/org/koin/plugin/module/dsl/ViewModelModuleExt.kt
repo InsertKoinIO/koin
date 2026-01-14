@@ -30,15 +30,3 @@ public fun <T : ViewModel> Module.buildViewModel(kclass: KClass<T>, qualifier: Q
 public fun <T : ViewModel> ScopeDSL.buildViewModel(kclass: KClass<T>, qualifier: Qualifier? = null, definition: Definition<T>): KoinDefinition<T> {
     return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module).bind(ViewModel::class::class) as KoinDefinition<T>
 }
-
-// ============================================================================
-// Scope Archetype Functions
-// ============================================================================
-
-/**
- * ViewModel scope archetype.
- * Non-inline version for compiler plugin use.
- */
-public fun Module.viewModelScope(scopeSet: ScopeDSL.() -> Unit) {
-    ScopeDSL(ViewModelScopeArchetype, this).apply(scopeSet)
-}
