@@ -44,9 +44,9 @@ class CoreResolverV2(
     }
 
     private fun <T> resolveFromContextOrNull(scope : Scope, instanceContext: ResolutionContext): T? {
-        return resolveFromRegistry(scope, instanceContext)
-            ?: resolveFromInjectedParameters(instanceContext)
+        return resolveFromInjectedParameters(instanceContext)
             ?: resolveFromStackedParameters(scope,instanceContext)
+            ?: resolveFromRegistry(scope, instanceContext)
             ?: resolveInExtensions(scope,instanceContext)
     }
 

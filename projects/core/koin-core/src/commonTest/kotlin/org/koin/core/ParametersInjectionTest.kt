@@ -376,4 +376,74 @@ class ParametersInjectionTest {
             }
         }
     }
+
+    // Test classes for #2337
+    class SharedViewModel(val id: Int)
+    class ConsumerViewModel(val shared: SharedViewModel)
+
+    /**
+     * Test for issue #2337 - Injected parameters should take precedence over registry resolution
+     * When passing an existing instance via parametersOf(), that instance should be used directly
+     * instead of Koin trying to resolve/recreate it from the registry definition.
+     *
+     * This simulates the common Compose Navigation pattern where a SharedViewModel is passed
+     * to another ViewModel via parametersOf().
+     */
+    @Test
+    fun `injected parameter instance should be used directly - not resolved from registry`() {
+        // Pre-existing SharedViewModel instance (simulates one already created in a parent screen)
+        val existingSharedVM = SharedViewModel(42)
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    // SharedViewModel has a definition that requires an Int parameter
+                    // If Koin tries to resolve from registry, it will fail without the Int
+                    single { (id: Int) -> SharedViewModel(id) }
+                    // ConsumerViewModel depends on SharedViewModel
+                    factory { ConsumerViewModel(get()) }
+                },
+            )
+        }
+
+        val koin = app.koin
+
+        // Pass existing SharedViewModel instance via parameters
+        // This should use the passed instance directly, NOT try to create a new one from registry
+        val consumer: ConsumerViewModel = koin.get { parametersOf(existingSharedVM) }
+
+        // Verify that the exact same instance was used (not a new one from registry)
+        assertEquals(existingSharedVM, consumer.shared)
+        assertEquals(42, consumer.shared.id)
+    }
+
+    /**
+     * Additional test for #2337 - Ensure parameter instance takes priority over definition
+     * even when definition exists and could technically be resolved
+     */
+    @Test
+    fun `parameter instance takes priority over existing definition`() {
+        val passedInstance = Simple.ComponentA()
+
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    // ComponentA has a definition in registry
+                    single { Simple.ComponentA() }
+                    // ComponentB depends on ComponentA
+                    factory { Simple.ComponentB(get()) }
+                },
+            )
+        }
+
+        val koin = app.koin
+
+        // Pass our own ComponentA instance - should use this one, not the one from registry
+        val b: Simple.ComponentB = koin.get { parametersOf(passedInstance) }
+
+        // Verify that our passed instance was used, not the singleton from registry
+        assertEquals(passedInstance, b.a)
+    }
 }
