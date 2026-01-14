@@ -19,6 +19,7 @@ import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.NoDefinitionFoundException
+import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
@@ -53,50 +54,56 @@ class CoreResolverV2(
         scope: Scope,
         ctx: ResolutionContext
     ): T? {
-        // direct definition
-        var factory = _koin.instanceRegistry.resolveDefinition(ctx.clazz,ctx.qualifier, scope.scopeQualifier)
-            ?: if (!scope.isRoot) scope.scopeArchetype?.let {
-                ctx.scopeArchetype = it
-                _koin.instanceRegistry.resolveDefinition(ctx.clazz,ctx.qualifier, it)
-            } else null
-        var newCtx = ctx
-        return if (factory != null){
-            factory.get(newCtx) as T?
+        return resolveDirectDefinition(scope, ctx)
+            ?: resolveFromScopeSource(scope, ctx)
+            ?: resolveFromLinkedScopes(scope, ctx)
+    }
+
+    private fun <T> resolveDirectDefinition(scope: Scope, ctx: ResolutionContext): T? {
+        val factory = _koin.instanceRegistry.resolveDefinition(ctx.clazz, ctx.qualifier, scope.scopeQualifier)
+            ?: resolveFromScopeArchetype(scope, ctx)
+        return factory?.get(ctx) as T?
+    }
+
+    private fun resolveFromScopeArchetype(scope: Scope, ctx: ResolutionContext): InstanceFactory<*>? {
+        if (scope.isRoot) return null
+        return scope.scopeArchetype?.let { archetype ->
+            ctx.scopeArchetype = archetype
+            _koin.instanceRegistry.resolveDefinition(ctx.clazz, ctx.qualifier, archetype)
         }
-        else {
-            // scope source
-            if (!scope.isRoot && ctx.qualifier == null && ctx.clazz.isInstance(scope.sourceValue)) scope.sourceValue as? T
-            // parent scopes
-            else {
-                var lastScope : Scope? = null
-                val scopes = listOf(scope) + flatten(scope.linkedScopes)
-                factory = scopes.firstNotNullOfOrNull {
-                    val foundDefinition = it.scopeArchetype?.let {
-                        _koin.instanceRegistry.resolveDefinition(
-                            ctx.clazz,
-                            ctx.qualifier,
-                            it
-                        )
-                    } ?:
-                    _koin.instanceRegistry.resolveDefinition(
-                        ctx.clazz,
-                        ctx.qualifier,
-                        it.scopeQualifier
-                    )
-                    if (foundDefinition != null){
-                        lastScope = it
-                    }
-                    foundDefinition
-                }
-                if (factory != null && lastScope != null){
-                    newCtx = ctx.newContextForScope(lastScope)
-                    if (lastScope.scopeArchetype != null && !lastScope.isRoot){
-                        newCtx.scopeArchetype = lastScope.scopeArchetype
-                    }
-                }
-                factory?.get(newCtx) as T?
+    }
+
+    private fun <T> resolveFromScopeSource(scope: Scope, ctx: ResolutionContext): T? {
+        if (scope.isRoot || ctx.qualifier != null) return null
+        return if (ctx.clazz.isInstance(scope.sourceValue)) scope.sourceValue as? T else null
+    }
+
+    private fun <T> resolveFromLinkedScopes(scope: Scope, ctx: ResolutionContext): T? {
+        val scopes = listOf(scope) + flatten(scope.linkedScopes)
+        var resolvedScope: Scope? = null
+
+        val factory = scopes.firstNotNullOfOrNull { linkedScope ->
+            val definition = findDefinitionInScope(linkedScope, ctx)
+            if (definition != null) {
+                resolvedScope = linkedScope
             }
+            definition
         }
+
+        val foundScope = resolvedScope ?: return null
+        if (factory == null) return null
+
+        val newCtx = ctx.newContextForScope(foundScope)
+        if (foundScope.scopeArchetype != null && !foundScope.isRoot) {
+            newCtx.scopeArchetype = foundScope.scopeArchetype
+        }
+        return factory.get(newCtx) as T?
+    }
+
+    private fun findDefinitionInScope(scope: Scope, ctx: ResolutionContext): InstanceFactory<*>? {
+        return scope.scopeArchetype?.let { archetype ->
+            _koin.instanceRegistry.resolveDefinition(ctx.clazz, ctx.qualifier, archetype)
+        } ?: _koin.instanceRegistry.resolveDefinition(ctx.clazz, ctx.qualifier, scope.scopeQualifier)
     }
 
     private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
@@ -120,7 +127,7 @@ class CoreResolverV2(
     private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
         val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
         throw NoDefinitionFoundException(
-            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString. Check your Modules configuration and add missing type and/or qualifier!",
+            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString on scope '${ctx.scope}'. Check your Modules configuration and add missing type and/or qualifier!",
         )
     }
 
