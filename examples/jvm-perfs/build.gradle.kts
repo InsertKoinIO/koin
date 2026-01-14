@@ -28,7 +28,6 @@ val koinVersion = extra["koin_version"] as String
 dependencies {
     api("io.insert-koin:koin-core:$koinVersion")
     api("io.insert-koin:koin-core-coroutines:$koinVersion")
-    api("io.insert-koin:koin-fu:$koinVersion")
     implementation("org.openjdk.jmh:jmh-core:$jmhVersion")
     kapt("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
 }
