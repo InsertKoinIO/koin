@@ -81,3 +81,20 @@ APIs marked with @KoinDelicateAPI require careful usage and understanding of the
     AnnotationTarget.CONSTRUCTOR,
 )
 annotation class KoinDelicateAPI
+
+/**
+ * ViewModelScope APIs - Create Scope for ViewModel, at ViewModel creation time
+ * To use ViewModelScope for ViewModel's constructor injection, you need to declare your ViewModel inside a viewModelScope section, like viewModelScope { viewModel() }. Or use @ViewModelScope annotation with @KoinViewModel.
+ * Else Koin won't find your instance in the right scope, if ViewModel is declared in root scope.
+ */
+@RequiresOptIn(message = "To use ViewModelScope for ViewModel's constructor injection, you need to declare your ViewModel inside a viewModelScope section, like viewModelScope { viewModel() }. Or use @ViewModelScope annotation with @KoinViewModel.", level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR,
+)
+annotation class KoinViewModelScopeApi
