@@ -222,67 +222,143 @@ class MyActivity : AppCompatActivity(), AndroidScopeComponent {
 }
 ```
 
-### ViewModel Scope (updated in 4.1.0)
+### ViewModel Scope (updated in 4.2.0)
 
 ViewModel is only created against the root scope to avoid any leaking (leaking Activity or Fragment ...). This guards for the visibility problem, where the ViewModel could have access to incompatible scopes.
 
-:::warn
-ViewModel can't access to Activity or Fragment scope. Why? Because ViewModel is lasting long than Activity and Fragment, and then it would leak dependencies outside of proper scopes.
-If you need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel: `viewModel { p ->  }`
+:::warning
+ViewModel can't access Activity or Fragment scope. Why? Because ViewModel outlives Activity and Fragment, and would leak dependencies outside of proper scopes.
+If you need to pass data from Activity/Fragment to ViewModel, use "injected parameters": `viewModel { params -> }`
 :::
 
-Declare your ViewModel scope as follows, tied to your ViewModel class or using the `viewModelScope` DSL section:
+#### When to Use ViewModel Scope
+
+Use ViewModel Scope when your ViewModel needs **scoped dependencies that are tied to its lifecycle**. Common use cases:
+- Session data specific to a ViewModel
+- Caches that should be cleared when ViewModel is destroyed
+- Coordinators or use cases that should live as long as the ViewModel
+
+#### Declaring ViewModel Scope
+
+You can declare a ViewModel scope tied to a specific ViewModel class or using the `viewModelScope` archetype:
 
 ```kotlin
 module {
-    viewModelOf(::MyScopeViewModel)
-    // scope for MyScopeViewModel only
+    // Option 1: Scope for a specific ViewModel class
     scope<MyScopeViewModel> {
         scopedOf(::Session)
     }
-    // ViewModel Archetype scope - Scope for all ViewModel 
+
+    // Option 2: ViewModel Archetype scope - shared by all ViewModels
     viewModelScope {
         scopedOf(::Session)
     }
 }
 ```
 
-Once you have declared your ViewModel and your scoped components, you can _choose between_:
-- Manual API - Manually using the `KoinScopeComponent` and the `viewModelScope` function. This will handle the creation and destruction of your created ViewModel scope. But you will have to inject your scoped definitions by field, as you need to rely on `scope` property to inject your scoped definition:
+#### Manual Scope API
+
+Use `KoinScopeComponent` and `viewModelScope()` function to manually manage the scope. Dependencies must be injected by field:
+
 ```kotlin
+module {
+    viewModelOf(::MyScopeViewModel)
+    scope<MyScopeViewModel> {
+        scopedOf(::Session)
+    }
+}
+
 class MyScopeViewModel : ViewModel(), KoinScopeComponent {
-    
-    // create ViewModel scope
+
+    // Create ViewModel scope - handles creation and destruction
     override val scope: Scope = viewModelScope()
-    
-    // uses scope above to inject session
+
+    // Inject from scope above
     val session: Session by inject()
 }
 ```
-- Automatic Scope Creation
-    - Activate the `viewModelScopeFactory` option (see [Koin Options](../koin-core/start-koin.md#koin-options---feature-flagging)) to automatically create a ViewModel scope on the fly.
-    - This allows to use of constructor injection
+
+#### Automatic Scope with Constructor Injection (Experimental)
+
+For constructor injection of scoped dependencies, use the `viewModelScopeFactory` option.
+
+:::caution Experimental Feature
+This feature is experimental and requires opt-in via `@OptIn(KoinViewModelScopeApi::class)`.
+**Important:** Your ViewModel must be declared **inside** the `viewModelScope { }` block for constructor injection to work.
+:::
+
+**Step 1: Enable the option**
+
 ```kotlin
-// activate ViewModel Scope factory
+@OptIn(KoinViewModelScopeApi::class)
 startKoin {
     options(
         viewModelScopeFactory()
     )
 }
+```
 
-// Scope being created at factory level, automatically before injection
+**Step 2: Declare ViewModel inside viewModelScope block**
+
+```kotlin
+@OptIn(KoinViewModelScopeApi::class)
+module {
+    // ✅ Correct: ViewModel declared INSIDE viewModelScope
+    viewModelScope {
+        viewModel { MyScopeViewModel(get()) }  // or viewModelOf(::MyScopeViewModel)
+        scoped { Session() }
+    }
+}
+
+// ViewModel with constructor injection
 class MyScopeViewModel(val session: Session) : ViewModel()
 ```
 
-Now just call your ViewModel from your Activity or Fragment:
+:::danger Common Mistake
+Declaring the ViewModel **outside** the `viewModelScope` block will not work for constructor injection:
+
+```kotlin
+// ❌ Wrong: ViewModel outside viewModelScope - Session won't be found!
+module {
+    viewModelOf(::MyScopeViewModel)  // Declared at root scope
+    viewModelScope {
+        scoped { Session() }  // Session is in ViewModel scope
+    }
+}
+```
+
+The ViewModel is resolved from root scope and cannot see the scoped `Session` inside `viewModelScope`.
+:::
+
+**Step 3: Inject ViewModel**
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
-    
-    // create MyScopeViewModel instance, and allocate MyScopeViewModel's scope
-    val vieModel: MyScopeViewModel by viewModel()
+
+    // Creates MyScopeViewModel and its scope
+    val viewModel: MyScopeViewModel by viewModel()
 }
 ```
+
+#### How It Works
+
+When `viewModelScopeFactory()` is enabled and a ViewModel is requested:
+1. Koin creates a dedicated scope for the ViewModel
+2. Dependencies declared in `viewModelScope { }` are resolved from this scope
+3. The scope is automatically closed when the ViewModel is cleared
+
+```
+Root Scope
+└── ViewModel Scope (created per ViewModel instance)
+        └── scoped { Session() }  ← Available for constructor injection
+```
+
+#### Summary: Which Approach to Use?
+
+| Approach | Constructor Injection | Field Injection | Opt-in Required |
+|----------|----------------------|-----------------|-----------------|
+| Manual (`KoinScopeComponent`) | ❌ No | ✅ Yes | No |
+| Automatic (`viewModelScopeFactory`) | ✅ Yes | ✅ Yes | Yes (`@KoinViewModelScopeApi`) |
 
 ## Scope Links
 
