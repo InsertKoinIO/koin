@@ -96,7 +96,7 @@ class CoreResolver(
     }
 
     private inline fun <T> resolveFromStackedParameters(scope: Scope, ctx: ResolutionContext): T? {
-        val current = scope.parameterStack?.get()
+        val current = scope._parameterStack?.get()
         return if (current.isNullOrEmpty()) null
         else {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")

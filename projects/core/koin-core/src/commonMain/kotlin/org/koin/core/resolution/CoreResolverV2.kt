@@ -128,7 +128,7 @@ class CoreResolverV2(
     }
 
     private inline fun <T> resolveFromStackedParameters(scope: Scope, ctx: ResolutionContext): T? {
-        val stack = scope.parameterStack ?: return null
+        val stack = scope._parameterStack ?: return null
         val current = stack.get()
         return if (current.isNullOrEmpty()) null
         else {
