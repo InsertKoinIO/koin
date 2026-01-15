@@ -45,9 +45,9 @@ class CoreResolverV2(
 
     private fun <T> resolveFromContextOrNull(scope : Scope, instanceContext: ResolutionContext): T? {
         return resolveFromInjectedParameters(instanceContext)
-            ?: resolveFromStackedParameters(scope,instanceContext)
+            ?: resolveFromStackedParameters(scope, instanceContext)
             ?: resolveFromRegistry(scope, instanceContext)
-            ?: resolveInExtensions(scope,instanceContext)
+            ?: resolveInExtensions(scope, instanceContext)
     }
 
     private fun <T> resolveFromRegistry(
@@ -93,11 +93,25 @@ class CoreResolverV2(
         val foundScope = resolvedScope ?: return null
         if (factory == null) return null
 
+        // we will loose parameters from parent context
         val newCtx = ctx.newContextForScope(foundScope)
         if (foundScope.scopeArchetype != null && !foundScope.isRoot) {
             newCtx.scopeArchetype = foundScope.scopeArchetype
         }
-        return factory.get(newCtx) as T?
+
+        // stack params for call on other Scope
+        if (newCtx.parameters != null) {
+            newCtx.scope.onParameterOnStack(newCtx.parameters)
+        }
+        // call with scope
+        val value = factory.get(newCtx) as T?
+
+        // unstack params
+        if (newCtx.parameters != null) {
+            val params = newCtx.scope.parameterStack?.get()
+            params?.let { newCtx.scope.clearParameterStack(params) }
+        }
+        return value
     }
 
     private fun findDefinitionInScope(scope: Scope, ctx: ResolutionContext): InstanceFactory<*>? {
@@ -109,16 +123,17 @@ class CoreResolverV2(
     private inline fun <T> resolveFromInjectedParameters(ctx: ResolutionContext): T? {
         return if (ctx.parameters == null || ctx.parameters.isEmpty()) null
         else {
-            ctx.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
+//            ctx.logger.debug("|- ? ${ctx.debugTag} look in injected parameters")
             ctx.parameters.getOrNull(clazz = ctx.clazz)
         }
     }
 
     private inline fun <T> resolveFromStackedParameters(scope: Scope, ctx: ResolutionContext): T? {
-        val current = scope.parameterStack?.get()
+        val stack = scope.parameterStack ?: return null
+        val current = stack.get()
         return if (current.isNullOrEmpty()) null
         else {
-            ctx.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
+//            ctx.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
             val parameters = current.firstOrNull()
             parameters?.getOrNull(ctx.clazz)
         }

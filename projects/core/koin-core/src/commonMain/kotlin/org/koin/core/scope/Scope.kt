@@ -297,13 +297,13 @@ class Scope(
         }
     }
 
-    private fun onParameterOnStack(parameters: ParametersHolder): ArrayDeque<ParametersHolder> {
+    internal fun onParameterOnStack(parameters: ParametersHolder): ArrayDeque<ParametersHolder> {
         val stack = getOrCreateParameterStack()
         stack.addFirst(parameters)
         return stack
     }
 
-    private fun clearParameterStack(stack: ArrayDeque<ParametersHolder>) {
+    internal fun clearParameterStack(stack: ArrayDeque<ParametersHolder>) {
         stack.removeFirstOrNull()
         if (stack.isEmpty()) {
             parameterStack?.remove()
