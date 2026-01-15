@@ -27,10 +27,11 @@ import org.koin.core.scope.Scope
 /**
  * Type alias for a function that provides navigation entries based on a route/destination.
  *
- * An [EntryProvider] takes any route object and returns the corresponding [NavEntry] that
+ * An [EntryProvider] takes a route object of type [T] and returns the corresponding [NavEntry] that
  * contains the composable content for that destination. This enables type-safe navigation
  * with Koin dependency injection.
  *
+ * @param T The type of route/key used for navigation entries
  * @see EntryProviderInstaller for defining navigation entries in Koin modules
  */
 @KoinExperimentalAPI
