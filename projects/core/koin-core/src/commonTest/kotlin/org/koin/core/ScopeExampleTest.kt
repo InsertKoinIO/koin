@@ -38,7 +38,7 @@ class ScopeExampleTest {
 
     @Test
     fun test_issue_2325() {
-        val koin = startKoin {
+        val koin = koinApplication {
             printLogger(level = Level.DEBUG)
 
             modules(
