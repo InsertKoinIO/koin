@@ -100,17 +100,16 @@ class CoreResolverV2(
         }
 
         // stack params for call on other Scope
-        if (newCtx.parameters != null) {
+        val paramStack = if (newCtx.parameters != null) {
             newCtx.scope.onParameterOnStack(newCtx.parameters)
-        }
+        } else null
+
         // call with scope
         val value = factory.get(newCtx) as T?
 
-        // unstack params
-        if (newCtx.parameters != null) {
-            val params = newCtx.scope.parameterStack?.get()
-            params?.let { newCtx.scope.clearParameterStack(params) }
-        }
+        // unstack params - reuse stack reference, avoid second ThreadLocal access
+        paramStack?.let { newCtx.scope.clearParameterStack(it) }
+
         return value
     }
 
