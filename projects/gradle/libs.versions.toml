@@ -41,7 +41,7 @@ mockito = "5.2.0"
 mockk = "1.14.7"
 robolectric = "4.16"
 # Ktor
-ktor = "3.3.3"
+ktor = "3.4.0-eap-1520"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
@@ -77,7 +77,7 @@ androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runt
 
 # Ktor
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
-#ktor-core-di = { module = "io.ktor:ktor-server-di", version.ref = "ktor" }
+ktor-core-di = { module = "io.ktor:ktor-server-di", version.ref = "ktor" }
 ktor-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }

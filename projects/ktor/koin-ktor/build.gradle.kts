@@ -41,8 +41,9 @@ kotlin {
             api(project(":core:koin-core"))
             // Ktor
             implementation(libs.ktor.core)
-            //TODO Ktor 3.2
-//            implementation(libs.ktor.core.di)
+            implementation(libs.ktor.core.di)
+            // Coroutines
+            implementation(libs.kotlin.coroutines)
         }
         jvmTest.dependencies {
             implementation(libs.kotlin.test)

@@ -2,7 +2,7 @@
 title: Ktor & Koin Isolated Context
 ---
 
-The `koin-ktor` module is dedicated to bring dependency injection for Ktor. 
+The `koin-ktor` module is dedicated to bring dependency injection for Ktor.
 
 
 ## Isolated Koin Context Plugin
@@ -21,6 +21,10 @@ fun Application.main() {
 
 :::warning
  By using an isolated Koin context you won't be able to use Koin outside Ktor server instance (i.e: by using `GlobalContext` for example)
+:::
+
+:::tip Ktor DI Bridge
+The isolated context also supports the `bridge { }` DSL for Ktor DI integration. See [Ktor DI Bridge](/docs/reference/koin-ktor/ktor#ktor-di-bridge-koin-42-ktor-34) for details.
 :::
 
 
