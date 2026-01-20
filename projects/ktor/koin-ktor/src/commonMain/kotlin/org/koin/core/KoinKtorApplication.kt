@@ -25,7 +25,11 @@ import org.koin.ktor.di.KoinDependencyMap
 import org.koin.ktor.di.KtorDIExtension
 
 /**
+ * Koin Application for Ktor with DI bridge support.
+ * Extends KoinApplication to provide bidirectional dependency resolution between Koin and Ktor DI.
  *
+ * @author Arnaud Giuliani
+ * @author Lidonis Calhau
  */
 @OptIn(KoinInternalApi::class)
 @KoinApplicationDslMarker
@@ -35,9 +39,10 @@ class KoinKtorApplication() : KoinApplication() {
     var ktorBridge : KtorBridgeDSL? = null
 
     /**
-     * Setup Bridge options for Koin & Ktor
+     * Setup Bridge options for Koin & Ktor DI
      *
-     * @ee KtorDSL
+     * @param option configuration block for bridge options
+     * @see KtorBridgeDSL
      */
     @KoinExperimentalAPI
     fun bridge(option : KtorBridgeDSL.() -> Unit){
@@ -59,7 +64,8 @@ class KoinKtorApplication() : KoinApplication() {
     internal fun onBridgeKoinToKtor(){
         koin.logger.debug("Ktor DI Bridge: Koin -> Ktor")
 
-        koin.resolver.addResolutionExtension(KtorDIExtension(ktorApplication ?: error("KoinKtorApplication has no ktorApplication, when using koinToKtor()")))
+        val application = ktorApplication ?: error("KoinKtorApplication has no ktorApplication, when using koinToKtor()")
+        koin.addResolutionExtension(KtorDIExtension(application))
     }
 
     internal fun onBridgeKtorToKoin(){
@@ -80,7 +86,10 @@ class KoinKtorApplication() : KoinApplication() {
 }
 
 /**
+ * DSL for configuring Koin & Ktor DI bridge options.
  *
+ * @author Arnaud Giuliani
+ * @author Lidonis Calhau
  */
 @OptIn(KoinInternalApi::class)
 @KoinApplicationDslMarker
@@ -92,11 +101,19 @@ class KtorBridgeDSL {
     internal var bridgeKtorToKoin : Boolean = false
         private set
 
+    /**
+     * Enable Koin to resolve dependencies from Ktor DI.
+     * Allows using `inject()` to get dependencies declared in Ktor's `dependencies { }` block.
+     */
     @KoinExperimentalAPI
     fun koinToKtor() {
         bridgeKoinToKtor = true
     }
 
+    /**
+     * Enable Ktor DI to resolve dependencies from Koin.
+     * Allows using `by dependencies` delegate to get dependencies declared in Koin modules.
+     */
     @KoinExperimentalAPI
     fun ktorToKoin() {
         bridgeKtorToKoin = true

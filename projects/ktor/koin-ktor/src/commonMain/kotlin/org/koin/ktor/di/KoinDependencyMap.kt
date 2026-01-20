@@ -22,46 +22,31 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
-import org.koin.ktor.plugin.koin
-
-///**
-// * Full DependencyMapExtension integration for Koin with Ktor 3.2 DI
-// *
-// * This implementation provides seamless integration by implementing the
-// * DependencyMapExtension interface, allowing Ktor DI to automatically
-// * resolve dependencies from Koin when not found in Ktor's registry.
-// */
-//class KoinDependencyMapExtension : DependencyMapExtension {
-//
-//    override fun get(application: Application): DependencyMap {
-//        return KoinDependencyMap(application.koin())
-//    }
-//}
-
 /**
- * Koin implementation of DependencyMap interface
+ * Koin implementation of Ktor's DependencyMap interface.
+ * Allows Ktor DI to resolve dependencies from Koin modules.
+ *
+ * @param koin the Koin instance to resolve dependencies from
+ * @author Arnaud Giuliani
+ * @author Lidonis Calhau
  */
 @OptIn(KoinInternalApi::class)
 class KoinDependencyMap(private val koin: Koin) : DependencyMap {
 
-    init {
-        println("[DEBUG] KoinDependencyMap init")
-    }
-
-    val koinLogger = koin.logger
+    private val koinLogger = koin.logger
 
     override fun contains(key: DependencyKey): Boolean{
-        koin.logger.debug("contains $key ?")
+        koinLogger.debug("contains $key ?")
         return try {
             resolve(key)
             true
-        } catch (e: NoDefinitionFoundException) {
+        } catch (_: NoDefinitionFoundException) {
             false
         }
     }
 
     override fun getInitializer(key: DependencyKey): DependencyInitializer{
-        koin.logger.debug("getInitializer $key ?")
+        koinLogger.debug("getInitializer $key ?")
 
         return DependencyInitializer.Explicit(key) {
             resolve(key)
@@ -70,7 +55,7 @@ class KoinDependencyMap(private val koin: Koin) : DependencyMap {
 
     // Here we are using Any because we do not have the type
     private fun resolve(key: DependencyKey): Any {
-        koin.logger.debug("resolve $key ?")
+        koinLogger.debug("resolve $key ?")
 
         val clazz = key.type.type
         val qualifier = key.toQualifier()

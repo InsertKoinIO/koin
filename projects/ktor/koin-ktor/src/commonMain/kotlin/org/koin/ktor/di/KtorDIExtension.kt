@@ -25,29 +25,28 @@ import org.koin.core.resolution.ResolutionExtension
 import org.koin.core.scope.Scope
 
 /**
- * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects
+ * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects.
+ * Allows Koin's `inject()` to resolve dependencies declared in Ktor's `dependencies { }` block.
  *
  * @author Arnaud Giuliani
+ * @author Lidonis Calhau
  */
 internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
-
-    init {
-        println("[DEBUG] KtorDIExtension init")
-    }
 
     override val name: String = "ktor-di"
 
     override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
         val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
+        val logger = scope.logger
 
-        println("[DEBUG] KtorDIExtension -> $key")
-        try {
+        logger.debug("Resolving KtorDI with '$key'")
+        return try {
             val value = application.dependencies.getBlocking<Any?>(key)
-
-            println("[DEBUG] KtorDIExtension value? $value")
-            return value
+            logger.debug("Resolving KtorDI value? $value")
+            value
         } catch (e: Exception) {
-            error(e)
+            logger.warn("Error Resolving KtorDI: no definition found for $key - Got error: ${e.message}")
+            null
         }
     }
 }
