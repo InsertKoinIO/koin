@@ -3,7 +3,11 @@ package org.koin.sample.android.main
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.*
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import org.koin.sample.android.R
 import org.koin.sample.android.main.MainApplication.Companion.limits
 import org.koin.sample.android.main.MainApplication.Companion.results
@@ -17,7 +21,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         title = "Android First Perfs"
-
     }
 
     override fun onStart() {
@@ -41,11 +44,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
 
         textWidget.text = textReport
 
-        val color = if (!ok) {
+        val color = if (ok) {
+            android.R.color.holo_green_dark
+        } else {
             android.R.color.holo_red_dark
-        } else android.R.color.holo_green_dark
+        }
 
-        textWidget.setTextColor(resources.getColor(color))
+        textWidget.setTextColor(ContextCompat.getColor(this, color))
     }
 
     override fun onDestroy() {

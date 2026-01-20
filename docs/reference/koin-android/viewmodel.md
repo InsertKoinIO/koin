@@ -181,7 +181,11 @@ class NavFragment : Fragment() {
 
 ## ViewModel Scope API
 
-see all API to be used for ViewModel and Scopes: [ViewModel Scope](/docs/reference/koin-android/scope.md#viewmodel-scope-since-354)
+If your ViewModel needs scoped dependencies (tied to the ViewModel's lifecycle), you can use ViewModel Scope. This allows:
+- **Manual scope management** with `KoinScopeComponent` (field injection)
+- **Automatic scope creation** with `viewModelScopeFactory()` option (constructor injection - experimental)
+
+See the full guide: [ViewModel Scope](/docs/reference/koin-android/scope#viewmodel-scope-updated-in-420)
 
 ## ViewModel Generic API
 

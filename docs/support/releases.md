@@ -31,13 +31,13 @@ Uses Kotlin `2.1.21`
 - Enhanced `sharedKoinViewModel` with optional `navGraphRoute` parameter for better Compose Navigation support
 
 `koin-core`
-- Core resolver performance optimization - avoid unnecessary flattening with single scope resolution  
+- Core resolver performance optimization - avoid unnecessary flattening with single scope resolution
 - Enhanced scope debugging with linked scope IDs display
 
 ### Library Updates 📚
 
 - **Kotlin** 2.1.21 (from 2.1.20)
-- **Ktor** 3.2.3 (from 3.1.3) 
+- **Ktor** 3.2.3 (from 3.1.3)
 - **Jetbrains Compose** 1.8.2 (from 1.8.0)
 - **AndroidX**: Fragment 1.8.9, WorkManager 2.10.3, Lifecycle 2.9.3, Navigation 2.9.3
 - **Testing**: Robolectric 4.15.1, Benchmark 0.4.14
@@ -101,7 +101,7 @@ fun Application.customerDataModule() {
 }
 ```
 - Scope - `Module.requestScope` - allows declaring definitions inside a Ktor request scope (avoid declaring `scope<RequestScope>` manually)
-The injected scope is also allows to inject `ApplicationCall` in constructor.
+  The injected scope is also allows to inject `ApplicationCall` in constructor.
 
 
 `koin-core-coroutines`
@@ -224,14 +224,14 @@ class ComponentBProvided(@Provided val a: ComponentA)
 
 `koin-android`
 - All state old ViewModel API are now removed:
-    - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
-    - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
+  - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
+  - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
 
 `koin-compose`
 - Old compose API functions are removed:
-    - function `inject()` have been removed in favor of `koinInject()`
-    - function `getViewModel()` has been removed in favor of `koinViewModel()`
-    - function `rememberKoinInject()` has been moved into `koinInject()`,
+  - function `inject()` have been removed in favor of `koinInject()`
+  - function `getViewModel()` has been removed in favor of `koinViewModel()`
+  - function `rememberKoinInject()` has been moved into `koinInject()`,
 - Function `rememberKoinApplication` is marked as `@KoinInternalAPI`
 
 ## 4.0.4
@@ -280,23 +280,23 @@ Following APIs in the given projects are now stable.
 The following APIs have been deprecated and should not be used anymore:
 
 - `koin-test`
-    - All API for `checkModules`. Migrate to `Verify` API.
+  - All API for `checkModules`. Migrate to `Verify` API.
 
 - `koin-android`
-    - ViewModel DSL in favor of new centralized DSL in koin-core
-    - All state ViewModel API are deprecated at the error level:
-        - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
-        - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
+  - ViewModel DSL in favor of new centralized DSL in koin-core
+  - All state ViewModel API are deprecated at the error level:
+    - `stateViewModel()`,`getStateViewModel()`, use instead `viewModel()`
+    - `getSharedStateViewModel()`, `sharedStateViewModel()`, use instead `viewModel()` or `activityViewModel()` for shared instance
 
 `koin-compose`
 - old compose API function are deprecated at error level:
-    - function `inject()` is deprecated (error level) in favor of `koinInject()`
-    - function `getViewModel()` is deprecated (error level) in favor of `koinViewModel()`
-    - function `rememberKoinInject()` is deprecated (error level) in favor of `koinInject()`,
+  - function `inject()` is deprecated (error level) in favor of `koinInject()`
+  - function `getViewModel()` is deprecated (error level) in favor of `koinViewModel()`
+  - function `rememberKoinInject()` is deprecated (error level) in favor of `koinInject()`,
 
 - `koin-compose-viewmodel`
-    - ViewModel DSL in favor of new centralized DSL in koin-core
-    - function `koinNavViewModel` is now deprecated, in favor of `koinViewModel`
+  - ViewModel DSL in favor of new centralized DSL in koin-core
+  - function `koinNavViewModel` is now deprecated, in favor of `koinViewModel`
 
 ### Breaking 💥
 
@@ -334,12 +334,12 @@ All used lib versions are located in [libs.versions.toml](https://github.com/Ins
 
 `koin-core`
 - `KoinContext` now has followings:
-    - `fun loadKoinModules(module: Module, createEagerInstances: Boolean = false)`
-    - `fun loadKoinModules(modules: List<Module>, createEagerInstances: Boolean = false)`
+  - `fun loadKoinModules(module: Module, createEagerInstances: Boolean = false)`
+  - `fun loadKoinModules(modules: List<Module>, createEagerInstances: Boolean = false)`
 - `koinApplication()` function is now using several formats:
-    - `koinApplication(createEagerInstances: Boolean = true, appDeclaration: KoinAppDeclaration? = null)`
-    - `koinApplication(appDeclaration: KoinAppDeclaration?)`
-    - `koinApplication(createEagerInstances: Boolean)`
+  - `koinApplication(createEagerInstances: Boolean = true, appDeclaration: KoinAppDeclaration? = null)`
+  - `koinApplication(appDeclaration: KoinAppDeclaration?)`
+  - `koinApplication(createEagerInstances: Boolean)`
 - `KoinAppDeclaration` to help open declaration styles
 - `KoinPlatformTimeTools` to use API Time for JS
 - iOS - `synchronized` API to use Touchlab Lockable API

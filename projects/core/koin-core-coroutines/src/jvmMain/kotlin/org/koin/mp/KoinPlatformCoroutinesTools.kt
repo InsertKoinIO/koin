@@ -16,8 +16,14 @@
 package org.koin.mp
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 actual object KoinPlatformCoroutinesTools {
     actual fun defaultCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    actual fun <T> runBlocking(
+        context: CoroutineContext,
+        block: suspend CoroutineScope.() -> T
+    ): T = kotlinx.coroutines.runBlocking(context,block)
 }

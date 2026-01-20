@@ -26,7 +26,6 @@ public final class org/koin/core/Koin {
 	public final fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getPropertyRegistry ()Lorg/koin/core/registry/PropertyRegistry;
-	public final fun getResolver ()Lorg/koin/core/resolution/CoreResolver;
 	public final fun getScope (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeOrNull (Ljava/lang/String;)Lorg/koin/core/scope/Scope;
 	public final fun getScopeRegistry ()Lorg/koin/core/registry/ScopeRegistry;
@@ -51,10 +50,14 @@ public final class org/koin/core/KoinApplication {
 	public final fun printLogger (Lorg/koin/core/logger/Level;)Lorg/koin/core/KoinApplication;
 	public static synthetic fun printLogger$default (Lorg/koin/core/KoinApplication;Lorg/koin/core/logger/Level;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 	public final fun properties (Ljava/util/Map;)Lorg/koin/core/KoinApplication;
+	public final fun strictOverride ()V
 }
 
 public final class org/koin/core/KoinApplication$Companion {
 	public final fun init ()Lorg/koin/core/KoinApplication;
+}
+
+public abstract interface annotation class org/koin/core/annotation/KoinDelicateAPI : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class org/koin/core/annotation/KoinExperimentalAPI : java/lang/annotation/Annotation {
@@ -64,7 +67,7 @@ public abstract interface annotation class org/koin/core/annotation/KoinInternal
 }
 
 public abstract interface class org/koin/core/component/KoinComponent {
-	public abstract fun getKoin ()Lorg/koin/core/Koin;
+	public fun getKoin ()Lorg/koin/core/Koin;
 }
 
 public final class org/koin/core/component/KoinComponent$DefaultImpls {
@@ -121,6 +124,8 @@ public abstract interface class org/koin/core/context/KoinContext {
 	public abstract fun getOrNull ()Lorg/koin/core/Koin;
 	public abstract fun loadKoinModules (Ljava/util/List;Z)V
 	public abstract fun loadKoinModules (Lorg/koin/core/module/Module;Z)V
+	public static synthetic fun loadKoinModules$default (Lorg/koin/core/context/KoinContext;Ljava/util/List;ZILjava/lang/Object;)V
+	public static synthetic fun loadKoinModules$default (Lorg/koin/core/context/KoinContext;Lorg/koin/core/module/Module;ZILjava/lang/Object;)V
 	public abstract fun startKoin (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
 	public abstract fun startKoin (Lorg/koin/core/KoinApplication;)Lorg/koin/core/KoinApplication;
 	public abstract fun stopKoin ()V
@@ -134,9 +139,11 @@ public final class org/koin/core/context/KoinContext$DefaultImpls {
 }
 
 public final class org/koin/core/definition/BeanDefinition {
-	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;)V
-	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;)V
+	public fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;Ljava/lang/Boolean;)V
+	public synthetic fun <init> (Lorg/koin/core/qualifier/Qualifier;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Lorg/koin/core/definition/Kind;Ljava/util/List;Ljava/lang/Boolean;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAllowOverride ()Ljava/lang/Boolean;
 	public final fun getCallbacks ()Lorg/koin/core/definition/Callbacks;
 	public final fun getDefinition ()Lkotlin/jvm/functions/Function2;
 	public final fun getKind ()Lorg/koin/core/definition/Kind;
@@ -148,6 +155,7 @@ public final class org/koin/core/definition/BeanDefinition {
 	public final fun hasType (Lkotlin/reflect/KClass;)Z
 	public fun hashCode ()I
 	public final fun is (Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/qualifier/Qualifier;)Z
+	public final fun setAllowOverride (Ljava/lang/Boolean;)V
 	public final fun setCallbacks (Lorg/koin/core/definition/Callbacks;)V
 	public final fun setQualifier (Lorg/koin/core/qualifier/Qualifier;)V
 	public final fun setSecondaryTypes (Ljava/util/List;)V
@@ -399,8 +407,9 @@ public final class org/koin/core/module/Module {
 
 public final class org/koin/core/module/ModuleKt {
 	public static final fun flatten (Ljava/util/List;)Ljava/util/Set;
-	public static final fun overrideError (Lorg/koin/core/instance/InstanceFactory;Ljava/lang/String;)V
+	public static final synthetic fun overrideError (Lorg/koin/core/instance/InstanceFactory;Ljava/lang/String;)V
 	public static final fun plus (Ljava/util/List;Lorg/koin/core/module/Module;)Ljava/util/List;
+	public static final fun throwOverrideError (Lorg/koin/core/instance/InstanceFactory;Ljava/lang/String;)V
 }
 
 public abstract interface annotation class org/koin/core/module/OptionDslMarker : java/lang/annotation/Annotation {
@@ -536,12 +545,20 @@ public final class org/koin/core/registry/ScopeRegistry$Companion {
 
 public final class org/koin/core/resolution/CoreResolver : org/koin/core/resolution/InstanceResolver {
 	public fun <init> (Lorg/koin/core/Koin;)V
-	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun getExtendedResolution ()Ljava/util/ArrayList;
 	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 }
 
 public final class org/koin/core/resolution/CoreResolverKt {
 	public static final fun flatten (Ljava/util/List;)Ljava/util/Set;
+}
+
+public final class org/koin/core/resolution/CoreResolverV2 : org/koin/core/resolution/InstanceResolver {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
+	public fun getExtendedResolution ()Ljava/util/ArrayList;
+	public fun resolveFromContext (Lorg/koin/core/scope/Scope;Lorg/koin/core/instance/ResolutionContext;)Ljava/lang/Object;
 }
 
 public abstract interface class org/koin/core/resolution/ResolutionExtension {
@@ -601,6 +618,7 @@ public final class org/koin/dsl/DefinitionBindingKt {
 	public static final fun bind (Lorg/koin/core/definition/KoinDefinition;Lkotlin/reflect/KClass;)Lorg/koin/core/definition/KoinDefinition;
 	public static final fun binds (Lorg/koin/core/definition/KoinDefinition;[Lkotlin/reflect/KClass;)Lorg/koin/core/definition/KoinDefinition;
 	public static final fun onClose (Lorg/koin/core/definition/KoinDefinition;Lkotlin/jvm/functions/Function1;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun override (Lorg/koin/core/definition/KoinDefinition;)Lorg/koin/core/definition/KoinDefinition;
 }
 
 public final class org/koin/dsl/KoinApplicationKt {

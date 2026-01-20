@@ -52,6 +52,31 @@ inline fun <reified S : Any> KoinDefinition<out S>.bind(): KoinDefinition<out S>
 }
 
 /**
+ * Mark this definition as allowing override, even when global allowOverride is false.
+ *
+ * This enables targeted overrides for specific definitions without opening up
+ * all definitions to be overridden globally.
+ *
+ * @return this definition for chaining
+ *
+ * Example:
+ * ```kotlin
+ * koinApplication {
+ *     allowOverride(false)  // Strict mode - no overrides by default
+ *     modules(
+ *         module { single { ProductionService() } },
+ *         module { single { TestService() }.override() }  // Only this can override
+ *     )
+ * }
+ * ```
+ */
+@OptionDslMarker
+fun <T> KoinDefinition<T>.override(): KoinDefinition<T> {
+    factory.beanDefinition.allowOverride = true
+    return this
+}
+
+/**
  * Add compatible types to match for definition
  *
  * Type-safety may be checked by "checkModules" from "koin-test" module.

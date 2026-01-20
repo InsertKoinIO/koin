@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 buildscript {
     repositories {
         mavenLocal()
@@ -26,10 +28,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -46,22 +44,24 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_1_8
+        }
     }
 }
 
 dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation "androidx.work:work-runtime-ktx:2.10.1"
+    implementation "androidx.work:work-runtime-ktx:2.10.5"
     implementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
-    testImplementation "junit:junit:4.13.2"
+    testImplementation "junit:junit:$junit_version"
 
     // Koin
     implementation platform("io.insert-koin:koin-bom:$koin_android_version")
@@ -74,10 +74,10 @@ dependencies {
     testImplementation "io.insert-koin:koin-android-test"
     testImplementation "io.insert-koin:koin-test-coroutines"
 
-    testImplementation "androidx.test.ext:junit:1.2.1"
-    testImplementation "androidx.test:runner:1.6.2"
-    testImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    testImplementation "androidx.test.ext:junit:1.3.0"
+    testImplementation "androidx.test:runner:1.7.0"
+    testImplementation "androidx.test.espresso:espresso-core:3.7.0"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
     testImplementation "org.robolectric:robolectric:$robolectric"
-    testImplementation "androidx.test:core:1.6.1"
+    testImplementation "androidx.test:core:1.7.0"
 }

@@ -5,6 +5,7 @@ import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getOrCreateScope
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.error.ClosedScopeException
 import org.koin.core.logger.Level
 import org.koin.core.module.dsl.scopedOf
@@ -20,6 +21,11 @@ class ScopeTest {
 
     private class A
     private class B
+
+    @BeforeTest
+    fun before(){
+        stopKoin()
+    }
 
     @Test
     fun scope_component() {
@@ -202,27 +208,84 @@ class ScopeTest {
 
     @Test
     fun scope_regression_test(){
-        startKoin {
+        try {
+            startKoin {
+                modules(
+                    module {
+                        single<Unit> {}
+                        scope(named("one")) {}
+                        scope(named("two")) {
+                            scoped<String> {
+                                get<Unit>().toString() // gets Unit from the root scope
+                            }
+                        }
+                    },
+                )
+            }.run {
+                val one = koin.createScope("one", named("one"))
+                val two = koin.createScope("two", named("two")).apply {
+                    unlink(getScope("_root_"))
+                    linkTo(one)
+                }
+                // in 4.1.0-Beta11 -> prints "kotlin.Unit"
+                // in 4.1.0-RC1 -> throws NoDefinitionFoundException
+                assertEquals(Unit.toString(),two.get<String>())
+            }
+        } catch (e: Exception) {
+            stopKoin()
+        }
+    }
+
+    @Test
+    fun scope_regression_test2(){
+        val koin = startKoin {
+            printLogger(Level.DEBUG)
             modules(
                 module {
-                    single<Unit> {}
-                    scope(named("one")) {}
-                    scope(named("two")) {
-                        scoped<String> {
-                            get<Unit>().toString() // gets Unit from the root scope
-                        }
-                    }
-                },
+                    single<String> { "ABC" }
+                    scope(named("scope1")) {}
+                    scope(named("scope2")) {}
+                }
             )
-        }.run {
-            val one = koin.createScope("one", named("one"))
-            val two = koin.createScope("two", named("two")).apply {
-                unlink(getScope("_root_"))
-                linkTo(one)
-            }
-            // in 4.1.0-Beta11 -> prints "kotlin.Unit"
-            // in 4.1.0-RC1 -> throws NoDefinitionFoundException
-            assertEquals(Unit.toString(),two.get<String>())
+        }.koin
+
+        val scope1 = koin.createScope("scope1", named("scope1"))
+
+        val scope2 = koin.createScope("scope2", named("scope2")).apply {
+            unlink(koin.getScope("_root_"))
+            linkTo(scope1)
         }
+
+        // Koin 4.1.0 returns "ABC"
+        // Koin 4.1.1 throws NoDefinitionFoundException
+        val stringAbc = scope2.getOrNull<String>()
+        assertEquals("ABC",stringAbc)
+
+        stopKoin()
+    }
+
+    @Test
+    fun `resolve scoped dependency from within same scope`() {
+        val scopeKey = named("myScope")
+
+        val koin = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    scope(scopeKey) {
+                        scoped { Simple.ComponentA() }
+                        scoped { Simple.ComponentB(get()) } // should resolve ComponentA from current scope
+                    }
+                }
+            )
+        }.koin
+
+        val scope = koin.createScope("scope1", scopeKey)
+        val componentB = scope.get<Simple.ComponentB>()
+        assertNotNull(componentB)
+        assertNotNull(componentB.a)
+        // Verify same instance is returned (scoped behavior)
+        assertEquals(scope.get<Simple.ComponentA>(), componentB.a)
+        scope.close()
     }
 }

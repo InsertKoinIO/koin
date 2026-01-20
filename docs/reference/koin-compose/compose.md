@@ -124,6 +124,53 @@ You can use parameters with lambda injection like `koinInject<MyService>{ parame
 From version 4.0.2 of Koin, koinInject(Qualifier,Scope,ParametersHolder) is introduced to let you use parameters in the most efficient way
 :::
 
+### Injecting from Activity Scope - koinActivityInject (Android only)
+
+:::info
+This is an **Android-only** feature available in `koin-compose` starting from version 4.2.0.
+:::
+
+The `koinActivityInject()` function allows you to resolve dependencies scoped to the current Activity from within a Composable. This is useful when you need to share state or dependencies across multiple Composables within the same Activity.
+
+**Requirements:**
+- Your Activity must implement `AndroidScopeComponent` to provide its Koin scope
+- The dependency must be declared in an Activity scope
+
+```kotlin
+// Define scoped dependencies
+val appModule = module {
+    scope<MainActivity> {
+        scoped { StateHolder() }
+    }
+}
+
+// Activity implementing AndroidScopeComponent
+class MainActivity : ComponentActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityScope()
+
+    // ...
+}
+
+// Use in any Composable within the Activity
+@Composable
+fun MyScreen() {
+    val stateHolder: StateHolder = koinActivityInject()
+    // Use stateHolder...
+}
+```
+
+The resolved instance is remembered across recompositions. You can also pass optional parameters:
+
+```kotlin
+@Composable
+fun MyScreen() {
+    val stateHolder: StateHolder = koinActivityInject(
+        qualifier = named("myQualifier"),
+        parameters = { parametersOf("param1") }
+    )
+}
+```
+
 ## ViewModel for @Composable
 
 The same way you have access to classical single/factory instances, you gain access to the following Koin ViewModel API:

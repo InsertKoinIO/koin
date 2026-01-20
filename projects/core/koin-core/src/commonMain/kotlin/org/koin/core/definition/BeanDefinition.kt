@@ -37,7 +37,22 @@ class BeanDefinition<T>(
     val definition: Definition<T>,
     val kind: Kind,
     var secondaryTypes: List<KClass<*>> = emptyList(),
+    var allowOverride : Boolean? = null
 ) {
+    /**
+     * Deprecated constructor for binary compatibility with Koin 4.1.x
+     * This ensures that code compiled against Koin 4.1.x can still run with Koin 4.2.0
+     */
+    @Deprecated("Binary compatibility constructor - use primary constructor", level = DeprecationLevel.HIDDEN)
+    constructor(
+        scopeQualifier: Qualifier,
+        primaryType: KClass<*>,
+        qualifier: Qualifier?,
+        definition: Definition<T>,
+        kind: Kind,
+        secondaryTypes: List<KClass<*>>
+    ) : this(scopeQualifier, primaryType, qualifier, definition, kind, secondaryTypes, null)
+
     var callbacks: Callbacks<T> = Callbacks()
 
     @PublishedApi

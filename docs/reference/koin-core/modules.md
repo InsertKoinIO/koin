@@ -74,6 +74,8 @@ startKoin {
 
 You can check in Koin logs, about definition mapping override.
 
+### Disabling override globally
+
 You can specify to not allow overriding in your Koin application configuration with `allowOverride(false)`:
 
 ```kotlin
@@ -84,6 +86,39 @@ startKoin {
 ```
 
 In the case of disabling override, Koin will throw an `DefinitionOverrideException` exception on any attempt of override.
+
+### Explicit override per definition (4.2.0+)
+
+When you want strict control over overrides (by using `allowOverride(false)`), but still need specific definitions to override existing ones, you can use the `.override()` function on individual definitions:
+
+```kotlin
+val myModuleA = module {
+    single<Service> { ProductionService() }
+}
+
+val myModuleB = module {
+    // This definition is explicitly allowed to override
+    single<Service> { TestService() }.override()
+}
+
+startKoin {
+    allowOverride(false)  // Strict mode - no overrides by default
+    modules(myModuleA, myModuleB)
+}
+```
+
+This enables targeted overrides for specific definitions without opening up all definitions to be overridden globally. This is particularly useful for:
+- Test configurations that need to override production services
+- Feature flags that conditionally override implementations
+- Plugin systems where specific plugins can override defaults
+
+You can also use it with the `withOptions` syntax:
+
+```kotlin
+single<Service> { TestService() } withOptions {
+    override()
+}
+```
 
 ## Sharing Modules
 

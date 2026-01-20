@@ -1,0 +1,59 @@
+public final class org/koin/viewmodel/BundleExtKt {
+	public static final fun emptyState ()Lkotlin/jvm/functions/Function0;
+	public static final fun toExtras (Landroid/os/Bundle;Landroidx/lifecycle/ViewModelStoreOwner;)Landroidx/lifecycle/viewmodel/CreationExtras;
+}
+
+public final class org/koin/viewmodel/CreationExtrasExtKt {
+	public static final fun defaultExtras (Landroidx/lifecycle/ViewModelStoreOwner;)Landroidx/lifecycle/viewmodel/CreationExtras;
+}
+
+public final class org/koin/viewmodel/GetViewModelKt {
+	public static final fun getViewModelKey (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static synthetic fun getViewModelKey$default (Lorg/koin/core/qualifier/Qualifier;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun lazyResolveViewModel (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;)Lkotlin/Lazy;
+	public static synthetic fun lazyResolveViewModel$default (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlin/Lazy;
+	public static final fun resolveViewModel (Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStore;Ljava/lang/String;Landroidx/lifecycle/viewmodel/CreationExtras;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;)Landroidx/lifecycle/ViewModel;
+	public static synthetic fun resolveViewModel$default (Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStore;Ljava/lang/String;Landroidx/lifecycle/viewmodel/CreationExtras;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/scope/Scope;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
+}
+
+public final class org/koin/viewmodel/factory/AndroidParametersHolder : org/koin/core/parameter/ParametersHolder {
+	public fun <init> (Lkotlin/jvm/functions/Function0;Landroidx/lifecycle/viewmodel/CreationExtras;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Landroidx/lifecycle/viewmodel/CreationExtras;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun elementAt (ILkotlin/reflect/KClass;)Ljava/lang/Object;
+	public fun getOrNull (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+}
+
+public final class org/koin/viewmodel/factory/KoinViewModelFactory : androidx/lifecycle/ViewModelProvider$Factory {
+	public fun <init> (Lkotlin/reflect/KClass;Lorg/koin/core/scope/Scope;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lkotlin/reflect/KClass;Lorg/koin/core/scope/Scope;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Ljava/lang/Class;)Landroidx/lifecycle/ViewModel;
+	public fun create (Ljava/lang/Class;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModel;
+	public fun create (Lkotlin/reflect/KClass;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModel;
+}
+
+public final class org/koin/viewmodel/factory/ViewModelScopeAutoCloseable : java/lang/AutoCloseable {
+	public fun <init> (Ljava/lang/String;Lorg/koin/core/Koin;)V
+	public fun close ()V
+	public final fun getKoin ()Lorg/koin/core/Koin;
+	public final fun getScopeId ()Ljava/lang/String;
+}
+
+public abstract class org/koin/viewmodel/scope/ScopeViewModel : androidx/lifecycle/ViewModel, org/koin/core/component/KoinScopeComponent {
+	public fun <init> ()V
+	public fun getKoin ()Lorg/koin/core/Koin;
+	public fun getScope ()Lorg/koin/core/scope/Scope;
+	public fun onCloseScope ()V
+}
+
+public final class org/koin/viewmodel/scope/ScopeViewModelKt {
+	public static final fun viewModelScope (Lorg/koin/core/component/KoinScopeComponent;)Lorg/koin/core/scope/Scope;
+}
+
+public final class org/koin/viewmodel/scope/ViewModelScopeArchetypeDSLKt {
+	public static final fun viewModelScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class org/koin/viewmodel/scope/ViewModelScopeArchetypeKt {
+	public static final fun getViewModelScopeArchetype ()Lorg/koin/core/qualifier/TypeQualifier;
+}
+

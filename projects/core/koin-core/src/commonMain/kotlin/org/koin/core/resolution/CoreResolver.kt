@@ -59,9 +59,9 @@ class CoreResolver(
     private val _koin : Koin
 ) : InstanceResolver {
 
-    internal val extendedResolution = arrayListOf<ResolutionExtension>()
+    override val extendedResolution = arrayListOf<ResolutionExtension>()
 
-    fun addResolutionExtension(resolutionExtension : ResolutionExtension){
+    override fun addResolutionExtension(resolutionExtension : ResolutionExtension){
         extendedResolution += resolutionExtension
     }
 
@@ -96,7 +96,7 @@ class CoreResolver(
     }
 
     private inline fun <T> resolveFromStackedParameters(scope: Scope, ctx: ResolutionContext): T? {
-        val current = scope.parameterStack?.get()
+        val current = scope._parameterStack?.get()
         return if (current.isNullOrEmpty()) null
         else {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in stack parameters")
@@ -113,7 +113,7 @@ class CoreResolver(
 
     @KoinExperimentalAPI
     private inline fun <T> resolveFromScopeArchetype(scope: Scope, ctx: ResolutionContext): T? {
-        if (scope.isRoot || scope.scopeQualifier !is TypeQualifier) return null
+        if (scope.isRoot || scope.scopeArchetype == null) return null
         ctx.logger.debug("|- ? ${ctx.debugTag} look at scope archetype")
         return _koin.instanceRegistry.resolveScopeArchetypeInstance<T>(ctx.qualifier, ctx.clazz, ctx)
     }
@@ -128,11 +128,13 @@ class CoreResolver(
         scope: Scope,
         ctx: ResolutionContext,
     ): T? {
-        val parentScopes = if (scope.linkedScopes.size > 1) flatten(scope.linkedScopes) else scope.linkedScopes
+        val hasSingleLink = scope.linkedScopes.size == 1
+        val parentScopes = if (!hasSingleLink && scope.linkedScopes.size > 1) flatten(scope.linkedScopes) else scope.linkedScopes
         return parentScopes.firstNotNullOfOrNull {
             ctx.logger.debug("|- ? ${ctx.debugTag} look in scope '${it.id}'")
             val instanceContext = if (!it.isRoot) ctx.newContextForScope(it) else ctx
-            resolveFromContextOrNull(it, instanceContext, lookupParent = false)
+            // If there is exactly one linked scope, allow traversal into its own parents (chained lookup)
+            resolveFromContextOrNull(it, instanceContext, lookupParent = hasSingleLink)
         }
     }
 

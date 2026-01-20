@@ -2,6 +2,7 @@ package org.koin.sample.sandbox
 
 import android.app.Application
 import android.os.StrictMode
+import android.util.Log
 import androidx.work.WorkManager
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.koin.androidContext
@@ -10,10 +11,14 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.lazyModules
 import org.koin.core.logger.Level
 import org.koin.core.module.moduleConfiguration
 import org.koin.core.option.viewModelScopeFactory
-import org.koin.sample.sandbox.di.appModules
+import org.koin.core.waitAllStartJobs
+import org.koin.mp.KoinPlatform
+import org.koin.sample.sandbox.di.mainModules
+import kotlin.time.measureTime
 
 
 class MainApplication : Application() {
@@ -53,24 +58,28 @@ class MainApplication : Application() {
 
         startTime = System.currentTimeMillis()
 
-        startKoin {
-            androidLogger(Level.DEBUG)
-            androidContext(this@MainApplication)
-            androidFileProperties()
-            fragmentFactory()
-            workManagerFactory()
+        val s = measureTime {
+            startKoin {
+                androidLogger(Level.DEBUG)
+                androidContext(this@MainApplication)
+                androidFileProperties()
+                fragmentFactory()
+                workManagerFactory()
 
-            moduleConfiguration(appModules)
+                lazyModules(mainModules)
 
-            options(
-                viewModelScopeFactory()
-            )
+                options(
+                    viewModelScopeFactory()
+                )
+            }
         }
+
+        Log.i("[MEASURE]","Koin startup time - Started in $s ms")
 
         //TODO Load/Unload Koin modules scenario cases
         cancelPendingWorkManager(this)
 
-//        KoinPlatform.getKoin().waitAllStartJobs()
+        KoinPlatform.getKoin().waitAllStartJobs()
     }
 }
 

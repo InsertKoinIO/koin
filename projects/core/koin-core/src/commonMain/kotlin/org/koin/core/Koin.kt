@@ -33,6 +33,8 @@ import org.koin.core.registry.OptionRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.resolution.CoreResolver
+import org.koin.core.resolution.CoreResolverV2
+import org.koin.core.resolution.InstanceResolver
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.time.inMs
@@ -56,7 +58,7 @@ class Koin {
         private set
 
     @KoinInternalApi
-    val resolver = CoreResolver(this)
+    internal val resolver : InstanceResolver = CoreResolverV2(this)
 
     @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)

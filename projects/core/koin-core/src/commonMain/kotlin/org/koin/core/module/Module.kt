@@ -185,8 +185,25 @@ class Module(
     }
 }
 
+/**
+ * Deprecated function for binary compatibility with Koin 4.1.x
+ * This ensures that inlined code compiled against Koin 4.1.x can still run with Koin 4.2.0
+ */
+@Deprecated(
+    message = "Renamed to throwOverrideError for clarity",
+    replaceWith = ReplaceWith("throwOverrideError(factory, mapping)"),
+    level = DeprecationLevel.HIDDEN
+)
 @PublishedApi
 internal fun overrideError(
+    factory: InstanceFactory<*>,
+    mapping: IndexKey,
+) {
+    throwOverrideError(factory, mapping)
+}
+
+@PublishedApi
+internal fun throwOverrideError(
     factory: InstanceFactory<*>,
     mapping: IndexKey,
 ) {

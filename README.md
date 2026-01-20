@@ -1,9 +1,11 @@
 ![logo](./docs/img/koin_main_logo.png)
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![Github Actions](https://github.com/InsertKoinIO/koin/actions/workflows/build.yml/badge.svg)
 [![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/InsertKoinIO/koin/blob/main/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-orange.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/koin/)
+
+[![Free Monitoring](https://img.shields.io/badge/Kotzilla.io-Free%20Monitoring-brightgreen?style=flat&logo=kotlin&logoColor=white)]([https://forms.gle/YOUR-FORM-ID](https://bit.ly/koin_opensource_monitoring))
 
 
 # What is KOIN? ✨
@@ -40,6 +42,12 @@ Take a look at:
 
 - **Kotzilla Platform** Free signup on [Kotzilla](https://kotzilla.io)
 > is a console-based suite with connected cloud services that visualizes your Koin module structure, monitors runtime performance and memory metrics, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects. 
+
+### 🚀 Free Monitoring for Koin Apps
+
+Kotzilla.io — the team behind [Koin](https://insert-koin.io) — offers **free monitoring** for any open source Android or KMP app using Koin and published on the Google Play Store.
+
+👉 [Apply for Free Monitoring](https://bit.ly/koin_opensource_monitoring)
 
 ## Latest News & Resources 🌐
 - Official Website: [insert-koin.io](https://insert-koin.io)

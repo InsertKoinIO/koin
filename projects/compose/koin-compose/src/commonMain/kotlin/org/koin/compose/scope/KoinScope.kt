@@ -18,7 +18,7 @@ package org.koin.compose.scope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import org.koin.compose.ComposeContextWrapper
-import org.koin.compose.LocalKoinScope
+import org.koin.compose.LocalKoinScopeContext
 import org.koin.compose.getKoin
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -93,7 +93,7 @@ inline fun KoinScope(
 internal fun OnKoinScope(scope: Scope, content: @Composable () -> Unit) {
     rememberKoinScope(scope)
     CompositionLocalProvider(
-        LocalKoinScope provides ComposeContextWrapper(scope),
+        LocalKoinScopeContext provides ComposeContextWrapper(scope),
     ) {
         content()
     }
