@@ -207,7 +207,7 @@ class InstanceRegistry(val _koin: Koin) {
                 (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
             }
             .distinct()
-            .sortedWith(compareBy({ it.beanDefinition.toString() }))
+//            .sortedWith(compareBy({ it.beanDefinition.toString() }))
         return factories.mapNotNull { it.get(instanceContext) as? T }
     }
 
