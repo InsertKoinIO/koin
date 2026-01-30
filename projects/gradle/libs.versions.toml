@@ -41,7 +41,7 @@ mockito = "5.2.0"
 mockk = "1.14.7"
 robolectric = "4.16"
 # Ktor
-ktor = "3.4.0-eap-1520"
+ktor = "3.4.0"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
